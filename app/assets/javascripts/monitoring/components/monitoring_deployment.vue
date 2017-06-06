@@ -121,5 +121,4 @@
       </defs>
     </svg>
   </g>
-  <!--The gradient-->
 </template>

@@ -103,7 +103,7 @@
     },
 
     beforeDestroy() {
-      eventHub.$off('', this.toggleAspectRatio);
+      eventHub.$off('toggleAspectRatio', this.toggleAspectRatio);
       window.removeEventListener('resize', this.resizeThrottled, false);
     },
 

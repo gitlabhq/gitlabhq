@@ -35,17 +35,17 @@
       },
     },
     computed: {
-      calculateTextTransform() {
-        const yPosition = (((this.height - this.margin.top)
+      textTransform() {
+        const yCoordinate = (((this.height - this.margin.top)
                           + this.measurements.axisLabelLineOffset) / 2) || 0;
-        return `translate(15, ${yPosition}) rotate(-90)`;
+        return `translate(15, ${yCoordinate}) rotate(-90)`;
       },
 
-      calculateXPosition() {
+      xPosition() {
         return (((this.width + this.measurements.axisLabelLineOffset) / 2) - this.margin.right) || 0;
       },
 
-      calculateYPosition() {
+      yPosition() {
         return ((this.height - this.margin.top) + this.measurements.axisLabelLineOffset) || 0;
       },
     },
@@ -59,9 +59,9 @@
       stroke="#000000"
       stroke-width="1"
       x1="10"
-      :y1="calculateYPosition"
+      :y1="yPosition"
       :x2="width + 20"
-      :y2="calculateYPosition">
+      :y2="yPosition">
     </line>
     <line
       class="label-y-axis-line"
@@ -70,7 +70,7 @@
       x1="10"
       y1="0"
       :x2="10"
-      :y2="calculateYPosition">
+      :y2="yPosition">
     </line>
     <rect
       class="rect-axis-text"
@@ -82,20 +82,20 @@
     <text 
       class="label-axis-text"
       text-anchor="middle"
-      :transform="calculateTextTransform">
+      :transform="textTransform">
       {{yAxisLabel}}
     </text>
     <rect
       class="rect-axis-text"
-      :x="calculateXPosition"
+      :x="xPosition"
       :y="height - 80"
       width="30"
       height="50">
     </rect>
     <text
       class="label-axis-text"
-      :x="calculateXPosition"
-      :y="calculateYPosition"
+      :x="xPosition"
+      :y="yPosition"
       dy=".35em">
       Time
     </text>

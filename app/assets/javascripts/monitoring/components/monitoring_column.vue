@@ -71,22 +71,22 @@
     },
 
     computed: {
-      calculateViewBox() {
+      outterViewBox() {
         return `0 0 ${this.width} ${this.height}`;
       },
 
-      calculateInnerViewBox() {
+      innerViewBox() {
         if ((this.width - 150) > 0) {
           return `0 0 ${this.width - 150} ${this.height}`;
         }
         return '0 0 0 0';
       },
 
-      calculateAxisTransform() {
+      axisTransform() {
         return `translate(70, ${this.height - 100})`;
       },
 
-      calculatePaddingBottom() {
+      paddingBottomRootSvg() {
         return (Math.ceil(this.height * 100) / this.width) || 0;
       },
     },
@@ -114,13 +114,12 @@
         }
       },
 
-      formatDeployments() {
-        // Empty method to prevent hook errors during the mounting of the component
-      },
-
-      handleMouseOverGraph() {
-        const currentMouseXCoordinate = d3.mouse(this.$refs.graphOverlay)[0];
-        const timeValueOverlay = this.xScale.invert(currentMouseXCoordinate);
+      handleMouseOverGraph(e) {
+        let point = this.$refs.graphData.createSVGPoint();
+        point.x = e.clientX;
+        point.y = e.clientY;
+        point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
+        const timeValueOverlay = this.xScale.invert(point.x);
         const overlayIndex = bisectDate(this.data, timeValueOverlay, 1);
         const d0 = this.data[overlayIndex - 1];
         const d1 = this.data[overlayIndex];
@@ -128,7 +127,7 @@
         const evalTime = timeValueOverlay - d0[0] > d1[0] - timeValueOverlay;
         this.currentData = evalTime ? d1 : d0;
         this.currentXCoordinate = Math.floor(this.xScale(this.currentData.time));
-        const currentDeployXPos = this.mouseOverDeployInfo(currentMouseXCoordinate);
+        const currentDeployXPos = this.mouseOverDeployInfo(point.x);
         this.currentYCoordinate = this.yScale(this.currentData.value);
 
         if (this.currentXCoordinate > (this.width - 200)) {
@@ -191,9 +190,6 @@
         this.line = lineFunction(this.data);
 
         this.area = areaFunction(this.data);
-
-        d3.select(this.$refs.graphOverlay)
-        .on('mousemove', this.handleMouseOverGraph);
       },
     },
 
@@ -224,12 +220,12 @@
     <div 
       class="prometheus-svg-container">
       <svg 
-        :viewBox="calculateViewBox"
-        :style="{ 'padding-bottom': calculatePaddingBottom }"
+        :viewBox="outterViewBox"
+        :style="{ 'padding-bottom': paddingBottomRootSvg }"
         ref="baseSvg">
         <g
           class="x-axis"
-          :transform="calculateAxisTransform">
+          :transform="axisTransform">
         </g>
         <g
           class="y-axis"
@@ -247,7 +243,8 @@
         />
         <svg 
           class="graph-data"
-          :viewBox="calculateInnerViewBox">
+          :viewBox="innerViewBox"
+          ref="graphData">
             <path
               class="metric-area"
               :d="area"
@@ -267,7 +264,8 @@
               :width="(width - 70)"
               :height="(height - 100)"
               transform="translate(-5, 20)"
-              ref="graphOverlay">
+              ref="graphOverlay"
+              @mousemove="handleMouseOverGraph($event)">
             </rect>
             <monitoring-flag 
               v-show="showFlag"

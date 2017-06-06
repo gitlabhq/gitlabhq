@@ -18,29 +18,28 @@ const mixins = {
 
       return dataFound;
     },
-  },
+    formatDeployments() {
+      this.reducedDeploymentData = this.deploymentData.reduce((deploymentDataArray, deployment) => {
+        const time = new Date(deployment.created_at);
+        const xPos = Math.floor(this.xScale(time));
 
-  formatDeployments() {
-    this.reducedDeploymentData = this.deploymentData.reduce((deploymentDataArray, deployment) => {
-      const time = new Date(deployment.created_at);
-      const xPos = Math.floor(this.xScale(time));
+        time.setSeconds(this.data[0].time.getSeconds());
 
-      time.setSeconds(this.data[0].time.getSeconds());
+        if (xPos >= 0) {
+          deploymentDataArray.push({
+            id: deployment.id,
+            time,
+            sha: deployment.sha,
+            tag: deployment.tag,
+            ref: deployment.ref.name,
+            xPos,
+            showDeploymentFlag: false,
+          });
+        }
 
-      if (xPos >= 0) {
-        deploymentDataArray.push({
-          id: deployment.id,
-          time,
-          sha: deployment.sha,
-          tag: deployment.tag,
-          ref: deployment.ref.name,
-          xPos,
-          showDeploymentFlag: false,
-        });
-      }
-
-      return deploymentDataArray;
-    }, []);
+        return deploymentDataArray;
+      }, []);
+    },
   },
 };
 
