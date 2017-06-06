@@ -2,7 +2,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   include MilestoneActions
 
   before_action :module_enabled
-  before_action :milestone, only: [:edit, :update, :destroy, :show, :sort_issues, :sort_merge_requests, :merge_requests, :participants, :labels]
+  before_action :milestone, only: [:edit, :update, :destroy, :show, :merge_requests, :participants, :labels]
 
   # Allow read any milestone
   before_action :authorize_read_milestone!
@@ -83,22 +83,6 @@ class Projects::MilestonesController < Projects::ApplicationController
       format.html { redirect_to namespace_project_milestones_path, status: 302 }
       format.js { head :ok }
     end
-  end
-
-  def sort_issues
-    @milestone.sort_issues(params['sortable_issue'].map(&:to_i))
-
-    render json: { saved: true }
-  end
-
-  def sort_merge_requests
-    @merge_requests = @milestone.merge_requests.where(id: params['sortable_merge_request'])
-    @merge_requests.each do |merge_request|
-      merge_request.position = params['sortable_merge_request'].index(merge_request.id.to_s) + 1
-      merge_request.save
-    end
-
-    render json: { saved: true }
   end
 
   protected

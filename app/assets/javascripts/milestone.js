@@ -84,7 +84,6 @@
       this.issuesSortEndpoint = $('#tab-issues').data('sort-endpoint');
       this.mergeRequestsSortEndpoint = $('#tab-merge-requests').data('sort-endpoint');
 
-      this.bindIssuesSorting();
       this.bindTabsSwitching();
 
       // Load merge request tab if it is active
@@ -93,22 +92,6 @@
 
       this.loadInitialTab();
     }
-
-    Milestone.prototype.bindIssuesSorting = function() {
-      if (!this.issuesSortEndpoint) return;
-
-      $('#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed').each(function (i, el) {
-        this.createSortable(el, {
-          group: 'issue-list',
-          listEls: $('.issues-sortable-list'),
-          fieldName: 'issue',
-          sortCallback: (data) => {
-            Milestone.sortIssues(this.issuesSortEndpoint, data);
-          },
-          updateCallback: Milestone.updateIssue,
-        });
-      }.bind(this));
-    };
 
     Milestone.prototype.bindTabsSwitching = function() {
       return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
