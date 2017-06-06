@@ -23,6 +23,10 @@ module Ci
         return error('Insufficient permissions to create a new pipeline')
       end
 
+      unless trigger_request && trigger_request.trigger.owner
+        return error('Legacy trigger without a owner is not allowed')
+      end
+
       unless branch? || tag?
         return error('Reference not found')
       end
@@ -59,9 +63,7 @@ module Ci
     def triggering_user_allowed_for_ref?(trigger_request, ref)
       triggering_user = current_user || trigger_request.trigger.owner
 
-      (triggering_user &&
-        Ci::Pipeline.allowed_to_create?(triggering_user, project, ref)) ||
-        !project.protected_for?(ref)
+      Ci::Pipeline.allowed_to_create?(triggering_user, project, ref)
     end
 
     def process!

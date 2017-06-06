@@ -409,5 +409,18 @@ describe Ci::CreatePipelineService, services: true do
 
       it_behaves_like 'when ref is protected'
     end
+
+    context 'when ref is not protected' do
+      context 'when trigger belongs to no one' do
+        let(:user) {}
+        let(:trigger_request) { create(:ci_trigger_request) }
+
+        it 'does not create a pipeline' do
+          expect(execute_service(trigger_request: trigger_request))
+            .not_to be_persisted
+          expect(Ci::Pipeline.count).to eq(0)
+        end
+      end
+    end
   end
 end
