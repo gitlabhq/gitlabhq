@@ -52,7 +52,8 @@ describe API::V3::Triggers do
       it 'returns bad request with no builds created if there\'s no commit for that ref' do
         post v3_api("/projects/#{project.id}/trigger/builds"), options.merge(ref: 'other-branch')
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('No builds created')
+        expect(json_response['message']['base'])
+          .to contain_exactly('Reference not found')
       end
 
       context 'Validates variables' do
