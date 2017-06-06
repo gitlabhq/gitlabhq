@@ -1,6 +1,6 @@
 > **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
 > **Level:** intermediary ||
-> **Author:** [Fabio busatto](https://gitlab.com/bikebilly) ||
+> **Author:** [Fabio Busatto](https://gitlab.com/bikebilly) ||
 > **Publication date:** AAAA/MM/DD
 
 In this article, we're going to show how we can leverage the power of GitLab CI to compile, test and deploy a Maven application to an Artifactory repository with just a very few lines of configuration.
@@ -20,14 +20,14 @@ Done! Let's move into the maven-example-app directory. Now we've our app to work
  
 The project structure is quite simple, and we're interested mainly in these resources:
  
-`pom.xml`: project object model (POM) file
-`src/main/java/com/example/app/App.java`: source of our application (it prints "Hello World!" to stdout)
+- `pom.xml`: project object model (POM) file
+- `src/main/java/com/example/app/App.java`: source of our application (it prints "Hello World!" to stdout)
  
 # Test our app locally
  
 If we want to be sure the application has been created correctly, we can compile and test it:
  
-```bash
+```
 mvn compile && mvn test
 ```
 
@@ -145,23 +145,22 @@ cache:
   paths:
     - target/
  
-Build:
-  Stage: build
+build:
+  stage: build
   script:
     - mvn compile
  
-Test:
-  Stage: test
+test:
+  stage: test
   script:
     - mvn test
  
-Deploy:
-  Stage: deploy
+deploy:
+  stage: deploy
   script:
     - cp .maven-settings.xml ~/.m2/settings.xml
     - mvn deploy
   only:
     - master
 ```
-
 We're ready to go! Every merge (or push) to master will now trigger the deployment to our Artifactory repository!
