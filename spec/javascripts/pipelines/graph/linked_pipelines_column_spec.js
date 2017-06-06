@@ -34,20 +34,5 @@ describe('Linked Pipelines Column', () => {
     const linkedPipelineElements = this.linkedPipelinesColumn.$el.querySelectorAll('.linked-pipeline');
     expect(linkedPipelineElements.length).toBe(this.propsData.linkedPipelines.length);
   });
-
-  describe('flatConnectorClass', () => {
-    beforeEach(() => {
-      this.flatConnectorClass = this.linkedPipelinesColumn.flatConnectorClass;
-    });
-
-    it('should return flat-connector-before for the first job on the right side of the graph', () => {
-      expect(this.flatConnectorClass(0)).toBe('flat-connector-before');
-    });
-
-    it('should return an empty string for subsequent jobs', () => {
-      expect(this.flatConnectorClass(1)).toBeFalsy();
-      expect(this.flatConnectorClass(99)).toBeFalsy();
-    });
-  });
 });
 
