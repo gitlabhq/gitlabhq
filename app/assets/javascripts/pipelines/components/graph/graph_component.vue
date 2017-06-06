@@ -4,11 +4,6 @@
   import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 
   export default {
-    components: {
-      linkedPipelinesColumn,
-      stageColumnComponent,
-      loadingIcon,
-    },
     props: {
       isLoading: {
         type: Boolean,
@@ -26,6 +21,11 @@
         type: Array,
         required: true,
       },
+    },
+    components: {
+      linkedPipelinesColumn,
+      stageColumnComponent,
+      loadingIcon,
     },
     computed: {
       graph() {
