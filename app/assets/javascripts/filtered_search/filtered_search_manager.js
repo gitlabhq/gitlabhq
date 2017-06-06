@@ -500,6 +500,10 @@ class FilteredSearchManager {
 
   searchState(e) {
     const target = e.currentTarget;
+
+    // remove focus outline after click
+    target.blur();
+
     // return class name that has a prefix of `state-`
     const stateClassName = [].find.call(target.classList, name => name.match(/(state-)(\w+)/g));
     const state = stateClassName.replace('state-', '');

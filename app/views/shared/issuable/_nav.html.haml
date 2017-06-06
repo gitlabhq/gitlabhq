@@ -5,20 +5,20 @@
 
 %ul.nav-links.issues-state-filters
   %li{ class: active_when(params[:state] == 'opened') }>
-    .div-btn.state-opened{ id: 'state-opened', title: "Filter by #{page_context_word} that are currently opened.", role: 'button' }
+    %button.btn.btn-link.state-opened{ id: 'state-opened', title: "Filter by #{page_context_word} that are currently opened.", type: 'button' }
       #{issuables_state_counter_text(type, :opened)}
 
   - if type == :merge_requests
     %li{ class: active_when(params[:state] == 'merged') }>
-      .div-btn.state-merged{ id: 'state-merged', title: 'Filter by merge requests that are currently merged.', role: 'button' }
+      %button.btn.btn-link.state-merged{ id: 'state-merged', title: 'Filter by merge requests that are currently merged.', type: 'button' }
         #{issuables_state_counter_text(type, :merged)}
 
     - closed_title = 'Filter by merge requests that are currently closed and unmerged.'
 
   %li{ class: active_when(params[:state] == 'closed') }>
-    .div-btn.state-closed{ id: 'state-closed', title: closed_title, role: 'button' }
+    %button.btn.btn-link.state-closed{ id: 'state-closed', title: closed_title, type: 'button' }
       #{issuables_state_counter_text(type, :closed)}
 
   %li{ class: active_when(params[:state] == 'all') }>
-    .div-btn.state-all{ id: 'state-all', title: "Show all #{page_context_word}.", role: 'button' }
+    %button.btn.btn-link.state-all{ id: 'state-all', title: "Show all #{page_context_word}.", type: 'button' }
       #{issuables_state_counter_text(type, :all)}
