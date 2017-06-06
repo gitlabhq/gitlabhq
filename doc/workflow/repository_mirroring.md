@@ -38,9 +38,9 @@ repository to pull from and click on the **Mirror repository** checkbox.
 
 ![New project](repository_mirroring/repository_mirroring_new_project.png)
 
-For an existing project, you can set up mirror pulling by visiting the
-**Mirror repository** page under the wheel icon in the upper right corner.
-Check the 'Mirror repository' box and hit **Save changes** at the bottom.
+For an existing project, you can set up mirror pulling by visiting your project's
+**Settings ➔ Repository** and searching for the "Pull from a remote repository"
+section. Check the "Mirror repository" box and hit **Save changes** at the bottom.
 You have a few options to choose from one being the user who will be the author
 of all events in the activity feed that are the result of an update. This user
 needs to have at least [master access][perms] to the project. Another option is
@@ -62,9 +62,9 @@ this branch to prevent any changes from being lost.
 
 ## Pushing to a remote repository
 
-You can set up mirror pushing to an existing GitLab project by visiting the
-**Mirror repository** page under the wheel icon in the upper right. Simply
-click the "Remote mirror repository" checkbox and fill in the Git URL of the
+For an existing project, you can set up mirror pushing by visiting your project's
+**Settings ➔ Repository** and searching for the "Push to a remote repository"
+section. Check the "Remote mirror repository" box and fill in the Git URL of the
 repository to push to. Hit **Save changes** for the changes to take effect.
 
 ![Push settings](repository_mirroring/repository_mirroring_push_settings.png)
