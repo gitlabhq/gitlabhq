@@ -117,7 +117,7 @@ module API
         finder_params = {
           project_id: user_project.id,
           milestone_title: milestone.title,
-          sort: 'position_asc'
+          sort: 'created_desc'
         }
 
         issues = IssuesFinder.new(current_user, finder_params).execute
@@ -140,7 +140,7 @@ module API
         finder_params = {
           project_id: user_project.id,
           milestone_title: milestone.title,
-          sort: 'position_asc'
+          sort: 'created_desc'
         }
 
         merge_requests = MergeRequestsFinder.new(current_user, finder_params).execute

@@ -111,8 +111,8 @@
   }
 }
 
-.issues-sortable-list,
-.merge_requests-sortable-list {
+.milestone-issues-list,
+.milestone-merge_requests-list {
   .issuable-detail {
     display: block;
     margin-top: 7px;
@@ -197,6 +197,4 @@
 
 .issuable-row {
   background-color: $white-light;
-  cursor: -webkit-grab;
-  cursor: grab;
 }
