@@ -35,7 +35,7 @@ feature 'Merge request approvals', js: true, feature: true do
     before do
       create(:forked_project_link, forked_to_project: forked_project, forked_from_project: project)
 
-      forked_project.add_developer(nuser)
+      forked_project.add_developer(user)
       project.add_developer(user)
       project.add_developer(other_user)
 
