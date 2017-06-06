@@ -32,10 +32,10 @@
         return this.pipeline.details && this.pipeline.details.stages;
       },
       hasTriggered() {
-        return !!this.triggered.length;
+        return this.triggered.length;
       },
       hasTriggeredBy() {
-        return !!this.triggeredBy.length;
+        return this.triggeredBy.length;
       },
       linkedPipelinesClass() {
         return this.hasTriggered || this.hasTriggeredBy ? 'has-linked-pipelines' : '';
