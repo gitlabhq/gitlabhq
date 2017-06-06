@@ -23,7 +23,7 @@ module Gitlab
         # is enabled.
         result =
           service_request_check(login, password, project) ||
-          build_access_token_check(login, password) ||
+          job_access_token_check(login, password) ||
           lfs_token_check(login, password) ||
           oauth_access_token_check(login, password) ||
           user_with_password_for_git(login, password) ||
@@ -160,20 +160,9 @@ module Gitlab
         end
       end
 
-      def build_access_token_check(login, password)
-        return unless login == 'gitlab-ci-token'
-        return unless password
-
-        build = ::Ci::Build.running.find_by_token(password)
-        return unless build
-        return unless build.project.builds_enabled?
-
-        if build.user
-          # If user is assigned to build, use restricted credentials of user
-          Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)
-        else
-          # Otherwise use generic CI credentials (backward compatibility)
-          Gitlab::Auth::Result.new(nil, build.project, :ci, build_authentication_abilities)
+      def job_access_token_check(login, password)
+        ::Auth::JobTokenAuthenticationService.new.execute(login, password)&.tap do |result|
+          authentication_abilities = build_authentication_abilities
         end
       end
 

@@ -85,6 +85,7 @@ module API
 
     # Keep in alphabetical order
     mount ::API::AccessRequests
+    mount ::API::Artifacts
     mount ::API::AwardEmoji
     mount ::API::Boards
     mount ::API::Branches

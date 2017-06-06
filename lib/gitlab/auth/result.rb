@@ -1,6 +1,15 @@
 module Gitlab
   module Auth
-    Result = Struct.new(:actor, :project, :type, :authentication_abilities) do
+    class Result
+      attr_accessor :actor, :project, :type, :authentication_abilities
+
+      def initialize(actor = nil, project = nil, type = nil, abilities = [])
+        @actor = actor
+        @project = project
+        @type = type
+        @authentication_abilities = abilities
+      end
+
       def ci?(for_project)
         type == :ci &&
           project &&
