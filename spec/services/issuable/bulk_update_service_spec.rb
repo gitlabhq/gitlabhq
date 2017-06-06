@@ -72,7 +72,7 @@ describe Issuable::BulkUpdateService, services: true do
     end
 
     context "when the new assignee ID is #{IssuableFinder::NONE}" do
-      it "unassigns the issues" do
+      it 'unassigns the issues' do
         expect { bulk_update(merge_request, assignee_id: IssuableFinder::NONE) }
           .to change { merge_request.reload.assignee }.to(nil)
       end
