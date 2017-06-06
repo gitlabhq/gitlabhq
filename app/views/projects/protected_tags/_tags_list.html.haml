@@ -1,4 +1,4 @@
-.panel.panel-default.protected-tags-list.js-protected-tags-list
+.panel.panel-default.protected-tags-list
   - if @protected_tags.empty?
     .panel-heading
       %h3.panel-title
@@ -13,6 +13,8 @@
         %col{ width: "25%" }
         %col{ width: "25%" }
         %col{ width: "50%" }
+        - if can_admin_project
+          %col
       %thead
         %tr
           %th Protected tag (#{@protected_tags.size})

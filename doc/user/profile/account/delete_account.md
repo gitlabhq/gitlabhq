@@ -25,7 +25,8 @@ Instead of being deleted, these records will be moved to a system-wide
 When a user is deleted from an abuse report or spam log, these associated
 records are not ghosted and will be removed, along with any groups the user
 is a sole owner of. Administrators can also request this behaviour when
-deleting users from the [API](../../../api/users.md#user-deletion)
+deleting users from the [API](../../../api/users.md#user-deletion) or the
+admin area.
 
 [ce-7393]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7393
 [ce-10273]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10273

@@ -297,6 +297,15 @@ cache:
   untracked: true
 ```
 
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+cache:
+  key: "$env:CI_JOB_STAGE/$env:CI_COMMIT_REF_NAME"
+  untracked: true
+```
+
 ## Jobs
 
 `.gitlab-ci.yml` allows you to specify an unlimited number of jobs. Each job
@@ -434,7 +443,7 @@ but allows you to define job-specific variables.
 
 When the `variables` keyword is used on a job level, it overrides the global YAML
 job variables and predefined ones. To turn off global defined variables
-in your job, define an empty array:
+in your job, define an empty hash:
 
 ```yaml
 job_name:
@@ -906,6 +915,16 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 job:
   artifacts:
     name: "%CI_JOB_STAGE%_%CI_COMMIT_REF_NAME%"
+    untracked: true
+```
+
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+job:
+  artifacts:
+    name: "$env:CI_JOB_STAGE_$env:CI_COMMIT_REF_NAME"
     untracked: true
 ```
 

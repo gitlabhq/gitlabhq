@@ -14,14 +14,7 @@ class Projects::ImportsController < Projects::ApplicationController
     @project.import_url = params[:project][:import_url]
 
     if @project.save
-      @project.reload
-
-      if @project.import_failed?
-        @project.import_retry
-      else
-        @project.import_start
-        @project.add_import_job
-      end
+      @project.reload.import_schedule
     end
 
     redirect_to namespace_project_import_path(@project.namespace, @project)
