@@ -14,11 +14,13 @@
         required: true,
       },
     },
+
     components: {
       linkedPipelinesColumn,
       stageColumnComponent,
       loadingIcon,
     },
+
     computed: {
       graph() {
         return this.pipeline.details && this.pipeline.details.stages;
@@ -36,13 +38,16 @@
         return !!this.triggeredBy.length;
       },
     },
+
     methods: {
       capitalizeStageName(name) {
         return name.charAt(0).toUpperCase() + name.slice(1);
       },
+
       isFirstColumn(index) {
         return index === 0;
       },
+
       stageConnectorClass(index, stage) {
         let className;
 
