@@ -254,9 +254,37 @@ production: &base
         host: '_your_ldap_server'
         port: 389
         uid: 'sAMAccountName'
-        method: 'plain' # "tls" or "ssl" or "plain"
         bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
         password: '_the_password_of_the_bind_user'
+
+        # Encryption method. The "method" key is deprecated in favor of
+        # "encryption".
+        #
+        #   Examples: "start_tls" or "simple_tls" or "plain"
+        #
+        #   Deprecated values: "tls" was replaced with "start_tls" and "ssl" was
+        #   replaced with "simple_tls".
+        #
+        encryption: 'plain'
+
+        # Enables SSL certificate verification if encryption method is
+        # "start_tls" or "simple_tls". (Defaults to false for backward-
+        # compatibility)
+        verify_certificates: false
+
+        # Specifies the path to a file containing a PEM-format CA certificate,
+        # e.g. if you need to use an internal CA.
+        #
+        #   Example: '/etc/ca.pem'
+        #
+        ca_cert: ''
+
+        # Specifies the SSL version for OpenSSL to use, if the OpenSSL default
+        # is not appropriate.
+        #
+        #   Example: 'TLSv1_1'
+        #
+        ssl_version: ''
 
         # Set a timeout, in seconds, for LDAP queries. This helps avoid blocking
         # a request if the LDAP server becomes unresponsive.

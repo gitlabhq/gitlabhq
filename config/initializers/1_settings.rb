@@ -145,6 +145,11 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['attributes'] = {} if server['attributes'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
+    server['encryption'] ||= server['method'] # for backwards compatibility
+
+    # Certificates are not verified for backwards compatibility.
+    # This default should be flipped to true in 9.5.
+    server['verify_certificates'] = false if server['verify_certificates'].nil?
   end
 end
 
