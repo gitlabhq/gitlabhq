@@ -124,6 +124,13 @@ describe Groups::GroupMembersController do
           expect(response).to redirect_to(dashboard_groups_path)
           expect(group.users).not_to include user
         end
+
+        it 'supports json request' do
+          delete :leave, group_id: group, format: :json
+
+          expect(response).to have_http_status(200)
+          expect(response.body).to be_empty
+        end
       end
 
       context 'and is an owner' do
