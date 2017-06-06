@@ -8,7 +8,15 @@ export default class FilterableList {
     this.filterForm = form;
     this.listFilterElement = filter;
     this.listHolderElement = holder;
-    this.filterUrl = `${this.filterForm.getAttribute('action')}?${$(this.filterForm).serialize()}`;
+    this.isBusy = false;
+  }
+
+  getFilterEndpoint() {
+    return `${this.filterForm.getAttribute('action')}?${$(this.filterForm).serialize()}`;
+  }
+
+  getPagePath() {
+    return this.getFilterEndpoint();
   }
 
   initSearch() {
@@ -20,9 +28,19 @@ export default class FilterableList {
   }
 
   onFilterInput() {
-    const url = this.filterForm.getAttribute('action');
-    const data = $(this.filterForm).serialize();
-    this.filterResults(url, data, 'filter-input');
+    const $form = $(this.filterForm);
+    const queryData = {};
+    const filterGroupsParam = $form.find('[name="filter_groups"]').val();
+
+    if (filterGroupsParam) {
+      queryData.filter_groups = filterGroupsParam;
+    }
+
+    this.filterResults(queryData);
+
+    if (this.setDefaultFilterOption) {
+      this.setDefaultFilterOption();
+    }
   }
 
   bindEvents() {
@@ -33,42 +51,44 @@ export default class FilterableList {
     this.listFilterElement.removeEventListener('input', this.debounceFilter);
   }
 
-  filterResults(url, data, comingFrom) {
-    const endpoint = url || this.filterForm.getAttribute('action');
-    const additionalData = data || $(this.filterForm).serialize();
+  filterResults(queryData) {
+    if (this.isBusy) {
+      return false;
+    }
 
     $(this.listHolderElement).fadeTo(250, 0.5);
 
     return $.ajax({
-      url: endpoint,
-      data: additionalData,
+      url: this.getFilterEndpoint(),
+      data: queryData,
       type: 'GET',
       dataType: 'json',
       context: this,
       complete: this.onFilterComplete,
+      beforeSend: () => {
+        this.isBusy = true;
+      },
       success: (response, textStatus, xhr) => {
-        if (this.preOnFilterSuccess) {
-          this.preOnFilterSuccess(comingFrom);
-        }
-
-        this.onFilterSuccess(response, xhr);
+        this.onFilterSuccess(response, xhr, queryData);
       },
     });
   }
 
-  onFilterSuccess(data) {
-    if (data.html) {
-      this.listHolderElement.innerHTML = data.html;
+  onFilterSuccess(response, xhr, queryData) {
+    if (response.html) {
+      this.listHolderElement.innerHTML = response.html;
     }
 
-   // Change url so if user reload a page - search results are saved
-    return window.history.replaceState({
-      page: this.filterUrl,
+    // Change url so if user reload a page - search results are saved
+    const currentPath = this.getPagePath(queryData);
 
-    }, document.title, this.filterUrl);
+    return window.history.replaceState({
+      page: currentPath,
+    }, document.title, currentPath);
   }
 
   onFilterComplete() {
+    this.isBusy = false;
     $(this.listHolderElement).fadeTo(250, 1);
   }
 }

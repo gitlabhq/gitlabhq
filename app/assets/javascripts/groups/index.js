@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let parentId = null;
         let getGroups = null;
         let page = null;
+        let sort = null;
         let pageParam = null;
+        let sortParam = null;
         let filterGroups = null;
         let filterGroupsParam = null;
 
@@ -55,15 +57,31 @@ document.addEventListener('DOMContentLoaded', () => {
           filterGroups = filterGroupsParam;
         }
 
-        getGroups = this.service.getGroups(parentId, page, filterGroups);
+        sortParam = gl.utils.getParameterByName('sort');
+        if (sortParam) {
+          sort = sortParam;
+        }
+
+        getGroups = this.service.getGroups(parentId, page, filterGroups, sort);
         getGroups.then((response) => {
-          eventHub.$emit('updateGroups', response.json(), parentGroup);
+          this.updateGroups(response.json(), parentGroup);
         })
         .catch(() => {
           // TODO: Handle error
         });
 
         return getGroups;
+      },
+      fetchPage(page, filterGroups, sort) {
+        this.service.getGroups(null, page, filterGroups, sort)
+          .then((response) => {
+            this.updateGroups(response.json());
+            this.updatePagination(response.headers);
+            $.scrollTo(0);
+          })
+          .catch(() => {
+            // TODO: Handle error
+          });
       },
       toggleSubGroups(parentGroup = null) {
         if (!parentGroup.isOpen) {
@@ -95,9 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const filter = document.querySelector('.js-groups-list-filter');
       const holder = document.querySelector('.js-groups-list-holder');
 
-      groupFilterList = new GroupFilterableList(form, filter, holder);
+      const opts = {
+        form,
+        filter,
+        holder,
+        filterEndpoint: el.dataset.endpoint,
+        pagePath: el.dataset.path,
+      };
+
+      groupFilterList = new GroupFilterableList(opts);
       groupFilterList.initSearch();
 
+      eventHub.$on('fetchPage', this.fetchPage);
       eventHub.$on('toggleSubGroups', this.toggleSubGroups);
       eventHub.$on('leaveGroup', this.leaveGroup);
       eventHub.$on('updateGroups', this.updateGroups);
@@ -106,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mounted() {
       this.fetchGroups()
         .then((response) => {
-          eventHub.$emit('updatePagination', response.headers);
+          this.updatePagination(response.headers);
         })
         .catch(() => {
           // TODO: Handle error
