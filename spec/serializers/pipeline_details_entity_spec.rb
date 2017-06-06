@@ -121,7 +121,7 @@ describe PipelineDetailsEntity do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       before do
-        create(:ci_sources_pipeline, :create_source, pipeline: pipeline)
+        create(:ci_sources_pipeline, pipeline: pipeline)
       end
 
       it 'contains an information about depedent pipeline' do
@@ -138,8 +138,8 @@ describe PipelineDetailsEntity do
       let(:build) { create(:ci_build, pipeline: pipeline) }
 
       before do
-        create(:ci_sources_pipeline, :create_target, source_job: build)
-        create(:ci_sources_pipeline, :create_target, source_job: build)
+        create(:ci_sources_pipeline, source_job: build)
+        create(:ci_sources_pipeline, source_job: build)
       end
 
       it 'contains an information about depedent pipeline' do

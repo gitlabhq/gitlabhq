@@ -45,7 +45,7 @@ describe ExpirePipelineCacheWorker do
 
     context 'when pipeline is triggered by other pipeline' do
       let(:pipeline) { create(:ci_empty_pipeline) }
-      let(:source) { create(:ci_sources_pipeline, :create_source, pipeline: pipeline) }
+      let(:source) { create(:ci_sources_pipeline, pipeline: pipeline) }
 
       it 'updates the cache of dependent pipeline' do
         dependent_pipeline_path = "/#{source.source_project.full_path}/pipelines/#{source.source_pipeline.id}.json"
@@ -60,7 +60,7 @@ describe ExpirePipelineCacheWorker do
     context 'when pipeline triggered other pipeline' do
       let(:pipeline) { create(:ci_empty_pipeline) }
       let(:build) { create(:ci_build, pipeline: pipeline) }
-      let(:source) { create(:ci_sources_pipeline, :create_target, source_job: build) }
+      let(:source) { create(:ci_sources_pipeline, source_job: build) }
 
       it 'updates the cache of dependent pipeline' do
         dependent_pipeline_path = "/#{source.project.full_path}/pipelines/#{source.pipeline.id}.json"

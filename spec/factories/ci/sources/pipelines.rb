@@ -5,13 +5,9 @@ FactoryGirl.define do
       source.source_pipeline ||= source.source_job.pipeline
       source.source_project ||= source.source_pipeline.project
     end
-    
-    trait :create_source do
-      source_job factory: :ci_build
-    end
-    
-    trait :create_target do
-      pipeline factory: :ci_empty_pipeline
-    end
+
+    source_job factory: :ci_build
+  
+    pipeline factory: :ci_empty_pipeline
   end
 end
