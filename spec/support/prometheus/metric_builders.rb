@@ -21,7 +21,7 @@ module Prometheus
     end
 
     def simple_metric_group(name: 'name', metrics: simple_metrics)
-      Gitlab::Prometheus::MetricGroup.new(name, 1, metrics)
+      Gitlab::Prometheus::MetricGroup.new(name: name, priority: 1, metrics: metrics)
     end
   end
 end

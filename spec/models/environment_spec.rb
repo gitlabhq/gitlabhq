@@ -453,7 +453,7 @@ describe Environment, models: true do
 
       it 'returns the additional metrics from the deployment service' do
         expect(project.monitoring_service).to receive(:reactive_query)
-                                                .with(Gitlab::Prometheus::Queries::AdditionalMetricsQuery.name, environment.id)
+                                                .with(Gitlab::Prometheus::Queries::AdditionalMetricsEnvironmentQuery.name, environment.id)
                                                 .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)

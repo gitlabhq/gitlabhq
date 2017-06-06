@@ -159,7 +159,7 @@ class Environment < ActiveRecord::Base
 
   def additional_metrics
     if has_additional_metrics?
-      project.monitoring_service.reactive_query(Gitlab::Prometheus::Queries::AdditionalMetricsQuery.name, self.id, &:itself)
+      project.monitoring_service.reactive_query(Gitlab::Prometheus::Queries::AdditionalMetricsEnvironmentQuery.name, self.id, &:itself)
     end
   end
 
