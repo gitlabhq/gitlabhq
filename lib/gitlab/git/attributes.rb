@@ -55,25 +55,22 @@ module Gitlab
       # Returns a Hash containing the attributes and their values.
       def parse_attributes(string)
         values = {}
-        dash = '-'
-        equal = '='
-        binary = 'binary'
 
         string.split(/\s+/).each do |chunk|
           # Data such as "foo = bar" should be treated as "foo" and "bar" being
           # separate boolean attributes.
-          next if chunk == equal
+          next if chunk == '='
 
           key = chunk
 
           # Input: "-foo"
-          if chunk.start_with?(dash)
+          if chunk.start_with?('-')
             key = chunk.byteslice(1, chunk.length - 1)
             value = false
 
           # Input: "foo=bar"
-          elsif chunk.include?(equal)
-            key, value = chunk.split(equal, 2)
+          elsif chunk.include?('=')
+            key, value = chunk.split('=', 2)
 
           # Input: "foo"
           else
@@ -82,10 +79,12 @@ module Gitlab
 
           values[key] = value
 
-          # When the "binary" option is set the "diff" option should be set to
-          # the inverse. If "diff" is later set it should overwrite the
-          # automatically set value.
-          values['diff'] = false if key == binary && value
+          # "binary" is a macro for "-text -diff", so we should expand it
+          # See https://git-scm.com/docs/gitattributes#_using_macro_attributes
+          if key == 'binary' && value
+            values['text'] = false
+            values['diff'] = false
+          end
         end
 
         values
