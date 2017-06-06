@@ -167,16 +167,6 @@ module API
                               user_can_admin_project: can?(current_user, :admin_project, user_project), statistics: params[:statistics]
       end
 
-      desc 'Get events for a single project' do
-        success Entities::Event
-      end
-      params do
-        use :pagination
-      end
-      get ":id/events" do
-        present paginate(user_project.events.recent), with: Entities::Event
-      end
-
       desc 'Fork new project for the current user or provided namespace.' do
         success Entities::Project
       end

@@ -19,7 +19,7 @@ export default {
 </script>
 <template>
   <a
-    class="btn monitoring-url has-tooltip"
+    class="btn monitoring-url has-tooltip hidden-xs hidden-sm"
     data-container="body"
     rel="noopener noreferrer nofollow"
     :href="monitoringUrl"
