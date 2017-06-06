@@ -38,7 +38,7 @@ module Gitlab
 
     def encode_utf8(message)
       detect = CharlockHolmes::EncodingDetector.detect(message)
-      if detect
+      if detect && detect[:encoding]
         begin
           CharlockHolmes::Converter.convert(message, detect[:encoding], 'UTF-8')
         rescue ArgumentError => e
