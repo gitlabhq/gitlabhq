@@ -9,9 +9,9 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
            namespace: create(:namespace, path: 'known-parent' ))
   end
 
-
   before do
     allow(migration).to receive(:say)
+    TestEnv.clean_test_path
   end
 
   describe '#projects_for_paths' do

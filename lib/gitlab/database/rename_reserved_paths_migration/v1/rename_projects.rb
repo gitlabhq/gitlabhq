@@ -38,7 +38,8 @@ module Gitlab
 
                 move_project_folders(project, current_path, path_before_rename)
               else
-                say "Couldn't rename project##{project.id} from #{current_path} back to #{path_before_rename}, project no longer exists"
+                say "Couldn't rename project##{project.id} from #{current_path} "\
+                    "back to #{path_before_rename}, project no longer exists"
               end
             end
           end
