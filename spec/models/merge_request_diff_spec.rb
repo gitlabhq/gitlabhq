@@ -139,4 +139,15 @@ describe MergeRequestDiff, models: true do
       expect(subject.commits_count).to eq 2
     end
   end
+
+  describe '#utf8_st_diffs' do
+    it 'does not raise error when a hash value is in binary' do
+      subject.st_diffs = [
+        { diff: "\0" },
+        { diff: "\x05\x00\x68\x65\x6c\x6c\x6f" }
+      ]
+
+      expect { subject.utf8_st_diffs }.not_to raise_error
+    end
+  end
 end
