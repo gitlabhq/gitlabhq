@@ -328,27 +328,6 @@ module API
         end
       end
 
-      desc 'Get the contribution events of a specified user' do
-        detail 'This feature was introduced in GitLab 8.13.'
-        success Entities::Event
-      end
-      params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        use :pagination
-      end
-      get ':id/events' do
-        user = User.find_by(id: params[:id])
-        not_found!('User') unless user
-
-        events = user.events.
-          merge(ProjectsFinder.new(current_user: current_user).execute).
-          references(:project).
-          with_associations.
-          recent
-
-        present paginate(events), with: Entities::Event
-      end
-
       params do
         requires :user_id, type: Integer, desc: 'The ID of the user'
       end

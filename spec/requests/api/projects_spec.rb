@@ -762,64 +762,6 @@ describe API::Projects do
     end
   end
 
-  describe 'GET /projects/:id/events' do
-    shared_examples_for 'project events response' do
-      it 'returns the project events' do
-        member = create(:user)
-        create(:project_member, :developer, user: member, project: project)
-        note = create(:note_on_issue, note: 'What an awesome day!', project: project)
-        EventCreateService.new.leave_note(note, note.author)
-
-        get api("/projects/#{project.id}/events", current_user)
-
-        expect(response).to have_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-
-        first_event = json_response.first
-        expect(first_event['action_name']).to eq('commented on')
-        expect(first_event['note']['body']).to eq('What an awesome day!')
-
-        last_event = json_response.last
-
-        expect(last_event['action_name']).to eq('joined')
-        expect(last_event['project_id'].to_i).to eq(project.id)
-        expect(last_event['author_username']).to eq(member.username)
-        expect(last_event['author']['name']).to eq(member.name)
-      end
-    end
-
-    context 'when unauthenticated' do
-      it_behaves_like 'project events response' do
-        let(:project) { create(:empty_project, :public) }
-        let(:current_user) { nil }
-      end
-    end
-
-    context 'when authenticated' do
-      context 'valid request' do
-        it_behaves_like 'project events response' do
-          let(:current_user) { user }
-        end
-      end
-
-      it 'returns a 404 error if not found' do
-        get api('/projects/42/events', user)
-
-        expect(response).to have_http_status(404)
-        expect(json_response['message']).to eq('404 Project Not Found')
-      end
-
-      it 'returns a 404 error if user is not a member' do
-        other_user = create(:user)
-
-        get api("/projects/#{project.id}/events", other_user)
-
-        expect(response).to have_http_status(404)
-      end
-    end
-  end
-
   describe 'GET /projects/:id/users' do
     shared_examples_for 'project users response' do
       it 'returns the project users' do
