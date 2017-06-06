@@ -15,11 +15,11 @@ class AddCiPipelineSourcePipelineForeignKey < ActiveRecord::Migration
   end
 
   def down
-    remove_foreign_key :ci_sources_pipelines, :projects, column: :project_id
-    remove_foreign_key :ci_sources_pipelines, :ci_pipelines, column: :pipeline_id
+    remove_foreign_key :ci_sources_pipelines, column: :project_id
+    remove_foreign_key :ci_sources_pipelines, column: :pipeline_id
 
-    remove_foreign_key :ci_sources_pipelines, :projects, column: :source_project_id
-    remove_foreign_key :ci_sources_pipelines, :ci_builds, column: :source_job_id
-    remove_foreign_key :ci_sources_pipelines, :ci_pipelines, column: :source_pipeline_id
+    remove_foreign_key :ci_sources_pipelines, column: :source_project_id
+    remove_foreign_key :ci_sources_pipelines, column: :source_job_id
+    remove_foreign_key :ci_sources_pipelines, column: :source_pipeline_id
   end
 end
