@@ -9,8 +9,15 @@ describe MigrateBuildStageReference, :migration do
   let(:jobs) { table(:ci_builds) }
   let(:stages) { table(:ci_stages) }
   let(:pipelines) { table(:ci_pipelines) }
+  let(:projects) { table(:projects) }
 
   before do
+    # Create projects
+    #
+    projects.create!(id: 123, name: 'gitlab1', path: 'gitlab1')
+    projects.create!(id: 456, name: 'gitlab2', path: 'gitlab2')
+    projects.create!(id: 798, name: 'gitlab3', path: 'gitlab3')
+
     # Create CI/CD pipelines
     #
     pipelines.create!(id: 1, project_id: 123, ref: 'master', sha: 'adf43c3a')
