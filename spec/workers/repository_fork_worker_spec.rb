@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RepositoryForkWorker do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :repository, :import_scheduled) }
   let(:fork_project) { create(:project, :repository, forked_from_project: project) }
   let(:shell) { Gitlab::Shell.new }
 
@@ -46,15 +46,27 @@ describe RepositoryForkWorker do
     end
 
     it "handles bad fork" do
+      source_path = project.full_path
+      target_path = fork_project.namespace.full_path
+      error_message = "Unable to fork project #{project.id} for repository #{source_path} -> #{target_path}"
+
       expect(shell).to receive(:fork_repository).and_return(false)
 
-      expect(subject.logger).to receive(:error)
+      expect do
+        subject.perform(project.id, '/test/path', source_path, target_path)
+      end.to raise_error(RepositoryForkWorker::ForkError, error_message)
+    end
 
-      subject.perform(
-        project.id,
-        '/test/path',
-        project.full_path,
-        fork_project.namespace.full_path)
+    it 'handles unexpected error' do
+      source_path = project.full_path
+      target_path = fork_project.namespace.full_path
+
+      allow_any_instance_of(Gitlab::Shell).to receive(:fork_repository).and_raise(RuntimeError)
+
+      expect do
+        subject.perform(project.id, '/test/path', source_path, target_path)
+      end.to raise_error(RepositoryForkWorker::ForkError)
+      expect(project.reload.import_status).to eq('failed')
     end
   end
 end

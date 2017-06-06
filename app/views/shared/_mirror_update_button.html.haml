@@ -4,8 +4,13 @@
       %span.btn.disabled
         = icon("refresh spin")
         Updating&hellip;
+    - elsif !can_force_update_mirror?(@project)
+      %span.btn.disabled{ data: { toggle: 'tooltip', placement: 'auto top' }, style: 'cursor: default',
+      title: 'You can only force update once every five minutes.' }
+        = icon("refresh")
+        Update Now
     - else
-      = link_to update_now_namespace_project_mirror_path(@project.namespace, @project), method: :post, class: "btn" do
+      = link_to update_now_namespace_project_mirror_path(@project.namespace, @project), method: :post, class: 'btn' do
         = icon("refresh")
         Update Now
     - if @project.mirror_last_update_success?

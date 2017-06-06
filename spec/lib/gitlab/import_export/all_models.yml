@@ -262,6 +262,7 @@ project:
 - statistics
 - container_repositories
 - uploads
+- mirror_data
 award_emoji:
 - awardable
 - user
