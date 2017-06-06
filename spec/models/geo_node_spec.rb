@@ -162,6 +162,15 @@ describe GeoNode, type: :model do
       expected_url = 'https://localhost:3000/gitlab'
       expect(new_node.url).to eq(expected_url)
     end
+
+    it 'defaults to existing HTTPS and relative URL if present' do
+      stub_config_setting(port: 443)
+      stub_config_setting(protocol: 'https')
+      stub_config_setting(relative_url_root: '/gitlab')
+      node = GeoNode.new
+
+      expect(node.url).to eq('https://localhost/gitlab')
+    end
   end
 
   describe '#url=' do
