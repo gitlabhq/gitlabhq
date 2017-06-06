@@ -49,9 +49,11 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def destroy
     if schedule.destroy
-      redirect_to pipeline_schedules_path(@project)
+      redirect_to pipeline_schedules_path(@project), status: 302
     else
-      redirect_to pipeline_schedules_path(@project), alert: "Failed to remove the pipeline schedule"
+      redirect_to pipeline_schedules_path(@project),
+                  status: 302,
+                  alert: "Failed to remove the pipeline schedule"
     end
   end
 

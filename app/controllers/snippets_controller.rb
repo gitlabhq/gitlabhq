@@ -82,7 +82,7 @@ class SnippetsController < ApplicationController
 
     @snippet.destroy
 
-    redirect_to snippets_path
+    redirect_to snippets_path, status: 302
   end
 
   def preview_markdown

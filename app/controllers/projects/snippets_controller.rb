@@ -79,7 +79,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to namespace_project_snippets_path(@project.namespace, @project)
+    redirect_to namespace_project_snippets_path(@project.namespace, @project), status: 302
   end
 
   protected

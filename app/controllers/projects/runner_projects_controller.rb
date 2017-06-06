@@ -22,6 +22,6 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     runner_project = project.runner_projects.find(params[:id])
     runner_project.destroy
 
-    redirect_to runners_path(project)
+    redirect_to runners_path(project), status: 302
   end
 end
