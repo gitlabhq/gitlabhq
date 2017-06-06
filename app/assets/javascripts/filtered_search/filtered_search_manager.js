@@ -78,42 +78,36 @@ class FilteredSearchManager {
   }
 
   bindStateEvents() {
-    const stateFilters = document.querySelector('.container-fluid .issues-state-filters');
+    this.stateFilters = document.querySelector('.container-fluid .issues-state-filters');
 
-    if (stateFilters) {
-      this.searchStateOpened = this.search.bind(this, 'opened');
-      this.searchStateMerged = this.search.bind(this, 'merged');
-      this.searchStateClosed = this.search.bind(this, 'closed');
-      this.searchStateAll = this.search.bind(this, 'all');
+    if (this.stateFilters) {
+      this.searchStateWrapper = this.searchState.bind(this);
 
-      stateFilters.querySelector('.state-opened')
-        .addEventListener('click', this.searchStateOpened);
-      stateFilters.querySelector('.state-closed')
-        .addEventListener('click', this.searchStateClosed);
-      stateFilters.querySelector('.state-all')
-        .addEventListener('click', this.searchStateAll);
+      this.stateFilters.querySelector('.state-opened')
+        .addEventListener('click', this.searchStateWrapper);
+      this.stateFilters.querySelector('.state-closed')
+        .addEventListener('click', this.searchStateWrapper);
+      this.stateFilters.querySelector('.state-all')
+        .addEventListener('click', this.searchStateWrapper);
 
-      const mergedState = stateFilters.querySelector('.state-merged');
-      if (mergedState) {
-        mergedState.addEventListener('click', this.searchStateMerged);
+      this.mergedState = this.stateFilters.querySelector('.state-merged');
+      if (this.mergedState) {
+        this.mergedState.addEventListener('click', this.searchStateWrapper);
       }
     }
   }
 
   unbindStateEvents() {
-    const stateFilters = document.querySelector('.container-fluid .issues-state-filters');
+    if (this.stateFilters) {
+      this.stateFilters.querySelector('.state-opened')
+        .removeEventListener('click', this.searchStateWrapper);
+      this.stateFilters.querySelector('.state-closed')
+        .removeEventListener('click', this.searchStateWrapper);
+      this.stateFilters.querySelector('.state-all')
+        .removeEventListener('click', this.searchStateWrapper);
 
-    if (stateFilters) {
-      stateFilters.querySelector('.state-opened')
-        .removeEventListener('click', this.searchStateOpened);
-      stateFilters.querySelector('.state-closed')
-        .removeEventListener('click', this.searchStateClosed);
-      stateFilters.querySelector('.state-all')
-        .removeEventListener('click', this.searchStateAll);
-
-      const mergedState = stateFilters.querySelector('.state-merged');
-      if (mergedState) {
-        mergedState.removeEventListener('click', this.searchStateMerged);
+      if (this.mergedState) {
+        this.mergedState.removeEventListener('click', this.searchStateWrapper);
       }
     }
   }
@@ -502,6 +496,15 @@ class FilteredSearchManager {
       this.clearSearchButton.classList.remove('hidden');
       this.handleInputPlaceholder();
     }
+  }
+
+  searchState(e) {
+    const target = e.currentTarget;
+    // return class name that has a prefix of `state-`
+    const stateClassName = [].find.call(target.classList, name => name.match(/(state-)(\w+)/g));
+    const state = stateClassName.replace('state-', '');
+
+    this.search(state);
   }
 
   search(state = null) {
