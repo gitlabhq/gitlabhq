@@ -8,15 +8,18 @@ export default {
       type: String,
       required: true,
     },
+
     jobs: {
       type: Array,
       required: true,
     },
+
     isFirstColumn: {
       type: Boolean,
       required: false,
       default: false,
     },
+
     stageConnectorClass: {
       type: String,
       required: false,
@@ -27,14 +30,17 @@ export default {
       required: true,
     },
   },
+
   components: {
     jobComponent,
     dropdownJobComponent,
   },
+
   methods: {
     firstJob(list) {
       return list[0];
     },
+
     jobId(job) {
       return `ci-badge-${job.name}`;
     },
