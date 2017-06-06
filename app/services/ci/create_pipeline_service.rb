@@ -23,7 +23,7 @@ module Ci
         return error('Insufficient permissions to create a new pipeline')
       end
 
-      unless trigger_request && trigger_request.trigger.owner
+      if trigger_request && !trigger_request.trigger.owner
         return error('Legacy trigger without a owner is not allowed')
       end
 

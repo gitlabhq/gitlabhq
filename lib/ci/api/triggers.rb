@@ -25,11 +25,12 @@ module Ci
 
           # create request and trigger builds
           trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref], variables)
-          if trigger_request
+          pipeline = trigger_request.pipeline
+
+          if pipeline.persisted?
             present trigger_request, with: Entities::TriggerRequest
           else
-            errors = 'No builds created'
-            render_api_error!(errors, 400)
+            render_validation_error!(pipeline)
           end
         end
       end
