@@ -14,7 +14,7 @@ export default class PipelineStore {
 
     this.state.pipeline = {};
     this.state.triggered = [];
-    this.state.triggered_by = [];
+    this.state.triggeredBy = [];
   }
 
   storePipeline(pipeline = {}) {
@@ -24,7 +24,7 @@ export default class PipelineStore {
     // multiple jobs in last stage
     // pipeline.details.stages[3].groups.push(pipeline.details.stages[0].groups[0]);
     this.state.pipeline = pipeline;
-    this.state.triggered_by = mockTriggerers;
+    this.state.triggeredBy = mockTriggerers;
 
     // single triggered
     // this.state.triggered = [mockTriggereds[0]];
