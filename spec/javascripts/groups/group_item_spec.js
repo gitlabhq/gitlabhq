@@ -3,7 +3,7 @@ import groupItemComponent from '~/groups/components/group_item.vue';
 import GroupsStore from '~/groups/stores/groups_store';
 import { group1 } from './mock_data';
 
-describe('Groups Component', () => {
+fdescribe('Groups Component', () => {
   let GroupItemComponent;
   let component;
   let store;

@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 export default class GroupsStore {
   constructor() {
     this.state = {};
@@ -129,6 +131,11 @@ export default class GroupsStore {
       numberUsers: rawGroup.number_users_with_delimiter,
       subGroups: {},
     };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  removeGroup(group, collection) {
+    Vue.delete(collection, group.id);
   }
 
   // eslint-disable-next-line class-methods-use-this

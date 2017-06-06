@@ -1,3 +1,5 @@
+/* global Flash */
+
 import Vue from 'vue';
 import GroupFilterableList from './groups_filterable_list';
 import GroupsComponent from './components/groups.vue';
@@ -29,8 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       return {
         store: this.store,
+        isLoading: true,
         state: this.store.state,
+        loading: true,
       };
+    },
+    computed: {
+      isEmpty() {
+        return Object.keys(this.state.groups).length === 0;
+      },
     },
     methods: {
       fetchGroups(parentGroup) {
@@ -42,6 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let sortParam = null;
         let filterGroups = null;
         let filterGroupsParam = null;
+
+        this.isLoading = true;
 
         if (parentGroup) {
           parentId = parentGroup.id;
@@ -66,22 +77,26 @@ document.addEventListener('DOMContentLoaded', () => {
         getGroups.then((response) => {
           this.updateGroups(response.json(), parentGroup);
         })
-        .catch(() => {
-          // TODO: Handle error
-        });
+        .finally(() => {
+          this.isLoading = false;
+        })
+        .catch(this.handleErrorResponse);
 
         return getGroups;
       },
       fetchPage(page, filterGroups, sort) {
+        this.isLoading = true;
+
         this.service.getGroups(null, page, filterGroups, sort)
           .then((response) => {
             this.updateGroups(response.json());
             this.updatePagination(response.headers);
             $.scrollTo(0);
           })
-          .catch(() => {
-            // TODO: Handle error
-          });
+          .finally(() => {
+            this.isLoading = false;
+          })
+          .catch(this.handleErrorResponse);
       },
       toggleSubGroups(parentGroup = null) {
         if (!parentGroup.isOpen) {
@@ -91,13 +106,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         GroupsStore.toggleSubGroups(parentGroup);
       },
-      leaveGroup(endpoint) {
-        this.service.leaveGroup(endpoint)
-          .then(() => {
-            // TODO: Refresh?
+      leaveGroup(group, collection) {
+        this.service.leaveGroup(group.leavePath)
+          .then((response) => {
+            this.store.removeGroup(group, collection);
+
+            // eslint-disable-next-line no-new
+            new Flash(response.json().notice, 'notice');
           })
-          .catch(() => {
-            // TODO: Handle error
+          .finally(() => {
+            $.scrollTo(0);
+          })
+          .catch((response) => {
+            let message = 'An error occurred. Please try again.';
+
+            if (response.status === 403) {
+              message = 'Failed to leave the group. Please make sure you are not the only owner';
+            }
+
+            // eslint-disable-next-line no-new
+            new Flash(message);
           });
       },
       updateGroups(groups, parentGroup) {
@@ -105,6 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       updatePagination(headers) {
         this.store.storePagination(headers);
+      },
+      handleErrorResponse() {
+        // eslint-disable-next-line no-new
+        new Flash('An error occurred. Please try again.');
       },
     },
     beforeMount() {
@@ -135,9 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
         .then((response) => {
           this.updatePagination(response.headers);
         })
-        .catch(() => {
-          // TODO: Handle error
-        });
+        .finally(() => {
+          this.isLoading = false;
+        })
+        .catch(this.handleErrorResponse);
     },
   });
 });

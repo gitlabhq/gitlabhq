@@ -12,6 +12,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    collection: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   methods: {
     onClickRowGroup(e) {
@@ -35,7 +40,7 @@ export default {
       }
     },
     leaveGroup() {
-      eventHub.$emit('leaveGroup', this.group.leavePath);
+      eventHub.$emit('leaveGroup', this.group, this.collection);
     },
   },
   computed: {
@@ -63,7 +68,7 @@ export default {
 
       if (this.group.isOrphan) {
         // check if current group is baseGroup
-        if (Object.keys(this.baseGroup).length > 0) {
+        if (Object.keys(this.baseGroup).length > 0 && this.baseGroup !== this.group) {
           // Remove baseGroup prefix from our current group.fullName. e.g:
           // baseGroup.fullName: `level1`
           // group.fullName: `level1 / level2 / level3`

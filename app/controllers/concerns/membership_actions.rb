@@ -57,7 +57,7 @@ module MembershipActions
         redirect_to redirect_path, notice: notice
       end
 
-      format.json { head :ok }
+      format.json { render json: { notice: notice } }
     end
   end
 
