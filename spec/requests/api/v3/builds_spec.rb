@@ -7,13 +7,14 @@ describe API::V3::Builds do
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
   let(:reporter) { create(:project_member, :reporter, project: project) }
   let(:guest) { create(:project_member, :guest, project: project) }
-  let!(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
-  let!(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
+  let(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
 
     before do
+      build
       create(:ci_build, :skipped, pipeline: pipeline)
 
       get v3_api("/projects/#{project.id}/builds?#{query}", api_user)
@@ -87,6 +88,10 @@ describe API::V3::Builds do
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/builds' do
+    before do
+      build
+    end
+
     context 'when commit does not exist in repository' do
       before do
         get v3_api("/projects/#{project.id}/repository/commits/1a271fd1/builds", api_user)

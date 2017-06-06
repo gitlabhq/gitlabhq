@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 describe API::Jobs, :api do
-  let!(:project) do
+  let(:project) do
     create(:project, :repository, public_builds: false)
   end
 
-  let!(:pipeline) do
+  let(:pipeline) do
     create(:ci_empty_pipeline, project: project,
                                sha: project.commit.id,
                                ref: project.default_branch)
   end
 
-  let!(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:build) { create(:ci_build, pipeline: pipeline) }
 
   let(:user) { create(:user) }
   let(:api_user) { user }
@@ -26,6 +26,7 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
+      build
       get api("/projects/#{project.id}/jobs", api_user), query
     end
 
@@ -89,6 +90,7 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
+      build
       get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
     end
 
