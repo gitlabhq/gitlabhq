@@ -16,8 +16,4 @@ class MigratePipelineStages < ActiveRecord::Migration
           ORDER BY MAX(stage_idx)
     SQL
   end
-
-  def down
-    execute('TRUNCATE TABLE ci_stages')
-  end
 end
