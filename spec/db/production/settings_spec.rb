@@ -42,5 +42,17 @@ describe 'seed production settings', lib: true do
         expect(settings.prometheus_metrics_enabled).to eq(false)
       end
     end
+
+    context 'GITLAB_PROMETHEUS_METRICS_ENABLED is false' do
+      before do
+        stub_env('GITLAB_PROMETHEUS_METRICS_ENABLED', '')
+      end
+
+      it 'prometheus_metrics_enabled is set to false' do
+        load(settings_file)
+
+        expect(settings.prometheus_metrics_enabled).to eq(false)
+      end
+    end
   end
 end
