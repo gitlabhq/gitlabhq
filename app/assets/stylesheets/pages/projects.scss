@@ -29,6 +29,20 @@
     & > .form-group {
       padding-left: 0;
     }
+
+    select option[disabled] {
+      display: none;
+    }
+  }
+
+  select {
+    background: transparent;
+    transition: background 2s ease-out;
+
+    &.highlight-changes {
+      background: $highlight-changes-color;
+      transition: none;
+    }
   }
 
   .help-block {
