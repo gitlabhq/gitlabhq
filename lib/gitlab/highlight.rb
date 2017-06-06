@@ -9,7 +9,7 @@ module Gitlab
       blob = repository.blob_at(ref, file_name)
       return [] unless blob
 
-      blob.load_all_data!(repository)
+      blob.load_all_data!
       highlight(file_name, blob.data, repository: repository).lines.map!(&:html_safe)
     end
 

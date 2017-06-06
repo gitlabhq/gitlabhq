@@ -55,7 +55,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def edit
     if can_collaborate_with_project?
-      blob.load_all_data!(@repository)
+      blob.load_all_data!
     else
       redirect_to action: 'show'
     end
@@ -74,7 +74,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def preview
     @content = params[:content]
-    @blob.load_all_data!(@repository)
+    @blob.load_all_data!
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..-1]
     diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines)
@@ -111,7 +111,7 @@ class Projects::BlobController < Projects::ApplicationController
   private
 
   def blob
-    @blob ||= Blob.decorate(@repository.blob_at(@commit.id, @path), @project)
+    @blob ||= @repository.blob_at(@commit.id, @path)
 
     if @blob
       @blob

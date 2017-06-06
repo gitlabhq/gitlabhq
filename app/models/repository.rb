@@ -1102,7 +1102,7 @@ class Repository
     blob = blob_at(sha, path)
     return unless blob
 
-    blob.load_all_data!(self)
+    blob.load_all_data!
     blob.data
   end
 
