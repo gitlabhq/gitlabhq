@@ -135,8 +135,8 @@ export default {
         {{shortSha}}
       </a>
 
-      <p class="commit-title">
-        <span v-if="title">
+      <div class="commit-title flex-truncate-parent">
+        <span v-if="title" class="flex-truncate-child">
           <user-avatar-link
             v-if="hasAuthor"
             class="avatar-image-container"
@@ -153,7 +153,7 @@ export default {
         <span v-else>
           Cant find HEAD commit for this branch
         </span>
-      </p>
+      </div>
     </div>
   `,
 };

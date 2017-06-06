@@ -14,20 +14,20 @@ describe Gitlab::CurrentSettings do
       end
 
       it 'attempts to use cached values first' do
-        expect(ApplicationSetting).to receive(:current)
-        expect(ApplicationSetting).not_to receive(:last)
+        expect(ApplicationSetting).to receive(:cached)
 
         expect(current_application_settings).to be_a(ApplicationSetting)
       end
 
       it 'falls back to DB if Redis returns an empty value' do
+        expect(ApplicationSetting).to receive(:cached).and_return(nil)
         expect(ApplicationSetting).to receive(:last).and_call_original
 
         expect(current_application_settings).to be_a(ApplicationSetting)
       end
 
       it 'falls back to DB if Redis fails' do
-        expect(ApplicationSetting).to receive(:current).and_raise(::Redis::BaseError)
+        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
         expect(ApplicationSetting).to receive(:last).and_call_original
 
         expect(current_application_settings).to be_a(ApplicationSetting)
@@ -37,6 +37,7 @@ describe Gitlab::CurrentSettings do
     context 'with DB unavailable' do
       before do
         allow_any_instance_of(described_class).to receive(:connect_to_db?).and_return(false)
+        allow_any_instance_of(described_class).to receive(:retrieve_settings_from_database_cache?).and_return(nil)
       end
 
       it 'returns an in-memory ApplicationSetting object' do

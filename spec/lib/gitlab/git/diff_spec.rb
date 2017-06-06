@@ -31,6 +31,36 @@ EOT
                                           [".gitmodules"]).patches.first
   end
 
+  describe 'size limit feature toggles' do
+    context 'when the feature gitlab_git_diff_size_limit_increase is enabled' do
+      before do
+        Feature.enable('gitlab_git_diff_size_limit_increase')
+      end
+
+      it 'returns 200 KB for size_limit' do
+        expect(described_class.size_limit).to eq(200.kilobytes)
+      end
+
+      it 'returns 100 KB for collapse_limit' do
+        expect(described_class.collapse_limit).to eq(100.kilobytes)
+      end
+    end
+
+    context 'when the feature gitlab_git_diff_size_limit_increase is disabled' do
+      before do
+        Feature.disable('gitlab_git_diff_size_limit_increase')
+      end
+
+      it 'returns 100 KB for size_limit' do
+        expect(described_class.size_limit).to eq(100.kilobytes)
+      end
+
+      it 'returns 10 KB for collapse_limit' do
+        expect(described_class.collapse_limit).to eq(10.kilobytes)
+      end
+    end
+  end
+
   describe '.new' do
     context 'using a Hash' do
       context 'with a small diff' do
@@ -47,7 +77,7 @@ EOT
 
       context 'using a diff that is too large' do
         it 'prunes the diff' do
-          diff = described_class.new(diff: 'a' * 204800)
+          diff = described_class.new(diff: 'a' * (described_class.size_limit + 1))
 
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
@@ -85,8 +115,8 @@ EOT
           # The patch total size is 200, with lines between 21 and 54.
           # This is a quick-and-dirty way to test this. Ideally, a new patch is
           # added to the test repo with a size that falls between the real limits.
-          stub_const("#{described_class}::SIZE_LIMIT", 150)
-          stub_const("#{described_class}::COLLAPSE_LIMIT", 100)
+          allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(150)
+          allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(100)
         end
 
         it 'prunes the diff as a large diff instead of as a collapsed diff' do
@@ -299,7 +329,7 @@ EOT
 
   describe '#collapsed?' do
     it 'returns true for a diff that is quite large' do
-      diff = described_class.new({ diff: 'a' * 20480 }, expanded: false)
+      diff = described_class.new({ diff: 'a' * (described_class.collapse_limit + 1) }, expanded: false)
 
       expect(diff).to be_collapsed
     end

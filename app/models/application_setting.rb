@@ -189,8 +189,9 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.cached
-    ensure_cache_setup
-    Rails.cache.fetch(CACHE_KEY)
+    value = Rails.cache.read(CACHE_KEY)
+    ensure_cache_setup if value.present?
+    value
   end
 
   def self.ensure_cache_setup
@@ -199,7 +200,7 @@ class ApplicationSetting < ActiveRecord::Base
     ApplicationSetting.define_attribute_methods
   end
 
-  def self.defaults_ce
+  def self.defaults
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
@@ -248,10 +249,6 @@ class ApplicationSetting < ActiveRecord::Base
       polling_interval_multiplier: 1,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
     }
-  end
-
-  def self.defaults
-    defaults_ce
   end
 
   def self.create_from_defaults

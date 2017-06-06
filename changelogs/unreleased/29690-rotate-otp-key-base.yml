@@ -1,0 +1,4 @@
+---
+title: Add a Rake task to aid in rotating otp_key_base
+merge_request: 11881
+author:

@@ -151,7 +151,9 @@ merge_access_levels:
 push_access_levels:
 - protected_branch
 create_access_levels:
+- user
 - protected_tag
+- group
 container_repositories:
 - project
 - name

@@ -1,30 +1,33 @@
 /* eslint-disable no-param-reassign, func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, wrap-iife, max-len */
-/* global Issuable */
+/* global IssuableIndex */
+
+import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
+import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 
 ((global) => {
   var issuable_created;
 
   issuable_created = false;
 
-  global.Issuable = {
-    init: function() {
-      Issuable.initTemplates();
-      Issuable.initSearch();
-      Issuable.initChecks();
-      Issuable.initResetFilters();
-      Issuable.resetIncomingEmailToken();
-      return Issuable.initLabelFilterRemove();
+  global.IssuableIndex = {
+    init: function(pagePrefix) {
+      IssuableIndex.initTemplates();
+      IssuableIndex.initSearch();
+      IssuableIndex.initBulkUpdate(pagePrefix);
+      IssuableIndex.initResetFilters();
+      IssuableIndex.resetIncomingEmailToken();
+      IssuableIndex.initLabelFilterRemove();
     },
     initTemplates: function() {
-      return Issuable.labelRow = _.template('<% _.each(labels, function(label){ %> <span class="label-row btn-group" role="group" aria-label="<%- label.title %>" style="color: <%- label.text_color %>;"> <a href="#" class="btn btn-transparent has-tooltip" style="background-color: <%- label.color %>;" title="<%- label.description %>" data-container="body"> <%- label.title %> </a> <button type="button" class="btn btn-transparent label-remove js-label-filter-remove" style="background-color: <%- label.color %>;" data-label="<%- label.title %>"> <i class="fa fa-times"></i> </button> </span> <% }); %>');
+      return IssuableIndex.labelRow = _.template('<% _.each(labels, function(label){ %> <span class="label-row btn-group" role="group" aria-label="<%- label.title %>" style="color: <%- label.text_color %>;"> <a href="#" class="btn btn-transparent has-tooltip" style="background-color: <%- label.color %>;" title="<%- label.description %>" data-container="body"> <%- label.title %> </a> <button type="button" class="btn btn-transparent label-remove js-label-filter-remove" style="background-color: <%- label.color %>;" data-label="<%- label.title %>"> <i class="fa fa-times"></i> </button> </span> <% }); %>');
     },
     initSearch: function() {
       const $searchInput = $('#issuable_search');
 
-      Issuable.initSearchState($searchInput);
+      IssuableIndex.initSearchState($searchInput);
 
       // `immediate` param set to false debounces on the `trailing` edge, lets user finish typing
-      const debouncedExecSearch = _.debounce(Issuable.executeSearch, 1000, false);
+      const debouncedExecSearch = _.debounce(IssuableIndex.executeSearch, 1000, false);
 
       $searchInput.off('keyup').on('keyup', debouncedExecSearch);
 
@@ -37,16 +40,16 @@
     initSearchState: function($searchInput) {
       const currentSearchVal = $searchInput.val();
 
-      Issuable.searchState = {
+      IssuableIndex.searchState = {
         elem: $searchInput,
         current: currentSearchVal
       };
 
-      Issuable.maybeFocusOnSearch();
+      IssuableIndex.maybeFocusOnSearch();
     },
     accessSearchPristine: function(set) {
       // store reference to previous value to prevent search on non-mutating keyup
-      const state = Issuable.searchState;
+      const state = IssuableIndex.searchState;
       const currentSearchVal = state.elem.val();
 
       if (set) {
@@ -56,10 +59,10 @@
       }
     },
     maybeFocusOnSearch: function() {
-      const currentSearchVal = Issuable.searchState.current;
+      const currentSearchVal = IssuableIndex.searchState.current;
       if (currentSearchVal && currentSearchVal !== '') {
         const queryLength = currentSearchVal.length;
-        const $searchInput = Issuable.searchState.elem;
+        const $searchInput = IssuableIndex.searchState.elem;
 
       /* The following ensures that the cursor is initially placed at
         * the end of search input when focus is applied. It accounts
@@ -80,7 +83,7 @@
       const $searchValue = $search.val();
       const $filtersForm = $('.js-filter-form');
       const $input = $(`input[name='${$searchName}']`, $filtersForm);
-      const isPristine = Issuable.accessSearchPristine();
+      const isPristine = IssuableIndex.accessSearchPristine();
 
       if (isPristine) {
         return;
@@ -92,7 +95,7 @@
         $input.val($searchValue);
       }
 
-      Issuable.filterResults($filtersForm);
+      IssuableIndex.filterResults($filtersForm);
     },
     initLabelFilterRemove: function() {
       return $(document).off('click', '.js-label-filter-remove').on('click', '.js-label-filter-remove', function(e) {
@@ -103,7 +106,7 @@
           return this.value === $button.data('label');
         }).remove();
         // Submit the form to get new data
-        Issuable.filterResults($('.filter-form'));
+        IssuableIndex.filterResults($('.filter-form'));
       });
     },
     filterResults: (function(_this) {
@@ -132,38 +135,18 @@
         gl.utils.visitUrl(baseIssuesUrl);
       });
     },
-    initChecks: function() {
-      this.issuableBulkActions = $('.bulk-update').data('bulkActions');
-      $('.check_all_issues').off('click').on('click', function() {
-        $('.selected_issue').prop('checked', this.checked);
-        return Issuable.checkChanged();
-      });
-      return $('.selected_issue').off('change').on('change', Issuable.checkChanged.bind(this));
-    },
-    checkChanged: function() {
-      const $checkedIssues = $('.selected_issue:checked');
-      const $updateIssuesIds = $('#update_issuable_ids');
-      const $issuesOtherFilters = $('.issues-other-filters');
-      const $issuesBulkUpdate = $('.issues_bulk_update');
+    initBulkUpdate: function(pagePrefix) {
+      const userCanBulkUpdate = $('.issues-bulk-update').length > 0;
+      const alreadyInitialized = !!this.bulkUpdateSidebar;
 
-      this.issuableBulkActions.willUpdateLabels = false;
-      this.issuableBulkActions.setOriginalDropdownData();
-
-      if ($checkedIssues.length > 0) {
-        const ids = $.map($checkedIssues, function(value) {
-          return $(value).data('id');
+      if (userCanBulkUpdate && !alreadyInitialized) {
+        IssuableBulkUpdateActions.init({
+          prefixId: pagePrefix,
         });
-        $updateIssuesIds.val(ids);
-        $issuesOtherFilters.hide();
-        $issuesBulkUpdate.show();
-      } else {
-        $updateIssuesIds.val([]);
-        $issuesBulkUpdate.hide();
-        $issuesOtherFilters.show();
-      }
-      return true;
-    },
 
+        this.bulkUpdateSidebar = new IssuableBulkUpdateSidebar();
+      }
+    },
     resetIncomingEmailToken: function() {
       $('.incoming-email-token-reset').on('click', function(e) {
         e.preventDefault();
