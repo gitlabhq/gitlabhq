@@ -649,8 +649,9 @@
             By default, we write to the "authorized_keys" file to support old
             OpenSSH servers. If, and only if, you have configured the GitLab
             instance to use the AuthorizedKeysCommand, uncheck this to improve
-            performance.
-            = link_to icon('question-circle'), help_page_path('administration/operations/speed_up_ssh', anchor: 'tidying-up')
+            performance by preventing a sequential file read on each git SSH
+            access.
+            = link_to icon('question-circle'), help_page_path('administration/operations/speed_up_ssh', anchor: 'the-solution')
 
   - if Gitlab::Geo.license_allows?
     %fieldset
