@@ -51,10 +51,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:project_feature).dependent(:destroy) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics').dependent(:delete) }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:delete) }
-<<<<<<< HEAD
     it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData').dependent(:delete) }
-=======
->>>>>>> ce/master
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
@@ -1925,10 +1922,7 @@ describe Project, models: true do
 
         expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
 
-          expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
-
-          project.add_import_job
-        end
+        project.add_import_job
       end
     end
   end

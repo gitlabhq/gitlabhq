@@ -344,13 +344,10 @@ class Project < ActiveRecord::Base
 
     event :import_fail do
       transition [:scheduled, :started] => :failed
-<<<<<<< HEAD
-=======
     end
 
     event :import_retry do
       transition failed: :started
->>>>>>> ce/master
     end
 
     state :scheduled
@@ -358,18 +355,14 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-<<<<<<< HEAD
     before_transition [:none, :finished, :failed] => :scheduled do |project, _|
       project.mirror_data&.last_update_scheduled_at = Time.now
     end
 
-=======
->>>>>>> ce/master
     after_transition [:none, :finished, :failed] => :scheduled do |project, _|
       project.run_after_commit { add_import_job }
     end
 
-<<<<<<< HEAD
     before_transition scheduled: :started do |project, _|
       project.mirror_data&.last_update_started_at = Time.now
     end
@@ -417,9 +410,8 @@ class Project < ActiveRecord::Base
     after_transition [:finished, :failed] => [:scheduled, :started] do |project, _|
       Gitlab::Mirror.increment_capacity(project.id) if project.mirror?
     end
-=======
+
     after_transition started: :finished, do: :reset_cache_and_import_attrs
->>>>>>> ce/master
   end
 
   class << self
