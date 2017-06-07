@@ -9,13 +9,10 @@ module DropdownsHelper
 
       dropdown_output = dropdown_toggle(toggle_text, data_attr, options)
 
-<<<<<<< HEAD
       if options.key?(:toggle_link)
         dropdown_output = dropdown_toggle_link(toggle_text, data_attr, options)
       end
 
-=======
->>>>>>> ce/master
       dropdown_output << content_tag(:div, class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.key?(:dropdown_class)}") do
         output = ""
 

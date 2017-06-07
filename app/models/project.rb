@@ -170,11 +170,7 @@ class Project < ActiveRecord::Base
   has_many :audit_events, as: :entity, dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source
 
-<<<<<<< HEAD
-  has_one :import_data, dependent: :delete, class_name: 'ProjectImportData'
-=======
   has_one :import_data, dependent: :delete, class_name: "ProjectImportData"
->>>>>>> ce/master
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
   has_many :container_repositories, dependent: :destroy
