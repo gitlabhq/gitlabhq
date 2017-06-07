@@ -20,6 +20,7 @@ window.Build = (function () {
     this.$document = $(document);
     this.logBytes = 0;
     this.scrollOffsetPadding = 30;
+    this.hasBeenScrolled = false;
 
     this.updateDropdown = this.updateDropdown.bind(this);
     this.getBuildTrace = this.getBuildTrace.bind(this);
@@ -71,7 +72,11 @@ window.Build = (function () {
     // eslint-disable-next-line
     this.getBuildTrace()
       .then(() => this.makeTraceScrollable())
-      .then(() => this.scrollToBottom());
+      .then(() => {
+        if (!this.hasBeenScrolled) {
+          this.scrollToBottom();
+        }
+      });
 
     this.verifyTopPosition();
   }
@@ -84,7 +89,10 @@ window.Build = (function () {
       railpadding: { top: 5, bottom: 5, right: 5 },
     });
 
-    this.$scrollContainer.on('scroll', _.throttle(this.toggleScroll.bind(this), 100));
+    this.$scrollContainer.on('scroll', () => {
+      this.hasBeenScrolled = true;
+      _.throttle(this.toggleScroll.bind(this), 100);
+    });
 
     this.toggleScroll();
   };
@@ -123,11 +131,13 @@ window.Build = (function () {
   };
 
   Build.prototype.scrollToTop = function () {
+    this.hasBeenScrolled = true;
     this.$scrollContainer.getNiceScroll(0).doScrollTop(0);
     this.toggleScroll();
   };
 
   Build.prototype.scrollToBottom = function () {
+    this.hasBeenScrolled = true;
     this.$scrollContainer.getNiceScroll(0).doScrollTo(this.$scrollContainer.prop('scrollHeight'));
     this.toggleScroll();
   };
@@ -216,7 +226,11 @@ window.Build = (function () {
           Build.timeout = setTimeout(() => {
             //eslint-disable-next-line
             this.getBuildTrace()
-              .then(() => this.scrollToBottom());
+            .then(() => {
+              if (!this.hasBeenScrolled) {
+                this.scrollToBottom();
+              }
+            });
           }, 4000);
         } else {
           this.$buildRefreshAnimation.remove();
