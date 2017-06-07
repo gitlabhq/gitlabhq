@@ -20,24 +20,7 @@ class HealthController < ActionController::Base
     render_check_results(results)
   end
 
-  def metrics
-    results = CHECKS.flat_map(&:metrics)
-
-    response = results.map(&method(:metric_to_prom_line)).join("\n")
-
-    render text: response, content_type: 'text/plain; version=0.0.4'
-  end
-
   private
-
-  def metric_to_prom_line(metric)
-    labels = metric.labels&.map { |key, value| "#{key}=\"#{value}\"" }&.join(',') || ''
-    if labels.empty?
-      "#{metric.name} #{metric.value}"
-    else
-      "#{metric.name}{#{labels}} #{metric.value}"
-    end
-  end
 
   def render_check_results(results)
     flattened = results.flat_map do |name, result|
