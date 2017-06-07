@@ -109,7 +109,7 @@ https://example.com/<namespace>/<project>/builds/artifacts/<ref>/download?job=<j
 To download a single file from the artifacts use the following URL:
 
 ```
-https://example.com/<namespace>/<project>/builds/artifacts/<ref>/file/<path_to_file>?job=<job_name>
+https://example.com/<namespace>/<project>/builds/artifacts/<ref>/raw/<path_to_file>?job=<job_name>
 ```
 
 For example, to download the latest artifacts of the job named `coverage` of
@@ -124,7 +124,7 @@ To download the file `coverage/index.html` from the same
 artifacts use the following URL:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/file/coverage/index.html?job=coverage
+https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/raw/coverage/index.html?job=coverage
 ```
 
 There is also a URL to browse the latest job artifacts:
