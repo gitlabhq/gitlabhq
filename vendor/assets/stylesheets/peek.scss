@@ -1,6 +1,10 @@
 //= require peek/views/performance_bar
 //= require peek/views/rblineprof
 
+header.navbar-gitlab.with-peek {
+  top: 35px;
+}
+
 #peek {
   background: #000;
   height: 35px;
@@ -55,6 +59,12 @@
 
   strong {
     color: #fff;
+  }
+
+  table {
+    strong {
+      color: #000;
+    }
   }
 
   .view {
