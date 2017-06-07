@@ -1,23 +1,22 @@
 require 'spec_helper'
 
 feature 'Top Plus Menu', feature: true, js: true do
-  let!(:user) { create :user }
-  let!(:group) { create(:group) }
-  let!(:public_group) { create(:group, :public) }
-  let!(:private_group) { create(:group, :private) }
-  let!(:empty_project) { create(:empty_project, group: public_group) }
+  let(:user) { create :user }
+  let(:guest_user) { create :user}
+  let(:group) { create(:group) }
+  let(:public_group) { create(:group, :public) }
+  let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
 
   before do
     group.add_owner(user)
+    group.add_guest(guest_user)
 
-    login_as(user)
-
-    visit explore_groups_path
+    project.add_guest(guest_user)
   end
 
   context 'used by full user' do
     before do
-      login_as :user
+      login_as(user)
     end
 
     scenario 'click on New project shows new project page' do
@@ -48,7 +47,7 @@ feature 'Top Plus Menu', feature: true, js: true do
     end
 
     scenario 'click on New issue shows new issue page' do
-      visit namespace_project_path(empty_project.namespace, empty_project)
+      visit namespace_project_path(project.namespace, project)
 
       click_topmenuitem("New issue")
 
@@ -57,7 +56,7 @@ feature 'Top Plus Menu', feature: true, js: true do
     end
 
     scenario 'click on New merge request shows new merge request page' do
-      visit namespace_project_path(empty_project.namespace, empty_project)
+      visit namespace_project_path(project.namespace, project)
 
       click_topmenuitem("New merge request")
 
@@ -67,7 +66,7 @@ feature 'Top Plus Menu', feature: true, js: true do
     end
 
     scenario 'click on New project snippet shows new snippet page' do
-      visit namespace_project_path(empty_project.namespace, empty_project)
+      visit namespace_project_path(project.namespace, project)
 
       page.within '.header-content' do
         find('.header-new-dropdown-toggle').trigger('click')
@@ -102,11 +101,55 @@ feature 'Top Plus Menu', feature: true, js: true do
     end
   end
 
+  context 'used by guest user' do
+    before do
+      login_as(guest_user)
+    end
+
+    scenario 'click on New issue shows new issue page' do
+      visit namespace_project_path(project.namespace, project)
+
+      click_topmenuitem("New issue")
+
+      expect(page).to have_content('New Issue')
+      expect(page).to have_content('Title')
+    end
+
+    scenario 'has no New merge request menu item' do
+      visit namespace_project_path(project.namespace, project)
+
+      hasnot_topmenuitem("New merge request")
+    end
+
+    scenario 'has no New project snippet menu item' do
+      visit namespace_project_path(project.namespace, project)
+
+      expect(find('.header-new.dropdown')).not_to have_selector('.header-new-project-snippet')
+    end
+
+    scenario 'has no New subgroup menu item' do
+      visit group_path(group)
+
+      hasnot_topmenuitem("New subgroup")
+    end
+
+    scenario 'has no New project for group menu item' do
+      visit group_path(group)
+      
+      expect(find('.header-new.dropdown')).not_to have_selector('.header-new-group-project')
+    end
+  end
+
   def click_topmenuitem(item_name)
     page.within '.header-content' do
       find('.header-new-dropdown-toggle').trigger('click')
       expect(page).to have_selector('.header-new.dropdown.open', count: 1)
       click_link item_name
+    end
+  end
+
+  def hasnot_topmenuitem(item_name)
+      expect(find('.header-new.dropdown')).not_to have_content(item_name)
     end
   end
 end
