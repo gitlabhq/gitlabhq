@@ -75,7 +75,7 @@
 </script>
 
 <template>
-  <div class="col-lg-9 col-lg-offset-3 append-bottom-default deploy-keys">
+  <div class="append-bottom-default deploy-keys">
     <loading-icon
       v-if="isLoading && !hasKeys"
       size="2"
