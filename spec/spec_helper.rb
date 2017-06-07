@@ -56,6 +56,7 @@ RSpec.configure do |config|
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include ApiHelpers, :api
+  config.include MigrationsHelpers, :migration
 
   config.infer_spec_type_from_file_location!
 
@@ -95,6 +96,17 @@ RSpec.configure do |config|
 
     Gitlab::Redis.with(&:flushall)
     Sidekiq.redis(&:flushall)
+  end
+
+  config.around(:example, :migration) do |example|
+    begin
+      ActiveRecord::Migrator
+        .migrate(migrations_paths, previous_migration.version)
+
+      example.run
+    ensure
+      ActiveRecord::Migrator.migrate(migrations_paths)
+    end
   end
 
   config.around(:each, :nested_groups) do |example|
