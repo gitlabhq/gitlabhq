@@ -52,10 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let filterGroups = null;
         let filterGroupsParam = null;
 
-        this.isLoading = true;
-
         if (parentGroup) {
           parentId = parentGroup.id;
+        } else {
+          this.isLoading = true;
         }
 
         pageParam = gl.utils.getParameterByName('page');
