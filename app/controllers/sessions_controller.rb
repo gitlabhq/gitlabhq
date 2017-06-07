@@ -90,7 +90,7 @@ class SessionsController < Devise::SessionsController
 
     # Prevent a 'you are already signed in' message directly after signing:
     # we should never redirect to '/users/sign_in' after signing in successfully.
-    if redirect_uri.path != new_user_session_path
+    if redirect_uri.path == new_user_session_path
       return true
     elsif redirect_uri.host == Gitlab.config.gitlab.host && redirect_uri.port == Gitlab.config.gitlab.port
       redirect_to = redirect_uri.to_s
