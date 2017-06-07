@@ -70,6 +70,12 @@
 
   .input-token {
     max-width: 200px;
+
+    &:hover,
+    &:focus {
+      background-color: inherit;
+      color: inherit;
+    }
   }
 
   .input-token:only-child,

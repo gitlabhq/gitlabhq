@@ -9,13 +9,13 @@
 .pull-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
   = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_path(issuable), { method: button_method.to_s, class: "#{button_class} btn-#{button_action}", title: "#{display_button_action} #{display_issuable_type}" }
 
-  = button_tag type: 'button', class: "#{toggle_class} btn-#{button_action}-color", data: { 'dropdown-trigger' => '#issuable-close-menu' }, 'aria-label' => 'Open close dropdown' do
-    = icon('caret-down', class: 'toggle-icon')
+  = button_tag type: 'button', class: "#{toggle_class} btn-#{button_action}-color", data: { 'dropdown-trigger' => '#issuable-close-menu' }, 'aria-label' => 'Toggle dropdown' do
+    = icon('caret-down', class: 'toggle-icon icon')
 
   %ul#issuable-close-menu.js-issuable-close-menu.dropdown-menu{ class: button_responsive_class, data: { dropdown: true } }
     %li.close-item{ class: "#{issuable.closed? ? 'hidden' : 'droplab-item-selected'}", data: { text: "Close #{display_issuable_type}", url: close_issuable_path(issuable), button_class: "#{button_class} btn-close", toggle_class: "#{toggle_class} btn-close-color", method: button_method } }
-      %a{ href: '#' }
-        = icon('check')
+      %button.btn.btn-transparent
+        = icon('check', class: 'icon')
         .description
           %strong
             Close
@@ -23,8 +23,8 @@
           %p
 
     %li.reopen-item{ class: "#{issuable.closed? ? 'droplab-item-selected' : 'hidden'}", data: { text: "Reopen #{display_issuable_type}", url: reopen_issuable_path(issuable), button_class: "#{button_class} btn-reopen", toggle_class: "#{toggle_class} btn-reopen-color", method: button_method } }
-      %a{ href: '#' }
-        = icon('check')
+      %button.btn.btn-transparent
+        = icon('check', class: 'icon')
         .description
           %strong
             Reopen
@@ -34,8 +34,8 @@
     %li.divider.droplab-item-ignore
 
     %li{ data: { text: 'Report abuse', url: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)), button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
-      %a{ href: '#' }
-        = icon('check')
+      %button.btn.btn-transparent
+        = icon('check', class: 'icon')
         .description
           %strong Report abuse
           %p

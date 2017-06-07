@@ -310,17 +310,26 @@
   li {
     padding-top: 6px;
 
-    & > a {
+    > a,
+    > button {
       margin: 0;
       padding: 0;
-      color: inherit;
       border-radius: 0;
       text-overflow: inherit;
+      background-color: inherit;
+      color: inherit;
+      border: inherit;
+      text-align: left;
 
       &:hover,
       &:focus {
         background-color: inherit;
         color: inherit;
+      }
+
+      &.btn .fa:not(:last-child) {
+        margin-right: 0;
+        margin-left: 5px;
       }
     }
 
@@ -334,12 +343,12 @@
       visibility: visible;
     }
 
-    i {
+    .icon {
       visibility: hidden;
     }
   }
 
-  i {
+  .icon {
     display: inline-block;
     vertical-align: top;
     padding-top: 2px;
