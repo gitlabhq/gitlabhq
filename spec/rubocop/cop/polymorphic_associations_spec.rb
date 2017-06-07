@@ -1,18 +1,18 @@
 require 'spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
-require_relative '../../../rubocop/cop/activerecord_serialize'
+require_relative '../../../rubocop/cop/polymorphic_associations'
 
-describe RuboCop::Cop::ActiverecordSerialize do
+describe RuboCop::Cop::PolymorphicAssociations do
   include CopHelper
 
   subject(:cop) { described_class.new }
 
   context 'inside the app/models directory' do
-    it 'registers an offense when serialize is used' do
+    it 'registers an offense when polymorphic: true is used' do
       allow(cop).to receive(:in_model?).and_return(true)
 
-      inspect_source(cop, 'serialize :foo')
+      inspect_source(cop, 'belongs_to :foo, polymorphic: true')
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -25,7 +25,7 @@ describe RuboCop::Cop::ActiverecordSerialize do
     it 'does nothing' do
       allow(cop).to receive(:in_model?).and_return(false)
 
-      inspect_source(cop, 'serialize :foo')
+      inspect_source(cop, 'belongs_to :foo, polymorphic: true')
 
       expect(cop.offenses).to be_empty
     end
