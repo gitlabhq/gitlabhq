@@ -18,7 +18,6 @@ Peek.into Peek::Views::Sidekiq
 Peek.into Peek::Views::Rblineprof
 Peek.into Peek::Views::GC
 
-
 class PEEK_DB_CLIENT
   class << self
     attr_accessor :query_details

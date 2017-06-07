@@ -74,6 +74,8 @@ class ApplicationController < ActionController::Base
       else
         RequestStore.store[:peek_enabled] = cookies[:perf_bar_enabled].present?
       end
+    else
+      cookies[:perf_bar_enabled].present?
     end
   end
 
