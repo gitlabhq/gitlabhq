@@ -149,7 +149,6 @@ feature 'Top Plus Menu', feature: true, js: true do
   end
 
   def hasnot_topmenuitem(item_name)
-      expect(find('.header-new.dropdown')).not_to have_content(item_name)
-    end
-  end
+    expect(find('.header-new.dropdown')).not_to have_content(item_name)
+  end 
 end
