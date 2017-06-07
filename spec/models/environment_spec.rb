@@ -472,10 +472,6 @@ describe Environment, models: true do
   describe '#has_additional_metrics??' do
     subject { environment.has_additional_metrics? }
 
-    before do
-
-    end
-
     context 'when the enviroment is available' do
       context 'with a deployment service' do
         let(:project) { create(:prometheus_project) }
