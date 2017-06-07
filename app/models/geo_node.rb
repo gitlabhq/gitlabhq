@@ -21,9 +21,7 @@ class GeoNode < ActiveRecord::Base
   validates :encrypted_secret_access_key, presence: true
 
   after_initialize :build_dependents
-  after_save :refresh_bulk_notify_worker_status
   after_save :expire_cache!
-  after_destroy :refresh_bulk_notify_worker_status
   after_destroy :expire_cache!
   before_validation :update_dependents_attributes
 
@@ -128,10 +126,6 @@ class GeoNode < ActiveRecord::Base
     end
 
     { protocol: schema, host: host, port: port, script_name: relative_url }
-  end
-
-  def refresh_bulk_notify_worker_status
-    Gitlab::Geo.configure_cron_jobs!
   end
 
   def build_dependents

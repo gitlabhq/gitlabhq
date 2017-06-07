@@ -13,10 +13,10 @@ describe GeoFileDownloadDispatchWorker do
   subject { described_class.new }
 
   describe '#perform' do
-    it 'does not schedule anything when tracking DB is not available' do
+    it 'does not schedule anything when secondary role is disabled' do
       create(:lfs_object, :with_file)
 
-      allow(Rails.configuration).to receive(:respond_to?).with(:geo_database) { false }
+      allow(Gitlab::Geo).to receive(:secondary_role_enabled?) { false }
 
       expect(GeoFileDownloadWorker).not_to receive(:perform_async)
 
