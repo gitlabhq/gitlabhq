@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Backup::Repository, lib: true do
-  include StubENV
-
   let(:progress) { StringIO.new }
   let!(:project) { create(:empty_project) }
 
