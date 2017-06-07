@@ -58,10 +58,11 @@ import findAndFollowLink from './shortcuts_dashboard_navigation';
 
     Shortcuts.prototype.onTogglePerfBar = function(e) {
       e.preventDefault();
-      if (Cookies.get('perf_bar_enabled') === 'true') {
-        Cookies.remove('perf_bar_enabled', { path: '/' });
+      const performanceBarCookieName = 'perf_bar_enabled';
+      if (Cookies.get(performanceBarCookieName) === 'true') {
+        Cookies.remove(performanceBarCookieName, { path: '/' });
       } else {
-        Cookies.set('perf_bar_enabled', true, { path: '/' });
+        Cookies.set(performanceBarCookieName, true, { path: '/' });
       }
       gl.utils.refreshCurrentPage();
     };
