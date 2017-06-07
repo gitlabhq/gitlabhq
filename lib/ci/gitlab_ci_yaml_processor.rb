@@ -51,11 +51,9 @@ module Ci
     end
 
     def stage_seeds(pipeline)
-      trigger_request = pipeline.trigger_requests.first
-
       seeds = @stages.uniq.map do |stage|
         builds = builds_for_stage_and_ref(
-          stage, pipeline.ref, pipeline.tag?, trigger_request)
+          stage, pipeline.ref, pipeline.tag?, pipeline.source)
 
         Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
       end
