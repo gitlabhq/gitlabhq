@@ -44,7 +44,7 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
-  scope :include_associations, -> { includes(:labels, project: :namespace) }
+  scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   after_save :expire_etag_cache
 
