@@ -326,12 +326,11 @@ class Commit
   end
 
   def raw_diffs(*args)
-    # Uncomment when https://gitlab.com/gitlab-org/gitaly/merge_requests/170 is merged
-    # if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
-    #   Gitlab::GitalyClient::Commit.new(project.repository).diff_from_parent(self, *args)
-    # else
-    raw.diffs(*args)
-    # end
+    if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
+      Gitlab::GitalyClient::Commit.new(project.repository).diff_from_parent(self, *args)
+    else
+      raw.diffs(*args)
+    end
   end
 
   def raw_deltas
