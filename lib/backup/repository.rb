@@ -14,7 +14,7 @@ module Backup
         # Create namespace dir if missing
         FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
 
-        if project.empty_repo?
+        if empty_repo?(project)
           $progress.puts "[SKIPPED]".color(:cyan)
         else
           in_path(path_to_project_repo) do |dir|
@@ -23,10 +23,7 @@ module Backup
             output, status = Gitlab::Popen.popen(cmd)
 
             unless status.zero?
-              puts "[FAILED]".color(:red)
-              puts "failed: #{cmd.join(' ')}"
-              puts output
-              abort 'Backup failed'
+              progress_warn(project, cmd.join(' '), output)
             end
           end
 
@@ -36,10 +33,7 @@ module Backup
           if status.zero?
             $progress.puts "[DONE]".color(:green)
           else
-            puts "[FAILED]".color(:red)
-            puts "failed: #{cmd.join(' ')}"
-            puts output
-            abort 'Backup failed'
+            progress_warn(project, cmd.join(' '), output)
           end
         end
 
@@ -49,7 +43,7 @@ module Backup
 
         if File.exist?(path_to_wiki_repo)
           $progress.print " * #{wiki.path_with_namespace} ... "
-          if wiki.repository.empty?
+          if empty_wiki_repo?(wiki)
             $progress.puts " [SKIPPED]".color(:cyan)
           else
             cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_wiki_repo} bundle create #{path_to_wiki_bundle} --all)
@@ -57,10 +51,7 @@ module Backup
             if status.zero?
               $progress.puts " [DONE]".color(:green)
             else
-              puts " [FAILED]".color(:red)
-              puts "failed: #{cmd.join(' ')}"
-              puts output
-              abort 'Backup failed'
+              progress_warn(wiki, cmd.join(' '), output)
             end
           end
         end
@@ -96,10 +87,7 @@ module Backup
         if status.zero?
           $progress.puts "[DONE]".color(:green)
         else
-          puts "[FAILED]".color(:red)
-          puts "failed: #{cmd.join(' ')}"
-          puts output
-          abort 'Restore failed'
+          progress_warn(project, cmd.join(' '), output)
         end
 
         in_path(path_to_tars(project)) do |dir|
@@ -107,10 +95,7 @@ module Backup
 
           output, status = Gitlab::Popen.popen(cmd)
           unless status.zero?
-            puts "[FAILED]".color(:red)
-            puts "failed: #{cmd.join(' ')}"
-            puts output
-            abort 'Restore failed'
+            progress_warn(project, cmd.join(' '), output)
           end
         end
 
@@ -131,10 +116,7 @@ module Backup
           if status.zero?
             $progress.puts " [DONE]".color(:green)
           else
-            puts " [FAILED]".color(:red)
-            puts "failed: #{cmd.join(' ')}"
-            puts output
-            abort 'Restore failed'
+            progress_warn(project, cmd.join(' '), output)
           end
         end
       end
@@ -200,6 +182,27 @@ module Backup
     end
 
     private
+
+    def progress_warn(project, cmd, output)
+      $progress.puts "[WARNING] Executing #{cmd}".color(:orange)
+      $progress.puts "Ignoring error on #{project.path_with_namespace} - #{output}".color(:orange)
+    end
+
+    def empty_repo?(project)
+      project.empty_repo?
+    rescue => e
+      $progress.puts "Ignoring error on #{project.full_path} repository - #{e.message}".color(:orange)
+
+      false
+    end
+
+    def empty_wiki_repo?(wiki)
+      wiki.repository.empty?
+    rescue => e
+      $progress.puts "Ignoring error on #{wiki.path_with_namespace} repository - #{e.message}".color(:orange)
+
+      false
+    end
 
     def repository_storage_paths_args
       Gitlab.config.repositories.storages.values.map { |rs| rs['path'] }
