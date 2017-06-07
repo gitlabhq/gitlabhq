@@ -379,7 +379,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       blobs = results.objects('blobs')
 
       expect(blobs.first['_source']['blob']['content']).to include('def')
-      expect(results.blobs_count).to eq 5
+      expect(results.blobs_count).to eq 7
     end
 
     it 'finds blobs from public projects only' do
@@ -388,10 +388,11 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       Gitlab::Elastic::Helper.refresh_index
 
       results = described_class.new(user, 'def', [project_1.id])
-      expect(results.blobs_count).to eq 5
+      expect(results.blobs_count).to eq 7
 
       results = described_class.new(user, 'def', [project_1.id, project_2.id])
-      expect(results.blobs_count).to eq 10
+
+      expect(results.blobs_count).to eq 14
     end
 
     it 'returns zero when blobs are not found' do
