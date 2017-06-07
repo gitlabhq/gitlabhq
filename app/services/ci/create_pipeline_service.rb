@@ -2,7 +2,7 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false, &block)
       @pipeline = Ci::Pipeline.new(
         source: source,
         project: project,
@@ -51,7 +51,7 @@ module Ci
         return error('No builds for this pipeline.')
       end
 
-      _create_pipeline
+      _create_pipeline(&block)
     end
 
     private
@@ -59,6 +59,8 @@ module Ci
     def _create_pipeline
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
+
+        yield(pipeline) if block_given?
 
         Ci::CreatePipelineBuildsService
           .new(project, current_user)
