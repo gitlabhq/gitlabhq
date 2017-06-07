@@ -585,7 +585,22 @@
     .issue-info-container {
       -webkit-flex: 1;
       flex: 1;
+      display: flex;
       padding-right: $gl-padding;
+
+      .issue-main-info {
+        flex: 1 auto;
+      }
+
+      .issuable-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        .controls {
+          margin-bottom: 2px;
+        }
+      }
     }
 
     .issue-check {
@@ -598,25 +613,27 @@
       }
     }
 
-    .issue-title,
-    .issue-info {
-      margin-right: 150px;
-    }
-
-    .issue-milestone a,
+    .issue-milestone,
     .issue-info,
-    .task-status {
+    .task-status,
+    .issue-updated-at {
       font-weight: normal;
-      font-size: 13px;
       color: $gl-text-color-secondary;
+
+      a {
+        color: $gl-text-color;
+
+        .fa {
+          color: $gl-text-color-secondary;
+        }
+      }
     }
 
-    .issuable-meta {
-      font-size: 13px;
-      position: absolute;
-      right: 15px;
-      top: 15px;
-      width: 150px;
+    @media(max-width: $screen-md-max) {
+      .task-status,
+      .issue-due-date {
+        display: none;
+      }
     }
 
     @media(max-width: $screen-xs-max) {
@@ -626,11 +643,6 @@
       .task-status,
       .issue-updated-at {
         display: none;
-      }
-
-      .issue-title,
-      .issue-info {
-        margin-right: 100px;
       }
     }
   }

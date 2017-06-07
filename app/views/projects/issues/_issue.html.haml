@@ -4,49 +4,48 @@
       .issue-check
         = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
     .issue-info-container
-      .issue-title.title
-        %span.issue-title-text
-          = confidential_icon(issue)
-          = link_to issue.title, issue_path(issue)
-        - if issue.tasks?
-          %span.task-status
-            &nbsp;
-            = issue.task_status
-        
-        
+      .issue-main-info
+        .issue-title.title
+          %span.issue-title-text
+            = confidential_icon(issue)
+            = link_to issue.title, issue_path(issue)
+          - if issue.tasks?
+            %span.task-status
+              &nbsp;
+              = issue.task_status
 
-      .issue-info
-        %span.issue-reference
-          #{issuable_reference(issue)}
-        %span.issue-authored
-          &middot;
-          opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
-          by #{link_to_member(@project, issue.author, avatar: false)}
+        .issue-info
+          %span.issue-reference
+            #{issuable_reference(issue)}
+          %span.issue-authored
+            &middot;
+            opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
+            by #{link_to_member(@project, issue.author, avatar: false)}
           &nbsp;
-        - if issue.milestone
-          %span.issue-milestone
-            = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
-              = icon('clock-o')
-              = issue.milestone.title
+          - if issue.milestone
+            %span.issue-milestone
+              = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
+                = icon('clock-o')
+                = issue.milestone.title
             &nbsp;
-        - if issue.due_date
-          %span.issue-due-date{ class: "#{'cred' if issue.overdue?}" }
-            = icon('calendar')
-            = issue.due_date.to_s(:medium)
+          - if issue.due_date
+            %span.issue-due-date{ class: "#{'cred' if issue.overdue?}" }
+              = icon('calendar')
+              = issue.due_date.to_s(:medium)
             &nbsp;
-        - if issue.labels.any?
-          - issue.labels.each do |label|
-            = link_to_label(label, subject: issue.project, css_class: 'label-link')        
-        .issuable-meta
-          %ul.controls
-            - if issue.closed?
-              %li
-                CLOSED
+          - if issue.labels.any?
+            - issue.labels.each do |label|
+              = link_to_label(label, subject: issue.project, css_class: 'label-link')
+      .issuable-meta
+        %ul.controls
+          - if issue.closed?
+            %li
+              CLOSED
 
-            - if issue.assignees.any?
-              %li
-                = render 'shared/issuable/assignees', project: @project, issue: issue
+          - if issue.assignees.any?
+            %li
+              = render 'shared/issuable/assignees', project: @project, issue: issue
 
-            = render 'shared/issuable_meta_data', issuable: issue
-          .pull-right.issue-updated-at
-            %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}
+          = render 'shared/issuable_meta_data', issuable: issue
+        .pull-right.issue-updated-at
+          %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}
