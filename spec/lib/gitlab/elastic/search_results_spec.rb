@@ -399,6 +399,45 @@ describe Gitlab::Elastic::SearchResults, lib: true do
 
       expect(results.blobs_count).to eq 0
     end
+
+    context 'Searches CamelCased methods' do
+      before do
+        project_1.repository.create_file(
+          user,
+          'test.txt',
+          ' function writeStringToFile(){} ',
+          message: 'added test file',
+          branch_name: 'master')
+
+        project_1.repository.index_blobs
+
+        Gitlab::Elastic::Helper.refresh_index
+      end
+
+      def search_for(term)
+        blobs = described_class.new(user, term, [project_1.id]).objects('blobs')
+
+        blobs.map do |blob|
+          blob["_source"]["blob"]["path"]
+        end
+      end
+
+      it 'find by first word' do
+        expect(search_for('write')).to include('test.txt')
+      end
+
+      it 'find by first two words' do
+        expect(search_for('writeString')).to include('test.txt')
+      end
+
+      it 'find by last two words' do
+        expect(search_for('ToFile')).to include('test.txt')
+      end
+
+      it 'find by exact match' do
+        expect(search_for('writeStringToFile')).to include('test.txt')
+      end
+    end
   end
 
   describe 'Wikis' do
