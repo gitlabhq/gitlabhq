@@ -102,70 +102,71 @@ export default {
     :id="groupDomId"
     :class="rowClass"
     >
-    <div class="controls">
-      <a
-        v-if="group.canEdit"
-        class="edit-group btn"
-        :href="group.editPath">
-        <i aria-hidden="true" class="fa fa-cogs"></i>
-      </a>
-      <a @click="onLeaveGroup"
-        :href="group.leavePath"
-        class="leave-group btn"
-        title="Leave this group">
-        <i aria-hidden="true" class="fa fa-sign-out"></i>
-      </a>
+    <div class="group-row-contents">
+      <div class="controls">
+        <a
+          v-if="group.canEdit"
+          class="edit-group btn"
+          :href="group.editPath">
+          <i aria-hidden="true" class="fa fa-cogs"></i>
+        </a>
+        <a @click="onLeaveGroup"
+          :href="group.leavePath"
+          class="leave-group btn"
+          title="Leave this group">
+          <i aria-hidden="true" class="fa fa-sign-out"></i>
+        </a>
+      </div>
+
+      <div class="stats">
+        <span class="number-projects">
+          <i aria-hidden="true" class="fa fa-bookmark"></i>
+          {{group.numberProjects}}
+        </span>
+        <span class="number-users">
+          <i aria-hidden="true" class="fa fa-users"></i>
+          {{group.numberUsers}}
+        </span>
+        <span class="group-visibility">
+          <i aria-hidden="true" :class="visibilityIcon"></i>
+        </span>
+      </div>
+
+      <div class="folder-toggle-wrap">
+        <span class="folder-caret" v-if="group.hasSubgroups">
+          <i
+            v-if="group.isOpen"
+            class="fa fa-caret-down" />
+          <i
+            v-if="!group.isOpen"
+            class="fa fa-caret-right" />
+        </span>
+
+        <span class="folder-icon">
+          <i
+            v-if="group.isOpen"
+            class="fa fa-folder-open"
+            aria-hidden="true"></i>
+          <i
+            v-if="!group.isOpen"
+            class="fa fa-folder"></i>
+        </span>
+      </div>
+
+      <div class="avatar-container s40 hidden-xs">
+        <a :href="group.webUrl">
+          <img class="avatar s40" :src="group.avatarUrl" />
+        </a>
+      </div>
+
+      <div class="title">
+        <a :href="group.webUrl">{{fullPath}}</a>
+      </div>
+
+      <div class="description">
+        {{group.description}}
+      </div>
     </div>
-
-    <div class="stats">
-      <span class="number-projects">
-        <i aria-hidden="true" class="fa fa-bookmark"></i>
-        {{group.numberProjects}}
-      </span>
-      <span class="number-users">
-        <i aria-hidden="true" class="fa fa-users"></i>
-        {{group.numberUsers}}
-      </span>
-      <span class="group-visibility">
-        <i aria-hidden="true" :class="visibilityIcon"></i>
-      </span>
-    </div>
-
-    <div class="folder-toggle-wrap">
-      <span class="folder-caret" v-if="group.hasSubgroups">
-        <i
-          v-if="group.isOpen"
-          class="fa fa-caret-down" />
-        <i
-          v-if="!group.isOpen"
-          class="fa fa-caret-right" />
-      </span>
-
-      <span class="folder-icon">
-        <i
-          v-if="group.isOpen"
-          class="fa fa-folder-open"
-          aria-hidden="true"></i>
-        <i
-          v-if="!group.isOpen"
-          class="fa fa-folder"></i>
-      </span>
-    </div>
-
-    <div class="avatar-container s40">
-      <a href="/h5bp">
-        <img class="avatar s40 hidden-xs" src="http://localhost:3000/uploads/group/avatar/2/logo-extra-whitespace.png" alt="Logo extra whitespace">
-      </a>
-    </div>
-
-    <div class="title">
-      <a :href="group.webUrl">{{fullPath}}</a>
-    </div>
-
-    <div class="description">
-      {{group.description}}
-    </div>
-
     <group-folder v-if="group.isOpen && hasGroups" :groups="group.subGroups" :baseGroup="group" />
   </li>
 </template>

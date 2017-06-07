@@ -302,10 +302,9 @@ ul.indent-list {
   }
 
   .group-list-tree {
-    margin-top: 10px;
     margin-bottom: 0;
     margin-left: 20px;
-    border-top: solid 1px $border-white-light;
+    // border-top: solid 1px $border-white-light;
     position: relative;
 
     &::before {
@@ -313,7 +312,7 @@ ul.indent-list {
       display: block;
       width: 0;
       position: absolute;
-      top: 0;
+      top: 5px;
       bottom: 0;
       left: -16px;
       border-left: 2px solid $border-white-normal;
@@ -339,6 +338,23 @@ ul.indent-list {
         top: 30px;
         bottom: 0;
       }
+    }
+  }
+  
+  .group-row {
+    padding: 0;
+    border: none;
+  }
+
+  .group-row-contents {
+    padding: 10px 10px 8px 10px;
+    border-top: solid 1px transparent;
+    border-bottom: solid 1px $white-normal;
+
+    &:hover{
+      border-color: $row-hover-border;
+      background-color: $row-hover;
+      cursor: pointer; 
     }
   }
 }
