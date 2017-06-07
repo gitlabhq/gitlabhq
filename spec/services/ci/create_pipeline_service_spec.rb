@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::CreatePipelineService, services: true do
+describe Ci::CreatePipelineService, :services do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
 
@@ -30,6 +30,7 @@ describe Ci::CreatePipelineService, services: true do
       it 'creates a pipeline' do
         expect(pipeline).to be_kind_of(Ci::Pipeline)
         expect(pipeline).to be_valid
+        expect(pipeline).to be_persisted
         expect(pipeline).to be_push
         expect(pipeline).to eq(project.pipelines.last)
         expect(pipeline).to have_attributes(user: user)
