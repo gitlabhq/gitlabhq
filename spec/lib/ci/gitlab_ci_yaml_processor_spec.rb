@@ -123,6 +123,25 @@ module Ci
           expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
         end
       end
+
+      context 'when source policy is specified' do
+        let(:config) do
+          YAML.dump(production: { stage: 'deploy', script: 'cap prod', only: ['triggers'] },
+                    spinach: { stage: 'test', script: 'spinach', only: ['schedules'] })
+        end
+
+        let(:pipeline) do
+          create(:ci_empty_pipeline, source: :schedule)
+        end
+
+        it 'returns stage seeds only assigned to schedules' do
+          seeds = subject.stage_seeds(pipeline)
+
+          expect(seeds.size).to eq 1
+          expect(seeds.first.stage[:name]).to eq 'test'
+          expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
+        end
+      end
     end
 
     describe "#builds_for_ref" do
