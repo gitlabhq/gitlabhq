@@ -13,7 +13,7 @@ module Gitlab
         metrics.flat_map do |metric|
           metric_lines = []
 
-          unless type_declaration_added.has_key?(metric.name)
+          unless type_declaration_added.key?(metric.name)
             type_declaration_added[metric.name] = true
             metric_lines << metric_type_declaration(metric)
           end

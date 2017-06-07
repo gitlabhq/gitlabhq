@@ -80,21 +80,27 @@
       v-if="isLoading && !hasKeys"
       size="2"
       label="Loading deploy keys"
-      />
+    />
     <div v-else-if="hasKeys">
       <keys-panel
         title="Enabled deploy keys for this project"
         :keys="keys.enabled_keys"
-        :store="store" />
+        :store="store"
+        :endpoint="endpoint"
+      />
       <keys-panel
         title="Deploy keys from projects you have access to"
         :keys="keys.available_project_keys"
-        :store="store" />
+        :store="store"
+        :endpoint="endpoint"
+      />
       <keys-panel
         v-if="keys.public_keys.length"
         title="Public deploy keys available to any project"
         :keys="keys.public_keys"
-        :store="store" />
+        :store="store"
+        :endpoint="endpoint"
+      />
     </div>
   </div>
 </template>
