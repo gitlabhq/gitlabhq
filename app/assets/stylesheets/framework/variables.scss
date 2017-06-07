@@ -250,6 +250,7 @@ $dark-diff-match-bg: rgba(255, 255, 255, 0.3);
 $dark-diff-match-color: rgba(255, 255, 255, 0.1);
 $file-mode-changed: #777;
 $file-mode-changed: #777;
+$diff-image-bg: #ddd;
 $diff-image-info-color: grey;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
@@ -581,3 +582,10 @@ $gl-gold-plan: #d4af37;
 $gl-silver-plan: #91a1ab;
 $gl-bronze-plan: #cd7f32;
 $gl-no-plan: $gl-gray-light;
+
+/*
+Cross-project Pipelines
+ */
+
+$linked-project-column-margin: 60px;
+
