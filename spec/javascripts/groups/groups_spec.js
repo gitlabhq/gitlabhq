@@ -34,6 +34,10 @@ describe('Groups Component', () => {
     });
   });
 
+  afterEach(() => {
+    component.$destroy();
+  });
+
   describe('with data', () => {
     it('should render a list of groups', () => {
       expect(component.$el.classList.contains('groups-list-tree-container')).toBe(true);

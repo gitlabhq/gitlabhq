@@ -156,6 +156,7 @@ var config = {
         'environments',
         'environments_folder',
         'filtered_search',
+        'groups',
         'issue_show',
         'merge_conflicts',
         'notebook_viewer',

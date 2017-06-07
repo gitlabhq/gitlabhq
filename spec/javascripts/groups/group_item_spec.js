@@ -26,6 +26,10 @@ describe('Groups Component', () => {
       });
     });
 
+    afterEach(() => {
+      component.$destroy();
+    });
+
     it('should render the group item correctly', () => {
       expect(component.$el.classList.contains('group-row')).toBe(true);
       expect(component.$el.classList.contains('.no-description')).toBe(false);
