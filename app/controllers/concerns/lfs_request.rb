@@ -108,6 +108,10 @@ module LfsRequest
     @objects ||= (params[:objects] || []).to_a
   end
 
+  def has_authentication_ability?(capability)
+    (authentication_abilities || []).include?(capability)
+  end
+
   module EE
     def lfs_forbidden!
       raise NotImplementedError unless defined?(super)

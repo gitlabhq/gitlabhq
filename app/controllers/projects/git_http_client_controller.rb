@@ -128,32 +128,10 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     @authentication_result = Gitlab::Auth.find_for_git_client(
       login, password, project: project, ip: request.ip)
 
-    return false unless @authentication_result.success?
-
-    if download_request?
-      authentication_has_download_access?
-    else
-      authentication_has_upload_access?
-    end
+    @authentication_result.success?
   end
 
   def ci?
     authentication_result.ci?(project)
-  end
-
-  def authentication_has_download_access?
-    has_authentication_ability?(:download_code) || has_authentication_ability?(:build_download_code)
-  end
-
-  def authentication_has_upload_access?
-    has_authentication_ability?(:push_code)
-  end
-
-  def has_authentication_ability?(capability)
-    (authentication_abilities || []).include?(capability)
-  end
-
-  def authentication_project
-    authentication_result.project
   end
 end
