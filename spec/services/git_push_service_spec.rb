@@ -131,6 +131,19 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "Pipelines" do
+    subject { execute_service(project, user, @oldrev, @newrev, @ref) }
+
+    before do
+      stub_ci_pipeline_to_return_yaml_file
+    end
+
+    it "creates a new pipeline" do
+      expect{ subject }.to change{ Ci::Pipeline.count }
+      expect(Ci::Pipeline.last).to be_push
+    end
+  end
+
   describe "Push Event" do
     before do
       service = execute_service(project, user, @oldrev, @newrev, @ref )
@@ -436,6 +449,7 @@ describe GitPushService, services: true do
                                                     author_name: commit_author.name,
                                                     author_email: commit_author.email
                                                   })
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end

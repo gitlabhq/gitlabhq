@@ -124,10 +124,6 @@ module API
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
-        at_least_one_of :email, :password, :name, :username, :skype, :linkedin,
-                        :twitter, :website_url, :organization, :projects_limit,
-                        :extern_uid, :provider, :bio, :location, :admin,
-                        :can_create_group, :confirm, :external
       end
       put ":id" do
         authenticated_as_admin!
@@ -286,13 +282,14 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
+        optional :hard_delete, type: Boolean, desc: "Whether to remove a user's contributions"
       end
       delete ":id" do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        DeleteUserWorker.perform_async(current_user.id, user.id)
+        user.delete_async(deleted_by: current_user, params: params)
       end
 
       desc 'Block a user. Available only for admins.'
@@ -325,27 +322,6 @@ module API
         else
           user.activate
         end
-      end
-
-      desc 'Get the contribution events of a specified user' do
-        detail 'This feature was introduced in GitLab 8.13.'
-        success Entities::Event
-      end
-      params do
-        requires :id, type: Integer, desc: 'The ID of the user'
-        use :pagination
-      end
-      get ':id/events' do
-        user = User.find_by(id: params[:id])
-        not_found!('User') unless user
-
-        events = user.events.
-          merge(ProjectsFinder.new(current_user: current_user).execute).
-          references(:project).
-          with_associations.
-          recent
-
-        present paginate(events), with: Entities::Event
       end
 
       params do

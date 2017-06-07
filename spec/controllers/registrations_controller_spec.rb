@@ -77,7 +77,7 @@ describe RegistrationsController do
     end
 
     it 'schedules the user for destruction' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(user.id, user.id)
+      expect(DeleteUserWorker).to receive(:perform_async).with(user.id, user.id, {})
 
       post(:destroy)
 

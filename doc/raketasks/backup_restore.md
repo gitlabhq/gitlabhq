@@ -133,7 +133,7 @@ It uses the [Fog library](http://fog.io/) to perform the upload.
 In the example below we use Amazon S3 for storage, but Fog also lets you use
 [other storage providers](http://fog.io/storage/). GitLab
 [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab-ce/blob/30f5b9a5b711b46f1065baf755e413ceced5646b/Gemfile#L88)
-for AWS, Google, OpenStack Swift and Rackspace as well. A local driver is
+for AWS, Google, OpenStack Swift, Rackspace and Aliyun as well. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
 For omnibus packages, add the following to `/etc/gitlab/gitlab.rb`:

@@ -8,6 +8,7 @@ class Snippet < ActiveRecord::Base
   include Awardable
   include Mentionable
   include Spammable
+  include Editable
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :content

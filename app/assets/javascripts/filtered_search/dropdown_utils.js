@@ -102,10 +102,13 @@ class DropdownUtils {
       if (token.classList.contains('js-visual-token')) {
         const name = token.querySelector('.name');
         const value = token.querySelector('.value');
+        const valueContainer = token.querySelector('.value-container');
         const symbol = value && value.dataset.symbol ? value.dataset.symbol : '';
         let valueText = '';
 
-        if (value && value.innerText) {
+        if (valueContainer && valueContainer.dataset.originalValue) {
+          valueText = valueContainer.dataset.originalValue;
+        } else if (value && value.innerText) {
           valueText = value.innerText;
         }
 

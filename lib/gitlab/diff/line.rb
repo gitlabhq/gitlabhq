@@ -59,6 +59,10 @@ module Gitlab
         type == 'match'
       end
 
+      def discussable?
+        !['match', 'new-nonewline', 'old-nonewline'].include?(type)
+      end
+
       def as_json(opts = nil)
         {
           type: type,

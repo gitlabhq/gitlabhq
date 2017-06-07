@@ -56,7 +56,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
   def show
     blob = @snippet.blob
-    override_max_blob_size(blob)
+    conditionally_expand_blob(blob)
 
     respond_to do |format|
       format.html do
@@ -79,7 +79,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to namespace_project_snippets_path(@project.namespace, @project)
+    redirect_to namespace_project_snippets_path(@project.namespace, @project), status: 302
   end
 
   protected

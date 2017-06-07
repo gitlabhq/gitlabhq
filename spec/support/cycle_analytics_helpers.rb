@@ -51,12 +51,43 @@ module CycleAnalyticsHelpers
   end
 
   def deploy_master(environment: 'production')
-    CreateDeploymentService.new(project, user, {
-                                  environment: environment,
-                                  ref: 'master',
-                                  tag: false,
-                                  sha: project.repository.commit('master').sha
-                                }).execute
+    dummy_job =
+      case environment
+      when 'production'
+        dummy_production_job
+      when 'staging'
+        dummy_staging_job
+      else
+        raise ArgumentError
+      end
+
+    CreateDeploymentService.new(dummy_job).execute
+  end
+
+  def dummy_production_job
+    @dummy_job ||= new_dummy_job('production')
+  end
+
+  def dummy_staging_job
+    @dummy_job ||= new_dummy_job('staging')
+  end
+
+  def dummy_pipeline
+    @dummy_pipeline ||=
+      Ci::Pipeline.new(sha: project.repository.commit('master').sha)
+  end
+
+  def new_dummy_job(environment)
+    project.environments.find_or_create_by(name: environment)
+
+    Ci::Build.new(
+      project: project,
+      user: user,
+      environment: environment,
+      ref: 'master',
+      tag: false,
+      name: 'dummy',
+      pipeline: dummy_pipeline)
   end
 end
 

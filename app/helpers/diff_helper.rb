@@ -8,8 +8,8 @@ module DiffHelper
     [marked_old_line, marked_new_line]
   end
 
-  def expand_all_diffs?
-    params[:expand_all_diffs].present?
+  def diffs_expanded?
+    params[:expanded].present?
   end
 
   def diff_view
@@ -22,10 +22,10 @@ module DiffHelper
   end
 
   def diff_options
-    options = { ignore_whitespace_change: hide_whitespace?, no_collapse: expand_all_diffs? }
+    options = { ignore_whitespace_change: hide_whitespace?, expanded: diffs_expanded? }
 
     if action_name == 'diff_for_path'
-      options[:no_collapse] = true
+      options[:expanded] = true
       options[:paths] = params.values_at(:old_path, :new_path)
     end
 
@@ -66,12 +66,12 @@ module DiffHelper
 
     discussions_left = discussions_right = nil
 
-    if left && (left.unchanged? || left.removed?)
+    if left && (left.unchanged? || left.discussable?)
       line_code = diff_file.line_code(left)
       discussions_left = @grouped_diff_discussions[line_code]
     end
 
-    if right && right.added?
+    if right&.discussable?
       line_code = diff_file.line_code(right)
       discussions_right = @grouped_diff_discussions[line_code]
     end

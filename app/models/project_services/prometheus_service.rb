@@ -39,7 +39,8 @@ class PrometheusService < MonitoringService
         name: 'api_url',
         title: 'API URL',
         placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/',
-        help: 'By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.'
+        help: 'By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.',
+        required: true
       }
     ]
   end
