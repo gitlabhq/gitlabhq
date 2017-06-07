@@ -214,7 +214,7 @@ module Ci
 
     def matches_path?(path)
       return true unless path
-      
+
       path == self.path
     end
 
@@ -231,10 +231,10 @@ module Ci
     end
 
     def source_to_pattern(source)
-      if %w(api external web).include?(source) || source.nil?
+      if %w(api external web).include?(source)
         source
       else
-        source.pluralize
+        source&.pluralize
       end
     end
   end
