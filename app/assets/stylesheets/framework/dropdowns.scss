@@ -201,6 +201,11 @@
     width: 100%;
   }
 
+  &.dropdown-open-left {
+    right: 0;
+    left: auto;
+  }
+
   &.is-loading {
     .dropdown-content {
       display: none;

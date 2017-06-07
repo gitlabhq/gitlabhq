@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Comments on personal snippets', :js, feature: true do
+  include NoteInteractionHelpers
+
   let!(:user)    { create(:user) }
   let!(:snippet) { create(:personal_snippet, :public) }
   let!(:snippet_notes) do
@@ -22,12 +24,16 @@ describe 'Comments on personal snippets', :js, feature: true do
     it 'contains notes for a snippet with correct action icons' do
       expect(page).to have_selector('#notes-list li', count: 2)
 
+      open_more_actions_dropdown(snippet_notes[0])
+
       # comment authored by current user
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
         expect(page).to have_content(snippet_notes[0].note)
         expect(page).to have_selector('.js-note-delete')
         expect(page).to have_selector('.note-emoji-button')
       end
+
+      open_more_actions_dropdown(snippet_notes[1])
 
       page.within("#notes-list li#note_#{snippet_notes[1].id}") do
         expect(page).to have_content(snippet_notes[1].note)
@@ -68,6 +74,8 @@ describe 'Comments on personal snippets', :js, feature: true do
 
   context 'when editing a note' do
     it 'changes the text' do
+      open_more_actions_dropdown(snippet_notes[0])
+
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
         click_on 'Edit comment'
       end
@@ -89,8 +97,10 @@ describe 'Comments on personal snippets', :js, feature: true do
 
   context 'when deleting a note' do
     it 'removes the note from the snippet detail page' do
+      open_more_actions_dropdown(snippet_notes[0])
+
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
-        click_on 'Remove comment'
+        click_on 'Delete comment'
       end
 
       wait_for_requests
