@@ -77,7 +77,7 @@ module Peek
             output << "<pre class='duration'>#{times.join("\n")}</pre>"
             # The following line was changed from
             # https://github.com/peek/peek-rblineprof/blob/8d3b7a283a27de2f40abda45974516693d882258/lib/peek/rblineprof/controller_helpers.rb#L125
-            output << "<pre class='code highlight'>#{pygmentize(file_name, code.join, 'ruby')}</pre>"
+            output << "<pre class='code highlight white'>#{pygmentize(file_name, code.join, 'ruby')}</pre>"
             output << "</div></div>" # .data then .peek-rblineprof-file
           end
 
