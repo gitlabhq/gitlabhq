@@ -13,6 +13,10 @@ describe User, models: true do
     it { is_expected.to include_module(TokenAuthenticatable) }
   end
 
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
+  end
+
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
