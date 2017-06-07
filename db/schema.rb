@@ -532,8 +532,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.datetime "created_at", null: false
     t.integer "branches_affected", null: false
     t.integer "tags_affected", null: false
-    t.integer "source", limit: 2, null: false
     t.integer "project_id", null: false
+    t.integer "source", limit: 2, null: false
     t.boolean "new_branch", default: false, null: false
     t.boolean "remove_branch", default: false, null: false
     t.text "ref"
