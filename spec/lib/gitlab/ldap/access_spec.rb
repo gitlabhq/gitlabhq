@@ -5,6 +5,23 @@ describe Gitlab::LDAP::Access, lib: true do
   let(:access) { Gitlab::LDAP::Access.new user }
   let(:user) { create(:omniauth_user) }
 
+  describe '#find_ldap_user' do
+    it 'finds a user by dn first' do
+      expect(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
+      expect(user).not_to receive(:ldap_email?)
+
+      access.find_ldap_user
+    end
+
+    it 'finds a user by email if the email came from LDAP' do
+      expect(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+      expect(user).to receive(:ldap_email?).and_return(true)
+      expect(Gitlab::LDAP::Person).to receive(:find_by_email)
+
+      access.find_ldap_user
+    end
+  end
+
   describe '#allowed?' do
     subject { access.allowed? }
 
@@ -193,6 +210,12 @@ describe Gitlab::LDAP::Access, lib: true do
 
       subject
     end
+
+    it 'updates the ldap identity' do
+      expect(access).to receive(:update_identity)
+
+      subject
+    end
   end
 
   describe '#update_kerberos_identity' do
@@ -356,6 +379,21 @@ describe Gitlab::LDAP::Access, lib: true do
       expect(LdapGroupSyncWorker).not_to receive(:perform_async)
 
       access.update_memberships
+    end
+  end
+
+  describe '#update_identity' do
+    it 'updates the external UID if it changed in the entry' do
+      entry = ldap_user_entry('another uid')
+      provider = user.ldap_identity.provider
+      person = Gitlab::LDAP::Person.new(entry, provider)
+
+      allow(access).to receive(:ldap_user).and_return(person)
+
+      access.update_identity
+
+      expect(user.ldap_identity.reload.extern_uid)
+        .to eq('uid=another uid,ou=users,dc=example,dc=com')
     end
   end
 end

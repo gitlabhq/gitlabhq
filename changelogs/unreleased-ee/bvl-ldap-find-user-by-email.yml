@@ -1,0 +1,4 @@
+---
+title: Lookup users by email in LDAP if lookup by DN fails during sync
+merge_request: 2003
+author:

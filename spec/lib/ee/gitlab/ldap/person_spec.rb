@@ -1,8 +1,22 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::Person do
+  include LdapHelpers
+
   it 'includes the EE module' do
     expect(described_class).to include(EE::Gitlab::LDAP::Person)
+  end
+
+  describe '.find_by_email' do
+    it 'tries finding for each configured email attribute' do
+      adapter = ldap_adapter
+
+      expect(adapter).to receive(:user).with('mail', 'jane@gitlab.com')
+      expect(adapter).to receive(:user).with('email', 'jane@gitlab.com')
+      expect(adapter).to receive(:user).with('userPrincipalName', 'jane@gitlab.com')
+
+      described_class.find_by_email('jane@gitlab.com', adapter)
+    end
   end
 
   describe '#kerberos_principal' do
