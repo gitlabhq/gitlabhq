@@ -457,7 +457,6 @@ describe API::Users do
 
         expect(response).to have_http_status(403)
       end
-<<<<<<< HEAD
 
       it "cannot update their own shared_runners_minutes_limit" do
         expect do
@@ -466,8 +465,6 @@ describe API::Users do
 
         expect(response).to have_http_status(403)
       end
-=======
->>>>>>> ce/master
     end
 
     it "returns 404 for non-existing user" do

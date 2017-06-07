@@ -15,13 +15,10 @@ describe User, models: true do
 
   describe 'delegations' do
     it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
-<<<<<<< HEAD
 
     # EE
     it { is_expected.to delegate_method(:shared_runners_minutes_limit).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_limit=).to(:namespace).with_arguments(133) }
-=======
->>>>>>> ce/master
   end
 
   describe 'associations' do

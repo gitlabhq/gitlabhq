@@ -68,19 +68,11 @@ describe Gitlab::EtagCaching::Router do
   end
 
   it 'matches build endpoint' do
-<<<<<<< HEAD
-    env = build_env(
-      '/my-group/my-project/builds/234.json'
-    )
-
-    result = described_class.match(env)
-=======
     request = build_request(
       '/my-group/my-project/builds/234.json'
     )
 
     result = described_class.match(request)
->>>>>>> ce/master
 
     expect(result).to be_present
     expect(result.name).to eq 'project_build'

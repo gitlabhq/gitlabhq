@@ -1,12 +1,8 @@
 require 'spec_helper'
 
-<<<<<<< HEAD
-feature 'Projected Branches', feature: true, js: true do
+feature 'Protected Branches', feature: true, js: true do
   include ProtectedBranchHelpers
 
-=======
-feature 'Protected Branches', feature: true, js: true do
->>>>>>> ce/master
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 

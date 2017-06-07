@@ -7,11 +7,7 @@ describe Gitlab::GitAccess, lib: true do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
-<<<<<<< HEAD
-
-=======
   let(:protocol) { 'ssh' }
->>>>>>> ce/master
   let(:authentication_abilities) do
     [
       :read_project,
@@ -302,11 +298,7 @@ describe Gitlab::GitAccess, lib: true do
         let(:project) { create(:project, :repository, namespace: user.namespace) }
 
         context 'pull code' do
-<<<<<<< HEAD
-          it { expect { subject }.not_to raise_error }
-=======
           it { expect { pull_access_check }.not_to raise_error }
->>>>>>> ce/master
         end
       end
 
@@ -314,11 +306,7 @@ describe Gitlab::GitAccess, lib: true do
         before { project.team << [user, :reporter] }
 
         context 'pull code' do
-<<<<<<< HEAD
-          it { expect { subject }.not_to raise_error }
-=======
           it { expect { pull_access_check }.not_to raise_error }
->>>>>>> ce/master
         end
       end
 
@@ -329,21 +317,13 @@ describe Gitlab::GitAccess, lib: true do
           before { project.team << [user, :reporter] }
 
           context 'pull code' do
-<<<<<<< HEAD
-            it { expect { subject }.not_to raise_error }
-=======
             it { expect { pull_access_check }.not_to raise_error }
->>>>>>> ce/master
           end
         end
 
         context 'when is not member of the project' do
           context 'pull code' do
-<<<<<<< HEAD
-            it { expect { subject }.not_to raise_error }
-=======
             it { expect { pull_access_check }.to raise_unauthorized('You are not allowed to download code from this project.') }
->>>>>>> ce/master
           end
         end
       end
