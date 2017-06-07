@@ -266,7 +266,7 @@ describe ProjectsHelper do
         result = helper.project_feature_access_select(:issues_access_level)
         expect(result).to include("Disabled")
         expect(result).to include("Only team members")
-        expect(result).not_to include("Everyone with access")
+        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
       end
     end
 
@@ -281,7 +281,7 @@ describe ProjectsHelper do
 
         expect(result).to include("Disabled")
         expect(result).to include("Only team members")
-        expect(result).not_to include("Everyone with access")
+        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
         expect(result).to have_selector('option[selected]', text: "Only team members")
       end
     end

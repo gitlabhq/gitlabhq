@@ -6,7 +6,7 @@ describe 'Filter issues', js: true, feature: true do
 
   let!(:group) { create(:group) }
   let!(:project) { create(:project, group: group) }
-  let!(:user) { create(:user, username: 'joe') }
+  let!(:user) { create(:user, username: 'joe', name: 'Joe') }
   let!(:user2) { create(:user, username: 'jane') }
   let!(:label) { create(:label, project: project) }
   let!(:wontfix) { create(:label, project: project, title: "Won't fix") }

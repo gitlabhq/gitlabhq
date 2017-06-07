@@ -52,6 +52,7 @@ export default {
           this.error = true;
         });
 
+      eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.cancel();
     },
     cancel() {
@@ -79,6 +80,7 @@ export default {
           type="text"
           v-model="title"
           ref="input"
+          autocomplete="off"
           :id="list.id + '-title'" />
         <div class="clearfix prepend-top-10">
           <button class="btn btn-success pull-left"

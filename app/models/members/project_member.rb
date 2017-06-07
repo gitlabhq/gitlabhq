@@ -80,10 +80,6 @@ class ProjectMember < Member
     end
   end
 
-  def access_field
-    access_level
-  end
-
   def project
     source
   end

@@ -110,6 +110,8 @@ module API
       expose :creator_id
       expose :namespace, using: 'API::Entities::Namespace'
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
+      expose :import_status
+      expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :avatar_url do |user, options|
         user.avatar_url(only_path: false)
       end
@@ -251,7 +253,7 @@ module API
     end
 
     class ProjectSnippet < Grape::Entity
-      expose :id, :title, :file_name
+      expose :id, :title, :file_name, :description
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
 
@@ -261,7 +263,7 @@ module API
     end
 
     class PersonalSnippet < Grape::Entity
-      expose :id, :title, :file_name
+      expose :id, :title, :file_name, :description
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
 

@@ -23,9 +23,12 @@
       .nav-controls.inline
         = link_to params.merge(rss_url_options), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
           = icon('rss')
+<<<<<<< HEAD
         - if current_user
           %button.csv_download_link.btn.append-right-10.has-tooltip{ title: 'Export as CSV' }
             = icon('download')
+=======
+>>>>>>> ce/master
         - if @can_bulk_update
           = button_tag "Edit Issues", class: "btn btn-default js-bulk-update-toggle"
         = link_to new_namespace_project_issue_path(@project.namespace,

@@ -5,7 +5,8 @@ import Cookies from 'js-cookie';
 
 class Activities {
   constructor() {
-    Pager.init(20, true, false, this.updateTooltips);
+    Pager.init(20, true, false, data => data, this.updateTooltips);
+
     $('.event-filter-link').on('click', (e) => {
       e.preventDefault();
       this.toggleFilter(e.currentTarget);
@@ -19,7 +20,7 @@ class Activities {
 
   reloadActivities() {
     $('.content_list').html('');
-    Pager.init(20, true, false, this.updateTooltips);
+    Pager.init(20, true, false, data => data, this.updateTooltips);
   }
 
   toggleFilter(sender) {

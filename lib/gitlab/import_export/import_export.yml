@@ -38,6 +38,7 @@ project_tree:
     - notes:
       - :author
       - :events
+    - :stages
     - :statuses
   - :triggers
   - :pipeline_schedules

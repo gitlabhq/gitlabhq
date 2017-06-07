@@ -36,7 +36,9 @@ class Projects::VariablesController < Projects::ApplicationController
     @key = @project.variables.find(params[:id])
     @key.destroy
 
-    redirect_to namespace_project_settings_ci_cd_path(project.namespace, project), notice: 'Variable was successfully removed.'
+    redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
+                status: 302,
+                notice: 'Variable was successfully removed.'
   end
 
   private

@@ -50,10 +50,23 @@ module Ci
       end
     end
 
+    def stage_seeds(pipeline)
+      trigger_request = pipeline.trigger_requests.first
+
+      seeds = @stages.uniq.map do |stage|
+        builds = builds_for_stage_and_ref(
+          stage, pipeline.ref, pipeline.tag?, trigger_request)
+
+        Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
+      end
+
+      seeds.compact
+    end
+
     def build_attributes(name)
       job = @jobs[name.to_sym] || {}
-      {
-        stage_idx: @stages.index(job[:stage]),
+
+      { stage_idx: @stages.index(job[:stage]),
         stage: job[:stage],
         commands: job[:commands],
         tag_list: job[:tags] || [],
@@ -71,8 +84,7 @@ module Ci
           dependencies: job[:dependencies],
           after_script: job[:after_script],
           environment: job[:environment]
-        }.compact
-      }
+        }.compact }
     end
 
     def self.validation_message(content)

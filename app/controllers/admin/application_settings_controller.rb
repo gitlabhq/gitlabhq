@@ -150,6 +150,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :version_check_enabled,
       :terminal_max_session_time,
       :polling_interval_multiplier,
+      :prometheus_metrics_enabled,
       :usage_ping_enabled,
 
       disabled_oauth_sign_in_sources: [],

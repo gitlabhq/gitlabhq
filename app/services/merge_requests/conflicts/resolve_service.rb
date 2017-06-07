@@ -37,11 +37,13 @@ module MergeRequests
       private
 
       def write_resolved_file_to_index(merge_index, rugged, file, params)
-        new_file = if params[:sections]
-                     file.resolve_lines(params[:sections]).map(&:text).join("\n")
-                   elsif params[:content]
-                     file.resolve_content(params[:content])
-                   end
+        if params[:sections]
+          new_file = file.resolve_lines(params[:sections]).map(&:text).join("\n")
+
+          new_file << "\n" if file.our_blob.data.ends_with?("\n")
+        elsif params[:content]
+          new_file = file.resolve_content(params[:content])
+        end
 
         our_path = file.our_path
 

@@ -1,6 +1,7 @@
-import AjaxCache from '~/lib/utils/ajax_cache';
-import '~/flash'; /* global Flash */
+import AjaxCache from '../lib/utils/ajax_cache';
+import '../flash'; /* global Flash */
 import FilteredSearchContainer from './container';
+import UsersCache from '../lib/utils/users_cache';
 
 class FilteredSearchVisualTokens {
   static getLastVisualTokenBeforeInput() {
@@ -82,12 +83,42 @@ class FilteredSearchVisualTokens {
     .catch(() => new Flash('An error occurred while fetching label colors.'));
   }
 
+  static updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue) {
+    if (tokenValue === 'none') {
+      return Promise.resolve();
+    }
+
+    const username = tokenValue.replace(/^@/, '');
+    return UsersCache.retrieve(username)
+      .then((user) => {
+        if (!user) {
+          return;
+        }
+
+        /* eslint-disable no-param-reassign */
+        tokenValueContainer.dataset.originalValue = tokenValue;
+        tokenValueElement.innerHTML = `
+          <img class="avatar s20" src="${user.avatar_url}" alt="${user.name}'s avatar">
+          ${user.name}
+        `;
+        /* eslint-enable no-param-reassign */
+      })
+      // ignore error and leave username in the search bar
+      .catch(() => { });
+  }
+
   static renderVisualTokenValue(parentElement, tokenName, tokenValue) {
     const tokenValueContainer = parentElement.querySelector('.value-container');
-    tokenValueContainer.querySelector('.value').innerText = tokenValue;
+    const tokenValueElement = tokenValueContainer.querySelector('.value');
+    tokenValueElement.innerText = tokenValue;
 
-    if (tokenName.toLowerCase() === 'label') {
+    const tokenType = tokenName.toLowerCase();
+    if (tokenType === 'label') {
       FilteredSearchVisualTokens.updateLabelTokenColor(tokenValueContainer, tokenValue);
+    } else if ((tokenType === 'author') || (tokenType === 'assignee')) {
+      FilteredSearchVisualTokens.updateUserTokenAppearance(
+        tokenValueContainer, tokenValueElement, tokenValue,
+      );
     }
   }
 
@@ -153,6 +184,12 @@ class FilteredSearchVisualTokens {
 
     if (!lastVisualToken) return '';
 
+    const valueContainer = lastVisualToken.querySelector('.value-container');
+    const originalValue = valueContainer && valueContainer.dataset.originalValue;
+    if (originalValue) {
+      return originalValue;
+    }
+
     const value = lastVisualToken.querySelector('.value');
     const name = lastVisualToken.querySelector('.name');
 
@@ -205,16 +242,27 @@ class FilteredSearchVisualTokens {
     const inputLi = input.parentElement;
     tokenContainer.replaceChild(inputLi, token);
 
-    const name = token.querySelector('.name');
-    const value = token.querySelector('.value');
+    const nameElement = token.querySelector('.name');
+    let value;
 
-    if (token.classList.contains('filtered-search-token') && value) {
-      FilteredSearchVisualTokens.addFilterVisualToken(name.innerText);
-      input.value = value.innerText;
-    } else {
-      // token is a search term
-      input.value = name.innerText;
+    if (token.classList.contains('filtered-search-token')) {
+      FilteredSearchVisualTokens.addFilterVisualToken(nameElement.innerText);
+
+      const valueContainerElement = token.querySelector('.value-container');
+      value = valueContainerElement.dataset.originalValue;
+
+      if (!value) {
+        const valueElement = valueContainerElement.querySelector('.value');
+        value = valueElement.innerText;
+      }
     }
+
+    // token is a search term
+    if (!value) {
+      value = nameElement.innerText;
+    }
+
+    input.value = value;
 
     // Opens dropdown
     const inputEvent = new Event('input');

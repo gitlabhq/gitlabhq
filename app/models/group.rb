@@ -266,6 +266,16 @@ class Group < Namespace
     User.where(id: members_with_parents.select(:user_id))
   end
 
+  def max_member_access_for_user(user)
+    return GroupMember::OWNER if user.admin?
+
+    members_with_parents.
+      where(user_id: user).
+      reorder(access_level: :desc).
+      first&.
+      access_level || GroupMember::NO_ACCESS
+  end
+
   def mattermost_team_params
     max_length = 59
 

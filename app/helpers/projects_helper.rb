@@ -138,11 +138,15 @@ module ProjectsHelper
 
     if @project.private?
       level = @project.project_feature.send(field)
-      options.delete('Everyone with access')
-      highest_available_option = options.values.max if level == ProjectFeature::ENABLED
+      disabled_option = ProjectFeature::ENABLED
+      highest_available_option = ProjectFeature::PRIVATE if level == disabled_option
     end
 
-    options = options_for_select(options, selected: highest_available_option || @project.project_feature.public_send(field))
+    options = options_for_select(
+      options,
+      selected: highest_available_option || @project.project_feature.public_send(field),
+      disabled: disabled_option
+    )
 
     content_tag(
       :select,

@@ -143,20 +143,19 @@ Then install the Bundler Gem:
 
 ## 3. Go
 
-Since GitLab 8.0, Git HTTP requests are handled by gitlab-workhorse (formerly
-gitlab-git-http-server). This is a small daemon written in Go. To install
-gitlab-workhorse we need a Go compiler. The instructions below assume you
-use 64-bit Linux. You can find downloads for other platforms at the [Go download
+Since GitLab 8.0, GitLab has several daemons written in Go. To install
+GitLab we need a Go compiler. The instructions below assume you use 64-bit
+Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
     # Remove former Go installation folder
     sudo rm -rf /usr/local/go
 
-    curl --remote-name --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
-    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
-      sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
+    curl --remote-name --progress https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
+    echo '1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772  go1.8.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
+      sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.3.linux-amd64.tar.gz
+    rm go1.8.3.linux-amd64.tar.gz
 
 ## 4. Node
 
@@ -504,6 +503,10 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H yarn install --production --pure-lockfile
     sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+
+### Compile GetText PO files
+
+    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 ### Start Your GitLab Instance
 

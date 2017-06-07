@@ -64,6 +64,7 @@ export default {
 };
 </script>
 <template>
+<<<<<<< HEAD
   <table class="table ci-table">
     <thead>
       <tr>
@@ -115,16 +116,51 @@ export default {
               <loading-icon size="2" />
             </td>
           </tr>
+=======
+  <div class="ci-table" role="grid">
+    <div class="gl-responsive-table-row table-row-header" role="row">
+      <div class="table-section section-10 environments-name" role="rowheader">
+        Environment
+      </div>
+      <div class="table-section section-10 environments-deploy" role="rowheader">
+        Deployment
+      </div>
+      <div class="table-section section-15 environments-build" role="rowheader">
+        Job
+      </div>
+      <div class="table-section section-25 environments-commit" role="rowheader">
+        Commit
+      </div>
+      <div class="table-section section-10 environments-date" role="rowheader">
+        Updated
+      </div>
+    </div>
+    <template
+      v-for="model in environments"
+      v-bind:model="model">
+      <div
+        is="environment-item"
+        :model="model"
+        :can-create-deployment="canCreateDeployment"
+        :can-read-environment="canReadEnvironment"
+        />
 
-          <template v-else>
-            <tr
-              is="environment-item"
-              v-for="children in model.children"
-              :model="children"
-              :can-create-deployment="canCreateDeployment"
-              :can-read-environment="canReadEnvironment"
-              />
+      <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
+        <div v-if="isLoadingFolderContent">
+          <loading-icon size="2" />
+        </div>
+>>>>>>> ce/master
 
+        <template v-else>
+          <div
+            is="environment-item"
+            v-for="children in model.children"
+            :model="children"
+            :can-create-deployment="canCreateDeployment"
+            :can-read-environment="canReadEnvironment"
+            />
+
+<<<<<<< HEAD
 
             <tr>
               <td
@@ -138,8 +174,19 @@ export default {
               </td>
             </tr>
           </template>
+=======
+          <div>
+            <div class="text-center prepend-top-10">
+              <a
+                :href="folderUrl(model)"
+                class="btn btn-default">
+                Show all
+              </a>
+            </div>
+          </div>
+>>>>>>> ce/master
         </template>
       </template>
-    </tbody>
-  </table>
+    </template>
+  </div>
 </template>

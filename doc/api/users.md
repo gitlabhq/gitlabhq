@@ -305,6 +305,9 @@ DELETE /users/:id
 Parameters:
 
 - `id` (required) - The ID of the user
+- `hard_delete` (optional) - If true, contributions that would usually be
+  [moved to the ghost user](../user/profile/account/delete_account.md#associated-records)
+  will be deleted instead, as well as groups owned solely by this user.
 
 ## User
 
@@ -703,147 +706,8 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 ### Get user contribution events
 
-Get the contribution events for the specified user, sorted from newest to oldest.
+Please refer to the [Events API documentation](events.md#get-user-contribution-events)
 
-```
-GET /users/:id/events
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the user |
-
-```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/:id/events
-```
-
-Example response:
-
-```json
-[
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "closed",
-    "target_id": 830,
-    "target_type": "Issue",
-    "author_id": 1,
-    "data": null,
-    "target_title": "Public project search field",
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "root"
-  },
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "opened",
-    "target_id": null,
-    "target_type": null,
-    "author_id": 1,
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "john",
-    "data": {
-      "before": "50d4420237a9de7be1304607147aec22e4a14af7",
-      "after": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-      "ref": "refs/heads/master",
-      "user_id": 1,
-      "user_name": "Dmitriy Zaporozhets",
-      "repository": {
-        "name": "gitlabhq",
-        "url": "git@dev.gitlab.org:gitlab/gitlabhq.git",
-        "description": "GitLab: self hosted Git management software. \r\nDistributed under the MIT License.",
-        "homepage": "https://dev.gitlab.org/gitlab/gitlabhq"
-      },
-      "commits": [
-        {
-          "id": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-          "message": "Add simple search to projects in public area",
-          "timestamp": "2013-05-13T18:18:08+00:00",
-          "url": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-          "author": {
-            "name": "Dmitriy Zaporozhets",
-            "email": "dmitriy.zaporozhets@gmail.com"
-          }
-        }
-      ],
-      "total_commits_count": 1
-    },
-    "target_title": null
-  },
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "closed",
-    "target_id": 840,
-    "target_type": "Issue",
-    "author_id": 1,
-    "data": null,
-    "target_title": "Finish & merge Code search PR",
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "root"
-  },
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "commented on",
-    "target_id": 1312,
-    "target_type": "Note",
-    "author_id": 1,
-    "data": null,
-    "target_title": null,
-    "created_at": "2015-12-04T10:33:58.089Z",
-    "note": {
-      "id": 1312,
-      "body": "What an awesome day!",
-      "attachment": null,
-      "author": {
-        "name": "Dmitriy Zaporozhets",
-        "username": "root",
-        "id": 1,
-        "state": "active",
-        "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-        "web_url": "http://localhost:3000/root"
-      },
-      "created_at": "2015-12-04T10:33:56.698Z",
-      "system": false,
-      "noteable_id": 377,
-      "noteable_type": "Issue"
-    },
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "root"
-  }
-]
-```
 
 ## Get all impersonation tokens of a user
 

@@ -25,12 +25,24 @@ describe Ci::RetryBuildService, :services do
        user_id auto_canceled_by_id retried sourced_pipelines].freeze
 
   shared_examples 'build duplication' do
+    let(:stage) do
+      # TODO, we still do not have factory for new stages, we will need to
+      # switch existing factory to persist stages, instead of using LegacyStage
+      #
+      Ci::Stage.create!(project: project, pipeline: pipeline, name: 'test')
+    end
+
     let(:build) do
       create(:ci_build, :failed, :artifacts_expired, :erased,
              :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
-             :teardown_environment, :triggered, :trace,
-             description: 'some build', pipeline: pipeline,
-             auto_canceled_by: create(:ci_empty_pipeline))
+             :triggered, :trace, :teardown_environment,
+             description: 'my-job', stage: 'test',  pipeline: pipeline,
+             auto_canceled_by: create(:ci_empty_pipeline)) do |build|
+               ##
+               # TODO, workaround for FactoryGirl limitation when having both
+               # stage (text) and stage_id (integer) columns in the table.
+               build.stage_id = stage.id
+             end
     end
 
     describe 'clone accessors' do

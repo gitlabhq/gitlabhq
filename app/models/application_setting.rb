@@ -202,8 +202,9 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.cached
-    ensure_cache_setup
-    Rails.cache.fetch(CACHE_KEY)
+    value = Rails.cache.read(CACHE_KEY)
+    ensure_cache_setup if value.present?
+    value
   end
 
   def self.ensure_cache_setup

@@ -188,9 +188,14 @@ $divergence-graph-bar-bg: #ccc;
 $divergence-graph-separator-bg: #ccc;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
+<<<<<<< HEAD
 $issue-box-upcoming-bg: #8f8f8f;
 $pages-group-name-color: #4c4e54;
 $ldap-members-override-bg: $orange-50;
+=======
+$highlight-changes-color: rgb(235, 255, 232);
+
+>>>>>>> ce/master
 
 /*
 * Common component specific colors
@@ -575,6 +580,7 @@ Animation Functions
 $dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
 
 /*
+<<<<<<< HEAD
 GitLab Plans
 */
 
@@ -589,3 +595,10 @@ Cross-project Pipelines
 
 $linked-project-column-margin: 60px;
 
+=======
+Convdev Index
+*/
+$color-high-score: $green-400;
+$color-average-score: $orange-400;
+$color-low-score: $red-400;
+>>>>>>> ce/master

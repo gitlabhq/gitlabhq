@@ -100,6 +100,7 @@ module API
         group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
         if group.persisted?
+<<<<<<< HEAD
           # NOTE: add backwards compatibility for single ldap link
           if ldap_link_attrs[:cn].present?
             group.ldap_group_links.create(
@@ -108,6 +109,8 @@ module API
             )
           end
 
+=======
+>>>>>>> ce/master
           present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)

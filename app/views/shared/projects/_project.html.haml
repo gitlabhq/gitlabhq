@@ -7,7 +7,7 @@
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && project.commit
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - cache_key = project_list_cache_key(project)
-- updated_tooltip = time_ago_with_tooltip(project.updated_at)
+- updated_tooltip = time_ago_with_tooltip(project.last_activity_at)
 
 %li.project-row{ class: css_class }
   = cache(cache_key) do

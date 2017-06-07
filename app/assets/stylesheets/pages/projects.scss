@@ -29,6 +29,20 @@
     & > .form-group {
       padding-left: 0;
     }
+
+    select option[disabled] {
+      display: none;
+    }
+  }
+
+  select {
+    background: transparent;
+    transition: background 2s ease-out;
+
+    &.highlight-changes {
+      background: $highlight-changes-color;
+      transition: none;
+    }
   }
 
   .help-block {
@@ -683,12 +697,16 @@ pre.light-well {
   }
 }
 
+<<<<<<< HEAD
 a.allowed-to-merge,
 a.allowed-to-push {
   cursor: pointer;
 }
 
 .new-protected-branch,
+=======
+.new_protected_branch,
+>>>>>>> ce/master
 .new-protected-tag {
   label {
     margin-top: 6px;
@@ -696,6 +714,7 @@ a.allowed-to-push {
   }
 }
 
+<<<<<<< HEAD
 .protected-branch-push-access-list,
 .protected-branch-merge-access-list {
   a {
@@ -703,6 +722,8 @@ a.allowed-to-push {
   }
 }
 
+=======
+>>>>>>> ce/master
 .create-new-protected-branch-button,
 .create-new-protected-tag-button {
   @include dropdown-link;

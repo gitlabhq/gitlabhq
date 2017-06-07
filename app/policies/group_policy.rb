@@ -6,23 +6,31 @@ class GroupPolicy < BasePolicy
     return unless @user
 
     globally_viewable = @subject.public? || (@subject.internal? && !@user.external?)
-    member = @subject.users_with_parents.include?(@user)
-    owner = @user.admin? || @subject.has_owner?(@user)
-    master = owner || @subject.has_master?(@user)
+    access_level = @subject.max_member_access_for_user(@user)
+    owner = access_level >= GroupMember::OWNER
+    master = access_level >= GroupMember::MASTER
+    reporter = access_level >= GroupMember::REPORTER
 
     can_read = false
     can_read ||= globally_viewable
+<<<<<<< HEAD
     can_read ||= member
     can_read ||= @user.admin?
     can_read ||= @user.auditor?
+=======
+    can_read ||= access_level >= GroupMember::GUEST
+>>>>>>> ce/master
     can_read ||= GroupProjectsFinder.new(group: @subject, current_user: @user).execute.any?
     can! :read_group if can_read
+
+    if reporter
+      can! :admin_label
+    end
 
     # Only group masters and group owners can create new projects
     if master
       can! :create_projects
       can! :admin_milestones
-      can! :admin_label
     end
 
     # Only group owner and administrators can admin group
@@ -34,7 +42,7 @@ class GroupPolicy < BasePolicy
       can! :create_subgroup if @user.can_create_group
     end
 
-    if globally_viewable && @subject.request_access_enabled && !member
+    if globally_viewable && @subject.request_access_enabled && access_level == GroupMember::NO_ACCESS
       can! :request_access
     end
   end

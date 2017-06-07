@@ -26,6 +26,8 @@ export default class pipelinesMediator {
     if (!Visibility.hidden()) {
       this.state.isLoading = true;
       this.poll.makeRequest();
+    } else {
+      this.refreshPipeline();
     }
 
     Visibility.change(() => {
@@ -47,5 +49,11 @@ export default class pipelinesMediator {
   errorCallback() {
     this.state.isLoading = false;
     return new Flash('An error occurred while fetching the pipeline.');
+  }
+
+  refreshPipeline() {
+    this.service.getPipeline()
+      .then(response => this.successCallback(response))
+      .catch(() => this.errorCallback());
   }
 }

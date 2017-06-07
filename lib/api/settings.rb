@@ -110,6 +110,7 @@ module API
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
+      optional :prometheus_metrics_enabled, type: Boolean, desc: 'Enable Prometheus metrics'
       optional :metrics_enabled, type: Boolean, desc: 'Enable the InfluxDB metrics'
       given metrics_enabled: ->(val) { val } do
         requires :metrics_host, type: String, desc: 'The InfluxDB host'

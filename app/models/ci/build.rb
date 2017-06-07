@@ -142,6 +142,17 @@ module Ci
       ExpandVariables.expand(environment, simple_variables) if environment
     end
 
+    def environment_url
+      return @environment_url if defined?(@environment_url)
+
+      @environment_url =
+        if unexpanded_url = options&.dig(:environment, :url)
+          ExpandVariables.expand(unexpanded_url, simple_variables)
+        else
+          persisted_environment&.external_url
+        end
+    end
+
     def has_environment?
       environment.present?
     end
@@ -202,9 +213,7 @@ module Ci
 
     # All variables, including those dependent on other variables
     def variables
-      variables = simple_variables
-      variables += persisted_environment.predefined_variables if persisted_environment.present?
-      variables
+      simple_variables.concat(persisted_environment_variables)
     end
 
     def merge_request
@@ -474,6 +483,18 @@ module Ci
       variables << { key: "CI_PIPELINE_TRIGGERED", value: 'true', public: true } if trigger_request
       variables << { key: "CI_JOB_MANUAL", value: 'true', public: true } if action?
       variables.concat(legacy_variables)
+    end
+
+    def persisted_environment_variables
+      return [] unless persisted_environment
+
+      variables = persisted_environment.predefined_variables
+
+      if url = environment_url
+        variables << { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
+      end
+
+      variables
     end
 
     def legacy_variables

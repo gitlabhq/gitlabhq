@@ -116,6 +116,7 @@ describe PipelineDetailsEntity do
         expect(subject[:flags][:yaml_errors]).to be false
       end
     end
+<<<<<<< HEAD
 
     context 'when pipeline is triggered by other pipeline' do
       let(:pipeline) { create(:ci_empty_pipeline) }
@@ -151,5 +152,7 @@ describe PipelineDetailsEntity do
         expect(subject[:triggered].first[:project]).not_to be_nil
       end
     end
+=======
+>>>>>>> ce/master
   end
 end

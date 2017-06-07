@@ -76,7 +76,7 @@ describe 'Commits' do
           end
         end
 
-        describe 'Commit builds' do
+        describe 'Commit builds', :feature, :js do
           before do
             visit ci_status_path(pipeline)
           end
@@ -85,7 +85,6 @@ describe 'Commits' do
             expect(page).to have_content pipeline.sha[0..7]
             expect(page).to have_content pipeline.git_commit_message
             expect(page).to have_content pipeline.user.name
-            expect(page).to have_content pipeline.created_at.strftime('%b %d, %Y')
           end
         end
 
@@ -102,7 +101,7 @@ describe 'Commits' do
         end
 
         describe 'Cancel all builds' do
-          it 'cancels commit' do
+          it 'cancels commit', :js do
             visit ci_status_path(pipeline)
             click_on 'Cancel running'
             expect(page).to have_content 'canceled'
@@ -110,9 +109,9 @@ describe 'Commits' do
         end
 
         describe 'Cancel build' do
-          it 'cancels build' do
+          it 'cancels build', :js do
             visit ci_status_path(pipeline)
-            find('a.btn[title="Cancel"]').click
+            find('.js-btn-cancel-pipeline').click
             expect(page).to have_content 'canceled'
           end
         end
@@ -152,17 +151,20 @@ describe 'Commits' do
           visit ci_status_path(pipeline)
         end
 
-        it do
+        it 'Renders header', :feature, :js do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message
           expect(page).to have_content pipeline.user.name
-          expect(page).to have_link('Download artifacts')
           expect(page).not_to have_link('Cancel running')
           expect(page).not_to have_link('Retry')
         end
+
+        it do
+          expect(page).to have_link('Download artifacts')
+        end
       end
 
-      context 'when accessing internal project with disallowed access' do
+      context 'when accessing internal project with disallowed access', :feature, :js do
         before do
           project.update(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
@@ -175,7 +177,7 @@ describe 'Commits' do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message
           expect(page).to have_content pipeline.user.name
-          expect(page).not_to have_link('Download artifacts')
+
           expect(page).not_to have_link('Cancel running')
           expect(page).not_to have_link('Retry')
         end

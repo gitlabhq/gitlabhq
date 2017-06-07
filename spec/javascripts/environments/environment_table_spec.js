@@ -29,7 +29,7 @@ describe('Environment item', () => {
       },
     }).$mount();
 
-    expect(component.$el.tagName).toEqual('TABLE');
+    expect(component.$el.getAttribute('class')).toContain('ci-table');
   });
 
   it('should render deploy board container when data is provided', () => {

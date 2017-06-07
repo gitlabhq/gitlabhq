@@ -23,7 +23,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
     current_user.update_secondary_emails!
 
     respond_to do |format|
-      format.html { redirect_to profile_emails_url }
+      format.html { redirect_to profile_emails_url, status: 302 }
       format.js { head :ok }
     end
   end

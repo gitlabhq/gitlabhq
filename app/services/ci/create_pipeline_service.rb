@@ -47,8 +47,8 @@ module Ci
         return pipeline
       end
 
-      unless pipeline.config_builds_attributes.present?
-        return error('No builds for this pipeline.')
+      unless pipeline.has_stage_seeds?
+        return error('No stages / jobs for this pipeline.')
       end
 
       _create_pipeline
@@ -60,7 +60,7 @@ module Ci
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
 
-        Ci::CreatePipelineBuildsService
+        Ci::CreatePipelineStagesService
           .new(project, current_user)
           .execute(pipeline)
       end

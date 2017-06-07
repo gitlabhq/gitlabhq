@@ -5,33 +5,39 @@ module Gitlab
     include ActionView::Helpers::SanitizeHelper
     include PathLocksHelper
     UnauthorizedError = Class.new(StandardError)
+    NotFoundError = Class.new(StandardError)
 
     ERROR_MESSAGES = {
       upload: 'You are not allowed to upload code for this project.',
       download: 'You are not allowed to download code from this project.',
       deploy_key_upload:
         'This deploy key does not have write access to this project.',
-      no_repo: 'A repository for this project does not exist yet.'
+      no_repo: 'A repository for this project does not exist yet.',
+      project_not_found: 'The project you were looking for could not be found.',
+      account_blocked: 'Your account has been blocked.',
+      command_not_allowed: "The command you're trying to execute is not allowed.",
+      upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
+      receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.'
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
+    attr_reader :actor, :project, :protocol, :authentication_abilities
 
     def initialize(actor, project, protocol, authentication_abilities:)
       @actor    = actor
       @project  = project
       @protocol = protocol
       @authentication_abilities = authentication_abilities
-      @user_access = UserAccess.new(user, project: project)
     end
 
     def check(cmd, changes)
       check_protocol!
       check_active_user!
       check_project_accessibility!
+      check_command_disabled!(cmd)
       check_command_existence!(cmd)
       check_repository_existence!
 
@@ -44,9 +50,7 @@ module Gitlab
         check_push_access!(changes)
       end
 
-      build_status_object(true)
-    rescue UnauthorizedError => ex
-      build_status_object(false, ex.message)
+      true
     end
 
     def guest_can_download_code?
@@ -77,19 +81,39 @@ module Gitlab
       return if deploy_key? || geo_node_key?
 
       if user && !user_access.allowed?
-        raise UnauthorizedError, "Your account has been blocked."
+        raise UnauthorizedError, ERROR_MESSAGES[:account_blocked]
       end
     end
 
     def check_project_accessibility!
       if project.blank? || !can_read_project?
-        raise UnauthorizedError, 'The project you were looking for could not be found.'
+        raise NotFoundError, ERROR_MESSAGES[:project_not_found]
+      end
+    end
+
+    def check_command_disabled!(cmd)
+      if upload_pack?(cmd)
+        check_upload_pack_disabled!
+      elsif receive_pack?(cmd)
+        check_receive_pack_disabled!
+      end
+    end
+
+    def check_upload_pack_disabled!
+      if http? && upload_pack_disabled_over_http?
+        raise UnauthorizedError, ERROR_MESSAGES[:upload_pack_disabled_over_http]
+      end
+    end
+
+    def check_receive_pack_disabled!
+      if http? && receive_pack_disabled_over_http?
+        raise UnauthorizedError, ERROR_MESSAGES[:receive_pack_disabled_over_http]
       end
     end
 
     def check_command_existence!(cmd)
       unless ALL_COMMANDS.include?(cmd)
-        raise UnauthorizedError, "The command you're trying to execute is not allowed."
+        raise UnauthorizedError, ERROR_MESSAGES[:command_not_allowed]
       end
     end
 
@@ -168,6 +192,7 @@ module Gitlab
 
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each do |change|
+<<<<<<< HEAD
         status = check_single_change_access(change)
 
         unless status.allowed?
@@ -182,6 +207,11 @@ module Gitlab
 
       if project.changes_will_exceed_size_limit?(push_size_in_bytes)
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
+=======
+        # If user does not have access to make at least one change, cancel all
+        # push by allowing the exception to bubble up
+        check_single_change_access(change)
+>>>>>>> ce/master
       end
     end
 
@@ -203,12 +233,17 @@ module Gitlab
       actor.is_a?(DeployKey)
     end
 
+<<<<<<< HEAD
     def geo_node_key
       actor if geo_node_key?
     end
 
     def geo_node_key?
       actor.is_a?(GeoNodeKey)
+=======
+    def ci?
+      actor == :ci
+>>>>>>> ce/master
     end
 
     def can_read_project?
@@ -218,7 +253,29 @@ module Gitlab
         true
       elsif user
         user.can?(:read_project, project)
+      elsif ci?
+        true # allow CI (build without a user) for backwards compatibility
       end || Guest.can?(:read_project, project)
+    end
+
+    def http?
+      protocol == 'http'
+    end
+
+    def upload_pack?(command)
+      command == 'git-upload-pack'
+    end
+
+    def receive_pack?(command)
+      command == 'git-receive-pack'
+    end
+
+    def upload_pack_disabled_over_http?
+      !Gitlab.config.gitlab_shell.upload_pack
+    end
+
+    def receive_pack_disabled_over_http?
+      !Gitlab.config.gitlab_shell.receive_pack
     end
 
     protected
@@ -230,17 +287,26 @@ module Gitlab
         case actor
         when User
           actor
+<<<<<<< HEAD
         when DeployKey
           nil
         when GeoNodeKey
           nil
+=======
+>>>>>>> ce/master
         when Key
-          actor.user
+          actor.user unless actor.is_a?(DeployKey)
+        when :ci
+          nil
         end
     end
 
-    def build_status_object(status, message = '')
-      Gitlab::GitAccessStatus.new(status, message)
+    def user_access
+      @user_access ||= if ci?
+                         CiAccess.new
+                       else
+                         UserAccess.new(user, project: project)
+                       end
     end
   end
 end

@@ -43,6 +43,7 @@ future GitLab releases.**
 | **CI_DEBUG_TRACE**              | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
 | **CI_ENVIRONMENT_NAME**         | 8.15   | all    | The name of the environment for this job |
 | **CI_ENVIRONMENT_SLUG**         | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
+| **CI_ENVIRONMENT_URL**          | 9.3    | all    | The URL of the environment for this job |
 | **CI_JOB_ID**                   | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
 | **CI_JOB_MANUAL**               | 8.12   | all    | The flag to indicate that job was manually started |
 | **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
@@ -56,9 +57,10 @@ future GitLab releases.**
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
 | **CI_PROJECT_ID**               | all    | all    | The unique id of the current project that GitLab CI uses internally |
-| **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built |
+| **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
 | **CI_PROJECT_NAMESPACE**        | 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
 | **CI_PROJECT_PATH**             | 8.10   | 0.5    | The namespace with project name |
+| **CI_PROJECT_PATH_SLUG**        | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
 | **CI_PROJECT_URL**              | 8.10   | 0.5    | The HTTP address to access project |
 | **CI_REGISTRY**                 | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
 | **CI_REGISTRY_IMAGE**           | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |
@@ -118,11 +120,11 @@ The YAML-defined variables are also set to all created
 tune them.
 
 Variables can be defined at a global level, but also at a job level. To turn off
-global defined variables in your job, define an empty array:
+global defined variables in your job, define an empty hash:
 
 ```yaml
 job_name:
-  variables: []
+  variables: {}
 ```
 
 You are able to use other variables inside your variable definition (or escape them with `$$`):

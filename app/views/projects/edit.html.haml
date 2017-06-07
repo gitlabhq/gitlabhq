@@ -106,14 +106,14 @@
           .form-group
             = render 'shared/allow_request_access', form: f
           - if Gitlab.config.lfs.enabled && current_user.admin?
-            .row
+            .row.js-lfs-enabled
               .col-md-9
                 = f.label :lfs_enabled, 'LFS', class: 'label-light'
                 %span.help-block
                   Git Large File Storage
                   = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
               .col-md-3
-                = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control', data: { field: 'lfs_enabled' }
+                = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control project-repo-select', data: { field: 'lfs_enabled' }
 
 
         - if Gitlab.config.registry.enabled

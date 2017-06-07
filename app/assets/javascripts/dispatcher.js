@@ -58,6 +58,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import initSettingsPanels from './settings_panels';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -224,6 +225,16 @@ import AuditLogs from './audit_logs';
           new ZenMode();
           new gl.GLForm($('.tag-form'));
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          break;
+        case 'projects:snippets:new':
+        case 'projects:snippets:edit':
+        case 'projects:snippets:create':
+        case 'projects:snippets:update':
+        case 'snippets:new':
+        case 'snippets:edit':
+        case 'snippets:create':
+        case 'snippets:update':
+          new gl.GLForm($('.snippet-form'));
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -403,6 +414,8 @@ import AuditLogs from './audit_logs';
           // Initialize Protected Tag Settings
           new ProtectedTagCreate();
           new ProtectedTagEditList();
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
@@ -412,6 +425,9 @@ import AuditLogs from './audit_logs';
           new gl.CILintEditor();
           break;
         case 'users:show':
+          new UserCallout();
+          break;
+        case 'admin:conversational_development_index:show':
           new UserCallout();
           break;
         case 'snippets:show':

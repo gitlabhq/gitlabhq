@@ -15,10 +15,13 @@ describe User, models: true do
 
   describe 'delegations' do
     it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
+<<<<<<< HEAD
 
     # EE
     it { is_expected.to delegate_method(:shared_runners_minutes_limit).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_limit=).to(:namespace).with_arguments(133) }
+=======
+>>>>>>> ce/master
   end
 
   describe 'associations' do
@@ -30,7 +33,7 @@ describe User, models: true do
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
-    it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
+    it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }

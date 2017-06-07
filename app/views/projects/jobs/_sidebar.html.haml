@@ -118,7 +118,7 @@
           %span.stage-selection More
           = icon('chevron-down')
         %ul.dropdown-menu
-          - @build.pipeline.stages.each do |stage|
+          - @build.pipeline.legacy_stages.each do |stage|
             %li
               %a.stage-item= stage.name
 
@@ -137,6 +137,3 @@
                 = build.id
             - if build.retried?
               %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
-
-:javascript
-  new Sidebar();

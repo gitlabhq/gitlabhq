@@ -33,4 +33,10 @@ FactoryGirl.define do
       project_key: 'jira-key'
     )
   end
+
+  factory :hipchat_service do
+    project factory: :empty_project
+    type 'HipchatService'
+    token 'test_token'
+  end
 end

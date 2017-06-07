@@ -108,6 +108,7 @@ module LfsRequest
     @objects ||= (params[:objects] || []).to_a
   end
 
+<<<<<<< HEAD
   module EE
     def lfs_forbidden!
       raise NotImplementedError unless defined?(super)
@@ -143,4 +144,9 @@ module LfsRequest
   end
 
   prepend EE
+=======
+  def has_authentication_ability?(capability)
+    (authentication_abilities || []).include?(capability)
+  end
+>>>>>>> ce/master
 end

@@ -1,0 +1,4 @@
+---
+title: Add a rubocop rule to check if a method 'redirect_to' is used without explicitly set 'status' in 'destroy' actions of controllers
+merge_request: 11749
+author: @blackst0ne

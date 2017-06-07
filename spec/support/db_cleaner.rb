@@ -21,6 +21,10 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation, { except: ['licenses'] }
   end
 
+  config.before(:each, :migration) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
   config.before(:each) do
     DatabaseCleaner.start
   end

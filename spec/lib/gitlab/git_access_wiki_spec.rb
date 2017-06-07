@@ -22,6 +22,7 @@ describe Gitlab::GitAccessWiki, lib: true do
 
       subject { access.check('git-receive-pack', changes) }
 
+<<<<<<< HEAD
       it { expect(subject.allowed?).to be_truthy }
 
       context 'when in a secondary gitlab geo node' do
@@ -29,6 +30,10 @@ describe Gitlab::GitAccessWiki, lib: true do
           allow(Gitlab::Geo).to receive(:enabled?) { true }
           allow(Gitlab::Geo).to receive(:secondary?) { true }
         end
+=======
+    it { expect { subject }.not_to raise_error }
+  end
+>>>>>>> ce/master
 
         it { expect(subject.allowed?).to be_falsey }
       end
@@ -44,7 +49,7 @@ describe Gitlab::GitAccessWiki, lib: true do
 
     context 'when wiki feature is enabled' do
       it 'give access to download wiki code' do
-        expect(subject.allowed?).to be_truthy
+        expect { subject }.not_to raise_error
       end
     end
 
@@ -52,8 +57,7 @@ describe Gitlab::GitAccessWiki, lib: true do
       it 'does not give access to download wiki code' do
         project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
 
-        expect(subject.allowed?).to be_falsey
-        expect(subject.message).to match(/You are not allowed to download code/)
+        expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to download code from this project.')
       end
     end
   end
