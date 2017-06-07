@@ -505,7 +505,6 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.integer "repository_updated_event_id", limit: 8
   end
 
-  add_index "geo_event_log", ["created_at"], name: "index_geo_event_log_on_created_at", using: :btree
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
 
   create_table "geo_nodes", force: :cascade do |t|
