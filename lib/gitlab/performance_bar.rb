@@ -1,7 +1,7 @@
 module Gitlab
   module PerformanceBar
     def self.enabled?
-      ENV["PERFORMANCE_BAR"] == '1'
+      Feature.enabled?('gitlab_performance_bar')
     end
   end
 end
