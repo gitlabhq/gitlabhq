@@ -5,7 +5,9 @@ describe Members::CreateService, services: true do
   let(:user) { create(:user) }
   let(:project_user) { create(:user) }
 
-  before { project.team << [user, :master] }
+  before do
+    project.team << [user, :master]
+  end
 
   it 'adds user to members' do
     params = { user_ids: project_user.id.to_s, access_level: Gitlab::Access::GUEST }

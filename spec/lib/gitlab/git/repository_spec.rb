@@ -16,7 +16,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#root_ref' do
     context 'with gitaly disabled' do
-      before { allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false) }
+      before do
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
+      end
 
       it 'calls #discover_default_branch' do
         expect(repository).to receive(:discover_default_branch)
@@ -25,8 +27,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context 'with gitaly enabled' do
-      before { stub_gitaly }
-      after { Gitlab::GitalyClient.clear_stubs! }
+      before do
+        stub_gitaly
+      end
+
+      after do
+        Gitlab::GitalyClient.clear_stubs!
+      end
 
       it 'gets the branch name from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
@@ -120,8 +127,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.not_to include("branch-from-space") }
 
     context 'with gitaly enabled' do
-      before { stub_gitaly }
-      after { Gitlab::GitalyClient.clear_stubs! }
+      before do
+        stub_gitaly
+      end
+
+      after do
+        Gitlab::GitalyClient.clear_stubs!
+      end
 
       it 'gets the branch names from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
@@ -158,8 +170,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.not_to include("v5.0.0") }
 
     context 'with gitaly enabled' do
-      before { stub_gitaly }
-      after { Gitlab::GitalyClient.clear_stubs! }
+      before do
+        stub_gitaly
+      end
+
+      after do
+        Gitlab::GitalyClient.clear_stubs!
+      end
 
       it 'gets the tag names from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
@@ -1321,8 +1338,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context 'with gitaly enabled' do
-      before { stub_gitaly }
-      after { Gitlab::GitalyClient.clear_stubs! }
+      before do
+        stub_gitaly
+      end
+
+      after do
+        Gitlab::GitalyClient.clear_stubs!
+      end
 
       it 'gets the branches from GitalyClient' do
         expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).

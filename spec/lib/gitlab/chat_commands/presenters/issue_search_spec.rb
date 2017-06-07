@@ -4,7 +4,9 @@ describe Gitlab::ChatCommands::Presenters::IssueSearch do
   let(:project) { create(:empty_project) }
   let(:message) { subject[:text] }
 
-  before { create_list(:issue, 2, project: project) }
+  before do
+    create_list(:issue, 2, project: project)
+  end
 
   subject { described_class.new(project.issues).present }
 

@@ -720,7 +720,9 @@ describe 'Git HTTP requests', lib: true do
           let(:path) { "/#{project.path_with_namespace}/info/refs" }
 
           context "when no params are added" do
-            before { get path }
+            before do
+              get path
+            end
 
             it "redirects to the .git suffix version" do
               expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs")
@@ -729,7 +731,10 @@ describe 'Git HTTP requests', lib: true do
 
           context "when the upload-pack service is requested" do
             let(:params) { { service: 'git-upload-pack' } }
-            before { get path, params }
+
+            before do
+              get path, params
+            end
 
             it "redirects to the .git suffix version" do
               expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
@@ -738,7 +743,10 @@ describe 'Git HTTP requests', lib: true do
 
           context "when the receive-pack service is requested" do
             let(:params) { { service: 'git-receive-pack' } }
-            before { get path, params }
+
+            before do
+              get path, params
+            end
 
             it "redirects to the .git suffix version" do
               expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
@@ -747,7 +755,10 @@ describe 'Git HTTP requests', lib: true do
 
           context "when the params are anything else" do
             let(:params) { { service: 'git-implode-pack' } }
-            before { get path, params }
+
+            before do
+              get path, params
+            end
 
             it "redirects to the sign-in page" do
               expect(response).to redirect_to(new_user_session_path)
@@ -788,7 +799,9 @@ describe 'Git HTTP requests', lib: true do
         end
 
         context "when the file does not exist" do
-          before { get "/#{project.path_with_namespace}/blob/master/info/refs" }
+          before do
+            get "/#{project.path_with_namespace}/blob/master/info/refs"
+          end
 
           it "returns not found" do
             expect(response).to have_http_status(:not_found)

@@ -1652,7 +1652,9 @@ describe User, models: true do
     end
 
     context 'user is member of the top group' do
-      before { group.add_owner(user) }
+      before do
+        group.add_owner(user)
+      end
 
       if Group.supports_nested_groups?
         it 'returns all groups' do
@@ -1670,7 +1672,9 @@ describe User, models: true do
     end
 
     context 'user is member of the first child (internal node), branch 1', :nested_groups do
-      before { nested_group_1.add_owner(user) }
+      before do
+        nested_group_1.add_owner(user)
+      end
 
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [
@@ -1681,7 +1685,9 @@ describe User, models: true do
     end
 
     context 'user is member of the first child (internal node), branch 2', :nested_groups do
-      before { nested_group_2.add_owner(user) }
+      before do
+        nested_group_2.add_owner(user)
+      end
 
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [
@@ -1692,7 +1698,9 @@ describe User, models: true do
     end
 
     context 'user is member of the last child (leaf node)', :nested_groups do
-      before { nested_group_1_1.add_owner(user) }
+      before do
+        nested_group_1_1.add_owner(user)
+      end
 
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [

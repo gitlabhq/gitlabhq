@@ -4,7 +4,9 @@ feature 'Projected Tags', feature: true, js: true do
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 
-  before { login_as(user) }
+  before do
+    login_as(user)
+  end
 
   def set_allowed_to(operation, option = 'Masters', form: '.new-protected-tag')
     within form do

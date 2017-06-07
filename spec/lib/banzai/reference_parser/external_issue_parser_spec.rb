@@ -10,7 +10,9 @@ describe Banzai::ReferenceParser::ExternalIssueParser, lib: true do
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
-      before { link['data-external-issue'] = 123 }
+      before do
+        link['data-external-issue'] = 123
+      end
 
       levels = [ProjectFeature::DISABLED, ProjectFeature::PRIVATE, ProjectFeature::ENABLED]
 

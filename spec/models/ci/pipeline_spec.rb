@@ -1160,7 +1160,9 @@ describe Ci::Pipeline, models: true do
     end
 
     context 'when pipeline is not stuck' do
-      before { create(:ci_runner, :shared, :online) }
+      before do
+        create(:ci_runner, :shared, :online)
+      end
 
       it 'is not stuck' do
         expect(pipeline).not_to be_stuck
@@ -1290,7 +1292,9 @@ describe Ci::Pipeline, models: true do
     end
 
     context 'no codeclimate build' do
-      before { create(:ci_build, pipeline: pipeline) }
+      before do
+        create(:ci_build, pipeline: pipeline)
+      end
 
       it { expect(pipeline.codeclimate_artifact).to be_nil }
     end

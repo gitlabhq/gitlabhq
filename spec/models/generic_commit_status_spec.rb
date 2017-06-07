@@ -19,7 +19,10 @@ describe GenericCommitStatus, models: true do
 
   describe '#context' do
     subject { generic_commit_status.context }
-    before { generic_commit_status.context = 'my_context' }
+
+    before do
+      generic_commit_status.context = 'my_context'
+    end
 
     it { is_expected.to eq(generic_commit_status.name) }
   end
@@ -39,7 +42,9 @@ describe GenericCommitStatus, models: true do
     end
 
     context 'when user has ability to see datails' do
-      before { project.team << [user, :developer] }
+      before do
+        project.team << [user, :developer]
+      end
 
       it 'details path points to an external URL' do
         expect(status).to have_details

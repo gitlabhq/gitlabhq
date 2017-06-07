@@ -94,7 +94,10 @@ describe NotificationSettingsController do
 
     context 'not authorized' do
       let(:private_project) { create(:empty_project, :private) }
-      before { sign_in(user) }
+
+      before do
+        sign_in(user)
+      end
 
       it 'returns 404' do
         post :create,
@@ -120,7 +123,9 @@ describe NotificationSettingsController do
     end
 
     context 'when authorized' do
-      before{ sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       it 'returns success' do
         put :update,
@@ -152,7 +157,9 @@ describe NotificationSettingsController do
     context 'not authorized' do
       let(:other_user) { create(:user) }
 
-      before { sign_in(other_user) }
+      before do
+        sign_in(other_user)
+      end
 
       it 'returns 404' do
         put :update,

@@ -124,7 +124,10 @@ describe "Admin::Users", feature: true do
 
     describe 'Impersonation' do
       let(:another_user) { create(:user) }
-      before { visit admin_user_path(another_user) }
+
+      before do
+        visit admin_user_path(another_user)
+      end
 
       context 'before impersonating' do
         it 'shows impersonate button for other users' do
@@ -149,7 +152,9 @@ describe "Admin::Users", feature: true do
       end
 
       context 'when impersonating' do
-        before { click_link 'Impersonate' }
+        before do
+          click_link 'Impersonate'
+        end
 
         it 'logs in as the user when impersonate is clicked' do
           expect(page.find(:css, '.header-user .profile-link')['data-user']).to eql(another_user.username)

@@ -142,7 +142,9 @@ describe SessionsController do
             end
 
             context 'when OTP is invalid' do
-              before { authenticate_2fa(otp_attempt: 'invalid') }
+              before do
+                authenticate_2fa(otp_attempt: 'invalid')
+              end
 
               it 'does not authenticate' do
                 expect(subject.current_user).not_to eq user
@@ -169,7 +171,9 @@ describe SessionsController do
             end
 
             context 'when OTP is invalid' do
-              before { authenticate_2fa(otp_attempt: 'invalid') }
+              before do
+                authenticate_2fa(otp_attempt: 'invalid')
+              end
 
               it 'does not authenticate' do
                 expect(subject.current_user).not_to eq user

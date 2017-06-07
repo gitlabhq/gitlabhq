@@ -15,10 +15,14 @@ describe EE::Gitlab::LDAP::Sync::Groups, lib: true do
       2.times { create(:group_with_ldap_group_link) }
     end
 
-    after { group_sync.update_permissions }
+    after do
+      group_sync.update_permissions
+    end
 
     context 'when group_base is not present' do
-      before { stub_ldap_config(group_base: nil) }
+      before do
+        stub_ldap_config(group_base: nil)
+      end
 
       it 'does not call EE::Gitlab::LDAP::Sync::Group#execute' do
         expect(EE::Gitlab::LDAP::Sync::Group).not_to receive(:execute)
@@ -35,7 +39,9 @@ describe EE::Gitlab::LDAP::Sync::Groups, lib: true do
 
     context 'when group_base is present' do
       context 'and admin_group and external_groups are not present' do
-        before { stub_ldap_config(group_base: 'dc=example,dc=com') }
+        before do
+          stub_ldap_config(group_base: 'dc=example,dc=com')
+        end
 
         it 'calls EE::Gitlab::LDAP::Sync::Group#execute' do
           expect(EE::Gitlab::LDAP::Sync::Group).to receive(:execute).twice

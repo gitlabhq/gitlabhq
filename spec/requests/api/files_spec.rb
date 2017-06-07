@@ -13,7 +13,9 @@ describe API::Files do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   def route(file_path = nil)
     "/projects/#{project.id}/repository/files/#{file_path}"

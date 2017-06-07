@@ -18,7 +18,9 @@ describe Gitlab::Ci::Config::Entry::Job do
   end
 
   describe 'validations' do
-    before { entry.compose! }
+    before do
+      entry.compose!
+    end
 
     context 'when entry config value is correct' do
       let(:config) { { script: 'rspec' } }
@@ -97,7 +99,9 @@ describe Gitlab::Ci::Config::Entry::Job do
     let(:deps) { double('deps', '[]' => unspecified) }
 
     context 'when job config overrides global config' do
-      before { entry.compose!(deps) }
+      before do
+        entry.compose!(deps)
+      end
 
       let(:config) do
         { script: 'rspec', image: 'some_image', cache: { key: 'test' } }
@@ -125,10 +129,14 @@ describe Gitlab::Ci::Config::Entry::Job do
   end
 
   context 'when composed' do
-    before { entry.compose! }
+    before do
+      entry.compose!
+    end
 
     describe '#value' do
-      before { entry.compose! }
+      before do
+        entry.compose!
+      end
 
       context 'when entry is correct' do
         let(:config) do
