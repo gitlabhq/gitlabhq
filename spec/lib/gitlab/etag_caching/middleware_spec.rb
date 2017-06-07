@@ -164,6 +164,25 @@ describe Gitlab::EtagCaching::Middleware do
     end
   end
 
+  context 'when GitLab instance is using a relative URL' do
+    before do
+      mock_app_response
+    end
+
+    it 'uses full path as cache key' do
+      env = {
+        'PATH_INFO' => enabled_path,
+        'SCRIPT_NAME' => '/relative-gitlab'
+      }
+
+      expect_any_instance_of(Gitlab::EtagCaching::Store)
+        .to receive(:get).with("/relative-gitlab#{enabled_path}")
+        .and_return(nil)
+
+      middleware.call(env)
+    end
+  end
+
   def mock_app_response
     allow(app).to receive(:call).and_return([app_status_code, {}, ['body']])
   end

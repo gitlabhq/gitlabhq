@@ -33,7 +33,7 @@ module Elasticsearch
               code_analyzer: {
                 type: 'custom',
                 tokenizer: 'standard',
-                filter: %w(code lowercase asciifolding),
+                filter: %w(code edgeNGram_filter lowercase asciifolding),
                 char_filter: ["code_mapping"]
               },
               code_search_analyzer: {
@@ -61,8 +61,14 @@ module Elasticsearch
                 preserve_original: 1,
                 patterns: [
                   "(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)",
-                  "(\\d+)"
+                  "(\\d+)",
+                  "(?=([\\p{Lu}]+[\\p{L}]+))"
                 ]
+              },
+              edgeNGram_filter: {
+                type: 'edgeNGram',
+                min_gram: 2,
+                max_gram: 40
               }
             },
             char_filter: {

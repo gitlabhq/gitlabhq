@@ -58,6 +58,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import initSettingsPanels from './settings_panels';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -403,6 +404,8 @@ import AuditLogs from './audit_logs';
           // Initialize Protected Tag Settings
           new ProtectedTagCreate();
           new ProtectedTagEditList();
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();

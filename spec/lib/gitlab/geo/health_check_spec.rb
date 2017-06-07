@@ -16,6 +16,13 @@ describe Gitlab::Geo::HealthCheck do
       expect(subject.perform_checks).to be_blank
     end
 
+    it 'returns an error when secondary role is disabled' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+      allow(Gitlab::Geo).to receive(:secondary_role_enabled?).and_return(false)
+
+      expect(subject.perform_checks).not_to be_blank
+    end
+
     it 'returns an error when database is not configured for streaming replication' do
       allow(Gitlab::Geo).to receive(:secondary?) { true }
       allow(Gitlab::Database).to receive(:postgresql?) { true }

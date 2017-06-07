@@ -7,12 +7,14 @@ class License < ActiveRecord::Base
   AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
+  RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
 
   FEATURE_CODES = {
     geo: GEO_FEATURE,
     auditor_user: AUDITOR_USER_FEATURE,
     service_desk: SERVICE_DESK_FEATURE,
     object_storage: OBJECT_STORAGE_FEATURE,
+    related_issues: RELATED_ISSUES_FEATURE,
     # Features that make sense to Namespace:
     deploy_board: DEPLOY_BOARD_FEATURE,
     file_lock: FILE_LOCK_FEATURE
@@ -24,7 +26,7 @@ class License < ActiveRecord::Base
   EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
   EES_FEATURES = [
-    # ..
+    { RELATED_ISSUES_FEATURE => 1 }
   ].freeze
 
   EEP_FEATURES = [

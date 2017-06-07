@@ -36,12 +36,6 @@ describe API::Triggers do
 
         expect(response).to have_http_status(404)
       end
-
-      it 'returns unauthorized if token is for different project' do
-        post api("/projects/#{project2.id}/trigger/pipeline"), options.merge(ref: 'master')
-
-        expect(response).to have_http_status(401)
-      end
     end
 
     context 'Have a commit' do
@@ -61,7 +55,7 @@ describe API::Triggers do
         post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'other-branch')
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('No pipeline created')
+        expect(json_response['message']).to eq('base' => ["Reference not found"])
       end
 
       context 'Validates variables' do
@@ -93,6 +87,12 @@ describe API::Triggers do
     end
 
     context 'when triggering a pipeline from a trigger token' do
+      it 'does not leak the presence of project when token is for different project' do
+        post api("/projects/#{project2.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+
+        expect(response).to have_http_status(404)
+      end
+  
       it 'creates builds from the ref given in the URL, not in the body' do
         expect do
           post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
@@ -110,6 +110,93 @@ describe API::Triggers do
           end.to change(project.builds, :count).by(4)
 
           expect(response).to have_http_status(201)
+        end
+      end
+    end
+  
+    context 'when triggering a pipeline from a job token' do
+      let(:other_job) { create(:ci_build, :running, user: other_user) }
+      let(:params) { { ref: 'refs/heads/other-branch' } }
+
+      subject do
+        post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{other_job.token}"), params
+      end
+
+      context 'without user' do
+        let(:other_user) { nil }
+
+        it 'does not leak the presence of project when using valid token' do
+          subject
+          
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'for unreleated user' do
+        let(:other_user) { create(:user) }
+
+        it 'does not leak the presence of project when using valid token' do
+          subject
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'for related user' do
+        let(:other_user) { create(:user) }
+
+        context 'with reporter permissions' do
+          before do
+            project.add_reporter(other_user)
+          end
+
+          it 'forbids to create a pipeline' do
+            subject
+
+            expect(response).to have_http_status(400)
+            expect(json_response['message']).to eq("base" => ["Insufficient permissions to create a new pipeline"])
+          end
+        end
+
+        context 'with developer permissions' do
+          before do
+            project.add_developer(other_user)
+          end
+
+          it 'creates a new pipeline' do
+            expect { subject }.to change(Ci::Pipeline, :count)
+
+            expect(response).to have_http_status(201)
+            expect(Ci::Pipeline.last.source).to eq('pipeline')
+            expect(Ci::Pipeline.last.triggered_by_pipeline).not_to be_nil
+          end
+
+          context 'when build is complete' do
+            before do
+              other_job.success
+            end
+
+            it 'does not create a pipeline' do
+              subject
+
+              expect(response).to have_http_status(400)
+              expect(json_response['message']).to eq('400 Job has to be running')
+            end
+          end
+
+          context 'when variables are defined' do
+            let(:params) do
+              { ref: 'refs/heads/other-branch',
+                variables: { 'KEY' => 'VALUE' } }
+            end
+
+            it 'forbids to create a pipeline' do
+              subject
+
+              expect(response).to have_http_status(400)
+              expect(json_response['message']).to eq('400 Variables not supported')
+            end
+          end
         end
       end
     end

@@ -52,7 +52,8 @@ module Ci
       trigger: 3,
       schedule: 4,
       api: 5,
-      external: 6
+      external: 6,
+      pipeline: 7
     }
 
     state_machine :status, initial: :created do
@@ -376,7 +377,8 @@ module Ci
 
     def predefined_variables
       [
-        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
+        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
+        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
       ]
     end
 

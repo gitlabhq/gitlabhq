@@ -288,6 +288,18 @@ describe IssuesFinder do
 
         expect(issues.count).to eq 0
       end
+
+      it 'returns disabled issues if feature_availability_check param set to false' do
+        [project1, project2].each do |project|
+          project.project_feature.update!(issues_access_level: ProjectFeature::DISABLED)
+        end
+
+        issues = described_class
+                   .new(search_user, params.reverse_merge(scope: scope, state: 'opened', feature_availability_check: false))
+                   .execute
+
+        expect(issues.count).to eq 3
+      end
     end
   end
 
