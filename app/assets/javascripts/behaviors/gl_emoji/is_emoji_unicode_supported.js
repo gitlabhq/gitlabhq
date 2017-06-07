@@ -28,7 +28,8 @@ function isSkinToneComboEmoji(emojiUnicode) {
 // doesn't support the skin tone versions of horse racing
 const horseRacingCodePoint = 127943;// parseInt('1F3C7', 16)
 function isHorceRacingSkinToneComboEmoji(emojiUnicode) {
-  return Array.from(emojiUnicode)[0].codePointAt(0) === horseRacingCodePoint &&
+  const firstCharacter = Array.from(emojiUnicode)[0];
+  return firstCharacter && firstCharacter.codePointAt(0) === horseRacingCodePoint &&
     isSkinToneComboEmoji(emojiUnicode);
 }
 
