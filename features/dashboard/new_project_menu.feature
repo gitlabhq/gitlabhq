@@ -1,5 +1,5 @@
 @dashboard
-Feature: New Project through top menu
+Feature: New Project top menu
 Background:
   Given I sign in as a user
   And I own project "Shop"
