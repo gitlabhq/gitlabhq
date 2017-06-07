@@ -36,6 +36,13 @@ module EE
         :shared_runners_minutes_used?, to: :namespace
     end
 
+    def can_override_approvers?
+      !disable_overriding_approvers_per_merge_request
+    rescue NameError
+      true
+    end
+
+
     def shared_runners_available?
       super && !namespace.shared_runners_minutes_used?
     end
