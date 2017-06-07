@@ -799,3 +799,14 @@
     }
   }
 }
+
+.issuable-close-button,
+.issuable-close-toggle {
+  @include transition(border-color, color);
+}
+
+.issuable-close-dropdown .dropdown-menu {
+  min-width: 270px;
+  left: auto;
+  right: 0;
+}

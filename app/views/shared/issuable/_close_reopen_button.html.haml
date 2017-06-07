@@ -1,0 +1,4 @@
+- if can_update
+  = render 'shared/issuable/close_reopen_report_toggle', issuable: issuable
+- else
+  = link_to 'Report abuse', new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)), class: 'hidden-xs hidden-sm btn btn-grouped btn-close-color', title: 'Report abuse'

@@ -4,6 +4,7 @@
 import 'vendor/jquery.waitforimages';
 import './task_list';
 import './merge_request_tabs';
+import CloseReopenReportToggle from './close_reopen_report_toggle';
 
 (function() {
   this.MergeRequest = (function() {
@@ -24,6 +25,7 @@ import './merge_request_tabs';
       this.initTabs();
       this.initMRBtnListeners();
       this.initCommitMessageListeners();
+      MergeRequest.initCloseReopenReport();
       if ($("a.btn-close").length) {
         this.taskList = new gl.TaskList({
           dataType: 'merge_request',
@@ -117,6 +119,21 @@ import './merge_request_tabs';
       const count = Math.max((parseInt($el.text().replace(/[^\d]/, ''), 10) - by), 0);
 
       $el.text(gl.text.addDelimiter(count));
+    };
+
+    MergeRequest.initCloseReopenReport = function () {
+      const container = document.querySelector('.js-issuable-close-dropdown');
+      const dropdownTrigger = container.querySelector('.js-issuable-close-toggle');
+      const dropdownList = container.querySelector('.js-issuable-close-menu');
+      const button = container.querySelector('.js-issuable-close-button');
+
+      const closeReopenReportToggle = new CloseReopenReportToggle({
+        dropdownTrigger,
+        dropdownList,
+        button,
+      });
+
+      closeReopenReportToggle.initDroplab();
     };
 
     return MergeRequest;
