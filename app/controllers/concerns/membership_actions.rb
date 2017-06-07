@@ -2,14 +2,15 @@ module MembershipActions
   extend ActiveSupport::Concern
 
   def create
-    status = Members::CreateService.new(membershipable, current_user, params).execute
+    create_params = params.permit(:user_ids, :access_level, :expires_at)
+    result = Members::CreateService.new(membershipable, current_user, create_params).execute
 
     redirect_url = members_page_url
 
-    if status
+    if result[:status] == :success
       redirect_to redirect_url, notice: 'Users were successfully added.'
     else
-      redirect_to redirect_url, alert: 'No users specified.'
+      redirect_to redirect_url, alert: result[:message]
     end
   end
 

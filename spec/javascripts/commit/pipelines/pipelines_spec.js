@@ -71,7 +71,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
       it('should render a table with the received pipelines', (done) => {
         setTimeout(() => {
-          expect(this.component.$el.querySelectorAll('table > tbody > tr').length).toEqual(1);
+          expect(this.component.$el.querySelectorAll('.ci-table .commit').length).toEqual(1);
           expect(this.component.$el.querySelector('.realtime-loading')).toBe(null);
           expect(this.component.$el.querySelector('.empty-state')).toBe(null);
           expect(this.component.$el.querySelector('.js-pipelines-error-state')).toBe(null);
@@ -108,7 +108,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
         expect(this.component.$el.querySelector('.js-pipelines-error-state')).toBeDefined();
         expect(this.component.$el.querySelector('.realtime-loading')).toBe(null);
         expect(this.component.$el.querySelector('.js-empty-state')).toBe(null);
-        expect(this.component.$el.querySelector('table')).toBe(null);
+        expect(this.component.$el.querySelector('.ci-table')).toBe(null);
         done();
       }, 0);
     });

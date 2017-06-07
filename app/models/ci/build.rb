@@ -47,8 +47,8 @@ module Ci
     before_destroy { unscoped_project }
 
     after_create :execute_hooks
-    after_save :update_project_statistics, if: :artifacts_size_changed?
-    after_destroy :update_project_statistics
+    after_commit :update_project_statistics_after_save, on: [:create, :update]
+    after_commit :update_project_statistics, on: :destroy
 
     class << self
       # This is needed for url_for to work,
@@ -138,6 +138,17 @@ module Ci
       ExpandVariables.expand(environment, simple_variables) if environment
     end
 
+    def environment_url
+      return @environment_url if defined?(@environment_url)
+
+      @environment_url =
+        if unexpanded_url = options&.dig(:environment, :url)
+          ExpandVariables.expand(unexpanded_url, simple_variables)
+        else
+          persisted_environment&.external_url
+        end
+    end
+
     def has_environment?
       environment.present?
     end
@@ -198,20 +209,23 @@ module Ci
 
     # All variables, including those dependent on other variables
     def variables
-      variables = simple_variables
-      variables += persisted_environment.predefined_variables if persisted_environment.present?
-      variables
+      simple_variables.concat(persisted_environment_variables)
     end
 
     def merge_request
-      merge_requests = MergeRequest.includes(:merge_request_diff)
-                                   .where(source_branch: ref,
-                                          source_project: pipeline.project)
-                                   .reorder(iid: :asc)
+      return @merge_request if defined?(@merge_request)
 
-      merge_requests.find do |merge_request|
-        merge_request.commits_sha.include?(pipeline.sha)
-      end
+      @merge_request ||=
+        begin
+          merge_requests = MergeRequest.includes(:merge_request_diff)
+            .where(source_branch: ref,
+                   source_project: pipeline.project)
+            .reorder(iid: :desc)
+
+          merge_requests.find do |merge_request|
+            merge_request.commits_sha.include?(pipeline.sha)
+          end
+        end
     end
 
     def repo_url
@@ -335,7 +349,7 @@ module Ci
     end
 
     def has_expiring_artifacts?
-      artifacts_expire_at.present?
+      artifacts_expire_at.present? && artifacts_expire_at > Time.now
     end
 
     def keep_artifacts!
@@ -462,6 +476,18 @@ module Ci
       variables.concat(legacy_variables)
     end
 
+    def persisted_environment_variables
+      return [] unless persisted_environment
+
+      variables = persisted_environment.predefined_variables
+
+      if url = environment_url
+        variables << { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
+      end
+
+      variables
+    end
+
     def legacy_variables
       variables = [
         { key: 'CI_BUILD_ID', value: id.to_s, public: true },
@@ -490,6 +516,12 @@ module Ci
       return unless project
 
       ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
+    end
+
+    def update_project_statistics_after_save
+      if previous_changes.include?('artifacts_size')
+        update_project_statistics
+      end
     end
   end
 end

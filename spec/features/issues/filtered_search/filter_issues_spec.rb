@@ -6,7 +6,7 @@ describe 'Filter issues', js: true, feature: true do
 
   let!(:group) { create(:group) }
   let!(:project) { create(:project, group: group) }
-  let!(:user) { create(:user, username: 'joe') }
+  let!(:user) { create(:user, username: 'joe', name: 'Joe') }
   let!(:user2) { create(:user, username: 'jane') }
   let!(:label) { create(:label, project: project) }
   let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
@@ -777,17 +777,17 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     it 'open state' do
-      find('.issues-state-filters a', text: 'Closed').click
+      find('.issues-state-filters [data-state="closed"]').click
       wait_for_requests
 
-      find('.issues-state-filters a', text: 'Open').click
+      find('.issues-state-filters [data-state="opened"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 4)
     end
 
     it 'closed state' do
-      find('.issues-state-filters a', text: 'Closed').click
+      find('.issues-state-filters [data-state="closed"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 1)
@@ -795,7 +795,7 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     it 'all state' do
-      find('.issues-state-filters a', text: 'All').click
+      find('.issues-state-filters [data-state="all"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 5)

@@ -104,12 +104,14 @@ Make sure that your GitLab Runner is configured to allow building Docker images 
 following the [Using Docker Build](../../ci/docker/using_docker_build.md)
 and [Using the GitLab Container Registry documentation](../../ci/docker/using_docker_build.md#using-the-gitlab-container-registry).
 
-## Limitations
+## Using with private projects
 
-In order to use a container image from your private project as an `image:` in
-your `.gitlab-ci.yml`, you have to follow the
-[Using a private Docker Registry][private-docker]
-documentation. This workflow will be simplified in the future.
+If a project is private, credentials will need to be provided for authorization.
+The preferred way to do this, is by using personal access tokens, which can be
+created under `/profile/personal_access_tokens`. The minimal scope needed is:
+`read_registry`.
+
+This feature was introduced in GitLab 9.3.
 
 ## Troubleshooting the GitLab Container Registry
 
@@ -255,4 +257,3 @@ Once the right permissions were set, the error will go away.
 
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
-[private-docker]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-container-registry

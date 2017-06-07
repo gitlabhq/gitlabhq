@@ -97,6 +97,49 @@ describe('Filtered Search Manager', () => {
     });
   });
 
+  describe('searchState', () => {
+    beforeEach(() => {
+      spyOn(gl.FilteredSearchManager.prototype, 'search').and.callFake(() => {});
+    });
+
+    it('should blur button', () => {
+      const e = {
+        currentTarget: {
+          blur: () => {},
+        },
+      };
+      spyOn(e.currentTarget, 'blur').and.callThrough();
+      manager.searchState(e);
+
+      expect(e.currentTarget.blur).toHaveBeenCalled();
+    });
+
+    it('should not call search if there is no state', () => {
+      const e = {
+        currentTarget: {
+          blur: () => {},
+        },
+      };
+
+      manager.searchState(e);
+      expect(gl.FilteredSearchManager.prototype.search).not.toHaveBeenCalled();
+    });
+
+    it('should call search when there is state', () => {
+      const e = {
+        currentTarget: {
+          blur: () => {},
+          dataset: {
+            state: 'opened',
+          },
+        },
+      };
+
+      manager.searchState(e);
+      expect(gl.FilteredSearchManager.prototype.search).toHaveBeenCalledWith('opened');
+    });
+  });
+
   describe('search', () => {
     const defaultParams = '?scope=all&utf8=%E2%9C%93&state=opened';
 
@@ -313,42 +356,6 @@ describe('Filtered Search Manager', () => {
 
     it('calls update dropdown offset', () => {
       expect(manager.dropdownManager.updateDropdownOffset).toHaveBeenCalled();
-    });
-  });
-
-  describe('unselects token', () => {
-    beforeEach(() => {
-      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug', true)}
-        ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~awesome')}
-      `);
-    });
-
-    it('unselects token when input is clicked', () => {
-      const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
-
-      expect(selectedToken.classList.contains('selected')).toEqual(true);
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).not.toHaveBeenCalled();
-
-      // Click directly on input attached to document
-      // so that the click event will propagate properly
-      document.querySelector('.filtered-search').click();
-
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
-      expect(selectedToken.classList.contains('selected')).toEqual(false);
-    });
-
-    it('unselects token when document.body is clicked', () => {
-      const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
-
-      expect(selectedToken.classList.contains('selected')).toEqual(true);
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).not.toHaveBeenCalled();
-
-      document.body.click();
-
-      expect(selectedToken.classList.contains('selected')).toEqual(false);
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
     });
   });
 

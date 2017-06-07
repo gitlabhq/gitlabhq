@@ -3,7 +3,7 @@
 /* global ActiveTabMemoizer */
 /* global ShortcutsNavigation */
 /* global Build */
-/* global Issuable */
+/* global IssuableIndex */
 /* global ShortcutsIssuable */
 /* global ZenMode */
 /* global Milestone */
@@ -55,6 +55,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import initSettingsPanels from './settings_panels';
 
 (function() {
   var Dispatcher;
@@ -127,10 +128,9 @@ import ShortcutsBlob from './shortcuts_blob';
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
-          Issuable.init();
-          new gl.IssuableBulkActions({
-            prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
-          });
+          const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
+          IssuableIndex.init(pagePrefix);
+
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
           break;
@@ -214,6 +214,16 @@ import ShortcutsBlob from './shortcuts_blob';
           new ZenMode();
           new gl.GLForm($('.tag-form'));
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          break;
+        case 'projects:snippets:new':
+        case 'projects:snippets:edit':
+        case 'projects:snippets:create':
+        case 'projects:snippets:update':
+        case 'snippets:new':
+        case 'snippets:edit':
+        case 'snippets:create':
+        case 'snippets:update':
+          new gl.GLForm($('.snippet-form'));
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -379,6 +389,8 @@ import ShortcutsBlob from './shortcuts_blob';
           // Initialize Protected Tag Settings
           new ProtectedTagCreate();
           new ProtectedTagEditList();
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
@@ -388,6 +400,9 @@ import ShortcutsBlob from './shortcuts_blob';
           new gl.CILintEditor();
           break;
         case 'users:show':
+          new UserCallout();
+          break;
+        case 'admin:conversational_development_index:show':
           new UserCallout();
           break;
         case 'snippets:show':

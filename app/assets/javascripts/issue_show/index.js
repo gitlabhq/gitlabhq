@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
           projectPath: this.projectPath,
           projectNamespace: this.projectNamespace,
           projectsAutocompleteUrl: this.projectsAutocompleteUrl,
+          updatedAt: this.updatedAt,
+          updatedByName: this.updatedByName,
+          updatedByPath: this.updatedByPath,
         },
       });
     },

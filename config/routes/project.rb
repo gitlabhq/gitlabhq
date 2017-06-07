@@ -67,13 +67,13 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
         member do
-          get :test
+          put :test
         end
       end
 
       resource :mattermost, only: [:new, :create]
 
-      resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
+      resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
         member do
           put :enable
           put :disable

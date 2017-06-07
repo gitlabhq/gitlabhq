@@ -236,13 +236,6 @@ Style/PerlBackrefs:
 Style/PredicateName:
   Enabled: false
 
-# Offense count: 45
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: short, verbose
-Style/PreferredHashMethods:
-  Enabled: false
-
 # Offense count: 65
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

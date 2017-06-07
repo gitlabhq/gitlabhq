@@ -45,6 +45,8 @@ class SnippetsController < ApplicationController
 
     @snippet = CreateSnippetService.new(nil, current_user, create_params).execute
 
+    move_temporary_files if @snippet.valid? && params[:files]
+
     recaptcha_check_with_fallback { render :new }
   end
 
@@ -82,7 +84,7 @@ class SnippetsController < ApplicationController
 
     @snippet.destroy
 
-    redirect_to snippets_path
+    redirect_to snippets_path, status: 302
   end
 
   def preview_markdown
@@ -124,6 +126,12 @@ class SnippetsController < ApplicationController
   end
 
   def snippet_params
-    params.require(:personal_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
+    params.require(:personal_snippet).permit(:title, :content, :file_name, :private, :visibility_level, :description)
+  end
+
+  def move_temporary_files
+    params[:files].each do |file|
+      FileMover.new(file, @snippet).execute
+    end
   end
 end

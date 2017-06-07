@@ -20,13 +20,25 @@ module Gitlab
       # We need this accessor because of `to_hash` and `init_from_hash`
       attr_accessor :too_large
 
-      # The maximum size of a diff to display.
-      SIZE_LIMIT = 100.kilobytes
-
-      # The maximum size before a diff is collapsed.
-      COLLAPSE_LIMIT = 10.kilobytes
-
       class << self
+        # The maximum size of a diff to display.
+        def size_limit
+          if Feature.enabled?('gitlab_git_diff_size_limit_increase')
+            200.kilobytes
+          else
+            100.kilobytes
+          end
+        end
+
+        # The maximum size before a diff is collapsed.
+        def collapse_limit
+          if Feature.enabled?('gitlab_git_diff_size_limit_increase')
+            100.kilobytes
+          else
+            10.kilobytes
+          end
+        end
+
         def between(repo, head, base, options = {}, *paths)
           straight = options.delete(:straight) || false
 
@@ -189,7 +201,7 @@ module Gitlab
           prune_diff_if_eligible
         when Rugged::Patch, Rugged::Diff::Delta
           init_from_rugged(raw_diff)
-        when Gitaly::CommitDiffResponse
+        when Gitlab::GitalyClient::Diff
           init_from_gitaly(raw_diff)
           prune_diff_if_eligible
         when Gitaly::CommitDelta
@@ -231,7 +243,7 @@ module Gitlab
 
       def too_large?
         if @too_large.nil?
-          @too_large = @diff.bytesize >= SIZE_LIMIT
+          @too_large = @diff.bytesize >= self.class.size_limit
         else
           @too_large
         end
@@ -246,7 +258,7 @@ module Gitlab
       def collapsed?
         return @collapsed if defined?(@collapsed)
 
-        @collapsed = !expanded && @diff.bytesize >= COLLAPSE_LIMIT
+        @collapsed = !expanded && @diff.bytesize >= self.class.collapse_limit
       end
 
       def collapse!
@@ -290,15 +302,15 @@ module Gitlab
         end
       end
 
-      def init_from_gitaly(msg)
-        @diff = msg.raw_chunks.join if msg.respond_to?(:raw_chunks)
-        @new_path = encode!(msg.to_path.dup)
-        @old_path = encode!(msg.from_path.dup)
-        @a_mode = msg.old_mode.to_s(8)
-        @b_mode = msg.new_mode.to_s(8)
-        @new_file = msg.from_id == BLANK_SHA
-        @renamed_file = msg.from_path != msg.to_path
-        @deleted_file = msg.to_id == BLANK_SHA
+      def init_from_gitaly(diff)
+        @diff = diff.patch if diff.respond_to?(:patch)
+        @new_path = encode!(diff.to_path.dup)
+        @old_path = encode!(diff.from_path.dup)
+        @a_mode = diff.old_mode.to_s(8)
+        @b_mode = diff.new_mode.to_s(8)
+        @new_file = diff.from_id == BLANK_SHA
+        @renamed_file = diff.from_path != diff.to_path
+        @deleted_file = diff.to_id == BLANK_SHA
       end
 
       def prune_diff_if_eligible
@@ -318,14 +330,14 @@ module Gitlab
           hunk.each_line do |line|
             size += line.content.bytesize
 
-            if size >= SIZE_LIMIT
+            if size >= self.class.size_limit
               too_large!
               return true
             end
           end
         end
 
-        if !expanded && size >= COLLAPSE_LIMIT
+        if !expanded && size >= self.class.collapse_limit
           collapse!
           return true
         end

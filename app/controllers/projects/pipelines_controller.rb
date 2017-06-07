@@ -99,7 +99,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def stage
-    @stage = pipeline.stage(params[:stage])
+    @stage = pipeline.legacy_stage(params[:stage])
     return not_found unless @stage
 
     respond_to do |format|

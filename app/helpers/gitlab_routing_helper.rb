@@ -128,7 +128,7 @@ module GitlabRoutingHelper
 
   def preview_markdown_path(project, *args)
     if @snippet.is_a?(PersonalSnippet)
-      preview_markdown_snippet_path(@snippet)
+      preview_markdown_snippets_path
     else
       preview_markdown_namespace_project_path(project.namespace, project, *args)
     end

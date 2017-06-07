@@ -21,6 +21,9 @@ describe "Admin::Users", feature: true do
       expect(page).to have_content(current_user.name)
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_link('Block', href: block_admin_user_path(user))
+      expect(page).to have_link('Remove user', href: admin_user_path(user))
+      expect(page).to have_link('Remove user and contributions', href: admin_user_path(user, hard_delete: true))
     end
 
     describe 'Two-factor Authentication filters' do
@@ -114,6 +117,9 @@ describe "Admin::Users", feature: true do
 
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_link('Block user', href: block_admin_user_path(user))
+      expect(page).to have_link('Remove user', href: admin_user_path(user))
+      expect(page).to have_link('Remove user and contributions', href: admin_user_path(user, hard_delete: true))
     end
 
     describe 'Impersonation' do

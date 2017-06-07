@@ -5,6 +5,13 @@
 - can_update_issue = can?(current_user, :update_issue, @issue)
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
 
+- if defined?(@issue) && @issue.confidential?
+  .confidential-issue-warning{ data: { spy: 'affix' } }
+    %span.confidential-issue-text
+      #{confidential_icon(@issue)} This issue is confidential.
+      %a{ href: help_page_path('user/project/issues/confidential_issues'), target: '_blank' }
+        What are confidential issues?
+
 .clearfix.detail-page-header
   .issuable-header
     .issuable-status-box.status-box.status-box-closed{ class: issue_button_visibility(@issue, false) }
@@ -19,7 +26,6 @@
       = icon('angle-double-left')
 
     .issuable-meta
-      = confidential_icon(@issue)
       = issuable_meta(@issue, @project, "Issue")
 
   .issuable-actions
@@ -63,7 +69,7 @@
           .wiki= markdown_field(@issue, :description)
           %textarea.hidden.js-task-list-field= @issue.description
 
-    = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
+      = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 
     #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
       // This element is filled in using JavaScript.

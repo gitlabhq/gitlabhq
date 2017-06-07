@@ -13,6 +13,17 @@ module SubmoduleHelper
 
     if url =~ /([^\/:]+)\/([^\/]+(?:\.git)?)\Z/
       namespace, project = $1, $2
+      gitlab_hosts = [Gitlab.config.gitlab.url,
+                      Gitlab.config.gitlab_shell.ssh_path_prefix]
+
+      gitlab_hosts.each do |host|
+        if url.start_with?(host)
+          namespace, _, project = url.sub(host, '').rpartition('/')
+          break
+        end
+      end
+
+      namespace.sub!(/\A\//, '')
       project.rstrip!
       project.sub!(/\.git\z/, '')
 

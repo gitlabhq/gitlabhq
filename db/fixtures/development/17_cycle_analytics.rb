@@ -212,12 +212,9 @@ class Gitlab::Seeder::CycleAnalytics
     merge_requests.each do |merge_request|
       Timecop.travel 12.hours.from_now
 
-      CreateDeploymentService.new(merge_request.project, @user, {
-                                    environment: 'production',
-                                    ref: 'master',
-                                    tag: false,
-                                    sha: @project.repository.commit('master').sha
-                                  }).execute
+      job = merge_request.head_pipeline.builds.where.not(environment: nil).last
+
+      CreateDeploymentService.new(job).execute
     end
   end
 end

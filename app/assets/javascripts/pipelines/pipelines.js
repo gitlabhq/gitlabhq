@@ -169,7 +169,7 @@ export default {
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
 
-  beforeDestroyed() {
+  beforeDestroy() {
     eventHub.$off('refreshPipelines');
   },
 

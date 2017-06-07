@@ -172,7 +172,7 @@ class Label < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:priority] = priority(options[:project]) if options.has_key?(:project)
+      json[:priority] = priority(options[:project]) if options.key?(:project)
     end
   end
 

@@ -201,10 +201,12 @@ describe 'project routing' do
   #                         POST   /:project_id/deploy_keys(.:format)          deploy_keys#create
   #  new_project_deploy_key GET    /:project_id/deploy_keys/new(.:format)      deploy_keys#new
   #      project_deploy_key GET    /:project_id/deploy_keys/:id(.:format)      deploy_keys#show
+  # edit_project_deploy_key GET    /:project_id/deploy_keys/:id/edit(.:format) deploy_keys#edit
+  #      project_deploy_key PATCH  /:project_id/deploy_keys/:id(.:format)      deploy_keys#update
   #                         DELETE /:project_id/deploy_keys/:id(.:format)      deploy_keys#destroy
   describe Projects::DeployKeysController, 'routing' do
     it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :new, :create] }
+      let(:actions)    { [:index, :new, :create, :edit, :update] }
       let(:controller) { 'deploy_keys' }
     end
   end

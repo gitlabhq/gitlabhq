@@ -109,7 +109,7 @@ export default {
     eventHub.$on('postAction', this.postAction);
   },
 
-  beforeDestroyed() {
+  beforeDestroy() {
     eventHub.$off('toggleFolder');
     eventHub.$off('postAction');
   },
@@ -255,7 +255,7 @@ export default {
           v-if="canCreateEnvironmentParsed"
           :href="newEnvironmentPath"
           class="btn btn-create js-new-environment-button">
-          New Environment
+          New environment
         </a>
       </div>
 

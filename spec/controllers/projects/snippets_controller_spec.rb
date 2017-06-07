@@ -78,8 +78,18 @@ describe Projects::SnippetsController do
       post :create, {
         namespace_id: project.namespace.to_param,
         project_id: project,
-        project_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
+        project_snippet: { title: 'Title', content: 'Content', description: 'Description' }.merge(snippet_params)
       }.merge(additional_params)
+
+      Snippet.last
+    end
+
+    it 'creates the snippet correctly' do
+      snippet = create_snippet(project, visibility_level: Snippet::PRIVATE)
+
+      expect(snippet.title).to eq('Title')
+      expect(snippet.content).to eq('Content')
+      expect(snippet.description).to eq('Description')
     end
 
     context 'when the snippet is spam' do

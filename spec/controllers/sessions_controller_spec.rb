@@ -1,6 +1,37 @@
 require 'spec_helper'
 
 describe SessionsController do
+  describe '#new' do
+    before do
+      @request.env['devise.mapping'] = Devise.mappings[:user]
+    end
+
+    context 'when auto sign-in is enabled' do
+      before do
+        stub_omniauth_setting(auto_sign_in_with_provider: :saml)
+        allow(controller).to receive(:omniauth_authorize_path).with(:user, :saml).
+          and_return('/saml')
+      end
+
+      context 'and no auto_sign_in param is passed' do
+        it 'redirects to :omniauth_authorize_path' do
+          get(:new)
+
+          expect(response).to have_http_status(302)
+          expect(response).to redirect_to('/saml')
+        end
+      end
+
+      context 'and auto_sign_in=false param is passed' do
+        it 'responds with 200' do
+          get(:new, auto_sign_in: 'false')
+
+          expect(response).to have_http_status(200)
+        end
+      end
+    end
+  end
+
   describe '#create' do
     before do
       @request.env['devise.mapping'] = Devise.mappings[:user]

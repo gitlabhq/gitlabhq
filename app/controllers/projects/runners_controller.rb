@@ -24,7 +24,7 @@ class Projects::RunnersController < Projects::ApplicationController
       @runner.destroy
     end
 
-    redirect_to runners_path(@project)
+    redirect_to runners_path(@project), status: 302
   end
 
   def resume
