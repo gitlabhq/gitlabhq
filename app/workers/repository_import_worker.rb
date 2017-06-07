@@ -25,13 +25,10 @@ class RepositoryImportWorker
 
     project.repository.after_import
     project.import_finish
-<<<<<<< HEAD
 
     # Explicitly schedule mirror for update so
     # that upstream remote is created and fetched
     project.import_schedule if project.mirror?
-=======
->>>>>>> ce/master
   rescue ImportError => ex
     fail_import(project, ex.message)
     raise
