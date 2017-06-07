@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 RSpec.describe Geo::EventLog, type: :model do
   describe 'relationships' do
