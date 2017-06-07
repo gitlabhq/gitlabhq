@@ -34,7 +34,7 @@ class Admin::HooksController < Admin::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to admin_hooks_path
+    redirect_to admin_hooks_path, status: 302
   end
 
   def test

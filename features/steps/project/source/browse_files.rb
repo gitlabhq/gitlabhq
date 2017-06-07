@@ -372,6 +372,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       expect(page).to have_content 'Permalink'
       expect(page).not_to have_content 'Edit'
       expect(page).not_to have_content 'Blame'
+      expect(page).not_to have_content 'Annotate'
       expect(page).to have_content 'Delete'
       expect(page).to have_content 'Replace'
     end

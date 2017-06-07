@@ -7,6 +7,7 @@ import Service from '../services/index';
 import Store from '../stores';
 import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
+import editedComponent from './edited.vue';
 import formComponent from './form.vue';
 import '../../lib/utils/url_utility';
 
@@ -50,6 +51,21 @@ export default {
       required: false,
       default: '',
     },
+    updatedAt: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    updatedByName: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    updatedByPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     issuableTemplates: {
       type: Array,
       required: false,
@@ -86,6 +102,9 @@ export default {
       titleText: this.initialTitleText,
       descriptionHtml: this.initialDescriptionHtml,
       descriptionText: this.initialDescriptionText,
+      updatedAt: this.updatedAt,
+      updatedByName: this.updatedByName,
+      updatedByPath: this.updatedByPath,
     });
 
     return {
@@ -98,10 +117,14 @@ export default {
     formState() {
       return this.store.formState;
     },
+    hasUpdated() {
+      return !!this.state.updatedAt;
+    },
   },
   components: {
     descriptionComponent,
     titleComponent,
+    editedComponent,
     formComponent,
   },
   methods: {
@@ -240,6 +263,11 @@ export default {
         :description-text="state.descriptionText"
         :updated-at="state.updatedAt"
         :task-status="state.taskStatus" />
+      <edited-component
+        v-if="hasUpdated"
+        :updated-at="state.updatedAt"
+        :updated-by-name="state.updatedByName"
+        :updated-by-path="state.updatedByPath" />
     </div>
   </div>
 </template>

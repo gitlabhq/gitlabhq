@@ -111,6 +111,7 @@ Parameters:
 - `author_name` (optional) - Specify the commit author's name
 - `content` (required) - New file content
 - `commit_message` (required) - Commit message
+- `last_commit_id` (optional) - Last known file commit id
 
 If the commit fails for any reason we return a 400 error with a non-specific
 error message. Possible causes for a failed commit include:

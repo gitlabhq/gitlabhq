@@ -22,6 +22,7 @@ gl.issueBoards.BoardsStore = {
   create () {
     this.state.lists = [];
     this.filter.path = gl.utils.getUrlParamsArray().join('&');
+    this.detail = { issue: {} };
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);

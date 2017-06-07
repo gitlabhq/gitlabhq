@@ -187,6 +187,7 @@ $divergence-graph-bar-bg: #ccc;
 $divergence-graph-separator-bg: #ccc;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
+$highlight-changes-color: rgb(235, 255, 232);
 
 
 /*
@@ -569,3 +570,10 @@ $filter-value-selected-color: #d7d7d7;
 Animation Functions
 */
 $dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
+
+/*
+Convdev Index
+*/
+$color-high-score: $green-400;
+$color-average-score: $orange-400;
+$color-low-score: $red-400;

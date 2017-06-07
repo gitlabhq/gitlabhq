@@ -2,6 +2,8 @@
 /* global Issuable */
 /* global ListLabel */
 
+import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
+
 (function() {
   this.LabelsSelect = (function() {
     function LabelsSelect(els) {
@@ -430,20 +432,15 @@
       if ($('.selected_issue:checked').length) {
         return;
       }
-      return $('.issues_bulk_update .labels-filter .dropdown-toggle-text').text('Label');
+      return $('.issues-bulk-update .labels-filter .dropdown-toggle-text').text('Label');
     };
 
     LabelsSelect.prototype.enableBulkLabelDropdown = function() {
-      var issuableBulkActions;
-      if ($('.selected_issue:checked').length) {
-        issuableBulkActions = $('.bulk-update').data('bulkActions');
-        return issuableBulkActions.willUpdateLabels = true;
-      }
+      IssuableBulkUpdateActions.willUpdateLabels = true;
     };
 
     LabelsSelect.prototype.setDropdownData = function($dropdown, isMarking, value) {
       var i, markedIds, unmarkedIds, indeterminateIds;
-      var issuableBulkActions = $('.bulk-update').data('bulkActions');
 
       markedIds = $dropdown.data('marked') || [];
       unmarkedIds = $dropdown.data('unmarked') || [];
@@ -469,13 +466,13 @@
         }
 
         // If an indeterminate item is being unmarked
-        if (issuableBulkActions.getOriginalIndeterminateIds().indexOf(value) > -1) {
+        if (IssuableBulkUpdateActions.getOriginalIndeterminateIds().indexOf(value) > -1) {
           unmarkedIds.push(value);
         }
 
         // If a marked item is being unmarked
         // (a marked item could also be a label that is present in all selection)
-        if (issuableBulkActions.getOriginalCommonIds().indexOf(value) > -1) {
+        if (IssuableBulkUpdateActions.getOriginalCommonIds().indexOf(value) > -1) {
           unmarkedIds.push(value);
         }
       }

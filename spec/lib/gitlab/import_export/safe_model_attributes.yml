@@ -92,6 +92,7 @@ Milestone:
 ProjectSnippet:
 - id
 - title
+- description
 - content
 - author_id
 - project_id
@@ -174,6 +175,7 @@ MergeRequestDiff:
 Ci::Pipeline:
 - id
 - project_id
+- source
 - ref
 - sha
 - before_sha
@@ -191,7 +193,13 @@ Ci::Pipeline:
 - lock_version
 - auto_canceled_by_id
 - pipeline_schedule_id
-- source
+Ci::Stage:
+- id
+- name
+- project_id
+- pipeline_id
+- created_at
+- updated_at
 CommitStatus:
 - id
 - project_id
@@ -213,6 +221,7 @@ CommitStatus:
 - stage
 - trigger_request_id
 - stage_idx
+- stage_id
 - tag
 - ref
 - user_id

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::CreatePipelineService, services: true do
+describe Ci::CreatePipelineService, :services do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
 
@@ -30,6 +30,7 @@ describe Ci::CreatePipelineService, services: true do
       it 'creates a pipeline' do
         expect(pipeline).to be_kind_of(Ci::Pipeline)
         expect(pipeline).to be_valid
+        expect(pipeline).to be_persisted
         expect(pipeline).to be_push
         expect(pipeline).to eq(project.pipelines.last)
         expect(pipeline).to have_attributes(user: user)
@@ -294,6 +295,21 @@ describe Ci::CreatePipelineService, services: true do
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/master")).not_to be_nil
+      end
+    end
+
+    context 'when environment with invalid name' do
+      before do
+        config = YAML.dump(deploy: { environment: { name: 'name,with,commas' }, script: 'ls' })
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'does not create an environment' do
+        expect do
+          result = execute_service
+
+          expect(result).to be_persisted
+        end.not_to change { Environment.count }
       end
     end
   end

@@ -33,7 +33,7 @@ export default {
     <user-avatar-link
       v-if="user"
       class="js-pipeline-url-user"
-      :link-href="pipeline.user.web_url"
+      :link-href="pipeline.user.path"
       :img-src="pipeline.user.avatar_url"
       :tooltip-text="pipeline.user.name"
     />

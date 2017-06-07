@@ -31,9 +31,9 @@ module VisibilityLevelHelper
     when Gitlab::VisibilityLevel::PRIVATE
       "Project access must be granted explicitly to each user."
     when Gitlab::VisibilityLevel::INTERNAL
-      "The project can be cloned by any logged in user."
+      "The project can be accessed by any logged in user."
     when Gitlab::VisibilityLevel::PUBLIC
-      "The project can be cloned without any authentication."
+      "The project can be accessed without any authentication."
     end
   end
 

@@ -47,7 +47,7 @@ export default {
 <template>
   <button
     type="button"
-    class="btn stop-env-link has-tooltip"
+    class="btn stop-env-link has-tooltip hidden-xs hidden-sm"
     data-container="body"
     @click="onClick"
     :disabled="isLoading"

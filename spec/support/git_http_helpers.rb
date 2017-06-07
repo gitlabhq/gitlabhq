@@ -35,14 +35,34 @@ module GitHttpHelpers
     yield response
   end
 
+  def download_or_upload(*args, &block)
+    download(*args, &block)
+    upload(*args, &block)
+  end
+
   def auth_env(user, password, spnego_request_token)
     env = workhorse_internal_api_request_header
-    if user && password
+    if user
       env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user, password)
     elsif spnego_request_token
       env['HTTP_AUTHORIZATION'] = "Negotiate #{::Base64.strict_encode64('opaque_request_token')}"
     end
 
     env
+  end
+
+  def git_access_error(error_key)
+    message = Gitlab::GitAccess::ERROR_MESSAGES[error_key]
+    message || raise("GitAccess error message key '#{error_key}' not found")
+  end
+
+  def git_access_wiki_error(error_key)
+    message = Gitlab::GitAccessWiki::ERROR_MESSAGES[error_key]
+    message || raise("GitAccessWiki error message key '#{error_key}' not found")
+  end
+
+  def change_access_error(error_key)
+    message = Gitlab::Checks::ChangeAccess::ERROR_MESSAGES[error_key]
+    message || raise("ChangeAccess error message key '#{error_key}' not found")
   end
 end

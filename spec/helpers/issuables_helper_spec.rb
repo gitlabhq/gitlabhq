@@ -192,4 +192,22 @@ describe IssuablesHelper do
       expect(helper.issuable_filter_present?).to be_falsey
     end
   end
+
+  describe '#updated_at_by' do
+    let(:user) { create(:user) }
+    let(:unedited_issuable) { create(:issue) }
+    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 2.days.ago, last_edited_at: 2.days.ago) }
+    let(:edited_updated_at_by) do
+      {
+        updatedAt: edited_issuable.updated_at.to_time.iso8601,
+        updatedBy: {
+          name: user.name,
+          path: user_path(user)
+        }
+      }
+    end
+
+    it { expect(helper.updated_at_by(unedited_issuable)).to eq({}) }
+    it { expect(helper.updated_at_by(edited_issuable)).to eq(edited_updated_at_by) }
+  end
 end

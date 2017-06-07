@@ -175,21 +175,53 @@
   }
 }
 
+.slide-down-enter {
+  transform: translateY(-100%);
+}
+
+.slide-down-enter-active {
+  transition: transform $fade-in-duration;
+
+  + .board-list {
+    transform: translateY(-136px);
+    transition: none;
+  }
+}
+
+.slide-down-enter-to {
+  + .board-list {
+    transform: translateY(0);
+    transition: transform $fade-in-duration ease;
+  }
+}
+
+.slide-down-leave {
+  transform: translateY(0);
+}
+
+.slide-down-leave-active {
+  transition: all $fade-in-duration;
+  transform: translateY(-136px);
+
+  + .board-list {
+    transition: transform $fade-in-duration ease;
+    transform: translateY(-136px);
+  }
+}
+
 .board-list-component {
   height: calc(100% - 49px);
+  overflow: hidden;
 }
 
 .board-list {
   height: 100%;
+  width: 100%;
   margin-bottom: 0;
   padding: 5px;
   list-style: none;
   overflow-y: scroll;
   overflow-x: hidden;
-
-  &.is-smaller {
-    height: calc(100% - 136px);
-  }
 }
 
 .board-list-loading {
@@ -352,6 +384,7 @@
 }
 
 .board-new-issue-form {
+  z-index: 1;
   margin: 5px;
 }
 

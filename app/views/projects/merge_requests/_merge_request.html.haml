@@ -1,6 +1,6 @@
 %li{ id: dom_id(merge_request), class: mr_css_classes(merge_request), data: { labels: merge_request.label_ids, id: merge_request.id } }
-  - if @bulk_edit
-    .issue-check
+  - if @can_bulk_update
+    .issue-check.hidden
       = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected_issue"
 
   .issue-info-container

@@ -3,6 +3,7 @@ module Gitlab
     class RelationFactory
       OVERRIDES = { snippets: :project_snippets,
                     pipelines: 'Ci::Pipeline',
+                    stages: 'Ci::Stage',
                     statuses: 'commit_status',
                     triggers: 'Ci::Trigger',
                     pipeline_schedules: 'Ci::PipelineSchedule',

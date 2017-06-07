@@ -1,7 +1,7 @@
 %li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id } }
   .issue-box
-    - if @bulk_edit
-      .issue-check
+    - if @can_bulk_update
+      .issue-check.hidden
         = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
     .issue-info-container
       .issue-title.title

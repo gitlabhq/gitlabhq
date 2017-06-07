@@ -2,8 +2,8 @@ require "spec_helper"
 
 describe Gitlab::Git::Compare, seed_helper: true do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
-  let(:compare) { Gitlab::Git::Compare.new(repository, SeedRepo::BigCommit::ID, SeedRepo::Commit::ID, false) }
-  let(:compare_straight) { Gitlab::Git::Compare.new(repository, SeedRepo::BigCommit::ID, SeedRepo::Commit::ID, true) }
+  let(:compare) { Gitlab::Git::Compare.new(repository, SeedRepo::BigCommit::ID, SeedRepo::Commit::ID, straight: false) }
+  let(:compare_straight) { Gitlab::Git::Compare.new(repository, SeedRepo::BigCommit::ID, SeedRepo::Commit::ID, straight: true) }
 
   describe '#commits' do
     subject do
