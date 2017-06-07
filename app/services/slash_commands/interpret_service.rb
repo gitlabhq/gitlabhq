@@ -92,26 +92,20 @@ module SlashCommands
 
     desc 'Assign'
     explanation do |users|
-      "Assigns #{users.map(&:to_reference).to_sentence}." if users.any?
+      "Assigns #{users.first.to_reference}." if users.any?
     end
     params '@user'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     parse_params do |assignee_param|
-      users = extract_references(assignee_param, :user)
-
-      if users.empty?
-        users = User.where(username: assignee_param.split(' ').map(&:strip))
-      end
-
-      users
+      extract_users(assignee_param)
     end
     command :assign do |users|
       next if users.empty?
 
       if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = users.map(&:id)
+        @updates[:assignee_ids] = [users.last.id]
       else
         @updates[:assignee_id] = users.last.id
       end
@@ -457,6 +451,18 @@ module SlashCommands
           issuable.labels.on_project_boards(issuable.project_id).where.not(id: label_id).pluck(:id)
         @updates[:add_label_ids] = [label_id]
       end
+    end
+
+    def extract_users(params)
+      return [] if params.nil?
+
+      users = extract_references(params, :user)
+
+      if users.empty?
+        users = User.where(username: params.split(' ').map(&:strip))
+      end
+
+      users
     end
 
     def find_labels(labels_param)
