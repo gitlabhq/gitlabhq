@@ -1,6 +1,6 @@
 module EE
   module WikiPages
-    # CreateService EE mixin
+    # BaseService EE mixin
     #
     # This module is intended to encapsulate EE-specific service logic
     # and be included in the `WikiPages::BaseService` service
