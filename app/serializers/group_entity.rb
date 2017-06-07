@@ -2,9 +2,9 @@ class GroupEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
   include MembersHelper
+  include GroupsHelper
 
   expose :id, :name, :path, :description, :visibility
-  expose :avatar_url
   expose :web_url
   expose :full_name, :full_path
   expose :parent_id
@@ -38,5 +38,9 @@ class GroupEntity < Grape::Entity
 
   expose :number_users_with_delimiter do |group|
     number_with_delimiter(group.users.count)
+  end
+
+  expose :avatar_url do |group|
+    group_icon(group)
   end
 end
