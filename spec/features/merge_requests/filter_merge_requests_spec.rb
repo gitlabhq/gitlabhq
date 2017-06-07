@@ -40,13 +40,13 @@ describe 'Filter merge requests', feature: true do
       end
 
       it 'does not change when closed link is clicked' do
-        find('.issues-state-filters .state-closed').click
+        find('.issues-state-filters [data-state="closed"]').click
 
         expect_assignee_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
-        find('.issues-state-filters .state-all').click
+        find('.issues-state-filters [data-state="all"]').click
 
         expect_assignee_visual_tokens()
       end
@@ -73,13 +73,13 @@ describe 'Filter merge requests', feature: true do
       end
 
       it 'does not change when closed link is clicked' do
-        find('.issues-state-filters .state-closed').click
+        find('.issues-state-filters [data-state="closed"]').click
 
         expect_milestone_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
-        find('.issues-state-filters .state-all').click
+        find('.issues-state-filters [data-state="all"]').click
 
         expect_milestone_visual_tokens()
       end
@@ -161,13 +161,13 @@ describe 'Filter merge requests', feature: true do
       end
 
       it 'does not change when closed link is clicked' do
-        find('.issues-state-filters .state-closed').click
+        find('.issues-state-filters [data-state="closed"]').click
 
         expect_assignee_label_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
-        find('.issues-state-filters .state-all').click
+        find('.issues-state-filters [data-state="all"]').click
 
         expect_assignee_label_visual_tokens()
       end

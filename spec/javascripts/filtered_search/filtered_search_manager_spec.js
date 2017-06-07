@@ -106,7 +106,6 @@ describe('Filtered Search Manager', () => {
       const e = {
         currentTarget: {
           blur: () => {},
-          classList: [],
         },
       };
       spyOn(e.currentTarget, 'blur').and.callThrough();
@@ -119,7 +118,6 @@ describe('Filtered Search Manager', () => {
       const e = {
         currentTarget: {
           blur: () => {},
-          classList: [],
         },
       };
 
@@ -131,7 +129,9 @@ describe('Filtered Search Manager', () => {
       const e = {
         currentTarget: {
           blur: () => {},
-          classList: ['class-name', 'state-opened'],
+          dataset: {
+            state: 'opened',
+          },
         },
       };
 

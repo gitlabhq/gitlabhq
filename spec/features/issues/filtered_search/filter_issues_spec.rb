@@ -777,17 +777,17 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     it 'open state' do
-      find('.issues-state-filters .state-closed').click
+      find('.issues-state-filters [data-state="closed"]').click
       wait_for_requests
 
-      find('.issues-state-filters .state-opened').click
+      find('.issues-state-filters [data-state="opened"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 4)
     end
 
     it 'closed state' do
-      find('.issues-state-filters .state-closed').click
+      find('.issues-state-filters [data-state="closed"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 1)
@@ -795,7 +795,7 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     it 'all state' do
-      find('.issues-state-filters .state-all').click
+      find('.issues-state-filters [data-state="all"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 5)

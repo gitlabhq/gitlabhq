@@ -83,14 +83,14 @@ class FilteredSearchManager {
     if (this.stateFilters) {
       this.searchStateWrapper = this.searchState.bind(this);
 
-      this.stateFilters.querySelector('.state-opened')
+      this.stateFilters.querySelector('[data-state="opened"]')
         .addEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('.state-closed')
+      this.stateFilters.querySelector('[data-state="closed"]')
         .addEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('.state-all')
+      this.stateFilters.querySelector('[data-state="all"]')
         .addEventListener('click', this.searchStateWrapper);
 
-      this.mergedState = this.stateFilters.querySelector('.state-merged');
+      this.mergedState = this.stateFilters.querySelector('[data-state="merged"]');
       if (this.mergedState) {
         this.mergedState.addEventListener('click', this.searchStateWrapper);
       }
@@ -99,11 +99,11 @@ class FilteredSearchManager {
 
   unbindStateEvents() {
     if (this.stateFilters) {
-      this.stateFilters.querySelector('.state-opened')
+      this.stateFilters.querySelector('[data-state="opened"]')
         .removeEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('.state-closed')
+      this.stateFilters.querySelector('[data-state="closed"]')
         .removeEventListener('click', this.searchStateWrapper);
-      this.stateFilters.querySelector('.state-all')
+      this.stateFilters.querySelector('[data-state="all"]')
         .removeEventListener('click', this.searchStateWrapper);
 
       if (this.mergedState) {
@@ -500,15 +500,12 @@ class FilteredSearchManager {
 
   searchState(e) {
     const target = e.currentTarget;
-
     // remove focus outline after click
     target.blur();
 
-    // return class name that has a prefix of `state-`
-    const stateClassName = [].find.call(target.classList, name => name.match(/(state-)(\w+)/g));
+    const state = target.dataset && target.dataset.state;
 
-    if (stateClassName) {
-      const state = stateClassName.replace('state-', '');
+    if (state) {
       this.search(state);
     }
   }
