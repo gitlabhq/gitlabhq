@@ -17,6 +17,7 @@ describe Ci::Build, :models do
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
   it { is_expected.to have_many(:deployments) }
+  it { is_expected.to have_many(:sourced_pipelines) }
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }

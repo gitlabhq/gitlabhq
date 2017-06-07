@@ -67,6 +67,17 @@ describe Gitlab::EtagCaching::Router do
     expect(result.name).to eq 'merge_request_pipelines'
   end
 
+  it 'matches build endpoint' do
+    env = build_env(
+      '/my-group/my-project/builds/234.json'
+    )
+
+    result = described_class.match(env)
+
+    expect(result).to be_present
+    expect(result.name).to eq 'project_build'
+  end
+
   it 'does not match blob with confusing name' do
     env = build_env(
       '/my-group/my-project/blob/master/pipelines.json'

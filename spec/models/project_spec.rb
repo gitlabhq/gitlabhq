@@ -77,6 +77,8 @@ describe Project, models: true do
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules).dependent(:destroy) }
+    it { is_expected.to have_many(:sourced_pipelines) }
+    it { is_expected.to have_many(:source_pipelines) }
 
     context 'after initialized' do
       it "has a project_feature" do
