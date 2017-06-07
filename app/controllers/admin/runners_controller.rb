@@ -27,7 +27,7 @@ class Admin::RunnersController < Admin::ApplicationController
   def destroy
     @runner.destroy
 
-    redirect_to admin_runners_path
+    redirect_to admin_runners_path, status: 302
   end
 
   def resume
