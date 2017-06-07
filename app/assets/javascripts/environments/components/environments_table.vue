@@ -64,59 +64,6 @@ export default {
 };
 </script>
 <template>
-<<<<<<< HEAD
-  <table class="table ci-table">
-    <thead>
-      <tr>
-        <th class="environments-name">
-          Environment
-        </th>
-        <th class="environments-deploy">
-          Last deployment
-        </th>
-        <th class="environments-build">
-          Job
-        </th>
-        <th class="environments-commit">
-          Commit
-        </th>
-        <th class="environments-date">
-          Updated
-        </th>
-        <th class="environments-actions"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <template
-        v-for="model in environments"
-        v-bind:model="model">
-        <tr
-          is="environment-item"
-          :model="model"
-          :can-create-deployment="canCreateDeployment"
-          :can-read-environment="canReadEnvironment"
-          :toggleDeployBoard="toggleDeployBoard"
-          />
-
-        <tr v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">
-          <td colspan="6" class="deploy-board-container">
-            <deploy-board
-              :store="store"
-              :service="service"
-              :environmentID="model.id"
-              :deployBoardData="model.deployBoardData"
-              :endpoint="model.rollout_status_path"
-              />
-          </td>
-        </tr>
-
-        <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
-          <tr v-if="isLoadingFolderContent">
-            <td colspan="6">
-              <loading-icon size="2" />
-            </td>
-          </tr>
-=======
   <div class="ci-table" role="grid">
     <div class="gl-responsive-table-row table-row-header" role="row">
       <div class="table-section section-10 environments-name" role="rowheader">
@@ -143,13 +90,25 @@ export default {
         :model="model"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
+        :toggleDeployBoard="toggleDeployBoard"
         />
+
+      <div v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">
+        <div class="deploy-board-container">
+          <deploy-board
+            :store="store"
+            :service="service"
+            :environmentID="model.id"
+            :deployBoardData="model.deployBoardData"
+            :endpoint="model.rollout_status_path"
+            />
+        </div>
+      </div>
 
       <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
         <div v-if="isLoadingFolderContent">
           <loading-icon size="2" />
         </div>
->>>>>>> ce/master
 
         <template v-else>
           <div
@@ -160,21 +119,6 @@ export default {
             :can-read-environment="canReadEnvironment"
             />
 
-<<<<<<< HEAD
-
-            <tr>
-              <td
-                colspan="6"
-                class="text-center">
-                <a
-                  :href="folderUrl(model)"
-                  class="btn btn-default">
-                  Show all
-                </a>
-              </td>
-            </tr>
-          </template>
-=======
           <div>
             <div class="text-center prepend-top-10">
               <a
@@ -184,7 +128,6 @@ export default {
               </a>
             </div>
           </div>
->>>>>>> ce/master
         </template>
       </template>
     </template>
