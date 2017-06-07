@@ -299,8 +299,7 @@
   .description {
     display: inline-block;
     white-space: normal;
-    margin-left: 8px;
-    padding-right: 33px;
+    margin-left: 5px;
   }
 
   .dropdown-toggle > i {
@@ -308,10 +307,11 @@
   }
 
   li {
-    padding-top: 6px;
+    padding: $gl-btn-padding $gl-btn-padding 2px;
 
     > a,
     > button {
+      display: flex;
       margin: 0;
       padding: 0;
       border-radius: 0;
@@ -328,7 +328,6 @@
       }
 
       &.btn .fa:not(:last-child) {
-        margin-right: 0;
         margin-left: 5px;
       }
     }
