@@ -231,7 +231,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           click_button 'Add 1 issue'
         end
 
-        page.within(first('.board')) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page).to have_selector('.card')
         end
       end
@@ -247,7 +247,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           click_button 'Add 1 issue'
         end
 
-        page.within(find('.board:nth-child(2)')) do
+        page.within(find('.board:nth-child(3)')) do
           expect(page).to have_selector('.card')
         end
       end
