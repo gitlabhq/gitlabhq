@@ -38,6 +38,7 @@ import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupName from './group_name';
+import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
@@ -160,6 +161,8 @@ import ShortcutsBlob from './shortcuts_blob';
           new ProjectsList();
           break;
         case 'explore:groups:index':
+          new GroupsList();
+
           const landingElement = document.querySelector('.js-explore-groups-landing');
           if (!landingElement) break;
           const exploreGroupsLanding = new Landing(

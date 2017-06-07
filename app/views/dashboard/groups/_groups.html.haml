@@ -5,5 +5,5 @@
     %template{ 'v-if' => '!isLoading && isEmpty' }
       %div{ 'v-cloak' => true }
         = render 'empty_state'
-    %template{ 'v-else-if' => '!isLoading && !isEmpty'}
+    %template{ 'v-else-if' => '!isLoading && !isEmpty' }
       %groups-component{ ':groups' => 'state.groups', ':page-info' => 'state.pageInfo' }
