@@ -72,8 +72,6 @@ module Ci
       pipeline.tap(&:process!)
     end
 
-    private
-
     def update_merge_requests_head_pipeline
       return unless pipeline.latest?
 
