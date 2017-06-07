@@ -39,6 +39,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Feature availability check using feature list AND license addons.
 - Disable mirror workers for Geo secondaries.
 
+## 9.1.7 (2017-06-07)
+
+- No changes.
+
 ## 9.1.6 (2017-06-02)
 
 - No changes.
