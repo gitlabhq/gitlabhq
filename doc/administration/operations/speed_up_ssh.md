@@ -8,7 +8,7 @@ SSH operations become slow as the number of users grows.
 
 By default, all SSH keys are written to one `authorized_keys` file, from oldest to newest. The way OpenSSH searches for a key to authorize a user is by doing a linear search.
 
-This means that a new user (or an old user with a new key) will force OpenSSH to load the whole file and scan through it on every git SSH operation to find its key. On top of this, the file is not cached by the OS because it is being written pretty much all the time, which also means that IOPS are wasted here.
+This means that a new user (or an old user with a new key) will force OpenSSH to load the whole file and scan through it on every git SSH operation to find its key. On top of this, the file is not cached by the OS if it is being written to frequently, which would result in wasted IOPS.
 
 ## The solution
 
@@ -59,3 +59,13 @@ You can disable any more writes to the `authorized_keys` file by unchecking `Wri
 Again, confirm that SSH is working by removing your user's SSH key in the UI, adding a new one, and attempting to pull a repo.
 
 Then you can backup and delete your `authorized_keys` file for best performance.
+
+## How to go back to using the `authorized_keys` file
+
+This is a brief overview. Please refer to the above instructions for more context.
+
+1. Rebuild the `authorized_keys` file. See https://docs.gitlab.com/ce/administration/raketasks/maintenance.html#rebuild-authorized_keys-file
+1. Enable writes to the `authorized_keys` file
+1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config`
+1. Reload the SSHD service
+1. Remove the `/opt/gitlab-shell/authorized_keys` file
