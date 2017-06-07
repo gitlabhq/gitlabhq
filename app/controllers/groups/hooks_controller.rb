@@ -43,7 +43,7 @@ class Groups::HooksController < Groups::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to group_hooks_path(@group)
+    redirect_to group_hooks_path(@group), status: 302
   end
 
   private
