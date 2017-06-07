@@ -208,15 +208,15 @@ module Ci
     def matching?(patterns, ref, tag, source)
       patterns.any? do |pattern|
         pattern, path = pattern.split('@', 2)
-        match_path?(path) && match_pattern?(pattern, ref, tag, source)
+        unmatches_path?(path) && matches_pattern?(pattern, ref, tag, source)
       end
     end
 
-    def match_path?(path)
-      return !(path && path != self.path)
+    def unmatches_path?(path)
+      path && path != self.path
     end
 
-    def match_pattern?(pattern, ref, tag, source)
+    def matches_pattern?(pattern, ref, tag, source)
       return true if tag && pattern == 'tags'
       return true if !tag && pattern == 'branches'
       return true if source_to_pattern(source) == pattern
@@ -229,8 +229,11 @@ module Ci
     end
 
     def source_to_pattern(source)
-      return source if %w(api external web).include?(source) || source.nil?
-      return source.pluralize
+      if %w(api external web).include?(source) || source.nil?
+        source
+      else
+        source.pluralize
+      end
     end
   end
 end
