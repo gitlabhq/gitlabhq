@@ -6,7 +6,7 @@ import '~/lib/utils/text_utility';
 import './flash';
 import './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
-import CloseReopenReportToggle from './close_reopen_report_toggle';
+import * as CloseReopenReportToggle from './close_reopen_report_toggle';
 
 class Issue {
   constructor() {
@@ -98,7 +98,7 @@ class Issue {
     const dropdownList = container.querySelector('.js-issuable-close-menu');
     const button = container.querySelector('.js-issuable-close-button');
 
-    this.closeReopenReportToggle = new CloseReopenReportToggle({
+    this.closeReopenReportToggle = new CloseReopenReportToggle.default({
       dropdownTrigger,
       dropdownList,
       button,

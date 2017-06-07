@@ -33,7 +33,7 @@
 
     %li.divider.droplab-item-ignore
 
-    %li{ data: { text: 'Report abuse', url: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)), button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
+    %li.report-item{ data: { text: 'Report abuse', url: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)), button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
       %button.btn.btn-transparent
         = icon('check', class: 'icon')
         .description
