@@ -140,7 +140,7 @@ export default class GroupsStore {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  static toggleSubGroups(toggleGroup) {
+  toggleSubGroups(toggleGroup) {
     const group = toggleGroup;
     group.isOpen = !group.isOpen;
     return group;

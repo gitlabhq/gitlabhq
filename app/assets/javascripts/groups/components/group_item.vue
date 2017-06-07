@@ -102,71 +102,102 @@ export default {
     :id="groupDomId"
     :class="rowClass"
     >
-    <div class="group-row-contents">
-      <div class="controls">
+    <div
+      class="group-row-contents">
+      <div
+        class="controls">
         <a
           v-if="group.canEdit"
           class="edit-group btn"
           :href="group.editPath">
           <i aria-hidden="true" class="fa fa-cogs"></i>
         </a>
-        <a @click="onLeaveGroup"
+        <a
+          @click="onLeaveGroup"
           :href="group.leavePath"
           class="leave-group btn"
           title="Leave this group">
-          <i aria-hidden="true" class="fa fa-sign-out"></i>
+          <i
+            aria-hidden="true"
+            class="fa fa-sign-out">
+          </i>
         </a>
       </div>
-
-      <div class="stats">
-        <span class="number-projects">
-          <i aria-hidden="true" class="fa fa-bookmark"></i>
+      <div
+        class="stats">
+        <span
+          class="number-projects">
+          <i
+            aria-hidden="true"
+            class="fa fa-bookmark">
+          </i>
           {{group.numberProjects}}
         </span>
-        <span class="number-users">
-          <i aria-hidden="true" class="fa fa-users"></i>
+        <span
+          class="number-users">
+          <i
+            aria-hidden="true"
+            class="fa fa-users">
+          </i>
           {{group.numberUsers}}
         </span>
-        <span class="group-visibility">
-          <i aria-hidden="true" :class="visibilityIcon"></i>
+        <span
+          class="group-visibility">
+          <i
+            aria-hidden="true"
+            :class="visibilityIcon">
+          </i>
         </span>
       </div>
-
-      <div class="folder-toggle-wrap">
-        <span class="folder-caret" v-if="group.hasSubgroups">
+      <div
+        class="folder-toggle-wrap">
+        <span
+          class="folder-caret"
+          v-if="group.hasSubgroups">
           <i
             v-if="group.isOpen"
-            class="fa fa-caret-down" />
+            class="fa fa-caret-down">
+          </i>
           <i
             v-if="!group.isOpen"
-            class="fa fa-caret-right" />
+            class="fa fa-caret-right">
+          </i>
         </span>
-
         <span class="folder-icon">
           <i
             v-if="group.isOpen"
             class="fa fa-folder-open"
-            aria-hidden="true"></i>
+            aria-hidden="true">
+          </i>
           <i
             v-if="!group.isOpen"
-            class="fa fa-folder"></i>
+            class="fa fa-folder"
+            aria-hidden="true">
+          </i>
         </span>
       </div>
-
-      <div class="avatar-container s40 hidden-xs">
-        <a :href="group.webUrl">
-          <img class="avatar s40" :src="group.avatarUrl" />
+      <div
+        class="avatar-container s40 hidden-xs">
+        <a
+          :href="group.webUrl">
+          <img
+            class="avatar s40"
+            :src="group.avatarUrl"
+          />
         </a>
       </div>
-
-      <div class="title">
-        <a :href="group.webUrl">{{fullPath}}</a>
+      <div
+        class="title">
+        <a
+          :href="group.webUrl">{{fullPath}}</a>
       </div>
-
-      <div class="description">
-        {{group.description}}
-      </div>
+      <div
+        class="description">{{group.description}}</div>
     </div>
-    <group-folder v-if="group.isOpen && hasGroups" :groups="group.subGroups" :baseGroup="group" />
+    <group-folder
+      v-if="group.isOpen && hasGroups"
+      :groups="group.subGroups"
+      :baseGroup="group"
+    />
   </li>
 </template>

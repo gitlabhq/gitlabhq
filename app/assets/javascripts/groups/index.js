@@ -10,7 +10,7 @@ import GroupsService from './services/groups_service';
 import eventHub from './event_hub';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const el = document.querySelector('#dashboard-group-app');
+  const el = document.getElementById('dashboard-group-app');
 
   // Don't do anything if element doesn't exist (No groups)
   // This is for when the user enters directly to the page via URL
@@ -74,27 +74,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         getGroups = this.service.getGroups(parentId, page, filterGroups, sort);
-        getGroups.then((response) => {
-          this.updateGroups(response.json(), parentGroup);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        })
-        .catch(this.handleErrorResponse);
+        getGroups
+          .then(response => response.json())
+          .then((response) => {
+            this.isLoading = false;
+
+            this.updateGroups(response, parentGroup);
+          })
+          .catch(this.handleErrorResponse);
 
         return getGroups;
       },
       fetchPage(page, filterGroups, sort) {
         this.isLoading = true;
 
-        this.service.getGroups(null, page, filterGroups, sort)
+        return this.service
+          .getGroups(null, page, filterGroups, sort)
           .then((response) => {
+            this.isLoading = false;
+            $.scrollTo(0);
+
             this.updateGroups(response.json());
             this.updatePagination(response.headers);
-            $.scrollTo(0);
-          })
-          .finally(() => {
-            this.isLoading = false;
           })
           .catch(this.handleErrorResponse);
       },
@@ -104,18 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
           this.fetchGroups(parentGroup);
         }
 
-        GroupsStore.toggleSubGroups(parentGroup);
+        this.store.toggleSubGroups(parentGroup);
       },
       leaveGroup(group, collection) {
         this.service.leaveGroup(group.leavePath)
           .then((response) => {
+            $.scrollTo(0);
+
             this.store.removeGroup(group, collection);
 
             // eslint-disable-next-line no-new
             new Flash(response.json().notice, 'notice');
-          })
-          .finally(() => {
-            $.scrollTo(0);
           })
           .catch((response) => {
             let message = 'An error occurred. Please try again.';
@@ -135,9 +135,19 @@ document.addEventListener('DOMContentLoaded', () => {
         this.store.storePagination(headers);
       },
       handleErrorResponse() {
+        this.isLoading = false;
+        $.scrollTo(0);
+
         // eslint-disable-next-line no-new
         new Flash('An error occurred. Please try again.');
       },
+    },
+    created() {
+      eventHub.$on('fetchPage', this.fetchPage);
+      eventHub.$on('toggleSubGroups', this.toggleSubGroups);
+      eventHub.$on('leaveGroup', this.leaveGroup);
+      eventHub.$on('updateGroups', this.updateGroups);
+      eventHub.$on('updatePagination', this.updatePagination);
     },
     beforeMount() {
       let groupFilterList = null;
@@ -155,19 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       groupFilterList = new GroupFilterableList(opts);
       groupFilterList.initSearch();
-
-      eventHub.$on('fetchPage', this.fetchPage);
-      eventHub.$on('toggleSubGroups', this.toggleSubGroups);
-      eventHub.$on('leaveGroup', this.leaveGroup);
-      eventHub.$on('updateGroups', this.updateGroups);
-      eventHub.$on('updatePagination', this.updatePagination);
     },
     mounted() {
       this.fetchGroups()
         .then((response) => {
           this.updatePagination(response.headers);
-        })
-        .finally(() => {
           this.isLoading = false;
         })
         .catch(this.handleErrorResponse);

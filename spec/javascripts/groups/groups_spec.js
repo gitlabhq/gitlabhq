@@ -5,7 +5,7 @@ import groupsComponent from '~/groups/components/groups.vue';
 import GroupsStore from '~/groups/stores/groups_store';
 import { groupsData } from './mock_data';
 
-fdescribe('Groups Component', () => {
+describe('Groups Component', () => {
   let GroupsComponent;
   let store;
   let component;

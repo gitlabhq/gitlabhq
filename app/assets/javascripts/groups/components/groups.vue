@@ -1,11 +1,8 @@
 <script>
-import TablePaginationComponent from '~/vue_shared/components/table_pagination.vue';
+import TablePagination from '~/vue_shared/components/table_pagination.vue';
 import eventHub from '../event_hub';
 
 export default {
-  components: {
-    'gl-pagination': TablePaginationComponent,
-  },
   props: {
     groups: {
       type: Object,
@@ -15,6 +12,9 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  components: {
+    TablePagination,
   },
   methods: {
     change(page) {
@@ -28,9 +28,12 @@ export default {
 
 <template>
   <div class="groups-list-tree-container">
-    <group-folder :groups="groups" />
-    <gl-pagination
+    <group-folder
+      :groups="groups"
+    />
+    <table-pagination
       :change="change"
-      :pageInfo="pageInfo" />
+      :pageInfo="pageInfo"
+    />
   </div>
 </template>

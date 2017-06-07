@@ -340,21 +340,21 @@ ul.indent-list {
       }
     }
   }
-  
+
   .group-row {
     padding: 0;
     border: none;
   }
 
   .group-row-contents {
-    padding: 10px 10px 8px 10px;
+    padding: 10px 10px 8px;
     border-top: solid 1px transparent;
     border-bottom: solid 1px $white-normal;
 
-    &:hover{
+    &:hover {
       border-color: $row-hover-border;
       background-color: $row-hover;
-      cursor: pointer; 
+      cursor: pointer;
     }
   }
 }
