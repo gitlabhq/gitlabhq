@@ -34,8 +34,8 @@ module Ci
     end
 
     def new_builds
-      @new_builds ||= pipeline.config_builds_attributes.
-        reject { |build| existing_build_names.include?(build[:name]) }
+      @new_builds ||= pipeline.config_builds_attributes
+        .reject { |build| existing_build_names.include?(build[:name]) }
     end
 
     def existing_build_names

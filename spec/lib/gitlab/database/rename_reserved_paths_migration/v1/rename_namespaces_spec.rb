@@ -21,8 +21,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
         parent = create(:group, path: 'parent')
         child = create(:group, path: 'the-path', parent: parent)
 
-        found_ids = subject.namespaces_for_paths(type: :child).
-                      map(&:id)
+        found_ids = subject.namespaces_for_paths(type: :child)
+                      .map(&:id)
 
         expect(found_ids).to contain_exactly(child.id)
       end
@@ -38,8 +38,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
                            path: 'the-path',
                            parent: create(:group))
 
-        found_ids = subject.namespaces_for_paths(type: :child).
-                      map(&:id)
+        found_ids = subject.namespaces_for_paths(type: :child)
+                      .map(&:id)
 
         expect(found_ids).to contain_exactly(namespace.id)
       end
@@ -53,8 +53,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
                            path: 'the-path',
                            parent: create(:group))
 
-        found_ids = subject.namespaces_for_paths(type: :child).
-                      map(&:id)
+        found_ids = subject.namespaces_for_paths(type: :child)
+                      .map(&:id)
 
         expect(found_ids).to contain_exactly(namespace.id)
       end
@@ -68,8 +68,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
                                   path: 'the-path',
                                   parent: create(:group))
 
-        found_ids = subject.namespaces_for_paths(type: :top_level).
-                      map(&:id)
+        found_ids = subject.namespaces_for_paths(type: :top_level)
+                      .map(&:id)
 
         expect(found_ids).to contain_exactly(root_namespace.id)
       end
@@ -81,8 +81,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
                                   path: 'the-path',
                                   parent: create(:group))
 
-        found_ids = subject.namespaces_for_paths(type: :top_level).
-                      map(&:id)
+        found_ids = subject.namespaces_for_paths(type: :top_level)
+                      .map(&:id)
 
         expect(found_ids).to contain_exactly(root_namespace.id)
       end
@@ -140,9 +140,9 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
     let(:namespace) { create(:group, name: 'the-path') }
 
     it 'renames paths & routes for the namespace' do
-      expect(subject).to receive(:rename_path_for_routable).
-                           with(namespace).
-                           and_call_original
+      expect(subject).to receive(:rename_path_for_routable)
+                           .with(namespace)
+                           .and_call_original
 
       subject.rename_namespace(namespace)
 
@@ -211,15 +211,15 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces do
     end
 
     it 'renames top level namespaces the namespace' do
-      expect(subject).to receive(:rename_namespace).
-                           with(migration_namespace(top_level_namespace))
+      expect(subject).to receive(:rename_namespace)
+                           .with(migration_namespace(top_level_namespace))
 
       subject.rename_namespaces(type: :top_level)
     end
 
     it 'renames child namespaces' do
-      expect(subject).to receive(:rename_namespace).
-                           with(migration_namespace(child_namespace))
+      expect(subject).to receive(:rename_namespace)
+                           .with(migration_namespace(child_namespace))
 
       subject.rename_namespaces(type: :child)
     end

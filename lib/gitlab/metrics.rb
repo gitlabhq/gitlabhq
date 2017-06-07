@@ -153,8 +153,8 @@ module Gitlab
         host = settings[:host]
         port = settings[:port]
 
-        InfluxDB::Client.
-          new(udp: { host: host, port: port })
+        InfluxDB::Client
+          .new(udp: { host: host, port: port })
       end
     end
   end

@@ -6,8 +6,8 @@ module WikiHelper
   # Returns a String composed of the capitalized name of each directory and the
   # capitalized name of the page itself.
   def breadcrumb(page_slug)
-    page_slug.split('/').
-      map { |dir_or_page| WikiPage.unhyphenize(dir_or_page).capitalize }.
-      join(' / ')
+    page_slug.split('/')
+      .map { |dir_or_page| WikiPage.unhyphenize(dir_or_page).capitalize }
+      .join(' / ')
   end
 end

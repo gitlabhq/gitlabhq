@@ -117,9 +117,9 @@ class KubernetesService < DeploymentService
   def terminals(environment)
     with_reactive_cache do |data|
       pods = data.fetch(:pods, nil)
-      filter_pods(pods, app: environment.slug).
-        flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.
-        each { |terminal| add_terminal_auth(terminal, terminal_auth) }
+      filter_pods(pods, app: environment.slug)
+        .flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
+        .each { |terminal| add_terminal_auth(terminal, terminal_auth) }
     end
   end
 

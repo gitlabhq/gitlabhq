@@ -92,9 +92,9 @@ describe Gitlab::Git::Blob, seed_helper: true do
       end
 
       it 'marks the blob as binary' do
-        expect(Gitlab::Git::Blob).to receive(:new).
-          with(hash_including(binary: true)).
-          and_call_original
+        expect(Gitlab::Git::Blob).to receive(:new)
+          .with(hash_including(binary: true))
+          .and_call_original
 
         expect(blob).to be_binary
       end

@@ -86,8 +86,8 @@ class GitPushService < BaseService
 
     push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
       if commit.matches_cross_reference_regex?
-        ProcessCommitWorker.
-          perform_async(project.id, current_user.id, commit.to_hash, default)
+        ProcessCommitWorker
+          .perform_async(project.id, current_user.id, commit.to_hash, default)
       end
     end
   end

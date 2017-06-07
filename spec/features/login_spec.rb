@@ -122,8 +122,8 @@ feature 'Login', feature: true do
           end
 
           it 'invalidates the used code' do
-            expect { enter_code(codes.sample) }.
-              to change { user.reload.otp_backup_codes.size }.by(-1)
+            expect { enter_code(codes.sample) }
+              .to change { user.reload.otp_backup_codes.size }.by(-1)
           end
         end
 

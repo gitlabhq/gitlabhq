@@ -172,8 +172,8 @@ module Ci
     end
 
     def stages_name
-      statuses.order(:stage_idx).distinct.
-        pluck(:stage, :stage_idx).map(&:first)
+      statuses.order(:stage_idx).distinct
+        .pluck(:stage, :stage_idx).map(&:first)
     end
 
     def stages
@@ -294,9 +294,9 @@ module Ci
     def config_builds_attributes
       return [] unless config_processor
 
-      config_processor.
-        builds_for_ref(ref, tag?, trigger_requests.first).
-        sort_by { |build| build[:stage_idx] }
+      config_processor
+        .builds_for_ref(ref, tag?, trigger_requests.first)
+        .sort_by { |build| build[:stage_idx] }
     end
 
     def has_warnings?

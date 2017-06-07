@@ -7,8 +7,8 @@ describe ProjectCacheWorker do
 
   describe '#perform' do
     before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
-        and_return(true)
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
+        .and_return(true)
     end
 
     context 'with a non-existing project' do
@@ -39,9 +39,9 @@ describe ProjectCacheWorker do
       end
 
       it 'refreshes the method caches' do
-        expect_any_instance_of(Repository).to receive(:refresh_method_caches).
-          with(%i(readme)).
-          and_call_original
+        expect_any_instance_of(Repository).to receive(:refresh_method_caches)
+          .with(%i(readme))
+          .and_call_original
 
         worker.perform(project.id, %w(readme))
       end
@@ -51,9 +51,9 @@ describe ProjectCacheWorker do
           allow(MarkupHelper).to receive(:gitlab_markdown?).and_return(false)
           allow(MarkupHelper).to receive(:plain?).and_return(true)
 
-          expect_any_instance_of(Repository).to receive(:refresh_method_caches).
-                                                  with(%i(readme)).
-                                                  and_call_original
+          expect_any_instance_of(Repository).to receive(:refresh_method_caches)
+                                                  .with(%i(readme))
+                                                  .and_call_original
           worker.perform(project.id, %w(readme))
         end
       end
@@ -63,9 +63,9 @@ describe ProjectCacheWorker do
   describe '#update_statistics' do
     context 'when a lease could not be obtained' do
       it 'does not update the repository size' do
-        allow(worker).to receive(:try_obtain_lease_for).
-          with(project.id, :update_statistics).
-          and_return(false)
+        allow(worker).to receive(:try_obtain_lease_for)
+          .with(project.id, :update_statistics)
+          .and_return(false)
 
         expect(statistics).not_to receive(:refresh!)
 
@@ -75,9 +75,9 @@ describe ProjectCacheWorker do
 
     context 'when a lease could be obtained' do
       it 'updates the project statistics' do
-        allow(worker).to receive(:try_obtain_lease_for).
-          with(project.id, :update_statistics).
-          and_return(true)
+        allow(worker).to receive(:try_obtain_lease_for)
+          .with(project.id, :update_statistics)
+          .and_return(true)
 
         expect(statistics).to receive(:refresh!)
           .with(only: %i(repository_size))
