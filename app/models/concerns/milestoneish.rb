@@ -1,7 +1,7 @@
 module Milestoneish
   def closed_items_count(user)
     memoize_per_user(user, :closed_items_count) do
-      (count_issues_by_state(user)['closed'] || 0) + merge_requests.closed_and_merged.size
+      (count_issues_by_state(user)['closed'].count || 0) + merge_requests.closed_and_merged.size
     end
   end
 
@@ -12,7 +12,7 @@ module Milestoneish
   end
 
   def total_issues_count(user)
-    count_issues_by_state(user).values.sum
+    issues_visible_to_user(user).length
   end
 
   def complete?(user)
@@ -39,8 +39,8 @@ module Milestoneish
 
   def issues_visible_to_user(user)
     memoize_per_user(user, :issues_visible_to_user) do
-      IssuesFinder.new(user, issues_finder_params)
-        .execute.includes(:assignees).where(milestone_id: milestoneish_ids)
+      IssuesFinder.new(user, issues_finder_params.merge({ sort: 'priority'}))
+        .execute.preload(:assignees).where(milestone_id: milestoneish_ids)
     end
   end
 
@@ -66,7 +66,9 @@ module Milestoneish
 
   def count_issues_by_state(user)
     memoize_per_user(user, :count_issues_by_state) do
-      issues_visible_to_user(user).reorder(nil).group(:state).count
+      # Need to group and count using ruby array to not break
+      # label ordering
+      issues_visible_to_user(user).to_a.group_by(&:state)
     end
   end
 
