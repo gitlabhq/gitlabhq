@@ -539,6 +539,10 @@ entry.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
 
+## 9.0.10 (2017-06-07)
+
+- No changes.
+
 ## 9.0.9 (2017-06-02)
 
 - Fix visibility when referencing snippets.
