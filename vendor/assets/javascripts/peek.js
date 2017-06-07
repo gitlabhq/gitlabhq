@@ -3,7 +3,7 @@ var requestId;
 requestId = null;
 
 (function($) {
-  var fetchRequestResults, getRequestId, initializeTipsy, peekEnabled, toggleBar, updatePerformanceBar;
+  var fetchRequestResults, getRequestId, peekEnabled, toggleBar, updatePerformanceBar;
   getRequestId = function() {
     if (requestId != null) {
       return requestId;
@@ -42,16 +42,6 @@ requestId = null;
     }
     return $(document).trigger('peek:render', [getRequestId(), results]);
   };
-  initializeTipsy = function() {
-    return $('#peek .peek-tooltip, #peek .tooltip').each(function() {
-      var el, gravity;
-      el = $(this);
-      gravity = el.hasClass('rightwards') || el.hasClass('leftwards') ? $.fn.tipsy.autoWE : $.fn.tipsy.autoNS;
-      return el.tipsy({
-        gravity: gravity
-      });
-    });
-  };
   toggleBar = function(event) {
     var wrapper;
     if ($(event.target).is(':input')) {
@@ -80,7 +70,6 @@ requestId = null;
     });
   };
   $(document).on('keypress', toggleBar);
-  $(document).on('peek:update', initializeTipsy);
   $(document).on('peek:update', fetchRequestResults);
   $(document).on('pjax:end', function(event, xhr, options) {
     if (xhr != null) {
