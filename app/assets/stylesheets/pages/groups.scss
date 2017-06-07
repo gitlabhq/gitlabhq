@@ -117,6 +117,14 @@
   }
 }
 
+.user-settings-pipeline-quota {
+  margin-top: $gl-padding;
+
+  .pipeline-quota {
+    border-top: none;
+  }
+}
+
 table.pipeline-project-metrics tr td {
   padding: $gl-padding;
 }

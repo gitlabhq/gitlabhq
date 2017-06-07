@@ -47,5 +47,9 @@ resource :profile, only: [:show, :update] do
     end
 
     resources :u2f_registrations, only: [:destroy]
+
+    ## EE-specific
+    resources :pipeline_quota, only: [:index]
+    ## EE-specific
   end
 end
