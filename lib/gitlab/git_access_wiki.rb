@@ -1,6 +1,7 @@
 module Gitlab
   class GitAccessWiki < GitAccess
     ERROR_MESSAGES = {
+      geo:           "You can't push code to a secondary GitLab Geo node.",
       write_to_wiki: "You are not allowed to write to this project's wiki."
     }.freeze
 
@@ -13,17 +14,12 @@ module Gitlab
     end
 
     def check_single_change_access(change)
-<<<<<<< HEAD
       if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
-        build_status_object(false, "You can't push code to a secondary GitLab Geo node.")
-      elsif user_access.can_do_action?(:create_wiki)
-        build_status_object(true)
-      else
-        build_status_object(false, "You are not allowed to write to this project's wiki.")
-=======
+        raise UnauthorizedError, ERROR_MESSAGES[:geo]
+      end
+
       unless user_access.can_do_action?(:create_wiki)
         raise UnauthorizedError, ERROR_MESSAGES[:write_to_wiki]
->>>>>>> ce/master
       end
 
       true

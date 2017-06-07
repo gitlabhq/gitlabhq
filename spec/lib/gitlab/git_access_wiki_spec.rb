@@ -22,20 +22,15 @@ describe Gitlab::GitAccessWiki, lib: true do
 
       subject { access.check('git-receive-pack', changes) }
 
-<<<<<<< HEAD
-      it { expect(subject.allowed?).to be_truthy }
+      it { expect { subject }.not_to raise_error }
 
       context 'when in a secondary gitlab geo node' do
         before do
           allow(Gitlab::Geo).to receive(:enabled?) { true }
           allow(Gitlab::Geo).to receive(:secondary?) { true }
         end
-=======
-    it { expect { subject }.not_to raise_error }
-  end
->>>>>>> ce/master
 
-        it { expect(subject.allowed?).to be_falsey }
+        it { expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can't push code to a secondary GitLab Geo node.") }
       end
     end
   end
