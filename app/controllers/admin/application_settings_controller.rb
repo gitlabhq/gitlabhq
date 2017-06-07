@@ -53,7 +53,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   private
 
   def set_application_setting
-    @application_setting = ApplicationSetting.current
+    @application_setting = current_application_settings
   end
 
   def application_setting_params
@@ -177,7 +177,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :check_namespace_plan,
       :mirror_max_delay,
       :mirror_max_capacity,
-      :mirror_capacity_threshold
+      :mirror_capacity_threshold,
+      :authorized_keys_enabled
     ]
   end
 end
