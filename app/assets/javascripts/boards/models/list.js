@@ -110,16 +110,13 @@ class List {
       .then((resp) => {
         const data = resp.json();
         issue.id = data.iid;
-<<<<<<< HEAD
         issue.milestone = data.milestone;
-=======
       })
       .then(() => {
         if (this.issuesSize > 1) {
           const moveBeforeIid = this.issues[1].id;
           gl.boardService.moveIssue(issue.id, null, null, null, moveBeforeIid);
         }
->>>>>>> ce/master
       });
   }
 

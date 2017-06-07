@@ -11,11 +11,8 @@ function highlightChanges($elm) {
       this.toggleSettings = this.toggleSettings.bind(this);
       this.$selects = $('.features select');
       this.$repoSelects = this.$selects.filter('.js-repo-select');
-<<<<<<< HEAD
       this.$enableApprovers = $('.js-require-approvals-toggle');
-=======
       this.$projectSelects = this.$selects.not('.js-repo-select');
->>>>>>> ce/master
 
       $('.project-edit-container').on('ajax:before', (function(_this) {
         return function() {
