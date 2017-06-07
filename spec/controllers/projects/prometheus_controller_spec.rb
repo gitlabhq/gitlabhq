@@ -8,7 +8,7 @@ describe Projects::PrometheusController do
 
   before do
     allow(controller).to receive(:project).and_return(project)
-    allow(project).to receive(:monitoring_service).and_return(prometheus_service)
+    allow(controller).to receive(:prometheus_service).and_return(prometheus_service)
 
     project.add_master(user)
     sign_in(user)
@@ -16,11 +16,11 @@ describe Projects::PrometheusController do
 
   describe 'GET #active_metrics' do
     context 'when prometheus metrics are enabled' do
-      before do
-        allow(prometheus_service).to receive(:reactive_query)
-      end
-
       context 'when data is not present' do
+        before do
+          allow(prometheus_service).to receive(:matched_metrics).and_return({})
+        end
+
         it 'returns no content response' do
           get :active_metrics, project_params(format: :json)
 
@@ -32,8 +32,7 @@ describe Projects::PrometheusController do
         let(:sample_response) { { some_data: 1 } }
 
         before do
-          allow(prometheus_service).to receive(:reactive_query).with(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name)
-                                         .and_return(sample_response)
+          allow(prometheus_service).to receive(:matched_metrics).and_return(sample_response)
         end
 
         it 'returns no content response' do

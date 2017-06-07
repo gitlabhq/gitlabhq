@@ -77,6 +77,35 @@ describe Deployment, models: true do
     end
   end
 
+  describe '#additional_metrics' do
+    let(:deployment) { create(:deployment) }
+
+    subject { deployment.additional_metrics }
+
+    context 'metrics are disabled' do
+      it { is_expected.to eq({}) }
+    end
+
+    context 'metrics are enabled' do
+      let(:simple_metrics) do
+        {
+          success: true,
+          metrics: {},
+          last_update: 42
+        }
+      end
+
+      let(:prometheus_service) { double('prometheus_service') }
+
+      before do
+        allow(deployment).to receive(:prometheus_service).and_return(prometheus_service)
+        allow(prometheus_service).to receive(:additional_deployment_metrics).and_return(simple_metrics)
+      end
+
+      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }
+    end
+  end
+
   describe '#stop_action' do
     let(:build) { create(:ci_build) }
 
