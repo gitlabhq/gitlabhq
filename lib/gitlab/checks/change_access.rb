@@ -1,11 +1,8 @@
 module Gitlab
   module Checks
     class ChangeAccess
-<<<<<<< HEAD
       include PathLocksHelper
 
-      # protocol is currently used only in EE
-=======
       ERROR_MESSAGES = {
         push_code: 'You are not allowed to push code to this project.',
         delete_default_branch: 'The default branch of a project cannot be deleted.',
@@ -20,7 +17,7 @@ module Gitlab
         create_protected_tag: 'You are not allowed to create this tag as it is protected.'
       }.freeze
 
->>>>>>> ce/master
+      # protocol is currently used only in EE
       attr_reader :user_access, :project, :skip_authorization, :protocol
 
       def initialize(
@@ -39,13 +36,10 @@ module Gitlab
       def exec
         return true if skip_authorization
 
-<<<<<<< HEAD
-        error = push_checks || branch_checks || tag_checks || push_rule_check
-=======
         push_checks
         branch_checks
         tag_checks
->>>>>>> ce/master
+        push_rule_check
 
         true
       end
@@ -155,7 +149,7 @@ module Gitlab
         # Prevent tag removal
         if @tag_name
           if tag_deletion_denied_by_push_rule?(push_rule)
-            return 'You cannot delete a tag'
+            raise GitAccess::UnauthorizedError, 'You cannot delete a tag'
           end
         else
           commit_validation = push_rule.try(:commit_validation?)
@@ -166,16 +160,14 @@ module Gitlab
           commits.each do |commit|
             if commit_validation
               error = check_commit(commit, push_rule)
-              return error if error
+              raise GitAccess::UnauthorizedError, error if error
             end
 
             if error = check_commit_diff(commit, push_rule)
-              return error
+              raise GitAccess::UnauthorizedError, error
             end
           end
         end
-
-        nil
       end
 
       def tag_deletion_denied_by_push_rule?(push_rule)
@@ -186,7 +178,7 @@ module Gitlab
       end
 
       # If commit does not pass push rule validation the whole push should be rejected.
-      # This method should return nil if no error found or status object if there are some errors.
+      # This method should return nil if no error found or a string if error.
       # In case of errors - all other checks will be canceled and push will be rejected.
       def check_commit(commit, push_rule)
         unless push_rule.commit_message_allowed?(commit.safe_message)

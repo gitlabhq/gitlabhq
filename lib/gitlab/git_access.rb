@@ -17,7 +17,8 @@ module Gitlab
       account_blocked: 'Your account has been blocked.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
-      receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.'
+      receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
+      cannot_push_to_secondary_geo: "You can't push code to a secondary GitLab Geo node."
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -148,7 +149,7 @@ module Gitlab
       end
 
       if Gitlab::Geo.secondary?
-        raise UnauthorizedError, "You can't push code on a secondary GitLab Geo node."
+        raise UnauthorizedError, ERROR_MESSAGES[:cannot_push_to_secondary_geo]
       end
 
       if deploy_key
@@ -192,13 +193,9 @@ module Gitlab
 
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each do |change|
-<<<<<<< HEAD
-        status = check_single_change_access(change)
-
-        unless status.allowed?
-          # If user does not have access to make at least one change - cancel all push
-          raise UnauthorizedError, status.message
-        end
+        # If user does not have access to make at least one change, cancel all
+        # push by allowing the exception to bubble up
+        check_single_change_access(change)
 
         if project.size_limit_enabled?
           push_size_in_bytes += EE::Gitlab::Deltas.delta_size_check(change, project.repository)
@@ -207,11 +204,6 @@ module Gitlab
 
       if project.changes_will_exceed_size_limit?(push_size_in_bytes)
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
-=======
-        # If user does not have access to make at least one change, cancel all
-        # push by allowing the exception to bubble up
-        check_single_change_access(change)
->>>>>>> ce/master
       end
     end
 
@@ -233,17 +225,16 @@ module Gitlab
       actor.is_a?(DeployKey)
     end
 
-<<<<<<< HEAD
     def geo_node_key
       actor if geo_node_key?
     end
 
     def geo_node_key?
       actor.is_a?(GeoNodeKey)
-=======
+    end
+
     def ci?
       actor == :ci
->>>>>>> ce/master
     end
 
     def can_read_project?
@@ -287,13 +278,8 @@ module Gitlab
         case actor
         when User
           actor
-<<<<<<< HEAD
-        when DeployKey
-          nil
         when GeoNodeKey
           nil
-=======
->>>>>>> ce/master
         when Key
           actor.user unless actor.is_a?(DeployKey)
         when :ci
