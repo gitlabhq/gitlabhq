@@ -123,7 +123,6 @@
   }
 }
 
-<<<<<<< HEAD
 /**
  * Deploy boards
  */
@@ -271,7 +270,9 @@
     width: 20px;
     display: block;
     font-size: 20px;
-=======
+  }
+}
+
 .gl-responsive-table-row {
   .environments-actions {
     @media (min-width: $screen-md-min) {
@@ -317,7 +318,6 @@
   @media (max-width: $screen-sm-max) {
     border-top: 1px solid $white-normal;
     margin-top: 10px;
->>>>>>> ce/master
   }
 }
 
