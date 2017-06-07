@@ -107,6 +107,6 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def snippet_params
-    params.require(:project_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
+    params.require(:project_snippet).permit(:title, :content, :file_name, :private, :visibility_level, :description)
   end
 end
