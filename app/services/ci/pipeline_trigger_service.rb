@@ -34,7 +34,11 @@ module Ci
 
       pipeline = Ci::CreatePipelineService.new(project, job.user, ref: params[:ref]).
         execute(:pipeline, ignore_skip_ci: true) do |pipeline|
-          job.sourced_pipelines.create!(pipeline: pipeline)
+          job.sourced_pipelines.create!(
+            source_pipeline: job.pipeline,
+            source_project: job.project,
+            pipeline: pipeline,
+            project: project)
         end
 
       if pipeline.persisted?

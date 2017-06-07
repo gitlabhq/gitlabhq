@@ -55,7 +55,7 @@ describe API::Triggers do
         post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'other-branch')
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('No pipeline created')
+        expect(json_response['message']).to eq('base' => ["Reference not found"])
       end
 
       context 'Validates variables' do
@@ -87,8 +87,8 @@ describe API::Triggers do
     end
 
     context 'when triggering a pipeline from a trigger token' do
-      it 'does not leak the presence of project when using valid token' do
-        post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+      it 'does not leak the presence of project when token is for different project' do
+        post api("/projects/#{project2.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
 
         expect(response).to have_http_status(404)
       end

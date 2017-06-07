@@ -16,16 +16,6 @@ module Ci
       validates :source_project, presence: true
       validates :source_job, presence: true
       validates :source_pipeline, presence: true
-
-      before_validation :set_dependent_objects
-
-      private
-
-      def set_dependent_objects
-        project ||= pipeline.project
-        source_pipeline ||= source_job.pipeline
-        source_project ||= source_pipeline.project
-      end
     end
   end
 end
