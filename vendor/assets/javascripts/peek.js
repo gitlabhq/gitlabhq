@@ -1,6 +1,4 @@
-var requestId;
-
-requestId = null;
+let requestId = null;
 
 (function($) {
   var fetchRequestResults, getRequestId, peekEnabled, toggleBar, updatePerformanceBar;
@@ -16,9 +14,11 @@ requestId = null;
   };
   updatePerformanceBar = function(results) {
     var key, label, data, table, html, tr, duration_td, sql_td, strong;
-    for (key in results.data) {
-      for (label in results.data[key]) {
+
+    Object.keys(results.data).forEach((key) => {
+      Object.keys(results.data[key]).forEach((label) => {
         data = results.data[key][label];
+
         if (label == 'queries') {
           table = document.createElement('table');
 
@@ -40,12 +40,11 @@ requestId = null;
 
           table.className = 'table';
           $("[data-defer-to=" + key + "-" + label + "]").html(table);
-        }
-        else {
+        } else {
           $("[data-defer-to=" + key + "-" + label + "]").text(results.data[key][label]);
         }
-      }
-    }
+      });
+    });
     return $(document).trigger('peek:render', [getRequestId(), results]);
   };
   toggleBar = function(event) {
@@ -77,19 +76,6 @@ requestId = null;
   };
   $(document).on('keypress', toggleBar);
   $(document).on('peek:update', fetchRequestResults);
-  $(document).on('pjax:end', function(event, xhr, options) {
-    if (xhr != null) {
-      requestId = xhr.getResponseHeader('X-Request-Id');
-    }
-    if (peekEnabled()) {
-      return $(this).trigger('peek:update');
-    }
-  });
-  $(document).on('page:change turbolinks:load', function() {
-    if (peekEnabled()) {
-      return $(this).trigger('peek:update');
-    }
-  });
   return $(function() {
     if (peekEnabled()) {
       return $(this).trigger('peek:update');

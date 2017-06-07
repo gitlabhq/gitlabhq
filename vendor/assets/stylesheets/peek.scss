@@ -6,15 +6,10 @@ header.navbar-gitlab.with-peek {
 }
 
 #peek {
-  background: #000;
+  background: $black;
   height: 35px;
   line-height: 35px;
   color: #999;
-
-  .hidden {
-    display: none;
-    visibility: visible;
-  }
 
   &.disabled {
     display: none;
@@ -58,12 +53,12 @@ header.navbar-gitlab.with-peek {
   }
 
   strong {
-    color: #fff;
+    color: $white-light;
   }
 
   table {
     strong {
-      color: #000;
+      color: $black;
     }
   }
 
@@ -95,5 +90,5 @@ header.navbar-gitlab.with-peek {
 }
 
 #modal-peek-pg-queries-content {
-  color: #000;
+  color: $black;
 }

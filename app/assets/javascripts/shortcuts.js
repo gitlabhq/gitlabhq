@@ -60,11 +60,10 @@ import findAndFollowLink from './shortcuts_dashboard_navigation';
       e.preventDefault();
       if (Cookies.get('perf_bar_enabled') === 'true') {
         Cookies.remove('perf_bar_enabled', { path: '/' });
-      }
-      else {
+      } else {
         Cookies.set('perf_bar_enabled', true, { path: '/' });
       }
-      return gl.utils.refreshCurrentPage();
+      gl.utils.refreshCurrentPage();
     };
 
     Shortcuts.prototype.toggleMarkdownPreview = function(e) {
