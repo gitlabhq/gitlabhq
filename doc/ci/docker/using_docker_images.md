@@ -192,13 +192,6 @@ To configure access for `registry.example.com`, follow these steps:
 
 You can add configuration for as many registries as you want, adding more
 registries to the `"auths"` hash as described above.
-<<<<<<< HEAD
-
-If the repository is private you need to authenticate your GitLab Runner in the
-registry. Learn how to do that on
-[GitLab Runner's documentation][runner-priv-reg].
-=======
->>>>>>> ce/master
 
 ## Accessing the services
 
