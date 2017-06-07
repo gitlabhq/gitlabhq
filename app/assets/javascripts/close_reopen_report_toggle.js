@@ -23,30 +23,25 @@ class CloseReopenReportToggle {
   }
 
   updateButton(isClosed) {
-    const action = isClosed ? this.showReopen : this.showClose;
+    this.toggleButtonType(isClosed);
 
-    action.call(this);
     this.button.blur();
   }
 
-  showClose() {
-    this.closeItem.classList.remove('hidden');
-    this.closeItem.classList.add('droplab-item-selected');
+  toggleButtonType(isClosed) {
+    const [showItem, hideItem] = this.getButtonTypes(isClosed);
 
-    this.reopenItem.classList.add('hidden');
-    this.reopenItem.classList.remove('droplab-item-selected');
+    showItem.classList.remove('hidden');
+    showItem.classList.add('droplab-item-selected');
 
-    this.closeItem.click();
+    hideItem.classList.add('hidden');
+    hideItem.classList.remove('droplab-item-selected');
+
+    showItem.click();
   }
 
-  showReopen() {
-    this.reopenItem.classList.remove('hidden');
-    this.reopenItem.classList.add('droplab-item-selected');
-
-    this.closeItem.classList.add('hidden');
-    this.closeItem.classList.remove('droplab-item-selected');
-
-    this.reopenItem.click();
+  getButtonTypes(isClosed) {
+    return isClosed ? [this.reopenItem, this.closeItem] : [this.closeItem, this.reopenItem];
   }
 
   setDisable(shouldDisable) {

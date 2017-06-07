@@ -20,7 +20,7 @@
   color: $text;
   border-color: $border;
 
-  > i {
+  > .icon {
     color: $text;
   }
 
@@ -30,7 +30,7 @@
     border-color: $hover-border;
     color: $hover-text;
 
-    > i {
+    > .icon {
       color: $hover-text;
     }
   }
@@ -40,7 +40,7 @@
     border-color: $active-border;
     color: $hover-text;
 
-    > i {
+    > .icon {
       color: $hover-text;
     }
   }
