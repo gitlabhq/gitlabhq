@@ -6,6 +6,7 @@ import '~/lib/utils/text_utility';
 import './flash';
 import './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
+import CloseReopenReportToggle from './close_reopen_report_toggle';
 
 class Issue {
   constructor() {
@@ -28,6 +29,8 @@ class Issue {
     Issue.initMergeRequests();
     Issue.initRelatedBranches();
 
+    this.initCloseReopenReport();
+
     if (Issue.createMrDropdownWrap) {
       this.createMergeRequestDropdown = new CreateMergeRequestDropdown(Issue.createMrDropdownWrap);
     }
@@ -35,13 +38,11 @@ class Issue {
 
   initIssueBtnEventListeners() {
     const issueFailMessage = 'Unable to update this issue at this time.';
-    const closeButtons = $('a.btn-close');
     const isClosedBadge = $('div.status-box-closed');
     const isOpenBadge = $('div.status-box-open');
     const projectIssuesCounter = $('.issue_counter');
-    const reopenButtons = $('a.btn-reopen');
 
-    return closeButtons.add(reopenButtons).on('click', (e) => {
+    return $(document).on('click', 'a.btn-close, a.btn-reopen', (e) => {
       var $button, shouldSubmit, url;
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -50,7 +51,9 @@ class Issue {
       if (shouldSubmit) {
         Issue.submitNoteForm($button.closest('form'));
       }
-      $button.prop('disabled', true);
+
+      this.closeReopenReportToggle.setDisable(true);
+
       url = $button.attr('href');
       return $.ajax({
         type: 'PUT',
@@ -62,10 +65,10 @@ class Issue {
           $(document).trigger('issuable:change');
 
           const isClosed = $button.hasClass('btn-close');
-          closeButtons.toggleClass('hidden', isClosed);
-          reopenButtons.toggleClass('hidden', !isClosed);
           isClosedBadge.toggleClass('hidden', !isClosed);
           isOpenBadge.toggleClass('hidden', isClosed);
+
+          this.closeReopenReportToggle.updateButton(isClosed);
 
           let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));
           numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
@@ -84,9 +87,24 @@ class Issue {
           new Flash(issueFailMessage);
         }
 
-        $button.prop('disabled', false);
+        this.closeReopenReportToggle.setDisable(false);
       });
     });
+  }
+
+  initCloseReopenReport() {
+    const container = document.querySelector('.js-issuable-close-dropdown');
+    const dropdownTrigger = container.querySelector('.js-issuable-close-toggle');
+    const dropdownList = container.querySelector('.js-issuable-close-menu');
+    const button = container.querySelector('.js-issuable-close-button');
+
+    this.closeReopenReportToggle = new CloseReopenReportToggle({
+      dropdownTrigger,
+      dropdownList,
+      button,
+    });
+
+    this.closeReopenReportToggle.initDroplab();
   }
 
   static submitNoteForm(form) {
