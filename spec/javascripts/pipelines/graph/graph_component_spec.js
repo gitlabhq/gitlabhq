@@ -19,7 +19,7 @@ describe('graph component', function () {
   describe('while is loading', function () {
     beforeEach(function () {
       this.component = new GraphComponent({
-        propsData: Object.assign(defaultPropsData, { isLoading: true }),
+        propsData: { pipeline: {}, isLoading: true },
       }).$mount();
     });
 
@@ -41,15 +41,30 @@ describe('graph component', function () {
       });
 
       it('should not include the loading icon', function () {
-        expect(this.component.$el.querySelector('.loading-icon')).toBe(null);
+        expect(this.component.$el.querySelector('.fa-spinner')).toBeNull();
       });
 
       it('should include the stage column list', function () {
-        expect(this.component.$el.querySelector('.stage-column-list')).toBeDefined();
+        expect(this.component.$el.querySelector('.stage-column-list')).not.toBeNull();
+      });
+
+      it('should include the no-margin class on the first child', function () {
+        const firstStageColumnElement = this.component.$el.querySelector('.stage-column-list .stage-column');
+        expect(firstStageColumnElement.classList.contains('no-margin')).toEqual(true);
+      });
+
+      it('should include the has-only-one-job class on the first child', function () {
+        const firstStageColumnElement = this.component.$el.querySelector('.stage-column-list .stage-column');
+        expect(firstStageColumnElement.classList.contains('has-only-one-job')).toEqual(true);
+      });
+
+      it('should include the left-margin class on the second child', function () {
+        const firstStageColumnElement = this.component.$el.querySelector('.stage-column-list .stage-column:last-child');
+        expect(firstStageColumnElement.classList.contains('left-margin')).toEqual(true);
       });
 
       it('should include the has-linked-pipelines flag', function () {
-        expect(this.component.$el.querySelector('.has-linked-pipelines')).toBeDefined();
+        expect(this.component.$el.querySelector('.has-linked-pipelines')).not.toBeNull();
       });
     });
 
