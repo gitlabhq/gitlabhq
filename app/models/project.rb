@@ -478,7 +478,11 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
-    self.import_data&.destroy
+    remove_import_data
+  end
+
+  def remove_import_data
+    import_data&.destroy
   end
 
   def import_url=(value)
