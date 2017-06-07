@@ -41,6 +41,7 @@ module Issues
        'Due Date' => -> (issue) { issue.due_date&.to_s(:csv) },
        'Created At (UTC)' => -> (issue) { issue.created_at&.to_s(:csv) },
        'Updated At (UTC)' => -> (issue) { issue.updated_at&.to_s(:csv) },
+       'Closed At (UTC)' => -> (issue) { issue.closed_at&.to_s(:csv) },
        'Milestone' => -> (issue) { issue.milestone&.title },
        'Labels' => -> (issue) { @labels[issue.id].sort.join(',').presence }
       }
