@@ -15,25 +15,31 @@ requestId = null;
     return $('#peek').length;
   };
   updatePerformanceBar = function(results) {
-    var key, label, data, table, html, tr, td;
+    var key, label, data, table, html, tr, duration_td, sql_td, strong;
     for (key in results.data) {
       for (label in results.data[key]) {
         data = results.data[key][label];
-        console.log(data);
-        if (Array.isArray(data)) {
+        if (label == 'queries') {
           table = document.createElement('table');
 
           for (var i = 0; i < data.length; i += 1) {
             tr = document.createElement('tr');
-            td = document.createElement('td');
+            duration_td = document.createElement('td');
+            sql_td = document.createElement('td');
+            strong = document.createElement('strong');
 
-            td.appendChild(document.createTextNode(data[i]));
-            tr.appendChild(td);
+            strong.append(data[i]['duration'] + 'ms');
+            duration_td.appendChild(strong);
+            tr.appendChild(duration_td);
+
+            sql_td.appendChild(document.createTextNode(data[i]['sql']));
+            tr.appendChild(sql_td);
+
             table.appendChild(tr);
           }
 
-          $table = $(table).addClass('table');
-          $("[data-defer-to=" + key + "-" + label + "]").html($table);
+          table.className = 'table';
+          $("[data-defer-to=" + key + "-" + label + "]").html(table);
         }
         else {
           $("[data-defer-to=" + key + "-" + label + "]").text(results.data[key][label]);

@@ -1,13 +1,14 @@
 # Inspired by https://github.com/peek/peek-pg/blob/master/lib/peek/views/pg.rb
 module Gitlab
   module PerformanceBar
-    module PeekPgWithQueries
-      def queries
-        ::PG::Connection.query_details
+    module PeekQueryTracker
+      def sorted_queries
+        PEEK_DB_CLIENT.query_details.
+          sort { |a, b| b[:duration] <=> a[:duration] }
       end
 
       def results
-        super.merge(queries: queries)
+        super.merge(queries: sorted_queries)
       end
 
       private
@@ -17,7 +18,7 @@ module Gitlab
 
         # Reset each counter when a new request starts
         before_request do
-          ::PG::Connection.query_details = []
+          PEEK_DB_CLIENT.query_details = []
         end
 
         subscribe('sql.active_record') do |_, start, finish, _, data|
@@ -29,7 +30,8 @@ module Gitlab
 
       def track_query(raw_query, bindings, start, finish)
         query = Gitlab::Sherlock::Query.new(raw_query, start, finish)
-        ::PG::Connection.query_details << query.formatted_query
+        query_info  = { duration: query.duration.round(4), sql: query.formatted_query }
+        PEEK_DB_CLIENT.query_details << query_info
       end
     end
   end
