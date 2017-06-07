@@ -14,11 +14,13 @@ module StubConfiguration
 
     allow_any_instance_of(ArtifactUploader).to receive(:verify_license!) { true }
 
+    return unless enabled
+
     ::Fog::Storage.new(Gitlab.config.artifacts.object_store.connection).tap do |connection|
       begin
         connection.directories.create(key: 'artifacts')
       rescue Excon::Error::Conflict
       end
-    end if enabled
+    end
   end
 end

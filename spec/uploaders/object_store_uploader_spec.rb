@@ -95,13 +95,10 @@ describe ObjectStoreUploader do
 
       context 'when migrating to remote storage' do
         let(:new_store) { described_class::REMOTE_STORE }
-
-        before do
-          @current_path = uploader.path
-        end
+        let!(current_path) { uploader.path }
 
         it "file does exist" do
-          expect(File.exist?(@current_path)).to eq(true)
+          expect(File.exist?(current_path)).to eq(true)
         end
         
         context 'when storage is disabled' do
@@ -123,13 +120,13 @@ describe ObjectStoreUploader do
             subject
 
             expect(uploader.object_store).to eq(new_store)
-            expect(File.exist?(@current_path)).to eq(false)
+            expect(File.exist?(current_path)).to eq(false)
           end
 
           it "does delete original file" do
             subject
     
-            expect(File.exist?(@current_path)).to eq(false)
+            expect(File.exist?(current_path)).to eq(false)
           end
 
           context 'when subject save fails' do
@@ -147,7 +144,7 @@ describe ObjectStoreUploader do
               rescue
               end
 
-              expect(File.exist?(@current_path)).to eq(true)
+              expect(File.exist?(current_path)).to eq(true)
             end
           end
         end

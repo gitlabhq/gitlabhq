@@ -316,7 +316,7 @@ Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['obj
 Settings.artifacts['object_store']['remote_directory'] ||= nil
 # Convert upload connection settings to use symbol keys, to make Fog happy
 if Settings.artifacts['object_store']['connection']
-  Settings.artifacts['object_store']['connection'] = Hash[Settings.artifacts['object_store']['connection'].map { |k, v| [k.to_sym, v] }]
+  Settings.artifacts['object_store']['connection'].deep_symbolize_keys!
 end
 
 #
