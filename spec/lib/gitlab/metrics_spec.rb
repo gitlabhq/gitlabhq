@@ -281,15 +281,10 @@ describe Gitlab::Metrics do
   end
 
   context 'prometheus metrics enabled' do
-    around do |example|
-      Dir.mktmpdir do |tmp_dir|
-        @metrics_multiproc_dir = tmp_dir
-        example.run
-      end
-    end
+    let(:metrics_multiproc_dir) { Dir.mktmpdir }
 
     before do
-      stub_const('Prometheus::Client::Multiprocdir', @metrics_multiproc_dir)
+      stub_const('Prometheus::Client::Multiprocdir', metrics_multiproc_dir)
       allow(described_class).to receive(:prometheus_metrics_enabled?).and_return(true)
     end
 
