@@ -378,7 +378,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       results = described_class.new(user, 'def', limit_project_ids)
       blobs = results.objects('blobs')
 
-      expect(blobs.first["_source"]["blob"]["content"]).to include("def")
+      expect(blobs.first['_source']['blob']['content']).to include('def')
       expect(results.blobs_count).to eq 5
     end
 
@@ -418,7 +418,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         blobs = described_class.new(user, term, [project_1.id]).objects('blobs')
 
         blobs.map do |blob|
-          blob["_source"]["blob"]["path"]
+          blob['_source']['blob']['path']
         end
       end
 
@@ -454,7 +454,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     it 'finds wiki blobs' do
       blobs = results.objects('wiki_blobs')
 
-      expect(blobs.first["_source"]["blob"]["content"]).to include("term")
+      expect(blobs.first['_source']['blob']['content']).to include("term")
       expect(results.wiki_blobs_count).to eq 1
     end
 
@@ -462,7 +462,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       project_1.add_guest(user)
       blobs = results.objects('wiki_blobs')
 
-      expect(blobs.first["_source"]["blob"]["content"]).to include("term")
+      expect(blobs.first['_source']['blob']['content']).to include("term")
       expect(results.wiki_blobs_count).to eq 1
     end
 
