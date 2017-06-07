@@ -25,9 +25,9 @@ describe WikiPages::UpdateService, services: true do
         allow(Gitlab::Geo).to receive(:primary?) { true }
       end
 
-      it 'triggers Geo::PushEventStore when Geo is enabled' do
-        expect(Geo::PushEventStore).to receive(:new).with(instance_of(Project), source: Geo::PushEvent::WIKI).and_call_original
-        expect_any_instance_of(Geo::PushEventStore).to receive(:create)
+      it 'triggers Geo::RepositoryUpdatedEventStore when Geo is enabled' do
+        expect(Geo::RepositoryUpdatedEventStore).to receive(:new).with(instance_of(Project), source: Geo::RepositoryUpdatedEvent::WIKI).and_call_original
+        expect_any_instance_of(Geo::RepositoryUpdatedEventStore).to receive(:create)
 
         service.execute(page)
       end
