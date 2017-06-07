@@ -1,4 +1,7 @@
 .awards {
+  display: flex;
+  flex-wrap: wrap;
+
   .emoji-icon {
     width: 20px;
     height: 20px;
@@ -110,6 +113,8 @@
   margin: 4px 8px 4px 0;
   outline: 0;
   position: relative;
+  display: block;
+  float: left;
 
   &.disabled {
     cursor: default;
