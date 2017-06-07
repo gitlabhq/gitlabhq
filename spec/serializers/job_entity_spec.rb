@@ -39,7 +39,7 @@ describe JobEntity do
     expect(subject[:status]).to include :icon, :favicon, :text, :label
   end
 
-  context 'when build is retryable' do
+  context 'when job is retryable' do
     before do
       job.update(status: :failed)
     end
@@ -49,7 +49,7 @@ describe JobEntity do
     end
   end
 
-  context 'when build is cancelable' do
+  context 'when job is cancelable' do
     before do
       job.update(status: :running)
     end

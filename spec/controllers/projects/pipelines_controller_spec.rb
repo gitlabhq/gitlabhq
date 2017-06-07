@@ -5,9 +5,12 @@ describe Projects::PipelinesController do
 
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
+  let(:feature) { ProjectFeature::DISABLED }
 
   before do
     project.add_developer(user)
+    project.project_feature.update(
+      builds_access_level: feature)
 
     sign_in(user)
   end
@@ -153,16 +156,26 @@ describe Projects::PipelinesController do
                    format: :json
     end
 
-    it 'retries a pipeline without returning any content' do
-      expect(response).to have_http_status(:no_content)
-      expect(build.reload).to be_retried
+    context 'when builds are enabled' do
+      let(:feature) { ProjectFeature::ENABLED }
+  
+      it 'retries a pipeline without returning any content' do
+        expect(response).to have_http_status(:no_content)
+        expect(build.reload).to be_retried
+      end
+    end
+
+    context 'when builds are disabled' do
+      it 'fails to retry pipeline' do
+        expect(response).to have_http_status(:not_found)
+      end
     end
   end
 
   describe 'POST cancel.json' do
     let!(:pipeline) { create(:ci_pipeline, project: project) }
     let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
-
+  
     before do
       post :cancel, namespace_id: project.namespace,
                     project_id: project,
@@ -170,9 +183,19 @@ describe Projects::PipelinesController do
                     format: :json
     end
 
-    it 'cancels a pipeline without returning any content' do
-      expect(response).to have_http_status(:no_content)
-      expect(pipeline.reload).to be_canceled
+    context 'when builds are enabled' do
+      let(:feature) { ProjectFeature::ENABLED }
+  
+      it 'cancels a pipeline without returning any content' do
+        expect(response).to have_http_status(:no_content)
+        expect(pipeline.reload).to be_canceled
+      end
+    end
+
+    context 'when builds are disabled' do
+      it 'fails to retry pipeline' do
+        expect(response).to have_http_status(:not_found)
+      end
     end
   end
 end
