@@ -33,7 +33,7 @@ describe Geo::RepositorySyncService, services: true do
 
       it 'releases lease' do
         expect(Gitlab::ExclusiveLease).to receive(:cancel).once.with(
-          subject.__send__(:lease_key), false).and_call_original
+          subject.__send__(:lease_key), anything).and_call_original
 
         subject.execute
       end
