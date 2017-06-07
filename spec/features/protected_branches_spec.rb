@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projected Branches', feature: true, js: true do
+feature 'Protected Branches', feature: true, js: true do
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 

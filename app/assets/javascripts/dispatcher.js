@@ -55,6 +55,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import initSettingsPanels from './settings_panels';
 
 (function() {
   var Dispatcher;
@@ -381,6 +382,8 @@ import ShortcutsBlob from './shortcuts_blob';
           // Initialize Protected Tag Settings
           new ProtectedTagCreate();
           new ProtectedTagEditList();
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
