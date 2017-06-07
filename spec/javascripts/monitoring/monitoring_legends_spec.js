@@ -30,6 +30,8 @@ describe('MonitoringLegends', () => {
 
       expect(typeof component.textTransform).toEqual('string');
       expect(component.textTransform.indexOf(120)).not.toEqual(-1);
+      expect(component.textTransform.indexOf('15,')).not.toEqual(-1);
+      expect(component.textTransform.indexOf('rotate(-90)')).not.toEqual(-1);
     });
 
     it('xPosition', () => {
@@ -60,6 +62,24 @@ describe('MonitoringLegends', () => {
       });
 
       expect(component.yPosition).toEqual(240);
+    });
+
+    it('rectTransform', () => {
+      const component = createComponent({
+        width: 500,
+        height: 300,
+        margin: measurements.large.margin,
+        measurements: measurements.large,
+        areaColorRgb: '#f0f0f0',
+        legendTitle: 'Title',
+        yAxisLabel: 'Values',
+        metricUsage: 'Value',
+      });
+
+      expect(typeof component.rectTransform).toEqual('string');
+      expect(component.rectTransform.indexOf(120)).not.toEqual(-1);
+      expect(component.rectTransform.indexOf('0,')).not.toEqual(-1);
+      expect(component.rectTransform.indexOf('rotate(-90)')).not.toEqual(-1);
     });
   });
 
