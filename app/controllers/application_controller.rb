@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables, unless: -> { request.path.start_with?('/peek') }
+  before_action :add_gon_variables, unless: -> { request.path.start_with?('/-/peek') }
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 

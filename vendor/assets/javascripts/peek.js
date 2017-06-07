@@ -1,13 +1,7 @@
-let requestId = null;
-
 (function($) {
   var fetchRequestResults, getRequestId, peekEnabled, toggleBar, updatePerformanceBar;
   getRequestId = function() {
-    if (requestId != null) {
-      return requestId;
-    } else {
-      return $('#peek').data('request-id');
-    }
+    return $('#peek').data('request-id');
   };
   peekEnabled = function() {
     return $('#peek').length;
@@ -64,7 +58,7 @@ let requestId = null;
     }
   };
   fetchRequestResults = function() {
-    return $.ajax('/peek/results', {
+    return $.ajax('/-/peek/results', {
       data: {
         request_id: getRequestId()
       },

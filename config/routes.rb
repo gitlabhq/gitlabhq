@@ -11,7 +11,6 @@ Rails.application.routes.draw do
     post :toggle_award_emoji, on: :member
   end
 
-  mount Peek::Railtie => '/peek'
   draw :sherlock
   draw :development
   draw :ci
@@ -43,6 +42,7 @@ Rails.application.routes.draw do
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
     resources :metrics, only: [:index]
+    mount Peek::Railtie => '/peek'
   end
 
   # Koding route

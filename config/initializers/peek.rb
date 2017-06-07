@@ -17,6 +17,7 @@ Peek.into Peek::Views::Sidekiq
 Peek.into Peek::Views::Rblineprof
 Peek.into Peek::Views::GC
 
+# rubocop:disable Style/ClassAndModuleCamelCase
 class PEEK_DB_CLIENT
   class << self
     attr_accessor :query_details
@@ -24,5 +25,4 @@ class PEEK_DB_CLIENT
   self.query_details = Concurrent::Array.new
 end
 
-# rubocop:disable Style/ClassAndModuleCamelCase
 PEEK_DB_VIEW.prepend ::Gitlab::PerformanceBar::PeekQueryTracker
