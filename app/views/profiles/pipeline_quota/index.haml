@@ -1,0 +1,14 @@
+- page_title 'Personal pipelines quota'
+= render 'profiles/head'
+
+.user-settings-pipeline-quota.row
+  .profile-settings-sidebar.col-lg-3
+    %h4
+      Personal pipelines quota
+      = link_to icon('question-circle'), help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-build-minutes-quota"), target: '_blank'
+    %p.light
+      Monthly build minutes usage across shared Runners
+
+  .col-lg-9
+    = render "namespaces/pipelines_quota/list",
+      locals: { namespace: @namespace, projects: @projects }

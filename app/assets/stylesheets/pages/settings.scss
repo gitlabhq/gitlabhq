@@ -56,7 +56,7 @@
 
   &.expanded {
     max-height: none;
-    overflow-y: hidden;
+    overflow-y: visible;
     animation: expandMaxHeight 300ms ease-in;
   }
 

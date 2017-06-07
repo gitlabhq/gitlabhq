@@ -39,6 +39,7 @@ describe Issues::ExportCsvService, services: true do
                     due_date: DateTime.new(2014, 3, 2),
                     created_at: DateTime.new(2015, 4, 3, 2, 1, 0),
                     updated_at: DateTime.new(2016, 5, 4, 3, 2, 1),
+                    closed_at: DateTime.new(2017, 6, 5, 4, 3, 2),
                     labels: [feature_label, idea_label])
     end
 
@@ -100,6 +101,10 @@ describe Issues::ExportCsvService, services: true do
 
     specify 'updated_at' do
       expect(csv[0]['Updated At (UTC)']).to eq '2016-05-04 03:02:01'
+    end
+
+    specify 'closed_at' do
+      expect(csv[0]['Closed At (UTC)']).to eq '2017-06-05 04:03:02'
     end
   end
 
