@@ -96,7 +96,6 @@
                     %span.dropdown-label-box{ style: 'background: {{color}}' }
                     %span.label-title.js-data-value
                       {{title}}
-<<<<<<< HEAD
 
             - if type == :issues || type == :boards || type == :boards_modal
               #js-dropdown-weight.filtered-search-input-dropdown-menu.dropdown-menu
@@ -113,10 +112,8 @@
                     %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
                       %button.btn.btn-link= weight
 
-=======
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
->>>>>>> ce/master
         .filter-dropdown-container
           - if type == :boards
             - if can?(current_user, :admin_list, @project)
@@ -130,11 +127,7 @@
                   = dropdown_loading
               #js-add-issues-btn.prepend-left-10
           - elsif type != :boards_modal
-<<<<<<< HEAD
             = render 'shared/sort_dropdown', type: local_assigns[:type]
-=======
-            = render 'shared/sort_dropdown'
->>>>>>> ce/master
 
 - unless type === :boards_modal
   :javascript
