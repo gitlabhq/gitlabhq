@@ -6,13 +6,11 @@ SSH operations become slow as the number of users grows.
 
 ## The reason
 
-By default, all SSH keys are written to one `authorized_keys` file, from oldest to newest. The way OpenSSH searches for a key to authorize a user is by doing a linear search.
-
-This means that a new user (or an old user with a new key) will force OpenSSH to load the whole file and scan through it on every git SSH operation to find its key. On top of this, the file is not cached by the OS if it is being written to frequently, which would result in wasted IOPS.
+OpenSSH searches for a key to authorize a user via a linear search. In the worst case, such as when the user is not authorized to access GitLab, OpenSSH will scan the entire file to search for a key. This can take significant time and disk I/O, which will delay users attempting to push or pull to a repository. Making matters worse, if users add or remove keys frequently, the operating system may not be able to cache the authorized_keys file, which causes the disk to be accessed repeatedly.
 
 ## The solution
 
-GitLab Shell provides a way to check keys by fingerprint which can be used to efficiently authorize users.
+GitLab Shell provides a way to authorize SSH users via a fast, indexed lookup to the GitLab database. GitLab Shell uses the fingerprint of the SSH key to check whether the user is authorized to access GitLab.
 
 > **Warning:** OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be able to accept a fingerprint. These instructions will break installations using older versions of OpenSSH, such as those included with CentOS as of May 2017.
 
@@ -40,7 +38,7 @@ AuthorizedKeysCommand /opt/gitlab-shell/authorized_keys %u %k
 AuthorizedKeysCommandUser git
 ```
 
-Reload the SSHD service:
+Reload the sshd service:
 
 ```
 sudo service sshd reload
@@ -67,5 +65,5 @@ This is a brief overview. Please refer to the above instructions for more contex
 1. Rebuild the `authorized_keys` file. See https://docs.gitlab.com/ce/administration/raketasks/maintenance.html#rebuild-authorized_keys-file
 1. Enable writes to the `authorized_keys` file
 1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config`
-1. Reload the SSHD service
+1. Reload the sshd service
 1. Remove the `/opt/gitlab-shell/authorized_keys` file
