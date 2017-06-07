@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.1.7 (2017-06-07)
+
+- No changes.
+
 ## 9.1.6 (2017-06-02)
 
 - Fix visibility when referencing snippets.
