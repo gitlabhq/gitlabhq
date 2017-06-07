@@ -18,7 +18,7 @@ module Geo
         event_log.save!
       end
     rescue ActiveRecord::RecordInvalid
-      log("#{Geo::PushEvent.sources.key(source).humanize} updated event could not created")
+      log("#{Geo::PushEvent.sources.key(source).humanize} updated event could not be created")
     end
 
     private
