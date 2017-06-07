@@ -18,7 +18,7 @@ class CommitStatus < ActiveRecord::Base
   validates :name, presence: true
 
   alias_attribute :author, :user
-  
+
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
   end
@@ -83,14 +83,15 @@ class CommitStatus < ActiveRecord::Base
       next if transition.loopback?
 
       commit_status.run_after_commit do
-        pipeline.try do |pipeline|
+        if pipeline
           if complete? || manual?
             PipelineProcessWorker.perform_async(pipeline.id)
           else
             PipelineUpdateWorker.perform_async(pipeline.id)
           end
-          ExpireJobCacheWorker.perform_async(commit_status.id)
         end
+
+        ExpireJobCacheWorker.perform_async(commit_status.id)
       end
     end
 
@@ -123,6 +124,11 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def playable?
+    false
+  end
+
+  # To be overriden when inherrited from
+  def retryable?
     false
   end
 

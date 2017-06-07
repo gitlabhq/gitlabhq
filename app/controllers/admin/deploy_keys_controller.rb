@@ -23,7 +23,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
     deploy_key.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_deploy_keys_path }
+      format.html { redirect_to admin_deploy_keys_path, status: 302 }
       format.json { head :ok }
     end
   end

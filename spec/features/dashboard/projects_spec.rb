@@ -15,6 +15,15 @@ RSpec.describe 'Dashboard Projects', feature: true do
     expect(page).to have_content('awesome stuff')
   end
 
+  it 'shows the last_activity_at attribute as the update date' do
+    now = Time.now
+    project.update_column(:last_activity_at, now)
+
+    visit dashboard_projects_path
+
+    expect(page).to have_xpath("//time[@datetime='#{now.getutc.iso8601}']")
+  end
+
   context 'when on Starred projects tab' do
     it 'shows only starred projects' do
       user.toggle_star(project2)

@@ -15,6 +15,8 @@ following locations:
 - [Commits](commits.md)
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
+- [Environments](environments.md)
+- [Events](events.md)
 - [Gitignores templates](templates/gitignores.md)
 - [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
 - [Groups](groups.md)
@@ -33,6 +35,7 @@ following locations:
 - [Notification settings](notification_settings.md)
 - [Pipelines](pipelines.md)
 - [Pipeline Triggers](pipeline_triggers.md)
+- [Pipeline Schedules](pipeline_schedules.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)

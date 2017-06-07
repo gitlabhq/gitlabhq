@@ -1,14 +1,14 @@
 .branch-commit
   - if deployment.ref
-    .icon-container
+    %span.icon-container
       = deployment.tag? ? icon('tag') : icon('code-fork')
     = link_to deployment.ref, project_ref_path(@project, deployment.ref), class: "ref-name"
   .icon-container.commit-icon
     = custom_icon("icon_commit")
   = link_to deployment.short_sha, namespace_project_commit_path(@project.namespace, @project, deployment.sha), class: "commit-sha"
 
-  %p.commit-title
-    %span
+  %p.commit-title.flex-truncate-parent
+    %span.flex-truncate-child
       - if commit_title = deployment.commit_title
         = author_avatar(deployment.commit, size: 20)
         = link_to_gfm commit_title, namespace_project_commit_path(@project.namespace, @project, deployment.sha), class: "commit-row-message"

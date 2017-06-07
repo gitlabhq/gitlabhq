@@ -21,7 +21,8 @@ class MockCiService < CiService
     [
       { type: 'text',
         name: 'mock_service_url',
-        placeholder: 'http://localhost:4004' }
+        placeholder: 'http://localhost:4004',
+        required: true }
     ]
   end
 
@@ -78,5 +79,9 @@ class MockCiService < CiService
     else
       :error
     end
+  end
+
+  def can_test?
+    false
   end
 end

@@ -29,7 +29,7 @@ module Gitlab
       end
     end
 
-    def label_values(name='__name__')
+    def label_values(name = '__name__')
       json_api_get("label/#{name}/values")
     end
 

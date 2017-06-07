@@ -16,6 +16,7 @@ var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
+var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
 var config = {
   // because sqljs requires fs.
@@ -41,6 +42,7 @@ var config = {
     group:                './group.js',
     groups_list:          './groups_list.js',
     issue_show:           './issue_show/index.js',
+    integrations:         './integrations',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -51,6 +53,7 @@ var config = {
     pipelines:            './pipelines/index.js',
     pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
+    prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
     sidebar:              './sidebar/sidebar_bundle.js',
@@ -73,8 +76,6 @@ var config = {
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
     chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
-
-  devtool: 'cheap-module-source-map',
 
   module: {
     rules: [
@@ -223,11 +224,18 @@ if (IS_PRODUCTION) {
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
-    }),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
     })
   );
+
+  // zopfli requires a lot of compute time and is disabled in CI
+  if (!NO_COMPRESSION) {
+    config.plugins.push(
+      new CompressionPlugin({
+        asset: '[path].gz[query]',
+        algorithm: 'zopfli',
+      })
+    );
+  }
 }
 
 if (IS_DEV_SERVER) {

@@ -200,6 +200,10 @@ class Member < ActiveRecord::Base
     source_type
   end
 
+  def access_field
+    access_level
+  end
+
   def invite?
     self.invite_token.present?
   end

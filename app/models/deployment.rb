@@ -12,6 +12,7 @@ class Deployment < ActiveRecord::Base
   delegate :name, to: :environment, prefix: true
 
   after_create :create_ref
+  after_create :invalidate_cache
 
   def commit
     project.commit(sha)
@@ -31,6 +32,10 @@ class Deployment < ActiveRecord::Base
 
   def create_ref
     project.repository.create_ref(ref, ref_path)
+  end
+
+  def invalidate_cache
+    environment.expire_etag_cache
   end
 
   def manual_actions
@@ -103,10 +108,6 @@ class Deployment < ActiveRecord::Base
     project.monitoring_service.present?
   end
 
-  def has_additional_metrics?
-    has_metrics? && project.monitoring_service&.respond_to?(:reactive_query)
-  end
-
   def metrics
     return {} unless has_metrics?
 
@@ -114,9 +115,14 @@ class Deployment < ActiveRecord::Base
   end
 
   def additional_metrics
-    return {} unless has_additional_metrics?
-    metrics = project.monitoring_service.reactive_query(Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery.name, id, &:itself)
+    return {} unless prometheus_service.present?
+
+    metrics = prometheus_service.additional_deployment_metrics(self)
     metrics&.merge(deployment_time: created_at.to_i) || {}
+  end
+
+  def prometheus_service
+    @prometheus_service ||= project.monitoring_services.reorder(nil).find_by(active: true, type: PrometheusService.name)
   end
 
   private

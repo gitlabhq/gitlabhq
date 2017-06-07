@@ -57,6 +57,10 @@ class Environment < ActiveRecord::Base
 
     state :available
     state :stopped
+
+    after_transition do |environment|
+      environment.expire_etag_cache
+    end
   end
 
   def predefined_variables
@@ -149,18 +153,22 @@ class Environment < ActiveRecord::Base
     project.monitoring_service.present? && available? && last_deployment.present?
   end
 
-  def has_additional_metrics?
-    has_metrics? && project.monitoring_service&.respond_to?(:reactive_query)
-  end
-
   def metrics
     project.monitoring_service.environment_metrics(self) if has_metrics?
   end
 
+  def has_additional_metrics?
+    prometheus_service.present? && available? && last_deployment.present?
+  end
+
   def additional_metrics
     if has_additional_metrics?
-      project.monitoring_service.reactive_query(Gitlab::Prometheus::Queries::AdditionalMetricsQuery.name, self.id, &:itself)
+      prometheus_service.additional_environment_metrics(self)
     end
+  end
+
+  def prometheus_service
+    @prometheus_service ||= project.monitoring_services.reorder(nil).find_by(active: true, type: PrometheusService.name)
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS
@@ -204,6 +212,18 @@ class Environment < ActiveRecord::Base
     return unless public_path
 
     [external_url, public_path].join('/')
+  end
+
+  def expire_etag_cache
+    Gitlab::EtagCaching::Store.new.tap do |store|
+      store.touch(etag_cache_key)
+    end
+  end
+
+  def etag_cache_key
+    Gitlab::Routing.url_helpers.namespace_project_environments_path(
+      project.namespace,
+      project)
   end
 
   private

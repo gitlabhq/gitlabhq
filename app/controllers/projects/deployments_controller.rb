@@ -23,11 +23,12 @@ class Projects::DeploymentsController < Projects::ApplicationController
   end
 
   def additional_metrics
-    return render_404 unless deployment.has_additional_metrics?
+    return render_404 unless deployment.prometheus_service.present?
+
     metrics = deployment.additional_metrics
 
-    if metrics&.any?
-      render json: metrics, status: :ok
+    if metrics.any?
+      render json: metrics
     else
       head :no_content
     end

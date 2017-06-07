@@ -5,6 +5,8 @@ export default class MergeRequestStore {
 
   constructor(data) {
     this.sha = data.diff_head_sha;
+    this.gitlabLogo = data.gitlabLogo;
+
     this.setData(data);
   }
 

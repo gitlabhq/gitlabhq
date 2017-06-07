@@ -1,3 +1,5 @@
-module Gitlab::Prometheus
-  ParsingError = Class.new(StandardError)
+module Gitlab
+  module Prometheus
+    ParsingError = Class.new(StandardError)
+  end
 end

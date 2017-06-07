@@ -24,6 +24,10 @@ module Ci
       owner == current_user
     end
 
+    def own!(user)
+      update(owner: user)
+    end
+
     def inactive?
       !active?
     end

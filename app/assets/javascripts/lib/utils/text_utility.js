@@ -170,7 +170,7 @@ gl.text.init = function(form) {
   });
 };
 gl.text.removeListeners = function(form) {
-  return $('.js-md', form).off();
+  return $('.js-md', form).off('click');
 };
 gl.text.humanize = function(string) {
   return string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);

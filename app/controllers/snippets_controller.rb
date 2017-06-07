@@ -58,7 +58,7 @@ class SnippetsController < ApplicationController
 
   def show
     blob = @snippet.blob
-    override_max_blob_size(blob)
+    conditionally_expand_blob(blob)
 
     @note = Note.new(noteable: @snippet)
     @noteable = @snippet
@@ -82,7 +82,7 @@ class SnippetsController < ApplicationController
 
     @snippet.destroy
 
-    redirect_to snippets_path
+    redirect_to snippets_path, status: 302
   end
 
   def preview_markdown

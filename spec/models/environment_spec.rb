@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment, models: true do
-  let(:project) { create(:empty_project) }
+  set(:project) { create(:empty_project) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -31,6 +31,26 @@ describe Environment, models: true do
 
     it 'returns the environments in order of having been last deployed' do
       expect(project.environments.order_by_last_deployed_at.to_a).to eq([environment3, environment2, environment1])
+    end
+  end
+
+  describe 'state machine' do
+    it 'invalidates the cache after a change' do
+      expect(environment).to receive(:expire_etag_cache)
+
+      environment.stop
+    end
+  end
+
+  describe '#expire_etag_cache' do
+    let(:store) { Gitlab::EtagCaching::Store.new }
+
+    it 'changes the cached value' do
+      old_value = store.get(environment.etag_cache_key)
+
+      environment.stop
+
+      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
     end
   end
 
@@ -227,7 +247,10 @@ describe Environment, models: true do
 
       context 'when user is allowed to stop environment' do
         before do
-          project.add_master(user)
+          project.add_developer(user)
+
+          create(:protected_branch, :developers_can_merge,
+                 name: 'master', project: project)
         end
 
         context 'when action did not yet finish' do
@@ -406,6 +429,99 @@ describe Environment, models: true do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_metrics?' do
+    subject { environment.has_metrics? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:prometheus_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:prometheus_project) }
+
+      before do
+        environment.stop
+      end
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#additional_metrics' do
+    let(:project) { create(:prometheus_project) }
+    subject { environment.additional_metrics }
+
+    context 'when the environment has additional metrics' do
+      before do
+        allow(environment).to receive(:has_additional_metrics?).and_return(true)
+      end
+
+      it 'returns the additional metrics from the deployment service' do
+        expect(environment.prometheus_service).to receive(:additional_environment_metrics)
+                                                .with(environment)
+                                                .and_return(:fake_metrics)
+
+        is_expected.to eq(:fake_metrics)
+      end
+    end
+
+    context 'when the environment does not have metrics' do
+      before do
+        allow(environment).to receive(:has_additional_metrics?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_additional_metrics??' do
+    subject { environment.has_additional_metrics? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:prometheus_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:prometheus_project) }
+
+      before do
+        environment.stop
+      end
+
+      it { is_expected.to be_falsy }
     end
   end
 

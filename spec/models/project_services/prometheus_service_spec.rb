@@ -61,7 +61,7 @@ describe PrometheusService, models: true, caching: true do
       end
 
       it 'returns reactive data' do
-        is_expected.to eq(prometheus_data)
+        is_expected.to eq(prometheus_metrics_data)
       end
     end
   end
@@ -82,7 +82,7 @@ describe PrometheusService, models: true, caching: true do
       end
 
       it 'returns reactive data' do
-        is_expected.to eq(prometheus_data.merge(deployment_time: deployment.created_at.to_i))
+        is_expected.to eq(prometheus_metrics_data.merge(deployment_time: deployment.created_at.to_i))
       end
     end
   end
@@ -111,6 +111,7 @@ describe PrometheusService, models: true, caching: true do
         stub_all_prometheus_requests(environment.slug)
       end
 
+      it { expect(subject.to_json).to eq(prometheus_data.to_json) }
       it { expect(subject.to_json).to eq(prometheus_data.to_json) }
     end
 
