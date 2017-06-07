@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe BuildEntity do
+describe JobEntity do
   let(:user) { create(:user) }
-  let(:build) { create(:ci_build) }
-  let(:project) { build.project }
+  let(:job) { create(:ci_build) }
+  let(:project) { job.project }
   let(:request) { double('request') }
 
   before do
@@ -12,12 +12,12 @@ describe BuildEntity do
   end
 
   let(:entity) do
-    described_class.new(build, request: request)
+    described_class.new(job, request: request)
   end
 
   subject { entity.as_json }
 
-  it 'contains paths to build page action' do
+  it 'contains paths to job page action' do
     expect(subject).to include(:build_path)
   end
 
@@ -27,7 +27,7 @@ describe BuildEntity do
   end
 
   it 'contains whether it is playable' do
-    expect(subject[:playable]).to eq build.playable?
+    expect(subject[:playable]).to eq job.playable?
   end
 
   it 'contains timestamps' do
@@ -41,7 +41,7 @@ describe BuildEntity do
 
   context 'when build is retryable' do
     before do
-      build.update(status: :failed)
+      job.update(status: :failed)
     end
 
     it 'contains cancel path' do
@@ -51,7 +51,7 @@ describe BuildEntity do
 
   context 'when build is cancelable' do
     before do
-      build.update(status: :running)
+      job.update(status: :running)
     end
 
     it 'contains cancel path' do
@@ -59,7 +59,7 @@ describe BuildEntity do
     end
   end
 
-  context 'when build is a regular build' do
+  context 'when job is a regular job' do
     it 'does not contain path to play action' do
       expect(subject).not_to include(:play_path)
     end
@@ -69,8 +69,8 @@ describe BuildEntity do
     end
   end
 
-  context 'when build is a manual action' do
-    let(:build) { create(:ci_build, :manual) }
+  context 'when job is a manual action' do
+    let(:job) { create(:ci_build, :manual) }
 
     context 'when user is allowed to trigger action' do
       before do
@@ -97,6 +97,27 @@ describe BuildEntity do
       it 'is not a playable action' do
         expect(subject[:playable]).to be false
       end
+    end
+  end
+
+  context 'when job is generic commit status' do
+    let(:job) { create(:generic_commit_status, target_url: 'http://google.com') }
+
+    it 'contains paths to target action' do
+      expect(subject).to include(:build_path)
+    end
+
+    it 'does not contain paths to other action paths' do
+      expect(subject).not_to include(:retry_path, :cancel_path, :play_path)
+    end
+
+    it 'contains timestamps' do
+      expect(subject).to include(:created_at, :updated_at)
+    end
+
+    it 'contains details' do
+      expect(subject).to include :status
+      expect(subject[:status]).to include :icon, :favicon, :text, :label
     end
   end
 end
