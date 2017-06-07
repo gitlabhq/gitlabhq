@@ -75,7 +75,7 @@ feature 'Geo clone instructions', feature: true, js: true do
     when 'ssh'
       project.ssh_url_to_repo
     when 'http'
-      project.http_url_to_repo(developer)
+      project.http_url_to_repo
     end
   end
 end
