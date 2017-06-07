@@ -2,6 +2,8 @@ class Spinach::Features::NewMenu < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
+  include SharedGroup
+  include SharedUser
 
   step 'I click "New project" in top right menu' do
     click_topmenuitem("New project")
