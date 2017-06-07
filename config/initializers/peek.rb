@@ -2,7 +2,13 @@ Rails.application.config.peek.adapter = :redis, { client: ::Redis.new(Gitlab::Re
 
 Peek.into Peek::Views::Host
 Peek.into Peek::Views::PerformanceBar
-Peek.into Gitlab::Database.mysql? ? Peek::Views::Mysql2 : Peek::Views::PG
+if Gitlab::Database.mysql?
+  require 'peek-mysql'
+  Peek.into Peek::Views::Mysql2
+else
+  require 'peek-pg'
+  Peek.into Peek::Views::PG
+end
 Peek.into Peek::Views::Redis
 Peek.into Peek::Views::Sidekiq
 Peek.into Peek::Views::Rblineprof

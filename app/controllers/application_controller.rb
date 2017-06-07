@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
+  include Peek::Rblineprof::CustomControllerHelpers
 
   before_action :authenticate_user_from_private_token!
   before_action :authenticate_user_from_rss_token!

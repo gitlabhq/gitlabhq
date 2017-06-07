@@ -608,8 +608,6 @@ GEM
       pry (~> 0.10)
     pry-rails (0.3.5)
       pry (>= 0.9.10)
-    pygments.rb (1.1.2)
-      multi_json (>= 1.0.0)
     pyu-ruby-sasl (0.0.3.3)
     rack (1.6.5)
     rack-accept (0.4.5)
@@ -1049,7 +1047,6 @@ DEPENDENCIES
   prometheus-client-mmap (~> 0.7.0.beta5)
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
-  pygments.rb
   rack-attack (~> 4.4.1)
   rack-cors (~> 0.4.0)
   rack-oauth2 (~> 1.2.1)
