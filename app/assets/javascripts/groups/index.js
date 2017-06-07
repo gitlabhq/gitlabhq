@@ -1,6 +1,7 @@
 /* global Flash */
 
 import Vue from 'vue';
+import GroupsList from '~/groups_list';
 import GroupFilterableList from './groups_filterable_list';
 import GroupsComponent from './components/groups.vue';
 import GroupFolder from './components/group_folder.vue';
@@ -174,5 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(this.handleErrorResponse);
     },
+    beforeDestroy() {
+      eventHub.$off('fetchPage', this.fetchPage);
+      eventHub.$off('toggleSubGroups', this.toggleSubGroups);
+      eventHub.$off('leaveGroup', this.leaveGroup);
+      eventHub.$off('updateGroups', this.updateGroups);
+      eventHub.$off('updatePagination', this.updatePagination);
+    }
   });
 });
