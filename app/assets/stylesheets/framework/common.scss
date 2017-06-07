@@ -449,3 +449,9 @@ table {
     word-wrap: break-word;
   }
 }
+
+.disabled-content {
+  pointer-events: none;
+  opacity: .5;
+}
+

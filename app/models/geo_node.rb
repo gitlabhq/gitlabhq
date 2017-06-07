@@ -5,10 +5,10 @@ class GeoNode < ActiveRecord::Base
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
   belongs_to :system_hook, dependent: :destroy
 
-  default_values schema: 'http',
+  default_values schema: lambda { Gitlab.config.gitlab.protocol },
                  host: lambda { Gitlab.config.gitlab.host },
-                 port: 80,
-                 relative_url_root: '',
+                 port: lambda { Gitlab.config.gitlab.port },
+                 relative_url_root: lambda { Gitlab.config.gitlab.relative_url_root },
                  primary: false
 
   accepts_nested_attributes_for :geo_node_key, :system_hook
