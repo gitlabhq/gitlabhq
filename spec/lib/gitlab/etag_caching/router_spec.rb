@@ -68,11 +68,11 @@ describe Gitlab::EtagCaching::Router do
   end
 
   it 'matches build endpoint' do
-    env = build_env(
+    request = build_request(
       '/my-group/my-project/builds/234.json'
     )
 
-    result = described_class.match(env)
+    result = described_class.match(request)
 
     expect(result).to be_present
     expect(result.name).to eq 'project_build'
@@ -89,11 +89,11 @@ describe Gitlab::EtagCaching::Router do
   end
 
   it 'matches the environments path' do
-    env = build_env(
+    request = build_request(
       '/my-group/my-project/environments.json'
     )
 
-    result = described_class.match(env)
+    result = described_class.match(request)
     expect(result).to be_present
 
     expect(result.name).to eq 'environments'
