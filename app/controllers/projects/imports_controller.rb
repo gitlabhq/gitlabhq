@@ -11,13 +11,7 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def create
-<<<<<<< HEAD
     if @project.update_attributes(import_params)
-=======
-    @project.import_url = params[:project][:import_url]
-
-    if @project.save
->>>>>>> ce/master
       @project.reload.import_schedule
     end
 

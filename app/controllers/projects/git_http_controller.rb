@@ -51,22 +51,8 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     render plain: exception.message, status: :forbidden
   end
 
-<<<<<<< HEAD
-  def render_denied
-    if user && can?(user, :read_project, project)
-      render plain: access_denied_message, status: :forbidden
-    else
-      # Do not leak information about project existence
-      render_not_found
-    end
-  end
-
-  def access_denied_message
-    access_check.message || 'Access denied'
-=======
   def render_404(exception)
     render plain: exception.message, status: :not_found
->>>>>>> ce/master
   end
 
   def access
