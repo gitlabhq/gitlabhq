@@ -41,9 +41,9 @@ module Gitlab
 
       def options
         {
-          'Private'  => PRIVATE,
-          'Internal' => INTERNAL,
-          'Public'   => PUBLIC
+          N_('VisibilityLevel|Private')  => PRIVATE,
+          N_('VisibilityLevel|Internal') => INTERNAL,
+          N_('VisibilityLevel|Public')   => PUBLIC
         }
       end
 

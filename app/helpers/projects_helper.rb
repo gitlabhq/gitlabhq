@@ -70,15 +70,18 @@ module ProjectsHelper
   end
 
   def remove_project_message(project)
-    "You are going to remove #{project.name_with_namespace}.\n Removed project CANNOT be restored!\n Are you ABSOLUTELY sure?"
+    _("You are going to remove %{project_name_with_namespace}.\nRemoved project CANNOT be restored!\nAre you ABSOLUTELY sure?") %
+      { project_name_with_namespace: project.name_with_namespace }
   end
 
   def transfer_project_message(project)
-    "You are going to transfer #{project.name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
+    _("You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?") %
+      { project_name_with_namespace: project.name_with_namespace }
   end
 
   def remove_fork_project_message(project)
-    "You are going to remove the fork relationship to source project #{@project.forked_from_project.name_with_namespace}.  Are you ABSOLUTELY sure?"
+    _("You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?") %
+      { forked_from_project: @project.forked_from_project.name_with_namespace }
   end
 
   def project_nav_tabs
@@ -138,11 +141,15 @@ module ProjectsHelper
 
     if @project.private?
       level = @project.project_feature.send(field)
-      options.delete('Everyone with access')
-      highest_available_option = options.values.max if level == ProjectFeature::ENABLED
+      disabled_option = ProjectFeature::ENABLED
+      highest_available_option = ProjectFeature::PRIVATE if level == disabled_option
     end
 
-    options = options_for_select(options, selected: highest_available_option || @project.project_feature.public_send(field))
+    options = options_for_select(
+      options.invert,
+      selected: highest_available_option || @project.project_feature.public_send(field),
+      disabled: disabled_option
+    )
 
     content_tag(
       :select,
@@ -155,12 +162,13 @@ module ProjectsHelper
   end
 
   def link_to_autodeploy_doc
-    link_to 'About auto deploy', help_page_path('ci/autodeploy/index'), target: '_blank'
+    link_to _('About auto deploy'), help_page_path('ci/autodeploy/index'), target: '_blank'
   end
 
   def autodeploy_flash_notice(branch_name)
-    "Branch <strong>#{truncate(sanitize(branch_name))}</strong> was created. To set up auto deploy, \
-      choose a GitLab CI Yaml template and commit your changes. #{link_to_autodeploy_doc}".html_safe
+    translation = _("Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}") %
+      { branch_name: truncate(sanitize(branch_name)), link_to_autodeploy_doc: link_to_autodeploy_doc }
+    translation.html_safe
   end
 
   def project_list_cache_key(project)
@@ -246,11 +254,11 @@ module ProjectsHelper
   def project_lfs_status(project)
     if project.lfs_enabled?
       content_tag(:span, class: 'lfs-enabled') do
-        'Enabled'
+        s_('LFSStatus|Enabled')
       end
     else
       content_tag(:span, class: 'lfs-disabled') do
-        'Disabled'
+        s_('LFSStatus|Disabled')
       end
     end
   end
@@ -269,7 +277,7 @@ module ProjectsHelper
     if current_user
       current_user.name
     else
-      "Your name"
+      _("Your name")
     end
   end
 
@@ -315,17 +323,18 @@ module ProjectsHelper
     if project.last_activity_at
       time_ago_with_tooltip(project.last_activity_at, placement: 'bottom', html_class: 'last_activity_time_ago')
     else
-      "Never"
+      s_("ProjectLastActivity|Never")
     end
   end
 
   def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
+    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
     namespace_project_new_blob_path(
       project.namespace,
       project,
       project.default_branch || 'master',
       file_name:      file_name,
-      commit_message: commit_message || "Add #{file_name.downcase}",
+      commit_message: commit_message,
       branch_name: branch_name,
       context: context
     )
@@ -476,9 +485,9 @@ module ProjectsHelper
 
   def project_feature_options
     {
-      'Disabled' => ProjectFeature::DISABLED,
-      'Only team members' => ProjectFeature::PRIVATE,
-      'Everyone with access' => ProjectFeature::ENABLED
+      ProjectFeature::DISABLED => s_('ProjectFeature|Disabled'),
+      ProjectFeature::PRIVATE => s_('ProjectFeature|Only team members'),
+      ProjectFeature::ENABLED => s_('ProjectFeature|Everyone with access')
     }
   end
 
