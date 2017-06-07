@@ -4,8 +4,8 @@ feature 'Top Plus Menu', feature: true, js: true do
   let(:user) { create :user }
   let(:guest_user) { create :user}
   let(:group) { create(:group) }
-  let(:public_group) { create(:group, :public) }
   let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
+  let(:public_project) { create(:project, :public) }
 
   before do
     group.add_owner(user)
@@ -123,6 +123,24 @@ feature 'Top Plus Menu', feature: true, js: true do
 
     scenario 'has no New project snippet menu item' do
       visit namespace_project_path(project.namespace, project)
+
+      expect(find('.header-new.dropdown')).not_to have_selector('.header-new-project-snippet')
+    end
+
+    scenario 'public project has no New Issue Button' do
+      visit namespace_project_path(public_project.namespace, public_project)
+
+      hasnot_topmenuitem("New issue")
+    end
+
+    scenario 'public project has no New merge request menu item' do
+      visit namespace_project_path(public_project.namespace, public_project)
+
+      hasnot_topmenuitem("New merge request")
+    end
+
+    scenario 'public project has no New project snippet menu item' do
+      visit namespace_project_path(public_project.namespace, public_project)
 
       expect(find('.header-new.dropdown')).not_to have_selector('.header-new-project-snippet')
     end
