@@ -377,6 +377,20 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
 
+  create_table "ci_sources_pipelines", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "pipeline_id"
+    t.integer "source_project_id"
+    t.integer "source_job_id"
+    t.integer "source_pipeline_id"
+  end
+
+  add_index "ci_sources_pipelines", ["pipeline_id"], name: "index_ci_pipeline_source_pipelines_on_pipeline_id", using: :btree
+  add_index "ci_sources_pipelines", ["project_id"], name: "index_ci_pipeline_source_pipelines_on_project_id", using: :btree
+  add_index "ci_sources_pipelines", ["source_job_id"], name: "index_ci_pipeline_source_pipelines_on_source_job_id", using: :btree
+  add_index "ci_sources_pipelines", ["source_pipeline_id"], name: "index_ci_pipeline_source_pipelines_on_source_pipeline_id", using: :btree
+  add_index "ci_sources_pipelines", ["source_project_id"], name: "index_ci_pipeline_source_pipelines_on_source_project_id", using: :btree
+
   create_table "ci_trigger_requests", force: :cascade do |t|
     t.integer "trigger_id", null: false
     t.text "variables"
@@ -1683,6 +1697,11 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_3d34ab2e06", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
+  add_foreign_key "ci_sources_pipelines", "ci_builds", column: "source_job_id", name: "fk_3f0c88d7dc", on_delete: :cascade
+  add_foreign_key "ci_sources_pipelines", "ci_pipelines", column: "pipeline_id", name: "fk_b8c0fac459", on_delete: :cascade
+  add_foreign_key "ci_sources_pipelines", "ci_pipelines", column: "source_pipeline_id", name: "fk_3a3e3cb83a", on_delete: :cascade
+  add_foreign_key "ci_sources_pipelines", "projects", column: "source_project_id", name: "fk_8868d0f3e4", on_delete: :cascade
+  add_foreign_key "ci_sources_pipelines", "projects", name: "fk_83b4346e48", on_delete: :cascade
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade

@@ -9,6 +9,8 @@ module Ci
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
+    has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_job_id
+
     has_many :deployments, as: :deployable
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
 
@@ -206,14 +208,19 @@ module Ci
     end
 
     def merge_request
-      merge_requests = MergeRequest.includes(:merge_request_diff)
-                                   .where(source_branch: ref,
-                                          source_project: pipeline.project)
-                                   .reorder(iid: :asc)
+      return @merge_request if defined?(@merge_request)
 
-      merge_requests.find do |merge_request|
-        merge_request.commits_sha.include?(pipeline.sha)
-      end
+      @merge_request ||=
+        begin
+          merge_requests = MergeRequest.includes(:merge_request_diff)
+            .where(source_branch: ref,
+                   source_project: pipeline.project)
+            .reorder(iid: :desc)
+
+          merge_requests.find do |merge_request|
+            merge_request.commits_sha.include?(pipeline.sha)
+          end
+        end
     end
 
     def repo_url
@@ -337,7 +344,7 @@ module Ci
     end
 
     def has_expiring_artifacts?
-      artifacts_expire_at.present?
+      artifacts_expire_at.present? && artifacts_expire_at > Time.now
     end
 
     def keep_artifacts!

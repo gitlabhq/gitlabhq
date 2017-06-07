@@ -108,6 +108,10 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
+- source_pipeline
+- sourced_pipelines
+- triggered_by_pipeline
+- triggered_pipelines
 statuses:
 - project
 - pipeline
@@ -263,6 +267,8 @@ project:
 - container_repositories
 - uploads
 - mirror_data
+- source_pipelines
+- sourced_pipelines
 award_emoji:
 - awardable
 - user
