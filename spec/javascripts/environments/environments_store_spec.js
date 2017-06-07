@@ -178,4 +178,13 @@ describe('Store', () => {
       expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
     });
   });
+
+  describe('getOpenFolders', () => {
+    it('should return open folder', () => {
+      store.storeEnvironments(serverData);
+
+      store.toggleFolder(store.state.environments[1]);
+      expect(store.getOpenFolders()[0]).toEqual(store.state.environments[1]);
+    });
+  });
 });

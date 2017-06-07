@@ -99,6 +99,7 @@ gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
+gem 'fog-aliyun', '~> 0.1.0'
 
 # for Google storage
 gem 'google-api-client', '~> 0.8.6'
@@ -118,7 +119,7 @@ gem 'faraday_middleware-aws-signers-v4'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
-gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
+gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.5.1'
 gem 'redcarpet', '~> 3.4'
 gem 'RedCloth', '~> 4.3.2'
@@ -380,3 +381,7 @@ gem 'sys-filesystem', '~> 1.1.6'
 gem 'gitaly', '~> 0.7.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
+
+# Feature toggles
+gem 'flipper', '~> 0.10.2'
+gem 'flipper-active_record', '~> 0.10.2'

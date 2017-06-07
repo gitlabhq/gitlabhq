@@ -334,6 +334,7 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.integer "lock_version"
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
+    t.integer "source"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
@@ -406,6 +407,7 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.string "encrypted_value_salt"
     t.string "encrypted_value_iv"
     t.integer "project_id", null: false
+    t.boolean "protected", default: false, null: false
   end
 
   add_index "ci_variables", ["project_id"], name: "index_ci_variables_on_project_id", using: :btree
@@ -490,6 +492,24 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "events", ["project_id"], name: "index_events_on_project_id", using: :btree
   add_index "events", ["target_id"], name: "index_events_on_target_id", using: :btree
   add_index "events", ["target_type"], name: "index_events_on_target_type", using: :btree
+
+  create_table "feature_gates", force: :cascade do |t|
+    t.string "feature_key", null: false
+    t.string "key", null: false
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "feature_gates", ["feature_key", "key", "value"], name: "index_feature_gates_on_feature_key_and_key_and_value", unique: true, using: :btree
+
+  create_table "features", force: :cascade do |t|
+    t.string "key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "features", ["key"], name: "index_features_on_key", unique: true, using: :btree
 
   create_table "forked_project_links", force: :cascade do |t|
     t.integer "forked_to_project_id", null: false
@@ -1071,6 +1091,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.date "expires_at"
   end
 
+  add_index "project_group_links", ["group_id"], name: "index_project_group_links_on_group_id", using: :btree
+
   create_table "project_import_data", force: :cascade do |t|
     t.integer "project_id"
     t.text "data"
@@ -1573,7 +1595,6 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.boolean "external", default: false
     t.string "incoming_email_token"
     t.string "organization"
-    t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
     t.boolean "ghost"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false

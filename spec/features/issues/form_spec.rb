@@ -24,7 +24,7 @@ describe 'New/edit issue', :feature, :js do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
-    describe 'shorten users API pagination limit' do
+    describe 'single assignee' do
       before do
         # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
         # somehow refer to the very block we defined to _wrap_ that method, instead of

@@ -145,6 +145,19 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "Pipelines" do
+    subject { execute_service(project, user, oldrev, newrev, ref) }
+
+    before do
+      stub_ci_pipeline_to_return_yaml_file
+    end
+
+    it "creates a new pipeline" do
+      expect{ subject }.to change { Ci::Pipeline.count }
+      expect(Ci::Pipeline.last).to be_push
+    end
+  end
+
   describe "ES indexing" do
     before do
       stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
@@ -183,7 +196,7 @@ describe GitPushService, services: true do
         execute_service(project, user, blankrev, 'newrev', ref)
       end
     end
-    
+
     context "Sends System Push data" do
       it "when pushing on a branch" do
         expect(SystemHookPushWorker).to receive(:perform_async).with(push_data, :push_hooks)
@@ -466,11 +479,12 @@ describe GitPushService, services: true do
         stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({
-          issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
-          safe_message: message,
-          author_name: commit_author.name,
-          author_email: commit_author.email
-        })
+                                                    issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
+                                                    safe_message: message,
+                                                    author_name: commit_author.name,
+                                                    author_email: commit_author.email
+                                                  })
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end

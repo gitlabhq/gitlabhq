@@ -1,0 +1,4 @@
+---
+title: Fix pipeline_schedules pages throwing error 500
+merge_request: 11706
+author: dosuken123

@@ -169,7 +169,7 @@ class ProjectTeam
       access = RequestStore.store[key]
     end
 
-    # Lookup only the IDs we need
+    # Look up only the IDs we need
     user_ids = user_ids - access.keys
 
     return access if user_ids.empty?
@@ -180,6 +180,13 @@ class ProjectTeam
       maximum(:access_level)
 
     access.merge!(users_access)
+
+    missing_user_ids = user_ids - users_access.keys
+
+    missing_user_ids.each do |user_id|
+      access[user_id] = Gitlab::Access::NO_ACCESS
+    end
+
     access
   end
 

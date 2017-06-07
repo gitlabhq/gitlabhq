@@ -95,8 +95,6 @@ and click **Registry** in the project menu.
 This view will show you all tags in your project and will easily allow you to
 delete them.
 
-![Container Registry panel](img/container_registry_panel.png)
-
 ## Build and push images using GitLab CI
 
 > **Note:**

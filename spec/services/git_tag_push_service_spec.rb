@@ -30,6 +30,20 @@ describe GitTagPushService, services: true do
     end
   end
 
+  describe "Pipelines" do
+    subject { service.execute }
+
+    before do
+      stub_ci_pipeline_to_return_yaml_file
+      project.team << [user, :developer]
+    end
+
+    it "creates a new pipeline" do
+      expect{ subject }.to change{ Ci::Pipeline.count }
+      expect(Ci::Pipeline.last).to be_push
+    end
+  end
+
   describe "Git Tag Push Data" do
     subject { @push_data }
     let(:tag) { project.repository.find_tag(tag_name) }

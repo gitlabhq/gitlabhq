@@ -105,6 +105,15 @@ describe API::V3::DeployKeys do
 
         expect(response).to have_http_status(201)
       end
+
+      it 'accepts can_push parameter' do
+        key_attrs = attributes_for :write_access_key
+
+        post v3_api("/projects/#{project.id}/#{path}", admin), key_attrs
+
+        expect(response).to have_http_status(201)
+        expect(json_response['can_push']).to eq(true)
+      end
     end
 
     describe "DELETE /projects/:id/#{path}/:key_id" do

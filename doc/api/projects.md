@@ -38,6 +38,8 @@ Parameters:
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
+| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
 ```json
 [
@@ -476,6 +478,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
@@ -510,6 +513,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
@@ -544,6 +548,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 

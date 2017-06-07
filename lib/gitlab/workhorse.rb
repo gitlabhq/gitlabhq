@@ -31,8 +31,7 @@ module Gitlab
 
           feature_enabled = case action.to_s
                             when 'git_receive_pack'
-                              # Disabled for now, see https://gitlab.com/gitlab-org/gitaly/issues/172
-                              false
+                              Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
                             when 'git_upload_pack'
                               Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
                             when 'info_refs'

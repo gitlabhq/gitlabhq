@@ -131,9 +131,7 @@ import AuditLogs from './audit_logs';
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
-            const filteredSearchManager = new gl.FilteredSearchManager(
-              page === 'projects:issues:index' ? 'issues' : 'merge_requests',
-            );
+            const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';

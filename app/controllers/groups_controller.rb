@@ -64,6 +64,8 @@ class GroupsController < Groups::ApplicationController
   end
 
   def subgroups
+    return not_found unless Group.supports_nested_groups?
+
     @nested_groups = GroupsFinder.new(current_user, parent: group).execute
     @nested_groups = @nested_groups.search(params[:filter_groups]) if params[:filter_groups].present?
   end

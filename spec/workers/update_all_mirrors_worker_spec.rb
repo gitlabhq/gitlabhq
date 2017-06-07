@@ -13,9 +13,9 @@ describe UpdateAllMirrorsWorker do
     end
 
     it 'does not execute if cannot get the lease' do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
-
       create(:empty_project, :mirror)
+
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
 
       expect(worker).not_to receive(:fail_stuck_mirrors!)
 

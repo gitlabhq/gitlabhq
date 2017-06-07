@@ -26,7 +26,7 @@ class Event < ActiveRecord::Base
   belongs_to :target, polymorphic: true
 
   # For Hash only
-  serialize :data
+  serialize :data # rubocop:disable Cop/ActiverecordSerialize
 
   # Callbacks
   after_create :reset_project_activity

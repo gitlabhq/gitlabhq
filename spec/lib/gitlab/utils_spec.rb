@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::Utils, lib: true do
-  delegate :to_boolean, :which, to: :described_class
+  delegate :to_boolean, :boolean_to_yes_no, to: :described_class
+
+  # EE
+  delegate :which, to: :described_class
 
   describe '.to_boolean' do
     it 'accepts booleans' do
@@ -33,6 +36,14 @@ describe Gitlab::Utils, lib: true do
     end
   end
 
+  describe '.boolean_to_yes_no' do
+    it 'converts booleans to Yes or No' do
+      expect(boolean_to_yes_no(true)).to eq('Yes')
+      expect(boolean_to_yes_no(false)).to eq('No')
+    end
+  end
+
+  # EE
   describe '.which' do
     it 'finds the full path to an executable binary' do
       expect(File).to receive(:executable?).with('/bin/sh').and_return(true)

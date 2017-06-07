@@ -333,10 +333,11 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
     context 'when pipeline is promoted sequentially up to the end' do
       before do
-        # We are using create(:empty_project), and users has to be master in
-        # order to execute manual action when repository does not exist.
+        # Users need ability to merge into a branch in order to trigger
+        # protected manual actions.
         #
-        project.add_master(user)
+        create(:protected_branch, :developers_can_merge,
+               name: 'master', project: project)
       end
 
       it 'properly processes entire pipeline' do

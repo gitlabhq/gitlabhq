@@ -92,6 +92,12 @@
           = gitlab_pages
           %span.light.pull-right
             = boolean_to_icon gitlab_pages_enabled
+        - gitlab_shared_runners = 'Shared Runners'
+        - gitlab_shared_runners_enabled = Gitlab.config.gitlab_ci.shared_runners_enabled
+        %p{ "aria-label" => "#{gitlab_shared_runners}: status " + (gitlab_shared_runners_enabled ? "on" : "off") }
+          = gitlab_shared_runners
+          %span.light.pull-right
+            = boolean_to_icon gitlab_shared_runners_enabled
 
       .col-md-4
         %h4

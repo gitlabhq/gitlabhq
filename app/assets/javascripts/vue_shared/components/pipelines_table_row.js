@@ -4,7 +4,7 @@ import PipelinesActionsComponent from '../../pipelines/components/pipelines_acti
 import PipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts';
 import ciBadge from './ci_badge_link.vue';
 import PipelinesStageComponent from '../../pipelines/components/stage.vue';
-import PipelinesUrlComponent from '../../pipelines/components/pipeline_url';
+import PipelinesUrlComponent from '../../pipelines/components/pipeline_url.vue';
 import PipelinesTimeagoComponent from '../../pipelines/components/time_ago';
 import CommitComponent from './commit';
 

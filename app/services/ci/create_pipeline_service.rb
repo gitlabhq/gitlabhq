@@ -2,8 +2,9 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false)
       @pipeline = Ci::Pipeline.new(
+        source: source,
         project: project,
         ref: ref,
         sha: sha,
@@ -69,6 +70,13 @@ module Ci
       pipeline.tap(&:process!)
     end
 
+    def update_merge_requests_head_pipeline
+      return unless pipeline.latest?
+
+      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref).
+        update_all(head_pipeline_id: @pipeline.id)
+    end
+
     def skip_ci?
       return false unless pipeline.git_commit_message
       pipeline.git_commit_message =~ /\[(ci[ _-]skip|skip[ _-]ci)\]/i
@@ -124,11 +132,6 @@ module Ci
 
     def valid_sha?
       origin_sha && origin_sha != Gitlab::Git::BLANK_SHA
-    end
-
-    def update_merge_requests_head_pipeline
-      MergeRequest.where(source_branch: @pipeline.ref, source_project: @pipeline.project).
-        update_all(head_pipeline_id: @pipeline.id)
     end
 
     def error(message, save: false)
