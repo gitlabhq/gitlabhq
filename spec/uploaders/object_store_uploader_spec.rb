@@ -95,7 +95,7 @@ describe ObjectStoreUploader do
 
       context 'when migrating to remote storage' do
         let(:new_store) { described_class::REMOTE_STORE }
-        let!(current_path) { uploader.path }
+        let!(:current_path) { uploader.path }
 
         it "file does exist" do
           expect(File.exist?(current_path)).to eq(true)

@@ -315,9 +315,7 @@ Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
 Settings.artifacts['object_store']['remote_directory'] ||= nil
 # Convert upload connection settings to use symbol keys, to make Fog happy
-if Settings.artifacts['object_store']['connection']
-  Settings.artifacts['object_store']['connection'].deep_symbolize_keys!
-end
+Settings.artifacts['object_store']['connection']&.deep_symbolize_keys!
 
 #
 # Registry
