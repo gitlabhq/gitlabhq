@@ -66,7 +66,7 @@ export default {
   },
 
   template: `
-    <td class="pipelines-time-ago">
+    <div class="table-section section-15 pipelines-time-ago">
       <p
         class="duration"
         v-if="hasDuration">
@@ -93,6 +93,6 @@ export default {
           {{finishedTimeFormated}}
         </time>
       </p>
-    </td>
+    </div>
   `,
 };

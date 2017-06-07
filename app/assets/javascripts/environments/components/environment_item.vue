@@ -535,10 +535,10 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-30 environments-actions table-button-footer" role="gridcell">
+    <div class="table-section section-30 table-button-footer" role="gridcell">
       <div
         v-if="!model.isFolder"
-        class="btn-group environment-action-buttons"
+        class="btn-group table-action-buttons"
         role="group">
 
         <actions-component

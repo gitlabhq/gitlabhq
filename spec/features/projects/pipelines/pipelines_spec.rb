@@ -174,7 +174,7 @@ describe 'Pipelines', :feature, :js do
         before { visit_project_pipelines }
 
         it 'has a dropdown with play button' do
-          expect(page).to have_selector('.dropdown-toggle.btn.btn-default .icon-play')
+          expect(page).to have_selector('.dropdown-new.btn.btn-default .icon-play')
         end
 
         it 'has link to the manual action' do

@@ -19,7 +19,7 @@ describe('Pipeline Url Component', () => {
       },
     }).$mount();
 
-    expect(component.$el.tagName).toEqual('TD');
+    expect(component.$el.querySelector).toEqual('.table-section');
   });
 
   it('should render a link the provided path and id', () => {

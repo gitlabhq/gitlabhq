@@ -20,7 +20,7 @@
     .table-mobile-header{ role: 'rowheader' } Created
     %span.table-mobile-content= time_ago_with_tooltip(deployment.created_at)
 
-  .table-section.section-20.environments-actions.table-button-footer{ role: 'gridcell' }
-    .btn-group.environment-action-buttons
+  .table-section.section-20.table-button-footer{ role: 'gridcell' }
+    .btn-group.table-action-buttons
       = render 'projects/deployments/actions', deployment: deployment
       = render 'projects/deployments/rollback', deployment: deployment

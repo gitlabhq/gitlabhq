@@ -206,14 +206,14 @@ export default {
   },
 
   template: `
-    <tr class="commit">
-      <td class="commit-link">
+    <div class="commit gl-responsive-table-row">
+      <div class="table-section section-10 commit-link">
         <ci-badge :status="pipelineStatus"/>
-      </td>
+      </div>
 
       <pipeline-url :pipeline="pipeline"></pipeline-url>
 
-      <td>
+      <div class="table-section section-25">
         <commit-component
           :tag="commitTag"
           :commit-ref="commitRef"
@@ -221,9 +221,9 @@ export default {
           :short-sha="commitShortSha"
           :title="commitTitle"
           :author="commitAuthor"/>
-      </td>
+      </div>
 
-      <td class="stage-cell">
+      <div class="table-section section-wrap section-15 stage-cell">
         <div class="stage-container dropdown js-mini-pipeline-graph"
           v-if="pipeline.details.stages.length > 0"
           v-for="stage in pipeline.details.stages">
@@ -232,14 +232,14 @@ export default {
             :stage="stage"
             :update-dropdown="updateGraphDropdown"/>
         </div>
-      </td>
+      </div>
 
       <time-ago
         :duration="pipelineDuration"
         :finished-time="pipelineFinishedAt" />
 
-      <td class="pipeline-actions">
-        <div class="pull-right btn-group">
+      <div class="table-section section-20 table-button-footer pipeline-actions">
+        <div class="btn-group table-action-buttons">
           <pipelines-actions-component
             v-if="pipeline.details.manual_actions.length"
             :actions="pipeline.details.manual_actions"
@@ -247,6 +247,7 @@ export default {
 
           <pipelines-artifacts-component
             v-if="pipeline.details.artifacts.length"
+            class="hidden-xs hidden-sm"
             :artifacts="pipeline.details.artifacts" />
 
           <async-button-component
@@ -266,7 +267,7 @@ export default {
             icon="remove"
             confirm-action-message="Are you sure you want to cancel this pipeline?" />
         </div>
-      </td>
-    </tr>
+      </div>
+    </div>
   `,
 };

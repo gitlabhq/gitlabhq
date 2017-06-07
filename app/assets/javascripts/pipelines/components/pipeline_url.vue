@@ -23,7 +23,7 @@ export default {
 };
 </script>
 <template>
-  <td>
+  <div class="table-section section-15 hidden-xs hidden-sm">
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">
@@ -61,5 +61,5 @@ export default {
       class="js-pipeline-url-stuck label label-warning">
       stuck
     </span>
-  </td>
+  </div>
 </template>

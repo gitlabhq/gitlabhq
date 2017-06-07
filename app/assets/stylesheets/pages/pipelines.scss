@@ -10,17 +10,13 @@
 
   .table-holder {
     width: 100%;
-
-    @media (max-width: $screen-sm-max) {
-      overflow: auto;
-    }
   }
 
   .commit-title {
     margin: 0;
   }
 
-  .table.ci-table {
+  .ci-table {
 
     .label {
       margin-bottom: 3px;
@@ -28,11 +24,6 @@
 
     .pipeline-id {
       color: $black;
-    }
-
-    .stage-cell {
-      min-width: 130px; // Guarantees we show at least 4 stages in line
-      width: 20%;
     }
 
     .pipelines-time-ago {
@@ -108,39 +99,7 @@
   }
 }
 
-.table.ci-table {
-
-  &.builds-page tbody tr {
-    height: 71px;
-  }
-
-  tr {
-    th {
-      padding: 16px 8px;
-      border: none;
-    }
-
-    td {
-      padding: 10px 8px;
-    }
-
-    td.environments-actions {
-      padding-right: 0;
-    }
-
-    td.stage-cell {
-      padding: 10px 0;
-    }
-
-    .commit-link {
-      padding: 9px 8px 10px 2px;
-    }
-  }
-
-  tbody {
-    border-top-width: 1px;
-  }
-
+.ci-table {
   .build.retried {
     background-color: $gray-lightest;
   }
@@ -192,13 +151,6 @@
 
     .commit-sha {
       color: $gl-link-color;
-    }
-
-    .commit-title {
-      max-width: 225px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
     }
 
     .label {
@@ -254,7 +206,6 @@
 
 .stage-cell {
   font-size: 0;
-  padding: 0 4px;
 
   > .stage-container > div > button > span > svg,
   > .stage-container > button > svg {

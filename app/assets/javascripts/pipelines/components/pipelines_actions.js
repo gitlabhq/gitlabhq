@@ -59,7 +59,7 @@ export default {
     <div class="btn-group" v-if="actions">
       <button
         type="button"
-        class="dropdown-toggle btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
+        class="dropdown-new btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
         title="Manual job"
         data-toggle="dropdown"
         data-placement="top"
@@ -73,7 +73,7 @@ export default {
         <loading-icon v-if="isLoading" />
       </button>
 
-      <ul class="dropdown-menu dropdown-menu-align-right">
+      <ul class="dropdown-menu">
         <li v-for="action in actions">
           <button
             type="button"
