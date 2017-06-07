@@ -20,7 +20,7 @@ describe Backup::Repository, lib: true do
     $progress = @old_progress # rubocop:disable Style/GlobalVars
   end
 
-  describe '.dump' do
+  describe '#dump' do
     describe 'repo failure' do
       before do
         allow_any_instance_of(Project).to receive(:empty_repo?).and_raise(Rugged::OdbError)
@@ -52,7 +52,7 @@ describe Backup::Repository, lib: true do
     end
   end
 
-  describe '.restore' do
+  describe '#restore' do
     describe 'command failure' do
       before do
         allow(Gitlab::Popen).to receive(:popen).and_return(['error', 1])
