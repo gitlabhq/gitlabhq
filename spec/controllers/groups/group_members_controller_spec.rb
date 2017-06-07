@@ -129,7 +129,7 @@ describe Groups::GroupMembersController do
           delete :leave, group_id: group, format: :json
 
           expect(response).to have_http_status(200)
-          expect(response.body).to be_empty
+          expect(json_response['notice']).to eq "You left the \"#{group.name}\" group."
         end
       end
 
