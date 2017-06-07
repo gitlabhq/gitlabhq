@@ -82,6 +82,8 @@ window.Build = (function () {
       cursoropacitymin: 1,
       cursorwidth: '3px',
       railpadding: { top: 5, bottom: 5, right: 5 },
+      scrollspeed: 100,
+      mousescrollstep: 100,
     });
 
     this.$scrollContainer.on('scroll', _.throttle(this.toggleScroll.bind(this), 100));
