@@ -43,7 +43,7 @@ module Backup
 
         if File.exist?(path_to_wiki_repo)
           progress.print " * #{wiki.path_with_namespace} ... "
-          if empty_wiki_repo?(wiki)
+          if empty_repo?(wiki)
             progress.puts " [SKIPPED]".color(:cyan)
           else
             cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_wiki_repo} bundle create #{path_to_wiki_bundle} --all)
