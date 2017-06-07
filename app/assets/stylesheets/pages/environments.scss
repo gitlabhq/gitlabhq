@@ -198,6 +198,7 @@
 
 .text-metric {
   font-weight: 600;
+  font-size: 14px;
 }
 
 .selected-metric-line {
@@ -207,7 +208,7 @@
 
 .deployment-line {
   stroke: $black;
-  stroke-width: 2;
+  stroke-width: 1;
 }
 
 .deploy-info-text {

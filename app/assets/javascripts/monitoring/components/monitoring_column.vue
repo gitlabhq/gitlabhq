@@ -119,6 +119,7 @@
         point.x = e.clientX;
         point.y = e.clientY;
         point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
+        point.x = point.x += 7;
         const timeValueOverlay = this.xScale.invert(point.x);
         const overlayIndex = bisectDate(this.data, timeValueOverlay, 1);
         const d0 = this.data[overlayIndex - 1];
@@ -131,7 +132,7 @@
         this.currentYCoordinate = this.yScale(this.currentData.value);
 
         if (this.currentXCoordinate > (this.width - 200)) {
-          this.currentFlagPosition = this.currentXCoordinate - 100;
+          this.currentFlagPosition = this.currentXCoordinate - 103;
         } else {
           this.currentFlagPosition = this.currentXCoordinate;
         }
@@ -267,17 +268,17 @@
               ref="graphOverlay"
               @mousemove="handleMouseOverGraph($event)">
             </rect>
+            <monitoring-deployment
+              :show-deploy-info="showDeployInfo"
+              :deployment-data="reducedDeploymentData"
+              :height="height"
+            />
             <monitoring-flag 
               v-show="showFlag"
               :current-x-coordinate="currentXCoordinate"
               :current-y-coordinate="currentYCoordinate"
               :current-data="currentData"
               :current-flag-position="currentFlagPosition"
-              :height="height"
-            />
-            <monitoring-deployment
-              :show-deploy-info="showDeployInfo"
-              :deployment-data="reducedDeploymentData"
               :height="height"
             />
         </svg>

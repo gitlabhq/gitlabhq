@@ -75,7 +75,7 @@
         rx="2"
         width="90"
         height="40"
-        transform="translate(-5, 20)">
+        transform="translate(-3, 20)">
       </rect>
       <text
         class="text-metric text-metric-bold"

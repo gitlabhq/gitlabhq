@@ -34,11 +34,25 @@
         required: true,
       },
     },
+    data() {
+      return {
+        yLabelWidth: 0,
+        yLabelHeight: 0,
+      };
+    },
     computed: {
       textTransform() {
         const yCoordinate = (((this.height - this.margin.top)
                           + this.measurements.axisLabelLineOffset) / 2) || 0;
+
         return `translate(15, ${yCoordinate}) rotate(-90)`;
+      },
+
+      rectTransform() {
+        const yCoordinate = ((this.height - this.margin.top) / 2)
+                            + (this.yLabelWidth / 2) + 10 || 0;
+
+        return `translate(0, ${yCoordinate}) rotate(-90)`;
       },
 
       xPosition() {
@@ -48,6 +62,13 @@
       yPosition() {
         return ((this.height - this.margin.top) + this.measurements.axisLabelLineOffset) || 0;
       },
+    },
+    mounted() {
+      this.$nextTick(() => {
+        const bbox = this.$refs.ylabel.getBBox();
+        this.yLabelWidth = bbox.width + 10; // Added some padding
+        this.yLabelHeight = bbox.height + 5;
+      });
     },
   };
 </script>
@@ -74,27 +95,27 @@
     </line>
     <rect
       class="rect-axis-text"
-      x="-10"
-      y="50"
-      :width="measurements.backgroundLegend.width"
-      :height="measurements.backgroundLegend.height">
+      :transform="rectTransform"
+      :width="yLabelWidth"
+      :height="yLabelHeight">
     </rect>
     <text 
-      class="label-axis-text"
+      class="label-axis-text y-label-text"
       text-anchor="middle"
-      :transform="textTransform">
+      :transform="textTransform"
+      ref="ylabel">
       {{yAxisLabel}}
     </text>
     <rect
       class="rect-axis-text"
-      :x="xPosition"
+      :x="xPosition + 50"
       :y="height - 80"
-      width="30"
+      width="50"
       height="50">
     </rect>
     <text
       class="label-axis-text"
-      :x="xPosition"
+      :x="xPosition + 60"
       :y="yPosition"
       dy=".35em">
       Time

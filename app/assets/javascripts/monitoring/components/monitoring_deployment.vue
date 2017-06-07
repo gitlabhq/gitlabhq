@@ -52,10 +52,10 @@
       :class="nameDeploymentClass(deployment)"
       :transform="transformDeploymentGroup(deployment)">
       <rect
-        x="1"
+        x="0"
         y="0"
         :height="height - 120"
-        width="2"
+        width="3"
         fill="url(#shadow-gradient)">
       </rect>
       <line
@@ -90,18 +90,19 @@
         </g>
         <text
           class="deploy-info-text"
-          y="18">
+          y="18"
+          transform="translate(5, 2)">
           {{formatDate(deployment.time)}}
         </text>
         <text
           class="deploy-info-text text-metric-bold"
-          y="38">
+          y="38"
+          transform="translate(5, 2)">
           {{formatTime(deployment.time)}}
         </text>
       </svg>
     </g>
     <svg
-      class="hidden"
       height="0"
       width="0">
       <defs>
