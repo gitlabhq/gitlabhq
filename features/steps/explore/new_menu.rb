@@ -4,42 +4,42 @@ class Spinach::Features::NewMenu < Spinach::FeatureSteps
   include SharedProject
 
   step 'I click "New project" in top right menu' do
-    page.within '.header-content' do
-      find('.header-new-dropdown-toggle').trigger('click')
-      expect(page).to have_selector('.header-new.dropdown.open', count: 1)
-      click_link "New project"
-    end
+    click_topmenuitem("New project")
   end
 
   step 'I click "New group" in top right menu' do
-    page.within '.header-content' do
-      find('.header-new-dropdown-toggle').trigger('click')
-      expect(page).to have_selector('.header-new.dropdown.open', count: 1)
-      click_link "New group"
-    end
+    click_topmenuitem("New group")
   end
 
   step 'I click "New snippet" in top right menu' do
+    click_topmenuitem("New snippet")
+  end
+
+  step 'I click "New project snippet" in top right menu' do
     page.within '.header-content' do
       find('.header-new-dropdown-toggle').trigger('click')
       expect(page).to have_selector('.header-new.dropdown.open', count: 1)
-      click_link "New snippet"
+      find('.header-new-project-snippet a').trigger('click')
     end
   end
 
   step 'I click "New issue" in top right menu' do
-    page.within '.header-content' do
-      find('.header-new-dropdown-toggle').trigger('click')
-      expect(page).to have_selector('.header-new.dropdown.open', count: 1)
-      click_link "New issue"
-    end
+    click_topmenuitem("New issue")
   end
 
   step 'I click "New merge request" in top right menu' do
+    click_topmenuitem("New merge request")
+  end
+
+  step 'I click "New subgroup" in top right menu' do
+    click_topmenuitem("New subgroup")
+  end
+
+  step 'I click "New group project" in top right menu' do
     page.within '.header-content' do
       find('.header-new-dropdown-toggle').trigger('click')
       expect(page).to have_selector('.header-new.dropdown.open', count: 1)
-      click_link "New merge request"
+      find('.header-new-group-project a').trigger('click')
     end
   end
 
@@ -67,5 +67,13 @@ class Spinach::Features::NewMenu < Spinach::FeatureSteps
     expect(page).to have_content('New Merge Request')
     expect(page).to have_content('Source branch')
     expect(page).to have_content('Target branch')
+  end
+
+  def click_topmenuitem(item_name)
+    page.within '.header-content' do
+      find('.header-new-dropdown-toggle').trigger('click')
+      expect(page).to have_selector('.header-new.dropdown.open', count: 1)
+      click_link item_name
+    end
   end
 end

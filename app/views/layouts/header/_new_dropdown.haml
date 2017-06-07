@@ -10,7 +10,7 @@
         - if create_group_project || create_group_subgroup
           %li.dropdown-bold-header This group
           - if create_group_project
-            %li
+            %li.header-new-group-project
               = link_to 'New project', new_project_path(namespace_id: @group.id)
           - if create_group_subgroup
             %li
@@ -31,7 +31,7 @@
             %li
               = link_to 'New merge request', new_namespace_project_merge_request_path(merge_project.namespace, merge_project)
           - if create_project_snippet
-            %li
+            %li.header-new-project-snippet
               = link_to 'New snippet', new_namespace_project_snippet_path(@project.namespace, @project)
           %li.divider
           %li.dropdown-bold-header GitLab

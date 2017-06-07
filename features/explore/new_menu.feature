@@ -1,7 +1,8 @@
 @explore
 Feature: New Menu
 Background:
-  Given I sign in as a user
+  Given I sign in as "John Doe"
+  And "John Doe" is owner of group "Owned"
   And I own project "Shop"
   And I visit dashboard page
 
@@ -38,5 +39,17 @@ Background:
   @javascript
   Scenario: I should see New Project Snippet page
     When I visit project "Shop" page
-    And I click "New snippet" in top right menu
+    And I click "New project snippet" in top right menu
     Then I see "New Snippet" page
+
+  @javascript
+  Scenario: I should see New Group Project page
+    When I visit group "Owned" page
+    And I click "New group project" in top right menu
+    Then I see "New Project" page
+
+  @javascript
+  Scenario: I should see New Subgroup page
+    When I visit group "Owned" page
+    And I click "New subgroup" in top right menu
+    Then I see "New Group" page
