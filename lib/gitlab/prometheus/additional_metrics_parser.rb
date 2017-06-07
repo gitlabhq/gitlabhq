@@ -14,14 +14,14 @@ module Gitlab
       end
 
       def metric_from_entry(entry)
-        missing_fields = [:title, :required_metrics, :weight, :queries].select { |key| !entry.has_key?(key) }
+        missing_fields = [:title, :required_metrics, :weight, :queries].select { |key| !entry.key?(key) }
         raise ParsingError.new("entry missing required fields #{missing_fields}") unless missing_fields.empty?
 
         Metric.new(entry[:title], entry[:required_metrics], entry[:weight], entry[:y_label], entry[:queries])
       end
 
       def group_from_entry(entry)
-        missing_fields = [:group, :priority, :metrics].select { |key| !entry.has_key?(key) }
+        missing_fields = [:group, :priority, :metrics].select { |key| !entry.key?(key) }
         raise ParsingError.new("entry missing required fields #{missing_fields}") unless missing_fields.empty?
 
         group = MetricGroup.new(entry[:group], entry[:priority])

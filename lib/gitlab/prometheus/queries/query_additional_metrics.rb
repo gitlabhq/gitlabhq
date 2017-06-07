@@ -44,7 +44,7 @@ module Gitlab
         def process_query(context, query)
           query_with_result = query.dup
           query_with_result[:result] =
-            if query.has_key?(:query_range)
+            if query.key?(:query_range)
               client_query_range(query[:query_range] % context, start: context[:timeframe_start], stop: context[:timeframe_end])
             else
               client_query(query[:query] % context, time: context[:timeframe_end])
