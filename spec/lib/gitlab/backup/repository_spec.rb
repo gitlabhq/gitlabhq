@@ -12,18 +12,13 @@ describe Backup::Repository, lib: true do
       string
     end
 
-    @old_progress = $progress # rubocop:disable Style/GlobalVars
-    $progress = progress # rubocop:disable Style/GlobalVars
-  end
-
-  after do
-    $progress = @old_progress # rubocop:disable Style/GlobalVars
+    allow_any_instance_of(described_class).to receive(:progress).and_return(progress)
   end
 
   describe '#dump' do
     describe 'repo failure' do
       before do
-        allow_any_instance_of(Project).to receive(:empty_repo?).and_raise(Rugged::OdbError)
+        allow_any_instance_of(Repository).to receive(:empty_repo?).and_raise(Rugged::OdbError)
         allow(Gitlab::Popen).to receive(:popen).and_return(['normal output', 0])
       end
 
@@ -34,13 +29,13 @@ describe Backup::Repository, lib: true do
       it 'shows the appropriate error' do
         described_class.new.dump
 
-        expect(progress).to have_received(:puts).with("Ignoring error on #{project.full_path} repository - Rugged::OdbError")
+        expect(progress).to have_received(:puts).with("Ignoring repository error and continuing backing up project: #{project.full_path} - Rugged::OdbError")
       end
     end
 
     describe 'command failure' do
       before do
-        allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
+        allow_any_instance_of(Repository).to receive(:empty_repo?).and_return(false)
         allow(Gitlab::Popen).to receive(:popen).and_return(['error', 1])
       end
 
