@@ -1,5 +1,4 @@
 /* global Flash */
-import pendingAvatarSvg from 'icons/_icon_dotted_circle.svg';
 import LinkToMemberAvatar from '~/vue_shared/components/link_to_member_avatar';
 import eventHub from '../../../event_hub';
 
@@ -38,7 +37,6 @@ export default {
   data() {
     return {
       unapproving: false,
-      pendingAvatarSvg,
     };
   },
   components: {
@@ -68,23 +66,23 @@ export default {
   template: `
     <div v-if="approvedBy.length" class="approved-by-users approvals-footer clearfix mr-info-list">
       <div class="legend"></div>
-      <div>
-        <p class="approvers-prefix">Approved by</p>
+      <div class="approvers-prefix">
+        <p>Approved by</p>
         <div class="approvers-list">
           <span v-for="approver in approvedBy">
             <link-to-member-avatar
-              extra-link-class="approver-avatar"
+              :avatarSize="20"
               :avatar-url="approver.user.avatar_url"
+              extra-link-class="approver-avatar"
               :display-name="approver.user.name"
               :profile-url="approver.user.web_url"
               :show-tooltip="true" />
           </span>
           <span class="potential-approvers-list" v-for="n in approvalsLeft">
             <link-to-member-avatar
+              :avatarSize="20"
               :clickable="false"
-              :avatar-html="pendingAvatarSvg"
-              :show-tooltip="false"
-              extra-link-class="hide-asset" />
+              :show-tooltip="false" />
           </span>
         </div>
         <span class="unapprove-btn-wrap" v-if="showUnapproveButton">

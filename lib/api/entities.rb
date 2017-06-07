@@ -5,7 +5,10 @@ module API
     end
 
     class UserBasic < UserSafe
-      expose :id, :state, :avatar_url
+      expose :id, :state
+      expose :avatar_url do |user, options|
+        user.avatar_url(only_path: false)
+      end
 
       expose :web_url do |user, options|
         Gitlab::Routing.url_helpers.user_url(user)
@@ -38,6 +41,9 @@ module API
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
+
+      # EE-only
+      expose :shared_runners_minutes_limit
     end
 
     class UserWithPrivateDetails < UserPublic
@@ -62,7 +68,7 @@ module API
 
     class ProjectPushRule < Grape::Entity
       expose :id, :project_id, :created_at
-      expose :commit_message_regex, :deny_delete_tag
+      expose :commit_message_regex, :branch_name_regex, :deny_delete_tag
       expose :member_check, :prevent_secrets, :author_email_regex
       expose :file_name_regex, :max_file_size
     end
@@ -104,7 +110,9 @@ module API
       expose :creator_id
       expose :namespace, using: 'API::Entities::Namespace'
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
-      expose :avatar_url
+      expose :avatar_url do |user, options|
+        user.avatar_url(only_path: false)
+      end
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -162,7 +170,9 @@ module API
       ## EE-only
 
       expose :lfs_enabled?, as: :lfs_enabled
-      expose :avatar_url
+      expose :avatar_url do |user, options|
+        user.avatar_url(only_path: false)
+      end
       expose :web_url
       expose :request_access_enabled
       expose :full_name, :full_path
@@ -181,6 +191,9 @@ module API
     class GroupDetail < Group
       expose :projects, using: Entities::Project
       expose :shared_projects, using: Entities::Project
+
+      # EE-only
+      expose :shared_runners_minutes_limit
     end
 
     class RepoCommit < Grape::Entity
@@ -266,7 +279,9 @@ module API
 
     class RepoDiff < Grape::Entity
       expose :old_path, :new_path, :a_mode, :b_mode, :diff
-      expose :new_file, :renamed_file, :deleted_file
+      expose :new_file?, as: :new_file
+      expose :renamed_file?, as: :renamed_file
+      expose :deleted_file?, as: :deleted_file
     end
 
     class Milestone < ProjectEntity
@@ -474,6 +489,7 @@ module API
     end
 
     class Namespace < Grape::Entity
+      expose :plan, if: lambda { |_, options| options[:current_user] && options[:current_user].admin? }
       expose :id, :name, :path, :kind, :full_path
     end
 

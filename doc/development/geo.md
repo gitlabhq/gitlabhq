@@ -120,3 +120,22 @@ If the data checks out, then the Geo primary sends data via the
 [XSendfile](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
 feature, which allows nginx to handle the file transfer without tying up Rails
 or Workhorse.
+
+## Geo Tracking Database
+
+Secondary Geo nodes track data about what has been downloaded in a second
+PostgreSQL database that is distinct from the production GitLab database.
+The database configuration is set in `config/database_geo.yml`.
+`db/geo` contains the schema and migrations for this database.
+
+To write a migration for the database, use the `GeoMigrationGenerator`:
+
+```
+rails g geo_generator [args] [options]
+```
+
+To migrate the tracking database, run:
+
+```
+bundle exec rake geo:db:migrate
+```

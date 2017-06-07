@@ -30,6 +30,9 @@ module API
           optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           all_or_none_of :extern_uid, :provider
+
+          # EE
+          optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this user'
         end
       end
 
@@ -59,17 +62,7 @@ module API
 
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
-        users = User.all
-        users = User.where(username: params[:username]) if params[:username]
-        users = users.active if params[:active]
-        users = users.search(params[:search]) if params[:search].present?
-        users = users.blocked if params[:blocked]
-        users = users.non_ldap if params[:skip_ldap]
-
-        if current_user.admin?
-          users = users.joins(:identities).merge(Identity.with_extern_uid(params[:provider], params[:extern_uid])) if params[:extern_uid] && params[:provider]
-          users = users.external if params[:external]
-        end
+        users = UsersFinder.new(current_user, params).execute
 
         entity = current_user.admin? ? Entities::UserPublic : Entities::UserBasic
         present paginate(users), with: entity
@@ -137,10 +130,6 @@ module API
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
-        at_least_one_of :email, :password, :name, :username, :skype, :linkedin,
-                        :twitter, :website_url, :organization, :projects_limit,
-                        :extern_uid, :provider, :bio, :location, :admin,
-                        :can_create_group, :confirm, :external
       end
       put ":id" do
         authenticated_as_admin!

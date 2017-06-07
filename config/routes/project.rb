@@ -1,13 +1,29 @@
 require 'constraints/project_url_constrainer'
+require 'gitlab/routes/legacy_builds'
 
 resources :projects, only: [:index, :new, :create]
 
 draw :git_http
 
 constraints(ProjectUrlConstrainer.new) do
-  scope(path: '*namespace_id', as: :namespace) do
+  # If the route has a wildcard segment, the segment has a regex constraint,
+  # the segment is potentially followed by _another_ wildcard segment, and
+  # the `format` option is not set to false, we need to specify that
+  # regex constraint _outside_ of `constraints: {}`.
+  #
+  # Otherwise, Rails will overwrite the constraint with `/.+?/`,
+  # which breaks some of our wildcard routes like `/blob/*id`
+  # and `/tree/*id` that depend on the negative lookahead inside
+  # `Gitlab::PathRegex.full_namespace_route_regex`, which helps the router
+  # determine whether a certain path segment is part of `*namespace_id`,
+  # `:project_id`, or `*id`.
+  #
+  # See https://github.com/rails/rails/blob/v4.2.8/actionpack/lib/action_dispatch/routing/mapper.rb#L155
+  scope(path: '*namespace_id',
+        as: :namespace,
+        namespace_id: Gitlab::PathRegex.full_namespace_route_regex) do
     scope(path: ':project_id',
-          constraints: { project_id: Gitlab::Regex.project_route_regex },
+          constraints: { project_id: Gitlab::PathRegex.project_route_regex },
           module: :projects,
           as: :project) do
 
@@ -200,41 +216,51 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
-        collection do
-          post :cancel_all
+      scope '-' do
+        resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
+          collection do
+            post :cancel_all
 
-          resources :artifacts, only: [] do
-            collection do
-              get :latest_succeeded,
-                path: '*ref_name_and_path',
-                format: false
+            resources :artifacts, only: [] do
+              collection do
+                get :latest_succeeded,
+                  path: '*ref_name_and_path',
+                  format: false
+              end
             end
           end
-        end
 
-        member do
-          get :status
-          post :cancel
-          post :retry
-          post :play
-          post :erase
-          get :trace, defaults: { format: 'json' }
-          get :raw
-        end
+          member do
+            get :status
+            post :cancel
+            post :retry
+            post :play
+            post :erase
+            get :trace, defaults: { format: 'json' }
+            get :raw
+          end
 
-        resource :artifacts, only: [] do
-          get :download
-          get :browse, path: 'browse(/*path)', format: false
-          get :file, path: 'file/*path', format: false
-          get :raw, path: 'raw/*path', format: false
-          post :keep
+          resource :artifacts, only: [] do
+            get :download
+            get :browse, path: 'browse(/*path)', format: false
+            get :file, path: 'file/*path', format: false
+            get :raw, path: 'raw/*path', format: false
+            post :keep
+          end
         end
       end
+
+      Gitlab::Routes::LegacyBuilds.new(self).draw
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
           get :test
+        end
+
+        resources :hook_logs, only: [:show] do
+          member do
+            get :retry
+          end
         end
       end
 
@@ -355,7 +381,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :runner_projects, only: [:create, :destroy]
       resources :badges, only: [:index] do
         collection do
-          scope '*ref', constraints: { ref: Gitlab::Regex.git_reference_regex } do
+          scope '*ref', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
             constraints format: /svg/ do
               get :build
               get :coverage
@@ -383,7 +409,7 @@ constraints(ProjectUrlConstrainer.new) do
 
     resources(:projects,
               path: '/',
-              constraints: { id: Gitlab::Regex.project_route_regex },
+              constraints: { id: Gitlab::PathRegex.project_route_regex },
               only: [:edit, :show, :update, :destroy]) do
       member do
         put :transfer

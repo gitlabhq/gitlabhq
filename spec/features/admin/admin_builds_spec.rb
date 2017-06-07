@@ -16,7 +16,7 @@ describe 'Admin Builds' do
           create(:ci_build, pipeline: pipeline, status: :success)
           create(:ci_build, pipeline: pipeline, status: :failed)
 
-          visit admin_builds_path
+          visit admin_jobs_path
 
           expect(page).to have_selector('.nav-links li.active', text: 'All')
           expect(page).to have_selector('.row-content-block', text: 'All jobs')
@@ -27,7 +27,7 @@ describe 'Admin Builds' do
 
       context 'when have no jobs' do
         it 'shows a message' do
-          visit admin_builds_path
+          visit admin_jobs_path
 
           expect(page).to have_selector('.nav-links li.active', text: 'All')
           expect(page).to have_content 'No jobs to show'
@@ -44,7 +44,7 @@ describe 'Admin Builds' do
           build3 = create(:ci_build, pipeline: pipeline, status: :success)
           build4 = create(:ci_build, pipeline: pipeline, status: :failed)
 
-          visit admin_builds_path(scope: :pending)
+          visit admin_jobs_path(scope: :pending)
 
           expect(page).to have_selector('.nav-links li.active', text: 'Pending')
           expect(page.find('.build-link')).to have_content(build1.id)
@@ -59,7 +59,7 @@ describe 'Admin Builds' do
         it 'shows a message' do
           create(:ci_build, pipeline: pipeline, status: :success)
 
-          visit admin_builds_path(scope: :pending)
+          visit admin_jobs_path(scope: :pending)
 
           expect(page).to have_selector('.nav-links li.active', text: 'Pending')
           expect(page).to have_content 'No jobs to show'
@@ -76,7 +76,7 @@ describe 'Admin Builds' do
           build3 = create(:ci_build, pipeline: pipeline, status: :failed)
           build4 = create(:ci_build, pipeline: pipeline, status: :pending)
 
-          visit admin_builds_path(scope: :running)
+          visit admin_jobs_path(scope: :running)
 
           expect(page).to have_selector('.nav-links li.active', text: 'Running')
           expect(page.find('.build-link')).to have_content(build1.id)
@@ -91,7 +91,7 @@ describe 'Admin Builds' do
         it 'shows a message' do
           create(:ci_build, pipeline: pipeline, status: :success)
 
-          visit admin_builds_path(scope: :running)
+          visit admin_jobs_path(scope: :running)
 
           expect(page).to have_selector('.nav-links li.active', text: 'Running')
           expect(page).to have_content 'No jobs to show'
@@ -107,7 +107,7 @@ describe 'Admin Builds' do
           build2 = create(:ci_build, pipeline: pipeline, status: :running)
           build3 = create(:ci_build, pipeline: pipeline, status: :success)
 
-          visit admin_builds_path(scope: :finished)
+          visit admin_jobs_path(scope: :finished)
 
           expect(page).to have_selector('.nav-links li.active', text: 'Finished')
           expect(page.find('.build-link')).not_to have_content(build1.id)
@@ -121,7 +121,7 @@ describe 'Admin Builds' do
         it 'shows a message' do
           create(:ci_build, pipeline: pipeline, status: :running)
 
-          visit admin_builds_path(scope: :finished)
+          visit admin_jobs_path(scope: :finished)
 
           expect(page).to have_selector('.nav-links li.active', text: 'Finished')
           expect(page).to have_content 'No jobs to show'

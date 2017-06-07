@@ -154,13 +154,9 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
-  validates :minimum_mirror_sync_time,
-            presence: true,
-            inclusion: { in: Gitlab::Mirror::SYNC_TIME_OPTIONS.values }
-
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
-      unless Gitlab::VisibilityLevel.options.has_value?(level)
+      unless Gitlab::VisibilityLevel.options.value?(level)
         record.errors.add(attr, "'#{level}' is not a valid visibility level")
       end
     end
@@ -168,7 +164,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates_each :import_sources do |record, attr, value|
     value&.each do |source|
-      unless Gitlab::ImportSources.options.has_value?(source)
+      unless Gitlab::ImportSources.options.value?(source)
         record.errors.add(attr, "'#{source}' is not a import source")
       end
     end
@@ -185,8 +181,6 @@ class ApplicationSetting < ActiveRecord::Base
   before_validation :ensure_uuid!
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
-
-  after_update :update_mirror_cron_job, if: :minimum_mirror_sync_time_changed?
 
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
@@ -218,7 +212,7 @@ class ApplicationSetting < ActiveRecord::Base
     ApplicationSetting.define_attribute_methods
   end
 
-  def self.defaults_ce
+  def self.defaults
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
@@ -265,22 +259,8 @@ class ApplicationSetting < ActiveRecord::Base
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1,
-      usage_ping_enabled: true
+      usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
     }
-  end
-
-  def self.defaults_ee
-    {
-      elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',
-      elasticsearch_aws: false,
-      elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
-      minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN,
-      repository_size_limit: 0
-    }
-  end
-
-  def self.defaults
-    defaults_ce.merge(defaults_ee)
   end
 
   def self.create_from_defaults
@@ -293,13 +273,6 @@ class ApplicationSetting < ActiveRecord::Base
     else
       super
     end
-  end
-
-  def update_mirror_cron_job
-    Project.mirror.where('sync_time < ?', minimum_mirror_sync_time)
-      .update_all(sync_time: minimum_mirror_sync_time)
-
-    Gitlab::Mirror.configure_cron_job!
   end
 
   def elasticsearch_url
@@ -403,6 +376,14 @@ class ApplicationSetting < ActiveRecord::Base
     return false unless sidekiq_throttling_column_exists?
 
     sidekiq_throttling_enabled
+  end
+
+  def usage_ping_can_be_configured?
+    Settings.gitlab.usage_ping_enabled
+  end
+
+  def usage_ping_enabled
+    usage_ping_can_be_configured? && super
   end
 
   private

@@ -290,7 +290,7 @@ describe Projects::MergeRequestsController do
 
           recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
 
-          expect(recorded.count).to be_within(1).of(100)
+          expect(recorded.count).to be_within(5).of(95)
           expect(recorded.cached_count).to eq(0)
         end
       end
@@ -646,8 +646,7 @@ describe Projects::MergeRequestsController do
         end
 
         before do
-          pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
-          merge_request.update(head_pipeline: pipeline)
+          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -1217,7 +1216,9 @@ describe Projects::MergeRequestsController do
       end
 
       it 'returns the file in JSON format' do
-        content = merge_request_with_conflicts.conflicts.file_for_path(path, path).content
+        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts).
+                    file_for_path(path, path).
+                    content
 
         expect(json_response).to include('old_path' => path,
                                          'new_path' => path,
@@ -1341,11 +1342,15 @@ describe Projects::MergeRequestsController do
 
     context 'when a file has identical content to the conflict' do
       before do
+        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts).
+                    file_for_path('files/ruby/popen.rb', 'files/ruby/popen.rb').
+                    content
+
         resolved_files = [
           {
             'new_path' => 'files/ruby/popen.rb',
             'old_path' => 'files/ruby/popen.rb',
-            'content' => merge_request_with_conflicts.conflicts.file_for_path('files/ruby/popen.rb', 'files/ruby/popen.rb').content
+            'content' => content
           }, {
             'new_path' => 'files/ruby/regex.rb',
             'old_path' => 'files/ruby/regex.rb',
@@ -1456,13 +1461,13 @@ describe Projects::MergeRequestsController do
       let!(:pipeline) do
         create(:ci_pipeline, project: merge_request.source_project,
                              ref: merge_request.source_branch,
-                             sha: merge_request.diff_head_sha)
+                             sha: merge_request.diff_head_sha,
+                             head_pipeline_of: merge_request)
       end
 
       let(:status) { pipeline.detailed_status(double('user')) }
 
       before do
-        merge_request.update(head_pipeline: pipeline)
         get_pipeline_status
       end
 

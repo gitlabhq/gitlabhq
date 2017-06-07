@@ -1,0 +1,12 @@
+- namespace = local_assigns[:namespace]
+- if current_application_settings.should_check_namespace_plan? && namespace
+  %li
+    %span.light Plan:
+    - if namespace.plan.present?
+      %strong.plan-badge.inline{ data: { plan: namespace.plan } }
+        = custom_icon('icon_premium')
+        = namespace.plan.titleize
+    - else
+      %strong.plan-badge.inline
+        = custom_icon('icon_premium')
+        No Plan

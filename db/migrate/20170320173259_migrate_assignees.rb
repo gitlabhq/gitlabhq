@@ -1,6 +1,4 @@
-# See http://doc.gitlab.com/ce/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
+# rubocop:disable Migration/UpdateColumnInBatches
 class MigrateAssignees < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
@@ -37,16 +35,8 @@ class MigrateAssignees < ActiveRecord::Migration
           users.project("true").where(users[:id].eq(table[:assignee_id])).exists.not
         ))
     end
-
-    execute <<-EOF
-      INSERT INTO issue_assignees(issue_id, user_id)
-      SELECT id, assignee_id FROM issues WHERE assignee_id IS NOT NULL
-    EOF
   end
 
   def down
-    execute <<-EOF
-      DELETE FROM issue_assignees
-    EOF
   end
 end

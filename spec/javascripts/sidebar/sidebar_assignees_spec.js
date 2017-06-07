@@ -24,6 +24,7 @@ describe('sidebar assignees', () => {
     SidebarService.singleton = null;
     SidebarStore.singleton = null;
     SidebarMediator.singleton = null;
+    Vue.http.interceptors = _.without(Vue.http.interceptors, Mock.sidebarMockInterceptor);
   });
 
   it('calls the mediator when saves the assignees', () => {
@@ -41,5 +42,17 @@ describe('sidebar assignees', () => {
 
     expect(SidebarMediator.prototype.assignYourself).toHaveBeenCalled();
     expect(this.mediator.store.assignees.length).toEqual(1);
+  });
+
+  it('hides assignees until fetched', (done) => {
+    component = new SidebarAssigneeComponent().$mount(this.sidebarAssigneesEl);
+    const currentAssignee = this.sidebarAssigneesEl.querySelector('.value');
+    expect(currentAssignee).toBe(null);
+
+    component.store.isFetching.assignees = false;
+    Vue.nextTick(() => {
+      expect(component.$el.querySelector('.value')).toBeVisible();
+      done();
+    });
   });
 });

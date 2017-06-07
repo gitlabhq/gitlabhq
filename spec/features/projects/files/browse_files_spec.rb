@@ -24,11 +24,23 @@ feature 'user browses project', feature: true, js: true do
     click_link 'files'
     click_link 'lfs'
     click_link 'lfs_object.iso'
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).not_to have_content 'Download (1.5 MB)'
     expect(page).to have_content 'version https://git-lfs.github.com/spec/v1'
     expect(page).to have_content 'oid sha256:91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897'
     expect(page).to have_content 'size 1575078'
+  end
+
+  scenario 'can see last commit for current directory' do
+    last_commit = project.repository.last_commit_for_path(project.default_branch, 'files')
+
+    click_link 'files'
+    wait_for_requests
+
+    page.within('.blob-commit-info') do
+      expect(page).to have_content last_commit.short_id
+      expect(page).to have_content last_commit.author_name
+    end
   end
 end

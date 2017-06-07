@@ -72,7 +72,7 @@
     height: 100%;
     top: 0;
     background: $white-light;
-    z-index: 100;
+    z-index: 500;
 
     .boards-list {
       height: calc(100vh - 50px);
@@ -101,7 +101,9 @@
 
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
+    // scss-lint:disable DuplicateProperty
     height: calc(100vh - 222px);
+    // scss-lint:enable DuplicateProperty
     min-height: 475px;
     transition: width .2s;
 
@@ -669,6 +671,9 @@
 
   .dropdown-menu {
     position: fixed;
+    left: 10px;
+    top: 175px;
+    min-width: 200px;
   }
 }
 

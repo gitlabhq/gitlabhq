@@ -11,6 +11,10 @@ module Gitlab
       # Stats properties
       attr_accessor :new_file, :renamed_file, :deleted_file
 
+      alias_method :new_file?, :new_file
+      alias_method :deleted_file?, :deleted_file
+      alias_method :renamed_file?, :renamed_file
+
       attr_accessor :too_large
 
       # The maximum size of a diff to display.
@@ -183,6 +187,8 @@ module Gitlab
         when Gitaly::CommitDiffResponse
           init_from_gitaly(raw_diff)
           prune_diff_if_eligible(collapse)
+        when Gitaly::CommitDelta
+          init_from_gitaly(raw_diff)
         when nil
           raise "Nil as raw diff passed"
         else
@@ -204,6 +210,10 @@ module Gitlab
         end
 
         hash
+      end
+
+      def mode_changed?
+        a_mode && b_mode && a_mode != b_mode
       end
 
       def submodule?
@@ -278,15 +288,15 @@ module Gitlab
         end
       end
 
-      def init_from_gitaly(diff_msg)
-        @diff = diff_msg.raw_chunks.join
-        @new_path = encode!(diff_msg.to_path.dup)
-        @old_path = encode!(diff_msg.from_path.dup)
-        @a_mode = diff_msg.old_mode.to_s(8)
-        @b_mode = diff_msg.new_mode.to_s(8)
-        @new_file = diff_msg.from_id == BLANK_SHA
-        @renamed_file = diff_msg.from_path != diff_msg.to_path
-        @deleted_file = diff_msg.to_id == BLANK_SHA
+      def init_from_gitaly(msg)
+        @diff = msg.raw_chunks.join if msg.respond_to?(:raw_chunks)
+        @new_path = encode!(msg.to_path.dup)
+        @old_path = encode!(msg.from_path.dup)
+        @a_mode = msg.old_mode.to_s(8)
+        @b_mode = msg.new_mode.to_s(8)
+        @new_file = msg.from_id == BLANK_SHA
+        @renamed_file = msg.from_path != msg.to_path
+        @deleted_file = msg.to_id == BLANK_SHA
       end
 
       def prune_diff_if_eligible(collapse = false)

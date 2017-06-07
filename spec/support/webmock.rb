@@ -1,12 +1,16 @@
 require 'webmock'
 require 'webmock/rspec'
 
-allowed = %w[elasticsearch registry.gitlab.com-gitlab-org-test-elastic-image]
+def webmock_setup_defaults
+  allowed = %w[elasticsearch registry.gitlab.com-gitlab-org-test-elastic-image]
 
-if ENV.has_key?('ELASTIC_URL')
-  url = URI.parse(ENV['ELASTIC_URL'])
-  allowed << url.host
-  allowed.uniq!
+  if ENV.key?('ELASTIC_URL')
+    url = URI.parse(ENV['ELASTIC_URL'])
+    allowed << url.host
+    allowed.uniq!
+  end
+
+  WebMock.disable_net_connect!(allow_localhost: true, allow: allowed)
 end
 
-WebMock.disable_net_connect!(allow_localhost: true, allow: allowed)
+webmock_setup_defaults

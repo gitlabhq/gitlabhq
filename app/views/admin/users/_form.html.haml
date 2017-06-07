@@ -42,6 +42,12 @@
 
     = render partial: 'access_levels', locals: { f: f }
 
+    - if current_application_settings.should_check_namespace_plan?
+      = f.fields_for :namespace do |namespace_form|
+        %fieldset
+          %legend Licensed Features
+          = render 'admin/namespace_plan', f: namespace_form
+
     = render partial: 'limits', locals: { f: f }
 
     %fieldset

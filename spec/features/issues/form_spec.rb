@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'New/edit issue', :feature, :js do
   include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
-  include WaitForAjax
+  include FormHelper
 
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
@@ -24,11 +24,50 @@ describe 'New/edit issue', :feature, :js do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
+    describe 'shorten users API pagination limit' do
+      before do
+        # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
+        # somehow refer to the very block we defined to _wrap_ that method, instead of
+        # the original method, resulting in infinite recurison when called.
+        # This is likely a bug with helper modules included into dynamically generated view classes.
+        # To work around this, we have to hold on to and call to the original implementation manually.
+        original_issue_dropdown_options = FormHelper.instance_method(:issue_dropdown_options)
+        allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
+          options = original_issue_dropdown_options.bind(original.receiver).call(*args)
+          options[:data][:per_page] = 2
+
+          options
+        end
+
+        visit new_namespace_project_issue_path(project.namespace, project)
+
+        click_button 'Unassigned'
+
+        wait_for_requests
+      end
+
+      it 'should display selected users even if they are not part of the original API call' do
+        find('.dropdown-input-field').native.send_keys user2.name
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user2.name
+          click_link user2.name
+        end
+
+        find('.js-dropdown-input-clear').click
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user.name
+          expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
+        end
+      end
+    end
+
     describe 'multiple assignees' do
       before do
         click_button 'Unassigned'
-        
-        wait_for_ajax
+
+        wait_for_requests
       end
 
       it 'unselects other assignees when unassigned is selected' do
@@ -38,10 +77,6 @@ describe 'New/edit issue', :feature, :js do
 
         page.within '.dropdown-menu-user' do
           click_link 'Unassigned'
-        end
-
-        page.within '.js-assignee-search' do
-          expect(page).to have_content 'Unassigned'
         end
 
         expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match('0')
@@ -54,7 +89,7 @@ describe 'New/edit issue', :feature, :js do
 
         expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
-        page.within '.dropdown-menu-user' do
+        page.within('.dropdown-menu-user') do
           click_link user.name
         end
 
@@ -68,8 +103,8 @@ describe 'New/edit issue', :feature, :js do
 
       expect(find('a', text: 'Assign to me')).to be_visible
       click_button 'Unassigned'
-      
-      wait_for_ajax
+
+      wait_for_requests
 
       page.within '.dropdown-menu-user' do
         click_link user2.name
@@ -168,17 +203,13 @@ describe 'New/edit issue', :feature, :js do
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
 
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.dropdown-menu-user' do
         click_link user.name
       end
 
-      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
-      expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
-      # check the ::before pseudo element to ensure checkmark icon is present
-      expect(before_for_selector('.dropdown-menu-selectable a.is-active')).not_to eq('')
-      expect(before_for_selector('.dropdown-menu-selectable a:not(.is-active)')).to eq('')
+      expect(find('.js-assignee-search')).to have_content(user.name)
 
       page.within '.dropdown-menu-user' do
         click_link user2.name
@@ -238,6 +269,37 @@ describe 'New/edit issue', :feature, :js do
           expect(page).to have_content label.title
           expect(page).to have_content label2.title
         end
+      end
+    end
+  end
+
+  describe 'sub-group project' do
+    let(:group) { create(:group) }
+    let(:nested_group_1) { create(:group, parent: group) }
+    let(:sub_group_project) { create(:empty_project, group: nested_group_1) }
+
+    before do
+      sub_group_project.add_master(user)
+
+      visit new_namespace_project_issue_path(sub_group_project.namespace, sub_group_project)
+    end
+
+    it 'creates new label from dropdown' do
+      click_button 'Labels'
+
+      click_link 'Create new label'
+
+      page.within '.dropdown-new-label' do
+        fill_in 'new_label_name', with: 'test label'
+        first('.suggest-colors-dropdown a').click
+
+        click_button 'Create'
+
+        wait_for_requests
+      end
+
+      page.within '.dropdown-menu-labels' do
+        expect(page).to have_link 'test label'
       end
     end
   end

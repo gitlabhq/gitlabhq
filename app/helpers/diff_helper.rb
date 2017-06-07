@@ -63,7 +63,7 @@ module DiffHelper
 
   def parallel_diff_discussions(left, right, diff_file)
     return unless @grouped_diff_discussions
-    
+
     discussions_left = discussions_right = nil
 
     if left && (left.unchanged? || left.removed?)
@@ -98,18 +98,18 @@ module DiffHelper
     [
       content_tag(:span, link_to(truncate(blob.name, length: 40), tree)),
       '@',
-      content_tag(:span, commit_id, class: 'monospace')
+      content_tag(:span, commit_id, class: 'commit-sha')
     ].join(' ').html_safe
   end
 
-  def commit_for_diff(diff_file)
-    return diff_file.content_commit if diff_file.content_commit
+  def diff_file_blob_raw_path(diff_file)
+    namespace_project_raw_path(@project.namespace, @project, tree_join(diff_file.content_sha, diff_file.file_path))
+  end
 
-    if diff_file.deleted_file
-      @base_commit || @commit.parent || @commit
-    else
-      @commit
-    end
+  def diff_file_old_blob_raw_path(diff_file)
+    sha = diff_file.old_content_sha
+    return unless sha
+    namespace_project_raw_path(@project.namespace, @project, tree_join(diff_file.old_content_sha, diff_file.old_path))
   end
 
   def diff_file_html_data(project, diff_file_path, diff_commit_id)
@@ -120,8 +120,8 @@ module DiffHelper
     }
   end
 
-  def editable_diff?(diff)
-    !diff.deleted_file && @merge_request && @merge_request.source_project
+  def editable_diff?(diff_file)
+    !diff_file.deleted_file? && @merge_request && @merge_request.source_project
   end
 
   private

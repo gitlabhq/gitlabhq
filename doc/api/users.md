@@ -220,7 +220,8 @@ Parameters:
   "can_create_group": true,
   "can_create_project": true,
   "two_factor_enabled": true,
-  "external": false
+  "external": false,
+  "shared_runners_minutes_limit": 133
 }
 ```
 
@@ -253,6 +254,7 @@ Parameters:
 - `can_create_group` (optional) - User can create groups - true or false
 - `confirm` (optional)          - Require confirmation - true (default) or false
 - `external` (optional)         - Flags the user as external - true or false(default)
+- `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
 
 ## User modification
 
@@ -281,6 +283,7 @@ Parameters:
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
+- `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,

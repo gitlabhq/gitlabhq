@@ -12,3 +12,9 @@
   = render partial: 'form', locals: { form: f, hook: @hook }
   .form-actions
     = f.submit 'Save changes', class: 'btn btn-create'
+    = link_to 'Test hook', test_admin_hook_path(@hook), class: 'btn btn-default'
+    = link_to 'Remove', admin_hook_path(@hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: 'Are you sure?' }
+
+%hr
+
+= render partial: 'admin/hook_logs/index', locals: { hook: @hook, hook_logs: @hook_logs }

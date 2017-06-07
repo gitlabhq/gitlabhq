@@ -13,8 +13,7 @@ describe 'CycleAnalytics#test', feature: true do
     data_fn: lambda do |context|
       issue = context.create(:issue, project: context.project)
       merge_request = context.create_merge_request_closing_issue(issue)
-      pipeline = context.create(:ci_pipeline, ref: merge_request.source_branch, sha: merge_request.diff_head_sha, project: context.project)
-      merge_request.update(head_pipeline: pipeline)
+      pipeline = context.create(:ci_pipeline, ref: merge_request.source_branch, sha: merge_request.diff_head_sha, project: context.project, head_pipeline_of: merge_request)
       { pipeline: pipeline, issue: issue }
     end,
     start_time_conditions: [["pipeline is started", -> (context, data) { data[:pipeline].run! }]],

@@ -37,7 +37,7 @@ class Repository
   METHOD_CACHES_FOR_FILE_TYPES = {
     readme: :rendered_readme,
     changelog: :changelog,
-    license: %i(license_blob license_key),
+    license: %i(license_blob license_key license),
     contributing: :contribution_guide,
     gitignore: :gitignore,
     koding: :koding_yml,
@@ -49,13 +49,13 @@ class Repository
   # variable.
   #
   # This only works for methods that do not take any arguments.
-  def self.cache_method(name, fallback: nil)
+  def self.cache_method(name, fallback: nil, memoize_only: false)
     original = :"_uncached_#{name}"
 
     alias_method(original, name)
 
     define_method(name) do
-      cache_method_output(name, fallback: fallback) { __send__(original) }
+      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) { __send__(original) }
     end
   end
 
@@ -524,8 +524,8 @@ class Repository
   cache_method :avatar
 
   def readme
-    if head = tree(:head)
-      head.readme
+    if readme = tree(:head)&.readme
+      ReadmeBlob.new(readme, self)
     end
   end
 
@@ -555,6 +555,13 @@ class Repository
     Licensee.license(path).try(:key)
   end
   cache_method :license_key
+
+  def license
+    return unless license_key
+
+    Licensee::License.new(license_key)
+  end
+  cache_method :license, memoize_only: true
 
   def gitignore
     file_on_head(:gitignore)
@@ -1127,14 +1134,20 @@ class Repository
   #
   # key - The name of the key to cache the data in.
   # fallback - A value to fall back to in the event of a Git error.
-  def cache_method_output(key, fallback: nil, &block)
+  def cache_method_output(key, fallback: nil, memoize_only: false, &block)
     ivar = cache_instance_variable_name(key)
 
     if instance_variable_defined?(ivar)
       instance_variable_get(ivar)
     else
       begin
-        instance_variable_set(ivar, cache.fetch(key, &block))
+        value =
+          if memoize_only
+            yield
+          else
+            cache.fetch(key, &block)
+          end
+        instance_variable_set(ivar, value)
       rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
         # if e.g. HEAD or the entire repository doesn't exist we want to
         # gracefully handle this and not cache anything.
@@ -1149,8 +1162,8 @@ class Repository
 
   def file_on_head(type)
     if head = tree(:head)
-      head.blobs.find do |file|
-        Gitlab::FileDetector.type_of(file.name) == type
+      head.blobs.find do |blob|
+        Gitlab::FileDetector.type_of(blob.path) == type
       end
     end
   end
@@ -1215,8 +1228,6 @@ class Repository
   def repository_storage_path
     @project.repository_storage_path
   end
-
-  delegate :gitaly_channel, :gitaly_repository, to: :raw_repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')

@@ -4,16 +4,8 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 = render "projects/commits/head"
+
 = render 'projects/last_push'
 
 %div{ class: container_class }
-  #tree-holder.tree-holder.clearfix
-    .nav-block
-      = render 'projects/tree/tree_header', tree: @tree
-
-    .info-well.hidden-xs.append-bottom-default
-      .well-segment
-        %ul.blob-commit-info
-          = render 'projects/commits/commit', commit: @commit, project: @project, ref: @ref
-
-    = render 'projects/tree/tree_content', tree: @tree
+  = render 'projects/files', commit: @last_commit, project: @project, ref: @ref

@@ -6,7 +6,6 @@ describe Projects::ParticipantsService, services: true do
       let(:project) { create(:empty_project, :public) }
       let(:group) { create(:group, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png')) }
       let(:user) { create(:user) }
-      let(:base_url) { Settings.send(:build_base_gitlab_url) }
       let!(:group_member) { create(:group_member, group: group, user: user) }
 
       it 'should return an url for the avatar' do
@@ -14,7 +13,7 @@ describe Projects::ParticipantsService, services: true do
         groups = participants.groups
 
         expect(groups.size).to eq 1
-        expect(groups.first[:avatar_url]).to eq "#{base_url}/uploads/group/avatar/#{group.id}/dk.png"
+        expect(groups.first[:avatar_url]).to eq("/uploads/group/avatar/#{group.id}/dk.png")
       end
 
       it 'should return an url for the avatar with relative url' do
@@ -25,7 +24,7 @@ describe Projects::ParticipantsService, services: true do
         groups = participants.groups
 
         expect(groups.size).to eq 1
-        expect(groups.first[:avatar_url]).to eq "#{base_url}/gitlab/uploads/group/avatar/#{group.id}/dk.png"
+        expect(groups.first[:avatar_url]).to eq("/gitlab/uploads/group/avatar/#{group.id}/dk.png")
       end
     end
   end

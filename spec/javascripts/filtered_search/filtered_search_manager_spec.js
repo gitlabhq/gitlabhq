@@ -1,14 +1,13 @@
 import * as recentSearchesStoreSrc from '~/filtered_search/stores/recent_searches_store';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
-
-require('~/lib/utils/url_utility');
-require('~/lib/utils/common_utils');
-require('~/filtered_search/filtered_search_token_keys');
-require('~/filtered_search/filtered_search_tokenizer');
-require('~/filtered_search/filtered_search_dropdown_manager');
-require('~/filtered_search/filtered_search_manager');
-const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper');
+import '~/lib/utils/url_utility';
+import '~/lib/utils/common_utils';
+import '~/filtered_search/filtered_search_token_keys';
+import '~/filtered_search/filtered_search_tokenizer';
+import '~/filtered_search/filtered_search_dropdown_manager';
+import '~/filtered_search/filtered_search_manager';
+import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Manager', () => {
   let input;
@@ -58,6 +57,7 @@ describe('Filtered Search Manager', () => {
     input = document.querySelector('.filtered-search');
     tokensContainer = document.querySelector('.tokens-container');
     manager = new gl.FilteredSearchManager();
+    manager.setup();
   });
 
   afterEach(() => {
@@ -73,6 +73,7 @@ describe('Filtered Search Manager', () => {
       spyOn(recentSearchesStoreSrc, 'default');
 
       filteredSearchManager = new gl.FilteredSearchManager();
+      filteredSearchManager.setup();
 
       return filteredSearchManager;
     });
@@ -81,6 +82,7 @@ describe('Filtered Search Manager', () => {
       expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
       expect(recentSearchesStoreSrc.default).toHaveBeenCalledWith({
         isLocalStorageAvailable,
+        allowedKeys: gl.FilteredSearchTokenKeys.getKeys(),
       });
     });
 
@@ -89,6 +91,7 @@ describe('Filtered Search Manager', () => {
       spyOn(window, 'Flash');
 
       filteredSearchManager = new gl.FilteredSearchManager();
+      filteredSearchManager.setup();
 
       expect(window.Flash).not.toHaveBeenCalled();
     });

@@ -48,10 +48,12 @@ describe('MRWidgetHeader', () => {
   describe('template', () => {
     let vm;
     let el;
+    const sourceBranchPath = '/foo/bar/mr-widget-refactor';
     const mr = {
       divergedCommitsCount: 12,
       sourceBranch: 'mr-widget-refactor',
-      sourceBranchLink: '/foo/bar/mr-widget-refactor',
+      sourceBranchLink: `<a href="${sourceBranchPath}">mr-widget-refactor</a>`,
+      targetBranchPath: 'foo/bar/commits-path',
       targetBranch: 'master',
       isOpen: true,
       emailPatchesPath: '/mr/email-patches',
@@ -65,8 +67,13 @@ describe('MRWidgetHeader', () => {
 
     it('should render template elements correctly', () => {
       expect(el.classList.contains('mr-source-target')).toBeTruthy();
-      expect(el.querySelectorAll('.label-branch')[0].textContent).toContain(mr.sourceBranch);
-      expect(el.querySelectorAll('.label-branch')[1].textContent).toContain(mr.targetBranch);
+      const sourceBranchLink = el.querySelectorAll('.label-branch')[0];
+      const targetBranchLink = el.querySelectorAll('.label-branch')[1];
+
+      expect(sourceBranchLink.textContent).toContain(mr.sourceBranch);
+      expect(targetBranchLink.textContent).toContain(mr.targetBranch);
+      expect(sourceBranchLink.querySelector('a').getAttribute('href')).toEqual(sourceBranchPath);
+      expect(targetBranchLink.querySelector('a').getAttribute('href')).toEqual(mr.targetBranchPath);
       expect(el.querySelector('.diverged-commits-count').textContent).toContain('12 commits behind');
 
       expect(el.textContent).toContain('Check out branch');

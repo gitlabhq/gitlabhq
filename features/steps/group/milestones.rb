@@ -1,5 +1,5 @@
 class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
-  include WaitForAjax
+  include WaitForRequests
   include SharedAuthentication
   include SharedPaths
   include SharedGroup
@@ -91,7 +91,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   end
 
   step 'I should see the list of labels' do
-    wait_for_ajax
+    wait_for_requests
 
     page.within('#tab-labels') do
       expect(page).to have_content 'bug'

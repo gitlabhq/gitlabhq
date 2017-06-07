@@ -8,6 +8,73 @@ describe Namespace, models: true do
   it { is_expected.to delegate_method(:shared_runners_minutes).to(:namespace_statistics) }
   it { is_expected.to delegate_method(:shared_runners_seconds).to(:namespace_statistics) }
   it { is_expected.to delegate_method(:shared_runners_seconds_last_reset).to(:namespace_statistics) }
+  it { is_expected.to validate_inclusion_of(:plan).in_array(Namespace::EE_PLANS.keys).allow_blank }
+
+  context 'scopes' do
+    describe '.with_plan' do
+      let!(:namespace) { create :namespace, plan: namespace_plan }
+
+      context 'plan is set' do
+        let(:namespace_plan) { EE::Namespace::BRONZE_PLAN }
+
+        it 'returns namespaces with plan' do
+          expect(described_class.with_plan).to eq([namespace])
+        end
+      end
+
+      context 'plan is not set' do
+        context 'plan is empty string' do
+          let(:namespace_plan) { '' }
+
+          it 'returns no namespace' do
+            expect(described_class.with_plan).to be_empty
+          end
+        end
+
+        context 'plan is nil' do
+          let(:namespace_plan) { nil }
+
+          it 'returns no namespace' do
+            expect(described_class.with_plan).to be_empty
+          end
+        end
+      end
+    end
+  end
+
+  describe '#feature_available?' do
+    let(:group) { create(:group, plan: plan_license) }
+
+    subject { group.feature_available?(feature) }
+
+    context 'when feature available' do
+      let(:feature) { :deploy_board }
+      let(:plan_license) { Namespace::GOLD_PLAN }
+
+      context 'when feature available for current group' do
+        it 'returns false' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when license is applied to parent group' do
+        let(:child_group) { create :group, parent: group }
+
+        it 'child group has feature available' do
+          expect(child_group.feature_available?(feature)).to eq(true)
+        end
+      end
+    end
+
+    context 'when feature not available' do
+      let(:feature) { :deploy_board }
+      let(:plan_license) { Namespace::BRONZE_PLAN }
+
+      it 'returns false' do
+        is_expected.to eq(false)
+      end
+    end
+  end
 
   describe '#shared_runners_enabled?' do
     subject { namespace.shared_runners_enabled? }

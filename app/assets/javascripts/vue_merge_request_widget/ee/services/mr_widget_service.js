@@ -28,4 +28,8 @@ export default class MRWidgetService extends CEWidgetService {
   rebase() {
     return this.rebaseResource.save();
   }
+
+  fetchCodeclimate(endpoint) { // eslint-disable-line
+    return Vue.http.get(endpoint);
+  }
 }

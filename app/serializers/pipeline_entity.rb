@@ -38,10 +38,7 @@ class PipelineEntity < Grape::Entity
 
     expose :path do |pipeline|
       if pipeline.ref
-        namespace_project_tree_path(
-          pipeline.project.namespace,
-          pipeline.project,
-          id: pipeline.ref)
+        project_ref_path(pipeline.project, pipeline.ref)
       end
     end
 

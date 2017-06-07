@@ -22,7 +22,7 @@ describe Ci::RetryBuildService, :services do
     %i[type lock_version target_url base_tags
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
-       user_id auto_canceled_by_id].freeze
+       user_id auto_canceled_by_id retried].freeze
 
   shared_examples 'build duplication' do
     let(:build) do
@@ -115,7 +115,7 @@ describe Ci::RetryBuildService, :services do
   end
 
   describe '#reprocess' do
-    let(:new_build) { service.reprocess(build) }
+    let(:new_build) { service.reprocess!(build) }
 
     context 'when user has ability to execute build' do
       before do
@@ -131,11 +131,16 @@ describe Ci::RetryBuildService, :services do
       it 'does not enqueue the new build' do
         expect(new_build).to be_created
       end
+
+      it 'does mark old build as retried' do
+        expect(new_build).to be_latest
+        expect(build.reload).to be_retried
+      end
     end
 
     context 'when user does not have ability to execute build' do
       it 'raises an error' do
-        expect { service.reprocess(build) }
+        expect { service.reprocess!(build) }
           .to raise_error Gitlab::Access::AccessDeniedError
       end
     end

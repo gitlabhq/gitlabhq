@@ -2,16 +2,16 @@ import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
 
 class FilteredSearchDropdownManager {
-  constructor(baseEndpoint = '', page) {
+  constructor(baseEndpoint = '', tokenizer, page) {
     this.container = FilteredSearchContainer.container;
     this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
-    this.tokenizer = gl.FilteredSearchTokenizer;
+    this.tokenizer = tokenizer;
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
 
     if (this.page === 'issues' || this.page === 'boards') {
-      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
+      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysIssuesEE;
     }
 
     this.setupMapping();
@@ -66,7 +66,7 @@ class FilteredSearchDropdownManager {
       this.mapping.weight = {
         reference: null,
         gl: 'DropdownNonUser',
-        element: document.querySelector('#js-dropdown-weight'),
+        element: this.container.querySelector('#js-dropdown-weight'),
       };
     }
   }
@@ -110,7 +110,8 @@ class FilteredSearchDropdownManager {
 
     if (!mappingKey.reference) {
       const dl = this.droplab;
-      const defaultArguments = [null, dl, element, this.filteredSearchInput, key];
+      const defaultArguments =
+        [null, dl, element, this.filteredSearchInput, this.filteredSearchTokenKeys, key];
       const glArguments = defaultArguments.concat(mappingKey.extraArguments || []);
 
       // Passing glArguments to `new gl[glClass](<arguments>)`
@@ -153,7 +154,8 @@ class FilteredSearchDropdownManager {
 
   setDropdown() {
     const query = gl.DropdownUtils.getSearchQuery(true);
-    const { lastToken, searchToken } = this.tokenizer.processTokens(query);
+    const { lastToken, searchToken } =
+      this.tokenizer.processTokens(query, this.filteredSearchTokenKeys.getKeys());
 
     if (this.currentDropdown) {
       this.updateCurrentDropdownOffset();

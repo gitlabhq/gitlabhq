@@ -16,6 +16,7 @@ import {
   MissingBranchState,
   NotAllowedState,
   ReadyToMergeState,
+  SHAMismatchState,
   UnresolvedDiscussionsState,
   PipelineBlockedState,
   PipelineFailedState,
@@ -80,13 +81,12 @@ export default {
         .then((res) => {
           this.mr.setData(res);
           this.setFavicon();
+
           if (cb) {
             cb.call(null, res);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     initPolling() {
       this.pollingInterval = new gl.SmartInterval({
@@ -133,9 +133,7 @@ export default {
             document.body.appendChild(el);
           }
         })
-        .catch(() => {
-          new Flash('Something went wrong. Please try again.'); // eslint-disable-line
-        });
+        .catch(() => new Flash('Something went wrong. Please try again.'));
     },
     resumePolling() {
       this.pollingInterval.resume();
@@ -204,6 +202,7 @@ export default {
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
+    'mr-widget-sha-mismatch': SHAMismatchState,
     'mr-widget-squash-before-merge': SquashBeforeMerge,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,

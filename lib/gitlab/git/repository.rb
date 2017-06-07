@@ -27,13 +27,15 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
+      attr_reader :storage
+
       # 'path' must be the path to a _bare_ git repository, e.g.
       # /path/to/my-repo.git
-      def initialize(repository_storage, relative_path)
-        @repository_storage = repository_storage
+      def initialize(storage, relative_path)
+        @storage = storage
         @relative_path = relative_path
 
-        storage_path = Gitlab.config.repositories.storages[@repository_storage]['path']
+        storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
@@ -122,7 +124,7 @@ module Gitlab
 
       # Returns the number of valid branches
       def branch_count
-        Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
+        gitaly_migrate(:branch_names) do |is_enabled|
           if is_enabled
             gitaly_ref_client.count_branch_names
           else
@@ -141,7 +143,7 @@ module Gitlab
 
       # Returns the number of valid tags
       def tag_count
-        Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
+        gitaly_migrate(:tag_names) do |is_enabled|
           if is_enabled
             gitaly_ref_client.count_tag_names
           else
@@ -477,19 +479,19 @@ module Gitlab
 
       # Returns a RefName for a given SHA
       def ref_name_for_sha(ref_path, sha)
-        # NOTE: This feature is intentionally disabled until
-        # https://gitlab.com/gitlab-org/gitaly/issues/180 is resolved
-        # Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
-        #   if is_enabled
-        #     gitaly_ref_client.find_ref_name(sha, ref_path)
-        #   else
-        args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+        raise ArgumentError, "sha can't be empty" unless sha.present?
 
-        # Not found -> ["", 0]
-        # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-        Gitlab::Popen.popen(args, @path).first.split.last
-        #   end
-        # end
+        gitaly_migrate(:find_ref_name) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.find_ref_name(sha, ref_path)
+          else
+            args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+
+            # Not found -> ["", 0]
+            # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
+            Gitlab::Popen.popen(args, @path).first.split.last
+          end
+        end
       end
 
       # Returns commits collection
@@ -973,11 +975,7 @@ module Gitlab
       end
 
       def gitaly_repository
-        Gitlab::GitalyClient::Util.repository(@repository_storage, @relative_path)
-      end
-
-      def gitaly_channel
-        Gitlab::GitalyClient.get_channel(@repository_storage)
+        Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
       end
 
       private

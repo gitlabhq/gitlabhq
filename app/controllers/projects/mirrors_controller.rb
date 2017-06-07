@@ -14,10 +14,10 @@ class Projects::MirrorsController < Projects::ApplicationController
   def update
     if @project.update_attributes(mirror_params)
       if @project.mirror?
-        @project.update_mirror
+        @project.force_import_job!
 
         flash[:notice] = "Mirroring settings were successfully updated. The project is being updated."
-      elsif @project.mirror_changed?
+      elsif project.previous_changes.key?('mirror')
         flash[:notice] = "Mirroring was successfully disabled."
       else
         flash[:notice] = "Mirroring settings were successfully updated."
@@ -34,9 +34,10 @@ class Projects::MirrorsController < Projects::ApplicationController
       @project.update_remote_mirrors
       flash[:notice] = "The remote repository is being updated..."
     else
-      @project.update_mirror
+      @project.force_import_job!
       flash[:notice] = "The repository is being updated..."
     end
+
     redirect_to_repository_settings(@project)
   end
 
@@ -48,7 +49,6 @@ class Projects::MirrorsController < Projects::ApplicationController
 
   def mirror_params
     params.require(:project).permit(:mirror, :import_url, :mirror_user_id,
-                                    :mirror_trigger_builds, :sync_time,
-                                    remote_mirrors_attributes: [:url, :id, :enabled])
+                                    :mirror_trigger_builds, remote_mirrors_attributes: [:url, :id, :enabled])
   end
 end

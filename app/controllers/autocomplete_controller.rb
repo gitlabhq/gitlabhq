@@ -9,7 +9,7 @@ class AutocompleteController < ApplicationController
     @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.active
     @users = @users.reorder(:name)
-    @users = load_users_by_ability || @users.page(params[:page])
+    @users = load_users_by_ability || @users.page(params[:page]).per(params[:per_page])
 
     if params[:todo_filter].present? && current_user
       @users = @users.todo_authors(current_user.id, params[:todo_state_filter])
@@ -63,7 +63,7 @@ class AutocompleteController < ApplicationController
 
     @users.to_a
       .select { |user| user.can?(ability, @project) }
-      .take(Kaminari.config.default_per_page)
+      .take(params[:per_page]&.to_i || Kaminari.config.default_per_page)
   end
 
   def find_users

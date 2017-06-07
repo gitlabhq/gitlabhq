@@ -34,6 +34,9 @@ class MergeRequest < ActiveRecord::Base
   delegate :commits, :real_size, :commits_sha, :commits_count,
     to: :merge_request_diff, prefix: nil
 
+  delegate :codeclimate_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
+  delegate :codeclimate_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
+
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
@@ -251,19 +254,6 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  # MRs created before 8.4 don't store a MergeRequestDiff#base_commit_sha,
-  # but we need to get a commit for the "View file @ ..." link by deleted files,
-  # so we find the likely one if we can't get the actual one.
-  # This will not be the actual base commit if the target branch was merged into
-  # the source branch after the merge request was created, but it is good enough
-  # for the specific purpose of linking to a commit.
-  # It is not good enough for use in `Gitlab::Git::DiffRefs`, which needs the
-  # true base commit, so we can't simply have `#diff_base_commit` fall back on
-  # this method.
-  def likely_diff_base_commit
-    first_commit.try(:parent) || first_commit
-  end
-
   def diff_start_commit
     if persisted?
       merge_request_diff.start_commit
@@ -299,6 +289,8 @@ class MergeRequest < ActiveRecord::Base
   attr_writer :target_branch_sha, :source_branch_sha
 
   def source_branch_head
+    return unless source_project
+
     source_branch_ref = @source_branch_sha || source_branch
     source_project.repository.commit(source_branch_ref) if source_branch_ref
   end
@@ -326,21 +318,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    return unless diff_start_commit || diff_base_commit
-
-    Gitlab::Diff::DiffRefs.new(
-      base_sha:  diff_base_sha,
-      start_sha: diff_start_sha,
-      head_sha:  diff_head_sha
-    )
-  end
-
-  # Return diff_refs instance trying to not touch the git repository
-  def diff_sha_refs
-    if merge_request_diff && merge_request_diff.diff_refs_by_sha?
+    if persisted?
       merge_request_diff.diff_refs
     else
-      diff_refs
+      Gitlab::Diff::DiffRefs.new(
+        base_sha:  diff_base_sha,
+        start_sha: diff_start_sha,
+        head_sha:  diff_head_sha
+      )
     end
   end
 
@@ -436,13 +421,24 @@ class MergeRequest < ActiveRecord::Base
     @merge_request_diffs_by_diff_refs_or_sha[diff_refs_or_sha]
   end
 
+  def version_params_for(diff_refs)
+    if diff = merge_request_diff_for(diff_refs)
+      { diff_id: diff.id }
+    elsif diff = merge_request_diff_for(diff_refs.head_sha)
+      {
+        diff_id: diff.id,
+        start_sha: diff_refs.start_sha
+      }
+    end
+  end
+
   def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff
     end
   end
 
-  def reload_diff
+  def reload_diff(current_user = nil)
     return unless open?
 
     old_diff_refs = self.diff_refs
@@ -452,7 +448,8 @@ class MergeRequest < ActiveRecord::Base
 
     update_diff_notes_positions(
       old_diff_refs: old_diff_refs,
-      new_diff_refs: new_diff_refs
+      new_diff_refs: new_diff_refs,
+      current_user: current_user
     )
   end
 
@@ -490,6 +487,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?(skip_ci_check: false)
+    return false unless approved?
     return false unless mergeable_state?(skip_ci_check: skip_ci_check)
 
     check_if_can_be_merged
@@ -922,10 +920,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_complete_diff_refs?
-    diff_sha_refs && diff_sha_refs.complete?
+    diff_refs && diff_refs.complete?
   end
 
-  def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)
+  def update_diff_notes_positions(old_diff_refs:, new_diff_refs:, current_user: nil)
     return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
@@ -939,7 +937,7 @@ class MergeRequest < ActiveRecord::Base
 
     service = Notes::DiffPositionUpdateService.new(
       self.project,
-      nil,
+      current_user,
       old_diff_refs: old_diff_refs,
       new_diff_refs: new_diff_refs,
       paths: paths
@@ -955,34 +953,6 @@ class MergeRequest < ActiveRecord::Base
 
   def keep_around_commit
     project.repository.keep_around(self.merge_commit_sha)
-  end
-
-  def conflicts
-    @conflicts ||= Gitlab::Conflict::FileCollection.new(self)
-  end
-
-  def conflicts_can_be_resolved_by?(user)
-    return false unless source_project
-
-    access = ::Gitlab::UserAccess.new(user, project: source_project)
-    access.can_push_to_branch?(source_branch)
-  end
-
-  def conflicts_can_be_resolved_in_ui?
-    return @conflicts_can_be_resolved_in_ui if defined?(@conflicts_can_be_resolved_in_ui)
-
-    return @conflicts_can_be_resolved_in_ui = false unless cannot_be_merged?
-    return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
-
-    begin
-      # Try to parse each conflict. If the MR's mergeable status hasn't been updated,
-      # ensure that we don't say there are conflicts to resolve when there are no conflict
-      # files.
-      conflicts.files.each(&:lines)
-      @conflicts_can_be_resolved_in_ui = conflicts.files.length > 0
-    rescue Rugged::OdbError, Gitlab::Conflict::Parser::UnresolvableError, Gitlab::Conflict::FileCollection::ConflictSideMissing
-      @conflicts_can_be_resolved_in_ui = false
-    end
   end
 
   def has_commits?
@@ -1003,5 +973,14 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  def base_pipeline
+    @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
+  end
+
+  def has_codeclimate_data?
+    !!(head_codeclimate_artifact&.success? &&
+       base_codeclimate_artifact&.success?)
   end
 end

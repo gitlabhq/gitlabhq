@@ -86,12 +86,14 @@
     "email_patches_path": { "type": "string" },
     "plain_diff_path": { "type": "string" },
     "status_path": { "type": "string" },
+    "new_blob_path": { "type": "string" },
     "merge_check_path": { "type": "string" },
     "ci_environments_status_path": { "type": "string" },
     "merge_commit_message_with_description": { "type": "string" },
     "diverged_commits_count": { "type": "integer" },
     "commit_change_content_path": { "type": "string" },
     "remove_wip_path": { "type": "string" },
+    "remove_source_branch": { "type": ["boolean", "null"] },
     // EE-specific
     "rebase_commit_sha": { "type": ["string", "null"] },
     "approvals_before_merge": { "type": ["integer", "null"] },
@@ -102,7 +104,11 @@
     "rebase_path": { "type": ["string", "null"] },
     "approved": { "type": "boolean" },
     "approvals_path": { "type": ["string", "null"] },
-    "ff_only_enabled": { "type": "boolean" }
+    "ff_only_enabled": { "type": "boolean" },
+    "codeclimate": {
+      "head_path": { "type": "string" },
+      "base_path": { "type": "string" }
+    }
   },
   "additionalProperties": false
 }

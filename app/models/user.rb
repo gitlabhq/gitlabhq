@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Avatarable
   include Referable
   include Sortable
   include CaseSensitivity
@@ -16,6 +17,7 @@ class User < ActiveRecord::Base
 
   add_authentication_token_field :authentication_token
   add_authentication_token_field :incoming_email_token
+  add_authentication_token_field :rss_token
 
   default_value_for :admin, false
   default_value_for(:external) { current_application_settings.user_default_external }
@@ -63,7 +65,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id
+  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, autosave: true
 
   # Profile
   has_many :keys, -> do
@@ -176,8 +178,13 @@ class User < ActiveRecord::Base
   enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos]
 
   # User's Project preference
-  # Note: When adding an option, it MUST go on the end of the array.
-  enum project_view: [:readme, :activity, :files]
+  #
+  # Note: When adding an option, it MUST go on the end of the hash with a
+  # number higher than the current max. We cannot move options and/or change
+  # their numbers.
+  #
+  # We skip 0 because this was used by an option that has since been removed.
+  enum project_view: { activity: 1, files: 2 }
 
   alias_attribute :private_token, :authentication_token
 
@@ -388,7 +395,7 @@ class User < ActiveRecord::Base
     def reference_pattern
       %r{
         #{Regexp.escape(reference_prefix)}
-        (?<user>#{Gitlab::Regex::FULL_NAMESPACE_REGEX_STR})
+        (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
       }x
     end
 
@@ -811,12 +818,10 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
-  def avatar_url(size = nil, scale = 2)
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    else
-      GravatarService.new.execute(email, size, scale)
-    end
+  def avatar_url(size: nil, scale: 2, **args)
+    # We use avatar_path instead of overriding avatar_url because of carrierwave.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+    avatar_path(args) || GravatarService.new.execute(email, size, scale)
   end
 
   def all_emails
@@ -945,13 +950,13 @@ class User < ActiveRecord::Base
   end
 
   def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force, expires_in: 20.minutes) do
       MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def assigned_open_issues_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force, expires_in: 20.minutes) do
       IssuesFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
@@ -962,8 +967,16 @@ class User < ActiveRecord::Base
   end
 
   def invalidate_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+    invalidate_issue_cache_counts
+    invalidate_merge_request_cache_counts
+  end
+
+  def invalidate_issue_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
+  end
+
+  def invalidate_merge_request_cache_counts
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
   end
 
   def todos_done_count(force: false)
@@ -1024,6 +1037,13 @@ class User < ActiveRecord::Base
     self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
 
     save
+  end
+
+  # each existing user needs to have an `rss_token`.
+  # we do this on read since migrating all existing users is not a feasible
+  # solution.
+  def rss_token
+    ensure_rss_token!
   end
 
   protected

@@ -42,6 +42,8 @@ class Projects::BlobController < Projects::ApplicationController
         environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
         @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
 
+        @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
+
         render 'show'
       end
 

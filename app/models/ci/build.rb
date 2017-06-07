@@ -35,6 +35,7 @@ module Ci
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual).relevant }
+    scope :codeclimate, ->() { where(name: 'codeclimate') }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -48,10 +49,16 @@ module Ci
     before_destroy { unscoped_project }
 
     after_create :execute_hooks
-    after_save :update_project_statistics, if: :artifacts_size_changed?
-    after_destroy :update_project_statistics
+    after_commit :update_project_statistics_after_save, on: [:create, :update]
+    after_commit :update_project_statistics, on: :destroy
 
     class << self
+      # This is needed for url_for to work,
+      # as the controller is JobsController
+      def model_name
+        ActiveModel::Name.new(self, nil, 'job')
+      end
+
       def first_pending
         pending.unstarted.order('created_at ASC').first
       end
@@ -125,8 +132,8 @@ module Ci
       success? || failed? || canceled?
     end
 
-    def retried?
-      !self.pipeline.statuses.latest.include?(self)
+    def latest?
+      !retried?
     end
 
     def expanded_environment_name
@@ -440,6 +447,11 @@ module Ci
       trace
     end
 
+    def has_codeclimate_json?
+      options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
+        artifacts_metadata?
+    end
+
     private
 
     def update_artifacts_size
@@ -517,6 +529,12 @@ module Ci
       return unless project
 
       ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
+    end
+
+    def update_project_statistics_after_save
+      if previous_changes.include?('artifacts_size')
+        update_project_statistics
+      end
     end
   end
 end

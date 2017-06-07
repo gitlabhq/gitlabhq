@@ -2,11 +2,6 @@
 .diff-file {
   margin-bottom: $gl-padding;
 
-  .commit-short-id {
-    font-family: $regular_font;
-    font-weight: 400;
-  }
-
   .file-title,
   .file-title-flex-parent {
     cursor: pointer;
@@ -99,7 +94,6 @@
     .old_line,
     .new_line {
       margin: 0;
-      padding: 0;
       border: none;
       padding: 0 5px;
       border-right: 1px solid;
@@ -156,14 +150,10 @@
         }
       }
     }
-
-    .text-file.diff-wrap-lines table .line_holder td span {
-      white-space: pre-wrap;
-    }
   }
 
   .image {
-    background: $diff-image-bg;
+    background: $file-image-bg;
     text-align: center;
     padding: 30px;
 

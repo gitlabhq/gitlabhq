@@ -1,18 +1,28 @@
 module BlobViewer
   class Base
-    class_attribute :partial_name, :type, :extensions, :client_side, :binary, :switcher_icon, :switcher_title, :max_size, :absolute_max_size
+    PARTIAL_PATH_PREFIX = 'projects/blob/viewers'.freeze
 
-    delegate :partial_path, :rich?, :simple?, :client_side?, :server_side?, :text?, :binary?, to: :class
+    class_attribute :partial_name, :loading_partial_name, :type, :extensions, :file_types, :load_async, :binary, :switcher_icon, :switcher_title, :overridable_max_size, :max_size
+
+    self.loading_partial_name = 'loading'
+
+    delegate :partial_path, :loading_partial_path, :rich?, :simple?, :text?, :binary?, to: :class
 
     attr_reader :blob
     attr_accessor :override_max_size
+
+    delegate :project, to: :blob
 
     def initialize(blob)
       @blob = blob
     end
 
     def self.partial_path
-      "projects/blob/viewers/#{partial_name}"
+      File.join(PARTIAL_PATH_PREFIX, partial_name)
+    end
+
+    def self.loading_partial_path
+      File.join(PARTIAL_PATH_PREFIX, loading_partial_name)
     end
 
     def self.rich?
@@ -23,12 +33,12 @@ module BlobViewer
       type == :simple
     end
 
-    def self.client_side?
-      client_side
+    def self.auxiliary?
+      type == :auxiliary
     end
 
-    def self.server_side?
-      !client_side?
+    def self.load_async?
+      load_async
     end
 
     def self.binary?
@@ -39,20 +49,36 @@ module BlobViewer
       !binary?
     end
 
-    def self.can_render?(blob)
-      !extensions || extensions.include?(blob.extension)
+    def self.can_render?(blob, verify_binary: true)
+      return false if verify_binary && binary? != blob.binary?
+      return true if extensions&.include?(blob.extension)
+      return true if file_types&.include?(Gitlab::FileDetector.type_of(blob.path))
+
+      false
     end
 
-    def too_large?
-      blob.raw_size > max_size
+    def load_async?
+      self.class.load_async? && render_error.nil?
     end
 
-    def absolutely_too_large?
-      blob.raw_size > absolute_max_size
+    def exceeds_overridable_max_size?
+      overridable_max_size && blob.raw_size > overridable_max_size
+    end
+
+    def exceeds_max_size?
+      max_size && blob.raw_size > max_size
     end
 
     def can_override_max_size?
-      too_large? && !absolutely_too_large?
+      exceeds_overridable_max_size? && !exceeds_max_size?
+    end
+
+    def too_large?
+      if override_max_size
+        exceeds_max_size?
+      else
+        exceeds_overridable_max_size?
+      end
     end
 
     # This method is used on the server side to check whether we can attempt to
@@ -67,31 +93,13 @@ module BlobViewer
     # binary from `blob_raw_url` and does its own format validation and error
     # rendering, especially for potentially large binary formats.
     def render_error
-      return @render_error if defined?(@render_error)
-
-      @render_error =
-        if server_side_but_stored_externally?
-          # Files that are not stored in the repository, like LFS files and
-          # build artifacts, can only be rendered using a client-side viewer,
-          # since we do not want to read large amounts of data into memory on the
-          # server side. Client-side viewers use JS and can fetch the file from
-          # `blob_raw_url` using AJAX.
-          :server_side_but_stored_externally
-        elsif override_max_size ? absolutely_too_large? : too_large?
-          :too_large
-        end
-    end
-
-    def prepare!
-      if server_side? && blob.project
-        blob.load_all_data!(blob.project.repository)
+      if too_large?
+        :too_large
       end
     end
 
-    private
-
-    def server_side_but_stored_externally?
-      server_side? && blob.stored_externally?
+    def prepare!
+      # To be overridden by subclasses
     end
   end
 end

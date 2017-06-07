@@ -22,7 +22,16 @@ module Geo
           if response.success?
             response.parsed_response.values_at(*KEYS)
           else
-            ["Could not connect to Geo node - HTTP Status Code: #{response.code}"]
+            message = "Could not connect to Geo node - HTTP Status Code: #{response.code} #{response.message}"
+            payload = response.parsed_response
+            details =
+              if payload.is_a?(Hash)
+                payload['message']
+              else
+                payload
+              end
+
+            Array([message, details].compact.join("\n"))
           end
         rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => e
           [e.message]

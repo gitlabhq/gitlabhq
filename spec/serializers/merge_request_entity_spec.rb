@@ -69,6 +69,23 @@ describe MergeRequestEntity do
       .to eq(resource.merge_commit_message(include_description: true))
   end
 
+  describe 'new_blob_path' do
+    context 'when user can push to project' do
+      it 'returns path' do
+        project.add_developer(user)
+
+        expect(subject[:new_blob_path])
+          .to eq("/#{resource.project.full_path}/new/#{resource.source_branch}")
+      end
+    end
+
+    context 'when user cannot push to project' do
+      it 'returns nil' do
+        expect(subject[:new_blob_path]).to be_nil
+      end
+    end
+  end
+
   describe 'diff_head_sha' do
     before do
       allow(resource).to receive(:diff_head_sha) { 'sha' }
@@ -127,6 +144,22 @@ describe MergeRequestEntity do
 
         expect(subject[:diverged_commits_count]).to be_zero
       end
+    end
+  end
+
+  describe 'when source project is deleted' do
+    let(:project) { create(:project, :repository) }
+    let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: project) }
+
+    it 'returns a blank rebase_path' do
+      allow(merge_request).to receive(:should_be_rebased?).and_return(true)
+      fork_project.destroy
+      merge_request.reload
+
+      entity = described_class.new(merge_request, request: request).as_json
+
+      expect(entity[:rebase_path]).to be_nil
     end
   end
 end

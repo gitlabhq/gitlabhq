@@ -7,8 +7,8 @@ describe EE::NotificationService do
     allow(Notify).to receive(:service_desk_new_note_email)
       .with(kind_of(Integer), kind_of(Integer)).and_return(double(deliver_later: true))
 
-    allow_any_instance_of(License).to receive(:add_on?).and_call_original
-    allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+    allow_any_instance_of(License).to receive(:feature_available?).and_call_original
+    allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
     allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
   end

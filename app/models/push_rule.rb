@@ -8,6 +8,7 @@ class PushRule < ActiveRecord::Base
 
   def commit_validation?
     commit_message_regex.present? ||
+      branch_name_regex.present? ||
       author_email_regex.present? ||
       member_check ||
       file_name_regex.present? ||
@@ -17,6 +18,10 @@ class PushRule < ActiveRecord::Base
 
   def commit_message_allowed?(message)
     data_match?(message, commit_message_regex)
+  end
+
+  def branch_name_allowed?(branch)
+    data_match?(branch, branch_name_regex)
   end
 
   def author_email_allowed?(email)

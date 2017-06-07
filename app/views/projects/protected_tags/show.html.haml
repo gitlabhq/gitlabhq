@@ -2,10 +2,10 @@
 
 .row.prepend-top-default.append-bottom-default
   .col-lg-3
-    %h4.prepend-top-0
+    %h4.prepend-top-0.ref-name
       = @protected_ref.name
 
-  .col-lg-9
+  .col-lg-9.edit_protected_tag
     %h5 Matching Tags
     - if @matching_refs.present?
       .table-responsive

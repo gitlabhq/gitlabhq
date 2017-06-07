@@ -76,7 +76,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def conflict_resolution_path
-    if conflicts_can_be_resolved_in_ui? && conflicts_can_be_resolved_by?(current_user)
+    if conflicts.can_be_resolved_in_ui? && conflicts.can_be_resolved_by?(current_user)
       conflicts_namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
   end
@@ -161,6 +161,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   private
 
+  def conflicts
+    @conflicts ||= MergeRequests::Conflicts::ListService.new(merge_request)
+  end
+
   def closing_issues
     @closing_issues ||= closes_issues(current_user)
   end
@@ -178,6 +182,8 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def user_can_push_to_source_branch?
+    return false unless source_branch_exists?
+
     ::Gitlab::UserAccess
       .new(current_user, project: source_project)
       .can_push_to_branch?(source_branch)

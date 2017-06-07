@@ -159,5 +159,23 @@ describe Users::DestroyService, services: true do
         service.execute(user, hard_delete: true)
       end
     end
+
+    context "when the user was the mirror_user for a group project" do
+      let(:group_owner) { create(:user) }
+      let(:mirror_user) { create(:user) }
+      let(:group)       { create(:group) }
+
+      before do
+        group.add_owner(group_owner)
+        group.add_master(mirror_user)
+      end
+
+      it 'updates the mirror_user to one of the group owners' do
+        project = create(:empty_project, namespace_id: group.id, creator: group_owner, mirror_user: mirror_user)
+        service.execute(mirror_user)
+
+        expect(project.reload.mirror_user).to eq group_owner
+      end
+    end
   end
 end

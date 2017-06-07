@@ -36,18 +36,14 @@ module Approvable
     #
     def number_of_potential_approvers
       has_access = ['access_level > ?', Member::REPORTER]
-      wheres = [
-        "id IN (#{project.members.where(has_access).select(:user_id).to_sql})"
-      ]
-
       all_approvers = all_approvers_including_groups
+
+      wheres = [
+        "id IN (#{project.project_authorizations.where(has_access).select(:user_id).to_sql})"
+      ]
 
       if all_approvers.any?
         wheres << "id IN (#{all_approvers.map(&:id).join(', ')})"
-      end
-
-      if project.group
-        wheres << "id IN (#{project.group.members.where(has_access).select(:user_id).to_sql})"
       end
 
       users = User
@@ -73,7 +69,6 @@ module Approvable
     #
     def overall_approvers
       approvers_relation = approvers_overwritten? ? approvers : target_project.approvers
-
       approvers_relation = approvers_relation.where.not(user_id: author.id) if author
 
       approvers_relation
@@ -113,7 +108,7 @@ module Approvable
     end
 
     def approvers_overwritten?
-      approvers.any? || approver_groups.any?
+      approvers.to_a.any? || approver_groups.to_a.any?
     end
 
     def can_approve?(user)

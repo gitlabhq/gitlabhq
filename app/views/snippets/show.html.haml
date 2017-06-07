@@ -9,4 +9,4 @@
   .row-content-block.top-block.content-component-block
     = render 'award_emoji/awards_block', awardable: @snippet, inline: true
 
-  #notes= render "shared/notes/notes_with_form"
+  #notes= render "shared/notes/notes_with_form", :autocomplete => false

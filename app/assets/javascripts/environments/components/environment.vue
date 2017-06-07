@@ -3,6 +3,7 @@
 import EnvironmentsService from '../services/environments_service';
 import environmentTable from './environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import '../../lib/utils/common_utils';
 import eventHub from '../event_hub';
@@ -12,6 +13,7 @@ export default {
   components: {
     environmentTable,
     tablePagination,
+    loadingIcon,
   },
 
   data() {
@@ -208,14 +210,11 @@ export default {
     </div>
 
     <div class="content-list environments-container">
-      <div
-          class="environments-list-loading text-center"
-          v-if="isLoading">
-
-        <i
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true" />
-      </div>
+      <loading-icon
+        label="Loading environments"
+        size="3"
+        v-if="isLoading"
+        />
 
       <div
         class="blank-state blank-state-no-icon"

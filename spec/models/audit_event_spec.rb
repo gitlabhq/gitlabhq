@@ -42,4 +42,10 @@ RSpec.describe AuditEvent, type: :model do
       end
     end
   end
+
+  describe '#present' do
+    it 'returns a presenter' do
+      expect(subject.present).to be_an_instance_of(AuditEventPresenter)
+    end
+  end
 end

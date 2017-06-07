@@ -1,10 +1,4 @@
 .pipelines {
-  .realtime-loading {
-    font-size: 40px;
-    text-align: center;
-    margin: 0 auto;
-  }
-
   .stage {
     max-width: 90px;
     width: 90px;
@@ -12,10 +6,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .empty-state {
-    margin: 5% auto 0;
   }
 
   .table-holder {
@@ -172,9 +162,13 @@
     float: none;
   }
 
+  .api {
+    @extend .monospace;
+  }
+
   .branch-commit {
 
-    .branch-name {
+    .ref-name {
       font-weight: bold;
       max-width: 120px;
       overflow: hidden;
@@ -196,12 +190,11 @@
       color: $gl-text-color;
     }
 
-    .commit-id {
+    .commit-sha {
       color: $gl-link-color;
     }
 
     .commit-title {
-      margin-top: 4px;
       max-width: 225px;
       overflow: hidden;
       white-space: nowrap;
@@ -234,7 +227,7 @@
   .duration,
   .finished-at {
     color: $gl-text-color-secondary;
-    margin: 4px 0;
+    margin: 0;
     white-space: nowrap;
 
     .fa {

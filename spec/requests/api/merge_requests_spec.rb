@@ -635,6 +635,27 @@ describe API::MergeRequests do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
+    it 'returns 405 if merge request was not approved' do
+      project.team << [create(:user), :developer]
+      project.update_attributes(approvals_before_merge: 1)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+
+      expect(response).to have_http_status(406)
+      expect(json_response['message']).to eq('Branch cannot be merged')
+    end
+
+    it 'returns 200 if merge request was approved' do
+      approver = create(:user)
+      project.team << [approver, :developer]
+      project.update_attributes(approvals_before_merge: 1)
+      merge_request.approvals.create(user: approver)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
+
+      expect(response).to have_http_status(200)
+    end
+
     it "returns 401 if user has no permissions to merge" do
       user2 = create(:user)
       project.team << [user2, :reporter]

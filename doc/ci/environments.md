@@ -442,7 +442,8 @@ and/or `production`) you can see this information in the merge request itself.
 
 ![Environment URLs in merge request](img/environments_link_url_mr.png)
 
-### Go directly from source files to public pages on the environment
+### <a name="route-map"></a>Go directly from source files to public pages on the environment
+
 
 > Introduced in GitLab 8.17.
 
@@ -590,6 +591,38 @@ exist, you should see something like:
 
 ![Environment groups](img/environments_dynamic_groups.png)
 
+## Monitoring environments
+
+>**Notes:**
+>
+- For the monitor dashboard to appear, you need to:
+  - Have enabled the [Kubernetes integration][kube]
+  - Have your app deployed on Kubernetes
+  - Have enabled the [Prometheus integration][prom]
+- With GitLab 9.2, all deployments to an environment are shown directly on the
+  monitoring dashboard
+
+If your application is deployed on Kubernetes and you have enabled Prometheus
+collecting metrics, you can monitor the performance behavior of your app
+through the environments.
+
+Once configured, GitLab will attempt to retrieve performance metrics for any
+environment which has had a successful deployment. If monitoring data was
+successfully retrieved, a Monitoring button will appear on the environment's
+detail page.
+
+![Environment Detail with Metrics](img/prometheus_environment_detail_with_metrics.png)
+
+Clicking on the Monitoring button will display a new page, showing up to the last
+8 hours of performance data. It may take a minute or two for data to appear
+after initial deployment.
+
+All deployments to an environment are shown directly on the monitoring dashboard
+which allows easy correlation between any changes in performance and a new
+version of the app, all without leaving GitLab.
+
+![Monitoring dashboard](img/environments_monitoring.png)
+
 ## Checkout deployments locally
 
 Since 8.13, a reference in the git repository is saved for each deployment, so
@@ -632,3 +665,5 @@ Below are some links you may find interesting:
 [gitlab-flow]: ../workflow/gitlab_flow.md
 [gitlab runner]: https://docs.gitlab.com/runner/
 [git-strategy]: yaml/README.md#git-strategy
+[kube]: ../user/project/integrations/kubernetes.md
+[prom]: ../user/project/integrations/prometheus.md

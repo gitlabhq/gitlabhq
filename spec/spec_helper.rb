@@ -10,7 +10,7 @@ require 'shoulda/matchers'
 require 'rspec/retry'
 
 rspec_profiling_is_configured =
-  ENV['RSPEC_PROFILING_POSTGRES_URL'] ||
+  ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
   ENV['RSPEC_PROFILING']
 branch_can_be_profiled =
   ENV['GITLAB_DATABASE'] == 'postgresql' &&
@@ -25,6 +25,9 @@ if ENV['CI'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind
 end
+
+# require rainbow gem String monkeypatch, so we can test SystemChecks
+require 'rainbow/ext/string'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -44,7 +47,6 @@ RSpec.configure do |config|
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
   config.include WaitForRequests, :js
-  config.include WaitForAjax, :js
   config.include StubConfiguration
   config.include EmailHelpers, type: :mailer
   config.include TestEnv

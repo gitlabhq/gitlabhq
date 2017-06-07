@@ -92,46 +92,75 @@ module SlashCommands
 
     desc 'Assign'
     explanation do |users|
-      "Assigns #{users.map(&:to_reference).to_sentence}." if users.any?
+      users = issuable.is_a?(Issue) ? users : users.take(1)
+      "Assigns #{users.map(&:to_reference).to_sentence}."
     end
-    params '@user'
+    params do
+      issuable.is_a?(Issue) ? '@user1 @user2' : '@user'
+    end
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     parse_params do |assignee_param|
-      users = extract_references(assignee_param, :user)
-
-      if users.empty?
-        users = User.where(username: assignee_param.split(' ').map(&:strip))
-      end
-
-      users
+      extract_users(assignee_param)
     end
     command :assign do |users|
       next if users.empty?
 
       if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = users.map(&:id)
+        # EE specific. In CE we should replace one assignee with another
+        @updates[:assignee_ids] = issuable.assignees.pluck(:id) + users.map(&:id)
       else
         @updates[:assignee_id] = users.last.id
       end
     end
 
-    desc 'Remove assignee'
+    desc do
+      if issuable.is_a?(Issue)
+        'Remove all or specific assignee(s)'
+      else
+        'Remove assignee'
+      end
+    end
     explanation do
-      "Removes assignee #{issuable.assignees.first.to_reference}."
+      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}"
+    end
+    params do
+      issuable.is_a?(Issue) ? '@user1 @user2' : ''
     end
     condition do
       issuable.persisted? &&
         issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :unassign do
+    command :unassign do |unassign_param = nil|
+      users = extract_users(unassign_param)
+
       if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = []
+        @updates[:assignee_ids] =
+          if users.any?
+            issuable.assignees.pluck(:id) - users.map(&:id)
+          else
+            []
+          end
       else
         @updates[:assignee_id] = nil
       end
+    end
+
+    desc 'Change assignee(s)'
+    explanation do
+      'Change assignee(s)'
+    end
+    params '@user1 @user2'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        issuable.assignees.any? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :reassign do |unassign_param|
+      @updates[:assignee_ids] = extract_users(unassign_param).map(&:id)
     end
 
     desc 'Set milestone'
@@ -485,6 +514,18 @@ module SlashCommands
           issuable.labels.on_project_boards(issuable.project_id).where.not(id: label_id).pluck(:id)
         @updates[:add_label_ids] = [label_id]
       end
+    end
+
+    def extract_users(params)
+      return [] if params.nil?
+
+      users = extract_references(params, :user)
+
+      if users.empty?
+        users = User.where(username: params.split(' ').map(&:strip))
+      end
+
+      users
     end
 
     def find_labels(labels_param)

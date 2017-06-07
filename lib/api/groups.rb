@@ -17,6 +17,7 @@ module API
         optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
         optional :ldap_cn, type: String, desc: 'LDAP Common Name'
         optional :ldap_access, type: Integer, desc: 'A valid access level'
+        optional :shared_runners_minutes_limit, type: Integer, desc: '(admin-only) Pipeline minutes quota for this group'
         all_or_none_of :ldap_cn, :ldap_access
       end
 
@@ -89,6 +90,9 @@ module API
           group_access: params.delete(:ldap_access)
         }
 
+        # EE
+        authenticated_as_admin! if params[:shared_runners_minutes_limit]
+
         group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
         if group.persisted?
@@ -100,7 +104,7 @@ module API
             )
           end
 
-          present group, with: Entities::Group, current_user: current_user
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)
         end
@@ -118,12 +122,17 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
-        at_least_one_of :name, :path, :description, :visibility,
-                        :lfs_enabled, :request_access_enabled
       end
       put ':id' do
         group = find_group!(params[:id])
         authorize! :admin_group, group
+
+        # EE
+        if params[:shared_runners_minutes_limit].present? &&
+            group.shared_runners_minutes_limit.to_i !=
+                params[:shared_runners_minutes_limit].to_i
+          authenticated_as_admin!
+        end
 
         if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
           present group, with: Entities::GroupDetail, current_user: current_user

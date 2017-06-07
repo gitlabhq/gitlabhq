@@ -128,6 +128,16 @@ FactoryGirl.define do
       end
     end
 
+    trait :unicode_trace do
+      after(:create) do |build, evaluator|
+        trace = File.binread(
+          File.expand_path(
+            Rails.root.join('spec/fixtures/trace/ansi-sequence-and-unicode')))
+
+        build.trace.set(trace)
+      end
+    end
+
     trait :erased do
       erased_at Time.now
       erased_by factory: :user

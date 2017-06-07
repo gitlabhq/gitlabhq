@@ -26,7 +26,7 @@ module Gitlab
         }
 
         if Gitlab.config.gitaly.enabled
-          address = Gitlab::GitalyClient.get_address(project.repository_storage)
+          address = Gitlab::GitalyClient.address(project.repository_storage)
           params[:Repository] = repository.gitaly_repository.to_h
 
           feature_enabled = case action.to_s
@@ -130,7 +130,7 @@ module Gitlab
             'MaxSessionTime' => terminal[:max_session_time]
           }
         }
-        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.key?(:ca_pem)
 
         details
       end

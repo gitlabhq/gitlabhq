@@ -62,7 +62,7 @@ describe Issuable::BulkUpdateService, services: true do
         expect(result[:count]).to eq(1)
       end
 
-      it 'updates the assignee to the use ID passed' do
+      it 'updates the assignee to the user ID passed' do
         assignee = create(:user)
         project.team << [assignee, :developer]
 
@@ -72,7 +72,7 @@ describe Issuable::BulkUpdateService, services: true do
     end
 
     context "when the new assignee ID is #{IssuableFinder::NONE}" do
-      it "unassigns the issues" do
+      it 'unassigns the issues' do
         expect { bulk_update(merge_request, assignee_id: IssuableFinder::NONE) }
           .to change { merge_request.reload.assignee }.to(nil)
       end
@@ -100,7 +100,7 @@ describe Issuable::BulkUpdateService, services: true do
         expect(result[:count]).to eq(1)
       end
 
-      it 'updates the assignee to the use ID passed' do
+      it 'updates the assignee to the user ID passed' do
         assignee = create(:user)
         project.team << [assignee, :developer]
         expect { bulk_update(issue, assignee_ids: [assignee.id]) }

@@ -69,6 +69,14 @@ module API
       end
     end
 
+    def find_namespace(id)
+      if id =~ /^\d+$/
+        Namespace.find_by(id: id)
+      else
+        Namespace.find_by_full_path(id)
+      end
+    end
+
     def find_group!(id)
       group = find_group(id)
 
@@ -167,7 +175,7 @@ module API
       params_hash = custom_params || params
       attrs = {}
       keys.each do |key|
-        if params_hash[key].present? || (params_hash.has_key?(key) && params_hash[key] == false)
+        if params_hash[key].present? || (params_hash.key?(key) && params_hash[key] == false)
           attrs[key] = params_hash[key]
         end
       end

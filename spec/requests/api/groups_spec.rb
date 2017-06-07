@@ -192,7 +192,7 @@ describe API::Groups do
         expect(json_response['path']).to eq(group1.path)
         expect(json_response['description']).to eq(group1.description)
         expect(json_response['visibility']).to eq(Gitlab::VisibilityLevel.string_level(group1.visibility_level))
-        expect(json_response['avatar_url']).to eq(group1.avatar_url)
+        expect(json_response['avatar_url']).to eq(group1.avatar_url(only_path: false))
         expect(json_response['web_url']).to eq(group1.web_url)
         expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
         expect(json_response['full_name']).to eq(group1.full_name)
@@ -272,6 +272,25 @@ describe API::Groups do
 
         expect(response).to have_http_status(404)
       end
+
+      # EE
+      it 'returns 403 for updating shared_runners_minutes_limit' do
+        expect do
+          put api("/groups/#{group1.id}", user1), shared_runners_minutes_limit: 133
+        end.not_to change { group1.shared_runners_minutes_limit }
+
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns 200 if shared_runners_minutes_limit is not changing' do
+        group1.update(shared_runners_minutes_limit: 133)
+
+        expect do
+          put api("/groups/#{group1.id}", user1), shared_runners_minutes_limit: 133
+        end.not_to change { group1.shared_runners_minutes_limit }
+
+        expect(response).to have_http_status(200)
+      end
     end
 
     context 'when authenticated as the admin' do
@@ -280,6 +299,17 @@ describe API::Groups do
 
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
+      end
+
+      # EE
+      it 'updates the group for shared_runners_minutes_limit' do
+        expect do
+          put api("/groups/#{group1.id}", admin), shared_runners_minutes_limit: 133
+        end.to change { group1.reload.shared_runners_minutes_limit }
+          .from(nil).to(133)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['shared_runners_minutes_limit']).to eq(133)
       end
     end
 
@@ -479,23 +509,36 @@ describe API::Groups do
         group_attributes = attributes_for(:group, ldap_cn: 'ldap-group', ldap_access: Gitlab::Access::DEVELOPER)
         expect { post api("/groups", admin), group_attributes }.to change{ LdapGroupLink.count }.by(1)
       end
-    end
-  end
 
-  describe "PUT /groups" do
-    context "when authenticated as user without group permissions" do
-      it "does not create group" do
-        put api("/groups/#{group2.id}", user1), attributes_for(:group)
-        expect(response.status).to eq(404)
-      end
-    end
+      # EE
+      context 'when shared_runners_minutes_limit is given' do
+        context 'when the current user is not an admin' do
+          it "does not create a group with shared_runners_minutes_limit" do
+            group = attributes_for(:group, { shared_runners_minutes_limit: 133 })
 
-    context "when authenticated as user with group permissions" do
-      it "updates group" do
-        group2.update(owner: user2)
-        put api("/groups/#{group2.id}", user2), { name: 'Renamed' }
-        expect(response.status).to eq(200)
-        expect(group2.reload.name).to eq('Renamed')
+            expect do
+              post api("/groups", user3), group
+            end.not_to change { Group.count }
+
+            expect(response).to have_http_status(403)
+          end
+        end
+
+        context 'when the current user is an admin' do
+          it "creates a group with shared_runners_minutes_limit" do
+            group = attributes_for(:group, { shared_runners_minutes_limit: 133 })
+
+            expect do
+              post api("/groups", admin), group
+            end.to change { Group.count }.by(1)
+
+            created_group = Group.find(json_response['id'])
+
+            expect(created_group.shared_runners_minutes_limit).to eq(133)
+            expect(response).to have_http_status(201)
+            expect(json_response['shared_runners_minutes_limit']).to eq(133)
+          end
+        end
       end
     end
   end

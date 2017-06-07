@@ -2,8 +2,9 @@ import Timeago from 'timeago.js';
 import { getStateKey } from '../dependencies';
 
 export default class MergeRequestStore {
-
   constructor(data) {
+    this.sha = data.diff_head_sha;
+
     this.setData(data);
   }
 
@@ -18,7 +19,6 @@ export default class MergeRequestStore {
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
     this.mergeStatus = data.merge_status;
-    this.sha = data.diff_head_sha;
     this.commitMessage = data.merge_commit_message;
     this.commitMessageWithDescription = data.merge_commit_message_with_description;
     this.commitsCount = data.commits_count;
@@ -53,13 +53,14 @@ export default class MergeRequestStore {
     this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
-    this.shouldRemoveSourceBranch = (data.merge_params || {}).should_remove_source_branch || false;
+    this.shouldRemoveSourceBranch = data.remove_source_branch || false;
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
+    this.newBlobPath = data.new_blob_path;
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.mergeCheckPath = data.merge_check_path;
     this.mergeActionsContentPath = data.commit_change_content_path;
@@ -70,6 +71,7 @@ export default class MergeRequestStore {
     this.canMerge = !!data.merge_path;
     this.canCreateIssue = currentUser.can_create_issue || false;
     this.canCancelAutomaticMerge = !!data.cancel_merge_when_pipeline_succeeds_path;
+    this.hasSHAChanged = this.sha !== data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
 
     // Cherry-pick and Revert actions related
@@ -133,5 +135,4 @@ export default class MergeRequestStore {
 
     return timeagoInstance.format(event.updated_at);
   }
-
 }

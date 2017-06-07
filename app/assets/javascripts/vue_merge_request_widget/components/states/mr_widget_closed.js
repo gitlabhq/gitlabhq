@@ -20,7 +20,7 @@ export default {
         <p>
           The changes were not merged into
           <a
-            :href="mr.targetBranchCommitsPath"
+            :href="mr.targetBranchPath"
             class="label-branch">
             {{mr.targetBranch}}</a>.
         </p>

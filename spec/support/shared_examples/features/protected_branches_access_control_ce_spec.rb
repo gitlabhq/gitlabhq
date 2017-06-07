@@ -5,7 +5,7 @@ shared_examples "protected branches > access control > CE" do
 
       set_protected_branch_name('master')
 
-      within('.new_protected_branch') do
+      within('.js-new-protected-branch') do
         allowed_to_push_button = find(".js-allowed-to-push")
 
         unless allowed_to_push_button.text == access_type_name
@@ -38,7 +38,7 @@ shared_examples "protected branches > access control > CE" do
         end
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to include(access_type_id)
     end
@@ -50,7 +50,7 @@ shared_examples "protected branches > access control > CE" do
 
       set_protected_branch_name('master')
 
-      within('.new_protected_branch') do
+      within('.js-new-protected-branch') do
         allowed_to_merge_button = find(".js-allowed-to-merge")
 
         unless allowed_to_merge_button.text == access_type_name
@@ -83,7 +83,7 @@ shared_examples "protected branches > access control > CE" do
         end
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(ProtectedBranch.last.merge_access_levels.map(&:access_level)).to include(access_type_id)
     end

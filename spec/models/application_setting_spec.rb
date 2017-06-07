@@ -21,11 +21,24 @@ describe ApplicationSetting, models: true do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
-    it { is_expected.to allow_value(Gitlab::Mirror::FIFTEEN).for(:minimum_mirror_sync_time) }
-    it { is_expected.to allow_value(Gitlab::Mirror::HOURLY).for(:minimum_mirror_sync_time) }
-    it { is_expected.to allow_value(Gitlab::Mirror::DAILY).for(:minimum_mirror_sync_time) }
-    it { is_expected.not_to allow_value(nil).for(:minimum_mirror_sync_time) }
-    it { is_expected.not_to allow_value(61).for(:minimum_mirror_sync_time) }
+    it { is_expected.to allow_value(10).for(:mirror_max_delay) }
+    it { is_expected.not_to allow_value(nil).for(:mirror_max_delay) }
+    it { is_expected.not_to allow_value(0).for(:mirror_max_delay) }
+    it { is_expected.not_to allow_value(1.0).for(:mirror_max_delay) }
+    it { is_expected.not_to allow_value(-1).for(:mirror_max_delay) }
+
+    it { is_expected.to allow_value(10).for(:mirror_max_capacity) }
+    it { is_expected.not_to allow_value(nil).for(:mirror_max_capacity) }
+    it { is_expected.not_to allow_value(0).for(:mirror_max_capacity) }
+    it { is_expected.not_to allow_value(1.0).for(:mirror_max_capacity) }
+    it { is_expected.not_to allow_value(-1).for(:mirror_max_capacity) }
+
+    it { is_expected.to allow_value(10).for(:mirror_capacity_threshold) }
+    it { is_expected.not_to allow_value(nil).for(:mirror_capacity_threshold) }
+    it { is_expected.not_to allow_value(0).for(:mirror_capacity_threshold) }
+    it { is_expected.not_to allow_value(1.0).for(:mirror_capacity_threshold) }
+    it { is_expected.not_to allow_value(-1).for(:mirror_capacity_threshold) }
+    it { is_expected.not_to allow_value(subject.mirror_max_capacity + 1).for(:mirror_capacity_threshold) }
 
     describe 'disabled_oauth_sign_in_sources validations' do
       before do
@@ -80,51 +93,6 @@ describe ApplicationSetting, models: true do
 
     it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
       subject { setting }
-    end
-
-    context "update minimum_mirror_sync_time" do
-      sync_times = Gitlab::Mirror::SYNC_TIME_TO_CRON.keys
-
-      before do
-        Sidekiq::Logging.logger = nil
-        sync_times.each do |sync_time|
-          create(:project, :mirror, sync_time: sync_time)
-        end
-      end
-
-      sync_times.drop(1).each_with_index do |sync_time, index|
-        context "with #{sync_time} sync_time" do
-          subject { setting.update_attributes(minimum_mirror_sync_time: sync_time) }
-
-          it "updates minimum mirror sync time to #{sync_time}" do
-            expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_job).and_call_original
-            expect(Gitlab::Mirror).to receive(:configure_cron_job!)
-
-            subject
-          end
-
-          it 'updates every mirror to the current minimum_mirror_sync_time' do
-            expect { subject }.to change { Project.mirror.where('sync_time < ?', sync_time).count }.from(index + 1).to(0)
-          end
-        end
-      end
-
-      # fifteen is a special case so we isolate it
-      context 'with default fifteen sync time' do
-        let(:sync_time) { Gitlab::Mirror::FIFTEEN }
-
-        it 'does not update minimum_mirror_sync_time' do
-          expect_any_instance_of(ApplicationSetting).not_to receive(:update_mirror_cron_job)
-          expect(Gitlab::Mirror).not_to receive(:configure_cron_job!)
-          expect(setting.minimum_mirror_sync_time).to eq(Gitlab::Mirror::FIFTEEN)
-
-          setting.update_attributes(minimum_mirror_sync_time: sync_time)
-        end
-
-        it 'updates every mirror to the current minimum_mirror_sync_time' do
-          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.not_to change { Project.mirror.where('sync_time < ?', sync_time).count }
-        end
-      end
     end
 
     # Upgraded databases will have this sort of content
@@ -260,6 +228,68 @@ describe ApplicationSetting, models: true do
     it 'sets multiple domain with file' do
       setting.domain_blacklist_file = File.open(Rails.root.join('spec/fixtures/', 'domain_blacklist.txt'))
       expect(setting.domain_blacklist).to contain_exactly('example.com', 'test.com', 'foo.bar')
+    end
+  end
+
+  describe 'usage ping settings' do
+    context 'when the usage ping is disabled in gitlab.yml' do
+      before do
+        allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(false)
+      end
+
+      it 'does not allow the usage ping to be configured' do
+        expect(setting.usage_ping_can_be_configured?).to be_falsey
+      end
+
+      context 'when the usage ping is disabled in the DB' do
+        before do
+          setting.usage_ping_enabled = false
+        end
+
+        it 'returns false for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_falsey
+        end
+      end
+
+      context 'when the usage ping is enabled in the DB' do
+        before do
+          setting.usage_ping_enabled = true
+        end
+
+        it 'returns false for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_falsey
+        end
+      end
+    end
+
+    context 'when the usage ping is enabled in gitlab.yml' do
+      before do
+        allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(true)
+      end
+
+      it 'allows the usage ping to be configured' do
+        expect(setting.usage_ping_can_be_configured?).to be_truthy
+      end
+
+      context 'when the usage ping is disabled in the DB' do
+        before do
+          setting.usage_ping_enabled = false
+        end
+
+        it 'returns false for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_falsey
+        end
+      end
+
+      context 'when the usage ping is enabled in the DB' do
+        before do
+          setting.usage_ping_enabled = true
+        end
+
+        it 'returns true for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_truthy
+        end
+      end
     end
   end
 

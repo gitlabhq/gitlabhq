@@ -15,7 +15,7 @@ describe AvatarsHelper do
     end
 
     it "contains the user's avatar image" do
-      is_expected.to include(CGI.escapeHTML(user.avatar_url(16)))
+      is_expected.to include(CGI.escapeHTML(user.avatar_url(size: 16)))
     end
   end
 end

@@ -28,8 +28,16 @@ module Ci
       !active?
     end
 
+    def deactivate!
+      update_attribute(:active, false)
+    end
+
     def importing_or_inactive?
       importing? || inactive?
+    end
+
+    def runnable_by_owner?
+      Ability.allowed?(owner, :create_pipeline, project)
     end
 
     def set_next_run_at

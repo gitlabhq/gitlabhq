@@ -11,16 +11,18 @@ export default function deviseState(data) {
     return 'conflicts';
   } else if (data.work_in_progress) {
     return 'workInProgress';
-  } else if (this.mergeWhenPipelineSucceeds) {
-    return this.mergeError ? 'autoMergeFailed' : 'mergeWhenPipelineSucceeds';
-  } else if (!this.canMerge) {
-    return 'notAllowedToMerge';
   } else if (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed) {
     return 'pipelineFailed';
   } else if (this.hasMergeableDiscussionsState) {
     return 'unresolvedDiscussions';
   } else if (this.isPipelineBlocked) {
     return 'pipelineBlocked';
+  } else if (this.hasSHAChanged) {
+    return 'shaMismatch';
+  } else if (this.mergeWhenPipelineSucceeds) {
+    return this.mergeError ? 'autoMergeFailed' : 'mergeWhenPipelineSucceeds';
+  } else if (!this.canMerge) {
+    return 'notAllowedToMerge';
   } else if (this.canBeMerged) {
     return 'readyToMerge';
   }

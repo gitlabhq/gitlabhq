@@ -58,6 +58,7 @@ class MergeRequestEntity < IssuableEntity
   expose :commits_count
   expose :cannot_be_merged?, as: :has_conflicts
   expose :can_be_merged?, as: :can_be_merged
+  expose :remove_source_branch?, as: :remove_source_branch
 
   expose :project_archived do |merge_request|
     merge_request.project.archived?
@@ -113,6 +114,14 @@ class MergeRequestEntity < IssuableEntity
   #
   expose :target_branch_commits_path do |merge_request|
     presenter(merge_request).target_branch_commits_path
+  end
+
+  expose :new_blob_path do |merge_request|
+    if can?(current_user, :push_code, merge_request.project)
+      namespace_project_new_blob_path(merge_request.project.namespace,
+                                      merge_request.project,
+                                      merge_request.source_branch)
+    end
   end
 
   expose :conflict_resolution_path do |merge_request|
@@ -186,6 +195,23 @@ class MergeRequestEntity < IssuableEntity
     commit_change_content_namespace_project_merge_request_path(merge_request.project.namespace,
                                                                merge_request.project,
                                                                merge_request)
+  end
+
+  # EE-specific
+  expose :codeclimate, if: -> (mr, _) { mr.has_codeclimate_data? } do
+    expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_codeclimate_artifact) } do |merge_request|
+      raw_namespace_project_build_artifacts_url(merge_request.source_project.namespace,
+                                                merge_request.source_project,
+                                                merge_request.head_codeclimate_artifact,
+                                                path: 'codeclimate.json')
+    end
+
+    expose :base_path, if: -> (mr, _) { can?(current_user, :read_build, mr.base_codeclimate_artifact) } do |merge_request|
+      raw_namespace_project_build_artifacts_url(merge_request.target_project.namespace,
+                                                merge_request.target_project,
+                                                merge_request.base_codeclimate_artifact,
+                                                path: 'codeclimate.json')
+    end
   end
 
   private

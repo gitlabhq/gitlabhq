@@ -135,6 +135,7 @@ services:
 - service_hook
 hooks:
 - project
+- web_hook_logs
 protected_branches:
 - project
 - merge_access_levels
@@ -151,7 +152,9 @@ push_access_levels:
 - protected_branch
 - group
 create_access_levels:
+- user
 - protected_tag
+- group
 container_repositories:
 - project
 - name
@@ -259,6 +262,7 @@ project:
 - statistics
 - container_repositories
 - uploads
+- mirror_data
 award_emoji:
 - awardable
 - user

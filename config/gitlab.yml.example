@@ -182,7 +182,7 @@ production: &base
       cron: "0 * * * *"
     # Execute scheduled triggers
     pipeline_schedule_worker:
-      cron: "0 */12 * * *"
+      cron: "19 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"

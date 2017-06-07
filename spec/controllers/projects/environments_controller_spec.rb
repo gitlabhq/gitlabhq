@@ -1,27 +1,27 @@
 require 'spec_helper'
 
 describe Projects::EnvironmentsController do
-  let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  set(:user) { create(:user) }
+  set(:project) { create(:empty_project) }
 
-  let(:environment) do
+  set(:environment) do
     create(:environment, name: 'production', project: project)
   end
 
   before do
-    allow_any_instance_of(License).to receive(:add_on?).and_return(false)
+    allow_any_instance_of(License).to receive(:feature_available?).and_return(false)
 
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end
 
   describe 'GET index' do
-    context 'when standardrequest has been made' do
+    context 'when a request for the HTML is made' do
       it 'responds with status code 200' do
         get :index, environment_params
 
-        expect(response).to be_ok
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -46,7 +46,7 @@ describe Projects::EnvironmentsController do
 
       context 'when requesting available environments scope' do
         before do
-          allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(true)
+          allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
 
           get :index, environment_params(format: :json, scope: :available)
         end
@@ -87,7 +87,7 @@ describe Projects::EnvironmentsController do
 
       context 'when license does not has the GitLab_DeployBoard add-on' do
         before do
-          allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(false)
+          allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(false)
 
           get :index, environment_params(format: :json)
         end
@@ -105,6 +105,9 @@ describe Projects::EnvironmentsController do
       create(:environment, project: project,
                            name: 'staging-1.0/review',
                            state: :available)
+      create(:environment, project: project,
+                           name: 'staging-1.0/zzz',
+                           state: :available)
     end
 
     context 'when using default format' do
@@ -119,7 +122,7 @@ describe Projects::EnvironmentsController do
     end
 
     context 'when using JSON format' do
-      it 'responds with JSON' do
+      it 'sorts the subfolders lexicographically' do
         get :folder, namespace_id: project.namespace,
                      project_id: project,
                      id: 'staging-1.0',
@@ -129,6 +132,8 @@ describe Projects::EnvironmentsController do
         expect(response).not_to render_template 'folder'
         expect(json_response['environments'][0])
           .to include('name' => 'staging-1.0/review')
+        expect(json_response['environments'][1])
+          .to include('name' => 'staging-1.0/zzz')
       end
     end
   end
@@ -193,7 +198,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/builds/#{action.id}" })
+              namespace_project_job_url(project.namespace, project, action) })
       end
     end
 
@@ -207,7 +212,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/environments/#{environment.id}" })
+              namespace_project_environment_url(project.namespace, project, environment) })
       end
     end
   end
@@ -292,9 +297,10 @@ describe Projects::EnvironmentsController do
 
     context 'with deployment service' do
       let(:project) { create(:kubernetes_project) }
+      let(:environment) { create(:environment, name: 'production', project: project) }
 
       before do
-        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(true)
+        allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
         allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
       end
 
@@ -322,7 +328,7 @@ describe Projects::EnvironmentsController do
 
     context 'when license does not has the GitLab_DeployBoard add-on' do
       before do
-        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_DeployBoard').and_return(false)
+        allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(false)
       end
 
       it 'does not return any data' do

@@ -187,19 +187,21 @@ module Gitlab
       end
 
       def wiki_filter
-        blob_filter(:wiki_access_level)
+        blob_filter(:wiki_access_level, visible_for_guests: true)
       end
 
       def repository_filter
         blob_filter(:repository_access_level)
       end
 
-      def blob_filter(project_feature_name)
+      def blob_filter(project_feature_name, visible_for_guests: false)
+        project_ids = visible_for_guests ? limit_project_ids : non_guest_project_ids
+
         conditions =
-          if non_guest_project_ids == :any
+          if project_ids == :any
             [{ exists: { field: "id" } }]
           else
-            [{ terms: { id: non_guest_project_ids } }]
+            [{ terms: { id: project_ids } }]
           end
 
         if public_and_internal_projects

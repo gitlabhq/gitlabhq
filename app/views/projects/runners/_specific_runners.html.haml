@@ -9,7 +9,7 @@
       (checkout the #{link_to 'GitLab Runner section', 'https://about.gitlab.com/gitlab-ci/#gitlab-runner', target: '_blank'} for information on how to install it).
     %li
       Specify the following URL during the Runner setup:
-      %code= ci_root_url(only_path: false)
+      %code= root_url(only_path: false)
     %li
       Use the following registration token during setup:
       %code= @project.runners_token

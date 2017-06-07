@@ -1,4 +1,4 @@
-require('~/project_new');
+import '~/project_new';
 
 describe('ApproversSelect', function () {
   const projectSettingsTemplate = 'projects/edit.html.raw';

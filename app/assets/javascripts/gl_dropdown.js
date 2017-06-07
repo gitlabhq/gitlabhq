@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
+import { isObject } from './lib/utils/type_utility';
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote;
 
@@ -93,7 +94,7 @@ GitLabDropdownFilter = (function() {
           //     { prop: 'def' }
           //   ]
           // }
-          if (gl.utils.isObject(data)) {
+          if (isObject(data)) {
             results = {};
             for (key in data) {
               group = data[key];
@@ -396,7 +397,7 @@ GitLabDropdown = (function() {
       html = [this.noResults()];
     } else {
       // Handle array groups
-      if (gl.utils.isObject(data)) {
+      if (isObject(data)) {
         html = [];
         for (name in data) {
           groupData = data[name];
@@ -467,8 +468,8 @@ GitLabDropdown = (function() {
 
     // Process the data to make sure rendered data
     // matches the correct layout
-    if (this.fullData && hasMultiSelect && this.options.processData) {
-      const inputValue = this.filterInput.val();
+    const inputValue = this.filterInput.val();
+    if (this.fullData && hasMultiSelect && this.options.processData && inputValue.length === 0) {
       this.options.processData.call(this.options, inputValue, this.filteredFullData(), this.parseData.bind(this));
     }
 
@@ -623,7 +624,12 @@ GitLabDropdown = (function() {
       var link = document.createElement('a');
 
       link.href = url;
-      link.textContent = text;
+
+      if (this.highlight) {
+        link.innerHTML = text;
+      } else {
+        link.textContent = text;
+      }
 
       if (selected) {
         link.className = 'is-active';
@@ -747,6 +753,12 @@ GitLabDropdown = (function() {
     $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
+    }
+
+    if (this.options.multiSelect) {
+      Object.keys(selectedObject).forEach((attribute) => {
+        $input.attr(`data-${attribute}`, selectedObject[attribute]);
+      });
     }
 
     if (this.options.inputMeta) {

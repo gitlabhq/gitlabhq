@@ -42,12 +42,45 @@ module Gitlab
             'in the body of your migration class'
         end
 
-        if Database.postgresql?
+        if supports_drop_index_concurrently?
           options = options.merge({ algorithm: :concurrently })
           disable_statement_timeout
         end
 
         remove_index(table_name, options.merge({ column: column_name }))
+      end
+
+      # Removes an existing index, concurrently when supported
+      #
+      # On PostgreSQL this method removes an index concurrently.
+      #
+      # Example:
+      #
+      #     remove_concurrent_index :users, "index_X_by_Y"
+      #
+      # See Rails' `remove_index` for more info on the available arguments.
+      def remove_concurrent_index_by_name(table_name, index_name, options = {})
+        if transaction_open?
+          raise 'remove_concurrent_index_by_name can not be run inside a transaction, ' \
+            'you can disable transactions by calling disable_ddl_transaction! ' \
+            'in the body of your migration class'
+        end
+
+        if supports_drop_index_concurrently?
+          options = options.merge({ algorithm: :concurrently })
+          disable_statement_timeout
+        end
+
+        remove_index(table_name, options.merge({ name: index_name }))
+      end
+
+      # Only available on Postgresql >= 9.2
+      def supports_drop_index_concurrently?
+        return false unless Database.postgresql?
+
+        version = select_one("SELECT current_setting('server_version_num') AS v")['v'].to_i
+
+        version >= 90200
       end
 
       # Adds a foreign key with only minimal locking on the tables involved.
@@ -283,10 +316,13 @@ module Gitlab
 
         add_column(table, new, new_type,
                    limit: old_col.limit,
-                   default: old_col.default,
-                   null: old_col.null,
                    precision: old_col.precision,
                    scale: old_col.scale)
+
+        # We set the default value _after_ adding the column so we don't end up
+        # updating any existing data with the default value. This isn't
+        # necessary since we copy over old values further down.
+        change_column_default(table, new, old_col.default) if old_col.default
 
         trigger_name = rename_trigger_name(table, old, new)
         quoted_table = quote_table_name(table)
@@ -302,6 +338,8 @@ module Gitlab
         end
 
         update_column_in_batches(table, new, Arel::Table.new(table)[old])
+
+        change_column_null(table, new, false) unless old_col.null
 
         copy_indexes(table, old, new)
         copy_foreign_keys(table, old, new)

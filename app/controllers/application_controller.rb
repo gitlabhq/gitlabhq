@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
 
   before_action :authenticate_user_from_private_token!
+  before_action :authenticate_user_from_rss_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
@@ -72,13 +73,20 @@ class ApplicationController < ActionController::Base
 
     user = User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
 
-    if user && can?(user, :log_in)
-      # Notice we are passing store false, so the user is not
-      # actually stored in the session and a token is needed
-      # for every request. If you want the token to work as a
-      # sign in token, you can simply remove store: false.
-      sign_in user, store: false
-    end
+    sessionless_sign_in(user)
+  end
+
+  # This filter handles authentication for atom request with an rss_token
+  def authenticate_user_from_rss_token!
+    return unless request.format.atom?
+
+    token = params[:rss_token].presence
+
+    return unless token.present?
+
+    user = User.find_by_rss_token(token)
+
+    sessionless_sign_in(user)
   end
 
   def log_exception(exception)
@@ -279,11 +287,17 @@ class ApplicationController < ActionController::Base
     request.base_url
   end
 
-  def set_locale
-    Gitlab::I18n.set_locale(current_user)
+  def set_locale(&block)
+    Gitlab::I18n.with_user_locale(current_user, &block)
+  end
 
-    yield
-  ensure
-    Gitlab::I18n.reset_locale
+  def sessionless_sign_in(user)
+    if user && can?(user, :log_in)
+      # Notice we are passing store false, so the user is not
+      # actually stored in the session and a token is needed
+      # for every request. If you want the token to work as a
+      # sign in token, you can simply remove store: false.
+      sign_in user, store: false
+    end
   end
 end

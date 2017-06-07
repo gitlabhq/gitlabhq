@@ -18,7 +18,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
     end
 
     after do
-      wait_for_ajax
+      wait_for_requests
     end
 
     describe 'adding a due date from note' do

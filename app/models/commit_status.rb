@@ -19,12 +19,6 @@ class CommitStatus < ActiveRecord::Base
 
   alias_attribute :author, :user
 
-  scope :latest, -> do
-    max_id = unscope(:select).select("max(#{quoted_table_name}.id)")
-
-    where(id: max_id.group(:name, :commit_id))
-  end
-
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
   end
@@ -37,7 +31,8 @@ class CommitStatus < ActiveRecord::Base
       false, all_state_names - [:failed, :canceled, :manual])
   end
 
-  scope :retried, -> { where.not(id: latest) }
+  scope :latest, -> { where(retried: [false, nil]) }
+  scope :retried, -> { where(retried: true) }
   scope :ordered, -> { order(:name) }
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
@@ -88,13 +83,15 @@ class CommitStatus < ActiveRecord::Base
       next if transition.loopback?
 
       commit_status.run_after_commit do
-        pipeline.try do |pipeline|
+        if pipeline
           if complete? || manual?
             PipelineProcessWorker.perform_async(pipeline.id)
           else
             PipelineUpdateWorker.perform_async(pipeline.id)
           end
         end
+
+        ExpireJobCacheWorker.perform_async(commit_status.id)
       end
     end
 

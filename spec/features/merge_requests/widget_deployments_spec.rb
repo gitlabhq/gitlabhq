@@ -18,7 +18,7 @@ feature 'Widget Deployments Header', feature: true, js: true do
     end
 
     scenario 'displays that the environment is deployed' do
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content("Deployed to #{environment.name}")
       expect(find('.js-deploy-time')['data-title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
@@ -34,7 +34,7 @@ feature 'Widget Deployments Header', feature: true, js: true do
       end
 
       background do
-        wait_for_ajax
+        wait_for_requests
       end
 
       scenario 'does show stop button' do

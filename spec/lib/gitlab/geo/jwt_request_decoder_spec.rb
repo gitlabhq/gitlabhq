@@ -26,5 +26,17 @@ describe Gitlab::Geo::JwtRequestDecoder do
       primary_node.save
       expect(described_class.new(data).decode).to be_nil
     end
+
+    it 'returns nil when clocks are not in sync' do
+      allow(JWT).to receive(:decode).and_raise(JWT::InvalidIatError)
+
+      expect(subject.decode).to be_nil
+    end
+
+    it 'raises invalid decryption key error' do
+      allow_any_instance_of(described_class).to receive(:decode_auth_header).and_raise(Gitlab::Geo::InvalidDecryptionKeyError)
+
+      expect { subject.decode }.to raise_error(Gitlab::Geo::InvalidDecryptionKeyError)
+    end
   end
 end

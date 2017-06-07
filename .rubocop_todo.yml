@@ -18,10 +18,6 @@ RSpec/EmptyLineAfterFinalLet:
 RSpec/EmptyLineAfterSubject:
   Enabled: false
 
-# Offense count: 3
-RSpec/ExpectOutput:
-  Enabled: false
-
 # Offense count: 72
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: implicit, each, example
@@ -238,13 +234,6 @@ Style/PerlBackrefs:
 # NamePrefixBlacklist: is_, has_, have_
 # NameWhitelist: is_a?
 Style/PredicateName:
-  Enabled: false
-
-# Offense count: 45
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: short, verbose
-Style/PreferredHashMethods:
   Enabled: false
 
 # Offense count: 65

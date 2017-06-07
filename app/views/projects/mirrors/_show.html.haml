@@ -43,9 +43,6 @@
           They need to have at least master access to this project.
       - if @project.builds_enabled?
         = render "shared/mirror_trigger_builds_setting", f: f
-      .form-group
-        = f.label :sync_time, "Synchronization time", class: "label-light append-bottom-0"
-        = f.select :sync_time, options_for_select(mirror_sync_time_options, @project.sync_time), {}, class: 'form-control project-mirror-sync-time'
     .col-sm-12
       %hr
     .col-lg-3

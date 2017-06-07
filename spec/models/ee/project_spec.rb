@@ -11,6 +11,101 @@ describe Project, models: true do
     it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:namespace) }
   end
 
+  describe '#feature_available?' do
+    let(:namespace) { build_stubbed(:namespace) }
+    let(:project) { build_stubbed(:project, namespace: namespace) }
+    let(:user) { build_stubbed(:user) }
+
+    subject { project.feature_available?(feature, user) }
+
+    context 'when feature symbol is included on Namespace features code' do
+      before do
+        stub_application_setting('check_namespace_plan?' => check_namespace_plan)
+        allow(Gitlab).to receive(:com?) { true }
+        expect_any_instance_of(License).to receive(:feature_available?).with(feature) { allowed_on_global_license }
+        allow(namespace).to receive(:plan) { plan_license }
+      end
+
+      License::FEATURE_CODES.each do |feature_sym, feature_code|
+        let(:feature) { feature_sym }
+        let(:feature_code) { feature_code }
+
+        context "checking #{feature} availabily both on Global and Namespace license" do
+          let(:check_namespace_plan) { true }
+
+          context 'allowed by Plan License AND Global License' do
+            let(:allowed_on_global_license) { true }
+            let(:plan_license) { Namespace::GOLD_PLAN }
+
+            it 'returns true' do
+              is_expected.to eq(true)
+            end
+          end
+
+          context 'not allowed by Plan License but project and namespace are public' do
+            let(:allowed_on_global_license) { true }
+            let(:plan_license) { Namespace::BRONZE_PLAN }
+
+            it 'returns true' do
+              allow(namespace).to receive(:public?) { true }
+              allow(project).to receive(:public?) { true }
+
+              is_expected.to eq(true)
+            end
+          end
+
+          context 'not allowed by Plan License' do
+            let(:allowed_on_global_license) { true }
+            let(:plan_license) { Namespace::BRONZE_PLAN }
+
+            it 'returns false' do
+              is_expected.to eq(false)
+            end
+          end
+
+          context 'not allowed by Global License' do
+            let(:allowed_on_global_license) { false }
+            let(:plan_license) { Namespace::GOLD_PLAN }
+
+            it 'returns false' do
+              is_expected.to eq(false)
+            end
+          end
+        end
+
+        context "when checking #{feature_code} only for Global license" do
+          let(:check_namespace_plan) { false }
+
+          context 'allowed by Global License' do
+            let(:allowed_on_global_license) { true }
+
+            it 'returns true' do
+              is_expected.to eq(true)
+            end
+          end
+
+          context 'not allowed by Global License' do
+            let(:allowed_on_global_license) { false }
+
+            it 'returns false' do
+              is_expected.to eq(false)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when feature symbol is not included on Namespace features code' do
+      let(:feature) { :issues }
+
+      it 'checks availability of licensed feature' do
+        expect(project.project_feature).to receive(:feature_available?).with(feature, user)
+
+        subject
+      end
+    end
+  end
+
   describe '#any_runners_limit' do
     let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
     let(:specific_runner) { create(:ci_runner) }
@@ -120,8 +215,8 @@ describe Project, models: true do
     let(:project) { create(:empty_project, service_desk_enabled: true) }
 
     before do
-      allow_any_instance_of(License).to receive(:add_on?).and_call_original
-      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+      allow_any_instance_of(License).to receive(:feature_available?).and_call_original
+      allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
       allow(Gitlab.config.incoming_email).to receive(:address).and_return("test+%{key}@mail.com")
     end

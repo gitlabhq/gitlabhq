@@ -3,9 +3,7 @@
 import Vue from 'vue';
 import boardList from './board_list';
 import boardBlankState from './board_blank_state';
-
-require('./board_delete');
-require('./board_list');
+import './board_delete';
 
 const Store = gl.issueBoards.BoardsStore;
 

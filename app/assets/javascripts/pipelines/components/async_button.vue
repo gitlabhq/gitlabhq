@@ -3,6 +3,7 @@
 /* global Flash */
 import '~/flash';
 import eventHub from '../event_hub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   props: {
@@ -35,6 +36,10 @@ export default {
       type: String,
       required: false,
     },
+  },
+
+  components: {
+    loadingIcon,
   },
 
   data() {
@@ -94,9 +99,6 @@ export default {
     <i
       :class="iconClass"
       aria-hidden="true" />
-    <i
-      class="fa fa-spinner fa-spin"
-      aria-hidden="true"
-      v-if="isLoading" />
+    <loading-icon v-if="isLoading" />
   </button>
 </template>

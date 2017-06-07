@@ -5,10 +5,10 @@ class GeoNode < ActiveRecord::Base
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
   belongs_to :system_hook, dependent: :destroy
 
-  default_values schema: 'http',
+  default_values schema: lambda { Gitlab.config.gitlab.protocol },
                  host: lambda { Gitlab.config.gitlab.host },
-                 port: 80,
-                 relative_url_root: '',
+                 port: lambda { Gitlab.config.gitlab.port },
+                 relative_url_root: lambda { Gitlab.config.gitlab.relative_url_root },
                  primary: false
 
   accepts_nested_attributes_for :geo_node_key, :system_hook
@@ -95,6 +95,18 @@ class GeoNode < ActiveRecord::Base
     self.primary? ? false : !oauth_application.present?
   end
 
+  def update_clone_url!
+    update_clone_url
+
+    # Update with update_column to prevent calling callbacks as this method will
+    # be called in an initializer and we don't want other callbacks
+    # to mess with uninitialized dependencies.
+    if clone_url_prefix_changed?
+      Rails.logger.info "Geo: modified clone_url_prefix to #{clone_url_prefix}"
+      update_column(:clone_url_prefix, clone_url_prefix)
+    end
+  end
+
   private
 
   def geo_api_url(suffix)
@@ -134,6 +146,7 @@ class GeoNode < ActiveRecord::Base
 
     if self.primary?
       self.oauth_application = nil
+      update_clone_url
     else
       update_oauth_application!
       update_system_hook!
@@ -147,6 +160,10 @@ class GeoNode < ActiveRecord::Base
         record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
       record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
     end
+  end
+
+  def update_clone_url
+    self.clone_url_prefix = Gitlab.config.gitlab_shell.ssh_path_prefix
   end
 
   def update_oauth_application!

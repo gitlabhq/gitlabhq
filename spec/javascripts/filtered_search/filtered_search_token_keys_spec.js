@@ -1,5 +1,5 @@
-require('~/extensions/array');
-require('~/filtered_search/filtered_search_token_keys');
+import '~/extensions/array';
+import '~/filtered_search/filtered_search_token_keys';
 
 describe('Filtered Search Token Keys', () => {
   describe('get', () => {
@@ -15,6 +15,17 @@ describe('Filtered Search Token Keys', () => {
 
     it('should return tokenKeys as an array', () => {
       expect(tokenKeys instanceof Array).toBe(true);
+    });
+  });
+
+  describe('getKeys', () => {
+    it('should return keys', () => {
+      const getKeys = gl.FilteredSearchTokenKeys.getKeys();
+      const keys = gl.FilteredSearchTokenKeys.get().map(i => i.key);
+
+      keys.forEach((key, i) => {
+        expect(key).toEqual(getKeys[i]);
+      });
     });
   });
 

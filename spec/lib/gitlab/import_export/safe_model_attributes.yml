@@ -55,6 +55,7 @@ Note:
 - type
 - position
 - original_position
+- change_position
 - resolved_at
 - resolved_by_id
 - discussion_id
@@ -235,6 +236,7 @@ CommitStatus:
 - lock_version
 - coverage_regex
 - auto_canceled_by_id
+- retried
 Ci::Variable:
 - id
 - project_id

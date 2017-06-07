@@ -85,6 +85,12 @@ module ProjectsHelper
     @nav_tabs ||= get_project_nav_tabs(@project, current_user)
   end
 
+  def project_search_tabs?(tab)
+    abilities = Array(search_tab_ability_map[tab])
+
+    abilities.any? { |ability| can?(current_user, ability, @project) }
+  end
+
   def project_nav_tab?(name)
     project_nav_tabs.include? name
   end
@@ -110,15 +116,13 @@ module ProjectsHelper
   end
 
   def license_short_name(project)
-    return 'LICENSE' if project.repository.license_key.nil?
-
-    license = Licensee::License.new(project.repository.license_key)
-
-    license.nickname || license.name
+    license = project.repository.license
+    license&.nickname || license&.name || 'LICENSE'
   end
 
   def last_push_event
     return unless current_user
+    return current_user.recent_push unless @project
 
     project_ids = [@project.id]
     if fork = current_user.fork_of(@project)
@@ -160,7 +164,15 @@ module ProjectsHelper
   end
 
   def project_list_cache_key(project)
-    key = [project.namespace.cache_key, project.cache_key, controller.controller_name, controller.action_name, current_application_settings.cache_key, 'v2.4']
+    key = [
+      project.route.cache_key,
+      project.cache_key,
+      controller.controller_name,
+      controller.action_name,
+      current_application_settings.cache_key,
+      'v2.4'
+    ]
+
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
 
     key
@@ -198,7 +210,17 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
-    tab_ability_map = {
+    tab_ability_map.each do |tab, ability|
+      if can?(current_user, ability, project)
+        nav_tabs << tab
+      end
+    end
+
+    nav_tabs.flatten
+  end
+
+  def tab_ability_map
+    {
       environments: :read_environment,
       milestones:   :read_milestone,
       pipelines:    :read_pipeline,
@@ -210,14 +232,15 @@ module ProjectsHelper
       team:         :read_project_member,
       wiki:         :read_wiki
     }
+  end
 
-    tab_ability_map.each do |tab, ability|
-      if can?(current_user, ability, project)
-        nav_tabs << tab
-      end
-    end
-
-    nav_tabs.flatten
+  def search_tab_ability_map
+    @search_tab_ability_map ||= tab_ability_map.merge(
+      blobs:          :download_code,
+      commits:        :download_code,
+      merge_requests: :read_merge_request,
+      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet]
+    )
   end
 
   def project_lfs_status(project)
@@ -407,6 +430,12 @@ module ProjectsHelper
     when "finished"
       "success"
     end
+  end
+
+  def can_force_update_mirror?(project)
+    return true unless project.mirror_last_update_at
+
+    Time.now - project.mirror_last_update_at >= 5.minutes
   end
 
   def membership_locked?

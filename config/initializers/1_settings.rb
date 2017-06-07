@@ -264,6 +264,9 @@ Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
 Settings.gitlab['session_expire_delay'] ||= 10080
+Settings.gitlab['mirror_max_delay'] ||= 5
+Settings.gitlab['mirror_max_capacity'] ||= 30
+Settings.gitlab['mirror_capacity_threshold'] ||= 15
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests']     = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
 Settings.gitlab.default_projects_features['wiki']               = true if Settings.gitlab.default_projects_features['wiki'].nil?
@@ -275,6 +278,7 @@ Settings.gitlab['domain_whitelist'] ||= []
 Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project gitea]
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
+Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
 
 #
 # Elasticseacrh
@@ -370,7 +374,7 @@ Settings.cron_jobs['stuck_ci_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
 Settings.cron_jobs['pipeline_schedule_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['pipeline_schedule_worker']['cron'] ||= '0 */12 * * *'
+Settings.cron_jobs['pipeline_schedule_worker']['cron'] ||= '19 * * * *'
 Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleWorker'
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
@@ -402,9 +406,6 @@ Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'GeoRepository
 Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '5 * * * *'
 Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'GeoFileDownloadDispatchWorker'
-Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.send(:cron_random_weekly_time)
-Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 Settings.cron_jobs['import_export_project_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['import_export_project_cleanup_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'ImportExportProjectCleanupWorker'
@@ -434,7 +435,6 @@ Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_random_weekly_time)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
-# Every day at 00:30
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
 Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
@@ -443,10 +443,9 @@ Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= Settingslogic.new(
 Settings.cron_jobs['clear_shared_runners_minutes_worker']['cron'] ||= '0 0 1 * *'
 Settings.cron_jobs['clear_shared_runners_minutes_worker']['job_class'] = 'ClearSharedRunnersMinutesWorker'
 
-# Every day at 00:30
-Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
-Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
+Settings.cron_jobs['remove_old_web_hook_logs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_old_web_hook_logs_worker']['cron'] ||= '40 0 * * *'
+Settings.cron_jobs['remove_old_web_hook_logs_worker']['job_class'] = 'RemoveOldWebHookLogsWorker'
 
 #
 # GitLab Shell

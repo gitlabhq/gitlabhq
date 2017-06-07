@@ -149,10 +149,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
       format.json do
         if @issue.valid?
-          render json: @issue.to_json(methods: [:task_status, :task_status_short],
-                                      include: { milestone: {},
-                                                 assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
-                                                 labels: { methods: :text_color } })
+          render json: IssueSerializer.new.represent(@issue)
         else
           render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
         end
@@ -216,7 +213,6 @@ class Projects::IssuesController < Projects::ApplicationController
       description: view_context.markdown_field(@issue, :description),
       description_text: @issue.description,
       task_status: @issue.task_status,
-      issue_number: @issue.iid,
       updated_at: @issue.updated_at
     }
   end
@@ -276,7 +272,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue_params
     params.require(:issue).permit(
-      :title, :position, :description, :confidential, :weight,
+      :title, :assignee_id, :position, :description, :confidential, :weight,
       :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
     )
   end
@@ -286,7 +282,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
     notice = "Please sign in to create the new issue."
 
-    store_location_for :user, request.fullpath
+    if request.get? && !request.xhr?
+      store_location_for :user, request.fullpath
+    end
+
     redirect_to new_user_session_path, notice: notice
   end
 end

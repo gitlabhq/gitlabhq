@@ -110,7 +110,7 @@ module API
       end
       post do
         attrs = declared_params(include_missing: false)
-        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.has_key?(:jobs_enabled)
+        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.key?(:jobs_enabled)
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -253,7 +253,7 @@ module API
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
-        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.has_key?(:jobs_enabled)
+        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.key?(:jobs_enabled)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 

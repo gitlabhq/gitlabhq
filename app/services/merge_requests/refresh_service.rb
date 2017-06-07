@@ -67,12 +67,12 @@ module MergeRequests
 
       filter_merge_requests(merge_requests).each do |merge_request|
         if merge_request.source_branch == @branch_name || force_push?
-          merge_request.reload_diff
+          merge_request.reload_diff(current_user)
         else
           mr_commit_ids = merge_request.commits_sha
           push_commit_ids = @commits.map(&:id)
           matches = mr_commit_ids & push_commit_ids
-          merge_request.reload_diff if matches.any?
+          merge_request.reload_diff(current_user) if matches.any?
         end
 
         merge_request.mark_as_unchecked
@@ -90,7 +90,7 @@ module MergeRequests
             target_project.reset_approvals_on_push &&
             merge_request.rebase_commit_sha != @newrev
 
-          merge_request.approvals.destroy_all
+          merge_request.approvals.delete_all
         end
       end
     end

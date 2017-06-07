@@ -1,9 +1,10 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-phantomjs-2.1-node-7.1-postgresql-9.6"
 
 cache:
-  key: "ruby-233"
+  key: "ruby-233-with-yarn"
   paths:
   - vendor/ruby
+  - .yarn-cache/
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
@@ -54,7 +55,7 @@ stages:
 
 .use-pg: &use-pg
   services:
-    - postgres:latest
+    - postgres:9.2
     - redis:alpine
     - elasticsearch:5.3
 
@@ -67,6 +68,7 @@ stages:
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
     - /mysql/
+    - /-stable$/
     - master@gitlab-org/gitlab-ce
     - master@gitlab/gitlabhq
     - tags@gitlab-org/gitlab-ce
@@ -88,7 +90,7 @@ stages:
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
     - export CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_${JOB_NAME[1]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
@@ -119,7 +121,7 @@ stages:
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
     - export CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_${JOB_NAME[1]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
@@ -153,11 +155,13 @@ stages:
 # Trigger a package build on omnibus-gitlab repository
 
 build-package:
+  image: ruby:2.3-alpine
   before_script: []
   services: []
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
+    EE_PACKAGE: "true"
   stage: build
   when: manual
   script:
@@ -182,8 +186,8 @@ update-knapsack:
   <<: *only-canonical-masters
   stage: post-test
   script:
-    - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec_pg_node_*.json
-    - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach_pg_node_*.json
+    - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
+    - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
     - '[[ -z ${KNAPSACK_S3_BUCKET} ]] || scripts/sync-reports put $KNAPSACK_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
 
@@ -194,7 +198,7 @@ setup-test-env:
   stage: prepare
   script:
     - node --version
-    - yarn install --pure-lockfile
+    - yarn install --pure-lockfile --cache-folder .yarn-cache
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
@@ -413,7 +417,8 @@ gitlab:assets:compile:
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
   script:
-    - bundle exec rake yarn:install gitlab:assets:compile
+    - yarn install --pure-lockfile --production --cache-folder .yarn-cache
+    - bundle exec rake gitlab:assets:compile
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -421,9 +426,6 @@ gitlab:assets:compile:
     - webpack-report/
 
 karma:
-  cache:
-    paths:
-      - vendor/ruby
   stage: test
   <<: *use-pg
   <<: *dedicated-runner
@@ -470,24 +472,6 @@ lint:javascript:report:
     expire_in: 31d
     paths:
     - eslint-report.html
-
-# Trigger docs build
-# https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
-trigger_docs:
-  stage: post-test
-  image: "alpine"
-  <<: *dedicated-runner
-  before_script:
-    - apk update && apk add curl
-  variables:
-    GIT_STRATEGY: "none"
-  cache: {}
-  artifacts: {}
-  script:
-    - "HTTP_STATUS=$(curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=${CI_PROJECT_NAME} --silent --output curl.log --write-out '%{http_code}' https://gitlab.com/api/v3/projects/1794617/trigger/builds)"
-    - if [ "${HTTP_STATUS}" -ne "201" ]; then echo "Error ${HTTP_STATUS}"; cat curl.log; echo; exit 1; fi
-  only:
-    - master@gitlab-org/gitlab-ee
 
 pages:
   before_script: []

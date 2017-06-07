@@ -1,1 +1,1 @@
-require('./export_csv_modal');
+import './export_csv_modal';

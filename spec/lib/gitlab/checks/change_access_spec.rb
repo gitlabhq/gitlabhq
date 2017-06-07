@@ -336,12 +336,11 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       let!(:path_lock) { create(:path_lock, path: 'README', project: project) }
 
       before do
-        allow_any_instance_of(PathLocksHelper).to receive(:license_allows_file_locks?).and_return(true)
-
         allow(project.repository).to receive(:new_commits).and_return(
           project.repository.commits_between('be93687618e4b132087f430a4d8fc3a609c9b77c', '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51')
         )
       end
+
       it 'returns an error if the changes update a path locked by another user' do
         expect(subject.status).to be(false)
         expect(subject.message).to eq("The path 'README' is locked by #{path_lock.user.name}")

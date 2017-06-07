@@ -15,29 +15,23 @@ module Gitlab
         @safe_max_bytes = @safe_max_files * 5120 # Average 5 KB per file
         @all_diffs = !!options.fetch(:all_diffs, false)
         @no_collapse = !!options.fetch(:no_collapse, true)
-        @deltas_only = !!options.fetch(:deltas_only, false)
 
         @line_count = 0
         @byte_count = 0
         @overflow = false
+        @empty = true
         @array = Array.new
       end
 
       def each(&block)
-        if @populated
-          # @iterator.each is slower than just iterating the array in place
-          @array.each(&block)
-        elsif @deltas_only
-          each_delta(&block)
-        else
-          Gitlab::GitalyClient.migrate(:commit_raw_diffs) do
-            each_patch(&block)
-          end
+        Gitlab::GitalyClient.migrate(:commit_raw_diffs) do
+          each_patch(&block)
         end
       end
 
       def empty?
-        !@iterator.any?
+        any? # Make sure the iterator has been exercised
+        @empty
       end
 
       def overflow?
@@ -63,9 +57,10 @@ module Gitlab
         collection = each_with_index do |element, i|
           @array[i] = yield(element)
         end
-        @populated = true
         collection
       end
+
+      alias_method :to_ary, :to_a
 
       private
 
@@ -73,7 +68,6 @@ module Gitlab
         return if @populated
 
         each { nil } # force a loop through all diffs
-        @populated = true
         nil
       end
 
@@ -81,24 +75,18 @@ module Gitlab
         files >= @safe_max_files || @line_count > @safe_max_lines || @byte_count >= @safe_max_bytes
       end
 
-      def each_delta
-        @iterator.each_delta.with_index do |delta, i|
-          diff = Gitlab::Git::Diff.new(delta)
-
-          yield @array[i] = diff
-        end
-      end
-
       def each_patch
-        @iterator.each_with_index do |raw, i|
-          # First yield cached Diff instances from @array
-          if @array[i]
-            yield @array[i]
-            next
-          end
+        i = 0
+        @array.each do |diff|
+          yield diff
+          i += 1
+        end
 
-          # We have exhausted @array, time to create new Diff instances or stop.
-          break if @overflow
+        return if @overflow
+        return if @iterator.nil?
+
+        @iterator.each do |raw|
+          @empty = false
 
           if !@all_diffs && i >= @max_files
             @overflow = true
@@ -124,7 +112,13 @@ module Gitlab
           end
 
           yield @array[i] = diff
+          i += 1
         end
+
+        @populated = true
+
+        # Allow iterator to be garbage-collected. It cannot be reused anyway.
+        @iterator = nil
       end
     end
   end
