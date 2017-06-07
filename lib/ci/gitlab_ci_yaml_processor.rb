@@ -208,12 +208,14 @@ module Ci
     def matching?(patterns, ref, tag, source)
       patterns.any? do |pattern|
         pattern, path = pattern.split('@', 2)
-        unmatches_path?(path) && matches_pattern?(pattern, ref, tag, source)
+        matches_path?(path) && matches_pattern?(pattern, ref, tag, source)
       end
     end
 
-    def unmatches_path?(path)
-      path && path != self.path
+    def matches_path?(path)
+      return true unless path
+      
+      path == self.path
     end
 
     def matches_pattern?(pattern, ref, tag, source)

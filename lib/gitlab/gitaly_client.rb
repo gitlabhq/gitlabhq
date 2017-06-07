@@ -49,7 +49,8 @@ module Gitlab
     end
 
     def self.enabled?
-      Gitlab.config.gitaly.enabled
+      # Gitlab.config.gitaly.enabled
+      false
     end
 
     def self.feature_enabled?(feature, status: MigrationStatus::OPT_IN)
