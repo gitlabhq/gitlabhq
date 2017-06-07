@@ -191,9 +191,12 @@ class Blob < SimpleDelegator
     rendered_as_text? && rich_viewer
   end
 
+  def expanded?
+    !!@expanded
+  end
+
   def expand!
-    simple_viewer&.expanded = true
-    rich_viewer&.expanded = true
+    @expanded = true
   end
 
   private
