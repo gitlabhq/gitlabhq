@@ -62,8 +62,8 @@ Then you can backup and delete your `authorized_keys` file for best performance.
 
 This is a brief overview. Please refer to the above instructions for more context.
 
-1. Rebuild the `authorized_keys` file. See https://docs.gitlab.com/ce/administration/raketasks/maintenance.html#rebuild-authorized_keys-file
-1. Enable writes to the `authorized_keys` file
+1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file)
+1. Enable writes to the `authorized_keys` file in Application Settings
 1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config`
-1. Reload the sshd service
+1. Reload sshd: `sudo service sshd reload`
 1. Remove the `/opt/gitlab-shell/authorized_keys` file
