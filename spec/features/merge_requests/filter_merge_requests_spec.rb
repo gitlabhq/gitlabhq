@@ -40,13 +40,13 @@ describe 'Filter merge requests', feature: true do
       end
 
       it 'does not change when closed link is clicked' do
-        find('.issues-state-filters a', text: "Closed").click
+        find('.issues-state-filters [data-state="closed"]').click
 
         expect_assignee_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
-        find('.issues-state-filters a', text: "All").click
+        find('.issues-state-filters [data-state="all"]').click
 
         expect_assignee_visual_tokens()
       end
@@ -73,13 +73,13 @@ describe 'Filter merge requests', feature: true do
       end
 
       it 'does not change when closed link is clicked' do
-        find('.issues-state-filters a', text: "Closed").click
+        find('.issues-state-filters [data-state="closed"]').click
 
         expect_milestone_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
-        find('.issues-state-filters a', text: "All").click
+        find('.issues-state-filters [data-state="all"]').click
 
         expect_milestone_visual_tokens()
       end
@@ -142,11 +142,9 @@ describe 'Filter merge requests', feature: true do
       expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
       expect_filtered_search_input_empty
 
-      input_filtered_search_keys("label:~#{label.title} ")
+      input_filtered_search_keys("label:~#{label.title}")
 
       expect_mr_list_count(1)
-
-      find("#state-opened[href=\"#{URI.parse(current_url).path}?assignee_username=#{user.username}&label_name%5B%5D=#{label.title}&scope=all&state=opened\"]")
     end
 
     context 'assignee and label', js: true do
@@ -163,13 +161,13 @@ describe 'Filter merge requests', feature: true do
       end
 
       it 'does not change when closed link is clicked' do
-        find('.issues-state-filters a', text: "Closed").click
+        find('.issues-state-filters [data-state="closed"]').click
 
         expect_assignee_label_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
-        find('.issues-state-filters a', text: "All").click
+        find('.issues-state-filters [data-state="all"]').click
 
         expect_assignee_label_visual_tokens()
       end
