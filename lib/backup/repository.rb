@@ -201,7 +201,7 @@ module Backup
     end
 
     def progress
-      progress
+      $progress
     end
   end
 end
