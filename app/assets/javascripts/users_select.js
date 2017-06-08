@@ -5,7 +5,6 @@
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
 
-<<<<<<< HEAD
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
     slice = [].slice;
@@ -20,84 +19,6 @@ window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
       if (currentUser != null) {
         if (typeof currentUser === 'object') {
           this.currentUser = currentUser;
-=======
-function UsersSelect(currentUser, els) {
-  var $els;
-  this.users = this.users.bind(this);
-  this.user = this.user.bind(this);
-  this.usersPath = "/autocomplete/users.json";
-  this.userPath = "/autocomplete/users/:id.json";
-  if (currentUser != null) {
-    if (typeof currentUser === 'object') {
-      this.currentUser = currentUser;
-    } else {
-      this.currentUser = JSON.parse(currentUser);
-    }
-  }
-
-  $els = $(els);
-
-  if (!els) {
-    $els = $('.js-user-search');
-  }
-
-  $els.each((function(_this) {
-    return function(i, dropdown) {
-      var options = {};
-      var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, defaultNullUser, firstUser, issueURL, selectedId, selectedIdDefault, showAnyUser, showNullUser, showMenuAbove;
-      $dropdown = $(dropdown);
-      options.projectId = $dropdown.data('project-id');
-      options.groupId = $dropdown.data('group-id');
-      options.showCurrentUser = $dropdown.data('current-user');
-      options.todoFilter = $dropdown.data('todo-filter');
-      options.todoStateFilter = $dropdown.data('todo-state-filter');
-      options.perPage = $dropdown.data('per-page');
-      showNullUser = $dropdown.data('null-user');
-      defaultNullUser = $dropdown.data('null-user-default');
-      showMenuAbove = $dropdown.data('showMenuAbove');
-      showAnyUser = $dropdown.data('any-user');
-      firstUser = $dropdown.data('first-user');
-      options.authorId = $dropdown.data('author-id');
-      defaultLabel = $dropdown.data('default-label');
-      issueURL = $dropdown.data('issueUpdate');
-      $selectbox = $dropdown.closest('.selectbox');
-      $block = $selectbox.closest('.block');
-      abilityName = $dropdown.data('ability-name');
-      $value = $block.find('.value');
-      $collapsedSidebar = $block.find('.sidebar-collapsed-user');
-      $loading = $block.find('.block-loading').fadeOut();
-      selectedIdDefault = (defaultNullUser && showNullUser) ? 0 : null;
-      selectedId = $dropdown.data('selected');
-
-      if (selectedId === undefined) {
-        selectedId = selectedIdDefault;
-      }
-
-      const assignYourself = function () {
-        const unassignedSelected = $dropdown.closest('.selectbox')
-          .find(`input[name='${$dropdown.data('field-name')}'][value=0]`);
-
-        if (unassignedSelected) {
-          unassignedSelected.remove();
-        }
-
-        // Save current selected user to the DOM
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = $dropdown.data('field-name');
-
-        const currentUserInfo = $dropdown.data('currentUserInfo');
-
-        if (currentUserInfo) {
-          input.value = currentUserInfo.id;
-          input.dataset.meta = currentUserInfo.name;
-        } else if (_this.currentUser) {
-          input.value = _this.currentUser.id;
-        }
-
-        if ($selectbox) {
-          $dropdown.parent().before(input);
->>>>>>> 38d9538... Merge branch '2472-assignee-dropdown-does-not-display-selected-assignee-ce' into 'master'
         } else {
           this.currentUser = JSON.parse(currentUser);
         }
@@ -119,6 +40,7 @@ function UsersSelect(currentUser, els) {
           options.showCurrentUser = $dropdown.data('current-user');
           options.todoFilter = $dropdown.data('todo-filter');
           options.todoStateFilter = $dropdown.data('todo-state-filter');
+          options.perPage = $dropdown.data('per-page');
           showNullUser = $dropdown.data('null-user');
           defaultNullUser = $dropdown.data('null-user-default');
           showMenuAbove = $dropdown.data('showMenuAbove');
@@ -155,112 +77,11 @@ function UsersSelect(currentUser, els) {
 
             const currentUserInfo = $dropdown.data('currentUserInfo');
 
-<<<<<<< HEAD
             if (currentUserInfo) {
               input.value = currentUserInfo.id;
               input.dataset.meta = currentUserInfo.name;
             } else if (_this.currentUser) {
               input.value = _this.currentUser.id;
-=======
-      assignTo = function(selected) {
-        var data;
-        data = {};
-        data[abilityName] = {};
-        data[abilityName].assignee_id = selected != null ? selected : null;
-        $loading.removeClass('hidden').fadeIn();
-        $dropdown.trigger('loading.gl.dropdown');
-
-        return $.ajax({
-          type: 'PUT',
-          dataType: 'json',
-          url: issueURL,
-          data: data
-        }).done(function(data) {
-          var user;
-          $dropdown.trigger('loaded.gl.dropdown');
-          $loading.fadeOut();
-          if (data.assignee) {
-            user = {
-              name: data.assignee.name,
-              username: data.assignee.username,
-              avatar: data.assignee.avatar_url
-            };
-          } else {
-            user = {
-              name: 'Unassigned',
-              username: '',
-              avatar: ''
-            };
-          }
-          $value.html(assigneeTemplate(user));
-          $collapsedSidebar.attr('title', user.name).tooltip('fixTitle');
-          return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
-        });
-      };
-      collapsedAssigneeTemplate = _.template('<% if( avatar ) { %> <a class="author_link" href="/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>');
-      assigneeTemplate = _.template('<% if (username) { %> <a class="author_link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> No assignee - <a href="#" class="js-assign-yourself"> assign yourself </a> </span> <% } %>');
-      return $dropdown.glDropdown({
-        showMenuAbove: showMenuAbove,
-        data: function(term, callback) {
-          var isAuthorFilter;
-          isAuthorFilter = $('.js-author-search');
-          return _this.users(term, options, function(users) {
-            // GitLabDropdownFilter returns this.instance
-            // GitLabDropdownRemote returns this.options.instance
-            const glDropdown = this.instance || this.options.instance;
-            glDropdown.options.processData(term, users, callback);
-          }.bind(this));
-        },
-        processData: function(term, data, callback) {
-          let users = data;
-
-          // Only show assigned user list when there is no search term
-          if ($dropdown.hasClass('js-multiselect') && term.length === 0) {
-            const selectedInputs = getSelectedUserInputs();
-
-            // Potential duplicate entries when dealing with issue board
-            // because issue board is also managed by vue
-            const selectedUsers = _.uniq(selectedInputs, false, a => a.value)
-              .filter((input) => {
-                const userId = parseInt(input.value, 10);
-                const inUsersArray = users.find(u => u.id === userId);
-
-                return !inUsersArray && userId !== 0;
-              })
-              .map((input) => {
-                const userId = parseInt(input.value, 10);
-                const { avatarUrl, avatar_url, name, username } = input.dataset;
-                return {
-                  avatar_url: avatarUrl || avatar_url,
-                  id: userId,
-                  name,
-                  username,
-                };
-              });
-
-            users = data.concat(selectedUsers);
-          }
-
-          let anyUser;
-          let index;
-          let j;
-          let len;
-          let name;
-          let obj;
-          let showDivider;
-          if (term.length === 0) {
-            showDivider = 0;
-            if (firstUser) {
-              // Move current user to the front of the list
-              for (index = j = 0, len = users.length; j < len; index = (j += 1)) {
-                obj = users[index];
-                if (obj.username === firstUser) {
-                  users.splice(index, 1);
-                  users.unshift(obj);
-                  break;
-                }
-              }
->>>>>>> 38d9538... Merge branch '2472-assignee-dropdown-does-not-display-selected-assignee-ce' into 'master'
             }
 
             if ($selectbox) {
@@ -399,7 +220,36 @@ function UsersSelect(currentUser, els) {
                 glDropdown.options.processData(term, users, callback);
               }.bind(this));
             },
-            processData: function(term, users, callback) {
+            processData: function(term, data, callback) {
+              let users = data;
+
+              // Only show assigned user list when there is no search term
+              if ($dropdown.hasClass('js-multiselect') && term.length === 0) {
+                const selectedInputs = getSelectedUserInputs();
+
+                // Potential duplicate entries when dealing with issue board
+                // because issue board is also managed by vue
+                const selectedUsers = _.uniq(selectedInputs, false, a => a.value)
+                  .filter((input) => {
+                    const userId = parseInt(input.value, 10);
+                    const inUsersArray = users.find(u => u.id === userId);
+
+                    return !inUsersArray && userId !== 0;
+                  })
+                  .map((input) => {
+                    const userId = parseInt(input.value, 10);
+                    const { avatarUrl, avatar_url, name, username } = input.dataset;
+                    return {
+                      avatar_url: avatarUrl || avatar_url,
+                      id: userId,
+                      name,
+                      username,
+                    };
+                  });
+
+                users = data.concat(selectedUsers);
+              }
+
               let anyUser;
               let index;
               let j;
@@ -830,7 +680,7 @@ function UsersSelect(currentUser, els) {
         url: url,
         data: {
           search: query,
-          per_page: 20,
+          per_page: options.perPage || 20,
           active: true,
           project_id: options.projectId || null,
           group_id: options.groupId || null,
@@ -854,81 +704,7 @@ function UsersSelect(currentUser, els) {
       }
       return url;
     };
-<<<<<<< HEAD
 
     return UsersSelect;
   })();
 }).call(window);
-=======
-    return callback(nullUser);
-  } else if (id !== "") {
-    return this.user(id, callback);
-  }
-};
-
-UsersSelect.prototype.formatResult = function(user) {
-  var avatar;
-  if (user.avatar_url) {
-    avatar = user.avatar_url;
-  } else {
-    avatar = gon.default_avatar_url;
-  }
-  return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar s24' src='" + avatar + "'></div> <div class='user-name'>" + user.name + "</div> <div class='user-username'>" + (user.username || "") + "</div> </div>";
-};
-
-UsersSelect.prototype.formatSelection = function(user) {
-  return user.name;
-};
-
-UsersSelect.prototype.user = function(user_id, callback) {
-  if (!/^\d+$/.test(user_id)) {
-    return false;
-  }
-
-  var url;
-  url = this.buildUrl(this.userPath);
-  url = url.replace(':id', user_id);
-  return $.ajax({
-    url: url,
-    dataType: "json"
-  }).done(function(user) {
-    return callback(user);
-  });
-};
-
-// Return users list. Filtered by query
-// Only active users retrieved
-UsersSelect.prototype.users = function(query, options, callback) {
-  var url;
-  url = this.buildUrl(this.usersPath);
-  return $.ajax({
-    url: url,
-    data: {
-      search: query,
-      per_page: options.perPage || 20,
-      active: true,
-      project_id: options.projectId || null,
-      group_id: options.groupId || null,
-      skip_ldap: options.skipLdap || null,
-      todo_filter: options.todoFilter || null,
-      todo_state_filter: options.todoStateFilter || null,
-      current_user: options.showCurrentUser || null,
-      push_code_to_protected_branches: options.pushCodeToProtectedBranches || null,
-      author_id: options.authorId || null,
-      skip_users: options.skipUsers || null
-    },
-    dataType: "json"
-  }).done(function(users) {
-    return callback(users);
-  });
-};
-
-UsersSelect.prototype.buildUrl = function(url) {
-  if (gon.relative_url_root != null) {
-    url = gon.relative_url_root.replace(/\/$/, '') + url;
-  }
-  return url;
-};
-
-export default UsersSelect;
->>>>>>> 38d9538... Merge branch '2472-assignee-dropdown-does-not-display-selected-assignee-ce' into 'master'
