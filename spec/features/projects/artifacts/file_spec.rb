@@ -39,6 +39,7 @@ feature 'Artifact file', :js, feature: true do
 
   context 'JPG file' do
     before do
+      page.driver.browser.url_blacklist = []
       visit_file('rails_sample.jpg')
 
       wait_for_requests
