@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { statusIconEntityMap } from '~/vue_shared/ci_status_icons';
 import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline';
 import mockData from '../mock_data';
+import mockLinkedPipelines from '../../pipelines/graph/linked_pipelines_mock_data';
 
 const createComponent = (mr) => {
   const Component = Vue.extend(pipelineComponent);
@@ -77,6 +78,7 @@ describe('MRWidgetPipeline', () => {
     });
 
     it('should render template elements correctly', () => {
+      // TODO: Break this into separate specs
       expect(el.classList.contains('mr-widget-heading')).toBeTruthy();
       expect(el.querySelectorAll('.ci-status-icon.ci-status-icon-success').length).toEqual(1);
       expect(el.querySelector('.pipeline-id').textContent).toContain(`#${pipeline.id}`);
@@ -124,6 +126,54 @@ describe('MRWidgetPipeline', () => {
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.js-ci-error').length).toEqual(1);
         expect(el.innerText).toContain('Could not connect to the CI server');
+        done();
+      });
+    });
+
+    it('should not render upstream or downstream pipelines', () => {
+      expect(el.querySelector('.linked-pipeline-mini-list')).toBeNull();
+    });
+  });
+
+  describe('when upstream pipelines are passed', function () {
+    beforeEach(function () {
+      const pipeline = Object.assign({}, mockData.pipeline, {
+        triggered_by: mockLinkedPipelines.triggered_by,
+      });
+
+      this.vm = createComponent({
+        pipeline,
+        pipelineDetailedStatus: mockData.pipeline.details.status,
+        hasCI: true,
+        ciStatus: 'success',
+      }).$mount();
+    });
+
+    it('should render the linked pipelines mini list', function (done) {
+      Vue.nextTick(() => {
+        expect(this.vm.$el.querySelector('.linked-pipeline-mini-list.is-upstream')).not.toBeNull();
+        done();
+      });
+    });
+  });
+
+  describe('when downstream pipelines are passed', function () {
+    beforeEach(function () {
+      const pipeline = Object.assign({}, mockData.pipeline, {
+        triggered: mockLinkedPipelines.triggered,
+      });
+
+      this.vm = createComponent({
+        pipeline,
+        pipelineDetailedStatus: mockData.pipeline.details.status,
+        hasCI: true,
+        ciStatus: 'success',
+      }).$mount();
+    });
+
+    it('should render the linked pipelines mini list', function (done) {
+      Vue.nextTick(() => {
+        expect(this.vm.$el.querySelector('.linked-pipeline-mini-list.is-downstream')).not.toBeNull();
         done();
       });
     });
