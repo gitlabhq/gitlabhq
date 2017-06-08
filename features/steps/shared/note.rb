@@ -8,7 +8,12 @@ module SharedNote
 
   step 'I delete a comment' do
     page.within('.main-notes-list') do
-      find('.note').hover
+      note = find('.note')
+      note.hover
+
+      note.find('.more-actions').click
+      note.find('.more-actions .dropdown-menu li', match: :first)
+
       find(".js-note-delete").click
     end
   end
@@ -139,8 +144,13 @@ module SharedNote
 
   step 'I edit the last comment with a +1' do
     page.within(".main-notes-list") do
-      find(".note").hover
-      find('.js-note-edit').click
+      note = find('.note')
+      note.hover
+
+      note.find('.more-actions').click
+      note.find('.more-actions .dropdown-menu li', match: :first)
+
+      note.find('.js-note-edit').click
     end
 
     page.within(".current-note-edit-form") do
