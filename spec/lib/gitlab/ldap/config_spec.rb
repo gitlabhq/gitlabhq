@@ -23,9 +23,9 @@ describe Gitlab::LDAP::Config, lib: true do
     it 'constructs basic options' do
       stub_ldap_config(
         options: {
-          'host'    => 'ldap.example.com',
-          'port'    => 386,
-          'method'  => 'plain'
+          'host'       => 'ldap.example.com',
+          'port'       => 386,
+          'encryption' => 'plain'
         }
       )
 
@@ -39,11 +39,11 @@ describe Gitlab::LDAP::Config, lib: true do
     it 'includes authentication options when auth is configured' do
       stub_ldap_config(
         options: {
-          'host'      => 'ldap.example.com',
-          'port'      => 686,
-          'method'    => 'ssl',
-          'bind_dn'   => 'uid=admin,dc=example,dc=com',
-          'password'  => 'super_secret'
+          'host'       => 'ldap.example.com',
+          'port'       => 686,
+          'encryption' => 'ssl',
+          'bind_dn'    => 'uid=admin,dc=example,dc=com',
+          'password'   => 'super_secret'
         }
       )
 
@@ -64,11 +64,11 @@ describe Gitlab::LDAP::Config, lib: true do
     it 'constructs basic options' do
       stub_ldap_config(
         options: {
-          'host'    => 'ldap.example.com',
-          'port'    => 386,
-          'base'    => 'ou=users,dc=example,dc=com',
-          'method'  => 'plain',
-          'uid'     => 'uid'
+          'host'       => 'ldap.example.com',
+          'port'       => 386,
+          'base'       => 'ou=users,dc=example,dc=com',
+          'encryption' => 'plain',
+          'uid'        => 'uid'
         }
       )
 
@@ -76,7 +76,7 @@ describe Gitlab::LDAP::Config, lib: true do
         host: 'ldap.example.com',
         port: 386,
         base: 'ou=users,dc=example,dc=com',
-        method: 'plain',
+        encryption: 'plain',
         filter: '(uid=%{username})'
       )
       expect(config.omniauth_options.keys).not_to include(:bind_dn, :password)

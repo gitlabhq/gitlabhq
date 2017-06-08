@@ -50,7 +50,7 @@ module Gitlab
       def omniauth_options
         opts = base_options.merge(
           base: base,
-          method: options['method'],
+          encryption: options['encryption'],
           filter: omniauth_user_filter,
           name_proc: name_proc
         )
@@ -158,7 +158,7 @@ module Gitlab
       end
 
       def encryption
-        case options['method'].to_s
+        case options['encryption'].to_s
         when 'ssl'
           :simple_tls
         when 'tls'
