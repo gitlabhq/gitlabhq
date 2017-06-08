@@ -15,10 +15,12 @@ class GitlabUploader < CarrierWave::Uploader::Base
   # This method is overridden in the `FileUploader`
   def self.base_dir
     return root_dir unless file_storage?
+
+    File.join(root_dir, 'system')
   end
 
   def self.file_storage?
-    self.storage.is_a?(CarrierWave::Storage::File)
+    self.storage == CarrierWave::Storage::File
   end
 
   delegate :base_dir, :file_storage?, to: :class
