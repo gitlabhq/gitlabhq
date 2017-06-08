@@ -374,9 +374,11 @@ import initSettingsPanels from './settings_panels';
           new ProjectFork();
           break;
         case 'projects:artifacts:browse':
+          new ShortcutsNavigation();
           new BuildArtifacts();
           break;
         case 'projects:artifacts:file':
+          new ShortcutsNavigation();
           new BlobViewer();
           break;
         case 'help:index':
