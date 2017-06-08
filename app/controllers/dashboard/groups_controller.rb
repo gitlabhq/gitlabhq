@@ -1,16 +1,17 @@
 class Dashboard::GroupsController < Dashboard::ApplicationController
   def index
-    @groups = if params[:parent_id]
-                parent = Group.find(params[:parent_id])
+    @groups =
+      if params[:parent_id] && Group.supports_nested_groups?
+        parent = Group.find_by(id: params[:parent_id])
 
-                if parent.users_with_parents.find_by(id: current_user)
-                  Group.where(id: parent.children)
-                else
-                  Group.none
-                end
-              else
-                Group.joins(:group_members).merge(current_user.group_members)
-              end
+        if can?(current_user, :read_group, parent)
+          GroupsFinder.new(current_user, parent: parent).execute
+        else
+          Group.none
+        end
+      else
+        current_user.groups
+      end
 
     @groups = @groups.search(params[:filter_groups]) if params[:filter_groups].present?
     @groups = @groups.includes(:route)
