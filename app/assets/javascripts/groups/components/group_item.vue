@@ -110,7 +110,11 @@ export default {
           v-if="group.canEdit"
           class="edit-group btn"
           :href="group.editPath">
-          <i aria-hidden="true" class="fa fa-cogs"></i>
+          <i
+            class="fa fa-cogs"
+            aria-hidden="true"
+          >
+          </i>
         </a>
         <a
           @click="onLeaveGroup"
@@ -118,8 +122,9 @@ export default {
           class="leave-group btn"
           title="Leave this group">
           <i
+            class="fa fa-sign-out"
             aria-hidden="true"
-            class="fa fa-sign-out">
+          >
           </i>
         </a>
       </div>
@@ -128,24 +133,27 @@ export default {
         <span
           class="number-projects">
           <i
+            class="fa fa-bookmark"
             aria-hidden="true"
-            class="fa fa-bookmark">
+          >
           </i>
           {{group.numberProjects}}
         </span>
         <span
           class="number-users">
           <i
+            class="fa fa-users"
             aria-hidden="true"
-            class="fa fa-users">
+          >
           </i>
           {{group.numberUsers}}
         </span>
         <span
           class="group-visibility">
           <i
+            :class="visibilityIcon"
             aria-hidden="true"
-            :class="visibilityIcon">
+          >
           </i>
         </span>
       </div>
@@ -156,18 +164,23 @@ export default {
           v-if="group.hasSubgroups">
           <i
             v-if="group.isOpen"
-            class="fa fa-caret-down">
+            class="fa fa-caret-down"
+            aria-hidden="true"
+          >
           </i>
           <i
             v-if="!group.isOpen"
-            class="fa fa-caret-right">
+            class="fa fa-caret-right"
+            aria-hidden="true"
+          >
           </i>
         </span>
         <span class="folder-icon">
           <i
             v-if="group.isOpen"
             class="fa fa-folder-open"
-            aria-hidden="true">
+            aria-hidden="true"
+          >
           </i>
           <i
             v-if="!group.isOpen"
