@@ -11,8 +11,8 @@ class GroupEntity < Grape::Entity
   expose :created_at, :updated_at
 
   expose :permissions do
-    expose :group_access do |group, options|
-      group.group_members.find_by(user_id: request.current_user)&.access_level
+    expose :human_group_access do |group, options|
+      group.group_members.find_by(user_id: request.current_user)&.human_access
     end
   end
 
