@@ -1,6 +1,7 @@
 import PipelineStage from '../../pipelines/components/stage.vue';
 import ciIcon from '../../vue_shared/components/ci_icon.vue';
 import { statusIconEntityMap } from '../../vue_shared/ci_status_icons';
+import linkedPipelinesMiniList from '../../vue_shared/components/linked_pipelines_mini_list.vue';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -10,6 +11,7 @@ export default {
   components: {
     'pipeline-stage': PipelineStage,
     ciIcon,
+    linkedPipelinesMiniList,
   },
   computed: {
     hasCIError() {
@@ -25,6 +27,18 @@ export default {
     },
     status() {
       return this.mr.pipeline.details.status || {};
+    },
+
+    /* We typically set defaults ([]) in the store or prop declarations, but because triggered
+     * and triggeredBy are appended to `pipeline`, we can't set defaults in the store, and we
+     * need to check their length here to prevent initializing linked-pipeline-mini-lists
+     * unneccessarily. */
+
+    triggered() {
+      return this.mr.pipeline.triggered || [];
+    },
+    triggeredBy() {
+      return this.mr.pipeline.triggered_by || [];
     },
   },
   template: `
@@ -61,12 +75,25 @@ export default {
           </span>
           <div class="mr-widget-pipeline-graph">
             <div class="stage-cell">
+              <linked-pipelines-mini-list
+                v-if="triggeredBy.length"
+                :triggered-by="triggeredBy"
+                />
+
               <div
                 v-if="mr.pipeline.details.stages.length > 0"
-                v-for="stage in mr.pipeline.details.stages"
-                class="stage-container dropdown js-mini-pipeline-graph">
+                v-for="(stage, index) in mr.pipeline.details.stages"
+                class="stage-container dropdown js-mini-pipeline-graph"
+                :class="{
+                  'has-downstream': index === mr.pipeline.details.stages.length - 1 && triggered.length
+                }">
                 <pipeline-stage :stage="stage" />
               </div>
+
+              <linked-pipelines-mini-list
+                v-if="triggered.length"
+                :triggered="triggered"
+                />
             </div>
           </div>
           <span>

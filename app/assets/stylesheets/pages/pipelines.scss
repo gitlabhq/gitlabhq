@@ -644,7 +644,8 @@
 }
 
 // Dropdown button in mini pipeline graph
-.mini-pipeline-graph-dropdown-toggle {
+.mini-pipeline-graph-dropdown-toggle,
+.linked-pipeline-mini-item {
   border-radius: 100px;
   background-color: $white-light;
   border-width: 1px;
@@ -995,6 +996,93 @@
     margin-right: 5px;
     height: 13px;
     width: 12px;
+  }
+}
+
+.linked-pipeline-mini-list {
+  display: inline-block;
+
+  &.is-downstream {
+    margin-left: -4px;
+  }
+
+  .arrow-icon {
+    display: inline-block;
+    vertical-align: middle;
+    margin: -2px 5px 0;
+
+    svg {
+      fill: $gray-darkest;
+    }
+  }
+
+  &:hover {
+    .linked-pipeline-mini-item {
+      margin-left: 0;
+    }
+  }
+
+  .linked-pipeline-mini-item {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    height: 20px;
+    width: 20px;
+    transition: margin .2s linear;
+    margin: 2px 5px 3px -12px;
+
+    svg {
+      top: 0;
+      right: 0;
+      width: 18px;
+      height: 18px;
+    }
+    // override dropdown-toggle width expansion
+    &:hover {
+      width: 20px;
+    }
+
+    &:first-of-type:last-of-type {
+      margin-right: 1px;
+    }
+
+    &:nth-of-type(1) {
+      margin-left: 0;
+      z-index: 100;
+    }
+
+    &:nth-of-type(2):not(.linked-pipelines-counter) {
+      z-index: 99;
+    }
+
+    &:nth-of-type(3) {
+      z-index: 98;
+    }
+
+    &:nth-of-type(4) {
+      z-index: 97;
+    }
+  }
+
+  .linked-pipelines-counter {
+    position: relative;
+    font-size: 12px;
+    vertical-align: middle;
+    line-height: 20px;
+    height: 22px;
+    width: 22px;
+    padding-left: 1px;
+    margin-left: -15px;
+    border-radius: 2em;
+    background: $gray-darkest;
+    color: $white-light;
+    z-index: 96;
+    text-decoration: none;
+
+    &:hover {
+      width: 22px;
+      background: darken($gray-darkest, 10%);
+    }
   }
 }
 
