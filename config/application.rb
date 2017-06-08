@@ -104,7 +104,6 @@ module Gitlab
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "katex.css"
     config.assets.precompile << "katex.js"
-    config.assets.precompile << "peek.js"
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "peek.css"
     config.assets.precompile << "lib/ace.js"

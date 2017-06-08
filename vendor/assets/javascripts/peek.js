@@ -9,8 +9,8 @@
   updatePerformanceBar = function(results) {
     var key, label, data, table, html, tr, duration_td, sql_td, strong;
 
-    Object.keys(results.data).forEach((key) => {
-      Object.keys(results.data[key]).forEach((label) => {
+    Object.keys(results.data).forEach(function(key) {
+      Object.keys(results.data[key]).forEach(function(label) {
         data = results.data[key][label];
 
         if (label == 'queries') {
