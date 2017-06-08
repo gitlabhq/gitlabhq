@@ -9,7 +9,8 @@ module Gitlab
       'pt_BR' => 'Português(Brasil)',
       'zh_CN' => '简体中文',
       'zh_HK' => '繁體中文(香港)',
-      'zh_TW' => '繁體中文(臺灣)'
+      'zh_TW' => '繁體中文(臺灣)',
+      'bg' => 'български'
     }.freeze
 
     def available_locales
