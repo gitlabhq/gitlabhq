@@ -311,6 +311,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
   rescue ActiveRecord::StaleObjectError
+    set_suggested_approvers if request.format.html?
+
     render_conflict_response
   end
 
