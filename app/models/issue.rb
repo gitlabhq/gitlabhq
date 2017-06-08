@@ -23,9 +23,14 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 
-  has_many :events, as: :target, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues'
+  has_many :merge_requests_closing_issues,
+    class_name: 'MergeRequestsClosingIssues',
+    dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :issue_assignees
+  has_many :assignees, class_name: "User", through: :issue_assignees
 
   has_many :issue_assignees
   has_many :assignees, class_name: "User", through: :issue_assignees
