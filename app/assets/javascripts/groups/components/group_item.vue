@@ -190,8 +190,10 @@ export default {
         class="title">
         <a
           :href="group.webUrl">{{fullPath}}</a>
+        <template v-if="group.permissions.humanGroupAccess">
         as
         <span class="access-type">{{group.permissions.humanGroupAccess}}</span>
+        </template>
       </div>
       <div
         class="description">{{group.description}}</div>
