@@ -336,6 +336,8 @@ module Github
 
     def restore_target_branch(pull_request)
       repository.create_branch(pull_request.target_branch_name, pull_request.target_branch_sha)
+
+      pull_request.target_branch.confirm_branch_existence
     end
 
     def remove_branch(name)

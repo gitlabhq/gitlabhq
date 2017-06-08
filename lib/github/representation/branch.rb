@@ -26,7 +26,11 @@ module Github
       end
 
       def exists?
-        branch_exists? && commit_exists?
+        @exists ||= branch_exists? && commit_exists?
+      end
+
+      def confirm_branch_existence
+        @exists = commit_exists?
       end
 
       def valid?
