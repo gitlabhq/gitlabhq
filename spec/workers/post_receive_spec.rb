@@ -94,26 +94,23 @@ describe PostReceive do
         it { expect{ subject }.not_to change{ Ci::Pipeline.count } }
       end
     end
-  end
 
-  describe '#process_repository_update' do
-    let(:changes) {'123456 789012 refs/heads/tést'}
-    let(:fake_hook_data) do
-      { event_name: 'repository_update' }
-    end
+    context 'after project changes hooks' do
+      let(:changes) { '123456 789012 refs/heads/tést' }
+      let(:fake_hook_data) { Hash.new(event_name: 'repository_update') }
 
-    before do
-      allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
-      allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
-      # silence hooks so we can isolate
-      allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
-      allow(subject).to receive(:process_project_changes).and_return(true)
-    end
+      before do
+        allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
+        # silence hooks so we can isolate
+        allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
+        allow_any_instance_of(GitPushService).to receive(:execute).and_return(true)
+      end
 
-    it 'calls SystemHooksService' do
-      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(fake_hook_data, :repository_update_hooks).and_return(true)
+      it 'calls SystemHooksService' do
+        expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(fake_hook_data, :repository_update_hooks).and_return(true)
 
-      subject.perform(pwd(project), key_id, base64_changes)
+        described_class.new.perform(project_identifier, key_id, base64_changes)
+      end
     end
   end
 
