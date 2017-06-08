@@ -51,15 +51,48 @@ describe GroupsFinder do
       end
 
       context 'with a user' do
+        subject { described_class.new(user, parent: parent_group).execute }
+
         it 'returns public and internal subgroups' do
-          expect(described_class.new(user, parent: parent_group).execute).to contain_exactly(public_subgroup, internal_subgroup)
+          is_expected.to contain_exactly(public_subgroup, internal_subgroup)
         end
 
         context 'being member' do
           it 'returns public subgroups, internal subgroups, and private subgroups user is member of' do
             private_subgroup.add_guest(user)
 
-            expect(described_class.new(user, parent: parent_group).execute).to contain_exactly(public_subgroup, internal_subgroup, private_subgroup)
+            is_expected.to contain_exactly(public_subgroup, internal_subgroup, private_subgroup)
+          end
+        end
+
+        context 'parent group private' do
+          before do
+            parent_group.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+          end
+
+          context 'being member of parent group' do
+            it 'returns all subgroups' do
+              parent_group.add_guest(user)
+
+              is_expected.to contain_exactly(public_subgroup, internal_subgroup, private_subgroup)
+            end
+          end
+
+          context 'authorized to private project' do
+            it 'returns the subgroup of the project' do
+              subproject = create(:empty_project, :private, namespace: private_subgroup)
+              subproject.add_guest(user)
+
+              is_expected.to include(private_subgroup)
+            end
+
+            it 'returns all the parent groups if project is several levels deep' do
+              private_subsubgroup = create(:group, :private, parent: private_subgroup)
+              subsubproject = create(:empty_project, :private, namespace: private_subsubgroup)
+              subsubproject.add_guest(user)
+
+              expect(described_class.new(user).execute).to include(private_subsubgroup, private_subgroup, parent_group)
+            end
           end
         end
       end
