@@ -208,29 +208,38 @@ export default {
   template: `
     <div class="commit gl-responsive-table-row">
       <div class="table-section section-10 commit-link">
-        <ci-badge :status="pipelineStatus"/>
+        <div class="table-mobile-header" role="rowheader">Status</div>
+        <div class="table-mobile-content">
+          <ci-badge :status="pipelineStatus"/>
+        </div>
       </div>
 
       <pipeline-url :pipeline="pipeline"></pipeline-url>
 
       <div class="table-section section-25">
-        <commit-component
-          :tag="commitTag"
-          :commit-ref="commitRef"
-          :commit-url="commitUrl"
-          :short-sha="commitShortSha"
-          :title="commitTitle"
-          :author="commitAuthor"/>
+        <div class="table-mobile-header" role="rowheader">Commit</div>
+        <div class="table-mobile-content">
+          <commit-component
+            :tag="commitTag"
+            :commit-ref="commitRef"
+            :commit-url="commitUrl"
+            :short-sha="commitShortSha"
+            :title="commitTitle"
+            :author="commitAuthor"/>
+          </div>
       </div>
 
       <div class="table-section section-wrap section-15 stage-cell">
-        <div class="stage-container dropdown js-mini-pipeline-graph"
-          v-if="pipeline.details.stages.length > 0"
-          v-for="stage in pipeline.details.stages">
+        <div class="table-mobile-header" role="rowheader">Stages</div>
+        <div class="table-mobile-content">
+          <div class="stage-container dropdown js-mini-pipeline-graph"
+            v-if="pipeline.details.stages.length > 0"
+            v-for="stage in pipeline.details.stages">
 
-          <dropdown-stage
-            :stage="stage"
-            :update-dropdown="updateGraphDropdown"/>
+            <dropdown-stage
+              :stage="stage"
+              :update-dropdown="updateGraphDropdown"/>
+          </div>
         </div>
       </div>
 

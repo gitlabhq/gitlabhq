@@ -84,6 +84,10 @@
       .dropdown-new {
         width: 100%;
       }
+
+      .dropdown-menu {
+        min-width: initial;
+      }
     }
   }
 }
