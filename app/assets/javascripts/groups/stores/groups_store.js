@@ -130,6 +130,9 @@ export default class GroupsStore {
       isOrphan: false,
       numberProjects: rawGroup.number_projects_with_delimiter,
       numberUsers: rawGroup.number_users_with_delimiter,
+      permissions: {
+        humanGroupAccess: rawGroup.permissions.human_group_access,
+      },
       subGroups: {},
     };
   }

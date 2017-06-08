@@ -15,7 +15,7 @@ const group1 = {
   number_users_with_delimiter: '1',
   has_subgroups: true,
   permissions: {
-    group_access: 50,
+    human_group_access: 'Master',
   },
 };
 
@@ -37,7 +37,7 @@ const group14 = {
   number_users_with_delimiter: '1',
   has_subgroups: true,
   permissions: {
-    group_access: 30,
+    human_group_access: 'Master',
   },
 };
 
@@ -58,7 +58,7 @@ const group2 = {
   number_users_with_delimiter: '1',
   has_subgroups: true,
   permissions: {
-    group_access: 50,
+    human_group_access: 'Master',
   },
 };
 
@@ -79,7 +79,7 @@ const group21 = {
   number_users_with_delimiter: '1',
   has_subgroups: true,
   permissions: {
-    group_access: 50,
+    human_group_access: 'Master',
   },
 };
 

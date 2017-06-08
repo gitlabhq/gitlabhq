@@ -190,6 +190,8 @@ export default {
         class="title">
         <a
           :href="group.webUrl">{{fullPath}}</a>
+        as
+        <span class="access-type">{{group.permissions.humanGroupAccess}}</span>
       </div>
       <div
         class="description">{{group.description}}</div>

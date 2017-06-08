@@ -38,6 +38,7 @@ describe('Groups Component', () => {
       expect(component.$el.querySelector('.group-visibility')).toBeDefined();
       expect(component.$el.querySelector('.avatar-container')).toBeDefined();
       expect(component.$el.querySelector('.title').textContent).toContain(group.name);
+      expect(component.$el.querySelector('.access-type').textContent).toContain(group.permissions.humanGroupAccess);
       expect(component.$el.querySelector('.description').textContent).toContain(group.description);
       expect(component.$el.querySelector('.edit-group')).toBeDefined();
       expect(component.$el.querySelector('.leave-group')).toBeDefined();
