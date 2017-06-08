@@ -273,7 +273,7 @@ class NotificationService
   end
 
   def issue_moved(issue, new_issue, current_user)
-    recipients = NotificationRecipientService.new(issue.project).build_recipients(issue, current_user)
+    recipients = NotificationRecipientService.new(issue.project).build_recipients(issue, current_user, action: 'moved')
 
     recipients.map do |recipient|
       email = mailer.issue_moved_email(recipient, issue, new_issue, current_user)

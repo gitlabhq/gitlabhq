@@ -60,7 +60,7 @@ describe NotificationSettingsController do
             expect(notification_setting.level).to eq("custom")
 
             custom_events.each do |event, value|
-              expect(notification_setting.send(event)).to eq(value)
+              expect(notification_setting.event_enabled?(event)).to eq(value)
             end
           end
         end
@@ -91,7 +91,7 @@ describe NotificationSettingsController do
             expect(notification_setting.level).to eq("custom")
 
             custom_events.each do |event, value|
-              expect(notification_setting.send(event)).to eq(value)
+              expect(notification_setting.event_enabled?(event)).to eq(value)
             end
           end
         end
