@@ -136,7 +136,8 @@ module Gitlab
           'email'       => %w(mail email userPrincipalName),
           'name'        => 'cn',
           'first_name'  => 'givenName',
-          'last_name'   => 'sn'
+          'last_name'   => 'sn',
+          'photo'       => %w(jpegPhoto thumbnailPhoto)
         }
       end
 

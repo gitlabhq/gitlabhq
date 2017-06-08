@@ -43,6 +43,10 @@ module Gitlab
         attribute_value(:email)
       end
 
+      def photo
+        attribute_value(:photo)
+      end
+
       delegate :dn, to: :entry
 
       private
