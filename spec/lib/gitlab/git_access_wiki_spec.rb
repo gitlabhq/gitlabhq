@@ -31,13 +31,9 @@ describe Gitlab::GitAccessWiki, lib: true do
           allow(Gitlab::Geo).to receive(:license_allows?) { true }
         end
 
-<<<<<<< HEAD
-        it { expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can't push code to a secondary GitLab Geo node.") }
-=======
         it 'does not give access to upload wiki code' do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can't push code to a secondary GitLab Geo node.")
         end
->>>>>>> master
       end
     end
   end
