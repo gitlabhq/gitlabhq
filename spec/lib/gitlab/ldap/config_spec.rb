@@ -5,7 +5,7 @@ describe Gitlab::LDAP::Config, lib: true do
 
   let(:config) { Gitlab::LDAP::Config.new('ldapmain') }
 
-  describe '#initalize' do
+  describe '#initialize' do
     it 'requires a provider' do
       expect{ Gitlab::LDAP::Config.new }.to raise_error ArgumentError
     end
@@ -32,31 +32,111 @@ describe Gitlab::LDAP::Config, lib: true do
       expect(config.adapter_options).to eq(
         host: 'ldap.example.com',
         port: 386,
-        encryption: nil
+        encryption: { method: nil }
       )
     end
 
     it 'includes authentication options when auth is configured' do
       stub_ldap_config(
         options: {
-          'host'       => 'ldap.example.com',
-          'port'       => 686,
-          'encryption' => 'ssl',
-          'bind_dn'    => 'uid=admin,dc=example,dc=com',
-          'password'   => 'super_secret'
+          'host'                => 'ldap.example.com',
+          'port'                => 686,
+          'encryption'          => 'simple_tls',
+          'verify_certificates' => true,
+          'bind_dn'             => 'uid=admin,dc=example,dc=com',
+          'password'            => 'super_secret'
         }
       )
 
-      expect(config.adapter_options).to eq(
-        host: 'ldap.example.com',
-        port: 686,
-        encryption: :simple_tls,
+      expect(config.adapter_options).to include({
         auth: {
           method: :simple,
           username: 'uid=admin,dc=example,dc=com',
           password: 'super_secret'
         }
+      })
+    end
+
+    it 'sets encryption method to simple_tls when configured as simple_tls' do
+      stub_ldap_config(
+        options: {
+          'host'                => 'ldap.example.com',
+          'port'                => 686,
+          'encryption'          => 'simple_tls'
+        }
       )
+
+      expect(config.adapter_options[:encryption]).to include({ method: :simple_tls })
+    end
+
+    it 'sets encryption method to simple_tls when configured as ssl, for backwards compatibility' do
+      stub_ldap_config(
+        options: {
+          'host'                => 'ldap.example.com',
+          'port'                => 686,
+          'encryption'          => 'ssl'
+        }
+      )
+
+      expect(config.adapter_options[:encryption]).to include({ method: :simple_tls })
+    end
+
+    it 'sets encryption method to start_tls when configured as start_tls' do
+      stub_ldap_config(
+        options: {
+          'host'                => 'ldap.example.com',
+          'port'                => 686,
+          'encryption'          => 'start_tls'
+        }
+      )
+
+      expect(config.adapter_options[:encryption]).to include({ method: :start_tls })
+    end
+
+    it 'sets encryption method to start_tls when configured as tls, for backwards compatibility' do
+      stub_ldap_config(
+        options: {
+          'host'                => 'ldap.example.com',
+          'port'                => 686,
+          'encryption'          => 'tls'
+        }
+      )
+
+      expect(config.adapter_options[:encryption]).to include({ method: :start_tls })
+    end
+
+    context 'when verify_certificates is enabled' do
+      it 'sets tls_options to OpenSSL defaults' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true
+          }
+        )
+
+        expect(config.adapter_options[:encryption]).to include({ tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS })
+      end
+    end
+
+    context 'when verify_certificates is disabled' do
+      it 'sets verify_mode to OpenSSL VERIFY_NONE' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => false
+          }
+        )
+
+        expect(config.adapter_options[:encryption]).to include({
+          tls_options: {
+            verify_mode: OpenSSL::SSL::VERIFY_NONE
+          }
+        })
+      end
     end
   end
 

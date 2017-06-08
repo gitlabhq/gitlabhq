@@ -2,6 +2,16 @@
 module Gitlab
   module LDAP
     class Config
+      NET_LDAP_ENCRYPTION_METHOD = {
+        :simple_tls => :simple_tls,
+        :start_tls => :start_tls,
+        :plain => nil,
+
+        # Deprecated. Better to pass-through the actual `Net::LDAP` encryption type.
+        :ssl => :simple_tls,
+        :tls => :start_tls,
+      }
+
       attr_accessor :provider, :options
 
       def self.enabled?
@@ -39,7 +49,7 @@ module Gitlab
 
       def adapter_options
         opts = base_options.merge(
-          encryption: encryption
+          encryption: encryption_options
         )
 
         opts.merge!(auth_options) if has_auth?
@@ -157,14 +167,22 @@ module Gitlab
         base_config.servers.values.find { |server| server['provider_name'] == provider }
       end
 
-      def encryption
-        case options['encryption'].to_s
-        when 'ssl'
-          :simple_tls
-        when 'tls'
-          :start_tls
+      def encryption_options
+        method = translate_method(options['encryption'])
+        options = { method: method }
+        options.merge!(tls_options: tls_options(method)) if method
+        options
+      end
+
+      def translate_method(method_from_config)
+        NET_LDAP_ENCRYPTION_METHOD[method_from_config.to_sym]
+      end
+
+      def tls_options(method)
+        if method && options['verify_certificates']
+          OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
         else
-          nil
+          { verify_mode: OpenSSL::SSL::VERIFY_NONE }
         end
       end
 
