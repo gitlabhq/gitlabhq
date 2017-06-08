@@ -93,9 +93,11 @@ class Projects::BlobController < Projects::ApplicationController
   def diff
     apply_diff_view_cookie!
 
-    @form  = UnfoldForm.new(params)
-    @lines = Gitlab::Highlight.highlight_lines(repository, @ref, @path)
-    @lines = @lines[@form.since - 1..@form.to - 1]
+    @blob.load_all_data!
+    @lines = Gitlab::Highlight.highlight(@blob.path, @blob.data, repository: @repository).lines
+
+    @form = UnfoldForm.new(params)
+    @lines = @lines[@form.since - 1..@form.to - 1].map(&:html_safe)
 
     if @form.bottom?
       @match_line = ''
