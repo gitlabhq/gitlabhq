@@ -844,4 +844,3 @@ describe 'Git HTTP requests', lib: true do
     end
   end
 end
-
