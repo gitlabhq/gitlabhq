@@ -179,7 +179,7 @@ describe Group, models: true do
     let!(:group) { create(:group, :access_requestable, :with_avatar) }
     let(:user) { create(:user) }
     let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-    let(:avatar_path) { "/uploads/group/avatar/#{group.id}/dk.png" }
+    let(:avatar_path) { "/uploads/system/group/avatar/#{group.id}/dk.png" }
 
     context 'when avatar file is uploaded' do
       before { group.add_master(user) }
