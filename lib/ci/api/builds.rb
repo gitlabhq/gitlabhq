@@ -192,7 +192,7 @@ module Ci
           end
 
           unless artifacts_file.file_storage?
-            return redirect_to build.artifacts_file.url
+            return redirect(build.artifacts_file.url)
           end
 
           present_file!(artifacts_file.path, artifacts_file.filename)

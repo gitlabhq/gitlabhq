@@ -65,9 +65,9 @@ module Projects
     end
 
     def extract_archive!(temp_path)
-      if artifacts.ends_with?('.tar.gz') || artifacts.ends_with?('.tgz')
+      if artifacts_filename.ends_with?('.tar.gz') || artifacts_filename.ends_with?('.tgz')
         extract_tar_archive!(temp_path)
-      elsif artifacts.ends_with?('.zip')
+      elsif artifacts_filename.ends_with?('.zip')
         extract_zip_archive!(temp_path)
       else
         raise 'unsupported artifacts format'
@@ -75,11 +75,13 @@ module Projects
     end
 
     def extract_tar_archive!(temp_path)
-      results = Open3.pipeline(%W(gunzip -c #{artifacts}),
-                               %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
-                               %W(tar -x -C #{temp_path} #{SITE_PATH}),
-                               err: '/dev/null')
-      raise 'pages failed to extract' unless results.compact.all?(&:success?)
+      build.artifacts_file.use_file do |artifacts_path|
+        results = Open3.pipeline(%W(gunzip -c #{artifacts_path}),
+                                %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
+                                %W(tar -x -C #{temp_path} #{SITE_PATH}),
+                                err: '/dev/null')
+        raise 'pages failed to extract' unless results.compact.all?(&:success?)
+      end
     end
 
     def extract_zip_archive!(temp_path)
@@ -96,8 +98,10 @@ module Projects
       # -n  never overwrite existing files
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
-      unless system(*%W(unzip -n #{artifacts} #{site_path} -d #{temp_path}))
-        raise 'pages failed to extract'
+      build.artifacts_file.use_file do |artifacts_path|
+        unless system(*%W(unzip -n #{artifacts_path} #{site_path} -d #{temp_path}))
+          raise 'pages failed to extract'
+        end
       end
     end
 
@@ -128,6 +132,10 @@ module Projects
       1 + max_size / BLOCK_SIZE
     end
 
+    def artifacts_filename
+      build.artifacts_file.filename
+    end
+
     def max_size
       current_application_settings.max_pages_size.megabytes || MAX_SIZE
     end
@@ -150,10 +158,6 @@ module Projects
 
     def ref
       build.ref
-    end
-
-    def artifacts
-      build.artifacts_file.path
     end
 
     def latest_sha

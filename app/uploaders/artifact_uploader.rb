@@ -1,7 +1,5 @@
-class ArtifactUploader < GitlabUploader
-  storage :file
-
-  attr_reader :job, :field
+class ArtifactUploader < ObjectStoreUploader
+  storage_options Gitlab.config.artifacts
 
   def self.local_artifacts_store
     Gitlab.config.artifacts.path
@@ -11,12 +9,12 @@ class ArtifactUploader < GitlabUploader
     File.join(self.local_artifacts_store, 'tmp/uploads/')
   end
 
-  def initialize(job, field)
-    @job, @field = job, field
-  end
-
   def store_dir
-    default_local_path
+    if file_storage?
+      default_local_path
+    else
+      default_path
+    end
   end
 
   def cache_dir
@@ -30,6 +28,6 @@ class ArtifactUploader < GitlabUploader
   end
 
   def default_path
-    File.join(job.created_at.utc.strftime('%Y_%m'), job.project_id.to_s, job.id.to_s)
+    File.join(subject.created_at.utc.strftime('%Y_%m'), subject.project_id.to_s, subject.id.to_s)
   end
 end
