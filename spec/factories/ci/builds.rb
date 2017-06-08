@@ -163,6 +163,11 @@ FactoryGirl.define do
       end
     end
 
+    trait :remote_store do
+      artifacts_file_store ArtifactUploader::REMOTE_STORE
+      artifacts_metadata_store ArtifactUploader::REMOTE_STORE
+    end
+
     trait :artifacts_expired do
       after(:create) do |build, _|
         build.artifacts_file =

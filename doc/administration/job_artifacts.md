@@ -85,12 +85,41 @@ _The artifacts are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
-### Using object storage
+---
 
-In [GitLab Enterprise Edition Premium][eep] you can use an object storage like
-AWS S3 to store the artifacts.
+**Using Object Store**
 
-[Learn how to use the object storage option.][ee-os]
+The previously mentioned methods use the local disk to store artifacts. However,
+there is the option to use object stores like AWS' S3. To do this, set the
+`object_store` in your `gitlab.yml`. This relies on valid AWS
+credentials to be configured already. 
+
+    ```yaml
+    artifacts:
+        enabled: true
+        path: /mnt/storage/artifacts
+        object_store:
+          enabled: true
+          remote_directory: my-bucket-name
+          connection:
+            provider: AWS
+            aws_access_key_id: S3_KEY_ID
+            aws_secret_key_id: S3_SECRET_KEY_ID
+            region: eu-central-1
+    ```
+
+This will allow you to migrate existing artifacts to object store,
+but all new artifacts will still be stored on the local disk.
+In the future you will be given an option to define a default storage artifacts
+for all new files. Currently the artifacts migration has to be executed manually:
+
+    ```bash
+    gitlab-rake gitlab:artifacts:migrate
+    ```
+
+Please note, that enabling this feature
+will have the effect that artifacts are _not_ browsable anymore through the web
+interface. This limitation will be removed in one of the upcoming releases.
 
 ## Expiring artifacts
 
