@@ -141,26 +141,26 @@ class Project < ActiveRecord::Base
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
   has_many :project_members, -> { where(requested_at: nil) },
-    as: :source, dependent: :delete_all
+    as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   alias_method :members, :project_members
   has_many :users, through: :project_members
 
   has_many :requesters, -> { where.not(requested_at: nil) },
-    as: :source, class_name: 'ProjectMember', dependent: :delete_all
+    as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :deploy_keys_projects
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects
   has_many :starrers, through: :users_star_projects, source: :user
   has_many :releases
-  has_many :lfs_objects_projects, dependent: :destroy
+  has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :lfs_objects, through: :lfs_objects_projects
   has_many :project_group_links
   has_many :invited_groups, through: :project_group_links, source: :group
   has_many :pages_domains
   has_many :todos
-  has_many :notification_settings, as: :source, dependent: :delete_all
+  has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_one :import_data, class_name: 'ProjectImportData'
   has_one :project_feature
@@ -169,7 +169,7 @@ class Project < ActiveRecord::Base
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
-  has_many :container_repositories, dependent: :destroy
+  has_many :container_repositories, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :commit_statuses
   has_many :pipelines, class_name: 'Ci::Pipeline'
@@ -178,7 +178,7 @@ class Project < ActiveRecord::Base
   # build traces. Currently there's no efficient way of removing this data in
   # bulk that doesn't involve loading the rows into memory. As a result we're
   # still using `dependent: :destroy` here.
-  has_many :builds, class_name: 'Ci::Build', dependent: :destroy
+  has_many :builds, class_name: 'Ci::Build', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
@@ -238,7 +238,7 @@ class Project < ActiveRecord::Base
   before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
