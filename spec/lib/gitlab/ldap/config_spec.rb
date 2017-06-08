@@ -138,6 +138,36 @@ describe Gitlab::LDAP::Config, lib: true do
         })
       end
     end
+
+    context 'when ca_file is specified' do
+      it 'passes it through in tls_options' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'ca_file'             => '/etc/ca.pem'
+          }
+        )
+
+        expect(config.adapter_options[:encryption][:tls_options]).to include({ ca_file: '/etc/ca.pem' })
+      end
+    end
+
+    context 'when ca_file is a blank string' do
+      it 'does not add the ca_file key to tls_options' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'ca_file'             => ' '
+          }
+        )
+
+        expect(config.adapter_options[:encryption][:tls_options]).not_to have_key(:ca_file)
+      end
+    end
   end
 
   describe '#omniauth_options' do

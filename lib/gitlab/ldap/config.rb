@@ -179,11 +179,21 @@ module Gitlab
       end
 
       def tls_options(method)
-        if method && options['verify_certificates']
-          OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
-        else
-          { verify_mode: OpenSSL::SSL::VERIFY_NONE }
-        end
+        return { verify_mode: OpenSSL::SSL::VERIFY_NONE } unless method
+
+        opts = if options['verify_certificates']
+                 OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
+               else
+                 # It is important to explicitly set verify_mode for two reasons:
+                 # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
+                 # 2. The net-ldap gem implementation verifies the certificate hostname
+                 #    unless verify_mode is set to VERIFY_NONE.
+                 { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+               end
+
+        opts[:ca_file] = options['ca_file'] if options['ca_file'].present?
+
+        opts
       end
 
       def auth_options
