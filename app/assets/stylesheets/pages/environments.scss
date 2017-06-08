@@ -143,8 +143,8 @@
         }
 
         > .btn-group,
-        .external-url,
-        .btn {
+        > .external-url,
+        > .btn {
           flex: 1;
           flex-basis: 28px;
           margin: 0 5px;
@@ -152,6 +152,10 @@
 
         .dropdown-new {
           width: 100%;
+        }
+
+        .dropdown-menu {
+          min-width: initial;
         }
       }
     }

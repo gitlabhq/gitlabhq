@@ -13,12 +13,12 @@
             = ci_icon_for_status(pipeline_schedule.last_pipeline.status)
             %span ##{pipeline_schedule.last_pipeline.id}
       - else
-        None
+        = _("PipelineSchedules|None")
     %td.next-run-cell
       - if pipeline_schedule.active?
         = time_ago_with_tooltip(pipeline_schedule.real_next_run)
       - else
-        Inactive
+        = _("PipelineSchedules|Inactive")
     %td
       - if pipeline_schedule.owner
         = image_tag avatar_icon(pipeline_schedule.owner, 20), class: "avatar s20"
@@ -27,11 +27,11 @@
     %td
       .pull-right.btn-group
         - if can?(current_user, :update_pipeline_schedule, @project) && !pipeline_schedule.owned_by?(current_user)
-          = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: 'Take Ownership', class: 'btn' do
-            Take ownership
+          = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('PipelineSchedules|Take ownership'), class: 'btn' do
+            = s_('PipelineSchedules|Take ownership')
         - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)
-          = link_to edit_pipeline_schedule_path(pipeline_schedule), title: 'Edit', class: 'btn' do
+          = link_to edit_pipeline_schedule_path(pipeline_schedule), title: _('Edit'), class: 'btn' do
             = icon('pencil')
         - if can?(current_user, :admin_pipeline_schedule, pipeline_schedule)
-          = link_to pipeline_schedule_path(pipeline_schedule), title: 'Delete', method: :delete, class: 'btn btn-remove', data: { confirm: "Are you sure you want to cancel this pipeline?" } do
+          = link_to pipeline_schedule_path(pipeline_schedule), title: _('Delete'), method: :delete, class: 'btn btn-remove', data: { confirm: _("Are you sure you want to delete this pipeline schedule?") } do
             = icon('trash')

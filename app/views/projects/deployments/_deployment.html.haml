@@ -1,20 +1,24 @@
-.gl-responsive-table-row.deployment
+.gl-responsive-table-row.deployment{ role: 'row' }
   .table-section.section-10{ role: 'gridcell' }
-    %strong ##{deployment.iid}
+    .table-mobile-header{ role: 'rowheader' } ID
+    %strong.table-mobile-content ##{deployment.iid}
 
   .table-section.section-40{ role: 'gridcell' }
+    .table-mobile-header{ role: 'rowheader' } Commit
     = render 'projects/deployments/commit', deployment: deployment
 
   .table-section.section-15.build-column{ role: 'gridcell' }
+    .table-mobile-header{ role: 'rowheader' } Job
     - if deployment.deployable
-      = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link' do
+      = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link table-mobile-content' do
         #{deployment.deployable.name} (##{deployment.deployable.id})
       - if deployment.user
         by
         = user_avatar(user: deployment.user, size: 20)
 
   .table-section.section-15{ role: 'gridcell' }
-    #{time_ago_with_tooltip(deployment.created_at)}
+    .table-mobile-header{ role: 'rowheader' } Created
+    %span.table-mobile-content= time_ago_with_tooltip(deployment.created_at)
 
   .table-section.section-20.environments-actions.table-button-footer{ role: 'gridcell' }
     .btn-group.environment-action-buttons

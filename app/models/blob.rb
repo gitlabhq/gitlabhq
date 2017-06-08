@@ -94,6 +94,10 @@ class Blob < SimpleDelegator
     end
   end
 
+  def load_all_data!
+    super(project.repository) if project
+  end
+
   def no_highlighting?
     raw_size && raw_size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
   end

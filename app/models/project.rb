@@ -63,16 +63,6 @@ class Project < ActiveRecord::Base
 
   # update visibility_level of forks
   after_update :update_forks_visibility_level
-  def update_forks_visibility_level
-    return unless visibility_level < visibility_level_was
-
-    forks.each do |forked_project|
-      if forked_project.visibility_level > visibility_level
-        forked_project.visibility_level = visibility_level
-        forked_project.save!
-      end
-    end
-  end
 
   after_validation :check_pending_delete
 
@@ -165,7 +155,7 @@ class Project < ActiveRecord::Base
   has_many :todos, dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source
 
-  has_one :import_data, dependent: :delete, class_name: "ProjectImportData"
+  has_one :import_data, dependent: :delete, class_name: 'ProjectImportData'
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
   has_many :container_repositories, dependent: :destroy
@@ -488,7 +478,11 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
-    self.import_data&.destroy
+    remove_import_data
+  end
+
+  def remove_import_data
+    import_data&.destroy
   end
 
   def import_url=(value)
@@ -1060,12 +1054,27 @@ class Project < ActiveRecord::Base
     !!repository.exists?
   end
 
+  def update_forks_visibility_level
+    return unless visibility_level < visibility_level_was
+
+    forks.each do |forked_project|
+      if forked_project.visibility_level > visibility_level
+        forked_project.visibility_level = visibility_level
+        forked_project.save!
+      end
+    end
+  end
+
   def create_wiki
     ProjectWiki.new(self, self.owner).wiki
     true
   rescue ProjectWiki::CouldNotCreateWikiError
     errors.add(:base, 'Failed create wiki')
     false
+  end
+
+  def wiki
+    @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
   def jira_tracker_active?
@@ -1188,10 +1197,6 @@ class Project < ActiveRecord::Base
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.full_path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
-  end
-
-  def wiki
-    @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
   def running_or_pending_build_count(force: false)

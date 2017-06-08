@@ -55,6 +55,15 @@ following locations:
 - [V3 to V4](v3_to_v4.md)
 - [Version](version.md)
 
+## Road to GraphQL
+
+API v4 will be the last REST API that we support. Going forward, we will start
+on moving to GraphQL and deprecate the use of controller-specific
+endpoints. GraphQL has a number of benefits:
+
+1. We avoid having to maintain two different APIs.
+2. Callers of the API can request only what they need.
+
 ### Internal CI API
 
 The following documentation is for the [internal CI API](ci/README.md):

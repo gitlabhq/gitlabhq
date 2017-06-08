@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.2.5 (2017-06-07)
+
+- No changes.
+
+## 9.2.4 (2017-06-02)
+
+- Fix visibility when referencing snippets.
+
+## 9.2.3 (2017-05-31)
+
+- Move uploads from 'public/uploads' to 'public/uploads/system'.
+- Escapes html content before appending it to the DOM.
+- Restrict API X-Frame-Options to same origin.
+- Allow users autocomplete by author_id only for authenticated users.
+
+## 9.2.2 (2017-05-25)
+
+- Fix issue where real time pipelines were not cached. !11615
+- Make all notes use equal padding.
+
 ## 9.2.1 (2017-05-23)
 
 - Fix placement of note emoji on hover.
@@ -206,6 +226,20 @@ entry.
 - Unassign all Issues and Merge Requests when member leaves a team.
 - Fix preemptive scroll bar on user activity calendar.
 - Pipeline chat notifications convert seconds to minutes and hours.
+
+## 9.1.7 (2017-06-07)
+
+- No changes.
+
+## 9.1.6 (2017-06-02)
+
+- Fix visibility when referencing snippets.
+
+## 9.1.5 (2017-05-31)
+
+- Move uploads from 'public/uploads' to 'public/uploads/system'.
+- Restrict API X-Frame-Options to same origin.
+- Allow users autocomplete by author_id only for authenticated users.
 
 ## 9.1.4 (2017-05-12)
 
@@ -504,6 +538,20 @@ entry.
 - Removed the hours & minutes from the users start date on their profile.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
+
+## 9.0.10 (2017-06-07)
+
+- No changes.
+
+## 9.0.9 (2017-06-02)
+
+- Fix visibility when referencing snippets.
+
+## 9.0.8 (2017-05-31)
+
+- Move uploads from 'public/uploads' to 'public/uploads/system'.
+- Restrict API X-Frame-Options to same origin.
+- Allow users autocomplete by author_id only for authenticated users.
 
 ## 9.0.7 (2017-05-05)
 
