@@ -1,11 +1,6 @@
 module CreatesCommit
   extend ActiveSupport::Concern
 
-  def set_start_branch_to_branch_name
-    branch_exists = @repository.find_branch(@branch_name)
-    @start_branch = @branch_name if branch_exists
-  end
-
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     if can?(current_user, :push_code, @project)
       @project_to_commit_into = @project
