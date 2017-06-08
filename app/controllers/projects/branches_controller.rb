@@ -10,10 +10,10 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
     @branches = BranchesFinder.new(@repository, params).execute
+    @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
     respond_to do |format|
       format.html do
-        paginate_branches
         @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
 
         @max_commits = @branches.reduce(0) do |memo, branch|
@@ -22,7 +22,6 @@ class Projects::BranchesController < Projects::ApplicationController
         end
       end
       format.json do
-        paginate_branches unless params[:show_all]
         render json: @branches.map(&:name)
       end
     end
@@ -104,10 +103,6 @@ class Projects::BranchesController < Projects::ApplicationController
     else
       @project.default_branch || 'master'
     end
-  end
-
-  def paginate_branches
-    @branches = Kaminari.paginate_array(@branches).page(params[:page])
   end
 
   def url_to_autodeploy_setup(project, branch_name)
