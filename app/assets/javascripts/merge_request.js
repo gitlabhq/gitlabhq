@@ -4,7 +4,7 @@
 import 'vendor/jquery.waitforimages';
 import './task_list';
 import './merge_request_tabs';
-import * as CloseReopenReportToggle from './close_reopen_report_toggle';
+import CloseReopenReportToggle from './close_reopen_report_toggle';
 
 (function() {
   this.MergeRequest = (function() {
@@ -130,7 +130,7 @@ import * as CloseReopenReportToggle from './close_reopen_report_toggle';
       const dropdownList = container.querySelector('.js-issuable-close-menu');
       const button = container.querySelector('.js-issuable-close-button');
 
-      const closeReopenReportToggle = new CloseReopenReportToggle.default({
+      const closeReopenReportToggle = new CloseReopenReportToggle({
         dropdownTrigger,
         dropdownList,
         button,
