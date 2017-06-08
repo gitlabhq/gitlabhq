@@ -12,5 +12,5 @@ $(document).on('click', '#peek-show-queries', (e) => {
 
 $(document).on('click', '.js-lineprof-file', (e) => {
   e.preventDefault();
-  $(this).parents('.heading').next('div').toggle();
+  $(e.target).parents('.peek-rblineprof-file').find('.data').toggle();
 });
