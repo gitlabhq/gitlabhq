@@ -160,9 +160,6 @@ import initSettingsPanels from './settings_panels';
         case 'admin:projects:index':
           new ProjectsList();
           break;
-        case 'dashboard:groups:index':
-          new GroupsList();
-          break;
         case 'explore:groups:index':
           new GroupsList();
 
