@@ -1,7 +1,6 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 /* global Notes */
 
-<<<<<<< HEAD
 require('~/merge_request_tabs');
 require('~/commit/pipelines/pipelines_bundle.js');
 require('~/breakpoints');
@@ -9,18 +8,8 @@ require('~/lib/utils/common_utils');
 require('~/diff');
 require('~/single_file_diff');
 require('~/files_comment_button');
+require('~/notes');
 require('vendor/jquery.scrollTo');
-=======
-import '~/merge_request_tabs';
-import '~/commit/pipelines/pipelines_bundle';
-import '~/breakpoints';
-import '~/lib/utils/common_utils';
-import '~/diff';
-import '~/single_file_diff';
-import '~/files_comment_button';
-import '~/notes';
-import 'vendor/jquery.scrollTo';
->>>>>>> a59165e... Merge branch '32888-fix-error-after-missing-note-hash-fragment-in-dom' into 'master'
 
 (function () {
   // TODO: remove this hack!
