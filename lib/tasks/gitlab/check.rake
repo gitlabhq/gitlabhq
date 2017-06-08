@@ -507,11 +507,9 @@ namespace :gitlab do
     desc "GitLab | Check the integrity of the repositories managed by GitLab"
     task check: :environment do
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        namespace_dirs = Dir.glob(File.join(repository_storage['path'], '*'))
-
-        namespace_dirs.each do |namespace_dir|
-          repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
-          repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
+        repo_dirs = Dir.glob(File.join(repository_storage['path'], '**/*'))
+        repo_dirs.each do |repo|
+          check_repo_integrity(repo) if repo.end_with?('.git') && File.directory?(repo)
         end
       end
     end
