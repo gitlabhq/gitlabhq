@@ -94,12 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
             this.isLoading = false;
             $.scrollTo(0);
 
-            const currentPath = gl.utils.mergeUrlParams({ page: page }, window.location.href);
+            const currentPath = gl.utils.mergeUrlParams({ page }, window.location.href);
             window.history.replaceState({
               page: currentPath,
             }, document.title, currentPath);
 
-            this.updateGroups(response.json()); 
+            this.updateGroups(response.json());
             this.updatePagination(response.headers);
           })
           .catch(this.handleErrorResponse);

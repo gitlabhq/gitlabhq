@@ -63,9 +63,40 @@ describe('Groups Component', () => {
       });
     });
 
+    afterEach(() => {
+      component.$destroy();
+    });
+
     it('should render group item correctly', () => {
       expect(component.$el.querySelector('.description').textContent).toBe('');
       expect(component.$el.classList.contains('.no-description')).toBe(false);
+    });
+  });
+
+  describe('user has not access to group', () => {
+    beforeEach((done) => {
+      GroupItemComponent = Vue.extend(groupItemComponent);
+      store = new GroupsStore();
+      group1.permissions.human_group_access = null;
+      group = store.decorateGroup(group1);
+
+      component = new GroupItemComponent({
+        propsData: {
+          group,
+        },
+      }).$mount();
+
+      Vue.nextTick(() => {
+        done();
+      });
+    });
+
+    afterEach(() => {
+      component.$destroy();
+    });
+
+    it('should not display access type', () => {
+      expect(component.$el.querySelector('.access-type')).toBeNull();
     });
   });
 });
