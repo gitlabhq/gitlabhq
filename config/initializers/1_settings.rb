@@ -311,6 +311,12 @@ Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
 Settings.artifacts['path']         = Settings.absolute(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"))
 Settings.artifacts['max_size']   ||= 100 # in megabytes
 
+Settings.artifacts['object_store'] ||= Settingslogic.new({})
+Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
+Settings.artifacts['object_store']['remote_directory'] ||= nil
+# Convert upload connection settings to use symbol keys, to make Fog happy
+Settings.artifacts['object_store']['connection']&.deep_symbolize_keys!
+
 #
 # Registry
 #
