@@ -14,6 +14,6 @@ class GroupMilestone < GlobalMilestone
   end
 
   def issues_finder_params
-    { group_id: group.id }
+    super.merge({ group_id: group.id })
   end
 end
