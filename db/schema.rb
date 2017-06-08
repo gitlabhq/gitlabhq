@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170602003304) do
+ActiveRecord::Schema.define(version: 20170603200744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1640,7 +1640,6 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.text "note"
     t.string "unlock_token"
     t.datetime "otp_grace_period_started_at"
-    t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
     t.string "incoming_email_token"
     t.string "organization"
@@ -1653,6 +1652,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.boolean "support_bot"
     t.string "preferred_language"
     t.string "rss_token"
+    t.boolean "external_email", default: false, null: false
+    t.string "email_provider"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

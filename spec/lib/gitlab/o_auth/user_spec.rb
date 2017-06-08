@@ -28,11 +28,11 @@ describe Gitlab::OAuth::User, lib: true do
     end
   end
 
-  describe '#save' do
-    def stub_omniauth_config(messages)
-      allow(Gitlab.config.omniauth).to receive_messages(messages)
-    end
+  def stub_omniauth_config(messages)
+    allow(Gitlab.config.omniauth).to receive_messages(messages)
+  end
 
+  describe '#save' do
     def stub_ldap_config(messages)
       allow(Gitlab::LDAP::Config).to receive_messages(messages)
     end
@@ -374,6 +374,42 @@ describe Gitlab::OAuth::User, lib: true do
             expect(gl_user).not_to be_blocked
           end
         end
+      end
+    end
+  end
+
+  describe 'updating email' do
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+
+    before do
+      stub_omniauth_config(sync_email_from_provider: 'my-provider')
+    end
+
+    context "when provider sets an email" do
+      it "updates the user email" do
+        expect(gl_user.email).to eq(info_hash[:email])
+      end
+
+      it "has external_email set to true" do
+        expect(gl_user.external_email?).to be(true)
+      end
+
+      it "has email_provider set to provider" do
+        expect(gl_user.email_provider).to eql 'my-provider'
+      end
+    end
+
+    context "when provider doesn't set an email" do
+      before do
+        info_hash.delete(:email)
+      end
+
+      it "does not update the user email" do
+        expect(gl_user.email).not_to eq(info_hash[:email])
+      end
+
+      it "has external_email set to false" do
+        expect(gl_user.external_email?).to be(false)
       end
     end
   end
