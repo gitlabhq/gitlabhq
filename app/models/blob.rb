@@ -155,6 +155,10 @@ class Blob < SimpleDelegator
     @extension ||= extname.downcase.delete('.')
   end
 
+  def file_type
+    Gitlab::FileDetector.type_of(path)
+  end
+
   def video?
     UploaderHelper::VIDEO_EXT.include?(extension)
   end
