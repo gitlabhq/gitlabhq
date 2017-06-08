@@ -17,7 +17,7 @@ module ProtectedRef
   class_methods do
     def protected_ref_access_levels(*types)
       types.each do |type|
-        has_many :"#{type}_access_levels", dependent: :destroy
+        has_many :"#{type}_access_levels", dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
         validates :"#{type}_access_levels", length: { is: 1, message: "are restricted to a single instance per #{self.model_name.human}." }
 

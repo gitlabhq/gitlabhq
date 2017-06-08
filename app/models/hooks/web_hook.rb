@@ -12,7 +12,7 @@ class WebHook < ActiveRecord::Base
   default_value_for :repository_update_events, false
   default_value_for :enable_ssl_verification, true
 
-  has_many :web_hook_logs, dependent: :destroy
+  has_many :web_hook_logs, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   scope :push_hooks, -> { where(push_events: true) }
   scope :tag_push_hooks, -> { where(tag_push_events: true) }

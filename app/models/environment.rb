@@ -6,7 +6,7 @@ class Environment < ActiveRecord::Base
 
   belongs_to :project, required: true, validate: true
 
-  has_many :deployments, dependent: :destroy
+  has_many :deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :last_deployment, -> { order('deployments.id DESC') }, class_name: 'Deployment'
 
   before_validation :nullify_external_url
