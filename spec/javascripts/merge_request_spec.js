@@ -2,7 +2,7 @@
 /* global MergeRequest */
 
 import '~/merge_request';
-import * as CloseReopenReportToggle from '~/close_reopen_report_toggle';
+import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 
 (function() {
   describe('MergeRequest', function() {
@@ -40,15 +40,14 @@ import * as CloseReopenReportToggle from '~/close_reopen_report_toggle';
     });
 
     describe('initCloseReopenReport', () => {
-      it('inits a new CloseReopenReportToggle instance and calls .initDroplab', () => {
+      it('calls .initDroplab', () => {
         const container = jasmine.createSpyObj('container', ['querySelector']);
-        const closeReopenReportToggle = jasmine.createSpyObj('closeReopenReportToggle', ['initDroplab']);
         const dropdownTrigger = {};
         const dropdownList = {};
         const button = {};
 
+        spyOn(CloseReopenReportToggle.prototype, 'initDroplab');
         spyOn(document, 'querySelector').and.returnValue(container);
-        spyOn(CloseReopenReportToggle, 'default').and.returnValue(closeReopenReportToggle);
         container.querySelector.and.returnValues(dropdownTrigger, dropdownList, button);
 
         MergeRequest.initCloseReopenReport();
@@ -57,12 +56,7 @@ import * as CloseReopenReportToggle from '~/close_reopen_report_toggle';
         expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-toggle');
         expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-menu');
         expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-button');
-        expect(CloseReopenReportToggle.default).toHaveBeenCalledWith({
-          dropdownTrigger,
-          dropdownList,
-          button,
-        });
-        expect(closeReopenReportToggle.initDroplab).toHaveBeenCalled();
+        expect(CloseReopenReportToggle.prototype.initDroplab).toHaveBeenCalled();
       });
     });
   });

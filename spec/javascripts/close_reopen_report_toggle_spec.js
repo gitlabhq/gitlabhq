@@ -1,5 +1,5 @@
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
-import * as DropLab from '~/droplab/drop_lab';
+import DropLab from '~/droplab/drop_lab';
 
 describe('CloseReopenReportToggle', () => {
   describe('class constructor', () => {
@@ -32,7 +32,6 @@ describe('CloseReopenReportToggle', () => {
   describe('initDroplab', () => {
     let closeReopenReportToggle;
     const dropdownList = jasmine.createSpyObj('dropdownList', ['querySelector']);
-    const droplab = jasmine.createSpyObj('droplab', ['init']);
     const dropdownTrigger = {};
     const button = {};
     const reopenItem = {};
@@ -40,7 +39,7 @@ describe('CloseReopenReportToggle', () => {
     const config = {};
 
     beforeEach(() => {
-      spyOn(DropLab, 'default').and.returnValue(droplab);
+      spyOn(DropLab.prototype, 'init');
       dropdownList.querySelector.and.returnValues(reopenItem, closeItem);
 
       closeReopenReportToggle = new CloseReopenReportToggle({
@@ -61,17 +60,16 @@ describe('CloseReopenReportToggle', () => {
       expect(closeReopenReportToggle.closeItem).toBe(closeItem);
     });
 
-    it('instantiates DropLab and set .droplab', () => {
-      expect(DropLab.default).toHaveBeenCalled();
-      expect(closeReopenReportToggle.droplab).toBe(droplab);
+    it('sets .droplab', () => {
+      expect(closeReopenReportToggle.droplab).toEqual(jasmine.any(Object));
     });
 
     it('calls .setConfig', () => {
       expect(closeReopenReportToggle.setConfig).toHaveBeenCalled();
     });
 
-    it('calls .droplab.init', () => {
-      expect(droplab.init).toHaveBeenCalledWith(
+    it('calls droplab.init', () => {
+      expect(DropLab.prototype.init).toHaveBeenCalledWith(
         dropdownTrigger,
         dropdownList,
         jasmine.any(Array),

@@ -1,4 +1,4 @@
-import * as DropLab from './droplab/drop_lab';
+import DropLab from './droplab/drop_lab';
 import ISetter from './droplab/plugins/input_setter';
 
 // Todo: Remove this when fixing issue in input_setter plugin
@@ -15,7 +15,7 @@ class CloseReopenReportToggle {
     this.reopenItem = this.dropdownList.querySelector('.reopen-item');
     this.closeItem = this.dropdownList.querySelector('.close-item');
 
-    this.droplab = new DropLab.default();
+    this.droplab = new DropLab();
 
     const config = this.setConfig();
 
