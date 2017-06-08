@@ -62,7 +62,7 @@ module Ci
 
         yield(pipeline) if block_given?
 
-        Ci::CreatePipelineBuildsService
+        Ci::CreatePipelineStagesService
           .new(project, current_user)
           .execute(pipeline)
       end
