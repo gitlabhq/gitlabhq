@@ -8,14 +8,14 @@ describe Gitlab::LDAP::Access, lib: true do
   describe '#find_ldap_user' do
     it 'finds a user by dn first' do
       expect(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
-      expect(user).not_to receive(:ldap_email?)
+      expect(user).not_to receive(:external_email?)
 
       access.find_ldap_user
     end
 
     it 'finds a user by email if the email came from LDAP' do
       expect(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(nil)
-      expect(user).to receive(:ldap_email?).and_return(true)
+      expect(user).to receive(:external_email?).and_return(true)
       expect(Gitlab::LDAP::Person).to receive(:find_by_email)
 
       access.find_ldap_user

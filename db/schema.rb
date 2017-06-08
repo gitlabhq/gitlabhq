@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170602003304) do
+ActiveRecord::Schema.define(version: 20170603200744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -654,17 +654,6 @@ ActiveRecord::Schema.define(version: 20170602003304) do
 
   add_index "issue_assignees", ["issue_id", "user_id"], name: "index_issue_assignees_on_issue_id_and_user_id", unique: true, using: :btree
   add_index "issue_assignees", ["user_id"], name: "index_issue_assignees_on_user_id", using: :btree
-
-  create_table "issue_links", force: :cascade do |t|
-    t.integer "source_id", null: false
-    t.integer "target_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "issue_links", ["source_id", "target_id"], name: "index_issue_links_on_source_id_and_target_id", unique: true, using: :btree
-  add_index "issue_links", ["source_id"], name: "index_issue_links_on_source_id", using: :btree
-  add_index "issue_links", ["target_id"], name: "index_issue_links_on_target_id", using: :btree
 
   create_table "issue_metrics", force: :cascade do |t|
     t.integer "issue_id", null: false
@@ -1682,7 +1671,6 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.text "note"
     t.string "unlock_token"
     t.datetime "otp_grace_period_started_at"
-    t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
     t.string "incoming_email_token"
     t.string "organization"
@@ -1695,6 +1683,8 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.boolean "support_bot"
     t.string "preferred_language"
     t.string "rss_token"
+    t.boolean "external_email", default: false, null: false
+    t.string "email_provider"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1790,8 +1780,6 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
-  add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
-  add_foreign_key "issue_links", "issues", column: "target_id", name: "fk_e71bb44f1f", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade

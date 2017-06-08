@@ -70,7 +70,7 @@ module Gitlab
         found_user = Gitlab::LDAP::Person.find_by_dn(ldap_identity.extern_uid, adapter)
         return found_user if found_user
 
-        if user.ldap_email?
+        if user.external_email? && [nil, provider].include?(user.email_provider)
           Gitlab::LDAP::Person.find_by_email(user.email, adapter)
         end
       end

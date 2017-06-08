@@ -899,38 +899,6 @@ describe SystemNoteService, services: true do
     end
   end
 
-  describe '.relate_issue' do
-    let(:noteable_ref) { create(:issue) }
-
-    subject { described_class.relate_issue(noteable, noteable_ref, author) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'relate' }
-    end
-
-    context 'when issue marks another as related' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "marked this issue as related to #{noteable_ref.to_reference(project)}"
-      end
-    end
-  end
-
-  describe '.unrelate_issue' do
-    let(:noteable_ref) { create(:issue) }
-
-    subject { described_class.unrelate_issue(noteable, noteable_ref, author) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'unrelate' }
-    end
-
-    context 'when issue relation is removed' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "removed the relation with #{noteable_ref.to_reference(project)}"
-      end
-    end
-  end
-
   describe '.approve_mr' do
     let(:noteable)    { create(:merge_request, source_project: project) }
     subject { described_class.approve_mr(noteable, author) }

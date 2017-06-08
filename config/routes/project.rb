@@ -311,8 +311,6 @@ constraints(ProjectUrlConstrainer.new) do
           post :bulk_update
           post :export_csv
         end
-
-        resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
       end
 
       resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
