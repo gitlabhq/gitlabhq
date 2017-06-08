@@ -165,6 +165,18 @@ module Gitlab
       def file_identifier
         "#{file_path}-#{new_file?}-#{deleted_file?}-#{renamed_file?}"
       end
+
+      def diffable?
+        repository.attributes(file_path).fetch('diff') { true }
+      end
+
+      def binary?
+        old_blob&.binary? || new_blob&.binary?
+      end
+
+      def text?
+        !binary?
+      end
     end
   end
 end
