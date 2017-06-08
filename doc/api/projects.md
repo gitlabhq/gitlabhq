@@ -14,7 +14,7 @@ Constants for project visibility levels are next:
   The project can be cloned by any logged in user.
 
 * `public`:
-  The project can be cloned without any authentication.
+  The project can be accessed without any authentication.
 
 ## List projects
 
