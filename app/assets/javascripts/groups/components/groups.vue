@@ -1,5 +1,5 @@
 <script>
-import TablePagination from '~/vue_shared/components/table_pagination.vue';
+import tablePagination from '~/vue_shared/components/table_pagination.vue';
 import eventHub from '../event_hub';
 
 export default {
@@ -14,7 +14,7 @@ export default {
     },
   },
   components: {
-    TablePagination,
+    tablePagination,
   },
   methods: {
     change(page) {
