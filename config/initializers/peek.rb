@@ -26,3 +26,7 @@ class PEEK_DB_CLIENT
 end
 
 PEEK_DB_VIEW.prepend ::Gitlab::PerformanceBar::PeekQueryTracker
+
+class Peek::Views::PerformanceBar::ProcessUtilization
+  prepend ::Gitlab::PerformanceBar::PeekPerformanceBarWithRackBody
+end
