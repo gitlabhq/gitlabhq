@@ -674,7 +674,7 @@ Will return `200 OK` on success, or `404 Not found` if either user or email cann
 Blocks the specified user.  Available only for admin.
 
 ```
-POST /users/:id/block
+PUT /users/:id/block
 ```
 
 Parameters:
@@ -689,7 +689,7 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 Unblocks the specified user.  Available only for admin.
 
 ```
-POST /users/:id/unblock
+PUT /users/:id/unblock
 ```
 
 Parameters:
