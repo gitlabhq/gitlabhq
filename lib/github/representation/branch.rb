@@ -30,7 +30,7 @@ module Github
       end
 
       def confirm_branch_existence
-        @exists = commit_exists?
+        @exists = true
       end
 
       def valid?
