@@ -13,7 +13,6 @@ class GroupPolicy < BasePolicy
 
     can_read = false
     can_read ||= globally_viewable
-    can_read ||= member
     can_read ||= @user.admin?
     can_read ||= @user.auditor?
     can_read ||= access_level >= GroupMember::GUEST
