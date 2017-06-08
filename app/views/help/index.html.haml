@@ -4,7 +4,7 @@
     Community Edition
     - if user_signed_in?
       %span= Gitlab::VERSION
-      %small= Gitlab::REVISION
+      %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
       = version_status_badge
   %p.slead
     GitLab is open source software to collaborate on code.
