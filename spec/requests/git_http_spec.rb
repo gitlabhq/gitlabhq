@@ -14,6 +14,7 @@ describe 'Git HTTP requests', lib: true do
         end
       end
     end
+<<<<<<< HEAD
 
     context "when only username is provided" do
       it "responds to downloads with status 401 Unauthorized" do
@@ -68,6 +69,22 @@ describe 'Git HTTP requests', lib: true do
       context "when authentication fails" do
         it "responds to uploads with status 401 Unauthorized" do
           upload(path, user: user.username, password: "wrong-password") do |response|
+=======
+
+    context "when only username is provided" do
+      it "responds to downloads with status 401 Unauthorized" do
+        download(path, user: user.username) do |response|
+          expect(response).to have_http_status(:unauthorized)
+          expect(response.header['WWW-Authenticate']).to start_with('Basic ')
+        end
+      end
+    end
+
+    context "when username and password are provided" do
+      context "when authentication fails" do
+        it "responds to downloads with status 401 Unauthorized" do
+          download(path, user: user.username, password: "wrong-password") do |response|
+>>>>>>> master
             expect(response).to have_http_status(:unauthorized)
             expect(response.header['WWW-Authenticate']).to start_with('Basic ')
           end
@@ -75,10 +92,188 @@ describe 'Git HTTP requests', lib: true do
       end
 
       context "when authentication succeeds" do
+<<<<<<< HEAD
+        it "does not respond to uploads with status 401 Unauthorized" do
+          upload(path, user: user.username, password: user.password) do |response|
+=======
+        it "does not respond to downloads with status 401 Unauthorized" do
+          download(path, user: user.username, password: user.password) do |response|
+>>>>>>> master
+            expect(response).not_to have_http_status(:unauthorized)
+            expect(response.header['WWW-Authenticate']).to be_nil
+          end
+        end
+      end
+    end
+  end
+
+<<<<<<< HEAD
+  shared_examples_for 'pulls are allowed' do
+    it do
+      download(path, env) do |response|
+        expect(response).to have_http_status(:ok)
+        expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+      end
+    end
+  end
+
+  shared_examples_for 'pushes are allowed' do
+    it do
+      upload(path, env) do |response|
+        expect(response).to have_http_status(:ok)
+        expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+      end
+    end
+  end
+
+  describe "User with no identities" do
+    let(:user) { create(:user) }
+
+    context "when the project doesn't exist" do
+      let(:path) { 'doesnt/exist.git' }
+
+      it_behaves_like 'pulls require Basic HTTP Authentication'
+      it_behaves_like 'pushes require Basic HTTP Authentication'
+
+      context 'when authenticated' do
+        it 'rejects downloads and uploads with 404 Not Found' do
+          download_or_upload(path, user: user.username, password: user.password) do |response|
+            expect(response).to have_http_status(:not_found)
+          end
+=======
+  shared_examples 'pushes require Basic HTTP Authentication' do
+    context "when no credentials are provided" do
+      it "responds to uploads with status 401 Unauthorized (no project existence information leak)" do
+        upload(path) do |response|
+          expect(response).to have_http_status(:unauthorized)
+          expect(response.header['WWW-Authenticate']).to start_with('Basic ')
+>>>>>>> master
+        end
+      end
+    end
+
+<<<<<<< HEAD
+    context "when requesting the Wiki" do
+      let(:wiki) { ProjectWiki.new(project) }
+      let(:path) { "/#{wiki.repository.path_with_namespace}.git" }
+
+      context "when the project is public" do
+        let(:project) { create(:project, :repository, :public, :wiki_enabled) }
+
+        it_behaves_like 'pushes require Basic HTTP Authentication'
+
+        context 'when unauthenticated' do
+          let(:env) { {} }
+
+          it_behaves_like 'pulls are allowed'
+
+          it "responds to pulls with the wiki's repo" do
+            download(path) do |response|
+              json_body = ActiveSupport::JSON.decode(response.body)
+
+              expect(json_body['RepoPath']).to include(wiki.repository.path_with_namespace)
+            end
+          end
+=======
+    context "when only username is provided" do
+      it "responds to uploads with status 401 Unauthorized" do
+        upload(path, user: user.username) do |response|
+          expect(response).to have_http_status(:unauthorized)
+          expect(response.header['WWW-Authenticate']).to start_with('Basic ')
+>>>>>>> master
+        end
+      end
+    end
+
+<<<<<<< HEAD
+        context 'when authenticated' do
+          let(:env) { { user: user.username, password: user.password } }
+
+          context 'and as a developer on the team' do
+            before do
+              project.team << [user, :developer]
+            end
+
+            context 'but the repo is disabled' do
+              let(:project) { create(:project, :repository, :public, :repository_disabled, :wiki_enabled) }
+
+              it_behaves_like 'pulls are allowed'
+              it_behaves_like 'pushes are allowed'
+            end
+          end
+
+          context 'and not on the team' do
+            it_behaves_like 'pulls are allowed'
+
+            it 'rejects pushes with 403 Forbidden' do
+              upload(path, env) do |response|
+                expect(response).to have_http_status(:forbidden)
+                expect(response.body).to eq(git_access_wiki_error(:write_to_wiki))
+              end
+            end
+=======
+    context "when username and password are provided" do
+      context "when authentication fails" do
+        it "responds to uploads with status 401 Unauthorized" do
+          upload(path, user: user.username, password: "wrong-password") do |response|
+            expect(response).to have_http_status(:unauthorized)
+            expect(response.header['WWW-Authenticate']).to start_with('Basic ')
+>>>>>>> master
+          end
+        end
+      end
+
+<<<<<<< HEAD
+      context "when the project is private" do
+        let(:project) { create(:project, :repository, :private, :wiki_enabled) }
+
+        it_behaves_like 'pulls require Basic HTTP Authentication'
+        it_behaves_like 'pushes require Basic HTTP Authentication'
+
+        context 'when authenticated' do
+          context 'and as a developer on the team' do
+            before do
+              project.team << [user, :developer]
+            end
+
+            context 'but the repo is disabled' do
+              let(:project) { create(:project, :repository, :private, :repository_disabled, :wiki_enabled) }
+
+              it 'allows clones' do
+                download(path, user: user.username, password: user.password) do |response|
+                  expect(response).to have_http_status(:ok)
+                end
+              end
+
+              it 'pushes are allowed' do
+                upload(path, user: user.username, password: user.password) do |response|
+                  expect(response).to have_http_status(:ok)
+                end
+              end
+            end
+          end
+
+          context 'and not on the team' do
+            it 'rejects clones with 404 Not Found' do
+              download(path, user: user.username, password: user.password) do |response|
+                expect(response).to have_http_status(:not_found)
+                expect(response.body).to eq(git_access_error(:project_not_found))
+              end
+            end
+
+            it 'rejects pushes with 404 Not Found' do
+              upload(path, user: user.username, password: user.password) do |response|
+                expect(response).to have_http_status(:not_found)
+                expect(response.body).to eq(git_access_error(:project_not_found))
+              end
+            end
+=======
+      context "when authentication succeeds" do
         it "does not respond to uploads with status 401 Unauthorized" do
           upload(path, user: user.username, password: user.password) do |response|
             expect(response).not_to have_http_status(:unauthorized)
             expect(response.header['WWW-Authenticate']).to be_nil
+>>>>>>> master
           end
         end
       end
@@ -94,6 +289,25 @@ describe 'Git HTTP requests', lib: true do
     end
   end
 
+<<<<<<< HEAD
+      context "when the project is public" do
+        let(:project) { create(:project, :repository, :public) }
+
+        it_behaves_like 'pushes require Basic HTTP Authentication'
+
+        context 'when not authenticated' do
+          let(:env) { {} }
+
+          it_behaves_like 'pulls are allowed'
+        end
+
+        context "when authenticated" do
+          let(:env) { { user: user.username, password: user.password } }
+
+          context 'as a developer on the team' do
+            before do
+              project.team << [user, :developer]
+=======
   shared_examples_for 'pushes are allowed' do
     it do
       upload(path, env) do |response|
@@ -157,9 +371,47 @@ describe 'Git HTTP requests', lib: true do
 
               it_behaves_like 'pulls are allowed'
               it_behaves_like 'pushes are allowed'
+>>>>>>> master
+            end
+
+<<<<<<< HEAD
+            it_behaves_like 'pulls are allowed'
+            it_behaves_like 'pushes are allowed'
+
+            context 'but git-receive-pack over HTTP is disabled in config' do
+              before do
+                allow(Gitlab.config.gitlab_shell).to receive(:receive_pack).and_return(false)
+              end
+
+              it 'rejects pushes with 403 Forbidden' do
+                upload(path, env) do |response|
+                  expect(response).to have_http_status(:forbidden)
+                  expect(response.body).to eq(git_access_error(:receive_pack_disabled_over_http))
+                end
+              end
+            end
+
+            context 'but git-upload-pack over HTTP is disabled in config' do
+              it "rejects pushes with 403 Forbidden" do
+                allow(Gitlab.config.gitlab_shell).to receive(:upload_pack).and_return(false)
+
+                download(path, env) do |response|
+                  expect(response).to have_http_status(:forbidden)
+                  expect(response.body).to eq(git_access_error(:upload_pack_disabled_over_http))
+                end
+              end
             end
           end
 
+          context 'and not a member of the team' do
+            it_behaves_like 'pulls are allowed'
+
+            it 'rejects pushes with 403 Forbidden' do
+              upload(path, env) do |response|
+                expect(response).to have_http_status(:forbidden)
+                expect(response.body).to eq(change_access_error(:push_code))
+              end
+=======
           context 'and not on the team' do
             it_behaves_like 'pulls are allowed'
 
@@ -183,11 +435,37 @@ describe 'Git HTTP requests', lib: true do
           context 'and as a developer on the team' do
             before do
               project.team << [user, :developer]
+>>>>>>> master
             end
 
             context 'but the repo is disabled' do
               let(:project) { create(:project, :repository, :private, :repository_disabled, :wiki_enabled) }
 
+<<<<<<< HEAD
+        context 'when the repo is public' do
+          context 'but the repo is disabled' do
+            let(:project) { create(:project, :public, :repository, :repository_disabled) }
+            let(:path) { "#{project.path_with_namespace}.git" }
+            let(:env) { {} }
+
+            it_behaves_like 'pulls require Basic HTTP Authentication'
+            it_behaves_like 'pushes require Basic HTTP Authentication'
+          end
+
+          context 'but the repo is enabled' do
+            let(:project) { create(:project, :public, :repository, :repository_enabled) }
+            let(:path) { "#{project.path_with_namespace}.git" }
+            let(:env) { {} }
+
+            it_behaves_like 'pulls are allowed'
+          end
+
+          context 'but only project members are allowed' do
+            let(:project) { create(:project, :public, :repository, :repository_private) }
+
+            it_behaves_like 'pulls require Basic HTTP Authentication'
+            it_behaves_like 'pushes require Basic HTTP Authentication'
+=======
               it 'allows clones' do
                 download(path, user: user.username, password: user.password) do |response|
                   expect(response).to have_http_status(:ok)
@@ -216,6 +494,7 @@ describe 'Git HTTP requests', lib: true do
                 expect(response.body).to eq(git_access_error(:project_not_found))
               end
             end
+>>>>>>> master
           end
         end
       end
@@ -314,134 +593,6 @@ describe 'Git HTTP requests', lib: true do
 
             it_behaves_like 'pulls require Basic HTTP Authentication'
             it_behaves_like 'pushes require Basic HTTP Authentication'
-          end
-        end
-      end
-
-      context "when Kerberos token is provided" do
-        let(:env) { { spnego_request_token: 'opaque_request_token' } }
-
-        before do
-          allow_any_instance_of(Projects::GitHttpController).to receive(:allow_kerberos_spnego_auth?).and_return(true)
-        end
-
-        context "when authentication fails because of invalid Kerberos token" do
-          before do
-            allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return(nil)
-          end
-
-          it "responds with status 401" do
-            download(path, env) do |response|
-              expect(response.status).to eq(401)
-            end
-          end
-        end
-
-        context "when authentication fails because of unknown Kerberos identity" do
-          before do
-            allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
-          end
-
-          it "responds with status 401" do
-            download(path, env) do |response|
-              expect(response.status).to eq(401)
-            end
-          end
-        end
-
-        context "when authentication succeeds" do
-          before do
-            allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
-            user.identities.create!(provider: "kerberos", extern_uid: "mylogin@FOO.COM")
-          end
-
-          context "when the user has access to the project" do
-            before do
-              project.team << [user, :master]
-            end
-
-            context "when the user is blocked" do
-              before do
-                user.block
-                project.team << [user, :master]
-              end
-
-              it "responds with status 404" do
-                download(path, env) do |response|
-                  expect(response.status).to eq(404)
-                end
-              end
-            end
-
-            context "when the user isn't blocked", :redis do
-              it "responds with status 200" do
-                download(path, env) do |response|
-                  expect(response.status).to eq(200)
-                end
-              end
-
-              it 'updates the user last activity' do
-                download(path, env) do |_response|
-                  expect(user).to have_an_activity_record
-                end
-              end
-            end
-
-            it "complies with RFC4559" do
-              allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_response_token).and_return("opaque_response_token")
-              download(path, env) do |response|
-                expect(response.headers['WWW-Authenticate'].split("\n")).to include("Negotiate #{::Base64.strict_encode64('opaque_response_token')}")
-              end
-            end
-          end
-
-          context "when the user doesn't have access to the project" do
-            it "responds with status 404" do
-              download(path, env) do |response|
-                expect(response.status).to eq(404)
-              end
-            end
-
-            it "complies with RFC4559" do
-              allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_response_token).and_return("opaque_response_token")
-              download(path, env) do |response|
-                expect(response.headers['WWW-Authenticate'].split("\n")).to include("Negotiate #{::Base64.strict_encode64('opaque_response_token')}")
-              end
-            end
-          end
-        end
-      end
-
-      context "when repository is above size limit" do
-        let(:env) { { user: user.username, password: user.password } }
-
-        before do
-          project.team << [user, :master]
-        end
-
-        it 'responds with status 403' do
-          allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
-
-          upload(path, env) do |response|
-            expect(response).to have_http_status(403)
-          end
-        end
-      end
-
-      context 'when license is not provided' do
-        let(:env) { { user: user.username, password: user.password } }
-
-        before do
-          project.team << [user, :master]
-        end
-
-        it 'responds with status 403' do
-          msg = 'No GitLab Enterprise Edition license has been provided yet. Pushing code and creation of issues and merge requests has been disabled. Ask an admin to upload a license to activate this functionality.'
-          allow(License).to receive(:current).and_return(nil)
-
-          upload(path, env) do |response|
-            expect(response).to have_http_status(403)
-            expect(response.body).to eq(msg)
           end
         end
       end
@@ -601,13 +752,17 @@ describe 'Git HTTP requests', lib: true do
             end
 
             context "when the user doesn't have access to the project" do
+<<<<<<< HEAD
               it "pulls get status 404" do
+=======
+              it "pulls get status 404 Not Found" do
+>>>>>>> master
                 download(path, user: user.username, password: user.password) do |response|
                   expect(response).to have_http_status(:not_found)
                 end
               end
 
-              it "uploads get status 404" do
+              it "uploads get status 404 Not Found" do
                 upload(path, user: user.username, password: user.password) do |response|
                   expect(response).to have_http_status(:not_found)
                 end
@@ -691,7 +846,7 @@ describe 'Git HTTP requests', lib: true do
 
               it_behaves_like 'can download code only'
 
-              it 'downloads from other project get status 403' do
+              it 'downloads from other project get status 403 Forbidden' do
                 clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
 
                 expect(response).to have_http_status(:forbidden)
@@ -703,7 +858,7 @@ describe 'Git HTTP requests', lib: true do
 
               it_behaves_like 'can download code only'
 
-              it 'downloads from other project get status 404' do
+              it 'downloads from other project get status 404 Not Found' do
                 clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
 
                 expect(response).to have_http_status(:not_found)
@@ -711,8 +866,209 @@ describe 'Git HTTP requests', lib: true do
             end
           end
         end
+<<<<<<< HEAD
       end
 
+      context "when the project path doesn't end in .git" do
+        let(:project) { create(:project, :repository, :public, path: 'project.git-project') }
+
+        context "GET info/refs" do
+          let(:path) { "/#{project.path_with_namespace}/info/refs" }
+
+          context "when no params are added" do
+            before { get path }
+
+            it "redirects to the .git suffix version" do
+              expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs")
+            end
+          end
+
+          context "when the upload-pack service is requested" do
+            let(:params) { { service: 'git-upload-pack' } }
+            before { get path, params }
+
+            it "redirects to the .git suffix version" do
+              expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
+            end
+          end
+
+          context "when the receive-pack service is requested" do
+            let(:params) { { service: 'git-receive-pack' } }
+            before { get path, params }
+
+            it "redirects to the .git suffix version" do
+              expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
+=======
+        
+        context "when Kerberos token is provided" do
+          let(:env) { { spnego_request_token: 'opaque_request_token' } }
+
+          before do
+            allow_any_instance_of(Projects::GitHttpController).to receive(:allow_kerberos_spnego_auth?).and_return(true)
+          end
+
+          context "when authentication fails because of invalid Kerberos token" do
+            before do
+              allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return(nil)
+            end
+
+            it "responds with status 401 Unauthorized" do
+              download(path, env) do |response|
+                expect(response).to have_http_status(:unauthorized)
+              end
+            end
+          end
+
+          context "when authentication fails because of unknown Kerberos identity" do
+            before do
+              allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
+            end
+
+            it "responds with status 401 Unauthorized" do
+              download(path, env) do |response|
+                expect(response).to have_http_status(:unauthorized)
+              end
+            end
+          end
+
+          context "when authentication succeeds" do
+            before do
+              allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
+              user.identities.create!(provider: "kerberos", extern_uid: "mylogin@FOO.COM")
+            end
+
+            context "when the user has access to the project" do
+              before do
+                project.team << [user, :master]
+              end
+
+              context "when the user is blocked" do
+                before do
+                  user.block
+                  project.team << [user, :master]
+                end
+
+                it "responds with status 403 Forbidden" do
+                  download(path, env) do |response|
+                    expect(response).to have_http_status(:forbidden)
+                  end
+                end
+              end
+
+              context "when the user isn't blocked", :redis do
+                it "responds with status 200 OK" do
+                  download(path, env) do |response|
+                    expect(response).to have_http_status(:ok)
+                  end
+                end
+
+                it 'updates the user last activity' do
+                  download(path, env) do |_response|
+                    expect(user).to have_an_activity_record
+                  end
+                end
+              end
+
+              it "complies with RFC4559" do
+                allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_response_token).and_return("opaque_response_token")
+                download(path, env) do |response|
+                  expect(response.headers['WWW-Authenticate'].split("\n")).to include("Negotiate #{::Base64.strict_encode64('opaque_response_token')}")
+                end
+              end
+            end
+
+            context "when the user doesn't have access to the project" do
+              it "responds with status 404 Not Found" do
+                download(path, env) do |response|
+                  expect(response).to have_http_status(:not_found)
+                end
+              end
+
+              it "complies with RFC4559" do
+                allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_response_token).and_return("opaque_response_token")
+                download(path, env) do |response|
+                  expect(response.headers['WWW-Authenticate'].split("\n")).to include("Negotiate #{::Base64.strict_encode64('opaque_response_token')}")
+                end
+              end
+>>>>>>> master
+            end
+          end
+
+<<<<<<< HEAD
+          context "when the params are anything else" do
+            let(:params) { { service: 'git-implode-pack' } }
+            before { get path, params }
+
+            it "redirects to the sign-in page" do
+              expect(response).to redirect_to(new_user_session_path)
+            end
+          end
+        end
+
+        context "POST git-upload-pack" do
+          it "fails to find a route" do
+            expect { clone_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
+          end
+        end
+
+        context "POST git-receive-pack" do
+          it "failes to find a route" do
+            expect { push_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
+=======
+        context "when repository is above size limit" do
+          let(:env) { { user: user.username, password: user.password } }
+
+          before do
+            project.team << [user, :master]
+          end
+
+          it 'responds with status 403 Forbidden' do
+            allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
+
+            upload(path, env) do |response|
+              expect(response).to have_http_status(:forbidden)
+            end
+          end
+        end
+
+        context 'when license is not provided' do
+          let(:env) { { user: user.username, password: user.password } }
+
+          before do
+            project.team << [user, :master]
+          end
+
+          it 'responds with status 403 Forbidden' do
+            msg = 'No GitLab Enterprise Edition license has been provided yet. Pushing code and creation of issues and merge requests has been disabled. Ask an admin to upload a license to activate this functionality.'
+            allow(License).to receive(:current).and_return(nil)
+
+            upload(path, env) do |response|
+              expect(response).to have_http_status(:forbidden)
+              expect(response.body).to eq(msg)
+            end
+>>>>>>> master
+          end
+        end
+      end
+
+<<<<<<< HEAD
+      context "retrieving an info/refs file" do
+        let(:project) { create(:project, :repository, :public) }
+
+        context "when the file exists" do
+          before do
+            # Provide a dummy file in its place
+            allow_any_instance_of(Repository).to receive(:blob_at).and_call_original
+            allow_any_instance_of(Repository).to receive(:blob_at).with('b83d6e391c22777fca1ed3012fce84f633d7fed0', 'info/refs') do
+              Gitlab::Git::Blob.find(project.repository, 'master', 'bar/branch-test.txt')
+            end
+
+            get "/#{project.path_with_namespace}/blob/master/info/refs"
+          end
+
+          it "returns the file" do
+            expect(response).to have_http_status(:ok)
+=======
       context "when the project path doesn't end in .git" do
         let(:project) { create(:project, :repository, :public, path: 'project.git-project') }
 
@@ -764,10 +1120,12 @@ describe 'Git HTTP requests', lib: true do
         context "POST git-receive-pack" do
           it "failes to find a route" do
             expect { push_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
+>>>>>>> master
           end
         end
-      end
 
+<<<<<<< HEAD
+=======
       context "retrieving an info/refs file" do
         let(:project) { create(:project, :repository, :public) }
 
@@ -787,6 +1145,7 @@ describe 'Git HTTP requests', lib: true do
           end
         end
 
+>>>>>>> master
         context "when the file does not exist" do
           before { get "/#{project.path_with_namespace}/blob/master/info/refs" }
 

@@ -16,6 +16,7 @@
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
+#     feature_availability_check: boolean (default: true)
 #     iids: integer[]
 #
 class IssuableFinder
@@ -25,11 +26,15 @@ class IssuableFinder
   ARRAY_PARAMS = { label_name: [], iids: [] }.freeze
   VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
 
+  DEFAULT_PARAMS = {
+    feature_availability_check: true
+  }.freeze
+
   attr_accessor :current_user, :params
 
   def initialize(current_user, params = {})
     @current_user = current_user
-    @params = params
+    @params = DEFAULT_PARAMS.merge(params).with_indifferent_access
   end
 
   def execute
@@ -126,7 +131,20 @@ class IssuableFinder
         ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids(items)).execute
       end
 
-    @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
+    # Querying through feature availability for an user is expensive
+    # (i.e. https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1719#note_31406525),
+    # and there are cases which a project level access check should be enough.
+    # In any case, `feature_availability_check` param should be kept with `true`
+    # by default.
+    #
+    projects =
+      if params[:feature_availability_check]
+        projects.with_feature_available_for_user(klass, current_user)
+      else
+        projects
+      end
+
+    @projects = projects.reorder(nil)
   end
 
   def search

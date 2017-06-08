@@ -378,8 +378,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       results = described_class.new(user, 'def', limit_project_ids)
       blobs = results.objects('blobs')
 
-      expect(blobs.first["_source"]["blob"]["content"]).to include("def")
-      expect(results.blobs_count).to eq 5
+      expect(blobs.first['_source']['blob']['content']).to include('def')
+      expect(results.blobs_count).to eq 7
     end
 
     it 'finds blobs from public projects only' do
@@ -388,16 +388,56 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       Gitlab::Elastic::Helper.refresh_index
 
       results = described_class.new(user, 'def', [project_1.id])
-      expect(results.blobs_count).to eq 5
+      expect(results.blobs_count).to eq 7
 
       results = described_class.new(user, 'def', [project_1.id, project_2.id])
-      expect(results.blobs_count).to eq 10
+
+      expect(results.blobs_count).to eq 14
     end
 
     it 'returns zero when blobs are not found' do
       results = described_class.new(user, 'asdfg', limit_project_ids)
 
       expect(results.blobs_count).to eq 0
+    end
+
+    context 'Searches CamelCased methods' do
+      before do
+        project_1.repository.create_file(
+          user,
+          'test.txt',
+          ' function writeStringToFile(){} ',
+          message: 'added test file',
+          branch_name: 'master')
+
+        project_1.repository.index_blobs
+
+        Gitlab::Elastic::Helper.refresh_index
+      end
+
+      def search_for(term)
+        blobs = described_class.new(user, term, [project_1.id]).objects('blobs')
+
+        blobs.map do |blob|
+          blob['_source']['blob']['path']
+        end
+      end
+
+      it 'find by first word' do
+        expect(search_for('write')).to include('test.txt')
+      end
+
+      it 'find by first two words' do
+        expect(search_for('writeString')).to include('test.txt')
+      end
+
+      it 'find by last two words' do
+        expect(search_for('ToFile')).to include('test.txt')
+      end
+
+      it 'find by exact match' do
+        expect(search_for('writeStringToFile')).to include('test.txt')
+      end
     end
   end
 
@@ -415,7 +455,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     it 'finds wiki blobs' do
       blobs = results.objects('wiki_blobs')
 
-      expect(blobs.first["_source"]["blob"]["content"]).to include("term")
+      expect(blobs.first['_source']['blob']['content']).to include("term")
       expect(results.wiki_blobs_count).to eq 1
     end
 
@@ -423,7 +463,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       project_1.add_guest(user)
       blobs = results.objects('wiki_blobs')
 
-      expect(blobs.first["_source"]["blob"]["content"]).to include("term")
+      expect(blobs.first['_source']['blob']['content']).to include("term")
       expect(results.wiki_blobs_count).to eq 1
     end
 

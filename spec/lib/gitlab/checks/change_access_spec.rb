@@ -178,15 +178,14 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         before { project.add_master(user) }
 
         it 'returns an error if the rule denies tag deletion' do
-          expect(subject.status).to be(false)
-          expect(subject.message).to eq('You cannot delete a tag')
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You cannot delete a tag')
         end
 
         context 'when tag is deleted in web UI' do
           let(:protocol) { 'web' }
 
           it 'ignores the push rule' do
-            expect(subject.status).to be(true)
+            expect(subject).to be_truthy
           end
         end
       end
@@ -195,8 +194,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         let(:push_rule) { create(:push_rule, :commit_message) }
 
         it 'returns an error if the rule fails' do
-          expect(subject.status).to be(false)
-          expect(subject.message).to eq("Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
         end
       end
 
@@ -211,15 +209,13 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         it 'returns an error if the rule fails for the committer' do
           allow_any_instance_of(Commit).to receive(:committer_email).and_return('ana@invalid.com')
 
-          expect(subject.status).to be(false)
-          expect(subject.message).to eq("Committer's email 'ana@invalid.com' does not follow the pattern '.*@valid.com'")
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Committer's email 'ana@invalid.com' does not follow the pattern '.*@valid.com'")
         end
 
         it 'returns an error if the rule fails for the author' do
           allow_any_instance_of(Commit).to receive(:author_email).and_return('joan@invalid.com')
 
-          expect(subject.status).to be(false)
-          expect(subject.message).to eq("Author's email 'joan@invalid.com' does not follow the pattern '.*@valid.com'")
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Author's email 'joan@invalid.com' does not follow the pattern '.*@valid.com'")
         end
       end
 
@@ -232,8 +228,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         end
 
         it 'returns an error if the commit author is not a GitLab member' do
-          expect(subject.status).to be(false)
-          expect(subject.message).to eq("Author 'some@mail.com' is not a member of team")
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Author 'some@mail.com' is not a member of team")
         end
       end
 
@@ -243,23 +238,14 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
           let(:push_rule) { create(:push_rule, file_name_regex: 'READ*') }
 
           it "returns an error if a new or renamed filed doesn't match the file name regex" do
-            expect(subject.status).to be(false)
-            expect(subject.message).to eq("File name README was blacklisted by the pattern READ*.")
+            expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File name README was blacklisted by the pattern READ*.")
           end
         end
 
         context 'blacklisted files check' do
           let(:push_rule) { create(:push_rule, prevent_secrets: true) }
-          let(:checker) do
-            described_class.new(
-              changes,
-              project: project,
-              user_access: user_access,
-              protocol: protocol
-            )
-          end
 
-          it "returns status true if there is no blacklisted files" do
+          it "returns true if there is no blacklisted files" do
             new_rev = nil
 
             white_listed =
@@ -277,7 +263,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
                 project.repository.commits_between(old_rev, new_rev)
               )
 
-              expect(checker.exec.status).to be(true)
+              expect(subject).to be_truthy
             end
           end
 
@@ -300,10 +286,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
                 project.repository.commits_between(old_rev, new_rev)
               )
 
-              result = checker.exec
-
-              expect(result.status).to be(false)
-              expect(result.message).to include("File name #{file_path} was blacklisted by the pattern")
+              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /File name #{file_path} was blacklisted by the pattern/)
             end
           end
         end
@@ -315,8 +298,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         before { allow_any_instance_of(Blob).to receive(:size).and_return(2.megabytes) }
 
         it 'returns an error if file exceeds the maximum file size' do
-          expect(subject.status).to be(false)
-          expect(subject.message).to eq("File \"README\" is larger than the allowed size of 1 MB")
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File \"README\" is larger than the allowed size of 1 MB")
         end
       end
     end
@@ -331,8 +313,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       end
 
       it 'returns an error if the changes update a path locked by another user' do
-        expect(subject.status).to be(false)
-        expect(subject.message).to eq("The path 'README' is locked by #{path_lock.user.name}")
+        expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "The path 'README' is locked by #{path_lock.user.name}")
       end
     end
   end

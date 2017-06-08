@@ -141,6 +141,7 @@ ActiveRecord::Schema.define(version: 20170602003304) do
     t.integer "mirror_max_delay", default: 5, null: false
     t.integer "mirror_max_capacity", default: 100, null: false
     t.integer "mirror_capacity_threshold", default: 50, null: false
+    t.boolean "authorized_keys_enabled"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -574,6 +575,13 @@ ActiveRecord::Schema.define(version: 20170602003304) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
+  create_table "geo_event_log", id: :bigserial, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "repository_updated_event_id", limit: 8
+  end
+
+  add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
+
   create_table "geo_nodes", force: :cascade do |t|
     t.string "schema"
     t.string "host"
@@ -593,6 +601,20 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
+
+  create_table "geo_repository_updated_events", id: :bigserial, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "branches_affected", null: false
+    t.integer "tags_affected", null: false
+    t.integer "project_id", null: false
+    t.integer "source", limit: 2, null: false
+    t.boolean "new_branch", default: false, null: false
+    t.boolean "remove_branch", default: false, null: false
+    t.text "ref"
+  end
+
+  add_index "geo_repository_updated_events", ["project_id"], name: "index_geo_repository_updated_events_on_project_id", using: :btree
+  add_index "geo_repository_updated_events", ["source"], name: "index_geo_repository_updated_events_on_source", using: :btree
 
   create_table "historical_data", force: :cascade do |t|
     t.date "date", null: false
@@ -630,6 +652,17 @@ ActiveRecord::Schema.define(version: 20170602003304) do
 
   add_index "issue_assignees", ["issue_id", "user_id"], name: "index_issue_assignees_on_issue_id_and_user_id", unique: true, using: :btree
   add_index "issue_assignees", ["user_id"], name: "index_issue_assignees_on_user_id", using: :btree
+
+  create_table "issue_links", force: :cascade do |t|
+    t.integer "source_id", null: false
+    t.integer "target_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "issue_links", ["source_id", "target_id"], name: "index_issue_links_on_source_id_and_target_id", unique: true, using: :btree
+  add_index "issue_links", ["source_id"], name: "index_issue_links_on_source_id", using: :btree
+  add_index "issue_links", ["target_id"], name: "index_issue_links_on_target_id", using: :btree
 
   create_table "issue_metrics", force: :cascade do |t|
     t.integer "issue_id", null: false
@@ -1751,8 +1784,12 @@ ActiveRecord::Schema.define(version: 20170602003304) do
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
+  add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
+  add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
+  add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
+  add_foreign_key "issue_links", "issues", column: "target_id", name: "fk_e71bb44f1f", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade

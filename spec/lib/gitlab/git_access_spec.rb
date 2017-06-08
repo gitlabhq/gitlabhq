@@ -8,6 +8,10 @@ describe Gitlab::GitAccess, lib: true do
   let(:user) { create(:user) }
   let(:actor) { user }
   let(:protocol) { 'ssh' }
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
   let(:authentication_abilities) do
     [
       :read_project,
@@ -168,6 +172,7 @@ describe Gitlab::GitAccess, lib: true do
         before do
           allow(Gitlab.config.gitlab_shell).to receive(:upload_pack).and_return(false)
         end
+<<<<<<< HEAD
 
         context 'when calling git-upload-pack' do
           it { expect { pull_access_check }.to raise_unauthorized('Pulling over HTTP is not allowed.') }
@@ -194,6 +199,34 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
+=======
+
+        context 'when calling git-upload-pack' do
+          it { expect { pull_access_check }.to raise_unauthorized('Pulling over HTTP is not allowed.') }
+        end
+
+        context 'when calling git-receive-pack' do
+          it { expect { push_access_check }.not_to raise_error }
+        end
+      end
+
+      context 'when the git-receive-pack command is disabled in config' do
+        before do
+          allow(Gitlab.config.gitlab_shell).to receive(:receive_pack).and_return(false)
+        end
+
+        context 'when calling git-receive-pack' do
+          it { expect { push_access_check }.to raise_unauthorized('Pushing over HTTP is not allowed.') }
+        end
+
+        context 'when calling git-upload-pack' do
+          it { expect { pull_access_check }.not_to raise_error }
+        end
+      end
+    end
+  end
+
+>>>>>>> master
   describe '#check_download_access!' do
     describe 'master permissions' do
       before { project.team << [user, :master] }
@@ -856,13 +889,12 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   context 'when the repository is read only' do
+    let(:project) { create(:project, :read_only_repository) }
+
     it 'denies push access' do
-      project = create(:project, :read_only_repository)
       project.team << [user, :master]
 
-      check = access.check('git-receive-pack', '_any')
-
-      expect(check).not_to be_allowed
+      expect { push_access_check }.to raise_unauthorized('The repository is temporarily read-only. Please try again later.')
     end
   end
 

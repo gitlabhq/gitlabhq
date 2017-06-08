@@ -24,7 +24,7 @@ describe 'New/edit issue', :feature, :js do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
-    describe 'single assignee' do
+    xdescribe 'shorten users API pagination limit (CE)' do
       before do
         # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
         # somehow refer to the very block we defined to _wrap_ that method, instead of
@@ -54,6 +54,7 @@ describe 'New/edit issue', :feature, :js do
           click_link user2.name
         end
 
+        find('.js-assignee-search').click
         find('.js-dropdown-input-clear').click
 
         page.within '.dropdown-menu-user' do
@@ -63,7 +64,7 @@ describe 'New/edit issue', :feature, :js do
       end
     end
 
-    describe 'multiple assignees' do
+    xdescribe 'single assignee (CE)' do
       before do
         click_button 'Unassigned'
 
@@ -74,6 +75,8 @@ describe 'New/edit issue', :feature, :js do
         page.within '.dropdown-menu-user' do
           click_link user2.name
         end
+
+        click_button user2.name
 
         page.within '.dropdown-menu-user' do
           click_link 'Unassigned'
@@ -89,11 +92,13 @@ describe 'New/edit issue', :feature, :js do
 
         expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
+        click_button user.name
+
         page.within('.dropdown-menu-user') do
           click_link user.name
         end
 
-        expect(find('a', text: 'Assign to me')).to be_visible
+        expect(page.find('.dropdown-menu-user', visible: false)).not_to be_visible
       end
     end
 

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::GitAccessWiki, lib: true do
   let(:access) { Gitlab::GitAccessWiki.new(user, project, 'web', authentication_abilities: authentication_abilities) }
-  let(:project) { create(:project, :repository) }
+  let!(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:changes) { ['6f6d7e7ed 570e7b2ab refs/heads/master'] }
   let(:authentication_abilities) do
@@ -28,9 +28,16 @@ describe Gitlab::GitAccessWiki, lib: true do
         before do
           allow(Gitlab::Geo).to receive(:enabled?) { true }
           allow(Gitlab::Geo).to receive(:secondary?) { true }
+          allow(Gitlab::Geo).to receive(:license_allows?) { true }
         end
 
+<<<<<<< HEAD
         it { expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can't push code to a secondary GitLab Geo node.") }
+=======
+        it 'does not give access to upload wiki code' do
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can't push code to a secondary GitLab Geo node.")
+        end
+>>>>>>> master
       end
     end
   end

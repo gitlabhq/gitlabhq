@@ -3,7 +3,7 @@ class SystemNoteMetadata < ActiveRecord::Base
     commit description merge confidential visible label assignee cross_reference
     title time_tracking branch milestone discussion task moved opened closed merged
     outdated
-    approved unapproved
+    approved unapproved relate unrelate
   ].freeze
 
   validates :note, presence: true
