@@ -115,6 +115,36 @@ describe Users::RefreshAuthorizedProjectsService do
 
       expect(user.authorized_projects_populated).to eq(true)
     end
+
+    context 'when the group has special chars in its path' do
+      let(:user1) { create(:user) }
+      let(:group1) { create(:group, name: 'demo', path: 'demo') }
+      let(:nested_group1) { create(:group, name: 'nest', path: 'nest', parent: group1) }
+      let!(:project1) { create(:empty_project, group: nested_group1) }
+
+      let(:user2) { create(:user) }
+      let(:group2) { create(:group, name: '____', path: '____') }
+      let(:nested_group2) { create(:group, name: 'test', path: 'test', parent: group2) }
+      let!(:project2) { create(:empty_project, group: nested_group2) }
+
+      before do
+        group1.add_master(user1)
+        group2.add_master(user2)
+
+        described_class.new(user1).execute
+        described_class.new(user2).execute
+      end
+
+      it "it doesn't give authorization to foreign projects" do
+        expect(user1.authorized_projects).not_to include(project2)
+        expect(user2.authorized_projects).not_to include(project1)
+      end
+
+      it 'only gives authorization to the right projects' do
+        expect(user1.authorized_projects).to match_array([project1])
+        expect(user2.authorized_projects).to match_array([project2])
+      end
+    end
   end
 
   describe '#fresh_access_levels_per_project' do
