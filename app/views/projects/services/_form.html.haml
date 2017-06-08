@@ -22,7 +22,6 @@
             - disabled_class = 'disabled'
             - disabled_title = @service.disabled_title
 
-          = link_to 'Test settings', test_namespace_project_service_path(@project.namespace, @project, @service), class: "btn #{disabled_class}", title: disabled_title
         = link_to 'Cancel', namespace_project_settings_integrations_path(@project.namespace, @project), class: 'btn btn-cancel'
 
 - if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)

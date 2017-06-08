@@ -37,7 +37,7 @@ module Gitlab
 
         def query_with_result(query)
           query[:result]&.any? do |item|
-            item&.[](:values)&.any? || item&.[](:value)&.any?
+            item&.[]('values')&.any? || item&.[]('value')&.any?
           end
         end
 

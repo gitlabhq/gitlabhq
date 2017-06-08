@@ -72,7 +72,11 @@ class PrometheusService < MonitoringService
   end
 
   def matched_metrics
-    additional_deployment_metrics(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, &:itself)
+    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, &:itself)
+  end
+
+  def with_reactive_cache(*args, &block)
+    yield calculate_reactive_cache(*args)
   end
 
   # Cache metrics for specific environment

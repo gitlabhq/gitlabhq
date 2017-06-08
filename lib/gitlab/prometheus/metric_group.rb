@@ -4,7 +4,7 @@ module Gitlab
       attr_reader :priority, :name
       attr_accessor :metrics
 
-      def initialize(name:, priority:, metrics: [])
+      def initialize(name, priority, metrics = [])
         @name = name
         @priority = priority
         @metrics = metrics
