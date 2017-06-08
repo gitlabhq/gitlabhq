@@ -201,6 +201,11 @@
     width: 100%;
   }
 
+  &.dropdown-open-left {
+    right: 0;
+    left: auto;
+  }
+
   &.is-loading {
     .dropdown-content {
       display: none;
@@ -261,7 +266,14 @@
     text-transform: capitalize;
   }
 
-  .separator + .dropdown-header {
+  .dropdown-bold-header {
+    font-weight: 600;
+    line-height: 22px;
+    padding: 0 16px;
+  }
+
+  .separator + .dropdown-header,
+  .separator + .dropdown-bold-header {
     padding-top: 2px;
   }
 

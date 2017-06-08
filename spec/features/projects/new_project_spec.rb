@@ -17,10 +17,10 @@ feature "New project", feature: true do
         expect(find_field("project_visibility_level_#{level}")).to be_checked
       end
 
-      it 'saves visibility level on validation error' do
+      it "saves visibility level #{level} on validation error" do
         visit new_project_path
 
-        choose(key)
+        choose(s_(key))
         click_button('Create project')
 
         expect(find_field("project_visibility_level_#{level}")).to be_checked

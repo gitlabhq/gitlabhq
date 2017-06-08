@@ -38,9 +38,12 @@ ul.notes {
   }
 
   .discussion {
-    overflow: hidden;
     display: block;
     position: relative;
+
+    .diff-content {
+      overflow: visible;
+    }
   }
 
   > li {
@@ -442,6 +445,53 @@ ul.notes {
 
   .note-action-button {
     margin-left: 8px;
+  }
+
+  .more-actions-toggle {
+    margin-left: 2px;
+  }
+}
+
+.more-actions {
+  display: inline;
+
+  .tooltip {
+    white-space: nowrap;
+  }
+}
+
+.more-actions-toggle {
+  padding: 0;
+  outline: none;
+
+  &:hover .icon,
+  &:focus .icon {
+    color: $blue-600;
+  }
+
+  .icon {
+    padding: 0 6px;
+  }
+}
+
+.more-actions-dropdown {
+  width: 180px;
+  min-width: 180px;
+  margin-top: $gl-btn-padding;
+
+  li > a,
+  li > .btn {
+    color: $gl-text-color;
+    padding: $gl-btn-padding;
+    width: 100%;
+    text-align: left;
+
+    &:hover,
+    &:focus {
+      color: $gl-text-color;
+      background-color: $blue-25;
+      border-radius: $border-radius-default;
+    }
   }
 }
 

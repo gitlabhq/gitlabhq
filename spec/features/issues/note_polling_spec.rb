@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Issue notes polling', :feature, :js do
+  include NoteInteractionHelpers
+
   let(:project) { create(:empty_project, :public) }
   let(:issue) { create(:issue, project: project) }
 
@@ -48,7 +50,7 @@ feature 'Issue notes polling', :feature, :js do
       end
 
       it 'when editing but have not changed anything, and an update comes in, show the updated content in the textarea' do
-        find("#note_#{existing_note.id} .js-note-edit").click
+        click_edit_action(existing_note)
 
         expect(page).to have_field("note[note]", with: note_text)
 
@@ -58,19 +60,18 @@ feature 'Issue notes polling', :feature, :js do
       end
 
       it 'when editing but you changed some things, and an update comes in, show a warning' do
-        find("#note_#{existing_note.id} .js-note-edit").click
+        click_edit_action(existing_note)
 
         expect(page).to have_field("note[note]", with: note_text)
 
         find("#note_#{existing_note.id} .js-note-text").set('something random')
-
         update_note(existing_note, updated_text)
 
         expect(page).to have_selector(".alert")
       end
 
       it 'when editing but you changed some things, an update comes in, and you press cancel, show the updated content' do
-        find("#note_#{existing_note.id} .js-note-edit").click
+        click_edit_action(existing_note)
 
         expect(page).to have_field("note[note]", with: note_text)
 
@@ -127,5 +128,13 @@ feature 'Issue notes polling', :feature, :js do
   def update_note(note, new_text)
     note.update(note: new_text)
     page.execute_script('notes.refresh();')
+  end
+
+  def click_edit_action(note)
+    note_element = find("#note_#{note.id}")
+
+    open_more_actions_dropdown(note)
+
+    note_element.find('.js-note-edit').click
   end
 end

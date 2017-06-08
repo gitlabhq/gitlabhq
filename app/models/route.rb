@@ -1,5 +1,5 @@
 class Route < ActiveRecord::Base
-  belongs_to :source, polymorphic: true
+  belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :source, presence: true
 
