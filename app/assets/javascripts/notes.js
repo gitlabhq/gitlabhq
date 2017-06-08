@@ -7,6 +7,7 @@
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import CommentTypeToggle from './comment_type_toggle';
+import normalizeNewlines from './lib/utils/normalize_newlines';
 
 require('./autosave');
 window.autosize = require('vendor/autosize');
@@ -16,10 +17,6 @@ require('./gfm_auto_complete');
 require('vendor/jquery.caret'); // required by jquery.atwho
 require('vendor/jquery.atwho');
 require('./task_list');
-
-const normalizeNewlines = function(str) {
-  return str.replace(/\r\n/g, '\n');
-};
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
