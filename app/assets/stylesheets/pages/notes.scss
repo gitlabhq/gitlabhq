@@ -394,19 +394,12 @@ ul.notes {
   padding-bottom: 8px;
 }
 
-<<<<<<< HEAD
-=======
-.system-note .note-header-info {
-  padding-bottom: 0;
-}
-
 .note-header-author-name {
   @media (max-width: $screen-xs-max) {
     display: none;
   }
 }
 
->>>>>>> 4144144... Merge branch '32801-fix-discussion-header-wrapping-in-parallel-diff' into 'master'
 .note-headline-light {
   display: inline;
 
