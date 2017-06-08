@@ -59,6 +59,7 @@ Manage files and branches from the UI (user interface):
 - Branches
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
   - [Protected branches](user/project/protected_branches.md#protected-branches)
+  - [Delete merged branches](user/project/branches.md#delete-merged-branches)
 
 ### Issues and Merge Requests (MRs)
 

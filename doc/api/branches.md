@@ -251,6 +251,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gi
 
 Will delete all branches that are merged into the project's default branch.
 
+Protected branches will not be deleted as part of this operation.
+
 ```
 DELETE /projects/:id/repository/merged_branches
 ```
