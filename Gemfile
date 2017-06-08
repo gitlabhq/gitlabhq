@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.8'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+gem 'bootsnap', '~> 1.0.0'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
