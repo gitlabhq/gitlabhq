@@ -5,7 +5,9 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
 
   step 'fill project form with valid data' do
     fill_in 'project_path', with: 'Empty'
-    click_button "Create project"
+    page.within '#content-body' do
+      click_button "Create project"
+    end  
   end
 
   step 'I should see project page' do
