@@ -1,7 +1,7 @@
 module Milestoneish
   def closed_items_count(user)
     memoize_per_user(user, :closed_items_count) do
-      (count_issues_by_state(user)['closed'].count || 0) + merge_requests.closed_and_merged.size
+      (count_issues_by_state(user)['closed']&.length || 0) + merge_requests.closed_and_merged.size
     end
   end
 
@@ -39,7 +39,7 @@ module Milestoneish
 
   def issues_visible_to_user(user)
     memoize_per_user(user, :issues_visible_to_user) do
-      IssuesFinder.new(user, issues_finder_params.merge({ sort: 'priority'}))
+      IssuesFinder.new(user, issues_finder_params)
         .execute.preload(:assignees).where(milestone_id: milestoneish_ids)
     end
   end
@@ -81,6 +81,6 @@ module Milestoneish
   # override in a class that includes this module to get a faster query
   # from IssuesFinder
   def issues_finder_params
-    {}
+    { sort: 'priority' }
   end
 end
