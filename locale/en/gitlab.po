@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-06-07 12:14+0200\n"
+"PO-Revision-Date: 2017-04-12 22:36-0500\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"Last-Translator: Bob Van Landuyt <bob@gitlab.com>\n"
-"X-Generator: Poedit 2.0.2\n"
+"\n"
 
 msgid "About auto deploy"
 msgstr ""
@@ -41,6 +41,9 @@ msgstr ""
 msgid "Archived project! Repository is read-only"
 msgstr ""
 
+msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -56,6 +59,9 @@ msgid "ByAuthor|by"
 msgstr ""
 
 msgid "CI configuration"
+msgstr ""
+
+msgid "Cancel"
 msgstr ""
 
 msgid "Changelog"
@@ -162,6 +168,9 @@ msgstr ""
 msgid "CreateNewFork|Fork"
 msgstr ""
 
+msgid "Cron Timezone"
+msgstr ""
+
 msgid "Custom notification events"
 msgstr ""
 
@@ -195,10 +204,16 @@ msgstr ""
 msgid "CycleAnalyticsStage|Test"
 msgstr ""
 
+msgid "Delete"
+msgstr ""
+
 msgid "Deploy"
 msgid_plural "Deploys"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Description"
+msgstr ""
 
 msgid "Directory name"
 msgstr ""
@@ -224,7 +239,22 @@ msgstr ""
 msgid "DownloadSource|Download"
 msgstr ""
 
+msgid "Edit"
+msgstr ""
+
+msgid "Edit Pipeline Schedule %{id}"
+msgstr ""
+
+msgid "Failed to change the owner"
+msgstr ""
+
+msgid "Failed to remove the pipeline schedule"
+msgstr ""
+
 msgid "Files"
+msgstr ""
+
+msgid "Filter"
 msgstr ""
 
 msgid "Find by path"
@@ -266,6 +296,9 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+msgid "Interval Pattern"
+msgstr ""
+
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
@@ -279,6 +312,9 @@ msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Last Pipeline"
+msgstr ""
 
 msgid "Last Update"
 msgstr ""
@@ -308,6 +344,9 @@ msgid_plural "New Issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "New Pipeline Schedule"
+msgstr ""
+
 msgid "New branch"
 msgstr ""
 
@@ -330,6 +369,9 @@ msgid "New tag"
 msgstr ""
 
 msgid "No repository"
+msgstr ""
+
+msgid "No schedules"
 msgstr ""
 
 msgid "Not available"
@@ -395,7 +437,43 @@ msgstr ""
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
+msgid "Owner"
+msgstr ""
+
 msgid "Pipeline Health"
+msgstr ""
+
+msgid "Pipeline Schedule"
+msgstr ""
+
+msgid "Pipeline Schedules"
+msgstr ""
+
+msgid "PipelineSchedules|Activated"
+msgstr ""
+
+msgid "PipelineSchedules|Active"
+msgstr ""
+
+msgid "PipelineSchedules|All"
+msgstr ""
+
+msgid "PipelineSchedules|Inactive"
+msgstr ""
+
+msgid "PipelineSchedules|Next Run"
+msgstr ""
+
+msgid "PipelineSchedules|None"
+msgstr ""
+
+msgid "PipelineSchedules|Provide a short description for this pipeline"
+msgstr ""
+
+msgid "PipelineSchedules|Take ownership"
+msgstr ""
+
+msgid "PipelineSchedules|Target"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -488,10 +566,22 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
+msgid "Save pipeline schedule"
+msgstr ""
+
+msgid "Schedule a new pipeline"
+msgstr ""
+
 msgid "Search branches and tags"
 msgstr ""
 
 msgid "Select Archive Format"
+msgstr ""
+
+msgid "Select a timezone"
+msgstr ""
+
+msgid "Select target branch"
 msgstr ""
 
 msgid "Set a password on your account to pull or push via %{protocol}"
@@ -529,6 +619,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Tags"
+msgstr ""
+
+msgid "Target Branch"
 msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
