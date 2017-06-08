@@ -1,5 +1,7 @@
 module WikiPages
   class BaseService < ::BaseService
+    prepend EE::WikiPages::BaseService
+
     def hook_data(page, action)
       hook_data = {
         object_kind: page.class.name.underscore,
