@@ -68,10 +68,10 @@
         .sidebar-collapsed-icon
           %strong
             = icon('hashtag', 'aria-hidden': 'true')
-          %span= milestone.issues_visible_to_user(current_user).length
+          %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           Issues
-          %span.badge= milestone.issues_visible_to_user(current_user).length
+          %span.badge= milestone.issues_visible_to_user(current_user).count
           - if project && can?(current_user, :create_issue, project)
             = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
               New issue
@@ -79,11 +79,11 @@
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues) do
               Open:
-              = milestone.issues_visible_to_user(current_user).opened.length
+              = milestone.issues_visible_to_user(current_user).opened.count
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues, state: 'closed') do
               Closed:
-              = milestone.issues_visible_to_user(current_user).closed.length
+              = milestone.issues_visible_to_user(current_user).closed.count
 
     .block.merge-requests
       .sidebar-collapsed-icon

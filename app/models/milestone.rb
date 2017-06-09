@@ -187,6 +187,6 @@ class Milestone < ActiveRecord::Base
   end
 
   def issues_finder_params
-    super.merge({ project_id: project_id })
+    { project_id: project_id }
   end
 end

@@ -28,13 +28,13 @@ describe Milestone, 'Milestoneish' do
     project.team << [guest, :guest]
   end
 
-  describe '#issues_visible_to_user' do
+  describe '#sorted_issues' do
     it 'sorts issues by label priority' do
       issue.labels << label_1
       security_issue_1.labels << label_2
       closed_issue_1.labels << label_3
 
-      issues = milestone.issues_visible_to_user(member)
+      issues = milestone.sorted_issues(member)
 
       expect(issues.first).to eq(issue)
       expect(issues.second).to eq(security_issue_1)
@@ -43,14 +43,10 @@ describe Milestone, 'Milestoneish' do
   end
 
   describe '#sorted_merge_requests' do
-    let(:merge_request_1) { create(:merge_request, :simple, source_project: project, source_branch: 'branch_1', milestone: milestone) }
-    let(:merge_request_2) { create(:merge_request, :simple, source_project: project, source_branch: 'branch_2', milestone: milestone) }
-    let(:merge_request_3) { create(:merge_request, :simple, source_project: project, source_branch: 'branch_3', milestone: milestone) }
-
     it 'sorts merge requests by label priority' do
-      merge_request_2.labels << label_1
-      merge_request_1.labels << label_2
-      merge_request_3.labels << label_3
+      merge_request_1 = create(:labeled_merge_request, labels: [label_2], source_project: project, source_branch: 'branch_1', milestone: milestone)
+      merge_request_2 = create(:labeled_merge_request, labels: [label_1], source_project: project, source_branch: 'branch_2', milestone: milestone)
+      merge_request_3 = create(:labeled_merge_request, labels: [label_3], source_project: project, source_branch: 'branch_3', milestone: milestone)
 
       merge_requests = milestone.sorted_merge_requests
 
