@@ -1,8 +1,11 @@
 require 'spec_helper'
 
 feature 'Merge Request closing issues message', feature: true, js: true do
+<<<<<<< HEAD
   include WaitForAjax
 
+=======
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:issue_1) { create(:issue, project: project)}
@@ -25,7 +28,11 @@ feature 'Merge Request closing issues message', feature: true, js: true do
     login_as user
 
     visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+<<<<<<< HEAD
     wait_for_ajax
+=======
+    wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   end
 
   context 'not closing or mentioning any issue' do

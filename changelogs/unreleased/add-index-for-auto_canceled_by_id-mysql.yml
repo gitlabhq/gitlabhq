@@ -1,0 +1,4 @@
+---
+title: Add indices for auto_canceled_by_id for ci_pipelines and ci_builds on PostgreSQL
+merge_request: 11034
+author:

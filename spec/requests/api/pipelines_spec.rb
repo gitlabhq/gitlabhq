@@ -7,7 +7,7 @@ describe API::Pipelines do
 
   let!(:pipeline) do
     create(:ci_empty_pipeline, project: project, sha: project.commit.id,
-                               ref: project.default_branch)
+                               ref: project.default_branch, user: user)
   end
 
   before { project.team << [user, :master] }
@@ -232,20 +232,26 @@ describe API::Pipelines do
 
         context 'when order_by and sort are specified' do
           context 'when order_by user_id' do
-            let!(:pipeline) { create_list(:ci_pipeline, 2, project: project, user: create(:user)) }
-
-            it 'sorts as user_id: :asc' do
-              get api("/projects/#{project.id}/pipelines", user), order_by: 'user_id', sort: 'asc'
-
-              expect(response).to have_http_status(:ok)
-              expect(response).to include_pagination_headers
-              expect(json_response).not_to be_empty
-              pipeline.sort_by { |p| p.user.id }.tap do |sorted_pipeline|
-                json_response.each_with_index { |r, i| expect(r['id']).to eq(sorted_pipeline[i].id) }
+            before do
+              3.times do
+                create(:ci_pipeline, project: project, user: create(:user))
               end
             end
 
-            context 'when sort is invalid' do
+            context 'when sort parameter is valid' do
+              it 'sorts as user_id: :desc' do
+                get api("/projects/#{project.id}/pipelines", user), order_by: 'user_id', sort: 'desc'
+
+                expect(response).to have_http_status(:ok)
+                expect(response).to include_pagination_headers
+                expect(json_response).not_to be_empty
+
+                pipeline_ids = Ci::Pipeline.all.order(user_id: :desc).pluck(:id)
+                expect(json_response.map { |r| r['id'] }).to eq(pipeline_ids)
+              end
+            end
+
+            context 'when sort parameter is invalid' do
               it 'returns bad_request' do
                 get api("/projects/#{project.id}/pipelines", user), order_by: 'user_id', sort: 'invalid_sort'
 

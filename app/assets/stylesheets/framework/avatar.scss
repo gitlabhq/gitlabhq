@@ -10,6 +10,8 @@
   border-radius: $avatar_radius;
   border: 1px solid $avatar-border;
   &.s16 { @include avatar-size(16px, 6px); }
+  &.s18 { @include avatar-size(18px, 6px); }
+  &.s19 { @include avatar-size(19px, 6px); }
   &.s20 { @include avatar-size(20px, 7px); }
   &.s24 { @include avatar-size(24px, 8px); }
   &.s26 { @include avatar-size(26px, 8px); }

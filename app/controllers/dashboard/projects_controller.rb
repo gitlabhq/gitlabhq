@@ -8,7 +8,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = load_projects(params.merge(non_public: true)).page(params[:page])
 
     respond_to do |format|
-      format.html { @last_push = current_user.recent_push }
+      format.html
       format.atom do
         load_events
         render layout: false
@@ -25,7 +25,6 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = load_projects(params.merge(starred: true)).
       includes(:forked_from_project, :tags).page(params[:page])
 
-    @last_push = current_user.recent_push
     @groups = []
 
     respond_to do |format|

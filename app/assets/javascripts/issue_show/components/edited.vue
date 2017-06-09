@@ -53,3 +53,7 @@ export default {
     </span>
   </small>
 </template>
+<<<<<<< HEAD
+=======
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259

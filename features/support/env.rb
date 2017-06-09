@@ -10,7 +10,11 @@ if ENV['CI']
   Knapsack::Adapters::SpinachAdapter.bind
 end
 
+<<<<<<< HEAD
 %w(select2_helper test_env repo_helpers wait_for_ajax wait_for_requests sidekiq wait_for_vue_resource).each do |f|
+=======
+%w(select2_helper test_env repo_helpers wait_for_requests sidekiq).each do |f|
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   require Rails.root.join('spec', 'support', f)
 end
 
@@ -33,7 +37,7 @@ end
 Spinach.hooks.after_scenario do |scenario_data, step_definitions|
   if scenario_data.tags.include?('javascript')
     include WaitForRequests
-    wait_for_requests_complete
+    block_and_wait_for_requests_complete
   end
 end
 

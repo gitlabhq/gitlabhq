@@ -13,7 +13,7 @@
       = icon('angle-double-left')
 
     .issuable-meta
-      = issuable_meta(@merge_request, @project, "Merge Request")
+      = issuable_meta(@merge_request, @project, "Merge request")
 
   - if can?(current_user, :update_merge_request, @merge_request)
     .issuable-actions

@@ -163,14 +163,15 @@ module Banzai
       # been queried the object is returned from the cache.
       def collection_objects_for_ids(collection, ids)
         if RequestStore.active?
+          ids = ids.map(&:to_i)
           cache = collection_cache[collection_cache_key(collection)]
-          to_query = ids.map(&:to_i) - cache.keys
+          to_query = ids - cache.keys
 
           unless to_query.empty?
             collection.where(id: to_query).each { |row| cache[row.id] = row }
           end
 
-          cache.values
+          cache.values_at(*ids)
         else
           collection.where(id: ids)
         end

@@ -1,5 +1,9 @@
 <script>
 import tooltipMixin from '../mixins/tooltip';
+<<<<<<< HEAD
+=======
+import timeagoMixin from '../mixins/timeago';
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 import '../../lib/utils/datetime_utility';
 
 /**
@@ -25,13 +29,18 @@ export default {
       default: false,
     },
 
+<<<<<<< HEAD
     htmlClass: {
+=======
+    cssClass: {
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       type: String,
       required: false,
       default: '',
     },
   },
 
+<<<<<<< HEAD
   mixins: [tooltipMixin],
 
   computed: {
@@ -62,5 +71,28 @@ export default {
     ref="tooltip"
   >
     {{timeFormated}}
+=======
+  mixins: [
+    tooltipMixin,
+    timeagoMixin,
+  ],
+
+  computed: {
+    timeagoCssClass() {
+      return this.shortFormat ? 'js-short-timeago' : 'js-timeago';
+    },
+  },
+};
+</script>
+<template>
+  <time
+    :class="[timeagoCssClass, cssClass]"
+    class="js-timeago js-timeago-render"
+    :title="tooltipTitle(time)"
+    :data-placement="tooltipPlacement"
+    data-container="body"
+    ref="tooltip">
+    {{timeFormated(time)}}
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   </time>
 </template>

@@ -203,6 +203,11 @@ $white-gc-bg: #eaf2f5;
     background-color: $white-highlight !important;
   }
 
+  // Links to URLs, emails, or dependencies
+  .line a {
+    color: $white-nb;
+  }
+
   .hll { background-color: $white-hll-bg; }
   .c { color: $white-c; font-style: italic; }
   .err { color: $white-err; background-color: $white-err-bg; }

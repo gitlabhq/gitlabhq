@@ -1,4 +1,10 @@
-/* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape */
+/* eslint-disable no-restricted-properties, func-names, space-before-function-paren,
+no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase,
+no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line,
+default-case, prefer-template, consistent-return, no-alert, no-return-assign,
+no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new,
+brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow,
+newline-per-chained-call, no-useless-escape */
 /* global Flash */
 /* global Autosave */
 /* global ResolveService */
@@ -6,31 +12,35 @@
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
+import autosize from 'vendor/autosize';
+import Dropzone from 'dropzone';
+import 'vendor/jquery.caret'; // required by jquery.atwho
+import 'vendor/jquery.atwho';
+import AjaxCache from '~/lib/utils/ajax_cache';
 import CommentTypeToggle from './comment_type_toggle';
+import './autosave';
+import './dropzone_input';
+import './task_list';
 
-require('./autosave');
-window.autosize = require('vendor/autosize');
-window.Dropzone = require('dropzone');
-require('./dropzone_input');
-require('./gfm_auto_complete');
-require('vendor/jquery.caret'); // required by jquery.atwho
-require('vendor/jquery.atwho');
-require('./task_list');
+window.autosize = autosize;
+window.Dropzone = Dropzone;
 
 const normalizeNewlines = function(str) {
   return str.replace(/\r\n/g, '\n');
 };
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.Notes = (function() {
     const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
     const REGEX_SLASH_COMMANDS = /^\/\w+.*$/gm;
 
     Notes.interval = null;
 
+<<<<<<< HEAD
     function Notes(notes_url, note_ids, last_fetched_at, view) {
+=======
+    function Notes(notes_url, note_ids, last_fetched_at, view, enableGFM = true) {
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       this.updateTargetButtons = this.updateTargetButtons.bind(this);
       this.updateComment = this.updateComment.bind(this);
       this.visibilityChange = this.visibilityChange.bind(this);
@@ -49,14 +59,19 @@ const normalizeNewlines = function(str) {
       this.keydownNoteText = this.keydownNoteText.bind(this);
       this.toggleCommitList = this.toggleCommitList.bind(this);
       this.postComment = this.postComment.bind(this);
+<<<<<<< HEAD
+=======
+      this.clearFlashWrapper = this.clearFlash.bind(this);
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
       this.notes_url = notes_url;
       this.note_ids = note_ids;
+      this.enableGFM = enableGFM;
       // Used to keep track of updated notes while people are editing things
       this.updatedNotesTrackingMap = {};
       this.last_fetched_at = last_fetched_at;
       this.noteable_url = document.URL;
-      this.notesCountBadge || (this.notesCountBadge = $(".issuable-details").find(".notes-tab .badge"));
+      this.notesCountBadge || (this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge'));
       this.basePollingInterval = 15000;
       this.maxPollingSteps = 4;
 
@@ -85,61 +100,67 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.addBinding = function() {
       // Edit note link
-      $(document).on("click", ".js-note-edit", this.showEditForm.bind(this));
-      $(document).on("click", ".note-edit-cancel", this.cancelEdit);
+      $(document).on('click', '.js-note-edit', this.showEditForm.bind(this));
+      $(document).on('click', '.note-edit-cancel', this.cancelEdit);
       // Reopen and close actions for Issue/MR combined with note form submit
-      $(document).on("click", ".js-comment-submit-button", this.postComment);
-      $(document).on("click", ".js-comment-save-button", this.updateComment);
-      $(document).on("keyup input", ".js-note-text", this.updateTargetButtons);
+      $(document).on('click', '.js-comment-submit-button', this.postComment);
+      $(document).on('click', '.js-comment-save-button', this.updateComment);
+      $(document).on('keyup input', '.js-note-text', this.updateTargetButtons);
       // resolve a discussion
       $(document).on('click', '.js-comment-resolve-button', this.postComment);
       // remove a note (in general)
-      $(document).on("click", ".js-note-delete", this.removeNote);
+      $(document).on('click', '.js-note-delete', this.removeNote);
       // delete note attachment
-      $(document).on("click", ".js-note-attachment-delete", this.removeAttachment);
+      $(document).on('click', '.js-note-attachment-delete', this.removeAttachment);
       // reset main target form when clicking discard
-      $(document).on("click", ".js-note-discard", this.resetMainTargetForm);
+      $(document).on('click', '.js-note-discard', this.resetMainTargetForm);
       // update the file name when an attachment is selected
-      $(document).on("change", ".js-note-attachment-input", this.updateFormAttachment);
+      $(document).on('change', '.js-note-attachment-input', this.updateFormAttachment);
       // reply to diff/discussion notes
+<<<<<<< HEAD
       $(document).on("click", ".js-discussion-reply-button", this.onReplyToDiscussionNote);
       // add diff note
       $(document).on("click", ".js-add-diff-note-button", this.onAddDiffNote);
+=======
+      $(document).on('click', '.js-discussion-reply-button', this.onReplyToDiscussionNote);
+      // add diff note
+      $(document).on('click', '.js-add-diff-note-button', this.onAddDiffNote);
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       // hide diff note form
-      $(document).on("click", ".js-close-discussion-note-form", this.cancelDiscussionForm);
+      $(document).on('click', '.js-close-discussion-note-form', this.cancelDiscussionForm);
       // toggle commit list
-      $(document).on("click", '.system-note-commit-list-toggler', this.toggleCommitList);
+      $(document).on('click', '.system-note-commit-list-toggler', this.toggleCommitList);
       // fetch notes when tab becomes visible
-      $(document).on("visibilitychange", this.visibilityChange);
+      $(document).on('visibilitychange', this.visibilityChange);
       // when issue status changes, we need to refresh data
-      $(document).on("issuable:change", this.refresh);
+      $(document).on('issuable:change', this.refresh);
       // ajax:events that happen on Form when actions like Reopen, Close are performed on Issues and MRs.
-      $(document).on("ajax:success", ".js-main-target-form", this.addNote);
-      $(document).on("ajax:success", ".js-discussion-note-form", this.addDiscussionNote);
-      $(document).on("ajax:success", ".js-main-target-form", this.resetMainTargetForm);
-      $(document).on("ajax:complete", ".js-main-target-form", this.reenableTargetFormSubmitButton);
+      $(document).on('ajax:success', '.js-main-target-form', this.addNote);
+      $(document).on('ajax:success', '.js-discussion-note-form', this.addDiscussionNote);
+      $(document).on('ajax:success', '.js-main-target-form', this.resetMainTargetForm);
+      $(document).on('ajax:complete', '.js-main-target-form', this.reenableTargetFormSubmitButton);
       // when a key is clicked on the notes
-      return $(document).on("keydown", ".js-note-text", this.keydownNoteText);
+      return $(document).on('keydown', '.js-note-text', this.keydownNoteText);
     };
 
     Notes.prototype.cleanBinding = function() {
-      $(document).off("click", ".js-note-edit");
-      $(document).off("click", ".note-edit-cancel");
-      $(document).off("click", ".js-note-delete");
-      $(document).off("click", ".js-note-attachment-delete");
-      $(document).off("click", ".js-discussion-reply-button");
-      $(document).off("click", ".js-add-diff-note-button");
-      $(document).off("visibilitychange");
-      $(document).off("keyup input", ".js-note-text");
-      $(document).off("click", ".js-note-target-reopen");
-      $(document).off("click", ".js-note-target-close");
-      $(document).off("click", ".js-note-discard");
-      $(document).off("keydown", ".js-note-text");
+      $(document).off('click', '.js-note-edit');
+      $(document).off('click', '.note-edit-cancel');
+      $(document).off('click', '.js-note-delete');
+      $(document).off('click', '.js-note-attachment-delete');
+      $(document).off('click', '.js-discussion-reply-button');
+      $(document).off('click', '.js-add-diff-note-button');
+      $(document).off('visibilitychange');
+      $(document).off('keyup input', '.js-note-text');
+      $(document).off('click', '.js-note-target-reopen');
+      $(document).off('click', '.js-note-target-close');
+      $(document).off('click', '.js-note-discard');
+      $(document).off('keydown', '.js-note-text');
       $(document).off('click', '.js-comment-resolve-button');
-      $(document).off("click", '.system-note-commit-list-toggler');
-      $(document).off("ajax:success", ".js-main-target-form");
-      $(document).off("ajax:success", ".js-discussion-note-form");
-      $(document).off("ajax:complete", ".js-main-target-form");
+      $(document).off('click', '.system-note-commit-list-toggler');
+      $(document).off('ajax:success', '.js-main-target-form');
+      $(document).off('ajax:success', '.js-discussion-note-form');
+      $(document).off('ajax:complete', '.js-main-target-form');
     };
 
     Notes.initCommentTypeToggle = function (form) {
@@ -175,7 +196,7 @@ const normalizeNewlines = function(str) {
           if ($textarea.val() !== '') {
             return;
           }
-          myLastNote = $("li.note[data-author-id='" + gon.current_user_id + "'][data-editable]:last");
+          myLastNote = $(`li.note[data-author-id='${gon.current_user_id}'][data-editable]:last`, $textarea.closest('.note, #notes'));
           if (myLastNote.length) {
             myLastNoteEditBtn = myLastNote.find('.js-note-edit');
             return myLastNoteEditBtn.trigger('click', [true, myLastNote]);
@@ -229,8 +250,8 @@ const normalizeNewlines = function(str) {
       this.refreshing = true;
       return $.ajax({
         url: this.notes_url,
-        headers: { "X-Last-Fetched-At": this.last_fetched_at },
-        dataType: "json",
+        headers: { 'X-Last-Fetched-At': this.last_fetched_at },
+        dataType: 'json',
         success: (function(_this) {
           return function(data) {
             var notes;
@@ -301,13 +322,13 @@ const normalizeNewlines = function(str) {
      */
 
     Notes.prototype.renderNote = function(noteEntity, $form, $notesList = $('.main-notes-list')) {
-      if (noteEntity.discussion_html != null) {
+      if (noteEntity.discussion_html) {
         return this.renderDiscussionNote(noteEntity, $form);
       }
 
       if (!noteEntity.valid) {
         if (noteEntity.errors.commands_only) {
-          new Flash(noteEntity.errors.commands_only, 'notice', this.parentTimeline);
+          this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline);
           this.refresh();
         }
         return;
@@ -317,6 +338,9 @@ const normalizeNewlines = function(str) {
       if (Notes.isNewNote(noteEntity, this.note_ids)) {
         this.note_ids.push(noteEntity.id);
 
+        if ($notesList.length) {
+          $notesList.find('.system-note.being-posted').remove();
+        }
         const $newNote = Notes.animateAppendNote(noteEntity.html, $notesList);
 
         this.setupNewNote($newNote);
@@ -366,8 +390,8 @@ const normalizeNewlines = function(str) {
         return;
       }
       this.note_ids.push(noteEntity.id);
-      form = $form || $(".js-discussion-note-form[data-discussion-id='" + noteEntity.discussion_id + "']");
-      row = form.closest("tr");
+      form = $form || $(`.js-discussion-note-form[data-discussion-id="${noteEntity.discussion_id}"]`);
+      row = form.closest('tr');
       lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
       diffAvatarContainer = row.prevAll('.line_holder').first().find('.js-avatar-container.' + lineType + '_line');
       // is this the first note of discussion?
@@ -384,7 +408,7 @@ const normalizeNewlines = function(str) {
             row.after($discussion);
           } else {
             // Merge new discussion HTML in
-            var $notes = $discussion.find('.notes[data-discussion-id="' + noteEntity.discussion_id + '"]');
+            var $notes = $discussion.find(`.notes[data-discussion-id="${noteEntity.discussion_id}"]`);
             var contentContainerClass = '.' + $notes.closest('.notes_content')
               .attr('class')
               .split(' ')
@@ -395,7 +419,7 @@ const normalizeNewlines = function(str) {
         }
         // Init discussion on 'Discussion' page if it is merge request page
         const page = $('body').attr('data-page');
-        if ((page && page.indexOf('projects:merge_request') === 0) || !noteEntity.diff_discussion_html) {
+        if ((page && page.indexOf('projects:merge_request') !== -1) || !noteEntity.diff_discussion_html) {
           Notes.animateAppendNote(noteEntity.discussion_html, $('.main-notes-list'));
         }
       } else {
@@ -448,13 +472,13 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.resetMainTargetForm = function(e) {
       var form;
-      form = $(".js-main-target-form");
+      form = $('.js-main-target-form');
       // remove validation errors
-      form.find(".js-errors").remove();
+      form.find('.js-errors').remove();
       // reset text and preview
-      form.find(".js-md-write-button").click();
-      form.find(".js-note-text").val("").trigger("input");
-      form.find(".js-note-text").data("autosave").reset();
+      form.find('.js-md-write-button').click();
+      form.find('.js-note-text').val('').trigger('input');
+      form.find('.js-note-text').data('autosave').reset();
 
       var event = document.createEvent('Event');
       event.initEvent('autosize:update', true, false);
@@ -465,8 +489,8 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.reenableTargetFormSubmitButton = function() {
       var form;
-      form = $(".js-main-target-form");
-      return form.find(".js-note-text").trigger("input");
+      form = $('.js-main-target-form');
+      return form.find('.js-note-text').trigger('input');
     };
 
     /*
@@ -478,18 +502,18 @@ const normalizeNewlines = function(str) {
     Notes.prototype.setupMainTargetNoteForm = function() {
       var form;
       // find the form
-      form = $(".js-new-note-form");
+      form = $('.js-new-note-form');
       // Set a global clone of the form for later cloning
       this.formClone = form.clone();
       // show the form
       this.setupNoteForm(form);
       // fix classes
-      form.removeClass("js-new-note-form");
-      form.addClass("js-main-target-form");
-      form.find("#note_line_code").remove();
-      form.find("#note_position").remove();
-      form.find("#note_type").val('');
-      form.find("#in_reply_to_discussion_id").remove();
+      form.removeClass('js-new-note-form');
+      form.addClass('js-main-target-form');
+      form.find('#note_line_code').remove();
+      form.find('#note_position').remove();
+      form.find('#note_type').val('');
+      form.find('#in_reply_to_discussion_id').remove();
       form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
       this.parentTimeline = form.parents('.timeline');
 
@@ -509,21 +533,21 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.setupNoteForm = function(form) {
       var textarea, key;
-      new gl.GLForm(form);
-      textarea = form.find(".js-note-text");
+      new gl.GLForm(form, this.enableGFM);
+      textarea = form.find('.js-note-text');
       key = [
-        "Note",
-        form.find("#note_noteable_type").val(),
-        form.find("#note_noteable_id").val(),
-        form.find("#note_commit_id").val(),
-        form.find("#note_type").val(),
-        form.find("#in_reply_to_discussion_id").val(),
+        'Note',
+        form.find('#note_noteable_type').val(),
+        form.find('#note_noteable_id').val(),
+        form.find('#note_commit_id').val(),
+        form.find('#note_type').val(),
+        form.find('#in_reply_to_discussion_id').val(),
 
         // LegacyDiffNote
-        form.find("#note_line_code").val(),
+        form.find('#note_line_code').val(),
 
         // DiffNote
-        form.find("#note_position").val()
+        form.find('#note_position').val()
       ];
       return new Autosave(textarea, key);
     };
@@ -538,14 +562,14 @@ const normalizeNewlines = function(str) {
       return this.renderNote(note);
     };
 
-    Notes.prototype.addNoteError = ($form) => {
+    Notes.prototype.addNoteError = function($form) {
       let formParentTimeline;
       if ($form.hasClass('js-main-target-form')) {
         formParentTimeline = $form.parents('.timeline');
       } else if ($form.hasClass('js-discussion-note-form')) {
         formParentTimeline = $form.closest('.discussion-notes').find('.notes');
       }
-      return new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline);
+      return this.addFlash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline);
     };
 
     Notes.prototype.updateNoteError = $parentTimeline => new Flash('Your comment could not be updated! Please check your network connection and try again.');
@@ -668,7 +692,12 @@ const normalizeNewlines = function(str) {
         const $newNote = $(this.updatedNotesTrackingMap[noteId].html);
         $note.replaceWith($newNote);
         this.setupNewNote($newNote);
+<<<<<<< HEAD
         this.updatedNotesTrackingMap[noteId] = null;
+=======
+        // Now that we have taken care of the update, clear it out
+        delete this.updatedNotesTrackingMap[noteId];
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       }
       else {
         $note.find('.js-finish-edit-warning').hide();
@@ -720,14 +749,14 @@ const normalizeNewlines = function(str) {
       lineHolder = $(e.currentTarget).closest('.notes[data-discussion-id]')
         .closest('.notes_holder')
         .prev('.line_holder');
-      $(".note[id='" + noteElId + "']").each((function(_this) {
+      $(`.note[id="${noteElId}"]`).each((function(_this) {
         // A same note appears in the "Discussion" and in the "Changes" tab, we have
-        // to remove all. Using $(".note[id='noteId']") ensure we get all the notes,
-        // where $("#noteId") would return only one.
+        // to remove all. Using $('.note[id='noteId']') ensure we get all the notes,
+        // where $('#noteId') would return only one.
         return function(i, el) {
           var $note, $notes;
           $note = $(el);
-          $notes = $note.closest(".discussion-notes");
+          $notes = $note.closest('.discussion-notes');
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             if (gl.diffNoteApps[noteElId]) {
@@ -738,11 +767,11 @@ const normalizeNewlines = function(str) {
           $note.remove();
 
           // check if this is the last note for this line
-          if ($notes.find(".note").length === 0) {
-            var notesTr = $notes.closest("tr");
+          if ($notes.find('.note').length === 0) {
+            var notesTr = $notes.closest('tr');
 
             // "Discussions" tab
-            $notes.closest(".timeline-entry").remove();
+            $notes.closest('.timeline-entry').remove();
 
             // The notes tr can contain multiple lists of notes, like on the parallel diff
             if (notesTr.find('.discussion-notes').length > 1) {
@@ -766,11 +795,11 @@ const normalizeNewlines = function(str) {
      */
 
     Notes.prototype.removeAttachment = function() {
-      const $note = $(this).closest(".note");
-      $note.find(".note-attachment").remove();
-      $note.find(".note-body > .note-text").show();
-      $note.find(".note-header").show();
-      return $note.find(".current-note-edit-form").remove();
+      const $note = $(this).closest('.note');
+      $note.find('.note-attachment').remove();
+      $note.find('.note-body > .note-text').show();
+      $note.find('.note-header').show();
+      return $note.find('.current-note-edit-form').remove();
     };
 
     /*
@@ -786,7 +815,11 @@ const normalizeNewlines = function(str) {
     Notes.prototype.replyToDiscussionNote = function(target) {
       var form, replyLink;
       form = this.cleanForm(this.formClone.clone());
+<<<<<<< HEAD
       replyLink = $(target).closest(".js-discussion-reply-button");
+=======
+      replyLink = $(target).closest('.js-discussion-reply-button');
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       // insert the form after the button
       replyLink
         .closest('.discussion-reply-holder')
@@ -806,26 +839,26 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.setupDiscussionNoteForm = function(dataHolder, form) {
       // setup note target
-      var discussionID = dataHolder.data("discussionId");
+      var discussionID = dataHolder.data('discussionId');
 
       if (discussionID) {
-        form.attr("data-discussion-id", discussionID);
-        form.find("#in_reply_to_discussion_id").val(discussionID);
+        form.attr('data-discussion-id', discussionID);
+        form.find('#in_reply_to_discussion_id').val(discussionID);
       }
 
-      form.attr("data-line-code", dataHolder.data("lineCode"));
-      form.find("#line_type").val(dataHolder.data("lineType"));
+      form.attr('data-line-code', dataHolder.data('lineCode'));
+      form.find('#line_type').val(dataHolder.data('lineType'));
 
-      form.find("#note_noteable_type").val(dataHolder.data("noteableType"));
-      form.find("#note_noteable_id").val(dataHolder.data("noteableId"));
-      form.find("#note_commit_id").val(dataHolder.data("commitId"));
-      form.find("#note_type").val(dataHolder.data("noteType"));
+      form.find('#note_noteable_type').val(dataHolder.data('noteableType'));
+      form.find('#note_noteable_id').val(dataHolder.data('noteableId'));
+      form.find('#note_commit_id').val(dataHolder.data('commitId'));
+      form.find('#note_type').val(dataHolder.data('noteType'));
 
       // LegacyDiffNote
-      form.find("#note_line_code").val(dataHolder.data("lineCode"));
+      form.find('#note_line_code').val(dataHolder.data('lineCode'));
 
       // DiffNote
-      form.find("#note_position").val(dataHolder.attr("data-position"));
+      form.find('#note_position').val(dataHolder.attr('data-position'));
 
       form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancel-text'));
       form.find('.js-note-target-close').remove();
@@ -834,7 +867,7 @@ const normalizeNewlines = function(str) {
 
       form
         .removeClass('js-main-target-form')
-        .addClass("discussion-form js-discussion-note-form");
+        .addClass('discussion-form js-discussion-note-form');
 
       if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         var $commentBtn = form.find('comment-and-resolve-btn');
@@ -843,7 +876,7 @@ const normalizeNewlines = function(str) {
         gl.diffNotesCompileComponents();
       }
 
-      form.find(".js-note-text").focus();
+      form.find('.js-note-text').focus();
       form
         .find('.js-comment-resolve-button')
         .attr('data-discussion-id', discussionID);
@@ -876,13 +909,18 @@ const normalizeNewlines = function(str) {
     }) {
       var $link, addForm, hasNotes, newForm, noteForm, replyButton, row, rowCssToAdd, targetContent, isDiffCommentAvatar;
       $link = $(target);
+<<<<<<< HEAD
       row = $link.closest("tr");
+=======
+      row = $link.closest('tr');
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       const nextRow = row.next();
       let targetRow = row;
       if (nextRow.is('.notes_holder')) {
         targetRow = nextRow;
       }
 
+<<<<<<< HEAD
       hasNotes = targetRow.is(".notes_holder");
       addForm = false;
       let lineTypeSelector = '';
@@ -891,6 +929,16 @@ const normalizeNewlines = function(str) {
       if (this.isParallelView()) {
         lineTypeSelector = `.${lineType}`;
         rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line old\"></td><td class=\"notes_content parallel old\"><div class=\"content\"></div></td><td class=\"notes_line new\"></td><td class=\"notes_content parallel new\"><div class=\"content\"></div></td></tr>";
+=======
+      hasNotes = nextRow.is('.notes_holder');
+      addForm = false;
+      let lineTypeSelector = '';
+      rowCssToAdd = '<tr class="notes_holder js-temp-notes-holder"><td class="notes_line" colspan="2"></td><td class="notes_content"><div class="content"></div></td></tr>';
+      // In parallel view, look inside the correct left/right pane
+      if (this.isParallelView()) {
+        lineTypeSelector = `.${lineType}`;
+        rowCssToAdd = '<tr class="notes_holder js-temp-notes-holder"><td class="notes_line old"></td><td class="notes_content parallel old"><div class="content"></div></td><td class="notes_line new"></td><td class="notes_content parallel new"><div class="content"></div></td></tr>';
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       }
       const notesContentSelector = `.notes_content${lineTypeSelector} .content`;
       let notesContent = targetRow.find(notesContentSelector);
@@ -900,12 +948,12 @@ const normalizeNewlines = function(str) {
         notesContent = targetRow.find(notesContentSelector);
         if (notesContent.length) {
           notesContent.show();
-          replyButton = notesContent.find(".js-discussion-reply-button:visible");
+          replyButton = notesContent.find('.js-discussion-reply-button:visible');
           if (replyButton.length) {
             this.replyToDiscussionNote(replyButton[0]);
           } else {
             // In parallel view, the form may not be present in one of the panes
-            noteForm = notesContent.find(".js-discussion-note-form");
+            noteForm = notesContent.find('.js-discussion-note-form');
             if (noteForm.length === 0) {
               addForm = true;
             }
@@ -943,15 +991,15 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.removeDiscussionNoteForm = function(form) {
       var glForm, row;
-      row = form.closest("tr");
+      row = form.closest('tr');
       glForm = form.data('gl-form');
       glForm.destroy();
-      form.find(".js-note-text").data("autosave").reset();
+      form.find('.js-note-text').data('autosave').reset();
       // show the reply button (will only work for replies)
       form
         .prev('.discussion-reply-holder')
         .show();
-      if (row.is(".js-temp-notes-holder")) {
+      if (row.is('.js-temp-notes-holder')) {
         // remove temporary row for diff lines
         return row.remove();
       } else {
@@ -963,7 +1011,7 @@ const normalizeNewlines = function(str) {
     Notes.prototype.cancelDiscussionForm = function(e) {
       var form;
       e.preventDefault();
-      form = $(e.target).closest(".js-discussion-note-form");
+      form = $(e.target).closest('.js-discussion-note-form');
       return this.removeDiscussionNoteForm(form);
     };
 
@@ -975,10 +1023,10 @@ const normalizeNewlines = function(str) {
 
     Notes.prototype.updateFormAttachment = function() {
       var filename, form;
-      form = $(this).closest("form");
+      form = $(this).closest('form');
       // get only the basename
-      filename = $(this).val().replace(/^.*[\\\/]/, "");
-      return form.find(".js-attachment-filename").text(filename);
+      filename = $(this).val().replace(/^.*[\\\/]/, '');
+      return form.find('.js-attachment-filename').text(filename);
     };
 
     /*
@@ -1108,6 +1156,17 @@ const normalizeNewlines = function(str) {
       });
     };
 
+    Notes.prototype.addFlash = function(...flashParams) {
+      this.flashInstance = new Flash(...flashParams);
+    };
+
+    Notes.prototype.clearFlash = function() {
+      if (this.flashInstance && this.flashInstance.flashContainer) {
+        this.flashInstance.flashContainer.hide();
+        this.flashInstance = null;
+      }
+    };
+
     Notes.prototype.cleanForm = function($form) {
       // Remove JS classes that are not needed here
       $form
@@ -1169,7 +1228,7 @@ const normalizeNewlines = function(str) {
     Notes.prototype.getFormData = function($form) {
       return {
         formData: $form.serialize(),
-        formContent: $form.find('.js-note-text').val(),
+        formContent: _.escape($form.find('.js-note-text').val()),
         formAction: $form.attr('action'),
       };
     };
@@ -1189,19 +1248,47 @@ const normalizeNewlines = function(str) {
     };
 
     /**
+     * Gets appropriate description from slash commands found in provided `formContent`
+     */
+    Notes.prototype.getSlashCommandDescription = function (formContent, availableSlashCommands = []) {
+      let tempFormContent;
+
+      // Identify executed slash commands from `formContent`
+      const executedCommands = availableSlashCommands.filter((command, index) => {
+        const commandRegex = new RegExp(`/${command.name}`);
+        return commandRegex.test(formContent);
+      });
+
+      if (executedCommands && executedCommands.length) {
+        if (executedCommands.length > 1) {
+          tempFormContent = 'Applying multiple commands';
+        } else {
+          const commandDescription = executedCommands[0].description.toLowerCase();
+          tempFormContent = `Applying command to ${commandDescription}`;
+        }
+      } else {
+        tempFormContent = 'Applying command';
+      }
+
+      return tempFormContent;
+    };
+
+    /**
      * Create placeholder note DOM element populated with comment body
      * that we will show while comment is being posted.
      * Once comment is _actually_ posted on server, we will have final element
      * in response that we will show in place of this temporary element.
      */
-    Notes.prototype.createPlaceholderNote = function({ formContent, uniqueId, isDiscussionNote, currentUsername, currentUserFullname }) {
+    Notes.prototype.createPlaceholderNote = function ({ formContent, uniqueId, isDiscussionNote, currentUsername, currentUserFullname, currentUserAvatar }) {
       const discussionClass = isDiscussionNote ? 'discussion' : '';
       const escapedFormContent = _.escape(formContent);
       const $tempNote = $(
         `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
            <div class="timeline-entry-inner">
               <div class="timeline-icon">
-                 <a href="/${currentUsername}"><span class="dummy-avatar"></span></a>
+                 <a href="/${currentUsername}">
+                   <img class="avatar s40" src="${currentUserAvatar}">
+                 </a>
               </div>
               <div class="timeline-content ${discussionClass}">
                  <div class="note-header">
@@ -1220,6 +1307,23 @@ const normalizeNewlines = function(str) {
               </div>
            </div>
         </li>`
+      );
+
+      return $tempNote;
+    };
+
+    /**
+     * Create Placeholder System Note DOM element populated with slash command description
+     */
+    Notes.prototype.createPlaceholderSystemNote = function ({ formContent, uniqueId }) {
+      const $tempNote = $(
+        `<li id="${uniqueId}" class="note system-note timeline-entry being-posted fade-in-half">
+           <div class="timeline-entry-inner">
+             <div class="timeline-content">
+               <i>${formContent}</i>
+             </div>
+           </div>
+         </li>`
       );
 
       return $tempNote;
@@ -1256,7 +1360,9 @@ const normalizeNewlines = function(str) {
       const isDiscussionForm = $form.hasClass('js-discussion-note-form');
       const isDiscussionResolve = $submitBtn.hasClass('js-comment-resolve-button');
       const { formData, formContent, formAction } = this.getFormData($form);
-      const uniqueId = _.uniqueId('tempNote_');
+      let noteUniqueId;
+      let systemNoteUniqueId;
+      let hasSlashCommands = false;
       let $notesContainer;
       let tempFormContent;
 
@@ -1277,16 +1383,28 @@ const normalizeNewlines = function(str) {
       tempFormContent = formContent;
       if (this.hasSlashCommands(formContent)) {
         tempFormContent = this.stripSlashCommands(formContent);
+        hasSlashCommands = true;
       }
 
+      // Show placeholder note
       if (tempFormContent) {
-        // Show placeholder note
+        noteUniqueId = _.uniqueId('tempNote_');
         $notesContainer.append(this.createPlaceholderNote({
           formContent: tempFormContent,
-          uniqueId,
+          uniqueId: noteUniqueId,
           isDiscussionNote,
           currentUsername: gon.current_username,
           currentUserFullname: gon.current_user_fullname,
+          currentUserAvatar: gon.current_user_avatar_url,
+        }));
+      }
+
+      // Show placeholder system note
+      if (hasSlashCommands) {
+        systemNoteUniqueId = _.uniqueId('tempSystemNote_');
+        $notesContainer.append(this.createPlaceholderSystemNote({
+          formContent: this.getSlashCommandDescription(formContent, AjaxCache.get(gl.GfmAutoComplete.dataSources.commands)),
+          uniqueId: systemNoteUniqueId,
         }));
       }
 
@@ -1304,7 +1422,15 @@ const normalizeNewlines = function(str) {
       gl.utils.ajaxPost(formAction, formData)
         .then((note) => {
           // Submission successful! remove placeholder
-          $notesContainer.find(`#${uniqueId}`).remove();
+          $notesContainer.find(`#${noteUniqueId}`).remove();
+
+          // Reset cached commands list when command is applied
+          if (hasSlashCommands) {
+            $form.find('textarea.js-note-text').trigger('clear-commands-cache.atwho');
+          }
+
+          // Clear previous form errors
+          this.clearFlashWrapper();
 
           // Check if this was discussion comment
           if (isDiscussionForm) {
@@ -1339,7 +1465,11 @@ const normalizeNewlines = function(str) {
           $form.trigger('ajax:success', [note]);
         }).fail(() => {
           // Submission failed, remove placeholder note and show Flash error message
-          $notesContainer.find(`#${uniqueId}`).remove();
+          $notesContainer.find(`#${noteUniqueId}`).remove();
+
+          if (hasSlashCommands) {
+            $notesContainer.find(`#${systemNoteUniqueId}`).remove();
+          }
 
           // Show form again on UI on failure
           if (isDiscussionForm && $notesContainer.length) {

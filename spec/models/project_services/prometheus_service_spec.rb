@@ -6,6 +6,7 @@ describe PrometheusService, models: true, caching: true do
 
   let(:project) { create(:prometheus_project) }
   let(:service) { project.prometheus_service }
+  let(:environment_query) { Gitlab::Prometheus::Queries::EnvironmentQuery }
 
   describe "Associations" do
     it { is_expected.to belong_to :project }
@@ -45,13 +46,14 @@ describe PrometheusService, models: true, caching: true do
     end
   end
 
-  describe '#metrics' do
+  describe '#environment_metrics' do
     let(:environment) { build_stubbed(:environment, slug: 'env-slug') }
 
     around do |example|
       Timecop.freeze { example.run }
     end
 
+<<<<<<< HEAD
     context 'with valid data without time range' do
       subject { service.metrics(environment) }
 
@@ -71,6 +73,13 @@ describe PrometheusService, models: true, caching: true do
 
       before do
         stub_reactive_cache(service, prometheus_data, 'env-slug', t_start, t_end)
+=======
+    context 'with valid data' do
+      subject { service.environment_metrics(environment) }
+
+      before do
+        stub_reactive_cache(service, prometheus_data, environment_query, environment.id)
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       end
 
       it 'returns reactive data' do
@@ -79,15 +88,40 @@ describe PrometheusService, models: true, caching: true do
     end
   end
 
+  describe '#deployment_metrics' do
+    let(:deployment) { build_stubbed(:deployment)}
+    let(:deployment_query) { Gitlab::Prometheus::Queries::DeploymentQuery }
+
+    around do |example|
+      Timecop.freeze { example.run }
+    end
+
+    context 'with valid data' do
+      subject { service.deployment_metrics(deployment) }
+
+      before do
+        stub_reactive_cache(service, prometheus_data, deployment_query, deployment.id)
+      end
+
+      it 'returns reactive data' do
+        is_expected.to eq(prometheus_data.merge(deployment_time: deployment.created_at.to_i))
+      end
+    end
+  end
+
   describe '#calculate_reactive_cache' do
-    let(:environment) { build_stubbed(:environment, slug: 'env-slug') }
+    let(:environment) { create(:environment, slug: 'env-slug') }
 
     around do |example|
       Timecop.freeze { example.run }
     end
 
     subject do
+<<<<<<< HEAD
       service.calculate_reactive_cache(environment.slug, nil, nil)
+=======
+      service.calculate_reactive_cache(environment_query.to_s, environment.id)
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     end
 
     context 'when service is inactive' do

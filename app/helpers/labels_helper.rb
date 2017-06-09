@@ -69,13 +69,12 @@ module LabelsHelper
   end
 
   def render_colored_label(label, label_suffix = '', tooltip: true)
-    label_color = label.color || Label::DEFAULT_COLOR
-    text_color = text_color_for_bg(label_color)
+    text_color = text_color_for_bg(label.color)
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter
     span = %(<span class="label color-label #{"has-tooltip" if tooltip}" ) +
-      %(style="background-color: #{label_color}; color: #{text_color}" ) +
+      %(style="background-color: #{label.color}; color: #{text_color}" ) +
       %(title="#{escape_once(label.description)}" data-container="body">) +
       %(#{escape_once(label.name)}#{label_suffix}</span>)
 

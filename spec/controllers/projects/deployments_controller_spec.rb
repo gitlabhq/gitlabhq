@@ -42,6 +42,7 @@ describe Projects::DeploymentsController do
     before do
       allow(controller).to receive(:deployment).and_return(deployment)
     end
+<<<<<<< HEAD
 
     context 'when environment has no metrics' do
       before do
@@ -75,6 +76,70 @@ describe Projects::DeploymentsController do
         expect(json_response['success']).to be(true)
         expect(json_response['metrics']).to eq({})
         expect(json_response['last_update']).to eq(42)
+=======
+    context 'when metrics are disabled' do
+      before do
+        allow(deployment).to receive(:has_metrics?).and_return false
+      end
+
+      it 'responds with not found' do
+        get :metrics, deployment_params(id: deployment.id)
+
+        expect(response).to be_not_found
+      end
+    end
+
+    context 'when metrics are enabled' do
+      before do
+        allow(deployment).to receive(:has_metrics?).and_return true
+      end
+
+      context 'when environment has no metrics' do
+        before do
+          expect(deployment).to receive(:metrics).and_return(nil)
+        end
+
+        it 'returns a empty response 204 resposne' do
+          get :metrics, deployment_params(id: deployment.id)
+          expect(response).to have_http_status(204)
+          expect(response.body).to eq('')
+        end
+      end
+
+      context 'when environment has some metrics' do
+        let(:empty_metrics) do
+          {
+            success: true,
+            metrics: {},
+            last_update: 42
+          }
+        end
+
+        before do
+          expect(deployment).to receive(:metrics).and_return(empty_metrics)
+        end
+
+        it 'returns a metrics JSON document' do
+          get :metrics, deployment_params(id: deployment.id)
+
+          expect(response).to be_ok
+          expect(json_response['success']).to be(true)
+          expect(json_response['metrics']).to eq({})
+          expect(json_response['last_update']).to eq(42)
+        end
+      end
+
+      context 'when metrics service does not implement deployment metrics' do
+        before do
+          allow(deployment).to receive(:metrics).and_raise(NotImplementedError)
+        end
+
+        it 'responds with not found' do
+          get :metrics, deployment_params(id: deployment.id)
+
+          expect(response).to be_not_found
+        end
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       end
     end
   end

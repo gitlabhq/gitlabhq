@@ -44,12 +44,28 @@ module Gitlab
         branch_names.count
       end
 
+      def local_branches(sort_by: nil)
+        request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
+        request.sort_by = sort_by_param(sort_by) if sort_by
+        consume_branches_response(stub.find_local_branches(request))
+      end
+
       private
 
       def consume_refs_response(response, prefix:)
         response.flat_map do |r|
           r.names.map { |name| name.sub(/\A#{Regexp.escape(prefix)}/, '') }
         end
+      end
+
+      def sort_by_param(sort_by)
+        enum_value = Gitaly::FindLocalBranchesRequest::SortBy.resolve(sort_by.upcase.to_sym)
+        raise ArgumentError, "Invalid sort_by key `#{sort_by}`" unless enum_value
+        enum_value
+      end
+
+      def consume_branches_response(response)
+        response.flat_map { |r| r.branches }
       end
     end
   end

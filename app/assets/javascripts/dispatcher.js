@@ -3,7 +3,7 @@
 /* global ActiveTabMemoizer */
 /* global ShortcutsNavigation */
 /* global Build */
-/* global Issuable */
+/* global IssuableIndex */
 /* global ShortcutsIssuable */
 /* global ZenMode */
 /* global Milestone */
@@ -14,7 +14,6 @@
 /* global NotificationsForm */
 /* global TreeView */
 /* global NotificationsDropdown */
-/* global UsersSelect */
 /* global GroupAvatar */
 /* global LineHighlighter */
 /* global ProjectFork */
@@ -35,12 +34,13 @@
 /* global ShortcutsWiki */
 
 import Issue from './issue';
-
 import BindInOut from './behaviors/bind_in_out';
+import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
+import setupProjectEdit from './project_edit';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
@@ -51,9 +51,17 @@ import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
+<<<<<<< HEAD
 import RefSelectDropdown from './ref_select_dropdown';
 
 const ShortcutsBlob = require('./shortcuts_blob');
+=======
+import UsersSelect from './users_select';
+import RefSelectDropdown from './ref_select_dropdown';
+import GfmAutoComplete from './gfm_auto_complete';
+import ShortcutsBlob from './shortcuts_blob';
+import initSettingsPanels from './settings_panels';
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
 (function() {
   var Dispatcher;
@@ -77,6 +85,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
       }
       path = page.split(':');
       shortcut_handler = null;
+
+      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
 
       function initBlob() {
         new LineHighlighter();
@@ -113,20 +123,22 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:boards:show':
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
+          new UsersSelect();
           break;
-        case 'projects:builds:show':
+        case 'projects:jobs:show':
           new Build();
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          if (gl.FilteredSearchManager) {
-            new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
+          if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
+            const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
+            filteredSearchManager.setup();
           }
-          Issuable.init();
-          new gl.IssuableBulkActions({
-            prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
-          });
+          const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
+          IssuableIndex.init(pagePrefix);
+
           shortcut_handler = new ShortcutsNavigation();
+          new UsersSelect();
           break;
         case 'projects:issues:show':
           new Issue();
@@ -138,6 +150,10 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'dashboard:milestones:show':
           new Milestone();
           new Sidebar();
+          break;
+        case 'groups:issues':
+        case 'groups:merge_requests':
+          new UsersSelect();
           break;
         case 'dashboard:todos:index':
           new gl.Todos();
@@ -180,6 +196,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'projects:branches:index':
           gl.AjaxLoadingSpinner.init();
+          new DeleteModal();
           break;
         case 'projects:issues:new':
         case 'projects:issues:edit':
@@ -206,6 +223,19 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new ZenMode();
           new gl.GLForm($('.tag-form'));
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+<<<<<<< HEAD
+=======
+          break;
+        case 'projects:snippets:new':
+        case 'projects:snippets:edit':
+        case 'projects:snippets:create':
+        case 'projects:snippets:update':
+        case 'snippets:new':
+        case 'snippets:edit':
+        case 'snippets:create':
+        case 'snippets:update':
+          new gl.GLForm($('.snippet-form'));
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -222,6 +252,10 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'dashboard:activity':
           new gl.Activities();
+          break;
+        case 'dashboard:issues':
+        case 'dashboard:merge_requests':
+          new UsersSelect();
           break;
         case 'projects:commit:show':
           new Commit();
@@ -247,6 +281,12 @@ const ShortcutsBlob = require('./shortcuts_blob');
           if ($('#tree-slider').length) {
             new TreeView();
           }
+          if ($('.blob-viewer').length) {
+            new BlobViewer();
+          }
+          break;
+        case 'projects:edit':
+          setupProjectEdit();
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -300,6 +340,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
+          new BlobViewer();
           gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:find_file:show':
@@ -360,6 +401,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
           // Initialize Protected Tag Settings
           new ProtectedTagCreate();
           new ProtectedTagEditList();
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
@@ -371,9 +414,15 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'users:show':
           new UserCallout();
           break;
+        case 'admin:conversational_development_index:show':
+          new UserCallout();
+          break;
         case 'snippets:show':
           new LineHighlighter();
           new BlobViewer();
+          break;
+        case 'import:fogbugz:new_user_map':
+          new UsersSelect();
           break;
       }
       switch (path.first()) {

@@ -285,7 +285,11 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
           // Similar to `toggler_behavior` in the discussion tab
           const hash = window.gl.utils.getLocationHash();
           const anchor = hash && $container.find(`[id="${hash}"]`);
+<<<<<<< HEAD
           if (anchor) {
+=======
+          if (anchor && anchor.length > 0) {
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
             const notesContent = anchor.closest('.notes_content');
             const lineType = notesContent.hasClass('new') ? 'new' : 'old';
             notes.toggleDiffNote({
@@ -373,10 +377,18 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
     initAffix() {
       const $tabs = $('.js-tabs-affix');
+      const $fixedNav = $('.navbar-gitlab');
 
       // Screen space on small screens is usually very sparse
       // So we dont affix the tabs on these
       if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
+
+      /**
+        If the browser does not support position sticky, it returns the position as static.
+        If the browser does support sticky, then we allow the browser to handle it, if not
+        then we default back to Bootstraps affix
+      **/
+      if ($tabs.css('position') !== 'static') return;
 
       const $diffTabs = $('#diff-notes-app');
 
@@ -384,7 +396,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
         .affix({
           offset: {
             top: () => (
-              $diffTabs.offset().top - $tabs.height()
+              $diffTabs.offset().top - $tabs.height() - $fixedNav.height()
             ),
           },
         })

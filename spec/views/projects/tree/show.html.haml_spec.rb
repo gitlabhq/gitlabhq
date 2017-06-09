@@ -21,17 +21,17 @@ describe 'projects/tree/show' do
     let(:tree) { repository.tree(commit.id, path) }
 
     before do
+      assign(:id, File.join(ref, path))
       assign(:ref, ref)
-      assign(:commit, commit)
-      assign(:id, commit.id)
-      assign(:tree, tree)
       assign(:path, path)
+      assign(:last_commit, commit)
+      assign(:tree, tree)
     end
 
     it 'displays correctly' do
       render
       expect(rendered).to have_css('.js-project-refs-dropdown .dropdown-toggle-text', text: ref)
-      expect(rendered).to have_css('.readme-holder .file-content', text: ref)
+      expect(rendered).to have_css('.readme-holder')
     end
   end
 end

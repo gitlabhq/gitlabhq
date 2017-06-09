@@ -2,7 +2,11 @@ module SharedPaths
   include Spinach::DSL
   include RepoHelpers
   include DashboardHelper
+<<<<<<< HEAD
   include WaitForVueResource
+=======
+  include WaitForRequests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
   step 'I visit new project page' do
     visit new_project_path
@@ -152,7 +156,7 @@ module SharedPaths
     visit profile_preferences_path
   end
 
-  step 'I visit Audit Log page' do
+  step 'I visit Authentication log page' do
     visit audit_log_profile_path
   end
 
@@ -378,28 +382,48 @@ module SharedPaths
 
   step 'I visit merge request page "Bug NS-04"' do
     visit merge_request_path("Bug NS-04")
+<<<<<<< HEAD
     wait_for_vue_resource
+=======
+    wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   end
 
   step 'I visit merge request page "Bug NS-05"' do
     visit merge_request_path("Bug NS-05")
+<<<<<<< HEAD
     wait_for_vue_resource
+=======
+    wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   end
 
   step 'I visit merge request page "Bug NS-07"' do
     visit merge_request_path("Bug NS-07")
+<<<<<<< HEAD
     wait_for_vue_resource
+=======
+    wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   end
 
   step 'I visit merge request page "Bug NS-08"' do
     visit merge_request_path("Bug NS-08")
+<<<<<<< HEAD
     wait_for_vue_resource
+=======
+    wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   end
 
   step 'I visit merge request page "Bug CO-01"' do
     mr = MergeRequest.find_by(title: "Bug CO-01")
     visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+<<<<<<< HEAD
     wait_for_vue_resource
+=======
+    wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   end
 
   step 'I visit project "Shop" merge requests page' do

@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 # Installing GitLab in Kubernetes
+=======
+# Installing GitLab on Kubernetes
+> Officially supported cloud providers are Google Container Service and Azure Container Service.
+
+> Officially supported schedulers are Kubernetes and Terraform.
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
 The easiest method to deploy GitLab in [Kubernetes](https://kubernetes.io/) is
 to take advantage of the official GitLab Helm charts. [Helm] is a package

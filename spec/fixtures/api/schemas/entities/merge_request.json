@@ -85,13 +85,22 @@
     "email_patches_path": { "type": "string" },
     "plain_diff_path": { "type": "string" },
     "status_path": { "type": "string" },
+<<<<<<< HEAD
+=======
+    "new_blob_path": { "type": "string" },
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     "merge_check_path": { "type": "string" },
     "ci_environments_status_path": { "type": "string" },
     "merge_commit_message_with_description": { "type": "string" },
     "diverged_commits_count": { "type": "integer" },
     "commit_change_content_path": { "type": "string" },
     "remove_wip_path": { "type": "string" },
+<<<<<<< HEAD
     "commits_count": { "type": "integer" }
+=======
+    "commits_count": { "type": "integer" },
+    "remove_source_branch": { "type": ["boolean", "null"] }
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   },
   "additionalProperties": false
 }

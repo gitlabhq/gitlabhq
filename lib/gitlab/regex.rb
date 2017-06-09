@@ -2,6 +2,7 @@ module Gitlab
   module Regex
     extend self
 
+<<<<<<< HEAD
     # All routes that appear on the top level must be listed here.
     # This will make sure that groups cannot be created with these names
     # as these routes would be masked by the paths already in place.
@@ -200,6 +201,8 @@ module Gitlab
       "Cannot start with '-' or end in '.', '.git' or '.atom'." \
     end
 
+=======
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     def namespace_name_regex
       @namespace_name_regex ||= /\A[\p{Alnum}\p{Pd}_\. ]*\z/.freeze
     end
@@ -217,6 +220,7 @@ module Gitlab
       "It must start with letter, digit, emoji or '_'."
     end
 
+<<<<<<< HEAD
     def project_path_regex
       @project_path_regex ||= %r{\A#{project_route_regex}/\z}
     end
@@ -245,6 +249,8 @@ module Gitlab
       "Cannot start with '-', end in '.git' or end in '.atom'" \
     end
 
+=======
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     def file_name_regex
       @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@\+]*\z/.freeze
     end
@@ -253,6 +259,7 @@ module Gitlab
       "can contain only letters, digits, '_', '-', '@', '+' and '.'."
     end
 
+<<<<<<< HEAD
     def archive_formats_regex
       #                           |zip|tar|    tar.gz    |         tar.bz2         |
       @archive_formats_regex ||= /(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/.freeze
@@ -281,8 +288,10 @@ module Gitlab
       }x
     end
 
+=======
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     def container_registry_reference_regex
-      git_reference_regex
+      Gitlab::PathRegex.git_reference_regex
     end
 
     ##

@@ -18,7 +18,7 @@ class FlowdockService < Service
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: 'Flowdock Git source token' }
+      { type: 'text', name: 'token', placeholder: 'Flowdock Git source token', required: true }
     ]
   end
 
@@ -37,7 +37,7 @@ class FlowdockService < Service
       repo: project.repository.path_to_repo,
       repo_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}",
       commit_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/%s",
-      diff_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/compare/%s...%s",
+      diff_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/compare/%s...%s"
     )
   end
 end

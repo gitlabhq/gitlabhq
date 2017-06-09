@@ -80,7 +80,11 @@ structure.
 - You need to be an Owner of a group in order to be able to create
   a subgroup. For more information check the [permissions table][permissions].
 - For a list of words that are not allowed to be used as group names see the
+<<<<<<< HEAD
   [`regex.rb` file][reserved] under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists:
+=======
+  [`path_regex.rb` file][reserved] under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists:
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   - `TOP_LEVEL_ROUTES`: are names that are reserved as usernames or top level groups
   - `PROJECT_WILDCARD_ROUTES`: are names that are reserved for child groups or projects.
   - `GROUP_ROUTES`: are names that are reserved for all groups or projects.
@@ -172,4 +176,8 @@ Here's a list of what you can't do with subgroups:
 
 [ce-2772]: https://gitlab.com/gitlab-org/gitlab-ce/issues/2772
 [permissions]: ../../permissions.md#group
+<<<<<<< HEAD
 [reserved]:  https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/regex.rb
+=======
+[reserved]:  https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/path_regex.rb
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259

@@ -3,7 +3,11 @@ require 'spec_helper'
 describe ProjectSnippetPolicy, models: true do
   let(:regular_user) { create(:user) }
   let(:external_user) { create(:user, :external) }
+<<<<<<< HEAD
   let(:project) { create(:empty_project, :public) }
+=======
+  let(:project) { create(:empty_project) }
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
   let(:author_permissions) do
     [
@@ -107,7 +111,11 @@ describe ProjectSnippetPolicy, models: true do
     end
 
     context 'snippet author' do
+<<<<<<< HEAD
       let(:snippet) { create(:project_snippet, :private, author: regular_user, project: project) }
+=======
+      let(:snippet) { create(:project_snippet, :private, author: regular_user) }
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
       subject { described_class.abilities(regular_user, snippet).to_set }
 

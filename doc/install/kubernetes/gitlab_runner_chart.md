@@ -1,4 +1,10 @@
 # GitLab Runner Helm Chart
+<<<<<<< HEAD
+=======
+> Officially supported cloud providers are Google Container Service and Azure Container Service.
+
+> Officially supported schedulers are Kubernetes and Terraform.
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
 The `gitlab-runner` Helm chart deploys a GitLab Runner instance into your
 Kubernetes cluster.
@@ -138,7 +144,11 @@ Once you [have configured](#configuration) GitLab Runner in your `values.yml` fi
 run the following:
 
 ```bash
+<<<<<<< HEAD
 helm install --namepace <NAMEPACE> --name gitlab-runner -f <CONFIG_VALUES_FILE> gitlab/gitlab-runner
+=======
+helm install --namespace <NAMESPACE> --name gitlab-runner -f <CONFIG_VALUES_FILE> gitlab/gitlab-runner
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 ```
 
 - `<NAMESPACE>` is the Kubernetes namespace where you want to install the GitLab Runner.
@@ -150,7 +160,11 @@ helm install --namepace <NAMEPACE> --name gitlab-runner -f <CONFIG_VALUES_FILE> 
 Once your GitLab Runner Chart is installed, configuration changes and chart updates should we done using `helm upgrade`
 
 ```bash
+<<<<<<< HEAD
 helm upgrade --namepace <NAMEPACE> -f <CONFIG_VALUES_FILE> <RELEASE-NAME> gitlab/gitlab-runner
+=======
+helm upgrade --namespace <NAMESPACE> -f <CONFIG_VALUES_FILE> <RELEASE-NAME> gitlab/gitlab-runner
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 ```
 
 Where:

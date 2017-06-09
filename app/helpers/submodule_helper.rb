@@ -7,8 +7,29 @@ module SubmoduleHelper
   def submodule_links(submodule_item, ref = nil, repository = @repository)
     url = repository.submodule_url_for(ref, submodule_item.path)
 
+<<<<<<< HEAD
     if url =~ /([^\/:]+)\/([^\/]+(?:\.git)?)\Z/
       namespace, project = $1, $2
+=======
+    if url == '.' || url == './'
+      url = File.join(Gitlab.config.gitlab.url, @project.full_path)
+    end
+
+    if url =~ /([^\/:]+)\/([^\/]+(?:\.git)?)\Z/
+      namespace, project = $1, $2
+      gitlab_hosts = [Gitlab.config.gitlab.url,
+                      Gitlab.config.gitlab_shell.ssh_path_prefix]
+
+      gitlab_hosts.each do |host|
+        if url.start_with?(host)
+          namespace, _, project = url.sub(host, '').rpartition('/')
+          break
+        end
+      end
+
+      namespace.sub!(/\A\//, '')
+      project.rstrip!
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       project.sub!(/\.git\z/, '')
 
       if self_url?(url, namespace, project)

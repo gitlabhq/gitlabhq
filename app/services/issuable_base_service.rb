@@ -148,7 +148,7 @@ class IssuableBaseService < BaseService
         execute(params[:description], issuable)
 
     # Avoid a description already set on an issuable to be overwritten by a nil
-    params[:description] = description if params.has_key?(:description)
+    params[:description] = description if params.key?(:description)
 
     params.merge!(command_params)
   end
@@ -178,7 +178,11 @@ class IssuableBaseService < BaseService
       after_create(issuable)
       issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
+<<<<<<< HEAD
       issuable.assignees.each(&:invalidate_cache_counts)
+=======
+      invalidate_cache_counts(issuable.assignees, issuable)
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     end
 
     issuable
@@ -237,7 +241,11 @@ class IssuableBaseService < BaseService
 
         if old_assignees != issuable.assignees
           assignees = old_assignees + issuable.assignees.to_a
+<<<<<<< HEAD
           assignees.compact.each(&:invalidate_cache_counts)
+=======
+          invalidate_cache_counts(assignees.compact, issuable)
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
         end
 
         after_update(issuable)
@@ -329,5 +337,11 @@ class IssuableBaseService < BaseService
     end
 
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels
+  end
+
+  def invalidate_cache_counts(users, issuable)
+    users.each do |user|
+      user.public_send("invalidate_#{issuable.model_name.singular}_cache_counts")
+    end
   end
 end

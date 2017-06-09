@@ -11,13 +11,23 @@ class Projects::DeploymentsController < Projects::ApplicationController
   end
 
   def metrics
+<<<<<<< HEAD
     @metrics = deployment.metrics(1.hour)
 
+=======
+    return render_404 unless deployment.has_metrics?
+    @metrics = deployment.metrics
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     if @metrics&.any?
       render json: @metrics, status: :ok
     else
       head :no_content
     end
+<<<<<<< HEAD
+=======
+  rescue NotImplementedError
+    render_404
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   end
 
   private

@@ -49,7 +49,8 @@ class PrometheusService < MonitoringService
         type: 'text',
         name: 'api_url',
         title: 'API URL',
-        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/'
+        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/',
+        required: true
       }
     ]
   end
@@ -63,6 +64,7 @@ class PrometheusService < MonitoringService
     { success: false, result: err }
   end
 
+<<<<<<< HEAD
   def metrics(environment, timeframe_start: nil, timeframe_end: nil)
     with_reactive_cache(environment.slug, timeframe_start, timeframe_end) do |data|
       data
@@ -94,14 +96,33 @@ class PrometheusService < MonitoringService
         cpu_current: client.query(cpu_query, time: timeframe_end),
         cpu_previous: client.query(cpu_query, time: timeframe_start)
       },
+=======
+  def environment_metrics(environment)
+    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &:itself)
+  end
+
+  def deployment_metrics(deployment)
+    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &:itself)
+    metrics&.merge(deployment_time: created_at.to_i) || {}
+  end
+
+  # Cache metrics for specific environment
+  def calculate_reactive_cache(query_class_name, *args)
+    return unless active? && project && !project.pending_delete?
+
+    metrics = Kernel.const_get(query_class_name).new(client).query(*args)
+
+    {
+      success: true,
+      metrics: metrics,
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       last_update: Time.now.utc
     }
-
   rescue Gitlab::PrometheusError => err
     { success: false, result: err.message }
   end
 
   def client
-    @prometheus ||= Gitlab::Prometheus.new(api_url: api_url)
+    @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url)
   end
 end

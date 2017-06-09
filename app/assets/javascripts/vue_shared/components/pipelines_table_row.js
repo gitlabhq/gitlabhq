@@ -4,7 +4,7 @@ import PipelinesActionsComponent from '../../pipelines/components/pipelines_acti
 import PipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts';
 import ciBadge from './ci_badge_link.vue';
 import PipelinesStageComponent from '../../pipelines/components/stage.vue';
-import PipelinesUrlComponent from '../../pipelines/components/pipeline_url';
+import PipelinesUrlComponent from '../../pipelines/components/pipeline_url.vue';
 import PipelinesTimeagoComponent from '../../pipelines/components/time_ago';
 import CommitComponent from './commit';
 
@@ -62,10 +62,12 @@ export default {
     commitAuthor() {
       let commitAuthorInformation;
 
+      if (!this.pipeline || !this.pipeline.commit) {
+        return null;
+      }
+
       // 1. person who is an author of a commit might be a GitLab user
-      if (this.pipeline &&
-        this.pipeline.commit &&
-        this.pipeline.commit.author) {
+      if (this.pipeline.commit.author) {
         // 2. if person who is an author of a commit is a GitLab user
         // he/she can have a GitLab avatar
         if (this.pipeline.commit.author.avatar_url) {
@@ -77,14 +79,11 @@ export default {
             avatar_url: this.pipeline.commit.author_gravatar_url,
           });
         }
-      }
-
-      // 4. If committer is not a GitLab User he/she can have a Gravatar
-      if (this.pipeline &&
-        this.pipeline.commit) {
+        // 4. If committer is not a GitLab User he/she can have a Gravatar
+      } else {
         commitAuthorInformation = {
           avatar_url: this.pipeline.commit.author_gravatar_url,
-          web_url: `mailto:${this.pipeline.commit.author_email}`,
+          path: `mailto:${this.pipeline.commit.author_email}`,
           username: this.pipeline.commit.author_name,
         };
       }

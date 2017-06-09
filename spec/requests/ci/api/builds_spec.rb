@@ -185,7 +185,7 @@ describe Ci::API::Builds do
             { "key" => "CI_PIPELINE_TRIGGERED", "value" => "true", "public" => true },
             { "key" => "DB_NAME", "value" => "postgres", "public" => true },
             { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
-            { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false },
+            { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false }
           )
         end
       end

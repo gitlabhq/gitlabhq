@@ -3,6 +3,7 @@
 
 import Vue from 'vue';
 import collapseIcon from '../icons/collapse_icon.svg';
+import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 
 const DiffNoteAvatars = Vue.extend({
   props: ['discussionId'],
@@ -15,22 +16,24 @@ const DiffNoteAvatars = Vue.extend({
       collapseIcon,
     };
   },
+  components: {
+    userAvatarImage,
+  },
   template: `
     <div class="diff-comment-avatar-holders"
       v-show="notesCount !== 0">
       <div v-if="!isVisible">
-        <img v-for="note in notesSubset"
-          class="avatar diff-comment-avatar has-tooltip js-diff-comment-avatar"
-          width="19"
-          height="19"
-          role="button"
-          data-container="body"
-          data-placement="top"
-          data-html="true"
+        <!-- FIXME: Pass an alt attribute here for accessibility -->
+        <user-avatar-image
+          v-for="note in notesSubset"
+          class="diff-comment-avatar js-diff-comment-avatar"
+          @click.native="clickedAvatar($event)"
+          :img-src="note.authorAvatar"
+          :tooltip-text="getTooltipText(note)"
           :data-line-type="lineType"
-          :title="note.authorName + ': ' + note.noteTruncated"
-          :src="note.authorAvatar"
-          @click="clickedAvatar($event)" />
+          :size="19"
+          data-html="true"
+        />
         <span v-if="notesCount > shownAvatars"
           class="diff-comments-more-count has-tooltip js-diff-comment-avatar"
           data-container="body"
@@ -149,6 +152,9 @@ const DiffNoteAvatars = Vue.extend({
     },
     setDiscussionVisible() {
       this.isVisible = $(`.diffs .notes[data-discussion-id="${this.discussion.id}"]`).is(':visible');
+    },
+    getTooltipText(note) {
+      return `${note.authorName}: ${note.noteTruncated}`;
     },
   },
 });

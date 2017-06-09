@@ -5,6 +5,11 @@ export default class MergeRequestStore {
 
   constructor(data) {
     this.sha = data.diff_head_sha;
+<<<<<<< HEAD
+=======
+    this.gitlabLogo = data.gitlabLogo;
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     this.setData(data);
   }
 
@@ -50,13 +55,21 @@ export default class MergeRequestStore {
     this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
+<<<<<<< HEAD
     this.shouldRemoveSourceBranch = (data.merge_params || {}).should_remove_source_branch || false;
+=======
+    this.shouldRemoveSourceBranch = data.remove_source_branch || false;
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
+<<<<<<< HEAD
+=======
+    this.newBlobPath = data.new_blob_path;
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.mergeCheckPath = data.merge_check_path;
     this.mergeActionsContentPath = data.commit_change_content_path;

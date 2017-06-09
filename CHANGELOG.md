@@ -227,6 +227,34 @@ entry.
 - Fix preemptive scroll bar on user activity calendar.
 - Pipeline chat notifications convert seconds to minutes and hours.
 
+<<<<<<< HEAD
+=======
+## 9.1.7 (2017-06-07)
+
+- No changes.
+
+## 9.1.6 (2017-06-02)
+
+- Fix visibility when referencing snippets.
+
+## 9.1.5 (2017-05-31)
+
+- Move uploads from 'public/uploads' to 'public/uploads/system'.
+- Restrict API X-Frame-Options to same origin.
+- Allow users autocomplete by author_id only for authenticated users.
+
+## 9.1.4 (2017-05-12)
+
+- Fix error on CI/CD Settings page related to invalid pipeline trigger. !10948 (dosuken123)
+- Sort the network graph both by commit date and topographically. !11057
+- Fix cross referencing for private and internal projects. !11243
+- Handle incoming emails from aliases correctly.
+- Gracefully handle failures for incoming emails which do not match on the To header, and have no References header.
+- Add missing project attributes to Import/Export.
+- Fixed search terms not correctly highlighting.
+- Fixed bug where merge request JSON would be displayed.
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 ## 9.1.3 (2017-05-05)
 
 - Do not show private groups on subgroups page if user doesn't have access to.
@@ -267,6 +295,7 @@ entry.
 
 ## 9.1.0 (2017-04-22)
 
+- Add Jupyter notebook rendering !10017
 - Added merge requests empty state. !7342
 - Add option to start a new resolvable discussion in an MR. !7527
 - Hide form inputs for group member without editing rights. !7816
@@ -512,6 +541,20 @@ entry.
 - Removed the hours & minutes from the users start date on their profile.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
+
+## 9.0.10 (2017-06-07)
+
+- No changes.
+
+## 9.0.9 (2017-06-02)
+
+- Fix visibility when referencing snippets.
+
+## 9.0.8 (2017-05-31)
+
+- Move uploads from 'public/uploads' to 'public/uploads/system'.
+- Restrict API X-Frame-Options to same origin.
+- Allow users autocomplete by author_id only for authenticated users.
 
 ## 9.0.7 (2017-05-05)
 

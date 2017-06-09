@@ -41,3 +41,7 @@ export { default as getStateKey } from './stores/get_state_key';
 export { default as mrWidgetOptions } from './mr_widget_options';
 export { default as stateMaps } from './stores/state_maps';
 export { default as SquashBeforeMerge } from './components/states/mr_widget_squash_before_merge';
+<<<<<<< HEAD
+=======
+export { default as notify } from '../lib/utils/notify';
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259

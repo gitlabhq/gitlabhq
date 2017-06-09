@@ -32,7 +32,7 @@ feature 'Mini Pipeline Graph in Commit View', :js, :feature do
     it 'should show the builds list when stage is clicked' do
       first('.mini-pipeline-graph-dropdown-toggle').click
 
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.js-builds-dropdown-list' do
         expect(page).to have_selector('.ci-status-icon-running')

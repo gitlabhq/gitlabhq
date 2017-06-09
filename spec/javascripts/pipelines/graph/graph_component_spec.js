@@ -14,32 +14,49 @@ describe('graph component', () => {
 
   describe('while is loading', () => {
     it('should render a loading icon', () => {
-      const component = new GraphComponent().$mount('#js-pipeline-graph-vue');
+      const component = new GraphComponent({
+        propsData: {
+          isLoading: true,
+          pipeline: {},
+        },
+      }).$mount('#js-pipeline-graph-vue');
       expect(component.$el.querySelector('.loading-icon')).toBeDefined();
     });
   });
 
+<<<<<<< HEAD
   describe('with a successfull response', () => {
     const interceptor = (request, next) => {
       next(request.respondWith(JSON.stringify(graphJSON), {
         status: 200,
       }));
     };
+=======
+  describe('with data', () => {
+    it('should render the graph', () => {
+      const component = new GraphComponent({
+        propsData: {
+          isLoading: false,
+          pipeline: graphJSON,
+        },
+      }).$mount('#js-pipeline-graph-vue');
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
-    beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-    });
+      expect(component.$el.classList.contains('js-pipeline-graph')).toEqual(true);
 
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-    });
+      expect(
+        component.$el.querySelector('.stage-column:first-child').classList.contains('no-margin'),
+      ).toEqual(true);
 
-    it('should render the graph', (done) => {
-      const component = new GraphComponent().$mount('#js-pipeline-graph-vue');
+      expect(
+        component.$el.querySelector('.stage-column:nth-child(2)').classList.contains('left-margin'),
+      ).toEqual(true);
 
-      setTimeout(() => {
-        expect(component.$el.classList.contains('js-pipeline-graph')).toEqual(true);
+      expect(
+        component.$el.querySelector('.stage-column:nth-child(2) .build:nth-child(1)').classList.contains('left-connector'),
+      ).toEqual(true);
 
+<<<<<<< HEAD
         expect(
           component.$el.querySelector('.stage-column:first-child').classList.contains('no-margin'),
         ).toEqual(true);
@@ -53,10 +70,11 @@ describe('graph component', () => {
         ).toEqual(true);
 
         expect(component.$el.querySelector('loading-icon')).toBe(null);
+=======
+      expect(component.$el.querySelector('loading-icon')).toBe(null);
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
-        expect(component.$el.querySelector('.stage-column-list')).toBeDefined();
-        done();
-      }, 0);
+      expect(component.$el.querySelector('.stage-column-list')).toBeDefined();
     });
   });
 });

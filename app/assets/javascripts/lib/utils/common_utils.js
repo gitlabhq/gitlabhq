@@ -135,7 +135,10 @@
     gl.utils.getUrlParamsArray = function () {
       // We can trust that each param has one & since values containing & will be encoded
       // Remove the first character of search as it is always ?
-      return window.location.search.slice(1).split('&');
+      return window.location.search.slice(1).split('&').map((param) => {
+        const split = param.split('=');
+        return [decodeURI(split[0]), split[1]].join('=');
+      });
     };
 
     gl.utils.isMetaKey = function(e) {
@@ -195,10 +198,12 @@
 
       const textBefore = value.substring(0, selectionStart);
       const textAfter = value.substring(selectionEnd, value.length);
-      const newText = textBefore + text + textAfter;
+
+      const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
+      const newText = textBefore + insertedText + textAfter;
 
       target.value = newText;
-      target.selectionStart = target.selectionEnd = selectionStart + text.length;
+      target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
       // Trigger autosave
       $(target).trigger('input');

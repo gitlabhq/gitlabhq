@@ -55,7 +55,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it 'finds by name' do
-      expect(results).to include(["files/images/wm.svg", nil])
+      expect(results.map(&:first)).to include('files/images/wm.svg')
     end
 
     it 'finds by content' do
@@ -123,8 +123,13 @@ describe Gitlab::ProjectSearchResults, lib: true do
     context 'when wiki is internal' do
       let(:project) { create(:project, :public, :wiki_private) }
 
+<<<<<<< HEAD
       it 'finds wiki blobs for members' do
         project.add_reporter(user)
+=======
+      it 'finds wiki blobs for guest' do
+        project.add_guest(user)
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
         is_expected.not_to be_empty
       end

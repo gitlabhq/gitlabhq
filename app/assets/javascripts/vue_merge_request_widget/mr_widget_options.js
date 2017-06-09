@@ -29,6 +29,10 @@ import {
   eventHub,
   stateMaps,
   SquashBeforeMerge,
+<<<<<<< HEAD
+=======
+  notify,
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 } from './dependencies';
 
 export default {
@@ -77,8 +81,15 @@ export default {
       this.service.checkStatus()
         .then(res => res.json())
         .then((res) => {
+<<<<<<< HEAD
           this.mr.setData(res);
           this.setFavicon();
+=======
+          this.handleNotification(res);
+          this.mr.setData(res);
+          this.setFavicon();
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
           if (cb) {
             cb.call(null, res);
           }
@@ -136,6 +147,18 @@ export default {
           new Flash('Something went wrong. Please try again.'); // eslint-disable-line
         });
     },
+<<<<<<< HEAD
+=======
+    handleNotification(data) {
+      if (data.ci_status === this.mr.ciStatus) return;
+
+      const label = data.pipeline.details.status.label;
+      const title = `Pipeline ${label}`;
+      const message = `Pipeline ${label} for "${data.title}"`;
+
+      notify.notifyMe(title, message, this.mr.gitlabLogo);
+    },
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     resumePolling() {
       this.pollingInterval.resume();
     },

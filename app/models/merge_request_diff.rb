@@ -1,7 +1,7 @@
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
   include Importable
-  include Gitlab::Git::EncodingHelper
+  include Gitlab::EncodingHelper
 
   # Prevent store of diff if commits amount more then 500
   COMMITS_SAFE_SIZE = 100
@@ -11,8 +11,8 @@ class MergeRequestDiff < ActiveRecord::Base
 
   belongs_to :merge_request
 
-  serialize :st_commits
-  serialize :st_diffs
+  serialize :st_commits # rubocop:disable Cop/ActiverecordSerialize
+  serialize :st_diffs # rubocop:disable Cop/ActiverecordSerialize
 
   state_machine :state, initial: :empty do
     state :collected
@@ -150,6 +150,29 @@ class MergeRequestDiff < ActiveRecord::Base
     )
   end
 
+  # MRs created before 8.4 don't store their true diff refs (start and base),
+  # but we need to get a commit SHA for the "View file @ ..." link by a file,
+  # so we use an approximation of the diff refs if we can't get the actual one.
+  #
+  # These will not be the actual diff refs if the target branch was merged into
+  # the source branch after the merge request was created, but it is good enough
+  # for the specific purpose of linking to a commit.
+  #
+  # It is not good enough for highlighting diffs, so we can't simply pass
+  # these as `diff_refs.`
+  def fallback_diff_refs
+    real_refs = diff_refs
+    return real_refs if real_refs
+
+    likely_base_commit_sha = (first_commit&.parent || first_commit)&.sha
+
+    Gitlab::Diff::DiffRefs.new(
+      base_sha:  likely_base_commit_sha,
+      start_sha: safe_start_commit_sha,
+      head_sha:  head_commit_sha
+    )
+  end
+
   def diff_refs_by_sha?
     base_commit_sha? && head_commit_sha? && start_commit_sha?
   end
@@ -175,12 +198,11 @@ class MergeRequestDiff < ActiveRecord::Base
     self == merge_request.merge_request_diff
   end
 
-  def compare_with(sha, straight: true)
+  def compare_with(sha)
     # When compare merge request versions we want diff A..B instead of A...B
     # so we handle cases when user does squash and rebase of the commits between versions.
     # For this reason we set straight to true by default.
-    CompareService.new(project, head_commit_sha)
-      .execute(project, sha, straight: straight)
+    CompareService.new(project, head_commit_sha).execute(project, sha, straight: true)
   end
 
   def commits_count

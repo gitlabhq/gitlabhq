@@ -16,7 +16,7 @@ describe 'Dropdown author', js: true, feature: true do
     end
 
     sleep 0.5
-    wait_for_ajax
+    wait_for_requests
   end
 
   def dropdown_author_size
@@ -131,6 +131,25 @@ describe 'Dropdown author', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_author, visible: false)
       expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+      expect_filtered_search_input_empty
+    end
+  end
+
+  describe 'selecting from dropdown without Ajax call' do
+    before do
+      Gitlab::Testing::RequestBlockerMiddleware.block_requests!
+      filtered_search.set('author:')
+    end
+
+    after do
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
+    end
+
+    it 'selects current user' do
+      find('#js-dropdown-author .filter-dropdown-item', text: user.username).click
+
+      expect(page).to have_css(js_dropdown_author, visible: false)
+      expect_tokens([{ name: 'author', value: user.username }])
       expect_filtered_search_input_empty
     end
   end

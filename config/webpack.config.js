@@ -5,6 +5,7 @@ var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
+var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
@@ -15,6 +16,7 @@ var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
+var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
 var config = {
   // because sqljs requires fs.
@@ -23,6 +25,7 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
+    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
     common:               './commons/index.js',
@@ -39,6 +42,7 @@ var config = {
     group:                './group.js',
     groups_list:          './groups_list.js',
     issue_show:           './issue_show/index.js',
+    integrations:         './integrations',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -47,8 +51,7 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/index.js',
-    balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    pipelines_graph:      './pipelines/graph_bundle.js',
+    pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
@@ -69,10 +72,9 @@ var config = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
+    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
+    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
-
-  devtool: 'cheap-module-source-map',
 
   module: {
     rules: [
@@ -90,17 +92,17 @@ var config = {
         loader: 'raw-loader',
       },
       {
-        test: /\.gif$/,
+        test: /\.(gif|png)$/,
         loader: 'url-loader',
-        query: { mimetype: 'image/gif' },
+        options: { limit: 2048 },
       },
       {
-        test: /\.(worker\.js|pdf)$/,
+        test: /\.(worker\.js|pdf|bmpr)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
       },
       {
-        test: /locale\/[a-z]+\/(.*)\.js$/,
+        test: /locale\/\w+\/(.*)\.js$/,
         loader: 'exports-loader?locales',
       },
     ]
@@ -126,10 +128,20 @@ var config = {
       jQuery: 'jquery',
     }),
 
-    // use deterministic module ids in all environments
-    IS_PRODUCTION ?
-      new webpack.HashedModuleIdsPlugin() :
-      new webpack.NamedModulesPlugin(),
+    // assign deterministic module ids
+    new webpack.NamedModulesPlugin(),
+    new NameAllModulesPlugin(),
+
+    // assign deterministic chunk ids
+    new webpack.NamedChunksPlugin((chunk) => {
+      if (chunk.name) {
+        return chunk.name;
+      }
+      return chunk.modules.map((m) => {
+        var chunkPath = m.request.split('!').pop();
+        return path.relative(m.context, chunkPath);
+      }).join('_');
+    }),
 
     // create cacheable common library bundle for all vue chunks
     new webpack.optimize.CommonsChunkPlugin({
@@ -148,8 +160,12 @@ var config = {
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
+<<<<<<< HEAD
         'balsamiq_viewer',
         'pipelines_graph',
+=======
+        'pipelines_details',
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
         'schedule_form',
         'schedules_index',
         'sidebar',
@@ -172,15 +188,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'common', 'runtime'],
-    }),
-
-    // locale common library
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'locale',
-      chunks: [
-        'cycle_analytics',
-      ],
+      names: ['main', 'locale', 'common', 'runtime'],
     }),
   ],
 
@@ -191,6 +199,7 @@ var config = {
       'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
+      'images':         path.join(ROOT_PATH, 'app/assets/images'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.esm.js',
     }
@@ -210,11 +219,18 @@ if (IS_PRODUCTION) {
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
-    }),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
     })
   );
+
+  // zopfli requires a lot of compute time and is disabled in CI
+  if (!NO_COMPRESSION) {
+    config.plugins.push(
+      new CompressionPlugin({
+        asset: '[path].gz[query]',
+        algorithm: 'zopfli',
+      })
+    );
+  }
 }
 
 if (IS_DEV_SERVER) {

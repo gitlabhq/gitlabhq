@@ -113,7 +113,11 @@ describe PipelineSerializer do
 
       it "verifies number of queries" do
         recorded = ActiveRecord::QueryRecorder.new { subject }
+<<<<<<< HEAD
         expect(recorded.count).to be_within(1).of(58)
+=======
+        expect(recorded.count).to be_within(1).of(60)
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
         expect(recorded.cached_count).to eq(0)
       end
 

@@ -15,6 +15,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 3_000)
+
         render json: {
           environments: EnvironmentSerializer
             .new(project: @project, current_user: @current_user)
@@ -31,6 +33,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def folder
     folder_environments = project.environments.where(environment_type: params[:id])
     @environments = folder_environments.with_state(params[:scope] || :available)
+      .order(:name)
 
     respond_to do |format|
       format.html

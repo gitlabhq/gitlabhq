@@ -1,4 +1,9 @@
 import statusCodes from '~/lib/utils/http_status';
+<<<<<<< HEAD
+=======
+import { bytesToMiB } from '~/lib/utils/number_utils';
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 import MemoryGraph from '../../vue_shared/components/memory_graph';
 import MRWidgetService from '../services/mr_widget_service';
 
@@ -9,8 +14,13 @@ export default {
   },
   data() {
     return {
+<<<<<<< HEAD
       // memoryFrom: 0,
       // memoryTo: 0,
+=======
+      memoryFrom: 0,
+      memoryTo: 0,
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       memoryMetrics: [],
       deploymentTime: 0,
       hasMetrics: false,
@@ -35,6 +45,7 @@ export default {
     shouldShowMetricsUnavailable() {
       return !this.loadingMetrics && !this.hasMetrics && !this.loadFailed;
     },
+<<<<<<< HEAD
   },
   methods: {
     computeGraphData(metrics, deploymentTime) {
@@ -47,6 +58,40 @@ export default {
       // if (memory_current.length > 0) {
       //   this.memoryTo = Number(memory_current[0].value[1]).toFixed(2);
       // }
+=======
+    memoryChangeType() {
+      const memoryTo = Number(this.memoryTo);
+      const memoryFrom = Number(this.memoryFrom);
+
+      if (memoryTo > memoryFrom) {
+        return 'increased';
+      } else if (memoryTo < memoryFrom) {
+        return 'decreased';
+      }
+
+      return 'unchanged';
+    },
+  },
+  methods: {
+    getMegabytes(bytesString) {
+      const valueInBytes = Number(bytesString).toFixed(2);
+      return (bytesToMiB(valueInBytes)).toFixed(2);
+    },
+    computeGraphData(metrics, deploymentTime) {
+      this.loadingMetrics = false;
+      const { memory_before, memory_after, memory_values } = metrics;
+
+      // Both `memory_before` and `memory_after` objects
+      // have peculiar structure where accessing only a specific
+      // index yeilds correct value that we can use to show memory delta.
+      if (memory_before.length > 0) {
+        this.memoryFrom = this.getMegabytes(memory_before[0].value[1]);
+      }
+
+      if (memory_after.length > 0) {
+        this.memoryTo = this.getMegabytes(memory_after[0].value[1]);
+      }
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
       if (memory_values.length > 0) {
         this.hasMetrics = true;
@@ -102,7 +147,11 @@ export default {
       <p
         v-if="shouldShowMemoryGraph"
         class="usage-info js-usage-info">
+<<<<<<< HEAD
         Deployment memory usage:
+=======
+        Memory usage <b>{{memoryChangeType}}</b> from {{memoryFrom}}MB to {{memoryTo}}MB
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       </p>
       <p
         v-if="shouldShowLoadFailure"

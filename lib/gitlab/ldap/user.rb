@@ -41,11 +41,6 @@ module Gitlab
 
       def update_user_attributes
         if persisted?
-          if auth_hash.has_email?
-            gl_user.skip_reconfirmation!
-            gl_user.email = auth_hash.email
-          end
-
           # find_or_initialize_by doesn't update `gl_user.identities`, and isn't autosaved.
           identity = gl_user.identities.find { |identity|  identity.provider == auth_hash.provider }
           identity ||= gl_user.identities.build(provider: auth_hash.provider)
@@ -55,10 +50,6 @@ module Gitlab
           # For an existing identity with no change in DN, this line changes nothing.
           identity.extern_uid = auth_hash.uid
         end
-
-        gl_user.ldap_email = auth_hash.has_email?
-
-        gl_user
       end
 
       def changed?
@@ -67,6 +58,10 @@ module Gitlab
 
       def block_after_signup?
         ldap_config.block_auto_created_users
+      end
+
+      def sync_email_from_provider?
+        true
       end
 
       def allowed?

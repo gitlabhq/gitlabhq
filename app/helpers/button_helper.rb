@@ -42,7 +42,10 @@ module ButtonHelper
       class: "btn #{css_class}",
       data: data,
       type: :button,
-      title: title
+      title: title,
+      aria: {
+        label: title
+      }
   end
 
   def http_clone_button(project, placement = 'right', append_link: true)
@@ -53,12 +56,12 @@ module ButtonHelper
 
     content_tag (append_link ? :a : :span), protocol,
       class: klass,
-      href: (project.http_url_to_repo(current_user) if append_link),
+      href: (project.http_url_to_repo if append_link),
       data: {
         html: true,
         placement: placement,
         container: 'body',
-        title: "Set a password on your account<br>to pull or push via #{protocol}"
+        title: _("Set a password on your account to pull or push via %{protocol}") % { protocol: protocol }
       }
   end
 
@@ -73,7 +76,7 @@ module ButtonHelper
         html: true,
         placement: placement,
         container: 'body',
-        title: 'Add an SSH key to your profile<br>to pull or push via SSH.'
+        title: _('Add an SSH key to your profile to pull or push via SSH.')
       }
   end
 end

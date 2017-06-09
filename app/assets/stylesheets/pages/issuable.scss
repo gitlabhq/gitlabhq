@@ -198,8 +198,22 @@
   right: 0;
   transition: width .3s;
   background: $gray-light;
+<<<<<<< HEAD
   padding: 10px 20px;
   z-index: 200;
+=======
+  padding: 0 20px;
+  z-index: 200;
+  overflow: hidden;
+
+  .issuable-sidebar {
+    width: calc(100% + 100px);
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
   &.right-sidebar-expanded {
     width: $gutter_width;
@@ -211,6 +225,10 @@
         margin-top: 10px;
         display: block;
       }
+    }
+
+    .issuable-sidebar-header {
+      padding-top: 10px;
     }
 
     .assign-yourself .btn-link {
@@ -266,11 +284,10 @@
     }
 
     width: $gutter_collapsed_width;
-    padding-top: 0;
+    padding: 0;
 
     .block {
       width: $gutter_collapsed_width - 2px;
-      margin-left: -19px;
       padding: 15px 0 0;
       border-bottom: none;
       overflow: hidden;
@@ -419,7 +436,7 @@
 }
 
 .detail-page-description {
-  padding: 16px 0 0;
+  padding: 16px 0;
 
   small {
     color: $gray-darkest;
@@ -429,7 +446,7 @@
 .edited-text {
   color: $gray-darkest;
   display: block;
-  margin: 0 0 16px;
+  margin: 16px 0 0;
 
   .author_link {
     color: $gray-darkest;
@@ -714,6 +731,37 @@
       .issuable-todo-inner {
         display: none;
       }
+    }
+  }
+}
+
+.confidential-issue-warning {
+  background-color: $gl-gray;
+  border-radius: 3px;
+  padding: $gl-btn-padding $gl-padding;
+  margin-top: $gl-padding-top;
+  font-size: 14px;
+  color: $white-light;
+
+  .fa {
+    margin-right: 8px;
+  }
+
+  a {
+    color: $white-light;
+    text-decoration: underline;
+  }
+
+  &.affix {
+    position: static;
+    width: initial;
+
+    @media (min-width: $screen-sm-min) {
+      position: sticky;
+      position: -webkit-sticky;
+      top: 60px;
+      z-index: 200;
+      @include transition(all);
     }
   }
 }

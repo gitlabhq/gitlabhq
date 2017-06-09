@@ -11,7 +11,11 @@ describe 'Snippets tab on a user profile', feature: true, js: true do
         allow(Snippet).to receive(:default_per_page).and_return(1)
         visit user_path(user)
         page.within('.user-profile-nav') { click_link 'Snippets' }
+<<<<<<< HEAD
         wait_for_ajax
+=======
+        wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       end
 
       it_behaves_like 'paginated snippets', remote: true
@@ -27,7 +31,11 @@ describe 'Snippets tab on a user profile', feature: true, js: true do
         login_as(:user)
         visit user_path(user)
         page.within('.user-profile-nav') { click_link 'Snippets' }
+<<<<<<< HEAD
         wait_for_ajax
+=======
+        wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
         expect(page).to have_selector('.snippet-row', count: 2)
 
@@ -38,7 +46,11 @@ describe 'Snippets tab on a user profile', feature: true, js: true do
       it 'contains only public snippets of a user when a user is not logged in' do
         visit user_path(user)
         page.within('.user-profile-nav') { click_link 'Snippets' }
+<<<<<<< HEAD
         wait_for_ajax
+=======
+        wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
         expect(page).to have_selector('.snippet-row', count: 1)
         expect(page).to have_content(public_snippet.title)

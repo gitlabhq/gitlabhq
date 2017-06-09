@@ -36,11 +36,34 @@ describe API::ProjectSnippets do
     end
   end
 
+  describe 'GET /projects/:project_id/snippets/:id' do
+    let(:user) { create(:user) }
+    let(:snippet) {  create(:project_snippet, :public, project: project) }
+
+    it 'returns snippet json' do
+      get api("/projects/#{project.id}/snippets/#{snippet.id}", user)
+
+      expect(response).to have_http_status(200)
+
+      expect(json_response['title']).to eq(snippet.title)
+      expect(json_response['description']).to eq(snippet.description)
+      expect(json_response['file_name']).to eq(snippet.file_name)
+    end
+
+    it 'returns 404 for invalid snippet id' do
+      get api("/projects/#{project.id}/snippets/1234", user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 Not found')
+    end
+  end
+
   describe 'POST /projects/:project_id/snippets/' do
     let(:params) do
       {
         title: 'Test Title',
         file_name: 'test.rb',
+        description: 'test description',
         code: 'puts "hello world"',
         visibility: 'public'
       }
@@ -52,6 +75,7 @@ describe API::ProjectSnippets do
       expect(response).to have_http_status(201)
       snippet = ProjectSnippet.find(json_response['id'])
       expect(snippet.content).to eq(params[:code])
+      expect(snippet.description).to eq(params[:description])
       expect(snippet.title).to eq(params[:title])
       expect(snippet.file_name).to eq(params[:file_name])
       expect(snippet.visibility_level).to eq(Snippet::PUBLIC)
@@ -106,12 +130,14 @@ describe API::ProjectSnippets do
 
     it 'updates snippet' do
       new_content = 'New content'
+      new_description = 'New description'
 
-      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), code: new_content
+      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), code: new_content, description: new_description
 
       expect(response).to have_http_status(200)
       snippet.reload
       expect(snippet.content).to eq(new_content)
+      expect(snippet.description).to eq(new_description)
     end
 
     it 'returns 404 for invalid snippet id' do

@@ -59,14 +59,16 @@ describe MergeRequests::UpdateService, services: true do
         end
       end
 
-      it { expect(@merge_request).to be_valid }
-      it { expect(@merge_request.title).to eq('New title') }
-      it { expect(@merge_request.assignee).to eq(user2) }
-      it { expect(@merge_request).to be_closed }
-      it { expect(@merge_request.labels.count).to eq(1) }
-      it { expect(@merge_request.labels.first.title).to eq(label.name) }
-      it { expect(@merge_request.target_branch).to eq('target') }
-      it { expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1') }
+      it 'mathces base expectations' do
+        expect(@merge_request).to be_valid
+        expect(@merge_request.title).to eq('New title')
+        expect(@merge_request.assignee).to eq(user2)
+        expect(@merge_request).to be_closed
+        expect(@merge_request.labels.count).to eq(1)
+        expect(@merge_request.labels.first.title).to eq(label.name)
+        expect(@merge_request.target_branch).to eq('target')
+        expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1')
+      end
 
       it 'executes hooks with update action' do
         expect(service).to have_received(:execute_hooks).
@@ -148,9 +150,11 @@ describe MergeRequests::UpdateService, services: true do
           end
         end
 
-        it { expect(@merge_request).to be_valid }
-        it { expect(@merge_request.state).to eq('merged') }
-        it { expect(@merge_request.merge_error).to be_nil }
+        it 'merges the MR' do
+          expect(@merge_request).to be_valid
+          expect(@merge_request.state).to eq('merged')
+          expect(@merge_request.merge_error).to be_nil
+        end
       end
 
       context 'with finished pipeline' do
@@ -167,17 +171,22 @@ describe MergeRequests::UpdateService, services: true do
           end
         end
 
-        it { expect(@merge_request).to be_valid }
-        it { expect(@merge_request.state).to eq('merged') }
+        it 'merges the MR' do
+          expect(@merge_request).to be_valid
+          expect(@merge_request.state).to eq('merged')
+        end
       end
 
       context 'with active pipeline' do
         before do
           service_mock = double
-          create(:ci_pipeline_with_one_job,
+          create(
+            :ci_pipeline_with_one_job,
             project: project,
-            ref:     merge_request.source_branch,
-            sha:     merge_request.diff_head_sha)
+            ref: merge_request.source_branch,
+            sha: merge_request.diff_head_sha,
+            head_pipeline_of: merge_request
+          )
 
           expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user).
             and_return(service_mock)
@@ -200,8 +209,10 @@ describe MergeRequests::UpdateService, services: true do
           end
         end
 
-        it { expect(@merge_request.state).to eq('opened') }
-        it { expect(@merge_request.merge_error).not_to be_nil }
+        it 'does not merge the MR' do
+          expect(@merge_request.state).to eq('opened')
+          expect(@merge_request.merge_error).not_to be_nil
+        end
       end
 
       context 'MR can not be merged when note sha != MR sha' do

@@ -11,6 +11,7 @@ devise_scope :user do
   get '/users/almost_there' => 'confirmations#almost_there'
 end
 
+<<<<<<< HEAD
 constraints(UserUrlConstrainer.new) do
   # Get all keys of user
   get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: Gitlab::Regex.root_namespace_route_regex }
@@ -24,6 +25,9 @@ constraints(UserUrlConstrainer.new) do
 end
 
 scope(constraints: { username: Gitlab::Regex.root_namespace_route_regex }) do
+=======
+scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) do
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   scope(path: 'users/:username',
         as: :user,
         controller: :users) do
@@ -34,7 +38,7 @@ scope(constraints: { username: Gitlab::Regex.root_namespace_route_regex }) do
     get :contributed, as: :contributed_projects
     get :snippets
     get :exists
-    get '/', to: redirect('/%{username}')
+    get '/', to: redirect('/%{username}'), as: nil
   end
 
   # Compatibility with old routing
@@ -45,4 +49,16 @@ scope(constraints: { username: Gitlab::Regex.root_namespace_route_regex }) do
   get '/u/:username/projects', to: redirect('/users/%{username}/projects')
   get '/u/:username/snippets', to: redirect('/users/%{username}/snippets')
   get '/u/:username/contributed', to: redirect('/users/%{username}/contributed')
+end
+
+constraints(UserUrlConstrainer.new) do
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }
+
+  scope(path: ':username',
+        as: :user,
+        constraints: { username: Gitlab::PathRegex.root_namespace_route_regex },
+        controller: :users) do
+    get '/', action: :show
+  end
 end

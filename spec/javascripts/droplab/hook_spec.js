@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import Hook from '~/droplab/hook';
 import * as dropdownSrc from '~/droplab/drop_down';
 
@@ -71,12 +69,6 @@ describe('Hook', function () {
       it('should set .plugins to an empty array', function () {
         expect(this.hook.plugins).toEqual([]);
       });
-    });
-  });
-
-  describe('addEvents', function () {
-    it('should exist', function () {
-      expect(Hook.prototype.hasOwnProperty('addEvents')).toBe(true);
     });
   });
 });

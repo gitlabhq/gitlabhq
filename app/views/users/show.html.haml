@@ -56,11 +56,11 @@
                 = icon('skype')
           - unless @user.linkedin.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to "https://www.linkedin.com/in/#{@user.linkedin}", title: "LinkedIn" do
+              = link_to linkedin_url(@user), title: "LinkedIn" do
                 = icon('linkedin-square')
           - unless @user.twitter.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to "https://twitter.com/#{@user.twitter}", title: "Twitter" do
+              = link_to twitter_url(@user), title: "Twitter" do
                 = icon('twitter-square')
           - unless @user.website_url.blank?
             .profile-link-holder.middle-dot-divider
@@ -71,7 +71,7 @@
               = @user.location
           - unless @user.organization.blank?
             .profile-link-holder.middle-dot-divider
-              = icon('building')
+              = icon('briefcase')
               = @user.organization
 
     - if @user.bio.present?
@@ -100,7 +100,7 @@
             Snippets
 
   %div{ class: container_class }
-    - if @user == current_user && !show_user_callout?
+    - if @user == current_user && show_callout?('user_callout_dismissed')
       = render 'shared/user_callout'
     .tab-content
       #activity.tab-pane

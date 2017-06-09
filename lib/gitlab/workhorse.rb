@@ -22,7 +22,7 @@ module Gitlab
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
           GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
-          RepoPath: repo_path,
+          RepoPath: repo_path
         }
 
         if Gitlab.config.gitaly.enabled
@@ -31,8 +31,7 @@ module Gitlab
 
           feature_enabled = case action.to_s
                             when 'git_receive_pack'
-                              # Disabled for now, see https://gitlab.com/gitlab-org/gitaly/issues/172
-                              false
+                              Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
                             when 'git_upload_pack'
                               Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
                             when 'info_refs'
@@ -51,7 +50,7 @@ module Gitlab
         {
           StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
           LfsOid: oid,
-          LfsSize: size,
+          LfsSize: size
         }
       end
 
@@ -62,7 +61,7 @@ module Gitlab
       def send_git_blob(repository, blob)
         params = {
           'RepoPath' => repository.path_to_repo,
-          'BlobId' => blob.id,
+          'BlobId' => blob.id
         }
 
         [
@@ -127,10 +126,10 @@ module Gitlab
             'Subprotocols' => terminal[:subprotocols],
             'Url' => terminal[:url],
             'Header' => terminal[:headers],
-            'MaxSessionTime' => terminal[:max_session_time],
+            'MaxSessionTime' => terminal[:max_session_time]
           }
         }
-        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.key?(:ca_pem)
 
         details
       end
@@ -165,7 +164,7 @@ module Gitlab
           encoded_message,
           secret,
           true,
-          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' },
+          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' }
         )
       end
 

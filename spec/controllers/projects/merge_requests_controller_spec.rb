@@ -126,7 +126,11 @@ describe Projects::MergeRequestsController do
 
           recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
 
+<<<<<<< HEAD
           expect(recorded.count).to be_within(1).of(51)
+=======
+          expect(recorded.count).to be_within(5).of(50)
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
           expect(recorded.cached_count).to eq(0)
         end
       end
@@ -358,7 +362,7 @@ describe Projects::MergeRequestsController do
         end
 
         before do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -1175,12 +1179,15 @@ describe Projects::MergeRequestsController do
       let!(:pipeline) do
         create(:ci_pipeline, project: merge_request.source_project,
                              ref: merge_request.source_branch,
-                             sha: merge_request.diff_head_sha)
+                             sha: merge_request.diff_head_sha,
+                             head_pipeline_of: merge_request)
       end
 
       let(:status) { pipeline.detailed_status(double('user')) }
 
-      before { get_pipeline_status }
+      before do
+        get_pipeline_status
+      end
 
       it 'return a detailed head_pipeline status in json' do
         expect(response).to have_http_status(:ok)

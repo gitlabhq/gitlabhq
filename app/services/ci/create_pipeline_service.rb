@@ -2,8 +2,9 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
       @pipeline = Ci::Pipeline.new(
+        source: source,
         project: project,
         ref: ref,
         sha: sha,
@@ -42,14 +43,14 @@ module Ci
         return pipeline
       end
 
-      unless pipeline.config_builds_attributes.present?
-        return error('No builds for this pipeline.')
+      unless pipeline.has_stage_seeds?
+        return error('No stages / jobs for this pipeline.')
       end
 
       Ci::Pipeline.transaction do
-        pipeline.save
+        update_merge_requests_head_pipeline if pipeline.save
 
-        Ci::CreatePipelineBuildsService
+        Ci::CreatePipelineStagesService
           .new(project, current_user)
           .execute(pipeline)
       end
@@ -60,6 +61,13 @@ module Ci
     end
 
     private
+
+    def update_merge_requests_head_pipeline
+      return unless pipeline.latest?
+
+      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref).
+        update_all(head_pipeline_id: @pipeline.id)
+    end
 
     def skip_ci?
       return false unless pipeline.git_commit_message

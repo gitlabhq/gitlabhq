@@ -2,6 +2,10 @@ import Vue from 'vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+<<<<<<< HEAD
+=======
+import notify from '~/lib/utils/notify';
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 import mockData from './mock_data';
 
 const createComponent = () => {
@@ -107,6 +111,11 @@ describe('mrWidgetOptions', () => {
       it('should tell service to check status', (done) => {
         spyOn(vm.service, 'checkStatus').and.returnValue(returnPromise(mockData));
         spyOn(vm.mr, 'setData');
+<<<<<<< HEAD
+=======
+        spyOn(vm, 'handleNotification');
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
         let isCbExecuted = false;
         const cb = () => {
           isCbExecuted = true;
@@ -117,6 +126,10 @@ describe('mrWidgetOptions', () => {
         setTimeout(() => {
           expect(vm.service.checkStatus).toHaveBeenCalled();
           expect(vm.mr.setData).toHaveBeenCalled();
+<<<<<<< HEAD
+=======
+          expect(vm.handleNotification).toHaveBeenCalledWith(mockData);
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
           expect(isCbExecuted).toBeTruthy();
           done();
         }, 333);
@@ -254,6 +267,42 @@ describe('mrWidgetOptions', () => {
       });
     });
 
+<<<<<<< HEAD
+=======
+    describe('handleNotification', () => {
+      const data = {
+        ci_status: 'running',
+        title: 'title',
+        pipeline: { details: { status: { label: 'running-label' } } },
+      };
+
+      beforeEach(() => {
+        spyOn(notify, 'notifyMe');
+
+        vm.mr.ciStatus = 'failed';
+        vm.mr.gitlabLogo = 'logo.png';
+      });
+
+      it('should call notifyMe', () => {
+        vm.handleNotification(data);
+
+        expect(notify.notifyMe).toHaveBeenCalledWith(
+          'Pipeline running-label',
+          'Pipeline running-label for "title"',
+          'logo.png',
+        );
+      });
+
+      it('should not call notifyMe if the status has not changed', () => {
+        vm.mr.ciStatus = data.ci_status;
+
+        vm.handleNotification(data);
+
+        expect(notify.notifyMe).not.toHaveBeenCalled();
+      });
+    });
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     describe('resumePolling', () => {
       it('should call stopTimer on pollingInterval', () => {
         spyOn(vm.pollingInterval, 'resume');

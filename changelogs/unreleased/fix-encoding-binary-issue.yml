@@ -1,0 +1,4 @@
+---
+title: Fix binary encoding error on MR diffs
+merge_request: 11929
+author:

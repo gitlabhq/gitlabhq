@@ -1,0 +1,4 @@
+---
+title: Fix incorrect ETag cache key when relative instance URL is used
+merge_request: 11964
+author:

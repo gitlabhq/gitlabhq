@@ -70,6 +70,34 @@ module Gitlab
           expect(output).to include('rel="nofollow noreferrer noopener"')
         end
       end
+<<<<<<< HEAD
+=======
+
+      context 'LaTex code' do
+        it 'adds class js-render-math to the output' do
+          input = <<~MD
+            :stem: latexmath
+
+            [stem]
+            ++++
+            \sqrt{4} = 2
+            ++++
+
+            another part
+
+            [latexmath]
+            ++++
+            \beta_x \gamma
+            ++++
+
+            stem:[2+2] is 4
+            MD
+
+          expect(render(input, context)).to include('<pre data-math-style="display" class="code math js-render-math"><code>eta_x gamma</code></pre>')
+          expect(render(input, context)).to include('<p><code data-math-style="inline" class="code math js-render-math">2+2</code> is 4</p>')
+        end
+      end
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     end
 
     def render(*args)

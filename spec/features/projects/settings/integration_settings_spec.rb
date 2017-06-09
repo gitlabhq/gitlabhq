@@ -52,6 +52,7 @@ feature 'Integration settings', feature: true do
         fill_in 'hook_url', with: url
         check 'Tag push events'
         check 'Enable SSL verification'
+        check 'Job events'
 
         click_button 'Add webhook'
 
@@ -59,6 +60,7 @@ feature 'Integration settings', feature: true do
         expect(page).to have_content('SSL Verification: enabled')
         expect(page).to have_content('Push Events')
         expect(page).to have_content('Tag Push Events')
+        expect(page).to have_content('Job events')
       end
 
       scenario 'edit existing webhook' do
@@ -83,11 +85,55 @@ feature 'Integration settings', feature: true do
         expect(current_path).to eq(integrations_path)
       end
 
-      scenario 'remove existing webhook' do
-        hook
-        visit integrations_path
+      context 'remove existing webhook' do
+        scenario 'from webhooks list page' do
+          hook
+          visit integrations_path
 
-        expect { click_link 'Remove' }.to change(ProjectHook, :count).by(-1)
+          expect { click_link 'Remove' }.to change(ProjectHook, :count).by(-1)
+        end
+
+        scenario 'from webhook edit page' do
+          hook
+          visit integrations_path
+          click_link 'Edit'
+
+          expect { click_link 'Remove' }.to change(ProjectHook, :count).by(-1)
+        end
+      end
+    end
+
+    context 'Webhook logs' do
+      let(:hook) { create(:project_hook, project: project) }
+      let(:hook_log) { create(:web_hook_log, web_hook: hook, internal_error_message: 'some error') }
+
+      scenario 'show list of hook logs' do
+        hook_log
+        visit edit_namespace_project_hook_path(project.namespace, project, hook)
+
+        expect(page).to have_content('Recent Deliveries')
+        expect(page).to have_content(hook_log.url)
+      end
+
+      scenario 'show hook log details' do
+        hook_log
+        visit edit_namespace_project_hook_path(project.namespace, project, hook)
+        click_link 'View details'
+
+        expect(page).to have_content("POST #{hook_log.url}")
+        expect(page).to have_content(hook_log.internal_error_message)
+        expect(page).to have_content('Resend Request')
+      end
+
+      scenario 'retry hook log' do
+        WebMock.stub_request(:post, hook.url)
+
+        hook_log
+        visit edit_namespace_project_hook_path(project.namespace, project, hook)
+        click_link 'View details'
+        click_link 'Resend Request'
+
+        expect(current_path).to eq(edit_namespace_project_hook_path(project.namespace, project, hook))
       end
     end
   end

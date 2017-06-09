@@ -22,6 +22,7 @@ gl.issueBoards.BoardsStore = {
   create () {
     this.state.lists = [];
     this.filter.path = gl.utils.getUrlParamsArray().join('&');
+    this.detail = { issue: {} };
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);
@@ -31,10 +32,14 @@ gl.issueBoards.BoardsStore = {
   },
   new (listObj) {
     const list = this.addList(listObj);
+    const backlogList = this.findList('type', 'backlog', 'backlog');
 
     list
       .save()
       .then(() => {
+        // Remove any new issues from the backlog
+        // as they will be visible in the new list
+        list.issues.forEach(backlogList.removeIssue.bind(backlogList));
         this.state.lists = _.sortBy(this.state.lists, 'position');
       })
       .catch(() => {
@@ -47,7 +52,7 @@ gl.issueBoards.BoardsStore = {
   },
   shouldAddBlankState () {
     // Decide whether to add the blank state
-    return !(this.state.lists.filter(list => list.type !== 'closed')[0]);
+    return !(this.state.lists.filter(list => list.type !== 'backlog' && list.type !== 'closed')[0]);
   },
   addBlankState () {
     if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
@@ -100,7 +105,7 @@ gl.issueBoards.BoardsStore = {
       issueTo.removeLabel(listFrom.label);
     }
 
-    if (listTo.type === 'closed') {
+    if (listTo.type === 'closed' && listFrom.type !== 'backlog') {
       issueLists.forEach((list) => {
         list.removeIssue(issue);
       });

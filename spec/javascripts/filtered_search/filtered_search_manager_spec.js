@@ -1,14 +1,13 @@
 import * as recentSearchesStoreSrc from '~/filtered_search/stores/recent_searches_store';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
-
-require('~/lib/utils/url_utility');
-require('~/lib/utils/common_utils');
-require('~/filtered_search/filtered_search_token_keys');
-require('~/filtered_search/filtered_search_tokenizer');
-require('~/filtered_search/filtered_search_dropdown_manager');
-require('~/filtered_search/filtered_search_manager');
-const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper');
+import '~/lib/utils/url_utility';
+import '~/lib/utils/common_utils';
+import '~/filtered_search/filtered_search_token_keys';
+import '~/filtered_search/filtered_search_tokenizer';
+import '~/filtered_search/filtered_search_dropdown_manager';
+import '~/filtered_search/filtered_search_manager';
+import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Filtered Search Manager', () => {
   let input;
@@ -58,6 +57,7 @@ describe('Filtered Search Manager', () => {
     input = document.querySelector('.filtered-search');
     tokensContainer = document.querySelector('.tokens-container');
     manager = new gl.FilteredSearchManager();
+    manager.setup();
   });
 
   afterEach(() => {
@@ -73,6 +73,7 @@ describe('Filtered Search Manager', () => {
       spyOn(recentSearchesStoreSrc, 'default');
 
       filteredSearchManager = new gl.FilteredSearchManager();
+      filteredSearchManager.setup();
 
       return filteredSearchManager;
     });
@@ -81,6 +82,7 @@ describe('Filtered Search Manager', () => {
       expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
       expect(recentSearchesStoreSrc.default).toHaveBeenCalledWith({
         isLocalStorageAvailable,
+        allowedKeys: gl.FilteredSearchTokenKeys.getKeys(),
       });
     });
 
@@ -89,8 +91,52 @@ describe('Filtered Search Manager', () => {
       spyOn(window, 'Flash');
 
       filteredSearchManager = new gl.FilteredSearchManager();
+      filteredSearchManager.setup();
 
       expect(window.Flash).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('searchState', () => {
+    beforeEach(() => {
+      spyOn(gl.FilteredSearchManager.prototype, 'search').and.callFake(() => {});
+    });
+
+    it('should blur button', () => {
+      const e = {
+        currentTarget: {
+          blur: () => {},
+        },
+      };
+      spyOn(e.currentTarget, 'blur').and.callThrough();
+      manager.searchState(e);
+
+      expect(e.currentTarget.blur).toHaveBeenCalled();
+    });
+
+    it('should not call search if there is no state', () => {
+      const e = {
+        currentTarget: {
+          blur: () => {},
+        },
+      };
+
+      manager.searchState(e);
+      expect(gl.FilteredSearchManager.prototype.search).not.toHaveBeenCalled();
+    });
+
+    it('should call search when there is state', () => {
+      const e = {
+        currentTarget: {
+          blur: () => {},
+          dataset: {
+            state: 'opened',
+          },
+        },
+      };
+
+      manager.searchState(e);
+      expect(gl.FilteredSearchManager.prototype.search).toHaveBeenCalledWith('opened');
     });
   });
 
@@ -310,42 +356,6 @@ describe('Filtered Search Manager', () => {
 
     it('calls update dropdown offset', () => {
       expect(manager.dropdownManager.updateDropdownOffset).toHaveBeenCalled();
-    });
-  });
-
-  describe('unselects token', () => {
-    beforeEach(() => {
-      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug', true)}
-        ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~awesome')}
-      `);
-    });
-
-    it('unselects token when input is clicked', () => {
-      const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
-
-      expect(selectedToken.classList.contains('selected')).toEqual(true);
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).not.toHaveBeenCalled();
-
-      // Click directly on input attached to document
-      // so that the click event will propagate properly
-      document.querySelector('.filtered-search').click();
-
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
-      expect(selectedToken.classList.contains('selected')).toEqual(false);
-    });
-
-    it('unselects token when document.body is clicked', () => {
-      const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
-
-      expect(selectedToken.classList.contains('selected')).toEqual(true);
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).not.toHaveBeenCalled();
-
-      document.body.click();
-
-      expect(selectedToken.classList.contains('selected')).toEqual(false);
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
     });
   });
 

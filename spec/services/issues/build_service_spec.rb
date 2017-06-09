@@ -136,7 +136,7 @@ describe Issues::BuildService, services: true do
         user,
         title: 'Issue #1',
         description: 'Issue description',
-        milestone_id: milestone.id,
+        milestone_id: milestone.id
       ).execute
 
       expect(issue.title).to eq('Issue #1')

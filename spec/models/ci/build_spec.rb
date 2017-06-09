@@ -427,6 +427,42 @@ describe Ci::Build, :models do
       end
     end
 
+    describe '#environment_url' do
+      subject { job.environment_url }
+
+      context 'when yaml environment uses $CI_COMMIT_REF_NAME' do
+        let(:job) do
+          create(:ci_build,
+                 ref: 'master',
+                 options: { environment: { url: 'http://review/$CI_COMMIT_REF_NAME' } })
+        end
+
+        it { is_expected.to eq('http://review/master') }
+      end
+
+      context 'when yaml environment uses yaml_variables containing symbol keys' do
+        let(:job) do
+          create(:ci_build,
+                 yaml_variables: [{ key: :APP_HOST, value: 'host' }],
+                 options: { environment: { url: 'http://review/$APP_HOST' } })
+        end
+
+        it { is_expected.to eq('http://review/host') }
+      end
+
+      context 'when yaml environment does not have url' do
+        let(:job) { create(:ci_build, environment: 'staging') }
+
+        let!(:environment) do
+          create(:environment, project: job.project, name: job.environment)
+        end
+
+        it 'returns the external_url from persisted environment' do
+          is_expected.to eq(environment.external_url)
+        end
+      end
+    end
+
     describe '#starts_environment?' do
       subject { build.starts_environment? }
 
@@ -918,6 +954,10 @@ describe Ci::Build, :models do
 
       it { is_expected.to eq(environment) }
     end
+
+    context 'when there is no environment' do
+      it { is_expected.to be_nil }
+    end
   end
 
   describe '#play' do
@@ -972,7 +1012,7 @@ describe Ci::Build, :models do
       'fix-1-foo' => 'fix-1-foo',
       'a' * 63    => 'a' * 63,
       'a' * 64    => 'a' * 63,
-      'FOO'       => 'foo',
+      'FOO'       => 'foo'
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
@@ -1139,12 +1179,13 @@ describe Ci::Build, :models do
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
         { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
+        { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path.parameterize, public: true },
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
-        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
+        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false }
       ]
     end
 
@@ -1176,11 +1217,6 @@ describe Ci::Build, :models do
     end
 
     context 'when build has an environment' do
-      before do
-        build.update(environment: 'production')
-        create(:environment, project: build.project, name: 'production', slug: 'prod-slug')
-      end
-
       let(:environment_variables) do
         [
           { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true },
@@ -1188,7 +1224,56 @@ describe Ci::Build, :models do
         ]
       end
 
-      it { environment_variables.each { |v| is_expected.to include(v) } }
+      let!(:environment) do
+        create(:environment,
+          project: build.project,
+          name: 'production',
+          slug: 'prod-slug',
+          external_url: '')
+      end
+
+      before do
+        build.update(environment: 'production')
+      end
+
+      shared_examples 'containing environment variables' do
+        it { environment_variables.each { |v| is_expected.to include(v) } }
+      end
+
+      context 'when no URL was set' do
+        it_behaves_like 'containing environment variables'
+
+        it 'does not have CI_ENVIRONMENT_URL' do
+          keys = subject.map { |var| var[:key] }
+
+          expect(keys).not_to include('CI_ENVIRONMENT_URL')
+        end
+      end
+
+      context 'when an URL was set' do
+        let(:url) { 'http://host/test' }
+
+        before do
+          environment_variables <<
+            { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
+        end
+
+        context 'when the URL was set from the job' do
+          before do
+            build.update(options: { environment: { url: 'http://host/$CI_JOB_NAME' } })
+          end
+
+          it_behaves_like 'containing environment variables'
+        end
+
+        context 'when the URL was not set from the job, but environment' do
+          before do
+            environment.update(external_url: url)
+          end
+
+          it_behaves_like 'containing environment variables'
+        end
+      end
     end
 
     context 'when build started manually' do
@@ -1215,16 +1300,49 @@ describe Ci::Build, :models do
       it { is_expected.to include(tag_variable) }
     end
 
-    context 'when secure variable is defined' do
-      let(:secure_variable) do
+    context 'when secret variable is defined' do
+      let(:secret_variable) do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
       before do
-        build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+        create(:ci_variable,
+               secret_variable.slice(:key, :value).merge(project: project))
       end
 
-      it { is_expected.to include(secure_variable) }
+      it { is_expected.to include(secret_variable) }
+    end
+
+    context 'when protected variable is defined' do
+      let(:protected_variable) do
+        { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
+      end
+
+      before do
+        create(:ci_variable,
+               :protected,
+               protected_variable.slice(:key, :value).merge(project: project))
+      end
+
+      context 'when the branch is protected' do
+        before do
+          create(:protected_branch, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the tag is protected' do
+        before do
+          create(:protected_tag, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the ref is not protected' do
+        it { is_expected.not_to include(protected_variable) }
+      end
     end
 
     context 'when build is for triggers' do
@@ -1346,15 +1464,30 @@ describe Ci::Build, :models do
     end
 
     context 'returns variables in valid order' do
+      let(:build_pre_var) { { key: 'build', value: 'value' } }
+      let(:project_pre_var) { { key: 'project', value: 'value' } }
+      let(:pipeline_pre_var) { { key: 'pipeline', value: 'value' } }
+      let(:build_yaml_var) { { key: 'yaml', value: 'value' } }
+
       before do
-        allow(build).to receive(:predefined_variables) { ['predefined'] }
-        allow(project).to receive(:predefined_variables) { ['project'] }
-        allow(pipeline).to receive(:predefined_variables) { ['pipeline'] }
-        allow(build).to receive(:yaml_variables) { ['yaml'] }
-        allow(project).to receive(:secret_variables) { ['secret'] }
+        allow(build).to receive(:predefined_variables) { [build_pre_var] }
+        allow(project).to receive(:predefined_variables) { [project_pre_var] }
+        allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
+        allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+
+        allow(project).to receive(:secret_variables_for).with(build.ref) do
+          [create(:ci_variable, key: 'secret', value: 'value')]
+        end
       end
 
-      it { is_expected.to eq(%w[predefined project pipeline yaml secret]) }
+      it do
+        is_expected.to eq(
+          [build_pre_var,
+           project_pre_var,
+           pipeline_pre_var,
+           build_yaml_var,
+           { key: 'secret', value: 'value', public: false }])
+      end
     end
   end
 

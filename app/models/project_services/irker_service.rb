@@ -49,7 +49,7 @@ class IrkerService < Service
         help: 'A default IRC URI to prepend before each recipient (optional)',
         placeholder: 'irc://irc.network.net:6697/' },
       { type: 'textarea', name: 'recipients',
-        placeholder: 'Recipients/channels separated by whitespaces',
+        placeholder: 'Recipients/channels separated by whitespaces', required: true,
         help: 'Recipients have to be specified with a full URI: '\
         'irc[s]://irc.network.net[:port]/#channel. Special cases: if '\
         'you want the channel to be a nickname instead, append ",isnick" to ' \
@@ -58,7 +58,7 @@ class IrkerService < Service
         ' want to use a password, you have to omit the "#" on the channel). If you ' \
         ' specify a default IRC URI to prepend before each recipient, you can just ' \
         ' give a channel name.'  },
-      { type: 'checkbox', name: 'colorize_messages' },
+      { type: 'checkbox', name: 'colorize_messages' }
     ]
   end
 

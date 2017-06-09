@@ -13,6 +13,10 @@ describe User, models: true do
     it { is_expected.to include_module(TokenAuthenticatable) }
   end
 
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
+  end
+
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
@@ -22,7 +26,7 @@ describe User, models: true do
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
-    it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
+    it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
@@ -344,6 +348,35 @@ describe User, models: true do
     end
   end
 
+  describe '#update_tracked_fields!', :redis do
+    let(:request) { OpenStruct.new(remote_ip: "127.0.0.1") }
+    let(:user) { create(:user) }
+
+    it 'writes trackable attributes' do
+      expect do
+        user.update_tracked_fields!(request)
+      end.to change { user.reload.current_sign_in_at }
+    end
+
+    it 'does not write trackable attributes when called a second time within the hour' do
+      user.update_tracked_fields!(request)
+
+      expect do
+        user.update_tracked_fields!(request)
+      end.not_to change { user.reload.current_sign_in_at }
+    end
+
+    it 'writes trackable attributes for a different user' do
+      user2 = create(:user)
+
+      user.update_tracked_fields!(request)
+
+      expect do
+        user2.update_tracked_fields!(request)
+      end.to change { user2.reload.current_sign_in_at }
+    end
+  end
+
   shared_context 'user keys' do
     let(:user) { create(:user) }
     let!(:key) { create(:key, user: user) }
@@ -408,6 +441,22 @@ describe User, models: true do
     it "has authentication token" do
       user = create(:user)
       expect(user.authentication_token).not_to be_blank
+    end
+  end
+
+  describe 'ensure incoming email token' do
+    it 'has incoming email token' do
+      user = create(:user)
+      expect(user.incoming_email_token).not_to be_blank
+    end
+  end
+
+  describe 'rss token' do
+    it 'ensures an rss token on read' do
+      user = create(:user, rss_token: nil)
+      rss_token = user.rss_token
+      expect(rss_token).not_to be_blank
+      expect(user.reload.rss_token).to eq rss_token
     end
   end
 
@@ -637,7 +686,7 @@ describe User, models: true do
       protocol_and_expectation = {
         'http' => false,
         'ssh' => true,
-        '' => true,
+        '' => true
       }
 
       protocol_and_expectation.each do |protocol, expected|
@@ -935,12 +984,23 @@ describe User, models: true do
 
   describe '#avatar_url' do
     let(:user) { create(:user, :with_avatar) }
-    subject { user.avatar_url }
 
     context 'when avatar file is uploaded' do
+<<<<<<< HEAD
       let(:avatar_path) { "/uploads/system/user/avatar/#{user.id}/dk.png" }
+=======
+      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
+      let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      it 'shows correct avatar url' do
+        expect(user.avatar_url).to eq(avatar_path)
+        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
+
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
     end
   end
 
@@ -1444,25 +1504,6 @@ describe User, models: true do
     end
   end
 
-  describe '#viewable_starred_projects' do
-    let(:user) { create(:user) }
-    let(:public_project) { create(:empty_project, :public) }
-    let(:private_project) { create(:empty_project, :private) }
-    let(:private_viewable_project) { create(:empty_project, :private) }
-
-    before do
-      private_viewable_project.team << [user, Gitlab::Access::MASTER]
-
-      [public_project, private_project, private_viewable_project].each do |project|
-        user.toggle_star(project)
-      end
-    end
-
-    it 'returns only starred projects the user can view' do
-      expect(user.viewable_starred_projects).not_to include(private_project)
-    end
-  end
-
   describe '#projects_with_reporter_access_limited_to' do
     let(:project1) { create(:empty_project) }
     let(:project2) { create(:empty_project) }
@@ -1574,10 +1615,17 @@ describe User, models: true do
         ]
       end
     end
+<<<<<<< HEAD
 
     context 'user is member of the first child (internal node), branch 2', :nested_groups do
       before { nested_group_2.add_owner(user) }
 
+=======
+
+    context 'user is member of the first child (internal node), branch 2', :nested_groups do
+      before { nested_group_2.add_owner(user) }
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [
           group,
@@ -1790,6 +1838,34 @@ describe User, models: true do
       user = create(:user)
 
       expect(user.preferred_language).to eq('en')
+    end
+  end
+
+  context '#invalidate_issue_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for issue counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_issue_cache_counts
+    end
+  end
+
+  context '#invalidate_merge_request_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for Merge Request counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_merge_request_cache_counts
     end
   end
 end

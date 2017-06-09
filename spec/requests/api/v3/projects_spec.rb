@@ -165,7 +165,7 @@ describe API::V3::Projects do
 
         expect(json_response).to satisfy do |response|
           response.one? do |entry|
-            entry.has_key?('permissions') &&
+            entry.key?('permissions') &&
               entry['name'] == project.name &&
               entry['owner']['username'] == user.username
           end
@@ -226,7 +226,7 @@ describe API::V3::Projects do
           storage_size: 702,
           repository_size: 123,
           lfs_objects_size: 234,
-          build_artifacts_size: 345,
+          build_artifacts_size: 345
         }
 
         project4.statistics.update!(attributes)
@@ -704,7 +704,7 @@ describe API::V3::Projects do
           'name' => user.namespace.name,
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
-          'full_path' => user.namespace.full_path,
+          'full_path' => user.namespace.full_path
         })
       end
 

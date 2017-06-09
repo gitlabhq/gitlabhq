@@ -37,7 +37,7 @@ describe VisibilityLevelHelper do
 
     it "describes public projects" do
       expect(project_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC))
-            .to eq "The project can be cloned without any authentication."
+            .to eq "The project can be accessed without any authentication."
     end
   end
 

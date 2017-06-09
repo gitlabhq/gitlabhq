@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Issue notes polling', :feature, :js do
+  include NoteInteractionHelpers
+
   let(:project) { create(:empty_project, :public) }
   let(:issue) { create(:issue, project: project) }
 
@@ -48,7 +50,11 @@ feature 'Issue notes polling', :feature, :js do
       end
 
       it 'when editing but have not changed anything, and an update comes in, show the updated content in the textarea' do
+<<<<<<< HEAD
         find("#note_#{existing_note.id} .js-note-edit").click
+=======
+        click_edit_action(existing_note)
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
         expect(page).to have_field("note[note]", with: note_text)
 
@@ -58,6 +64,7 @@ feature 'Issue notes polling', :feature, :js do
       end
 
       it 'when editing but you changed some things, and an update comes in, show a warning' do
+<<<<<<< HEAD
         find("#note_#{existing_note.id} .js-note-edit").click
 
         expect(page).to have_field("note[note]", with: note_text)
@@ -74,6 +81,23 @@ feature 'Issue notes polling', :feature, :js do
 
         expect(page).to have_field("note[note]", with: note_text)
 
+=======
+        click_edit_action(existing_note)
+
+        expect(page).to have_field("note[note]", with: note_text)
+
+        find("#note_#{existing_note.id} .js-note-text").set('something random')
+        update_note(existing_note, updated_text)
+
+        expect(page).to have_selector(".alert")
+      end
+
+      it 'when editing but you changed some things, an update comes in, and you press cancel, show the updated content' do
+        click_edit_action(existing_note)
+
+        expect(page).to have_field("note[note]", with: note_text)
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
         find("#note_#{existing_note.id} .js-note-text").set('something random')
 
         update_note(existing_note, updated_text)
@@ -95,6 +119,7 @@ feature 'Issue notes polling', :feature, :js do
         login_as(user2)
         visit namespace_project_issue_path(project.namespace, project, issue)
       end
+<<<<<<< HEAD
 
       it 'has .original-note-content to compare against' do
         expect(page).to have_selector("#note_#{existing_note.id}", text: note_text)
@@ -102,6 +127,15 @@ feature 'Issue notes polling', :feature, :js do
 
         update_note(existing_note, updated_text)
 
+=======
+
+      it 'has .original-note-content to compare against' do
+        expect(page).to have_selector("#note_#{existing_note.id}", text: note_text)
+        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
+
+        update_note(existing_note, updated_text)
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
         expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
         expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
       end
@@ -127,5 +161,13 @@ feature 'Issue notes polling', :feature, :js do
   def update_note(note, new_text)
     note.update(note: new_text)
     page.execute_script('notes.refresh();')
+  end
+
+  def click_edit_action(note)
+    note_element = find("#note_#{note.id}")
+
+    open_more_actions_dropdown(note)
+
+    note_element.find('.js-note-edit').click
   end
 end

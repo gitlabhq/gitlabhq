@@ -16,6 +16,19 @@ describe Deployment, models: true do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
 
+  describe 'after_create callbacks' do
+    let(:environment) { create(:environment) }
+    let(:store) { Gitlab::EtagCaching::Store.new }
+
+    it 'invalidates the environment etag cache' do
+      old_value = store.get(environment.etag_cache_key)
+
+      create(:deployment, environment: environment)
+
+      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+    end
+  end
+
   describe '#includes_commit?' do
     let(:project)     { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }
@@ -52,7 +65,11 @@ describe Deployment, models: true do
   describe '#metrics' do
     let(:deployment) { create(:deployment) }
 
+<<<<<<< HEAD
     subject { deployment.metrics(1.hour) }
+=======
+    subject { deployment.metrics }
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
     context 'metrics are disabled' do
       it { is_expected.to eq({}) }
@@ -63,16 +80,29 @@ describe Deployment, models: true do
         {
           success: true,
           metrics: {},
+<<<<<<< HEAD
           last_update: 42
+=======
+          last_update: 42,
+          deployment_time: 1494408956
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
         }
       end
 
       before do
+<<<<<<< HEAD
         allow(deployment.project).to receive_message_chain(:monitoring_service, :metrics)
                                        .with(any_args).and_return(simple_metrics)
       end
 
       it { is_expected.to eq(simple_metrics.merge(deployment_time: deployment.created_at.utc.to_i)) }
+=======
+        allow(deployment.project).to receive_message_chain(:monitoring_service, :deployment_metrics)
+                                       .with(any_args).and_return(simple_metrics)
+      end
+
+      it { is_expected.to eq(simple_metrics) }
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     end
   end
 

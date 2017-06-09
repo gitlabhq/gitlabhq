@@ -1,7 +1,6 @@
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
-  include AfterCommitQueue
   include Sortable
 
   LAST_USED_AT_REFRESH_TIME = 1.day.to_i
@@ -25,10 +24,10 @@ class Key < ActiveRecord::Base
 
   delegate :name, :email, to: :user, prefix: true
 
-  after_create :add_to_shell
-  after_create :notify_user
+  after_commit :add_to_shell, on: :create
+  after_commit :notify_user, on: :create
   after_create :post_create_hook
-  after_destroy :remove_from_shell
+  after_commit :remove_from_shell, on: :destroy
   after_destroy :post_destroy_hook
 
   def key=(value)
@@ -74,7 +73,7 @@ class Key < ActiveRecord::Base
     GitlabShellWorker.perform_async(
       :remove_key,
       shell_id,
-      key,
+      key
     )
   end
 
@@ -93,6 +92,6 @@ class Key < ActiveRecord::Base
   end
 
   def notify_user
-    run_after_commit { NotificationService.new.new_key(self) }
+    NotificationService.new.new_key(self)
   end
 end

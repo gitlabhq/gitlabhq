@@ -32,7 +32,7 @@ describe 'Deleted source branch', feature: true, js: true do
     end
 
     click_on 'Changes'
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).to have_selector('.diffs.tab-pane .nothing-here-block')
     expect(page).to have_content('Source branch does not exist.')

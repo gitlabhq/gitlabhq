@@ -52,11 +52,13 @@ Every **Technical Article** contains, in the very beginning, a blockquote with t
 - A reference to the **type of article** (user guide, admin guide, tech overview, tutorial)
 - A reference to the **knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
 - A reference to the **author's name** and **GitLab.com handle**
+- A reference of the **publication date**
 
 ```md
-> **Type:** tutorial ||
+> **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
 > **Level:** intermediary ||
-> **Author:** [Name Surname](https://gitlab.com/username)
+> **Author:** [Name Surname](https://gitlab.com/username) ||
+> **Publication date:** AAAA/MM/DD
 ```
 
 #### Technical Articles - Writing Method
@@ -76,14 +78,21 @@ Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, b
 We try to treat documentation as code, thus have implemented some testing.
 Currently, the following tests are in place:
 
-1. `docs:check:links`: Check that all internal (relative) links work correctly
-1. `docs:check:apilint`: Check that the API docs follow some conventions
+1. `docs lint`: Check that all internal (relative) links work correctly and
+   that all cURL examples in API docs use the full switches.
 
 If your contribution contains **only** documentation changes, you can speed up
-the CI process by prepending to the name of your branch: `docs/`. For example,
-a valid name would be `docs/update-api-issues` and it will run only the docs
-tests. If the name is `docs-update-api-issues`, the whole test suite will run
-(including docs).
+the CI process by following some branch naming conventions. You have three
+choices:
+
+| Branch name | Valid example |
+| ----------- | ------------- |
+| Starting with `docs/` | `docs/update-api-issues`     |
+| Starting with `docs-` | `docs-update-api-issues`     |
+| Ending in `-docs`     | `123-update-api-issues-docs` |
+
+If your branch name matches any of the above, it will run only the docs
+tests. If it doesn't, the whole test suite will run (including docs).
 
 ---
 

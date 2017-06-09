@@ -6,8 +6,7 @@ class LfsObjectsProject < ActiveRecord::Base
   validates :lfs_object_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_id, presence: true
 
-  after_create :update_project_statistics
-  after_destroy :update_project_statistics
+  after_commit :update_project_statistics, on: [:create, :destroy]
 
   private
 

@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 describe Gitlab::Regex, lib: true do
+<<<<<<< HEAD
   # Pass in a full path to remove the format segment:
   # `/ci/lint(.:format)` -> `/ci/lint`
   def without_format(path)
@@ -382,6 +383,8 @@ describe Gitlab::Regex, lib: true do
     it { is_expected.not_to match('gitlab.git') }
   end
 
+=======
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   describe '.project_name_regex' do
     subject { described_class.project_name_regex }
 
@@ -411,17 +414,5 @@ describe Gitlab::Regex, lib: true do
     it { is_expected.not_to match('foo*1') }
     it { is_expected.not_to match('9foo') }
     it { is_expected.not_to match('foo-') }
-  end
-
-  describe '.full_namespace_regex' do
-    subject { described_class.full_namespace_regex }
-
-    it { is_expected.to match('gitlab.org') }
-    it { is_expected.to match('gitlab.org/gitlab-git') }
-    it { is_expected.not_to match('gitlab.org.') }
-    it { is_expected.not_to match('gitlab.org/') }
-    it { is_expected.not_to match('/gitlab.org') }
-    it { is_expected.not_to match('gitlab.git') }
-    it { is_expected.not_to match('gitlab git') }
   end
 end

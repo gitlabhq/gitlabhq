@@ -3,9 +3,15 @@
   margin: 0;
   padding: 0;
 
+<<<<<<< HEAD
   .note-text {
     p:last-child {
       margin-bottom: 0;
+=======
+  &::before {
+    @include notes-media('max', $screen-xs-min) {
+      background: none;
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     }
   }
 
@@ -26,6 +32,7 @@
   border-color: $white-normal;
   color: $gl-text-color;
   border-bottom: 1px solid $border-white-light;
+<<<<<<< HEAD
 
   .timeline-entry-inner {
     position: relative;
@@ -57,10 +64,34 @@
     .timeline-icon {
       display: none;
     }
+=======
+
+  .timeline-entry-inner {
+    position: relative;
+
+    @include notes-media('max', $screen-xs-min) {
+      .timeline-icon {
+        display: none;
+      }
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
     .timeline-content {
       margin-left: 0;
     }
+  }
+
+  &:target,
+  &.target {
+    background: $line-target-blue;
+  }
+
+  .avatar {
+    margin-right: 15px;
+  }
+
+  .controls {
+    padding-top: 10px;
+    float: right;
   }
 }
 

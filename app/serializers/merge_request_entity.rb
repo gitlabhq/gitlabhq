@@ -29,7 +29,11 @@ class MergeRequestEntity < IssuableEntity
 
   expose :merge_commit_sha
   expose :merge_commit_message
+<<<<<<< HEAD
   expose :head_pipeline, with: PipelineEntity, as: :pipeline
+=======
+  expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
   # Booleans
   expose :work_in_progress?, as: :work_in_progress
@@ -39,6 +43,10 @@ class MergeRequestEntity < IssuableEntity
   expose :commits_count
   expose :cannot_be_merged?, as: :has_conflicts
   expose :can_be_merged?, as: :can_be_merged
+<<<<<<< HEAD
+=======
+  expose :remove_source_branch?, as: :remove_source_branch
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 
   expose :project_archived do |merge_request|
     merge_request.project.archived?
@@ -96,6 +104,17 @@ class MergeRequestEntity < IssuableEntity
     presenter(merge_request).target_branch_commits_path
   end
 
+<<<<<<< HEAD
+=======
+  expose :new_blob_path do |merge_request|
+    if can?(current_user, :push_code, merge_request.project)
+      namespace_project_new_blob_path(merge_request.project.namespace,
+                                      merge_request.project,
+                                      merge_request.source_branch)
+    end
+  end
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   expose :conflict_resolution_path do |merge_request|
     presenter(merge_request).conflict_resolution_path
   end

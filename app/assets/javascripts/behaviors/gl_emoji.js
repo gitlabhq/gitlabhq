@@ -88,6 +88,7 @@ function installGlEmojiElement() {
     const hasCssSpriteFalback = fallbackSpriteClass && fallbackSpriteClass.length > 0;
 
     if (
+      emojiUnicode &&
       isEmojiUnicode &&
       !isEmojiUnicodeSupported(generatedUnicodeSupportMap, emojiUnicode, unicodeVersion)
     ) {

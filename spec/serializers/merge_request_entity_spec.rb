@@ -26,7 +26,11 @@ describe MergeRequestEntity do
     pipeline = build_stubbed(:ci_pipeline)
     allow(resource).to receive(:head_pipeline).and_return(pipeline)
 
+<<<<<<< HEAD
     pipeline_payload = PipelineEntity
+=======
+    pipeline_payload = PipelineDetailsEntity
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       .represent(pipeline, request: req)
       .as_json
 
@@ -65,6 +69,26 @@ describe MergeRequestEntity do
       .to eq(resource.merge_commit_message(include_description: true))
   end
 
+<<<<<<< HEAD
+=======
+  describe 'new_blob_path' do
+    context 'when user can push to project' do
+      it 'returns path' do
+        project.add_developer(user)
+
+        expect(subject[:new_blob_path])
+          .to eq("/#{resource.project.full_path}/new/#{resource.source_branch}")
+      end
+    end
+
+    context 'when user cannot push to project' do
+      it 'returns nil' do
+        expect(subject[:new_blob_path]).to be_nil
+      end
+    end
+  end
+
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
   describe 'diff_head_sha' do
     before do
       allow(resource).to receive(:diff_head_sha) { 'sha' }

@@ -13,6 +13,8 @@ module Gitlab
       highlight(file_name, blob.data, repository: repository).lines.map!(&:html_safe)
     end
 
+    attr_reader :blob_name
+
     def initialize(blob_name, blob_content, repository: nil)
       @formatter = Rouge::Formatters::HTMLGitlab
       @repository = repository
@@ -21,16 +23,9 @@ module Gitlab
     end
 
     def highlight(text, continue: true, plain: false)
-      if plain
-        hl_lexer = Rouge::Lexers::PlainText
-        continue = false
-      else
-        hl_lexer = self.lexer
-      end
-
-      @formatter.format(hl_lexer.lex(text, continue: continue), tag: hl_lexer.tag).html_safe
-    rescue
-      @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
+      highlighted_text = highlight_text(text, continue: continue, plain: plain)
+      highlighted_text = link_dependencies(text, highlighted_text) if blob_name
+      highlighted_text
     end
 
     def lexer
@@ -49,6 +44,28 @@ module Gitlab
       return nil unless language_name
 
       Rouge::Lexer.find_fancy(language_name)
+    end
+
+    def highlight_text(text, continue: true, plain: false)
+      if plain
+        highlight_plain(text)
+      else
+        highlight_rich(text, continue: continue)
+      end
+    end
+
+    def highlight_plain(text)
+      @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
+    end
+
+    def highlight_rich(text, continue: true)
+      @formatter.format(lexer.lex(text, continue: continue), tag: lexer.tag).html_safe
+    rescue
+      highlight_plain(text)
+    end
+
+    def link_dependencies(text, highlighted_text)
+      Gitlab::DependencyLinker.link(blob_name, text, highlighted_text)
     end
   end
 end

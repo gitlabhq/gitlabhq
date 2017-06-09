@@ -53,7 +53,11 @@ Sidekiq, which runs according to its interval. For example, if you set a
 schedule to create a pipeline every minute (`* * * * *`) and the Sidekiq worker
 runs on 00:00 and 12:00 every day (`0 */12 * * *`), only 2 pipelines will be
 created per day. To change the Sidekiq worker's frequency, you have to edit the
+<<<<<<< HEAD
 `trigger_schedule_worker_cron` value in your `gitlab.rb` and restart GitLab.
+=======
+`pipeline_schedule_worker_cron` value in your `gitlab.rb` and restart GitLab.
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
 For GitLab.com, you can check the [dedicated settings page][settings]. If you
 don't have admin access to the server, ask your administrator.
 

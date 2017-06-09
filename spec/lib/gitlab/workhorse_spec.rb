@@ -214,7 +214,7 @@ describe Gitlab::Workhorse, lib: true do
         repo_param = { Repository: {
           path: repo_path,
           storage_name: 'default',
-          relative_path: project.full_path + '.git',
+          relative_path: project.full_path + '.git'
         } }
 
         expect(subject).to include(repo_param)
@@ -244,7 +244,7 @@ describe Gitlab::Workhorse, lib: true do
       context "when git_receive_pack action is passed" do
         let(:action) { 'git_receive_pack' }
 
-        it { expect(subject).not_to include(gitaly_params) }
+        it { expect(subject).to include(gitaly_params) }
       end
 
       context "when info_refs action is passed" do

@@ -13,7 +13,11 @@ export default {
   },
   data() {
     return {
+<<<<<<< HEAD
       removeSourceBranch: true,
+=======
+      removeSourceBranch: this.mr.shouldRemoveSourceBranch,
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
       mergeWhenBuildSucceeds: false,
       useCommitMessageWithDescription: false,
       setToMergeWhenPipelineSucceeds: false,
@@ -69,6 +73,12 @@ export default {
         || this.isMakingRequest
         || this.mr.preventMerge);
     },
+<<<<<<< HEAD
+=======
+    isRemoveSourceBranchButtonDisabled() {
+      return this.isMergeButtonDisabled || !this.mr.canRemoveSourceBranch;
+    },
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     shouldShowSquashBeforeMerge() {
       const { commitsCount, enableSquashBeforeMerge } = this.mr;
       return enableSquashBeforeMerge && commitsCount > 1;
@@ -252,8 +262,14 @@ export default {
       <template v-if="isMergeAllowed()">
         <label class="spacing">
           <input
+<<<<<<< HEAD
             v-model="removeSourceBranch"
             :disabled="isMergeButtonDisabled"
+=======
+            id="remove-source-branch-input"
+            v-model="removeSourceBranch"
+            :disabled="isRemoveSourceBranchButtonDisabled"
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
             type="checkbox"/> Remove source branch
         </label>
 

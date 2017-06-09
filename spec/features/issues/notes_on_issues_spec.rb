@@ -15,7 +15,11 @@ describe 'Create notes on issues', :js, :feature do
       fill_in 'note[note]', with: note_text
       click_button 'Comment'
 
+<<<<<<< HEAD
       wait_for_ajax
+=======
+      wait_for_requests
+>>>>>>> abc61f260074663e5711d3814d9b7d301d07a259
     end
 
     it 'creates a note with reference and cross references the issue' do

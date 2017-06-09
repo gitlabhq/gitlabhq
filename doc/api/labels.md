@@ -1,4 +1,4 @@
-# Labels
+# Labels API
 
 ## List labels
 

@@ -43,19 +43,22 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def members_update
-    status = Members::CreateService.new(@group, current_user, params).execute
+    member_params = params.permit(:user_ids, :access_level, :expires_at)
+    result = Members::CreateService.new(@group, current_user, member_params.merge(limit: -1)).execute
 
-    if status
+    if result[:status] == :success
       redirect_to [:admin, @group], notice: 'Users were successfully added.'
     else
-      redirect_to [:admin, @group], alert: 'No users specified.'
+      redirect_to [:admin, @group], alert: result[:message]
     end
   end
 
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to admin_groups_path, alert: "Group '#{@group.name}' was scheduled for deletion."
+    redirect_to admin_groups_path,
+                status: 302,
+                alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   private

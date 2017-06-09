@@ -1,12 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-return-assign, max-len */
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.NewCommitForm = (function() {
     function NewCommitForm(form, targetBranchName = 'target_branch') {
       this.form = form;
       this.targetBranchName = targetBranchName;
-      this.renderDestination = bind(this.renderDestination, this);
+      this.renderDestination = this.renderDestination.bind(this);
       this.targetBranchDropdown = form.find('button.js-target-branch');
       this.originalBranch = form.find('.js-original-branch');
       this.createMergeRequest = form.find('.js-create-merge-request');
