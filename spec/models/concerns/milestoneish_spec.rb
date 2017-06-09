@@ -19,10 +19,45 @@ describe Milestone, 'Milestoneish' do
   let!(:closed_security_issue_3) { create(:issue, :confidential, :closed, project: project, author: author, milestone: milestone) }
   let!(:closed_security_issue_4) { create(:issue, :confidential, :closed, project: project, assignees: [assignee], milestone: milestone) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
+  let(:label_1) { create(:label, title: 'label_1', project: project, priority: 1) }
+  let(:label_2) { create(:label, title: 'label_2', project: project, priority: 2) }
+  let(:label_3) { create(:label, title: 'label_3', project: project) }
 
   before do
     project.team << [member, :developer]
     project.team << [guest, :guest]
+  end
+
+  describe '#issues_visible_to_user' do
+    it 'sorts issues by label priority' do
+      issue.labels << label_1
+      security_issue_1.labels << label_2
+      closed_issue_1.labels << label_3
+
+      issues = milestone.issues_visible_to_user(member)
+
+      expect(issues.first).to eq(issue)
+      expect(issues.second).to eq(security_issue_1)
+      expect(issues.third).not_to eq(closed_issue_1)
+    end
+  end
+
+  describe '#sorted_merge_requests' do
+    let(:merge_request_1) { create(:merge_request, :simple, source_project: project, source_branch: 'branch_1', milestone: milestone) }
+    let(:merge_request_2) { create(:merge_request, :simple, source_project: project, source_branch: 'branch_2', milestone: milestone) }
+    let(:merge_request_3) { create(:merge_request, :simple, source_project: project, source_branch: 'branch_3', milestone: milestone) }
+
+    it 'sorts merge requests by label priority' do
+      merge_request_2.labels << label_1
+      merge_request_1.labels << label_2
+      merge_request_3.labels << label_3
+
+      merge_requests = milestone.sorted_merge_requests
+
+      expect(merge_requests.first).to eq(merge_request_2)
+      expect(merge_requests.second).to eq(merge_request_1)
+      expect(merge_requests.third).to eq(merge_request_3)
+    end
   end
 
   describe '#closed_items_count' do

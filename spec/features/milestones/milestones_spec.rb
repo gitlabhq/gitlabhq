@@ -39,7 +39,6 @@
 #       expect(issue_target).to have_selector('.issuable-row')
 #     end
 #   end
->>>>>>> Remove Drag and drop and sorting from milestone view
 
 #   context 'merge requests' do
 #     let(:merge_request)        { page.find_by_id('merge_requests-list-unassigned').find('li') }
@@ -73,13 +72,8 @@
 #     end
 #   end
 
-<<<<<<< 5f42009f8dcc29d559ee415e92c88858e361f063
-  def create_and_drag_issue(params = {})
-    @issue = create(:issue, params.merge(title: 'Foo', project: project, milestone: milestone))
-=======
 #   def create_and_drag_issue(params = {})
 #     create(:issue, params.merge(title: 'Foo', project: project, milestone: milestone))
->>>>>>> Remove Drag and drop and sorting from milestone view
 
 #     visit namespace_project_milestone_path(project.namespace, project, milestone)
 #     scroll_into_view('.milestone-content')
