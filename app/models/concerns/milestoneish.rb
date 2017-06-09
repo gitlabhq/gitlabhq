@@ -1,7 +1,7 @@
 module Milestoneish
   def closed_items_count(user)
     memoize_per_user(user, :closed_items_count) do
-      (count_issues_by_state(user)['closed']&.length || 0) + merge_requests.closed_and_merged.size
+      (count_issues_by_state(user)['closed'] || 0) + merge_requests.closed_and_merged.size
     end
   end
 
@@ -12,7 +12,7 @@ module Milestoneish
   end
 
   def total_issues_count(user)
-    issues_visible_to_user(user).length
+    count_issues_by_state(user).values.sum
   end
 
   def complete?(user)
@@ -44,6 +44,14 @@ module Milestoneish
     end
   end
 
+  def sorted_issues(user)
+    issues_visible_to_user(user).preload_associations.sort('label_priority')
+  end
+
+  def sorted_merge_requests
+    merge_requests.sort('label_priority')
+  end
+
   def upcoming?
     start_date && start_date.future?
   end
@@ -62,17 +70,11 @@ module Milestoneish
     due_date && due_date.past?
   end
 
-  def sorted_merge_requests
-    merge_requests.sort('label_priority')
-  end
-
   private
 
   def count_issues_by_state(user)
     memoize_per_user(user, :count_issues_by_state) do
-      # Need to group and count using ruby array to not break
-      # label ordering. Also it saves a SQL query.
-      issues_visible_to_user(user).to_a.group_by(&:state)
+      issues_visible_to_user(user).reorder(nil).group(:state).count
     end
   end
 
@@ -85,6 +87,6 @@ module Milestoneish
   # override in a class that includes this module to get a faster query
   # from IssuesFinder
   def issues_finder_params
-    { sort: 'label_priority' }
+    {}
   end
 end
