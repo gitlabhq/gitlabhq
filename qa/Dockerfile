@@ -8,10 +8,10 @@ RUN sed -i "s/httpredir.debian.org/ftp.us.debian.org/" /etc/apt/sources.list
 RUN apt-get update && apt-get install -y wget git unzip xvfb
 
 ##
-# At this point Google Chrome Beta is 59 - first version with headless support
+# Google Chrome 59 is the first version with headless support
 #
-RUN wget -q https://dl.google.com/linux/direct/google-chrome-beta_current_amd64.deb
-RUN dpkg -i google-chrome-beta_current_amd64.deb; apt-get -fy install
+RUN wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_59.0.3071.86-1_amd64.deb
+RUN dpkg -i google-chrome-stable_59.0.3071.86-1_amd64.deb; apt-get -fy install
 
 ##
 # Install chromedriver to make it work with Selenium
