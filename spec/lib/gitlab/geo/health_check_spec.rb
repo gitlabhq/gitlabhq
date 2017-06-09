@@ -1,15 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::HealthCheck do
+describe Gitlab::Geo::HealthCheck, :postgresql do
   let!(:secondary) { create(:geo_node, :current) }
 
   subject { described_class }
 
   describe '.perform_checks' do
-    before do
-      skip("Not using PostgreSQL") unless Gitlab::Database.postgresql?
-    end
-
     it 'returns a string if database is not fully migrated' do
       allow(Gitlab::Geo).to receive(:secondary?) { true }
       allow(Gitlab::Geo).to receive(:secondary_role_enabled?).and_return(true)
