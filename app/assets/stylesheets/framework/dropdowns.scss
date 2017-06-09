@@ -48,6 +48,10 @@
     @include chevron-active;
     border-color: $gray-darkest;
   }
+
+  [data-toggle="dropdown"] {
+    outline: 0;
+  }
 }
 
 .dropdown-toggle {
@@ -109,6 +113,7 @@
   &:focus:active {
     @include chevron-active;
     border-color: $dropdown-toggle-active-border-color;
+    outline: 0;
   }
 }
 
