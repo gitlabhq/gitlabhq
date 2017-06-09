@@ -251,9 +251,13 @@ production: &base
         # Example: 'Paris' or 'Acme, Ltd.'
         label: 'LDAP'
 
+        # Example: 'ldap.mydomain.com'
         host: '_your_ldap_server'
-        port: 389
-        uid: 'sAMAccountName'
+        # This port is an example, it is sometimes different but it is always an integer and not a string
+        port: 389 # usually 636 for SSL
+        uid: 'sAMAccountName' # This should be the attribute, not the value that maps to uid.
+
+        # Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
         bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
         password: '_the_password_of_the_bind_user'
 
@@ -314,16 +318,19 @@ production: &base
 
         # Base where we can search for users
         #
-        #   Ex. ou=People,dc=gitlab,dc=example
+        #   Ex. 'ou=People,dc=gitlab,dc=example' or 'DC=mydomain,DC=com'
         #
         base: ''
 
         # Filter LDAP users
         #
-        #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
+        #   Format: RFC 4515 https://tools.ietf.org/search/rfc4515
         #   Ex. (employeeType=developer)
         #
         #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
+        #
+        #   Example for getting only specific users:
+        #   '(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'
         #
         user_filter: ''
 
