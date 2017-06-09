@@ -119,10 +119,8 @@ describe Projects::MergeRequestsController do
         end
       end
 
-      context 'number of queries' do
+      context 'number of queries', :request_store do
         it 'verifies number of queries' do
-          RequestStore.begin!
-
           # pre-create objects
           merge_request
 
@@ -130,9 +128,6 @@ describe Projects::MergeRequestsController do
 
           expect(recorded.count).to be_within(5).of(30)
           expect(recorded.cached_count).to eq(0)
-
-          RequestStore.end!
-          RequestStore.clear!
         end
       end
     end
