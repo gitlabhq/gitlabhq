@@ -398,6 +398,15 @@ describe API::Projects do
       expect(json_response['tag_list']).to eq(%w[tagFirst tagSecond])
     end
 
+    it 'uploads avatar for project a project' do
+      project = attributes_for(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif'))
+
+      post api('/projects', user), project
+
+      project_id = json_response['id']
+      expect(json_response['avatar_url']).to eq("http://localhost/uploads/system/project/avatar/#{project_id}/banana_sample.gif")
+    end
+
     it 'sets a project as allowing merge even if build fails' do
       project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: false })
       post api('/projects', user), project
