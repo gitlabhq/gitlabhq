@@ -394,6 +394,12 @@ ul.notes {
   padding-bottom: 8px;
 }
 
+.note-header-author-name {
+  @media (max-width: $screen-xs-max) {
+    display: none;
+  }
+}
+
 .note-headline-light {
   display: inline;
 
@@ -739,9 +745,8 @@ ul.notes {
 // Merge request notes in diffs
 .diff-file {
   // Diff is side by side
-  .notes_content.parallel .note-header .note-headline-light {
+  .notes_content.parallel .note-header .note-header-author-name {
     display: block;
-    position: relative;
   }
   // Diff is inline
   .notes_content .note-header .note-headline-light {
