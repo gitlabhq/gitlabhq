@@ -87,7 +87,7 @@ describe('Header CI Component', () => {
     vm.actions[0].isLoading = true;
 
     Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.btn .fa-spinner').getAttribute('style')).toEqual('');
+      expect(vm.$el.querySelector('.btn .fa-spinner').getAttribute('style')).toBeFalsy();
       done();
     });
   });
