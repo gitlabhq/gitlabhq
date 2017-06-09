@@ -5,11 +5,7 @@ module Gitlab
       NET_LDAP_ENCRYPTION_METHOD = {
         :simple_tls => :simple_tls,
         :start_tls => :start_tls,
-        :plain => nil,
-
-        # Deprecated. Better to pass-through the actual `Net::LDAP` encryption type.
-        :ssl => :simple_tls,
-        :tls => :start_tls,
+        :plain => nil
       }
 
       attr_accessor :provider, :options

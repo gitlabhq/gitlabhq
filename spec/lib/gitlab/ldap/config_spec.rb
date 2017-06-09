@@ -69,36 +69,12 @@ describe Gitlab::LDAP::Config, lib: true do
       expect(config.adapter_options[:encryption]).to include({ method: :simple_tls })
     end
 
-    it 'sets encryption method to simple_tls when configured as ssl, for backwards compatibility' do
-      stub_ldap_config(
-        options: {
-          'host'                => 'ldap.example.com',
-          'port'                => 686,
-          'encryption'          => 'ssl'
-        }
-      )
-
-      expect(config.adapter_options[:encryption]).to include({ method: :simple_tls })
-    end
-
     it 'sets encryption method to start_tls when configured as start_tls' do
       stub_ldap_config(
         options: {
           'host'                => 'ldap.example.com',
           'port'                => 686,
           'encryption'          => 'start_tls'
-        }
-      )
-
-      expect(config.adapter_options[:encryption]).to include({ method: :start_tls })
-    end
-
-    it 'sets encryption method to start_tls when configured as tls, for backwards compatibility' do
-      stub_ldap_config(
-        options: {
-          'host'                => 'ldap.example.com',
-          'port'                => 686,
-          'encryption'          => 'tls'
         }
       )
 
