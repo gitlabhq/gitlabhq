@@ -62,7 +62,8 @@ module Gitlab
           base: base,
           encryption: options['encryption'],
           filter: omniauth_user_filter,
-          name_proc: name_proc
+          name_proc: name_proc,
+          disable_verify_certificates: !options['verify_certificates']
         )
 
         if has_auth?

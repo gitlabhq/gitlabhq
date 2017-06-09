@@ -238,6 +238,36 @@ describe Gitlab::LDAP::Config, lib: true do
         password: 'super_secret'
       )
     end
+
+    context 'when verify_certificates is enabled' do
+      it 'specifies disable_verify_certificates as false' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true
+          }
+        )
+
+        expect(config.omniauth_options).to include({ disable_verify_certificates: false })
+      end
+    end
+
+    context 'when verify_certificates is disabled' do
+      it 'specifies disable_verify_certificates as true' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => false
+          }
+        )
+
+        expect(config.omniauth_options).to include({ disable_verify_certificates: true })
+      end
+    end
   end
 
   describe '#has_auth?' do
