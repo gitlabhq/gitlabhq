@@ -18,8 +18,7 @@ describe('Pipeline Url Component', () => {
         },
       },
     }).$mount();
-
-    expect(component.$el.querySelector).toEqual('.table-section');
+    expect(component.$el.getAttribute('class')).toContain('table-section');
   });
 
   it('should render a link the provided path and id', () => {

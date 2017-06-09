@@ -32,7 +32,7 @@ describe('Pipelines Table', () => {
     });
 
     it('should render a table', () => {
-      expect(component.$el.querySelector).toEqual('.ci-table');
+      expect(component.$el.getAttribute('class')).toContain('ci-table');
     });
 
     it('should render table head with correct columns', () => {
@@ -40,8 +40,6 @@ describe('Pipelines Table', () => {
       expect(component.$el.querySelector('.table-section.js-pipeline-info').textContent).toEqual('Pipeline');
       expect(component.$el.querySelector('.table-section.js-pipeline-commit').textContent).toEqual('Commit');
       expect(component.$el.querySelector('.table-section.js-pipeline-stages').textContent).toEqual('Stages');
-      expect(component.$el.querySelector('.table-section.js-pipeline-date').textContent).toEqual('');
-      expect(component.$el.querySelector('.table-section.js-pipeline-actions').textContent).toEqual('');
     });
   });
 

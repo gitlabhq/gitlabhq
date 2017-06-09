@@ -34,7 +34,7 @@ describe('Pipelines Table Row', () => {
 
   it('should render a table row', () => {
     component = buildComponent(pipeline);
-    expect(component.$el.querySelector).toEqual('.gl-responsive-table-row');
+    expect(component.$el.getAttribute('class')).toContain('gl-responsive-table-row');
   });
 
   describe('status column', () => {
