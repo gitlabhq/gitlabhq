@@ -2,6 +2,8 @@ module Gitlab
   module Geo
     class HealthCheck
       def self.perform_checks
+        raise NotImplementedError unless Gitlab::Database.postgresql?
+
         return '' unless Gitlab::Geo.secondary?
         return 'The Geo secondary role is disabled.' unless Gitlab::Geo.secondary_role_enabled?
         return 'The Geo database configuration file is missing.' unless self.geo_database_configured?
@@ -11,7 +13,8 @@ module Gitlab
         migration_version = self.get_migration_version.to_i
 
         if database_version != migration_version
-          "Current Geo database version (#{database_version}) does not match latest migration (#{migration_version})."
+          "Current Geo database version (#{database_version}) does not match latest migration (#{migration_version}).\n"\
+          "You may have to run `gitlab-rake geo:db:migrate` as root on the secondary."
         else
           ''
         end
