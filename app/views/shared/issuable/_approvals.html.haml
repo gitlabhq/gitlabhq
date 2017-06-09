@@ -11,9 +11,7 @@
     Approvers
   .col-sm-10
     - if can_override_approvers
-      - author = issuable.author || current_user
-      - skip_users = issuable.all_approvers_including_groups + [author]
-      = users_select_tag("merge_request[approver_ids]", multiple: true, class: 'input-large', email_user: true, skip_users: skip_users, project: issuable.target_project)
+      = users_select_tag("merge_request[approver_ids]", multiple: true, class: 'input-large', email_user: true, skip_users: issuable.all_approvers_including_groups, project: issuable.target_project)
       .help-block
         This merge request must be approved by these users.
         You can override the project settings by setting your own list of approvers.
