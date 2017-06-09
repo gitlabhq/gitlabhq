@@ -32,7 +32,7 @@ feature 'Admin disables Git access protocol', feature: true do
     scenario 'shows only HTTP url' do
       visit_project
 
-      expect(page).to have_content("git clone #{project.http_url_to_repo(admin)}")
+      expect(page).to have_content("git clone #{project.http_url_to_repo}")
       expect(page).not_to have_selector('#clone-dropdown')
     end
   end

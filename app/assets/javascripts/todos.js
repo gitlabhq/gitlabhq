@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props */
-/* global UsersSelect */
+
+import UsersSelect from './users_select';
 
 class Todos {
   constructor() {

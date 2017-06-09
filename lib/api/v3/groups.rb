@@ -20,7 +20,7 @@ module API
         def present_groups(groups, options = {})
           options = options.reverse_merge(
             with: Entities::Group,
-            current_user: current_user,
+            current_user: current_user
           )
 
           groups = groups.with_statistics if options[:statistics]

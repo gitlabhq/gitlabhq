@@ -2,6 +2,15 @@
 - page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
+- can_update_issue = can?(current_user, :update_issue, @issue)
+- can_report_spam = @issue.submittable_as_spam_by?(current_user)
+
+- if defined?(@issue) && @issue.confidential?
+  .confidential-issue-warning{ data: { spy: 'affix' } }
+    %span.confidential-issue-text
+      #{confidential_icon(@issue)} This issue is confidential.
+      %a{ href: help_page_path('user/project/issues/confidential_issues'), target: '_blank' }
+        What are confidential issues?
 
 .clearfix.detail-page-header
   .issuable-header
@@ -17,7 +26,6 @@
       = icon('angle-double-left')
 
     .issuable-meta
-      = confidential_icon(@issue)
       = issuable_meta(@issue, @project, "Issue")
 
   .issuable-actions
@@ -27,40 +35,41 @@
         = icon('caret-down')
       .dropdown-menu.dropdown-menu-align-right.hidden-lg
         %ul
-          %li
-            = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project), title: 'New issue', id: 'new_issue_link'
-          - if can?(current_user, :update_issue, @issue)
+          - if can_update_issue
             %li
-              = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), data: {no_turbolink: true}, class: "btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+              = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'issuable-edit'
             %li
-              = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), data: {no_turbolink: true}, class: "btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
+              = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), class: "btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
             %li
-              = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue)
-          - if @issue.submittable_as_spam_by?(current_user)
+              = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), class: "btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+          - if can_report_spam
             %li
               = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'btn-spam', title: 'Submit as spam'
+          - if can_update_issue || can_report_spam
+            %li.divider
+          %li
+            = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project), title: 'New issue', id: 'new_issue_link'
 
+    - if can_update_issue
+      = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
+      = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), class: "hidden-xs hidden-sm btn btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
+      = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), class: "hidden-xs hidden-sm btn btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+    - if can_report_spam
+      = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
     = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'hidden-xs hidden-sm btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
       New issue
-    - if can?(current_user, :update_issue, @issue)
-      = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
-      = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
-      - if @issue.submittable_as_spam_by?(current_user)
-        = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
-      = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
 
 .issue-details.issuable-details
   .detail-page-description.content-block
-    .issue-title-data.hidden{ "data" => { "endpoint" => rendered_title_namespace_project_issue_path(@project.namespace, @project, @issue),
-      "can-update-tasks-class" => can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '',
-      "is-edited": @issue.is_edited?,
-    } }
-    .issue-title-entrypoint
-      %h2.title.js-issue-title= markdown_field(@issue, :title)
+    %script#js-issuable-app-initial-data{ type: "application/json" }= issuable_initial_data(@issue)
+    #js-issuable-app
+      %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
         .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
-          .wiki.js-issue-description= markdown_field(@issue, :description)
+          .wiki= markdown_field(@issue, :description)
           %textarea.hidden.js-task-list-field= @issue.description
+
+      = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 
     #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
       // This element is filled in using JavaScript.

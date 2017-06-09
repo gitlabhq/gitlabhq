@@ -6,7 +6,7 @@ describe 'Filter issues', js: true, feature: true do
 
   let!(:group) { create(:group) }
   let!(:project) { create(:project, group: group) }
-  let!(:user) { create(:user, username: 'joe') }
+  let!(:user) { create(:user, username: 'joe', name: 'Joe') }
   let!(:user2) { create(:user, username: 'jane') }
   let!(:label) { create(:label, project: project) }
   let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
@@ -761,7 +761,7 @@ describe 'Filter issues', js: true, feature: true do
         sort_toggle.click
 
         find('.filtered-search-wrapper .dropdown-menu li a', text: 'Oldest updated').click
-        wait_for_ajax
+        wait_for_requests
 
         expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(old_issue.title)
       end
@@ -777,26 +777,26 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     it 'open state' do
-      find('.issues-state-filters a', text: 'Closed').click
-      wait_for_ajax
+      find('.issues-state-filters [data-state="closed"]').click
+      wait_for_requests
 
-      find('.issues-state-filters a', text: 'Open').click
-      wait_for_ajax
+      find('.issues-state-filters [data-state="opened"]').click
+      wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 4)
     end
 
     it 'closed state' do
-      find('.issues-state-filters a', text: 'Closed').click
-      wait_for_ajax
+      find('.issues-state-filters [data-state="closed"]').click
+      wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 1)
       expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(closed_issue.title)
     end
 
     it 'all state' do
-      find('.issues-state-filters a', text: 'All').click
-      wait_for_ajax
+      find('.issues-state-filters [data-state="all"]').click
+      wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 5)
     end
@@ -810,10 +810,10 @@ describe 'Filter issues', js: true, feature: true do
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
-      expect(params).to include('private_token' => [user.private_token])
+      expect(params).to include('rss_token' => [user.rss_token])
       expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
-      expect(auto_discovery_params).to include('private_token' => [user.private_token])
+      expect(auto_discovery_params).to include('rss_token' => [user.rss_token])
       expect(auto_discovery_params).to include('milestone_title' => [milestone.title])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
     end
@@ -825,10 +825,10 @@ describe 'Filter issues', js: true, feature: true do
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
-      expect(params).to include('private_token' => [user.private_token])
+      expect(params).to include('rss_token' => [user.rss_token])
       expect(params).to include('milestone_title' => [milestone.title])
       expect(params).to include('assignee_id' => [user.id.to_s])
-      expect(auto_discovery_params).to include('private_token' => [user.private_token])
+      expect(auto_discovery_params).to include('rss_token' => [user.rss_token])
       expect(auto_discovery_params).to include('milestone_title' => [milestone.title])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
     end

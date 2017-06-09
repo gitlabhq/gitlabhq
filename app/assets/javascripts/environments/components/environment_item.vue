@@ -1,5 +1,7 @@
 <script>
 import Timeago from 'timeago.js';
+import _ from 'underscore';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import '../../lib/utils/text_utility';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
@@ -19,6 +21,7 @@ const timeagoInstance = new Timeago();
 
 export default {
   components: {
+    userAvatarLink,
     'commit-component': CommitComponent,
     'actions-component': ActionsComponent,
     'external-url-component': ExternalUrlComponent,
@@ -59,7 +62,7 @@ export default {
     hasLastDeploymentKey() {
       if (this.model &&
         this.model.last_deployment &&
-        !this.$options.isObjectEmpty(this.model.last_deployment)) {
+        !_.isEmpty(this.model.last_deployment)) {
         return true;
       }
       return false;
@@ -310,8 +313,8 @@ export default {
      */
     deploymentHasUser() {
       return this.model &&
-        !this.$options.isObjectEmpty(this.model.last_deployment) &&
-        !this.$options.isObjectEmpty(this.model.last_deployment.user);
+        !_.isEmpty(this.model.last_deployment) &&
+        !_.isEmpty(this.model.last_deployment.user);
     },
 
     /**
@@ -322,8 +325,8 @@ export default {
      */
     deploymentUser() {
       if (this.model &&
-        !this.$options.isObjectEmpty(this.model.last_deployment) &&
-        !this.$options.isObjectEmpty(this.model.last_deployment.user)) {
+        !_.isEmpty(this.model.last_deployment) &&
+        !_.isEmpty(this.model.last_deployment.user)) {
         return this.model.last_deployment.user;
       }
       return {};
@@ -338,8 +341,8 @@ export default {
      */
     shouldRenderBuildName() {
       return !this.model.isFolder &&
-        !this.$options.isObjectEmpty(this.model.last_deployment) &&
-        !this.$options.isObjectEmpty(this.model.last_deployment.deployable);
+        !_.isEmpty(this.model.last_deployment) &&
+        !_.isEmpty(this.model.last_deployment.deployable);
     },
 
     /**
@@ -380,7 +383,7 @@ export default {
      */
     shouldRenderDeploymentID() {
       return !this.model.isFolder &&
-        !this.$options.isObjectEmpty(this.model.last_deployment) &&
+        !_.isEmpty(this.model.last_deployment) &&
         this.model.last_deployment.iid !== undefined;
     },
 
@@ -410,21 +413,6 @@ export default {
     },
   },
 
-  /**
-   * Helper to verify if certain given object are empty.
-   * Should be replaced by lodash _.isEmpty - https://lodash.com/docs/4.17.2#isEmpty
-   * @param  {Object} object
-   * @returns {Bollean}
-   */
-  isObjectEmpty(object) {
-    for (const key in object) { // eslint-disable-line
-      if (hasOwnProperty.call(object, key)) {
-        return false;
-      }
-    }
-    return true;
-  },
-
   methods: {
     onClickFolder() {
       eventHub.$emit('toggleFolder', this.model, this.folderUrl);
@@ -433,14 +421,21 @@ export default {
 };
 </script>
 <template>
-  <tr :class="{ 'js-child-row': model.isChildren }">
-    <td>
+  <div
+    :class="{ 'js-child-row environment-child-row': model.isChildren, 'folder-row': model.isFolder, 'gl-responsive-table-row': !model.isFolder }"
+    role="row">
+    <div class="table-section section-10" role="gridcell">
+      <div
+        v-if="!model.isFolder"
+        class="table-mobile-header"
+        role="rowheader">
+        Environment
+      </div>
       <a
         v-if="!model.isFolder"
-        class="environment-name"
-        :class="{ 'prepend-left-default': model.isChildren }"
+        class="environment-name flex-truncate-parent table-mobile-content"
         :href="environmentPath">
-        {{model.name}}
+        <span class="flex-truncate-child">{{model.name}}</span>
       </a>
       <span
         v-else
@@ -473,40 +468,44 @@ export default {
           {{model.size}}
         </span>
       </span>
-    </td>
+    </div>
 
-    <td class="deployment-column">
+    <div class="table-section section-10 deployment-column hidden-xs hidden-sm" role="gridcell">
       <span v-if="shouldRenderDeploymentID">
         {{deploymentInternalId}}
       </span>
 
       <span v-if="!model.isFolder && deploymentHasUser">
         by
-        <a
-          :href="deploymentUser.web_url"
-          class="js-deploy-user-container">
-          <img
-            class="avatar has-tooltip s20"
-            :src="deploymentUser.avatar_url"
-            :alt="userImageAltDescription"
-            :title="deploymentUser.username" />
-        </a>
+        <user-avatar-link
+          class="js-deploy-user-container"
+          :link-href="deploymentUser.web_url"
+          :img-src="deploymentUser.avatar_url"
+          :img-alt="userImageAltDescription"
+          :tooltip-text="deploymentUser.username"
+        />
       </span>
-    </td>
+    </div>
 
-    <td class="environments-build-cell">
+    <div class="table-section section-15 hidden-xs hidden-sm" role="gridcell">
       <a
         v-if="shouldRenderBuildName"
         class="build-link"
         :href="buildPath">
         {{buildName}}
       </a>
-    </td>
+    </div>
 
-    <td>
+    <div class="table-section section-25" role="gridcell">
+      <div
+        v-if="!model.isFolder"
+        role="rowheader"
+        class="table-mobile-header">
+        Commit
+      </div>
       <div
         v-if="!model.isFolder && hasLastDeploymentKey"
-        class="js-commit-component">
+        class="js-commit-component table-mobile-content">
         <commit-component
           :tag="commitTag"
           :commit-ref="commitRef"
@@ -515,25 +514,31 @@ export default {
           :title="commitTitle"
           :author="commitAuthor"/>
       </div>
-      <p
+      <div
         v-if="!model.isFolder && !hasLastDeploymentKey"
-        class="commit-title">
+        class="commit-title table-mobile-content">
         No deployments yet
-      </p>
-    </td>
+      </div>
+    </div>
 
-    <td>
-      <span
-        v-if="!model.isFolder && canShowDate"
-        class="environment-created-date-timeago">
-        {{createdDate}}
-      </span>
-    </td>
-
-    <td class="environments-actions">
+    <div class="table-section section-10" role="gridcell">
       <div
         v-if="!model.isFolder"
-        class="btn-group pull-right"
+        role="rowheader"
+        class="table-mobile-header">
+        Updated
+      </div>
+      <span
+        v-if="!model.isFolder && canShowDate"
+        class="environment-created-date-timeago table-mobile-content">
+        {{createdDate}}
+      </span>
+    </div>
+
+    <div class="table-section section-30 environments-actions table-button-footer" role="gridcell">
+      <div
+        v-if="!model.isFolder"
+        class="btn-group environment-action-buttons"
         role="group">
 
         <actions-component
@@ -567,6 +572,6 @@ export default {
           :retry-url="retryUrl"
           />
       </div>
-    </td>
-  </tr>
+    </div>
+  </div>
 </template>

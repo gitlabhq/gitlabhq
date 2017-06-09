@@ -163,7 +163,7 @@ $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: $red-500;
-$border-radius-default: 2px;
+$border-radius-default: 3px;
 $settings-icon-size: 18px;
 $provider-btn-not-active-color: $blue-500;
 $link-underline-blue: $blue-500;
@@ -187,6 +187,7 @@ $divergence-graph-bar-bg: #ccc;
 $divergence-graph-separator-bg: #ccc;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
+$highlight-changes-color: rgb(235, 255, 232);
 
 
 /*
@@ -247,7 +248,6 @@ $dark-diff-match-bg: rgba(255, 255, 255, 0.3);
 $dark-diff-match-color: rgba(255, 255, 255, 0.1);
 $file-mode-changed: #777;
 $file-mode-changed: #777;
-$diff-image-bg: #ddd;
 $diff-image-info-color: grey;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
@@ -294,7 +294,7 @@ $btn-white-active: #848484;
 /*
 * Badges
 */
-$badge-bg: #eee;
+$badge-bg: rgba(0, 0, 0, 0.07);
 $badge-color: $gl-text-color-secondary;
 
 /*
@@ -570,3 +570,10 @@ $filter-value-selected-color: #d7d7d7;
 Animation Functions
 */
 $dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
+
+/*
+Convdev Index
+*/
+$color-high-score: $green-400;
+$color-average-score: $orange-400;
+$color-low-score: $red-400;

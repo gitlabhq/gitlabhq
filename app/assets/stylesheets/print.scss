@@ -28,9 +28,6 @@ nav.navbar-collapse.collapse,
 .profiler-results,
 .tree-ref-holder,
 .tree-holder .breadcrumb,
-.blob-commit-info,
-.file-title,
-.file-holder,
 .nav,
 .btn,
 ul.notes-form,
@@ -41,6 +38,11 @@ ul.notes-form,
 .edit-link,
 .note-action-button {
   display: none!important;
+}
+
+pre {
+  page-break-before: avoid;
+  page-break-inside: auto;
 }
 
 .page-gutter {

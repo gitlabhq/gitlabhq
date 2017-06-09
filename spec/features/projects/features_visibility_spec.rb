@@ -21,17 +21,17 @@ describe 'Edit Project Settings', feature: true do
 
           select 'Disabled', from: "project_project_feature_attributes_#{tool_name}_access_level"
           click_button 'Save changes'
-          wait_for_ajax
+          wait_for_requests
           expect(page).not_to have_selector(".shortcuts-#{shortcut_name}")
 
           select 'Everyone with access', from: "project_project_feature_attributes_#{tool_name}_access_level"
           click_button 'Save changes'
-          wait_for_ajax
+          wait_for_requests
           expect(page).to have_selector(".shortcuts-#{shortcut_name}")
 
           select 'Only team members', from: "project_project_feature_attributes_#{tool_name}_access_level"
           click_button 'Save changes'
-          wait_for_ajax
+          wait_for_requests
           expect(page).to have_selector(".shortcuts-#{shortcut_name}")
 
           sleep 0.1
@@ -74,7 +74,7 @@ describe 'Edit Project Settings', feature: true do
         issues: namespace_project_issues_path(project.namespace, project),
         wiki: namespace_project_wiki_path(project.namespace, project, :home),
         snippets: namespace_project_snippets_path(project.namespace, project),
-        merge_requests: namespace_project_merge_requests_path(project.namespace, project),
+        merge_requests: namespace_project_merge_requests_path(project.namespace, project)
       }
     end
 
@@ -169,7 +169,7 @@ describe 'Edit Project Settings', feature: true do
       select "Disabled", from: "project_project_feature_attributes_wiki_access_level"
 
       click_button "Save changes"
-      wait_for_ajax
+      wait_for_requests
 
       visit namespace_project_path(project.namespace, project)
 
@@ -182,7 +182,7 @@ describe 'Edit Project Settings', feature: true do
       select "Disabled", from: "project_project_feature_attributes_wiki_access_level"
 
       click_button "Save changes"
-      wait_for_ajax
+      wait_for_requests
 
       visit activity_namespace_project_path(project.namespace, project)
 
@@ -223,7 +223,7 @@ describe 'Edit Project Settings', feature: true do
 
     def save_changes_and_check_activity_tab
       click_button "Save changes"
-      wait_for_ajax
+      wait_for_requests
 
       visit activity_namespace_project_path(project.namespace, project)
 

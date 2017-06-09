@@ -1,6 +1,24 @@
 require 'spec_helper'
 
 describe Gitlab::HealthChecks::FsShardsCheck do
+  def command_exists?(command)
+    _, status = Gitlab::Popen.popen(%W{ #{command} 1 echo })
+    status == 0
+  rescue Errno::ENOENT
+    false
+  end
+
+  def timeout_command
+    @timeout_command ||=
+      if command_exists?('timeout')
+        'timeout'
+      elsif command_exists?('gtimeout')
+        'gtimeout'
+      else
+        ''
+      end
+  end
+
   let(:metric_class) { Gitlab::HealthChecks::Metric }
   let(:result_class) { Gitlab::HealthChecks::Result }
   let(:repository_storages) { [:default] }
@@ -15,6 +33,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
   before do
     allow(described_class).to receive(:repository_storages) { repository_storages }
     allow(described_class).to receive(:storages_paths) { storages_paths }
+    stub_const('Gitlab::HealthChecks::FsShardsCheck::TIMEOUT_EXECUTABLE', timeout_command)
   end
 
   after do
@@ -78,40 +97,76 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           }.with_indifferent_access
         end
 
-        it { is_expected.to include(metric_class.new(:filesystem_accessible, 0, shard: :default)) }
-        it { is_expected.to include(metric_class.new(:filesystem_readable, 0, shard: :default)) }
-        it { is_expected.to include(metric_class.new(:filesystem_writable, 0, shard: :default)) }
+        it { is_expected.to all(have_attributes(labels: { shard: :default })) }
 
-        it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be >= 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be >= 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be >= 0, labels: { shard: :default })) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_accessible, value: 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_readable, value: 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_writable, value: 0)) }
+
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0)) }
       end
 
       context 'storage points to directory that has both read and write rights' do
         before do
           FileUtils.chmod_R(0755, tmp_dir)
         end
+        it { is_expected.to all(have_attributes(labels: { shard: :default })) }
 
-        it { is_expected.to include(metric_class.new(:filesystem_accessible, 1, shard: :default)) }
-        it { is_expected.to include(metric_class.new(:filesystem_readable, 1, shard: :default)) }
-        it { is_expected.to include(metric_class.new(:filesystem_writable, 1, shard: :default)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_accessible, value: 1)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_readable, value: 1)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_writable, value: 1)) }
 
-        it { is_expected.to include(have_attributes(name: :filesystem_access_latency, value: be >= 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_read_latency, value: be >= 0, labels: { shard: :default })) }
-        it { is_expected.to include(have_attributes(name: :filesystem_write_latency, value: be >= 0, labels: { shard: :default })) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0)) }
+        it { is_expected.to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0)) }
+      end
+    end
+  end
+
+  context 'when timeout kills fs checks' do
+    before do
+      stub_const('Gitlab::HealthChecks::FsShardsCheck::COMMAND_TIMEOUT', '1')
+
+      allow(described_class).to receive(:exec_with_timeout).and_wrap_original { |m| m.call(%w(sleep 60)) }
+      FileUtils.chmod_R(0755, tmp_dir)
+    end
+
+    describe '#readiness' do
+      subject { described_class.readiness }
+
+      it { is_expected.to include(result_class.new(false, 'cannot stat storage', shard: :default)) }
+    end
+
+    describe '#metrics' do
+      subject { described_class.metrics }
+
+      it 'provides metrics' do
+        expect(subject).to all(have_attributes(labels: { shard: :default }))
+
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
+
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
       end
     end
   end
 
   context 'when popen always finds required binaries' do
     before do
-      allow(Gitlab::Popen).to receive(:popen).and_wrap_original do |method, *args, &block|
+      allow(described_class).to receive(:exec_with_timeout).and_wrap_original do |method, *args, &block|
         begin
           method.call(*args, &block)
-        rescue RuntimeError
+        rescue RuntimeError, Errno::ENOENT
           raise 'expected not to happen'
         end
       end
+
+      stub_const('Gitlab::HealthChecks::FsShardsCheck::COMMAND_TIMEOUT', '10')
     end
 
     it_behaves_like 'filesystem checks'

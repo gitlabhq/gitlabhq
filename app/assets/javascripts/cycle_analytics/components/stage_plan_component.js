@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import Vue from 'vue';
+import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 import iconCommit from '../svg/icon_commit.svg';
 
 const global = window.gl || (window.gl = {});
@@ -10,11 +11,12 @@ global.cycleAnalytics.StagePlanComponent = Vue.extend({
     items: Array,
     stage: Object,
   },
-
+  components: {
+    userAvatarImage,
+  },
   data() {
     return { iconCommit };
   },
-
   template: `
     <div>
       <div class="events-description">
@@ -24,7 +26,8 @@ global.cycleAnalytics.StagePlanComponent = Vue.extend({
       <ul class="stage-event-list">
         <li v-for="commit in items" class="stage-event-item">
           <div class="item-details item-conmmit-component">
-            <img class="avatar" :src="commit.author.avatarUrl">
+            <!-- FIXME: Pass an alt attribute here for accessibility -->
+            <user-avatar-image :img-src="commit.author.avatarUrl"/>
             <h5 class="item-title commit-title">
               <a :href="commit.commitUrl">
                 {{ commit.title }}

@@ -113,7 +113,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         describe '#variables_value' do
           it 'returns variables' do
-            expect(global.variables_value).to eq(VAR: 'value')
+            expect(global.variables_value).to eq('VAR' => 'value')
           end
         end
 
@@ -154,7 +154,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                        services: ['postgres:9.1', 'mysql:5.5'],
                        stage: 'test',
                        cache: { key: 'k', untracked: true, paths: ['public/'] },
-                       variables: { VAR: 'value' },
+                       variables: { 'VAR' => 'value' },
                        ignore: false,
                        after_script: ['make clean'] },
               spinach: { name: :spinach,
@@ -167,7 +167,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                          cache: { key: 'k', untracked: true, paths: ['public/'] },
                          variables: {},
                          ignore: false,
-                         after_script: ['make clean'] },
+                         after_script: ['make clean'] }
             )
           end
         end

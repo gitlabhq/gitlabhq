@@ -4,7 +4,7 @@ class Deployment < ActiveRecord::Base
   belongs_to :project, required: true, validate: true
   belongs_to :environment, required: true, validate: true
   belongs_to :user
-  belongs_to :deployable, polymorphic: true
+  belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :sha, presence: true
   validates :ref, presence: true
@@ -12,6 +12,7 @@ class Deployment < ActiveRecord::Base
   delegate :name, to: :environment, prefix: true
 
   after_create :create_ref
+  after_create :invalidate_cache
 
   def commit
     project.commit(sha)
@@ -31,6 +32,10 @@ class Deployment < ActiveRecord::Base
 
   def create_ref
     project.repository.create_ref(ref, ref_path)
+  end
+
+  def invalidate_cache
+    environment.expire_etag_cache
   end
 
   def manual_actions
@@ -103,15 +108,10 @@ class Deployment < ActiveRecord::Base
     project.monitoring_service.present?
   end
 
-  def metrics(timeframe)
+  def metrics
     return {} unless has_metrics?
 
-    half_timeframe = timeframe / 2
-    timeframe_start = created_at - half_timeframe
-    timeframe_end = created_at + half_timeframe
-
-    metrics = project.monitoring_service.metrics(environment, timeframe_start: timeframe_start, timeframe_end: timeframe_end)
-    metrics&.merge(deployment_time: created_at.to_i) || {}
+    project.monitoring_service.deployment_metrics(self)
   end
 
   private

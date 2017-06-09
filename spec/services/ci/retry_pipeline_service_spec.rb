@@ -6,9 +6,12 @@ describe Ci::RetryPipelineService, '#execute', :services do
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:service) { described_class.new(project, user) }
 
-  context 'when user has ability to modify pipeline' do
+  context 'when user has full ability to modify pipeline' do
     before do
-      project.add_master(user)
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: pipeline.ref, project: project)
     end
 
     context 'when there are already retried jobs present' do

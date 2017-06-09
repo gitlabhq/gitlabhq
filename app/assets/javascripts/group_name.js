@@ -44,18 +44,18 @@ export default class GroupName {
   showToggle() {
     this.title.classList.add('wrap');
     this.toggle.classList.remove('hidden');
-    if (this.isHidden) this.groupTitle.classList.add('is-hidden');
+    if (this.isHidden) this.groupTitle.classList.add('hidden');
   }
 
   hideToggle() {
     this.title.classList.remove('wrap');
     this.toggle.classList.add('hidden');
-    if (this.isHidden) this.groupTitle.classList.remove('is-hidden');
+    if (this.isHidden) this.groupTitle.classList.remove('hidden');
   }
 
   toggleGroups() {
     this.isHidden = !this.isHidden;
-    this.groupTitle.classList.toggle('is-hidden');
+    this.groupTitle.classList.toggle('hidden');
   }
 
   render() {

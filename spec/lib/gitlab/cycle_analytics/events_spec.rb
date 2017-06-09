@@ -11,8 +11,6 @@ describe 'cycle analytics events' do
   end
 
   before do
-    allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([context])
-
     setup(context)
   end
 
@@ -128,7 +126,8 @@ describe 'cycle analytics events' do
       create(:ci_pipeline,
              ref: merge_request.source_branch,
              sha: merge_request.diff_head_sha,
-             project: context.project)
+             project: context.project,
+             head_pipeline_of: merge_request)
     end
 
     before do
@@ -224,7 +223,8 @@ describe 'cycle analytics events' do
       create(:ci_pipeline,
              ref: merge_request.source_branch,
              sha: merge_request.diff_head_sha,
-             project: context.project)
+             project: context.project,
+             head_pipeline_of: merge_request)
     end
 
     before do
@@ -332,7 +332,7 @@ describe 'cycle analytics events' do
   def setup(context)
     milestone = create(:milestone, project: project)
     context.update(milestone: milestone)
-    mr = create_merge_request_closing_issue(context)
+    mr = create_merge_request_closing_issue(context, commit_message: "References #{context.to_reference}")
 
     ProcessCommitWorker.new.perform(project.id, user.id, mr.commits.last.to_hash)
   end

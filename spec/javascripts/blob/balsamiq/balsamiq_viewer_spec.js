@@ -4,17 +4,11 @@ import ClassSpecHelper from '../../helpers/class_spec_helper';
 
 describe('BalsamiqViewer', () => {
   let balsamiqViewer;
-  let endpoint;
   let viewer;
 
   describe('class constructor', () => {
     beforeEach(() => {
-      endpoint = 'endpoint';
-      viewer = {
-        dataset: {
-          endpoint,
-        },
-      };
+      viewer = {};
 
       balsamiqViewer = new BalsamiqViewer(viewer);
     });
@@ -22,25 +16,25 @@ describe('BalsamiqViewer', () => {
     it('should set .viewer', () => {
       expect(balsamiqViewer.viewer).toBe(viewer);
     });
+  });
 
-    it('should set .endpoint', () => {
-      expect(balsamiqViewer.endpoint).toBe(endpoint);
-    });
+  describe('fileLoaded', () => {
+
   });
 
   describe('loadFile', () => {
     let xhr;
+    let loadFile;
+    const endpoint = 'endpoint';
 
     beforeEach(() => {
-      endpoint = 'endpoint';
       xhr = jasmine.createSpyObj('xhr', ['open', 'send']);
 
       balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['renderFile']);
-      balsamiqViewer.endpoint = endpoint;
 
       spyOn(window, 'XMLHttpRequest').and.returnValue(xhr);
 
-      BalsamiqViewer.prototype.loadFile.call(balsamiqViewer);
+      loadFile = BalsamiqViewer.prototype.loadFile.call(balsamiqViewer, endpoint);
     });
 
     it('should call .open', () => {
@@ -53,6 +47,10 @@ describe('BalsamiqViewer', () => {
 
     it('should call .send', () => {
       expect(xhr.send).toHaveBeenCalled();
+    });
+
+    it('should return a promise', () => {
+      expect(loadFile).toEqual(jasmine.any(Promise));
     });
   });
 
@@ -323,20 +321,6 @@ describe('BalsamiqViewer', () => {
 
     it('should return the name value', () => {
       expect(parseTitle).toBe('name');
-    });
-  });
-
-  describe('onError', () => {
-    beforeEach(() => {
-      spyOn(window, 'Flash');
-
-      BalsamiqViewer.onError();
-    });
-
-    ClassSpecHelper.itShouldBeAStaticMethod(BalsamiqViewer, 'onError');
-
-    it('should instantiate Flash', () => {
-      expect(window.Flash).toHaveBeenCalledWith('Balsamiq file could not be loaded.');
     });
   });
 });

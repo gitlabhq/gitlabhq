@@ -1,12 +1,7 @@
-# CI/CD pipelines settings
+# Pipelines settings
 
-To reach the pipelines settings:
-
-1. Navigate to your project and click the cog icon in the upper right corner.
-
-    ![Project settings menu](../img/project_settings_list.png)
-
-1. Select **CI/CD Pipelines** from the menu.
+To reach the pipelines settings navigate to your project's
+**Settings ➔ CI/CD Pipelines**.
 
 The following settings can be configured per project.
 

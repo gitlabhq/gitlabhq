@@ -116,10 +116,11 @@ describe BlobHelper do
 
     let(:viewer_class) do
       Class.new(BlobViewer::Base) do
-        self.max_size = 1.megabyte
-        self.absolute_max_size = 5.megabytes
+        include BlobViewer::ServerSide
+
+        self.collapse_limit = 1.megabyte
+        self.size_limit = 5.megabytes
         self.type = :rich
-        self.client_side = false
       end
     end
 
@@ -128,7 +129,7 @@ describe BlobHelper do
 
     describe '#blob_render_error_reason' do
       context 'for error :too_large' do
-        context 'when the blob size is larger than the absolute max size' do
+        context 'when the blob size is larger than the absolute size limit' do
           let(:blob) { fake_blob(size: 10.megabytes) }
 
           it 'returns an error message' do
@@ -136,7 +137,7 @@ describe BlobHelper do
           end
         end
 
-        context 'when the blob size is larger than the max size' do
+        context 'when the blob size is larger than the size limit' do
           let(:blob) { fake_blob(size: 2.megabytes) }
 
           it 'returns an error message' do
@@ -167,21 +168,19 @@ describe BlobHelper do
         controller.params[:id] = File.join('master', blob.path)
       end
 
-      context 'for error :too_large' do
-        context 'when the max size can be overridden' do
-          let(:blob) { fake_blob(size: 2.megabytes) }
+      context 'for error :collapsed' do
+        let(:blob) { fake_blob(size: 2.megabytes) }
 
-          it 'includes a "load it anyway" link' do
-            expect(helper.blob_render_error_options(viewer)).to include(/load it anyway/)
-          end
+        it 'includes a "load it anyway" link' do
+          expect(helper.blob_render_error_options(viewer)).to include(/load it anyway/)
         end
+      end
 
-        context 'when the max size cannot be overridden' do
-          let(:blob) { fake_blob(size: 10.megabytes) }
+      context 'for error :too_large' do
+        let(:blob) { fake_blob(size: 10.megabytes) }
 
-          it 'does not include a "load it anyway" link' do
-            expect(helper.blob_render_error_options(viewer)).not_to include(/load it anyway/)
-          end
+        it 'does not include a "load it anyway" link' do
+          expect(helper.blob_render_error_options(viewer)).not_to include(/load it anyway/)
         end
 
         context 'when the viewer is rich' do

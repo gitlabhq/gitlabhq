@@ -733,6 +733,26 @@ describe SystemNoteService, services: true do
       jira_service_settings
     end
 
+    def cross_reference(type, link_exists = false)
+      noteable = type == 'commit' ? commit : merge_request
+
+      links = []
+      if link_exists
+        url = if type == 'commit'
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/commit/#{commit.id}"
+              else
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/merge_requests/#{merge_request.iid}"
+              end
+        link = double(object: { 'url' => url })
+        links << link
+        expect(link).to receive(:save!)
+      end
+
+      allow(JIRA::Resource::Remotelink).to receive(:all).and_return(links)
+
+      described_class.cross_reference(jira_issue, noteable, author)
+    end
+
     noteable_types = %w(merge_requests commit)
 
     noteable_types.each do |type|
@@ -740,24 +760,39 @@ describe SystemNoteService, services: true do
         it "blocks cross reference when #{type.underscore}_events is false" do
           jira_tracker.update("#{type}_events" => false)
 
-          noteable = type == "commit" ? commit : merge_request
-          result = described_class.cross_reference(jira_issue, noteable, author)
-
-          expect(result).to eq("Events for #{noteable.class.to_s.underscore.humanize.pluralize.downcase} are disabled.")
+          expect(cross_reference(type)).to eq("Events for #{type.pluralize.humanize.downcase} are disabled.")
         end
 
         it "blocks cross reference when #{type.underscore}_events is true" do
           jira_tracker.update("#{type}_events" => true)
 
-          noteable = type == "commit" ? commit : merge_request
-          result = described_class.cross_reference(jira_issue, noteable, author)
+          expect(cross_reference(type)).to eq(success_message)
+        end
+      end
 
-          expect(result).to eq(success_message)
+      context 'when a new cross reference is created' do
+        it 'creates a new comment and remote link' do
+          cross_reference(type)
+
+          expect(WebMock).to have_requested(:post, jira_api_comment_url(jira_issue))
+          expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue))
+        end
+      end
+
+      context 'when a link exists' do
+        it 'updates a link but does not create a new comment' do
+          expect(WebMock).not_to have_requested(:post, jira_api_comment_url(jira_issue))
+
+          cross_reference(type, true)
         end
       end
     end
 
     describe "new reference" do
+      before do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
+      end
+
       context 'for commits' do
         it "creates comment" do
           result = described_class.cross_reference(jira_issue, commit, author)
@@ -837,6 +872,7 @@ describe SystemNoteService, services: true do
 
     describe "existing reference" do
       before do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
         message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
       end
@@ -1032,6 +1068,37 @@ describe SystemNoteService, services: true do
 
     it 'sets the note text' do
       expect(subject.note).to eq 'resolved all discussions'
+    end
+  end
+
+  describe '.diff_discussion_outdated' do
+    let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
+    let(:merge_request) { discussion.noteable }
+    let(:project) { merge_request.source_project }
+    let(:change_position) { discussion.position }
+
+    def reloaded_merge_request
+      MergeRequest.find(merge_request.id)
+    end
+
+    subject { described_class.diff_discussion_outdated(discussion, project, author, change_position) }
+
+    it_behaves_like 'a system note' do
+      let(:expected_noteable) { discussion.first_note.noteable }
+      let(:action)            { 'outdated' }
+    end
+
+    it 'creates a new note in the discussion' do
+      # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+      expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+    end
+
+    it 'links to the diff in the system note' do
+      expect(subject.note).to include('version 1')
+
+      diff_id = merge_request.merge_request_diff.id
+      line_code = change_position.line_code(project.repository)
+      expect(subject.note).to include(diffs_namespace_project_merge_request_url(project.namespace, project, merge_request, diff_id: diff_id, anchor: line_code))
     end
   end
 end

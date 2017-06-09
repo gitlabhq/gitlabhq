@@ -94,6 +94,12 @@ the name given in `.gitlab-ci.yml` (with any variables expanded), while the
 second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
 etc.
 
+>**Note:**
+Starting with GitLab 9.3, the environment URL is exposed to the Runner via
+`$CI_ENVIRONMENT_URL`. The URL would be expanded from `.gitlab-ci.yml`, or if
+the URL was not defined there, the external URL from the environment would be
+used.
+
 To sum up, with the above `.gitlab-ci.yml` we have achieved that:
 
 - All branches will run the `test` and `build` jobs.
@@ -442,7 +448,8 @@ and/or `production`) you can see this information in the merge request itself.
 
 ![Environment URLs in merge request](img/environments_link_url_mr.png)
 
-### Go directly from source files to public pages on the environment
+### <a name="route-map"></a>Go directly from source files to public pages on the environment
+
 
 > Introduced in GitLab 8.17.
 

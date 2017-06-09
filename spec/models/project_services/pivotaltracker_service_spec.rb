@@ -40,7 +40,7 @@ describe PivotaltrackerService, models: true do
               name: 'Some User'
             },
             url: 'https://example.com/commit',
-            message: 'commit message',
+            message: 'commit message'
           }
         ]
       }

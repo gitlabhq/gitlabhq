@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
 import Issue from '~/issue';
 
-require('~/lib/utils/text_utility');
+import '~/lib/utils/text_utility';
 
 describe('Issue', function() {
   let $boxClosed, $boxOpen, $btnClose, $btnReopen;

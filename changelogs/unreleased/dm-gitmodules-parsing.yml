@@ -1,0 +1,4 @@
+---
+title: Make .gitmodules parsing more resilient to syntax errors
+merge_request:
+author:

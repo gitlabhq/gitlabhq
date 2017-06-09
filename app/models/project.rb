@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Gitlab::CurrentSettings
   include AccessRequestable
+  include Avatarable
   include CacheMarkdownField
   include Referable
   include Sortable
@@ -164,7 +165,7 @@ class Project < ActiveRecord::Base
   has_many :todos, dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source
 
-  has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
+  has_one :import_data, dependent: :delete, class_name: "ProjectImportData"
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
   has_many :container_repositories, dependent: :destroy
@@ -174,7 +175,7 @@ class Project < ActiveRecord::Base
   has_many :builds, class_name: 'Ci::Build' # the builds are created from the commit_statuses
   has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
+  has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
@@ -204,8 +205,8 @@ class Project < ActiveRecord::Base
     presence: true,
     dynamic_path: true,
     length: { maximum: 255 },
-    format: { with: Gitlab::Regex.project_path_format_regex,
-              message: Gitlab::Regex.project_path_regex_message },
+    format: { with: Gitlab::PathRegex.project_path_format_regex,
+              message: Gitlab::PathRegex.project_path_format_message },
     uniqueness: { scope: :namespace_id }
 
   validates :namespace, presence: true
@@ -241,6 +242,7 @@ class Project < ActiveRecord::Base
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
+  scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
@@ -270,6 +272,7 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+  scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
@@ -295,8 +298,16 @@ class Project < ActiveRecord::Base
   scope :excluding_project, ->(project) { where.not(id: project) }
 
   state_machine :import_status, initial: :none do
+    event :import_schedule do
+      transition [:none, :finished, :failed] => :scheduled
+    end
+
+    event :force_import_start do
+      transition [:none, :finished, :failed] => :started
+    end
+
     event :import_start do
-      transition [:none, :finished] => :started
+      transition scheduled: :started
     end
 
     event :import_finish do
@@ -304,18 +315,23 @@ class Project < ActiveRecord::Base
     end
 
     event :import_fail do
-      transition started: :failed
+      transition [:scheduled, :started] => :failed
     end
 
     event :import_retry do
       transition failed: :started
     end
 
+    state :scheduled
     state :started
     state :finished
     state :failed
 
-    after_transition any => :finished, do: :reset_cache_and_import_attrs
+    after_transition [:none, :finished, :failed] => :scheduled do |project, _|
+      project.run_after_commit { add_import_job }
+    end
+
+    after_transition started: :finished, do: :reset_cache_and_import_attrs
   end
 
   class << self
@@ -348,10 +364,6 @@ class Project < ActiveRecord::Base
       where("projects.id IN (#{union.to_sql})")
     end
 
-    def search_by_visibility(level)
-      where(visibility_level: Gitlab::VisibilityLevel.string_options[level])
-    end
-
     def search_by_title(query)
       pattern = "%#{query}%"
       table   = Project.arel_table
@@ -379,11 +391,9 @@ class Project < ActiveRecord::Base
     end
 
     def reference_pattern
-      name_pattern = Gitlab::Regex::FULL_NAMESPACE_REGEX_STR
-
       %r{
-        ((?<namespace>#{name_pattern})\/)?
-        (?<project>#{name_pattern})
+        ((?<namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})\/)?
+        (?<project>#{Gitlab::PathRegex::PROJECT_PATH_FORMAT_REGEX})
       }x
     end
 
@@ -474,7 +484,9 @@ class Project < ActiveRecord::Base
   end
 
   def reset_cache_and_import_attrs
-    ProjectCacheWorker.perform_async(self.id)
+    run_after_commit do
+      ProjectCacheWorker.perform_async(self.id)
+    end
 
     self.import_data&.destroy
   end
@@ -533,7 +545,15 @@ class Project < ActiveRecord::Base
   end
 
   def import_in_progress?
+    import_started? || import_scheduled?
+  end
+
+  def import_started?
     import? && import_status == 'started'
+  end
+
+  def import_scheduled?
+    import_status == 'scheduled'
   end
 
   def import_failed?
@@ -798,12 +818,10 @@ class Project < ActiveRecord::Base
     repository.avatar
   end
 
-  def avatar_url
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    elsif avatar_in_git
-      Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self)
-    end
+  def avatar_url(**args)
+    # We use avatar_path instead of overriding avatar_url because of carrierwave.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+    avatar_path(args) || (Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self) if avatar_in_git)
   end
 
   # For compatibility with old code
@@ -876,10 +894,8 @@ class Project < ActiveRecord::Base
     url_to_repo
   end
 
-  def http_url_to_repo(user = nil)
-    credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
-
-    Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
+  def http_url_to_repo
+    "#{web_url}.git"
   end
 
   def user_can_push_to_empty_repo?(user)
@@ -968,7 +984,7 @@ class Project < ActiveRecord::Base
       namespace: namespace.name,
       visibility_level: visibility_level,
       path_with_namespace: path_with_namespace,
-      default_branch: default_branch,
+      default_branch: default_branch
     }
 
     # Backward compatibility
@@ -1066,11 +1082,6 @@ class Project < ActiveRecord::Base
     return unless sha
 
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
-  end
-
-  def ensure_pipeline(ref, sha, current_user = nil)
-    pipeline_for(ref, sha) ||
-      pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci
@@ -1238,6 +1249,7 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: path_with_namespace.parameterize, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
@@ -1257,10 +1269,17 @@ class Project < ActiveRecord::Base
     variables
   end
 
-  def secret_variables
-    variables.map do |variable|
-      { key: variable.key, value: variable.value, public: false }
+  def secret_variables_for(ref)
+    if protected_for?(ref)
+      variables
+    else
+      variables.unprotected
     end
+  end
+
+  def protected_for?(ref)
+    ProtectedBranch.protected?(self, ref) ||
+      ProtectedTag.protected?(self, ref)
   end
 
   def deployment_variables

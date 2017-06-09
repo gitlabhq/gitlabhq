@@ -2,7 +2,7 @@ import BindInOut from '~/behaviors/bind_in_out';
 import ClassSpecHelper from '../helpers/class_spec_helper';
 
 describe('BindInOut', function () {
-  describe('.constructor', function () {
+  describe('constructor', function () {
     beforeEach(function () {
       this.in = {};
       this.out = {};
@@ -53,7 +53,7 @@ describe('BindInOut', function () {
     });
   });
 
-  describe('.addEvents', function () {
+  describe('addEvents', function () {
     beforeEach(function () {
       this.in = jasmine.createSpyObj('in', ['addEventListener']);
 
@@ -79,7 +79,7 @@ describe('BindInOut', function () {
     });
   });
 
-  describe('.updateOut', function () {
+  describe('updateOut', function () {
     beforeEach(function () {
       this.in = { value: 'the-value' };
       this.out = { textContent: 'not-the-value' };
@@ -98,7 +98,7 @@ describe('BindInOut', function () {
     });
   });
 
-  describe('.removeEvents', function () {
+  describe('removeEvents', function () {
     beforeEach(function () {
       this.in = jasmine.createSpyObj('in', ['removeEventListener']);
       this.updateOut = () => {};
@@ -122,7 +122,7 @@ describe('BindInOut', function () {
     });
   });
 
-  describe('.initAll', function () {
+  describe('initAll', function () {
     beforeEach(function () {
       this.ins = [0, 1, 2];
       this.instances = [];
@@ -153,7 +153,7 @@ describe('BindInOut', function () {
     });
   });
 
-  describe('.init', function () {
+  describe('init', function () {
     beforeEach(function () {
       spyOn(BindInOut.prototype, 'addEvents').and.callFake(function () { return this; });
       spyOn(BindInOut.prototype, 'updateOut').and.callFake(function () { return this; });

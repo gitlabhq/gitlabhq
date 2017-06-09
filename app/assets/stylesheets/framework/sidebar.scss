@@ -33,7 +33,7 @@
   padding-right: 0;
 
   @media (min-width: $screen-sm-min) {
-    &:not(.wiki-sidebar):not(.build-sidebar) .content-wrapper {
+    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
       padding-right: $gutter_collapsed_width;
     }
 
@@ -56,7 +56,7 @@
   z-index: 300;
 
   @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-    &:not(.wiki-sidebar):not(.build-sidebar) .content-wrapper {
+    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
       padding-right: $gutter_collapsed_width;
     }
   }
@@ -81,7 +81,43 @@
 
   &.affix {
     position: fixed;
-    top: 0;
+    top: $header-height;
+  }
+
+  &:not(.affix-top) {
+    min-height: 100%;
+  }
+}
+
+@mixin maintain-sidebar-dimensions {
+  display: block;
+  width: $gutter-width;
+  padding: 10px 20px;
+}
+
+.issues-bulk-update.right-sidebar {
+  @include maintain-sidebar-dimensions;
+  transition: right $sidebar-transition-duration;
+  right: -$gutter-width;
+
+  &.right-sidebar-expanded {
+    @include maintain-sidebar-dimensions;
+    right: 0;
+  }
+
+  &.right-sidebar-collapsed {
+    @include maintain-sidebar-dimensions;
+    right: -$gutter-width;
+
+    .block {
+      padding: 16px 0;
+      width: 250px;
+      border-bottom: 1px solid $border-color;
+    }
+  }
+
+  .issuable-sidebar {
+    padding: 0 3px;
   }
 
   &:not(.affix-top) {

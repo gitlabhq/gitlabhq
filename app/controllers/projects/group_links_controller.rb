@@ -36,7 +36,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to namespace_project_settings_members_path(project.namespace, project)
+        redirect_to namespace_project_settings_members_path(project.namespace, project), status: 302
       end
       format.js { head :ok }
     end

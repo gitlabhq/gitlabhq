@@ -1,4 +1,4 @@
-# Application settings
+# Application settings API
 
 These API calls allow you to read and modify GitLab instance application
 settings as appear in `/admin/application_settings`. You have to be an

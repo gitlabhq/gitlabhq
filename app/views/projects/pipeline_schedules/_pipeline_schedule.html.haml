@@ -4,7 +4,8 @@
       = pipeline_schedule.description
     %td.branch-name-cell
       = icon('code-fork')
-      = link_to pipeline_schedule.ref, namespace_project_commits_path(@project.namespace, @project, pipeline_schedule.ref), class: "branch-name"
+      - if pipeline_schedule.ref
+        = link_to pipeline_schedule.ref, project_ref_path(@project, pipeline_schedule.ref), class: "ref-name"
     %td
       - if pipeline_schedule.last_pipeline
         .status-icon-container{ class: "ci-status-icon-#{pipeline_schedule.last_pipeline.status}" }
@@ -15,7 +16,7 @@
         None
     %td.next-run-cell
       - if pipeline_schedule.active?
-        = time_ago_with_tooltip(pipeline_schedule.next_run_at)
+        = time_ago_with_tooltip(pipeline_schedule.real_next_run)
       - else
         Inactive
     %td

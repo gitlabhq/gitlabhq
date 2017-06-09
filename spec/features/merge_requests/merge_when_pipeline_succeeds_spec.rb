@@ -7,16 +7,20 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project,
                                       author: user,
-                                      title: 'Bug NS-04')
+                                      title: 'Bug NS-04',
+                                      merge_params: { force_remove_source_branch: '1' })
   end
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: merge_request.diff_head_sha,
-                         ref: merge_request.source_branch)
+                         ref: merge_request.source_branch,
+                         head_pipeline_of: merge_request)
   end
 
-  before { project.team << [user, :master] }
+  before do
+    project.add_master(user)
+  end
 
   context 'when there is active pipeline for merge request' do
     background do
@@ -38,7 +42,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
           click_button "Merge when pipeline succeeds"
 
           expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
-          expect(page).to have_content "The source branch will be removed."
+          expect(page).to have_content "The source branch will not be removed."
           expect(page).to have_selector ".js-cancel-auto-merge"
           visit_merge_request(merge_request) # Needed to refresh the page
           expect(page).to have_content /enabled an automatic merge when the pipeline for \h{8} succeeds/i
@@ -79,7 +83,8 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
                    source_project: project,
                    title: 'Bug NS-04',
                    author: user,
-                   merge_user: user)
+                   merge_user: user,
+                   merge_params: { force_remove_source_branch: '1' })
         end
 
         before do

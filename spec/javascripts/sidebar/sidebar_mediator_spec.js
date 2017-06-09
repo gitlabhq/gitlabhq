@@ -14,6 +14,7 @@ describe('Sidebar mediator', () => {
     SidebarService.singleton = null;
     SidebarStore.singleton = null;
     SidebarMediator.singleton = null;
+    Vue.http.interceptors = _.without(Vue.http.interceptors, Mock.sidebarMockInterceptor);
   });
 
   it('assigns yourself ', () => {

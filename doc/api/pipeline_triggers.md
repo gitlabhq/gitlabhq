@@ -1,4 +1,4 @@
-# Pipeline triggers
+# Pipeline triggers API
 
 You can read more about [triggering pipelines through the API](../ci/triggers/README.md).
 

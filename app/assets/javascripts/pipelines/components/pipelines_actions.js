@@ -3,6 +3,7 @@
 import '~/flash';
 import playIconSvg from 'icons/_icon_play.svg';
 import eventHub from '../event_hub';
+import loadingIconComponent from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   props: {
@@ -15,6 +16,10 @@ export default {
       type: Object,
       required: true,
     },
+  },
+
+  components: {
+    loadingIconComponent,
   },
 
   data() {
@@ -65,10 +70,7 @@ export default {
         <i
           class="fa fa-caret-down"
           aria-hidden="true" />
-        <i
-          v-if="isLoading"
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true" />
+        <loading-icon v-if="isLoading" />
       </button>
 
       <ul class="dropdown-menu dropdown-menu-align-right">

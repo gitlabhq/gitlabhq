@@ -73,7 +73,7 @@ feature 'Merge requests > User posts diff notes', :js do
     context 'with an unfolded line' do
       before(:each) do
         find('.js-unfold', match: :first).click
-        wait_for_ajax
+        wait_for_requests
       end
 
       # The first `.js-unfold` unfolds upwards, therefore the first
@@ -122,7 +122,7 @@ feature 'Merge requests > User posts diff notes', :js do
     context 'with an unfolded line' do
       before(:each) do
         find('.js-unfold', match: :first).click
-        wait_for_ajax
+        wait_for_requests
       end
 
       # The first `.js-unfold` unfolds upwards, therefore the first
@@ -213,7 +213,7 @@ feature 'Merge requests > User posts diff notes', :js do
     write_comment_on_line(line_holder, diff_side)
 
     click_button 'Comment'
-    wait_for_ajax
+    wait_for_requests
 
     assert_comment_persistence(line_holder, asset_form_reset: asset_form_reset)
   end

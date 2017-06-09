@@ -35,6 +35,16 @@ describe PersonalAccessToken, models: true do
     end
   end
 
+  describe 'revoke!' do
+    let(:active_personal_access_token) { create(:personal_access_token) }
+
+    it 'revokes the token' do
+      active_personal_access_token.revoke!
+
+      expect(active_personal_access_token.revoked?).to be true
+    end
+  end
+
   context "validations" do
     let(:personal_access_token) { build(:personal_access_token) }
 
@@ -51,11 +61,17 @@ describe PersonalAccessToken, models: true do
       expect(personal_access_token).to be_valid
     end
 
-    it "rejects creating a token with non-API scopes" do
+    it "allows creating a token with read_registry scope" do
+      personal_access_token.scopes = [:read_registry]
+
+      expect(personal_access_token).to be_valid
+    end
+
+    it "rejects creating a token with unavailable scopes" do
       personal_access_token.scopes = [:openid, :api]
 
       expect(personal_access_token).not_to be_valid
-      expect(personal_access_token.errors[:scopes].first).to eq "can only contain API scopes"
+      expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
     end
   end
 end

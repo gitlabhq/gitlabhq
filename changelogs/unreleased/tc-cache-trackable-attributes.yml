@@ -1,0 +1,4 @@
+---
+title: "Limit User's trackable attributes, like `current_sign_in_at`, to update at most once/hour"
+merge_request: 11053
+author:

@@ -1,0 +1,4 @@
+---
+title: Print Go version in rake gitlab:env:info
+merge_request: 11241
+author:

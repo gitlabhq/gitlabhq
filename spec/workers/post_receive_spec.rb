@@ -4,13 +4,16 @@ describe PostReceive do
   let(:changes) { "123456 789012 refs/heads/tést\n654321 210987 refs/tags/tag" }
   let(:wrongly_encoded_changes) { changes.encode("ISO-8859-1").force_encoding("UTF-8") }
   let(:base64_changes) { Base64.encode64(wrongly_encoded_changes) }
-  let(:project) { create(:project, :repository) }
   let(:project_identifier) { "project-#{project.id}" }
   let(:key) { create(:key, user: project.owner) }
   let(:key_id) { key.shell_id }
 
-  context "as a resque worker" do
-    it "reponds to #perform" do
+  let(:project) do
+    create(:project, :repository, auto_cancel_pending_pipelines: 'disabled')
+  end
+
+  context "as a sidekiq worker" do
+    it "responds to #perform" do
       expect(described_class.new).to respond_to(:perform)
     end
   end
@@ -90,6 +93,27 @@ describe PostReceive do
 
         it { expect{ subject }.not_to change{ Ci::Pipeline.count } }
       end
+    end
+  end
+
+  describe '#process_repository_update' do
+    let(:changes) {'123456 789012 refs/heads/tést'}
+    let(:fake_hook_data) do
+      { event_name: 'repository_update' }
+    end
+
+    before do
+      allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
+      allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
+      # silence hooks so we can isolate
+      allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
+      allow(subject).to receive(:process_project_changes).and_return(true)
+    end
+
+    it 'calls SystemHooksService' do
+      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(fake_hook_data, :repository_update_hooks).and_return(true)
+
+      subject.perform(pwd(project), key_id, base64_changes)
     end
   end
 

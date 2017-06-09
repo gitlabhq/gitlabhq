@@ -21,7 +21,7 @@ class UpdateRetriedForCiBuild < ActiveRecord::Migration
   private
 
   def up_mysql
-    # This is a trick to overcome MySQL limitation:
+    # This is a trick to overcome MySQL limitation: 
     # Mysql2::Error: Table 'ci_builds' is specified twice, both as a target for 'UPDATE' and as a separate source for data
     # However, this leads to create a temporary table from `max(ci_builds.id)` which is slow and do full database update
     execute <<-SQL.strip_heredoc

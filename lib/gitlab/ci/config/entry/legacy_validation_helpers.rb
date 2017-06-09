@@ -21,7 +21,13 @@ module Gitlab
 
           def validate_variables(variables)
             variables.is_a?(Hash) &&
-              variables.all? { |key, value| validate_string(key) && validate_string(value) }
+              variables.flatten.all? do |value|
+                validate_string(value) || validate_integer(value)
+              end
+          end
+
+          def validate_integer(value)
+            value.is_a?(Integer)
           end
 
           def validate_string(value)

@@ -98,16 +98,18 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
   end
 
   def change_status(text)
-    find('#check_all_issues').click
+    click_button 'Edit Merge Requests'
+    find('#check-all-issues').click
     find('.js-issue-status').click
     find('.dropdown-menu-status a', text: text).click
     click_update_merge_requests_button
   end
 
   def change_assignee(text)
-    find('#check_all_issues').click
+    click_button 'Edit Merge Requests'
+    find('#check-all-issues').click
     find('.js-update-assignee').click
-    wait_for_ajax
+    wait_for_requests
 
     page.within '.dropdown-menu-user' do
       click_link text
@@ -117,14 +119,15 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
   end
 
   def change_milestone(text)
-    find('#check_all_issues').click
-    find('.issues_bulk_update .js-milestone-select').click
+    click_button 'Edit Merge Requests'
+    find('#check-all-issues').click
+    find('.issues-bulk-update .js-milestone-select').click
     find('.dropdown-menu-milestone a', text: text).click
     click_update_merge_requests_button
   end
 
   def click_update_merge_requests_button
-    find('.update_selected_issues').click
-    wait_for_ajax
+    find('.update-selected-issues').click
+    wait_for_requests
   end
 end

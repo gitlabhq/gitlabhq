@@ -17,12 +17,14 @@ class ProcessCommitWorker
     project = Project.find_by(id: project_id)
 
     return unless project
+    return if commit_exists_in_upstream?(project, commit_hash)
 
     user = User.find_by(id: user_id)
 
     return unless user
 
     commit = build_commit(project, commit_hash)
+
     author = commit.author || user
 
     process_commit_message(project, commit, user, author, default)
@@ -72,5 +74,17 @@ class ProcessCommitWorker
     end
 
     Commit.from_hash(hash, project)
+  end
+
+  private
+
+  # Avoid reprocessing commits that already exist in the upstream
+  # when project is forked. This will also prevent duplicated system notes.
+  def commit_exists_in_upstream?(project, commit_hash)
+    return false unless project.forked?
+
+    upstream_project = project.forked_from_project
+    commit_id = commit_hash.with_indifferent_access[:id]
+    upstream_project.commit(commit_id).present?
   end
 end

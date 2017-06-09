@@ -1,6 +1,10 @@
 FactoryGirl.define do
   factory :project_statistics do
-    project { create :project }
-    namespace { project.namespace }
+    project
+
+    initialize_with do
+      # statistics are automatically created when a project is created
+      project&.statistics || new
+    end
   end
 end

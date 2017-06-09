@@ -1,5 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
-/* global Api */
+import Api from './api';
 
 (function() {
   this.ProjectSelect = (function() {
@@ -51,6 +51,9 @@
         this.groupId = $(select).data('group-id');
         this.includeGroups = $(select).data('include-groups');
         this.orderBy = $(select).data('order-by') || 'id';
+        this.withIssuesEnabled = $(select).data('with-issues-enabled');
+        this.withMergeRequestsEnabled = $(select).data('with-merge-requests-enabled');
+
         placeholder = "Search for project";
         if (this.includeGroups) {
           placeholder += " or group";
@@ -84,7 +87,11 @@
               if (_this.groupId) {
                 return Api.groupProjects(_this.groupId, query.term, projectsCallback);
               } else {
-                return Api.projects(query.term, { order_by: _this.orderBy }, projectsCallback);
+                return Api.projects(query.term, {
+                  order_by: _this.orderBy,
+                  with_issues_enabled: _this.withIssuesEnabled,
+                  with_merge_requests_enabled: _this.withMergeRequestsEnabled
+                }, projectsCallback);
               }
             };
           })(this),

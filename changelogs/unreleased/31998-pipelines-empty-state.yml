@@ -1,0 +1,4 @@
+---
+title: Fix Pipelines table empty state - only render empty state if we receive 0 pipelines
+merge_request:
+author:

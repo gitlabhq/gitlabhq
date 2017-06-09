@@ -54,7 +54,7 @@ You can use other versions of Scala and SBT by defining them in
 ## Display test coverage in job
 
 Add the `Coverage was \[\d+.\d+\%\]` regular expression in the
-**Settings ➔ CI/CD Pipelines ➔ Coverage report** project setting to
+**Settings ➔ Pipelines ➔ Coverage report** project setting to
 retrieve the [test coverage] rate from the build trace and have it
 displayed with your jobs.
 
