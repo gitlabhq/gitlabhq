@@ -168,6 +168,36 @@ describe Gitlab::LDAP::Config, lib: true do
         expect(config.adapter_options[:encryption][:tls_options]).not_to have_key(:ca_file)
       end
     end
+
+    context 'when ssl_version is specified' do
+      it 'passes it through in tls_options' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'ssl_version'         => 'TLSv1_2'
+          }
+        )
+
+        expect(config.adapter_options[:encryption][:tls_options]).to include({ ssl_version: 'TLSv1_2' })
+      end
+    end
+
+    context 'when ssl_version is a blank string' do
+      it 'does not add the ssl_version key to tls_options' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'ssl_version'         => ' '
+          }
+        )
+
+        expect(config.adapter_options[:encryption][:tls_options]).not_to have_key(:ssl_version)
+      end
+    end
   end
 
   describe '#omniauth_options' do
