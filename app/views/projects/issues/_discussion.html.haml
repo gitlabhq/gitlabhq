@@ -8,5 +8,5 @@
     = webpack_bundle_tag 'common_vue'
     = webpack_bundle_tag 'notes'
 
-#notes
+#notes{ data: { discussions_path: discussions_namespace_project_issue_path(@project.namespace, @project, @issue, format: :json) } }
   = render 'shared/notes/notes_with_form', :autocomplete => true
