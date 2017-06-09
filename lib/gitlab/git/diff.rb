@@ -16,9 +16,7 @@ module Gitlab
       alias_method :renamed_file?, :renamed_file
 
       attr_accessor :expanded
-
-      # We need this accessor because of `to_hash` and `init_from_hash`
-      attr_accessor :too_large
+      attr_writer :too_large
 
       class << self
         # The maximum size of a diff to display.
@@ -264,6 +262,7 @@ module Gitlab
           @too_large
         end
       end
+      alias_method :too_large, :too_large?
 
       def too_large!
         @diff = ''
