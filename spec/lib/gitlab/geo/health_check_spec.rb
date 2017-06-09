@@ -10,6 +10,20 @@ describe Gitlab::Geo::HealthCheck do
       skip("Not using PostgreSQL") unless Gitlab::Database.postgresql?
     end
 
+    it 'returns a string if database is not fully migrated' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+      allow(Gitlab::Geo).to receive(:secondary_role_enabled?).and_return(true)
+      allow(described_class).to receive(:geo_database_configured?).and_return(true)
+      allow(described_class).to receive(:database_secondary?).and_return(true)
+      allow(described_class).to receive(:get_database_version).and_return('20170101')
+      allow(described_class).to receive(:get_migration_version).and_return('20170201')
+
+      message = subject.perform_checks
+
+      expect(message).to include('Current Geo database version (20170101) does not match latest migration (20170201)')
+      expect(message).to include('gitlab-rake geo:db:migrate')
+    end
+
     it 'returns an empty string when not running on a secondary node' do
       allow(Gitlab::Geo).to receive(:secondary?) { false }
 
