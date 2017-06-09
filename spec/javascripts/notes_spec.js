@@ -622,22 +622,6 @@ import '~/notes';
 
       beforeEach(() => {
         this.notes = new Notes('', []);
-        spyOn(_, 'escape').and.callFake((comment) => {
-          const escapedString = comment.replace(/["&'<>]/g, (a) => {
-            const escapedToken = {
-              '&': '&amp;',
-              '<': '&lt;',
-              '>': '&gt;',
-              '"': '&quot;',
-              "'": '&#x27;',
-              '`': '&#x60;'
-            }[a];
-
-            return escapedToken;
-          });
-
-          return escapedString;
-        });
       });
 
       it('should return constructed placeholder element for regular note based on form contents', () => {

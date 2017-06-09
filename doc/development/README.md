@@ -58,10 +58,6 @@
 
 - [Internationalization for GitLab](i18n_guide.md)
 
-## i18n
-
-- [Internationalization for GitLab](i18n_guide.md)
-
 ## Compliance
 
 - [Licensing](licensing.md) for ensuring license compliance

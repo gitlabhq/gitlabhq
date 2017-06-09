@@ -62,13 +62,5 @@ module Gitlab
       "can contain only lowercase letters, digits, and '-'. " \
       "Must start with a letter, and cannot end with '-'"
     end
-
-    private
-
-    def single_line_regexp(regex)
-      # Turns a multiline extended regexp into a single line one,
-      # beacuse `rake routes` breaks on multiline regexes.
-      Regexp.new(regex.source.gsub(/\(\?#.+?\)/, '').gsub(/\s*/, ''), regex.options ^ Regexp::EXTENDED).freeze
-    end
   end
 end

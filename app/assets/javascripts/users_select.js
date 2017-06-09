@@ -566,8 +566,6 @@ function UsersSelect(currentUser, els) {
                     break;
                   }
                 }
-              } else {
-                selected = user.id === selectedId;
               }
               if (showNullUser) {
                 nullUser = {
