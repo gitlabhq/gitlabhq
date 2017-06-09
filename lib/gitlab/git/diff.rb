@@ -23,6 +23,23 @@ module Gitlab
       class << self
         # The maximum size of a diff to display.
         def size_limit
+          if RequestStore.active?
+            RequestStore['gitlab_git_diff_size_limit'] ||= find_size_limit
+          else
+            find_size_limit
+          end
+        end
+
+        # The maximum size before a diff is collapsed.
+        def collapse_limit
+          if RequestStore.active?
+            RequestStore['gitlab_git_diff_collapse_limit'] ||= find_collapse_limit
+          else
+            find_collapse_limit
+          end
+        end
+
+        def find_size_limit
           if Feature.enabled?('gitlab_git_diff_size_limit_increase')
             200.kilobytes
           else
@@ -30,8 +47,7 @@ module Gitlab
           end
         end
 
-        # The maximum size before a diff is collapsed.
-        def collapse_limit
+        def find_collapse_limit
           if Feature.enabled?('gitlab_git_diff_size_limit_increase')
             100.kilobytes
           else
