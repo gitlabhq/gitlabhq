@@ -13,7 +13,6 @@ describe JiraService, models: true do
       before { subject.active = true }
 
       it { is_expected.to validate_presence_of(:url) }
-      it { is_expected.to validate_presence_of(:project_key) }
       it_behaves_like 'issue tracker service URL attribute', :url
     end
 
@@ -30,7 +29,6 @@ describe JiraService, models: true do
           active: true,
           username: 'username',
           password: 'test',
-          project_key: 'TEST',
           jira_issue_transition_id: 24,
           url: 'http://jira.test.com'
         )
@@ -84,7 +82,6 @@ describe JiraService, models: true do
         url: 'http://jira.example.com',
         username: 'gitlab_jira_username',
         password: 'gitlab_jira_password',
-        project_key: 'GitLabProject',
         jira_issue_transition_id: "custom-id"
       )
 
@@ -192,15 +189,14 @@ describe JiraService, models: true do
         project: create(:project),
         url: 'http://jira.example.com',
         username: 'jira_username',
-        password: 'jira_password',
-        project_key: 'GitLabProject'
+        password: 'jira_password'
       )
     end
 
     def test_settings(api_url)
-      project_url = "http://jira_username:jira_password@#{api_url}/rest/api/2/project/GitLabProject"
+      project_url = "http://jira_username:jira_password@#{api_url}/rest/api/2/project"
 
-      WebMock.stub_request(:get, project_url)
+      WebMock.stub_request(:get, project_url).to_return(body: ['project'].to_json )
 
       jira_service.test_settings
     end
@@ -380,6 +376,18 @@ describe JiraService, models: true do
         expect(@service.properties['url']).to eq('http://jira.sample/projects/project_a')
         expect(@service.properties['api_url']).to eq('http://jira.sample/api')
       end
+    end
+  end
+
+  describe '#project_url' do
+    it 'returns url to all JIRA issues' do
+      service = described_class.new(
+        properties: {
+          url: 'http://jira.example.com'
+        }
+      )
+
+      expect(service.project_url).to eq('http://jira.example.com/issues')
     end
   end
 end

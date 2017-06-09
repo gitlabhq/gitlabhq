@@ -51,7 +51,7 @@ module JiraServiceHelper
   end
 
   def jira_project_url
-    JIRA_API + "/project/#{jira_tracker.project_key}"
+    JIRA_API + "/project"
   end
 
   def jira_api_comment_url(issue_id)

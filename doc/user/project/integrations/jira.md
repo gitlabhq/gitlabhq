@@ -99,10 +99,10 @@ in the table below.
 | ----- | ----------- |
 | `Web URL` | The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
 | `JIRA API URL` | The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., `https://jira-api.example.com`. |
-| `Project key` | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
+| `Project key` | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. (optional) - this key is used for redirecting to the correct project from issues tracker. |
 | `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
-| `JIRA issue transition` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
+| `Transition ID` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 
 After saving the configuration, your GitLab project will be able to interact
 with the linked JIRA project.
