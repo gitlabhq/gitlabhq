@@ -1,3 +1,4 @@
+# coding: utf-8
 class Commit
   extend ActiveModel::Naming
 
@@ -138,7 +139,7 @@ class Commit
 
     safe_message.split("\n", 2)[1].try(:chomp)
   end
-  
+
   def description?
     description.present?
   end
@@ -291,7 +292,7 @@ class Commit
   end
 
   def change_type_title(user)
-    merged_merge_request?(user) ? 'merge request' : 'commit'
+    merged_merge_request?(user) ? s_('ChangeType|merge request') : s_('ChangeType|commit')
   end
 
   # Get the URI type of the given path
