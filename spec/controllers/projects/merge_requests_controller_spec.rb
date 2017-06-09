@@ -461,6 +461,12 @@ describe Projects::MergeRequestsController do
       it_behaves_like 'update invalid issuable', MergeRequest
     end
 
+    context 'when the merge request requires approval' do
+      before { project.update_attributes(approvals_before_merge: 1) }
+
+      it_behaves_like 'update invalid issuable', MergeRequest
+    end
+
     context 'the approvals_before_merge param' do
       before { project.update_attributes(approvals_before_merge: 2) }
 
