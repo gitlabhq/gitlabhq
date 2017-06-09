@@ -73,6 +73,7 @@ module Gitlab
           )
         end
 
+        opts[:ca_file] = options['ca_file'] if options['ca_file'].present?
         opts
       end
 

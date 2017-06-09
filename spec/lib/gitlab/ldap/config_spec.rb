@@ -268,6 +268,39 @@ describe Gitlab::LDAP::Config, lib: true do
         expect(config.omniauth_options).to include({ disable_verify_certificates: true })
       end
     end
+
+    context 'when ca_file is present' do
+      it 'passes it through' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true,
+            'ca_file'             => '/etc/ca.pem'
+          }
+        )
+
+        expect(config.omniauth_options).to include({ ca_file: '/etc/ca.pem' })
+      end
+    end
+
+    context 'when ca_file is blank' do
+      it 'does not include the ca_file option' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true,
+            'ca_file'             => ' '
+          }
+        )
+
+        expect(config.omniauth_options).not_to have_key(:ca_file)
+      end
+    end
+
   end
 
   describe '#has_auth?' do
