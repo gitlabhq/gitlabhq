@@ -9,6 +9,9 @@ class Issue < ActiveRecord::Base
   include Spammable
   include FasterCacheKeys
   include RelativePositioning
+  include IgnorableColumn
+
+  ignore_column :position
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze

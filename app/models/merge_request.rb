@@ -4,6 +4,9 @@ class MergeRequest < ActiveRecord::Base
   include Noteable
   include Referable
   include Sortable
+  include IgnorableColumn
+
+  ignore_column :position
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
