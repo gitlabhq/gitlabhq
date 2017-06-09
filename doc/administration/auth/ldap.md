@@ -278,6 +278,19 @@ In other words, if an existing GitLab user wants to enable LDAP sign-in for
 themselves, they should check that their GitLab email address matches their
 LDAP email address, and then sign into GitLab via their LDAP credentials.
 
+## Encryption
+
+### TLS Server Authentication
+
+There are two encryption methods, `simple_tls` and `start_tls`.
+
+For either encryption method, if setting `validate_certificates: false`, TLS
+encryption is established with the LDAP server before any LDAP-protocol data is
+exchanged but no validation of the LDAP server's SSL certificate is performed.
+
+>**Note**: Before GitLab 9.5, `validate_certificates: false` is the default if
+unspecified.
+
 ## Limitations
 
 ### TLS Client Authentication
@@ -286,14 +299,6 @@ Not implemented by `Net::LDAP`.
 You should disable anonymous LDAP authentication and enable simple or SASL
 authentication. The TLS client authentication setting in your LDAP server cannot
 be mandatory and clients cannot be authenticated with the TLS protocol.
-
-### TLS Server Authentication
-
-Not supported by GitLab's configuration options.
-When setting `method: ssl`, the underlying authentication method used by
-`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with
-the LDAP server before any LDAP-protocol data is exchanged but no validation of
-the LDAP server's SSL certificate is performed.
 
 ## Troubleshooting
 
@@ -334,9 +339,9 @@ tree and traverse it.
 ### Connection Refused
 
 If you are getting 'Connection Refused' errors when trying to connect to the
-LDAP server please double-check the LDAP `port` and `method` settings used by
-GitLab. Common combinations are `method: 'plain'` and `port: 389`, OR
-`method: 'ssl'` and `port: 636`.
+LDAP server please double-check the LDAP `port` and `encryption` settings used by
+GitLab. Common combinations are `encryption: 'plain'` and `port: 389`, OR
+`encryption: 'simple_tls'` and `port: 636`.
 
 ### Troubleshooting
 
