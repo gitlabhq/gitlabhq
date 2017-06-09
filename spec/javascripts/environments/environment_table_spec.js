@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import environmentTableComp from '~/environments/components/environments_table.vue';
+import { deployBoardMockData } from './mock_data';
 
 describe('Environment item', () => {
   let EnvironmentTable;
@@ -40,15 +41,7 @@ describe('Environment item', () => {
       id: 1,
       rollout_status_path: 'url',
       hasDeployBoard: true,
-      deployBoardData: {
-        instances: [
-          { status: 'ready', tooltip: 'foo' },
-        ],
-        abort_url: 'url',
-        rollback_url: 'url',
-        completion: 100,
-        is_completed: true,
-      },
+      deployBoardData: deployBoardMockData,
       isDeployBoardVisible: true,
     };
 
@@ -60,7 +53,9 @@ describe('Environment item', () => {
         canReadEnvironment: true,
         toggleDeployBoard: () => {},
         store: {},
-        service: {},
+        service: {
+          getDeployBoard: () => Promise.resolve(),
+        },
       },
     }).$mount();
 
@@ -100,7 +95,9 @@ describe('Environment item', () => {
         canReadEnvironment: true,
         toggleDeployBoard: spy,
         store: {},
-        service: {},
+        service: {
+          getDeployBoard: () => Promise.resolve(),
+        },
       },
     }).$mount();
 
