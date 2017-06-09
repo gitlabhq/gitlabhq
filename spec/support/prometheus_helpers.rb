@@ -13,12 +13,6 @@ module PrometheusHelpers
     "https://prometheus.example.com/api/v1/query?#{query}"
   end
 
-  def prometheus_ping_url(prometheus_query)
-    query = { query: prometheus_query }.to_query
-
-    "https://prometheus.example.com/api/v1/query?#{query}"
-  end
-
   def prometheus_query_url(prometheus_query)
     query = { query: prometheus_query }.to_query
 
