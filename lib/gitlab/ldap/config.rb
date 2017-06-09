@@ -3,10 +3,10 @@ module Gitlab
   module LDAP
     class Config
       NET_LDAP_ENCRYPTION_METHOD = {
-        :simple_tls => :simple_tls,
-        :start_tls => :start_tls,
-        :plain => nil
-      }
+        simple_tls: :simple_tls,
+        start_tls:  :start_tls,
+        plain:      nil
+      }.freeze
 
       attr_accessor :provider, :options
 
@@ -170,7 +170,7 @@ module Gitlab
       def encryption_options
         method = translate_method(options['encryption'])
         options = { method: method }
-        options.merge!(tls_options: tls_options(method)) if method
+        options[:tls_options] = tls_options(method) if method
         options
       end
 
