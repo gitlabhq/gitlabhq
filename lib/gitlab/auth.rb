@@ -37,7 +37,11 @@ module Gitlab
         rate_limit!(ip, success: result.success?, login: login)
         Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
 
-        result
+        return result if result.success? || current_application_settings.signin_enabled? || Gitlab::LDAP::Config.enabled?
+
+        # If sign-in is disabled and LDAP is not configured, recommend a
+        # personal access token on failed auth attempts
+        raise Gitlab::Auth::MissingPersonalTokenError
       end
 
       def find_with_user_password(login, password)
