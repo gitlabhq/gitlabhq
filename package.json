@@ -79,7 +79,6 @@
     "karma-coverage-istanbul-reporter": "^0.2.0",
     "karma-jasmine": "^1.1.0",
     "karma-mocha-reporter": "^2.2.2",
-    "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.2",
     "nodemon": "^1.11.0",
