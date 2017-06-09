@@ -171,6 +171,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
+    Gitlab::Recaptcha.load_configurations!
   end
 
   def self.current

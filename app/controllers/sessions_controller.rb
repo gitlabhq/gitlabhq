@@ -11,7 +11,6 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :store_redirect_path, only: [:new]
 
   before_action :auto_sign_in_with_provider, only: [:new]
-  before_action :load_recaptcha
 
   def new
     set_minimum_password_length
@@ -135,10 +134,6 @@ class SessionsController < Devise::SessionsController
   def log_user_activity(user)
     login_counter.increment
     Users::ActivityService.new(user, 'login').execute
-  end
-
-  def load_recaptcha
-    Gitlab::Recaptcha.load_configurations!
   end
 
   def authentication_method

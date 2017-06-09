@@ -35,7 +35,7 @@ module SpammableActions
     default_params = { request: request }
 
     recaptcha_check = params[:recaptcha_verification] &&
-      Gitlab::Recaptcha.load_configurations! &&
+      Gitlab::Recaptcha.enabled? &&
       verify_recaptcha
 
     return default_params unless recaptcha_check

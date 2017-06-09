@@ -13,7 +13,7 @@ class RegistrationsController < Devise::RegistrationsController
       params[resource_name] = params.delete(:"new_#{resource_name}")
     end
 
-    if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
+    if !Gitlab::Recaptcha.enabled? || verify_recaptcha
       super
     else
       flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
