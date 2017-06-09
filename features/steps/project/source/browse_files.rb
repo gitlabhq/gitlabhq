@@ -89,10 +89,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the new branch name' do
-    first('button.js-target-branch', visible: true).click
-    find('.create-new-branch', visible: true).click
-    find('#new_branch_name', visible: true).set('new_branch_name')
-    find('.js-new-branch-btn', visible: true).click
+    fill_in :branch_name, with: 'new_branch_name', visible: true
   end
 
   step 'I fill the new file name with an illegal name' do
