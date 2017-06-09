@@ -1,8 +1,10 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
+import IssueNotes from './components/issue_notes.vue';
 
-Vue.use(Vuex);
-
-document.addEventListener('DOMContentLoaded', () => {
-  // instantiate Vue here...
-});
+document.addEventListener('DOMContentLoaded', () => new Vue({
+  el: '#js-notes',
+  components: { IssueNotes },
+  template: `
+    <issue-notes />
+  `,
+}));
