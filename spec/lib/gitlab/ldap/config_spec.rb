@@ -301,6 +301,37 @@ describe Gitlab::LDAP::Config, lib: true do
       end
     end
 
+    context 'when ssl_version is present' do
+      it 'passes it through' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true,
+            'ssl_version'         => 'TLSv1_2'
+          }
+        )
+
+        expect(config.omniauth_options).to include({ ssl_version: 'TLSv1_2' })
+      end
+    end
+
+    context 'when ssl_version is blank' do
+      it 'does not include the ssl_version option' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true,
+            'ssl_version'         => ' '
+          }
+        )
+
+        expect(config.omniauth_options).not_to have_key(:ssl_version)
+      end
+    end
   end
 
   describe '#has_auth?' do

@@ -74,6 +74,8 @@ module Gitlab
         end
 
         opts[:ca_file] = options['ca_file'] if options['ca_file'].present?
+        opts[:ssl_version] = options['ssl_version'] if options['ssl_version'].present?
+
         opts
       end
 
