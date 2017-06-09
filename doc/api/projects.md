@@ -415,6 +415,8 @@ Parameters:
 
 Forks a project into the user namespace of the authenticated user or the one provided.
 
+The forking operation for a project is asynchronous and is completed in a background job. The request will return immediately. To determine whether the fork of the project has completed, query the `import_status` for the new project.
+
 ```
 POST /projects/:id/fork
 ```

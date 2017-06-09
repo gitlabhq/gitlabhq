@@ -80,7 +80,7 @@ window.Build = (function () {
     this.$scrollContainer.niceScroll({
       cursorcolor: '#fff',
       cursoropacitymin: 1,
-      cursorwidth: '3px',
+      cursorwidth: '7px',
       railpadding: { top: 5, bottom: 5, right: 5 },
     });
 
@@ -238,7 +238,7 @@ window.Build = (function () {
   };
 
   Build.prototype.toggleSidebar = function (shouldHide) {
-    const shouldShow = !shouldHide;
+    const shouldShow = typeof shouldHide === 'boolean' ? !shouldHide : undefined;
 
     this.$buildTrace
       .toggleClass('sidebar-expanded', shouldShow)

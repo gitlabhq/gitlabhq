@@ -52,7 +52,7 @@ module BlobViewer
     def self.can_render?(blob, verify_binary: true)
       return false if verify_binary && binary? != blob.binary?
       return true if extensions&.include?(blob.extension)
-      return true if file_types&.include?(Gitlab::FileDetector.type_of(blob.path))
+      return true if file_types&.include?(blob.file_type)
 
       false
     end

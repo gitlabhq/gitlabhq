@@ -59,13 +59,13 @@ describe ApplicationHelper do
   describe 'project_icon' do
     it 'returns an url for the avatar' do
       project = create(:empty_project, avatar: File.open(uploaded_image_temp_path))
-      avatar_url = "/uploads/project/avatar/#{project.id}/banana_sample.gif"
+      avatar_url = "/uploads/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s).
         to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
 
       allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-      avatar_url = "#{gitlab_host}/uploads/project/avatar/#{project.id}/banana_sample.gif"
+      avatar_url = "#{gitlab_host}/uploads/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s).
         to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
@@ -85,12 +85,12 @@ describe ApplicationHelper do
     it 'returns an url for the avatar' do
       user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
-      avatar_url = "/uploads/user/avatar/#{user.id}/banana_sample.gif"
+      avatar_url = "/uploads/system/user/avatar/#{user.id}/banana_sample.gif"
 
       expect(helper.avatar_icon(user.email).to_s).to match(avatar_url)
 
       allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-      avatar_url = "#{gitlab_host}/uploads/user/avatar/#{user.id}/banana_sample.gif"
+      avatar_url = "#{gitlab_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif"
 
       expect(helper.avatar_icon(user.email).to_s).to match(avatar_url)
     end

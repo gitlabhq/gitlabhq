@@ -167,8 +167,8 @@
       if the name does not exist this function will return `null`
       otherwise it will return the value of the param key provided
     */
-    w.gl.utils.getParameterByName = (name) => {
-      const url = window.location.href;
+    w.gl.utils.getParameterByName = (name, parseUrl) => {
+      const url = parseUrl || window.location.href;
       name = name.replace(/[[\]]/g, '\\$&');
       const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
       const results = regex.exec(url);

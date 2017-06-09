@@ -94,6 +94,10 @@ class Blob < SimpleDelegator
     end
   end
 
+  def load_all_data!
+    super(project.repository) if project
+  end
+
   def no_highlighting?
     raw_size && raw_size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
   end
@@ -151,6 +155,10 @@ class Blob < SimpleDelegator
     @extension ||= extname.downcase.delete('.')
   end
 
+  def file_type
+    Gitlab::FileDetector.type_of(path)
+  end
+
   def video?
     UploaderHelper::VIDEO_EXT.include?(extension)
   end
@@ -176,7 +184,7 @@ class Blob < SimpleDelegator
   end
 
   def rendered_as_text?(ignore_errors: true)
-    simple_viewer.text? && (ignore_errors || simple_viewer.render_error.nil?)
+    simple_viewer.is_a?(BlobViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
   end
 
   def show_viewer_switcher?
