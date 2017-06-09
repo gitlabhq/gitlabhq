@@ -267,32 +267,6 @@ feature 'Merge request approvals', js: true, feature: true do
         expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
       end
     end
-
-    context 'when rebase is needed but no approval given', js: true do
-      let(:project) do
-        create(:project,
-          approvals_before_merge: 1,
-          merge_requests_rebase_enabled: true,
-          merge_requests_ff_only_enabled: true )
-      end
-
-      let(:merge_request) { create(:merge_request, source_project: project) }
-
-      before do
-        create :approver_group, group: group, target: merge_request
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
-      end
-
-      it 'I am unable to rebase the merge request' do
-        # before approval status is loaded
-        expect(page).to have_button("Rebase", disabled: true)
-
-        wait_for_requests
-
-        # after approval status is loaded
-        expect(page).to have_button("Rebase", disabled: true)
-      end
-    end
   end
 
   context 'when merge when discussions resolved is active', :js do
