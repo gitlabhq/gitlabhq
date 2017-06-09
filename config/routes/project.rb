@@ -308,6 +308,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :can_create_branch
           get :realtime_changes
           post :create_merge_request
+          get :discussions, format: :json
         end
         collection do
           post  :bulk_update

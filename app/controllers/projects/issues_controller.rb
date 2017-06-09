@@ -97,6 +97,14 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
+  def discussions
+    @discussions = @issue.discussions
+    @discussions.reject! { |d| d.individual_note? && d.first_note.cross_reference_not_visible_for?(current_user) }
+    prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+
+    render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(@discussions)
+  end
+
   def create
     create_params = issue_params.merge(spammable_params).merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],

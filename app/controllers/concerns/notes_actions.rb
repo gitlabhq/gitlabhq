@@ -11,14 +11,16 @@ module NotesActions
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
-    @notes = notes_finder.execute.inc_relations_for_view
+    @notes = notes_finder.execute.inc_relations_for_view.to_a
+    @notes.reject! { |n| n.cross_reference_not_visible_for?(current_user) }
     @notes = prepare_notes_for_rendering(@notes)
 
-    @notes.each do |note|
-      next if note.cross_reference_not_visible_for?(current_user)
-
-      notes_json[:notes] << note_json(note)
-    end
+    notes_json[:notes] =
+      if params[:full_data]
+        note_serializer.represent(@notes)
+      else
+        @notes.map { |note| note_json(note) }
+      end
 
     render json: notes_json
   end
@@ -80,22 +82,27 @@ module NotesActions
     }
 
     if note.persisted?
-      attrs.merge!(
-        valid: true,
-        id: note.id,
-        discussion_id: note.discussion_id(noteable),
-        html: note_html(note),
-        note: note.note
-      )
+      attrs[:valid] = true
 
-      discussion = note.to_discussion(noteable)
-      unless discussion.individual_note?
+      if params[:full_data]
+        attrs.merge!(note_serializer.represent(note))
+      else
         attrs.merge!(
-          discussion_resolvable: discussion.resolvable?,
-
-          diff_discussion_html: diff_discussion_html(discussion),
-          discussion_html: discussion_html(discussion)
+          id: note.id,
+          discussion_id: note.discussion_id(noteable),
+          html: note_html(note),
+          note: note.note
         )
+
+        discussion = note.to_discussion(noteable)
+        unless discussion.individual_note?
+          attrs.merge!(
+            discussion_resolvable: discussion.resolvable?,
+
+            diff_discussion_html: diff_discussion_html(discussion),
+            discussion_html: discussion_html(discussion)
+          )
+        end
       end
     else
       attrs.merge!(
@@ -176,5 +183,9 @@ module NotesActions
 
   def notes_finder
     @notes_finder ||= NotesFinder.new(project, current_user, finder_params)
+  end
+
+  def note_serializer
+    NoteSerializer.new(project: project, noteable: noteable, current_user: current_user)
   end
 end

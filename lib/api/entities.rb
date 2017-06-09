@@ -1,11 +1,11 @@
 module API
   module Entities
     class UserSafe < Grape::Entity
-      expose :name, :username
+      expose :id, :name, :username
     end
 
     class UserBasic < UserSafe
-      expose :id, :state
+      expose :state
       expose :avatar_url do |user, options|
         user.avatar_url(only_path: false)
       end

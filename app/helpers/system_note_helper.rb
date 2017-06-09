@@ -21,8 +21,14 @@ module SystemNoteHelper
     'outdated' => 'icon_edit'
   }.freeze
 
+  def system_note_icon_name(note)
+    ICON_NAMES_BY_ACTION[note.system_note_metadata&.action]
+  end
+
   def icon_for_system_note(note)
-    icon_name = ICON_NAMES_BY_ACTION[note.system_note_metadata&.action]
+    icon_name = system_note_icon_name(note)
     custom_icon(icon_name) if icon_name
   end
+
+  extend self
 end
