@@ -37,18 +37,19 @@ module Gitlab
 
         def query_with_result(query)
           query[:result]&.any? do |item|
-            item&.[]('values')&.any? || item&.[]('value')&.any?
+            item&.[](:values)&.any? || item&.[](:value)&.any?
           end
         end
 
         def process_query(context, query)
           query_with_result = query.dup
-          query_with_result[:result] =
+          result =
             if query.key?(:query_range)
               client_query_range(query[:query_range] % context, start: context[:timeframe_start], stop: context[:timeframe_end])
             else
               client_query(query[:query] % context, time: context[:timeframe_end])
             end
+          query_with_result[:result] = result&.map(&:deep_symbolize_keys)
           query_with_result
         end
 

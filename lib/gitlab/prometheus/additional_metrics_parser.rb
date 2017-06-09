@@ -14,22 +14,29 @@ module Gitlab
       end
 
       def metric_from_entry(entry)
-        missing_fields = [:title, :required_metrics, :weight, :queries].select { |key| !entry.key?(key) }
+        required_fields = [:title, :required_metrics, :weight, :queries]
+        missing_fields = required_fields.select { |key| entry[key].nil? }
         raise ParsingError.new("entry missing required fields #{missing_fields}") unless missing_fields.empty?
 
         Metric.new(entry[:title], entry[:required_metrics], entry[:weight], entry[:y_label], entry[:queries])
       end
 
       def group_from_entry(entry)
-        missing_fields = [:group, :priority, :metrics].select { |key| !entry.key?(key) }
-        raise ParsingError.new("entry missing required fields #{missing_fields}") unless missing_fields.empty?
+        required_fields = [:group, :priority, :metrics]
+        missing_fields = required_fields.select { |key| entry[key].nil? }
+
+        raise ParsingError.new("entry missing required fields #{missing_fields.map(&:to_s)}") unless missing_fields.empty?
 
         group = MetricGroup.new(entry[:group], entry[:priority])
         group.tap { |g| g.metrics = metrics_from_list(entry[:metrics]) }
       end
 
       def additional_metrics_raw
-        @additional_metrics_raw ||= YAML.load_file(Rails.root.join('config/additional_metrics.yml'))&.map(&:deep_symbolize_keys).freeze
+        @additional_metrics_raw ||= load_yaml_file&.map(&:deep_symbolize_keys).freeze
+      end
+
+      def load_yaml_file
+        YAML.load_file(Rails.root.join('config/additional_metrics.yml'))
       end
     end
   end
