@@ -23,6 +23,7 @@ describe DynamicPathValidator do
     it 'handles invalid utf8' do
       expect(described_class.valid_project_path?("a\0weird\255path")).to be_falsey
     end
+  end
 
   describe '#path_valid_for_record?' do
     context 'for project' do
