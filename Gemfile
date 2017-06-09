@@ -18,7 +18,7 @@ gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.25.1.1'
 
-gem 'faraday', '~> 0.11.0'
+gem 'faraday', '~> 0.12'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
@@ -359,7 +359,7 @@ gem 'html2text'
 gem 'ruby-prof', '~> 0.16.2'
 
 # OAuth
-gem 'oauth2', '~> 1.3.0'
+gem 'oauth2', '~> 1.4'
 
 # Soft deletion
 gem 'paranoia', '~> 2.2'
