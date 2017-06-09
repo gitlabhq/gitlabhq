@@ -85,8 +85,8 @@ describe 'Filter issues weight', js: true, feature: true do
       expect_filtered_search_input('bug')
     end
 
-    it 'filters issues by searched weight, author, assignee, label, milestone and text' do
-      search = "weight:2 author:@root assignee:@root label:~urgent milestone:%version1 bug"
+    it 'filters issues by searched weight, milestone and text' do
+      search = "weight:2 milestone:%version1 bug"
       input_filtered_search(search)
 
       expect_issues_list_count(1)
