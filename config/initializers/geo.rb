@@ -6,9 +6,10 @@ if File.exist?(Rails.root.join('config/database_geo.yml')) &&
 end
 
 begin
-  if Gitlab::Geo.primary?
+  # Avoid using the database if this is run in a Rake task
+  if Gitlab::Geo.primary_role_enabled?
     Gitlab::Geo.current_node.update_clone_url!
   end
-rescue
-  warn 'WARNING: Unable to check/update clone_url_prefix for Geo'
+rescue => e
+  warn "WARNING: Unable to check/update clone_url_prefix for Geo: #{e}"
 end
