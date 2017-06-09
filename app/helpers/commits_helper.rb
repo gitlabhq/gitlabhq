@@ -85,20 +85,20 @@ module CommitsHelper
 
     if @path.blank?
       return link_to(
-        "Browse Files",
+        _("Browse Files"),
         namespace_project_tree_path(project.namespace, project, commit),
         class: "btn btn-default"
       )
     elsif @repo.blob_at(commit.id, @path)
       return link_to(
-        "Browse File",
+        _("Browse File"),
         namespace_project_blob_path(project.namespace, project,
                                     tree_join(commit.id, @path)),
         class: "btn btn-default"
       )
     elsif @path.present?
       return link_to(
-        "Browse Directory",
+        _("Browse Directory"),
         namespace_project_tree_path(project.namespace, project,
                                     tree_join(commit.id, @path)),
         class: "btn btn-default"
