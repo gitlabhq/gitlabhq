@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GeoNodeStatusEntity do
+describe GeoNodeStatusEntity, :postgresql do
   let(:geo_node_status) do
     GeoNodeStatus.new(
       id: 1,
