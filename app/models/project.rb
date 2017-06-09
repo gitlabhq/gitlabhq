@@ -170,7 +170,7 @@ class Project < ActiveRecord::Base
   has_many :audit_events, as: :entity, dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source
 
-  has_one :import_data, dependent: :delete, class_name: 'ProjectImportData'
+  has_one :import_data, dependent: :delete, class_name: "ProjectImportData"
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
   has_many :container_repositories, dependent: :destroy
@@ -346,6 +346,10 @@ class Project < ActiveRecord::Base
       transition [:scheduled, :started] => :failed
     end
 
+    event :import_retry do
+      transition failed: :started
+    end
+
     state :scheduled
     state :started
     state :finished
@@ -406,6 +410,8 @@ class Project < ActiveRecord::Base
     after_transition [:finished, :failed] => [:scheduled, :started] do |project, _|
       Gitlab::Mirror.increment_capacity(project.id) if project.mirror?
     end
+
+    after_transition started: :finished, do: :reset_cache_and_import_attrs
   end
 
   class << self
@@ -1483,6 +1489,7 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: path_with_namespace.parameterize, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]

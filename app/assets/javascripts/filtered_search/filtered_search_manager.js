@@ -109,11 +109,9 @@ class FilteredSearchManager {
     this.filteredSearchInput.addEventListener('click', this.tokenChange);
     this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
     this.filteredSearchInput.addEventListener('focus', this.addInputContainerFocusWrapper);
-    this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
     this.tokensContainer.addEventListener('click', this.removeTokenWrapper);
-    this.tokensContainer.addEventListener('dblclick', this.editTokenWrapper);
+    this.tokensContainer.addEventListener('click', this.editTokenWrapper);
     this.clearSearchButton.addEventListener('click', this.onClearSearchWrapper);
-    document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
     document.addEventListener('click', this.unselectEditTokensWrapper);
     document.addEventListener('click', this.removeInputContainerFocusWrapper);
     document.addEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
@@ -131,11 +129,9 @@ class FilteredSearchManager {
     this.filteredSearchInput.removeEventListener('click', this.tokenChange);
     this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
     this.filteredSearchInput.removeEventListener('focus', this.addInputContainerFocusWrapper);
-    this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
     this.tokensContainer.removeEventListener('click', this.removeTokenWrapper);
-    this.tokensContainer.removeEventListener('dblclick', this.editTokenWrapper);
+    this.tokensContainer.removeEventListener('click', this.editTokenWrapper);
     this.clearSearchButton.removeEventListener('click', this.onClearSearchWrapper);
-    document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
     document.removeEventListener('click', this.unselectEditTokensWrapper);
     document.removeEventListener('click', this.removeInputContainerFocusWrapper);
     document.removeEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
@@ -211,23 +207,13 @@ class FilteredSearchManager {
     }
   }
 
-  static selectToken(e) {
-    const button = e.target.closest('.selectable');
-    const removeButtonSelected = e.target.closest('.remove-token');
-
-    if (!removeButtonSelected && button) {
-      e.preventDefault();
-      e.stopPropagation();
-      gl.FilteredSearchVisualTokens.selectToken(button);
-    }
-  }
-
   removeToken(e) {
     const removeButtonSelected = e.target.closest('.remove-token');
 
     if (removeButtonSelected) {
       e.preventDefault();
-      e.stopPropagation();
+      // Prevent editToken from being triggered after token is removed
+      e.stopImmediatePropagation();
 
       const button = e.target.closest('.selectable');
       gl.FilteredSearchVisualTokens.selectToken(button, true);
@@ -249,10 +235,12 @@ class FilteredSearchManager {
 
   editToken(e) {
     const token = e.target.closest('.js-visual-token');
-    const sanitizedTokenName = token.querySelector('.name').textContent.trim();
+    const sanitizedTokenName = token && token.querySelector('.name').textContent.trim();
     const canEdit = this.canEdit && this.canEdit(sanitizedTokenName);
 
     if (token && canEdit) {
+      e.preventDefault();
+      e.stopPropagation();
       gl.FilteredSearchVisualTokens.editToken(token);
       this.tokenChange();
     }

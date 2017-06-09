@@ -258,6 +258,25 @@ describe API::Files do
       expect(last_commit.author_name).to eq(user.name)
     end
 
+    it "returns a 400 bad request if update existing file with stale last commit id" do
+      params_with_stale_id = valid_params.merge(last_commit_id: 'stale')
+
+      put api(route(file_path), user), params_with_stale_id
+
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq('You are attempting to update a file that has changed since you started editing it.')
+    end
+
+    it "updates existing file in project repo with accepts correct last commit id" do
+      last_commit = Gitlab::Git::Commit
+                        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+      params_with_correct_id = valid_params.merge(last_commit_id: last_commit.id)
+
+      put api(route(file_path), user), params_with_correct_id
+
+      expect(response).to have_http_status(200)
+    end
+
     it "returns a 400 bad request if no params given" do
       put api(route(file_path), user)
 

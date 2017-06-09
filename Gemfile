@@ -278,6 +278,9 @@ group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
   gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
+
+  # Prometheus
+  gem 'prometheus-client-mmap', '~>0.7.0.beta5'
 end
 
 group :development do
@@ -378,7 +381,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.7.0'
+gem 'gitaly', '~> 0.8.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

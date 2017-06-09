@@ -2,6 +2,7 @@ import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
 import { glEmojiTag } from '~/behaviors/gl_emoji';
 import glRegexp from '~/lib/utils/regexp';
+import AjaxCache from '~/lib/utils/ajax_cache';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
@@ -35,6 +36,7 @@ class GfmAutoComplete {
       // This triggers at.js again
       // Needed for slash commands with suffixes (ex: /label ~)
       $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
+      $input.on('clear-commands-cache.atwho', () => this.clearCache());
     });
   }
 
@@ -375,11 +377,14 @@ class GfmAutoComplete {
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
       this.loadData($input, at, Object.keys(emojiMap).concat(Object.keys(emojiAliases)));
     } else {
-      $.getJSON(this.dataSources[GfmAutoComplete.atTypeMap[at]], (data) => {
-        this.loadData($input, at, data);
-      }).fail(() => { this.isLoadingData[at] = false; });
+      AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
+        .then((data) => {
+          this.loadData($input, at, data);
+        })
+        .catch(() => { this.isLoadingData[at] = false; });
     }
   }
+
   loadData($input, at, data) {
     this.isLoadingData[at] = false;
     this.cachedData[at] = data;
@@ -387,6 +392,10 @@ class GfmAutoComplete {
     // This trigger at.js again
     // otherwise we would be stuck with loading until the user types
     return $input.trigger('keyup');
+  }
+
+  clearCache() {
+    this.cachedData = {};
   }
 
   static isLoading(data) {

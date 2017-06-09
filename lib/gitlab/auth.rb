@@ -2,6 +2,8 @@ module Gitlab
   module Auth
     MissingPersonalTokenError = Class.new(StandardError)
 
+    REGISTRY_SCOPES = [:read_registry].freeze
+
     # Scopes used for GitLab API access
     API_SCOPES = [:api, :read_user].freeze
 
@@ -11,8 +13,10 @@ module Gitlab
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [:api].freeze
 
+    AVAILABLE_SCOPES = (API_SCOPES + REGISTRY_SCOPES).freeze
+
     # Other available scopes
-    OPTIONAL_SCOPES = (API_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
+    OPTIONAL_SCOPES = (AVAILABLE_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
 
     class << self
       prepend EE::Gitlab::Auth
@@ -28,8 +32,8 @@ module Gitlab
           build_access_token_check(login, password) ||
           lfs_token_check(login, password) ||
           oauth_access_token_check(login, password) ||
-          user_with_password_for_git(login, password) ||
           personal_access_token_check(password) ||
+          user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
         rate_limit!(ip, success: result.success?, login: login)
@@ -111,6 +115,7 @@ module Gitlab
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
+
           if valid_oauth_token?(token)
             user = User.find_by(id: token.resource_owner_id)
             Gitlab::Auth::Result.new(user, nil, :oauth, full_authentication_abilities)
@@ -123,17 +128,23 @@ module Gitlab
 
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
-        if token && valid_api_token?(token)
-          Gitlab::Auth::Result.new(token.user, nil, :personal_token, full_authentication_abilities)
+        if token && valid_scoped_token?(token, AVAILABLE_SCOPES.map(&:to_s))
+          Gitlab::Auth::Result.new(token.user, nil, :personal_token, abilities_for_scope(token.scopes))
         end
       end
 
       def valid_oauth_token?(token)
-        token && token.accessible? && valid_api_token?(token)
+        token && token.accessible? && valid_scoped_token?(token, ["api"])
       end
 
-      def valid_api_token?(token)
-        AccessTokenValidationService.new(token).include_any_scope?(['api'])
+      def valid_scoped_token?(token, scopes)
+        AccessTokenValidationService.new(token).include_any_scope?(scopes)
+      end
+
+      def abilities_for_scope(scopes)
+        scopes.map do |scope|
+          self.public_send(:"#{scope}_scope_authentication_abilities")
+        end.flatten.uniq
       end
 
       def lfs_token_check(login, password)
@@ -203,6 +214,16 @@ module Gitlab
           :push_code,
           :create_container_image
         ]
+      end
+      alias_method :api_scope_authentication_abilities, :full_authentication_abilities
+
+      def read_registry_scope_authentication_abilities
+        [:read_container_image]
+      end
+
+      # The currently used auth method doesn't allow any actions for this scope
+      def read_user_scope_authentication_abilities
+        []
       end
     end
   end

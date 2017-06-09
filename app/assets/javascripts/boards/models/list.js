@@ -103,7 +103,7 @@ class List {
   }
 
   newIssue (issue) {
-    this.addIssue(issue);
+    this.addIssue(issue, null, 0);
     this.issuesSize += 1;
 
     return gl.boardService.newIssue(this.id, issue)
@@ -111,6 +111,12 @@ class List {
         const data = resp.json();
         issue.id = data.iid;
         issue.milestone = data.milestone;
+      })
+      .then(() => {
+        if (this.issuesSize > 1) {
+          const moveBeforeIid = this.issues[1].id;
+          gl.boardService.moveIssue(issue.id, null, null, null, moveBeforeIid);
+        }
       });
   }
 

@@ -33,9 +33,11 @@ namespace :gitlab do
         SystemCheck::App::RedisVersionCheck,
         SystemCheck::App::RubyVersionCheck,
         SystemCheck::App::GitVersionCheck,
-        SystemCheck::App::ActiveUsersCheck,
-        SystemCheck::App::ElasticsearchCheck
+        SystemCheck::App::ActiveUsersCheck
       ]
+
+      # EE only
+      checks << SystemCheck::App::ElasticsearchCheck
 
       SystemCheck.run('GitLab', checks)
     end

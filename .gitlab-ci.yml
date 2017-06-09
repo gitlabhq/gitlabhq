@@ -416,6 +416,7 @@ gitlab:assets:compile:
     USE_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
+    NO_COMPRESSION: "true"
   script:
     - yarn install --pure-lockfile --production --cache-folder .yarn-cache
     - bundle exec rake gitlab:assets:compile

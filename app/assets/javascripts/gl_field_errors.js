@@ -31,9 +31,13 @@ class GlFieldErrors {
    * and prevents disabling of invalid submit button by application.js */
 
   catchInvalidFormSubmit (event) {
-    if (!event.currentTarget.checkValidity()) {
-      event.preventDefault();
-      event.stopPropagation();
+    const $form = $(event.currentTarget);
+
+    if (!$form.attr('novalidate')) {
+      if (!event.currentTarget.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
     }
   }
 

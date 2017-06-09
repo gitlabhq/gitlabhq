@@ -171,10 +171,48 @@ describe SnippetsController do
       sign_in(user)
 
       post :create, {
-        personal_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
+        personal_snippet: { title: 'Title', content: 'Content', description: 'Description' }.merge(snippet_params)
       }.merge(additional_params)
 
       Snippet.last
+    end
+
+    it 'creates the snippet correctly' do
+      snippet = create_snippet(visibility_level: Snippet::PRIVATE)
+
+      expect(snippet.title).to eq('Title')
+      expect(snippet.content).to eq('Content')
+      expect(snippet.description).to eq('Description')
+    end
+
+    context 'when the snippet description contains a file' do
+      let(:picture_file) { '/temp/secret56/picture.jpg' }
+      let(:text_file) { '/temp/secret78/text.txt' }
+      let(:description) do
+        "Description with picture: ![picture](/uploads#{picture_file}) and "\
+        "text: [text.txt](/uploads#{text_file})"
+      end
+
+      before do
+        allow(FileUtils).to receive(:mkdir_p)
+        allow(FileUtils).to receive(:move)
+      end
+
+      subject { create_snippet({ description: description }, { files: [picture_file, text_file] }) }
+
+      it 'creates the snippet' do
+        expect { subject }.to change { Snippet.count }.by(1)
+      end
+
+      it 'stores the snippet description correctly' do
+        snippet = subject
+
+        expected_description = "Description with picture: "\
+          "![picture](/uploads/personal_snippet/#{snippet.id}/secret56/picture.jpg) and "\
+          "text: [text.txt](/uploads/personal_snippet/#{snippet.id}/secret78/text.txt)"
+
+        expect(snippet.description).to eq(expected_description)
+      end
     end
 
     context 'when the snippet is spam' do

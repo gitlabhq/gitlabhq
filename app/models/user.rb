@@ -103,6 +103,7 @@ class User < ActiveRecord::Base
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
+  has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
@@ -130,11 +131,6 @@ class User < ActiveRecord::Base
   has_many :issue_assignees
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
-
-  # Issues that a user owns are expected to be moved to the "ghost" user before
-  # the user is destroyed. If the user owns any issues during deletion, this
-  # should be treated as an exceptional condition.
-  has_many :issues,                   dependent: :restrict_with_exception, foreign_key: :author_id
 
   #
   # Validations
@@ -838,6 +834,11 @@ class User < ActiveRecord::Base
   def post_destroy_hook
     log_info("User \"#{name}\" (#{email})  was removed")
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def delete_async(deleted_by:, params: {})
+    block if params[:hard_delete]
+    DeleteUserWorker.perform_async(deleted_by.id, id, params)
   end
 
   def notification_service

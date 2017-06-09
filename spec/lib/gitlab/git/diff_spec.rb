@@ -31,6 +31,36 @@ EOT
                                           [".gitmodules"]).patches.first
   end
 
+  describe 'size limit feature toggles' do
+    context 'when the feature gitlab_git_diff_size_limit_increase is enabled' do
+      before do
+        Feature.enable('gitlab_git_diff_size_limit_increase')
+      end
+
+      it 'returns 200 KB for size_limit' do
+        expect(described_class.size_limit).to eq(200.kilobytes)
+      end
+
+      it 'returns 100 KB for collapse_limit' do
+        expect(described_class.collapse_limit).to eq(100.kilobytes)
+      end
+    end
+
+    context 'when the feature gitlab_git_diff_size_limit_increase is disabled' do
+      before do
+        Feature.disable('gitlab_git_diff_size_limit_increase')
+      end
+
+      it 'returns 100 KB for size_limit' do
+        expect(described_class.size_limit).to eq(100.kilobytes)
+      end
+
+      it 'returns 10 KB for collapse_limit' do
+        expect(described_class.collapse_limit).to eq(10.kilobytes)
+      end
+    end
+  end
+
   describe '.new' do
     context 'using a Hash' do
       context 'with a small diff' do
@@ -47,7 +77,7 @@ EOT
 
       context 'using a diff that is too large' do
         it 'prunes the diff' do
-          diff = described_class.new(diff: 'a' * 204800)
+          diff = described_class.new(diff: 'a' * (described_class.size_limit + 1))
 
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
@@ -85,8 +115,8 @@ EOT
           # The patch total size is 200, with lines between 21 and 54.
           # This is a quick-and-dirty way to test this. Ideally, a new patch is
           # added to the test repo with a size that falls between the real limits.
-          stub_const("#{described_class}::SIZE_LIMIT", 150)
-          stub_const("#{described_class}::COLLAPSE_LIMIT", 100)
+          allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(150)
+          allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(100)
         end
 
         it 'prunes the diff as a large diff instead of as a collapsed diff' do
@@ -110,23 +140,23 @@ EOT
       end
     end
 
-    context 'using a Gitaly::CommitDiffResponse' do
+    context 'using a GitalyClient::Diff' do
       let(:diff) do
         described_class.new(
-          Gitaly::CommitDiffResponse.new(
+          Gitlab::GitalyClient::Diff.new(
             to_path: ".gitmodules",
             from_path: ".gitmodules",
             old_mode: 0100644,
             new_mode: 0100644,
             from_id: '357406f3075a57708d0163752905cc1576fceacc',
             to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
-            raw_chunks: raw_chunks
+            patch: raw_patch
           )
         )
       end
 
       context 'with a small diff' do
-        let(:raw_chunks) { [@raw_diff_hash[:diff]] }
+        let(:raw_patch) { @raw_diff_hash[:diff] }
 
         it 'initializes the diff' do
           expect(diff.to_hash).to eq(@raw_diff_hash)
@@ -138,7 +168,7 @@ EOT
       end
 
       context 'using a diff that is too large' do
-        let(:raw_chunks) { ['a' * 204800] }
+        let(:raw_patch) { 'a' * 204800 }
 
         it 'prunes the diff' do
           expect(diff.diff).to be_empty
@@ -299,7 +329,7 @@ EOT
 
   describe '#collapsed?' do
     it 'returns true for a diff that is quite large' do
-      diff = described_class.new({ diff: 'a' * 20480 }, expanded: false)
+      diff = described_class.new({ diff: 'a' * (described_class.collapse_limit + 1) }, expanded: false)
 
       expect(diff).to be_collapsed
     end

@@ -260,7 +260,7 @@
           = f.number_field :container_registry_token_expire_delay, class: 'form-control'
 
   %fieldset
-    %legend Metrics
+    %legend Metrics - Influx
     %p
       Setup InfluxDB to measure a wide variety of statistics like the time spent
       in running SQL queries. These settings require a
@@ -323,6 +323,21 @@
         .help-block
           The amount of points to store in a single UDP packet. More points
           results in fewer but larger UDP packets being sent.
+
+  %fieldset
+    %legend Metrics - Prometheus
+    %p
+      Setup Prometheus to measure a variety of statistics that partially overlap and complement Influx based metrics.
+      This setting requires a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/introduction')
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :prometheus_metrics_enabled do
+            = f.check_box :prometheus_metrics_enabled
+            Enable Prometheus Metrics
 
   %fieldset
     %legend Background Jobs

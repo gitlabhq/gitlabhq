@@ -98,6 +98,7 @@ module API
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
+    mount ::API::Events
     mount ::API::Features
     mount ::API::Files
     mount ::API::Groups

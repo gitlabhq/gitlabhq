@@ -41,6 +41,19 @@ describe JwtController do
 
         it { expect(response).to have_http_status(401) }
       end
+
+      context 'using personal access tokens' do
+        let(:user) { create(:user) }
+        let(:pat) { create(:personal_access_token, user: user, scopes: ['read_registry']) }
+        let(:headers) { { authorization: credentials('personal_access_token', pat.token) } }
+
+        subject! { get '/jwt/auth', parameters, headers }
+
+        it 'authenticates correctly' do
+          expect(response).to have_http_status(200)
+          expect(service_class).to have_received(:new).with(nil, user, parameters)
+        end
+      end
     end
 
     context 'using User login' do

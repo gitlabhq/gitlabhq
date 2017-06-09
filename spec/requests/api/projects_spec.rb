@@ -316,15 +316,15 @@ describe API::Projects do
       expect(project.path).to eq('foo_project')
     end
 
-    it 'creates new project name and path and returns 201' do
-      expect { post api('/projects', user), path: 'foo-Project', name: 'Foo Project' }.
+    it 'creates new project with name and path and returns 201' do
+      expect { post api('/projects', user), path: 'path-project-Foo', name: 'Foo Project' }.
         to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
 
       expect(project.name).to eq('Foo Project')
-      expect(project.path).to eq('foo-Project')
+      expect(project.path).to eq('path-project-Foo')
     end
 
     it 'creates last project before reaching project limit' do
@@ -470,9 +470,25 @@ describe API::Projects do
     before { project }
     before { admin }
 
-    it 'creates new project without path and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
+    it 'creates new project without path but with name and return 201' do
+      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change {Project.count}.by(1)
       expect(response).to have_http_status(201)
+
+      project = Project.first
+
+      expect(project.name).to eq('Foo Project')
+      expect(project.path).to eq('foo-project')
+    end
+
+    it 'creates new project with name and path and returns 201' do
+      expect { post api("/projects/user/#{user.id}", admin), path: 'path-project-Foo', name: 'Foo Project' }.
+        to change { Project.count }.by(1)
+      expect(response).to have_http_status(201)
+
+      project = Project.first
+
+      expect(project.name).to eq('Foo Project')
+      expect(project.path).to eq('path-project-Foo')
     end
 
     it 'responds with 400 on failure and not project' do
@@ -668,6 +684,8 @@ describe API::Projects do
         expect(json_response['shared_runners_enabled']).to be_present
         expect(json_response['creator_id']).to be_present
         expect(json_response['namespace']).to be_present
+        expect(json_response['import_status']).to be_present
+        expect(json_response).to include("import_error")
         expect(json_response['avatar_url']).to be_nil
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
@@ -736,6 +754,20 @@ describe API::Projects do
         expect(json_response).to include 'statistics'
       end
 
+      it "includes import_error if user can admin project" do
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to include("import_error")
+      end
+
+      it "does not include import_error if user cannot admin project" do
+        get api("/projects/#{project.id}", user3)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).not_to include("import_error")
+      end
+
       describe 'permissions' do
         context 'all projects' do
           before { project.team << [user, :master] }
@@ -776,64 +808,6 @@ describe API::Projects do
             to eq(Gitlab::Access::OWNER)
           end
         end
-      end
-    end
-  end
-
-  describe 'GET /projects/:id/events' do
-    shared_examples_for 'project events response' do
-      it 'returns the project events' do
-        member = create(:user)
-        create(:project_member, :developer, user: member, project: project)
-        note = create(:note_on_issue, note: 'What an awesome day!', project: project)
-        EventCreateService.new.leave_note(note, note.author)
-
-        get api("/projects/#{project.id}/events", current_user)
-
-        expect(response).to have_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-
-        first_event = json_response.first
-        expect(first_event['action_name']).to eq('commented on')
-        expect(first_event['note']['body']).to eq('What an awesome day!')
-
-        last_event = json_response.last
-
-        expect(last_event['action_name']).to eq('joined')
-        expect(last_event['project_id'].to_i).to eq(project.id)
-        expect(last_event['author_username']).to eq(member.username)
-        expect(last_event['author']['name']).to eq(member.name)
-      end
-    end
-
-    context 'when unauthenticated' do
-      it_behaves_like 'project events response' do
-        let(:project) { create(:empty_project, :public) }
-        let(:current_user) { nil }
-      end
-    end
-
-    context 'when authenticated' do
-      context 'valid request' do
-        it_behaves_like 'project events response' do
-          let(:current_user) { user }
-        end
-      end
-
-      it 'returns a 404 error if not found' do
-        get api('/projects/42/events', user)
-
-        expect(response).to have_http_status(404)
-        expect(json_response['message']).to eq('404 Project Not Found')
-      end
-
-      it 'returns a 404 error if user is not a member' do
-        other_user = create(:user)
-
-        get api("/projects/#{project.id}/events", other_user)
-
-        expect(response).to have_http_status(404)
       end
     end
   end
@@ -1507,6 +1481,8 @@ describe API::Projects do
         expect(json_response['owner']['id']).to eq(user2.id)
         expect(json_response['namespace']['id']).to eq(user2.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['import_status']).to eq('scheduled')
+        expect(json_response).to include("import_error")
       end
 
       it 'forks if user is admin' do
@@ -1518,6 +1494,8 @@ describe API::Projects do
         expect(json_response['owner']['id']).to eq(admin.id)
         expect(json_response['namespace']['id']).to eq(admin.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['import_status']).to eq('scheduled')
+        expect(json_response).to include("import_error")
       end
 
       it 'fails on missing project access for the project to fork' do

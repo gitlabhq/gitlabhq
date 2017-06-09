@@ -13,6 +13,7 @@ class PipelineSerializer < BaseSerializer
 
   def represent(resource, opts = {})
     if resource.is_a?(ActiveRecord::Relation)
+
       resource = resource.preload([
         :retryable_builds,
         :cancelable_statuses,
@@ -20,9 +21,9 @@ class PipelineSerializer < BaseSerializer
         :project,
         { triggered_by_pipeline: [:project, :user] },
         { triggered_pipelines: [:project, :user] },
-        { pending_builds: :project },
-        { manual_actions: :project },
-        { artifacts: :project }
+        :manual_actions,
+        :artifacts,
+        { pending_builds: :project }
       ])
     end
 

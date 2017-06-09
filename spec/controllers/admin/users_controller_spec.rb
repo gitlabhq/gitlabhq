@@ -10,15 +10,26 @@ describe Admin::UsersController do
 
   describe 'DELETE #user with projects' do
     let(:project) { create(:empty_project, namespace: user.namespace) }
+    let!(:issue) { create(:issue, author: user) }
 
     before do
       project.team << [user, :developer]
     end
 
-    it 'deletes user' do
+    it 'deletes user and ghosts their contributions' do
       delete :destroy, id: user.username, format: :json
+
       expect(response).to have_http_status(200)
-      expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+      expect(User.exists?(user.id)).to be_falsy
+      expect(issue.reload.author).to be_ghost
+    end
+
+    it 'deletes the user and their contributions when hard delete is specified' do
+      delete :destroy, id: user.username, hard_delete: true, format: :json
+
+      expect(response).to have_http_status(200)
+      expect(User.exists?(user.id)).to be_falsy
+      expect(Issue.exists?(issue.id)).to be_falsy
     end
   end
 

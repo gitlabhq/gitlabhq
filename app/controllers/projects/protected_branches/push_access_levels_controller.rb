@@ -8,6 +8,7 @@ module Projects
         @push_access_level.destroy
 
         redirect_to namespace_project_protected_branch_path(@project.namespace, @project, @protected_branch),
+                    status: 302,
                     notice: "Successfully deleted. #{@push_access_level.humanize} will not be able to push to this protected branch."
       end
     end

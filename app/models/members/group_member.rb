@@ -30,10 +30,6 @@ class GroupMember < Member
     source
   end
 
-  def access_field
-    access_level
-  end
-
   # Because source_type is `Namespace`...
   def real_source_type
     'Group'

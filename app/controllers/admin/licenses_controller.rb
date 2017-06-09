@@ -43,7 +43,7 @@ class Admin::LicensesController < Admin::ApplicationController
       flash[:alert] = "The license was removed. GitLab now no longer has a valid license."
     end
 
-    redirect_to admin_license_path
+    redirect_to admin_license_path, status: 302
   end
 
   private

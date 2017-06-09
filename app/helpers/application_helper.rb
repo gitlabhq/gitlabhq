@@ -184,7 +184,7 @@ module ApplicationHelper
   end
 
   def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)
-    return if object.last_edited_at == object.created_at || object.last_edited_at.blank?
+    return unless object.is_edited?
 
     content_tag :small, class: 'edited-text' do
       output = content_tag(:span, 'Edited ')
@@ -279,8 +279,8 @@ module ApplicationHelper
     'active' if condition
   end
 
-  def show_user_callout?
-    cookies[:user_callout_dismissed].nil?
+  def show_callout?(name)
+    cookies[name] != 'true'
   end
 
   def linkedin_url(user)

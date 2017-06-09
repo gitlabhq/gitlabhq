@@ -95,6 +95,7 @@ merge_request_diff:
 pipelines:
 - project
 - user
+- stages
 - statuses
 - builds
 - trigger_requests
@@ -112,9 +113,15 @@ pipelines:
 - sourced_pipelines
 - triggered_by_pipeline
 - triggered_pipelines
+stages:
+- project
+- pipeline
+- statuses
+- builds
 statuses:
 - project
 - pipeline
+- stage
 - user
 - auto_canceled_by
 variables:

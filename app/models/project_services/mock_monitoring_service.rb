@@ -15,4 +15,8 @@ class MockMonitoringService < MonitoringService
     data = File.read(Rails.root.join('spec', 'fixtures', 'metrics.json'))
     JSON.parse(data)
   end
+
+  def can_test?
+    false
+  end
 end

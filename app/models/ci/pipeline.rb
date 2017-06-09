@@ -21,6 +21,7 @@ module Ci
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
+    has_many :stages
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
@@ -32,8 +33,11 @@ module Ci
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :retryable_builds, -> { latest.failed_or_canceled }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
-    has_many :manual_actions, -> { latest.manual_actions }, foreign_key: :commit_id, class_name: 'Ci::Build'
-    has_many :artifacts, -> { latest.with_artifacts_not_expired }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :artifacts, -> { latest.with_artifacts_not_expired.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
+
+    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
+    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     delegate :id, to: :project, prefix: true
 
@@ -170,21 +174,21 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
-    def stage(name)
-      stage = Ci::Stage.new(self, name: name)
-      stage unless stage.statuses_count.zero?
-    end
-
     def stages_count
       statuses.select(:stage).distinct.count
     end
 
-    def stages_name
+    def stages_names
       statuses.order(:stage_idx).distinct.
         pluck(:stage, :stage_idx).map(&:first)
     end
 
-    def stages
+    def legacy_stage(name)
+      stage = Ci::LegacyStage.new(self, name: name)
+      stage unless stage.statuses_count.zero?
+    end
+
+    def legacy_stages
       # TODO, this needs refactoring, see gitlab-ce#26481.
 
       stages_query = statuses
@@ -199,7 +203,7 @@ module Ci
         .pluck('sg.stage', status_sql, "(#{warnings_sql})")
 
       stages_with_statuses.map do |stage|
-        Ci::Stage.new(self, Hash[%i[name status warnings].zip(stage)])
+        Ci::LegacyStage.new(self, Hash[%i[name status warnings].zip(stage)])
       end
     end
 
@@ -299,12 +303,14 @@ module Ci
       end
     end
 
-    def config_builds_attributes
+    def stage_seeds
       return [] unless config_processor
 
-      config_processor.
-        builds_for_ref(ref, tag?, trigger_requests.first).
-        sort_by { |build| build[:stage_idx] }
+      @stage_seeds ||= config_processor.stage_seeds(self)
+    end
+
+    def has_stage_seeds?
+      stage_seeds.any?
     end
 
     def has_warnings?
@@ -312,7 +318,7 @@ module Ci
     end
 
     def config_processor
-      return nil unless ci_yaml_file
+      return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin

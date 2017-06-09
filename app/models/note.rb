@@ -14,6 +14,7 @@ class Note < ActiveRecord::Base
   include AfterCommitQueue
   include ResolvableNote
   include IgnorableColumn
+  include Editable
 
   ignore_column :original_discussion_id
 

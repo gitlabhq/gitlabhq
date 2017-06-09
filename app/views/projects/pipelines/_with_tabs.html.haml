@@ -42,7 +42,7 @@
             %th
             %th Coverage
             %th
-        = render partial: "projects/stage/stage", collection: pipeline.stages, as: :stage
+        = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
   - if failed_builds.present?
     #js-tab-failures.build-failures.tab-pane
       - failed_builds.each_with_index do |build, index|

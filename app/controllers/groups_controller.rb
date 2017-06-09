@@ -101,7 +101,7 @@ class GroupsController < Groups::ApplicationController
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to root_path, alert: "Group '#{@group.name}' was scheduled for deletion."
+    redirect_to root_path, status: 302, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   protected
@@ -180,7 +180,7 @@ class GroupsController < Groups::ApplicationController
 
   def build_canonical_path(group)
     return group_path(group) if action_name == 'show' # root group path
-    
+
     params[:id] = group.to_param
 
     url_for(params)

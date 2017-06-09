@@ -1915,6 +1915,16 @@ describe Project, models: true do
         end
       end
     end
+
+    context 'not forked' do
+      it 'schedules a RepositoryImportWorker job' do
+        project = create(:empty_project, import_url: generate(:url))
+
+        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
+
+        project.add_import_job
+      end
+    end
   end
 
   describe '#gitlab_project_import?' do

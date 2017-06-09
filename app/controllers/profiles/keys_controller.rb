@@ -26,7 +26,7 @@ class Profiles::KeysController < Profiles::ApplicationController
     @key.destroy unless @key.is_a? LDAPKey
 
     respond_to do |format|
-      format.html { redirect_to profile_keys_url }
+      format.html { redirect_to profile_keys_url, status: 302 }
       format.js { head :ok }
     end
   end

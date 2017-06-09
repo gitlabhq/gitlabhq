@@ -1,3 +1,5 @@
+require_relative '../support/test_env'
+
 FactoryGirl.define do
   # Project without repository
   #

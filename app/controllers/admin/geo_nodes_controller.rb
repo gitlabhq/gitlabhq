@@ -25,7 +25,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
   def destroy
     @node.destroy
 
-    redirect_to admin_geo_nodes_path, notice: 'Node was successfully removed.'
+    redirect_to admin_geo_nodes_path, status: 302, notice: 'Node was successfully removed.'
   end
 
   def repair

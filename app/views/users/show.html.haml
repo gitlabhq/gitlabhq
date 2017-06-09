@@ -100,7 +100,7 @@
             Snippets
 
   %div{ class: container_class }
-    - if @user == current_user && show_user_callout?
+    - if @user == current_user && show_callout?('user_callout_dismissed')
       = render 'shared/user_callout'
     .tab-content
       #activity.tab-pane

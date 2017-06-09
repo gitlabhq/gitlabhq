@@ -10,11 +10,12 @@ describe GroupPolicy, models: true do
   let(:admin) { create(:admin) }
   let(:group) { create(:group) }
 
+  let(:reporter_permissions) { [:admin_label] }
+
   let(:master_permissions) do
     [
       :create_projects,
-      :admin_milestones,
-      :admin_label
+      :admin_milestones
     ]
   end
 
@@ -43,6 +44,7 @@ describe GroupPolicy, models: true do
 
     it do
       is_expected.to include(:read_group)
+      is_expected.not_to include(*reporter_permissions)
       is_expected.not_to include(*master_permissions)
       is_expected.not_to include(*owner_permissions)
     end
@@ -53,6 +55,7 @@ describe GroupPolicy, models: true do
 
     it do
       is_expected.to include(:read_group)
+      is_expected.not_to include(*reporter_permissions)
       is_expected.not_to include(*master_permissions)
       is_expected.not_to include(*owner_permissions)
     end
@@ -63,6 +66,7 @@ describe GroupPolicy, models: true do
 
     it do
       is_expected.to include(:read_group)
+      is_expected.to include(*reporter_permissions)
       is_expected.not_to include(*master_permissions)
       is_expected.not_to include(*owner_permissions)
     end
@@ -73,6 +77,7 @@ describe GroupPolicy, models: true do
 
     it do
       is_expected.to include(:read_group)
+      is_expected.to include(*reporter_permissions)
       is_expected.not_to include(*master_permissions)
       is_expected.not_to include(*owner_permissions)
     end
@@ -83,6 +88,7 @@ describe GroupPolicy, models: true do
 
     it do
       is_expected.to include(:read_group)
+      is_expected.to include(*reporter_permissions)
       is_expected.to include(*master_permissions)
       is_expected.not_to include(*owner_permissions)
     end
@@ -93,6 +99,7 @@ describe GroupPolicy, models: true do
 
     it do
       is_expected.to include(:read_group)
+      is_expected.to include(*reporter_permissions)
       is_expected.to include(*master_permissions)
       is_expected.to include(*owner_permissions)
     end
@@ -103,13 +110,26 @@ describe GroupPolicy, models: true do
 
     it do
       is_expected.to include(:read_group)
+      is_expected.to include(*reporter_permissions)
       is_expected.to include(*master_permissions)
       is_expected.to include(*owner_permissions)
     end
   end
 
-  describe 'private nested group inherit permissions', :nested_groups do
+  describe 'private nested group use the highest access level from the group and inherited permissions', :nested_groups do
     let(:nested_group) { create(:group, :private, parent: group) }
+
+    before do
+      nested_group.add_guest(guest)
+      nested_group.add_guest(reporter)
+      nested_group.add_guest(developer)
+      nested_group.add_guest(master)
+
+      group.owners.destroy_all
+
+      group.add_guest(owner)
+      nested_group.add_owner(owner)
+    end
 
     subject { described_class.abilities(current_user, nested_group).to_set }
 
@@ -118,6 +138,7 @@ describe GroupPolicy, models: true do
 
       it do
         is_expected.not_to include(:read_group)
+        is_expected.not_to include(*reporter_permissions)
         is_expected.not_to include(*master_permissions)
         is_expected.not_to include(*owner_permissions)
       end
@@ -128,6 +149,7 @@ describe GroupPolicy, models: true do
 
       it do
         is_expected.to include(:read_group)
+        is_expected.not_to include(*reporter_permissions)
         is_expected.not_to include(*master_permissions)
         is_expected.not_to include(*owner_permissions)
       end
@@ -138,6 +160,7 @@ describe GroupPolicy, models: true do
 
       it do
         is_expected.to include(:read_group)
+        is_expected.to include(*reporter_permissions)
         is_expected.not_to include(*master_permissions)
         is_expected.not_to include(*owner_permissions)
       end
@@ -148,6 +171,7 @@ describe GroupPolicy, models: true do
 
       it do
         is_expected.to include(:read_group)
+        is_expected.to include(*reporter_permissions)
         is_expected.not_to include(*master_permissions)
         is_expected.not_to include(*owner_permissions)
       end
@@ -158,6 +182,7 @@ describe GroupPolicy, models: true do
 
       it do
         is_expected.to include(:read_group)
+        is_expected.to include(*reporter_permissions)
         is_expected.to include(*master_permissions)
         is_expected.not_to include(*owner_permissions)
       end
@@ -168,6 +193,7 @@ describe GroupPolicy, models: true do
 
       it do
         is_expected.to include(:read_group)
+        is_expected.to include(*reporter_permissions)
         is_expected.to include(*master_permissions)
         is_expected.to include(*owner_permissions)
       end
