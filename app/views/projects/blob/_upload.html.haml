@@ -2,23 +2,26 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %a.close{ href: '#', data: { dismiss: 'modal' } } ×
         %h3.page-title= title
       .modal-body
         = form_tag form_path, method: method, class: 'js-quick-submit js-upload-blob-form form-horizontal', data: { method: method } do
           .dropzone
             .dropzone-previews.blob-upload-dropzone-previews
+              .upload-files
+                .svg-content
+                  = render 'shared/empty_states/icons/upload_files.svg'
               %p.dz-message.light
-                Attach a file by drag &amp; drop or
-                = link_to 'click to upload', '#', class: "markdown-selector"
+                Attach files by drag &amp; drop or
+                = link_to 'click to upload', '#', class: 'markdown-selector'
           %br
-          .dropzone-alerts.alert.alert-danger.data{ style: "display:none" }
+          .dropzone-alerts.alert.alert-danger.data{ style: 'display:none' }
 
           = render 'shared/new_commit_form', placeholder: placeholder
 
           .form-actions
-            = button_tag button_title, class: 'btn btn-small btn-create btn-upload-file', id: 'submit-all'
-            = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+            = button_tag button_title, class: 'btn btn-create btn-upload-file', id: 'submit-all'
+            = link_to 'Cancel', '#', class: 'btn btn-cancel', data: { dismiss: 'modal' }
 
             - unless can?(current_user, :push_code, @project)
               .inline.prepend-left-10

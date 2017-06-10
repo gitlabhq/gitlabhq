@@ -154,9 +154,14 @@
   min-height: 200px;
 }
 
-.upload-link {
-  font-weight: normal;
-  color: $md-link-color;
+.upload-files {
+  .svg-content {
+    padding-top: 5%;
+
+    svg {
+      width: 10%;
+    }
+   }
 }
 
 .tree-controls {

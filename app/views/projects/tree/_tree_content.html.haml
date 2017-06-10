@@ -20,7 +20,7 @@
     = render "projects/tree/readme", readme: tree.readme
 
 - if can_edit_tree?
-  = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
+  = render 'projects/blob/upload', title: _('Upload files'), placeholder: _('Upload files'), button_title: _('Upload'), form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
   = render 'projects/blob/new_dir'
 
 :javascript
