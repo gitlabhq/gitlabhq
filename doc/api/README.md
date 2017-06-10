@@ -15,6 +15,8 @@ following locations:
 - [Commits](commits.md)
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
+- [Environments](environments.md)
+- [Events](events.md)
 - [Gitignores templates](templates/gitignores.md)
 - [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
 - [Groups](groups.md)
@@ -33,6 +35,7 @@ following locations:
 - [Notification settings](notification_settings.md)
 - [Pipelines](pipelines.md)
 - [Pipeline Triggers](pipeline_triggers.md)
+- [Pipeline Schedules](pipeline_schedules.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)
@@ -52,6 +55,15 @@ following locations:
 - [V3 to V4](v3_to_v4.md)
 - [Version](version.md)
 
+## Road to GraphQL
+
+API v4 will be the last REST API that we support. Going forward, we will start
+on moving to GraphQL and deprecate the use of controller-specific
+endpoints. GraphQL has a number of benefits:
+
+1. We avoid having to maintain two different APIs.
+2. Callers of the API can request only what they need.
+
 ### Internal CI API
 
 The following documentation is for the [internal CI API](ci/README.md):
@@ -61,8 +73,9 @@ The following documentation is for the [internal CI API](ci/README.md):
 
 ## Authentication
 
-All API requests require authentication via a session cookie or token. There are
-three types of tokens available: private tokens, OAuth 2 tokens, and personal
+Most API requests require authentication via a session cookie or token. For those cases where it is not required, this will be mentioned in the documentation 
+for each individual endpoint. For example, the [`/projects/:id` endpoint](projects.md). 
+There are three types of tokens available: private tokens, OAuth 2 tokens, and personal
 access tokens.
 
 If authentication information is invalid or omitted, an error message will be

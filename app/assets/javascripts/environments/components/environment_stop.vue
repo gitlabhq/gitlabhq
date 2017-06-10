@@ -4,6 +4,7 @@
  * Used in environments table.
  */
 import eventHub from '../event_hub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   props: {
@@ -17,6 +18,10 @@ export default {
     return {
       isLoading: false,
     };
+  },
+
+  components: {
+    loadingIcon,
   },
 
   computed: {
@@ -42,7 +47,7 @@ export default {
 <template>
   <button
     type="button"
-    class="btn stop-env-link has-tooltip"
+    class="btn stop-env-link has-tooltip hidden-xs hidden-sm"
     data-container="body"
     @click="onClick"
     :disabled="isLoading"
@@ -51,9 +56,6 @@ export default {
     <i
       class="fa fa-stop stop-env-icon"
       aria-hidden="true" />
-    <i
-      v-if="isLoading"
-      class="fa fa-spinner fa-spin"
-      aria-hidden="true" />
+    <loading-icon v-if="isLoading" />
   </button>
 </template>

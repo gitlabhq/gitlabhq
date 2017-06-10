@@ -20,7 +20,7 @@ describe 'User Callouts', js: true do
     visit dashboard_projects_path
 
     within('.user-callout') do
-      find('.close').click
+      find('.close').trigger('click')
     end
 
     visit dashboard_projects_path

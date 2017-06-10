@@ -2,7 +2,7 @@ module Gitlab
   module Git
     class Blob
       include Linguist::BlobHelper
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
       # This number is the maximum amount of data that we want to display to
       # the user. We load as much as we can for encoding detection
@@ -88,9 +88,10 @@ module Gitlab
           new(
             id: blob_entry[:oid],
             name: blob_entry[:name],
+            size: 0,
             data: '',
             path: path,
-            commit_id: sha,
+            commit_id: sha
           )
         end
       end

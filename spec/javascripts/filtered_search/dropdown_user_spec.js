@@ -1,7 +1,7 @@
-require('~/filtered_search/dropdown_utils');
-require('~/filtered_search/filtered_search_tokenizer');
-require('~/filtered_search/filtered_search_dropdown');
-require('~/filtered_search/dropdown_user');
+import '~/filtered_search/dropdown_utils';
+import '~/filtered_search/filtered_search_tokenizer';
+import '~/filtered_search/filtered_search_dropdown';
+import '~/filtered_search/dropdown_user';
 
 describe('Dropdown User', () => {
   describe('getSearchInput', () => {
@@ -12,7 +12,7 @@ describe('Dropdown User', () => {
       spyOn(gl.DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
       spyOn(gl.DropdownUtils, 'getSearchInput').and.callFake(() => {});
 
-      dropdownUser = new gl.DropdownUser();
+      dropdownUser = new gl.DropdownUser(null, null, null, gl.FilteredSearchTokenKeys);
     });
 
     it('should not return the double quote found in value', () => {

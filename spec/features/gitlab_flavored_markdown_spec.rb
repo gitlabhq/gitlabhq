@@ -49,8 +49,6 @@ describe "GitLab Flavored Markdown", feature: true do
   end
 
   describe "for issues", feature: true, js: true do
-    include WaitForVueResource
-
     before do
       @other_issue = create(:issue,
                             author: @user,

@@ -132,12 +132,6 @@
       line-height: 16px;
     }
 
-    @media (min-width: $screen-sm-min) {
-      .stage-cell {
-        padding: 0 4px;
-      }
-    }
-
     @media (max-width: $screen-xs-max) {
       order: 1;
       margin-top: $gl-padding-top;
@@ -165,6 +159,34 @@
 
   .capitalize {
     text-transform: capitalize;
+  }
+
+  .label-branch {
+    @extend .ref-name;
+
+    color: $gl-text-color;
+    font-weight: bold;
+    overflow: hidden;
+    margin: 0 3px;
+    word-break: break-all;
+
+    &.label-truncated {
+      position: relative;
+      display: inline-block;
+      width: 250px;
+      margin-bottom: -3px;
+      white-space: nowrap;
+      text-overflow: clip;
+      line-height: 14px;
+
+      &::after {
+        position: absolute;
+        content: '...';
+        right: 0;
+        font-family: $regular_font;
+        background-color: $gray-light;
+      }
+    }
   }
 
   .js-deployment-link {
@@ -349,6 +371,22 @@
       margin-top: 10px;
       margin-left: 12px;
     }
+
+    &.empty-state {
+      .artwork {
+        margin-bottom: $gl-padding;
+      }
+
+      .text {
+        span {
+          font-weight: bold;
+        }
+
+        p {
+          margin-top: $gl-padding;
+        }
+      }
+    }
   }
 
   .mr-widget-footer {
@@ -386,34 +424,6 @@
 
     &:hover {
       background: none;
-    }
-  }
-}
-
-.label-branch {
-  color: $gl-text-color;
-  font-family: $monospace_font;
-  font-weight: bold;
-  overflow: hidden;
-  font-size: 90%;
-  margin: 0 3px;
-  word-break: break-all;
-
-  &.label-truncated {
-    position: relative;
-    display: inline-block;
-    width: 250px;
-    margin-bottom: -3px;
-    white-space: nowrap;
-    text-overflow: clip;
-    line-height: 14px;
-
-    &::after {
-      position: absolute;
-      content: '...';
-      right: 0;
-      font-family: $regular_font;
-      background-color: $gray-light;
     }
   }
 }
@@ -510,17 +520,13 @@
       position: absolute;
       border-top: 2px solid $border-color;
       height: 1px;
-      top: 8px;
+      top: 9px;
       width: 8px;
       left: 0;
     }
 
     &:last-child {
       margin-bottom: 0;
-
-      &::before {
-        top: 14px;
-      }
     }
   }
 
@@ -529,7 +535,7 @@
     width: 2px;
     background: $border-color;
     position: absolute;
-    top: -5px;
+    top: -9px;
   }
 }
 
@@ -724,14 +730,18 @@
 }
 
 .merge-request-tabs-holder {
+  top: $header-height;
   z-index: 100;
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
 
+  @media(min-width: $screen-sm-min) {
+    position: sticky;
+    position: -webkit-sticky;
+  }
+
   &.affix {
-    top: 0;
     left: 0;
-    z-index: 10;
     transition: right .15s;
 
     @media (max-width: $screen-xs-max) {

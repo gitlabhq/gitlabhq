@@ -1,3 +1,4 @@
+# rubocop:disable Migration/UpdateColumnInBatches
 class MakeProjectOwnersMasters < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

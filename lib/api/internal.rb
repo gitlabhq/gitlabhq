@@ -32,31 +32,23 @@ module API
 
         actor.update_last_used_at if actor.is_a?(Key)
 
-        access_checker = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
-        access_status = access_checker
+        access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+        access_checker = access_checker_klass
           .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
-          .check(params[:action], params[:changes])
 
-        response = { status: access_status.status, message: access_status.message }
-
-        if access_status.status
-          log_user_activity(actor)
-
-          # Project id to pass between components that don't share/don't have
-          # access to the same filesystem mounts
-          response[:gl_repository] = Gitlab::GlRepository.gl_repository(project, wiki?)
-
-          # Return the repository full path so that gitlab-shell has it when
-          # handling ssh commands
-          response[:repository_path] =
-            if wiki?
-              project.wiki.repository.path_to_repo
-            else
-              project.repository.path_to_repo
-            end
+        begin
+          access_checker.check(params[:action], params[:changes])
+        rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
+          return { status: false, message: e.message }
         end
 
-        response
+        log_user_activity(actor)
+
+        {
+          status: true,
+          gl_repository: gl_repository,
+          repository_path: repository_path
+        }
       end
 
       post "/lfs_authenticate" do
@@ -90,7 +82,7 @@ module API
         {
           api_version: API.version,
           gitlab_version: Gitlab::VERSION,
-          gitlab_rev: Gitlab::REVISION,
+          gitlab_rev: Gitlab::REVISION
         }
       end
 

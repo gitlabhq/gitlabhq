@@ -1,5 +1,6 @@
 <script>
 import tooltipMixin from '../mixins/tooltip';
+import timeagoMixin from '../mixins/timeago';
 import '../../lib/utils/datetime_utility';
 
 /**
@@ -25,42 +26,33 @@ export default {
       default: false,
     },
 
-    htmlClass: {
+    cssClass: {
       type: String,
       required: false,
       default: '',
     },
   },
 
-  mixins: [tooltipMixin],
+  mixins: [
+    tooltipMixin,
+    timeagoMixin,
+  ],
 
   computed: {
-    cssClass() {
+    timeagoCssClass() {
       return this.shortFormat ? 'js-short-timeago' : 'js-timeago';
-    },
-
-    tooltipTitle() {
-      return gl.utils.formatDate(this.time);
-    },
-
-    timeFormated() {
-      const timeago = gl.utils.getTimeago();
-
-      return timeago.format(this.time);
     },
   },
 };
 </script>
-
 <template>
   <time
-    :class="[cssClass, htmlClass]"
+    :class="[timeagoCssClass, cssClass]"
     class="js-timeago js-timeago-render"
-    :title="tooltipTitle"
+    :title="tooltipTitle(time)"
     :data-placement="tooltipPlacement"
     data-container="body"
-    ref="tooltip"
-  >
-    {{timeFormated}}
+    ref="tooltip">
+    {{timeFormated(time)}}
   </time>
 </template>

@@ -3,9 +3,9 @@
   margin: 0;
   padding: 0;
 
-  .note-text {
-    p:last-child {
-      margin-bottom: 0;
+  &::before {
+    @include notes-media('max', $screen-xs-min) {
+      background: none;
     }
   }
 
@@ -29,6 +29,16 @@
 
   .timeline-entry-inner {
     position: relative;
+
+    @include notes-media('max', $screen-xs-min) {
+      .timeline-icon {
+        display: none;
+      }
+
+      .timeline-content {
+        margin-left: 0;
+      }
+    }
   }
 
   &:target,
@@ -43,24 +53,6 @@
   .controls {
     padding-top: 10px;
     float: right;
-  }
-}
-
-@media (max-width: $screen-xs-max) {
-  .timeline {
-    &::before {
-      background: none;
-    }
-  }
-
-  .timeline-entry .timeline-entry-inner {
-    .timeline-icon {
-      display: none;
-    }
-
-    .timeline-content {
-      margin-left: 0;
-    }
   }
 }
 

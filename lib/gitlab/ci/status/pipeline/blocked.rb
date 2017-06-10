@@ -4,11 +4,11 @@ module Gitlab
       module Pipeline
         class Blocked < Status::Extended
           def text
-            'blocked'
+            s_('CiStatusText|blocked')
           end
 
           def label
-            'waiting for manual action'
+            s_('CiStatusLabel|waiting for manual action')
           end
 
           def self.matches?(pipeline, user)

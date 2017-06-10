@@ -66,8 +66,8 @@ describe ProjectsHelper do
   describe "#project_list_cache_key", redis: true do
     let(:project) { create(:project) }
 
-    it "includes the namespace" do
-      expect(helper.project_list_cache_key(project)).to include(project.namespace.cache_key)
+    it "includes the route" do
+      expect(helper.project_list_cache_key(project)).to include(project.route.cache_key)
     end
 
     it "includes the project" do
@@ -257,7 +257,7 @@ describe ProjectsHelper do
         result = helper.project_feature_access_select(:issues_access_level)
         expect(result).to include("Disabled")
         expect(result).to include("Only team members")
-        expect(result).not_to include("Everyone with access")
+        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
       end
     end
 
@@ -272,7 +272,7 @@ describe ProjectsHelper do
 
         expect(result).to include("Disabled")
         expect(result).to include("Only team members")
-        expect(result).not_to include("Everyone with access")
+        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
         expect(result).to have_selector('option[selected]', text: "Only team members")
       end
     end

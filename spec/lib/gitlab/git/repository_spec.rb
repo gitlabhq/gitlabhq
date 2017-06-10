@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Repository, seed_helper: true do
-  include Gitlab::Git::EncodingHelper
+  include Gitlab::EncodingHelper
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
@@ -380,6 +380,19 @@ describe Gitlab::Git::Repository, seed_helper: true do
             "url" => "git://github.com/randx/six.git"
           }
         ])
+      end
+
+      it 'should not break on invalid syntax' do
+        allow(repository).to receive(:blob_content).and_return(<<-GITMODULES.strip_heredoc)
+          [submodule "six"]
+          path = six
+          url = git://github.com/randx/six.git
+
+          [submodule]
+          foo = bar
+        GITMODULES
+
+        expect(submodules).to have_key('six')
       end
     end
 
@@ -1105,7 +1118,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
       ref = double()
       allow(ref).to receive(:name) { 'bad-branch' }
       allow(ref).to receive(:target) { raise Rugged::ReferenceError }
-      allow(repository.rugged).to receive(:branches) { [ref] }
+      branches = double()
+      allow(branches).to receive(:each) { [ref].each }
+      allow(repository.rugged).to receive(:branches) { branches }
     end
 
     it 'should return empty branches' do
@@ -1220,47 +1235,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#diffable' do
-    info_dir_path = attributes_path = File.join(SEED_STORAGE_PATH, TEST_REPO_PATH, 'info')
-    attributes_path = File.join(info_dir_path, 'attributes')
-
-    before(:all) do
-      FileUtils.mkdir(info_dir_path) unless File.exist?(info_dir_path)
-      File.write(attributes_path, "*.md -diff\n")
-    end
-
-    it "should return true for files which are text and do not have attributes" do
-      blob = Gitlab::Git::Blob.find(
-        repository,
-        '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
-        'LICENSE'
-      )
-      expect(repository.diffable?(blob)).to be_truthy
-    end
-
-    it "should return false for binary files which do not have attributes" do
-      blob = Gitlab::Git::Blob.find(
-        repository,
-        '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
-        'files/images/logo-white.png'
-      )
-      expect(repository.diffable?(blob)).to be_falsey
-    end
-
-    it "should return false for text files which have been marked as not being diffable in attributes" do
-      blob = Gitlab::Git::Blob.find(
-        repository,
-        '33bcff41c232a11727ac6d660bd4b0c2ba86d63d',
-        'README.md'
-      )
-      expect(repository.diffable?(blob)).to be_falsey
-    end
-
-    after(:all) do
-      FileUtils.rm_rf(info_dir_path)
-    end
-  end
-
   describe '#tag_exists?' do
     it 'returns true for an existing tag' do
       tag = repository.tag_names.first
@@ -1289,7 +1263,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#local_branches' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
     end
 
     after(:all) do
@@ -1303,6 +1277,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       expect(@repo.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
       expect(@repo.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
+    end
+
+    context 'with gitaly enabled' do
+      before { stub_gitaly }
+      after { Gitlab::GitalyClient.clear_stubs! }
+
+      it 'gets the branches from GitalyClient' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
+          and_return([])
+        @repo.local_branches
+      end
+
+      it 'wraps GRPC not found' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
+          and_raise(GRPC::NotFound)
+        expect { @repo.local_branches }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+
+      it 'wraps GRPC exceptions' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
+          and_raise(GRPC::Unknown)
+        expect { @repo.local_branches }.to raise_error(Gitlab::Git::CommandError)
+      end
     end
   end
 

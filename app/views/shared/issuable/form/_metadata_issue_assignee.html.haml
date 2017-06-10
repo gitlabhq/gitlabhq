@@ -2,7 +2,7 @@
 .col-sm-10{ class: ("col-lg-8" if has_due_date) }
   .issuable-form-select-holder.selectbox
     - issuable.assignees.each do |assignee|
-      = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { meta: assignee.name }
+      = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { meta: assignee.name, avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }
 
     - if issuable.assignees.length === 0
       = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil, data: { meta: '' }

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-
 import Vue from 'vue';
+import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 
 const global = window.gl || (window.gl = {});
 global.cycleAnalytics = global.cycleAnalytics || {};
@@ -9,6 +9,9 @@ global.cycleAnalytics.StageReviewComponent = Vue.extend({
   props: {
     items: Array,
     stage: Object,
+  },
+  components: {
+    userAvatarImage,
   },
   template: `
     <div>
@@ -19,7 +22,8 @@ global.cycleAnalytics.StageReviewComponent = Vue.extend({
       <ul class="stage-event-list">
         <li v-for="mergeRequest in items" class="stage-event-item">
           <div class="item-details">
-            <img class="avatar" :src="mergeRequest.author.avatarUrl">
+            <!-- FIXME: Pass an alt attribute here for accessibility -->
+            <user-avatar-image :img-src="mergeRequest.author.avatarUrl"/>
             <h5 class="item-title merge-merquest-title">
               <a :href="mergeRequest.url">
                 {{ mergeRequest.title }}

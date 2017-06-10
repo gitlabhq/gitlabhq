@@ -1,4 +1,5 @@
 require_relative 'error'
+
 module Github
   class Import
     include Gitlab::ShellAdapter
@@ -6,6 +7,7 @@ module Github
     class MergeRequest < ::MergeRequest
       self.table_name = 'merge_requests'
 
+      self.reset_callbacks :create
       self.reset_callbacks :save
       self.reset_callbacks :commit
       self.reset_callbacks :update
@@ -16,6 +18,7 @@ module Github
       self.table_name = 'issues'
 
       self.reset_callbacks :save
+      self.reset_callbacks :create
       self.reset_callbacks :commit
       self.reset_callbacks :update
       self.reset_callbacks :validate
@@ -79,7 +82,7 @@ module Github
     def fetch_repository
       begin
         project.create_repository unless project.repository.exists?
-        project.repository.add_remote('github', "https://{options.fetch(:token)}@github.com/#{repo}.git")
+        project.repository.add_remote('github', "https://#{options.fetch(:token)}@github.com/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
       rescue Gitlab::Shell::Error => e

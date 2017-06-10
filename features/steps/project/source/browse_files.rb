@@ -4,7 +4,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
   include RepoHelpers
-  include WaitForAjax
+  include WaitForRequests
 
   step "I don't have write access" do
     @project = create(:project, :repository, name: "Other Project", path: "other-project")
@@ -37,12 +37,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see its content' do
-    wait_for_ajax
+    wait_for_requests
     expect(page).to have_content old_gitignore_content
   end
 
   step 'I should see its new content' do
-    wait_for_ajax
+    wait_for_requests
     expect(page).to have_content new_gitignore_content
   end
 
@@ -372,6 +372,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       expect(page).to have_content 'Permalink'
       expect(page).not_to have_content 'Edit'
       expect(page).not_to have_content 'Blame'
+      expect(page).not_to have_content 'Annotate'
       expect(page).to have_content 'Delete'
       expect(page).to have_content 'Replace'
     end

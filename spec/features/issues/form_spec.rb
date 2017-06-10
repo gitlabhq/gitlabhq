@@ -1,8 +1,9 @@
 require 'rails_helper'
 
-describe 'New/edit issue', feature: true, js: true do
+describe 'New/edit issue', :feature, :js do
   include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
+  include FormHelper
 
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
@@ -23,11 +24,51 @@ describe 'New/edit issue', feature: true, js: true do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
-    describe 'single assignee' do
+    describe 'shorten users API pagination limit (CE)' do
+      before do
+        # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
+        # somehow refer to the very block we defined to _wrap_ that method, instead of
+        # the original method, resulting in infinite recurison when called.
+        # This is likely a bug with helper modules included into dynamically generated view classes.
+        # To work around this, we have to hold on to and call to the original implementation manually.
+        original_issue_dropdown_options = FormHelper.instance_method(:issue_dropdown_options)
+        allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
+          options = original_issue_dropdown_options.bind(original.receiver).call(*args)
+          options[:data][:per_page] = 2
+
+          options
+        end
+
+        visit new_namespace_project_issue_path(project.namespace, project)
+
+        click_button 'Unassigned'
+
+        wait_for_requests
+      end
+
+      it 'should display selected users even if they are not part of the original API call' do
+        find('.dropdown-input-field').native.send_keys user2.name
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user2.name
+          click_link user2.name
+        end
+
+        find('.js-assignee-search').click
+        find('.js-dropdown-input-clear').click
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user.name
+          expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
+        end
+      end
+    end
+
+    describe 'single assignee (CE)' do
       before do
         click_button 'Unassigned'
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'unselects other assignees when unassigned is selected' do
@@ -67,6 +108,9 @@ describe 'New/edit issue', feature: true, js: true do
 
       expect(find('a', text: 'Assign to me')).to be_visible
       click_button 'Unassigned'
+
+      wait_for_requests
+
       page.within '.dropdown-menu-user' do
         click_link user2.name
       end
@@ -151,7 +195,7 @@ describe 'New/edit issue', feature: true, js: true do
     it 'correctly updates the selected user when changing assignee' do
       click_button 'Unassigned'
 
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.dropdown-menu-user' do
         click_link user.name
@@ -212,6 +256,37 @@ describe 'New/edit issue', feature: true, js: true do
           expect(page).to have_content label.title
           expect(page).to have_content label2.title
         end
+      end
+    end
+  end
+
+  describe 'sub-group project' do
+    let(:group) { create(:group) }
+    let(:nested_group_1) { create(:group, parent: group) }
+    let(:sub_group_project) { create(:empty_project, group: nested_group_1) }
+
+    before do
+      sub_group_project.add_master(user)
+
+      visit new_namespace_project_issue_path(sub_group_project.namespace, sub_group_project)
+    end
+
+    it 'creates new label from dropdown' do
+      click_button 'Labels'
+
+      click_link 'Create new label'
+
+      page.within '.dropdown-new-label' do
+        fill_in 'new_label_name', with: 'test label'
+        first('.suggest-colors-dropdown a').click
+
+        click_button 'Create'
+
+        wait_for_requests
+      end
+
+      page.within '.dropdown-menu-labels' do
+        expect(page).to have_link 'test label'
       end
     end
   end

@@ -42,6 +42,9 @@ Shortcuts to GitLab's most visited docs:
   - [Create a group](gitlab-basics/create-group.md)
   - [GitLab Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
+- [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
+- [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
+- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 
 ### Repository
 
@@ -82,14 +85,6 @@ Manage files and branches from the UI (user interface):
 
 - [Importing to GitLab](workflow/importing/README.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md): Convert a SVN repository to Git and GitLab.
-
-## GitLab's superpowers
-
-Take a step ahead and dive into GitLab's advanced features.
-
-- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
-- [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
-- [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 
 ### Continuous Integration, Delivery, and Deployment
 

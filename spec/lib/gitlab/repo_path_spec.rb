@@ -29,7 +29,7 @@ describe ::Gitlab::RepoPath do
     before do
       allow(Gitlab.config.repositories).to receive(:storages).and_return({
         'storage1' => { 'path' => '/foo' },
-        'storage2' => { 'path' => '/bar' },
+        'storage2' => { 'path' => '/bar' }
       })
     end
 

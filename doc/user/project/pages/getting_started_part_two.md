@@ -1,8 +1,9 @@
 # GitLab Pages from A to Z: Part 2
 
-> **Type**: user guide || 
+> **Article [Type](../../../development/writing_documentation.html#types-of-technical-articles)**: user guide || 
 > **Level**: beginner || 
-> **Author**: [Marcia Ramos](https://gitlab.com/marcia)
+> **Author**: [Marcia Ramos](https://gitlab.com/marcia) ||
+> **Publication date:** 2017/02/22
 
 - [Part 1: Static sites and GitLab Pages domains](getting_started_part_one.md)
 - **Part 2: Quick start guide - Setting up GitLab Pages**
@@ -56,7 +57,7 @@ created for the steps below.
 
     ![remove fork relashionship](img/remove_fork_relashionship.png)
 
-1. Enable Shared Runners for your fork: navigate to your **Project**'s **Settings** > **CI/CD Pipelines**
+1. Enable Shared Runners for your fork: navigate to your **Project**'s **Settings** > **Pipelines**
 1. Trigger a build (push a change to any file)
 1. As soon as the build passes, your website will have been deployed with GitLab Pages. Your website URL will be available under your **Project**'s **Settings** > **Pages**
 

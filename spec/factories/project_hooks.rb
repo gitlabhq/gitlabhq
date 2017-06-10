@@ -14,7 +14,7 @@ FactoryGirl.define do
       issues_events true
       confidential_issues_events true
       note_events true
-      build_events true
+      job_events true
       pipeline_events true
       wiki_page_events true
     end

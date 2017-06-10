@@ -52,6 +52,14 @@ describe SubmoduleHelper do
         stub_url(['http://', config.host, '/gitlab/root/gitlab-org/gitlab-ce.git'].join(''))
         expect(submodule_links(submodule_item)).to eq([namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash')])
       end
+
+      it 'works with subgroups' do
+        allow(Gitlab.config.gitlab).to receive(:port).and_return(80) # set this just to be sure
+        allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
+        allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
+        stub_url(['http://', config.host, '/gitlab/root/gitlab-org/sub/gitlab-ce.git'].join(''))
+        expect(submodule_links(submodule_item)).to eq([namespace_project_path('gitlab-org/sub', 'gitlab-ce'), namespace_project_tree_path('gitlab-org/sub', 'gitlab-ce', 'hash')])
+      end
     end
 
     context 'submodule on github.com' do
@@ -81,6 +89,19 @@ describe SubmoduleHelper do
       end
     end
 
+    context 'in-repository submodule' do
+      let(:group) { create(:group, name: "Master Project", path: "master-project") }
+      let(:project) { create(:empty_project, group: group) }
+      before do
+        self.instance_variable_set(:@project, project)
+      end
+
+      it 'in-repository' do
+        stub_url('./')
+        expect(submodule_links(submodule_item)).to eq(["/master-project/#{project.path}", "/master-project/#{project.path}/tree/hash"])
+      end
+    end
+
     context 'submodule on gitlab.com' do
       it 'detects ssh' do
         stub_url('git@gitlab.com:gitlab-org/gitlab-ce.git')
@@ -99,6 +120,11 @@ describe SubmoduleHelper do
 
       it 'handles urls with no .git on the end' do
         stub_url('http://gitlab.com/gitlab-org/gitlab-ce')
+        expect(submodule_links(submodule_item)).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+      end
+
+      it 'handles urls with trailing whitespace' do
+        stub_url('http://gitlab.com/gitlab-org/gitlab-ce.git  ')
         expect(submodule_links(submodule_item)).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
       end
 

@@ -38,11 +38,13 @@ Feature: Project Merge Requests
     When I visit merge request page "Bug NS-08"
     Then I should see the diverged commits count
 
+  @javascript
   Scenario: I should see rejected merge requests
     Given I click link "Closed"
     Then I should see "Feature NS-03" in merge requests
     And I should not see "Bug NS-04" in merge requests
 
+  @javascript
   Scenario: I should see all merge requests
     Given I click link "All"
     Then I should see "Feature NS-03" in merge requests

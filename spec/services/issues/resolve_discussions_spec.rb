@@ -77,7 +77,7 @@ describe Issues::ResolveDiscussions, services: true do
         _second_discussion = Discussion.new([create(:diff_note_on_merge_request, :resolved,
                                                    noteable: merge_request,
                                                    project: merge_request.target_project,
-                                                   line_number: 15,
+                                                   line_number: 15
                                                    )])
         service = DummyService.new(
           project,

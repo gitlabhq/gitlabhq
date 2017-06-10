@@ -20,7 +20,7 @@ module CycleAnalyticsHelpers
                        ref: 'refs/heads/master').execute
   end
 
-  def create_merge_request_closing_issue(issue, message: nil, source_branch: nil)
+  def create_merge_request_closing_issue(issue, message: nil, source_branch: nil, commit_message: 'commit message')
     if !source_branch || project.repository.commit(source_branch).blank?
       source_branch = generate(:branch)
       project.repository.add_branch(user, source_branch, 'master')
@@ -30,7 +30,7 @@ module CycleAnalyticsHelpers
       user,
       generate(:branch),
       'content',
-      message: 'commit message',
+      message: commit_message,
       branch_name: source_branch)
     project.repository.commit(sha)
 
@@ -51,12 +51,43 @@ module CycleAnalyticsHelpers
   end
 
   def deploy_master(environment: 'production')
-    CreateDeploymentService.new(project, user, {
-                                  environment: environment,
-                                  ref: 'master',
-                                  tag: false,
-                                  sha: project.repository.commit('master').sha
-                                }).execute
+    dummy_job =
+      case environment
+      when 'production'
+        dummy_production_job
+      when 'staging'
+        dummy_staging_job
+      else
+        raise ArgumentError
+      end
+
+    CreateDeploymentService.new(dummy_job).execute
+  end
+
+  def dummy_production_job
+    @dummy_job ||= new_dummy_job('production')
+  end
+
+  def dummy_staging_job
+    @dummy_job ||= new_dummy_job('staging')
+  end
+
+  def dummy_pipeline
+    @dummy_pipeline ||=
+      Ci::Pipeline.new(sha: project.repository.commit('master').sha)
+  end
+
+  def new_dummy_job(environment)
+    project.environments.find_or_create_by(name: environment)
+
+    Ci::Build.new(
+      project: project,
+      user: user,
+      environment: environment,
+      ref: 'master',
+      tag: false,
+      name: 'dummy',
+      pipeline: dummy_pipeline)
   end
 end
 

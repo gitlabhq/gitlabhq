@@ -2,7 +2,7 @@
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) (introduced in GitLab
 9.0) is a service that provides high-level RPC access to Git
-repositories. As of GitLab 9.1 it is still an optional component with
+repositories. As of GitLab 9.3 it is still an optional component with
 limited scope.
 
 GitLab components that access Git repositories (gitlab-rails,
@@ -35,7 +35,7 @@ gitlab restart`.
 
 ## Configuring GitLab to not use Gitaly
 
-Gitaly is still an optional component in GitLab 9.0. This means you
+Gitaly is still an optional component in GitLab 9.3. This means you
 can choose to not use it.
 
 In Omnibus you can make the following change in

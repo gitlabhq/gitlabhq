@@ -11,7 +11,7 @@ gl.issueBoards.ModalFooterListsDropdown = Vue.extend({
   },
   computed: {
     selected() {
-      return this.modal.selectedList || this.state.lists[0];
+      return this.modal.selectedList || this.state.lists[1];
     },
   },
   destroyed() {

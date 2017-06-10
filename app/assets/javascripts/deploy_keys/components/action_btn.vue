@@ -1,5 +1,6 @@
 <script>
   import eventHub from '../eventhub';
+  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
     data() {
@@ -22,6 +23,11 @@
         default: 'btn-default',
       },
     },
+
+    components: {
+      loadingIcon,
+    },
+
     methods: {
       doAction() {
         this.isLoading = true;
@@ -44,11 +50,6 @@
     :disabled="isLoading"
     @click="doAction">
     {{ text }}
-    <i
-      v-if="isLoading"
-      class="fa fa-spinner fa-spin"
-      aria-hidden="true"
-      aria-label="Loading">
-    </i>
+    <loading-icon v-if="isLoading" />
   </button>
 </template>

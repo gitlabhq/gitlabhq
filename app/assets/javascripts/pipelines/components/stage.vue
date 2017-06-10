@@ -15,6 +15,8 @@
 
 /* global Flash */
 import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import tooltipMixin from '../../vue_shared/mixins/tooltip';
 
 export default {
   props: {
@@ -30,12 +32,20 @@ export default {
     },
   },
 
+  mixins: [
+    tooltipMixin,
+  ],
+
   data() {
     return {
       isLoading: false,
       dropdownContent: '',
       endpoint: this.stage.dropdown_path,
     };
+  },
+
+  components: {
+    loadingIcon,
   },
 
   updated() {
@@ -122,9 +132,10 @@ export default {
 <template>
   <div class="dropdown">
     <button
+      ref="tooltip"
       :class="triggerButtonClass"
       @click="onClickStage"
-      class="mini-pipeline-graph-dropdown-toggle has-tooltip js-builds-dropdown-button"
+      class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
       :title="stage.title"
       data-placement="top"
       data-toggle="dropdown"
@@ -153,15 +164,7 @@ export default {
         :class="dropdownClass"
         class="js-builds-dropdown-list scrollable-menu">
 
-        <div
-          class="text-center"
-          v-if="isLoading">
-          <i
-            class="fa fa-spin fa-spinner"
-            aria-hidden="true"
-            aria-label="Loading">
-          </i>
-        </div>
+        <loading-icon v-if="isLoading"/>
 
         <ul
           v-else

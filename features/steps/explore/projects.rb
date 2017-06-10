@@ -49,7 +49,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
 
   step 'I should see an http link to the repository' do
     project = Project.find_by(name: 'Community')
-    expect(page).to have_field('project_clone', with: project.http_url_to_repo(@user))
+    expect(page).to have_field('project_clone', with: project.http_url_to_repo)
   end
 
   step 'I should see an ssh link to the repository' do
@@ -101,7 +101,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
     create(:merge_request,
       title: "Bug fix for public project",
       source_project: public_project,
-      target_project: public_project,
+      target_project: public_project
           )
   end
 

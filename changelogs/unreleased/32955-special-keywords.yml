@@ -1,0 +1,4 @@
+---
+title: Add all pipeline sources as special keywords to 'only' and 'except'
+merge_request: 11844
+author: Filip Krakowski

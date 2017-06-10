@@ -30,7 +30,7 @@
     |
     \\s\\$(?!\\$)
   )
-    (.+?)
+    ((.|\\n)+?)
   (
     \\s\\\\end{[a-zA-Z]+}$
     |
@@ -45,15 +45,25 @@
     let inline = false;
 
     if (typeof katex !== 'undefined') {
-      const katexString = text.replace(/\\/g, '\\');
-      const matches = new RegExp(katexRegexString, 'gi').exec(katexString);
+      const katexString = text.replace(/&amp;/g, '&')
+        .replace(/&=&/g, '\\space=\\space')
+        .replace(/<(\/?)em>/g, '_');
+      const regex = new RegExp(katexRegexString, 'gi');
+      const matchLocation = katexString.search(regex);
+      const numberOfMatches = katexString.match(regex);
 
-      if (matches && matches.length > 0) {
-        if (matches[1].trim() === '$' && matches[3].trim() === '$') {
+      if (numberOfMatches && numberOfMatches.length !== 0) {
+        if (matchLocation > 0) {
+          let matches = regex.exec(katexString);
           inline = true;
 
-          text = `${katexString.replace(matches[0], '')} ${katex.renderToString(matches[2])}`;
+          while (matches !== null) {
+            const renderedKatex = katex.renderToString(matches[0].replace(/\$/g, ''));
+            text = `${text.replace(matches[0], ` ${renderedKatex}`)}`;
+            matches = regex.exec(katexString);
+          }
         } else {
+          const matches = regex.exec(katexString);
           text = katex.renderToString(matches[2]);
         }
       }
@@ -79,7 +89,7 @@
     },
     computed: {
       markdown() {
-        return marked(this.cell.source.join(''));
+        return marked(this.cell.source.join('').replace(/\\/g, '\\\\'));
       },
     },
   };

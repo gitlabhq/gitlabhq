@@ -6,6 +6,7 @@ class Namespace < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::CurrentSettings
   include Routable
+  include AfterCommitQueue
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -56,7 +57,7 @@ class Namespace < ActiveRecord::Base
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
-        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size'
       )
   end
 
@@ -242,7 +243,9 @@ class Namespace < ActiveRecord::Base
 
         # Remove namespace directroy async with delay so
         # GitLab has time to remove all projects first
-        GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
+        run_after_commit do
+          GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
+        end
       end
     end
 

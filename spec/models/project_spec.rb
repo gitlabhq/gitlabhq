@@ -50,7 +50,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
     it { is_expected.to have_one(:project_feature).dependent(:destroy) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics').dependent(:delete) }
-    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:destroy) }
+    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:delete) }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
@@ -813,8 +813,16 @@ describe Project, models: true do
     context 'when avatar file is uploaded' do
       let(:project) { create(:empty_project, :with_avatar) }
       let(:avatar_path) { "/uploads/system/project/avatar/#{project.id}/dk.png" }
+      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      it 'shows correct url' do
+        expect(project.avatar_url).to eq(avatar_path)
+        expect(project.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
+
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(project.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
     end
 
     context 'When avatar file in git' do
@@ -940,6 +948,20 @@ describe Project, models: true do
     end
   end
 
+  describe '.starred_by' do
+    it 'returns only projects starred by the given user' do
+      user1 = create(:user)
+      user2 = create(:user)
+      project1 = create(:empty_project)
+      project2 = create(:empty_project)
+      create(:empty_project)
+      user1.toggle_star(project1)
+      user2.toggle_star(project2)
+
+      expect(Project.starred_by(user1)).to contain_exactly(project1)
+    end
+  end
+
   describe '.visible_to_user' do
     let!(:project) { create(:empty_project, :private) }
     let!(:user)    { create(:user) }
@@ -965,7 +987,7 @@ describe Project, models: true do
     before do
       storages = {
         'default' => { 'path' => 'tmp/tests/repositories' },
-        'picked'  => { 'path' => 'tmp/tests/repositories' },
+        'picked'  => { 'path' => 'tmp/tests/repositories' }
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
@@ -1423,6 +1445,27 @@ describe Project, models: true do
     end
   end
 
+  describe 'Project import job' do
+    let(:project) { create(:empty_project, import_url: generate(:url)) }
+
+    before do
+      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
+        .with(project.repository_storage_path, project.path_with_namespace, project.import_url)
+        .and_return(true)
+
+      expect_any_instance_of(Repository).to receive(:after_import)
+        .and_call_original
+    end
+
+    it 'imports a project' do
+      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
+
+      project.import_schedule
+
+      expect(project.reload.import_status).to eq('finished')
+    end
+  end
+
   describe '#latest_successful_builds_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
@@ -1504,7 +1547,7 @@ describe Project, models: true do
 
   describe '#add_import_job' do
     context 'forked' do
-      let(:forked_project_link) { create(:forked_project_link) }
+      let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
       let(:forked_from_project) { forked_project_link.forked_from_project }
       let(:project) { forked_project_link.forked_to_project }
 
@@ -1518,9 +1561,9 @@ describe Project, models: true do
     end
 
     context 'not forked' do
-      let(:project) { create(:empty_project) }
-
       it 'schedules a RepositoryImportWorker job' do
+        project = create(:empty_project, import_url: generate(:url))
+
         expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
 
         project.add_import_job
@@ -1702,6 +1745,90 @@ describe Project, models: true do
     end
   end
 
+  describe '#secret_variables_for' do
+    let(:project) { create(:empty_project) }
+
+    let!(:secret_variable) do
+      create(:ci_variable, value: 'secret', project: project)
+    end
+
+    let!(:protected_variable) do
+      create(:ci_variable, :protected, value: 'protected', project: project)
+    end
+
+    subject { project.secret_variables_for('ref') }
+
+    shared_examples 'ref is protected' do
+      it 'contains all the variables' do
+        is_expected.to contain_exactly(secret_variable, protected_variable)
+      end
+    end
+
+    context 'when the ref is not protected' do
+      before do
+        stub_application_setting(
+          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+      end
+
+      it 'contains only the secret variables' do
+        is_expected.to contain_exactly(secret_variable)
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        create(:protected_branch, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+
+    context 'when the ref is a protected tag' do
+      before do
+        create(:protected_tag, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+  end
+
+  describe '#protected_for?' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.protected_for?('ref') }
+
+    context 'when the ref is not protected' do
+      before do
+        stub_application_setting(
+          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        create(:protected_branch, name: 'ref', project: project)
+      end
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when the ref is a protected tag' do
+      before do
+        create(:protected_tag, name: 'ref', project: project)
+      end
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+  end
+
   describe '#update_project_statistics' do
     let(:project) { create(:empty_project) }
 
@@ -1876,19 +2003,9 @@ describe Project, models: true do
   describe '#http_url_to_repo' do
     let(:project) { create :empty_project }
 
-    context 'when no user is given' do
-      it 'returns the url to the repo without a username' do
-        expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
-        expect(project.http_url_to_repo).not_to include('@')
-      end
-    end
-
-    context 'when user is given' do
-      it 'returns the url to the repo with the username' do
-        user = build_stubbed(:user)
-
-        expect(project.http_url_to_repo(user)).to start_with("http://#{user.username}@")
-      end
+    it 'returns the url to the repo without a username' do
+      expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
+      expect(project.http_url_to_repo).not_to include('@')
     end
   end
 

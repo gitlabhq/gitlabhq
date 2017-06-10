@@ -19,7 +19,7 @@ module NotesHelper
       id: noteable.id,
       class: noteable.class.name,
       resources: noteable.class.table_name,
-      project_id: noteable.project.id,
+      project_id: noteable.project.id
     }.to_json
   end
 
@@ -34,7 +34,7 @@ module NotesHelper
 
     data = {
       line_code: line_code,
-      line_type: line_type,
+      line_type: line_type
     }
 
     if @use_legacy_diff_notes
@@ -50,7 +50,7 @@ module NotesHelper
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
-    data = { discussion_id: discussion.id, line_type: line_type }
+    data = { discussion_id: discussion.reply_id, line_type: line_type }
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'
@@ -90,12 +90,16 @@ module NotesHelper
     end
   end
 
-  def note_url(note)
+  def note_url(note, project = @project)
     if note.noteable.is_a?(PersonalSnippet)
       snippet_note_path(note.noteable, note)
     else
-      namespace_project_note_path(@project.namespace, @project, note)
+      namespace_project_note_path(project.namespace, project, note)
     end
+  end
+
+  def noteable_note_url(note)
+    Gitlab::UrlBuilder.build(note)
   end
 
   def form_resources

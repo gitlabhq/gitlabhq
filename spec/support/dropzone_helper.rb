@@ -6,32 +6,52 @@ module DropzoneHelper
   # Dropzone events to perform the actual upload.
   #
   # This method waits for the upload to complete before returning.
-  def dropzone_file(file_path)
+  # max_file_size is an optional parameter.
+  # If it's not 0, then it used in dropzone.maxFilesize parameter.
+  # wait_for_queuecomplete is an optional parameter.
+  # If it's 'false', then the helper will NOT wait for backend response
+  # It lets to test behaviors while AJAX is processing.
+  def dropzone_file(files, max_file_size = 0, wait_for_queuecomplete = true)
     # Generate a fake file input that Capybara can attach to
     page.execute_script <<-JS.strip_heredoc
+      $('#fakeFileInput').remove();
       var fakeFileInput = window.$('<input/>').attr(
-        {id: 'fakeFileInput', type: 'file'}
+        {id: 'fakeFileInput', type: 'file', multiple: true}
       ).appendTo('body');
 
       window._dropzoneComplete = false;
     JS
 
-    # Attach the file to the fake input selector with Capybara
-    attach_file('fakeFileInput', file_path)
+    # Attach files to the fake input selector with Capybara
+    attach_file('fakeFileInput', files)
 
     # Manually trigger a Dropzone "drop" event with the fake input's file list
     page.execute_script <<-JS.strip_heredoc
-      var fileList = [$('#fakeFileInput')[0].files[0]];
-      var e = jQuery.Event('drop', { dataTransfer : { files : fileList } });
-
       var dropzone = $('.div-dropzone')[0].dropzone;
+      dropzone.options.autoProcessQueue = false;
+
+      if (#{max_file_size} > 0) {
+        dropzone.options.maxFilesize = #{max_file_size};
+      }
+
       dropzone.on('queuecomplete', function() {
         window._dropzoneComplete = true;
       });
-      dropzone.listeners[0].events.drop(e);
+
+      var fileList = [$('#fakeFileInput')[0].files];
+
+      $.map(fileList, function(file){
+        var e = jQuery.Event('drop', { dataTransfer : { files : file } });
+
+        dropzone.listeners[0].events.drop(e);
+      });
+
+      dropzone.processQueue();
     JS
 
-    # Wait until Dropzone's fired `queuecomplete`
-    loop until page.evaluate_script('window._dropzoneComplete === true')
+    if wait_for_queuecomplete
+      # Wait until Dropzone's fired `queuecomplete`
+      loop until page.evaluate_script('window._dropzoneComplete === true')
+    end
   end
 end

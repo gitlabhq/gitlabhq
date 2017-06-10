@@ -55,7 +55,7 @@ feature 'Blob button line permalinks (BlobLinePermalinkUpdater)', feature: true,
       end
     end
 
-    describe 'Click "Blame" button' do
+    describe 'Click "Annotate" button' do
       it 'works with no initial line number fragment hash' do
         visit_blob
 

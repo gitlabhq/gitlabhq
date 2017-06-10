@@ -19,12 +19,14 @@ Feature: Project Source Markdown Render
     And I click on Gitlab API in README
     Then I should see correct document rendered
 
+  @javascript
   Scenario: I view README in markdown branch
     Then I should see files from repository in markdown
     And I should see rendered README which contains correct links
     And I click on Rake tasks in README
     Then I should see correct directory rendered
 
+  @javascript
   Scenario: I view README in markdown branch to see reference links to directory
     Then I should see files from repository in markdown
     And I should see rendered README which contains correct links
@@ -74,6 +76,7 @@ Feature: Project Source Markdown Render
     And I click on Gitlab API in README
     Then I should see correct document rendered for markdown branch
 
+  @javascript
   Scenario: I browse directory from markdown branch
     When I visit markdown branch
     Then I should see files from repository in markdown branch

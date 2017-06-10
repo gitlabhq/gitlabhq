@@ -35,12 +35,14 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show
-    override_max_blob_size(@blob)
+    conditionally_expand_blob(@blob)
 
     respond_to do |format|
       format.html do
         environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
         @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+
+        @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
 
         render 'show'
       end
@@ -53,7 +55,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def edit
     if can_collaborate_with_project?
-      blob.load_all_data!(@repository)
+      blob.load_all_data!
     else
       redirect_to action: 'show'
     end
@@ -72,7 +74,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def preview
     @content = params[:content]
-    @blob.load_all_data!(@repository)
+    @blob.load_all_data!
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..-1]
     diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines)
@@ -91,9 +93,11 @@ class Projects::BlobController < Projects::ApplicationController
   def diff
     apply_diff_view_cookie!
 
-    @form  = UnfoldForm.new(params)
-    @lines = Gitlab::Highlight.highlight_lines(repository, @ref, @path)
-    @lines = @lines[@form.since - 1..@form.to - 1]
+    @blob.load_all_data!
+    @lines = Gitlab::Highlight.highlight(@blob.path, @blob.data, repository: @repository).lines
+
+    @form = UnfoldForm.new(params)
+    @lines = @lines[@form.since - 1..@form.to - 1].map(&:html_safe)
 
     if @form.bottom?
       @match_line = ''
@@ -109,7 +113,7 @@ class Projects::BlobController < Projects::ApplicationController
   private
 
   def blob
-    @blob ||= Blob.decorate(@repository.blob_at(@commit.id, @path), @project)
+    @blob ||= @repository.blob_at(@commit.id, @path)
 
     if @blob
       @blob

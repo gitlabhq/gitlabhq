@@ -43,7 +43,7 @@ describe ProjectPolicy, models: true do
 
   let(:master_permissions) do
     %i[
-      push_code_to_protected_branches update_project_snippet update_environment
+      delete_protected_branch update_project_snippet update_environment
       update_deployment admin_milestone admin_project_snippet
       admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image

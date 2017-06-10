@@ -21,4 +21,30 @@ describe DiscussionOnDiff, model: true do
       end
     end
   end
+
+  describe '#line_code_in_diffs' do
+    context 'when the discussion is active in the diff' do
+      let(:diff_refs) { subject.position.diff_refs }
+
+      it 'returns the current line code' do
+        expect(subject.line_code_in_diffs(diff_refs)).to eq(subject.line_code)
+      end
+    end
+
+    context 'when the discussion was created in the diff' do
+      let(:diff_refs) { subject.original_position.diff_refs }
+
+      it 'returns the original line code' do
+        expect(subject.line_code_in_diffs(diff_refs)).to eq(subject.original_line_code)
+      end
+    end
+
+    context 'when the discussion is unrelated to the diff' do
+      let(:diff_refs) { subject.project.commit(RepoHelpers.sample_commit.id).diff_refs }
+
+      it 'returns nil' do
+        expect(subject.line_code_in_diffs(diff_refs)).to be_nil
+      end
+    end
+  end
 end

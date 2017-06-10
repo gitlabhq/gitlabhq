@@ -79,7 +79,9 @@ describe RenameSystemNamespaces, truncate: true do
     it "moves the the repository for a project in the namespace" do
       project = build(:project, namespace: system_namespace, path: "system-project")
       save_invalid_routable(project)
-      TestEnv.copy_repo(project)
+      TestEnv.copy_repo(project,
+                        bare_repo: TestEnv.factory_repo_path_bare,
+                        refs: TestEnv::BRANCH_SHA)
       expected_repo = File.join(TestEnv.repos_path, "system0", "system-project.git")
 
       migration.up
@@ -230,10 +232,10 @@ describe RenameSystemNamespaces, truncate: true do
 
   describe "#child_ids_for_parent" do
     it "collects child ids for all levels" do
-      parent = create(:namespace)
-      first_child = create(:namespace, parent: parent)
-      second_child = create(:namespace, parent: parent)
-      third_child = create(:namespace, parent: second_child)
+      parent = create(:group)
+      first_child = create(:group, parent: parent)
+      second_child = create(:group, parent: parent)
+      third_child = create(:group, parent: second_child)
       all_ids = [parent.id, first_child.id, second_child.id, third_child.id]
 
       collected_ids = migration.child_ids_for_parent(parent, ids: [parent.id])

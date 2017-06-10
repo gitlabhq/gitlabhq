@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards new issue', feature: true, js: true do
-  include WaitForVueResource
-
   let(:project) { create(:empty_project, :public) }
   let(:board)   { create(:board, project: project) }
   let!(:list)   { create(:list, board: board, position: 0) }
@@ -15,17 +13,17 @@ describe 'Issue Boards new issue', feature: true, js: true do
       login_as(user)
 
       visit namespace_project_board_path(project.namespace, project, board)
-      wait_for_vue_resource
+      wait_for_requests
 
-      expect(page).to have_selector('.board', count: 2)
+      expect(page).to have_selector('.board', count: 3)
     end
 
     it 'displays new issue button' do
-      expect(page).to have_selector('.board-issue-count-holder .btn', count: 1)
+      expect(first('.board')).to have_selector('.board-issue-count-holder .btn', count: 1)
     end
 
     it 'does not display new issue button in closed list' do
-      page.within('.board:nth-child(2)') do
+      page.within('.board:nth-child(3)') do
         expect(page).not_to have_selector('.board-issue-count-holder .btn')
       end
     end
@@ -60,7 +58,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
         click_button 'Submit issue'
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       page.within(first('.board .board-issue-count')) do
         expect(page).to have_content('1')
@@ -77,7 +75,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
         click_button 'Submit issue'
       end
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.issue-boards-sidebar')
     end
@@ -86,7 +84,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
   context 'unauthorized user' do
     before do
       visit namespace_project_board_path(project.namespace, project, board)
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'does not display new issue button' do
