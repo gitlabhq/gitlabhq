@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-06-09 15:54+0200\n"
+"PO-Revision-Date: 2017-06-11 18:31-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -190,7 +190,7 @@ msgid "CreateNewFork|Fork"
 msgstr "Bifurcar"
 
 msgid "Cron Timezone"
-msgstr ""
+msgstr "Zona horaria del Cron"
 
 msgid "Custom notification events"
 msgstr "Eventos de notificaciones personalizadas"
@@ -234,7 +234,7 @@ msgstr[0] "Despliegue"
 msgstr[1] "Despliegues"
 
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 msgid "Directory name"
 msgstr "Nombre del directorio"
@@ -320,7 +320,7 @@ msgid "Import repository"
 msgstr "Importar repositorio"
 
 msgid "Interval Pattern"
-msgstr ""
+msgstr "Patrón de intervalo"
 
 msgid "Introducing Cycle Analytics"
 msgstr "Introducción a Cycle Analytics"
@@ -344,6 +344,9 @@ msgstr "Última actualización"
 
 msgid "Last commit"
 msgstr "Último cambio"
+
+msgid "Learn more in the"
+msgstr "Más información en la"
 
 msgid "Leave group"
 msgstr "Abandonar grupo"
@@ -385,6 +388,9 @@ msgstr "Nueva incidencia"
 msgid "New merge request"
 msgstr "Nueva solicitud de fusión"
 
+msgid "New schedule"
+msgstr "Nueva programación"
+
 msgid "New snippet"
 msgstr "Nuevo fragmento de código"
 
@@ -395,7 +401,7 @@ msgid "No repository"
 msgstr "No hay repositorio"
 
 msgid "No schedules"
-msgstr ""
+msgstr "No hay programaciones"
 
 msgid "Not available"
 msgstr "No disponible"
@@ -473,16 +479,16 @@ msgid "Pipeline Schedules"
 msgstr ""
 
 msgid "PipelineSchedules|Activated"
-msgstr ""
+msgstr "Activado"
 
 msgid "PipelineSchedules|Active"
-msgstr ""
+msgstr "Activos"
 
 msgid "PipelineSchedules|All"
-msgstr ""
+msgstr "Todos"
 
 msgid "PipelineSchedules|Inactive"
-msgstr ""
+msgstr "Inactivos"
 
 msgid "PipelineSchedules|Next Run"
 msgstr ""
@@ -491,7 +497,7 @@ msgid "PipelineSchedules|None"
 msgstr ""
 
 msgid "PipelineSchedules|Provide a short description for this pipeline"
-msgstr ""
+msgstr "Proporcione una breve descripción para este pipeline"
 
 msgid "PipelineSchedules|Take ownership"
 msgstr ""
@@ -593,7 +599,10 @@ msgid "Save pipeline schedule"
 msgstr ""
 
 msgid "Schedule a new pipeline"
-msgstr ""
+msgstr "Programar un nuevo pipeline"
+
+msgid "Scheduling Pipelines"
+msgstr "Programación de Pipelines"
 
 msgid "Search branches and tags"
 msgstr "Buscar ramas y etiquetas"
@@ -648,7 +657,7 @@ msgid "Tags"
 msgstr "Etiquetas"
 
 msgid "Target Branch"
-msgstr ""
+msgstr "Rama de destino"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "La etapa de desarrollo muestra el tiempo desde el primer cambio hasta la creación de la solicitud de fusión. Los datos serán automáticamente incorporados aquí una vez creada tu primera solicitud de fusión."
@@ -664,6 +673,9 @@ msgstr "La etapa de incidencia muestra el tiempo que toma desde la creación de 
 
 msgid "The phase of the development lifecycle."
 msgstr "La etapa del ciclo de vida de desarrollo."
+
+msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
+msgstr "La programación de pipelines ejecuta pipelines en el futuro, repetidamente, para ramas o etiquetas específicas. Los pipelines programados heredarán acceso limitado al proyecto basado en su usuario asociado."
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
 msgstr "La etapa de planificación muestra el tiempo desde el paso anterior hasta el envío de tu primera confirmación. Este tiempo se añadirá automáticamente una vez que usted envíe el primer cambio."
@@ -937,3 +949,6 @@ msgstr[1] "días"
 
 msgid "notification emails"
 msgstr "correos electrónicos de notificación"
+
+msgid "pipeline schedules documentation"
+msgstr "documentación sobre la programación de pipelines"

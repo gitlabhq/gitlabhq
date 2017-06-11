@@ -7,7 +7,7 @@
   .form-group
     .col-md-9
       = f.label :description, _('Description'), class: 'label-light'
-      = f.text_field :description, class: 'form-control', required: true, autofocus: true, placeholder: _('PipelineSchedules|Provide a short description for this pipeline')
+      = f.text_field :description, class: 'form-control', required: true, autofocus: true, placeholder: s_('PipelineSchedules|Provide a short description for this pipeline')
   .form-group
     .col-md-9
       = f.label :cron, _('Interval Pattern'), class: 'label-light'
@@ -24,7 +24,7 @@
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
   .form-group
     .col-md-9
-      = f.label  :active, _('PipelineSchedules|Activated'), class: 'label-light'
+      = f.label  :active, s_('PipelineSchedules|Activated'), class: 'label-light'
       %div
         = f.check_box :active, required: false, value: @schedule.active?
         Active
