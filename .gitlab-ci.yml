@@ -441,6 +441,7 @@ gitlab:assets:compile:
     - webpack-report/
 
 karma:
+  image: pixelcog/gitlab:chrometest
   stage: test
   <<: *use-pg
   <<: *dedicated-runner
