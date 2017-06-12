@@ -21,6 +21,12 @@ describe Dashboard::TodosController do
         expect(response).to have_http_status(404)
       end
 
+      it 'renders 404 when given project does not exists' do
+        get :index, project_id: 999
+
+        expect(response).to have_http_status(404)
+      end
+
       it 'renders 200 when filtering for "any project" todos' do
         get :index, project_id: ''
 
