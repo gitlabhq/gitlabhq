@@ -67,35 +67,32 @@ export default {
 
   template: `
     <div class="table-section section-15 pipelines-time-ago">
-      <div class="table-mobile-header" role="rowheader"></div>
-      <div class="table-mobile-content">
-        <p
-          class="duration"
-          v-if="hasDuration">
-          <span
-            v-html="iconTimerSvg">
-          </span>
-          {{durationFormated}}
-        </p>
+      <p
+        class="duration"
+        v-if="hasDuration">
+        <span
+          v-html="iconTimerSvg">
+        </span>
+        {{durationFormated}}
+      </p>
 
-        <p
-          class="finished-at"
-          v-if="hasFinishedTime">
+      <p
+        class="finished-at"
+        v-if="hasFinishedTime">
 
-          <i
-            class="fa fa-calendar"
-            aria-hidden="true" />
+        <i
+          class="fa fa-calendar"
+          aria-hidden="true" />
 
-          <time
-            ref="tooltip"
-            data-toggle="tooltip"
-            data-placement="top"
-            data-container="body"
-            :title="localTimeFinished">
-            {{finishedTimeFormated}}
-          </time>
-        </p>
-      </div>
+        <time
+          ref="tooltip"
+          data-toggle="tooltip"
+          data-placement="top"
+          data-container="body"
+          :title="localTimeFinished">
+          {{finishedTimeFormated}}
+        </time>
+      </p>
     </div>
   `,
 };

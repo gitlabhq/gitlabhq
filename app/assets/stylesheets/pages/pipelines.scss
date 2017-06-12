@@ -580,6 +580,23 @@
   font-weight: normal;
 }
 
+@mixin mini-pipeline-graph-color($color-light, $color-main, $color-dark) {
+  border-color: $color-main;
+  color: $color-main;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: $color-light;
+    border-color: $color-dark;
+    color: $color-dark;
+
+    svg {
+      fill: $color-dark;
+    }
+  }
+}
+
 // Dropdown button in mini pipeline graph
 .mini-pipeline-graph-dropdown-toggle {
   border-radius: 100px;
@@ -619,100 +636,32 @@
 
   // Dropdown button animation in mini pipeline graph
   &.ci-status-icon-success {
-    border-color: $green-500;
-    color: $green-500;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $green-50;
-      border-color: $green-600;
-      color: $green-600;
-
-      svg {
-        fill: $green-600;
-      }
-    }
+    @include mini-pipeline-graph-color($green-50, $green-500, $green-600);
   }
 
   &.ci-status-icon-failed {
-    border-color: $red-500;
-    color: $red-500;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $red-50;
-      border-color: $red-600;
-      color: $red-600;
-
-      svg {
-        fill: $red-600;
-      }
-    }
+    @include mini-pipeline-graph-color($red-50, $red-500, $red-600);
   }
 
   &.ci-status-icon-pending,
   &.ci-status-icon-success_with_warnings {
-    border-color: $orange-500;
-    color: $orange-500;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $orange-50;
-      border-color: $orange-600;
-      color: $orange-600;
-
-      svg {
-        fill: $orange-600;
-      }
-    }
+    @include mini-pipeline-graph-color($orange-50, $orange-500, $orange-600);
   }
 
   &.ci-status-icon-running {
-    border-color: $blue-400;
-    color: $blue-400;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $blue-50;
-      border-color: $blue-600;
-      color: $blue-600;
-
-      svg {
-        fill: $blue-600;
-      }
-    }
+    @include mini-pipeline-graph-color($blue-50, $blue-400, $blue-600);
   }
 
   &.ci-status-icon-canceled,
   &.ci-status-icon-disabled,
   &.ci-status-icon-not-found,
   &.ci-status-icon-manual {
-    border-color: $gl-text-color;
-    color: $gl-text-color;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: rgba($gl-text-color, 0.1);
-      border-color: $gl-text-color;
-    }
+    @include mini-pipeline-graph-color(rgba($gl-text-color, 0.1), $gl-text-color, $gl-text-color);
   }
 
   &.ci-status-icon-created,
   &.ci-status-icon-skipped {
-    border-color: $gray-darkest;
-    color: $gray-darkest;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: rgba($gray-darkest, 0.1);
-      border-color: $gray-darkest;
-    }
+    @include mini-pipeline-graph-color(rgba($gray-darkest, 0.1), $gray-darkest, $gray-darkest);
   }
 }
 
@@ -955,6 +904,14 @@
     .btn,
     a {
       margin-left: 10px;
+    }
+  }
+}
+
+.table-section {
+  @media (max-width: $screen-sm-max) {
+    .ci-status {
+      border: 0;
     }
   }
 }
