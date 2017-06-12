@@ -7,7 +7,6 @@ module Gitlab
         #
         class Image < Node
           include Validatable
-          include DockerImage
 
           ALLOWED_KEYS = %i[name entrypoint].freeze
 
@@ -17,6 +16,28 @@ module Gitlab
 
             validates :name, type: String, presence: true
             validates :entrypoint, type: String, allow_nil: true
+          end
+
+          def hash?
+            @config.is_a?(Hash)
+          end
+
+          def string?
+            @config.is_a?(String)
+          end
+
+          def name
+            value[:name]
+          end
+
+          def entrypoint
+            value[:entrypoint]
+          end
+
+          def value
+            return { name: @config } if string?
+            return @config if hash?
+            {}
           end
         end
       end
