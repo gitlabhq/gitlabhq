@@ -70,6 +70,22 @@ describe 'Comments on personal snippets', :js, feature: true do
 
       expect(find('div#notes')).to have_content('This is awesome!')
     end
+
+    it 'should not have autocomplete' do
+      wait_for_requests
+      request_count_before = page.driver.network_traffic.count
+
+      find('#note_note').native.send_keys('')
+      fill_in 'note[note]', with: '@'
+
+      wait_for_requests
+      request_count_after = page.driver.network_traffic.count
+
+      # This selector probably won't be in place even if autocomplete was enabled
+      # but we want to make sure
+      expect(page).not_to have_selector('.atwho-view')
+      expect(request_count_before).to eq(request_count_after)
+    end
   end
 
   context 'when editing a note' do
