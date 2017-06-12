@@ -174,3 +174,13 @@
     white-space: nowrap;
   }
 }
+
+@media(max-width: $screen-xs-max) {
+  #at-view-commands {
+    left: 5px;
+
+    > .atwho-view-ul {
+      width: 350px;
+    }
+  }
+}
