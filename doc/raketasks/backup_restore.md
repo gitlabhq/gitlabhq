@@ -246,8 +246,8 @@ For omnibus packages:
 
 ```ruby
 gitlab_rails['backup_upload_connection'] = {
-  :provider => 'Local',
-  :local_root => '/mnt/backups'
+  'provider' => 'Local',
+  'local_root' => '/mnt/backups'
 }
 
 # The directory inside the mounted folder to copy backups to
