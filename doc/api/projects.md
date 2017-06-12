@@ -343,6 +343,7 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
+| `avatar`    | mixed   | no      | Image file for avatar of the project                |
 
 ### Create project for user
 
@@ -377,6 +378,7 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
+| `avatar`    | mixed   | no      | Image file for avatar of the project                |
 
 ### Edit project
 
@@ -410,6 +412,7 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
+| `avatar`    | mixed   | no      | Image file for avatar of the project                |
 
 ### Fork project
 
