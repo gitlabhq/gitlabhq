@@ -63,7 +63,7 @@ describe 'New/edit issue', feature: true, js: true do
 
         click_button 'Unassigned'
 
-        wait_for_requests
+        wait_for_ajax
       end
 
       it 'should display selected users even if they are not part of the original API call' do

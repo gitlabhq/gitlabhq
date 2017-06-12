@@ -61,7 +61,7 @@ feature 'Issue Sidebar', feature: true do
     it 'keeps your filtered term after filtering and dismissing the dropdown' do
       find('.dropdown-input-field').native.send_keys user2.name
 
-      wait_for_requests
+      wait_for_ajax
 
       page.within '.dropdown-menu-user' do
         expect(page).not_to have_content 'Unassigned'
