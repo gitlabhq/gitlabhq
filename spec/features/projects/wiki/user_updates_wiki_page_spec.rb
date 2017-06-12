@@ -5,11 +5,10 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
 
   background do
     project.team << [user, :master]
+    WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
     login_as(user)
 
-    visit namespace_project_path(project.namespace, project)
-    WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
-    click_link 'Wiki'
+    visit namespace_project_wikis_path(project.namespace, project)
   end
 
   context 'in the user namespace' do
@@ -41,6 +40,15 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
         expect(page).to have_content('The form contains the following error:')
         expect(page).to have_content('Content can\'t be blank')
         expect(find('textarea#wiki_content').value).to eq ''
+      end
+
+      scenario 'content has autocomplete', :js do
+        click_link 'Edit'
+
+        find('#wiki_content').native.send_keys('')
+        fill_in :wiki_content, with: '@'
+
+        expect(page).to have_selector('.atwho-view')
       end
     end
   end
