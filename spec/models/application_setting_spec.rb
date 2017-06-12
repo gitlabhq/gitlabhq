@@ -303,6 +303,35 @@ describe ApplicationSetting, models: true do
     end
   end
 
+  describe 'elasticsearch licensing' do
+    before do
+      setting.elasticsearch_search = true
+      setting.elasticsearch_indexing = true
+    end
+
+    def expect_is_es_licensed
+      expect(License).to receive(:feature_available?).with(:elastic_search).at_least(:once)
+    end
+
+    it 'disables elasticsearch when unlicensed' do
+      expect_is_es_licensed.and_return(false)
+
+      expect(setting.elasticsearch_indexing?).to be_falsy
+      expect(setting.elasticsearch_indexing).to be_falsy
+      expect(setting.elasticsearch_search?).to be_falsy
+      expect(setting.elasticsearch_search).to be_falsy
+    end
+
+    it 'enables elasticsearch when licensed' do
+      expect_is_es_licensed.and_return(true)
+
+      expect(setting.elasticsearch_indexing?).to be_truthy
+      expect(setting.elasticsearch_indexing).to be_truthy
+      expect(setting.elasticsearch_search?).to be_truthy
+      expect(setting.elasticsearch_search).to be_truthy
+    end
+  end
+
   describe '#elasticsearch_url' do
     it 'presents a single URL as a one-element array' do
       setting.elasticsearch_url = 'http://example.com'
