@@ -9,8 +9,8 @@
 [Elasticsearch] is a flexible, scalable and powerful search service that saves developers time.  Instead of developers creating duplicate code and wasting time, they can now search for code within other teams that will help their own project.
 
 ## Do you need Elasticsearch?
-1. How do developers currently find code from different teams that might be useful for their project eg: a plugin?
-2. How do you ensure developers don't reinvent the wheel?
+1. My team uses a plugin to find code from different teams
+2. Are developers from different teams creating the same code for their own projects
 3. Are you looking to enable innersourcing?
 4. Do you you want to keep GitLab's search fast when dealing with huge amount of data?
 
