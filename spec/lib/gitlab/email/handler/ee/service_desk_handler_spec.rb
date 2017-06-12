@@ -10,19 +10,16 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
 
   let(:email_raw) { fixture_file('emails/service_desk.eml') }
   let(:namespace) { create(:namespace, name: "email") }
-  let(:project) { create(:project, :public, namespace: namespace, path: "test") }
 
-  context 'when service desk is enabled' do
+  context 'service desk is enabled for the project' do
+    let(:project) { create(:empty_project, :public, namespace: namespace, path: 'test', service_desk_enabled: true) }
+
     before do
-      project.update(service_desk_enabled: true)
-
       allow(Notify).to receive(:service_desk_thank_you_email)
         .with(kind_of(Integer)).and_return(double(deliver_later!: true))
 
-      allow_any_instance_of(License).to receive(:feature_available?).and_call_original
-      allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
-      allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
-      allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
+      allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(true)
+      allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
     end
 
     it 'sends thank you the email and creates issue' do
@@ -56,8 +53,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
 
     context 'when license does not support service desk' do
       before do
-        allow_any_instance_of(License).to receive(:feature_available?).and_call_original
-        allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { false }
+        allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)
       end
 
       it 'does not create an issue or send email' do
@@ -88,16 +84,14 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
     end
   end
 
-  context 'when service desk is not enabled' do
-    before do
-      project.update_attributes(service_desk_enabled: false)
-    end
+  context 'service desk is disabled for the project' do
+    let(:project) { create(:empty_project, :public, namespace: namespace, path: 'test') }
 
     it 'bounces the email' do
       expect { receiver.execute }.to raise_error(Gitlab::Email::ProcessingError)
     end
 
-    it 'doesn\'t create an issue' do
+    it "doesn't create an issue" do
       expect { receiver.execute rescue nil }.not_to change { Issue.count }
     end
   end
