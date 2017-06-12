@@ -4,4 +4,8 @@ class FakeRenameReservedPathMigrationV1 < ActiveRecord::Migration
   def version
     '20170316163845'
   end
+
+  def name
+    "FakeRenameReservedPathMigrationV1"
+  end
 end

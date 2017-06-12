@@ -144,7 +144,7 @@ module Gitlab
           end
 
           def redis_key_for_type(type)
-            "rename:#{migration.version}:#{type}"
+            "rename:#{migration.name}:#{type}"
           end
 
           def file_storage?

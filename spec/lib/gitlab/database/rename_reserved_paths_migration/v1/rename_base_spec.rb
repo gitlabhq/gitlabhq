@@ -231,7 +231,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
 
   describe '#track_rename', redis: true do
     it 'tracks a rename in redis' do
-      key = 'rename:20170316163845:namespace'
+      key = 'rename:FakeRenameReservedPathMigrationV1:namespace'
 
       subject.track_rename('namespace', 'path/to/namespace', 'path/to/renamed')
 
