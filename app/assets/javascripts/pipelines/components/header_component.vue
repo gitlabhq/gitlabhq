@@ -91,7 +91,7 @@ export default {
       @actionClicked="postAction"
       />
     <loading-icon
-      v-else
+      v-if="isLoading"
       size="2"/>
   </div>
 </template>

@@ -2,12 +2,13 @@ require 'spec_helper'
 
 describe BuildEntity do
   let(:user) { create(:user) }
-  let(:build) { create(:ci_build, :failed) }
+  let(:build) { create(:ci_build) }
   let(:project) { build.project }
   let(:request) { double('request') }
 
   before do
     allow(request).to receive(:current_user).and_return(user)
+    project.add_developer(user)
   end
 
   let(:entity) do
@@ -16,9 +17,8 @@ describe BuildEntity do
 
   subject { entity.as_json }
 
-  it 'contains paths to build page and retry action' do
-    expect(subject).to include(:build_path, :retry_path)
-    expect(subject[:retry_path]).not_to be_nil
+  it 'contains paths to build page action' do
+    expect(subject).to include(:build_path)
   end
 
   it 'does not contain sensitive information' do
@@ -39,12 +39,32 @@ describe BuildEntity do
     expect(subject[:status]).to include :icon, :favicon, :text, :label
   end
 
-  context 'when build is a regular job' do
+  context 'when build is retryable' do
+    before do
+      build.update(status: :failed)
+    end
+
+    it 'contains cancel path' do
+      expect(subject).to include(:retry_path)
+    end
+  end
+
+  context 'when build is cancelable' do
+    before do
+      build.update(status: :running)
+    end
+
+    it 'contains cancel path' do
+      expect(subject).to include(:cancel_path)
+    end
+  end
+
+  context 'when build is a regular build' do
     it 'does not contain path to play action' do
       expect(subject).not_to include(:play_path)
     end
 
-    it 'is not a playable job' do
+    it 'is not a playable build' do
       expect(subject[:playable]).to be false
     end
   end

@@ -8,8 +8,12 @@ class BuildEntity < Grape::Entity
     path_to(:namespace_project_job, build)
   end
 
-  expose :retry_path, if: -> (*) { build&.retryable? } do |build|
+  expose :retry_path, if: -> (*) { retryable? } do |build|
     path_to(:retry_namespace_project_job, build)
+  end
+
+  expose :cancel_path, if: -> (*) { cancelable? } do |build|
+    path_to(:cancel_namespace_project_job, build)
   end
 
   expose :play_path, if: -> (*) { playable? } do |build|
@@ -24,6 +28,14 @@ class BuildEntity < Grape::Entity
   private
 
   alias_method :build, :object
+
+  def cancelable?
+    build.cancelable? && can?(request.current_user, :update_build, build)
+  end
+
+  def retryable?
+    build.retryable? && can?(request.current_user, :update_build, build)
+  end
 
   def playable?
     build.playable? && can?(request.current_user, :update_build, build)
