@@ -22,5 +22,5 @@ class ProjectSnippetPolicy < BasePolicy
     enable :admin_project_snippet
   end
 
-  rule { team_member }.enable :read_project_snippet
+  rule { guest }.enable :read_project_snippet
 end
