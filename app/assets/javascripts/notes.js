@@ -1060,7 +1060,7 @@ const normalizeNewlines = function(str) {
       var targetId = $originalContentEl.data('target-id');
       var targetType = $originalContentEl.data('target-type');
 
-      new gl.GLForm($editForm.find('form'));
+      new gl.GLForm($editForm.find('form'), this.enableGFM);
 
       $editForm.find('form')
         .attr('action', postUrl)
