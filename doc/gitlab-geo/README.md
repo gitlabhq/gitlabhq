@@ -31,6 +31,38 @@ Keep in mind that:
   clone/pull from repositories (HTTP(S)/SSH).
 - Primary talks to secondaries to notify for changes (API).
 
+## Architecture
+
+The following diagram illustrates the underlying architecture of GitLab Geo:
+
+![GitLab Geo architecture](img/geo-architecture.png)
+
+[Source diagram](https://docs.google.com/drawings/d/1VQIcj6jyE3idWKyt9MRUAaE3XXrkwx8g-Ne4pmURmwI/edit)
+
+In this diagram, there is one Geo primary node and one secondary. The
+secondary clones repositories via git over SSH. Attachments, LFS objects, and
+other files are downloaded via HTTPS using a GitLab API to authenticate.
+
+Writes to the database and Git repositories can only be performed on the Geo
+primary node. The secondary node receives database updates via PostgreSQL
+streaming replication.
+
+Note that the secondary needs two different PostgreSQL databases: a read-only
+instance that streams data from the main GitLab database and another used
+internally by the secondary node to record what data has been replicated.
+
+### LDAP
+
+We recommend that if you use LDAP on your primary that you also set up a
+secondary LDAP server for the secondary Geo node. Otherwise, users will not be
+able to perform Git operations over HTTP(s) on the **secondary** Geo node
+using HTTP Basic Authentication. However, Git via SSH and personal access
+tokens will still work.
+
+Check with your LDAP provider for instructions on on how to set up
+replication. For example, OpenLDAP provides [these
+instructions](https://www.openldap.org/doc/admin24/replication.html).
+
 ## Setup instructions
 
 In order to set up one or more GitLab Geo instances, follow the steps below in
@@ -47,6 +79,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
 1. [Upload the GitLab License](../user/admin_area/license.md) to the **primary** Geo Node to unlock GitLab Geo.
 1. [Setup the database replication](database.md)  (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
+1. Optional: [Configure a secondary LDAP server](../administration/auth/ldap.md) for the secondary. See [notes on LDAP](#ldap).
 1. [Follow the after setup steps](after_setup.md).
 
 [install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
