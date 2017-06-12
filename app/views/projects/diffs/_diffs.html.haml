@@ -1,6 +1,6 @@
+- @can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - environment = local_assigns.fetch(:environment, nil)
 - show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
-- can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_files = diffs.diff_files
 
 .content-block.oneline-block.files-changed
@@ -22,5 +22,5 @@
 - if render_overflow_warning?(diff_files)
   = render 'projects/diffs/warning', diff_files: diffs
 
-.files{ data: { can_create_note: can_create_note } }
+.files{ data: { can_create_note: @can_create_note } }
   = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment }

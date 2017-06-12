@@ -16,7 +16,7 @@ const LINE_COLUMN_CLASSES = "." + LINE_NUMBER_CLASS + ", .line_content";
 
 export default {
   init($diffFile) {
-    const userCanCreateNote = $diffFile && $diffFile.parent().data('can-create-note') !== null;
+    const userCanCreateNote = $diffFile && $diffFile.parent().data('can-create-note') != null;
 
     if (userCanCreateNote) {
       $diffFile.on('mouseover', LINE_COLUMN_CLASSES, e => this.showButton(e))
