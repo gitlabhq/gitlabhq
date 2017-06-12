@@ -4,10 +4,17 @@
 > [Amazon Elasticsearch][aws-elasticsearch] was [introduced][ee-1305] in GitLab
 > EE 9.0.
 
-[Elasticsearch] is a flexible, scalable and powerful search service.
+## How will Elasticsearch help? 
 
-If you want to keep GitLab's search fast when dealing with huge amount of data,
-you should consider [enabling Elasticsearch](#enable-elasticsearch).
+[Elasticsearch] is a flexible, scalable and powerful search service that saves developers time.  Instead of developers creating duplicate code and wasting time, they can now search for code within other teams that will help their own project.
+
+## Do you need Elasticsearch?
+1. How do developers currently find code from different teams that might be useful for their project eg: a plugin?
+2. How do you ensure developers don't reinvent the wheel?
+3. Are you looking to enable innersourcing?
+4. Do you you want to keep GitLab's search fast when dealing with huge amount of data?
+
+If you answered yes to any of these, you should consider [enabling Elasticsearch](#enable-elasticsearch).
 
 GitLab leverages the search capabilities of Elasticsearch and enables it when
 searching in:
