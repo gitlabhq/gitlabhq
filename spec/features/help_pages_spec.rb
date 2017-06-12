@@ -34,7 +34,7 @@ describe 'Help Pages', feature: true do
     end
   end
 
-  context 'in a production environment with version check enabled', js: true do
+  context 'in a production environment with version check enabled', :js do
     before do
       allow(Rails.env).to receive(:production?) { true }
       allow(current_application_settings).to receive(:version_check_enabled) { true }
@@ -44,18 +44,12 @@ describe 'Help Pages', feature: true do
       visit help_path
     end
 
-    it 'should display a version check image' do
-      expect(find('.js-version-status-badge')).to be_visible
+    it 'has a version check image' do
+      expect(find('.js-version-status-badge', visible: false)['src']).to end_with('/version-check-url')
     end
 
-    it 'should have a src url' do
-      expect(find('.js-version-status-badge')['src']).to match(/\/version-check-url/)
-    end
-
-    it 'should hide the version check image if the image request fails' do
-      # We use '--load-images=no' with poltergeist so we must trigger manually
-      execute_script("$('.js-version-status-badge').trigger('error');")
-
+    it 'hides the version check image if the image request fails' do
+      # We use '--load-images=yes' with poltergeist so the image fails to load
       expect(find('.js-version-status-badge', visible: false)).not_to be_visible
     end
   end
