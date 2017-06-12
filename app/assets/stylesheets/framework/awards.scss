@@ -10,7 +10,7 @@
   top: 0;
   margin-top: 3px;
   padding: $gl-padding;
-  z-index: 9;
+  z-index: 300;
   width: 300px;
   font-size: 14px;
   background-color: $white-light;
@@ -110,6 +110,7 @@
 .award-control {
   margin: 0 5px 6px 0;
   outline: 0;
+  position: relative;
 
   &.disabled {
     cursor: default;
@@ -227,8 +228,8 @@
   .award-control-icon-positive,
   .award-control-icon-super-positive {
     position: absolute;
-    left: 11px;
-    bottom: 7px;
+    left: 10px;
+    bottom: 6px;
     opacity: 0;
     @include transition(opacity, transform);
   }

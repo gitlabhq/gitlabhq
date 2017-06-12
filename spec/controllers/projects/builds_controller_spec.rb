@@ -261,7 +261,11 @@ describe Projects::BuildsController do
 
   describe 'POST play' do
     before do
-      project.add_master(user)
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: 'master', project: project)
+
       sign_in(user)
 
       post_play

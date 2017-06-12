@@ -510,17 +510,13 @@
       position: absolute;
       border-top: 2px solid $border-color;
       height: 1px;
-      top: 8px;
+      top: 9px;
       width: 8px;
       left: 0;
     }
 
     &:last-child {
       margin-bottom: 0;
-
-      &::before {
-        top: 14px;
-      }
     }
   }
 
@@ -529,7 +525,7 @@
     width: 2px;
     background: $border-color;
     position: absolute;
-    top: -5px;
+    top: -9px;
   }
 }
 

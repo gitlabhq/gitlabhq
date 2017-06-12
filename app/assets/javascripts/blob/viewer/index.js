@@ -78,7 +78,7 @@ export default class BlobViewer {
     .fail(() => new Flash('Error loading source view'))
     .done((data) => {
       viewer.innerHTML = data.html;
-      $(viewer).syntaxHighlight();
+      $(viewer).renderGFM();
 
       viewer.setAttribute('data-loaded', 'true');
 

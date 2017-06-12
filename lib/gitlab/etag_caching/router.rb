@@ -43,8 +43,8 @@ module Gitlab
         ),
       ].freeze
 
-      def self.match(env)
-        ROUTES.find { |route| route.regexp.match(env['PATH_INFO']) }
+      def self.match(request)
+        ROUTES.find { |route| route.regexp.match(request.path_info) }
       end
     end
   end

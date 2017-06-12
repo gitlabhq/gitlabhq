@@ -1861,19 +1861,43 @@ describe Repository, models: true do
   end
 
   describe '#is_ancestor?' do
-    context 'Gitaly is_ancestor feature enabled' do
-      let(:commit) { repository.commit }
-      let(:ancestor) { commit.parents.first }
+    let(:commit) { repository.commit }
+    let(:ancestor) { commit.parents.first }
 
-      before do
-        allow(Gitlab::GitalyClient).to receive(:enabled?).and_return(true)
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+    context 'with Gitaly enabled' do
+      it 'it is an ancestor' do
+        expect(repository.is_ancestor?(ancestor.id, commit.id)).to eq(true)
       end
 
-      it "asks Gitaly server if it's an ancestor" do
-        expect_any_instance_of(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).with(ancestor.id, commit.id)
+      it 'it is not an ancestor' do
+        expect(repository.is_ancestor?(commit.id, ancestor.id)).to eq(false)
+      end
 
-        repository.is_ancestor?(ancestor.id, commit.id)
+      it 'returns false on nil-values' do
+        expect(repository.is_ancestor?(nil, commit.id)).to eq(false)
+        expect(repository.is_ancestor?(ancestor.id, nil)).to eq(false)
+        expect(repository.is_ancestor?(nil, nil)).to eq(false)
+      end
+    end
+
+    context 'with Gitaly disabled' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:enabled?).and_return(false)
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(false)
+      end
+
+      it 'it is an ancestor' do
+        expect(repository.is_ancestor?(ancestor.id, commit.id)).to eq(true)
+      end
+
+      it 'it is not an ancestor' do
+        expect(repository.is_ancestor?(commit.id, ancestor.id)).to eq(false)
+      end
+
+      it 'returns false on nil-values' do
+        expect(repository.is_ancestor?(nil, commit.id)).to eq(false)
+        expect(repository.is_ancestor?(ancestor.id, nil)).to eq(false)
+        expect(repository.is_ancestor?(nil, nil)).to eq(false)
       end
     end
   end

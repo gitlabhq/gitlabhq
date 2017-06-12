@@ -394,6 +394,12 @@ ul.notes {
   padding-bottom: 8px;
 }
 
+.note-header-author-name {
+  @media (max-width: $screen-xs-max) {
+    display: none;
+  }
+}
+
 .note-headline-light {
   display: inline;
 
@@ -665,7 +671,7 @@ ul.notes {
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: 6px 10px;
+  padding: 5px 10px 6px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -678,6 +684,10 @@ ul.notes {
 
   .line-resolve-btn {
     margin-right: 5px;
+
+    svg {
+      vertical-align: middle;
+    }
   }
 }
 
@@ -714,6 +724,10 @@ ul.notes {
   }
 }
 
+.line-resolve-text {
+  vertical-align: middle;
+}
+
 .discussion-next-btn {
   svg {
     margin: 0;
@@ -731,9 +745,8 @@ ul.notes {
 // Merge request notes in diffs
 .diff-file {
   // Diff is side by side
-  .notes_content.parallel .note-header .note-headline-light {
+  .notes_content.parallel .note-header .note-header-author-name {
     display: block;
-    position: relative;
   }
   // Diff is inline
   .notes_content .note-header .note-headline-light {

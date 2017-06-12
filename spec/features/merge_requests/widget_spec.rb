@@ -197,4 +197,25 @@ describe 'Merge request', :feature, :js do
       end
     end
   end
+
+  context 'user can merge into source project but cannot push to fork', js: true do
+    let(:fork_project) { create(:project, :public) }
+    let(:user2) { create(:user) }
+
+    before do
+      project.team << [user2, :master]
+      logout
+      login_as user2
+      merge_request.update(target_project: fork_project)
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    end
+
+    it 'user can merge into the source project' do
+      expect(page).to have_button('Merge', disabled: false)
+    end
+
+    it 'user cannot remove source branch' do
+      expect(page).to have_field('remove-source-branch-input', disabled: true)
+    end
+  end
 end

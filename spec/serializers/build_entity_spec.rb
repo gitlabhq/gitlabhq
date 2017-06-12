@@ -3,6 +3,7 @@ require 'spec_helper'
 describe BuildEntity do
   let(:user) { create(:user) }
   let(:build) { create(:ci_build) }
+  let(:project) { build.project }
   let(:request) { double('request') }
 
   before do
@@ -52,7 +53,10 @@ describe BuildEntity do
 
     context 'when user is allowed to trigger action' do
       before do
-        build.project.add_master(user)
+        project.add_developer(user)
+
+        create(:protected_branch, :developers_can_merge,
+               name: 'master', project: project)
       end
 
       it 'contains path to play action' do

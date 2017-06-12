@@ -15,7 +15,7 @@
         None
     %td.next-run-cell
       - if pipeline_schedule.active?
-        = time_ago_with_tooltip(pipeline_schedule.next_run_at)
+        = time_ago_with_tooltip(pipeline_schedule.real_next_run)
       - else
         Inactive
     %td

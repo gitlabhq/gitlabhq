@@ -953,6 +953,8 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
+    return false if ancestor_id.nil? || descendant_id.nil?
+    
     Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
       if is_enabled
         raw_repository.is_ancestor?(ancestor_id, descendant_id)

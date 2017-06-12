@@ -20,7 +20,6 @@ FactoryGirl.define do
     project factory: :empty_project
     active true
     properties({
-      namespace: 'somepath',
       api_url: 'https://kubernetes.example.com',
       token: 'a' * 40,
     })
