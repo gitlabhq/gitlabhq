@@ -66,13 +66,8 @@ class Project < ActiveRecord::Base
 
   # update visibility_level of forks
   after_update :update_forks_visibility_level
-<<<<<<< HEAD
   after_update :remove_mirror_repository_reference,
                if: ->(project) { project.mirror? && project.import_url_updated? }
-
-  after_validation :check_pending_delete
-=======
->>>>>>> ce-com/master
 
   after_validation :check_pending_delete
 
@@ -571,15 +566,11 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
-<<<<<<< HEAD
-    self.import_data&.destroy unless mirror?
-=======
     remove_import_data
   end
 
   def remove_import_data
-    import_data&.destroy
->>>>>>> ce-com/master
+    import_data&.destroy unless mirror?
   end
 
   def import_url=(value)
@@ -1255,13 +1246,6 @@ class Project < ActiveRecord::Base
     @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
-<<<<<<< HEAD
-  def reference_issue_tracker?
-    default_issues_tracker? || jira_tracker_active?
-  end
-
-=======
->>>>>>> ce-com/master
   def jira_tracker_active?
     jira_tracker? && jira_service.active
   end
@@ -1401,7 +1385,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-<<<<<<< HEAD
   def merge_method
     if self.merge_requests_ff_only_enabled
       :ff
@@ -1460,8 +1443,6 @@ class Project < ActiveRecord::Base
     remote_mirrors.each(&:mark_for_delete_if_blank_url)
   end
 
-=======
->>>>>>> ce-com/master
   def running_or_pending_build_count(force: false)
     Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
       builds.running_or_pending.count(:all)
