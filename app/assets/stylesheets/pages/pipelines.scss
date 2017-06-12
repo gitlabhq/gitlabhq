@@ -986,10 +986,17 @@
   }
 }
 
-.pipeline-header-container {
+.ci-header-container {
   min-height: 55px;
 
   .text-center {
     padding-top: 12px;
+  }
+
+  .header-action-buttons {
+    .btn,
+    a {
+      margin-left: 10px;
+    }
   }
 }

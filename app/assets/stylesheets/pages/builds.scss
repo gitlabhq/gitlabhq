@@ -153,15 +153,16 @@
   }
 
   .environment-information {
-    background-color: $gray-light;
     border: 1px solid $border-color;
-    padding: 12px $gl-padding;
+    padding: 8px $gl-padding 12px;
     border-radius: $border-radius-default;
 
     svg {
       position: relative;
-      top: 1px;
+      top: 5px;
       margin-right: 5px;
+      width: 22px;
+      height: 22px;
     }
   }
 
@@ -175,54 +176,31 @@
   }
 }
 
-.status-message {
-  display: inline-block;
-  color: $white-light;
-
-  .status-icon {
-    display: inline-block;
-    width: 16px;
-    height: 33px;
-  }
-
-  .status-text {
-    float: left;
-    opacity: 0;
-    margin-right: 10px;
-    font-weight: normal;
-    line-height: 1.8;
-    transition: opacity 1s ease-out;
-
-    &.animate {
-      animation: fade-out-status 2s ease;
-    }
-  }
-
-  &:hover .status-text {
-    opacity: 1;
-  }
-}
-
 .build-header {
-  position: relative;
-  padding: 0;
-  display: flex;
-  min-height: 58px;
-  align-items: center;
+  .ci-header-container,
+  .header-action-buttons {
+    display: flex;
+  }
 
-  @media (max-width: $screen-sm-max) {
-    padding-right: 40px;
-    margin-top: 6px;
+  .ci-header-container {
+    min-height: 54px;
+  }
 
-    .btn-inverted {
-      display: none;
+  .page-content-header {
+    padding: 10px 0 9px;
+  }
+
+  .header-action-buttons {
+    @media (max-width: $screen-xs-max) {
+      .sidebar-toggle-btn {
+        margin-top: 0;
+        margin-left: 10px;
+        max-height: 34px;
+      }
     }
   }
 
   .header-content {
-    flex: 1;
-    line-height: 1.8;
-
     a {
       color: $gl-text-color;
 
@@ -245,7 +223,7 @@
 }
 
 .right-sidebar.build-sidebar {
-  padding: $gl-padding 0;
+  padding: 0;
 
   &.right-sidebar-collapsed {
     display: none;
@@ -258,6 +236,10 @@
   .block {
     width: 100%;
 
+    &:last-child {
+      border-bottom: 1px solid $border-gray-normal;
+    }
+
     &.coverage {
       padding: 0 16px 11px;
     }
@@ -267,34 +249,39 @@
     }
   }
 
-  .js-build-variable {
+  .trigger-build-variable {
     color: $code-color;
   }
 
-  .js-build-value {
+  .trigger-build-value {
     padding: 2px 4px;
     color: $black;
     background-color: $white-light;
   }
 
-  .build-sidebar-header {
-    padding: 0 $gl-padding $gl-padding;
-
-    .gutter-toggle {
-      margin-top: 0;
-    }
+  .label {
+    margin-left: 2px;
   }
 
   .retry-link {
-    color: $gl-link-color;
     display: none;
 
-    &:hover {
-      text-decoration: underline;
+    .btn-inverted-secondary {
+      color: $blue-500;
+
+      &:hover {
+        color: $white-light;
+      }
     }
 
     @media (max-width: $screen-sm-max) {
       display: block;
+
+      .btn {
+        i {
+          margin-left: 5px;
+        }
+      }
     }
   }
 
@@ -317,6 +304,12 @@
       right: $gl-padding;
       left: $gl-padding;
       width: auto;
+    }
+
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 3px;
     }
   }
 
@@ -378,6 +371,10 @@
         margin-left: 3px;
       }
     }
+  }
+
+  .link-commit {
+    color: $blue-600;
   }
 }
 

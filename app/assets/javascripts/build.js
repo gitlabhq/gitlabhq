@@ -149,27 +149,34 @@ window.Build = (function () {
   Build.prototype.verifyTopPosition = function () {
     const $buildPage = $('.build-page');
 
+    const $flashError = $('.alert-wrapper');
     const $header = $('.build-header', $buildPage);
     const $runnersStuck = $('.js-build-stuck', $buildPage);
     const $startsEnvironment = $('.js-environment-container', $buildPage);
     const $erased = $('.js-build-erased', $buildPage);
+    const prependTopDefault = 20;
 
+    // header + navigation + margin
     let topPostion = 168;
 
-    if ($header) {
+    if ($header.length) {
       topPostion += $header.outerHeight();
     }
 
-    if ($runnersStuck) {
+    if ($runnersStuck.length) {
       topPostion += $runnersStuck.outerHeight();
     }
 
-    if ($startsEnvironment) {
-      topPostion += $startsEnvironment.outerHeight();
+    if ($startsEnvironment.length) {
+      topPostion += $startsEnvironment.outerHeight() + prependTopDefault;
     }
 
-    if ($erased) {
-      topPostion += $erased.outerHeight() + 10;
+    if ($erased.length) {
+      topPostion += $erased.outerHeight() + prependTopDefault;
+    }
+
+    if ($flashError.length) {
+      topPostion += $flashError.outerHeight();
     }
 
     this.$buildTrace.css({
@@ -245,6 +252,7 @@ window.Build = (function () {
 
   Build.prototype.toggleSidebar = function (shouldHide) {
     const shouldShow = typeof shouldHide === 'boolean' ? !shouldHide : undefined;
+    const $toggleButton = $('.js-sidebar-build-toggle-header');
 
     this.$buildTrace
       .toggleClass('sidebar-expanded', shouldShow)
@@ -252,6 +260,16 @@ window.Build = (function () {
     this.$sidebar
       .toggleClass('right-sidebar-expanded', shouldShow)
       .toggleClass('right-sidebar-collapsed', shouldHide);
+
+    $('.js-build-page')
+      .toggleClass('sidebar-expanded', shouldShow)
+      .toggleClass('sidebar-collapsed', shouldHide);
+
+    if (this.$sidebar.hasClass('right-sidebar-expanded')) {
+      $toggleButton.addClass('hidden');
+    } else {
+      $toggleButton.removeClass('hidden');
+    }
   };
 
   Build.prototype.sidebarOnResize = function () {
@@ -266,6 +284,7 @@ window.Build = (function () {
 
   Build.prototype.sidebarOnClick = function () {
     if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
+    this.verifyTopPosition();
   };
 
   Build.prototype.updateArtifactRemoveDate = function () {

@@ -34,10 +34,8 @@ class BuildDetailsEntity < BuildEntity
   private
 
   def build_failed_issue_options
-    {
-      title: "Build Failed ##{build.id}",
-      description: namespace_project_job_url(project.namespace, project, build)
-    }
+    { title: "Build Failed ##{build.id}",
+      description: namespace_project_job_path(project.namespace, project, build) }
   end
 
   def current_user

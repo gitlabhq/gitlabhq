@@ -132,6 +132,11 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
+  # To be overriden when inherrited from
+  def cancelable?
+    false
+  end
+
   def stuck?
     false
   end
