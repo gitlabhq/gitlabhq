@@ -15,13 +15,13 @@ describe Gitlab::EtagCaching::Middleware do
     end
 
     it 'does not add ETag header' do
-      _, headers, _ = middleware.call(build_env(path, if_none_match))
+      _, headers, _ = middleware.call(build_request(path, if_none_match))
 
       expect(headers['ETag']).to be_nil
     end
 
     it 'passes status code from app' do
-      status, _, _ = middleware.call(build_env(path, if_none_match))
+      status, _, _ = middleware.call(build_request(path, if_none_match))
 
       expect(status).to eq app_status_code
     end
@@ -39,7 +39,7 @@ describe Gitlab::EtagCaching::Middleware do
       expect_any_instance_of(Gitlab::EtagCaching::Store)
         .to receive(:touch).and_return('123')
 
-      middleware.call(build_env(path, if_none_match))
+      middleware.call(build_request(path, if_none_match))
     end
 
     context 'when If-None-Match header was specified' do
@@ -51,7 +51,7 @@ describe Gitlab::EtagCaching::Middleware do
         expect(Gitlab::Metrics).to receive(:add_event)
           .with(:etag_caching_key_not_found, endpoint: 'issue_notes')
 
-        middleware.call(build_env(path, if_none_match))
+        middleware.call(build_request(path, if_none_match))
       end
     end
   end
@@ -65,7 +65,7 @@ describe Gitlab::EtagCaching::Middleware do
     end
 
     it 'returns this value as header' do
-      _, headers, _ = middleware.call(build_env(path, if_none_match))
+      _, headers, _ = middleware.call(build_request(path, if_none_match))
 
       expect(headers['ETag']).to eq 'W/"123"'
     end
@@ -82,17 +82,17 @@ describe Gitlab::EtagCaching::Middleware do
     it 'does not call app' do
       expect(app).not_to receive(:call)
 
-      middleware.call(build_env(path, if_none_match))
+      middleware.call(build_request(path, if_none_match))
     end
 
     it 'returns status code 304' do
-      status, _, _ = middleware.call(build_env(path, if_none_match))
+      status, _, _ = middleware.call(build_request(path, if_none_match))
 
       expect(status).to eq 304
     end
 
     it 'returns empty body' do
-      _, _, body = middleware.call(build_env(path, if_none_match))
+      _, _, body = middleware.call(build_request(path, if_none_match))
 
       expect(body).to be_empty
     end
@@ -103,7 +103,7 @@ describe Gitlab::EtagCaching::Middleware do
       expect(Gitlab::Metrics).to receive(:add_event)
         .with(:etag_caching_cache_hit, endpoint: 'issue_notes')
 
-      middleware.call(build_env(path, if_none_match))
+      middleware.call(build_request(path, if_none_match))
     end
 
     context 'when polling is disabled' do
@@ -113,7 +113,7 @@ describe Gitlab::EtagCaching::Middleware do
       end
 
       it 'returns status code 429' do
-        status, _, _ = middleware.call(build_env(path, if_none_match))
+        status, _, _ = middleware.call(build_request(path, if_none_match))
 
         expect(status).to eq 429
       end
@@ -131,7 +131,7 @@ describe Gitlab::EtagCaching::Middleware do
     it 'calls app' do
       expect(app).to receive(:call).and_return([app_status_code, {}, ['body']])
 
-      middleware.call(build_env(path, if_none_match))
+      middleware.call(build_request(path, if_none_match))
     end
 
     it 'tracks "etag_caching_resource_changed" event' do
@@ -142,7 +142,7 @@ describe Gitlab::EtagCaching::Middleware do
       expect(Gitlab::Metrics).to receive(:add_event)
         .with(:etag_caching_resource_changed, endpoint: 'issue_notes')
 
-      middleware.call(build_env(path, if_none_match))
+      middleware.call(build_request(path, if_none_match))
     end
   end
 
@@ -160,7 +160,7 @@ describe Gitlab::EtagCaching::Middleware do
       expect(Gitlab::Metrics).to receive(:add_event)
         .with(:etag_caching_header_missing, endpoint: 'issue_notes')
 
-      middleware.call(build_env(path, if_none_match))
+      middleware.call(build_request(path, if_none_match))
     end
   end
 
@@ -192,10 +192,7 @@ describe Gitlab::EtagCaching::Middleware do
       .to receive(:get).and_return(value)
   end
 
-  def build_env(path, if_none_match)
-    {
-      'PATH_INFO' => path,
-      'HTTP_IF_NONE_MATCH' => if_none_match
-    }
+  def build_request(path, if_none_match)
+    { 'PATH_INFO' => path, 'HTTP_IF_NONE_MATCH' => if_none_match }
   end
 end
