@@ -807,7 +807,7 @@ module API
         expose :name, :entrypoint
       end
 
-      class ServiceImage < Image
+      class Service < Image
         expose :alias, :command
       end
 
@@ -852,7 +852,7 @@ module API
         expose :variables
         expose :steps, using: Step
         expose :image, using: Image
-        expose :services, using: ServiceImage
+        expose :services, using: Service
         expose :artifacts, using: Artifacts
         expose :cache, using: Cache
         expose :credentials, using: Credentials
