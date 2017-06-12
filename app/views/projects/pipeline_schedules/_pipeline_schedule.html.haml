@@ -4,12 +4,9 @@
       = pipeline_schedule.description
     %td.branch-name-cell
       = icon('code-fork')
-<<<<<<< HEAD
-      = link_to pipeline_schedule.ref, namespace_project_commits_path(@project.namespace, @project, pipeline_schedule.ref), class: "branch-name"
-=======
       - if pipeline_schedule.ref
-        = link_to pipeline_schedule.ref, project_ref_path(@project, pipeline_schedule.ref), class: "ref-name"
->>>>>>> 9dfecec... Merge branch '32790-pipeline_schedules-pages-throwing-error-500' into 'master'
+        = link_to pipeline_schedule.ref, namespace_project_commits_path(@project.namespace, @project, pipeline_schedule.ref), class: "branch-name"
+
     %td
       - if pipeline_schedule.last_pipeline
         .status-icon-container{ class: "ci-status-icon-#{pipeline_schedule.last_pipeline.status}" }

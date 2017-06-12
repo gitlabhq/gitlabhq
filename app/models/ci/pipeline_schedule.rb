@@ -28,17 +28,12 @@ module Ci
       !active?
     end
 
-<<<<<<< HEAD
-    def importing_or_inactive?
-      importing? || inactive?
-=======
     def deactivate!
       update_attribute(:active, false)
     end
 
     def runnable_by_owner?
       Ability.allowed?(owner, :create_pipeline, project)
->>>>>>> 9dfecec... Merge branch '32790-pipeline_schedules-pages-throwing-error-500' into 'master'
     end
 
     def set_next_run_at
