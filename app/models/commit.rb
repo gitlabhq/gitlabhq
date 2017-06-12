@@ -237,13 +237,16 @@ class Commit
   def signature
     return @signature if defined?(@signature)
 
-    sig, signed = @raw.signature(project.repository)
-    if sig && signed
-      GPGME::Crypto.new.verify(sig, signed_text: signed) do |sign|
-        @signature = sign
+    @signature = nil
+
+    signature, signed_text = @raw.signature(project.repository)
+    if signature && signed_text
+      GPGME::Crypto.new.verify(signature, signed_text: signed_text) do |verified_signature|
+        @signature = verified_signature
       end
     end
-    @signature ||= nil
+
+    @signature
   end
 
   def revert_branch_name
