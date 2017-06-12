@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170603200744) do
+ActiveRecord::Schema.define(version: 20170612150426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -440,6 +440,7 @@ ActiveRecord::Schema.define(version: 20170603200744) do
     t.string "encrypted_value_iv"
     t.integer "project_id", null: false
     t.boolean "protected", default: false, null: false
+    t.string "scope", default: "*", null: false
   end
 
   add_index "ci_variables", ["project_id"], name: "index_ci_variables_on_project_id", using: :btree

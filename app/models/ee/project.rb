@@ -77,6 +77,10 @@ module EE
       end
     end
 
+    def secret_variables_for(ref)
+      super.where(scope: '*')
+    end
+
     private
 
     def licensed_feature_available?(feature)
