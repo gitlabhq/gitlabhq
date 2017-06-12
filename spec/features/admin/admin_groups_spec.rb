@@ -24,14 +24,9 @@ feature 'Admin Groups', feature: true do
     it 'creates new group' do
       visit admin_groups_path
 
-<<<<<<< HEAD
-      click_link "New group"
-
-=======
       page.within '#content-body' do
         click_link "New group"
       end
->>>>>>> ce-com/master
       path_component = 'gitlab'
       group_name = 'GitLab group name'
       group_description = 'Description of group for GitLab'
