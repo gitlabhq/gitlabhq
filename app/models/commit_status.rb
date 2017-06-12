@@ -15,7 +15,7 @@ class CommitStatus < ActiveRecord::Base
 
   validates :pipeline, presence: true, unless: :importing?
 
-  validates :name, presence: true
+  validates :name, presence: true, unless: :importing?
 
   alias_attribute :author, :user
 
