@@ -47,16 +47,7 @@ describe Banzai::Filter::AbstractReferenceFilter do
       end
     end
 
-    context 'with RequestStore enabled' do
-      before do
-        RequestStore.begin!
-      end
-
-      after do
-        RequestStore.end!
-        RequestStore.clear!
-      end
-
+    context 'with RequestStore enabled', :request_store do
       it 'returns a list of Projects for a list of paths' do
         expect(filter.find_projects_for_paths([project.path_with_namespace])).
           to eq([project])

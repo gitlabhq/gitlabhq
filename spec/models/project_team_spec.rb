@@ -389,16 +389,7 @@ describe ProjectTeam, models: true do
   end
 
   describe '#max_member_access_for_user_ids' do
-    context 'with RequestStore enabled' do
-      before do
-        RequestStore.begin!
-      end
-
-      after do
-        RequestStore.end!
-        RequestStore.clear!
-      end
-
+    context 'with RequestStore enabled', :request_store do
       include_examples 'max member access for users'
 
       def access_levels(users)
