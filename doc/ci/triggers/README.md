@@ -16,7 +16,6 @@ The following methods of authentication are supported.
 
 A unique trigger token can be obtained when [adding a new trigger](#adding-a-new-trigger).
 
-<<<<<<< HEAD
 ### CI job token
 
 > **Note**:
@@ -44,8 +43,6 @@ Pipelines triggered that way also expose a special variable:
 
 For more information, read about [triggering a pipeline](#triggering-a-pipeline).
 
-=======
->>>>>>> ce-com/master
 ## Adding a new trigger
 
 You can add a new trigger by going to your project's
@@ -150,7 +147,6 @@ Now, whenever a new tag is pushed on project A, the job will run and the
 `stage: test` complete successfully.
 
 ## Triggering a pipeline from a webhook
-<<<<<<< HEAD
 
 > **Notes**:
 - Introduced in GitLab 8.14.
@@ -180,37 +176,6 @@ This information is also exposed in the UI.
 
 ![Job variables in UI](img/trigger_variables.png)
 
-=======
-
-> **Notes**:
-- Introduced in GitLab 8.14.
-- `ref` should be passed as part of the URL in order to take precedence over
-  `ref` from the webhook body that designates the branch ref that fired the
-  trigger in the source repository.
-- `ref` should be URL-encoded if it contains slashes.
-
-To trigger a job from a webhook of another project you need to add the following
-webhook URL for Push and Tag events (change the project ID, ref and token):
-
-```
-https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN
-```
-
-## Making use of trigger variables
-
-You can pass any number of arbitrary variables in the trigger API call and they
-will be available in GitLab CI so that they can be used in your `.gitlab-ci.yml`
-file. The parameter is of the form:
-
-```
-variables[key]=value
-```
-
-This information is also exposed in the UI.
-
-![Job variables in UI](img/trigger_variables.png)
-
->>>>>>> ce-com/master
 Using trigger variables can be proven useful for a variety of reasons:
 
 * Identifiable jobs. Since the variable is exposed in the UI you can know
