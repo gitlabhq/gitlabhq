@@ -173,7 +173,7 @@ When the job is run, `tutum/wordpress` will be started and you will have
 access to it from your build container under the hostnames `tutum-wordpress`
 (requires GitLab Runner v1.1.0 or newer) and `tutum__wordpress`.
 
-When using private registry, image name usually also include hostname and port
+When using a private registry, the image name also includes a hostname and port
 of the registry. 
 
 ```yaml
@@ -181,7 +181,7 @@ services:
 - docker.example.com:5000/wordpress:latest
 ```
 
-In this case, hostname will also include registry's hostname. Service will be
+The service hostname will also include the registry hostname. Service will be
 available under hostnames `docker.example.com-wordpress` (requires GitLab Runner v1.1.0 or newer)
 and `docker.example.com__wordpress`.
 
