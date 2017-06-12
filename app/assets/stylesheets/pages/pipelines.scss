@@ -545,12 +545,13 @@
       border: 1px solid $border-color;
       border-radius: 30px;
       background-color: $white-light;
+    }
 
-      &:hover {
-        background-color: $stage-hover-bg;
-        border: 1px solid $stage-hover-border;
-        color: $gl-text-color;
-      }
+    a.build-content:hover,
+    button.build-content:hover {
+      background-color: $stage-hover-bg;
+      border: 1px solid $stage-hover-border;
+      color: $gl-text-color;
     }
 
 
