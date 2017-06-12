@@ -187,7 +187,7 @@ class License < ActiveRecord::Base
   end
 
   def plan
-    restricted_attr(:plan)
+    restricted_attr(:plan, STARTER_PLAN)
   end
 
   def current_active_users_count
