@@ -84,9 +84,8 @@ RSpec.configure do |config|
   end
 
   if ENV['CI']
-    # Retry only on feature specs that use JS
-    config.around :each, :js do |ex|
-      ex.run_with_retry retry: 3
+    config.around(:each) do |ex|
+      ex.run_with_retry retry: 2
     end
   end
 
