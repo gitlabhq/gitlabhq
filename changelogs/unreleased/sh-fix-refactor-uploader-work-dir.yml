@@ -1,0 +1,4 @@
+---
+title: Set artifact working directory to be in the destination store to prevent unnecessary I/O
+merge_request:
+author:
