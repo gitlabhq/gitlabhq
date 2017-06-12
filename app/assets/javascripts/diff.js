@@ -9,6 +9,7 @@ class Diff {
   constructor() {
     const $diffFile = $('.files .diff-file');
     $diffFile.singleFileDiff();
+    $diffFile.filesCommentButton();
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
 

@@ -2,8 +2,6 @@
 /* global FilesCommentButton */
 /* global notes */
 
-let $commentButtonTemplate;
-
 window.FilesCommentButton = (function() {
   var COMMENT_BUTTON_CLASS, EMPTY_CELL_CLASS, LINE_COLUMN_CLASSES, LINE_CONTENT_CLASS, LINE_HOLDER_CLASS, LINE_NUMBER_CLASS, OLD_LINE_CLASS, TEXT_FILE_SELECTOR, UNFOLDABLE_LINE_CLASS;
 
@@ -34,40 +32,14 @@ window.FilesCommentButton = (function() {
   }
 
   FilesCommentButton.prototype.render = function(e) {
-    var $currentTarget, buttonParentElement, lineContentElement, textFileElement, $button;
-    $currentTarget = $(e.currentTarget);
+    const $currentTarget = $(e.currentTarget);
+    const buttonParentElement = this.getButtonParent($currentTarget);
 
-    if ($currentTarget.hasClass('js-no-comment-btn')) return;
-
-    lineContentElement = this.getLineContent($currentTarget);
-    buttonParentElement = this.getButtonParent($currentTarget);
-
-    if (!this.validateButtonParent(buttonParentElement) || !this.validateLineContent(lineContentElement)) return;
+    if (!this.validateButtonParent(buttonParentElement)) return;
 
     $button = $(COMMENT_BUTTON_CLASS, buttonParentElement);
     buttonParentElement.addClass('is-over')
       .nextUntil(`.${LINE_CONTENT_CLASS}`).addClass('is-over');
-
-    if ($button.length) {
-      return;
-    }
-
-    textFileElement = this.getTextFileElement($currentTarget);
-    buttonParentElement.append(this.buildButton({
-      discussionID: lineContentElement.attr('data-discussion-id'),
-      lineType: lineContentElement.attr('data-line-type'),
-
-      noteableType: textFileElement.attr('data-noteable-type'),
-      noteableID: textFileElement.attr('data-noteable-id'),
-      commitID: textFileElement.attr('data-commit-id'),
-      noteType: lineContentElement.attr('data-note-type'),
-
-      // LegacyDiffNote
-      lineCode: lineContentElement.attr('data-line-code'),
-
-      // DiffNote
-      position: lineContentElement.attr('data-position')
-    }));
   };
 
   FilesCommentButton.prototype.hideButton = function(e) {
@@ -76,39 +48,6 @@ window.FilesCommentButton = (function() {
 
     buttonParentElement.removeClass('is-over')
       .nextUntil(`.${LINE_CONTENT_CLASS}`).removeClass('is-over');
-  };
-
-  FilesCommentButton.prototype.buildButton = function(buttonAttributes) {
-    return $commentButtonTemplate.clone().attr({
-      'data-discussion-id': buttonAttributes.discussionID,
-      'data-line-type': buttonAttributes.lineType,
-
-      'data-noteable-type': buttonAttributes.noteableType,
-      'data-noteable-id': buttonAttributes.noteableID,
-      'data-commit-id': buttonAttributes.commitID,
-      'data-note-type': buttonAttributes.noteType,
-
-      // LegacyDiffNote
-      'data-line-code': buttonAttributes.lineCode,
-
-      // DiffNote
-      'data-position': buttonAttributes.position
-    });
-  };
-
-  FilesCommentButton.prototype.getTextFileElement = function(hoveredElement) {
-    return hoveredElement.closest(TEXT_FILE_SELECTOR);
-  };
-
-  FilesCommentButton.prototype.getLineContent = function(hoveredElement) {
-    if (hoveredElement.hasClass(LINE_CONTENT_CLASS)) {
-      return hoveredElement;
-    }
-    if (!this.isParallelView) {
-      return $(hoveredElement).closest(LINE_HOLDER_CLASS).find("." + LINE_CONTENT_CLASS);
-    } else {
-      return $(hoveredElement).next("." + LINE_CONTENT_CLASS);
-    }
   };
 
   FilesCommentButton.prototype.getButtonParent = function(hoveredElement) {
@@ -129,16 +68,10 @@ window.FilesCommentButton = (function() {
     return !buttonParentElement.hasClass(EMPTY_CELL_CLASS) && !buttonParentElement.hasClass(UNFOLDABLE_LINE_CLASS);
   };
 
-  FilesCommentButton.prototype.validateLineContent = function(lineContentElement) {
-    return lineContentElement.attr('data-note-type') && lineContentElement.attr('data-note-type') !== '';
-  };
-
   return FilesCommentButton;
 })();
 
 $.fn.filesCommentButton = function() {
-  $commentButtonTemplate = $('<button name="button" type="submit" class="add-diff-note js-add-diff-note-button" title="Add a comment to this line"><i class="fa fa-comment-o"></i></button>');
-
   if (!(this && (this.parent().data('can-create-note') != null))) {
     return;
   }

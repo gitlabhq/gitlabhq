@@ -614,7 +614,9 @@ ul.notes {
  */
 
 .line_holder:hover {
-  .add-diff-note {
+  // .js-no-comment-btn appended when diff notes already
+  // exist for that line
+  .add-diff-note:not(.js-no-comment-btn) {
     opacity: 1;
   }
 }
