@@ -112,6 +112,10 @@ class ObjectStoreUploader < GitlabUploader
     raise 'Object Storage feature is missing' unless subject.project.feature_available?(:object_storage)
   end
 
+  def file_storage?
+    storage.is_a?(CarrierWave::Storage::File)
+  end
+
   private
 
   def set_default_local_store(new_file)
