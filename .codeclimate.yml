@@ -36,3 +36,5 @@ exclude_paths:
 - spec/
 - vendor/
 - lib/api/v3/
+- .yarn-cache/
+- tmp/
