@@ -13,7 +13,7 @@ module Gitlab
         base_config = { urls: config[:url] }
 
         if config[:aws]
-          creds = Aws::Credentials.new(config[:aws_access_key], config[:aws_secret_access_key])
+          creds = resolve_aws_credentials(config)
           region = config[:aws_region]
 
           ::Elasticsearch::Client.new(base_config) do |fmid|
@@ -21,6 +21,19 @@ module Gitlab
           end
         else
           ::Elasticsearch::Client.new(base_config)
+        end
+      end
+
+      def self.resolve_aws_credentials(config)
+        # Resolve credentials in order
+        # 1.  Static config
+        # 2.  ec2 instance profile
+        credentials = [
+          Aws::Credentials.new(config[:aws_access_key], config[:aws_secret_access_key]),
+          Aws::InstanceProfileCredentials.new
+        ]
+        credentials.find do |creds|
+          creds&.set?
         end
       end
     end
