@@ -212,7 +212,7 @@ describe Gitlab::Workhorse, lib: true do
 
       it 'includes a Repository param' do
         repo_param = { Repository: {
-          path: repo_path,
+          path: '', # deprecated field; grpc automatically creates it anyway
           storage_name: 'default',
           relative_path: project.full_path + '.git'
         } }
