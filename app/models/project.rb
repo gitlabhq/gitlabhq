@@ -377,6 +377,7 @@ class Project < ActiveRecord::Base
           .or(ptable[:description].matches(pattern))
       )
 
+
       namespaces = unscoped.select(:id)
         .joins(:namespace)
         .where(ntable[:name].matches(pattern))
