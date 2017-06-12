@@ -2,24 +2,6 @@ module Gitlab
   module Gpg
     extend self
 
-    module CurrentKeyChain
-      extend self
-
-      def add(key)
-        GPGME::Key.import(key)
-      end
-
-      def remove(fingerprint)
-        # `#get` raises an EOFError if the keychain is empty, which is why we
-        # use the friendlier `#find`
-        GPGME::Key.find(:public, fingerprint).each(&:delete!)
-      end
-
-      def emails(fingerprint)
-        GPGME::Key.find(:public, fingerprint).flat_map { |raw_key| raw_key.uids.map(&:email) }
-      end
-    end
-
     def fingerprints_from_key(key)
       using_tmp_keychain do
         import = GPGME::Key.import(key)

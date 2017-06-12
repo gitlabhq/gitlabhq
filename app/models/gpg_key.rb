@@ -21,9 +21,7 @@ class GpgKey < ActiveRecord::Base
     unless: -> { errors.has_key?(:key) }
 
   before_validation :extract_fingerprint
-  after_create :synchronize_keychain
   after_create :notify_user
-  after_destroy :synchronize_keychain
 
   def key=(value)
     value.strip! unless value.blank?
@@ -34,27 +32,13 @@ class GpgKey < ActiveRecord::Base
     @emails ||= Gitlab::Gpg.emails_from_key(key)
   end
 
-  def emails_in_keychain
-    @emails_in_keychain ||= Gitlab::Gpg::CurrentKeyChain.emails(fingerprint)
-  end
-
   def emails_with_verified_status
     emails.map do |email|
       [
         email,
-        email == user.email && emails_in_keychain.include?(email)
+        email == user.email
       ]
     end
-  end
-
-  def synchronize_keychain
-    if emails.include?(user.email)
-      add_to_keychain
-    else
-      remove_from_keychain
-    end
-
-    @emails_in_keychain = nil
   end
 
   private
@@ -63,14 +47,6 @@ class GpgKey < ActiveRecord::Base
     # we can assume that the result only contains one item as the validation
     # only allows one key
     self.fingerprint = Gitlab::Gpg.fingerprints_from_key(key).first
-  end
-
-  def add_to_keychain
-    Gitlab::Gpg::CurrentKeyChain.add(key)
-  end
-
-  def remove_from_keychain
-    Gitlab::Gpg::CurrentKeyChain.remove(fingerprint)
   end
 
   def notify_user

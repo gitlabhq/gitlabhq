@@ -155,7 +155,6 @@ class User < ActiveRecord::Base
   before_validation :set_public_email, if: :public_email_changed?
 
   after_update :update_emails_with_primary_email, if: :email_changed?
-  after_update :synchronize_gpg_keys, if: :email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
   after_save :ensure_namespace_correct
@@ -1157,11 +1156,5 @@ class User < ActiveRecord::Base
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
-  end
-
-  def synchronize_gpg_keys
-    gpg_keys.each do |gpg_key|
-      gpg_key.synchronize_keychain
-    end
   end
 end

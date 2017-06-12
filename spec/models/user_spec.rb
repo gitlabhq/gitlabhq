@@ -1956,24 +1956,4 @@ describe User, models: true do
       expect(user.allow_password_authentication?).to be_falsey
     end
   end
-
-  context 'callbacks' do
-    context '.synchronize_gpg_keys' do
-      let(:user) do
-        create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
-          user.skip_reconfirmation!
-        end
-      end
-
-      it 'does nothing when the name is updated' do
-        expect(user).not_to receive(:synchronize_gpg_keys)
-        user.update_attributes!(name: 'Bette')
-      end
-
-      it 'synchronizes the gpg keys when the email is updated' do
-        expect(user).to receive(:synchronize_gpg_keys)
-        user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
-      end
-    end
-  end
 end

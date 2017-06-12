@@ -29,36 +29,3 @@ describe Gitlab::Gpg do
     end
   end
 end
-
-describe Gitlab::Gpg::CurrentKeyChain, :gpg do
-  describe '.emails' do
-    it 'returns the emails' do
-      Gitlab::Gpg::CurrentKeyChain.add(GpgHelpers::User2.public_key)
-
-      expect(
-        described_class.emails(GpgHelpers::User2.fingerprint)
-      ).to match_array GpgHelpers::User2.emails
-    end
-  end
-
-  describe '.add', :gpg do
-    it 'stores the key in the keychain' do
-      expect(GPGME::Key.find(:public, GpgHelpers::User1.fingerprint)).to eq []
-
-      Gitlab::Gpg::CurrentKeyChain.add(GpgHelpers::User1.public_key)
-
-      expect(GPGME::Key.find(:public, GpgHelpers::User1.fingerprint)).not_to eq []
-    end
-  end
-
-  describe '.remove', :gpg do
-    it 'removes the key from the keychain' do
-      Gitlab::Gpg::CurrentKeyChain.add(GpgHelpers::User1.public_key)
-      expect(GPGME::Key.find(:public, GpgHelpers::User1.fingerprint)).not_to eq []
-
-      Gitlab::Gpg::CurrentKeyChain.remove(GpgHelpers::User1.fingerprint)
-
-      expect(GPGME::Key.find(:public, GpgHelpers::User1.fingerprint)).to eq []
-    end
-  end
-end
