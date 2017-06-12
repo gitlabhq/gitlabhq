@@ -5,7 +5,7 @@ scope path: :uploads do
       constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: /[^\/]+/ }
 
   # show uploads for models, snippets (notes) available for now
-  get ':model/:id/:secret/:filename',
+  get 'system/:model/:id/:secret/:filename',
     to: 'uploads#show',
     constraints: { model: /personal_snippet/, id: /\d+/, filename: /[^\/]+/ }
 
