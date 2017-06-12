@@ -80,7 +80,14 @@ class Projects::DeployKeysController < Projects::ApplicationController
     params.require(:deploy_key).permit(:key, :title, :can_push)
   end
 
-<<<<<<< HEAD
+  def update_params
+    params.require(:deploy_key).permit(:title, :can_push)
+  end
+
+  def authorize_update_deploy_key!
+    access_denied! unless can?(current_user, :update_deploy_key, deploy_key)
+  end
+
   def log_audit_event(key_title, options = {})
     AuditEventService.new(current_user, @project, options)
       .for_deploy_key(key_title).security_event
@@ -88,13 +95,5 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def load_key
     @key ||= current_user.accessible_deploy_keys.find(params[:id])
-=======
-  def update_params
-    params.require(:deploy_key).permit(:title, :can_push)
-  end
-
-  def authorize_update_deploy_key!
-    access_denied! unless can?(current_user, :update_deploy_key, deploy_key)
->>>>>>> ce-com/master
   end
 end
