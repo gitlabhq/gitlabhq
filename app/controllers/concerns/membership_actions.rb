@@ -54,17 +54,13 @@ module MembershipActions
         "You left the \"#{membershipable.human_name}\" #{source_type}."
       end
 
-<<<<<<< HEAD
     log_audit_event(member, action: :destroy) unless member.request?
 
-    redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
-=======
     respond_to do |format|
       format.html do
         redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
         redirect_to redirect_path, notice: notice
       end
->>>>>>> ce-com/master
 
       format.json { render json: { notice: notice } }
     end
