@@ -1,10 +1,10 @@
 - case type.to_s
 - when 'revert'
   - label = n_('ChangeTypeAction|Revert')
-  - branch_label = _('ChangeTypeActionLabel|Revert in branch')
+  - branch_label = s_('ChangeTypeActionLabel|Revert in branch')
 - when 'cherry-pick'
-  - label = n_('ChangeTypeAction|Cherry-pick')
-  - branch_label = n_('ChangeTypeActionLabel|Pick into branch')
+  - label = s_('ChangeTypeAction|Cherry-pick')
+  - branch_label = s_('ChangeTypeActionLabel|Pick into branch')
 - change_type = commit.change_type_title(current_user)
 
 .modal{ id: "modal-#{type}-commit" }

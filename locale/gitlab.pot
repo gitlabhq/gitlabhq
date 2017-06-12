@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-11 18:29-0500\n"
-"PO-Revision-Date: 2017-06-11 18:29-0500\n"
+"POT-Creation-Date: 2017-06-12 00:33-0500\n"
+"PO-Revision-Date: 2017-06-12 00:33-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -22,6 +22,9 @@ msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr ""
 
 msgid "About auto deploy"
+msgstr ""
+
+msgid "Active"
 msgstr ""
 
 msgid "Activity"
@@ -71,7 +74,13 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+msgid "ChangeTypeActionLabel|Pick into branch"
+msgstr ""
+
 msgid "ChangeTypeActionLabel|Revert in branch"
+msgstr ""
+
+msgid "ChangeTypeAction|Cherry-pick"
 msgstr ""
 
 msgid "ChangeType|commit"
@@ -193,6 +202,12 @@ msgstr ""
 msgid "Cron Timezone"
 msgstr ""
 
+msgid "Cron syntax"
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
 msgid "Custom notification events"
 msgstr ""
 
@@ -224,6 +239,9 @@ msgid "CycleAnalyticsStage|Staging"
 msgstr ""
 
 msgid "CycleAnalyticsStage|Test"
+msgstr ""
+
+msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
 msgid "Delete"
@@ -267,6 +285,15 @@ msgstr ""
 msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
+msgid "Every day (at 4:00am)"
+msgstr ""
+
+msgid "Every month (on the 1st at 4:00am)"
+msgstr ""
+
+msgid "Every week (Sundays at 4:00am)"
+msgstr ""
+
 msgid "Failed to change the owner"
 msgstr ""
 
@@ -274,9 +301,6 @@ msgid "Failed to remove the pipeline schedule"
 msgstr ""
 
 msgid "Files"
-msgstr ""
-
-msgid "Filter"
 msgstr ""
 
 msgid "Find by path"
@@ -462,6 +486,9 @@ msgid "NotificationLevel|Participate"
 msgstr ""
 
 msgid "NotificationLevel|Watch"
+msgstr ""
+
+msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
 msgid "OpenedNDaysAgo|Opened"
