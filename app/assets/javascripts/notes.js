@@ -298,8 +298,13 @@ const normalizeNewlines = function(str) {
     Notes.prototype.setupNewNote = function($note) {
       // Update datetime format on the recent note
       gl.utils.localTimeAgo($note.find('.js-timeago'), false);
+
       this.collapseLongCommitList();
       this.taskList.init();
+
+      // Refresh the `:target` selector
+      // This stops the note highlight from being removed after real time update
+      window.location = window.location;
     };
 
     /*
