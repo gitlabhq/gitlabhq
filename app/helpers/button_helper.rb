@@ -61,8 +61,12 @@ module ButtonHelper
         html: true,
         placement: placement,
         container: 'body',
+<<<<<<< HEAD
         title: _("Set a password on your account to pull or push via %{protocol}") % { protocol: protocol },
         primary_url: (geo_primary_http_url_to_repo(project) if Gitlab::Geo.secondary?)
+=======
+        title: _("Set a password on your account to pull or push via %{protocol}") % { protocol: protocol }
+>>>>>>> ce-com/master
       }
   end
 

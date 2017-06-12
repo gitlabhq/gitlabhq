@@ -127,6 +127,14 @@ New translations will be added with their default content and will be marked
 fuzzy. To use the translation, look for the `#, fuzzy` mention in `gitlab.edit.po`
 and remove it.
 
+We need to make sure we remove the `fuzzy` translations before generating the
+`locale/**/gitlab.po` file. When they aren't removed, the resulting `.po` will
+be treated as a binary file which could overwrite translations that were merged
+before the new translations.
+
+When we are just preparing a page to be translated, but not actually adding any
+translations. There's no need to generate `.po` files.
+
 Translations that aren't used in the source code anymore will be marked with
 `~#`; these can be removed to keep our translation files clutter-free.
 

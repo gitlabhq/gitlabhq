@@ -339,12 +339,9 @@ namespace :gitlab do
     ########################
 
     def check_initd_configured_correctly
-      print "Init.d configured correctly? ... "
+      return if omnibus_gitlab?
 
-      if omnibus_gitlab?
-        puts 'skipped (omnibus-gitlab has no init script)'.color(:magenta)
-        return
-      end
+      print "Init.d configured correctly? ... "
 
       path = "/etc/default/gitlab"
 
@@ -382,6 +379,8 @@ namespace :gitlab do
     end
 
     def check_mail_room_running
+      return if omnibus_gitlab?
+
       print "MailRoom running? ... "
 
       path = "/etc/default/gitlab"

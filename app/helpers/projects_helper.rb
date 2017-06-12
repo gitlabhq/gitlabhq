@@ -146,7 +146,7 @@ module ProjectsHelper
     end
 
     options = options_for_select(
-      options,
+      options.invert,
       selected: highest_available_option || @project.project_feature.public_send(field),
       disabled: disabled_option
     )
@@ -485,9 +485,15 @@ module ProjectsHelper
 
   def project_feature_options
     {
+<<<<<<< HEAD
       s_('ProjectFeature|Disabled') => ProjectFeature::DISABLED,
       s_('ProjectFeature|Only team members') => ProjectFeature::PRIVATE,
       s_('ProjectFeature|Everyone with access') => ProjectFeature::ENABLED
+=======
+      ProjectFeature::DISABLED => s_('ProjectFeature|Disabled'),
+      ProjectFeature::PRIVATE => s_('ProjectFeature|Only team members'),
+      ProjectFeature::ENABLED => s_('ProjectFeature|Everyone with access')
+>>>>>>> ce-com/master
     }
   end
 

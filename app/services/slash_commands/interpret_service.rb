@@ -92,11 +92,15 @@ module SlashCommands
 
     desc 'Assign'
     explanation do |users|
+<<<<<<< HEAD
       users = issuable.is_a?(Issue) ? users : users.take(1)
       "Assigns #{users.map(&:to_reference).to_sentence}."
     end
     params do
       issuable.is_a?(Issue) ? '@user1 @user2' : '@user'
+=======
+      "Assigns #{users.first.to_reference}." if users.any?
+>>>>>>> ce-com/master
     end
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
@@ -108,8 +112,12 @@ module SlashCommands
       next if users.empty?
 
       if issuable.is_a?(Issue)
+<<<<<<< HEAD
         # EE specific. In CE we should replace one assignee with another
         @updates[:assignee_ids] = issuable.assignees.pluck(:id) + users.map(&:id)
+=======
+        @updates[:assignee_ids] = [users.last.id]
+>>>>>>> ce-com/master
       else
         @updates[:assignee_id] = users.last.id
       end

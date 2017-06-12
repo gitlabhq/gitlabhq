@@ -256,4 +256,14 @@ describe NotesHelper do
       expect(helper.form_resources).to eq([@project.namespace, @project, @note])
     end
   end
+
+  describe '#noteable_note_url' do
+    let(:project) { create(:empty_project) }
+    let(:issue) { create(:issue, project: project) }
+    let(:note) { create(:note_on_issue, noteable: issue, project: project) }
+
+    it 'returns the noteable url with an anchor to the note' do
+      expect(noteable_note_url(note)).to match("/#{project.namespace.path}/#{project.path}/issues/#{issue.iid}##{dom_id(note)}")
+    end
+  end
 end

@@ -1,25 +1,24 @@
 - type = local_assigns.fetch(:type, :issues)
 - page_context_word = type.to_s.humanize(capitalize: false)
 - issuables = @issues || @merge_requests
+- closed_title = 'Filter by issues that are currently closed.'
 
 %ul.nav-links.issues-state-filters
   %li{ class: active_when(params[:state] == 'opened') }>
-    = link_to page_filter_path(state: 'opened', label: true), id: 'state-opened', title: "Filter by #{page_context_word} that are currently opened." do
+    %button.btn.btn-link{ id: 'state-opened', title: "Filter by #{page_context_word} that are currently opened.", type: 'button', data: { state: 'opened' } }
       #{issuables_state_counter_text(type, :opened)}
 
   - if type == :merge_requests
     %li{ class: active_when(params[:state] == 'merged') }>
-      = link_to page_filter_path(state: 'merged', label: true), id: 'state-merged', title: 'Filter by merge requests that are currently merged.' do
+      %button.btn.btn-link{ id: 'state-merged', title: 'Filter by merge requests that are currently merged.', type: 'button', data: { state: 'merged' } }
         #{issuables_state_counter_text(type, :merged)}
 
-    %li{ class: active_when(params[:state] == 'closed') }>
-      = link_to page_filter_path(state: 'closed', label: true), id: 'state-closed', title: 'Filter by merge requests that are currently closed and unmerged.' do
-        #{issuables_state_counter_text(type, :closed)}
-  - else
-    %li{ class: active_when(params[:state] == 'closed') }>
-      = link_to page_filter_path(state: 'closed', label: true), id: 'state-all', title: 'Filter by issues that are currently closed.' do
-        #{issuables_state_counter_text(type, :closed)}
+    - closed_title = 'Filter by merge requests that are currently closed and unmerged.'
+
+  %li{ class: active_when(params[:state] == 'closed') }>
+    %button.btn.btn-link{ id: 'state-closed', title: closed_title, type: 'button', data: { state: 'closed' } }
+      #{issuables_state_counter_text(type, :closed)}
 
   %li{ class: active_when(params[:state] == 'all') }>
-    = link_to page_filter_path(state: 'all', label: true), id: 'state-all', title: "Show all #{page_context_word}." do
+    %button.btn.btn-link{ id: 'state-all', title: "Show all #{page_context_word}.", type: 'button', data: { state: 'all' } }
       #{issuables_state_counter_text(type, :all)}

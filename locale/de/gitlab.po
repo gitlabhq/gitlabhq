@@ -52,9 +52,13 @@ msgstr ""
 msgid "Branches"
 msgstr ""
 
+msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
 msgid "ByAuthor|by"
 msgstr "Von"
 
+<<<<<<< HEAD
 msgid "CI configuration"
 msgstr ""
 
@@ -116,6 +120,9 @@ msgid "CiStatusText|skipped"
 msgstr ""
 
 msgid "CiStatus|running"
+=======
+msgid "Cancel"
+>>>>>>> ce-com/master
 msgstr ""
 
 msgid "Commit"
@@ -123,6 +130,7 @@ msgid_plural "Commits"
 msgstr[0] "Commit"
 msgstr[1] "Commits"
 
+<<<<<<< HEAD
 msgid "CommitMessage|Add %{file_name}"
 msgstr ""
 
@@ -169,6 +177,9 @@ msgid "Custom notification levels are the same as participating levels. With cus
 msgstr ""
 
 msgid "Cycle Analytics"
+=======
+msgid "Cron Timezone"
+>>>>>>> ce-com/master
 msgstr ""
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
@@ -195,11 +206,15 @@ msgstr "Staging"
 msgid "CycleAnalyticsStage|Test"
 msgstr "Test"
 
+msgid "Delete"
+msgstr ""
+
 msgid "Deploy"
 msgid_plural "Deploys"
 msgstr[0] "Deployment"
 msgstr[1] "Deployments"
 
+<<<<<<< HEAD
 msgid "Directory name"
 msgstr ""
 
@@ -231,6 +246,24 @@ msgid "Find by path"
 msgstr ""
 
 msgid "Find file"
+=======
+msgid "Description"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Edit Pipeline Schedule %{id}"
+msgstr ""
+
+msgid "Failed to change the owner"
+msgstr ""
+
+msgid "Failed to remove the pipeline schedule"
+msgstr ""
+
+msgid "Filter"
+>>>>>>> ce-com/master
 msgstr ""
 
 msgid "FirstPushedBy|First"
@@ -251,6 +284,7 @@ msgstr "Vom Anlegen des Issues bis zum Produktivdeployment"
 msgid "From merge request merge until deploy to production"
 msgstr "Vom Merge Request bis zum Produktivdeployment"
 
+<<<<<<< HEAD
 msgid "Go to your fork"
 msgstr ""
 
@@ -264,6 +298,9 @@ msgid "Housekeeping successfully started"
 msgstr ""
 
 msgid "Import repository"
+=======
+msgid "Interval Pattern"
+>>>>>>> ce-com/master
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
@@ -280,6 +317,7 @@ msgid_plural "Last %d days"
 msgstr[0] "Letzter %d Tag"
 msgstr[1] "Letzten %d Tage"
 
+<<<<<<< HEAD
 msgid "Last Update"
 msgstr ""
 
@@ -290,6 +328,9 @@ msgid "Leave group"
 msgstr ""
 
 msgid "Leave project"
+=======
+msgid "Last Pipeline"
+>>>>>>> ce-com/master
 msgstr ""
 
 msgid "Limited to showing %d event at most"
@@ -308,6 +349,7 @@ msgid_plural "New Issues"
 msgstr[0] "Neues Issue"
 msgstr[1] "Neue Issues"
 
+<<<<<<< HEAD
 msgid "New branch"
 msgstr ""
 
@@ -330,6 +372,12 @@ msgid "New tag"
 msgstr ""
 
 msgid "No repository"
+=======
+msgid "New Pipeline Schedule"
+msgstr ""
+
+msgid "No schedules"
+>>>>>>> ce-com/master
 msgstr ""
 
 msgid "Not available"
@@ -395,9 +443,13 @@ msgstr ""
 msgid "OpenedNDaysAgo|Opened"
 msgstr "Erstellt"
 
+msgid "Owner"
+msgstr ""
+
 msgid "Pipeline Health"
 msgstr "Pipeline Kennzahlen"
 
+<<<<<<< HEAD
 msgid "Project '%{project_name}' queued for deletion."
 msgstr ""
 
@@ -441,6 +493,39 @@ msgid "ProjectFileTree|Name"
 msgstr ""
 
 msgid "ProjectLastActivity|Never"
+=======
+msgid "Pipeline Schedule"
+msgstr ""
+
+msgid "Pipeline Schedules"
+msgstr ""
+
+msgid "PipelineSchedules|Activated"
+msgstr ""
+
+msgid "PipelineSchedules|Active"
+msgstr ""
+
+msgid "PipelineSchedules|All"
+msgstr ""
+
+msgid "PipelineSchedules|Inactive"
+msgstr ""
+
+msgid "PipelineSchedules|Next Run"
+msgstr ""
+
+msgid "PipelineSchedules|None"
+msgstr ""
+
+msgid "PipelineSchedules|Provide a short description for this pipeline"
+msgstr ""
+
+msgid "PipelineSchedules|Take ownership"
+msgstr ""
+
+msgid "PipelineSchedules|Target"
+>>>>>>> ce-com/master
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
@@ -479,6 +564,7 @@ msgstr "Zugehörige Merge Requests"
 msgid "Related Merged Requests"
 msgstr "Zugehörige abgeschlossene Merge Requests"
 
+<<<<<<< HEAD
 msgid "Remind later"
 msgstr ""
 
@@ -507,6 +593,18 @@ msgid "Set up auto deploy"
 msgstr ""
 
 msgid "SetPasswordToCloneLink|set a password"
+=======
+msgid "Save pipeline schedule"
+msgstr ""
+
+msgid "Schedule a new pipeline"
+msgstr ""
+
+msgid "Select a timezone"
+msgstr ""
+
+msgid "Select target branch"
+>>>>>>> ce-com/master
 msgstr ""
 
 msgid "Showing %d event"
@@ -514,6 +612,7 @@ msgid_plural "Showing %d events"
 msgstr[0] "Zeige %d Ereignis"
 msgstr[1] "Zeige %d Ereignisse"
 
+<<<<<<< HEAD
 msgid "Source code"
 msgstr ""
 
@@ -529,6 +628,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Tags"
+=======
+msgid "Target Branch"
+>>>>>>> ce-com/master
 msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."

@@ -43,7 +43,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     if schedule.update(owner: current_user)
       redirect_to pipeline_schedules_path(@project)
     else
-      redirect_to pipeline_schedules_path(@project), alert: "Failed to change the owner"
+      redirect_to pipeline_schedules_path(@project), alert: _("Failed to change the owner")
     end
   end
 
@@ -53,7 +53,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     else
       redirect_to pipeline_schedules_path(@project),
                   status: 302,
-                  alert: "Failed to remove the pipeline schedule"
+                  alert: _("Failed to remove the pipeline schedule")
     end
   end
 

@@ -125,9 +125,51 @@
   @media (min-width: $screen-sm-min) {
     width: 400px;
   }
+
+  &.is-expandable {
+    .board-header {
+      cursor: pointer;
+    }
+  }
+
+  &.is-collapsed {
+    width: 50px;
+
+    .board-header {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .board-title {
+      position: initial;
+      padding: 0;
+      border-bottom: 0;
+
+      > span {
+        display: block;
+        transform: rotate(90deg) translate(25px, 0);
+      }
+    }
+
+    .board-title-expandable-toggle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -10px;
+    }
+
+    .board-list-component,
+    .board-issue-count-holder {
+      display: none;
+    }
+  }
 }
 
 .board-inner {
+  position: relative;
   height: 100%;
   font-size: $issue-boards-font-size;
   background: $gray-light;

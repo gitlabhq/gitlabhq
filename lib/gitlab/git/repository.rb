@@ -962,11 +962,6 @@ module Gitlab
         end
       end
 
-      # Checks if the blob should be diffable according to its attributes
-      def diffable?(blob)
-        attributes(blob.path).fetch('diff') { blob.text? }
-      end
-
       # Returns the Git attributes for the given file path.
       #
       # See `Gitlab::Git::Attributes` for more information.

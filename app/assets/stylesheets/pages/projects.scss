@@ -793,8 +793,7 @@ a.allowed-to-push {
 }
 
 .project-refs-form .dropdown-menu,
-.dropdown-menu-projects,
-.dropdown-menu-branches {
+.dropdown-menu-projects {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {

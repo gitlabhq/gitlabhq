@@ -24,7 +24,11 @@ describe 'New/edit issue', :feature, :js do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
+<<<<<<< HEAD
     xdescribe 'shorten users API pagination limit (CE)' do
+=======
+    describe 'shorten users API pagination limit (CE)' do
+>>>>>>> ce-com/master
       before do
         # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
         # somehow refer to the very block we defined to _wrap_ that method, instead of
@@ -64,7 +68,11 @@ describe 'New/edit issue', :feature, :js do
       end
     end
 
+<<<<<<< HEAD
     xdescribe 'single assignee (CE)' do
+=======
+    describe 'single assignee (CE)' do
+>>>>>>> ce-com/master
       before do
         click_button 'Unassigned'
 

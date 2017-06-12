@@ -56,6 +56,19 @@ following locations:
 - [V3 to V4](v3_to_v4.md)
 - [Version](version.md)
 
+## Road to GraphQL
+
+Going forward, we will start on moving to
+[GraphQL](http://graphql.org/learn/best-practices/) and deprecate the use of
+controller-specific endpoints. GraphQL has a number of benefits:
+
+1. We avoid having to maintain two different APIs.
+2. Callers of the API can request only what they need.
+3. It is versioned by default.
+
+It will co-exist with the current V4 REST API. If we have a V5 API, this should be
+compatability layer on top of GraphQL.
+
 ### Internal CI API
 
 The following documentation is for the [internal CI API](ci/README.md):

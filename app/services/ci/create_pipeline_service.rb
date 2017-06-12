@@ -69,6 +69,8 @@ module Ci
 
       cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
 
+      pipeline_created_counter.increment(source: source)
+
       pipeline.tap(&:process!)
     end
 
@@ -140,6 +142,10 @@ module Ci
       pipeline.errors.add(:base, message)
       pipeline.drop if save
       pipeline
+    end
+
+    def pipeline_created_counter
+      @pipeline_created_counter ||= Gitlab::Metrics.counter(:pipelines_created_count, "Pipelines created count")
     end
   end
 end

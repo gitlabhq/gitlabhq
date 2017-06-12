@@ -58,19 +58,19 @@ module Gitlab
         diff_refs&.head_sha
       end
 
-      def content_sha
-        return old_content_sha if deleted_file?
-        return @content_sha if defined?(@content_sha)
+      def new_content_sha
+        return if deleted_file?
+        return @new_content_sha if defined?(@new_content_sha)
 
         refs = diff_refs || fallback_diff_refs
-        @content_sha = refs&.head_sha
+        @new_content_sha = refs&.head_sha
       end
 
-      def content_commit
-        return @content_commit if defined?(@content_commit)
+      def new_content_commit
+        return @new_content_commit if defined?(@new_content_commit)
 
-        sha = content_sha
-        @content_commit = repository.commit(sha) if sha
+        sha = new_content_commit
+        @new_content_commit = repository.commit(sha) if sha
       end
 
       def old_content_sha
@@ -88,13 +88,13 @@ module Gitlab
         @old_content_commit = repository.commit(sha) if sha
       end
 
-      def blob
-        return @blob if defined?(@blob)
+      def new_blob
+        return @new_blob if defined?(@new_blob)
 
-        sha = content_sha
-        return @blob = nil unless sha
+        sha = new_content_sha
+        return @new_blob = nil unless sha
 
-        repository.blob_at(sha, file_path)
+        @new_blob = repository.blob_at(sha, file_path)
       end
 
       def old_blob
@@ -104,6 +104,18 @@ module Gitlab
         return @old_blob = nil unless sha
 
         @old_blob = repository.blob_at(sha, old_path)
+      end
+
+      def content_sha
+        new_content_sha || old_content_sha
+      end
+
+      def content_commit
+        new_content_commit || old_content_commit
+      end
+
+      def blob
+        new_blob || old_blob
       end
 
       attr_writer :highlighted_diff_lines
@@ -152,6 +164,18 @@ module Gitlab
 
       def file_identifier
         "#{file_path}-#{new_file?}-#{deleted_file?}-#{renamed_file?}"
+      end
+
+      def diffable?
+        repository.attributes(file_path).fetch('diff') { true }
+      end
+
+      def binary?
+        old_blob&.binary? || new_blob&.binary?
+      end
+
+      def text?
+        !binary?
       end
     end
   end

@@ -264,14 +264,19 @@ ul.related-merge-requests > li {
 }
 
 @media (min-width: $screen-sm-min) {
-  .new-branch-col {
-    padding-top: 0;
-    text-align: right;
-  }
+  .emoji-block .row {
+    display: flex;
 
-  .create-mr-dropdown-wrap {
-    .btn-group:not(.hide) {
-      display: inline-block;
+    .new-branch-col {
+      padding-top: 0;
+      text-align: right;
+      align-self: center;
+    }
+
+    .create-mr-dropdown-wrap {
+      .btn-group:not(.hide) {
+        display: inline-block;
+      }
     }
   }
 }
