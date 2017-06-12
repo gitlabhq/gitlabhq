@@ -273,6 +273,17 @@ gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
+# Perf bar
+gem 'peek', '~> 1.0.1'
+gem 'peek-gc', '~> 0.0.2'
+gem 'peek-host', '~> 1.0.0'
+gem 'peek-mysql2', '~> 1.1.0', group: :mysql
+gem 'peek-performance_bar', '~> 1.2.1'
+gem 'peek-pg', '~> 1.3.0', group: :postgres
+gem 'peek-rblineprof', '~> 0.2.0'
+gem 'peek-redis', '~> 1.2.0'
+gem 'peek-sidekiq', '~> 1.0.3'
+
 # Metrics
 group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
