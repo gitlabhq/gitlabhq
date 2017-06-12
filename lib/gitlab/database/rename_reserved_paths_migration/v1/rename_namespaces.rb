@@ -43,15 +43,15 @@ module Gitlab
             reverts_for_type('namespace') do |path_before_rename, current_path|
               matches_path = MigrationClasses::Route.arel_table[:path].matches(current_path)
               namespace = MigrationClasses::Namespace.joins(:route)
-                            .where(matches_path).first.becomes(MigrationClasses::Namespace)
+                            .where(matches_path).first&.becomes(MigrationClasses::Namespace)
 
               if namespace
                 perform_rename(namespace, current_path, path_before_rename)
 
                 rename_namespace_dependencies(namespace, current_path, path_before_rename)
               else
-                say "Couldn't rename namespace##{namespace.id} from #{current_path} "\
-                    " back to #{path_before_rename}, namespace no longer exists"
+                say "Couldn't rename namespace from #{current_path} back to #{path_before_rename} "\
+                    "namespace was renamed, or no longer exists at the expected path"
               end
             end
           end
