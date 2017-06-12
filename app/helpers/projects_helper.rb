@@ -485,15 +485,9 @@ module ProjectsHelper
 
   def project_feature_options
     {
-<<<<<<< HEAD
-      s_('ProjectFeature|Disabled') => ProjectFeature::DISABLED,
-      s_('ProjectFeature|Only team members') => ProjectFeature::PRIVATE,
-      s_('ProjectFeature|Everyone with access') => ProjectFeature::ENABLED
-=======
       ProjectFeature::DISABLED => s_('ProjectFeature|Disabled'),
       ProjectFeature::PRIVATE => s_('ProjectFeature|Only team members'),
       ProjectFeature::ENABLED => s_('ProjectFeature|Everyone with access')
->>>>>>> ce-com/master
     }
   end
 

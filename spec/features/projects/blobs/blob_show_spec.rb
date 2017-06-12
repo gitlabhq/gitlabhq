@@ -105,13 +105,7 @@ feature 'File blob', :js, feature: true do
 
     context 'visiting with a line number anchor' do
       before do
-<<<<<<< HEAD
-        visit_blob('files/markdown/ruby-style-guide.md', 'L1')
-
-        wait_for_requests
-=======
         visit_blob('files/markdown/ruby-style-guide.md', anchor: 'L1')
->>>>>>> ce-com/master
       end
 
       it 'displays the blob using the simple viewer' do
