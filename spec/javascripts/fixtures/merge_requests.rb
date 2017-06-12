@@ -16,6 +16,16 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
       sha: merge_request.diff_head_sha
     )
   end
+  let(:path) { "files/ruby/popen.rb" }
+  let(:position) do
+    Gitlab::Diff::Position.new(
+      old_path: path,
+      new_path: path,
+      old_line: nil,
+      new_line: 14,
+      diff_refs: merge_request.diff_refs
+    )
+  end
 
   render_views
 
@@ -37,6 +47,12 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     allow_any_instance_of(MergeRequest).to receive(:source_branch_exists?).and_return(true)
     allow_any_instance_of(MergeRequest).to receive(:can_remove_source_branch?).and_return(true)
     render_merge_request(example.description, merged_merge_request)
+  end
+
+  it 'merge_requests/diff_comment.html.raw' do |example|
+    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
+    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
+    render_merge_request(example.description, merge_request)
   end
 
   private
