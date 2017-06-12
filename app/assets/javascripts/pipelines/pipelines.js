@@ -5,8 +5,8 @@ import pipelinesTableComponent from '../vue_shared/components/pipelines_table';
 import tablePagination from '../vue_shared/components/table_pagination.vue';
 import emptyState from './components/empty_state.vue';
 import errorState from './components/error_state.vue';
-import navigationTabs from './components/navigation_tabs';
-import navigationControls from './components/nav_controls';
+import navigationTabs from './components/navigation_tabs.vue';
+import navigationControls from './components/nav_controls.vue';
 import loadingIcon from '../vue_shared/components/loading_icon.vue';
 import Poll from '../lib/utils/poll';
 
