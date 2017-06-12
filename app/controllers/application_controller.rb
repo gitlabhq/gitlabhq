@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
+  include Peek::Rblineprof::CustomControllerHelpers
 
   before_action :authenticate_user_from_private_token!
   before_action :authenticate_user_from_rss_token!
@@ -18,7 +19,7 @@ class ApplicationController < ActionController::Base
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables
+  before_action :add_gon_variables, unless: -> { request.path.start_with?('/-/peek') }
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
@@ -60,6 +61,21 @@ class ApplicationController < ActionController::Base
       not_found
     else
       authenticate_user!
+    end
+  end
+
+  def peek_enabled?
+    return false unless Gitlab::PerformanceBar.enabled?
+    return false unless current_user
+
+    if RequestStore.active?
+      if RequestStore.store.key?(:peek_enabled)
+        RequestStore.store[:peek_enabled]
+      else
+        RequestStore.store[:peek_enabled] = cookies[:perf_bar_enabled].present?
+      end
+    else
+      cookies[:perf_bar_enabled].present?
     end
   end
 
