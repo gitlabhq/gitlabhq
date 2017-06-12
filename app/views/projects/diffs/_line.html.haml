@@ -15,7 +15,7 @@
     %td.line_content.match= line.text
   - else
     %td.old_line.diff-line-num{ class: [type, ("js-avatar-container" if !plain)], data: { linenumber: line.old_pos } }
-      %button.add-diff-note.js-add-diff-note-button{ type: 'submit', title: 'Add a comment to this line', data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }
+      %button.add-diff-note.js-add-diff-note-button{ type: 'submit', name: 'button', title: 'Add a comment to this line', data: (diff_view_data.merge!(diff_view_line_data(line_code, diff_file.position(line), type)) unless plain) }
         %i.fa.fa-comment-o
       - link_text = type == "new" ? " " : line.old_pos
       - if plain
