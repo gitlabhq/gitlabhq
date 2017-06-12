@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-12 00:33-0500\n"
-"PO-Revision-Date: 2017-06-12 00:33-0500\n"
+"POT-Creation-Date: 2017-06-12 09:07+0200\n"
+"PO-Revision-Date: 2017-06-12 09:07+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -65,6 +65,9 @@ msgstr ""
 msgid "Branches"
 msgstr ""
 
+msgid "Browse files"
+msgstr ""
+
 msgid "ByAuthor|by"
 msgstr ""
 
@@ -93,6 +96,12 @@ msgid "Changelog"
 msgstr ""
 
 msgid "Charts"
+msgstr ""
+
+msgid "Cherry-pick this commit"
+msgstr ""
+
+msgid "Cherry-pick this merge-request"
 msgstr ""
 
 msgid "CiStatusLabel|canceled"
@@ -166,6 +175,9 @@ msgstr ""
 msgid "Commits|History"
 msgstr ""
 
+msgid "Committed by"
+msgstr ""
+
 msgid "Compare"
 msgstr ""
 
@@ -197,6 +209,9 @@ msgid "Create new..."
 msgstr ""
 
 msgid "CreateNewFork|Fork"
+msgstr ""
+
+msgid "CreateTag|Tag"
 msgstr ""
 
 msgid "Cron Timezone"
@@ -261,6 +276,9 @@ msgstr ""
 msgid "Don't show again"
 msgstr ""
 
+msgid "Download"
+msgstr ""
+
 msgid "Download tar"
 msgstr ""
 
@@ -283,6 +301,9 @@ msgid "Edit"
 msgstr ""
 
 msgid "Edit Pipeline Schedule %{id}"
+msgstr ""
+
+msgid "Email Patches"
 msgstr ""
 
 msgid "Every day (at 4:00am)"
@@ -494,7 +515,13 @@ msgstr ""
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
+msgid "Options"
+msgstr ""
+
 msgid "Owner"
+msgstr ""
+
+msgid "Pipeline"
 msgstr ""
 
 msgid "Pipeline Health"
@@ -531,6 +558,9 @@ msgid "PipelineSchedules|Take ownership"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
+msgstr ""
+
+msgid "Plain Diff"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -621,6 +651,12 @@ msgid "Remove project"
 msgstr ""
 
 msgid "Request Access"
+msgstr ""
+
+msgid "Revert this commit"
+msgstr ""
+
+msgid "Revert this merge-request"
 msgstr ""
 
 msgid "Save pipeline schedule"
@@ -975,5 +1011,15 @@ msgstr[1] ""
 msgid "notification emails"
 msgstr ""
 
+msgid "parent"
+msgid_plural "parents"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "pipeline schedules documentation"
 msgstr ""
+
+msgid "with stage"
+msgid_plural "with stages"
+msgstr[0] ""
+msgstr[1] ""

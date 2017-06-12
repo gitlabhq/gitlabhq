@@ -2,17 +2,20 @@
 - when 'revert'
   - label = n_('ChangeTypeAction|Revert')
   - branch_label = s_('ChangeTypeActionLabel|Revert in branch')
+  - revert_merge_request = _('Revert this merge-request')
+  - revert_commit = _('Revert this commit')
+  - title = commit.merged_merge_request(current_user) ? revert_merge_request : revert_commit
 - when 'cherry-pick'
   - label = s_('ChangeTypeAction|Cherry-pick')
   - branch_label = s_('ChangeTypeActionLabel|Pick into branch')
-- change_type = commit.change_type_title(current_user)
+  - title = commit.merged_merge_request(current_user) ? _('Cherry-pick this merge-request') : _('Cherry-pick this commit')
 
 .modal{ id: "modal-#{type}-commit" }
   .modal-dialog
     .modal-content
       .modal-header
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
-        %h3.page-title== _("%{action} this %{change_type}")
+        %h3.page-title= title
       .modal-body
         = form_tag [type.underscore, @project.namespace.becomes(Namespace), @project, commit], method: :post, remote: false, class: "form-horizontal js-#{type}-form js-requires-input" do
           .form-group.branch
