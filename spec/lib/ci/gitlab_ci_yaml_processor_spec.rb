@@ -596,62 +596,117 @@ module Ci
     end
 
     describe "Image and service handling" do
-      it "returns image and service when defined" do
-        config = YAML.dump({
-                             image: { name: "ruby:2.1" },
-                             services: ["mysql", { name: "docker:dind", alias: "docker" }],
-                             before_script: ["pwd"],
-                             rspec: { script: "rspec" }
-                           })
+      context "when extended docker configuration is used" do
+        it "returns image and service when defined" do
+          config = YAML.dump({ image: { name: "ruby:2.1" },
+                               services: ["mysql", { name: "docker:dind", alias: "docker" }],
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec" } })
 
-        config_processor = GitlabCiYamlProcessor.new(config, path)
+          config_processor = GitlabCiYamlProcessor.new(config, path)
 
-        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-        expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
-          stage: "test",
-          stage_idx: 1,
-          name: "rspec",
-          commands: "pwd\nrspec",
-          coverage_regex: nil,
-          tag_list: [],
-          options: {
-            image: { name: "ruby:2.1" },
-            services: [{ name: "mysql" }, { name: "docker:dind", alias: "docker" }]
-          },
-          allow_failure: false,
-          when: "on_success",
-          environment: nil,
-          yaml_variables: []
-        })
+          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+          expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            stage: "test",
+            stage_idx: 1,
+            name: "rspec",
+            commands: "pwd\nrspec",
+            coverage_regex: nil,
+            tag_list: [],
+            options: {
+                image: { name: "ruby:2.1" },
+                services: [{ name: "mysql" }, { name: "docker:dind", alias: "docker" }]
+            },
+            allow_failure: false,
+            when: "on_success",
+            environment: nil,
+            yaml_variables: []
+          })
+        end
+
+        it "returns image and service when overridden for job" do
+          config = YAML.dump({ image: "ruby:2.1",
+                               services: ["mysql"],
+                               before_script: ["pwd"],
+                               rspec: { image: { name: "ruby:2.5" },
+                                        services: [{ name: "postgresql", alias: "db-pg" }, "docker:dind"], script: "rspec" } })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+          expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            stage: "test",
+            stage_idx: 1,
+            name: "rspec",
+            commands: "pwd\nrspec",
+            coverage_regex: nil,
+            tag_list: [],
+            options: {
+                image: { name: "ruby:2.5" },
+                services: [{ name: "postgresql", alias: "db-pg" }, { name: "docker:dind" }]
+            },
+            allow_failure: false,
+            when: "on_success",
+            environment: nil,
+            yaml_variables: []
+          })
+        end
       end
 
-      it "returns image and service when overridden for job" do
-        config = YAML.dump({
-                             image:         "ruby:2.1",
-                             services:      ["mysql"],
-                             before_script: ["pwd"],
-                             rspec:         { image: "ruby:2.5", services: [{ name: "postgresql" }, "docker:dind"], script: "rspec" }
-                           })
+      context "when etended docker configuration is not used" do
+        it "returns image and service when defined" do
+          config = YAML.dump({ image: "ruby:2.1",
+                               services: ["mysql", "docker:dind"],
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec" } })
 
-        config_processor = GitlabCiYamlProcessor.new(config, path)
+          config_processor = GitlabCiYamlProcessor.new(config, path)
 
-        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-        expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
-          stage: "test",
-          stage_idx: 1,
-          name: "rspec",
-          commands: "pwd\nrspec",
-          coverage_regex: nil,
-          tag_list: [],
-          options: {
-            image: { name: "ruby:2.5" },
-            services: [{ name: "postgresql" }, { name: "docker:dind" }]
-          },
-          allow_failure: false,
-          when: "on_success",
-          environment: nil,
-          yaml_variables: []
-        })
+          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+          expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            stage: "test",
+            stage_idx: 1,
+            name: "rspec",
+            commands: "pwd\nrspec",
+            coverage_regex: nil,
+            tag_list: [],
+            options: {
+              image: { name: "ruby:2.1" },
+              services: [{ name: "mysql" }, { name: "docker:dind" }]
+            },
+            allow_failure: false,
+            when: "on_success",
+            environment: nil,
+            yaml_variables: []
+          })
+        end
+
+        it "returns image and service when overridden for job" do
+          config = YAML.dump({ image: "ruby:2.1",
+                               services: ["mysql"],
+                               before_script: ["pwd"],
+                               rspec: { image: "ruby:2.5", services: ["postgresql", "docker:dind"], script: "rspec" } })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+          expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            stage: "test",
+            stage_idx: 1,
+            name: "rspec",
+            commands: "pwd\nrspec",
+            coverage_regex: nil,
+            tag_list: [],
+            options: {
+                image: { name: "ruby:2.5" },
+                services: [{ name: "postgresql" }, { name: "docker:dind" }]
+            },
+            allow_failure: false,
+            when: "on_success",
+            environment: nil,
+            yaml_variables: []
+          })
+        end
       end
     end
 
