@@ -198,6 +198,23 @@ module ProjectsHelper
       .load_in_batch_for_projects(projects)
   end
 
+  def show_no_ssh_key_message?
+    cookies[:hide_no_ssh_message].blank? && !current_user.hide_no_ssh_key && current_user.require_ssh_key?
+  end
+
+  def show_no_password_message?
+    cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
+      ( current_user.require_password? || current_user.require_personal_access_token? )
+  end
+
+  def link_to_set_password
+    if current_user.require_password?
+      link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
+    else
+      link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
+    end
+  end
+
   private
 
   def repo_children_classes(field)
