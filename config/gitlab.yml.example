@@ -709,7 +709,7 @@ test:
         host: 127.0.0.1
         port: 3890
         uid: 'uid'
-        method: 'plain' # "tls" or "ssl" or "plain"
+        encryption: 'plain' # "start_tls" or "simple_tls" or "plain"
         base: 'dc=example,dc=com'
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
