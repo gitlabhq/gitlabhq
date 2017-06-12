@@ -104,5 +104,6 @@ class RenameAllReservedPathsAgain < ActiveRecord::Migration
   end
 
   def down
+    revert_renames
   end
 end
