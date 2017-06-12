@@ -25,8 +25,8 @@ module Gitlab
       end
 
       def redis_key(key)
-        raise 'Invalid key' unless Gitlab::EtagCaching::Router.match(key)
-        
+        raise 'Invalid key' if !Rails.env.production? && !Gitlab::EtagCaching::Router.match(key)
+
         "#{REDIS_NAMESPACE}#{key}"
       end
     end

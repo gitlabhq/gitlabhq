@@ -209,7 +209,8 @@ class Environment < ActiveRecord::Base
   def etag_cache_key
     Gitlab::Routing.url_helpers.namespace_project_environments_path(
       project.namespace,
-      project)
+      project,
+      format: :json)
   end
 
   private
