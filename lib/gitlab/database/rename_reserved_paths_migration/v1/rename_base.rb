@@ -125,7 +125,11 @@ module Gitlab
 
           def track_rename(type, old_path, new_path)
             key = redis_key_for_type(type)
-            Gitlab::Redis.with { |redis| redis.lpush(key, [old_path, new_path].to_json) }
+            Gitlab::Redis.with do |redis|
+              redis.lpush(key, [old_path, new_path].to_json)
+              redis.expire(key, 2.weeks.to_i)
+            end
+            say "tracked rename: #{key}: #{old_path} -> #{new_path}"
           end
 
           def reverts_for_type(type)
