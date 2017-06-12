@@ -48,7 +48,7 @@ body {
 .container-limited {
   max-width: $fixed-layout-width;
 
-  &.limit-container-width {
+  &.limit-container-width:not(.limited-inner-width-container) {
     max-width: $limited-layout-width;
   }
 }
