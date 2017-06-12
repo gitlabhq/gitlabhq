@@ -248,4 +248,5 @@ en:
       default: "%a, %d %b %Y %H:%M:%S %z"
       long: "%B %d, %Y %H:%M"
       short: "%d %b %H:%M"
+      timeago_tooltip: "%b %-d, %Y %-k:%M%P"
     pm: pm
