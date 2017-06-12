@@ -25,8 +25,8 @@ describe 'projects/commit/show.html.haml', :view do
       render
     end
 
-    it 'keeps container-limited' do
-      expect(rendered).not_to have_selector('.limit-container-width')
+    it 'spans full width' do
+      expect(rendered).to have_selector('.limit-container-width')
     end
   end
 
