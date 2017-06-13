@@ -603,6 +603,9 @@ module API
       expose :plantuml_url
       expose :terminal_max_session_time
       expose :polling_interval_multiplier
+      expose :help_page_hide_commercial_content
+      expose :help_page_text
+      expose :help_page_support_url
     end
 
     class Release < Grape::Entity
