@@ -11,8 +11,10 @@ Capybara.register_driver :poltergeist do |app|
     js_errors: true,
     timeout: timeout,
     window_size: [1366, 768],
+    url_whitelist: %w[localhost 127.0.0.1],
+    url_blacklist: %w[.mp4 .png .gif .avi .bmp .jpg .jpeg],
     phantomjs_options: [
-      '--load-images=no'
+      '--load-images=yes'
     ]
   )
 end
