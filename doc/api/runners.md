@@ -31,7 +31,8 @@ Example response:
         "id": 6,
         "is_shared": false,
         "name": null,
-        "online": true
+        "online": true,
+        "status": "online"
     },
     {
         "active": true,
@@ -39,7 +40,8 @@ Example response:
         "id": 8,
         "is_shared": false,
         "name": null,
-        "online": false
+        "online": false,
+        "status": "offline"
     }
 ]
 ```
@@ -72,7 +74,8 @@ Example response:
         "id": 1,
         "is_shared": true,
         "name": null,
-        "online": true
+        "online": true,
+        "status": "online"
     },
     {
         "active": true,
@@ -81,6 +84,7 @@ Example response:
         "is_shared": true,
         "name": null,
         "online": false
+        "status": "offline"
     },
     {
         "active": true,
@@ -89,6 +93,7 @@ Example response:
         "is_shared": false,
         "name": null,
         "online": true
+        "status": "paused"
     },
     {
         "active": true,
@@ -96,7 +101,8 @@ Example response:
         "id": 8,
         "is_shared": false,
         "name": null,
-        "online": false
+        "online": false,
+        "status": "offline"
     }
 ]
 ```
@@ -129,6 +135,7 @@ Example response:
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
     "online": true,
+    "status": "online",
     "platform": null,
     "projects": [
         {
@@ -184,6 +191,7 @@ Example response:
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
     "online": true,
+    "status": "online",
     "platform": null,
     "projects": [
         {
@@ -336,7 +344,8 @@ Example response:
         "id": 8,
         "is_shared": false,
         "name": null,
-        "online": false
+        "online": false,
+        "status": "offline"
     },
     {
         "active": true,
@@ -345,6 +354,7 @@ Example response:
         "is_shared": true,
         "name": null,
         "online": true
+        "status": "paused"
     }
 ]
 ```
@@ -375,7 +385,8 @@ Example response:
     "id": 9,
     "is_shared": false,
     "name": null,
-    "online": true
+    "online": true,
+    "status": "online"
 }
 ```
 

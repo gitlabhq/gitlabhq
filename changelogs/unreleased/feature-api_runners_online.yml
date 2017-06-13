@@ -1,4 +1,5 @@
 ---
-title: Add online attribute to runner api entity
+title: Add online and status attribute to runner api entity
 merge_request: 11750
-author: Alessio Caiazza
+author:
+type: added
