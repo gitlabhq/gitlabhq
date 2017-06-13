@@ -112,7 +112,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def group_name
-    name.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
+    name.to_s.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
   end
 
   def failed_but_allowed?
@@ -156,7 +156,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def sortable_name
-    name.split(/(\d+)/).map do |v|
+    name.to_s.split(/(\d+)/).map do |v|
       v =~ /\d+/ ? v.to_i : v
     end
   end
