@@ -222,9 +222,8 @@ class Project < ActiveRecord::Base
   has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
-  default_scope { where(pending_delete: false) }
-
-  scope :with_deleted, -> { unscope(where: :pending_delete) }
+  scope :with_deleted, -> { where(pending_delete: true) }
+  scope :without_deleted, -> { where(pending_delete: false) }
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
