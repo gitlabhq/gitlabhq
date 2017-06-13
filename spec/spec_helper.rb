@@ -80,6 +80,15 @@ RSpec.configure do |config|
     TestEnv.cleanup
   end
 
+  config.before(:example, :request_store) do
+    RequestStore.begin!
+  end
+
+  config.after(:example, :request_store) do
+    RequestStore.end!
+    RequestStore.clear!
+  end
+
   if ENV['CI']
     # Retry only on feature specs that use JS
     config.around :each, :js do |ex|

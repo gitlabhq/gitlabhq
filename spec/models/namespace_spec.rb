@@ -43,6 +43,12 @@ describe Namespace, models: true do
         end
       end
 
+      context "is case insensitive" do
+        let(:group) { build(:group, path: "System") }
+
+        it { expect(group).not_to be_valid }
+      end
+
       context 'top-level group' do
         let(:group) { build(:group, path: 'tree') }
 
@@ -178,8 +184,8 @@ describe Namespace, models: true do
       let(:parent) { create(:group, name: 'parent', path: 'parent') }
       let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
       let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child) }
-      let(:uploads_dir) { File.join(CarrierWave.root, 'uploads') }
-      let(:pages_dir) { TestEnv.pages_path }
+      let(:uploads_dir) { File.join(CarrierWave.root, FileUploader.base_dir) }
+      let(:pages_dir) { File.join(TestEnv.pages_path) }
 
       before do
         FileUtils.mkdir_p(File.join(uploads_dir, 'parent', 'child', 'the-project'))

@@ -170,7 +170,7 @@ class Project < ActiveRecord::Base
   has_many :audit_events, as: :entity, dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source
 
-  has_one :import_data, dependent: :delete, class_name: "ProjectImportData"
+  has_one :import_data, dependent: :delete, class_name: 'ProjectImportData'
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
   has_many :container_repositories, dependent: :destroy
@@ -346,10 +346,6 @@ class Project < ActiveRecord::Base
       transition [:scheduled, :started] => :failed
     end
 
-    event :import_retry do
-      transition failed: :started
-    end
-
     state :scheduled
     state :started
     state :finished
@@ -410,8 +406,6 @@ class Project < ActiveRecord::Base
     after_transition [:finished, :failed] => [:scheduled, :started] do |project, _|
       Gitlab::Mirror.increment_capacity(project.id) if project.mirror?
     end
-
-    after_transition started: :finished, do: :reset_cache_and_import_attrs
   end
 
   class << self

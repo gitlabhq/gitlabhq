@@ -276,6 +276,16 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  def elasticsearch_indexing
+    License.feature_available?(:elastic_search) && super
+  end
+  alias_method :elasticsearch_indexing?, :elasticsearch_indexing
+
+  def elasticsearch_search
+    License.feature_available?(:elastic_search) && super
+  end
+  alias_method :elasticsearch_search?, :elasticsearch_search
+
   def elasticsearch_url
     read_attribute(:elasticsearch_url).split(',').map(&:strip)
   end
