@@ -3,33 +3,38 @@ module Gitlab
   #
   # This class uses recursive CTEs and as a result will only work on PostgreSQL.
   class GroupHierarchy
-    attr_reader :base, :model
+    attr_reader :ancestors_base, :descendants_base, :model
 
-    # base - An instance of ActiveRecord::Relation for which to get parent or
-    #        child groups.
-    def initialize(base)
-      @base = base
-      @model = base.model
+    # ancestors_base - An instance of ActiveRecord::Relation for which to
+    #                  get parent groups.
+    # descendants_base - An instance of ActiveRecord::Relation for which to
+    #                    get child groups. If omitted, ancestors_base is used.
+    def initialize(ancestors_base, descendants_base = ancestors_base)
+      raise ArgumentError if ancestors_base.model != descendants_base.model
+
+      @ancestors_base = ancestors_base
+      @descendants_base = descendants_base
+      @model = ancestors_base.model
     end
 
-    # Returns a relation that includes the base set of groups and all their
-    # ancestors (recursively).
+    # Returns a relation that includes the ancestors_base set of groups
+    # and all their ancestors (recursively).
     def base_and_ancestors
-      return model.none unless Group.supports_nested_groups?
+      return ancestors_base unless Group.supports_nested_groups?
 
       base_and_ancestors_cte.apply_to(model.all)
     end
 
-    # Returns a relation that includes the base set of groups and all their
-    # descendants (recursively).
+    # Returns a relation that includes the descendants_base set of groups
+    # and all their descendants (recursively).
     def base_and_descendants
-      return model.none unless Group.supports_nested_groups?
+      return descendants_base unless Group.supports_nested_groups?
 
       base_and_descendants_cte.apply_to(model.all)
     end
 
-    # Returns a relation that includes the base groups, their ancestors, and the
-    # descendants of the base groups.
+    # Returns a relation that includes the base groups, their ancestors,
+    # and the descendants of the base groups.
     #
     # The resulting query will roughly look like the following:
     #
@@ -49,7 +54,7 @@ module Gitlab
     # Using this approach allows us to further add criteria to the relation with
     # Rails thinking it's selecting data the usual way.
     def all_groups
-      return base unless Group.supports_nested_groups?
+      return ancestors_base unless Group.supports_nested_groups?
 
       ancestors = base_and_ancestors_cte
       descendants = base_and_descendants_cte
@@ -72,7 +77,7 @@ module Gitlab
     def base_and_ancestors_cte
       cte = SQL::RecursiveCTE.new(:base_and_ancestors)
 
-      cte << base.except(:order)
+      cte << ancestors_base.except(:order)
 
       # Recursively get all the ancestors of the base set.
       cte << model.
@@ -86,7 +91,7 @@ module Gitlab
     def base_and_descendants_cte
       cte = SQL::RecursiveCTE.new(:base_and_descendants)
 
-      cte << base.except(:order)
+      cte << descendants_base.except(:order)
 
       # Recursively get all the descendants of the base set.
       cte << model.

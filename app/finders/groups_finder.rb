@@ -16,7 +16,11 @@ class GroupsFinder < UnionFinder
   def all_groups
     groups = []
 
-    groups << current_user.authorized_groups if current_user
+    if current_user
+      groups_for_ancestors = find_union([current_user.authorized_groups, authorized_project_groups], Group)
+      groups_for_descendants = current_user.authorized_groups
+      groups << Gitlab::GroupHierarchy.new(groups_for_ancestors, groups_for_descendants).all_groups
+    end
     groups << Group.unscoped.public_to_user(current_user)
 
     groups
