@@ -374,6 +374,7 @@ describe API::Users do
 
       expect(response).to have_http_status(200)
       expect(user.reload.password_expires_at).to be <= Time.now
+      expect(AuditEvent.count).to eq(1)
     end
 
     it "updates user with organization" do
@@ -399,6 +400,13 @@ describe API::Users do
       expect(response).to have_http_status(200)
       expect(json_response['email']).to eq(user.email)
       expect(user.reload.email).to eq(user.email)
+    end
+
+    it 'updates user with a new email' do
+      put api("/users/#{user.id}", admin), email: 'new@email.com'
+      expect(response).to have_http_status(200)
+      expect(user.reload.notification_email).to eq('new@email.com')
+      expect(AuditEvent.count).to eq(1)
     end
 
     it 'updates user with his own username' do
@@ -643,7 +651,7 @@ describe API::Users do
       email_attrs = attributes_for :email
       expect do
         post api("/users/#{user.id}/emails", admin), email_attrs
-      end.to change { user.emails.count }.by(1)
+      end.to change { user.emails.count }.by(1).and change { AuditEvent.count }.by(1)
     end
 
     it "returns a 400 for invalid ID" do
