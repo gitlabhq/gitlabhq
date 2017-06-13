@@ -7,7 +7,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-12 11:04-0400\n"
+"PO-Revision-Date: 2017-06-13 04:29-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
 "Language-Team: Chinese (China) (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: zh-CN\n"
@@ -36,13 +36,13 @@ msgid "Add License"
 msgstr "添加许可证"
 
 msgid "Add an SSH key to your profile to pull or push via SSH."
-msgstr "新增一个用于推送或拉取的 SSH 秘钥到您的个人账户中。"
+msgstr "新增一个用于推送或拉取的 SSH 秘钥到账号中。"
 
 msgid "Add new directory"
-msgstr "添加新目录"
+msgstr "添加目录"
 
 msgid "Archived project! Repository is read-only"
-msgstr "已归档项目！存储库为只读"
+msgstr "项目已归档！存储库为只读状态"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "您确定要删除此流水线计划吗？"
@@ -59,7 +59,7 @@ msgid ""
 "choose a GitLab CI Yaml template and commit your changes. "
 "%{link_to_autodeploy_doc}"
 msgstr ""
-"分支 <strong>%{branch_name}</strong> 已创建。如要设置自动部署， 请选择合适的 GitLab CI Yaml "
+"已创建分支 <strong>%{branch_name}</strong> 。如要设置自动部署， 请选择合适的 GitLab CI Yaml "
 "模板并提交更改。%{link_to_autodeploy_doc}"
 
 msgid "Branches"
@@ -144,7 +144,7 @@ msgid "CiStatusText|failed"
 msgstr "已失败"
 
 msgid "CiStatusText|manual"
-msgstr "待手动"
+msgstr "手动操作"
 
 msgid "CiStatusText|passed"
 msgstr "已通过"
@@ -190,7 +190,7 @@ msgid "Copy URL to clipboard"
 msgstr "复制 URL 到剪贴板"
 
 msgid "Copy commit SHA to clipboard"
-msgstr "复制提交 SHA 到剪贴板"
+msgstr "复制提交 SHA 的值到剪贴板"
 
 msgid "Create New Directory"
 msgstr "创建新目录"
@@ -357,10 +357,10 @@ msgid "From merge request merge until deploy to production"
 msgstr "从合并请求被合并后到部署至生产环境"
 
 msgid "Go to your fork"
-msgstr "跳转到您的派生项目"
+msgstr "跳转到派生项目"
 
 msgid "GoToYourFork|Fork"
-msgstr "跳转到您的派生项目"
+msgstr "跳转到派生项目"
 
 msgid "Home"
 msgstr "首页"
@@ -378,7 +378,7 @@ msgid "Introducing Cycle Analytics"
 msgstr "周期分析简介"
 
 msgid "LFSStatus|Disabled"
-msgstr "禁用"
+msgstr "停用"
 
 msgid "LFSStatus|Enabled"
 msgstr "启用"
@@ -413,17 +413,17 @@ msgid "Median"
 msgstr "中位数"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
-msgstr "添加一个 SSH 公钥"
+msgstr "新增 SSH 公钥"
 
 msgid "New Issue"
 msgid_plural "New Issues"
-msgstr[0] "新议题"
+msgstr[0] "新增议题"
 
 msgid "New Pipeline Schedule"
 msgstr "创建流水线计划"
 
 msgid "New branch"
-msgstr "新分支"
+msgstr "新增分支"
 
 msgid "New directory"
 msgstr "新增目录"
@@ -432,19 +432,19 @@ msgid "New file"
 msgstr "新增文件"
 
 msgid "New issue"
-msgstr "新议题"
+msgstr "新增议题"
 
 msgid "New merge request"
-msgstr "新合并请求"
+msgstr "新增合并请求"
 
 msgid "New schedule"
-msgstr "新计划"
+msgstr "新增计划"
 
 msgid "New snippet"
-msgstr "新代码片段"
+msgstr "新增代码片段"
 
 msgid "New tag"
-msgstr "新标签"
+msgstr "新增标签"
 
 msgid "No repository"
 msgstr "没有存储库"
@@ -474,13 +474,13 @@ msgid "NotificationEvent|Merge merge request"
 msgstr "合并请求被合并"
 
 msgid "NotificationEvent|New issue"
-msgstr "新议题"
+msgstr "新增议题"
 
 msgid "NotificationEvent|New merge request"
 msgstr "新合并请求"
 
 msgid "NotificationEvent|New note"
-msgstr "新评论"
+msgstr "新增评论"
 
 msgid "NotificationEvent|Reassign issue"
 msgstr "重新指派议题"
@@ -498,7 +498,7 @@ msgid "NotificationLevel|Custom"
 msgstr "自定义"
 
 msgid "NotificationLevel|Disabled"
-msgstr "禁用"
+msgstr "停用"
 
 msgid "NotificationLevel|Global"
 msgstr "全局"
@@ -596,7 +596,7 @@ msgid "Project home"
 msgstr "项目首页"
 
 msgid "ProjectFeature|Disabled"
-msgstr "禁用"
+msgstr "停用"
 
 msgid "ProjectFeature|Everyone with access"
 msgstr "任何对项目有访问权的人"
@@ -683,7 +683,7 @@ msgid "Select target branch"
 msgstr "选择目标分支"
 
 msgid "Set a password on your account to pull or push via %{protocol}"
-msgstr "为您的账户创建一个用于推送或拉取的 %{protocol} 密码。"
+msgstr "为账号创建一个用于推送或拉取的 %{protocol} 密码。"
 
 msgid "Set up CI"
 msgstr "设置 CI"
@@ -730,7 +730,7 @@ msgid ""
 msgstr "编码阶段概述了从第一次提交到创建合并请求的时间。创建第一个合并请求后，数据将自动添加到此处。"
 
 msgid "The collection of events added to the data gathered for that stage."
-msgstr "与该阶段相关的事件。"
+msgstr "与该阶段相关的事件集合。"
 
 msgid "The fork relationship has been removed."
 msgstr "派生关系已被删除。"
@@ -1023,7 +1023,7 @@ msgid ""
 msgstr "您只会收到您参与的主题的通知"
 
 msgid "You will receive notifications for any activity"
-msgstr "您将收到任何活动的通知"
+msgstr "您将收到所有活动的通知"
 
 msgid ""
 "You will receive notifications only for comments in which you were "
@@ -1033,12 +1033,12 @@ msgstr "您只会收到评论中提及(@)您的通知"
 msgid ""
 "You won't be able to pull or push project code via %{protocol} until you "
 "%{set_password_link} on your account"
-msgstr "在您的账户上  %{set_password_link} 之前， 您将无法通过 %{protocol} 拉取或推送代码。"
+msgstr "在账号中 %{set_password_link} 之前将无法通过 %{protocol} 拉取或推送代码。"
 
 msgid ""
 "You won't be able to pull or push project code via SSH until you "
 "%{add_ssh_key_link} to your profile"
-msgstr "在您的个人资料中添加 %{add_ssh_key_link} 之前， 您将无法通过 SSH 拉取或推送代码。"
+msgstr "在账号中添加 %{add_ssh_key_link} 之前将无法通过 SSH 拉取或推送代码。"
 
 msgid "Your name"
 msgstr "您的名字"
