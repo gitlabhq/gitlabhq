@@ -1223,17 +1223,6 @@ class Project < ActiveRecord::Base
     !!repository.exists?
   end
 
-  def update_forks_visibility_level
-    return unless visibility_level < visibility_level_was
-
-    forks.each do |forked_project|
-      if forked_project.visibility_level > visibility_level
-        forked_project.visibility_level = visibility_level
-        forked_project.save!
-      end
-    end
-  end
-
   def create_wiki
     ProjectWiki.new(self, self.owner).wiki
     true
