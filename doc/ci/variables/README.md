@@ -176,6 +176,22 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
+## Secret variable scope
+
+>**Notes:**
+This feature requires GitLab 9.4 or higher.
+
+The scope of a secret variable describes which environments should have this
+variable. The default scope is `*` which means any jobs should have this
+variable, having environments or not doesn't matter.
+
+If the scope is for example, `production`, then only the job having
+environment `production` would have this specific variable. Wildcard `*`
+could be used along with the name, therefore if the scope is `review/*`
+then any jobs with environments name starting with `review/` would have
+that particular variable. For example, `review/feature-01`, `review/bug-01`,
+and so on.
+
 ## Deployment variables
 
 >**Note:**

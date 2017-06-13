@@ -43,9 +43,12 @@ module API
         requires :key, type: String, desc: 'The key of the variable'
         requires :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
+
+        # EE
+        optional :scope, type: String, desc: 'The scope of the variable'
       end
       post ':id/variables' do
-        variable = user_project.variables.create(declared(params, include_parent_namespaces: false).to_h)
+        variable = user_project.variables.create(declared_params(include_missing: false))
 
         if variable.valid?
           present variable, with: Entities::Variable
@@ -61,6 +64,9 @@ module API
         optional :key, type: String, desc: 'The key of the variable'
         optional :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
+
+        # EE
+        optional :scope, type: String, desc: 'The scope of the variable'
       end
       put ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])

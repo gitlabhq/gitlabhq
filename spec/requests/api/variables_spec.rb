@@ -89,6 +89,30 @@ describe API::Variables do
 
         expect(response).to have_http_status(400)
       end
+
+      # EE
+      it 'creates variable with a specific scope' do
+        expect do
+          post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2', scope: 'review/*'
+        end.to change{project.variables.count}.by(1)
+
+        expect(response).to have_http_status(201)
+        expect(json_response['key']).to eq('TEST_VARIABLE_2')
+        expect(json_response['value']).to eq('VALUE_2')
+        expect(json_response['scope']).to eq('review/*')
+      end
+
+      # EE
+      it 'allows duplicated variable key given different scopes' do
+        expect do
+          post api("/projects/#{project.id}/variables", user), key: variable.key, value: 'VALUE_2', scope: 'review/*'
+        end.to change{project.variables.count}.by(1)
+
+        expect(response).to have_http_status(201)
+        expect(json_response['key']).to eq(variable.key)
+        expect(json_response['value']).to eq('VALUE_2')
+        expect(json_response['scope']).to eq('review/*')
+      end
     end
 
     context 'authorized user with invalid permissions' do

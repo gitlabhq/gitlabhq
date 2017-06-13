@@ -751,6 +751,9 @@ module API
     class Variable < Grape::Entity
       expose :key, :value
       expose :protected?, as: :protected
+
+      # EE
+      expose :scope
     end
 
     class Pipeline < PipelineBasic
