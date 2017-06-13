@@ -2,7 +2,7 @@ module Gitlab
   module Geo
     class HealthCheck
       def self.perform_checks
-        raise NotImplementedError unless Gitlab::Database.postgresql?
+        raise NotImplementedError.new('Geo is only compatible with PostgreSQL') unless Gitlab::Database.postgresql?
 
         return '' unless Gitlab::Geo.secondary?
         return 'The Geo secondary role is disabled.' unless Gitlab::Geo.secondary_role_enabled?
