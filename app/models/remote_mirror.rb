@@ -46,10 +46,14 @@ class RemoteMirror < ActiveRecord::Base
     state :failed
 
     after_transition any => :started do |remote_mirror, _|
+      Gitlab::Mirror.increment_metric(:remote_mirrors_running, 'Remote mirrors running count')
+
       remote_mirror.update(last_update_started_at: Time.now)
     end
 
     after_transition started: :finished do |remote_mirror, _|
+      Gitlab::Mirror.increment_metric(:remote_mirrors_finished, 'Remote mirrors successfully finished count')
+
       timestamp = Time.now
       remote_mirror.update_attributes!(
         last_update_at: timestamp, last_successful_update_at: timestamp, last_error: nil
@@ -57,6 +61,8 @@ class RemoteMirror < ActiveRecord::Base
     end
 
     after_transition started: :failed do |remote_mirror, _|
+      Gitlab::Mirror.increment_metric(:remote_mirrors_failed, 'Remote mirrors failed count')
+
       remote_mirror.update(last_update_at: Time.now)
     end
   end

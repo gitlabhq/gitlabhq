@@ -73,6 +73,8 @@ module EE
       if import? && !repository_exists?
         super
       elsif mirror?
+        ::Gitlab::Mirror.increment_metric(:mirrors_scheduled, 'Mirrors scheduled count')
+
         RepositoryUpdateMirrorWorker.perform_async(self.id)
       end
     end
