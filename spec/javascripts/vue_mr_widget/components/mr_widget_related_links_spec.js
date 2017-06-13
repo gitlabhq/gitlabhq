@@ -119,8 +119,9 @@ describe('MRWidgetRelatedLinks', () => {
 
   describe('methods', () => {
     const relatedLinks = {
-      closing: '<a href="#">#23</a> and <a>#42</a>',
-      mentioned: '<a href="#">#7</a>',
+      oneIssue: '<a href="#">#7</a>',
+      twoIssues: '<a href="#">#23</a> and <a>#42</a>',
+      threeIssues: '<a href="#">#1</a>, <a>#2</a>, and <a>#3</a>',
     };
 
     beforeEach(() => {
@@ -129,21 +130,23 @@ describe('MRWidgetRelatedLinks', () => {
 
     describe('hasMultipleIssues', () => {
       it('should return true if the given text has multiple issues', () => {
-        expect(vm.hasMultipleIssues(relatedLinks.closing)).toBeTruthy();
+        expect(vm.hasMultipleIssues(relatedLinks.twoIssues)).toBeTruthy();
+        expect(vm.hasMultipleIssues(relatedLinks.threeIssues)).toBeTruthy();
       });
 
       it('should return false if the given text has one issue', () => {
-        expect(vm.hasMultipleIssues(relatedLinks.mentioned)).toBeFalsy();
+        expect(vm.hasMultipleIssues(relatedLinks.oneIssue)).toBeFalsy();
       });
     });
 
     describe('issueLabel', () => {
       it('should return true if the given text has multiple issues', () => {
-        expect(vm.issueLabel('closing')).toEqual('issues');
+        expect(vm.issueLabel('twoIssues')).toEqual('issues');
+        expect(vm.issueLabel('threeIssues')).toEqual('issues');
       });
 
       it('should return false if the given text has one issue', () => {
-        expect(vm.issueLabel('mentioned')).toEqual('issue');
+        expect(vm.issueLabel('oneIssue')).toEqual('issue');
       });
     });
   });
