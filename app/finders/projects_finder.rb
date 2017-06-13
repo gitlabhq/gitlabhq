@@ -28,34 +28,72 @@ class ProjectsFinder < UnionFinder
   end
 
   def execute
-    items = init_collection
-    items = items.map do |item|
-      item = by_ids(item)
-      item = by_personal(item)
-      item = by_starred(item)
-      item = by_trending(item)
-      item = by_visibilty_level(item)
-      item = by_tags(item)
-      item = by_search(item)
-      by_archived(item)
-    end
-    items = union(items)
-    sort(items)
+    collection = init_collection
+    collection = by_ids(collection)
+    collection = by_personal(collection)
+    collection = by_starred(collection)
+    collection = by_trending(collection)
+    collection = by_visibilty_level(collection)
+    collection = by_tags(collection)
+    collection = by_search(collection)
+    collection = by_archived(collection)
+
+    sort(collection)
   end
 
   private
 
   def init_collection
-    projects = []
-
-    if params[:owned].present?
-      projects << current_user.owned_projects if current_user
+    if current_user
+      collection_with_user
     else
-      projects << current_user.authorized_projects if current_user
-      projects << Project.unscoped.public_to_user(current_user) unless params[:non_public].present?
+      collection_without_user
     end
+  end
 
-    projects
+  def collection_with_user
+    if owned_projects?
+      current_user.owned_projects
+    else
+      if private_only?
+        current_user.authorized_projects
+      else
+        collection_with_user_and_public_projects
+      end
+    end
+  end
+
+  # Builds a collection for a signed in user that includes additional projects
+  # such as public and internal ones.
+  #
+  # This method manually constructs some WHERE conditions in order to ensure the
+  # produced query is as efficient as possible.
+  def collection_with_user_and_public_projects
+    levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
+    authorized = current_user.project_authorizations.
+      select(1).
+      where('project_id = projects.id')
+
+    Project.where('EXISTS (?) OR projects.visibility_level IN (?)',
+                  authorized,
+                  levels)
+  end
+
+  # Builds a collection for an anonymous user.
+  def collection_without_user
+    if private_only? || owned_projects?
+      Project.none
+    else
+      Project.public_to_user
+    end
+  end
+
+  def owned_projects?
+    params[:owned].present?
+  end
+
+  def private_only?
+    params[:non_public].present?
   end
 
   def by_ids(items)
