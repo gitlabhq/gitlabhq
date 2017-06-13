@@ -25,38 +25,36 @@ export default {
   },
 
   showButton(e) {
-    const $currentTarget = $(e.currentTarget);
-    const buttonParentElement = this.getButtonParent($currentTarget);
+    const buttonParentElement = this.getButtonParent(e.currentTarget);
 
     if (!this.validateButtonParent(buttonParentElement)) return;
 
-    buttonParentElement.addClass('is-over')
-      .nextUntil(`.${LINE_CONTENT_CLASS}`).addClass('is-over');
+    buttonParentElement.classList.add('is-over');
+    buttonParentElement.nextElementSibling.classList.add('is-over');
   },
 
   hideButton(e) {
-    const $currentTarget = $(e.currentTarget);
-    const buttonParentElement = this.getButtonParent($currentTarget);
+    const buttonParentElement = this.getButtonParent(e.currentTarget);
 
-    buttonParentElement.removeClass('is-over')
-      .nextUntil(`.${LINE_CONTENT_CLASS}`).removeClass('is-over');
+    buttonParentElement.classList.remove('is-over');
+    buttonParentElement.nextElementSibling.classList.remove('is-over');
   },
 
   getButtonParent(hoveredElement) {
     if (!notes.isParallelView()) {
-      if (hoveredElement.hasClass(OLD_LINE_CLASS)) {
+      if (hoveredElement.classList.contains(OLD_LINE_CLASS)) {
         return hoveredElement;
       }
-      return hoveredElement.parent().find(`.${OLD_LINE_CLASS});
+      return hoveredElement.parentNode.querySelector(`.${OLD_LINE_CLASS}`);
     } else {
-      if (hoveredElement.hasClass(LINE_NUMBER_CLASS)) {
+      if (hoveredElement.classList.contains(LINE_NUMBER_CLASS)) {
         return hoveredElement;
       }
-      return $(hoveredElement).prev(`.${LINE_NUMBER_CLASS}`);
+      return hoveredElement.previousElementSibling;
     }
   },
 
   validateButtonParent(buttonParentElement) {
-    return !buttonParentElement.hasClass(EMPTY_CELL_CLASS) && !buttonParentElement.hasClass(UNFOLDABLE_LINE_CLASS);
+    return !buttonParentElement.classList.contains(EMPTY_CELL_CLASS) && !buttonParentElement.classList.contains(UNFOLDABLE_LINE_CLASS);
   },
 };
