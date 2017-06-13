@@ -77,7 +77,7 @@ module EE
       end
     end
 
-    def secret_variables_for(ref:, environment:)
+    def secret_variables_for(ref:, environment: nil)
       query = super
 
       # Full wildcard has the least priority

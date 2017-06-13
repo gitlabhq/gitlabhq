@@ -198,22 +198,23 @@ module Ci
 
     # Variables whose value does not depend on other variables
     def simple_variables
+      variables(with_environment: false)
+    end
+
+    # All variables, including those dependent on other variables
+    def variables(with_environment: true)
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
       variables += project.deployment_variables if has_environment?
+      variables += persisted_environment_variables if with_environment
       variables += yaml_variables
       variables += user_variables
-      variables += secret_variables
+      variables += secret_variables(with_environment: with_environment)
       variables += trigger_request.user_variables if trigger_request
       variables
-    end
-
-    # All variables, including those dependent on other variables
-    def variables
-      simple_variables.concat(persisted_environment_variables)
     end
 
     def merge_request
@@ -391,10 +392,16 @@ module Ci
       ]
     end
 
-    def secret_variables
-      project.secret_variables_for(
-        ref: ref, environment: persisted_environment)
-        .map(&:to_runner_variable)
+    def secret_variables(with_environment: true)
+      variables = project.secret_variables_for(ref: ref)
+
+      if with_environment
+        variables.concat(
+          project.secret_variables_for(
+            ref: ref, environment: persisted_environment))
+      end
+
+      variables.map(&:to_runner_variable)
     end
 
     def steps
