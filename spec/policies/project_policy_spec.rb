@@ -103,6 +103,30 @@ describe ProjectPolicy, models: true do
     end
   end
 
+  context 'issues feature' do
+    subject { described_class.new(owner, project) }
+
+    context 'when the feature is disabled' do
+      it 'does not include the issues permissions' do
+        project.issues_enabled = false
+        project.save!
+
+        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+      end
+    end
+
+    context 'when the feature is disabled and external tracker configured' do
+      it 'does not include the issues permissions' do
+        create(:jira_service, project: project)
+
+        project.issues_enabled = false
+        project.save!
+
+        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+      end
+    end
+  end
+
   context 'abilities for non-public projects' do
     let(:project) { create(:empty_project, namespace: owner.namespace) }
 
