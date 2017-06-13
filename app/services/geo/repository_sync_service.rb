@@ -36,7 +36,7 @@ module Geo
         expire_repository_caches
 
         finished_at = DateTime.now
-      rescue Gitlab::Shell::Error => e
+      rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
         Rails.logger.error("#{self.class.name}: Error syncing repository for project #{project.path_with_namespace}: #{e}")
       end
 
