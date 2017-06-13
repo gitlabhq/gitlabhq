@@ -42,4 +42,20 @@ describe ArtifactUploader do
     it { is_expected.to start_with(path) }
     it { is_expected.to end_with('/tmp/work') }
   end
+
+  describe '#filename' do
+    # we need to use uploader, as this makes to use mounter
+    # which initialises uploader.file object
+    let(:uploader) { job.artifacts_file }
+
+    subject { uploader.filename }
+
+    it { is_expected.to be_nil }
+
+    context 'with artifacts' do
+      let(:job) { create(:ci_build, :artifacts) }
+
+      it { is_expected.not_to be_nil }
+    end
+  end
 end
