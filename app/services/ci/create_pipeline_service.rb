@@ -51,12 +51,12 @@ module Ci
         return error('No stages / jobs for this pipeline.')
       end
 
-      _create_pipeline(&block)
+      _create_pipeline(source, &block)
     end
 
     private
 
-    def _create_pipeline
+    def _create_pipeline(source)
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
 
