@@ -929,7 +929,8 @@
     border-color: transparent;
     border-style: solid;
     top: -6px;
-    left: 2px;
+    left: 50%;
+    transform: translate(-50%, 0);
     border-width: 0 5px 6px;
   }
 
@@ -944,6 +945,14 @@
   }
 }
 
+/**
+ * Center dropdown menu in mini graph
+ */
+.mini-pipeline-graph-dropdown-menu.dropdown-menu {
+  right: auto;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
 /**
  * Terminal
  */
