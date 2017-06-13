@@ -228,7 +228,8 @@ production: &base
   # ==========================
 
   ## LDAP settings
-  # You can inspect a sample of the LDAP users with login access by running:
+  # You can test connections and inspect a sample of the LDAP users with login
+  # access by running:
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
