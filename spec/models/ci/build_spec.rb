@@ -21,6 +21,18 @@ describe Ci::Build, :models do
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
 
+  describe '.manual_actions' do
+    let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }
+    let!(:manual_but_succeeded) { create(:ci_build, :manual, status: :success, pipeline: pipeline) }
+    let!(:manual_action) { create(:ci_build, :manual, pipeline: pipeline) }
+
+    subject { described_class.manual_actions }
+
+    it { is_expected.to include(manual_action) }
+    it { is_expected.to include(manual_but_succeeded) }
+    it { is_expected.not_to include(manual_but_created) }
+  end
+
   describe '#actionize' do
     context 'when build is a created' do
       before do
@@ -925,6 +937,10 @@ describe Ci::Build, :models do
 
     context 'when other build is retried' do
       let!(:retried_build) { Ci::Build.retry(other_build, user) }
+
+      before do
+        retried_build.success
+      end
 
       it 'returns a retried build' do
         is_expected.to contain_exactly(retried_build)
