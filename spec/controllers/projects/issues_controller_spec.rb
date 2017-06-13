@@ -7,14 +7,39 @@ describe Projects::IssuesController do
 
   describe "GET #index" do
     context 'external issue tracker' do
-      it 'redirects to the external issue tracker' do
-        external = double(project_path: 'https://example.com/project')
-        allow(project).to receive(:external_issue_tracker).and_return(external)
-        controller.instance_variable_set(:@project, project)
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
 
-        get :index, namespace_id: project.namespace, project_id: project
+        JiraService.create(
+          project: project,
+          active: true,
+          username: 'username',
+          password: 'test',
+          project_key: 'TEST',
+          jira_issue_transition_id: 24,
+          url: 'http://jira.test.com'
+        )
+      end
 
-        expect(response).to redirect_to('https://example.com/project')
+      context 'when GitLab issues disabled' do
+        it 'returns 404 status' do
+          project.issues_enabled = false
+          project.save
+
+          get :index, namespace_id: project.namespace, project_id: project
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'when GitLab issues enabled' do
+        it 'renders the "index" template' do
+          get :index, namespace_id: project.namespace, project_id: project
+
+          expect(response).to have_http_status(200)
+          expect(response).to render_template(:index)
+        end
       end
     end
 
@@ -41,14 +66,6 @@ describe Projects::IssuesController do
       it "returns 404 when issues are disabled" do
         project.issues_enabled = false
         project.save
-
-        get :index, namespace_id: project.namespace, project_id: project
-        expect(response).to have_http_status(404)
-      end
-
-      it "returns 404 when external issue tracker is enabled" do
-        controller.instance_variable_set(:@project, project)
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
 
         get :index, namespace_id: project.namespace, project_id: project
         expect(response).to have_http_status(404)
@@ -144,14 +161,32 @@ describe Projects::IssuesController do
         project.team << [user, :developer]
       end
 
-      it 'redirects to the external issue tracker' do
-        external = double(new_issue_path: 'https://example.com/issues/new')
-        allow(project).to receive(:external_issue_tracker).and_return(external)
-        controller.instance_variable_set(:@project, project)
+      context 'when GitLab issues disabled' do
+        it 'returns 404 status' do
+          project.issues_enabled = false
+          project.save
 
-        get :new, namespace_id: project.namespace, project_id: project
+          external = double(new_issue_path: 'https://example.com/issues/new')
+          allow(project).to receive(:external_issue_tracker).and_return(external)
+          controller.instance_variable_set(:@project, project)
 
-        expect(response).to redirect_to('https://example.com/issues/new')
+          get :new, namespace_id: project.namespace, project_id: project
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'when GitLab issues enabled' do
+        it 'renders the "new" template' do
+          external = double(new_issue_path: 'https://example.com/issues/new')
+          allow(project).to receive(:external_issue_tracker).and_return(external)
+          controller.instance_variable_set(:@project, project)
+
+          get :new, namespace_id: project.namespace, project_id: project
+
+          expect(response).to have_http_status(200)
+          expect(response).to render_template(:new)
+        end
       end
     end
   end

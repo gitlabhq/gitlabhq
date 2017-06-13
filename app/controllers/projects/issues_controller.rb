@@ -8,7 +8,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   prepend_before_action :authenticate_user!, only: [:new]
 
-  before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
                                :related_branches, :can_create_branch, :realtime_changes, :create_merge_request]
@@ -254,19 +253,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def module_enabled
-    return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
-  end
-
-  def redirect_to_external_issue_tracker
-    external = @project.external_issue_tracker
-
-    return unless external
-
-    if action_name == 'new'
-      redirect_to external.new_issue_path
-    else
-      redirect_to external.project_path
-    end
+    return render_404 unless @project.feature_available?(:issues, current_user)
   end
 
   def issue_params

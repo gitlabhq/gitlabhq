@@ -235,7 +235,7 @@ class ProjectPolicy < BasePolicy
 
   def block_issues_abilities
     unless project.feature_available?(:issues, user)
-      cannot! :read_issue if project.default_issues_tracker?
+      cannot! :read_issue
       cannot! :create_issue
       cannot! :update_issue
       cannot! :admin_issue

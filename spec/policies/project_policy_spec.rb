@@ -95,6 +95,42 @@ describe ProjectPolicy, models: true do
     expect(permissions).not_to include(*wiki_permissions)
   end
 
+  context 'issues feature' do
+    context 'when the feature is disabled' do
+      it 'does not include the issues permissions' do
+        project.issues_enabled = false
+        project.save
+        issues_permissions = [:read_issue, :create_issue, :update_issue, :admin_issue]
+
+        permissions = described_class.abilities(owner, project).to_set
+
+        expect(permissions).not_to include(*issues_permissions)
+      end
+    end
+
+    context 'when the feature is disabled and external tracker configured' do
+      it 'does not include the issues permissions' do
+        JiraService.create(
+          project: project,
+          active: true,
+          username: 'username',
+          password: 'test',
+          project_key: 'TEST',
+          jira_issue_transition_id: 24,
+          url: 'http://jira.test.com'
+        )
+
+        project.issues_enabled = false
+        project.save
+        issues_permissions = [:read_issue, :create_issue, :update_issue, :admin_issue]
+
+        permissions = described_class.abilities(owner, project).to_set
+
+        expect(permissions).not_to include(*issues_permissions)
+      end
+    end
+  end
+
   context 'abilities for non-public projects' do
     let(:project) { create(:empty_project, namespace: owner.namespace) }
 
