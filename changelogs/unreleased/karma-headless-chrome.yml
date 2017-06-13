@@ -1,4 +1,0 @@
----
-title: Replace PhantomJS with headless Chrome for karma test suite
-merge_request: 12036
-author:

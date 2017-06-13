@@ -5,6 +5,15 @@ import '~/pager';
 import '~/commits';
 
 (() => {
+  // TODO: remove this hack!
+  // PhantomJS causes spyOn to panic because replaceState isn't "writable"
+  let phantomjs;
+  try {
+    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
+  } catch (err) {
+    phantomjs = false;
+  }
+
   describe('Commits List', () => {
     beforeEach(() => {
       setFixtures(`
@@ -52,7 +61,9 @@ import '~/commits';
         CommitsList.init(25);
         CommitsList.searchField.val('');
 
-        spyOn(history, 'replaceState').and.stub();
+        if (!phantomjs) {
+          spyOn(history, 'replaceState').and.stub();
+        }
         ajaxSpy = spyOn(jQuery, 'ajax').and.callFake((req) => {
           req.success({
             data: '<li>Result</li>',

@@ -21,7 +21,7 @@ module.exports = function(config) {
 
   var karmaConfig = {
     basePath: ROOT_PATH,
-    browsers: ['ChromeHeadless'],
+    browsers: ['PhantomJS'],
     frameworks: ['jasmine'],
     files: [
       { pattern: 'spec/javascripts/test_bundle.js', watched: false },
