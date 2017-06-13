@@ -740,6 +740,10 @@
       top: 1px;
       vertical-align: text-bottom;
       position: relative;
+
+      @media (max-width: $screen-xs-max) {
+        max-width: 60%;
+      }
     }
 
     // status icon on the left
@@ -830,6 +834,10 @@
     left: 50%;
     transform: translate(-50%, 0);
     border-width: 0 5px 6px;
+
+    @media (max-width: $screen-sm-max) {
+      left: 70%;
+    }
   }
 
   &::before {
@@ -847,9 +855,15 @@
  * Center dropdown menu in mini graph
  */
 .mini-pipeline-graph-dropdown-menu.dropdown-menu {
-  right: auto;
-  left: 50%;
-  transform: translate(-50%, 0);
+  transform: translate(-60%, 0);
+  min-width: 150px;
+
+  @media(min-width: $screen-md-min) {
+    transform: translate(-50%, 0);
+    right: auto;
+    left: 50%;
+    min-width: 240px;
+  }
 }
 /**
  * Terminal
@@ -904,14 +918,6 @@
     .btn,
     a {
       margin-left: 10px;
-    }
-  }
-}
-
-.table-section {
-  @media (max-width: $screen-sm-max) {
-    .ci-status {
-      border: 0;
     }
   }
 }

@@ -117,13 +117,13 @@ export default {
   template: `
     <div class="branch-commit">
 
-      <div v-if="hasCommitRef" class="icon-container">
+      <div v-if="hasCommitRef" class="icon-container hidden-xs">
         <i v-if="tag" class="fa fa-tag"></i>
         <i v-if="!tag" class="fa fa-code-fork"></i>
       </div>
 
       <a v-if="hasCommitRef"
-        class="ref-name"
+        class="ref-name hidden-xs"
         :href="commitRef.ref_url">
         {{commitRef.name}}
       </a>
