@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'New/edit issue', feature: true, js: true do
   include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
+  include FormHelper
 
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
@@ -21,6 +22,65 @@ describe 'New/edit issue', feature: true, js: true do
   context 'new issue' do
     before do
       visit new_namespace_project_issue_path(project.namespace, project)
+    end
+
+    describe 'shorten users API pagination limit' do
+      before do
+        allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
+          has_multiple_assignees = *args[1]
+
+          options = {
+            toggle_class: 'js-user-search js-assignee-search js-multiselect js-save-user-data',
+            title: 'Select assignee',
+            filter: true,
+            dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee',
+            placeholder: 'Search users',
+            data: {
+              per_page: 1,
+              null_user: true,
+              current_user: true,
+              project_id: project.try(:id),
+              field_name: "issue[assignee_ids][]",
+              default_label: 'Assignee',
+              'max-select': 1,
+              'dropdown-header': 'Assignee',
+              multi_select: true,
+              'input-meta': 'name',
+              'always-show-selectbox': true
+            }
+          }
+
+          if has_multiple_assignees
+            options[:title] = 'Select assignee(s)'
+            options[:data][:'dropdown-header'] = 'Assignee(s)'
+            options[:data].delete(:'max-select')
+          end
+
+          options
+        end
+
+        visit new_namespace_project_issue_path(project.namespace, project)
+
+        click_button 'Unassigned'
+
+        wait_for_ajax
+      end
+
+      it 'should display selected users even if they are not part of the original API call' do
+        find('.dropdown-input-field').native.send_keys user2.name
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user2.name
+          click_link user2.name
+        end
+
+        find('.js-dropdown-input-clear').click
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user.name
+          expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
+        end
+      end
     end
 
     describe 'single assignee' do
