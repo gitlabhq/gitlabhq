@@ -29,6 +29,7 @@ module API
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
+          optional :avatar, type: File, desc: 'Avatar image for user'
           all_or_none_of :extern_uid, :provider
         end
       end
