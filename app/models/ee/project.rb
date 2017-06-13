@@ -77,8 +77,26 @@ module EE
       end
     end
 
-    def secret_variables_for(ref)
-      super.where(scope: '*')
+    def secret_variables_for(ref:, environment:)
+      query = super
+
+      # Full wildcard has the least priority
+      variables = query.where(scope: '*').to_a
+
+      if environment
+        # Partial wildcard sits in the middle
+        variables.concat(
+          query.where("? LIKE REPLACE(scope, ?, ?)",
+                      environment.name, '*', '%')
+               .where.not(scope: '*')
+               .where.not(scope: environment.name)
+        )
+
+        # Exactly match has the highest priority
+        variables.concat(query.where(scope: environment.name))
+      end
+
+      variables
     end
 
     private

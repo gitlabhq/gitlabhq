@@ -2238,7 +2238,12 @@ describe Project, models: true do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.secret_variables_for('ref') }
+    subject { project.secret_variables_for(ref: 'ref') }
+
+    before do
+      stub_application_setting(
+        default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    end
 
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
@@ -2247,11 +2252,6 @@ describe Project, models: true do
     end
 
     context 'when the ref is not protected' do
-      before do
-        stub_application_setting(
-          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-      end
-
       it 'contains only the secret variables' do
         is_expected.to contain_exactly(secret_variable)
       end
@@ -2271,6 +2271,70 @@ describe Project, models: true do
       end
 
       it_behaves_like 'ref is protected'
+    end
+
+    # EE
+    context 'when environment is specified' do
+      let(:environment) { create(:environment, name: 'review/name') }
+
+      subject do
+        project.secret_variables_for(ref: 'ref', environment: environment)
+      end
+
+      context 'when scope is exactly matched' do
+        before do
+          secret_variable.update(scope: 'review/name')
+        end
+
+        it 'contains the secret variable' do
+          is_expected.to contain_exactly(secret_variable)
+        end
+      end
+
+      context 'when scope is matched by wildcard' do
+        before do
+          secret_variable.update(scope: 'review/*')
+        end
+
+        it 'contains the secret variable' do
+          is_expected.to contain_exactly(secret_variable)
+        end
+      end
+
+      context 'when scope does not match' do
+        before do
+          secret_variable.update(scope: 'review/*/special')
+        end
+
+        it 'does not contain the secret variable' do
+          is_expected.not_to contain_exactly(secret_variable)
+        end
+      end
+
+      context 'when variables with the same name have different scopes' do
+        let!(:partially_matched_variable) do
+          create(:ci_variable,
+                 key: secret_variable.key,
+                 value: 'partial',
+                 scope: 'review/*',
+                 project: project)
+        end
+
+        let!(:perfectly_matched_variable) do
+          create(:ci_variable,
+                 key: secret_variable.key,
+                 value: 'prefect',
+                 scope: 'review/name',
+                 project: project)
+        end
+
+        it 'puts variables matching scope more in the end' do
+          is_expected.to eq(
+            [secret_variable,
+             partially_matched_variable,
+             perfectly_matched_variable])
+        end
+      end
     end
   end
 
