@@ -90,8 +90,8 @@ module GpgHelpers
       KEY
     end
 
-    def key_id
-      '00AC8B1D'
+    def primary_keyid
+      fingerprint[-16..-1]
     end
 
     def fingerprint
@@ -179,8 +179,8 @@ module GpgHelpers
       KEY
     end
 
-    def key_id
-      '911EFD65'
+    def primary_keyid
+      fingerprint[-16..-1]
     end
 
     def fingerprint

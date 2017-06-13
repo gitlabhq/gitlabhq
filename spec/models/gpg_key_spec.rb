@@ -21,6 +21,14 @@ describe GpgKey do
         expect(gpg_key.fingerprint).to eq GpgHelpers::User1.fingerprint
       end
     end
+
+    describe 'extract_primary_keyid' do
+      it 'extracts the primary keyid from the gpg key' do
+        gpg_key = described_class.new(key: GpgHelpers::User1.public_key)
+        gpg_key.valid?
+        expect(gpg_key.primary_keyid).to eq GpgHelpers::User1.primary_keyid
+      end
+    end
   end
 
   describe '#key=' do

@@ -15,6 +15,20 @@ describe Gitlab::Gpg do
     end
   end
 
+  describe '.primary_keyids_from_key' do
+    it 'returns the keyid' do
+      expect(
+        described_class.primary_keyids_from_key(GpgHelpers::User1.public_key)
+      ).to eq [GpgHelpers::User1.primary_keyid]
+    end
+
+    it 'returns an empty array when the key is invalid' do
+      expect(
+        described_class.primary_keyids_from_key('bogus')
+      ).to eq []
+    end
+  end
+
   describe '.emails_from_key' do
     it 'returns the emails' do
       expect(

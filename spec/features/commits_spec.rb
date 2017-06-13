@@ -220,8 +220,8 @@ describe 'Commits' do
       Dir.mktmpdir do |dir|
         FileUtils.cd dir do
           `git clone --quiet #{remote_path} .`
-          `git commit --quiet -S#{GpgHelpers::User1.key_id} --allow-empty -m "signed commit, verified key/email"`
-          `git commit --quiet -S#{GpgHelpers::User2.key_id} --allow-empty -m "signed commit, unverified key/email"`
+          `git commit --quiet -S#{GpgHelpers::User1.primary_keyid} --allow-empty -m "signed commit, verified key/email"`
+          `git commit --quiet -S#{GpgHelpers::User2.primary_keyid} --allow-empty -m "signed commit, unverified key/email"`
           `git push --quiet`
         end
       end

@@ -546,8 +546,10 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "primary_keyid"
   end
 
+  add_index "gpg_keys", ["primary_keyid"], name: "index_gpg_keys_on_primary_keyid", using: :btree
   add_index "gpg_keys", ["user_id"], name: "index_gpg_keys_on_user_id", using: :btree
 
   create_table "identities", force: :cascade do |t|
