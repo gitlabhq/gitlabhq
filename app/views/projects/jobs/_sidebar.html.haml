@@ -72,6 +72,7 @@
         .title
           %span{ class: "ci-status-icon-#{@build.pipeline.status}" }
             = ci_icon_for_status(@build.pipeline.status)
+          Pipeline
           = link_to "##{@build.pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @build.pipeline), class: 'link-commit'
           from
           = link_to "#{@build.pipeline.ref}", namespace_project_branch_path(@project.namespace, @project, @build.pipeline.ref), class: 'link-commit'
