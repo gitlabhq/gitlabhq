@@ -109,7 +109,7 @@ describe Ci::Build, :models do
 
   describe '#browsable_artifacts?' do
     subject { build.browsable_artifacts? }
-  
+
     context 'artifacts metadata does not exist' do
       before do
         build.update_attributes(artifacts_metadata: nil)
@@ -1520,9 +1520,14 @@ describe Ci::Build, :models do
         allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
         allow(build).to receive(:yaml_variables) { [build_yaml_var] }
 
-        allow(project).to receive(:secret_variables_for).with(build.ref) do
+        allow(project).to receive(:secret_variables_for).with(ref: 'master') do
           [create(:ci_variable, key: 'secret', value: 'value')]
         end
+
+        allow(project).to receive(:secret_variables_for)
+          .with(ref: 'master', environment: nil) do
+            [create(:ci_variable, key: 'env', value: 'value')]
+          end
       end
 
       it do
@@ -1531,7 +1536,8 @@ describe Ci::Build, :models do
            project_pre_var,
            pipeline_pre_var,
            build_yaml_var,
-           { key: 'secret', value: 'value', public: false }])
+           { key: 'secret', value: 'value', public: false },
+           { key: 'env', value: 'value', public: false }])
       end
     end
   end
