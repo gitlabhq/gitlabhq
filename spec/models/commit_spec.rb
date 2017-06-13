@@ -422,7 +422,7 @@ eos
 
     context 'signed commit', :gpg do
       it 'returns a valid signature if the public key is known' do
-        GPGME::Key.import(GpgHelpers::User1.public_key)
+        create :gpg_key, key: GpgHelpers::User1.public_key
 
         raw_commit = double(:raw_commit, signature: [
           GpgHelpers::User1.signed_commit_signature,
@@ -438,7 +438,7 @@ eos
         expect(commit.signature.valid?).to be_truthy
       end
 
-      it 'returns an invalid signature if the public commit is unknown', :gpg do
+      it 'returns an invalid signature if the public key is unknown', :gpg do
         raw_commit = double(:raw_commit, signature: [
           GpgHelpers::User1.signed_commit_signature,
           GpgHelpers::User1.signed_commit_base_data

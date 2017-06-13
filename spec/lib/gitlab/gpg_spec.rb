@@ -43,3 +43,20 @@ describe Gitlab::Gpg do
     end
   end
 end
+
+describe Gitlab::Gpg::CurrentKeyChain, :gpg do
+  describe '.add', :gpg do
+    it 'stores the key in the keychain' do
+      expect(GPGME::Key.find(:public, GpgHelpers::User1.fingerprint)).to eq []
+
+      described_class.add(GpgHelpers::User1.public_key)
+
+      keys = GPGME::Key.find(:public, GpgHelpers::User1.fingerprint)
+      expect(keys.count).to eq 1
+      expect(keys.first).to have_attributes(
+        email: GpgHelpers::User1.emails.first,
+        fingerprint: GpgHelpers::User1.fingerprint
+      )
+    end
+  end
+end

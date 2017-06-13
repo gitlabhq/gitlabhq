@@ -240,7 +240,22 @@ class Commit
     @signature = nil
 
     signature, signed_text = @raw.signature(project.repository)
-    if signature && signed_text
+
+    return unless signature && signed_text
+
+    Gitlab::Gpg.using_tmp_keychain do
+      # first we need to get the keyid from the signature...
+      GPGME::Crypto.new.verify(signature, signed_text: signed_text) do |verified_signature|
+        @signature = verified_signature
+      end
+
+      # ... then we query the gpg key belonging to the keyid.
+      gpg_key = GpgKey.find_by(primary_keyid: @signature.fingerprint)
+
+      return @signature unless gpg_key
+
+      Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
+
       GPGME::Crypto.new.verify(signature, signed_text: signed_text) do |verified_signature|
         @signature = verified_signature
       end
