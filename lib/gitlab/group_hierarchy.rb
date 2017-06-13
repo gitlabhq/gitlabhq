@@ -10,7 +10,7 @@ module Gitlab
     # descendants_base - An instance of ActiveRecord::Relation for which to
     #                    get child groups. If omitted, ancestors_base is used.
     def initialize(ancestors_base, descendants_base = ancestors_base)
-      raise ArgumentError if ancestors_base.model != descendants_base.model
+      raise ArgumentError.new("Model of ancestors_base does not match model of descendants_base") if ancestors_base.model != descendants_base.model
 
       @ancestors_base = ancestors_base
       @descendants_base = descendants_base
@@ -53,6 +53,8 @@ module Gitlab
     #
     # Using this approach allows us to further add criteria to the relation with
     # Rails thinking it's selecting data the usual way.
+    #
+    # If nested groups are not supported, ancestors_base is returned.
     def all_groups
       return ancestors_base unless Group.supports_nested_groups?
 
