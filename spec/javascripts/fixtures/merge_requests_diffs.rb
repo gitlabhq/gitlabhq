@@ -1,21 +1,13 @@
+
 require 'spec_helper'
 
-describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :controller do
+describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, namespace: namespace, path: 'merge-requests-project') }
   let(:merge_request) { create(:merge_request, :with_diffs, source_project: project, target_project: project, description: '- [ ] Task List Item') }
-  let(:merged_merge_request) { create(:merge_request, :merged, source_project: project, target_project: project) }
-  let(:pipeline) do
-    create(
-      :ci_pipeline,
-      project: merge_request.source_project,
-      ref: merge_request.source_branch,
-      sha: merge_request.diff_head_sha
-    )
-  end
   let(:path) { "files/ruby/popen.rb" }
   let(:position) do
     Gitlab::Diff::Position.new(
@@ -30,39 +22,34 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   render_views
 
   before(:all) do
-    clean_frontend_fixtures('merge_requests/')
+    clean_frontend_fixtures('merge_request_diffs/')
   end
 
   before(:each) do
     sign_in(admin)
   end
 
-  it 'merge_requests/merge_request_with_task_list.html.raw' do |example|
-    create(:ci_build, :pending, pipeline: pipeline)
-
-    render_merge_request(example.description, merge_request)
-  end
-
-  it 'merge_requests/merged_merge_request.html.raw' do |example|
-    allow_any_instance_of(MergeRequest).to receive(:source_branch_exists?).and_return(true)
-    allow_any_instance_of(MergeRequest).to receive(:can_remove_source_branch?).and_return(true)
-    render_merge_request(example.description, merged_merge_request)
-  end
-
-  it 'merge_requests/diff_comment.html.raw' do |example|
+  it 'merge_request_diffs/inline_changes_tab_with_comments.json' do |example|
     create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
     render_merge_request(example.description, merge_request)
   end
 
+  it 'merge_request_diffs/parallel_changes_tab_with_comments.json' do |example|
+    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
+    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
+    render_merge_request(example.description, merge_request, view: 'parallel')
+  end
+
   private
 
-  def render_merge_request(fixture_file_name, merge_request)
+  def render_merge_request(fixture_file_name, merge_request, view: 'inline')
     get :show,
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: merge_request.to_param,
-      format: :html
+      format: :json,
+      view: view
 
     expect(response).to be_success
     store_frontend_fixture(response, fixture_file_name)

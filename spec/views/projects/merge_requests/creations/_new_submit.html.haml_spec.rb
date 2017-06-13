@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/merge_requests/_new_submit.html.haml', :view do
+describe 'projects/merge_requests/creations/_new_submit.html.haml', :view do
   let(:merge_request) { create(:merge_request) }
   let!(:pipeline) { create(:ci_empty_pipeline) }
 
