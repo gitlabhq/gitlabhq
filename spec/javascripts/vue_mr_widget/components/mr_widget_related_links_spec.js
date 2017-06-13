@@ -1,19 +1,26 @@
 import Vue from 'vue';
-import relatedLinksComponent from '~/vue_merge_request_widget/components/mr_widget_related_links';
-
-const createComponent = (data) => {
-  const Component = Vue.extend(relatedLinksComponent);
-
-  return new Component({
-    el: document.createElement('div'),
-    propsData: data,
-  });
-};
+import MRWidgetRelatedLinks from '~/vue_merge_request_widget/components/mr_widget_related_links';
 
 describe('MRWidgetRelatedLinks', () => {
+  let vm;
+
+  beforeEach(() => {
+    const Component = Vue.extend(MRWidgetRelatedLinks);
+    vm = new Component({
+      el: document.createElement('div'),
+      propsData: {
+        relatedLinks: {},
+      },
+    });
+  });
+
+  afterEach(() => {
+    vm.$destroy();
+  });
+
   describe('props', () => {
     it('should have props', () => {
-      const { relatedLinks } = relatedLinksComponent.props;
+      const { relatedLinks } = MRWidgetRelatedLinks.props;
 
       expect(relatedLinks).toBeDefined();
       expect(relatedLinks.type instanceof Object).toBeTruthy();
@@ -24,14 +31,12 @@ describe('MRWidgetRelatedLinks', () => {
   describe('computed', () => {
     describe('hasLinks', () => {
       it('should return correct value when we have links reference', () => {
-        const data = {
-          relatedLinks: {
-            closing: '/foo',
-            mentioned: '/foo',
-            assignToMe: '/foo',
-          },
+        vm.relatedLinks = {
+          closing: '/foo',
+          mentioned: '/foo',
+          assignToMe: '/foo',
         };
-        const vm = createComponent(data);
+
         expect(vm.hasLinks).toBeTruthy();
 
         vm.relatedLinks.closing = null;
@@ -47,21 +52,22 @@ describe('MRWidgetRelatedLinks', () => {
   });
 
   describe('methods', () => {
-    const data = {
-      relatedLinks: {
-        closing: '<a href="#">#23</a> and <a>#42</a>',
-        mentioned: '<a href="#">#7</a>',
-      },
+    const relatedLinks = {
+      closing: '<a href="#">#23</a> and <a>#42</a>',
+      mentioned: '<a href="#">#7</a>',
     };
-    const vm = createComponent(data);
+
+    beforeEach(() => {
+      vm.relatedLinks = relatedLinks;
+    });
 
     describe('hasMultipleIssues', () => {
       it('should return true if the given text has multiple issues', () => {
-        expect(vm.hasMultipleIssues(data.relatedLinks.closing)).toBeTruthy();
+        expect(vm.hasMultipleIssues(relatedLinks.closing)).toBeTruthy();
       });
 
       it('should return false if the given text has one issue', () => {
-        expect(vm.hasMultipleIssues(data.relatedLinks.mentioned)).toBeFalsy();
+        expect(vm.hasMultipleIssues(relatedLinks.mentioned)).toBeFalsy();
       });
     });
 
@@ -87,52 +93,66 @@ describe('MRWidgetRelatedLinks', () => {
   });
 
   describe('template', () => {
-    it('should have only have closing issues text', () => {
-      const vm = createComponent({
-        relatedLinks: {
-          closing: '<a href="#">#23</a> and <a>#42</a>',
-        },
-      });
-      const content = vm.$el.textContent.replace(/\n(\s)+/g, ' ').trim();
+    it('should have only have closing issues text', (done) => {
+      vm.relatedLinks = {
+        closing: '<a href="#">#23</a> and <a>#42</a>',
+      };
 
-      expect(content).toContain('Closes issues #23 and #42');
-      expect(content).not.toContain('mentioned');
+      Vue.nextTick()
+      .then(() => {
+        const content = vm.$el.textContent.replace(/\n(\s)+/g, ' ').trim();
+
+        expect(content).toContain('Closes issues #23 and #42');
+        expect(content).not.toContain('mentioned');
+      })
+      .then(done)
+      .catch(done.fail);
     });
 
-    it('should have only have mentioned issues text', () => {
-      const vm = createComponent({
-        relatedLinks: {
-          mentioned: '<a href="#">#7</a>',
-        },
-      });
+    it('should have only have mentioned issues text', (done) => {
+      vm.relatedLinks = {
+        mentioned: '<a href="#">#7</a>',
+      };
 
-      expect(vm.$el.innerText).toContain('issue #7');
-      expect(vm.$el.innerText).toContain('is mentioned but will not be closed.');
-      expect(vm.$el.innerText).not.toContain('Closes');
+      Vue.nextTick()
+      .then(() => {
+        expect(vm.$el.innerText).toContain('issue #7');
+        expect(vm.$el.innerText).toContain('is mentioned but will not be closed.');
+        expect(vm.$el.innerText).not.toContain('Closes');
+      })
+      .then(done)
+      .catch(done.fail);
     });
 
-    it('should have closing and mentioned issues at the same time', () => {
-      const vm = createComponent({
-        relatedLinks: {
-          closing: '<a href="#">#7</a>',
-          mentioned: '<a href="#">#23</a> and <a>#42</a>',
-        },
-      });
-      const content = vm.$el.textContent.replace(/\n(\s)+/g, ' ').trim();
+    it('should have closing and mentioned issues at the same time', (done) => {
+      vm.relatedLinks = {
+        closing: '<a href="#">#7</a>',
+        mentioned: '<a href="#">#23</a> and <a>#42</a>',
+      };
 
-      expect(content).toContain('Closes issue #7.');
-      expect(content).toContain('issues #23 and #42');
-      expect(content).toContain('are mentioned but will not be closed.');
+      Vue.nextTick()
+      .then(() => {
+        const content = vm.$el.textContent.replace(/\n(\s)+/g, ' ').trim();
+
+        expect(content).toContain('Closes issue #7.');
+        expect(content).toContain('issues #23 and #42');
+        expect(content).toContain('are mentioned but will not be closed.');
+      })
+      .then(done)
+      .catch(done.fail);
     });
 
-    it('should have assing issues link', () => {
-      const vm = createComponent({
-        relatedLinks: {
-          assignToMe: '<a href="#">Assign yourself to these issues</a>',
-        },
-      });
+    it('should have assing issues link', (done) => {
+      vm.relatedLinks = {
+        assignToMe: '<a href="#">Assign yourself to these issues</a>',
+      };
 
-      expect(vm.$el.innerText).toContain('Assign yourself to these issues');
+      Vue.nextTick()
+      .then(() => {
+        expect(vm.$el.innerText).toContain('Assign yourself to these issues');
+      })
+      .then(done)
+      .catch(done.fail);
     });
   });
 });
