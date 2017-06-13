@@ -43,8 +43,8 @@
         %li.dropdown-header
           #{ _('Download') }
         - unless @commit.parents.length > 1
-          %li= link_to _("Email Patches"), namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch)
-        %li= link_to _("Plain Diff"),    namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff)
+          %li= link_to s_("DownloadCommit|Email Patches"), namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch)
+        %li= link_to s_("DownloadCommit|Plain Diff"),    namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff)
 
 .commit-box
   %h3.commit-title

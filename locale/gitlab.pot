@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-12 09:07+0200\n"
-"PO-Revision-Date: 2017-06-12 09:07+0200\n"
+"POT-Creation-Date: 2017-06-12 19:29-0500\n"
+"PO-Revision-Date: 2017-06-12 19:29-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -294,6 +294,12 @@ msgstr ""
 msgid "DownloadArtifacts|Download"
 msgstr ""
 
+msgid "DownloadCommit|Email Patches"
+msgstr ""
+
+msgid "DownloadCommit|Plain Diff"
+msgstr ""
+
 msgid "DownloadSource|Download"
 msgstr ""
 
@@ -301,9 +307,6 @@ msgid "Edit"
 msgstr ""
 
 msgid "Edit Pipeline Schedule %{id}"
-msgstr ""
-
-msgid "Email Patches"
 msgstr ""
 
 msgid "Every day (at 4:00am)"
@@ -558,9 +561,6 @@ msgid "PipelineSchedules|Take ownership"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
-msgstr ""
-
-msgid "Plain Diff"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -964,7 +964,7 @@ msgid ""
 "Are you ABSOLUTELY sure?"
 msgstr ""
 
-msgid "You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?"
+msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
