@@ -134,4 +134,4 @@ access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
 ```
 
-[personal access tokens]: ./README.md#personal-access-tokens
+[personal access tokens]: ../user/profile/personal_access_tokens.md
