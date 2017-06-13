@@ -235,7 +235,7 @@ describe Projects::BlobController do
           put :update, default_params
 
           expect(response).to redirect_to(
-            new_namespace_project_merge_request_path(
+            namespace_project_new_merge_request_path(
               forked_project.namespace,
               forked_project,
               merge_request: {

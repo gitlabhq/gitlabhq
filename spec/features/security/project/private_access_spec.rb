@@ -575,7 +575,7 @@ describe "Private Project Access", feature: true  do
     end
 
     describe "GET /:project_path/merge_requests/new" do
-      subject { new_namespace_project_merge_request_path(project.namespace, project) }
+      subject { namespace_project_new_merge_request_path(project.namespace, project) }
 
       it { is_expected.to be_denied_for(:master).of(project) }
       it { is_expected.to be_denied_for(:reporter).of(project) }
