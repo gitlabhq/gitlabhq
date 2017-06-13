@@ -55,6 +55,17 @@ describe Ci::LegacyStage, :models do
       expect(stage.groups.map(&:name))
         .to eq %w[aaaaa rspec spinach]
     end
+
+    context 'when a name is nil on legacy pipelines' do
+      before do
+        pipeline.builds.first.update_attribute(:name, nil)
+      end
+
+      it 'returns an array of three groups' do
+        expect(stage.groups.map(&:name))
+          .to eq ['', 'aaaaa', 'rspec', 'spinach']
+      end
+    end
   end
 
   describe '#statuses_count' do
