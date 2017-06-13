@@ -12,7 +12,7 @@ const LINE_CONTENT_CLASS = 'line_content';
 const UNFOLDABLE_LINE_CLASS = 'js-unfold';
 const EMPTY_CELL_CLASS = 'empty-cell';
 const OLD_LINE_CLASS = 'old_line';
-const LINE_COLUMN_CLASSES = "." + LINE_NUMBER_CLASS + ", .line_content";
+const LINE_COLUMN_CLASSES = `.${LINE_NUMBER_CLASS}, .line_content`;
 
 export default {
   init($diffFile) {
@@ -47,12 +47,12 @@ export default {
       if (hoveredElement.hasClass(OLD_LINE_CLASS)) {
         return hoveredElement;
       }
-      return hoveredElement.parent().find("." + OLD_LINE_CLASS);
+      return hoveredElement.parent().find(`.${OLD_LINE_CLASS});
     } else {
       if (hoveredElement.hasClass(LINE_NUMBER_CLASS)) {
         return hoveredElement;
       }
-      return $(hoveredElement).prev("." + LINE_NUMBER_CLASS);
+      return $(hoveredElement).prev(`.${LINE_NUMBER_CLASS}`);
     }
   },
 
