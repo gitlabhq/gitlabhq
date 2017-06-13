@@ -34,7 +34,10 @@ module API
           notification_setting.transaction do
             new_notification_email = params.delete(:notification_email)
 
-            current_user.update(notification_email: new_notification_email) if new_notification_email
+            if new_notification_email
+              ::Users::UpdateService.new(current_user, notification_email: new_notification_email).execute
+            end
+
             notification_setting.update(declared_params(include_missing: false))
           end
         rescue ArgumentError => e # catch level enum error

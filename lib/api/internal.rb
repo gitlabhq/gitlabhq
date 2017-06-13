@@ -144,10 +144,11 @@ module API
           return { success: false, message: 'Two-factor authentication is not enabled for this user' }
         end
 
-        codes = user.generate_otp_backup_codes!
-        user.save!
+        ::Users::UpdateService.new(user).execute! do |user|
+          @codes = user.generate_otp_backup_codes!
+        end
 
-        { success: true, recovery_codes: codes }
+        { success: true, recovery_codes: @codes }
       end
 
       post "/notify_post_receive" do

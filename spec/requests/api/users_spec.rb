@@ -376,6 +376,7 @@ describe API::Users do
 
     it "updates user with new bio" do
       put api("/users/#{user.id}", admin), { bio: 'new test bio' }
+
       expect(response).to have_http_status(200)
       expect(json_response['bio']).to eq('new test bio')
       expect(user.reload.bio).to eq('new test bio')
@@ -408,13 +409,22 @@ describe API::Users do
 
     it 'updates user with his own email' do
       put api("/users/#{user.id}", admin), email: user.email
+
       expect(response).to have_http_status(200)
       expect(json_response['email']).to eq(user.email)
       expect(user.reload.email).to eq(user.email)
     end
 
+    it 'updates user with a new email' do
+      put api("/users/#{user.id}", admin), email: 'new@email.com'
+
+      expect(response).to have_http_status(200)
+      expect(user.reload.notification_email).to eq('new@email.com')
+    end
+
     it 'updates user with his own username' do
       put api("/users/#{user.id}", admin), username: user.username
+
       expect(response).to have_http_status(200)
       expect(json_response['username']).to eq(user.username)
       expect(user.reload.username).to eq(user.username)
@@ -422,12 +432,14 @@ describe API::Users do
 
     it "updates user's existing identity" do
       put api("/users/#{omniauth_user.id}", admin), provider: 'ldapmain', extern_uid: '654321'
+
       expect(response).to have_http_status(200)
       expect(omniauth_user.reload.identities.first.extern_uid).to eq('654321')
     end
 
     it 'updates user with new identity' do
       put api("/users/#{user.id}", admin), provider: 'github', extern_uid: 'john'
+
       expect(response).to have_http_status(200)
       expect(user.reload.identities.first.extern_uid).to eq('john')
       expect(user.reload.identities.first.provider).to eq('github')
@@ -435,12 +447,14 @@ describe API::Users do
 
     it "updates admin status" do
       put api("/users/#{user.id}", admin), { admin: true }
+
       expect(response).to have_http_status(200)
       expect(user.reload.admin).to eq(true)
     end
 
     it "updates external status" do
       put api("/users/#{user.id}", admin), { external: true }
+
       expect(response.status).to eq 200
       expect(json_response['external']).to eq(true)
       expect(user.reload.external?).to be_truthy
@@ -459,6 +473,7 @@ describe API::Users do
 
     it "does not update admin status" do
       put api("/users/#{admin_user.id}", admin), { can_create_group: false }
+
       expect(response).to have_http_status(200)
       expect(admin_user.reload.admin).to eq(true)
       expect(admin_user.can_create_group).to eq(false)
@@ -466,6 +481,7 @@ describe API::Users do
 
     it "does not allow invalid update" do
       put api("/users/#{user.id}", admin), { email: 'invalid email' }
+
       expect(response).to have_http_status(400)
       expect(user.reload.email).not_to eq('invalid email')
     end
@@ -490,6 +506,7 @@ describe API::Users do
 
     it "returns 404 for non-existing user" do
       put api("/users/999999", admin), { bio: 'update should fail' }
+
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
@@ -540,6 +557,7 @@ describe API::Users do
 
       it 'returns 409 conflict error if email address exists' do
         put api("/users/#{@user.id}", admin), email: 'test@example.com'
+
         expect(response).to have_http_status(409)
         expect(@user.reload.email).to eq(@user.email)
       end
@@ -547,6 +565,7 @@ describe API::Users do
       it 'returns 409 conflict error if username taken' do
         @user_id = User.all.last.id
         put api("/users/#{@user.id}", admin), username: 'test'
+
         expect(response).to have_http_status(409)
         expect(@user.reload.username).to eq(@user.username)
       end
