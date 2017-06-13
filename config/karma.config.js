@@ -21,7 +21,14 @@ module.exports = function(config) {
 
   var karmaConfig = {
     basePath: ROOT_PATH,
-    browsers: ['ChromeHeadless'],
+    browsers: ['ChromeDebug'],
+    customLaunchers: {
+      ChromeDebug: {
+        base: 'ChromeHeadless',
+        flags: ['--enable-logging', '--v=1'],
+        displayName: 'Chrome'
+      }
+    },
     frameworks: ['jasmine'],
     files: [
       { pattern: 'spec/javascripts/test_bundle.js', watched: false },
@@ -33,6 +40,7 @@ module.exports = function(config) {
     reporters: [progressReporter],
     webpack: webpackConfig,
     webpackMiddleware: { stats: 'errors-only' },
+    logLevel: config.LOG_DEBUG,
   };
 
   if (process.env.BABEL_ENV === 'coverage' || process.env.NODE_ENV === 'coverage') {
