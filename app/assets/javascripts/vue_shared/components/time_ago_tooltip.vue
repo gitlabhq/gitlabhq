@@ -20,12 +20,6 @@ export default {
       default: 'top',
     },
 
-    shortFormat: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
     cssClass: {
       type: String,
       required: false,
@@ -37,18 +31,12 @@ export default {
     tooltipMixin,
     timeagoMixin,
   ],
-
-  computed: {
-    timeagoCssClass() {
-      return this.shortFormat ? 'js-short-timeago' : 'js-timeago';
-    },
-  },
 };
 </script>
 <template>
   <time
-    :class="[timeagoCssClass, cssClass]"
-    class="js-timeago js-timeago-render"
+    :class="cssClass"
+    class="js-vue-timeago"
     :title="tooltipTitle(time)"
     :data-placement="tooltipPlacement"
     data-container="body"
