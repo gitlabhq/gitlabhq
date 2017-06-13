@@ -9,7 +9,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update
-    user_params.except!(:email) if @user.ldap_user?
+    user_params.except!(:email) if @user.external_email?
 
     respond_to do |format|
       if @user.update_attributes(user_params)
@@ -76,7 +76,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(
+    @user_params ||= params.require(:user).permit(
       :avatar,
       :bio,
       :email,

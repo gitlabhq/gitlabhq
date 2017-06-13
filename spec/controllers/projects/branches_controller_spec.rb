@@ -367,19 +367,5 @@ describe Projects::BranchesController do
         expect(parsed_response.first).to eq 'master'
       end
     end
-
-    context 'show_all = true' do
-      it 'returns all the branches name' do
-        get :index,
-            namespace_id: project.namespace,
-            project_id: project,
-            format: :json,
-            show_all: true
-
-        parsed_response = JSON.parse(response.body)
-
-        expect(parsed_response.length).to eq(project.repository.branches.count)
-      end
-    end
   end
 end

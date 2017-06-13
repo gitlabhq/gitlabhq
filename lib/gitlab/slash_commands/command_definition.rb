@@ -48,17 +48,23 @@ module Gitlab
       end
 
       def to_h(opts)
+        context = OpenStruct.new(opts)
+
         desc = description
         if desc.respond_to?(:call)
-          context = OpenStruct.new(opts)
           desc = context.instance_exec(&desc) rescue ''
+        end
+
+        prms = params
+        if prms.respond_to?(:call)
+          prms = Array(context.instance_exec(&prms)) rescue params
         end
 
         {
           name: name,
           aliases: aliases,
           description: desc,
-          params: params
+          params: prms
         }
       end
 

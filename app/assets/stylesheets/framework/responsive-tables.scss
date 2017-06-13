@@ -19,7 +19,7 @@
   .table-section {
     white-space: nowrap;
 
-    $section-widths: 10 15 25 30;
+    $section-widths: 10 15 20 25 30 40;
     @each $width in $section-widths {
       &.section-#{$width} {
         flex: 0 0 #{$width + '%'};
@@ -82,5 +82,10 @@
 
   @media (min-width: $screen-md-min) {
     flex: 0 0 90%;
+  }
+
+  .avatar {
+    float: none;
+    margin-right: 4px;
   }
 }

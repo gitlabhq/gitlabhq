@@ -79,7 +79,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to namespace_project_snippets_path(@project.namespace, @project)
+    redirect_to namespace_project_snippets_path(@project.namespace, @project), status: 302
   end
 
   protected
@@ -107,6 +107,6 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def snippet_params
-    params.require(:project_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
+    params.require(:project_snippet).permit(:title, :content, :file_name, :private, :visibility_level, :description)
   end
 end

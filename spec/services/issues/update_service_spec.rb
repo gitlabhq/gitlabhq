@@ -31,6 +31,13 @@ describe Issues::UpdateService, services: true do
       end
     end
 
+    def find_notes(action)
+      issue
+        .notes
+        .joins(:system_note_metadata)
+        .where(system_note_metadata: { action: action })
+    end
+
     def update_issue(opts)
       described_class.new(project, user, opts).execute(issue)
     end
@@ -330,6 +337,9 @@ describe Issues::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -345,6 +355,9 @@ describe Issues::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -354,10 +367,12 @@ describe Issues::UpdateService, services: true do
           update_issue(description: "- [x] Task 1\n- [ ] Task 3\n- [ ] Task 2")
         end
 
-        it 'does not create a system note' do
-          note = find_note('marked the task **Task 2** as incomplete')
+        it 'does not create a system note for the task' do
+          task_note = find_note('marked the task **Task 2** as incomplete')
+          description_notes = find_notes('description')
 
-          expect(note).to be_nil
+          expect(task_note).to be_nil
+          expect(description_notes.length).to eq(2)
         end
       end
 
@@ -368,9 +383,11 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'does not create a system note referencing the position the old item' do
-          note = find_note('marked the task **Two** as incomplete')
+          task_note = find_note('marked the task **Two** as incomplete')
+          description_notes = find_notes('description')
 
-          expect(note).to be_nil
+          expect(task_note).to be_nil
+          expect(description_notes.length).to eq(2)
         end
 
         it 'does not generate a new note at all' do

@@ -39,6 +39,14 @@ You can read more about Docker Registry at https://docs.docker.com/registry/intr
 
 ## Build and push images
 
+>**Notes:**
+- Moving or renaming existing container registry repositories is not supported
+once you have pushed images because the images are signed, and the
+signature includes the repository name.
+- To move or rename a repository with a container registry you will have to
+delete all existing images.
+
+
 If you visit the **Registry** link under your project's menu, you can see the
 explicit instructions to login to the Container Registry using your GitLab
 credentials.
@@ -104,12 +112,14 @@ Make sure that your GitLab Runner is configured to allow building Docker images 
 following the [Using Docker Build](../../ci/docker/using_docker_build.md)
 and [Using the GitLab Container Registry documentation](../../ci/docker/using_docker_build.md#using-the-gitlab-container-registry).
 
-## Limitations
+## Using with private projects
 
-In order to use a container image from your private project as an `image:` in
-your `.gitlab-ci.yml`, you have to follow the
-[Using a private Docker Registry][private-docker]
-documentation. This workflow will be simplified in the future.
+If a project is private, credentials will need to be provided for authorization.
+The preferred way to do this, is by using personal access tokens, which can be
+created under `/profile/personal_access_tokens`. The minimal scope needed is:
+`read_registry`.
+
+This feature was introduced in GitLab 9.3.
 
 ## Troubleshooting the GitLab Container Registry
 
@@ -255,4 +265,3 @@ Once the right permissions were set, the error will go away.
 
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
-[private-docker]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-container-registry

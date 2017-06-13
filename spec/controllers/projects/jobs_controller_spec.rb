@@ -69,18 +69,11 @@ describe Projects::JobsController do
         Ci::Build::AVAILABLE_STATUSES.each do |status|
           create_job(status, status)
         end
-
-        RequestStore.begin!
       end
 
-      after do
-        RequestStore.end!
-        RequestStore.clear!
-      end
-
-      it "verifies number of queries" do
+      it 'verifies number of queries', :request_store do
         recorded = ActiveRecord::QueryRecorder.new { get_index }
-        expect(recorded.count).to be_within(5).of(8)
+        expect(recorded.count).to be_within(5).of(7)
       end
 
       def create_job(name, status)

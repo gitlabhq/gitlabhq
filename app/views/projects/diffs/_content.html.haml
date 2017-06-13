@@ -6,7 +6,7 @@
   - elsif blob.truncated?
     .nothing-here-block The file could not be displayed because it is too large.
   - elsif blob.readable_text?
-    - if !diff_file.repository.diffable?(blob)
+    - if !diff_file.diffable?
       .nothing-here-block This diff was suppressed by a .gitattributes entry.
     - elsif diff_file.collapsed?
       - url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier))

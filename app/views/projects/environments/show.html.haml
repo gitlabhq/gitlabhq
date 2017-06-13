@@ -3,7 +3,7 @@
 = render "projects/pipelines/head"
 
 %div{ class: container_class }
-  .top-area.adjust
+  .row.top-area.adjust
     .col-md-7
       %h3.page-title= @environment.name
     .col-md-5
@@ -28,14 +28,12 @@
         = link_to "Read more", help_page_path("ci/environments"), class: "btn btn-success"
     - else
       .table-holder
-        %table.table.ci-table.environments
-          %thead
-            %tr
-              %th ID
-              %th Commit
-              %th Job
-              %th Created
-              %th.hidden-xs
+        .ci-table.environments{ role: 'grid' }
+          .gl-responsive-table-row.table-row-header{ role: 'row' }
+            .table-section.section-10{ role: 'columnheader' } ID
+            .table-section.section-40{ role: 'columnheader' } Commit
+            .table-section.section-15{ role: 'columnheader' } Job
+            .table-section.section-15{ role: 'columnheader' } Created
 
           = render @deployments
 

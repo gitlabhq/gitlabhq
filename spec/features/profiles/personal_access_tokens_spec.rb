@@ -17,6 +17,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
 
   def disallow_personal_access_token_saves!
     allow_any_instance_of(PersonalAccessToken).to receive(:save).and_return(false)
+
     errors = ActiveModel::Errors.new(PersonalAccessToken.new).tap { |e| e.add(:name, "cannot be nil") }
     allow_any_instance_of(PersonalAccessToken).to receive(:errors).and_return(errors)
   end
@@ -91,8 +92,11 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
 
     context "when revocation fails" do
       it "displays an error message" do
-        disallow_personal_access_token_saves!
         visit profile_personal_access_tokens_path
+        allow_any_instance_of(PersonalAccessToken).to receive(:update!).and_return(false)
+
+        errors = ActiveModel::Errors.new(PersonalAccessToken.new).tap { |e| e.add(:name, "cannot be nil") }
+        allow_any_instance_of(PersonalAccessToken).to receive(:errors).and_return(errors)
 
         click_on "Revoke"
         expect(active_personal_access_tokens).to have_text(personal_access_token.name)

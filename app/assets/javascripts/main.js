@@ -39,10 +39,6 @@ import './shortcuts_network';
 // behaviors
 import './behaviors/';
 
-// blob
-import './blob/create_branch_dropdown';
-import './blob/target_branch_dropdown';
-
 // templates
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
@@ -104,12 +100,11 @@ import './group_label_subscription';
 import './groups_select';
 import './header';
 import './importer_status';
-import './issuable';
+import './issuable_index';
 import './issuable_context';
 import './issuable_form';
 import './issue';
 import './issue_status_select';
-import './issues_bulk_assignment';
 import './label_manager';
 import './labels';
 import './labels_select';

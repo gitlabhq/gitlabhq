@@ -26,7 +26,7 @@ class Projects::CommitsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.atom { render layout: false }
+      format.atom { render layout: 'xml.atom' }
 
       format.json do
         pager_json(

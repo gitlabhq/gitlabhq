@@ -545,12 +545,13 @@
       border: 1px solid $border-color;
       border-radius: 30px;
       background-color: $white-light;
+    }
 
-      &:hover {
-        background-color: $stage-hover-bg;
-        border: 1px solid $stage-hover-border;
-        color: $gl-text-color;
-      }
+    a.build-content:hover,
+    button.build-content:hover {
+      background-color: $stage-hover-bg;
+      border: 1px solid $stage-hover-border;
+      color: $gl-text-color;
     }
 
 
@@ -928,7 +929,8 @@
     border-color: transparent;
     border-style: solid;
     top: -6px;
-    left: 2px;
+    left: 50%;
+    transform: translate(-50%, 0);
     border-width: 0 5px 6px;
   }
 
@@ -943,6 +945,14 @@
   }
 }
 
+/**
+ * Center dropdown menu in mini graph
+ */
+.mini-pipeline-graph-dropdown-menu.dropdown-menu {
+  right: auto;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
 /**
  * Terminal
  */
@@ -985,10 +995,17 @@
   }
 }
 
-.pipeline-header-container {
+.ci-header-container {
   min-height: 55px;
 
   .text-center {
     padding-top: 12px;
+  }
+
+  .header-action-buttons {
+    .btn,
+    a {
+      margin-left: 10px;
+    }
   }
 }

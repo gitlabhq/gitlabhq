@@ -7,7 +7,7 @@
     .form-group.branch
       = label_tag 'branch_name', 'Target branch', class: 'control-label'
       .col-sm-10
-        = render 'shared/branch_switcher'
+        = text_field_tag 'branch_name', @branch_name || tree_edit_branch, required: true, class: "form-control js-branch-name ref-name"
 
         .js-create-merge-request-container
           .checkbox

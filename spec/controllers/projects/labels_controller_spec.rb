@@ -117,7 +117,7 @@ describe Projects::LabelsController do
     let!(:promoted_label_name) { "Promoted Label" }
     let!(:label_1) { create(:label, title: promoted_label_name, project: project) }
 
-    context 'not group owner' do
+    context 'not group reporters' do
       it 'denies access' do
         post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
 
@@ -125,9 +125,9 @@ describe Projects::LabelsController do
       end
     end
 
-    context 'group owner' do
+    context 'group reporter' do
       before do
-        GroupMember.add_users(group, [user], :owner)
+        group.add_reporter(user)
       end
 
       it 'gives access' do

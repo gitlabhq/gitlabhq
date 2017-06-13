@@ -426,9 +426,14 @@ describe API::Users do
       expect(user.reload.email).not_to eq('invalid email')
     end
 
-    it "is not available for non admin users" do
-      put api("/users/#{user.id}", user), attributes_for(:user)
-      expect(response).to have_http_status(403)
+    context 'when the current user is not an admin' do
+      it "is not available" do
+        expect do
+          put api("/users/#{user.id}", user), attributes_for(:user)
+        end.not_to change { user.reload.attributes }
+
+        expect(response).to have_http_status(403)
+      end
     end
 
     it "returns 404 for non-existing user" do
@@ -649,7 +654,7 @@ describe API::Users do
       end
 
       it "returns a 404 for invalid ID" do
-        put api("/users/ASDF/emails", admin)
+        get api("/users/ASDF/emails", admin)
 
         expect(response).to have_http_status(404)
       end

@@ -5,7 +5,7 @@ class AwardEmoji < ActiveRecord::Base
   include Participable
   include GhostUser
 
-  belongs_to :awardable, polymorphic: true
+  belongs_to :awardable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :user
 
   validates :awardable, :user, presence: true

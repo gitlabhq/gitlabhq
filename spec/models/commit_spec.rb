@@ -20,8 +20,8 @@ describe Commit, models: true do
     end
 
     it 'caches the author' do
+      allow(RequestStore).to receive(:active?).and_return(true)
       user = create(:user, email: commit.author_email)
-      expect(RequestStore).to receive(:active?).twice.and_return(true)
       expect_any_instance_of(Commit).to receive(:find_author_by_any_email).and_call_original
 
       expect(commit.author).to eq(user)
@@ -67,11 +67,11 @@ describe Commit, models: true do
       expect(commit.title).to eq("--no commit message")
     end
 
-    it "truncates a message without a newline at 80 characters" do
+    it 'truncates a message without a newline at natural break to 80 characters' do
       message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.'
 
       allow(commit).to receive(:safe_message).and_return(message)
-      expect(commit.title).to eq("#{message[0..79]}…")
+      expect(commit.title).to eq('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis…')
     end
 
     it "truncates a message with a newline before 80 characters at the newline" do
@@ -110,6 +110,28 @@ eos
 
       allow(commit).to receive(:safe_message).and_return(message + "\n" + message)
       expect(commit.full_title).to eq(message)
+    end
+  end
+
+  describe 'description' do
+    it 'returns description of commit message if title less than 100 characters' do
+      message = <<eos
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
+Vivamus egestas lacinia lacus, sed rutrum mauris.
+eos
+
+      allow(commit).to receive(:safe_message).and_return(message)
+      expect(commit.description).to eq('Vivamus egestas lacinia lacus, sed rutrum mauris.')
+    end
+
+    it 'returns full commit message if commit title more than 100 characters' do
+      message = <<eos
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.
+Vivamus egestas lacinia lacus, sed rutrum mauris.
+eos
+
+      allow(commit).to receive(:safe_message).and_return(message)
+      expect(commit.description).to eq(message)
     end
   end
 

@@ -22,12 +22,6 @@
 }
 
 @media (min-width: $screen-sm-min) {
-  .issues_bulk_update {
-    .dropdown-menu-toggle {
-      width: 132px;
-    }
-  }
-
   .filter-item:not(:last-child) {
     margin-right: 6px;
   }
@@ -148,15 +142,17 @@
       }
     }
   }
+}
 
-  .selected {
-    .name {
-      background-color: $filter-name-selected-color;
-    }
+.filtered-search-token:hover,
+.filtered-search-token .selected,
+.filtered-search-term .selected {
+  .name {
+    background-color: $filter-name-selected-color;
+  }
 
-    .value-container {
-      background-color: $filter-value-selected-color;
-    }
+  .value-container {
+    background-color: $filter-value-selected-color;
   }
 }
 
@@ -374,12 +370,6 @@
 
 .dropdown-menu .filter-dropdown-item {
   padding: 0;
-}
-
-@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-  .issue-bulk-update-dropdown-toggle {
-    width: 100px;
-  }
 }
 
 @media (max-width: $screen-xs-max) {

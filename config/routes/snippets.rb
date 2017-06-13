@@ -2,6 +2,9 @@ resources :snippets, concerns: :awardable do
   member do
     get :raw
     post :mark_as_spam
+  end
+
+  collection do
     post :preview_markdown
   end
 

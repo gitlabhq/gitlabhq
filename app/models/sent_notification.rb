@@ -2,7 +2,7 @@ class SentNotification < ActiveRecord::Base
   serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true
+  belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :recipient, class_name: "User"
 
   validates :project, :recipient, presence: true

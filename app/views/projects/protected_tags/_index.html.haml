@@ -1,18 +1,25 @@
+- expanded = Rails.env.test?
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('protected_tags')
 
-.row.prepend-top-default.append-bottom-default
-  .col-lg-3
-    %h4.prepend-top-0
+%section.settings
+  .settings-header
+    %h4
       Protected Tags
-    %p.prepend-top-20
+    %button.btn.js-settings-toggle
+      = expanded ? 'Close' : 'Expand'
+    %p
+      Limit access to creating and updating tags.
+  .settings-content.no-animate{ class: ('expanded' if expanded) }
+    %p
       By default, protected tags are designed to:
       %ul
         %li Prevent tag creation by everybody except Masters
         %li Prevent <strong>anyone</strong> from updating the tag
         %li Prevent <strong>anyone</strong> from deleting the tag
-      %p.append-bottom-0 Read more about #{link_to "protected tags", help_page_path("user/project/protected_tags"), class: "underlined-link"}.
-  .col-lg-9
+
+    %p Read more about #{link_to "protected tags", help_page_path("user/project/protected_tags"), class: "underlined-link"}.
+
     - if can? current_user, :admin_project, @project
       = render 'projects/protected_tags/create_protected_tag'
 

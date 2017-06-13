@@ -297,6 +297,15 @@ cache:
   untracked: true
 ```
 
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+cache:
+  key: "$env:CI_JOB_STAGE/$env:CI_COMMIT_REF_NAME"
+  untracked: true
+```
+
 ## Jobs
 
 `.gitlab-ci.yml` allows you to specify an unlimited number of jobs. Each job
@@ -384,7 +393,8 @@ There are a few rules that apply to the usage of refs policy:
 * `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
 * `only` and `except` allow the use of regular expressions.
-* `only` and `except` allow the use of special keywords: `branches`, `tags`, and `triggers`.
+* `only` and `except` allow the use of special keywords:
+`api`, `branches`, `external`, `tags`, `pushes`, `schedules`, `triggers`, and `web`
 * `only` and `except` allow to specify a repository path to filter jobs for
    forks.
 
@@ -402,7 +412,7 @@ job:
 ```
 
 In this example, `job` will run only for refs that are tagged, or if a build is
-explicitly requested via an API trigger.
+explicitly requested via an API trigger or a [Pipeline Schedule](../../user/project/pipelines/schedules.md).
 
 ```yaml
 job:
@@ -410,6 +420,7 @@ job:
   only:
     - tags
     - triggers
+    - schedules
 ```
 
 The repository path can be used to have jobs executed only for the parent
@@ -906,6 +917,16 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 job:
   artifacts:
     name: "%CI_JOB_STAGE%_%CI_COMMIT_REF_NAME%"
+    untracked: true
+```
+
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+job:
+  artifacts:
+    name: "$env:CI_JOB_STAGE_$env:CI_COMMIT_REF_NAME"
     untracked: true
 ```
 

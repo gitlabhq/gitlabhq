@@ -5,14 +5,6 @@ module Gitlab
         highlight(blob_content, continue: false, plain: plain)
     end
 
-    def self.highlight_lines(repository, ref, file_name)
-      blob = repository.blob_at(ref, file_name)
-      return [] unless blob
-
-      blob.load_all_data!(repository)
-      highlight(file_name, blob.data, repository: repository).lines.map!(&:html_safe)
-    end
-
     attr_reader :blob_name
 
     def initialize(blob_name, blob_content, repository: nil)
