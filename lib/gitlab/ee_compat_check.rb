@@ -76,9 +76,13 @@ module Gitlab
 
       step(
         "Generating the patch against origin/master in #{patch_path}",
-        %W[git diff --binary origin/master > #{patch_path}]
+        %W[git diff --binary origin/master]
       ) do |output, status|
-        throw(:halt_check, :ko) unless status.zero? && File.exist?(patch_path)
+        throw(:halt_check, :ko) unless status.zero?
+
+        File.write(patch_path, output)
+
+        throw(:halt_check, :ko) unless File.exist?(patch_path)
       end
     end
 
