@@ -61,6 +61,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
     CarrierWave.tmp_path
   end
 
+  def filename
+    super || file&.filename
+  end
+
   private
 
   # To prevent files from moving across filesystems, override the default

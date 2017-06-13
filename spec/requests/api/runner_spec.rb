@@ -431,8 +431,29 @@ describe API::Runner do
               expect(response).to have_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(2)
-              expect(json_response['dependencies']).to include({ 'id' => job.id, 'name' => job.name, 'token' => job.token },
-                                                               { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+              expect(json_response['dependencies']).to include(
+                { 'id' => job.id, 'name' => job.name, 'token' => job.token },
+                { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+            end
+          end
+
+          context 'when pipeline have jobs with artifacts' do
+            let!(:job) { create(:ci_build_tag, :artifacts, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
+
+            before do
+              job.success
+            end
+
+            it 'returns dependent jobs' do
+              request_job
+
+              expect(response).to have_http_status(201)
+              expect(json_response['id']).to eq(test_job.id)
+              expect(json_response['dependencies'].count).to eq(1)
+              expect(json_response['dependencies']).to include(
+                { 'id' => job.id, 'name' => job.name, 'token' => job.token,
+                  'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => 106365 } })
             end
           end
 
