@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     hasMultipleIssues(text) {
-      return !text ? false : text.match(/<\/a> and <a/);
+      return /<\/a>,? and <a/.test(text);
     },
     // TODO: the following should be handled by i18n
     issueLabel(field) {
