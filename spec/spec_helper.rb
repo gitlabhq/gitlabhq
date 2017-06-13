@@ -106,15 +106,13 @@ RSpec.configure do |config|
     Sidekiq.redis(&:flushall)
   end
 
-  config.around(:example, :migration) do |example|
-    begin
-      ActiveRecord::Migrator
-        .migrate(migrations_paths, previous_migration.version)
+  config.before(:example, :migration) do
+    ActiveRecord::Migrator
+      .migrate(migrations_paths, previous_migration.version)
+  end
 
-      example.run
-    ensure
-      ActiveRecord::Migrator.migrate(migrations_paths)
-    end
+  config.after(:example, :migration) do
+    ActiveRecord::Migrator.migrate(migrations_paths)
   end
 
   config.around(:each, :nested_groups) do |example|
