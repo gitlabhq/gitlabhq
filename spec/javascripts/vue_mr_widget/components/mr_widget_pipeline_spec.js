@@ -76,6 +76,25 @@ describe('MRWidgetPipeline', () => {
       el = vm.$el;
     });
 
+    afterEach(() => {
+      vm.$destroy();
+    });
+
+    describe('without a pipeline', () => {
+      beforeEach(() => {
+        vm.mr = { pipeline: null };
+      });
+
+      it('should render message with spinner', (done) => {
+        Vue.nextTick(() => {
+          expect(el.querySelector('.pipeline-id')).toBe(null);
+          expect(el.innerText.trim()).toBe('Waiting for pipeline...');
+          expect(el.querySelectorAll('i.fa.fa-spinner.fa-spin').length).toBe(1);
+          done();
+        });
+      });
+    });
+
     it('should render template elements correctly', () => {
       expect(el.classList.contains('mr-widget-heading')).toBeTruthy();
       expect(el.querySelectorAll('.ci-status-icon.ci-status-icon-success').length).toEqual(1);
