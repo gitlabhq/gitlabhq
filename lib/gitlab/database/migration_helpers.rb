@@ -1,6 +1,39 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      # Adds `created_at` and `updated_at` columns with timezone information.
+      #
+      # This method is an improved version of Rails' built-in method `add_timestamps`.
+      #
+      # Available options are:
+      # default - The default value for the column.
+      # null - When set to `true` the column will allow NULL values.
+      #        The default is to not allow NULL values.
+      def add_timestamps_with_timezone(table_name, options = {})
+        options[:null] = false if options[:null].nil?
+
+        [:created_at, :updated_at].each do |column_name|
+          if options[:default] && transaction_open?
+            raise '`add_timestamps_with_timezone` with default value cannot be run inside a transaction. ' \
+              'You can disable transactions by calling `disable_ddl_transaction!` ' \
+              'in the body of your migration class'
+          end
+
+          # If default value is presented, use `add_column_with_default` method instead.
+          if options[:default]
+            add_column_with_default(
+              table_name,
+              column_name,
+              :datetime_with_timezone,
+              default: options[:default],
+              allow_null: options[:null]
+            )
+          else
+            add_column(table_name, column_name, :datetime_with_timezone, options)
+          end
+        end
+      end
+
       # Creates a new index, concurrently when supported
       #
       # On PostgreSQL this method creates an index concurrently, on MySQL this
