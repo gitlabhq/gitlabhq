@@ -283,6 +283,9 @@ msgstr "權限不足。如需查看相關數據，請向管理員申請權限。
 msgid "We don't have enough data to show this stage."
 msgstr "該階段的數據不足，無法顯示。"
 
+msgid "You have reached your project limit"
+msgstr ""
+
 msgid "You need permission."
 msgstr "您需要相關的權限。"
 
