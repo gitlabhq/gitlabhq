@@ -169,9 +169,12 @@ module Gitlab
 
       def encryption_options
         method = translate_method(options['encryption'])
-        options = { method: method }
-        options[:tls_options] = tls_options(method) if method
-        options
+        return nil unless method
+
+        {
+          method: method,
+          tls_options: tls_options(method)
+        }
       end
 
       def translate_method(method_from_config)

@@ -32,7 +32,7 @@ describe Gitlab::LDAP::Config, lib: true do
       expect(config.adapter_options).to eq(
         host: 'ldap.example.com',
         port: 386,
-        encryption: { method: nil }
+        encryption: nil
       )
     end
 
