@@ -36,6 +36,15 @@ describe Admin::GroupsController do
       expect(group.users).to include group_user
     end
 
+    it 'can add unlimited members' do
+      put :members_update, id: group,
+                           user_ids: 1.upto(1000).to_a.join(','),
+                           access_level: Gitlab::Access::GUEST
+
+      expect(response).to set_flash.to 'Users were successfully added.'
+      expect(response).to redirect_to(admin_group_path(group))
+    end
+
     it 'adds no user to members' do
       put :members_update, id: group,
                            user_ids: '',

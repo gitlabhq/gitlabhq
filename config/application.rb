@@ -28,7 +28,8 @@ module Gitlab
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
-                                     #{config.root}/app/services/concerns))
+                                     #{config.root}/app/services/concerns
+                                     #{config.root}/app/uploaders/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -110,6 +111,7 @@ module Gitlab
     config.assets.precompile << "katex.css"
     config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
+    config.assets.precompile << "peek.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"

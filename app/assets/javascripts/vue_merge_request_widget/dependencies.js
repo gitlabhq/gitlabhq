@@ -41,3 +41,4 @@ export { default as getStateKey } from './ee/stores/get_state_key';
 export { default as mrWidgetOptions } from './ee/mr_widget_options';
 export { default as stateMaps } from './ee/stores/state_maps';
 export { default as SquashBeforeMerge } from './ee/components/states/mr_widget_squash_before_merge';
+export { default as notify } from '../lib/utils/notify';

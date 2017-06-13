@@ -57,11 +57,13 @@ describe Namespace, models: true do
         end
       end
 
-      context 'when license is applied to parent group' do
-        let(:child_group) { create :group, parent: group }
+      if Group.supports_nested_groups?
+        context 'when license is applied to parent group' do
+          let(:child_group) { create :group, parent: group }
 
-        it 'child group has feature available' do
-          expect(child_group.feature_available?(feature)).to eq(true)
+          it 'child group has feature available' do
+            expect(child_group.feature_available?(feature)).to eq(true)
+          end
         end
       end
     end

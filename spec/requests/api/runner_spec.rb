@@ -185,7 +185,7 @@ describe API::Runner do
     let(:project) { create(:empty_project, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner) }
-    let!(:job) do
+    let(:job) do
       create(:ci_build, :artifacts, :extended_options,
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate")
     end
@@ -197,7 +197,10 @@ describe API::Runner do
       let!(:new_update) { }
       let(:user_agent) { 'gitlab-runner 9.0.0 (9-0-stable; go1.7.4; linux/amd64)' }
 
-      before { stub_container_registry_config(enabled: false) }
+      before do
+        job
+        stub_container_registry_config(enabled: false)
+      end
 
       shared_examples 'no jobs available' do
         before { request_job }
@@ -767,7 +770,10 @@ describe API::Runner do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
 
-      before { job.run! }
+      before do
+        stub_artifacts_object_storage
+        job.run!
+      end
 
       describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
         context 'when using token as parameter' do
@@ -1059,15 +1065,26 @@ describe API::Runner do
 
         context 'when job has artifacts' do
           let(:job) { create(:ci_build, :artifacts) }
-          let(:download_headers) do
-            { 'Content-Transfer-Encoding' => 'binary',
-              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
-          end
 
           context 'when using job token' do
-            it 'download artifacts' do
-              expect(response).to have_http_status(200)
-              expect(response.headers).to include download_headers
+            context 'when artifacts are stored locally' do
+              let(:download_headers) do
+                { 'Content-Transfer-Encoding' => 'binary',
+                  'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+              end
+
+              it 'download artifacts' do
+                expect(response).to have_http_status(200)
+                expect(response.headers).to include download_headers
+              end
+            end
+
+            context 'when artifacts are stored remotely' do
+              let(:job) { create(:ci_build, :artifacts, :remote_store) }
+
+              it 'download artifacts' do
+                expect(response).to have_http_status(302)
+              end
             end
           end
 

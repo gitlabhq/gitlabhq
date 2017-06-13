@@ -29,7 +29,7 @@ export default {
 </script>
 <template>
   <a
-    class="btn terminal-button has-tooltip"
+    class="btn terminal-button has-tooltip hidden-xs hidden-sm"
     data-container="body"
     :title="title"
     :aria-label="title"

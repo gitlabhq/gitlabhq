@@ -58,7 +58,7 @@ The following Elasticsearch settings are available:
 | `Use experimental repository indexer` | Perform repository indexing using [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). |
 | `Search with Elasticsearch enabled` | Enables/disables using Elasticsearch in search. |
 | `URL`                              | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://host1, https://host2:9200"). |
-| `Using AWS hosted Elasticsearch with IAM credentials` | Sign your Elasticsearch requests using [AWS IAM authorization][aws-iam]. The access key must be allowed to perform `es:*` actions. |
+| `Using AWS hosted Elasticsearch with IAM credentials` | Sign your Elasticsearch requests using [AWS IAM authorization][aws-iam] or [AWS EC2 Instance Profile Credentials][aws-instance-profile]. The policies must be configured to allow `es:*` actions. |
 | `AWS Region` | The AWS region your Elasticsearch service is located in. |
 | `AWS Access Key` | The AWS access key. |
 | `AWS Secret Access Key` | The AWS secret access key. |
@@ -325,6 +325,7 @@ Make sure you indexed all the database data as stated above (`sudo gitlab-rake g
 [ee-1305]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1305
 [aws-elasticsearch]: http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html
 [aws-iam]: http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html
+[aws-instance-profile]: http://docs.aws.amazon.com/codedeploy/latest/userguide/getting-started-create-iam-instance-profile.html#getting-started-create-iam-instance-profile-cli
 [ee-109]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/109 "Elasticsearch Merge Request"
 [elasticsearch]: https://www.elastic.co/products/elasticsearch "Elasticsearch website"
 [install]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html "Elasticsearch installation documentation"

@@ -56,11 +56,10 @@ describe 'Admin::AuditLogs', feature: true, js: true do
   end
 
   describe 'project events' do
-    let(:project) { create(:empty_project) }
     let(:project_member) { create(:project_member, user: user) }
 
     before do
-      AuditEventService.new(user, project, { action: :destroy }).
+      AuditEventService.new(user, project_member.project, { action: :destroy }).
         for_member(project_member).security_event
 
       visit admin_audit_logs_path

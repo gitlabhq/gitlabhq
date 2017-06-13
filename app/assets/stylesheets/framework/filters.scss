@@ -22,12 +22,6 @@
 }
 
 @media (min-width: $screen-sm-min) {
-  .issues_bulk_update {
-    .dropdown-menu-toggle:not(.wide) {
-      width: 132px;
-    }
-  }
-
   .filter-item:not(:last-child) {
     margin-right: 6px;
   }
@@ -90,6 +84,7 @@
 .filtered-search-term {
   display: -webkit-flex;
   display: flex;
+  flex-shrink: 0;
   margin-top: 5px;
   margin-bottom: 5px;
 
@@ -147,15 +142,17 @@
       }
     }
   }
+}
 
-  .selected {
-    .name {
-      background-color: $filter-name-selected-color;
-    }
+.filtered-search-token:hover,
+.filtered-search-token .selected,
+.filtered-search-term .selected {
+  .name {
+    background-color: $filter-name-selected-color;
+  }
 
-    .value-container {
-      background-color: $filter-value-selected-color;
-    }
+  .value-container {
+    background-color: $filter-value-selected-color;
   }
 }
 
@@ -239,7 +236,7 @@
     width: 35px;
     background-color: $white-light;
     border: none;
-    position: absolute;
+    position: static;
     right: 0;
     height: 100%;
     outline: none;
@@ -375,12 +372,6 @@
   padding: 0;
 }
 
-@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-  .issue-bulk-update-dropdown-toggle {
-    width: 100px;
-  }
-}
-
 @media (max-width: $screen-xs-max) {
   .issues-details-filters {
     padding: 0 0 10px;
@@ -475,4 +466,5 @@
 
 .filter-dropdown-loading {
   padding: 8px 16px;
+  text-align: center;
 }

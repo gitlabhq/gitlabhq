@@ -248,23 +248,10 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 ### User DN has changed
 
 When an LDAP user is created in GitLab, their LDAP DN is stored for later reference.
-If a user's DN changes, it can cause problems for LDAP sync. Administrators can
-manually update a user's stored DN in this case.
 
-> **Note:** If GitLab cannot find a user by their DN, it will attempt to fallback
-  to finding the user by their email. If the lookup is successful, GitLab will
-  update the stored DN to the new value.
-
-1. Sign in to GitLab as an administrator user.
-1. Navigate to **Admin area -> Users**.
-1. Search for the user
-1. Open the user, by clicking on their name. Do not click 'Edit'.
-1. Navigate to the **Identities** tab.
-1. Click 'Edit' next to the LDAP identity.
-1. Change the 'Identifier' to match the user's new LDAP DN.
-1. Save the identity.
-
-Now the user should sync correctly.
+If GitLab cannot find a user by their DN, it will attempt to fallback
+to finding the user by their email. If the lookup is successful, GitLab will
+update the stored DN to the new value.
 
 ### User is not being added to a group
 

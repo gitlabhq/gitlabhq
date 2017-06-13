@@ -30,7 +30,7 @@ describe User, models: true do
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
-    it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
+    it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
@@ -659,16 +659,6 @@ describe User, models: true do
     it { expect(User.without_projects).to include user_without_project2 }
   end
 
-  describe '.not_in_project' do
-    before do
-      User.delete_all
-      @user = create :user
-      @project = create(:empty_project)
-    end
-
-    it { expect(User.not_in_project(@project)).to include(@user, @project.owner) }
-  end
-
   describe 'user creation' do
     describe 'normal user' do
       let(:user) { create(:user, name: 'John Smith') }
@@ -1025,7 +1015,7 @@ describe User, models: true do
 
     context 'when avatar file is uploaded' do
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-      let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
+      let(:avatar_path) { "/uploads/system/user/avatar/#{user.id}/dk.png" }
 
       it 'shows correct avatar url' do
         expect(user.avatar_url).to eq(avatar_path)
@@ -1578,25 +1568,6 @@ describe User, models: true do
     end
   end
 
-  describe '#viewable_starred_projects' do
-    let(:user) { create(:user) }
-    let(:public_project) { create(:empty_project, :public) }
-    let(:private_project) { create(:empty_project, :private) }
-    let(:private_viewable_project) { create(:empty_project, :private) }
-
-    before do
-      private_viewable_project.team << [user, Gitlab::Access::MASTER]
-
-      [public_project, private_project, private_viewable_project].each do |project|
-        user.toggle_star(project)
-      end
-    end
-
-    it 'returns only starred projects the user can view' do
-      expect(user.viewable_starred_projects).not_to include(private_project)
-    end
-  end
-
   describe '#projects_with_reporter_access_limited_to' do
     let(:project1) { create(:empty_project) }
     let(:project2) { create(:empty_project) }
@@ -1633,48 +1604,103 @@ describe User, models: true do
     end
   end
 
-  describe '#nested_groups' do
-    let!(:user) { create(:user) }
-    let!(:group) { create(:group) }
-    let!(:nested_group) { create(:group, parent: group) }
-
-    before do
-      group.add_owner(user)
-
-      # Add more data to ensure method does not include wrong groups
-      create(:group).add_owner(create(:user))
-    end
-
-    it { expect(user.nested_groups).to eq([nested_group]) }
-  end
-
   describe '#all_expanded_groups' do
+    # foo/bar would also match foo/barbaz instead of just foo/bar and foo/bar/baz
     let!(:user) { create(:user) }
-    let!(:group) { create(:group) }
-    let!(:nested_group_1) { create(:group, parent: group) }
-    let!(:nested_group_2) { create(:group, parent: group) }
 
-    before { nested_group_1.add_owner(user) }
+    #                group
+    #        _______ (foo) _______
+    #       |                     |
+    #       |                     |
+    # nested_group_1        nested_group_2
+    # (bar)                 (barbaz)
+    #       |                     |
+    #       |                     |
+    # nested_group_1_1      nested_group_2_1
+    # (baz)                 (baz)
+    #
+    let!(:group) { create :group }
+    let!(:nested_group_1) { create :group, parent: group, name: 'bar' }
+    let!(:nested_group_1_1) { create :group, parent: nested_group_1, name: 'baz' }
+    let!(:nested_group_2) { create :group, parent: group, name: 'barbaz' }
+    let!(:nested_group_2_1) { create :group, parent: nested_group_2, name: 'baz' }
 
-    it { expect(user.all_expanded_groups).to match_array [group, nested_group_1] }
-  end
+    subject { user.all_expanded_groups }
 
-  describe '#nested_groups_projects' do
-    let!(:user) { create(:user) }
-    let!(:group) { create(:group) }
-    let!(:nested_group) { create(:group, parent: group) }
-    let!(:project) { create(:empty_project, namespace: group) }
-    let!(:nested_project) { create(:empty_project, namespace: nested_group) }
-
-    before do
-      group.add_owner(user)
-
-      # Add more data to ensure method does not include wrong projects
-      other_project = create(:empty_project, namespace: create(:group, :nested))
-      other_project.add_developer(create(:user))
+    context 'user is not a member of any group' do
+      it 'returns an empty array' do
+        is_expected.to eq([])
+      end
     end
 
-    it { expect(user.nested_groups_projects).to eq([nested_project]) }
+    context 'user is member of all groups' do
+      before do
+        group.add_owner(user)
+        nested_group_1.add_owner(user)
+        nested_group_1_1.add_owner(user)
+        nested_group_2.add_owner(user)
+        nested_group_2_1.add_owner(user)
+      end
+
+      it 'returns all groups' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1,
+          nested_group_2, nested_group_2_1
+        ]
+      end
+    end
+
+    context 'user is member of the top group' do
+      before { group.add_owner(user) }
+
+      if Group.supports_nested_groups?
+        it 'returns all groups' do
+          is_expected.to match_array [
+            group,
+            nested_group_1, nested_group_1_1,
+            nested_group_2, nested_group_2_1
+          ]
+        end
+      else
+        it 'returns the top-level groups' do
+          is_expected.to match_array [group]
+        end
+      end
+    end
+
+    context 'user is member of the first child (internal node), branch 1', :nested_groups do
+      before { nested_group_1.add_owner(user) }
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1
+        ]
+      end
+    end
+
+    context 'user is member of the first child (internal node), branch 2', :nested_groups do
+      before { nested_group_2.add_owner(user) }
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_2, nested_group_2_1
+        ]
+      end
+    end
+
+    context 'user is member of the last child (leaf node)', :nested_groups do
+      before { nested_group_1_1.add_owner(user) }
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1
+        ]
+      end
+    end
   end
 
   describe '#refresh_authorized_projects', redis: true do
@@ -1692,10 +1718,6 @@ describe User, models: true do
 
     it 'refreshes the list of authorized projects' do
       expect(user.project_authorizations.count).to eq(2)
-    end
-
-    it 'sets the authorized_projects_populated column' do
-      expect(user.authorized_projects_populated).to eq(true)
     end
 
     it 'stores the correct access levels' do
@@ -1948,7 +1970,7 @@ describe User, models: true do
       end
     end
 
-    context 'with 2FA requirement on nested parent group' do
+    context 'with 2FA requirement on nested parent group', :nested_groups do
       let!(:group1) { create :group, require_two_factor_authentication: true }
       let!(:group1a) { create :group, require_two_factor_authentication: false, parent: group1 }
 
@@ -1963,7 +1985,7 @@ describe User, models: true do
       end
     end
 
-    context 'with 2FA requirement on nested child group' do
+    context 'with 2FA requirement on nested child group', :nested_groups do
       let!(:group1) { create :group, require_two_factor_authentication: false }
       let!(:group1a) { create :group, require_two_factor_authentication: true, parent: group1 }
 

@@ -50,7 +50,7 @@ class Projects::TriggersController < Projects::ApplicationController
       flash[:alert] = "Could not remove the trigger."
     end
 
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project), status: 302
   end
 
   private

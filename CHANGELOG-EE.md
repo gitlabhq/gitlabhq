@@ -1,5 +1,20 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.2.5 (2017-06-07)
+
+- No changes.
+
+## 9.2.4 (2017-06-02)
+
+- No changes.
+- No changes.
+
+## 9.2.3 (2017-05-31)
+
+- No changes.
+- No changes.
+- Respect the external user setting in Elasticsearch.
+
 ## 9.2.2 (2017-05-25)
 
 - No changes.
@@ -27,6 +42,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix for XSS in project mirror errors caused by Hamlit filter usage.
 - Feature availability check using feature list AND license addons.
 - Disable mirror workers for Geo secondaries.
+
+## 9.1.7 (2017-06-07)
+
+- No changes.
+
+## 9.1.6 (2017-06-02)
+
+- No changes.
+
+## 9.1.5 (2017-05-31)
+
+- Respect the external user setting in Elasticsearch.
 
 ## 9.1.4 (2017-05-12)
 
@@ -94,6 +121,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove N+1 queries for Groups::AnalyticsController.
 - Show user cohorts data when usage ping is enabled.
 - Visualise Canary Deployments.
+
+## 9.0.10 (2017-06-07)
+
+- No changes.
+
+## 9.0.9 (2017-06-02)
+
+- No changes.
+
+## 9.0.8 (2017-05-31)
+
+- Respect the external user setting in Elasticsearch.
 
 ## 9.0.7 (2017-05-05)
 

@@ -14,6 +14,30 @@ class Event < ActiveRecord::Base
   DESTROYED = 10
   EXPIRED   = 11 # User left project due to expiry
 
+  ACTIONS = HashWithIndifferentAccess.new(
+    created:    CREATED,
+    updated:    UPDATED,
+    closed:     CLOSED,
+    reopened:   REOPENED,
+    pushed:     PUSHED,
+    commented:  COMMENTED,
+    merged:     MERGED,
+    joined:     JOINED,
+    left:       LEFT,
+    destroyed:  DESTROYED,
+    expired:    EXPIRED
+  ).freeze
+
+  TARGET_TYPES = HashWithIndifferentAccess.new(
+    issue:          Issue,
+    milestone:      Milestone,
+    merge_request:  MergeRequest,
+    note:           Note,
+    project:        Project,
+    snippet:        Snippet,
+    user:           User
+  ).freeze
+
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
 
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
@@ -26,7 +50,7 @@ class Event < ActiveRecord::Base
   belongs_to :target, polymorphic: true
 
   # For Hash only
-  serialize :data
+  serialize :data # rubocop:disable Cop/ActiverecordSerialize
 
   # Callbacks
   after_create :reset_project_activity
@@ -60,6 +84,14 @@ class Event < ActiveRecord::Base
 
     def limit_recent(limit = 20, offset = nil)
       recent.limit(limit).offset(offset)
+    end
+
+    def actions
+      ACTIONS.keys
+    end
+
+    def target_types
+      TARGET_TYPES.keys
     end
   end
 

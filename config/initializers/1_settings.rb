@@ -190,6 +190,7 @@ Settings.omniauth['external_providers'] = [] if Settings.omniauth['external_prov
 Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block_auto_created_users'].nil?
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
 Settings.omniauth['auto_link_saml_user'] = false if Settings.omniauth['auto_link_saml_user'].nil?
+Settings.omniauth['sync_email_from_provider'] ||= nil
 
 Settings.omniauth['providers'] ||= []
 Settings.omniauth['cas3'] ||= Settingslogic.new({})
@@ -311,6 +312,12 @@ Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
 Settings.artifacts['path']         = Settings.absolute(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"))
 Settings.artifacts['max_size']   ||= 100 # in megabytes
 
+Settings.artifacts['object_store'] ||= Settingslogic.new({})
+Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
+Settings.artifacts['object_store']['remote_directory'] ||= nil
+# Convert upload connection settings to use symbol keys, to make Fog happy
+Settings.artifacts['object_store']['connection']&.deep_symbolize_keys!
+
 #
 # Registry
 #
@@ -342,6 +349,10 @@ Settings.pages['external_https']  ||= false unless Settings.pages['external_http
 # Geo
 #
 Settings.gitlab['geo_status_timeout'] ||= 10
+Settings['geo_primary_role'] ||= Settingslogic.new({})
+Settings.geo_primary_role['enabled'] = false if Settings.geo_primary_role['enabled'].nil?
+Settings['geo_secondary_role'] ||= Settingslogic.new({})
+Settings.geo_secondary_role['enabled'] = false if Settings.geo_secondary_role['enabled'].nil?
 
 #
 # Git LFS
@@ -568,7 +579,7 @@ Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 # Gitaly
 #
 Settings['gitaly'] ||= Settingslogic.new({})
-Settings.gitaly['enabled'] ||= false
+Settings.gitaly['enabled'] = true if Settings.gitaly['enabled'].nil?
 
 #
 # Webpack settings

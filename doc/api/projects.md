@@ -14,7 +14,7 @@ Constants for project visibility levels are next:
   The project can be cloned by any logged in user.
 
 * `public`:
-  The project can be cloned without any authentication.
+  The project can be accessed without any authentication.
 
 ## List projects
 
@@ -38,6 +38,8 @@ Parameters:
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
+| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
 ```json
 [
@@ -79,6 +81,7 @@ Parameters:
       "kind": "group",
       "full_path": "diaspora"
     },
+    "import_status": "none",
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
     "shared_runners_enabled": true,
@@ -137,6 +140,8 @@ Parameters:
       "kind": "group",
       "full_path": "brightbox"
     },
+    "import_status": "none",
+    "import_error": null,
     "permissions": {
       "project_access": {
         "access_level": 10,
@@ -225,6 +230,8 @@ Parameters:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
+  "import_error": null,
   "permissions": {
     "project_access": {
       "access_level": 10,
@@ -307,143 +314,7 @@ GET /projects/:id/users
 
 ### Get project events
 
-Get the events for the specified project sorted from newest to oldest. This
-endpoint can be accessed without authentication if the project is publicly
-accessible.
-
-```
-GET /projects/:id/events
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-
-```json
-[
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "closed",
-    "target_id": 830,
-    "target_type": "Issue",
-    "author_id": 1,
-    "data": null,
-    "target_title": "Public project search field",
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "root"
-  },
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "opened",
-    "target_id": null,
-    "target_type": null,
-    "author_id": 1,
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "john",
-    "data": {
-      "before": "50d4420237a9de7be1304607147aec22e4a14af7",
-      "after": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-      "ref": "refs/heads/master",
-      "user_id": 1,
-      "user_name": "Dmitriy Zaporozhets",
-      "repository": {
-        "name": "gitlabhq",
-        "url": "git@dev.gitlab.org:gitlab/gitlabhq.git",
-        "description": "GitLab: self hosted Git management software. \r\nDistributed under the MIT License.",
-        "homepage": "https://dev.gitlab.org/gitlab/gitlabhq"
-      },
-      "commits": [
-        {
-          "id": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-          "message": "Add simple search to projects in public area",
-          "timestamp": "2013-05-13T18:18:08+00:00",
-          "url": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-          "author": {
-            "name": "Dmitriy Zaporozhets",
-            "email": "dmitriy.zaporozhets@gmail.com"
-          }
-        }
-      ],
-      "total_commits_count": 1
-    },
-    "target_title": null
-  },
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "closed",
-    "target_id": 840,
-    "target_type": "Issue",
-    "author_id": 1,
-    "data": null,
-    "target_title": "Finish & merge Code search PR",
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "root"
-  },
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "commented on",
-    "target_id": 1312,
-    "target_type": "Note",
-    "author_id": 1,
-    "data": null,
-    "target_title": null,
-    "created_at": "2015-12-04T10:33:58.089Z",
-    "note": {
-      "id": 1312,
-      "body": "What an awesome day!",
-      "attachment": null,
-      "author": {
-        "name": "Dmitriy Zaporozhets",
-        "username": "root",
-        "id": 1,
-        "state": "active",
-        "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-        "web_url": "http://localhost:3000/root"
-      },
-      "created_at": "2015-12-04T10:33:56.698Z",
-      "system": false,
-      "noteable_id": 377,
-      "noteable_type": "Issue"
-    },
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "root"
-  }
-]
-```
+Please refer to the [Events API documentation](events.md#list-a-projects-visible-events)
 
 ### Create project
 
@@ -476,6 +347,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
@@ -510,6 +382,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
@@ -544,6 +417,7 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
@@ -616,6 +490,7 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
@@ -681,6 +556,7 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
@@ -752,6 +628,8 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
+  "import_error": null,
   "permissions": {
     "project_access": {
       "access_level": 10,
@@ -834,6 +712,8 @@ Example response:
     "kind": "group",
     "full_path": "diaspora"
   },
+  "import_status": "none",
+  "import_error": null,
   "permissions": {
     "project_access": {
       "access_level": 10,

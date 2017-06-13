@@ -93,16 +93,13 @@ export default {
           :width="avatarSize"
           :height="avatarSize"
           :alt="displayName"/>
-        <svg
+        <span
           v-else
           v-html="pendingAvatarSvg"
           :class="avatarHtmlClass"
           :width="avatarSize"
-          :height="avatarSize"
-          :alt="displayName">
-        </svg>
-
-
+          :height="avatarSize">
+        </span>
       </a>
     </div>
   `,

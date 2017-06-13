@@ -69,16 +69,9 @@ describe Projects::JobsController do
         Ci::Build::AVAILABLE_STATUSES.each do |status|
           create_build(status, status)
         end
-
-        RequestStore.begin!
       end
 
-      after do
-        RequestStore.end!
-        RequestStore.clear!
-      end
-
-      it "verifies number of queries" do
+      it 'verifies number of queries', :request_store do
         recorded = ActiveRecord::QueryRecorder.new { get_index }
         expect(recorded.count).to be_within(5).of(8)
       end
@@ -101,26 +94,49 @@ describe Projects::JobsController do
   end
 
   describe 'GET show' do
-    context 'when build exists' do
-      let!(:build) { create(:ci_build, pipeline: pipeline) }
+    let!(:build) { create(:ci_build, :failed, pipeline: pipeline) }
 
-      before do
-        get_show(id: build.id)
+    context 'when requesting HTML' do
+      context 'when build exists' do
+        before do
+          get_show(id: build.id)
+        end
+
+        it 'has a build' do
+          expect(response).to have_http_status(:ok)
+          expect(assigns(:build).id).to eq(build.id)
+        end
       end
 
-      it 'has a build' do
-        expect(response).to have_http_status(:ok)
-        expect(assigns(:build).id).to eq(build.id)
+      context 'when build does not exist' do
+        before do
+          get_show(id: 1234)
+        end
+
+        it 'renders not_found' do
+          expect(response).to have_http_status(:not_found)
+        end
       end
     end
 
-    context 'when build does not exist' do
+    context 'when requesting JSON' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
       before do
-        get_show(id: 1234)
+        project.add_developer(user)
+        sign_in(user)
+
+        allow_any_instance_of(Ci::Build).to receive(:merge_request).and_return(merge_request)
+
+        get_show(id: build.id, format: :json)
       end
 
-      it 'renders not_found' do
-        expect(response).to have_http_status(:not_found)
+      it 'exposes needed information' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response['raw_path']).to match(/builds\/\d+\/raw\z/)
+        expect(json_response.dig('merge_request', 'path')).to match(/merge_requests\/\d+\z/)
+        expect(json_response['new_issue_path'])
+          .to include('/issues/new')
       end
     end
 
@@ -234,7 +250,11 @@ describe Projects::JobsController do
 
   describe 'POST play' do
     before do
-      project.add_master(user)
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: 'master', project: project)
+
       sign_in(user)
 
       post_play

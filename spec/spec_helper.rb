@@ -3,6 +3,7 @@ SimpleCovEnv.start!
 
 ENV["RAILS_ENV"] ||= 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
+# ENV['prometheus_multiproc_dir'] = 'tmp/prometheus_multiproc_dir_test'
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
@@ -55,6 +56,7 @@ RSpec.configure do |config|
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include ApiHelpers, :api
+  config.include MigrationsHelpers, :migration
   config.include Rails.application.routes.url_helpers, type: :routing
 
   config.infer_spec_type_from_file_location!
@@ -76,6 +78,15 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     TestEnv.cleanup
+  end
+
+  config.before(:example, :request_store) do
+    RequestStore.begin!
+  end
+
+  config.after(:example, :request_store) do
+    RequestStore.end!
+    RequestStore.clear!
   end
 
   if ENV['CI']
@@ -100,6 +111,25 @@ RSpec.configure do |config|
 
     Gitlab::Redis.with(&:flushall)
     Sidekiq.redis(&:flushall)
+  end
+
+  config.around(:example, :migration) do |example|
+    begin
+      ActiveRecord::Migrator
+        .migrate(migrations_paths, previous_migration.version)
+
+      example.run
+    ensure
+      ActiveRecord::Migrator.migrate(migrations_paths)
+    end
+  end
+
+  config.around(:each, :nested_groups) do |example|
+    example.run if Group.supports_nested_groups?
+  end
+
+  config.around(:each, :postgresql) do |example|
+    example.run if Gitlab::Database.postgresql?
   end
 end
 

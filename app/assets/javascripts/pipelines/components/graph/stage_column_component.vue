@@ -25,6 +25,10 @@ export default {
       required: false,
       default: '',
     },
+    hasTriggeredBy: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   components: {
@@ -39,10 +43,6 @@ export default {
 
     jobId(job) {
       return `ci-badge-${job.name}`;
-    },
-
-    buildConnnectorClass(index) {
-      return index === 0 && !this.isFirstColumn ? 'left-connector' : '';
     },
   },
 };
@@ -60,7 +60,9 @@ export default {
           v-for="(job, index) in jobs"
           :key="job.id"
           class="build"
-          :class="buildConnnectorClass(index)"
+          :class="{
+            'left-connector': index === 0 && (!isFirstColumn || hasTriggeredBy)
+          }"
           :id="jobId(job)">
 
           <div class="curve"></div>

@@ -24,6 +24,7 @@ describe "Compare", js: true do
       expect(find(".js-compare-to-dropdown .dropdown-toggle-text")).to have_content("binary-encoding")
 
       click_button "Compare"
+
       expect(page).to have_content "Commits"
     end
 

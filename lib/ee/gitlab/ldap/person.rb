@@ -2,6 +2,19 @@ module EE
   module Gitlab
     module LDAP
       module Person
+        extend ActiveSupport::Concern
+
+        class_methods do
+          def find_by_email(email, adapter)
+            email_attributes = Array(adapter.config.attributes['email'])
+
+            email_attributes.each do |possible_attribute|
+              found_user = adapter.user(possible_attribute, email)
+              return found_user if found_user
+            end
+          end
+        end
+
         def ssh_keys
           if config.sync_ssh_keys? && entry.respond_to?(config.sync_ssh_keys)
             entry[config.sync_ssh_keys.to_sym]

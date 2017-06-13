@@ -7,7 +7,7 @@ feature tests with Capybara for e2e (end-to-end) integration testing.
 Unit and feature tests need to be written for all new features.
 Most of the time, you should use rspec for your feature tests.
 There are cases where the behaviour you are testing is not worth the time spent running the full application,
-for example, if you are testing styling, animation or small actions that don't involve the backend,
+for example, if you are testing styling, animation, edge cases or small actions that don't involve the backend,
 you should write an integration test using Jasmine.
 
 ![Testing priority triangle](img/testing_triangle.png)

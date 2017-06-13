@@ -127,7 +127,9 @@ describe Gitlab::Geo, lib: true do
     end
 
     it 'activates cron jobs for primary' do
-      allow(described_class).to receive(:primary?).and_return(true)
+      allow(described_class).to receive(:primary_role_enabled?).and_return(true)
+      allow(described_class).to receive(:secondary_role_enabled?).and_return(false)
+
       described_class.configure_cron_jobs!
 
       expect(described_class.bulk_notify_job).to be_enabled
@@ -136,7 +138,9 @@ describe Gitlab::Geo, lib: true do
     end
 
     it 'activates cron jobs for secondary' do
-      allow(described_class).to receive(:secondary?).and_return(true)
+      allow(described_class).to receive(:primary_role_enabled?).and_return(false)
+      allow(described_class).to receive(:secondary_role_enabled?).and_return(true)
+
       described_class.configure_cron_jobs!
 
       expect(described_class.bulk_notify_job).not_to be_enabled
@@ -145,6 +149,9 @@ describe Gitlab::Geo, lib: true do
     end
 
     it 'deactivates all jobs when Geo is not active' do
+      allow(described_class).to receive(:primary_role_enabled?).and_return(false)
+      allow(described_class).to receive(:secondary_role_enabled?).and_return(false)
+
       described_class.configure_cron_jobs!
 
       expect(described_class.bulk_notify_job).not_to be_enabled

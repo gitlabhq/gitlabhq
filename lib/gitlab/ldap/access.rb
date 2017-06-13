@@ -6,7 +6,7 @@
 module Gitlab
   module LDAP
     class Access
-      attr_reader :adapter, :provider, :user, :ldap_user
+      attr_reader :adapter, :provider, :user, :ldap_user, :ldap_identity
 
       def self.open(user, &block)
         Gitlab::LDAP::Adapter.open(user.ldap_identity.provider) do |adapter|
@@ -32,7 +32,8 @@ module Gitlab
       def initialize(user, adapter = nil)
         @adapter = adapter
         @user = user
-        @provider = user.ldap_identity.provider
+        @provider = adapter&.provider || user.ldap_identity.provider
+        @ldap_identity = user.identities.find_by(provider: @provider)
       end
 
       def allowed?
@@ -43,7 +44,7 @@ module Gitlab
           end
 
           # Block user in GitLab if he/she was blocked in AD
-          if Gitlab::LDAP::Person.disabled_via_active_directory?(user.ldap_identity.extern_uid, adapter)
+          if Gitlab::LDAP::Person.disabled_via_active_directory?(ldap_identity.extern_uid, adapter)
             block_user(user, 'is disabled in Active Directory')
             false
           else
@@ -65,15 +66,24 @@ module Gitlab
         Gitlab::LDAP::Config.new(provider)
       end
 
+      def find_ldap_user
+        found_user = Gitlab::LDAP::Person.find_by_dn(ldap_identity.extern_uid, adapter)
+        return found_user if found_user
+
+        if user.external_email? && [nil, provider].include?(user.email_provider)
+          Gitlab::LDAP::Person.find_by_email(user.email, adapter)
+        end
+      end
+
       def ldap_user
-        @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
+        @ldap_user ||= find_ldap_user
       end
 
       def block_user(user, reason)
         user.ldap_block
 
         Gitlab::AppLogger.info(
-          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
+          "LDAP account \"#{ldap_identity.extern_uid}\" #{reason}, " \
           "blocking Gitlab user \"#{user.name}\" (#{user.email})"
         )
       end
@@ -82,7 +92,7 @@ module Gitlab
         user.activate
 
         Gitlab::AppLogger.info(
-          "LDAP account \"#{user.ldap_identity.extern_uid}\" #{reason}, " \
+          "LDAP account \"#{ldap_identity.extern_uid}\" #{reason}, " \
           "unblocking Gitlab user \"#{user.name}\" (#{user.email})"
         )
       end
@@ -90,6 +100,7 @@ module Gitlab
       def update_user
         update_email
         update_memberships
+        update_identity
         update_ssh_keys if sync_ssh_keys?
         update_kerberos_identity if import_kerberos_identities?
       end
@@ -154,6 +165,15 @@ module Gitlab
 
         user.skip_reconfirmation!
         user.update(email: ldap_email)
+      end
+
+      def update_identity
+        return if ldap_user.dn.empty? || ldap_user.dn == ldap_identity.extern_uid
+
+        unless ldap_identity.update(extern_uid: ldap_user.dn)
+          Rails.logger.error "Could not update DN for #{user.name} (#{user.id})\n"\
+                             "error messages: #{user.ldap_identity.errors.messages}"
+        end
       end
 
       delegate :sync_ssh_keys?, to: :ldap_config

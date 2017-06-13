@@ -22,7 +22,7 @@ class GeoFileDownloadDispatchWorker
   #    files, excluding ones in progress.
   # 5. Quit when we have scheduled all downloads or exceeded an hour.
   def perform
-    return unless Gitlab::Geo.configured?
+    return unless Gitlab::Geo.secondary_role_enabled?
     return unless Gitlab::Geo.secondary?
 
     @start_time = Time.now
@@ -153,7 +153,7 @@ class GeoFileDownloadDispatchWorker
 
   def node_enabled?
     # Only check every minute to avoid polling the DB excessively
-    unless @last_enabled_check.present? && (Time.now - @last_enabled_check > 1.minute)
+    unless @last_enabled_check.present? && @last_enabled_check > 1.minute.ago
       @last_enabled_check = Time.now
       @current_node_enabled = nil
     end

@@ -4,9 +4,10 @@ describe 'Every Sidekiq worker' do
   let(:workers) do
     root = Rails.root.join('app', 'workers')
     concerns = root.join('concerns').to_s
+    ee_modules = root.join('ee').to_s
 
     workers = Dir[root.join('**', '*.rb')].
-      reject { |path| path.start_with?(concerns) }
+      reject { |path| path.start_with?(concerns, ee_modules) }
 
     workers.map do |path|
       ns = Pathname.new(path).relative_path_from(root).to_s.gsub('.rb', '')

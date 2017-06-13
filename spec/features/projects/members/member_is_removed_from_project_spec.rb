@@ -11,7 +11,7 @@ feature 'Projects > Members > Member is removed from project', feature: true do
   end
 
   scenario 'user is removed from project' do
-    within(".project_member") { find(".btn-remove").click }
+    click_link 'Leave'
 
     expect(project.users.exists?(user.id)).to be_falsey
   end
@@ -22,7 +22,7 @@ feature 'Projects > Members > Member is removed from project', feature: true do
     let!(:non_matching_protected_branch) { create(:protected_branch, authorize_user_to_push: other_user, authorize_user_to_merge: other_user, project: project) }
 
     scenario 'user leaves project' do
-      within(".project_member") { find(".btn-remove").click }
+      click_link 'Leave'
 
       expect(project.users.exists?(user.id)).to be_falsey
       expect(matching_protected_branch.push_access_levels.where(user: user)).not_to exist

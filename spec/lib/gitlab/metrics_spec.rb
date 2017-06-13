@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics do
+  include StubENV
+
   describe '.settings' do
     it 'returns a Hash' do
       expect(described_class.settings).to be_an_instance_of(Hash)
@@ -9,7 +11,19 @@ describe Gitlab::Metrics do
 
   describe '.enabled?' do
     it 'returns a boolean' do
-      expect([true, false].include?(described_class.enabled?)).to eq(true)
+      expect(described_class.enabled?).to be_in([true, false])
+    end
+  end
+
+  describe '.prometheus_metrics_enabled?' do
+    it 'returns a boolean' do
+      expect(described_class.prometheus_metrics_enabled?).to be_in([true, false])
+    end
+  end
+
+  describe '.influx_metrics_enabled?' do
+    it 'returns a boolean' do
+      expect(described_class.influx_metrics_enabled?).to be_in([true, false])
     end
   end
 
@@ -175,6 +189,135 @@ describe Gitlab::Metrics do
 
         described_class.add_event(:meow)
       end
+    end
+  end
+
+  shared_examples 'prometheus metrics API' do
+    describe '#counter' do
+      subject { described_class.counter(:couter, 'doc') }
+
+      describe '#increment' do
+        it 'successfully calls #increment without arguments' do
+          expect { subject.increment }.not_to raise_exception
+        end
+
+        it 'successfully calls #increment with 1 argument' do
+          expect { subject.increment({}) }.not_to raise_exception
+        end
+
+        it 'successfully calls #increment with 2 arguments' do
+          expect { subject.increment({}, 1) }.not_to raise_exception
+        end
+      end
+    end
+
+    describe '#summary' do
+      subject { described_class.summary(:summary, 'doc') }
+
+      describe '#observe' do
+        it 'successfully calls #observe with 2 arguments' do
+          expect { subject.observe({}, 2) }.not_to raise_exception
+        end
+      end
+    end
+
+    describe '#gauge' do
+      subject { described_class.gauge(:gauge, 'doc') }
+
+      describe '#set' do
+        it 'successfully calls #set with 2 arguments' do
+          expect { subject.set({}, 1) }.not_to raise_exception
+        end
+      end
+    end
+
+    describe '#histogram' do
+      subject { described_class.histogram(:histogram, 'doc') }
+
+      describe '#observe' do
+        it 'successfully calls #observe with 2 arguments' do
+          expect { subject.observe({}, 2) }.not_to raise_exception
+        end
+      end
+    end
+  end
+
+  context 'prometheus metrics disabled' do
+    before do
+      allow(described_class).to receive(:prometheus_metrics_enabled?).and_return(false)
+    end
+
+    it_behaves_like 'prometheus metrics API'
+
+    describe '#null_metric' do
+      subject { described_class.provide_metric(:test) }
+
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
+    end
+
+    describe '#counter' do
+      subject { described_class.counter(:counter, 'doc') }
+
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
+    end
+
+    describe '#summary' do
+      subject { described_class.summary(:summary, 'doc') }
+
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
+    end
+
+    describe '#gauge' do
+      subject { described_class.gauge(:gauge, 'doc') }
+
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
+    end
+
+    describe '#histogram' do
+      subject { described_class.histogram(:histogram, 'doc') }
+
+      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
+    end
+  end
+
+  context 'prometheus metrics enabled' do
+    let(:metrics_multiproc_dir) { Dir.mktmpdir }
+
+    before do
+      stub_const('Prometheus::Client::Multiprocdir', metrics_multiproc_dir)
+      allow(described_class).to receive(:prometheus_metrics_enabled?).and_return(true)
+    end
+
+    it_behaves_like 'prometheus metrics API'
+
+    describe '#null_metric' do
+      subject { described_class.provide_metric(:test) }
+
+      it { is_expected.to be_nil }
+    end
+
+    describe '#counter' do
+      subject { described_class.counter(:name, 'doc') }
+
+      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
+    end
+
+    describe '#summary' do
+      subject { described_class.summary(:name, 'doc') }
+
+      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
+    end
+
+    describe '#gauge' do
+      subject { described_class.gauge(:name, 'doc') }
+
+      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
+    end
+
+    describe '#histogram' do
+      subject { described_class.histogram(:name, 'doc') }
+
+      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
     end
   end
 end

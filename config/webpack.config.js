@@ -16,6 +16,7 @@ var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
+var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
 var config = {
   // because sqljs requires fs.
@@ -43,6 +44,7 @@ var config = {
     groups_list:          './groups_list.js',
     issues:               './issues/issues_bundle.js',
     issue_show:           './issue_show/index.js',
+    integrations:         './integrations',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -68,6 +70,7 @@ var config = {
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
+    peek:                 './peek.js',
   },
 
   output: {
@@ -76,8 +79,6 @@ var config = {
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
     chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
-
-  devtool: 'cheap-module-source-map',
 
   module: {
     rules: [
@@ -188,15 +189,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'common', 'runtime'],
-    }),
-
-    // locale common library
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'locale',
-      chunks: [
-        'cycle_analytics',
-      ],
+      names: ['main', 'locale', 'common', 'runtime'],
     }),
   ],
 
@@ -227,11 +220,18 @@ if (IS_PRODUCTION) {
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
-    }),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
     })
   );
+
+  // zopfli requires a lot of compute time and is disabled in CI
+  if (!NO_COMPRESSION) {
+    config.plugins.push(
+      new CompressionPlugin({
+        asset: '[path].gz[query]',
+        algorithm: 'zopfli',
+      })
+    );
+  }
 }
 
 if (IS_DEV_SERVER) {

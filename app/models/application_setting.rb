@@ -14,13 +14,13 @@ class ApplicationSetting < ActiveRecord::Base
                             [\r\n]          # any number of newline characters
                           }x
 
-  serialize :restricted_visibility_levels
-  serialize :import_sources
-  serialize :disabled_oauth_sign_in_sources, Array
-  serialize :domain_whitelist, Array
-  serialize :domain_blacklist, Array
-  serialize :repository_storages
-  serialize :sidekiq_throttling_queues, Array
+  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiverecordSerialize
+  serialize :import_sources # rubocop:disable Cop/ActiverecordSerialize
+  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :repository_storages # rubocop:disable Cop/ActiverecordSerialize
+  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiverecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -202,8 +202,9 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.cached
-    ensure_cache_setup
-    Rails.cache.fetch(CACHE_KEY)
+    value = Rails.cache.read(CACHE_KEY)
+    ensure_cache_setup if value.present?
+    value
   end
 
   def self.ensure_cache_setup
@@ -274,6 +275,16 @@ class ApplicationSetting < ActiveRecord::Base
       super
     end
   end
+
+  def elasticsearch_indexing
+    License.feature_available?(:elastic_search) && super
+  end
+  alias_method :elasticsearch_indexing?, :elasticsearch_indexing
+
+  def elasticsearch_search
+    License.feature_available?(:elastic_search) && super
+  end
+  alias_method :elasticsearch_search?, :elasticsearch_search
 
   def elasticsearch_url
     read_attribute(:elasticsearch_url).split(',').map(&:strip)

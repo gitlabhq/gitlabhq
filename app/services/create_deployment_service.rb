@@ -1,71 +1,59 @@
-class CreateDeploymentService < BaseService
-  def execute(deployable = nil)
+class CreateDeploymentService
+  attr_reader :job
+
+  delegate :expanded_environment_name,
+           :environment_url,
+           :project,
+           to: :job
+
+  def initialize(job)
+    @job = job
+  end
+
+  def execute
     return unless executable?
 
     ActiveRecord::Base.transaction do
-      @deployable = deployable
+      environment.external_url = environment_url if environment_url
+      environment.fire_state_event(action)
 
-      @environment = environment
-      @environment.external_url = expanded_url if expanded_url
-      @environment.fire_state_event(action)
+      return unless environment.save
+      return if environment.stopped?
 
-      return unless @environment.save
-      return if @environment.stopped?
-
-      deploy.tap do |deployment|
-        deployment.update_merge_request_metrics!
-      end
+      deploy.tap(&:update_merge_request_metrics!)
     end
   end
 
   private
 
   def executable?
-    project && name.present?
+    project && job.environment.present? && environment
   end
 
   def deploy
     project.deployments.create(
-      environment: @environment,
-      ref: params[:ref],
-      tag: params[:tag],
-      sha: params[:sha],
-      user: current_user,
-      deployable: @deployable,
-      on_stop: options[:on_stop])
+      environment: environment,
+      ref: job.ref,
+      tag: job.tag,
+      sha: job.sha,
+      user: job.user,
+      deployable: job,
+      on_stop: on_stop)
   end
 
   def environment
-    @environment ||= project.environments.find_or_create_by(name: expanded_name)
+    @environment ||= job.persisted_environment
   end
 
-  def expanded_name
-    ExpandVariables.expand(name, variables)
+  def environment_options
+    @environment_options ||= job.options&.dig(:environment) || {}
   end
 
-  def expanded_url
-    return unless url
-
-    @expanded_url ||= ExpandVariables.expand(url, variables)
-  end
-
-  def name
-    params[:environment]
-  end
-
-  def url
-    options[:url]
-  end
-
-  def options
-    params[:options] || {}
-  end
-
-  def variables
-    params[:variables] || []
+  def on_stop
+    environment_options[:on_stop]
   end
 
   def action
-    options[:action] || 'start'
+    environment_options[:action] || 'start'
   end
 end

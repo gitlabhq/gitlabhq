@@ -49,6 +49,7 @@ module API
     end
 
     before { allow_access_with_scope :api }
+    before { header['X-Frame-Options'] = 'SAMEORIGIN' }
     before { Gitlab::I18n.locale = current_user&.preferred_language }
 
     after { Gitlab::I18n.use_default_locale }
@@ -98,6 +99,8 @@ module API
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
+    mount ::API::Events
+    mount ::API::Features
     mount ::API::Files
     mount ::API::Groups
     mount ::API::Geo
@@ -118,6 +121,7 @@ module API
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
+    mount ::API::PipelineSchedules
     mount ::API::ProjectHooks
     mount ::API::ProjectPushRule
     mount ::API::Projects

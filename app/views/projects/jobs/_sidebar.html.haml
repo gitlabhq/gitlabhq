@@ -36,7 +36,7 @@
             = link_to download_namespace_project_job_artifacts_path(@project.namespace, @project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
               Download
 
-            - if @build.artifacts_metadata?
+            - if @build.browsable_artifacts?
               = link_to browse_namespace_project_job_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
                 Browse
 
@@ -118,7 +118,7 @@
           %span.stage-selection More
           = icon('chevron-down')
         %ul.dropdown-menu
-          - @build.pipeline.stages.each do |stage|
+          - @build.pipeline.legacy_stages.each do |stage|
             %li
               %a.stage-item= stage.name
 
@@ -137,6 +137,3 @@
                 = build.id
             - if build.retried?
               %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
-
-:javascript
-  new Sidebar();

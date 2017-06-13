@@ -48,6 +48,10 @@ class SessionsController < Devise::SessionsController
 
   private
 
+  def login_counter
+    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins, 'User sign in count')
+  end
+
   # Handle an "initial setup" state, where there's only one user, it's an admin,
   # and they require a password change.
   def check_initial_setup
@@ -126,6 +130,10 @@ class SessionsController < Devise::SessionsController
     provider = Gitlab.config.omniauth.auto_sign_in_with_provider
     return unless provider.present?
 
+    # If a "auto_sign_in" query parameter is set to a falsy value, don't auto sign-in.
+    # Otherwise, the default is to auto sign-in.
+    return if Gitlab::Utils.to_boolean(params[:auto_sign_in]) == false
+
     # Auto sign in with an Omniauth provider only if the standard "you need to sign-in" alert is
     # registered or no alert at all. In case of another alert (such as a blocked user), it is safer
     # to do nothing to prevent redirection loops with certain Omniauth providers.
@@ -148,6 +156,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def log_user_activity(user)
+    login_counter.increment
     Users::ActivityService.new(user, 'login').execute
   end
 

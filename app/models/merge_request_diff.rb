@@ -1,7 +1,7 @@
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
   include Importable
-  include Gitlab::Git::EncodingHelper
+  include Gitlab::EncodingHelper
 
   # Prevent store of diff if commits amount more then 500
   COMMITS_SAFE_SIZE = 100
@@ -11,8 +11,8 @@ class MergeRequestDiff < ActiveRecord::Base
 
   belongs_to :merge_request
 
-  serialize :st_commits
-  serialize :st_diffs
+  serialize :st_commits # rubocop:disable Cop/ActiverecordSerialize
+  serialize :st_diffs # rubocop:disable Cop/ActiverecordSerialize
 
   state_machine :state, initial: :empty do
     state :collected

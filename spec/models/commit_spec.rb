@@ -20,8 +20,8 @@ describe Commit, models: true do
     end
 
     it 'caches the author' do
+      allow(RequestStore).to receive(:active?).and_return(true)
       user = create(:user, email: commit.author_email)
-      expect(RequestStore).to receive(:active?).twice.and_return(true)
       expect_any_instance_of(Commit).to receive(:find_author_by_any_email).and_call_original
 
       expect(commit.author).to eq(user)

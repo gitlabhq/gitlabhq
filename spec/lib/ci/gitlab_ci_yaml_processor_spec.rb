@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 module Ci
-  describe GitlabCiYamlProcessor, lib: true do
+  describe GitlabCiYamlProcessor, :lib do
+    subject { described_class.new(config, path) }
     let(:path) { 'path' }
 
     describe 'our current .gitlab-ci.yml' do
@@ -78,6 +79,48 @@ module Ci
               expect(subject[:allow_failure]).to be false
             end
           end
+        end
+      end
+    end
+
+    describe '#stage_seeds' do
+      context 'when no refs policy is specified' do
+        let(:config) do
+          YAML.dump(production: { stage: 'deploy', script: 'cap prod' },
+                    rspec: { stage: 'test', script: 'rspec' },
+                    spinach: { stage: 'test', script: 'spinach' })
+        end
+
+        let(:pipeline) { create(:ci_empty_pipeline) }
+
+        it 'correctly fabricates a stage seeds object' do
+          seeds = subject.stage_seeds(pipeline)
+
+          expect(seeds.size).to eq 2
+          expect(seeds.first.stage[:name]).to eq 'test'
+          expect(seeds.second.stage[:name]).to eq 'deploy'
+          expect(seeds.first.builds.dig(0, :name)).to eq 'rspec'
+          expect(seeds.first.builds.dig(1, :name)).to eq 'spinach'
+          expect(seeds.second.builds.dig(0, :name)).to eq 'production'
+        end
+      end
+
+      context 'when refs policy is specified' do
+        let(:config) do
+          YAML.dump(production: { stage: 'deploy', script: 'cap prod', only: ['master'] },
+                    spinach: { stage: 'test', script: 'spinach', only: ['tags'] })
+        end
+
+        let(:pipeline) do
+          create(:ci_empty_pipeline, ref: 'feature', tag: true)
+        end
+
+        it 'returns stage seeds only assigned to master to master' do
+          seeds = subject.stage_seeds(pipeline)
+
+          expect(seeds.size).to eq 1
+          expect(seeds.first.stage[:name]).to eq 'test'
+          expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
         end
       end
     end

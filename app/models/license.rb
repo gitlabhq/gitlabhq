@@ -6,11 +6,15 @@ class License < ActiveRecord::Base
   GEO_FEATURE = 'GitLab_Geo'.freeze
   AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
+  OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
+  ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
 
   FEATURE_CODES = {
     geo: GEO_FEATURE,
     auditor_user: AUDITOR_USER_FEATURE,
     service_desk: SERVICE_DESK_FEATURE,
+    object_storage: OBJECT_STORAGE_FEATURE,
+    elastic_search: ELASTIC_SEARCH_FEATURE,
     # Features that make sense to Namespace:
     deploy_board: DEPLOY_BOARD_FEATURE,
     file_lock: FILE_LOCK_FEATURE
@@ -22,7 +26,7 @@ class License < ActiveRecord::Base
   EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
   EES_FEATURES = [
-    # ..
+    { ELASTIC_SEARCH_FEATURE => 1 }
   ].freeze
 
   EEP_FEATURES = [
@@ -31,7 +35,8 @@ class License < ActiveRecord::Base
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 }
+    { SERVICE_DESK_FEATURE => 1 },
+    { OBJECT_STORAGE_FEATURE => 1 }
   ].freeze
 
   EEU_FEATURES = [
@@ -52,7 +57,8 @@ class License < ActiveRecord::Base
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 }
+    { SERVICE_DESK_FEATURE => 1 },
+    { OBJECT_STORAGE_FEATURE => 1 }
   ].freeze
 
   FEATURES_BY_PLAN = {
@@ -86,6 +92,8 @@ class License < ActiveRecord::Base
         load_license
       end
     end
+
+    delegate :feature_available?, to: :current, allow_nil: true
 
     def reset_current
       RequestStore.delete(:current_license)
@@ -179,7 +187,7 @@ class License < ActiveRecord::Base
   end
 
   def plan
-    restricted_attr(:plan)
+    restricted_attr(:plan, STARTER_PLAN)
   end
 
   def current_active_users_count

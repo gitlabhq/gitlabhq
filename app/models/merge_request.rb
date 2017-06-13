@@ -26,7 +26,7 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :assignee, class_name: "User"
 
-  serialize :merge_params, Hash
+  serialize :merge_params, Hash # rubocop:disable Cop/ActiverecordSerialize
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
@@ -229,10 +229,10 @@ class MergeRequest < ActiveRecord::Base
 
   def diffs(diff_options = {})
     if compare
-      # When saving MR diffs, `no_collapse` is implicitly added (because we need
+      # When saving MR diffs, `expanded` is implicitly added (because we need
       # to save the entire contents to the DB), so add that here for
       # consistency.
-      compare.diffs(diff_options.merge(no_collapse: true))
+      compare.diffs(diff_options.merge(expanded: true))
     else
       merge_request_diff.diffs(diff_options)
     end
@@ -446,7 +446,7 @@ class MergeRequest < ActiveRecord::Base
     MergeRequests::MergeRequestDiffCacheService.new.execute(self)
     new_diff_refs = self.diff_refs
 
-    update_diff_notes_positions(
+    update_diff_discussion_positions(
       old_diff_refs: old_diff_refs,
       new_diff_refs: new_diff_refs,
       current_user: current_user
@@ -923,19 +923,18 @@ class MergeRequest < ActiveRecord::Base
     diff_refs && diff_refs.complete?
   end
 
-  def update_diff_notes_positions(old_diff_refs:, new_diff_refs:, current_user: nil)
+  def update_diff_discussion_positions(old_diff_refs:, new_diff_refs:, current_user: nil)
     return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
-    active_diff_notes = self.notes.new_diff_notes.select do |note|
-      note.active?(old_diff_refs)
+    active_diff_discussions = self.notes.new_diff_notes.discussions.select do |discussion|
+      discussion.active?(old_diff_refs)
     end
+    return if active_diff_discussions.empty?
 
-    return if active_diff_notes.empty?
+    paths = active_diff_discussions.flat_map { |n| n.diff_file.paths }.uniq
 
-    paths = active_diff_notes.flat_map { |n| n.diff_file.paths }.uniq
-
-    service = Notes::DiffPositionUpdateService.new(
+    service = Discussions::UpdateDiffPositionService.new(
       self.project,
       current_user,
       old_diff_refs: old_diff_refs,
@@ -943,11 +942,8 @@ class MergeRequest < ActiveRecord::Base
       paths: paths
     )
 
-    transaction do
-      active_diff_notes.each do |note|
-        service.execute(note)
-        Gitlab::Timeless.timeless(note, &:save)
-      end
+    active_diff_discussions.each do |discussion|
+      service.execute(discussion)
     end
   end
 

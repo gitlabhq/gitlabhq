@@ -56,12 +56,12 @@ module ButtonHelper
 
     content_tag (append_link ? :a : :span), protocol,
       class: klass,
-      href: (project.http_url_to_repo(current_user) if append_link),
+      href: (project.http_url_to_repo if append_link),
       data: {
         html: true,
         placement: placement,
         container: 'body',
-        title: "Set a password on your account<br>to pull or push via #{protocol}",
+        title: _("Set a password on your account to pull or push via %{protocol}") % { protocol: protocol },
         primary_url: (geo_primary_http_url_to_repo(project) if Gitlab::Geo.secondary?)
       }
   end
@@ -77,7 +77,7 @@ module ButtonHelper
         html: true,
         placement: placement,
         container: 'body',
-        title: 'Add an SSH key to your profile<br>to pull or push via SSH.'
+        title: _('Add an SSH key to your profile to pull or push via SSH.')
       }
   end
 

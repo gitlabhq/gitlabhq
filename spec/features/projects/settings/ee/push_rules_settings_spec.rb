@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Project settings > [EE] repository', feature: true do
   include Select2Helper
-  
+
   let(:user) { create(:user) }
   let(:project) { create(:project_empty_repo) }
 
@@ -41,7 +41,7 @@ describe 'Project settings > [EE] repository', feature: true do
     end
 
     it 'sets mirror user' do
-      page.within('.edit_project') do
+      page.within('.project-mirror-settings') do
         select2(user2.id, from: '#project_mirror_user_id')
 
         click_button('Save changes')

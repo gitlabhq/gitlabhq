@@ -7,7 +7,15 @@ class EnsureProjectMirrorData < ActiveRecord::Migration
     return unless Gitlab::Database.postgresql?
 
     execute <<-SQL
-      INSERT INTO project_mirror_data
+      INSERT INTO project_mirror_data (
+        project_id,
+        retry_count,
+        last_update_started_at,
+        last_update_scheduled_at,
+        next_execution_timestamp,
+        created_at,
+        updated_at
+      )
       SELECT id AS project_id,
         0 AS retry_count,
         CAST(NULL AS TIMESTAMP) AS last_update_started_at,

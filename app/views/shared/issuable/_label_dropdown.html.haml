@@ -11,6 +11,8 @@
 - dropdown_title = local_assigns.fetch(:dropdown_title, "Filter by label")
 - dropdown_data = {toggle: 'dropdown', field_name: "label_name[]", show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:full_path), project_path: @project.try(:path), labels: labels_filter_path, default_label: "Labels"}
 - dropdown_data.merge!(data_options)
+- label_name = local_assigns.fetch(:label_name, "Labels")
+- no_default_styles = local_assigns.fetch(:no_default_styles, false)
 - classes << 'js-extra-options' if extra_options
 - classes << 'js-filter-submit' if filter_submit
 
@@ -20,8 +22,9 @@
 
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{ class: classes.join(' '), type: "button", data: dropdown_data }
-    %span.dropdown-toggle-text{ class: ("is-default" if selected.nil? || selected.empty?) }
-      = multi_label_name(selected, "Labels")
+    - apply_is_default_styles = (selected.nil? || selected.empty?) && !no_default_styles
+    %span.dropdown-toggle-text{ class: ("is-default" if apply_is_default_styles) }
+      = multi_label_name(selected, label_name)
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     = render partial: "shared/issuable/label_page_default", locals: { title: dropdown_title, show_footer: show_footer, show_create: show_create }

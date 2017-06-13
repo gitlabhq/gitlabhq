@@ -23,8 +23,8 @@ describe AutocompleteController do
         let(:body) { JSON.parse(response.body) }
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 2 }
-        it { expect(body.map { |u| u["username"] }).to match_array([user.username, user2.username]) }
+        it { expect(body.size).to eq 3 }
+        it { expect(body.map { |u| u["username"] }).to match_array([project.owner.username, user.username, user2.username]) }
       end
 
       describe 'GET #users with unknown project' do
@@ -43,8 +43,8 @@ describe AutocompleteController do
         let(:body) { JSON.parse(response.body) }
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
-        it { expect(body.first["username"]).to eq user.username }
+        it { expect(body.size).to eq 2 }
+        it { expect(body.map { |u| u["username"] }).to match_array([project.owner.username, user.username]) }
       end
 
       describe "GET #users that can push code" do
@@ -58,8 +58,8 @@ describe AutocompleteController do
         let(:body) { JSON.parse(response.body) }
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 2 }
-        it { expect(body.map { |user| user["username"] }).to match_array([user.username, user2.username]) }
+        it { expect(body.size).to eq 3 }
+        it { expect(body.map { |user| user["username"] }).to match_array([project.owner.username, user.username, user2.username]) }
       end
 
       describe "GET #users that can push to protected branches, including the current user" do
@@ -70,8 +70,8 @@ describe AutocompleteController do
         let(:body) { JSON.parse(response.body) }
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
-        it { expect(body.first["username"]).to eq user.username }
+        it { expect(body.size).to eq 2 }
+        it { expect(body.map { |u| u["username"] }).to match_array([project.owner.username, user.username]) }
       end
     end
 
@@ -120,8 +120,8 @@ describe AutocompleteController do
         end
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 2 }
-        it { expect(body.map { |u| u['username'] }).to match_array([user.username, non_member.username]) }
+        it { expect(body.size).to eq 3 }
+        it { expect(body.map { |u| u['username'] }).to include(user.username, non_member.username) }
       end
     end
 
@@ -162,7 +162,7 @@ describe AutocompleteController do
         end
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
+        it { expect(body.size).to eq 2 }
       end
 
       describe 'GET #users with project' do
@@ -210,22 +210,32 @@ describe AutocompleteController do
     end
 
     context 'author of issuable included' do
-      before do
-        sign_in(user)
-      end
-
       let(:body) { JSON.parse(response.body) }
 
-      it 'includes the author' do
-        get(:users, author_id: non_member.id)
+      context 'authenticated' do
+        before do
+          sign_in(user)
+        end
 
-        expect(body.first["username"]).to eq non_member.username
+        it 'includes the author' do
+          get(:users, author_id: non_member.id)
+
+          expect(body.first["username"]).to eq non_member.username
+        end
+
+        it 'rejects non existent user ids' do
+          get(:users, author_id: 99999)
+
+          expect(body.collect { |u| u['id'] }).not_to include(99999)
+        end
       end
 
-      it 'rejects non existent user ids' do
-        get(:users, author_id: 99999)
+      context 'without authenticating' do
+        it 'returns empty result' do
+          get(:users, author_id: non_member.id)
 
-        expect(body.collect { |u| u['id'] }).not_to include(99999)
+          expect(body).to be_empty
+        end
       end
     end
 

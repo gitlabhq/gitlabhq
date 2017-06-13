@@ -36,7 +36,7 @@ describe Projects::ProjectMembersController do
       before { project.team << [user, :master] }
 
       it 'adds user to members' do
-        expect_any_instance_of(Members::CreateService).to receive(:execute).and_return(true)
+        expect_any_instance_of(Members::CreateService).to receive(:execute).and_return(status: :success)
 
         post :create, namespace_id: project.namespace,
                       project_id: project,
@@ -48,14 +48,14 @@ describe Projects::ProjectMembersController do
       end
 
       it 'adds no user to members' do
-        expect_any_instance_of(Members::CreateService).to receive(:execute).and_return(false)
+        expect_any_instance_of(Members::CreateService).to receive(:execute).and_return(status: :failure, message: 'Message')
 
         post :create, namespace_id: project.namespace,
                       project_id: project,
                       user_ids: '',
                       access_level: Gitlab::Access::GUEST
 
-        expect(response).to set_flash.to 'No users specified.'
+        expect(response).to set_flash.to 'Message'
         expect(response).to redirect_to(namespace_project_settings_members_path(project.namespace, project))
       end
     end

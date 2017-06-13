@@ -1,18 +1,4 @@
-.page-content-header
-  .header-main-content
-    = render 'ci/status/badge', status: @pipeline.detailed_status(current_user), title: @pipeline.status_title
-    %strong Pipeline ##{@pipeline.id}
-    triggered #{time_ago_with_tooltip(@pipeline.created_at)}
-    - if @pipeline.user
-      by
-      = user_avatar(user: @pipeline.user, size: 24)
-      = user_link(@pipeline.user)
-  .header-action-buttons
-    - if can?(current_user, :update_pipeline, @pipeline.project)
-      - if @pipeline.retryable?
-        = link_to "Retry", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'js-retry-button btn btn-inverted-secondary', method: :post
-      - if @pipeline.cancelable?
-        = link_to "Cancel running", cancel_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+#js-pipeline-header-vue.pipeline-header-container
 
 - if @commit
   .commit-box

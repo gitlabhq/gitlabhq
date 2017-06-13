@@ -8,6 +8,7 @@ module Projects
         @merge_access_level.destroy
 
         redirect_to namespace_project_protected_branch_path(@project.namespace, @project, @protected_branch),
+                    status: 302,
                     notice: "Successfully deleted. #{@merge_access_level.humanize} will not be able to merge into this protected branch."
       end
     end

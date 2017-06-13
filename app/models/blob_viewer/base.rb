@@ -2,14 +2,14 @@ module BlobViewer
   class Base
     PARTIAL_PATH_PREFIX = 'projects/blob/viewers'.freeze
 
-    class_attribute :partial_name, :loading_partial_name, :type, :extensions, :file_types, :load_async, :binary, :switcher_icon, :switcher_title, :overridable_max_size, :max_size
+    class_attribute :partial_name, :loading_partial_name, :type, :extensions, :file_types, :load_async, :binary, :switcher_icon, :switcher_title, :collapse_limit, :size_limit
 
     self.loading_partial_name = 'loading'
 
     delegate :partial_path, :loading_partial_path, :rich?, :simple?, :text?, :binary?, to: :class
 
     attr_reader :blob
-    attr_accessor :override_max_size
+    attr_accessor :expanded
 
     delegate :project, to: :blob
 
@@ -61,24 +61,16 @@ module BlobViewer
       self.class.load_async? && render_error.nil?
     end
 
-    def exceeds_overridable_max_size?
-      overridable_max_size && blob.raw_size > overridable_max_size
-    end
+    def collapsed?
+      return @collapsed if defined?(@collapsed)
 
-    def exceeds_max_size?
-      max_size && blob.raw_size > max_size
-    end
-
-    def can_override_max_size?
-      exceeds_overridable_max_size? && !exceeds_max_size?
+      @collapsed = !expanded && collapse_limit && blob.raw_size > collapse_limit
     end
 
     def too_large?
-      if override_max_size
-        exceeds_max_size?
-      else
-        exceeds_overridable_max_size?
-      end
+      return @too_large if defined?(@too_large)
+
+      @too_large = size_limit && blob.raw_size > size_limit
     end
 
     # This method is used on the server side to check whether we can attempt to
@@ -95,6 +87,8 @@ module BlobViewer
     def render_error
       if too_large?
         :too_large
+      elsif collapsed?
+        :collapsed
       end
     end
 

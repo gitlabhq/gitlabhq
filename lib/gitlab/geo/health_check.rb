@@ -3,7 +3,8 @@ module Gitlab
     class HealthCheck
       def self.perform_checks
         return '' unless Gitlab::Geo.secondary?
-        return 'The Geo database configuration file is missing.' unless Gitlab::Geo.configured?
+        return 'The Geo secondary role is disabled.' unless Gitlab::Geo.secondary_role_enabled?
+        return 'The Geo database configuration file is missing.' unless self.geo_database_configured?
         return 'The Geo node has a database that is not configured for streaming replication with the primary node.' unless self.database_secondary?
 
         database_version  = self.get_database_version.to_i
@@ -56,6 +57,10 @@ module Gitlab
         ActiveRecord::Base.connection.execute('SELECT pg_is_in_recovery()')
           .first
           .fetch('pg_is_in_recovery') == 't'
+      end
+
+      def self.geo_database_configured?
+        Rails.configuration.respond_to?(:geo_database)
       end
     end
   end

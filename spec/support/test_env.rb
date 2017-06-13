@@ -41,7 +41,7 @@ module TestEnv
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
-    'add-ipython-files'                  => '6d85bb6',
+    'add-ipython-files'                  => '93ee732',
     'add-pdf-file'                       => 'e774ebd',
     'squash-large-files'                 => '54cec52'
   }.freeze
@@ -55,6 +55,8 @@ module TestEnv
     'remove-submodule'           => '2a33e0c',
     'conflict-resolvable-fork'   => '404fa3f'
   }.freeze
+
+  TMP_TEST_PATH = Rails.root.join('tmp', 'tests', '**')
 
   # Test environment
   #
@@ -100,9 +102,7 @@ module TestEnv
   #
   # Keeps gitlab-shell and gitlab-test
   def clean_test_path
-    tmp_test_path = Rails.root.join('tmp', 'tests', '**')
-
-    Dir[tmp_test_path].each do |entry|
+    Dir[TMP_TEST_PATH].each do |entry|
       unless File.basename(entry) =~ /\A(gitaly|gitlab-(shell|test|test_bare|test-fork|test-fork_bare))\z/
         FileUtils.rm_rf(entry)
       end
@@ -111,6 +111,14 @@ module TestEnv
     FileUtils.mkdir_p(repos_path)
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)
+  end
+
+  def clean_gitlab_test_path
+    Dir[TMP_TEST_PATH].each do |entry|
+      if File.basename(entry) =~ /\A(gitlab-(test|test_bare|test-fork|test-fork_bare))\z/
+        FileUtils.rm_rf(entry)
+      end
+    end
   end
 
   def setup_gitlab_shell
@@ -251,7 +259,7 @@ module TestEnv
 
       # Before we used Git clone's --mirror option, bare repos could end up
       # with missing refs, clearing them and retrying should fix the issue.
-      cleanup && init unless reset.call
+      cleanup && clean_gitlab_test_path && init unless reset.call
     end
   end
 

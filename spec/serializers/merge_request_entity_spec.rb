@@ -26,7 +26,7 @@ describe MergeRequestEntity do
     pipeline = build_stubbed(:ci_pipeline)
     allow(resource).to receive(:head_pipeline).and_return(pipeline)
 
-    pipeline_payload = PipelineEntity
+    pipeline_payload = PipelineDetailsEntity
       .represent(pipeline, request: req)
       .as_json
 

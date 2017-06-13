@@ -69,7 +69,7 @@ export default {
       </span>
     </button>
 
-    <ul class="dropdown-menu dropdown-menu-align-right">
+    <ul class="dropdown-menu">
       <li v-for="action in actions">
         <button
           type="button"

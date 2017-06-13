@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::MergeRequestsController do
   let(:project) { create(:project) }
-  let(:user)    { create(:user) }
+  let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do
     create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) do |mr|
@@ -12,7 +12,6 @@ describe Projects::MergeRequestsController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
   end
 
   describe 'GET new' do
@@ -283,14 +282,14 @@ describe Projects::MergeRequestsController do
         end
       end
 
-      context 'number of queries' do
+      context 'number of queries', :request_store do
         it 'verifies number of queries' do
           # pre-create objects
           merge_request
 
           recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
 
-          expect(recorded.count).to be_within(5).of(95)
+          expect(recorded.count).to be_within(5).of(30)
           expect(recorded.cached_count).to eq(0)
         end
       end
@@ -457,6 +456,12 @@ describe Projects::MergeRequestsController do
       it_behaves_like 'update invalid issuable', MergeRequest
     end
 
+    context 'when the merge request requires approval' do
+      before { project.update_attributes(approvals_before_merge: 1) }
+
+      it_behaves_like 'update invalid issuable', MergeRequest
+    end
+
     context 'the approvals_before_merge param' do
       before { project.update_attributes(approvals_before_merge: 2) }
 
@@ -575,6 +580,8 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when user cannot access' do
+      let(:user) { create(:user) }
+
       before do
         project.add_reporter(user)
         xhr :post, :merge, base_params
@@ -748,6 +755,8 @@ describe Projects::MergeRequestsController do
   end
 
   describe "DELETE destroy" do
+    let(:user) { create(:user) }
+
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 

@@ -10,6 +10,8 @@ class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicatio
       Doorkeeper::AccessToken.revoke_all_for(params[:id], current_resource_owner)
     end
 
-    redirect_to applications_profile_url, notice: I18n.t(:notice, scope: [:doorkeeper, :flash, :authorized_applications, :destroy])
+    redirect_to applications_profile_url,
+                status: 302,
+                notice: I18n.t(:notice, scope: [:doorkeeper, :flash, :authorized_applications, :destroy])
   end
 end

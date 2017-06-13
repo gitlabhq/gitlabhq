@@ -1,7 +1,7 @@
 module Gitlab
   module Git
     class Ref
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
       # Branch or tag name
       # without "refs/tags|heads" prefix

@@ -36,4 +36,8 @@ class DeploymentService < Service
   def rollout_status(environment)
     raise NotImplementedError
   end
+
+  def can_test?
+    false
+  end
 end

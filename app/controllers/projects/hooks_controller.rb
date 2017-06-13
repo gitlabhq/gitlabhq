@@ -47,7 +47,7 @@ class Projects::HooksController < Projects::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
+    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project), status: 302
   end
 
   private

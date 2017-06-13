@@ -60,7 +60,7 @@ class Projects::BoardsController < Projects::ApplicationController
     service.execute(@board)
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_boards_path(@project.namespace, @project) }
+      format.html { redirect_to namespace_project_boards_path(@project.namespace, @project), status: 302 }
     end
   end
 

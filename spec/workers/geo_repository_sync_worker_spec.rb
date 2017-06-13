@@ -52,8 +52,8 @@ describe GeoRepositorySyncWorker do
       subject.perform
     end
 
-    it 'does not perform Geo::RepositorySyncService when tracking DB is not available' do
-      allow(Rails.configuration).to receive(:respond_to?).with(:geo_database) { false }
+    it 'does not perform Geo::RepositorySyncService when secondary role is disabled' do
+      allow(Gitlab::Geo).to receive(:secondary_role_enabled?) { false }
 
       expect(Geo::RepositorySyncService).not_to receive(:new)
 

@@ -95,6 +95,7 @@ merge_request_diff:
 pipelines:
 - project
 - user
+- stages
 - statuses
 - builds
 - trigger_requests
@@ -108,9 +109,19 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
+- source_pipeline
+- sourced_pipelines
+- triggered_by_pipeline
+- triggered_pipelines
+stages:
+- project
+- pipeline
+- statuses
+- builds
 statuses:
 - project
 - pipeline
+- stage
 - user
 - auto_canceled_by
 variables:
@@ -263,6 +274,8 @@ project:
 - container_repositories
 - uploads
 - mirror_data
+- source_pipelines
+- sourced_pipelines
 award_emoji:
 - awardable
 - user

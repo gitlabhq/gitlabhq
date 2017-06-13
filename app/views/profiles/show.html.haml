@@ -49,10 +49,10 @@
 
       .form-group
         = f.label :email, class: "label-light"
-        - if @user.ldap_user? && @user.ldap_email?
+        - if @user.external_email?
           = f.text_field :email, class: "form-control", required: true, readonly: true
           %span.help-block.light
-            Your email address was automatically set based on the LDAP server.
+            Your email address was automatically set based on your #{email_provider_label} account.
         - else
           - if @user.temp_oauth_email?
             = f.text_field :email, class: "form-control", required: true, value: nil

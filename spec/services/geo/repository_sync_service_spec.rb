@@ -2,8 +2,18 @@ require 'spec_helper'
 
 describe Geo::RepositorySyncService, services: true do
   let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
+  let(:lease) { double(try_obtain: true) }
 
   subject { described_class.new(project.id) }
+
+  before do
+    allow(Gitlab::ExclusiveLease).to receive(:new)
+      .with(subject.__send__(:lease_key), anything)
+      .and_return(lease)
+
+    allow_any_instance_of(Repository).to receive(:fetch_geo_mirror)
+      .and_return(true)
+  end
 
   describe '#execute' do
     context 'when repository is empty' do
@@ -22,8 +32,6 @@ describe Geo::RepositorySyncService, services: true do
       end
 
       it 'expires repository caches' do
-        allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { true }
-
         expect_any_instance_of(Repository).to receive(:expire_all_method_caches).once
         expect_any_instance_of(Repository).to receive(:expire_branch_cache).once
         expect_any_instance_of(Repository).to receive(:expire_content_cache).once
@@ -32,7 +40,16 @@ describe Geo::RepositorySyncService, services: true do
       end
 
       it 'releases lease' do
-        expect(Gitlab::ExclusiveLease).to receive(:cancel).once.and_call_original
+        expect(Gitlab::ExclusiveLease).to receive(:cancel).once.with(
+          subject.__send__(:lease_key), anything).and_call_original
+
+        subject.execute
+      end
+
+      it 'does not fetch project repositories if cannot obtain a lease' do
+        allow(lease).to receive(:try_obtain) { false }
+
+        expect_any_instance_of(Repository).not_to receive(:fetch_geo_mirror)
 
         subject.execute
       end
@@ -43,8 +60,6 @@ describe Geo::RepositorySyncService, services: true do
         end
 
         it 'stores last_repository_successful_sync_at when succeed' do
-          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { true }
-
           subject.execute
 
           registry = Geo::ProjectRegistry.find_by(project_id: project.id)
@@ -85,8 +100,6 @@ describe Geo::RepositorySyncService, services: true do
         end
 
         it 'stores last_repository_successful_sync_at when succeed' do
-          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { true }
-
           subject.execute
 
           registry = Geo::ProjectRegistry.find_by(project_id: project.id)
@@ -136,8 +149,6 @@ describe Geo::RepositorySyncService, services: true do
         end
 
         it 'updates registry when succeed' do
-          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { true }
-
           subject.execute
 
           registry.reload
@@ -183,10 +194,6 @@ describe Geo::RepositorySyncService, services: true do
       end
 
       context 'tracking database' do
-        before do
-          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { true }
-        end
-
         it 'does not create a new registry' do
           expect { subject.execute }.not_to change(Geo::ProjectRegistry, :count)
         end

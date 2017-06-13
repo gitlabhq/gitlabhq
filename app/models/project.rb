@@ -187,6 +187,10 @@ class Project < ActiveRecord::Base
   has_many :deployments, dependent: :destroy
   has_many :pipeline_schedules, dependent: :destroy, class_name: 'Ci::PipelineSchedule'
 
+  has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_project_id
+
+  has_many :source_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :project_id
+
   has_many :path_locks, dependent: :destroy
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
@@ -262,6 +266,7 @@ class Project < ActiveRecord::Base
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
+  scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :non_archived, -> { where(archived: false) }
   scope :mirror, -> { where(mirror: true) }
@@ -292,6 +297,9 @@ class Project < ActiveRecord::Base
 
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
+  scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
+
+  # EE
   scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
@@ -428,10 +436,6 @@ class Project < ActiveRecord::Base
       union = Gitlab::SQL::Union.new([projects, namespaces])
 
       where("projects.id IN (#{union.to_sql})")
-    end
-
-    def search_by_visibility(level)
-      where(visibility_level: Gitlab::VisibilityLevel.string_options[level])
     end
 
     def search_by_title(query)
@@ -1032,10 +1036,8 @@ class Project < ActiveRecord::Base
     url_to_repo
   end
 
-  def http_url_to_repo(user = nil)
-    credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
-
-    Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
+  def http_url_to_repo
+    "#{web_url}.git"
   end
 
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
@@ -1255,11 +1257,6 @@ class Project < ActiveRecord::Base
     return unless sha
 
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
-  end
-
-  def ensure_pipeline(ref, sha, current_user = nil)
-    pipeline_for(ref, sha) ||
-      pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci
@@ -1486,6 +1483,7 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: path_with_namespace.parameterize, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
@@ -1505,10 +1503,17 @@ class Project < ActiveRecord::Base
     variables
   end
 
-  def secret_variables
-    variables.map do |variable|
-      { key: variable.key, value: variable.value, public: false }
+  def secret_variables_for(ref)
+    if protected_for?(ref)
+      variables
+    else
+      variables.unprotected
     end
+  end
+
+  def protected_for?(ref)
+    ProtectedBranch.protected?(self, ref) ||
+      ProtectedTag.protected?(self, ref)
   end
 
   def deployment_variables
