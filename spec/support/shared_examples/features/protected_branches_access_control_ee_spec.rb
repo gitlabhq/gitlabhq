@@ -12,20 +12,8 @@ shared_examples "protected branches > access control > EE" do
       groups.each { |group| project.project_group_links.create(group: group, group_access: Gitlab::Access::DEVELOPER) }
     end
 
-    def access_type_ids(git_operation)
+    def last_access_levels(git_operation)
       ProtectedBranch.last.public_send("#{git_operation}_access_levels")
-    end
-
-    def access_levels(access_level_types)
-      access_level_types.map(&:access_level)
-    end
-
-    def user_ids(access_level_types)
-      access_level_types.map(&:user_id)
-    end
-
-    def group_ids(access_level_types)
-      access_level_types.map(&:group_id)
     end
 
     it "allows creating protected branches that roles, users, and groups can #{git_operation} to" do
@@ -42,10 +30,10 @@ shared_examples "protected branches > access control > EE" do
       within(".protected-branches-list") { expect(page).to have_content('master') }
       expect(ProtectedBranch.count).to eq(1)
 
-      access_level_types = access_type_ids(git_operation)
-      roles.each { |(access_type_id, _)| expect(access_levels(access_level_types)).to include(access_type_id) }
-      users.each { |user| expect(user_ids(access_level_types)).to include(user.id) }
-      groups.each { |group| expect(group_ids(access_level_types)).to include(group.id) }
+      access_levels = last_access_levels(git_operation)
+      roles.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
+      users.each { |user| expect(access_levels.map(&:user_id)).to include(user.id) }
+      groups.each { |group| expect(access_levels.map(&:group_id)).to include(group.id) }
     end
 
     it "allows updating protected branches so that roles and users can #{git_operation} to it" do
@@ -64,10 +52,10 @@ shared_examples "protected branches > access control > EE" do
 
       expect(ProtectedBranch.count).to eq(1)
 
-      access_level_types = access_type_ids(git_operation)
-      roles.each { |(access_type_id, _)| expect(access_levels(access_level_types)).to include(access_type_id) }
-      users.each { |user| expect(user_ids(access_level_types)).to include(user.id) }
-      groups.each { |group| expect(group_ids(access_level_types)).to include(group.id) }
+      access_levels = last_access_levels(git_operation)
+      roles.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
+      users.each { |user| expect(access_levels.map(&:user_id)).to include(user.id) }
+      groups.each { |group| expect(access_levels.map(&:group_id)).to include(group.id) }
     end
 
     it "allows updating protected branches so that roles and users cannot #{git_operation} to it" do
@@ -89,8 +77,8 @@ shared_examples "protected branches > access control > EE" do
 
       expect(ProtectedBranch.count).to eq(1)
 
-      access_level_types = access_type_ids(git_operation)
-      expect(access_type_ids(access_level_types)).to be_empty
+      access_levels = last_access_levels(git_operation)
+      expect(access_levels).to be_empty
     end
 
     it "prepends selected users that can #{git_operation} to" do
@@ -129,9 +117,9 @@ shared_examples "protected branches > access control > EE" do
 
       expect(ProtectedBranch.count).to eq(1)
 
-      access_level_types = access_type_ids(git_operation)
-      roles.each { |(access_type_id, _)| expect(access_levels(access_level_types)).to include(access_type_id) }
-      expect(user_ids(git_operation)).to include(users.last.id)
+      access_levels = last_access_levels(git_operation)
+      roles.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
+      expect(access_levels.map(&:user_id)).to include(users.last.id)
     end
   end
 
@@ -154,11 +142,11 @@ shared_examples "protected branches > access control > EE" do
 
       wait_for_requests
 
-      access_level_types = access_type_ids('push')
+      access_levels = last_access_levels('push')
       roles.each do |(access_type_id, _)|
-        expect(access_levels(access_level_types)).not_to include(access_type_id)
+        expect(access_levels.map(&:access_level)).not_to include(access_type_id)
       end
-      expect(access_levels(access_level_types)).to include(0)
+      expect(access_levels.map(&:access_level)).to include(0)
     end
   end
 
@@ -172,11 +160,11 @@ shared_examples "protected branches > access control > EE" do
       click_on "Protect"
       wait_for_requests
 
-      access_level_types = access_type_ids('push')
+      access_levels = last_access_levels('push')
       roles.each do |(access_type_id, _)|
-        expect(access_levels(access_level_types)).not_to include(access_type_id)
+        expect(access_levels.map(&:access_level)).not_to include(access_type_id)
       end
-      expect(access_levels(access_level_types)).to include(0)
+      expect(access_levels.map(&:access_level)).to include(0)
     end
   end
 end
