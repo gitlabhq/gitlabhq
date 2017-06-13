@@ -690,6 +690,7 @@ multipart-post,2.0.0,MIT
 mustermann,0.4.0,MIT
 mustermann-grape,0.4.0,MIT
 mute-stream,0.0.5,ISC
+mysql2,0.3.20,MIT
 name-all-modules-plugin,1.0.1,MIT
 nan,2.5.1,MIT
 natural-compare,1.4.0,MIT
