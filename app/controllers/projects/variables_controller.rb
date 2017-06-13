@@ -14,7 +14,7 @@ class Projects::VariablesController < Projects::ApplicationController
   def update
     @variable = @project.variables.find(params[:id])
 
-    if @variable.update_attributes(project_params)
+    if @variable.update_attributes(variable_params)
       redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variable was successfully updated.'
     else
       render action: "show"
@@ -22,7 +22,7 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def create
-    @variable = Ci::Variable.new(project_params)
+    @variable = Ci::Variable.new(variable_params)
 
     if @variable.valid? && @project.variables << @variable
       flash[:notice] = 'Variables were successfully updated.'
@@ -43,8 +43,16 @@ class Projects::VariablesController < Projects::ApplicationController
 
   private
 
-  def project_params
+  def variable_params
     params.require(:variable)
-      .permit([:id, :key, :value, :protected, :_destroy])
+      .permit(variable_params_ce.concat(variable_params_ee))
+  end
+
+  def variable_params_ce
+    %i[id key value protected _destroy]
+  end
+
+  def variable_params_ee
+    %i[scope]
   end
 end

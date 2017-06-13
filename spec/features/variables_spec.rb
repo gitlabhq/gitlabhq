@@ -55,6 +55,20 @@ describe 'Project variables', js: true do
     end
   end
 
+  # EE
+  it 'adds new variable with a special scope' do
+    fill_in('variable_key', with: 'key')
+    fill_in('variable_value', with: 'value')
+    fill_in('variable_scope', with: 'review/*')
+    click_button('Add new variable')
+
+    expect(page).to have_content('Variables were successfully updated.')
+    page.within('.variables-table') do
+      expect(page).to have_content('key')
+      expect(page).to have_content('review/*')
+    end
+  end
+
   it 'reveals and hides new variable' do
     fill_in('variable_key', with: 'key')
     fill_in('variable_value', with: 'key value')
@@ -141,5 +155,19 @@ describe 'Project variables', js: true do
 
     expect(page).to have_content('Variable was successfully updated.')
     expect(project.variables(true).first).not_to be_protected
+  end
+
+  # EE
+  it 'edits variable to be another scope' do
+    page.within('.variables-table') do
+      find('.btn-variable-edit').click
+    end
+
+    expect(page).to have_content('Update variable')
+    fill_in('variable_scope', with: 'review/*')
+    click_button('Save variable')
+
+    expect(page).to have_content('Variable was successfully updated.')
+    expect(project.variables(true).first.scope).to eq('review/*')
   end
 end
