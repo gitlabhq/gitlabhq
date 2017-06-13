@@ -15,11 +15,11 @@
         .timeline-content.timeline-content-form
           = render "shared/notes/form", view: diff_view, supports_autocomplete: autocomplete
 - elsif !current_user
-  .disabled-comment.text-center.prepend-top-default
+  .disabled-comment.text-center.prepend-top-default.js-disabled-comment
     Please
-    = link_to "register", new_session_path(:user, redirect_to_referer: 'yes')
+    = link_to "register", new_session_path(:user, redirect_to_referer: 'yes'), class: 'js-register-link'
     or
-    = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes')
+    = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'js-sign-in-link'
     to comment
 
 :javascript

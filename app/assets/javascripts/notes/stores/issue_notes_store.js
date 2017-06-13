@@ -7,11 +7,20 @@ const state = {
   notes: [],
 };
 
-const getters = {};
+const getters = {
+  notes(storeState) {
+    return storeState.notes;
+  },
+};
 
 const mutations = {
-  setNotes(vmState, notes) {
-    vmState.notes = notes;
+  setNotes(storeState, notes) {
+    storeState.notes = notes;
+  },
+  toggleDiscussion(storeState, { discussionId }) {
+    const [ discussion ] = storeState.notes.filter((note) => note.id === discussionId);
+
+    discussion.expanded = !discussion.expanded;
   },
 };
 
@@ -24,7 +33,7 @@ const actions = {
         context.commit('setNotes', res);
       })
       .catch(() => {
-        new Flash('Something went while fetching issue comments. Please try again.'); // eslint-disable-line
+        new Flash('Something went wrong while fetching issue comments. Please try again.'); // eslint-disable-line
       });
   },
 };
