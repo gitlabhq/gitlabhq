@@ -1,2 +1,12 @@
 .nothing-here-block
   File added
+
+  %pre
+    :preserve
+      Content changed: #{viewer.diff_file.content_changed?.inspect}
+      Raw binary: #{viewer.diff_file.raw_binary?.inspect}
+      Old blob raw binary: #{viewer.diff_file.old_blob&.raw_binary?.inspect}
+      New blob raw binary: #{viewer.diff_file.new_blob&.raw_binary?.inspect}
+      Collapsed: #{viewer.diff_file.collapsed?.inspect}
+      Too large: #{viewer.diff_file.too_large?.inspect}
+      Line count: #{viewer.diff_file.line_count.inspect}
