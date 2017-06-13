@@ -106,6 +106,7 @@ module API
     mount ::API::Geo
     mount ::API::Internal
     mount ::API::Issues
+    mount ::API::IssueLinks
     mount ::API::Jobs
     mount ::API::Keys
     mount ::API::Labels

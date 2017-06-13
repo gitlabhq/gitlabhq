@@ -8,6 +8,8 @@ module IssueLinks
     end
 
     def execute
+      return error('Unauthorized', 401) unless permission_to_remove_relation?
+
       remove_relation
       create_notes
 
@@ -23,6 +25,11 @@ module IssueLinks
     def create_notes
       SystemNoteService.unrelate_issue(@issue, @referenced_issue, current_user)
       SystemNoteService.unrelate_issue(@referenced_issue, @issue, current_user)
+    end
+
+    def permission_to_remove_relation?
+      can?(current_user, :admin_issue_link, @issue) &&
+        can?(current_user, :admin_issue_link, @referenced_issue)
     end
   end
 end

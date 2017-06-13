@@ -320,6 +320,16 @@ module API
       end
     end
 
+    class RelatedIssue < Issue
+      expose :issue_link_id
+    end
+
+    class IssueLink < Grape::Entity
+      expose :id
+      expose :source_id, as: :source_issue_id
+      expose :target_id, as: :target_issue_id
+    end
+
     class IssuableTimeStats < Grape::Entity
       expose :time_estimate
       expose :total_time_spent
