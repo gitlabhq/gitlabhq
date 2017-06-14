@@ -25,6 +25,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    isSubmitting: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   data() {
@@ -40,7 +45,7 @@ export default {
 
   computed: {
     isSubmitButtonDisabled() {
-      return this.pendingReferences.length === 0;
+      return this.pendingReferences.length === 0 || this.isSubmitting;
     },
   },
 

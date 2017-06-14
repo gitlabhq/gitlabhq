@@ -59,6 +59,7 @@ export default {
     return {
       state: this.store.state,
       isFetching: false,
+      isSubmitting: false,
       isFormVisible: false,
       inputValue: '',
     };
@@ -103,6 +104,7 @@ export default {
     },
     onPendingFormSubmit() {
       if (this.state.pendingReferences.length > 0) {
+        this.isSubmitting = true;
         this.service.addRelatedIssues(this.state.pendingReferences)
           .then(res => res.json())
           .then((data) => {
@@ -110,10 +112,15 @@ export default {
             this.store.setPendingReferences([]);
             this.store.setRelatedIssues(data.issues);
 
+            this.isSubmitting = false;
             // Close the form on submission
             this.isFormVisible = false;
           })
-          .catch(res => new Flash(res.data.message || 'An error occurred while submitting related issues.'));
+          .catch((res) => {
+            this.isSubmitting = false;
+            // eslint-disable-next-line no-new
+            new Flash(res.data.message || 'An error occurred while submitting related issues.');
+          });
       }
     },
     onPendingFormCancel() {
@@ -197,7 +204,8 @@ export default {
 <template>
   <related-issues-block
     :help-path="helpPath"
-    :isFetching="isFetching"
+    :is-fetching="isFetching"
+    :is-submitting="isSubmitting"
     :related-issues="state.relatedIssues"
     :can-add-related-issues="canAddRelatedIssues"
     :pending-references="state.pendingReferences"

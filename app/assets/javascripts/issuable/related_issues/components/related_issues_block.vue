@@ -13,6 +13,11 @@ export default {
       required: false,
       default: false,
     },
+    isSubmitting: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     relatedIssues: {
       type: Array,
       required: false,
@@ -139,6 +144,7 @@ export default {
           'related-issues-add-related-issues-form-with-break': hasRelatedIssues
         }">
         <add-issuable-form
+          :is-submitting="isSubmitting"
           :input-value="inputValue"
           :pending-references="pendingReferences"
           add-button-label="Add related issues"
