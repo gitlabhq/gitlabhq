@@ -54,26 +54,34 @@ export default {
       const TOOLTIP_NAME_COUNT = amIAwarded ? 9 : 10;
       let awardList = awardsList;
 
+      // Filter myself from list if I am awarded.
       if (amIAwarded) {
         awardList = awardList.filter(award => award.user.id !== myUserId);
       }
 
+      // Get only 9-10 usernames to show in tooltip text.
       const namesToShow = awardList.slice(0, TOOLTIP_NAME_COUNT).map(award => award.user.name);
+
+      // Get the remaining list to use in `and x more` text.
       const remainingAwardList = awardList.slice(TOOLTIP_NAME_COUNT, awardList.length);
 
+      // Add myself to the begining of the list so title will start with You.
       if (amIAwarded) {
         namesToShow.unshift('You');
       }
 
       let title = '';
 
+      // We have 10+ awarded user, join them with comma and add `and x more`.
       if (remainingAwardList.length) {
         title = `${namesToShow.join(', ')}, and ${remainingAwardList.length} more.`;
       } else if (namesToShow.length > 1) {
+        // Join all names with comma but not the last one, it will be added with and text.
         title = namesToShow.slice(0, namesToShow.length - 1).join(', ');
+        // If we have more than 2 users we need an extra comma before and text.
         title += namesToShow.length > 2 ? ',' : '';
-        title += ` and ${namesToShow.slice(-1)}`;
-      } else {
+        title += ` and ${namesToShow.slice(-1)}`; // Append and text
+      } else { // We have only 2 users so join them with and.
         title = namesToShow.join(' and ');
       }
 
