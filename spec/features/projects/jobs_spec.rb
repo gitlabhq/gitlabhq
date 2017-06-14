@@ -137,27 +137,27 @@ feature 'Jobs', :feature do
     end
 
     context 'when job is not running', :js do
-      let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
       before do
-        visit namespace_project_job_path(project.namespace, project, build)
+        visit namespace_project_job_path(project.namespace, project, job)
       end
 
       it 'shows retry button' do
         expect(page).to have_link('Retry')
       end
 
-      context 'if build passed' do
+      context 'if job passed' do
         it 'does not show New issue button' do
           expect(page).not_to have_link('New issue')
         end
       end
 
-      context 'if build failed' do
-        let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+      context 'if job failed' do
+        let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
 
         before do
-          visit namespace_project_job_path(namespace, project, build)
+          visit namespace_project_job_path(namespace, project, job)
         end
 
         it 'shows New issue button' do
@@ -165,9 +165,9 @@ feature 'Jobs', :feature do
         end
 
         it 'links to issues/new with the title and description filled in' do
-          button_title = "Build Failed ##{build.id}"
-          build_path = namespace_project_job_path(namespace, project, build)
-          options = { issue: { title: button_title, description: build_path } }
+          button_title = "Build Failed ##{job.id}"
+          job_path = namespace_project_job_path(namespace, project, job)
+          options = { issue: { title: button_title, description: job_path } }
 
           href = new_namespace_project_issue_path(namespace, project, options)
 
@@ -467,7 +467,7 @@ feature 'Jobs', :feature do
             .to receive(:paths)
             .and_return([existing_file])
 
-          visit namespace_project_job_path(namespace, project, build)
+          visit namespace_project_job_path(namespace, project, job)
 
           find('.js-raw-link-controller').click
         end
@@ -485,7 +485,7 @@ feature 'Jobs', :feature do
             .to receive(:paths)
             .and_return([])
 
-          visit namespace_project_job_path(namespace, project, build)
+          visit namespace_project_job_path(namespace, project, job)
         end
 
         it 'sends the right headers' do
