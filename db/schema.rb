@@ -552,6 +552,21 @@ ActiveRecord::Schema.define(version: 20170725145659) do
   add_index "gpg_keys", ["primary_keyid"], name: "index_gpg_keys_on_primary_keyid", using: :btree
   add_index "gpg_keys", ["user_id"], name: "index_gpg_keys_on_user_id", using: :btree
 
+  create_table "gpg_signatures", force: :cascade do |t|
+    t.string "commit_sha"
+    t.integer "project_id"
+    t.integer "gpg_key_id"
+    t.string "gpg_key_primary_keyid"
+    t.boolean "valid_signature"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "gpg_signatures", ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", using: :btree
+  add_index "gpg_signatures", ["gpg_key_id"], name: "index_gpg_signatures_on_gpg_key_id", using: :btree
+  add_index "gpg_signatures", ["gpg_key_primary_keyid"], name: "index_gpg_signatures_on_gpg_key_primary_keyid", using: :btree
+  add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
+
   create_table "identities", force: :cascade do |t|
     t.string "extern_uid"
     t.string "provider"
@@ -1615,6 +1630,8 @@ ActiveRecord::Schema.define(version: 20170725145659) do
   add_foreign_key "events", "projects", name: "fk_0434b48643", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
   add_foreign_key "gpg_keys", "users"
+  add_foreign_key "gpg_signatures", "gpg_keys"
+  add_foreign_key "gpg_signatures", "projects"
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
