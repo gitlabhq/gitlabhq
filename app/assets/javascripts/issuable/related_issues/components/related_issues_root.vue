@@ -84,7 +84,12 @@ export default {
           .then((data) => {
             this.store.setRelatedIssues(data.issues);
           })
-          .catch(() => new Flash('An error occurred while removing related issues.'));
+          .catch((res) => {
+            if (res && res.status !== 404) {
+              // eslint-disable-next-line no-new
+              new Flash('An error occurred while removing related issues.');
+            }
+          });
       } else {
         // eslint-disable-next-line no-new
         new Flash('We could not determine the path to remove the related issue');
