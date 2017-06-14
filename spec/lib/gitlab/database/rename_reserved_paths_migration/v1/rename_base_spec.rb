@@ -257,5 +257,24 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
       expect { |b| subject.reverts_for_type('namespace', &b) }
         .to yield_with_args('namespace_path', 'new_namespace_path')
     end
+
+    it 'keeps the revert in redis if it failed' do
+      subject.track_rename('project', 'old_path', 'new_path')
+
+      subject.reverts_for_type('project') do
+        raise 'whatever happens, keep going!'
+      end
+
+      key = 'rename:FakeRenameReservedPathMigrationV1:project'
+      stored_renames = nil
+      rename_count = 0
+      Gitlab::Redis.with do |redis|
+        stored_renames = redis.lrange(key, 0, 1)
+        rename_count = redis.llen(key)
+      end
+
+      expect(rename_count).to eq(1)
+      expect(JSON.parse(stored_renames.first)).to eq(%w(old_path new_path))
+    end
   end
 end

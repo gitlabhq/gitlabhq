@@ -134,12 +134,24 @@ module Gitlab
 
           def reverts_for_type(type)
             key = redis_key_for_type(type)
+
             Gitlab::Redis.with do |redis|
+              failed_reverts = []
+
               while rename_info = redis.lpop(key)
                 path_before_rename, path_after_rename = JSON.parse(rename_info)
                 say "renaming #{type} from #{path_after_rename} back to #{path_before_rename}"
-                yield(path_before_rename, path_after_rename)
+                begin
+                  yield(path_before_rename, path_after_rename)
+                rescue StandardError => e
+                  failed_reverts << rename_info
+                  say "Renaming #{type} from back to #{path_before_rename} failed. "\
+                      "Review the error and try again by running the `down` action. \n"\
+                      "#{e.message}: \n #{e.backtrace.join("\n")}"
+                end
               end
+
+              failed_reverts.each { |rename_info| redis.lpush(key, rename_info) }
             end
           end
 
