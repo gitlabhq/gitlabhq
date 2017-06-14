@@ -1,20 +1,5 @@
 .tree-content-holder
-  .table-holder
-    %table.table#tree-slider{ class: "table_#{@hex_path} tree-table" }
-      %thead
-        %tr
-          %th= s_('ProjectFileTree|Name')
-          %th.hidden-xs
-            .pull-left= _('Last commit')
-          %th.text-right= _('Last Update')
-      - if @path.present?
-        %tr.tree-item
-          %td.tree-item-file-name
-            = link_to "..", namespace_project_tree_path(@project.namespace, @project, up_dir_path), class: 'prepend-left-10'
-          %td
-          %td.hidden-xs
-
-      = render_tree(tree)
+  #tree-vue
 
   - if tree.readme
     = render "projects/tree/readme", readme: tree.readme
