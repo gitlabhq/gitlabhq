@@ -1,4 +1,4 @@
 - if signature
-  %a.btn.disabled.btn-xs{ class: ('btn-success' if signature.valid?) }
-    %i.fa.fa-key{ class: ('fa-inverse' if signature.valid?) }
-    = signature.valid? ? 'Verified': 'Unverified'
+  %a.btn.disabled.btn-xs{ class: ('btn-success' if signature.valid_signature?) }
+    %i.fa.fa-key{ class: ('fa-inverse' if signature.valid_signature?) }
+    = signature.valid_signature? ? 'Verified' : 'Unverified'

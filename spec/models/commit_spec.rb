@@ -421,36 +421,78 @@ eos
     end
 
     context 'signed commit', :gpg do
-      it 'returns a valid signature if the public key is known' do
-        create :gpg_key, key: GpgHelpers::User1.public_key
+      context 'known public key' do
+        it 'returns a valid signature' do
+          create :gpg_key, key: GpgHelpers::User1.public_key
 
-        raw_commit = double(:raw_commit, signature: [
-          GpgHelpers::User1.signed_commit_signature,
-          GpgHelpers::User1.signed_commit_base_data
-        ])
-        allow(raw_commit).to receive :save!
+          raw_commit = double(:raw_commit, signature: [
+            GpgHelpers::User1.signed_commit_signature,
+            GpgHelpers::User1.signed_commit_base_data
+          ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
+          allow(raw_commit).to receive :save!
 
-        commit = create :commit,
-          git_commit: raw_commit,
-          project: project
+          commit = create :commit,
+            git_commit: raw_commit,
+            project: project
 
-        expect(commit.signature).to be_a GPGME::Signature
-        expect(commit.signature.valid?).to be_truthy
+          expect(commit.signature.valid_signature?).to be_truthy
+        end
+
+        it 'returns the cached validation result on second call', :gpg do
+          create :gpg_key, key: GpgHelpers::User1.public_key
+
+          raw_commit = double(:raw_commit, signature: [
+            GpgHelpers::User1.signed_commit_signature,
+            GpgHelpers::User1.signed_commit_base_data
+          ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
+          allow(raw_commit).to receive :save!
+
+          commit = create :commit,
+            git_commit: raw_commit,
+            project: project
+
+          expect(Gitlab::Gpg::Commit).to receive(:new).and_call_original
+          expect(commit.signature.valid_signature?).to be_truthy
+
+          # second call returns the cache
+          expect(Gitlab::Gpg::Commit).not_to receive(:new).and_call_original
+          expect(commit.signature.valid_signature?).to be_truthy
+        end
       end
 
-      it 'returns an invalid signature if the public key is unknown', :gpg do
-        raw_commit = double(:raw_commit, signature: [
-          GpgHelpers::User1.signed_commit_signature,
-          GpgHelpers::User1.signed_commit_base_data
-        ])
-        allow(raw_commit).to receive :save!
+      context 'unknown public key' do
+        it 'returns an invalid signature if the public key is unknown', :gpg do
+          raw_commit = double(:raw_commit, signature: [
+            GpgHelpers::User1.signed_commit_signature,
+            GpgHelpers::User1.signed_commit_base_data
+          ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
+          allow(raw_commit).to receive :save!
 
-        commit = create :commit,
-          git_commit: raw_commit,
-          project: project
+          commit = create :commit,
+            git_commit: raw_commit,
+            project: project
 
-        expect(commit.signature).to be_a GPGME::Signature
-        expect(commit.signature.valid?).to be_falsey
+          expect(commit.signature.valid_signature?).to be_falsey
+        end
+
+        it 'returns the cached validation result on second call', :gpg do
+          raw_commit = double(:raw_commit, signature: [
+            GpgHelpers::User1.signed_commit_signature,
+            GpgHelpers::User1.signed_commit_base_data
+          ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
+          allow(raw_commit).to receive :save!
+
+          commit = create :commit,
+            git_commit: raw_commit,
+            project: project
+
+          expect(Gitlab::Gpg::Commit).to receive(:new).and_call_original
+          expect(commit.signature.valid_signature?).to be_falsey
+
+          # second call returns the cache
+          expect(Gitlab::Gpg::Commit).not_to receive(:new).and_call_original
+          expect(commit.signature.valid_signature?).to be_falsey
+        end
       end
     end
   end

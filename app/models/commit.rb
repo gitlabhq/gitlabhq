@@ -239,29 +239,14 @@ class Commit
 
     @signature = nil
 
-    signature, signed_text = @raw.signature(project.repository)
+    cached_signature = GpgSignature.find_by(commit_sha: sha)
+    return cached_signature if cached_signature.present?
 
-    return unless signature && signed_text
+    gpg_commit = Gitlab::Gpg::Commit.new(self)
 
-    Gitlab::Gpg.using_tmp_keychain do
-      # first we need to get the keyid from the signature...
-      GPGME::Crypto.new.verify(signature, signed_text: signed_text) do |verified_signature|
-        @signature = verified_signature
-      end
+    return unless gpg_commit.has_signature?
 
-      # ... then we query the gpg key belonging to the keyid.
-      gpg_key = GpgKey.find_by(primary_keyid: @signature.fingerprint)
-
-      return @signature unless gpg_key
-
-      Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
-
-      GPGME::Crypto.new.verify(signature, signed_text: signed_text) do |verified_signature|
-        @signature = verified_signature
-      end
-    end
-
-    @signature
+    @signature = gpg_commit.signature
   end
 
   def revert_branch_name
