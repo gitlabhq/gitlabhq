@@ -1,3 +1,5 @@
+$token_spacing_bottom: 0.5em;
+
 .related-issues-block {
   margin-top: 3 * $gl-vert-padding;
 }
@@ -21,6 +23,10 @@
 }
 
 .related-issues-token-body {
+  padding-bottom: calc(#{$gl-padding} - #{$token_spacing_bottom});
+}
+
+.related-issues-token-list {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 0;
@@ -30,6 +36,6 @@
 
 .related-issues-token-list-item {
   max-width: 100%;
-  margin-bottom: 0.5em;
+  margin-bottom: $token_spacing_bottom;
   margin-right: 5px;
 }

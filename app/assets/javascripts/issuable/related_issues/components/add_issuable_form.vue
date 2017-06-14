@@ -126,7 +126,7 @@ export default {
         </li>
       </ul>
     </div>
-    <div class="clearfix prepend-top-10">
+    <div class="add-issuable-form-actions clearfix">
       <button
         ref="addButton"
         type="button"

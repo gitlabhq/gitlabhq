@@ -146,9 +146,9 @@ export default {
       </div>
       <div
         v-if="hasRelatedIssues"
-        class="panel-body">
+        class="related-issues-token-body panel-body">
         <ul
-          class="related-issues-token-body">
+          class="related-issues-token-list">
           <li
             :key="issue.id"
             v-for="issue in relatedIssues"
