@@ -10,17 +10,17 @@ module Users
     def execute(skip_authorization: false, &block)
       assign_attributes(skip_authorization, &block)
 
-      if @user.save
+      if @user.save || !@user.changed?
         success
       else
-        error('User could not be updated')
+        error("User could not be updated #{@user.errors.full_messages.uniq.join('. ')}" )
       end
     end
 
     def execute!(skip_authorization: false, &block)
       assign_attributes(skip_authorization, &block)
 
-      @user.save!
+      @user.save! if @user.changed?
     end
 
     private

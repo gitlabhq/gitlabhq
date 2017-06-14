@@ -12,38 +12,46 @@ class ProfilesController < Profiles::ApplicationController
     user_params.except!(:email) if @user.external_email?
 
     respond_to do |format|
-      if @user.update_attributes(user_params)
+      status = Users::UpdateService.new(current_user, @user, user_params).execute
+
+      if status[:success]
         message = "Profile was successfully updated"
+
         format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
         format.json { render json: { message: message } }
       else
-        message = @user.errors.full_messages.uniq.join('. ')
-        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: "Failed to update profile. #{message}" }) }
-        format.json { render json: { message: message }, status: :unprocessable_entity }
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: status[:message] }) }
+        format.json { render json: status }
       end
     end
   end
 
   def reset_private_token
-    if current_user.reset_authentication_token!
-      flash[:notice] = "Private token was successfully reset"
+    Users::UpdateService.new(current_user, @user).execute!(skip_authorization: true) do |user|
+      user.reset_authentication_token!
     end
+
+    flash[:notice] = "Private token was successfully reset"
 
     redirect_to profile_account_path
   end
 
   def reset_incoming_email_token
-    if current_user.reset_incoming_email_token!
-      flash[:notice] = "Incoming email token was successfully reset"
+    Users::UpdateService.new(current_user, @user).execute!(skip_authorization: true) do |user|
+      user.reset_incoming_email_token!
     end
+
+    flash[:notice] = "Incoming email token was successfully reset"
 
     redirect_to profile_account_path
   end
 
   def reset_rss_token
-    if current_user.reset_rss_token!
-      flash[:notice] = "RSS token was successfully reset"
+    Users::UpdateService.new(current_user, @user).execute!(skip_authorization: true) do |user|
+      user.reset_rss_token!
     end
+
+    flash[:notice] = "RSS token was successfully reset"
 
     redirect_to profile_account_path
   end
