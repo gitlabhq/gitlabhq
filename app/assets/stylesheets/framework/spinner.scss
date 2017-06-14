@@ -1,0 +1,57 @@
+@mixin spinner-color($color) {
+  border-color: rgba($color, .25);
+  border-top-color: $color;
+}
+
+@mixin spinner($size, $animation-duration, $border-width) {
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  position: relative;
+  margin: 0 auto;
+  animation-name: spinner-rotate;
+  animation-duration: $animation-duration;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  border-style: solid;
+  border-width: $border-width;
+  display: block;
+}
+
+@keyframes spinner-rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.spinner-sm,
+.spinner-md,
+.spinner-lg {
+
+  &.black {
+    @include spinner-color($black);
+  }
+
+  &.orange {
+    @include spinner-color($orange-600);
+  }
+
+  &.white {
+    @include spinner-color($white-light);
+  }
+}
+
+.spinner-sm {
+  @include spinner(15px, 1s, 2px);
+}
+
+.spinner-md {
+  @include spinner(30px, 1.5s, 4px);
+}
+
+.spinner-lg {
+  @include spinner(60px, 2.25s, 4px);
+}
