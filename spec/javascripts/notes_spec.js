@@ -378,6 +378,23 @@ import '~/notes';
       });
     });
 
+    describe('putEditFormInPlace', () => {
+      it('should call gl.GLForm with GFM parameter passed through', () => {
+        spyOn(gl, 'GLForm');
+
+        const $el = jasmine.createSpyObj('$form', ['find', 'closest']);
+        $el.find.and.returnValue($('<div>'));
+        $el.closest.and.returnValue($('<div>'));
+
+        Notes.prototype.putEditFormInPlace.call({
+          getEditFormSelector: () => '',
+          enableGFM: true
+        }, $el);
+
+        expect(gl.GLForm).toHaveBeenCalledWith(jasmine.any(Object), true);
+      });
+    });
+
     describe('postComment & updateComment', () => {
       const sampleComment = 'foo';
       const updatedComment = 'bar';
