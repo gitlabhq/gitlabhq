@@ -1,6 +1,7 @@
 module Projects
   class DestroyService < BaseService
     include Gitlab::ShellAdapter
+    prepend ::EE::Projects::DestroyService
 
     DestroyError = Class.new(StandardError)
 
@@ -45,21 +46,8 @@ module Projects
 
       log_info("Project \"#{project.path_with_namespace}\" was removed")
       system_hook_service.execute_hooks_for(project, :destroy)
+
       true
-    end
-
-    # Removes physical repository in a Geo replicated secondary node
-    # There is no need to do any database operation as it will be
-    # replicated by itself.
-    def geo_replicate
-      # Flush the cache for both repositories. This has to be done _before_
-      # removing the physical repositories as some expiration code depends on
-      # Git data (e.g. a list of branch names).
-      flush_caches(project, wiki_path)
-
-      trash_repositories!
-      remove_tracking_entries!
-      log_info("Project \"#{project.name}\" was removed")
     end
 
     private
