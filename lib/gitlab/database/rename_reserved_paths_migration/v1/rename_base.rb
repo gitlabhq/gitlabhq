@@ -145,8 +145,9 @@ module Gitlab
                   yield(path_before_rename, path_after_rename)
                 rescue StandardError => e
                   failed_reverts << rename_info
-                  say "Renaming #{type} from back to #{path_before_rename} failed. "\
-                      "Review the error and try again by running the `down` action. \n"\
+                  say "Renaming #{type} from #{path_after_rename} back to "\
+                      "#{path_before_rename} failed. Review the error and try "\
+                      "again by running the `down` action. \n"\
                       "#{e.message}: \n #{e.backtrace.join("\n")}"
                 end
               end

@@ -33,12 +33,13 @@ module Gitlab
               matches_path = MigrationClasses::Route.arel_table[:path].matches(current_path)
               project = MigrationClasses::Project.joins(:route)
                           .where(matches_path).first
+
               if project
                 perform_rename(project, current_path, path_before_rename)
 
                 move_project_folders(project, current_path, path_before_rename)
               else
-                say "Couldn't rename Project from #{current_path} back to "\
+                say "Couldn't rename project from #{current_path} back to "\
                     "#{path_before_rename}, project was renamed or no longer "\
                     "exists at the expected path."
 
