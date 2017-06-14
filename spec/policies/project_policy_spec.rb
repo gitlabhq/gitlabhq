@@ -139,6 +139,18 @@ describe ProjectPolicy, models: true do
           is_expected.not_to include(:read_build, :read_pipeline)
         end
       end
+
+      context 'when builds are disabled' do
+        before do
+          project.project_feature.update(
+            builds_access_level: ProjectFeature::DISABLED)
+        end
+
+        it do
+          is_expected.not_to include(:read_build)
+          is_expected.to include(:read_pipeline)
+        end
+      end
     end
 
     context 'reporter' do
