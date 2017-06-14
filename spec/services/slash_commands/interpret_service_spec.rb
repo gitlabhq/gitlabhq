@@ -430,7 +430,7 @@ describe SlashCommands::InterpretService, services: true do
         it 'fetches assignee and populates assignee_id if content contains /assign' do
           _, updates = service.execute(content, issue)
 
-          expect(updates[:assignee_ids]).to match_array([developer.id])
+          expect(updates[:assignee_ids]).to match_array([developer.id, developer2.id])
         end
       end
 
