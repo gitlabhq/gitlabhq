@@ -7,9 +7,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-13 04:29-0400\n"
+"PO-Revision-Date: 2017-06-14 05:43-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
-"Language-Team: Chinese (China) (https://translate.zanata.org/project/view/GitLab)\n"
+"Language-Team: Chinese (China) (https://translate.zanata.org/project/view/GitLab)n"
 "Language: zh-CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Zanata 3.9.6\n"
@@ -21,13 +21,13 @@ msgid "About auto deploy"
 msgstr "关于自动部署"
 
 msgid "Active"
-msgstr "激活"
+msgstr "启用"
 
 msgid "Activity"
 msgstr "活动"
 
 msgid "Add Changelog"
-msgstr "添加变更日志"
+msgstr "添加更新日志"
 
 msgid "Add Contribution guide"
 msgstr "添加贡献指南"
@@ -45,7 +45,7 @@ msgid "Archived project! Repository is read-only"
 msgstr "项目已归档！存储库为只读状态"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
-msgstr "您确定要删除此流水线计划吗？"
+msgstr "确定要删除此流水线计划吗？"
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "拖放文件到此处或者 %{upload_link}"
@@ -59,7 +59,7 @@ msgid ""
 "choose a GitLab CI Yaml template and commit your changes. "
 "%{link_to_autodeploy_doc}"
 msgstr ""
-"已创建分支 <strong>%{branch_name}</strong> 。如要设置自动部署， 请选择合适的 GitLab CI Yaml "
+"已创建分支 <strong>%{branch_name}</strong> 。如需设置自动部署， 请选择合适的 GitLab CI Yaml "
 "模板并提交更改。%{link_to_autodeploy_doc}"
 
 msgid "Branches"
@@ -78,7 +78,7 @@ msgid "Cancel"
 msgstr "取消"
 
 msgid "ChangeTypeActionLabel|Pick into branch"
-msgstr "挑选到分支"
+msgstr "选择分支"
 
 msgid "ChangeTypeActionLabel|Revert in branch"
 msgstr "还原分支"
@@ -93,7 +93,7 @@ msgid "ChangeType|merge request"
 msgstr "合并请求"
 
 msgid "Changelog"
-msgstr "变更日志"
+msgstr "更新日志"
 
 msgid "Charts"
 msgstr "统计图"
@@ -175,7 +175,7 @@ msgid "Commits|History"
 msgstr "历史"
 
 msgid "Committed by"
-msgstr "作者："
+msgstr "提交于"
 
 msgid "Compare"
 msgstr "比较"
@@ -314,13 +314,13 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr "编辑 %{id} 流水线计划"
 
 msgid "Every day (at 4:00am)"
-msgstr "每天（凌晨4点）"
+msgstr "每日執行（凌晨4点）"
 
 msgid "Every month (on the 1st at 4:00am)"
-msgstr "每月1日（凌晨4点）"
+msgstr "每月執行（第一天凌晨4点）"
 
 msgid "Every week (Sundays at 4:00am)"
-msgstr "每周日（凌晨4点）"
+msgstr "每周執行（周日凌晨4点）"
 
 msgid "Failed to change the owner"
 msgstr "无法变更所有者"
@@ -372,7 +372,7 @@ msgid "Import repository"
 msgstr "导入存储库"
 
 msgid "Interval Pattern"
-msgstr "间隔模式"
+msgstr "重复周期"
 
 msgid "Introducing Cycle Analytics"
 msgstr "周期分析简介"
@@ -385,7 +385,7 @@ msgstr "启用"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
-msgstr[0] "最后 %d 天"
+msgstr[0] "最近 %d 天"
 
 msgid "Last Pipeline"
 msgstr "最新流水线"
@@ -400,10 +400,10 @@ msgid "Learn more in the"
 msgstr "了解更多"
 
 msgid "Leave group"
-msgstr "离开群组"
+msgstr "退出群组"
 
 msgid "Leave project"
-msgstr "离开项目"
+msgstr "退出项目"
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
@@ -477,7 +477,7 @@ msgid "NotificationEvent|New issue"
 msgstr "新增议题"
 
 msgid "NotificationEvent|New merge request"
-msgstr "新合并请求"
+msgstr "新增合并请求"
 
 msgid "NotificationEvent|New note"
 msgstr "新增评论"
@@ -519,7 +519,7 @@ msgid "OpenedNDaysAgo|Opened"
 msgstr "开始于"
 
 msgid "Options"
-msgstr "选型"
+msgstr "选项"
 
 msgid "Owner"
 msgstr "所有者"
@@ -537,19 +537,19 @@ msgid "Pipeline Schedules"
 msgstr "流水线计划"
 
 msgid "PipelineSchedules|Activated"
-msgstr "已激活"
+msgstr "是否启用"
 
 msgid "PipelineSchedules|Active"
-msgstr "激活"
+msgstr "已启用"
 
 msgid "PipelineSchedules|All"
 msgstr "所有"
 
 msgid "PipelineSchedules|Inactive"
-msgstr "等待"
+msgstr "未启用"
 
 msgid "PipelineSchedules|Next Run"
-msgstr "下一个运行"
+msgstr "下次运行时间"
 
 msgid "PipelineSchedules|None"
 msgstr "无"
@@ -558,7 +558,7 @@ msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr "为此流水线提供简短描述"
 
 msgid "PipelineSchedules|Take ownership"
-msgstr "取得所有权"
+msgstr "取得所有者"
 
 msgid "PipelineSchedules|Target"
 msgstr "目标"
@@ -567,13 +567,13 @@ msgid "Project '%{project_name}' queued for deletion."
 msgstr "项目 '%{project_name}' 已进入删除队列。"
 
 msgid "Project '%{project_name}' was successfully created."
-msgstr "项目 '%{project_name}' 已创建完成。"
+msgstr "项目 '%{project_name}' 已创建成功。"
 
 msgid "Project '%{project_name}' was successfully updated."
 msgstr "项目 '%{project_name}' 已更新完成。"
 
 msgid "Project '%{project_name}' will be deleted."
-msgstr "项目 '%{project_name}' 已删除。"
+msgstr "项目 '%{project_name}' 将被删除。"
 
 msgid "Project access must be granted explicitly to each user."
 msgstr "项目访问权限必须明确授权给每个用户。"
@@ -665,7 +665,7 @@ msgid "Save pipeline schedule"
 msgstr "保存流水线计划"
 
 msgid "Schedule a new pipeline"
-msgstr "新增流水线计划"
+msgstr "新建流水线计划"
 
 msgid "Scheduling Pipelines"
 msgstr "流水线计划"
@@ -708,7 +708,7 @@ msgid "StarProject|Star"
 msgstr "星标"
 
 msgid "Start a <strong>new merge request</strong> with these changes"
-msgstr "包含这些更改到 <strong>新合并请求</strong>"
+msgstr "由此更改创建<strong>新合并请求</strong>"
 
 msgid "Switch branch/tag"
 msgstr "切换分支/标签"
@@ -739,7 +739,7 @@ msgid ""
 "The issue stage shows the time it takes from creating an issue to assigning "
 "the issue to a milestone, or add the issue to a list on your Issue Board. "
 "Begin creating issues to see data for this stage."
-msgstr "议题阶段概述了从创建议题到将议题设置里程碑或将议题添加到议题看板的时间。开始创建议题以查看此阶段的数据。"
+msgstr "议题阶段概述了从创建议题到将议题添加到里程碑或议题看板的时间。创建第一个议题后，数据将自动添加到此处.。"
 
 msgid "The phase of the development lifecycle."
 msgstr "项目生命周期中的各个阶段。"
@@ -754,7 +754,7 @@ msgid ""
 "The planning stage shows the time from the previous step to pushing your "
 "first commit. This time will be added automatically once you push your first "
 "commit."
-msgstr "计划阶段概述了从议题添加到日程后到推送首次提交的时间。当首次推送提交后，数据将自动添加到此处。"
+msgstr "计划阶段概述了从议题添加到日程到推送首次提交的时间。当首次推送提交后，数据将自动添加到此处。"
 
 msgid ""
 "The production stage shows the total time it takes between creating an issue "
@@ -801,7 +801,7 @@ msgstr "中位数是一个数列中最中间的值。例如在 3、5、9 之间�
 msgid ""
 "This means you can not push code until you create an empty repository or "
 "import existing one."
-msgstr "在创建一个空的存储库或导入现有存储库之前，您将无法推送代码。"
+msgstr "在创建一个空的存储库或导入现有存储库之前，将无法推送代码。"
 
 msgid "Time before an issue gets scheduled"
 msgstr "议题被列入日程表的时间"
@@ -888,52 +888,52 @@ msgid "Timeago|a year ago"
 msgstr "1 年前"
 
 msgid "Timeago|about %s hours ago"
-msgstr "大约 %s 小时前"
+msgstr "约 %s 小时前"
 
 msgid "Timeago|about a minute ago"
-msgstr "大约 1 分钟前"
+msgstr "约 1 分钟前"
 
 msgid "Timeago|about an hour ago"
-msgstr "大约 1 小时前"
+msgstr "约 1 小时前"
 
 msgid "Timeago|in %s days"
-msgstr "在 %s 天"
+msgstr " %s 天后"
 
 msgid "Timeago|in %s hours"
-msgstr "在 %s 小时"
+msgstr " %s 小时后"
 
 msgid "Timeago|in %s minutes"
-msgstr "在 %s 分钟"
+msgstr " %s 分钟后"
 
 msgid "Timeago|in %s months"
-msgstr "在 %s 个月"
+msgstr " %s 个月后"
 
 msgid "Timeago|in %s seconds"
-msgstr "在 %s 秒"
+msgstr " %s 秒后"
 
 msgid "Timeago|in %s weeks"
-msgstr "在 %s 星期"
+msgstr " %s 星期后"
 
 msgid "Timeago|in %s years"
-msgstr "在 %s 年"
+msgstr " %s 年后"
 
 msgid "Timeago|in 1 day"
-msgstr "在 1 天"
+msgstr " 1 天后"
 
 msgid "Timeago|in 1 hour"
-msgstr "在 1 小时"
+msgstr " 1 小时后"
 
 msgid "Timeago|in 1 minute"
-msgstr "在 1 分钟"
+msgstr " 1 分钟后"
 
 msgid "Timeago|in 1 month"
-msgstr "在 1 月"
+msgstr " 1 月后"
 
 msgid "Timeago|in 1 week"
-msgstr "在 1 星期"
+msgstr " 1 星期后"
 
 msgid "Timeago|in 1 year"
-msgstr "在 1 年"
+msgstr " 1 年后"
 
 msgid "Timeago|less than a minute ago"
 msgstr "不到 1 分钟前"
@@ -989,46 +989,46 @@ msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
 "Removed project CANNOT be restored!\n"
 "Are you ABSOLUTELY sure?"
-msgstr "您将要删除 %{project_name_with_namespace}。\n"
+msgstr "即将要删除 %{project_name_with_namespace}。\n"
 "已删除的项目无法恢复！\n"
 "你确定继续吗？"
 
 msgid ""
 "You are going to remove the fork relationship to source project "
 "%{forked_from_project}. Are you ABSOLUTELY sure?"
-msgstr "您将删除与源项目 %{forked_from_project} 的派生关系。您确定继续吗？"
+msgstr "即将删除与源项目 %{forked_from_project} 的派生关系。确定继续吗？"
 
 msgid ""
 "You are going to transfer %{project_name_with_namespace} to another owner. "
 "Are you ABSOLUTELY sure?"
-msgstr "将 %{project_name_with_namespace} 转移给另一个所有者。你确定继续吗？"
+msgstr "即将 %{project_name_with_namespace} 转移给另一个所有者。确定继续吗？"
 
 msgid "You can only add files when you are on a branch"
-msgstr "您只能在分支上添加文件"
+msgstr "只能在分支上添加文件"
 
 msgid "You must sign in to star a project"
-msgstr "您必须登录才能对项目加星标"
+msgstr "必须登录才能对项目加星标"
 
 msgid "You need permission."
-msgstr "您需要相关的权限。"
+msgstr "需要相关的权限。"
 
 msgid "You will not get any notifications via email"
-msgstr "您将不会收到任何通知邮件"
+msgstr "不会收到任何通知邮件"
 
 msgid "You will only receive notifications for the events you choose"
-msgstr "您只会收到您选择的事件通知"
+msgstr "只接收选择的事件通知"
 
 msgid ""
 "You will only receive notifications for threads you have participated in"
-msgstr "您只会收到您参与的主题的通知"
+msgstr "只接收参与的主题的通知"
 
 msgid "You will receive notifications for any activity"
-msgstr "您将收到所有活动的通知"
+msgstr "接收所有活动的通知"
 
 msgid ""
 "You will receive notifications only for comments in which you were "
 "@mentioned"
-msgstr "您只会收到评论中提及(@)您的通知"
+msgstr "只接收评论中提及(@)您的通知"
 
 msgid ""
 "You won't be able to pull or push project code via %{protocol} until you "
@@ -1038,7 +1038,7 @@ msgstr "在账号中 %{set_password_link} 之前将无法通过 %{protocol} 拉�
 msgid ""
 "You won't be able to pull or push project code via SSH until you "
 "%{add_ssh_key_link} to your profile"
-msgstr "在账号中添加 %{add_ssh_key_link} 之前将无法通过 SSH 拉取或推送代码。"
+msgstr "在账号中 %{add_ssh_key_link} 之前将无法通过 SSH 拉取或推送代码。"
 
 msgid "Your name"
 msgstr "您的名字"
