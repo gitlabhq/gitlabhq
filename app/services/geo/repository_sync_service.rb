@@ -12,8 +12,8 @@ module Geo
     def execute
       try_obtain_lease do
         log('Started repository sync')
-        started_at, finished_at = fetch_repositories
-        update_registry(started_at, finished_at)
+        sync_project_repository
+        sync_wiki_repository
         log('Finished repository sync')
       end
     rescue ActiveRecord::RecordNotFound
@@ -26,14 +26,51 @@ module Geo
       @project ||= Project.find(project_id)
     end
 
-    def fetch_repositories
+    def registry
+      @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project_id)
+    end
+
+    def sync_project_repository
+      return unless sync_repository?
+
+      started_at, finished_at = fetch_project_repository
+      update_registry(:repository, started_at, finished_at)
+      expire_repository_caches
+    end
+
+    def sync_repository?
+      return true if registry.resync_repository?
+      return true if registry.last_repository_successful_sync_at.nil?
+      return true if registry.last_repository_synced_at.nil?
+
+      false
+    end
+
+    def sync_wiki_repository
+      return unless sync_wiki?
+
+      started_at, finished_at = fetch_wiki_repository
+      update_registry(:wiki, started_at, finished_at)
+    end
+
+    def sync_wiki?
+      return true if registry.resync_wiki?
+      return true if registry.last_wiki_successful_sync_at.nil?
+      return true if registry.last_wiki_synced_at.nil?
+
+      false
+    end
+
+    def fetch_project_repository
+      return unless sync_repository?
+
+      log('Fetching project repository')
       started_at  = DateTime.now
       finished_at = nil
 
       begin
-        fetch_project_repository
-        fetch_wiki_repository
-        expire_repository_caches
+        project.create_repository unless project.repository_exists?
+        project.repository.fetch_geo_mirror(ssh_url_to_repo)
 
         finished_at = DateTime.now
       rescue Gitlab::Shell::Error => e
@@ -47,18 +84,25 @@ module Geo
       [started_at, finished_at]
     end
 
-    def fetch_project_repository
-      log('Fetching project repository')
-      project.create_repository unless project.repository_exists?
-      project.repository.fetch_geo_mirror(ssh_url_to_repo)
-    end
-
     def fetch_wiki_repository
-      # Second .wiki call returns a Gollum::Wiki, and it will always create the physical repository when not found
-      if project.wiki.wiki.exist?
-        log('Fetching wiki repository')
-        project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
+      return unless sync_wiki?
+
+      log('Fetching wiki repository')
+      started_at  = DateTime.now
+      finished_at = nil
+
+      begin
+        # Second .wiki call returns a Gollum::Wiki, and it will always create the physical repository when not found
+        if project.wiki.wiki.exist?
+          project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
+        end
+
+        finished_at = DateTime.now
+      rescue Gitlab::Shell::Error => e
+        Rails.logger.error("#{self.class.name}: Error syncing wiki repository for project #{project.path_with_namespace}: #{e}")
       end
+
+      [started_at, finished_at]
     end
 
     def expire_repository_caches
@@ -84,11 +128,15 @@ module Geo
       Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
     end
 
-    def update_registry(started_at, finished_at)
-      log('Updating repository sync information')
-      registry = Geo::ProjectRegistry.find_or_initialize_by(project_id: project_id)
-      registry.last_repository_synced_at = started_at
-      registry.last_repository_successful_sync_at = finished_at if finished_at
+    def update_registry(type, started_at, finished_at)
+      log('Updating #{type} sync information')
+      registry.public_send("last_#{type}_synced_at=", started_at)
+
+      if finished_at
+        registry.public_send("last_#{type}_successful_sync_at=", started_at)
+        registry.public_send("resync_#{type}=", false)
+      end
+
       registry.save
     end
 
