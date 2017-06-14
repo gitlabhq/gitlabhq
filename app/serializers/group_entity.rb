@@ -5,10 +5,13 @@ class GroupEntity < Grape::Entity
   include GroupsHelper
 
   expose :id, :name, :path, :description, :visibility
-  expose :web_url
   expose :full_name, :full_path
   expose :parent_id
   expose :created_at, :updated_at
+
+  expose :web_url do |group|
+    group_path(group)
+  end
 
   expose :permissions do
     expose :human_group_access do |group, options|
