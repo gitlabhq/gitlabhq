@@ -101,7 +101,7 @@ export default {
           v-if="hasState"
           class="fa"
           :class="{
-            'issue-token-state-icon-open fa-circle-o': state === 'opened',
+            'issue-token-state-icon-open fa-circle-o': state === 'opened' || state === 'reopened',
             'issue-token-state-icon-closed fa-minus': state === 'closed',
           }"
           :aria-label="state">

@@ -91,6 +91,22 @@ describe('IssueToken', () => {
       });
     });
 
+    describe('`state: \'reopened\'`', () => {
+      beforeEach(() => {
+        vm = new IssueToken({
+          propsData: {
+            idKey,
+            displayReference,
+            state: 'reopened',
+          },
+        }).$mount();
+      });
+
+      it('shows green circle icon', () => {
+        expect(vm.$el.querySelector('.issue-token-state-icon-open.fa.fa-circle-o')).toBeDefined();
+      });
+    });
+
     describe('`state: \'closed\'`', () => {
       beforeEach(() => {
         vm = new IssueToken({
