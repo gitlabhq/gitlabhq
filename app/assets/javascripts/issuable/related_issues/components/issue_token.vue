@@ -47,6 +47,12 @@ export default {
     hasState() {
       return this.state && this.state.length > 0;
     },
+    isOpen() {
+      return this.state === 'opened' || this.state === 'reopened';
+    },
+    isClosed() {
+      return this.state === 'closed';
+    },
     hasTitle() {
       return this.title.length > 0;
     },
@@ -101,8 +107,8 @@ export default {
           v-if="hasState"
           class="fa"
           :class="{
-            'issue-token-state-icon-open fa-circle-o': state === 'opened' || state === 'reopened',
-            'issue-token-state-icon-closed fa-minus': state === 'closed',
+            'issue-token-state-icon-open fa-circle-o': isOpen,
+            'issue-token-state-icon-closed fa-minus': isClosed,
           }"
           :aria-label="state">
         </i>
