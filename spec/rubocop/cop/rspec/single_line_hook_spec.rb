@@ -2,7 +2,6 @@ require 'spec_helper'
 
 require 'rubocop'
 require 'rubocop/rspec/support'
-require 'rubocop-rspec'
 
 require_relative '../../../../rubocop/cop/rspec/single_line_hook'
 
