@@ -109,10 +109,12 @@
       line-height: 15px;
       background-color: $gray-light;
       background-image: none;
+      padding: 3px 18px 3px 5px;
 
       .select2-search-choice-close {
-        top: 4px;
-        left: 3px;
+        top: 5px;
+        left: initial;
+        right: 3px;
       }
 
       &.select2-search-choice-focus {
