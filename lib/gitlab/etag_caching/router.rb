@@ -53,8 +53,8 @@ module Gitlab
         )
       ].freeze
 
-      def self.match(request)
-        ROUTES.find { |route| route.regexp.match(request.path_info) }
+      def self.match(path)
+        ROUTES.find { |route| route.regexp.match(path) }
       end
     end
   end
