@@ -1156,7 +1156,9 @@ describe Ci::Pipeline, models: true do
     end
 
     context 'when pipeline is not stuck' do
-      before { create(:ci_runner, :shared, :online) }
+      before do
+        create(:ci_runner, :shared, :online)
+      end
 
       it 'is not stuck' do
         expect(pipeline).not_to be_stuck

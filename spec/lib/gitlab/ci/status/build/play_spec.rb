@@ -28,7 +28,9 @@ describe Gitlab::Ci::Status::Build::Play do
       end
 
       context 'when user can not push to the branch' do
-        before { build.project.add_developer(user) }
+        before do
+          build.project.add_developer(user)
+        end
 
         it { is_expected.not_to have_action }
       end

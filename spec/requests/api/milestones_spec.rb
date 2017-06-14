@@ -6,7 +6,9 @@ describe API::Milestones do
   let!(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
   let!(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
 
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   describe 'GET /projects/:id/milestones' do
     it 'returns project milestones' do

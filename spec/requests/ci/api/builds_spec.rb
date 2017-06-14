@@ -241,7 +241,9 @@ describe Ci::API::Builds do
         end
 
         context 'when runner is allowed to pick untagged builds' do
-          before { runner.update_column(:run_untagged, true) }
+          before do
+            runner.update_column(:run_untagged, true)
+          end
 
           it 'picks build' do
             register_builds
@@ -467,7 +469,9 @@ describe Ci::API::Builds do
       let(:token) { build.token }
       let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => token) }
 
-      before { build.run! }
+      before do
+        build.run!
+      end
 
       describe "POST /builds/:id/artifacts/authorize" do
         context "authorizes posting artifact to running build" do
@@ -523,7 +527,9 @@ describe Ci::API::Builds do
         end
 
         context 'authorization token is invalid' do
-          before { post authorize_url, { token: 'invalid', filesize: 100 } }
+          before do
+            post authorize_url, { token: 'invalid', filesize: 100 }
+          end
 
           it 'responds with forbidden' do
             expect(response).to have_http_status(403)

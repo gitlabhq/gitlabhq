@@ -261,7 +261,10 @@ describe ApplicationHelper do
   describe '#support_url' do
     context 'when alternate support url is specified' do
       let(:alternate_url) { 'http://company.example.com/getting-help' }
-      before { allow(current_application_settings).to receive(:help_page_support_url) { alternate_url } }
+
+      before do
+        allow(current_application_settings).to receive(:help_page_support_url) { alternate_url }
+      end
 
       it 'returns the alternate support url' do
         expect(helper.support_url).to eq(alternate_url)
