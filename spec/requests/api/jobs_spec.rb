@@ -26,7 +26,7 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
-      build
+      job
       get api("/projects/#{project.id}/jobs", api_user), query
     end
 
@@ -90,7 +90,7 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
-      build
+      job
       get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
     end
 
@@ -209,7 +209,7 @@ describe API::Jobs, :api do
           it 'returns specific job artifacts' do
             expect(response).to have_http_status(200)
             expect(response.headers).to include(download_headers)
-            expect(response.body).to match_file(build.artifacts_file.file.file)
+            expect(response.body).to match_file(job.artifacts_file.file.file)
           end
         end
 
@@ -223,7 +223,7 @@ describe API::Jobs, :api do
       end
 
       context 'when artifacts are stored remotely' do
-        let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
 
         it 'returns location redirect' do
           expect(response).to have_http_status(302)
@@ -309,7 +309,7 @@ describe API::Jobs, :api do
         end
 
         context 'when artifacts are stored remotely' do
-          let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+          let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
 
           it 'returns location redirect' do
             expect(response).to have_http_status(302)

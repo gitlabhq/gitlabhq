@@ -306,12 +306,12 @@ feature 'Jobs', :feature do
       end
     end
 
-    context 'build project is over shared runners limit' do
+    context 'job project is over shared runners limit' do
       let(:group) { create(:group, :with_used_build_minutes_limit) }
       let(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
 
       it 'displays a warning message' do
-        visit namespace_project_build_path(project.namespace, project, build)
+        visit namespace_project_job_path(project.namespace, project, job)
 
         expect(page).to have_content('You have used all your shared Runners pipeline minutes.')
       end
@@ -335,9 +335,9 @@ feature 'Jobs', :feature do
 
     context "Job from other project" do
       before do
-        build.run!
-        visit namespace_project_job_path(project.namespace, project, build)
-        page.driver.post(cancel_namespace_project_job_path(project.namespace, project, build2))
+        job.run!
+        visit namespace_project_job_path(project.namespace, project, job)
+        page.driver.post(cancel_namespace_project_job_path(project.namespace, project, job2))
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -366,10 +366,10 @@ feature 'Jobs', :feature do
 
     context "Job from other project" do
       before do
-        build.run!
-        visit namespace_project_job_path(project.namespace, project, build)
+        job.run!
+        visit namespace_project_job_path(project.namespace, project, job)
         click_link 'Cancel'
-        page.driver.post(retry_namespace_project_job_path(project.namespace, project, build2))
+        page.driver.post(retry_namespace_project_job_path(project.namespace, project, job2))
       end
 
       it { expect(page).to have_http_status(404) }
