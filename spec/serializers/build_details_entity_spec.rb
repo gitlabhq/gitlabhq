@@ -3,8 +3,8 @@ require 'spec_helper'
 describe BuildDetailsEntity do
   set(:user) { create(:admin) }
 
-  it 'inherits from BuildEntity' do
-    expect(described_class).to be < BuildEntity
+  it 'inherits from JobEntity' do
+    expect(described_class).to be < JobEntity
   end
 
   describe '#as_json' do
