@@ -45,7 +45,9 @@ feature 'Users', feature: true, js: true do
   end
 
   describe 'redirect alias routes' do
-    before { user }
+    before do
+      expect(user).to be_persisted
+    end
 
     scenario '/u/user1 redirects to user page' do
       visit '/u/user1'

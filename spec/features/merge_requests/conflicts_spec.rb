@@ -85,14 +85,18 @@ feature 'Merge request conflict resolution', js: true, feature: true do
     context 'the conflicts are resolvable' do
       let(:merge_request) { create_merge_request('conflict-resolvable') }
 
-      before { visit namespace_project_merge_request_path(project.namespace, project, merge_request) }
+      before do
+        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      end
 
       it 'shows a link to the conflict resolution page' do
         expect(page).to have_link('conflicts', href: /\/conflicts\Z/)
       end
 
       context 'in Inline view mode' do
-        before { click_link('conflicts', href: /\/conflicts\Z/) }
+        before do
+          click_link('conflicts', href: /\/conflicts\Z/)
+        end
 
         include_examples "conflicts are resolved in Interactive mode"
         include_examples "conflicts are resolved in Edit inline mode"

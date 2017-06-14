@@ -3,7 +3,9 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Entry::Services do
   let(:entry) { described_class.new(config) }
 
-  before { entry.compose! }
+  before do
+    entry.compose!
+  end
 
   context 'when configuration is valid' do
     let(:config) { ['postgresql:9.5', { name: 'postgresql:9.1', alias: 'postgres_old' }] }

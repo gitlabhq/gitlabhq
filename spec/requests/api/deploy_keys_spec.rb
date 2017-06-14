@@ -41,7 +41,9 @@ describe API::DeployKeys do
   end
 
   describe 'GET /projects/:id/deploy_keys' do
-    before { deploy_key }
+    before do
+      deploy_key
+    end
 
     it 'returns array of ssh keys' do
       get api("/projects/#{project.id}/deploy_keys", admin)
@@ -161,7 +163,9 @@ describe API::DeployKeys do
   end
 
   describe 'DELETE /projects/:id/deploy_keys/:key_id' do
-    before { deploy_key }
+    before do
+      deploy_key
+    end
 
     it 'deletes existing key' do
       expect do

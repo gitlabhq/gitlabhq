@@ -83,7 +83,9 @@ describe "Search", feature: true  do
       let(:project) { create(:project, :repository) }
       let(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'Bug here') }
 
-      before { note.update_attributes(commit_id: 12345678) }
+      before do
+        note.update_attributes(commit_id: 12345678)
+      end
 
       it 'finds comment' do
         visit namespace_project_path(project.namespace, project)

@@ -250,7 +250,9 @@ describe ProjectsHelper do
     end
 
     context "when project is private" do
-      before { project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      before do
+        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
 
       it "shows only allowed options" do
         helper.instance_variable_set(:@project, project)

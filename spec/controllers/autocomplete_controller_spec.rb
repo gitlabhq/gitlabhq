@@ -200,7 +200,9 @@ describe AutocompleteController do
     end
 
     context 'skip_users parameter included' do
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       it 'skips the user IDs passed' do
         get(:users, skip_users: [user, user2].map(&:id))

@@ -15,7 +15,9 @@ describe Gitlab::Highlight, lib: true do
       Gitlab::Highlight.new(blob.path, blob.data, repository: repository)
     end
 
-    before { project.change_head('gitattributes') }
+    before do
+      project.change_head('gitattributes')
+    end
 
     describe 'basic language selection' do
       let(:path) { 'custom-highlighting/test.gitlab-custom' }

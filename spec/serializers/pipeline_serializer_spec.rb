@@ -69,7 +69,9 @@ describe PipelineSerializer do
         let(:pagination) { { page: 1, per_page: 2 } }
 
         context 'when a single pipeline object is present in relation' do
-          before { create(:ci_empty_pipeline) }
+          before do
+            create(:ci_empty_pipeline)
+          end
 
           it 'serializes pipeline relation' do
             expect(subject.first).to have_key :id
@@ -77,7 +79,9 @@ describe PipelineSerializer do
         end
 
         context 'when a multiple pipeline objects are being serialized' do
-          before { create_list(:ci_empty_pipeline, 3) }
+          before do
+            create_list(:ci_empty_pipeline, 3)
+          end
 
           it 'serializes appropriate number of objects' do
             expect(subject.count).to be 2

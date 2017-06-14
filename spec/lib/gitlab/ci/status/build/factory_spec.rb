@@ -6,7 +6,9 @@ describe Gitlab::Ci::Status::Build::Factory do
   let(:status) { factory.fabricate! }
   let(:factory) { described_class.new(build, user) }
 
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   context 'when build is successful' do
     let(:build) { create(:ci_build, :success) }

@@ -160,7 +160,9 @@ describe API::Users do
   end
 
   describe "POST /users" do
-    before { admin }
+    before do
+      admin
+    end
 
     it "creates user" do
       expect do
@@ -349,7 +351,9 @@ describe API::Users do
   describe "PUT /users/:id" do
     let!(:admin_user) { create(:admin) }
 
-    before { admin }
+    before do
+      admin
+    end
 
     it "updates user with new bio" do
       put api("/users/#{user.id}", admin), { bio: 'new test bio' }
@@ -502,7 +506,9 @@ describe API::Users do
   end
 
   describe "POST /users/:id/keys" do
-    before { admin }
+    before do
+      admin
+    end
 
     it "does not create invalid ssh key" do
       post api("/users/#{user.id}/keys", admin), { title: "invalid key" }
@@ -532,7 +538,9 @@ describe API::Users do
   end
 
   describe 'GET /user/:id/keys' do
-    before { admin }
+    before do
+      admin
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -563,7 +571,9 @@ describe API::Users do
   end
 
   describe 'DELETE /user/:id/keys/:key_id' do
-    before { admin }
+    before do
+      admin
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -601,7 +611,9 @@ describe API::Users do
   end
 
   describe "POST /users/:id/emails" do
-    before { admin }
+    before do
+      admin
+    end
 
     it "does not create invalid email" do
       post api("/users/#{user.id}/emails", admin), {}
@@ -625,7 +637,9 @@ describe API::Users do
   end
 
   describe 'GET /user/:id/emails' do
-    before { admin }
+    before do
+      admin
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -662,7 +676,9 @@ describe API::Users do
   end
 
   describe 'DELETE /user/:id/emails/:email_id' do
-    before { admin }
+    before do
+      admin
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -708,7 +724,10 @@ describe API::Users do
   describe "DELETE /users/:id" do
     let!(:namespace) { user.namespace }
     let!(:issue) { create(:issue, author: user) }
-    before { admin }
+
+    before do
+      admin
+    end
 
     it "deletes user" do
       Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
@@ -1068,7 +1087,10 @@ describe API::Users do
   end
 
   describe 'POST /users/:id/block' do
-    before { admin }
+    before do
+      admin
+    end
+
     it 'blocks existing user' do
       post api("/users/#{user.id}/block", admin)
       expect(response).to have_http_status(201)
@@ -1096,7 +1118,10 @@ describe API::Users do
 
   describe 'POST /users/:id/unblock' do
     let(:blocked_user)  { create(:user, state: 'blocked') }
-    before { admin }
+
+    before do
+      admin
+    end
 
     it 'unblocks existing user' do
       post api("/users/#{user.id}/unblock", admin)

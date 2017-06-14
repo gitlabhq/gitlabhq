@@ -245,7 +245,9 @@ describe Issue, models: true do
       let(:project) { create(:empty_project) }
       let(:issue) { create(:issue, project: project) }
 
-      before { project.team << [user, :reporter] }
+      before do
+        project.team << [user, :reporter]
+      end
 
       it { is_expected.to eq true }
 
@@ -259,12 +261,18 @@ describe Issue, models: true do
         let(:to_project) { create(:empty_project) }
 
         context 'destination project allowed' do
-          before { to_project.team << [user, :reporter] }
+          before do
+            to_project.team << [user, :reporter]
+          end
+
           it { is_expected.to eq true }
         end
 
         context 'destination project not allowed' do
-          before { to_project.team << [user, :guest] }
+          before do
+            to_project.team << [user, :guest]
+          end
+
           it { is_expected.to eq false }
         end
       end
@@ -549,7 +557,9 @@ describe Issue, models: true do
         end
 
         context 'when the user is the project owner' do
-          before { project.team << [user, :master] }
+          before do
+            project.team << [user, :master]
+          end
 
           it 'returns true for a regular issue' do
             issue = build(:issue, project: project)

@@ -28,7 +28,9 @@ describe API::Notes do
     system: true
   end
 
-  before { project.team << [user, :reporter] }
+  before do
+    project.team << [user, :reporter]
+  end
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
     context "when noteable is an Issue" do
@@ -58,7 +60,9 @@ describe API::Notes do
         end
 
         context "and issue is confidential" do
-          before { ext_issue.update_attributes(confidential: true) }
+          before do
+            ext_issue.update_attributes(confidential: true)
+          end
 
           it "returns 404" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", user)
@@ -150,7 +154,9 @@ describe API::Notes do
         end
 
         context "when issue is confidential" do
-          before { issue.update_attributes(confidential: true) }
+          before do
+            issue.update_attributes(confidential: true)
+          end
 
           it "returns 404" do
             get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{issue_note.id}", private_user)

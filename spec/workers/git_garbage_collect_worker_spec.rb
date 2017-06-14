@@ -23,7 +23,9 @@ describe GitGarbageCollectWorker do
     end
 
     shared_examples 'gc tasks' do
-      before { allow(subject).to receive(:bitmaps_enabled?).and_return(bitmaps_enabled) }
+      before do
+        allow(subject).to receive(:bitmaps_enabled?).and_return(bitmaps_enabled)
+      end
 
       it 'incremental repack adds a new packfile' do
         create_objects(project)

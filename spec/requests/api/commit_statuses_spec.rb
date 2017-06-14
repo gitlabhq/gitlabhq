@@ -34,7 +34,9 @@ describe API::CommitStatuses do
         let!(:status6) { create_status(master, status: 'success') }
 
         context 'latest commit statuses' do
-          before { get api(get_url, reporter) }
+          before do
+            get api(get_url, reporter)
+          end
 
           it 'returns latest commit statuses' do
             expect(response).to have_http_status(200)
@@ -48,7 +50,9 @@ describe API::CommitStatuses do
         end
 
         context 'all commit statuses' do
-          before { get api(get_url, reporter), all: 1 }
+          before do
+            get api(get_url, reporter), all: 1
+          end
 
           it 'returns all commit statuses' do
             expect(response).to have_http_status(200)
@@ -61,7 +65,9 @@ describe API::CommitStatuses do
         end
 
         context 'latest commit statuses for specific ref' do
-          before { get api(get_url, reporter), ref: 'develop' }
+          before do
+            get api(get_url, reporter), ref: 'develop'
+          end
 
           it 'returns latest commit statuses for specific ref' do
             expect(response).to have_http_status(200)
@@ -72,7 +78,9 @@ describe API::CommitStatuses do
         end
 
         context 'latest commit statues for specific name' do
-          before { get api(get_url, reporter), name: 'coverage' }
+          before do
+            get api(get_url, reporter), name: 'coverage'
+          end
 
           it 'return latest commit statuses for specific name' do
             expect(response).to have_http_status(200)
@@ -85,7 +93,9 @@ describe API::CommitStatuses do
     end
 
     context 'ci commit does not exist' do
-      before { get api(get_url, reporter) }
+      before do
+        get api(get_url, reporter)
+      end
 
       it 'returns empty array' do
         expect(response.status).to eq 200
@@ -95,7 +105,9 @@ describe API::CommitStatuses do
     end
 
     context "guest user" do
-      before { get api(get_url, guest) }
+      before do
+        get api(get_url, guest)
+      end
 
       it "does not return project commits" do
         expect(response).to have_http_status(403)
@@ -103,7 +115,9 @@ describe API::CommitStatuses do
     end
 
     context "unauthorized user" do
-      before { get api(get_url) }
+      before do
+        get api(get_url)
+      end
 
       it "does not return project commits" do
         expect(response).to have_http_status(401)
@@ -209,7 +223,9 @@ describe API::CommitStatuses do
       end
 
       context 'when status is invalid' do
-        before { post api(post_url, developer), state: 'invalid' }
+        before do
+          post api(post_url, developer), state: 'invalid'
+        end
 
         it 'does not create commit status' do
           expect(response).to have_http_status(400)
@@ -217,7 +233,9 @@ describe API::CommitStatuses do
       end
 
       context 'when request without a state made' do
-        before { post api(post_url, developer) }
+        before do
+          post api(post_url, developer)
+        end
 
         it 'does not create commit status' do
           expect(response).to have_http_status(400)
@@ -226,7 +244,10 @@ describe API::CommitStatuses do
 
       context 'when commit SHA is invalid' do
         let(:sha) { 'invalid_sha' }
-        before { post api(post_url, developer), state: 'running' }
+
+        before do
+          post api(post_url, developer), state: 'running'
+        end
 
         it 'returns not found error' do
           expect(response).to have_http_status(404)
@@ -248,7 +269,9 @@ describe API::CommitStatuses do
     end
 
     context 'reporter user' do
-      before { post api(post_url, reporter), state: 'running' }
+      before do
+        post api(post_url, reporter), state: 'running'
+      end
 
       it 'does not create commit status' do
         expect(response).to have_http_status(403)
@@ -256,7 +279,9 @@ describe API::CommitStatuses do
     end
 
     context 'guest user' do
-      before { post api(post_url, guest), state: 'running' }
+      before do
+        post api(post_url, guest), state: 'running'
+      end
 
       it 'does not create commit status' do
         expect(response).to have_http_status(403)
@@ -264,7 +289,9 @@ describe API::CommitStatuses do
     end
 
     context 'unauthorized user' do
-      before { post api(post_url) }
+      before do
+        post api(post_url)
+      end
 
       it 'does not create commit status' do
         expect(response).to have_http_status(401)

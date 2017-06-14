@@ -1064,6 +1064,13 @@ RSpec/NotToNot:
 RSpec/RepeatedDescription:
   Enabled: false
 
+# Ensure RSpec hook blocks are always multi-line.
+RSpec/SingleLineHook:
+  Enabled: true
+  Exclude:
+    - 'spec/factories/*'
+    - 'spec/requests/api/v3/*'
+
 # Checks for stubbed test subjects.
 RSpec/SubjectStub:
   Enabled: false

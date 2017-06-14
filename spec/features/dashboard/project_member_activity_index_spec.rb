@@ -17,19 +17,25 @@ feature 'Project member activity', feature: true, js: true do
   subject { page.find(".event-title").text }
 
   context 'when a user joins the project' do
-    before { visit_activities_and_wait_with_event(Event::JOINED) }
+    before do
+      visit_activities_and_wait_with_event(Event::JOINED)
+    end
 
     it { is_expected.to eq("#{user.name} joined project") }
   end
 
   context 'when a user leaves the project' do
-    before { visit_activities_and_wait_with_event(Event::LEFT) }
+    before do
+      visit_activities_and_wait_with_event(Event::LEFT)
+    end
 
     it { is_expected.to eq("#{user.name} left project") }
   end
 
   context 'when a users membership expires for the project' do
-    before { visit_activities_and_wait_with_event(Event::EXPIRED) }
+    before do
+      visit_activities_and_wait_with_event(Event::EXPIRED)
+    end
 
     it "presents the correct message" do
       message = "#{user.name} removed due to membership expiration from project"

@@ -12,7 +12,9 @@ describe Ci::API::Runners do
 
   describe "POST /runners/register" do
     context 'when runner token is provided' do
-      before { post ci_api("/runners/register"), token: registration_token }
+      before do
+        post ci_api("/runners/register"), token: registration_token
+      end
 
       it 'creates runner with default values' do
         expect(response).to have_http_status 201
@@ -69,7 +71,10 @@ describe Ci::API::Runners do
 
     context 'when project token is provided' do
       let(:project) { FactoryGirl.create(:empty_project) }
-      before { post ci_api("/runners/register"), token: project.runners_token }
+
+      before do
+        post ci_api("/runners/register"), token: project.runners_token
+      end
 
       it 'creates runner' do
         expect(response).to have_http_status 201
