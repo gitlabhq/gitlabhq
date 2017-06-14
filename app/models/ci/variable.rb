@@ -1,12 +1,17 @@
 module Ci
   class Variable < ActiveRecord::Base
     extend Ci::Model
+    prepend EE::Ci::Variable
+
+    def self.key_uniqueness_scope
+      :project_id
+    end
 
     belongs_to :project
 
     validates :key,
       presence: true,
-      uniqueness: { scope: %i[project_id scope] },
+      uniqueness: { scope: key_uniqueness_scope },
       length: { maximum: 255 },
       format: { with: /\A[a-zA-Z0-9_]+\z/,
                 message: "can contain only letters, digits and '_'." }
