@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170606155045) do
+ActiveRecord::Schema.define(version: 20170614201943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,8 @@ ActiveRecord::Schema.define(version: 20170606155045) do
     t.datetime "created_at", null: false
     t.boolean "resync_repository", default: true, null: false
     t.boolean "resync_wiki", default: true, null: false
+    t.datetime "last_wiki_synced_at"
+    t.datetime "last_wiki_successful_sync_at"
   end
 
   add_index "project_registry", ["project_id"], name: "index_project_registry_on_project_id", using: :btree
