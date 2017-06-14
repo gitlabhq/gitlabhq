@@ -160,7 +160,7 @@ Secret variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-## Protected secret variables
+### Protected secret variables
 
 >**Notes:**
 This feature requires GitLab 9.3 or higher.
@@ -176,21 +176,22 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-## Secret variable scope
+### Limiting scopes of secret variables
 
 >**Notes:**
-This feature requires GitLab 9.4 or higher.
+[Introduced][ee-2112] in [GitLab Enterprise Edition Premium][eep] 9.4.
 
-The scope of a secret variable describes which environments should have this
-variable. The default scope is `*` which means any jobs should have this
-variable, having environments or not doesn't matter.
+You can limit the scope of a secret variable by [defining which environments][envs]
+it should be available for.
 
-If the scope is for example, `production`, then only the job having
-environment `production` would have this specific variable. Wildcard `*`
-could be used along with the name, therefore if the scope is `review/*`
-then any jobs with environments name starting with `review/` would have
-that particular variable. For example, `review/feature-01`, `review/bug-01`,
-and so on.
+Regular expressions can be used, and the default scope is `*` which means any
+jobs will have this variable, not matter if an environment is defined or not.
+
+For example, if the scope is `production`, then only the jobs having the
+environment `production` defined would have this specific variable. Wildcards (`*`)
+can be used along with the environment name, therefore if the scope is `review/*`
+then any jobs with environment names starting with `review/` would have
+that particular variable.
 
 ## Deployment variables
 
@@ -442,10 +443,12 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
-[runner]: https://docs.gitlab.com/runner/
-[triggered]: ../triggers/README.md
-[triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[envs]: ../environments.md
+[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
+[ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
+[runner]: https://docs.gitlab.com/runner/
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
-[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
+[triggered]: ../triggers/README.md
+[triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
