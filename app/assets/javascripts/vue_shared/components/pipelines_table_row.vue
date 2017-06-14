@@ -273,4 +273,4 @@ export default {
       </div>
     </td>
   </tr>
-</tr>
+</template>
