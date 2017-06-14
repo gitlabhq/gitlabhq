@@ -244,7 +244,6 @@ if (IS_DEV_SERVER) {
     hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD
   };
-  config.output.publicPath = '//' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT + config.output.publicPath;
   config.plugins.push(
     // watch node_modules for changes if we encounter a missing module compile error
     new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
