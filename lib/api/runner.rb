@@ -16,7 +16,9 @@ module API
         optional :tag_list, type: Array[String], desc: %q(List of Runner's tags)
       end
       post '/' do
+        version_attributes = get_runner_version_from_params
         attributes = attributes_for_keys [:description, :locked, :run_untagged, :tag_list]
+        attributes = attributes.merge(version_attributes) if version_attributes
 
         if runner_registration_token_valid?
           # Create shared runner. Requires admin access
@@ -30,7 +32,6 @@ module API
 
         return render_validation_error!(runner) if runner.errors.any?
 
-        runner.update(get_runner_version_from_params)
         present runner, with: Entities::RunnerRegistrationDetails
       end
 
