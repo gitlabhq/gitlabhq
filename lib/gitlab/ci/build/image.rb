@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     module Build
       class Image
-        attr_reader :name
+        attr_reader :alias, :command, :entrypoint, :name
 
         class << self
           def from_image(job)
@@ -21,7 +21,14 @@ module Gitlab
         end
 
         def initialize(image)
-          @name = image
+          if image.is_a?(String)
+            @name = image
+          elsif image.is_a?(Hash)
+            @alias = image[:alias]
+            @command = image[:command]
+            @entrypoint = image[:entrypoint]
+            @name = image[:name]
+          end
         end
 
         def valid?
