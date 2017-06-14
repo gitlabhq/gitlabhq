@@ -12,16 +12,16 @@ class ProfilesController < Profiles::ApplicationController
     user_params.except!(:email) if @user.external_email?
 
     respond_to do |format|
-      status = Users::UpdateService.new(current_user, @user, user_params).execute
+      result = Users::UpdateService.new(current_user, @user, user_params).execute
 
-      if status[:success]
+      if result[:success]
         message = "Profile was successfully updated"
 
         format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
         format.json { render json: { message: message } }
       else
-        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: status[:message] }) }
-        format.json { render json: status }
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: result[:message] }) }
+        format.json { render json: result }
       end
     end
   end
@@ -63,12 +63,13 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update_username
-    if @user.update_attributes(username: user_params[:username])
-      options = { notice: "Username successfully changed" }
-    else
-      message = @user.errors.full_messages.uniq.join('. ')
-      options = { alert: "Username change failed - #{message}" }
-    end
+    result = Users::UpdateService.new(current_user, @user, username: user_params[:username]).execute
+
+    options = if result[:success]
+                { notice: "Username successfully changed" }
+              else
+                { alert: "Username change failed - #{result[:message]}" }
+              end
 
     redirect_back_or_default(default: { action: 'show' }, options: options)
   end

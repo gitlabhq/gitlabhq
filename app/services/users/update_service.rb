@@ -13,7 +13,7 @@ module Users
       if @user.save || !@user.changed?
         success
       else
-        error("User could not be updated #{@user.errors.full_messages.uniq.join('. ')}" )
+        error(@user.errors.full_messages.uniq.join('. '))
       end
     end
 
