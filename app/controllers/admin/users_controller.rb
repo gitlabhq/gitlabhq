@@ -125,14 +125,17 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       user.skip_reconfirmation!
-      if user.update_attributes(user_params_with_pass)
+
+      result = Users::UpdateService.new(current_user, @user, user_params_with_pass).execute
+
+      if result[:succcess]
         format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
         format.json { head :ok }
       else
         # restore username to keep form action url.
         user.username = params[:id]
         format.html { render "edit" }
-        format.json { render json: user.errors, status: :unprocessable_entity }
+        format.json { render json: result[:message], status: result[:status] }
       end
     end
   end
