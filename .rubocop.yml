@@ -604,6 +604,10 @@ Metrics/PerceivedComplexity:
 
 # Lint ########################################################################
 
+# This cop checks for the use of *Kernel#eval*.
+Lint/Eval:
+  Enabled: true
+
 # Checks for ambiguous operators in the first argument of a method invocation
 # without parentheses.
 Lint/AmbiguousOperator:
@@ -862,10 +866,6 @@ Performance/TimesMap:
 # This cop checks for the use of JSON class methods which have potential
 # security issues.
 Security/JSONLoad:
-  Enabled: true
-
-# This cop checks for the use of *Kernel#eval*.
-Security/Eval:
   Enabled: true
 
 # Rails #######################################################################
