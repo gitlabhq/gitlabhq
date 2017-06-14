@@ -21,14 +21,16 @@ module.exports = function(config) {
 
   var karmaConfig = {
     basePath: ROOT_PATH,
-    browsers: ['ChromeHeadlessNoSandbox'],
+    browsers: ['ChromeHeadlessCustom'],
     customLaunchers: {
-      ChromeHeadlessNoSandbox: {
+      ChromeHeadlessCustom: {
         base: 'ChromeHeadless',
-        // chrome cannot run in sandboxed mode inside a docker container unless it is run with
-        // escalated kernel privileges: docker run --cap-add=CAP_SYS_ADMIN
-        flags: ['--no-sandbox'],
-        displayName: 'Chrome'
+        displayName: 'Chrome',
+        flags: [
+          // chrome cannot run in sandboxed mode inside a docker container unless it is run with
+          // escalated kernel privileges (e.g. docker run --cap-add=CAP_SYS_ADMIN)
+          '--no-sandbox',
+        ],
       }
     },
     frameworks: ['jasmine'],
@@ -52,6 +54,15 @@ module.exports = function(config) {
       subdir: '.',
       fixWebpackSourcePaths: true
     };
+  }
+
+  if (process.env.DEBUG) {
+    karmaConfig.logLevel = config.LOG_DEBUG;
+    process.env.CHROME_LOG_FILE = process.env.CHROME_LOG_FILE || 'chrome_debug.log';
+  }
+
+  if (process.env.CHROME_LOG_FILE) {
+    karmaConfig.customLaunchers.ChromeHeadlessCustom.flags.push('--enable-logging', '--v=1');
   }
 
   config.set(karmaConfig);
