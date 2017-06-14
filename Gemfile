@@ -332,6 +332,7 @@ group :development, :test do
   gem 'spring-commands-spinach', '~> 1.1.0'
 
   gem 'rubocop', '~> 0.47.1', require: false
+  gem 'rubocop-gitlab-security', '~> 0.0.2', require: false
   gem 'rubocop-rspec', '~> 1.15.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false

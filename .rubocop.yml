@@ -1,5 +1,6 @@
 require:
   - rubocop-rspec
+  - rubocop-gitlab-security
   - ./rubocop/rubocop
 
 inherit_from: .rubocop_todo.yml
@@ -1078,3 +1079,9 @@ RSpec/SubjectStub:
 # Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:
   Enabled: false
+
+# GitlabSecurity ##############################################################
+GitlabSecurity/PublicSend:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
