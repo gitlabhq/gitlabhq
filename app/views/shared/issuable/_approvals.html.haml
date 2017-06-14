@@ -50,7 +50,7 @@
               = link_to approver_group.group.name, approver_group.group
               - if can_override_approvers
                 .pull-right
-                  - if unsaved_approversd
+                  - if unsaved_approvers
                     = link_to "#", data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}"}, class: "btn-xs btn btn-remove", title: 'Remove group' do
                       = icon("sign-out")
                       Remove
