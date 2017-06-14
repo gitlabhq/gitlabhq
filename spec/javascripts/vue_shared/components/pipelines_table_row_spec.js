@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import tableRowComp from '~/vue_shared/components/pipelines_table_row';
+import tableRowComp from '~/vue_shared/components/pipelines_table_row.vue';
 
 describe('Pipelines Table Row', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';

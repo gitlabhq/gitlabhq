@@ -1,12 +1,13 @@
+<script>
 /* eslint-disable no-param-reassign */
-import AsyncButtonComponent from '../../pipelines/components/async_button.vue';
-import PipelinesActionsComponent from '../../pipelines/components/pipelines_actions';
-import PipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts';
+import asyncButtonComponent from '../../pipelines/components/async_button.vue';
+import pipelinesActionsComponent from '../../pipelines/components/pipelines_actions.vue';
+import pipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts.vue';
 import ciBadge from './ci_badge_link.vue';
-import PipelinesStageComponent from '../../pipelines/components/stage.vue';
-import PipelinesUrlComponent from '../../pipelines/components/pipeline_url.vue';
-import PipelinesTimeagoComponent from '../../pipelines/components/time_ago';
-import CommitComponent from './commit';
+import pipelineStage from '../../pipelines/components/stage.vue';
+import pipelineUrl from '../../pipelines/components/pipeline_url.vue';
+import pipelinesTimeago from '../../pipelines/components/time_ago.vue';
+import commitComponent from './commit.vue';
 
 /**
  * Pipeline table row.
@@ -19,30 +20,26 @@ export default {
       type: Object,
       required: true,
     },
-
     service: {
       type: Object,
       required: true,
     },
-
     updateGraphDropdown: {
       type: Boolean,
       required: false,
       default: false,
     },
   },
-
   components: {
-    'async-button-component': AsyncButtonComponent,
-    'pipelines-actions-component': PipelinesActionsComponent,
-    'pipelines-artifacts-component': PipelinesArtifactsComponent,
-    'commit-component': CommitComponent,
-    'dropdown-stage': PipelinesStageComponent,
-    'pipeline-url': PipelinesUrlComponent,
+    asyncButtonComponent,
+    pipelinesActionsComponent,
+    pipelinesArtifactsComponent,
+    commitComponent,
+    pipelineStage,
+    pipelineUrl,
     ciBadge,
-    'time-ago': PipelinesTimeagoComponent,
+    pipelinesTimeago,
   },
-
   computed: {
     /**
      * If provided, returns the commit tag.
@@ -204,69 +201,76 @@ export default {
       return {};
     },
   },
-
-  template: `
-    <tr class="commit">
-      <td class="commit-link">
-        <ci-badge :status="pipelineStatus"/>
-      </td>
-
-      <pipeline-url :pipeline="pipeline"></pipeline-url>
-
-      <td>
-        <commit-component
-          :tag="commitTag"
-          :commit-ref="commitRef"
-          :commit-url="commitUrl"
-          :short-sha="commitShortSha"
-          :title="commitTitle"
-          :author="commitAuthor"/>
-      </td>
-
-      <td class="stage-cell">
-        <div class="stage-container dropdown js-mini-pipeline-graph"
-          v-if="pipeline.details.stages.length > 0"
-          v-for="stage in pipeline.details.stages">
-
-          <dropdown-stage
-            :stage="stage"
-            :update-dropdown="updateGraphDropdown"/>
-        </div>
-      </td>
-
-      <time-ago
-        :duration="pipelineDuration"
-        :finished-time="pipelineFinishedAt" />
-
-      <td class="pipeline-actions">
-        <div class="pull-right btn-group">
-          <pipelines-actions-component
-            v-if="pipeline.details.manual_actions.length"
-            :actions="pipeline.details.manual_actions"
-            :service="service" />
-
-          <pipelines-artifacts-component
-            v-if="pipeline.details.artifacts.length"
-            :artifacts="pipeline.details.artifacts" />
-
-          <async-button-component
-            v-if="pipeline.flags.retryable"
-            :service="service"
-            :endpoint="pipeline.retry_path"
-            css-class="js-pipelines-retry-button btn-default btn-retry"
-            title="Retry"
-            icon="repeat" />
-
-          <async-button-component
-            v-if="pipeline.flags.cancelable"
-            :service="service"
-            :endpoint="pipeline.cancel_path"
-            css-class="js-pipelines-cancel-button btn-remove"
-            title="Cancel"
-            icon="remove"
-            confirm-action-message="Are you sure you want to cancel this pipeline?" />
-        </div>
-      </td>
-    </tr>
-  `,
 };
+</script>
+<template>
+  <tr class="commit">
+    <td class="commit-link">
+      <ci-badge :status="pipelineStatus" />
+    </td>
+
+    <pipeline-url :pipeline="pipeline" />
+
+    <td>
+      <commit-component
+        :tag="commitTag"
+        :commit-ref="commitRef"
+        :commit-url="commitUrl"
+        :short-sha="commitShortSha"
+        :title="commitTitle"
+        :author="commitAuthor"
+        />
+    </td>
+
+    <td class="stage-cell">
+      <div class="stage-container dropdown js-mini-pipeline-graph"
+        v-if="pipeline.details.stages.length > 0"
+        v-for="stage in pipeline.details.stages">
+
+        <pipeline-stage
+          :stage="stage"
+          :update-dropdown="updateGraphDropdown"
+          />
+      </div>
+    </td>
+
+    <pipelines-timeago
+      :duration="pipelineDuration"
+      :finished-time="pipelineFinishedAt"
+      />
+
+    <td class="pipeline-actions">
+      <div class="pull-right btn-group">
+        <pipelines-actions-component
+          v-if="pipeline.details.manual_actions.length"
+          :actions="pipeline.details.manual_actions"
+          :service="service"
+          />
+
+        <pipelines-artifacts-component
+          v-if="pipeline.details.artifacts.length"
+          :artifacts="pipeline.details.artifacts"
+          />
+
+        <async-button-component
+          v-if="pipeline.flags.retryable"
+          :service="service"
+          :endpoint="pipeline.retry_path"
+          css-class="js-pipelines-retry-button btn-default btn-retry"
+          title="Retry"
+          icon="repeat"
+          />
+
+        <async-button-component
+          v-if="pipeline.flags.cancelable"
+          :service="service"
+          :endpoint="pipeline.cancel_path"
+          css-class="js-pipelines-cancel-button btn-remove"
+          title="Cancel"
+          icon="remove"
+          confirm-action-message="Are you sure you want to cancel this pipeline?"
+          />
+      </div>
+    </td>
+  </tr>
+</tr>
