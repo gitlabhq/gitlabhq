@@ -393,13 +393,13 @@ module Ci
     end
 
     def secret_variables(with_environment: true)
-      variables = project.secret_variables_for(ref: ref)
-
-      if with_environment
-        variables.concat(
+      variables =
+        if with_environment
           project.secret_variables_for(
-            ref: ref, environment: persisted_environment))
-      end
+            ref: ref, environment: persisted_environment)
+        else
+          project.secret_variables_for(ref: ref)
+        end
 
       variables.map(&:to_runner_variable)
     end

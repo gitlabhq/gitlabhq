@@ -1388,6 +1388,24 @@ describe Ci::Build, :models do
       context 'when the ref is not protected' do
         it { is_expected.not_to include(protected_variable) }
       end
+
+      # EE
+      context 'when environment specific variable is defined' do
+        let(:environment_varialbe) do
+          { key: 'ENV_KEY', value: 'environment', public: false }
+        end
+
+        before do
+          build.update(environment: 'staging')
+          create(:environment, name: 'staging', project: build.project)
+
+          create(:ci_variable,
+                 environment_varialbe.slice(:key, :value)
+                   .merge(project: project, scope: 'stag*'))
+        end
+
+        it { is_expected.to include(environment_varialbe) }
+      end
     end
 
     context 'when build is for triggers' do
@@ -1520,13 +1538,10 @@ describe Ci::Build, :models do
         allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
         allow(build).to receive(:yaml_variables) { [build_yaml_var] }
 
-        allow(project).to receive(:secret_variables_for).with(ref: 'master') do
-          [create(:ci_variable, key: 'secret', value: 'value')]
-        end
-
         allow(project).to receive(:secret_variables_for)
           .with(ref: 'master', environment: nil) do
-            [create(:ci_variable, key: 'env', value: 'value')]
+            [create(:ci_variable, key: 'secret', value: 'value'),
+             create(:ci_variable, key: 'env', value: 'value')]
           end
       end
 
