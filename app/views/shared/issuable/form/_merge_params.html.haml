@@ -16,4 +16,4 @@
           = check_box_tag 'merge_request[force_remove_source_branch]', '1', initial_checkbox_value
           Remove source branch when merge request is accepted.
 
-= render './ee/squash_merge_param', issuable: issuable
+= render 'shared/issuable/form/ee/squash_merge_param', issuable: issuable
