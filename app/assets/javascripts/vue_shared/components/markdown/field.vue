@@ -14,6 +14,11 @@
         type: String,
         required: true,
       },
+      addSpacingClasses: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     data() {
       return {
@@ -74,7 +79,8 @@
 
 <template>
   <div
-    class="md-area prepend-top-default append-bottom-default js-vue-markdown-field"
+    class="md-area js-vue-markdown-field"
+    :class="{ 'prepend-top-default append-bottom-default': addSpacingClasses }"
     ref="gl-form">
     <markdown-header
       :preview-markdown="previewMarkdown"
