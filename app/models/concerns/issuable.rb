@@ -105,6 +105,18 @@ module Issuable
     def locking_enabled?
       title_changed? || description_changed?
     end
+
+    def allows_multiple_assignees?
+      false
+    end
+
+    def has_multiple_assignees?
+      supports_multiple_assignees? && assignees.count > 1
+    end
+
+    def supports_multiple_assignees?
+      respond_to?(:assignee_ids)
+    end
   end
 
   module ClassMethods
