@@ -251,7 +251,8 @@ module Ci
     def extract_coverage(text, regex)
       return unless regex
 
-      matches = text.scan(Regexp.new(regex)).last
+      regex = Gitlab::UntrustedRegexp.new(regex)
+      matches = regex.scan(text).last
       matches = matches.last if matches.is_a?(Array)
       coverage = matches.gsub(/\d+(\.\d+)?/).first
 

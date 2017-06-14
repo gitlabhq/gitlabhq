@@ -153,6 +153,9 @@ gem 'rainbow', '~> 2.1.0'
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
 
+# Linear-time regex library for untrusted regular expressions
+gem 're2', '~> 1.0.0'
+
 # Misc
 
 gem 'version_sorter', '~> 2.1.0'

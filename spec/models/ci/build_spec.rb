@@ -533,34 +533,48 @@ describe Ci::Build, :models do
   end
 
   describe '#extract_coverage' do
+    subject { build.extract_coverage(data, regex) }
+
     context 'valid content & regex' do
-      subject { build.extract_coverage('Coverage 1033 / 1051 LOC (98.29%) covered', '\(\d+.\d+\%\) covered') }
+      let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
+      let(:regex) { '\(\d+.\d+\%\) covered' }
 
       it { is_expected.to eq(98.29) }
     end
 
     context 'valid content & bad regex' do
-      subject { build.extract_coverage('Coverage 1033 / 1051 LOC (98.29%) covered', 'very covered') }
+      let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered\n' }
+      let(:regex) { 'very covered' }
 
       it { is_expected.to be_nil }
     end
 
     context 'no coverage content & regex' do
-      subject { build.extract_coverage('No coverage for today :sad:', '\(\d+.\d+\%\) covered') }
+      let(:data) { 'No coverage for today :sad:' }
+      let(:regex) { '\(\d+.\d+\%\) covered' }
 
       it { is_expected.to be_nil }
     end
 
     context 'multiple results in content & regex' do
-      subject { build.extract_coverage(' (98.39%) covered. (98.29%) covered', '\(\d+.\d+\%\) covered') }
+      let(:data) { ' (98.39%) covered. (98.29%) covered' }
+      let(:regex) { '\(\d+.\d+\%\) covered' }
 
       it { is_expected.to eq(98.29) }
     end
 
     context 'using a regex capture' do
-      subject { build.extract_coverage('TOTAL      9926   3489    65%', 'TOTAL\s+\d+\s+\d+\s+(\d{1,3}\%)') }
+      let(:data) { 'TOTAL      9926   3489    65%' }
+      let(:regex) { 'TOTAL\s+\d+\s+\d+\s+(\d{1,3}\%)' }
 
       it { is_expected.to eq(65) }
+    end
+
+    context 'malicious regexp' do
+      let(:data) { malicious_text }
+      let(:regex) { malicious_regexp }
+
+      include_examples 'malicious regexp'
     end
   end
 
