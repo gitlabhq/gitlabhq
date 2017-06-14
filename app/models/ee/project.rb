@@ -78,25 +78,40 @@ module EE
     end
 
     def secret_variables_for(ref:, environment: nil)
+      return super.where(scope: '*') unless environment
+
       query = super
 
-      # Full wildcard has the least priority
-      variables = query.where(scope: '*').to_a
+      where = <<~SQL
+        scope IN (:wildcard, :environment_name) OR
+          :environment_name LIKE
+            REPLACE(REPLACE(scope, :wildcard, :percent),
+                    :underscore,
+                    :escaped_underscore)
+      SQL
 
-      if environment
-        # Partial wildcard sits in the middle
-        variables.concat(
-          query.where("? LIKE REPLACE(REPLACE(scope, ?, ?), ?, ?)",
-                      environment.name, '*', '%', '_', '\\_')
-               .where.not(scope: '*')
-               .where.not(scope: environment.name)
-        )
+      order = <<~SQL
+        CASE scope
+          WHEN %{wildcard} THEN 0
+          WHEN %{environment_name} THEN 2
+          ELSE 1
+        END
+      SQL
 
-        # Exactly match has the highest priority
-        variables.concat(query.where(scope: environment.name))
-      end
+      values = {
+        wildcard: '*',
+        environment_name: environment.name,
+        percent: '%',
+        underscore: '_',
+        escaped_underscore: '\\_'
+      }
 
-      variables
+      quoted_values =
+        values.transform_values(&self.class.connection.method(:quote))
+
+      query
+        .where(where, values)
+        .order(order % quoted_values) # `order` cannot escape for us!
     end
 
     private
