@@ -3,7 +3,6 @@ import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_
 import IssueNoteHeader from './issue_note_header.vue';
 import IssueNoteActions from './issue_note_actions.vue';
 import IssueNoteBody from './issue_note_body.vue';
-import IssueNoteEditedText from './issue_note_edited_text.vue';
 
 export default {
   props: {
@@ -17,7 +16,6 @@ export default {
     IssueNoteHeader,
     IssueNoteActions,
     IssueNoteBody,
-    IssueNoteEditedText,
   },
   computed: {
     author() {
@@ -52,11 +50,6 @@ export default {
             :reportAbusePath="note.report_abuse_path" />
         </div>
         <issue-note-body :note="note" />
-        <issue-note-edited-text
-          v-if="note.last_edited_by"
-          :editedAt="note.last_edited_at"
-          :editedBy="note.last_edited_by"
-          actionText="Edited" />
       </div>
     </div>
   </li>
