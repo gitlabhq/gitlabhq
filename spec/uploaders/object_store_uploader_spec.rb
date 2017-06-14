@@ -22,6 +22,42 @@ describe ObjectStoreUploader do
     end
   end
 
+  describe '#file_storage?' do
+    context 'when file storage is used' do
+      before do
+        uploader_class.storage(:file)
+      end
+
+      it { is_expected.to be_file_storage }
+    end
+
+    context 'when is remote storage' do
+      before do
+        uploader_class.storage(:fog)
+      end
+
+      it { is_expected.not_to be_file_storage }
+    end
+  end
+
+  describe '#file_cache_storage?' do
+    context 'when file storage is used' do
+      before do
+        uploader_class.cache_storage(:file)
+      end
+
+      it { is_expected.to be_file_cache_storage }
+    end
+
+    context 'when is remote storage' do
+      before do
+        uploader_class.cache_storage(:fog)
+      end
+
+      it { is_expected.not_to be_file_cache_storage }
+    end
+  end
+
   context 'when using ArtifactsUploader' do
     let(:job) { create(:ci_build, :artifacts, artifacts_file_store: store) }
     let(:uploader) { job.artifacts_file }

@@ -1,7 +1,7 @@
 require 'fog/aws'
 require 'carrierwave/storage/fog'
 
-class ObjectStoreUploader < GitlabUploader
+class ObjectStoreUploader < CarrierWave::Uploader::Base
   before :store, :set_default_local_store
   before :store, :verify_license!
 
@@ -27,6 +27,14 @@ class ObjectStoreUploader < GitlabUploader
   def initialize(subject, field)
     @subject = subject
     @field = field
+  end
+
+  def file_storage?
+    storage.is_a?(CarrierWave::Storage::File)
+  end
+
+  def file_cache_storage?
+    cache_storage.is_a?(CarrierWave::Storage::File)
   end
 
   def object_store
@@ -110,6 +118,10 @@ class ObjectStoreUploader < GitlabUploader
     return if file_storage?
 
     raise 'Object Storage feature is missing' unless subject.project.feature_available?(:object_storage)
+  end
+
+  def exists?
+    file.try(:exists?)
   end
 
   private
