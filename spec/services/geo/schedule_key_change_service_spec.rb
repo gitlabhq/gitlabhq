@@ -5,7 +5,9 @@ describe Geo::ScheduleKeyChangeService, services: true do
   subject(:key_delete) { Geo::ScheduleKeyChangeService.new('id' => 1, 'key' => key.key, 'action' => :delete) }
   let(:key) { FactoryGirl.build(:key) }
 
-  before(:each) { allow_any_instance_of(GeoKeyRefreshWorker).to receive(:perform) }
+  before do
+    allow_any_instance_of(GeoKeyRefreshWorker).to receive(:perform)
+  end
 
   context 'key creation' do
     it 'executes action' do

@@ -18,7 +18,9 @@ feature 'Merge immediately', :feature, :js do
                          sha: project.repository.commit('master').id)
   end
 
-  before { project.team << [user, :master] }
+  before do
+    project.team << [user, :master]
+  end
 
   context 'when there is active pipeline for merge request' do
     background do

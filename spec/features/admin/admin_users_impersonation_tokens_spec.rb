@@ -12,7 +12,9 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
     find(".table.inactive-tokens")
   end
 
-  before { login_as(admin) }
+  before do
+    login_as(admin)
+  end
 
   describe "token creation" do
     it "allows creation of a token" do

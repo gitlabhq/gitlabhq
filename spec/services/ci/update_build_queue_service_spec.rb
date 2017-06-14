@@ -9,7 +9,9 @@ describe Ci::UpdateBuildQueueService, :services do
     let(:runner) { create(:ci_runner) }
 
     context 'when there are runner that can pick build' do
-      before { build.project.runners << runner }
+      before do
+        build.project.runners << runner
+      end
 
       it 'ticks runner queue value' do
         expect { subject.execute(build) }
@@ -36,7 +38,9 @@ describe Ci::UpdateBuildQueueService, :services do
     end
 
     context 'when there are no runners that can pick build' do
-      before { build.tag_list = [:docker] }
+      before do
+        build.tag_list = [:docker]
+      end
 
       it 'does not tick runner queue value' do
         expect { subject.execute(build) }

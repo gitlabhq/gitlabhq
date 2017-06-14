@@ -130,8 +130,13 @@ describe Notify do
           end
 
           context 'with a preferred language' do
-            before { Gitlab::I18n.locale = :es }
-            after { Gitlab::I18n.use_default_locale }
+            before do
+              Gitlab::I18n.locale = :es
+            end
+
+            after do
+              Gitlab::I18n.use_default_locale
+            end
 
             it 'always generates the email using the default language' do
               is_expected.to have_body_text('foo, bar, and baz')
@@ -683,7 +688,9 @@ describe Notify do
         let(:project) { create(:project, :repository) }
         let(:commit) { project.commit }
 
-        before(:each) { allow(note).to receive(:noteable).and_return(commit) }
+        before do
+          allow(note).to receive(:noteable).and_return(commit)
+        end
 
         subject { described_class.note_commit_email(recipient.id, note.id) }
 
@@ -705,7 +712,10 @@ describe Notify do
       describe 'on a merge request' do
         let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
         let(:note_on_merge_request_path) { namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: "note_#{note.id}") }
-        before(:each) { allow(note).to receive(:noteable).and_return(merge_request) }
+
+        before do
+          allow(note).to receive(:noteable).and_return(merge_request)
+        end
 
         subject { described_class.note_merge_request_email(recipient.id, note.id) }
 
@@ -727,7 +737,10 @@ describe Notify do
       describe 'on an issue' do
         let(:issue) { create(:issue, project: project) }
         let(:note_on_issue_path) { namespace_project_issue_path(project.namespace, project, issue, anchor: "note_#{note.id}") }
-        before(:each) { allow(note).to receive(:noteable).and_return(issue) }
+
+        before do
+          allow(note).to receive(:noteable).and_return(issue)
+        end
 
         subject { described_class.note_issue_email(recipient.id, note.id) }
 
@@ -789,7 +802,9 @@ describe Notify do
         let(:commit) { project.commit }
         let(:note) { create(:discussion_note_on_commit, commit_id: commit.id, project: project, author: note_author) }
 
-        before(:each) { allow(note).to receive(:noteable).and_return(commit) }
+        before do
+          allow(note).to receive(:noteable).and_return(commit)
+        end
 
         subject { described_class.note_commit_email(recipient.id, note.id) }
 
@@ -813,7 +828,10 @@ describe Notify do
         let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
         let(:note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project, author: note_author) }
         let(:note_on_merge_request_path) { namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: "note_#{note.id}") }
-        before(:each) { allow(note).to receive(:noteable).and_return(merge_request) }
+
+        before do
+          allow(note).to receive(:noteable).and_return(merge_request)
+        end
 
         subject { described_class.note_merge_request_email(recipient.id, note.id) }
 
@@ -837,7 +855,10 @@ describe Notify do
         let(:issue) { create(:issue, project: project) }
         let(:note) { create(:discussion_note_on_issue, noteable: issue, project: project, author: note_author) }
         let(:note_on_issue_path) { namespace_project_issue_path(project.namespace, project, issue, anchor: "note_#{note.id}") }
-        before(:each) { allow(note).to receive(:noteable).and_return(issue) }
+
+        before do
+          allow(note).to receive(:noteable).and_return(issue)
+        end
 
         subject { described_class.note_issue_email(recipient.id, note.id) }
 

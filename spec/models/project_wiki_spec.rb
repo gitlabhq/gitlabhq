@@ -8,7 +8,10 @@ describe ProjectWiki, models: true do
   let(:project_wiki) { ProjectWiki.new(project, user) }
 
   subject { project_wiki }
-  before { project_wiki.wiki }
+
+  before do
+    project_wiki.wiki
+  end
 
   describe "#path_with_namespace" do
     it "returns the project path with namespace with the .wiki extension" do

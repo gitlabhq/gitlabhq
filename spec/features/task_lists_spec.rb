@@ -144,7 +144,9 @@ feature 'Task Lists', feature: true do
     describe 'nested tasks', js: true do
       let(:issue) { create(:issue, description: nested_tasks_markdown, author: user, project: project) }
 
-      before { visit_issue(project, issue) }
+      before do
+        visit_issue(project, issue)
+      end
 
       it 'renders' do
         expect(page).to have_selector('ul.task-list',      count: 2)

@@ -291,7 +291,9 @@ describe Gitlab::LDAP::Access, lib: true do
     end
 
     context 'user has at least one LDAPKey' do
-      before { user.keys.ldap.create key: ssh_key, title: 'to be removed' }
+      before do
+        user.keys.ldap.create key: ssh_key, title: 'to be removed'
+      end
 
       it "removes a SSH key if it is no longer in LDAP" do
         entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}:\n")

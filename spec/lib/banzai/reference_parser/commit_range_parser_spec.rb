@@ -10,7 +10,9 @@ describe Banzai::ReferenceParser::CommitRangeParser, lib: true do
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
-      before { link['data-commit-range'] = '123..456' }
+      before do
+        link['data-commit-range'] = '123..456'
+      end
 
       it_behaves_like "referenced feature visibility", "repository"
     end

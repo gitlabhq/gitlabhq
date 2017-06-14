@@ -173,7 +173,9 @@ describe Gitlab::LDAP::User, lib: true do
 
     context 'signup' do
       context 'dont block on create' do
-        before { configure_block(false) }
+        before do
+          configure_block(false)
+        end
 
         it do
           ldap_user.save
@@ -183,7 +185,9 @@ describe Gitlab::LDAP::User, lib: true do
       end
 
       context 'block on create' do
-        before { configure_block(true) }
+        before do
+          configure_block(true)
+        end
 
         it do
           ldap_user.save
@@ -200,7 +204,9 @@ describe Gitlab::LDAP::User, lib: true do
       end
 
       context 'dont block on create' do
-        before { configure_block(false) }
+        before do
+          configure_block(false)
+        end
 
         it do
           ldap_user.save
@@ -210,7 +216,9 @@ describe Gitlab::LDAP::User, lib: true do
       end
 
       context 'block on create' do
-        before { configure_block(true) }
+        before do
+          configure_block(true)
+        end
 
         it do
           ldap_user.save

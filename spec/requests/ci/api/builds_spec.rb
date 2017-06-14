@@ -229,7 +229,9 @@ describe Ci::API::Builds do
         end
 
         context 'when runner is allowed to pick untagged builds' do
-          before { runner.update_column(:run_untagged, true) }
+          before do
+            runner.update_column(:run_untagged, true)
+          end
 
           it 'picks build' do
             register_builds
@@ -514,7 +516,9 @@ describe Ci::API::Builds do
         end
 
         context 'authorization token is invalid' do
-          before { post authorize_url, { token: 'invalid', filesize: 100 } }
+          before do
+            post authorize_url, { token: 'invalid', filesize: 100 }
+          end
 
           it 'responds with forbidden' do
             expect(response).to have_http_status(403)

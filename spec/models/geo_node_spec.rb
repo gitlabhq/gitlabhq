@@ -17,9 +17,13 @@ describe GeoNode, type: :model do
   end
 
   context 'default values' do
-    let(:gitlab_host) { 'gitlabhost' }
-    before(:each) { allow(Gitlab.config.gitlab).to receive(:host) { gitlab_host } }
     subject { described_class.new }
+
+    let(:gitlab_host) { 'gitlabhost' }
+
+    before do
+      allow(Gitlab.config.gitlab).to receive(:host) { gitlab_host }
+    end
 
     it 'defines a default schema' do
       expect(subject.schema).to eq('http')
@@ -176,7 +180,9 @@ describe GeoNode, type: :model do
   describe '#url=' do
     subject { GeoNode.new }
 
-    before(:each) { subject.url = dummy_url }
+    before do
+      subject.url = dummy_url
+    end
 
     it 'sets schema field based on url' do
       expect(subject.schema).to eq('https')

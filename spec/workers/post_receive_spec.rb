@@ -89,7 +89,9 @@ describe PostReceive do
       end
 
       context "does not create a Ci::Pipeline" do
-        before { stub_ci_pipeline_yaml_file(nil) }
+        before do
+          stub_ci_pipeline_yaml_file(nil)
+        end
 
         it { expect{ subject }.not_to change{ Ci::Pipeline.count } }
       end

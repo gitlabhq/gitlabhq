@@ -5,7 +5,10 @@ feature 'Triggers', feature: true, js: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest_user) { create(:user) }
-  before { login_as(user) }
+
+  before do
+    login_as(user)
+  end
 
   before do
     @project = create(:empty_project)

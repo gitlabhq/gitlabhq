@@ -5,7 +5,9 @@ describe Gitlab::Geo, lib: true do
   let(:secondary_node) { FactoryGirl.create(:geo_node) }
 
   describe 'current_node' do
-    before(:each) { primary_node }
+    before do
+      primary_node
+    end
 
     it 'returns a GeoNode instance' do
       expect(described_class.current_node).to eq(primary_node)
@@ -25,7 +27,9 @@ describe Gitlab::Geo, lib: true do
 
   describe 'enabled?' do
     context 'when any GeoNode exists' do
-      before(:each) { secondary_node }
+      before do
+        secondary_node
+      end
 
       it 'returns true' do
         expect(described_class.enabled?).to be_truthy
@@ -58,7 +62,9 @@ describe Gitlab::Geo, lib: true do
 
   describe 'readonly?' do
     context 'when current node is secondary' do
-      before(:each) { secondary_node }
+      before do
+        secondary_node
+      end
 
       it 'returns true' do
         allow(described_class).to receive(:current_node) { secondary_node }
@@ -67,7 +73,9 @@ describe Gitlab::Geo, lib: true do
     end
 
     context 'current node is primary' do
-      before(:each) { primary_node }
+      before do
+        primary_node
+      end
 
       it 'returns false when ' do
         allow(described_class).to receive(:current_node) { primary_node }

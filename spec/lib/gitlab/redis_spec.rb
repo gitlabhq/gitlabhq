@@ -108,11 +108,18 @@ describe Gitlab::Redis do
   end
 
   describe '.with' do
-    before { clear_pool }
-    after { clear_pool }
+    before do
+      clear_pool
+    end
+
+    after do
+      clear_pool
+    end
 
     context 'when running not on sidekiq workers' do
-      before { allow(Sidekiq).to receive(:server?).and_return(false) }
+      before do
+        allow(Sidekiq).to receive(:server?).and_return(false)
+      end
 
       it 'instantiates a connection pool with size 5' do
         expect(ConnectionPool).to receive(:new).with(size: 5).and_call_original
