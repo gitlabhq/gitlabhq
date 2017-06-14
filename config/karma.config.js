@@ -21,11 +21,13 @@ module.exports = function(config) {
 
   var karmaConfig = {
     basePath: ROOT_PATH,
-    browsers: ['ChromeDebug'],
+    browsers: ['ChromeHeadlessNoSandbox'],
     customLaunchers: {
-      ChromeDebug: {
+      ChromeHeadlessNoSandbox: {
         base: 'ChromeHeadless',
-        flags: ['--enable-logging', '--v=1'],
+        // chrome cannot run in sandboxed mode inside a docker container unless it is run with
+        // escalated kernel privileges: docker run --cap-add=CAP_SYS_ADMIN
+        flags: ['--no-sandbox'],
         displayName: 'Chrome'
       }
     },
@@ -40,7 +42,6 @@ module.exports = function(config) {
     reporters: [progressReporter],
     webpack: webpackConfig,
     webpackMiddleware: { stats: 'errors-only' },
-    logLevel: config.LOG_DEBUG,
   };
 
   if (process.env.BABEL_ENV === 'coverage' || process.env.NODE_ENV === 'coverage') {
