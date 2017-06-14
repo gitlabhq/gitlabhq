@@ -91,7 +91,7 @@ export default {
                     v-if="note.can_reply"
                     type="button"
                     class="btn btn-text-field js-discussion-reply-button"
-                    title="Add a reply"></button>
+                    title="Add a reply">Reply...</button>
                   <div
                     v-if="!note.can_reply"
                     class="disabled-comment text-center">
