@@ -3,7 +3,7 @@ import eventHub from '~/issuable/related_issues/event_hub';
 import issueToken from '~/issuable/related_issues/components/issue_token.vue';
 
 describe('IssueToken', () => {
-  const idKey = '200';
+  const idKey = 200;
   const displayReference = 'foo/bar#123';
   const title = 'some title';
   let IssueToken;
@@ -31,6 +31,11 @@ describe('IssueToken', () => {
 
     it('shows reference', () => {
       expect(vm.$el.textContent.trim()).toEqual(displayReference);
+    });
+
+    it('does not link without path specified', () => {
+      expect(vm.$refs.link.tagName.toLowerCase()).toEqual('span');
+      expect(vm.$refs.link.getAttribute('href')).toBeNull();
     });
   });
 

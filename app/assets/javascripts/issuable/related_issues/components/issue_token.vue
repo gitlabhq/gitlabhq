@@ -50,6 +50,12 @@ export default {
     hasTitle() {
       return this.title.length > 0;
     },
+    computedLinkElementType() {
+      return this.path.length > 0 ? 'a' : 'span';
+    },
+    computedPath() {
+      return this.path.length ? this.path : null;
+    },
   },
 
   methods: {
@@ -79,10 +85,11 @@ export default {
 
 <template>
   <div class="issue-token">
-    <a
+    <component
+      :is="this.computedLinkElementType"
       ref="link"
       class="issue-token-link"
-      :href="path"
+      :href="computedPath"
       :title="title"
       data-toggle="tooltip"
       data-placement="top">
@@ -110,7 +117,7 @@ export default {
           {{ title }}
         </span>
       </span>
-    </a>
+    </component>
     <button
       ref="removeButton"
       v-if="canRemove"

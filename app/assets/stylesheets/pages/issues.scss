@@ -292,6 +292,12 @@ ul.related-merge-requests > li {
   display: inline-flex;
   min-width: 0;
 
+  color: $gl-text-color-secondary;
+
+  &[href] {
+    color: $gl-link-color;
+  }
+
   &:hover,
   &:focus {
     outline: none;
