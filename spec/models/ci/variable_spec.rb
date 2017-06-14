@@ -15,11 +15,11 @@ describe Ci::Variable, models: true do
   it { is_expected.to allow_value('review/*').for(:scope) }
   it { is_expected.not_to allow_value('').for(:scope) }
 
-  if defined?(EE::Ci::Variable)
-    it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :scope) }
-  else
-    it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id) }
+  let(:key_scope) do
+    [:project_id, :scope] # EE
   end
+
+  it { is_expected.to validate_uniqueness_of(:key).scoped_to(key_scope) }
 
   describe '.unprotected' do
     subject { described_class.unprotected }
