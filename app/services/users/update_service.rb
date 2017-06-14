@@ -7,14 +7,30 @@ module Users
       @params = params.dup
     end
 
-    def execute(skip_authorization: false)
-      raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_update_user?
+    def execute(skip_authorization: false, &block)
+      assign_attributes(skip_authorization, &block)
 
-      if @user.update_attributes(params)
+      if @user.save
         success
       else
-        error('Project could not be updated')
+        error('User could not be updated')
       end
+    end
+
+    def execute!(skip_authorization: false, &block)
+      assign_attributes(skip_authorization, &block)
+
+      @user.save!
+    end
+
+    private
+
+    def assign_attributes(skip_authorization, &block)
+      raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_update_user?
+
+      yield(@user) if block_given?
+
+      @user.assign_attributes(params) if params.any?
     end
 
     def can_update_user?

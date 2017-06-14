@@ -1900,7 +1900,6 @@ describe User, models: true do
     end
   end
 
-
   describe 'audit changes' do
     let!(:user) { create(:user) }
 
