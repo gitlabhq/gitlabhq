@@ -125,6 +125,178 @@ test:2.2:
   - bundle exec rake spec
 ```
 
+Starting with GitLab 9.4 and GitLab Runner 9.4 you can also pass an extended
+configuration options for image and services:
+
+```yaml
+image:
+  name: ruby:2.2
+  entrypoint: /bin/bash
+
+services:
+- name: my-postgres:9.4
+  alias: db-postgres
+  entrypoint: /usr/local/bin/db-postgres
+  command: start
+
+before_script:
+- bundle install
+
+test:
+  script:
+  - bundle exec rake spec
+```
+
+Read [Extended docker configuration options](#extended-docker-configuration-options) to
+check what options you can use with `image` and `services` definitions.
+
+## Extended docker configuration options
+
+> **Note: This feature is available with GitLab and GitLab Runner 9.4 or higher**
+
+While configuring `image` or `services` entry you can use both string or a map of
+options. If you will use a string, then it must be the full name of the image to use
+(including registry part if you wan't to download the image from a non-default
+registry). If you will use a map of options, then it must contain at least the `name`
+option, which is the same name of image as used for a string setting.
+
+For example, following definitions are equal:
+
+```yaml
+image: "registry.example.com/my/image:latest"
+services:
+- postgresql:9.4
+- redis:latest
+```
+
+```yaml
+image:
+  name: "registry.example.com/my/image:latest"
+services:
+- name: postgresql:9.4
+- name: redis:latest
+```
+
+### Available settings for `image`
+
+| Setting    | Required | Description |
+|------------|----------|-------------|
+| name       | yes      | Full name of the image that should be used. It should contain the registry part if needed. |
+| entrypoint | no       | Command or script that should be executed as container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating container. |
+
+### Available settings for `services` entry
+
+| Setting    | Required | Description |
+|------------|----------|-------------|
+| name       | yes      | Full name of the image that should be used. It should contain the registry part if needed. |
+| entrypoint | no       | Command or script that should be used as container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating container. |
+| command    | no       | Command or script and eventual arguments that should be used as container's command. It will be translated to arguments passed to Docker after image's name. |
+| alias      | no       | Additional alias, that can be used to access service from job's container. Read [Accessing the services](#accessing-the-services) for more information. |
+
+### Example usages
+
+You can use this feature for different purposes:
+
+#### Starting multiple services from the same image
+
+Before adding this feature following configuration will not work properly:
+
+```yaml
+services:
+- mysql:latest
+- mysql:latest
+```
+
+Runner would start two containers using the `mysql:latest` image, but both
+of them would be added to the job's container with the `mysql` alias. This
+would end with one of services not being accessible.
+
+Thanks to extended docker configuration we can change above configuration
+to a following version:
+
+```yaml
+services:
+- name: mysql:latest
+  alias: mysql-1
+- name: mysql:latest
+  aliase: mysql-2
+```
+
+Runner will still start two containers using the `mysql:latest` image,
+but now each of them will be also accessible with the alias configured
+in `.gitlab-ci.yml` file.
+
+#### Setting a command for the service
+
+Let's assume we have a `super/sql:latest` image with some SQL database
+inside. We would like to use it as a service for your job. The problem
+is that this image doesn't start the database process while starting
+the container. It have all installed and configured inside but user needs
+to manually use `/usr/bin/super-sql run` as command to start the database.
+
+Previously we would need to create our own image based on the `super/sql:latest`
+image, add the default command, and then use it in job's configuration, e.g.:
+
+```Dockerfile
+# my-super-sql:latest image's Dockerfile
+FROM super/sql:latest
+CMD ["/usr/bin/super-sql", "run"]
+```
+
+```yaml
+# .gitlab-ci.yml
+
+services:
+- my-super-sql:latest
+```
+
+With docker extended docker configuration we can now do this simple, setting
+only proper configuration in `.gitlab-ci.yml`, e.g:
+
+```yaml
+# .gitlab-ci.yml
+
+services:
+- name: super/sql:latest
+  command: /usr/bin/super-sql run
+```
+
+#### Overriding entrypoint of job's image
+
+Let's assume we have a `super/sql:experimental` image with some SQL database
+inside. We would like to use it as base for our job, because we wan't to
+execute some tests with this database binary. The problem is that this image
+is configured with `/usr/bin/super-sql run` as entrypoint. That means, that
+when starting container without additional options it will run database's
+process, while Runner expects that image will have no entrypoint or at least
+will start with a shell as entrypoint.
+
+Previously we would need to create our own image based on the
+`super/sql:experimental` image, set the entrypoint to a shell, and then use
+it in job's configuration, e.g.:
+
+```Dockerfile
+# my-super-sql:experimental image's Dockerfile
+FROM super/sql:experimental
+ENTRYPOINT ["/bin/sh"]
+```
+
+```yaml
+# .gitlab-ci.yml
+
+image: my-super-sql:experimental
+```
+
+With docker extended docker configuration we can now do this simple, setting
+only proper configuration in `.gitlab-ci.yml`, e.g:
+
+```yaml
+# .gitlab-ci.yml
+
+image:
+  name: super/sql:experimental
+  entrypoint: /bin/sh
+
 ## Define image and services in `config.toml`
 
 Look for the `[runners.docker]` section:
@@ -230,6 +402,10 @@ rules:
 1. Everything after `:` is stripped
 2. Slash (`/`) is replaced with double underscores (`__`) - primary alias
 3. Slash (`/`) is replaced with dash (`-`) - secondary alias, requires GitLab Runner v1.1.0 or newer
+
+Starting with 9.4 You can also set additional alias using the `alias` setting of `services`
+configuration entry. Please read [Extended docker configuration options](#extended-docker-configuration-options)
+for more information.
 
 ## Configuring services
 
