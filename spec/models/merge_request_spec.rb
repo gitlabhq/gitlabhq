@@ -1510,40 +1510,22 @@ describe MergeRequest, models: true do
     let(:approver) { create(:user) }
 
     context 'on a project with only one member' do
+      let(:author) { project.owner }
+
       context 'when there is one approver' do
         before { project.update_attributes(approvals_before_merge: 1) }
 
         context 'when that approver is the MR author' do
           before do
-            project.team << [author, :developer]
             create(:approver, user: author, target: merge_request)
           end
 
           it 'does not require approval for the merge request' do
-            expect(merge_request.approvals_left).to eq(1)
+            expect(merge_request.approvals_left).to eq(0)
           end
 
           it 'does not allow the approver to approve the MR' do
             expect(merge_request.can_approve?(author)).to be_falsey
-          end
-
-          it 'does not allow a logged-out user to approve the MR' do
-            expect(merge_request.can_approve?(nil)).to be_falsey
-          end
-        end
-
-        context 'when that approver is not the MR author' do
-          before do
-            project.team << [approver, :developer]
-            create(:approver, user: approver, target: merge_request)
-          end
-
-          it 'requires one approval' do
-            expect(merge_request.approvals_left).to eq(1)
-          end
-
-          it 'allows the approver to approve the MR' do
-            expect(merge_request.can_approve?(approver)).to be_truthy
           end
 
           it 'does not allow a logged-out user to approve the MR' do
