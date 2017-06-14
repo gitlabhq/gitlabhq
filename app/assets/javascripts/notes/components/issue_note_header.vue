@@ -27,7 +27,7 @@ export default {
     discussionId: {
       type: String,
       required: false,
-    }
+    },
   },
   components: {
     TimeAgoTooltip,

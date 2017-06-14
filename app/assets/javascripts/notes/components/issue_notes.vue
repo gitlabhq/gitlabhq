@@ -26,7 +26,7 @@ export default {
     },
     componentData(note) {
       return note.individual_note ? note.notes[0] : note;
-    }
+    },
   },
   mounted() {
     const path = this.$el.parentNode.dataset.discussionsPath;

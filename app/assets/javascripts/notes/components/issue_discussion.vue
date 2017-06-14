@@ -16,7 +16,7 @@ export default {
     return {
       registerLink: '#',
       signInLink: '#',
-    }
+    };
   },
   computed: {
     discussion() {
@@ -43,7 +43,7 @@ export default {
       this.signInLink = signInLink.getAttribute('href');
     }
   },
-}
+};
 </script>
 
 <template>

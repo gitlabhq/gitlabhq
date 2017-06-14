@@ -18,7 +18,7 @@ const mutations = {
     storeState.notes = notes;
   },
   toggleDiscussion(storeState, { discussionId }) {
-    const [ discussion ] = storeState.notes.filter((note) => note.id === discussionId);
+    const [discussion] = storeState.notes.filter(note => note.id === discussionId);
 
     discussion.expanded = !discussion.expanded;
   },
