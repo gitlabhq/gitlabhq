@@ -1,3 +1,7 @@
+- is_current_user = current_user == note.author
+
+- return unless note_editable || !is_current_user
+
 .dropdown.more-actions
   = button_tag title: 'More actions', class: 'note-action-button more-actions-toggle has-tooltip btn btn-transparent', data: { toggle: 'dropdown', container: 'body' } do
     = icon('ellipsis-v', class: 'icon')
@@ -5,8 +9,8 @@
     - if note_editable
       %li
         = button_tag 'Edit comment', class: 'js-note-edit btn btn-transparent'
-    %li.divider
-    - if current_user != note.author
+      %li.divider
+    - unless is_current_user
       %li
         = link_to new_abuse_report_path(user_id: note.author.id, ref_url: noteable_note_url(note)) do
           Report as abuse
