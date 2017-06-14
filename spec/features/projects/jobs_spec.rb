@@ -114,7 +114,7 @@ feature 'Jobs', :feature do
 
   describe "GET /:project/jobs/:id" do
     context "Job from project" do
-      let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
       before do
         visit namespace_project_job_path(project.namespace, project, job)
