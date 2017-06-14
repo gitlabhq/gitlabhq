@@ -15,6 +15,10 @@ class FilteredSearchManager {
     this.tokensContainer = this.container.querySelector('.tokens-container');
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
+    gl.FilteredSearchTokenKeysIssuesEE.init({
+      multipleAssignees: this.filteredSearchInput.dataset.multipleAssignees,
+    });
+
     if (this.page === 'issues' || this.page === 'boards') {
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysIssuesEE;
     }

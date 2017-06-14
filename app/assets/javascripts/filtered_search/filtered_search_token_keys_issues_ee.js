@@ -19,12 +19,16 @@ const weightConditions = [{
 }];
 
 class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
+  static init(availableFeatures) {
+    this.availableFeatures = availableFeatures;
+  }
+
   static get() {
     const tokenKeys = Array.from(super.get());
 
     // Enable multiple assignees
     const assigneeTokenKey = tokenKeys.find(tk => tk.key === 'assignee');
-    assigneeTokenKey.type = 'array';
+    if (this.availableFeatures && this.availableFeatures.multipleAssignees) assigneeTokenKey.type = 'array';
 
     tokenKeys.push(weightTokenKey);
     return tokenKeys;
