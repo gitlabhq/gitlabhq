@@ -97,7 +97,7 @@ module API
         authorize! :create_merge_request, user_project
 
         mr_params = declared_params(include_missing: false)
-        mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
+        mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch)
 
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
