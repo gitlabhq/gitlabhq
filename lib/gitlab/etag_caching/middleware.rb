@@ -7,7 +7,7 @@ module Gitlab
 
       def call(env)
         request = Rack::Request.new(env)
-        route = Gitlab::EtagCaching::Router.match(request)
+        route = Gitlab::EtagCaching::Router.match(request.path_info)
         return @app.call(env) unless route
 
         track_event(:etag_caching_middleware_used, route)
