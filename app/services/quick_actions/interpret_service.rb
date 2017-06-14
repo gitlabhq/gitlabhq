@@ -92,9 +92,12 @@ module QuickActions
 
     desc 'Assign'
     explanation do |users|
-      "Assigns #{users.first.to_reference}." if users.any?
+      users = issuable.allows_multiple_assignees? ? users : users.take(1)
+      "Assigns #{users.map(&:to_reference).to_sentence}."
     end
-    params '@user'
+    params do
+      issuable.allows_multiple_assignees? ? '@user1 @user2' : '@user'
+    end
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
@@ -104,25 +107,44 @@ module QuickActions
     command :assign do |users|
       next if users.empty?
 
-      if issuable.is_a?(Issue)
+      if issuable.allows_multiple_assignees?
+        @updates[:assignee_ids] = issuable.assignees.pluck(:id) + users.map(&:id)
+      elsif issuable.supports_multiple_assignees?
         @updates[:assignee_ids] = [users.last.id]
       else
         @updates[:assignee_id] = users.last.id
       end
     end
 
-    desc 'Remove assignee'
+    desc do
+      if issuable.allows_multiple_assignees?
+        'Remove all or specific assignee(s)'
+      else
+        'Remove assignee'
+      end
+    end
     explanation do
-      "Removes assignee #{issuable.assignees.first.to_reference}."
+      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}."
+    end
+    params do
+      issuable.allows_multiple_assignees? ? '@user1 @user2' : ''
     end
     condition do
       issuable.persisted? &&
         issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :unassign do
-      if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = []
+    command :unassign do |unassign_param = nil|
+      # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
+      users = extract_users(unassign_param) if issuable.allows_multiple_assignees?
+
+      if issuable.supports_multiple_assignees?
+        @updates[:assignee_ids] =
+          if users&.any?
+            issuable.assignees.pluck(:id) - users.map(&:id)
+          else
+            []
+          end
       else
         @updates[:assignee_id] = nil
       end
