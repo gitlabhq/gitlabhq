@@ -257,4 +257,21 @@ describe ApplicationHelper do
     it { expect(helper.active_when(true)).to eq('active') }
     it { expect(helper.active_when(false)).to eq(nil) }
   end
+
+  describe '#support_url' do
+    context 'when alternate support url is specified' do
+      let(:alternate_url) { 'http://company.example.com/getting-help' }
+      before { allow(current_application_settings).to receive(:help_page_support_url) { alternate_url } }
+
+      it 'returns the alternate support url' do
+        expect(helper.support_url).to eq(alternate_url)
+      end
+    end
+
+    context 'when alternate support url is not specified' do
+      it 'builds the support url from the promo_url' do
+        expect(helper.support_url).to eq(helper.promo_url + '/getting-help/')
+      end
+    end
+  end
 end
