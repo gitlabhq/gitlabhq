@@ -16,6 +16,7 @@ export default {
       emojiSmiling,
       emojiSmile,
       emojiSmiley,
+      canAward: !!window.gon.current_user_id,
     };
   },
   computed: {
@@ -41,6 +42,12 @@ export default {
   methods: {
     getAwardHTML(name) {
       return glEmojiTag(name);
+    },
+    getAwardClassBindings(awardList) {
+      return {
+        active: this.amIAwarded(awardList),
+        disabled: !this.canAward,
+      };
     },
     amIAwarded(awardList) {
       const myUserId = window.gon.current_user_id;
@@ -97,7 +104,7 @@ export default {
       <button
         v-for="(awardList, awardName) in groupedAwards"
         class="btn award-control has-tooltip"
-        :class="{ active: amIAwarded(awardList) }"
+        :class="getAwardClassBindings(awardList)"
         :title="awardTitle(awardList)"
         data-placement="bottom"
         type="button">
@@ -106,7 +113,9 @@ export default {
           {{awardList.length}}
         </span>
       </button>
-      <div class="award-menu-holder">
+      <div
+        v-if="canAward"
+        class="award-menu-holder">
         <button
           aria-label="Add reaction"
           class="award-control btn has-tooltip"
