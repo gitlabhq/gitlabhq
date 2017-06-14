@@ -33,7 +33,7 @@ export default {
     TimeAgoTooltip,
   },
   methods: {
-    doShit() {
+    toggle() {
       this.$store.commit('toggleDiscussion', {
         discussionId: this.discussionId,
       });
@@ -66,7 +66,7 @@ export default {
       v-if="includeToggle"
       class="discussion-actions">
       <button
-        @click="doShit"
+        @click="toggle"
         class="note-action-button discussion-toggle-button js-toggle-button"
         type="button">
           <i

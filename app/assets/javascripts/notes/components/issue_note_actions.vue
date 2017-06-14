@@ -21,6 +21,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    editHandler: {
+      type: Function,
+      required: true,
+    },
   },
   data() {
     return {
@@ -70,8 +74,9 @@ export default {
         <template v-if="canEdit">
           <li>
             <button
+              @click="editHandler"
               type="button"
-              class="js-note-edit btn btn-transparent">
+              class="btn btn-transparent">
               Edit comment
             </button>
           </li>

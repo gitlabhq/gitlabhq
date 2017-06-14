@@ -11,6 +11,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isEditing: false,
+    }
+  },
   components: {
     UserAvatarLink,
     IssueNoteHeader,
@@ -22,11 +27,24 @@ export default {
       return this.note.author;
     },
   },
+  methods: {
+    editHandler() {
+      this.isEditing = true;
+    },
+    formUpdateHandler(data) {
+      console.log('update requested', data);
+    },
+    formCancelHandler() {
+      this.isEditing = false;
+    },
+  },
 };
 </script>
 
 <template>
-  <li class="note timeline-entry">
+  <li
+    class="note timeline-entry"
+    :class="{ 'is-editing': isEditing }">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -47,9 +65,14 @@ export default {
             :canAward="note.emoji_awardable"
             :canEdit="note.can_edit"
             :canDelete="note.can_edit"
-            :reportAbusePath="note.report_abuse_path" />
+            :reportAbusePath="note.report_abuse_path"
+            :editHandler="editHandler" />
         </div>
-        <issue-note-body :note="note" />
+        <issue-note-body
+          :note="note"
+          :isEditing="isEditing"
+          :formUpdateHandler="formUpdateHandler"
+          :formCancelHandler="formCancelHandler" />
       </div>
     </div>
   </li>
