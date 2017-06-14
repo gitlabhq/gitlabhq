@@ -7,24 +7,6 @@ describe KubernetesService, models: true, caching: true do
   let(:project) { build_stubbed(:kubernetes_project) }
   let(:service) { project.kubernetes_service }
 
-  # We use Kubeclient to interactive with the Kubernetes API. It will
-  # GET /api/v1 for a list of resources the API supports. This must be stubbed
-  # in addition to any other HTTP requests we expect it to perform.
-  let(:discovery_url) { service.api_url + '/api/v1' }
-  let(:discovery_response) { { body: kube_discovery_body.to_json } }
-
-  let(:pods_url) { service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods" }
-  let(:pods_response) { { body: kube_pods_body(kube_pod).to_json } }
-
-  def stub_kubeclient_discover
-    WebMock.stub_request(:get, discovery_url).to_return(discovery_response)
-  end
-
-  def stub_kubeclient_pods
-    stub_kubeclient_discover
-    WebMock.stub_request(:get, pods_url).to_return(pods_response)
-  end
-
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -111,6 +93,34 @@ describe KubernetesService, models: true, caching: true do
     it "returns the default namespace" do
       is_expected.to eq(service.send(:default_namespace))
     end
+
+    context 'when namespace is specified' do
+      before do
+        service.namespace = 'my-namespace'
+      end
+
+      it "returns the user-namespace" do
+        is_expected.to eq('my-namespace')
+      end
+    end
+
+    context 'when service is not assigned to project' do
+      before do
+        service.project = nil
+      end
+
+      it "does not return namespace" do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#actual_namespace' do
+    subject { service.actual_namespace }
+
+    it "returns the default namespace" do
+      is_expected.to eq(service.send(:default_namespace))
+    end
     
     context 'when namespace is specified' do
       before do
@@ -134,6 +144,8 @@ describe KubernetesService, models: true, caching: true do
   end
 
   describe '#test' do
+    let(:discovery_url) { 'https://kubernetes.example.com/api/v1' }
+
     before do
       stub_kubeclient_discover
     end
@@ -142,7 +154,8 @@ describe KubernetesService, models: true, caching: true do
       let(:discovery_url) { 'https://kubernetes.example.com/prefix/api/v1' }
 
       it 'tests with the prefix' do
-        service.api_url = 'https://kubernetes.example.com/prefix/'
+        service.api_url = 'https://kubernetes.example.com/prefix'
+        stub_kubeclient_discover
 
         expect(service.test[:success]).to be_truthy
         expect(WebMock).to have_requested(:get, discovery_url).once
@@ -170,9 +183,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'failure' do
-      let(:discovery_response) { { status: 404 } }
-
       it 'fails to read the discovery endpoint' do
+        WebMock.stub_request(:get, service.api_url + '/api/v1').to_return(status: 404)
+
         expect(service.test[:success]).to be_falsy
         expect(WebMock).to have_requested(:get, discovery_url).once
       end
@@ -258,7 +271,6 @@ describe KubernetesService, models: true, caching: true do
   end
 
   describe '#calculate_reactive_cache' do
-    before { stub_kubeclient_pods }
     subject { service.calculate_reactive_cache }
 
     context 'when service is inactive' do
@@ -268,17 +280,25 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'when kubernetes responds with valid pods' do
+      before do
+        stub_kubeclient_pods
+      end
+
       it { is_expected.to eq(pods: [kube_pod]) }
     end
 
-    context 'when kubernetes responds with 500' do
-      let(:pods_response) { { status: 500 } }
+    context 'when kubernetes responds with 500s' do
+      before do
+        stub_kubeclient_pods(status: 500)
+      end
 
       it { expect { subject }.to raise_error(KubeException) }
     end
 
-    context 'when kubernetes responds with 404' do
-      let(:pods_response) { { status: 404 } }
+    context 'when kubernetes responds with 404s' do
+      before do
+        stub_kubeclient_pods(status: 404)
+      end
 
       it { is_expected.to eq(pods: []) }
     end
