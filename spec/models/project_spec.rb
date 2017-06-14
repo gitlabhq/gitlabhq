@@ -2311,6 +2311,21 @@ describe Project, models: true do
         end
       end
 
+      context 'when scope has _' do
+        it 'does not treat it as wildcard' do
+          secret_variable.update(scope: '*_*')
+
+          is_expected.not_to contain_exactly(secret_variable)
+        end
+
+        it 'matches literally for _' do
+          secret_variable.update(scope: 'foo_bar/*')
+          environment.update(name: 'foo_bar/test')
+
+          is_expected.to contain_exactly(secret_variable)
+        end
+      end
+
       context 'when variables with the same name have different scopes' do
         let!(:partially_matched_variable) do
           create(:ci_variable,

@@ -86,8 +86,8 @@ module EE
       if environment
         # Partial wildcard sits in the middle
         variables.concat(
-          query.where("? LIKE REPLACE(scope, ?, ?)",
-                      environment.name, '*', '%')
+          query.where("? LIKE REPLACE(REPLACE(scope, ?, ?), ?, ?)",
+                      environment.name, '*', '%', '_', '\\_')
                .where.not(scope: '*')
                .where.not(scope: environment.name)
         )
