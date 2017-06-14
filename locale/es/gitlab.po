@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-06-13 15:55-0500\n"
+"PO-Revision-Date: 2017-06-14 17:12-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -973,7 +973,7 @@ msgid "You are going to transfer %{project_name_with_namespace} to another owner
 msgstr "Vas a transferir %{project_name_with_namespace} a otro propietario. ¿Estás TOTALMENTE seguro?"
 
 msgid "You can only add files when you are on a branch"
-msgstr "Solo puede agregar archivos cuando estás en una rama"
+msgstr "Solo puedes agregar archivos cuando estás en una rama"
 
 msgid "You must sign in to star a project"
 msgstr "Debes iniciar sesión para destacar un proyecto"
