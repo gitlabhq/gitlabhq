@@ -35,19 +35,28 @@ describe GeoRepositorySyncWorker do
       Geo::ProjectRegistry.create(
         project: project_1,
         last_repository_synced_at: 2.days.ago,
-        last_repository_successful_sync_at: 2.days.ago
+        last_repository_successful_sync_at: 2.days.ago,
+        resync_repository: true,
+        resync_wiki: false
       )
 
       Geo::ProjectRegistry.create(
         project: project_2,
-        last_repository_synced_at: 2.days.ago,
-        last_repository_successful_sync_at: 2.days.ago
+        last_repository_synced_at: 10.minutes.ago,
+        last_repository_successful_sync_at: 10.minutes.ago,
+        resync_repository: false,
+        resync_wiki: false
       )
 
-      project_1.update_attribute(:last_repository_updated_at, 2.days.ago)
-      project_2.update_attribute(:last_repository_updated_at, 10.minutes.ago)
+      Geo::ProjectRegistry.create(
+        project: create(:empty_project),
+        last_repository_synced_at: 5.minutes.ago,
+        last_repository_successful_sync_at: 5.minutes.ago,
+        resync_repository: false,
+        resync_wiki: true
+      )
 
-      expect(Geo::RepositorySyncService).to receive(:new).once.and_return(spy)
+      expect(Geo::RepositorySyncService).to receive(:new).twice.and_return(spy)
 
       subject.perform
     end
