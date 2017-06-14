@@ -6,6 +6,8 @@ class GeoNodeStatus
 
   def health
     @health ||= HealthCheck::Utils.process_checks(['geo'])
+  rescue NotImplementedError => e
+    @health = e.to_s
   end
 
   def healthy?
