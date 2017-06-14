@@ -22,7 +22,7 @@ describe('Time ago with tooltip component', () => {
     }).$mount();
 
     expect(vm.$el.tagName).toEqual('TIME');
-    expect(vm.$el.classList.contains('js-timeago')).toEqual(true);
+    expect(vm.$el.classList.contains('js-vue-timeago')).toEqual(true);
     expect(
       vm.$el.getAttribute('data-original-title'),
     ).toEqual(gl.utils.formatDate('2017-05-08T14:57:39.781Z'));
@@ -42,17 +42,6 @@ describe('Time ago with tooltip component', () => {
     }).$mount();
 
     expect(vm.$el.getAttribute('data-placement')).toEqual('bottom');
-  });
-
-  it('should render short format class', () => {
-    vm = new TimeagoTooltip({
-      propsData: {
-        time: '2017-05-08T14:57:39.781Z',
-        shortFormat: true,
-      },
-    }).$mount();
-
-    expect(vm.$el.classList.contains('js-short-timeago')).toEqual(true);
   });
 
   it('should render provided html class', () => {

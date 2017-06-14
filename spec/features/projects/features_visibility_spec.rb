@@ -68,9 +68,12 @@ describe 'Edit Project Settings', feature: true do
   end
 
   describe 'project features visibility pages' do
+    let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let(:job) { create(:ci_build, pipeline: pipeline) }
+
     let(:tools) do
       {
-        builds: namespace_project_pipelines_path(project.namespace, project),
+        builds: namespace_project_job_path(project.namespace, project, job),
         issues: namespace_project_issues_path(project.namespace, project),
         wiki: namespace_project_wiki_path(project.namespace, project, :home),
         snippets: namespace_project_snippets_path(project.namespace, project),
