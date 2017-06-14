@@ -1,4 +1,4 @@
-class BuildDetailsEntity < BuildEntity
+class BuildDetailsEntity < JobEntity
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
   expose :user, using: UserEntity

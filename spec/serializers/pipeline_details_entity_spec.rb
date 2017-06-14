@@ -91,6 +91,20 @@ describe PipelineDetailsEntity do
       end
     end
 
+    context 'when pipeline has commit statuses' do
+      let(:pipeline) { create(:ci_empty_pipeline) }
+    
+      before do
+        create(:generic_commit_status, pipeline: pipeline)
+      end
+
+      it 'contains stages' do
+        expect(subject).to include(:details)
+        expect(subject[:details]).to include(:stages)
+        expect(subject[:details][:stages].first).to include(name: 'external')
+      end
+    end
+
     context 'when pipeline has YAML errors' do
       let(:pipeline) do
         create(:ci_pipeline, config: { rspec: { invalid: :value } })

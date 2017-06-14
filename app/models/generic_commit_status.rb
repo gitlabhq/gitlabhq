@@ -11,6 +11,7 @@ class GenericCommitStatus < CommitStatus
   def set_default_values
     self.context ||= 'default'
     self.stage ||= 'external'
+    self.stage_idx ||= 1000000
   end
 
   def tags
