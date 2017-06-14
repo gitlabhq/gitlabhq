@@ -1,6 +1,6 @@
 # Related issues
 
-> [Introduced][ee-1797] in [GitLab Enterprise Edition Starter][ee] 9.3.
+> [Introduced][ee-1797] in [GitLab Enterprise Edition Starter][ee] 9.4.
 
 Related issues are a bi-directional relationship between any two issues
 and appear in a block below the issue description. Issues can be across groups
