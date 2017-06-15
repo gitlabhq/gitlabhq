@@ -288,7 +288,9 @@ describe Issues::UpdateService, services: true do
       end
 
       context 'when issue has the `label` label' do
-        before { issue.labels << label }
+        before do
+          issue.labels << label
+        end
 
         it 'does not send notifications for existing labels' do
           opts = { label_ids: [label.id, label2.id] }
@@ -322,7 +324,9 @@ describe Issues::UpdateService, services: true do
       it { expect(issue.tasks?).to eq(true) }
 
       context 'when tasks are marked as completed' do
-        before { update_issue(description: "- [x] Task 1\n- [X] Task 2") }
+        before do
+          update_issue(description: "- [x] Task 1\n- [X] Task 2")
+        end
 
         it 'creates system note about task status change' do
           note1 = find_note('marked the task **Task 1** as completed')
@@ -400,7 +404,9 @@ describe Issues::UpdateService, services: true do
       context 'when remove_label_ids and label_ids are passed' do
         let(:params) { { label_ids: [], remove_label_ids: [label.id] } }
 
-        before { issue.update_attributes(labels: [label, label3]) }
+        before do
+          issue.update_attributes(labels: [label, label3])
+        end
 
         it 'ignores the label_ids parameter' do
           expect(result.label_ids).not_to be_empty
@@ -414,7 +420,9 @@ describe Issues::UpdateService, services: true do
       context 'when add_label_ids and remove_label_ids are passed' do
         let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
 
-        before { issue.update_attributes(labels: [label]) }
+        before do
+          issue.update_attributes(labels: [label])
+        end
 
         it 'adds the passed labels' do
           expect(result.label_ids).to include(label3.id)

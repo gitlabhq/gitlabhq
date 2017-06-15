@@ -17,7 +17,7 @@ describe API::License, api: true  do
       expect(Date.parse(json_response['expires_at'])).to eq Date.today + 11.months
       expect(json_response['active_users']).to eq 1
       expect(json_response['licensee']).not_to be_empty
-      expect(json_response['add_ons']).to eq({ 'GitLab_FileLocks' => 1, 'GitLab_Auditor_User' => 1 })
+      expect(json_response['add_ons']).to eq(license.add_ons)
     end
 
     it 'denies access if not admin' do

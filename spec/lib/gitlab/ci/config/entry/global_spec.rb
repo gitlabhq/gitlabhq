@@ -33,7 +33,9 @@ describe Gitlab::Ci::Config::Entry::Global do
       end
 
       describe '#compose!' do
-        before { global.compose! }
+        before do
+          global.compose!
+        end
 
         it 'creates nodes hash' do
           expect(global.descendants).to be_an Array
@@ -79,7 +81,9 @@ describe Gitlab::Ci::Config::Entry::Global do
       end
 
       context 'when composed' do
-        before { global.compose! }
+        before do
+          global.compose!
+        end
 
         describe '#errors' do
           it 'has no errors' do
@@ -175,7 +179,9 @@ describe Gitlab::Ci::Config::Entry::Global do
     end
 
     context 'when most of entires not defined' do
-      before { global.compose! }
+      before do
+        global.compose!
+      end
 
       let(:hash) do
         { cache: { key: 'a' }, rspec: { script: %w[ls] } }
@@ -218,7 +224,9 @@ describe Gitlab::Ci::Config::Entry::Global do
     # details.
     #
     context 'when entires specified but not defined' do
-      before { global.compose! }
+      before do
+        global.compose!
+      end
 
       let(:hash) do
         { variables: nil, rspec: { script: 'rspec' } }
@@ -233,7 +241,9 @@ describe Gitlab::Ci::Config::Entry::Global do
   end
 
   context 'when configuration is not valid' do
-    before { global.compose! }
+    before do
+      global.compose!
+    end
 
     context 'when before script is not an array' do
       let(:hash) do
@@ -297,7 +307,9 @@ describe Gitlab::Ci::Config::Entry::Global do
   end
 
   describe '#[]' do
-    before { global.compose! }
+    before do
+      global.compose!
+    end
 
     let(:hash) do
       { cache: { key: 'a' }, rspec: { script: 'ls' } }

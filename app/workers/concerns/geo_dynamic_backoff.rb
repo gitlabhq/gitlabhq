@@ -11,15 +11,17 @@ module GeoDynamicBackoff
     end
   end
 
-  private
+  class_methods do
+    private
 
-  def linear_backoff_strategy(count)
-    rand(1..20) + count
-  end
+    def linear_backoff_strategy(count)
+      rand(1..20) + count
+    end
 
-  def geometric_backoff_strategy(count)
-    # This strategy is based on the original one from sidekiq
-    count = count - 30 # we must start counting after 30
-    (count**4) + 15 + (rand(30) * (count + 1))
+    def geometric_backoff_strategy(count)
+      # This strategy is based on the original one from sidekiq
+      count = count - 30 # we must start counting after 30
+      (count**4) + 15 + (rand(30) * (count + 1))
+    end
   end
 end

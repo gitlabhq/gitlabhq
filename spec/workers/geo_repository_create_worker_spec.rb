@@ -5,10 +5,14 @@ describe GeoRepositoryCreateWorker do
   let(:project) { create :project }
   let(:perform!) { subject.perform(project.id) }
 
-  before { expect(Project).to receive(:find).at_least(:once).with(project.id) { project } }
+  before do
+    expect(Project).to receive(:find).at_least(:once).with(project.id) { project }
+  end
 
   context 'when no repository' do
-    before { expect(project).to receive(:repository_exists?) { false } }
+    before do
+      expect(project).to receive(:repository_exists?) { false }
+    end
 
     it 'creates the repository' do
       expect(project).to receive(:create_repository)
@@ -25,7 +29,9 @@ describe GeoRepositoryCreateWorker do
   end
 
   context 'when repository exists' do
-    before { expect(project).to receive(:repository_exists?) { true } }
+    before do
+      expect(project).to receive(:repository_exists?) { true }
+    end
 
     it 'does not try to create the repository again' do
       expect(project).not_to receive(:create_repository)

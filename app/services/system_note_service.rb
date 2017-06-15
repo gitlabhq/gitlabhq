@@ -552,6 +552,38 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
   end
 
+  #
+  # noteable     - Noteable object
+  # noteable_ref - Referenced noteable object
+  # user         - User performing reference
+  #
+  # Example Note text:
+  #
+  #   "marked this issue as related to gitlab-ce#9001"
+  #
+  # Returns the created Note object
+  def relate_issue(noteable, noteable_ref, user)
+    body = "marked this issue as related to #{noteable_ref.to_reference(noteable.project)}"
+
+    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'relate'))
+  end
+
+  #
+  # noteable     - Noteable object
+  # noteable_ref - Referenced noteable object
+  # user         - User performing reference
+  #
+  # Example Note text:
+  #
+  #   "removed the relation with gitlab-ce#9001"
+  #
+  # Returns the created Note object
+  def unrelate_issue(noteable, noteable_ref, user)
+    body = "removed the relation with #{noteable_ref.to_reference(noteable.project)}"
+
+    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'unrelate'))
+  end
+
   # Called when the merge request is approved by user
   #
   # noteable - Noteable object

@@ -20,8 +20,8 @@ describe Commit, models: true do
     end
 
     it 'caches the author' do
+      allow(RequestStore).to receive(:active?).and_return(true)
       user = create(:user, email: commit.author_email)
-      expect(RequestStore).to receive(:active?).twice.and_return(true)
       expect_any_instance_of(Commit).to receive(:find_author_by_any_email).and_call_original
 
       expect(commit.author).to eq(user)
@@ -206,19 +206,25 @@ eos
     it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
 
     context 'commit has no description' do
-      before { allow(commit).to receive(:description?).and_return(false) }
+      before do
+        allow(commit).to receive(:description?).and_return(false)
+      end
 
       it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
     end
 
     context "another_commit's description does not revert commit" do
-      before { allow(commit).to receive(:description).and_return("Foo Bar") }
+      before do
+        allow(commit).to receive(:description).and_return("Foo Bar")
+      end
 
       it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
     end
 
     context "another_commit's description reverts commit" do
-      before { allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar") }
+      before do
+        allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar")
+      end
 
       it { expect(commit.reverts_commit?(another_commit, user)).to be_truthy }
     end

@@ -97,7 +97,9 @@ describe ApplicationSetting, models: true do
 
     # Upgraded databases will have this sort of content
     context 'repository_storages is a String, not an Array' do
-      before { setting.__send__(:raw_write_attribute, :repository_storages, 'default') }
+      before do
+        setting.__send__(:raw_write_attribute, :repository_storages, 'default')
+      end
 
       it { expect(setting.repository_storages_before_type_cast).to eq('default') }
       it { expect(setting.repository_storages).to eq(['default']) }
@@ -300,6 +302,35 @@ describe ApplicationSetting, models: true do
       setting.reload
 
       expect(setting.repository_size_limit).to eql(8.exabytes - 1)
+    end
+  end
+
+  describe 'elasticsearch licensing' do
+    before do
+      setting.elasticsearch_search = true
+      setting.elasticsearch_indexing = true
+    end
+
+    def expect_is_es_licensed
+      expect(License).to receive(:feature_available?).with(:elastic_search).at_least(:once)
+    end
+
+    it 'disables elasticsearch when unlicensed' do
+      expect_is_es_licensed.and_return(false)
+
+      expect(setting.elasticsearch_indexing?).to be_falsy
+      expect(setting.elasticsearch_indexing).to be_falsy
+      expect(setting.elasticsearch_search?).to be_falsy
+      expect(setting.elasticsearch_search).to be_falsy
+    end
+
+    it 'enables elasticsearch when licensed' do
+      expect_is_es_licensed.and_return(true)
+
+      expect(setting.elasticsearch_indexing?).to be_truthy
+      expect(setting.elasticsearch_indexing).to be_truthy
+      expect(setting.elasticsearch_search?).to be_truthy
+      expect(setting.elasticsearch_search).to be_truthy
     end
   end
 

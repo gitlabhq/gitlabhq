@@ -569,7 +569,10 @@ describe MergeRequest, models: true do
 
     context "when the project is part of a group" do
       let(:group) { create(:group) }
-      before { project.update_attributes(group: group) }
+
+      before do
+        project.update_attributes(group: group)
+      end
 
       it "includes group members with developer access and up" do
         expect do
@@ -653,10 +656,15 @@ describe MergeRequest, models: true do
 
   describe "#approvals_required" do
     let(:merge_request) { build(:merge_request) }
-    before { merge_request.target_project.update_attributes(approvals_before_merge: 3) }
+
+    before do
+      merge_request.target_project.update_attributes(approvals_before_merge: 3)
+    end
 
     context "when the MR has approvals_before_merge set" do
-      before { merge_request.update_attributes(approvals_before_merge: 1) }
+      before do
+        merge_request.update_attributes(approvals_before_merge: 1)
+      end
 
       it "uses the approvals_before_merge from the MR" do
         expect(merge_request.approvals_required).to eq(1)
@@ -1149,7 +1157,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
@@ -1221,7 +1231,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when not open' do
-      before { subject.close }
+      before do
+        subject.close
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -1229,7 +1241,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when working in progress' do
-      before { subject.title = 'WIP MR' }
+      before do
+        subject.title = 'WIP MR'
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -1237,7 +1251,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -1510,40 +1526,24 @@ describe MergeRequest, models: true do
     let(:approver) { create(:user) }
 
     context 'on a project with only one member' do
+      let(:author) { project.owner }
+
       context 'when there is one approver' do
-        before { project.update_attributes(approvals_before_merge: 1) }
+        before do
+          project.update_attributes(approvals_before_merge: 1)
+        end
 
         context 'when that approver is the MR author' do
           before do
-            project.team << [author, :developer]
             create(:approver, user: author, target: merge_request)
           end
 
           it 'does not require approval for the merge request' do
-            expect(merge_request.approvals_left).to eq(1)
+            expect(merge_request.approvals_left).to eq(0)
           end
 
           it 'does not allow the approver to approve the MR' do
             expect(merge_request.can_approve?(author)).to be_falsey
-          end
-
-          it 'does not allow a logged-out user to approve the MR' do
-            expect(merge_request.can_approve?(nil)).to be_falsey
-          end
-        end
-
-        context 'when that approver is not the MR author' do
-          before do
-            project.team << [approver, :developer]
-            create(:approver, user: approver, target: merge_request)
-          end
-
-          it 'requires one approval' do
-            expect(merge_request.approvals_left).to eq(1)
-          end
-
-          it 'allows the approver to approve the MR' do
-            expect(merge_request.can_approve?(approver)).to be_truthy
           end
 
           it 'does not allow a logged-out user to approve the MR' do
@@ -1568,10 +1568,14 @@ describe MergeRequest, models: true do
       end
 
       context 'when there is one approver required' do
-        before { project.update_attributes(approvals_before_merge: 1) }
+        before do
+          project.update_attributes(approvals_before_merge: 1)
+        end
 
         context 'when that approver is the MR author' do
-          before { create(:approver, user: author, target: merge_request) }
+          before do
+            create(:approver, user: author, target: merge_request)
+          end
 
           it 'requires one approval' do
             expect(merge_request.approvals_left).to eq(1)
@@ -1594,7 +1598,9 @@ describe MergeRequest, models: true do
         end
 
         context 'when that approver is not the MR author' do
-          before { create(:approver, user: approver, target: merge_request) }
+          before do
+            create(:approver, user: approver, target: merge_request)
+          end
 
           it 'requires one approval' do
             expect(merge_request.approvals_left).to eq(1)
@@ -1613,7 +1619,9 @@ describe MergeRequest, models: true do
       end
 
       context 'when there are multiple approvers required' do
-        before { project.update_attributes(approvals_before_merge: 3) }
+        before do
+          project.update_attributes(approvals_before_merge: 3)
+        end
 
         context 'when one of those approvers is the MR author' do
           before do

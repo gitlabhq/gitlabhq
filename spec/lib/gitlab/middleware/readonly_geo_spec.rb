@@ -39,7 +39,10 @@ describe Gitlab::Middleware::ReadonlyGeo, lib: true do
 
   context 'normal requests to a secondary Gitlab Geo' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
-    before(:each) { allow(Gitlab::Geo).to receive(:secondary?) { true } }
+
+    before do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+    end
 
     it 'expects PATCH requests to be disallowed' do
       response = request.patch('/test_request')
@@ -96,7 +99,10 @@ describe Gitlab::Middleware::ReadonlyGeo, lib: true do
   context 'json requests to a secondary Geo node' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'application/json' }, ['OK']] } }
     let(:content_json) { { 'CONTENT_TYPE' => 'application/json' } }
-    before(:each) { allow(Gitlab::Geo).to receive(:secondary?) { true } }
+
+    before do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+    end
 
     it 'expects PATCH requests to be disallowed' do
       response = request.patch('/test_request', content_json)

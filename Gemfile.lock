@@ -56,6 +56,7 @@ GEM
     asciidoctor-plantuml (0.0.7)
       asciidoctor (~> 1.5)
     ast (2.3.0)
+    atomic (1.1.99)
     attr_encrypted (3.0.3)
       encryptor (~> 3.0.0)
     attr_required (1.0.0)
@@ -67,13 +68,13 @@ GEM
       execjs
       json
     awesome_print (1.2.0)
-    aws-sdk (2.7.8)
-      aws-sdk-resources (= 2.7.8)
-    aws-sdk-core (2.7.8)
+    aws-sdk (2.9.32)
+      aws-sdk-resources (= 2.9.32)
+    aws-sdk-core (2.9.32)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.7.8)
-      aws-sdk-core (= 2.7.8)
+    aws-sdk-resources (2.9.32)
+      aws-sdk-core (= 2.9.32)
     aws-sigv4 (1.0.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -139,6 +140,8 @@ GEM
     coffee-script-source (1.10.0)
     colorize (0.7.7)
     concurrent-ruby (1.0.5)
+    concurrent-ruby-ext (1.0.5)
+      concurrent-ruby (= 1.0.5)
     connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -218,8 +221,8 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.11.0.1)
       faraday (>= 0.7.4, < 1.0)
-    faraday_middleware-aws-signers-v4 (0.1.5)
-      aws-sdk (~> 2.1)
+    faraday_middleware-aws-signers-v4 (0.1.7)
+      aws-sdk-resources (~> 2)
       faraday (~> 0.9)
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
@@ -576,6 +579,36 @@ GEM
     parser (2.4.0.0)
       ast (~> 2.2)
     path_expander (1.0.1)
+    peek (1.0.1)
+      concurrent-ruby (>= 0.9.0)
+      concurrent-ruby-ext (>= 0.9.0)
+      railties (>= 4.0.0)
+    peek-gc (0.0.2)
+      peek
+    peek-host (1.0.0)
+      peek
+    peek-mysql2 (1.1.0)
+      atomic (>= 1.0.0)
+      mysql2
+      peek
+    peek-performance_bar (1.2.1)
+      peek (>= 0.1.0)
+    peek-pg (1.3.0)
+      concurrent-ruby
+      concurrent-ruby-ext
+      peek
+      pg
+    peek-rblineprof (0.2.0)
+      peek
+      rblineprof
+    peek-redis (1.2.0)
+      atomic (>= 1.0.0)
+      peek
+      redis
+    peek-sidekiq (1.0.3)
+      atomic (>= 1.0.0)
+      peek
+      sidekiq
     pg (0.18.4)
     po_to_json (1.0.1)
       json (>= 1.6.0)
@@ -1035,6 +1068,15 @@ DEPENDENCIES
   omniauth_crowd (~> 2.2.0)
   org-ruby (~> 0.9.12)
   paranoia (~> 2.2)
+  peek (~> 1.0.1)
+  peek-gc (~> 0.0.2)
+  peek-host (~> 1.0.0)
+  peek-mysql2 (~> 1.1.0)
+  peek-performance_bar (~> 1.2.1)
+  peek-pg (~> 1.3.0)
+  peek-rblineprof (~> 0.2.0)
+  peek-redis (~> 1.2.0)
+  peek-sidekiq (~> 1.0.3)
   pg (~> 0.18.2)
   poltergeist (~> 1.9.0)
   premailer-rails (~> 1.9.0)

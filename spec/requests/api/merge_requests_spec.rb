@@ -968,10 +968,14 @@ describe API::MergeRequests do
   end
 
   describe 'POST :id/merge_requests/:merge_request_iid/approve' do
-    before { project.update_attribute(:approvals_before_merge, 2) }
+    before do
+      project.update_attribute(:approvals_before_merge, 2)
+    end
 
     context 'as the author of the merge request' do
-      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", user) }
+      before do
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", user)
+      end
 
       it 'returns a 401' do
         expect(response).to have_http_status(401)
@@ -998,7 +1002,9 @@ describe API::MergeRequests do
   end
 
   describe 'POST :id/merge_requests/:merge_request_iid/unapprove' do
-    before { project.update_attribute(:approvals_before_merge, 2) }
+    before do
+      project.update_attribute(:approvals_before_merge, 2)
+    end
 
     context 'as a user who has approved the merge request' do
       let(:approver) { create(:user) }

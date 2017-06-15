@@ -10,7 +10,9 @@ describe Ci::BuildPolicy, :models do
   end
 
   shared_context 'public pipelines disabled' do
-    before { project.update_attribute(:public_builds, false) }
+    before do
+      project.update_attribute(:public_builds, false)
+    end
   end
 
   describe '#rules' do
@@ -54,7 +56,9 @@ describe Ci::BuildPolicy, :models do
       let(:project) { create(:empty_project, :public) }
 
       context 'team member is a guest' do
-        before { project.team << [user, :guest] }
+        before do
+          project.team << [user, :guest]
+        end
 
         context 'when public builds are enabled' do
           it 'includes ability to read build' do
@@ -72,7 +76,9 @@ describe Ci::BuildPolicy, :models do
       end
 
       context 'team member is a reporter' do
-        before { project.team << [user, :reporter] }
+        before do
+          project.team << [user, :reporter]
+        end
 
         context 'when public builds are enabled' do
           it 'includes ability to read build' do

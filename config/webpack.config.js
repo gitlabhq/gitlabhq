@@ -71,6 +71,7 @@ var config = {
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
+    peek:                 './peek.js',
   },
 
   output: {

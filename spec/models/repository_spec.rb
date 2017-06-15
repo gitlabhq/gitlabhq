@@ -1150,7 +1150,9 @@ describe Repository, models: true do
   end
 
   describe '#ff_merge' do
-    before { repository.add_branch(user, 'ff-target', 'feature~5') }
+    before do
+      repository.add_branch(user, 'ff-target', 'feature~5')
+    end
 
     it 'merges the code and return the commit id' do
       merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'ff-target', source_project: project)

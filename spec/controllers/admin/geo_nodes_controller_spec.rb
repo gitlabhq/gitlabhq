@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Admin::GeoNodesController do
+describe Admin::GeoNodesController, :postgresql do
   shared_examples 'unlicensed geo action' do
     it 'redirects to the license page' do
       expect(response).to redirect_to(admin_license_path)

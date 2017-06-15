@@ -46,7 +46,9 @@ describe Projects::SnippetsController do
       end
 
       context 'when signed in as the author' do
-        before { sign_in(user) }
+        before do
+          sign_in(user)
+        end
 
         it 'renders the snippet' do
           get :index, namespace_id: project.namespace, project_id: project
@@ -57,7 +59,9 @@ describe Projects::SnippetsController do
       end
 
       context 'when signed in as a project member' do
-        before { sign_in(user2) }
+        before do
+          sign_in(user2)
+        end
 
         it 'renders the snippet' do
           get :index, namespace_id: project.namespace, project_id: project
@@ -317,7 +321,9 @@ describe Projects::SnippetsController do
         end
 
         context 'when signed in as the author' do
-          before { sign_in(user) }
+          before do
+            sign_in(user)
+          end
 
           it 'renders the snippet' do
             get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
@@ -328,7 +334,9 @@ describe Projects::SnippetsController do
         end
 
         context 'when signed in as a project member' do
-          before { sign_in(user2) }
+          before do
+            sign_in(user2)
+          end
 
           it 'renders the snippet' do
             get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
@@ -349,7 +357,9 @@ describe Projects::SnippetsController do
         end
 
         context 'when signed in' do
-          before { sign_in(user) }
+          before do
+            sign_in(user)
+          end
 
           it 'responds with status 404' do
             get action, namespace_id: project.namespace, project_id: project, id: 42

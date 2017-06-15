@@ -120,8 +120,13 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
     raise 'Object Storage feature is missing' unless subject.project.feature_available?(:object_storage)
   end
 
+<<<<<<< HEAD
   def exists?
     file.try(:exists?)
+=======
+  def file_storage?
+    storage.is_a?(CarrierWave::Storage::File)
+>>>>>>> 9f999549099fb5b254a3892d3b88284c39a4e12d
   end
 
   private

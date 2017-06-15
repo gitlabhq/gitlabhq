@@ -112,7 +112,9 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context 'with new allow_single_sign_on enabled syntax' do
-          before { stub_omniauth_config(allow_single_sign_on: ['twitter']) }
+          before do
+            stub_omniauth_config(allow_single_sign_on: ['twitter'])
+          end
 
           it "creates a user from Omniauth" do
             oauth_user.save
@@ -125,7 +127,9 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context "with old allow_single_sign_on enabled syntax" do
-          before { stub_omniauth_config(allow_single_sign_on: true) }
+          before do
+            stub_omniauth_config(allow_single_sign_on: true)
+          end
 
           it "creates a user from Omniauth" do
             oauth_user.save
@@ -138,14 +142,20 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context 'with new allow_single_sign_on disabled syntax' do
-          before { stub_omniauth_config(allow_single_sign_on: []) }
+          before do
+            stub_omniauth_config(allow_single_sign_on: [])
+          end
+
           it 'throws an error' do
             expect{ oauth_user.save }.to raise_error StandardError
           end
         end
 
         context 'with old allow_single_sign_on disabled (Default)' do
-          before { stub_omniauth_config(allow_single_sign_on: false) }
+          before do
+            stub_omniauth_config(allow_single_sign_on: false)
+          end
+
           it 'throws an error' do
             expect{ oauth_user.save }.to raise_error StandardError
           end
@@ -153,21 +163,30 @@ describe Gitlab::OAuth::User, lib: true do
       end
 
       context "with auto_link_ldap_user disabled (default)" do
-        before { stub_omniauth_config(auto_link_ldap_user: false) }
+        before do
+          stub_omniauth_config(auto_link_ldap_user: false)
+        end
+
         include_examples "to verify compliance with allow_single_sign_on"
       end
 
       context "with auto_link_ldap_user enabled" do
-        before { stub_omniauth_config(auto_link_ldap_user: true) }
+        before do
+          stub_omniauth_config(auto_link_ldap_user: true)
+        end
 
         context "and no LDAP provider defined" do
-          before { stub_ldap_config(providers: []) }
+          before do
+            stub_ldap_config(providers: [])
+          end
 
           include_examples "to verify compliance with allow_single_sign_on"
         end
 
         context "and at least one LDAP provider is defined" do
-          before { stub_ldap_config(providers: %w(ldapmain)) }
+          before do
+            stub_ldap_config(providers: %w(ldapmain))
+          end
 
           context "and a corresponding LDAP person" do
             before do
@@ -238,7 +257,9 @@ describe Gitlab::OAuth::User, lib: true do
           end
 
           context "and no corresponding LDAP person" do
-            before { allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(nil) }
+            before do
+              allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(nil)
+            end
 
             include_examples "to verify compliance with allow_single_sign_on"
           end
@@ -248,11 +269,16 @@ describe Gitlab::OAuth::User, lib: true do
 
     describe 'blocking' do
       let(:provider) { 'twitter' }
-      before { stub_omniauth_config(allow_single_sign_on: ['twitter']) }
+
+      before do
+        stub_omniauth_config(allow_single_sign_on: ['twitter'])
+      end
 
       context 'signup with omniauth only' do
         context 'dont block on create' do
-          before { stub_omniauth_config(block_auto_created_users: false) }
+          before do
+            stub_omniauth_config(block_auto_created_users: false)
+          end
 
           it do
             oauth_user.save
@@ -262,7 +288,9 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context 'block on create' do
-          before { stub_omniauth_config(block_auto_created_users: true) }
+          before do
+            stub_omniauth_config(block_auto_created_users: true)
+          end
 
           it do
             oauth_user.save
@@ -284,7 +312,9 @@ describe Gitlab::OAuth::User, lib: true do
 
         context "and no account for the LDAP user" do
           context 'dont block on create (LDAP)' do
-            before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: false) }
+            before do
+              allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: false)
+            end
 
             it do
               oauth_user.save
@@ -294,7 +324,9 @@ describe Gitlab::OAuth::User, lib: true do
           end
 
           context 'block on create (LDAP)' do
-            before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: true) }
+            before do
+              allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: true)
+            end
 
             it do
               oauth_user.save
@@ -308,7 +340,9 @@ describe Gitlab::OAuth::User, lib: true do
           let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'ldapmain', username: 'john') }
 
           context 'dont block on create (LDAP)' do
-            before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: false) }
+            before do
+              allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: false)
+            end
 
             it do
               oauth_user.save
@@ -318,7 +352,9 @@ describe Gitlab::OAuth::User, lib: true do
           end
 
           context 'block on create (LDAP)' do
-            before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: true) }
+            before do
+              allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: true)
+            end
 
             it do
               oauth_user.save
@@ -336,7 +372,9 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context 'dont block on create' do
-          before { stub_omniauth_config(block_auto_created_users: false) }
+          before do
+            stub_omniauth_config(block_auto_created_users: false)
+          end
 
           it do
             oauth_user.save
@@ -346,7 +384,9 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context 'block on create' do
-          before { stub_omniauth_config(block_auto_created_users: true) }
+          before do
+            stub_omniauth_config(block_auto_created_users: true)
+          end
 
           it do
             oauth_user.save
@@ -356,7 +396,9 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context 'dont block on create (LDAP)' do
-          before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: false) }
+          before do
+            allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: false)
+          end
 
           it do
             oauth_user.save
@@ -366,7 +408,9 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context 'block on create (LDAP)' do
-          before { allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: true) }
+          before do
+            allow_any_instance_of(Gitlab::LDAP::Config).to receive_messages(block_auto_created_users: true)
+          end
 
           it do
             oauth_user.save

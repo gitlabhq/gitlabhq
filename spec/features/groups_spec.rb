@@ -12,7 +12,9 @@ feature 'Group', feature: true do
   end
 
   describe 'create a group' do
-    before { visit new_group_path }
+    before do
+      visit new_group_path
+    end
 
     describe 'with space in group path' do
       it 'renders new group form with validation errors' do
@@ -138,7 +140,9 @@ feature 'Group', feature: true do
     let(:path)  { edit_group_path(group) }
     let(:new_name) { 'new-name' }
 
-    before { visit path }
+    before do
+      visit path
+    end
 
     it 'saves new settings' do
       fill_in 'group_name', with: new_name

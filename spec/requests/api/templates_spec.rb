@@ -2,14 +2,18 @@ require 'spec_helper'
 
 describe API::Templates do
   context 'the Template Entity' do
-    before { get api('/templates/gitignores/Ruby') }
+    before do
+      get api('/templates/gitignores/Ruby')
+    end
 
     it { expect(json_response['name']).to eq('Ruby') }
     it { expect(json_response['content']).to include('*.gem') }
   end
 
   context 'the TemplateList Entity' do
-    before { get api('/templates/gitignores') }
+    before do
+      get api('/templates/gitignores')
+    end
 
     it { expect(json_response.first['name']).not_to be_nil }
     it { expect(json_response.first['content']).to be_nil }
@@ -47,7 +51,9 @@ describe API::Templates do
   end
 
   context 'the License Template Entity' do
-    before { get api('/templates/licenses/mit') }
+    before do
+      get api('/templates/licenses/mit')
+    end
 
     it 'returns a license template' do
       expect(json_response['key']).to eq('mit')

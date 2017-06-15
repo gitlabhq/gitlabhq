@@ -10,10 +10,14 @@ describe ProjectPolicy, models: true do
   let(:admin) { create(:admin) }
   let(:project) { create(:empty_project, :public, namespace: owner.namespace) }
 
+  before do
+    allow_any_instance_of(License).to receive(:feature_available?) { true }
+  end
+
   let(:guest_permissions) do
     %i[
       read_project read_board read_list read_wiki read_issue read_label
-      read_milestone read_project_snippet read_project_member
+      read_issue_link read_milestone read_project_snippet read_project_member
       read_note create_project create_issue create_note
       upload_file
     ]
@@ -22,7 +26,7 @@ describe ProjectPolicy, models: true do
   let(:reporter_permissions) do
     %i[
       download_code fork_project create_project_snippet update_issue
-      admin_issue admin_label admin_list read_commit_status read_build
+      admin_issue admin_label admin_issue_link admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
       read_merge_request download_wiki_code
     ]
@@ -71,7 +75,7 @@ describe ProjectPolicy, models: true do
   let(:auditor_permissions) do
     %i[
       download_code download_wiki_code read_project read_board read_list
-      read_wiki read_issue read_label read_milestone read_project_snippet
+      read_wiki read_issue read_label read_issue_link read_milestone read_project_snippet
       read_project_member read_note read_cycle_analytics read_pipeline
       read_build read_commit_status read_container_image read_environment
       read_deployment read_merge_request read_pages

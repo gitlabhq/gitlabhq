@@ -6,7 +6,9 @@ feature 'Protected Branches', feature: true, js: true do
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 
-  before { login_as(user) }
+  before do
+    login_as(user)
+  end
 
   describe "explicit protected branches" do
     it "allows creating explicit protected branches" do

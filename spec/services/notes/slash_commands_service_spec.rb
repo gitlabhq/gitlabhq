@@ -6,7 +6,9 @@ describe Notes::SlashCommandsService, services: true do
     let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
     let(:assignee) { create(:user) }
 
-    before { project.team << [assignee, :master] }
+    before do
+      project.team << [assignee, :master]
+    end
   end
 
   shared_examples 'note on noteable that does not support slash commands' do

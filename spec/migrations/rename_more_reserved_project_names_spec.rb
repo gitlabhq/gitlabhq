@@ -17,7 +17,9 @@ describe RenameMoreReservedProjectNames, truncate: true do
 
   describe '#up' do
     context 'when project repository exists' do
-      before { project.create_repository }
+      before do
+        project.create_repository
+      end
 
       context 'when no exception is raised' do
         it 'renames project with reserved names' do
