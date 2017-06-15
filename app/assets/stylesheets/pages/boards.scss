@@ -1,3 +1,5 @@
+@import "./issues/issue_count_badge";
+
 [v-cloak] {
   display: none;
 }
@@ -455,30 +457,6 @@
 .board-new-issue-form {
   z-index: 1;
   margin: 5px;
-}
-
-.board-issue-count-holder {
-  margin-top: -3px;
-
-  .btn {
-    line-height: 12px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-}
-
-.board-issue-count {
-  padding-right: 10px;
-  padding-left: 10px;
-  line-height: 21px;
-  border-radius: $border-radius-base;
-  border: 1px solid $border-color;
-
-  &.has-btn {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-width: 1px 0 1px 1px;
-  }
 }
 
 .boards-title-holder {
