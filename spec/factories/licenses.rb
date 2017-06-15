@@ -15,9 +15,19 @@ FactoryGirl.define do
     end
     notify_users_at   { |l| l.expires_at }
     notify_admins_at  { |l| l.expires_at }
+
+    trait :trial do
+      restrictions do
+        { trial: true }
+      end
+    end
   end
 
   factory :license do
     data { build(:gitlab_license).export }
+  end
+
+  factory :trial_license, class: License do
+    data { build(:gitlab_license, :trial).export }
   end
 end
