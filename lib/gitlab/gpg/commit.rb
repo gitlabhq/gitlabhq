@@ -45,7 +45,7 @@ module Gitlab
           project: commit.project,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: gpg_key&.primary_keyid,
-          valid_signature: !!(gpg_key && verified_signature.valid?)
+          valid_signature: !!(gpg_key && gpg_key.verified? && verified_signature.valid?)
         )
       end
     end

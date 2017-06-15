@@ -48,6 +48,10 @@ class GpgKey < ActiveRecord::Base
     end
   end
 
+  def verified?
+    emails_with_verified_status.any? { |_email, verified| verified }
+  end
+
   private
 
   def extract_fingerprint

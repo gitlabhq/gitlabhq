@@ -65,6 +65,22 @@ describe GpgKey do
     end
   end
 
+  describe '#verified?' do
+    it 'returns true one of the email addresses in the key belongs to the user' do
+      user = create :user, email: 'bette.cartwright@example.com'
+      gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+
+      expect(gpg_key.verified?).to be_truthy
+    end
+
+    it 'returns false if one of the email addresses in the key does not belong to the user' do
+      user = create :user, email: 'someone.else@example.com'
+      gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+
+      expect(gpg_key.verified?).to be_falsey
+    end
+  end
+
   describe 'notification' do
     include EmailHelpers
 
