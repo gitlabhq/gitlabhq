@@ -15,9 +15,6 @@ if defined?(Unicorn)
   end
 end
 
-# set default directory for multiproces metrics gathering
-ENV['prometheus_multiproc_dir'] ||= 'tmp/prometheus_multiproc_dir'
-
 require ::File.expand_path('../config/environment',  __FILE__)
 
 map ENV['RAILS_RELATIVE_URL_ROOT'] || "/" do
