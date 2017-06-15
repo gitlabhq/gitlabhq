@@ -114,7 +114,7 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
       expect(hash).to eq({ link => user })
     end
 
-    it 'returns an empty Hash when entry does not exist in the database' do
+    it 'returns an empty Hash when entry does not exist in the database', :request_store do
       link = double(:link)
 
       expect(link).to receive(:has_attribute?).
