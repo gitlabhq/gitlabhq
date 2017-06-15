@@ -10,10 +10,12 @@ module Gitlab
       end
 
       def has_signature?
-        @signature_text && @signed_text
+        !!(@signature_text && @signed_text)
       end
 
       def signature
+        return unless has_signature?
+
         Gitlab::Gpg.using_tmp_keychain do
           # first we need to get the keyid from the signature to query the gpg
           # key belonging to the keyid.
@@ -43,7 +45,7 @@ module Gitlab
           project: commit.project,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: gpg_key&.primary_keyid,
-          valid_signature: !!(gpg_key && verified_signature&.valid?)
+          valid_signature: !!(gpg_key && verified_signature.valid?)
         )
       end
     end

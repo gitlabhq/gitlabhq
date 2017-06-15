@@ -4,6 +4,12 @@ RSpec.describe Gitlab::Gpg::Commit do
   describe '#signature' do
     let!(:project) { create :project, :repository, path: 'sample-project' }
 
+    context 'unisgned commit' do
+      it 'returns nil' do
+        expect(described_class.new(project.commit).signature).to be_nil
+      end
+    end
+
     context 'known public key' do
       it 'returns a valid signature' do
         gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key

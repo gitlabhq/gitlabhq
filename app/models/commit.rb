@@ -242,11 +242,7 @@ class Commit
     cached_signature = GpgSignature.find_by(commit_sha: sha)
     return cached_signature if cached_signature.present?
 
-    gpg_commit = Gitlab::Gpg::Commit.new(self)
-
-    return unless gpg_commit.has_signature?
-
-    @signature = gpg_commit.signature
+    @signature = Gitlab::Gpg::Commit.new(self).signature
   end
 
   def revert_branch_name
