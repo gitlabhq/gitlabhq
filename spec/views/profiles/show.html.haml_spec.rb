@@ -11,8 +11,9 @@ describe 'profiles/show' do
   context 'when the profile page is opened' do
     it 'displays the correct elements' do
       render
-      expect(rendered).to have_field("user_name", user.name)
-      expect(rendered).to have_field("user_id", user.id)
+
+      expect(rendered).to have_field('user_name', user.name)
+      expect(rendered).to have_field('user_id', user.id)
     end
   end
 end
