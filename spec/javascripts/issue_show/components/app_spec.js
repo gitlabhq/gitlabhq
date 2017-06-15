@@ -126,7 +126,7 @@ describe('Issuable output', () => {
 
   describe('updateIssuable', () => {
     it('fetches new data after update', (done) => {
-      spyOn(vm.service, 'getData');
+      spyOn(vm.service, 'getData').and.callThrough();
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {
