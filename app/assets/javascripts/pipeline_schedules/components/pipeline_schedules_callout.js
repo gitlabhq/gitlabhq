@@ -41,11 +41,10 @@ export default {
             <a
               :href="docsUrl"
               target="_blank"
-              rel="nofollow">{{ __('pipeline schedules documentation') }}</a>. <!-- oneline to prevent extra space before period -->
+              rel="nofollow">{{ s__('Learn more in the|pipeline schedules documentation') }}</a>. <!-- oneline to prevent extra space before period -->
           </p>
         </div>
       </div>
     </div>
   `,
 };
-

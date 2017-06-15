@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-12 19:29-0500\n"
-"PO-Revision-Date: 2017-06-12 19:29-0500\n"
+"POT-Creation-Date: 2017-06-15 12:04+0200\n"
+"PO-Revision-Date: 2017-06-15 12:04+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -220,9 +220,6 @@ msgstr ""
 msgid "Cron syntax"
 msgstr ""
 
-msgid "Custom"
-msgstr ""
-
 msgid "Custom notification events"
 msgstr ""
 
@@ -397,6 +394,9 @@ msgstr ""
 msgid "Learn more in the"
 msgstr ""
 
+msgid "Learn more in the|pipeline schedules documentation"
+msgstr ""
+
 msgid "Leave group"
 msgstr ""
 
@@ -561,6 +561,9 @@ msgid "PipelineSchedules|Take ownership"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
+msgstr ""
+
+msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -1015,9 +1018,6 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "pipeline schedules documentation"
-msgstr ""
 
 msgid "with stage"
 msgid_plural "with stages"

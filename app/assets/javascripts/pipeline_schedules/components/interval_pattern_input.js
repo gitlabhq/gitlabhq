@@ -75,7 +75,7 @@ export default {
         />
 
         <label for="custom">
-          {{ __('Custom') }}
+          {{ s__('PipelineSheduleIntervalPattern|Custom') }}
         </label>
 
         <span class="cron-syntax-link-wrap">
