@@ -15,21 +15,43 @@ describe API::Internal do
     end
   end
 
-  describe "GET /internal/broadcast_message" do
-    context "broadcast message exists" do
-      let!(:broadcast_message) { create(:broadcast_message, starts_at: Time.now.yesterday, ends_at: Time.now.tomorrow ) }
+  describe 'GET /internal/broadcast_message' do
+    context 'broadcast message exists' do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
-      it do
-        get api("/internal/broadcast_message"), secret_token: secret_token
+      it 'returns one broadcast message'  do
+        get api('/internal/broadcast_message'), secret_token: secret_token
 
         expect(response).to have_http_status(200)
-        expect(json_response["message"]).to eq(broadcast_message.message)
+        expect(json_response['message']).to eq(broadcast_message.message)
       end
     end
 
-    context "broadcast message doesn't exist" do
-      it do
-        get api("/internal/broadcast_message"), secret_token: secret_token
+    context 'broadcast message does not exist' do
+      it 'returns nothing'  do
+        get api('/internal/broadcast_message'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+  end
+
+  describe 'GET /internal/broadcast_messages' do
+    context 'broadcast message(s) exist' do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
+
+      it 'returns active broadcast message(s)' do
+        get api('/internal/broadcast_messages'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response[0]['message']).to eq(broadcast_message.message)
+      end
+    end
+
+    context 'broadcast message does not exist' do
+      it 'returns nothing' do
+        get api('/internal/broadcast_messages'), secret_token: secret_token
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_empty
