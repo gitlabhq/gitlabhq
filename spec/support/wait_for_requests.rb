@@ -7,7 +7,7 @@ module WaitForRequests
   def block_and_wait_for_requests_complete
     Gitlab::Testing::RequestBlockerMiddleware.block_requests!
     wait_for('pending requests complete') do
-      Gitlab::Testing::RequestBlockerMiddleware.num_active_requests.zero?
+      Gitlab::Testing::RequestBlockerMiddleware.num_active_requests.zero? && finished_all_requests?
     end
   ensure
     Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
