@@ -266,6 +266,23 @@ class Project < ActiveRecord::Base
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
+  # Returns a collection of projects that is either public or visible to the
+  # logged in user.
+  def self.public_or_visible_to_user(user = nil)
+    if user
+      authorized = user.
+        project_authorizations.
+        select(1).
+        where('project_authorizations.project_id = projects.id')
+
+      levels = Gitlab::VisibilityLevel.levels_for_user(user)
+
+      where('EXISTS (?) OR projects.visibility_level IN (?)', authorized, levels)
+    else
+      public_to_user
+    end
+  end
+
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
   # the feature is either enabled, or internal with permission for the user.

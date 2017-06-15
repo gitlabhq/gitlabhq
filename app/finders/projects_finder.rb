@@ -58,25 +58,9 @@ class ProjectsFinder < UnionFinder
       if private_only?
         current_user.authorized_projects
       else
-        collection_with_user_and_public_projects
+        Project.public_or_visible_to_user(current_user)
       end
     end
-  end
-
-  # Builds a collection for a signed in user that includes additional projects
-  # such as public and internal ones.
-  #
-  # This method manually constructs some WHERE conditions in order to ensure the
-  # produced query is as efficient as possible.
-  def collection_with_user_and_public_projects
-    levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
-    authorized = current_user.project_authorizations.
-      select(1).
-      where('project_id = projects.id')
-
-    Project.where('EXISTS (?) OR projects.visibility_level IN (?)',
-                  authorized,
-                  levels)
   end
 
   # Builds a collection for an anonymous user.

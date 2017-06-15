@@ -2060,4 +2060,36 @@ describe Project, models: true do
       expect(project.last_repository_updated_at.to_i).to eq(project.created_at.to_i)
     end
   end
+
+  describe '.public_or_visible_to_user' do
+    let!(:user) { create(:user) }
+
+    let!(:private_project) do
+      create(:empty_project, :private, creator: user, namespace: user.namespace)
+    end
+
+    let!(:public_project) { create(:empty_project, :public) }
+
+    context 'with a user' do
+      let(:projects) do
+        Project.all.public_or_visible_to_user(user)
+      end
+
+      it 'includes projects the user has access to' do
+        expect(projects).to include(private_project)
+      end
+
+      it 'includes projects the user can see' do
+        expect(projects).to include(public_project)
+      end
+    end
+
+    context 'without a user' do
+      it 'only includes public projects' do
+        projects = Project.all.public_or_visible_to_user
+
+        expect(projects).to eq([public_project])
+      end
+    end
+  end
 end

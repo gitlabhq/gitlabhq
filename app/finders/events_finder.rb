@@ -33,7 +33,8 @@ class EventsFinder
   private
 
   def by_current_user_access(events)
-    events.merge(ProjectsFinder.new(current_user: current_user).execute).references(:project)
+    events.merge(ProjectsFinder.new(current_user: current_user).execute).
+      joins(:project)
   end
 
   def by_action(events)
