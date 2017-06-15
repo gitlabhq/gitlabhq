@@ -670,10 +670,6 @@
   width: 195px;
   max-width: 195px;
 
-  li {
-    padding: 2px 3px;
-  }
-
   .scrollable-menu {
     padding: 0;
     max-height: 245px;
@@ -690,7 +686,7 @@
     padding: 2px 0 0 5px;
     cursor: pointer;
     float: right;
-    margin: -26px 9px 0 0;
+    margin: -30px 9px 0 0;
     font-size: 12px;
     background-color: $white-light;
 
@@ -717,13 +713,22 @@
 
   // link to the build
   .mini-pipeline-graph-dropdown-item {
-    padding: 3px 7px 4px;
     clear: both;
     font-weight: normal;
     line-height: 1.428571429;
     white-space: nowrap;
-    margin: 0 5px;
-    border-radius: 3px;
+
+    &:hover,
+    &:focus {
+      .ci-status-icon svg path:nth-child(1) {
+        fill: $dropdown-hover-bg;
+      }
+
+      .ci-build-text,
+      .ci-status-text {
+        color: inherit;
+      }
+    }
 
     // build name
     .ci-build-text,
@@ -761,8 +766,6 @@
     &:focus {
       outline: none;
       text-decoration: none;
-      color: $gl-text-color;
-      background-color: $stage-hover-bg;
     }
   }
 }
