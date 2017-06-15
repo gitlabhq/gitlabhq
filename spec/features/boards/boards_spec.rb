@@ -249,11 +249,11 @@ describe 'Issue Boards', feature: true, js: true do
       it 'issue moves from closed' do
         drag(list_from_index: 3, list_to_index: 2)
 
-        expect(find('.board:nth-child(3)')).to have_content(issue8.title)
-
         wait_for_board_cards(2, 8)
         wait_for_board_cards(3, 3)
         wait_for_board_cards(4, 0)
+
+        expect(find('.board:nth-child(3)')).to have_content(issue8.title)
       end
 
       context 'issue card' do
