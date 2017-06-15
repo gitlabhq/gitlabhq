@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-06-15 13:28+0200\n"
+"PO-Revision-Date: 2017-06-15 13:46+0200\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -158,6 +158,9 @@ msgstr[1] "Cambios"
 
 msgid "Commit message"
 msgstr "Mensaje del cambio"
+
+msgid "CommitBoxTitle|Commit"
+msgstr "Cambio"
 
 msgid "CommitMessage|Add %{file_name}"
 msgstr "Agregar %{file_name}"

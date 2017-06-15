@@ -85,12 +85,6 @@ msgstr ""
 msgid "ChangeTypeAction|Cherry-pick"
 msgstr ""
 
-msgid "ChangeType|commit"
-msgstr ""
-
-msgid "ChangeType|merge request"
-msgstr ""
-
 msgid "Changelog"
 msgstr ""
 
@@ -100,7 +94,7 @@ msgstr ""
 msgid "Cherry-pick this commit"
 msgstr ""
 
-msgid "Cherry-pick this merge-request"
+msgid "Cherry-pick this merge request"
 msgstr ""
 
 msgid "CiStatusLabel|canceled"
@@ -165,6 +159,9 @@ msgstr[1] ""
 msgid "Commit message"
 msgstr ""
 
+msgid "CommitBoxTitle|Commit"
+msgstr ""
+
 msgid "CommitMessage|Add %{file_name}"
 msgstr ""
 
@@ -217,9 +214,6 @@ msgid "Cron Timezone"
 msgstr ""
 
 msgid "Cron syntax"
-msgstr ""
-
-msgid "Custom"
 msgstr ""
 
 msgid "Custom notification events"
@@ -396,6 +390,9 @@ msgstr ""
 msgid "Learn more in the"
 msgstr ""
 
+msgid "Learn more in the|pipeline schedules documentation"
+msgstr ""
+
 msgid "Leave group"
 msgstr ""
 
@@ -562,6 +559,9 @@ msgstr ""
 msgid "PipelineSchedules|Target"
 msgstr ""
 
+msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr ""
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr ""
 
@@ -655,7 +655,7 @@ msgstr ""
 msgid "Revert this commit"
 msgstr ""
 
-msgid "Revert this merge-request"
+msgid "Revert this merge request"
 msgstr ""
 
 msgid "Save pipeline schedule"
@@ -703,6 +703,9 @@ msgid "Source code"
 msgstr ""
 
 msgid "StarProject|Star"
+msgstr ""
+
+msgid "Start a  %{new_merge_request} with these changes"
 msgstr ""
 
 msgid "Start a <strong>new merge request</strong> with these changes"
@@ -1007,6 +1010,9 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "new merge request"
+msgstr ""
+
 msgid "notification emails"
 msgstr ""
 
@@ -1014,9 +1020,6 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "pipeline schedules documentation"
-msgstr ""
 
 msgid "with stage"
 msgid_plural "with stages"

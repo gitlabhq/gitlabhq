@@ -1,7 +1,7 @@
 .page-content-header
   .header-main-content
     %strong
-      #{ _('Commit') }
+      #{ s_('CommitBoxTitle|Commit') }
       %span.commit-sha= @commit.short_id
     = clipboard_button(text: @commit.id, title: _("Copy commit SHA to clipboard"))
     %span.hidden-xs authored
