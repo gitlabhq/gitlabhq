@@ -23,6 +23,8 @@ module Issuable
   IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count, :merge_requests_count)
 
   included do
+    prepend EE::Issuable
+
     cache_markdown_field :title, pipeline: :single_line
     cache_markdown_field :description, issuable_state_filter_enabled: true
 
