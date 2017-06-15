@@ -28,7 +28,9 @@
                 .checkbox
                   = label_tag do
                     = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: nil
-                    #{ _('Start a <strong>new merge request</strong> with these changes').html_safe }
+                    - translation_variables = { new_merge_request: "<strong>#{_('new merge request')}</strong>" }
+                    - translation = _('Start a  %{new_merge_request} with these changes') % translation_variables
+                    #{ translation.html_safe }
               - else
                 = hidden_field_tag 'create_merge_request', 1, id: nil
           .form-actions

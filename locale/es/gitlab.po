@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-06-15 12:10+0200\n"
+"PO-Revision-Date: 2017-06-15 13:28+0200\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -85,12 +85,6 @@ msgstr "Revertir en la rama"
 msgid "ChangeTypeAction|Cherry-pick"
 msgstr "Cherry-pick"
 
-msgid "ChangeType|commit"
-msgstr "cambio"
-
-msgid "ChangeType|merge request"
-msgstr "solicitud de fusión"
-
 msgid "Changelog"
 msgstr "Changelog"
 
@@ -100,7 +94,7 @@ msgstr "Gráficos"
 msgid "Cherry-pick this commit"
 msgstr "Escoger este cambio"
 
-msgid "Cherry-pick this merge-request"
+msgid "Cherry-pick this merge request"
 msgstr "Escoger esta solicitud de fusión"
 
 msgid "CiStatusLabel|canceled"
@@ -658,7 +652,7 @@ msgstr "Solicitar acceso"
 msgid "Revert this commit"
 msgstr "Revertir este cambio"
 
-msgid "Revert this merge-request"
+msgid "Revert this merge request"
 msgstr "Revertir esta solicitud de fusión"
 
 msgid "Save pipeline schedule"
@@ -707,6 +701,9 @@ msgstr "Código fuente"
 
 msgid "StarProject|Star"
 msgstr "Destacar"
+
+msgid "Start a  %{new_merge_request} with these changes"
+msgstr "Iniciar una %{new_merge_request} con estos cambios"
 
 msgid "Start a <strong>new merge request</strong> with these changes"
 msgstr "Iniciar una <strong>nueva solicitud de fusión</strong> con estos cambios"
@@ -1012,6 +1009,9 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "día"
 msgstr[1] "días"
+
+msgid "new merge request"
+msgstr "nueva solicitud de fusión"
 
 msgid "notification emails"
 msgstr "correos electrónicos de notificación"

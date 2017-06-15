@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 12:04+0200\n"
-"PO-Revision-Date: 2017-06-15 12:04+0200\n"
+"POT-Creation-Date: 2017-06-15 12:35+0200\n"
+"PO-Revision-Date: 2017-06-15 12:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -86,12 +86,6 @@ msgstr ""
 msgid "ChangeTypeAction|Cherry-pick"
 msgstr ""
 
-msgid "ChangeType|commit"
-msgstr ""
-
-msgid "ChangeType|merge request"
-msgstr ""
-
 msgid "Changelog"
 msgstr ""
 
@@ -101,7 +95,7 @@ msgstr ""
 msgid "Cherry-pick this commit"
 msgstr ""
 
-msgid "Cherry-pick this merge-request"
+msgid "Cherry-pick this merge request"
 msgstr ""
 
 msgid "CiStatusLabel|canceled"
@@ -659,7 +653,7 @@ msgstr ""
 msgid "Revert this commit"
 msgstr ""
 
-msgid "Revert this merge-request"
+msgid "Revert this merge request"
 msgstr ""
 
 msgid "Save pipeline schedule"
@@ -707,6 +701,9 @@ msgid "Source code"
 msgstr ""
 
 msgid "StarProject|Star"
+msgstr ""
+
+msgid "Start a  %{new_merge_request} with these changes"
 msgstr ""
 
 msgid "Start a <strong>new merge request</strong> with these changes"
@@ -1010,6 +1007,9 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "new merge request"
+msgstr ""
 
 msgid "notification emails"
 msgstr ""
