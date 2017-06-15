@@ -13,7 +13,13 @@ export default {
     },
     actionText: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
+    },
+    actionTextHtml: {
+      type: String,
+      required: false,
+      default: '',
     },
     notePath: {
       type: String,
@@ -54,7 +60,13 @@ export default {
     </a>
     <span class="note-headline-light">
       <span class="note-headline-meta">
-        {{actionText}}
+        <template v-if="actionText">
+          {{actionText}}
+        </template>
+        <span
+          v-if="actionTextHtml"
+          v-html="actionTextHtml"
+          class="system-note-message"></span>
         <a :href="notePath">
           <time-ago-tooltip
             :time="createdAt"
