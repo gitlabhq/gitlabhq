@@ -51,7 +51,9 @@ describe PipelineDetailsEntity do
       end
 
       context 'user has ability to retry pipeline' do
-        before { project.team << [user, :developer] }
+        before do
+          project.team << [user, :developer]
+        end
 
         it 'retryable flag is true' do
           expect(subject[:flags][:retryable]).to eq true
@@ -77,7 +79,9 @@ describe PipelineDetailsEntity do
       end
 
       context 'user has ability to cancel pipeline' do
-        before { project.add_developer(user) }
+        before do
+          project.add_developer(user)
+        end
 
         it 'cancelable flag is true' do
           expect(subject[:flags][:cancelable]).to eq true

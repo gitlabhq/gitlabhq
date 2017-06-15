@@ -164,7 +164,9 @@ describe IssuesFinder do
         let(:params) { { label_name: [label.title, label2.title].join(',') } }
         let(:label2) { create(:label, project: project2) }
 
-        before { create(:label_link, label: label2, target: issue2) }
+        before do
+          create(:label_link, label: label2, target: issue2)
+        end
 
         it 'returns the unique issues with any of those labels' do
           expect(issues).to contain_exactly(issue2)

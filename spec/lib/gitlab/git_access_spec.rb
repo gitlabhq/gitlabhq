@@ -61,7 +61,9 @@ describe Gitlab::GitAccess, lib: true do
           let(:actor) { deploy_key }
 
           context 'when the DeployKey has access to the project' do
-            before { deploy_key.projects << project }
+            before do
+              deploy_key.projects << project
+            end
 
             it 'allows pull access' do
               expect { pull_access_check }.not_to raise_error
@@ -85,7 +87,9 @@ describe Gitlab::GitAccess, lib: true do
 
         context 'when actor is a User' do
           context 'when the User can read the project' do
-            before { project.team << [user, :master] }
+            before do
+              project.team << [user, :master]
+            end
 
             it 'allows pull access' do
               expect { pull_access_check }.not_to raise_error
@@ -160,7 +164,9 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   describe '#check_command_disabled!' do
-    before { project.team << [user, :master] }
+    before do
+      project.team << [user, :master]
+    end
 
     context 'over http' do
       let(:protocol) { 'http' }
@@ -197,7 +203,9 @@ describe Gitlab::GitAccess, lib: true do
 
   describe '#check_download_access!' do
     describe 'master permissions' do
-      before { project.team << [user, :master] }
+      before do
+        project.team << [user, :master]
+      end
 
       context 'pull code' do
         it { expect { pull_access_check }.not_to raise_error }
@@ -205,7 +213,9 @@ describe Gitlab::GitAccess, lib: true do
     end
 
     describe 'guest permissions' do
-      before { project.team << [user, :guest] }
+      before do
+        project.team << [user, :guest]
+      end
 
       context 'pull code' do
         it { expect { pull_access_check }.to raise_unauthorized('You are not allowed to download code from this project.') }
@@ -254,7 +264,9 @@ describe Gitlab::GitAccess, lib: true do
 
       context 'pull code' do
         context 'when project is authorized' do
-          before { key.projects << project }
+          before do
+            key.projects << project
+          end
 
           it { expect { pull_access_check }.not_to raise_error }
         end
@@ -304,7 +316,9 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       describe 'reporter user' do
-        before { project.team << [user, :reporter] }
+        before do
+          project.team << [user, :reporter]
+        end
 
         context 'pull code' do
           it { expect { pull_access_check }.not_to raise_error }
@@ -315,7 +329,9 @@ describe Gitlab::GitAccess, lib: true do
         let(:user) { create(:admin) }
 
         context 'when member of the project' do
-          before { project.team << [user, :reporter] }
+          before do
+            project.team << [user, :reporter]
+          end
 
           context 'pull code' do
             it { expect { pull_access_check }.not_to raise_error }
@@ -340,8 +356,11 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   describe '#check_push_access!' do
-    before { merge_into_protected_branch }
     let(:unprotected_branch) { 'unprotected_branch' }
+
+    before do
+      merge_into_protected_branch
+    end
 
     let(:changes) do
       { push_new_branch: "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow",
@@ -496,19 +515,25 @@ describe Gitlab::GitAccess, lib: true do
 
     [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
-        before { create(:protected_branch, :remove_default_access_levels, :masters_can_push, name: protected_branch_name, project: project) }
+        before do
+          create(:protected_branch, :remove_default_access_levels, :masters_can_push, name: protected_branch_name, project: project)
+        end
 
         run_permission_checks(permissions_matrix)
       end
 
       context "when developers are allowed to push into the #{protected_branch_type} protected branch" do
-        before { create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_push, name: protected_branch_name, project: project) }
+        before do
+          create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_push, name: protected_branch_name, project: project)
+        end
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
 
       context "developers are allowed to merge into the #{protected_branch_type} protected branch" do
-        before { create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_merge, name: protected_branch_name, project: project) }
+        before do
+          create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_merge, name: protected_branch_name, project: project)
+        end
 
         context "when a merge request exists for the given source/target branch" do
           context "when the merge request is in progress" do
@@ -535,7 +560,9 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       context "when developers are allowed to push and merge into the #{protected_branch_type} protected branch" do
-        before { create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project) }
+        before do
+          create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project)
+        end
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
@@ -636,7 +663,9 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       context "when no one is allowed to push to the #{protected_branch_name} protected branch" do
-        before { create(:protected_branch, :remove_default_access_levels, :no_one_can_push, name: protected_branch_name, project: project) }
+        before do
+          create(:protected_branch, :remove_default_access_levels, :no_one_can_push, name: protected_branch_name, project: project)
+        end
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
@@ -830,7 +859,9 @@ describe Gitlab::GitAccess, lib: true do
     let(:authentication_abilities) { build_authentication_abilities }
 
     context 'when project is authorized' do
-      before { project.team << [user, :reporter] }
+      before do
+        project.team << [user, :reporter]
+      end
 
       it { expect { push_access_check }.to raise_unauthorized('You are not allowed to upload code for this project.') }
     end
@@ -874,7 +905,9 @@ describe Gitlab::GitAccess, lib: true do
       let(:can_push) { true }
 
       context 'when project is authorized' do
-        before { key.projects << project }
+        before do
+          key.projects << project
+        end
 
         it { expect { push_access_check }.not_to raise_error }
       end
@@ -904,7 +937,9 @@ describe Gitlab::GitAccess, lib: true do
       let(:can_push) { false }
 
       context 'when project is authorized' do
-        before { key.projects << project }
+        before do
+          key.projects << project
+        end
 
         it { expect { push_access_check }.to raise_unauthorized('This deploy key does not have write access to this project.') }
       end

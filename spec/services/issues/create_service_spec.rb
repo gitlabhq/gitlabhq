@@ -155,7 +155,9 @@ describe Issues::CreateService, services: true do
 
     context 'issue create service' do
       context 'assignees' do
-        before { project.team << [user, :master] }
+        before do
+          project.team << [user, :master]
+        end
 
         it 'removes assignee when user id is invalid' do
           opts = { title: 'Title', description: 'Description', assignee_ids: [-1] }

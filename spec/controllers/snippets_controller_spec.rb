@@ -437,7 +437,9 @@ describe SnippetsController do
         end
 
         context 'when signed in user is the author' do
-          before { get :raw, id: personal_snippet.to_param }
+          before do
+            get :raw, id: personal_snippet.to_param
+          end
 
           it 'responds with status 200' do
             expect(assigns(:snippet)).to eq(personal_snippet)

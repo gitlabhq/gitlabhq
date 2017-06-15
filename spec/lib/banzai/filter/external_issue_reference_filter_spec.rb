@@ -82,7 +82,9 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
     context 'with RequestStore enabled' do
       let(:reference_filter) { HTML::Pipeline.new([described_class]) }
 
-      before { allow(RequestStore).to receive(:active?).and_return(true) }
+      before do
+        allow(RequestStore).to receive(:active?).and_return(true)
+      end
 
       it 'queries the collection on the first call' do
         expect_any_instance_of(Project).to receive(:default_issues_tracker?).once.and_call_original

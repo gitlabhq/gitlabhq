@@ -9,7 +9,10 @@ describe Route, models: true do
   end
 
   describe 'validations' do
-    before { route }
+    before do
+      expect(route).to be_persisted
+    end
+
     it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_uniqueness_of(:path) }
@@ -59,7 +62,9 @@ describe Route, models: true do
 
     context 'path update' do
       context 'when route name is set' do
-        before { route.update_attributes(path: 'bar') }
+        before do
+          route.update_attributes(path: 'bar')
+        end
 
         it 'updates children routes with new path' do
           expect(described_class.exists?(path: 'bar')).to be_truthy

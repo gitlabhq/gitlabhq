@@ -10,7 +10,9 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
-      before { link['data-commit'] = 123 }
+      before do
+        link['data-commit'] = 123
+      end
 
       it_behaves_like "referenced feature visibility", "repository"
     end

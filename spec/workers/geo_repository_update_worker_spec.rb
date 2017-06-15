@@ -44,7 +44,9 @@ describe GeoRepositoryUpdateWorker do
   end
 
   context '#process_hooks' do
-    before { allow(subject).to receive(:fetch_repository) }
+    before do
+      allow(subject).to receive(:fetch_repository)
+    end
 
     it 'calls if push_data is present' do
       expect(subject).to receive(:process_hooks)
@@ -64,7 +66,9 @@ describe GeoRepositoryUpdateWorker do
   end
 
   context '#process_push' do
-    before { allow(subject).to receive(:fetch_repository) }
+    before do
+      allow(subject).to receive(:fetch_repository)
+    end
 
     it 'executes after_push_commit' do
       expect(project.repository).to receive(:after_push_commit).at_least(:once).with('master')

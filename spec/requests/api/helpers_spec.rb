@@ -55,40 +55,62 @@ describe API::Helpers do
     subject { current_user }
 
     describe "Warden authentication" do
-      before { doorkeeper_guard_returns false }
+      before do
+        doorkeeper_guard_returns false
+      end
 
       context "with invalid credentials" do
         context "GET request" do
-          before { env['REQUEST_METHOD'] = 'GET' }
+          before do
+            env['REQUEST_METHOD'] = 'GET'
+          end
+
           it { is_expected.to be_nil }
         end
       end
 
       context "with valid credentials" do
-        before { warden_authenticate_returns user }
+        before do
+          warden_authenticate_returns user
+        end
 
         context "GET request" do
-          before { env['REQUEST_METHOD'] = 'GET' }
+          before do
+            env['REQUEST_METHOD'] = 'GET'
+          end
+
           it { is_expected.to eq(user) }
         end
 
         context "HEAD request" do
-          before { env['REQUEST_METHOD'] = 'HEAD' }
+          before do
+            env['REQUEST_METHOD'] = 'HEAD'
+          end
+
           it { is_expected.to eq(user) }
         end
 
         context "PUT request" do
-          before { env['REQUEST_METHOD'] = 'PUT' }
+          before do
+            env['REQUEST_METHOD'] = 'PUT'
+          end
+
           it { is_expected.to be_nil }
         end
 
         context "POST request" do
-          before { env['REQUEST_METHOD'] = 'POST' }
+          before do
+            env['REQUEST_METHOD'] = 'POST'
+          end
+
           it { is_expected.to be_nil }
         end
 
         context "DELETE request" do
-          before { env['REQUEST_METHOD'] = 'DELETE' }
+          before do
+            env['REQUEST_METHOD'] = 'DELETE'
+          end
+
           it { is_expected.to be_nil }
         end
       end

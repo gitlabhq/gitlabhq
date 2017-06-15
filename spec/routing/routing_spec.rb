@@ -286,7 +286,9 @@ end
 describe "Groups", "routing" do
   let(:name) { 'complex.group-namegit' }
 
-  before { allow_any_instance_of(GroupUrlConstrainer).to receive(:matches?).and_return(true) }
+  before do
+    allow_any_instance_of(GroupUrlConstrainer).to receive(:matches?).and_return(true)
+  end
 
   it "to #show" do
     expect(get("/groups/#{name}")).to route_to('groups#show', id: name)

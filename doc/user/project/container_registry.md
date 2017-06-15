@@ -8,8 +8,8 @@
   Registry across your GitLab instance, visit the
   [administrator documentation](../../administration/container_registry.md).
 - Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
-  to pass a personal access token instead of your password in order to login to
-  GitLab's Container Registry.
+  to pass a [personal access token][pat] instead of your password in order to
+  login to GitLab's Container Registry.
 - Multiple level image names support was added in GitLab 9.1
 
 With the Docker Container Registry integrated into GitLab, every project can
@@ -106,12 +106,11 @@ and [Using the GitLab Container Registry documentation](../../ci/docker/using_do
 
 ## Using with private projects
 
-If a project is private, credentials will need to be provided for authorization.
-The preferred way to do this, is by using personal access tokens, which can be
-created under `/profile/personal_access_tokens`. The minimal scope needed is:
-`read_registry`.
+> [Introduced][ce-11845] in GitLab 9.3.
 
-This feature was introduced in GitLab 9.3.
+If a project is private, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens][pat].
+The minimal scope needed is `read_registry`.
 
 ## Troubleshooting the GitLab Container Registry
 
@@ -256,4 +255,6 @@ The solution: check the [IAM permissions again](https://docs.docker.com/registry
 Once the right permissions were set, the error will go away.
 
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
+[ce-11845]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
+[pat]: ../profile/personal_access_tokens.md

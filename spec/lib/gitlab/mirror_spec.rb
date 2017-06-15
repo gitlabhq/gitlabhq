@@ -3,7 +3,9 @@ require 'spec_helper'
 describe Gitlab::Mirror do
   include Gitlab::CurrentSettings
 
-  before { Sidekiq::Logging.logger = nil }
+  before do
+    Sidekiq::Logging.logger = nil
+  end
 
   describe '#configure_cron_job!' do
     let(:cron) { Gitlab::Mirror::SCHEDULER_CRON }

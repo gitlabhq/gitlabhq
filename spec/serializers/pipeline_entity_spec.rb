@@ -51,7 +51,9 @@ describe PipelineEntity do
       end
 
       context 'user has ability to retry pipeline' do
-        before { project.team << [user, :developer] }
+        before do
+          project.team << [user, :developer]
+        end
 
         it 'contains retry path' do
           expect(subject[:retry_path]).to be_present
@@ -77,7 +79,9 @@ describe PipelineEntity do
       end
 
       context 'user has ability to cancel pipeline' do
-        before { project.add_developer(user) }
+        before do
+          project.add_developer(user)
+        end
 
         it 'contains cancel path' do
           expect(subject[:cancel_path]).to be_present

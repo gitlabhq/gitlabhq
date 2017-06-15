@@ -4,7 +4,9 @@ describe Gitlab::Ci::Config::Entry::Cache do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
-    before { entry.compose! }
+    before do
+      entry.compose!
+    end
 
     context 'when entry config value is correct' do
       let(:config) do

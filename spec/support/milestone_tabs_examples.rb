@@ -11,7 +11,9 @@ shared_examples 'milestone tabs' do
 
   describe '#merge_requests' do
     context 'as html' do
-      before { go(:merge_requests, format: 'html') }
+      before do
+        go(:merge_requests, format: 'html')
+      end
 
       it 'redirects to milestone#show' do
         expect(response).to redirect_to(milestone_path)
@@ -19,7 +21,9 @@ shared_examples 'milestone tabs' do
     end
 
     context 'as json' do
-      before { go(:merge_requests, format: 'json') }
+      before do
+        go(:merge_requests, format: 'json')
+      end
 
       it 'renders the merge requests tab template to a string' do
         expect(response).to render_template('shared/milestones/_merge_requests_tab')
@@ -30,7 +34,9 @@ shared_examples 'milestone tabs' do
 
   describe '#participants' do
     context 'as html' do
-      before { go(:participants, format: 'html') }
+      before do
+        go(:participants, format: 'html')
+      end
 
       it 'redirects to milestone#show' do
         expect(response).to redirect_to(milestone_path)
@@ -38,7 +44,9 @@ shared_examples 'milestone tabs' do
     end
 
     context 'as json' do
-      before { go(:participants, format: 'json') }
+      before do
+        go(:participants, format: 'json')
+      end
 
       it 'renders the participants tab template to a string' do
         expect(response).to render_template('shared/milestones/_participants_tab')
@@ -49,7 +57,9 @@ shared_examples 'milestone tabs' do
 
   describe '#labels' do
     context 'as html' do
-      before { go(:labels, format: 'html') }
+      before do
+        go(:labels, format: 'html')
+      end
 
       it 'redirects to milestone#show' do
         expect(response).to redirect_to(milestone_path)
@@ -57,7 +67,9 @@ shared_examples 'milestone tabs' do
     end
 
     context 'as json' do
-      before { go(:labels, format: 'json') }
+      before do
+        go(:labels, format: 'json')
+      end
 
       it 'renders the labels tab template to a string' do
         expect(response).to render_template('shared/milestones/_labels_tab')

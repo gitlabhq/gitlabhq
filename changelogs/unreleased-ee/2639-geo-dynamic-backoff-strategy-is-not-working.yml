@@ -1,0 +1,4 @@
+---
+title: 'Geo: fixed Dynamic Backoff strategy that was not being used by workers'
+merge_request: 2128
+author:

@@ -8,20 +8,8 @@ RSpec.shared_examples "protected tags > access control > EE" do
     groups.each { |group| project.project_group_links.create(group: group, group_access: Gitlab::Access::DEVELOPER) }
   end
 
-  def access_type_ids
-    ProtectedTag.last.create_access_levels
-  end
-
   def access_levels
-    access_type_ids.map(&:access_level)
-  end
-
-  def user_ids
-    access_type_ids.map(&:user_id)
-  end
-
-  def group_ids
-    access_type_ids.map(&:group_id)
+    ProtectedTag.last.create_access_levels
   end
 
   it "allows creating protected tags that roles, users, and groups can create" do
@@ -37,9 +25,9 @@ RSpec.shared_examples "protected tags > access control > EE" do
     within(".protected-tags-list") { expect(page).to have_content('v1.0') }
     expect(ProtectedTag.count).to eq(1)
 
-    roles.each { |(access_type_id, _)| expect(access_levels).to include(access_type_id) }
-    users.each { |user| expect(user_ids).to include(user.id) }
-    groups.each { |group| expect(group_ids).to include(group.id) }
+    roles.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
+    users.each { |user| expect(access_levels.map(&:user_id)).to include(user.id) }
+    groups.each { |group| expect(access_levels.map(&:group_id)).to include(group.id) }
   end
 
   it "allows updating protected tags so that roles and users can create it" do
@@ -58,9 +46,9 @@ RSpec.shared_examples "protected tags > access control > EE" do
 
     expect(ProtectedTag.count).to eq(1)
 
-    roles.each { |(access_type_id, _)| expect(access_levels).to include(access_type_id) }
-    users.each { |user| expect(user_ids).to include(user.id) }
-    groups.each { |group| expect(group_ids).to include(group.id) }
+    roles.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
+    users.each { |user| expect(access_levels.map(&:user_id)).to include(user.id) }
+    groups.each { |group| expect(access_levels.map(&:group_id)).to include(group.id) }
   end
 
   it "allows updating protected tags so that roles and users cannot create it" do
@@ -81,7 +69,7 @@ RSpec.shared_examples "protected tags > access control > EE" do
     wait_for_requests
 
     expect(ProtectedTag.count).to eq(1)
-    expect(access_type_ids).to be_empty
+    expect(access_levels).to be_empty
   end
 
   it "prepends selected users that can create" do
@@ -120,8 +108,8 @@ RSpec.shared_examples "protected tags > access control > EE" do
     expect(page).to have_selector '.dropdown-content .is-active', text: users.last.name
 
     expect(ProtectedTag.count).to eq(1)
-    roles.each { |(access_type_id, _)| expect(access_levels).to include(access_type_id) }
-    expect(user_ids).to include(users.last.id)
+    roles.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
+    expect(access_levels.map(&:user_id)).to include(users.last.id)
   end
 
   context 'When updating a protected tag' do
@@ -136,20 +124,20 @@ RSpec.shared_examples "protected tags > access control > EE" do
       wait_for_requests
 
       roles.each do |(access_type_id, _)|
-        expect(access_levels).to include(access_type_id)
+        expect(access_levels.map(&:access_level)).to include(access_type_id)
       end
 
-      expect(access_levels).not_to include(0)
+      expect(access_levels.map(&:access_level)).not_to include(0)
 
       set_allowed_to('create', 'No one', form: '.js-protected-tag-edit-form')
 
       wait_for_requests
 
       roles.each do |(access_type_id, _)|
-        expect(access_levels).not_to include(access_type_id)
+        expect(access_levels.map(&:access_level)).not_to include(access_type_id)
       end
 
-      expect(access_levels).to include(0)
+      expect(access_levels.map(&:access_level)).to include(0)
     end
   end
 
@@ -165,10 +153,10 @@ RSpec.shared_examples "protected tags > access control > EE" do
       wait_for_requests
 
       roles.each do |(access_type_id, _)|
-        expect(access_levels).not_to include(access_type_id)
+        expect(access_levels.map(&:access_level)).not_to include(access_type_id)
       end
 
-      expect(access_levels).to include(0)
+      expect(access_levels.map(&:access_level)).to include(0)
     end
   end
 end

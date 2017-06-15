@@ -78,7 +78,9 @@ describe ProjectSnippetPolicy, models: true do
     context 'project team member external user' do
       subject { abilities(external_user, :internal) }
 
-      before { project.team << [external_user, :developer] }
+      before do
+        project.team << [external_user, :developer]
+      end
 
       it do
         is_expected.to include(:read_project_snippet)
@@ -130,7 +132,9 @@ describe ProjectSnippetPolicy, models: true do
     context 'project team member normal user' do
       subject { abilities(regular_user, :private) }
 
-      before { project.team << [regular_user, :developer] }
+      before do
+        project.team << [regular_user, :developer]
+      end
 
       it do
         is_expected.to include(:read_project_snippet)
@@ -141,7 +145,9 @@ describe ProjectSnippetPolicy, models: true do
     context 'project team member external user' do
       subject { abilities(external_user, :private) }
 
-      before { project.team << [external_user, :developer] }
+      before do
+        project.team << [external_user, :developer]
+      end
 
       it do
         is_expected.to include(:read_project_snippet)

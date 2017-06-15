@@ -7,7 +7,9 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     )
   end
 
-  before { allow(model).to receive(:puts) }
+  before do
+    allow(model).to receive(:puts)
+  end
 
   describe '#add_concurrent_index' do
     context 'outside a transaction' do
