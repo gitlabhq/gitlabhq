@@ -155,6 +155,7 @@ class User < ActiveRecord::Base
   before_validation :set_public_email, if: :public_email_changed?
 
   after_update :update_emails_with_primary_email, if: :email_changed?
+  after_update :update_invalid_gpg_signatures, if: :email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
   after_save :ensure_namespace_correct
@@ -511,6 +512,10 @@ class User < ActiveRecord::Base
       Emails::DestroyService.new(self, email: email).execute
       Emails::CreateService.new(self, email: email_was).execute
     end
+  end
+
+  def update_invalid_gpg_signatures
+    gpg_keys.each(&:update_invalid_gpg_signatures)
   end
 
   # Returns the groups a user has access to

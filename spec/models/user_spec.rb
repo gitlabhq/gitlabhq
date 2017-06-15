@@ -350,6 +350,26 @@ describe User, models: true do
     end
   end
 
+  describe 'after update hook' do
+    describe '.update_invalid_gpg_signatures' do
+      let(:user) do
+        create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
+          user.skip_reconfirmation!
+        end
+      end
+
+      it 'does nothing when the name is updated' do
+        expect(user).not_to receive(:update_invalid_gpg_signatures)
+        user.update_attributes!(name: 'Bette')
+      end
+
+      it 'synchronizes the gpg keys when the email is updated' do
+        expect(user).to receive(:update_invalid_gpg_signatures)
+        user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
+      end
+    end
+  end
+
   describe '#update_tracked_fields!', :clean_gitlab_redis_shared_state do
     let(:request) { OpenStruct.new(remote_ip: "127.0.0.1") }
     let(:user) { create(:user) }

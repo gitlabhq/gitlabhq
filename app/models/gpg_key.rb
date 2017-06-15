@@ -53,6 +53,10 @@ class GpgKey < ActiveRecord::Base
     emails_with_verified_status.any? { |_email, verified| verified }
   end
 
+  def update_invalid_gpg_signatures
+    Gitlab::Gpg::InvalidGpgSignatureUpdater.new(self).run
+  end
+
   private
 
   def extract_fingerprint
@@ -65,10 +69,6 @@ class GpgKey < ActiveRecord::Base
     # we can assume that the result only contains one item as the validation
     # only allows one key
     self.primary_keyid = Gitlab::Gpg.primary_keyids_from_key(key).first
-  end
-
-  def update_invalid_gpg_signatures
-    run_after_commit { Gitlab::Gpg::InvalidGpgSignatureUpdater.new(self).run }
   end
 
   def notify_user
