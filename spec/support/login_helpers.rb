@@ -62,10 +62,13 @@ module LoginHelpers
     Thread.current[:current_user] = user
   end
 
-  def login_via(provider, user, uid)
+  def login_via(provider, user, uid, remember_me: false)
     mock_auth_hash(provider, uid, user.email)
     visit new_user_session_path
     expect(page).to have_content('Sign in with')
+
+    check "Remember Me" if remember_me
+
     click_link "oauth-login-#{provider}"
   end
 
