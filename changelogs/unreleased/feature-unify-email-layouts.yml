@@ -1,0 +1,4 @@
+---
+title: Update the devise mail templates to match the design of the pipeline emails
+merge_request: 10483
+author: Alexis Reigel
