@@ -2,13 +2,8 @@ require 'spec_helper'
 
 describe JobEntity do
   let(:user) { create(:user) }
-<<<<<<< HEAD:spec/serializers/build_entity_spec.rb
-  let(:build) { create(:ci_build, :failed) }
-  let(:project) { build.project }
-=======
   let(:job) { create(:ci_build) }
   let(:project) { job.project }
->>>>>>> da66c90... Merge branch 'fix-external-ci-services' into 'master':spec/serializers/job_entity_spec.rb
   let(:request) { double('request') }
 
   before do
@@ -21,14 +16,8 @@ describe JobEntity do
 
   subject { entity.as_json }
 
-<<<<<<< HEAD:spec/serializers/build_entity_spec.rb
-  it 'contains paths to build page and retry action' do
-    expect(subject).to include(:build_path, :retry_path)
-    expect(subject[:retry_path]).not_to be_nil
-=======
   it 'contains paths to job page action' do
     expect(subject).to include(:build_path)
->>>>>>> da66c90... Merge branch 'fix-external-ci-services' into 'master':spec/serializers/job_entity_spec.rb
   end
 
   it 'does not contain sensitive information' do
@@ -49,31 +38,17 @@ describe JobEntity do
     expect(subject[:status]).to include :icon, :favicon, :text, :label
   end
 
-<<<<<<< HEAD:spec/serializers/build_entity_spec.rb
-  context 'when build is a regular job' do
-=======
   context 'when job is retryable' do
     before do
       job.update(status: :failed)
     end
 
-    it 'contains cancel path' do
+    it 'contains retry path' do
       expect(subject).to include(:retry_path)
     end
   end
 
-  context 'when job is cancelable' do
-    before do
-      job.update(status: :running)
-    end
-
-    it 'contains cancel path' do
-      expect(subject).to include(:cancel_path)
-    end
-  end
-
   context 'when job is a regular job' do
->>>>>>> da66c90... Merge branch 'fix-external-ci-services' into 'master':spec/serializers/job_entity_spec.rb
     it 'does not contain path to play action' do
       expect(subject).not_to include(:play_path)
     end
