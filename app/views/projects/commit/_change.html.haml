@@ -2,13 +2,13 @@
 - when 'revert'
   - label = n_('ChangeTypeAction|Revert')
   - branch_label = s_('ChangeTypeActionLabel|Revert in branch')
-  - revert_merge_request = _('Revert this merge-request')
+  - revert_merge_request = _('Revert this merge request')
   - revert_commit = _('Revert this commit')
   - title = commit.merged_merge_request(current_user) ? revert_merge_request : revert_commit
 - when 'cherry-pick'
   - label = s_('ChangeTypeAction|Cherry-pick')
   - branch_label = s_('ChangeTypeActionLabel|Pick into branch')
-  - title = commit.merged_merge_request(current_user) ? _('Cherry-pick this merge-request') : _('Cherry-pick this commit')
+  - title = commit.merged_merge_request(current_user) ? _('Cherry-pick this merge request') : _('Cherry-pick this commit')
 
 .modal{ id: "modal-#{type}-commit" }
   .modal-dialog
