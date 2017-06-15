@@ -19,18 +19,18 @@ describe 'Issue Boards new issue', feature: true, js: true do
     end
 
     it 'displays new issue button' do
-      expect(page).to have_selector('.board-issue-count-holder .btn', count: 1)
+      expect(page).to have_selector('.issue-count-badge-add-button', count: 1)
     end
 
     it 'does not display new issue button in closed list' do
       page.within('.board:nth-child(2)') do
-        expect(page).not_to have_selector('.board-issue-count-holder .btn')
+        expect(page).not_to have_selector('.issue-count-badge-add-button')
       end
     end
 
     it 'shows form when clicking button' do
       page.within(first('.board')) do
-        find('.board-issue-count-holder .btn').click
+        find('.issue-count-badge-add-button').click
 
         expect(page).to have_selector('.board-new-issue-form')
       end
@@ -38,7 +38,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
     it 'hides form when clicking cancel' do
       page.within(first('.board')) do
-        find('.board-issue-count-holder .btn').click
+        find('.issue-count-badge-add-button').click
 
         expect(page).to have_selector('.board-new-issue-form')
 
@@ -50,7 +50,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
     it 'creates new issue' do
       page.within(first('.board')) do
-        find('.board-issue-count-holder .btn').click
+        find('.issue-count-badge-add-button').click
       end
 
       page.within(first('.board-new-issue-form')) do
@@ -60,14 +60,14 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
       wait_for_requests
 
-      page.within(first('.board .board-issue-count')) do
+      page.within(first('.board .issue-count-badge-count')) do
         expect(page).to have_content('1')
       end
     end
 
     it 'shows sidebar when creating new issue' do
       page.within(first('.board')) do
-        find('.board-issue-count-holder .btn').click
+        find('.issue-count-badge-add-button').click
       end
 
       page.within(first('.board-new-issue-form')) do
@@ -88,7 +88,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
     end
 
     it 'does not display new issue button' do
-      expect(page).to have_selector('.board-issue-count-holder .btn', count: 0)
+      expect(page).to have_selector('.issue-count-badge-add-button', count: 0)
     end
   end
 end
