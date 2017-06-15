@@ -79,8 +79,14 @@ describe 'gitlab:gitaly namespace rake task' do
   describe 'storage_config' do
     it 'prints storage configuration in a TOML format' do
       config = {
-        'default' => { 'path' => '/path/to/default' },
-        'nfs_01' => { 'path' => '/path/to/nfs_01' }
+        'default' => {
+          'path' => '/path/to/default',
+          'gitaly_address' => 'unix:/path/to/my.socket'
+        },
+        'nfs_01' => {
+          'path' => '/path/to/nfs_01',
+          'gitaly_address' => 'unix:/path/to/my.socket'
+        }
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(config)
 
@@ -89,6 +95,7 @@ describe 'gitlab:gitaly namespace rake task' do
         expected_output = <<~TOML
           # Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}
           # This is in TOML format suitable for use in Gitaly's config.toml file.
+          socket_path = "/path/to/my.socket"
           [[storage]]
           name = "default"
           path = "/path/to/default"

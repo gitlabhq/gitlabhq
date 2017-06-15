@@ -241,6 +241,10 @@ describe 'gitlab:app namespace rake task' do
         project_a
         project_b
 
+        # Avoid asking gitaly about the root ref (which will fail beacuse of the
+        # mocked storages)
+        allow_any_instance_of(Repository).to receive(:empty_repo?).and_return(false)
+
         # We only need a backup of the repositories for this test
         ENV["SKIP"] = "db,uploads,builds,artifacts,lfs,registry"
         create_backup
