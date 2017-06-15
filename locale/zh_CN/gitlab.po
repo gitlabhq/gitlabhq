@@ -7,9 +7,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-14 05:43-0400\n"
+"PO-Revision-Date: 2017-06-15 06:18-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
-"Language-Team: Chinese (China) (https://translate.zanata.org/project/view/GitLab)n"
+"Language-Team: Chinese (China) (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: zh-CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Zanata 3.9.6\n"
@@ -36,7 +36,7 @@ msgid "Add License"
 msgstr "添加许可证"
 
 msgid "Add an SSH key to your profile to pull or push via SSH."
-msgstr "新增一个用于推送或拉取的 SSH 秘钥到账号中。"
+msgstr "新建一个用于推送或拉取的 SSH 秘钥到账号中。"
 
 msgid "Add new directory"
 msgstr "添加目录"
@@ -314,13 +314,13 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr "编辑 %{id} 流水线计划"
 
 msgid "Every day (at 4:00am)"
-msgstr "每日執行（凌晨4点）"
+msgstr "每日执行（凌晨4点）"
 
 msgid "Every month (on the 1st at 4:00am)"
-msgstr "每月執行（第一天凌晨4点）"
+msgstr "每月执行（每月1日凌晨4点）"
 
 msgid "Every week (Sundays at 4:00am)"
-msgstr "每周執行（周日凌晨4点）"
+msgstr "每周执行（周日凌晨4点）"
 
 msgid "Failed to change the owner"
 msgstr "无法变更所有者"
@@ -413,38 +413,38 @@ msgid "Median"
 msgstr "中位数"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
-msgstr "新增 SSH 公钥"
+msgstr "新建 SSH 公钥"
 
 msgid "New Issue"
 msgid_plural "New Issues"
-msgstr[0] "新增议题"
+msgstr[0] "新建议题"
 
 msgid "New Pipeline Schedule"
 msgstr "创建流水线计划"
 
 msgid "New branch"
-msgstr "新增分支"
+msgstr "新建分支"
 
 msgid "New directory"
-msgstr "新增目录"
+msgstr "新建目录"
 
 msgid "New file"
-msgstr "新增文件"
+msgstr "新建文件"
 
 msgid "New issue"
-msgstr "新增议题"
+msgstr "新建议题"
 
 msgid "New merge request"
-msgstr "新增合并请求"
+msgstr "新建合并请求"
 
 msgid "New schedule"
-msgstr "新增计划"
+msgstr "新建计划"
 
 msgid "New snippet"
-msgstr "新增代码片段"
+msgstr "新建代码片段"
 
 msgid "New tag"
-msgstr "新增标签"
+msgstr "新建标签"
 
 msgid "No repository"
 msgstr "没有存储库"
@@ -474,13 +474,13 @@ msgid "NotificationEvent|Merge merge request"
 msgstr "合并请求被合并"
 
 msgid "NotificationEvent|New issue"
-msgstr "新增议题"
+msgstr "新建议题"
 
 msgid "NotificationEvent|New merge request"
-msgstr "新增合并请求"
+msgstr "新建合并请求"
 
 msgid "NotificationEvent|New note"
-msgstr "新增评论"
+msgstr "新建评论"
 
 msgid "NotificationEvent|Reassign issue"
 msgstr "重新指派议题"
@@ -519,7 +519,7 @@ msgid "OpenedNDaysAgo|Opened"
 msgstr "开始于"
 
 msgid "Options"
-msgstr "选项"
+msgstr "操作"
 
 msgid "Owner"
 msgstr "所有者"
@@ -582,7 +582,7 @@ msgid "Project export could not be deleted."
 msgstr "无法删除项目导出。"
 
 msgid "Project export has been deleted."
-msgstr "项目导出已删除。"
+msgstr "项目导出已被删除。"
 
 msgid ""
 "Project export link has expired. Please generate a new export from your "
@@ -602,7 +602,7 @@ msgid "ProjectFeature|Everyone with access"
 msgstr "任何对项目有访问权的人"
 
 msgid "ProjectFeature|Only team members"
-msgstr "只有团队成员"
+msgstr "只限团队成员"
 
 msgid "ProjectFileTree|Name"
 msgstr "名称"
@@ -748,7 +748,7 @@ msgid ""
 "The pipelines schedule runs pipelines in the future, repeatedly, for "
 "specific branches or tags. Those scheduled pipelines will inherit limited "
 "project access based on their associated user."
-msgstr "流水线计划会针对特定的分支或标签在以后重复运行流水线。这些预定的流水线将根据其相关用户继承有限的项目访问。"
+msgstr "流水线计划会周期性重复运行指定分支或标签的流水线。这些流水线将根据其关联用户继承有限的项目访问权限。"
 
 msgid ""
 "The planning stage shows the time from the previous step to pushing your "
@@ -991,7 +991,7 @@ msgid ""
 "Are you ABSOLUTELY sure?"
 msgstr "即将要删除 %{project_name_with_namespace}。\n"
 "已删除的项目无法恢复！\n"
-"你确定继续吗？"
+"确定继续吗？"
 
 msgid ""
 "You are going to remove the fork relationship to source project "
