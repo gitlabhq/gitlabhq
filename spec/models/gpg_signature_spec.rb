@@ -10,5 +10,6 @@ RSpec.describe GpgSignature do
     subject { described_class.new }
     it { is_expected.to validate_presence_of(:commit_sha) }
     it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_presence_of(:gpg_key_primary_keyid) }
   end
 end

@@ -100,7 +100,7 @@ RSpec.describe Gitlab::Gpg::Commit do
           commit_sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33',
           project: project,
           gpg_key: nil,
-          gpg_key_primary_keyid: nil,
+          gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
           valid_signature: false
         )
       end

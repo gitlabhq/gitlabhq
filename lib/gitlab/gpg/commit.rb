@@ -43,12 +43,14 @@ module Gitlab
       end
 
       def create_cached_signature!(gpg_key)
+        verified_signature_result = verified_signature
+
         GpgSignature.create!(
           commit_sha: commit.sha,
           project: commit.project,
           gpg_key: gpg_key,
-          gpg_key_primary_keyid: gpg_key&.primary_keyid,
-          valid_signature: !!(gpg_key && gpg_key.verified? && verified_signature.valid?)
+          gpg_key_primary_keyid: gpg_key&.primary_keyid || verified_signature_result.fingerprint,
+          valid_signature: !!(gpg_key && gpg_key.verified? && verified_signature_result.valid?)
         )
       end
     end
