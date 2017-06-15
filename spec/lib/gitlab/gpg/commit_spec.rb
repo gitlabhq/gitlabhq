@@ -38,11 +38,11 @@ RSpec.describe Gitlab::Gpg::Commit do
       it 'returns the cached signature on second call' do
         gpg_commit = described_class.new(commit)
 
-        expect(gpg_commit).to receive(:verified_signature).twice.and_call_original
+        expect(gpg_commit).to receive(:using_keychain).and_call_original
         gpg_commit.signature
 
         # consecutive call
-        expect(gpg_commit).not_to receive(:verified_signature).and_call_original
+        expect(gpg_commit).not_to receive(:using_keychain).and_call_original
         gpg_commit.signature
       end
     end
@@ -73,11 +73,11 @@ RSpec.describe Gitlab::Gpg::Commit do
       it 'returns the cached signature on second call' do
         gpg_commit = described_class.new(commit)
 
-        expect(gpg_commit).to receive(:verified_signature).and_call_original
+        expect(gpg_commit).to receive(:using_keychain).and_call_original
         gpg_commit.signature
 
         # consecutive call
-        expect(gpg_commit).not_to receive(:verified_signature).and_call_original
+        expect(gpg_commit).not_to receive(:using_keychain).and_call_original
         gpg_commit.signature
       end
     end
@@ -108,11 +108,11 @@ RSpec.describe Gitlab::Gpg::Commit do
       it 'returns the cached signature on second call' do
         gpg_commit = described_class.new(commit)
 
-        expect(gpg_commit).to receive(:verified_signature).and_call_original
+        expect(gpg_commit).to receive(:using_keychain).and_call_original
         gpg_commit.signature
 
         # consecutive call
-        expect(gpg_commit).not_to receive(:verified_signature).and_call_original
+        expect(gpg_commit).not_to receive(:using_keychain).and_call_original
         gpg_commit.signature
       end
     end
