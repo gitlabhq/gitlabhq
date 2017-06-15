@@ -4,11 +4,11 @@
 > [Amazon Elasticsearch][aws-elasticsearch] was [introduced][ee-1305] in GitLab
 > EE 9.0.
 
-## Why You Need This? 
+## Why do you need this? 
 
 [Elasticsearch] is a flexible, scalable and powerful search service that saves developers time.  Instead of developers creating duplicate code and wasting time, they can now search for code within other teams that will help their own project.
 
-## Who Needs This?
+## Who needs this?
 1. My team uses a plugin to find code from different teams
 2. Are developers from different teams creating the same code for their own projects?
 3. Are you looking to enable innersourcing?
