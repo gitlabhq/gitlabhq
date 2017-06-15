@@ -16,6 +16,9 @@ module Gitlab
       def signature
         return unless has_signature?
 
+        cached_signature = GpgSignature.find_by(commit_sha: commit.sha)
+        return cached_signature if cached_signature.present?
+
         Gitlab::Gpg.using_tmp_keychain do
           # first we need to get the keyid from the signature to query the gpg
           # key belonging to the keyid.

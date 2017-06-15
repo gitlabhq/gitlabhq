@@ -237,11 +237,6 @@ class Commit
   def signature
     return @signature if defined?(@signature)
 
-    @signature = nil
-
-    cached_signature = GpgSignature.find_by(commit_sha: sha)
-    return cached_signature if cached_signature.present?
-
     @signature = Gitlab::Gpg::Commit.new(self).signature
   end
 

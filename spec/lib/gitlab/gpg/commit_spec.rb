@@ -11,19 +11,21 @@ RSpec.describe Gitlab::Gpg::Commit do
     end
 
     context 'known and verified public key' do
-      it 'returns a valid signature' do
-        gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key, user: create(:user, email: GpgHelpers::User1.emails.first)
+      let!(:gpg_key) do
+        create :gpg_key, key: GpgHelpers::User1.public_key, user: create(:user, email: GpgHelpers::User1.emails.first)
+      end
 
+      let!(:commit) do
         raw_commit = double(:raw_commit, signature: [
           GpgHelpers::User1.signed_commit_signature,
           GpgHelpers::User1.signed_commit_base_data
         ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
         allow(raw_commit).to receive :save!
 
-        commit = create :commit,
-          git_commit: raw_commit,
-          project: project
+        create :commit, git_commit: raw_commit, project: project
+      end
 
+      it 'returns a valid signature' do
         expect(described_class.new(commit).signature).to have_attributes(
           commit_sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33',
           project: project,
@@ -32,22 +34,33 @@ RSpec.describe Gitlab::Gpg::Commit do
           valid_signature: true
         )
       end
+
+      it 'returns the cached signature on second call' do
+        gpg_commit = described_class.new(commit)
+
+        expect(gpg_commit).to receive(:verified_signature).twice.and_call_original
+        gpg_commit.signature
+
+        # consecutive call
+        expect(gpg_commit).not_to receive(:verified_signature).and_call_original
+        gpg_commit.signature
+      end
     end
 
     context 'known but unverified public key' do
-      it 'returns an invalid signature' do
-        gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key
+      let!(:gpg_key) { create :gpg_key, key: GpgHelpers::User1.public_key }
 
+      let!(:commit) do
         raw_commit = double(:raw_commit, signature: [
           GpgHelpers::User1.signed_commit_signature,
           GpgHelpers::User1.signed_commit_base_data
         ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
         allow(raw_commit).to receive :save!
 
-        commit = create :commit,
-          git_commit: raw_commit,
-          project: project
+        create :commit, git_commit: raw_commit, project: project
+      end
 
+      it 'returns an invalid signature' do
         expect(described_class.new(commit).signature).to have_attributes(
           commit_sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33',
           project: project,
@@ -56,20 +69,33 @@ RSpec.describe Gitlab::Gpg::Commit do
           valid_signature: false
         )
       end
+
+      it 'returns the cached signature on second call' do
+        gpg_commit = described_class.new(commit)
+
+        expect(gpg_commit).to receive(:verified_signature).and_call_original
+        gpg_commit.signature
+
+        # consecutive call
+        expect(gpg_commit).not_to receive(:verified_signature).and_call_original
+        gpg_commit.signature
+      end
     end
 
     context 'unknown public key' do
-      it 'returns an invalid signature', :gpg do
+      let!(:commit) do
         raw_commit = double(:raw_commit, signature: [
           GpgHelpers::User1.signed_commit_signature,
           GpgHelpers::User1.signed_commit_base_data
         ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
         allow(raw_commit).to receive :save!
 
-        commit = create :commit,
+        create :commit,
           git_commit: raw_commit,
           project: project
+      end
 
+      it 'returns an invalid signature' do
         expect(described_class.new(commit).signature).to have_attributes(
           commit_sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33',
           project: project,
@@ -77,6 +103,17 @@ RSpec.describe Gitlab::Gpg::Commit do
           gpg_key_primary_keyid: nil,
           valid_signature: false
         )
+      end
+
+      it 'returns the cached signature on second call' do
+        gpg_commit = described_class.new(commit)
+
+        expect(gpg_commit).to receive(:verified_signature).and_call_original
+        gpg_commit.signature
+
+        # consecutive call
+        expect(gpg_commit).not_to receive(:verified_signature).and_call_original
+        gpg_commit.signature
       end
     end
   end
