@@ -249,6 +249,7 @@ if (IS_DEV_SERVER) {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
+    hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD
   };
   config.output.publicPath = '//' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT + config.output.publicPath;
@@ -256,6 +257,9 @@ if (IS_DEV_SERVER) {
     // watch node_modules for changes if we encounter a missing module compile error
     new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
   );
+  if (DEV_SERVER_LIVERELOAD) {
+    config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  }
 }
 
 if (WEBPACK_REPORT) {
