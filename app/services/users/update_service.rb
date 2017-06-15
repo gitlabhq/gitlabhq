@@ -10,7 +10,7 @@ module Users
     def execute(skip_authorization: false, &block)
       assign_attributes(skip_authorization, &block)
 
-      if @user.save || !@user.changed?
+      if @user.save || !@user.changed? && @user.errors.empty?
         success
       else
         error(@user.errors.full_messages.uniq.join('. '))

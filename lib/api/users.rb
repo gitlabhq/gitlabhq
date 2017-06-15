@@ -156,7 +156,9 @@ module API
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
-        if user.update_attributes(user_params.except(:extern_uid, :provider))
+        result = ::Users::UpdateService.new(current_user, user, user_params.except(:extern_uid, :provider)).execute
+
+        if result[:status] == :success
           present user, with: Entities::UserPublic
         else
           render_validation_error!(user)
