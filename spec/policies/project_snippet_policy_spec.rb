@@ -148,6 +148,7 @@ describe ProjectSnippetPolicy, models: true do
       before do
         project.team << [external_user, :developer]
       end
+<<<<<<< HEAD
 
       it do
         is_expected.to include(:read_project_snippet)
@@ -158,6 +159,8 @@ describe ProjectSnippetPolicy, models: true do
     context 'auditor user' do
       let(:current_user) { create(:user, :auditor) }
       subject { abilities(current_user, :private) }
+=======
+>>>>>>> ce/master
 
       it do
         is_expected.to include(:read_project_snippet)

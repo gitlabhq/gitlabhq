@@ -40,8 +40,13 @@ describe Gitlab::Kubernetes do
 
   describe '#filter_by_label' do
     it 'returns matching labels' do
+<<<<<<< HEAD
       matching_items = [kube_pod(app: 'foo'), kube_deployment(app: 'foo')]
       items = matching_items + [kube_pod, kube_deployment]
+=======
+      matching_items = [kube_pod(app: 'foo')]
+      items = matching_items + [kube_pod]
+>>>>>>> ce/master
 
       expect(filter_by_label(items, app: 'foo')).to eq(matching_items)
     end

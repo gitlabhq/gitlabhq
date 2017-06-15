@@ -56,6 +56,7 @@ RSpec.configure do |config|
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include ApiHelpers, :api
+  config.include Rails.application.routes.url_helpers, type: :routing
   config.include MigrationsHelpers, :migration
   config.include Rails.application.routes.url_helpers, type: :routing
 
@@ -90,9 +91,8 @@ RSpec.configure do |config|
   end
 
   if ENV['CI']
-    # Retry only on feature specs that use JS
-    config.around :each, :js do |ex|
-      ex.run_with_retry retry: 3
+    config.around(:each) do |ex|
+      ex.run_with_retry retry: 2
     end
   end
 
@@ -113,15 +113,13 @@ RSpec.configure do |config|
     Sidekiq.redis(&:flushall)
   end
 
-  config.around(:example, :migration) do |example|
-    begin
-      ActiveRecord::Migrator
-        .migrate(migrations_paths, previous_migration.version)
+  config.before(:example, :migration) do
+    ActiveRecord::Migrator
+      .migrate(migrations_paths, previous_migration.version)
+  end
 
-      example.run
-    ensure
-      ActiveRecord::Migrator.migrate(migrations_paths)
-    end
+  config.after(:example, :migration) do
+    ActiveRecord::Migrator.migrate(migrations_paths)
   end
 
   config.around(:each, :nested_groups) do |example|

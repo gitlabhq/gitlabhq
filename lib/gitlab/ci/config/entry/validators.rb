@@ -44,6 +44,14 @@ module Gitlab
             end
           end
 
+          class HashOrStringValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+              unless value.is_a?(Hash) || value.is_a?(String)
+                record.errors.add(attribute, 'should be a hash or a string')
+              end
+            end
+          end
+
           class KeyValidator < ActiveModel::EachValidator
             include LegacyValidationHelpers
 

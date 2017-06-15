@@ -9,7 +9,7 @@ import StopComponent from './environment_stop.vue';
 import RollbackComponent from './environment_rollback.vue';
 import TerminalButtonComponent from './environment_terminal_button.vue';
 import MonitoringButtonComponent from './environment_monitoring.vue';
-import CommitComponent from '../../vue_shared/components/commit';
+import CommitComponent from '../../vue_shared/components/commit.vue';
 import eventHub from '../event_hub';
 
 const timeagoInstance = new Timeago();

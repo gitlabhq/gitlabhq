@@ -27,6 +27,7 @@ Feature: Project Builds Permissions
     When I visit project builds page
     Then page status code should be 404
 
+  @javascript
   Scenario: I try to visit build details of internal project with access to builds
     Given The project is internal
     And public access for builds is enabled

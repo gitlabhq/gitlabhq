@@ -17,6 +17,8 @@ module Gitlab
 
       attr_accessor :expanded
 
+      alias_method :expanded?, :expanded
+
       # We need this accessor because of `to_hash` and `init_from_hash`
       attr_accessor :too_large
 

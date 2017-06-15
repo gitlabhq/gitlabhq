@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import pipelinesTableComp from '~/vue_shared/components/pipelines_table';
+import pipelinesTableComp from '~/vue_shared/components/pipelines_table.vue';
 import '~/lib/utils/datetime_utility';
 
 describe('Pipelines Table', () => {

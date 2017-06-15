@@ -164,7 +164,7 @@
     }
 
     .board-list-component,
-    .board-issue-count-holder {
+    .issue-count-badge {
       display: none;
     }
   }
@@ -459,6 +459,7 @@
   margin: 5px;
 }
 
+<<<<<<< HEAD
 .boards-title-holder {
   padding: 25px 13px $gl-padding;
 
@@ -479,6 +480,8 @@
   border-top: 1px solid $border-color;
 }
 
+=======
+>>>>>>> ce/master
 .page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar {
   &.right-sidebar {
     top: 0;

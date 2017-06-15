@@ -22,6 +22,7 @@ module API
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
         optional :tag_list, type: Array[String], desc: 'The list of tags for a project'
+        optional :avatar, type: File, desc: 'Avatar image for project'
       end
 
       params :optional_params_ee do

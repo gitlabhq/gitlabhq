@@ -447,7 +447,7 @@ module SlashCommands
     params '@user'
     command :cc
 
-    desc 'Define target branch for MR'
+    desc 'Set target branch'
     explanation do |branch_name|
       "Sets target branch to #{branch_name}."
     end

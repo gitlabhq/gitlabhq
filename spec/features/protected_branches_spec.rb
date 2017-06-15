@@ -8,6 +8,15 @@ feature 'Protected Branches', feature: true, js: true do
 
   before do
     login_as(user)
+<<<<<<< HEAD
+=======
+  end
+
+  def set_protected_branch_name(branch_name)
+    find(".js-protected-branch-select").trigger('click')
+    find(".dropdown-input-field").set(branch_name)
+    click_on("Create wildcard #{branch_name}")
+>>>>>>> ce/master
   end
 
   describe "explicit protected branches" do

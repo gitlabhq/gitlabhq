@@ -1190,7 +1190,7 @@ describe SystemNoteService, services: true do
       let(:action) { 'task' }
     end
 
-    it "posts the 'marked as a Work In Progress from commit' system note" do
+    it "posts the 'marked the task as complete' system note" do
       expect(subject.note).to eq("marked the task **task** as completed")
     end
   end

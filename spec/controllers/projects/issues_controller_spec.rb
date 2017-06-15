@@ -266,6 +266,7 @@ describe Projects::IssuesController do
             end
 
             it 'rejects an issue recognized as a spam' do
+              expect(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
               expect { update_spam_issue }.not_to change{ issue.reload.title }
             end
 

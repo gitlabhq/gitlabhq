@@ -399,7 +399,7 @@ Style/ParenthesesAroundCondition:
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: short, verbose
 Style/PreferredHashMethods:
-  Enabled: true
+  Enabled: false
 
 # Checks for an obsolete RuntimeException argument in raise/fail.
 Style/RedundantException:
