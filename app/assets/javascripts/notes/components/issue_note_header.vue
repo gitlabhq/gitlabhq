@@ -30,20 +30,13 @@ export default {
       required: false,
       default: false,
     },
-    discussionId: {
-      type: String,
+    toggleHandler: {
+      type: Function,
       required: false,
     },
   },
   components: {
     TimeAgoTooltip,
-  },
-  methods: {
-    toggle() {
-      this.$store.commit('toggleDiscussion', {
-        discussionId: this.discussionId,
-      });
-    },
   },
 };
 </script>
@@ -78,7 +71,7 @@ export default {
       v-if="includeToggle"
       class="discussion-actions">
       <button
-        @click="toggle"
+        @click="toggleHandler"
         class="note-action-button discussion-toggle-button js-toggle-button"
         type="button">
           <i

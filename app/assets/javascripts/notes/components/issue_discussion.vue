@@ -43,6 +43,13 @@ export default {
       this.signInLink = signInLink.getAttribute('href');
     }
   },
+  methods: {
+    toggleDiscussion() {
+      this.$store.commit('toggleDiscussion', {
+        discussionId: this.note.id,
+      });
+    }
+  },
 };
 </script>
 
@@ -64,7 +71,7 @@ export default {
               :createdAt="discussion.created_at"
               :notePath="discussion.path"
               :includeToggle="true"
-              :discussionId="note.id"
+              :toggleHandler="toggleDiscussion"
               actionText="started a discussion" />
             <issue-note-edited-text
               v-if="note.last_updated_by"

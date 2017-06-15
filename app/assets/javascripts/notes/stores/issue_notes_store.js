@@ -3,6 +3,10 @@
 
 import service from '../services/issue_notes_service';
 
+const findNoteObjectById = (notes, id) => {
+  return notes.filter(n => n.id === id)[0];
+};
+
 const state = {
   notes: [],
 };
@@ -18,7 +22,7 @@ const mutations = {
     storeState.notes = notes;
   },
   toggleDiscussion(storeState, { discussionId }) {
-    const [discussion] = storeState.notes.filter(note => note.id === discussionId);
+    const discussion = findNoteObjectById(storeState.notes, discussionId);
 
     discussion.expanded = !discussion.expanded;
   },
