@@ -55,4 +55,34 @@ RSpec.describe NotificationSetting, type: :model do
       expect(user.notification_settings.for_projects.map(&:project)).to all(have_attributes(pending_delete: false))
     end
   end
+
+  describe 'event_enabled?' do
+    before do
+      subject.update!(user: create(:user))
+    end
+
+    context 'for an event with a matching column name' do
+      before do
+        subject.update!(events: { new_note: true }.to_json)
+      end
+
+      it 'returns the value of the column' do
+        subject.update!(new_note: false)
+
+        expect(subject.event_enabled?(:new_note)).to be(false)
+      end
+
+      context 'when the column has a nil value' do
+        it 'returns the value from the events hash' do
+          expect(subject.event_enabled?(:new_note)).to be(false)
+        end
+      end
+    end
+
+    context 'for an event without a matching column name' do
+      it 'returns false' do
+        expect(subject.event_enabled?(:foo_event)).to be(false)
+      end
+    end
+  end
 end
