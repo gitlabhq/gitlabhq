@@ -124,6 +124,10 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
     storage.is_a?(CarrierWave::Storage::File)
   end
 
+  def exists?
+    file.try(:exists?)
+  end
+
   private
 
   def set_default_local_store(new_file)
