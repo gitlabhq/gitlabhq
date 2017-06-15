@@ -204,7 +204,9 @@ describe CreateDeploymentService, services: true do
     let(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: project) }
 
     context "while updating the 'first_deployed_to_production_at' time" do
-      before { merge_request.mark_as_merged }
+      before do
+        merge_request.mark_as_merged
+      end
 
       context "for merge requests merged before the current deploy" do
         it "sets the time if the deploy's environment is 'production'" do

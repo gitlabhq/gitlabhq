@@ -96,12 +96,18 @@ describe Ci::Build, :models do
       it { is_expected.to be_truthy }
 
       context 'is expired' do
-        before { build.update(artifacts_expire_at: Time.now - 7.days)  }
+        before do
+          build.update(artifacts_expire_at: Time.now - 7.days)
+        end
+
         it { is_expected.to be_falsy }
       end
 
       context 'is not expired' do
-        before { build.update(artifacts_expire_at: Time.now + 7.days)  }
+        before do
+          build.update(artifacts_expire_at: Time.now + 7.days)
+        end
+
         it { is_expected.to be_truthy }
       end
     end
@@ -155,13 +161,17 @@ describe Ci::Build, :models do
     subject { build.artifacts_expired? }
 
     context 'is expired' do
-      before { build.update(artifacts_expire_at: Time.now - 7.days)  }
+      before do
+        build.update(artifacts_expire_at: Time.now - 7.days)
+      end
 
       it { is_expected.to be_truthy }
     end
 
     context 'is not expired' do
-      before { build.update(artifacts_expire_at: Time.now + 7.days)  }
+      before do
+        build.update(artifacts_expire_at: Time.now + 7.days)
+      end
 
       it { is_expected.to be_falsey }
     end
@@ -186,7 +196,9 @@ describe Ci::Build, :models do
     context 'when artifacts_expire_at is specified' do
       let(:expire_at) { Time.now + 7.days }
 
-      before { build.artifacts_expire_at = expire_at }
+      before do
+        build.artifacts_expire_at = expire_at
+      end
 
       it { is_expected.to be_within(5).of(expire_at - Time.now) }
     end
@@ -1116,7 +1128,9 @@ describe Ci::Build, :models do
 
   describe '#has_expiring_artifacts?' do
     context 'when artifacts have expiration date set' do
-      before { build.update(artifacts_expire_at: 1.day.from_now) }
+      before do
+        build.update(artifacts_expire_at: 1.day.from_now)
+      end
 
       it 'has expiring artifacts' do
         expect(build).to have_expiring_artifacts
@@ -1124,7 +1138,9 @@ describe Ci::Build, :models do
     end
 
     context 'when artifacts do not have expiration date set' do
-      before { build.update(artifacts_expire_at: nil) }
+      before do
+        build.update(artifacts_expire_at: nil)
+      end
 
       it 'does not have expiring artifacts' do
         expect(build).not_to have_expiring_artifacts

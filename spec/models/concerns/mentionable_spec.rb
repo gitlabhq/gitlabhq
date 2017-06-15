@@ -61,7 +61,9 @@ describe Issue, "Mentionable" do
       end
 
       context 'when the current user can see the issue' do
-        before { private_project.team << [user, Gitlab::Access::DEVELOPER] }
+        before do
+          private_project.team << [user, Gitlab::Access::DEVELOPER]
+        end
 
         it 'includes the reference' do
           expect(referenced_issues(user)).to contain_exactly(private_issue, public_issue)

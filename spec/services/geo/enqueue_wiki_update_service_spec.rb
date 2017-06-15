@@ -15,7 +15,10 @@ describe Geo::EnqueueWikiUpdateService, services: true do
 
   describe '#execute' do
     let(:stored_data) { queue.first }
-    before(:each) { subject.execute }
+
+    before do
+      subject.execute
+    end
 
     it 'persists id and clone_url to redis queue' do
       expect(stored_data).to have_key('id')

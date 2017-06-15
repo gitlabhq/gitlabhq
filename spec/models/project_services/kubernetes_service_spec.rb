@@ -13,7 +13,9 @@ describe KubernetesService, models: true, caching: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.not_to validate_presence_of(:namespace) }
       it { is_expected.to validate_presence_of(:api_url) }
@@ -48,7 +50,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:api_url) }
       it { is_expected.not_to validate_presence_of(:token) }
@@ -69,7 +73,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'as template' do
-      before { subject.template = true }
+      before do
+        subject.template = true
+      end
 
       it 'sets the namespace to the default' do
         expect(kube_namespace).not_to be_nil
@@ -78,7 +84,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'with associated project' do
-      before { subject.project = project }
+      before do
+        subject.project = project
+      end
 
       it 'sets the namespace to the default' do
         expect(kube_namespace).not_to be_nil
@@ -93,7 +101,7 @@ describe KubernetesService, models: true, caching: true do
     it "returns the default namespace" do
       is_expected.to eq(service.send(:default_namespace))
     end
-    
+
     context 'when namespace is specified' do
       before do
         service.namespace = 'my-namespace'
@@ -121,7 +129,7 @@ describe KubernetesService, models: true, caching: true do
     it "returns the default namespace" do
       is_expected.to eq(service.send(:default_namespace))
     end
-    
+
     context 'when namespace is specified' do
       before do
         service.namespace = 'my-namespace'
@@ -201,7 +209,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'namespace is provided' do
-      before { subject.namespace = 'my-project' }
+      before do
+        subject.namespace = 'my-project'
+      end
 
       it 'sets the variables' do
         expect(subject.predefined_variables).to include(
@@ -293,7 +303,9 @@ describe KubernetesService, models: true, caching: true do
     subject { service.calculate_reactive_cache }
 
     context 'when service is inactive' do
-      before { service.active = false }
+      before do
+        service.active = false
+      end
 
       it { is_expected.to be_nil }
     end

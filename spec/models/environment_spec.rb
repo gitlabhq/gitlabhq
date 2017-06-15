@@ -377,7 +377,9 @@ describe Environment, models: true do
     subject { environment.rollout_status }
 
     context 'when the environment has rollout status' do
-      before { allow(environment).to receive(:deployment_service_ready?).and_return(true) }
+      before do
+        allow(environment).to receive(:deployment_service_ready?).and_return(true)
+      end
 
       it 'returns the rollout status from the deployment service' do
         expect(project.deployment_service).
@@ -389,7 +391,10 @@ describe Environment, models: true do
     end
 
     context 'when the environment does not have rollout status' do
-      before { allow(environment).to receive(:deployment_service_ready?).and_return(false) }
+      before do
+        allow(environment).to receive(:deployment_service_ready?).and_return(false)
+      end
+
       it { is_expected.to eq(nil) }
     end
   end

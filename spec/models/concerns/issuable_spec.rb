@@ -217,7 +217,9 @@ describe Issuable do
     let(:project) { issue.project }
 
     context 'user is not a participant in the issue' do
-      before { allow(issue).to receive(:participants).with(user).and_return([]) }
+      before do
+        allow(issue).to receive(:participants).with(user).and_return([])
+      end
 
       it 'returns false when no subcription exists' do
         expect(issue.subscribed?(user, project)).to be_falsey
@@ -237,7 +239,9 @@ describe Issuable do
     end
 
     context 'user is a participant in the issue' do
-      before { allow(issue).to receive(:participants).with(user).and_return([user]) }
+      before do
+        allow(issue).to receive(:participants).with(user).and_return([user])
+      end
 
       it 'returns false when no subcription exists' do
         expect(issue.subscribed?(user, project)).to be_truthy
@@ -269,7 +273,9 @@ describe Issuable do
     end
 
     context "issue is assigned" do
-      before { issue.assignees << user }
+      before do
+        issue.assignees << user
+      end
 
       it "returns correct hook data" do
         expect(data[:assignees].first).to eq(user.hook_attrs)
@@ -293,7 +299,9 @@ describe Issuable do
     context 'issue has labels' do
       let(:labels) { [create(:label), create(:label)] }
 
-      before { issue.update_attribute(:labels, labels)}
+      before do
+        issue.update_attribute(:labels, labels)
+      end
 
       it 'includes labels in the hook data' do
         expect(data[:labels]).to eq(labels.map(&:hook_attrs))

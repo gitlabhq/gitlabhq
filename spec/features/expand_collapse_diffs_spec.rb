@@ -140,7 +140,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         end
 
         context 'reloading the page' do
-          before { refresh }
+          before do
+            refresh
+          end
 
           it 'collapses the large diff by default' do
             expect(large_diff).not_to have_selector('.code')

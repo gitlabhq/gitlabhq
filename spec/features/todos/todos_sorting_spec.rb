@@ -8,7 +8,9 @@ describe "Dashboard > User sorts todos", feature: true do
   let(:label_2) { create(:label, title: 'label_2', project: project, priority: 2) }
   let(:label_3) { create(:label, title: 'label_3', project: project, priority: 3) }
 
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   context 'sort options' do
     let(:issue_1) { create(:issue, title: 'issue_1', project: project) }

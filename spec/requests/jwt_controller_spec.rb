@@ -6,7 +6,9 @@ describe JwtController do
   let(:service_name) { 'test' }
   let(:parameters) { { service: service_name } }
 
-  before { stub_const('JwtController::SERVICES', service_name => service_class) }
+  before do
+    stub_const('JwtController::SERVICES', service_name => service_class)
+  end
 
   context 'existing service' do
     subject! { get '/jwt/auth', parameters }

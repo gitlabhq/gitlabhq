@@ -18,7 +18,9 @@ describe SearchController do
 
   context 'on restricted projects' do
     context 'when signed out' do
-      before { sign_out(user) }
+      before do
+        sign_out(user)
+      end
 
       it "doesn't expose comments on issues" do
         project = create(:empty_project, :public, :issues_private)

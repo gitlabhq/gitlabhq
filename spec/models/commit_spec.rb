@@ -184,19 +184,25 @@ eos
     it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
 
     context 'commit has no description' do
-      before { allow(commit).to receive(:description?).and_return(false) }
+      before do
+        allow(commit).to receive(:description?).and_return(false)
+      end
 
       it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
     end
 
     context "another_commit's description does not revert commit" do
-      before { allow(commit).to receive(:description).and_return("Foo Bar") }
+      before do
+        allow(commit).to receive(:description).and_return("Foo Bar")
+      end
 
       it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
     end
 
     context "another_commit's description reverts commit" do
-      before { allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar") }
+      before do
+        allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar")
+      end
 
       it { expect(commit.reverts_commit?(another_commit, user)).to be_truthy }
     end

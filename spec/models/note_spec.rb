@@ -26,14 +26,18 @@ describe Note, models: true do
     it { is_expected.to validate_presence_of(:project) }
 
     context 'when note is on commit' do
-      before { allow(subject).to receive(:for_commit?).and_return(true) }
+      before do
+        allow(subject).to receive(:for_commit?).and_return(true)
+      end
 
       it { is_expected.to validate_presence_of(:commit_id) }
       it { is_expected.not_to validate_presence_of(:noteable_id) }
     end
 
     context 'when note is not on commit' do
-      before { allow(subject).to receive(:for_commit?).and_return(false) }
+      before do
+        allow(subject).to receive(:for_commit?).and_return(false)
+      end
 
       it { is_expected.not_to validate_presence_of(:commit_id) }
       it { is_expected.to validate_presence_of(:noteable_id) }

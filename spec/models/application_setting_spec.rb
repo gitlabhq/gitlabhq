@@ -97,7 +97,9 @@ describe ApplicationSetting, models: true do
 
     # Upgraded databases will have this sort of content
     context 'repository_storages is a String, not an Array' do
-      before { setting.__send__(:raw_write_attribute, :repository_storages, 'default') }
+      before do
+        setting.__send__(:raw_write_attribute, :repository_storages, 'default')
+      end
 
       it { expect(setting.repository_storages_before_type_cast).to eq('default') }
       it { expect(setting.repository_storages).to eq(['default']) }

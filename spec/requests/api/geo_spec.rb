@@ -49,7 +49,9 @@ describe API::Geo, api: true do
   end
 
   describe 'POST /geo/receive_events key events' do
-    before(:each) { allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute) }
+    before do
+      allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute)
+    end
 
     let(:key_create_payload) do
       {
@@ -87,8 +89,10 @@ describe API::Geo, api: true do
   end
 
   describe 'POST /geo/receive_events push events' do
-    before(:each) { allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute) }
-    before(:each) { allow_any_instance_of(::Geo::ScheduleRepoFetchService).to receive(:execute) }
+    before do
+      allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute)
+      allow_any_instance_of(::Geo::ScheduleRepoFetchService).to receive(:execute)
+    end
 
     let(:push_payload) do
       {
@@ -108,7 +112,9 @@ describe API::Geo, api: true do
   end
 
   describe 'POST /geo/receive_events push_tag events' do
-    before(:each) { allow_any_instance_of(::Geo::ScheduleWikiRepoUpdateService).to receive(:execute) }
+    before do
+      allow_any_instance_of(::Geo::ScheduleWikiRepoUpdateService).to receive(:execute)
+    end
 
     let(:tag_push_payload) do
       {

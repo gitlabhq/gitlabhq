@@ -150,7 +150,9 @@ describe MergeRequests::CreateService, services: true do
       context 'asssignee_id' do
         let(:assignee) { create(:user) }
 
-        before { project.team << [user, :master] }
+        before do
+          project.team << [user, :master]
+        end
 
         it 'removes assignee_id when user id is invalid' do
           opts = { title: 'Title', description: 'Description', assignee_id: -1 }

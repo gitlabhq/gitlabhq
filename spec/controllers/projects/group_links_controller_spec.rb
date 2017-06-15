@@ -22,7 +22,10 @@ describe Projects::GroupLinksController do
     end
 
     context 'when user has access to group he want to link project to' do
-      before { group.add_developer(user) }
+      before do
+        group.add_developer(user)
+      end
+
       include_context 'link project to group'
 
       it 'links project with selected group' do

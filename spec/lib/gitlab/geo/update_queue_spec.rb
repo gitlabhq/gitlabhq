@@ -6,10 +6,14 @@ describe Gitlab::Geo::UpdateQueue do
   let(:dummy_data2) { { 'id' => 99, 'clone_url' => 'git@localhost:other_repo/path.git' } }
   let(:multiple_dummy_data) { [dummy_data, dummy_data2] * 10 }
 
-  before(:each) { subject.empty! }
+  before do
+    subject.empty!
+  end
 
   describe '#store' do
-    before(:each) { subject.store(dummy_data) }
+    before do
+      subject.store(dummy_data)
+    end
 
     it 'stores data to the queue' do
       expect(subject).not_to be_empty
@@ -36,7 +40,9 @@ describe Gitlab::Geo::UpdateQueue do
   end
 
   describe '#fetch_batched_data' do
-    before(:each) { subject.store_batched_data(multiple_dummy_data) }
+    before do
+      subject.store_batched_data(multiple_dummy_data)
+    end
 
     it 'returns same stored data' do
       expect(subject.fetch_batched_data).to eq(multiple_dummy_data)
@@ -59,7 +65,9 @@ describe Gitlab::Geo::UpdateQueue do
   end
 
   describe '#batch_size' do
-    before(:each) { allow(subject).to receive(:queue_size) { queue_size } }
+    before do
+      allow(subject).to receive(:queue_size) { queue_size }
+    end
 
     context 'when queue size is smaller than BATCH_SIZE' do
       let(:queue_size) { described_class::BATCH_SIZE - 20 }

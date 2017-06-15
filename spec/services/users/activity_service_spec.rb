@@ -40,7 +40,9 @@ describe Users::ActivityService, services: true do
     end
 
     context 'when in Geo secondary node' do
-      before { allow(Gitlab::Geo).to receive(:secondary?).and_return(true) }
+      before do
+        allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+      end
 
       it 'does not update last_activity_at' do
         service.execute

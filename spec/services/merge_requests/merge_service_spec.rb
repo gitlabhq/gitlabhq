@@ -97,7 +97,9 @@ describe MergeRequests::MergeService, services: true do
         end
 
         context "when jira_issue_transition_id is not present" do
-          before { allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(nil) }
+          before do
+            allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(nil)
+          end
 
           it "does not close issue" do
             allow(jira_tracker).to receive_messages(jira_issue_transition_id: nil)
