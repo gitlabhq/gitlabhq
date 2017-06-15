@@ -72,7 +72,7 @@ describe JwtController do
         context 'without personal token' do
           it 'rejects the authorization attempt' do
             expect(response).to have_http_status(401)
-            expect(response.body).to include('You have 2FA enabled, please use a personal access token for Git over HTTP')
+            expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
           end
         end
 
@@ -90,9 +90,24 @@ describe JwtController do
     context 'using invalid login' do
       let(:headers) { { authorization: credentials('invalid', 'password') } }
 
-      subject! { get '/jwt/auth', parameters, headers }
+      context 'when internal auth is enabled' do
+        it 'rejects the authorization attempt' do
+          get '/jwt/auth', parameters, headers
 
-      it { expect(response).to have_http_status(401) }
+          expect(response).to have_http_status(401)
+          expect(response.body).not_to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+        end
+      end
+
+      context 'when internal auth is disabled' do
+        it 'rejects the authorization attempt with personal access token message' do
+          allow_any_instance_of(ApplicationSetting).to receive(:signin_enabled?) { false }
+          get '/jwt/auth', parameters, headers
+
+          expect(response).to have_http_status(401)
+          expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+        end
+      end
     end
   end
 

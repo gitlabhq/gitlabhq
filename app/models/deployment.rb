@@ -4,7 +4,7 @@ class Deployment < ActiveRecord::Base
   belongs_to :project, required: true, validate: true
   belongs_to :environment, required: true, validate: true
   belongs_to :user
-  belongs_to :deployable, polymorphic: true
+  belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :sha, presence: true
   validates :ref, presence: true

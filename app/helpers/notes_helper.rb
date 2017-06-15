@@ -90,12 +90,16 @@ module NotesHelper
     end
   end
 
-  def note_url(note)
+  def note_url(note, project = @project)
     if note.noteable.is_a?(PersonalSnippet)
       snippet_note_path(note.noteable, note)
     else
-      namespace_project_note_path(@project.namespace, @project, note)
+      namespace_project_note_path(project.namespace, project, note)
     end
+  end
+
+  def noteable_note_url(note)
+    Gitlab::UrlBuilder.build(note)
   end
 
   def form_resources

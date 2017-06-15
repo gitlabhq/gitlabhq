@@ -4,7 +4,7 @@ class NotificationSetting < ActiveRecord::Base
   default_value_for :level, NotificationSetting.levels[:global]
 
   belongs_to :user
-  belongs_to :source, polymorphic: true
+  belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :project, foreign_key: 'source_id'
 
   validates :user, presence: true

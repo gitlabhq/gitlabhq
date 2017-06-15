@@ -47,10 +47,10 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
     visit dashboard_groups_path
     click_link 'Sourcing'
     page.within '.layout-nav' do
-      click_link 'Settings'
+      find('a', text: 'Settings').trigger('click')
     end
     page.within '.sub-nav' do
-      click_link 'General'
+      find('a', text: 'General').trigger('click')
     end    
   end
 

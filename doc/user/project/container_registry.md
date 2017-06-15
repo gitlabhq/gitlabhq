@@ -39,6 +39,14 @@ You can read more about Docker Registry at https://docs.docker.com/registry/intr
 
 ## Build and push images
 
+>**Notes:**
+- Moving or renaming existing container registry repositories is not supported
+once you have pushed images because the images are signed, and the
+signature includes the repository name.
+- To move or rename a repository with a container registry you will have to
+delete all existing images.
+
+
 If you visit the **Registry** link under your project's menu, you can see the
 explicit instructions to login to the Container Registry using your GitLab
 credentials.

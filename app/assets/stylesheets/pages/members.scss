@@ -3,6 +3,41 @@
   border-bottom: 1px solid $border-color;
 }
 
+.project-member-tabs {
+  background: $gray-light;
+  border: 1px solid $border-color;
+
+  li {
+    width: 50%;
+
+    &.active {
+      background: $white-light;
+    }
+
+    &:first-child {
+      border-right: 1px solid $border-color;
+    }
+
+    a {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+.users-project-form {
+  .btn-create {
+    margin-right: 10px;
+  }
+}
+
+.project-member-tab-content {
+  padding: $gl-padding;
+  border: 1px solid $border-color;
+  border-top: 0;
+  margin-bottom: $gl-padding;
+}
+
 .member {
   &.is-overriden {
     .btn-ldap-override {

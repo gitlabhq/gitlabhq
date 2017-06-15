@@ -8,13 +8,10 @@ entry.
 
 ## 9.2.4 (2017-06-02)
 
-- No changes.
 - Fix visibility when referencing snippets.
 
 ## 9.2.3 (2017-05-31)
 
-- No changes.
-- No changes.
 - Move uploads from 'public/uploads' to 'public/uploads/system'.
 - Escapes html content before appending it to the DOM.
 - Restrict API X-Frame-Options to same origin.

@@ -10,7 +10,7 @@ describe RuboCop::Cop::ActiverecordSerialize do
 
   context 'inside the app/models directory' do
     it 'registers an offense when serialize is used' do
-      allow(cop).to receive(:in_models?).and_return(true)
+      allow(cop).to receive(:in_model?).and_return(true)
 
       inspect_source(cop, 'serialize :foo')
 
@@ -23,7 +23,7 @@ describe RuboCop::Cop::ActiverecordSerialize do
 
   context 'outside the app/models directory' do
     it 'does nothing' do
-      allow(cop).to receive(:in_models?).and_return(false)
+      allow(cop).to receive(:in_model?).and_return(false)
 
       inspect_source(cop, 'serialize :foo')
 

@@ -560,7 +560,11 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
-    self.import_data&.destroy unless mirror?
+    remove_import_data
+  end
+
+  def remove_import_data
+    import_data&.destroy unless mirror?
   end
 
   def import_url=(value)
@@ -1223,10 +1227,6 @@ class Project < ActiveRecord::Base
 
   def wiki
     @wiki ||= ProjectWiki.new(self, self.owner)
-  end
-
-  def reference_issue_tracker?
-    default_issues_tracker? || jira_tracker_active?
   end
 
   def jira_tracker_active?

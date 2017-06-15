@@ -42,9 +42,9 @@ module Gitlab
 
         rich_line =
           if diff_line.unchanged? || diff_line.added?
-            new_lines[diff_line.new_pos - 1]
+            new_lines[diff_line.new_pos - 1]&.html_safe
           elsif diff_line.removed?
-            old_lines[diff_line.old_pos - 1]
+            old_lines[diff_line.old_pos - 1]&.html_safe
           end
 
         # Only update text if line is found. This will prevent
@@ -60,13 +60,18 @@ module Gitlab
       end
 
       def old_lines
-        return unless diff_file
-        @old_lines ||= Gitlab::Highlight.highlight_lines(self.repository, diff_old_sha, diff_old_path)
+        @old_lines ||= highlighted_blob_lines(diff_file.old_blob)
       end
 
       def new_lines
-        return unless diff_file
-        @new_lines ||= Gitlab::Highlight.highlight_lines(self.repository, diff_new_sha, diff_new_path)
+        @new_lines ||= highlighted_blob_lines(diff_file.new_blob)
+      end
+
+      def highlighted_blob_lines(blob)
+        return [] unless blob
+
+        blob.load_all_data!
+        Gitlab::Highlight.highlight(blob.path, blob.data, repository: repository).lines
       end
     end
   end

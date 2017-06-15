@@ -284,9 +284,7 @@ export default {
 
         <table-pagination
           v-if="shouldRenderPagination"
-          :pagenum="pagenum"
           :change="change"
-          :count="state.count.all"
           :pageInfo="state.pageInfo"
           />
       </div>

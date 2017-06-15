@@ -16,6 +16,7 @@ describe Boards::Issues::ListService, services: true do
     let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
     let(:p3) { create(:label, title: 'P3', project: project, priority: 3) }
 
+    let!(:backlog) { create(:backlog_list, board: board) }
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
     let!(:closed)  { create(:closed_list, board: board) }
@@ -79,12 +80,20 @@ describe Boards::Issues::ListService, services: true do
         expect(issues).to eq [opened_issue2, reopened_issue1, opened_issue1]
       end
 
+      it 'returns opened issues when listing issues from Backlog' do
+        params = { board_id: board.id, id: backlog.id }
+
+        issues = described_class.new(project, user, params).execute
+
+        expect(issues).to eq [opened_issue2, reopened_issue1, opened_issue1]
+      end
+
       it 'returns closed issues when listing issues from Closed' do
         params = { board_id: board.id, id: closed.id }
 
         issues = described_class.new(project, user, params).execute
 
-        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
+        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue3, closed_issue1]
       end
 
       it 'returns opened issues that have label list applied when listing issues from a label list' do

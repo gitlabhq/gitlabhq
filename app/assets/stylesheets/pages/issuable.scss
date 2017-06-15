@@ -58,7 +58,7 @@
   }
 
   .emoji-block {
-    padding: 10px 0 4px;
+    padding: 10px 0;
   }
 }
 
@@ -724,6 +724,36 @@
       .issuable-todo-inner {
         display: none;
       }
+    }
+  }
+}
+
+.confidential-issue-warning {
+  background-color: $gl-gray;
+  border-radius: 3px;
+  padding: $gl-btn-padding $gl-padding;
+  margin-top: $gl-padding-top;
+  font-size: 14px;
+  color: $white-light;
+
+  .fa {
+    margin-right: 8px;
+  }
+
+  a {
+    color: $white-light;
+    text-decoration: underline;
+  }
+
+  &.affix {
+    position: static;
+    width: initial;
+
+    @media (min-width: $screen-sm-min) {
+      position: sticky;
+      position: -webkit-sticky;
+      top: 60px;
+      z-index: 200;
     }
   }
 }

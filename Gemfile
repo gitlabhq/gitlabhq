@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.8'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+gem 'bootsnap', '~> 1.0.0'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
@@ -17,7 +18,7 @@ gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.25.1.1'
 
-gem 'faraday', '~> 0.11.0'
+gem 'faraday', '~> 0.12'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
@@ -268,7 +269,7 @@ gem 'sentry-raven', '~> 2.4.0'
 gem 'premailer-rails', '~> 1.9.0'
 
 # I18n
-gem 'ruby_parser', '~> 3.8.4', require: false
+gem 'ruby_parser', '~> 3.8', require: false
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
@@ -379,7 +380,7 @@ gem 'html2text'
 gem 'ruby-prof', '~> 0.16.2'
 
 # OAuth
-gem 'oauth2', '~> 1.3.0'
+gem 'oauth2', '~> 1.4'
 
 # Soft deletion
 gem 'paranoia', '~> 2.2'

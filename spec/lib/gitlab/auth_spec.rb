@@ -204,6 +204,12 @@ describe Gitlab::Auth, lib: true do
       expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: login)
       expect(gl_auth.find_for_git_client(login, 'bar', project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new)
     end
+
+    it 'throws an error suggesting user create a PAT when internal auth is disabled' do
+      allow_any_instance_of(ApplicationSetting).to receive(:signin_enabled?) { false }
+
+      expect { gl_auth.find_for_git_client('foo', 'bar', project: nil, ip: 'ip') }.to raise_error(Gitlab::Auth::MissingPersonalTokenError)
+    end
   end
 
   describe 'find_with_user_password' do

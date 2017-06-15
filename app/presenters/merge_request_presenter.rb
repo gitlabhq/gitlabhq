@@ -126,12 +126,24 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def closing_issues_links
-    markdown issues_sentence(project, closing_issues), pipeline: :gfm, author: author, project: project
+    markdown(
+      issues_sentence(project, closing_issues),
+      pipeline: :gfm,
+      author: author,
+      project: project,
+      issuable_state_filter_enabled: true
+    )
   end
 
   def mentioned_issues_links
     mentioned_issues = issues_mentioned_but_not_closing(current_user)
-    markdown issues_sentence(project, mentioned_issues), pipeline: :gfm, author: author, project: project
+    markdown(
+      issues_sentence(project, mentioned_issues),
+      pipeline: :gfm,
+      author: author,
+      project: project,
+      issuable_state_filter_enabled: true
+    )
   end
 
   def assign_to_closing_issues_link
