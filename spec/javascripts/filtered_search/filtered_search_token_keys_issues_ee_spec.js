@@ -15,6 +15,9 @@ import '~/filtered_search/filtered_search_token_keys_issues_ee';
       let tokenKeys;
 
       beforeEach(() => {
+        gl.FilteredSearchTokenKeysIssuesEE.init({
+          multipleAssignees: true,
+        });
         tokenKeys = gl.FilteredSearchTokenKeysIssuesEE.get();
       });
 

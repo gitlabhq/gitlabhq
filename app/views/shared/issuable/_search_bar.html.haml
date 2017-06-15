@@ -1,7 +1,6 @@
 - type = local_assigns.fetch(:type)
 - board = local_assigns.fetch(:board, nil)
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
-- can_multiple_assignees = @project.feature_available?(:"multiple_#{type.to_s}_assignees")
 
 .issues-filters
   .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
@@ -28,7 +27,7 @@
             .scroll-container
               %ul.tokens-container.list-unstyled
                 %li.input-token
-                  %input.form-control.filtered-search{ id: "filtered-search-#{type.to_s}", placeholder: 'Search or filter results...', data: { 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => project_path(@project), 'multiple-assignees' => can_multiple_assignees } }
+                  %input.form-control.filtered-search{ search_filter_input_options(type) }
               = icon('filter')
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }

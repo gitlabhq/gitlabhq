@@ -26,9 +26,11 @@ class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
   static get() {
     const tokenKeys = Array.from(super.get());
 
-    // Enable multiple assignees
-    const assigneeTokenKey = tokenKeys.find(tk => tk.key === 'assignee');
-    if (this.availableFeatures && this.availableFeatures.multipleAssignees) assigneeTokenKey.type = 'array';
+    // Enable multiple assignees when available
+    if (this.availableFeatures && this.availableFeatures.multipleAssignees) {
+      const assigneeTokenKey = tokenKeys.find(tk => tk.key === 'assignee');
+      assigneeTokenKey.type = 'array';
+    }
 
     tokenKeys.push(weightTokenKey);
     return tokenKeys;
