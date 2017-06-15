@@ -1,0 +1,24 @@
+- parent_group = local_assigns[:parent_group]
+
+.billing-plan-header.content-block.center
+  .billing-plan-logo
+    - if Namespace::EE_PLANS.keys.include?(plan.code)
+      = render "shared/billings/plans/#{plan.code}.svg"
+    - elsif plan.free?
+      = render "shared/billings/plans/free.svg"
+
+  %h4
+    - plan_link = plan.about_page_href ? link_to(plan.name, plan.about_page_href) : plan.name
+    - if namespace == current_user.namespace
+      = s_("BillingPlans|You are currently on the %{plan_link} plan.").html_safe % { plan_link: plan_link }
+    - else
+      = s_("BillingPlans|%{group_name} is currently on the %{plan_link} plan.").html_safe % { group_name: namespace.full_name, plan_link: plan_link }
+
+  - if parent_group
+    %p= s_("BillingPlans|This group uses the plan associated with its parent group.")
+    - parent_billing_page_link = link_to parent_group.full_name, group_billings_path(parent_group)
+    %p= s_("BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}.").html_safe % { parent_billing_page_link: parent_billing_page_link }
+    = link_to s_("BillingPlans|Manage plan"), group_billings_path(parent_group), class: 'btn btn-success'
+  - else
+    - faq_link = link_to s_("BillingPlans|frequently asked questions"), "https://about.gitlab.com/gitlab-com/#faq"
+    = s_("BillingPlans|Learn more about each plan by reading our %{faq_link}.").html_safe % { faq_link: faq_link }

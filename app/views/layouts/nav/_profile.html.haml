@@ -12,6 +12,11 @@
       = link_to profile_account_path, title: 'Account' do
         %span
           Account
+    - if current_application_settings.should_check_namespace_plan?
+      = nav_link(controller: :billings) do
+        = link_to profile_billings_path, title: 'Billing' do
+          %span
+            Billing
     - if current_application_settings.user_oauth_applications?
       = nav_link(controller: 'oauth/applications') do
         = link_to applications_profile_path, title: 'Applications' do

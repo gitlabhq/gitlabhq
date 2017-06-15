@@ -6,6 +6,8 @@ module EE
   module Namespace
     extend ActiveSupport::Concern
 
+    FREE_PLAN = 'free'.freeze
+
     BRONZE_PLAN = 'bronze'.freeze
     SILVER_PLAN = 'silver'.freeze
     GOLD_PLAN = 'gold'.freeze
@@ -27,6 +29,10 @@ module EE
         to: :namespace_statistics, allow_nil: true
 
       validates :plan, inclusion: { in: EE_PLANS.keys }, allow_blank: true
+    end
+
+    def root_ancestor
+      ancestors.reorder(nil).find_by(parent_id: nil)
     end
 
     def move_dir
@@ -66,6 +72,12 @@ module EE
       end
 
       @features_available_in_plan[feature]
+    end
+
+    # The main difference between the "plan" column and this method is that "plan"
+    # returns nil / "" when it has no plan. Having no plan means it's a "free" plan.
+    def actual_plan
+      plan.presence || FREE_PLAN
     end
 
     def actual_shared_runners_minutes_limit

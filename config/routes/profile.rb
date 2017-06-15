@@ -55,6 +55,7 @@ resource :profile, only: [:show, :update] do
 
     ## EE-specific
     resources :pipeline_quota, only: [:index]
+    resources :billings, only: [:index]
     ## EE-specific
   end
 end
