@@ -176,22 +176,23 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-### Limiting scopes of secret variables
+### Limiting environment scopes of secret variables
 
 >**Notes:**
 [Introduced][ee-2112] in [GitLab Enterprise Edition Premium][eep] 9.4.
 
-You can limit the scope of a secret variable by [defining which environments][envs]
-it can be available for.
+You can limit the environment scope of a secret variable by
+[defining which environments][envs] it can be available for.
 
-Wildcards can be used, and the default scope is `*` which means any jobs will
-have this variable, not matter if an environment is defined or not.
+Wildcards can be used, and the default environment scope is `*` which means
+any jobs will have this variable, not matter if an environment is defined or
+not.
 
-For example, if the scope is `production`, then only the jobs having the
-environment `production` defined would have this specific variable. Wildcards (`*`)
-can be used along with the environment name, therefore if the scope is `review/*`
-then any jobs with environment names starting with `review/` would have
-that particular variable.
+For example, if the environment scope is `production`, then only the jobs
+having the environment `production` defined would have this specific variable.
+Wildcards (`*`) can be used along with the environment name, therefore if the
+environment scope is `review/*` then any jobs with environment names starting
+with `review/` would have that particular variable.
 
 ## Deployment variables
 

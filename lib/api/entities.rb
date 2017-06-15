@@ -753,7 +753,7 @@ module API
       expose :protected?, as: :protected
 
       # EE
-      expose :scope
+      expose :environment_scope
     end
 
     class Pipeline < PipelineBasic

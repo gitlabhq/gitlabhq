@@ -2293,9 +2293,9 @@ describe Project, models: true do
         project.secret_variables_for(ref: 'ref', environment: environment)
       end
 
-      context 'when scope is exactly matched' do
+      context 'when environment scope is exactly matched' do
         before do
-          secret_variable.update(scope: 'review/name')
+          secret_variable.update(environment_scope: 'review/name')
         end
 
         it 'contains the secret variable' do
@@ -2303,9 +2303,9 @@ describe Project, models: true do
         end
       end
 
-      context 'when scope is matched by wildcard' do
+      context 'when environment scope is matched by wildcard' do
         before do
-          secret_variable.update(scope: 'review/*')
+          secret_variable.update(environment_scope: 'review/*')
         end
 
         it 'contains the secret variable' do
@@ -2313,9 +2313,9 @@ describe Project, models: true do
         end
       end
 
-      context 'when scope does not match' do
+      context 'when environment scope does not match' do
         before do
-          secret_variable.update(scope: 'review/*/special')
+          secret_variable.update(environment_scope: 'review/*/special')
         end
 
         it 'does not contain the secret variable' do
@@ -2323,27 +2323,27 @@ describe Project, models: true do
         end
       end
 
-      context 'when scope has _' do
+      context 'when environment scope has _' do
         it 'does not treat it as wildcard' do
-          secret_variable.update(scope: '*_*')
+          secret_variable.update(environment_scope: '*_*')
 
           is_expected.not_to contain_exactly(secret_variable)
         end
 
         it 'matches literally for _' do
-          secret_variable.update(scope: 'foo_bar/*')
+          secret_variable.update(environment_scope: 'foo_bar/*')
           environment.update(name: 'foo_bar/test')
 
           is_expected.to contain_exactly(secret_variable)
         end
       end
 
-      context 'when variables with the same name have different scopes' do
+      context 'when variables with the same name have different environment scopes' do
         let!(:partially_matched_variable) do
           create(:ci_variable,
                  key: secret_variable.key,
                  value: 'partial',
-                 scope: 'review/*',
+                 environment_scope: 'review/*',
                  project: project)
         end
 
@@ -2351,11 +2351,11 @@ describe Project, models: true do
           create(:ci_variable,
                  key: secret_variable.key,
                  value: 'prefect',
-                 scope: 'review/name',
+                 environment_scope: 'review/name',
                  project: project)
         end
 
-        it 'puts variables matching scope more in the end' do
+        it 'puts variables matching environment scope more in the end' do
           is_expected.to eq(
             [secret_variable,
              partially_matched_variable,

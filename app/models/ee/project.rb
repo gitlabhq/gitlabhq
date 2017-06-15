@@ -78,20 +78,20 @@ module EE
     end
 
     def secret_variables_for(ref:, environment: nil)
-      return super.where(scope: '*') unless environment
+      return super.where(environment_scope: '*') unless environment
 
       query = super
 
       where = <<~SQL
-        scope IN (:wildcard, :environment_name) OR
+        environment_scope IN (:wildcard, :environment_name) OR
           :environment_name LIKE
-            REPLACE(REPLACE(scope, :wildcard, :percent),
+            REPLACE(REPLACE(environment_scope, :wildcard, :percent),
                     :underscore,
                     :escaped_underscore)
       SQL
 
       order = <<~SQL
-        CASE scope
+        CASE environment_scope
           WHEN %{wildcard} THEN 0
           WHEN %{environment_name} THEN 2
           ELSE 1

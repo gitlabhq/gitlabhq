@@ -1417,7 +1417,7 @@ describe Ci::Build, :models do
 
           create(:ci_variable,
                  environment_varialbe.slice(:key, :value)
-                   .merge(project: project, scope: 'stag*'))
+                   .merge(project: project, environment_scope: 'stag*'))
         end
 
         it { is_expected.to include(environment_varialbe) }

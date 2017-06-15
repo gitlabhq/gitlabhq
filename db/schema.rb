@@ -440,7 +440,7 @@ ActiveRecord::Schema.define(version: 20170612150426) do
     t.string "encrypted_value_iv"
     t.integer "project_id", null: false
     t.boolean "protected", default: false, null: false
-    t.string "scope", default: "*", null: false
+    t.string "environment_scope", default: "*", null: false
   end
 
   add_index "ci_variables", ["project_id"], name: "index_ci_variables_on_project_id", using: :btree

@@ -56,10 +56,10 @@ describe 'Project variables', js: true do
   end
 
   # EE
-  it 'adds new variable with a special scope' do
+  it 'adds new variable with a special environment scope' do
     fill_in('variable_key', with: 'key')
     fill_in('variable_value', with: 'value')
-    fill_in('variable_scope', with: 'review/*')
+    fill_in('variable_environment_scope', with: 'review/*')
     click_button('Add new variable')
 
     expect(page).to have_content('Variables were successfully updated.')
@@ -158,16 +158,16 @@ describe 'Project variables', js: true do
   end
 
   # EE
-  it 'edits variable to be another scope' do
+  it 'edits variable to be another environment scope' do
     page.within('.variables-table') do
       find('.btn-variable-edit').click
     end
 
     expect(page).to have_content('Update variable')
-    fill_in('variable_scope', with: 'review/*')
+    fill_in('variable_environment_scope', with: 'review/*')
     click_button('Save variable')
 
     expect(page).to have_content('Variable was successfully updated.')
-    expect(project.variables(true).first.scope).to eq('review/*')
+    expect(project.variables(true).first.environment_scope).to eq('review/*')
   end
 end

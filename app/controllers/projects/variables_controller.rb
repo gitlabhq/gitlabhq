@@ -53,6 +53,6 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def variable_params_ee
-    %i[scope]
+    %i[environment_scope]
   end
 end

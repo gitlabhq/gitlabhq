@@ -12,11 +12,11 @@ describe Ci::Variable, models: true do
   it { is_expected.not_to allow_value('foo/bar').for(:key) }
 
   # EE
-  it { is_expected.to allow_value('review/*').for(:scope) }
-  it { is_expected.not_to allow_value('').for(:scope) }
+  it { is_expected.to allow_value('review/*').for(:environment_scope) }
+  it { is_expected.not_to allow_value('').for(:environment_scope) }
 
   let(:key_scope) do
-    [:project_id, :scope] # EE
+    [:project_id, :environment_scope] # EE
   end
 
   it { is_expected.to validate_uniqueness_of(:key).scoped_to(key_scope) }

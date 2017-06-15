@@ -5,7 +5,7 @@ module EE
 
       module VariableClassMethods
         def key_uniqueness_scope
-          %i[project_id scope]
+          %i[project_id environment_scope]
         end
       end
 
@@ -13,10 +13,10 @@ module EE
         singleton_class.prepend(VariableClassMethods)
 
         validates(
-          :scope,
+          :environment_scope,
           presence: true,
-          format: { with: ::Gitlab::Regex.variable_scope_regex,
-                    message: ::Gitlab::Regex.variable_scope_regex_message }
+          format: { with: ::Gitlab::Regex.environment_scope_regex,
+                    message: ::Gitlab::Regex.environment_scope_regex_message }
         )
       end
     end
