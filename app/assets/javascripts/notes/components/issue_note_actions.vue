@@ -7,7 +7,8 @@ export default {
   props: {
     accessLevel: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     reportAbusePath: {
       type: String,
@@ -38,11 +39,14 @@ export default {
 
 <template>
   <div class="note-actions">
-    <span class="note-role">
+    <span
+      v-if="accessLevel"
+      class="note-role">
       {{accessLevel}}
     </span>
     <a
-      class="note-action-button note-emoji-button js-add-award js-note-emoji js-user-authored has-tooltip" data-position="right"
+      class="note-action-button note-emoji-button js-add-award js-note-emoji js-user-authored has-tooltip"
+      data-position="right"
       href="#"
       title="Add reaction">
         <i
