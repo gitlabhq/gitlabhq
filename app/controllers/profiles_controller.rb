@@ -14,7 +14,7 @@ class ProfilesController < Profiles::ApplicationController
     respond_to do |format|
       result = Users::UpdateService.new(current_user, @user, user_params).execute
 
-      if result[:success]
+      if result[:status] == :success
         message = "Profile was successfully updated"
 
         format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
@@ -65,7 +65,7 @@ class ProfilesController < Profiles::ApplicationController
   def update_username
     result = Users::UpdateService.new(current_user, @user, username: user_params[:username]).execute
 
-    options = if result[:success]
+    options = if result[:status] == :success
                 { notice: "Username successfully changed" }
               else
                 { alert: "Username change failed - #{result[:message]}" }
