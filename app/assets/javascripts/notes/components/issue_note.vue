@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       isEditing: false,
-    }
+    };
   },
   components: {
     UserAvatarLink,
@@ -31,8 +31,8 @@ export default {
     editHandler() {
       this.isEditing = true;
     },
-    formUpdateHandler(data) {
-      console.log('update requested', data);
+    formUpdateHandler() {
+      // console.log('update requested', data);
     },
     formCancelHandler() {
       this.isEditing = false;

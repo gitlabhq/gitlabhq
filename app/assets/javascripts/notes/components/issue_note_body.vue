@@ -21,7 +21,7 @@ export default {
     formCancelHandler: {
       type: Function,
       required: true,
-    }
+    },
   },
   components: {
     IssueNoteEditedText,
@@ -58,6 +58,7 @@ export default {
       actionText="Edited" />
     <issue-note-awards-list
       v-if="note.award_emoji.length"
-      :awards="note.award_emoji" />
+      :awards="note.award_emoji"
+      :noteAuthorId="note.author.id" />
   </div>
 </template>

@@ -10,13 +10,20 @@ export default {
       type: Array,
       required: true,
     },
+    noteAuthorId: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
+    const userId = window.gon.current_user_id;
+
     return {
       emojiSmiling,
       emojiSmile,
       emojiSmiley,
-      canAward: !!window.gon.current_user_id,
+      canAward: !!userId,
+      myUserId: userId,
     };
   },
   computed: {
@@ -48,9 +55,11 @@ export default {
         delete awards.thumbsdown;
       }
 
-      for (let key in awards) {
+      // Because for-in forbidden
+      const keys = Object.keys(awards);
+      keys.forEach((key) => {
         orderedAwards[key] = awards[key];
-      };
+      });
 
       return orderedAwards;
     },
@@ -59,27 +68,37 @@ export default {
     getAwardHTML(name) {
       return glEmojiTag(name);
     },
-    getAwardClassBindings(awardList) {
+    getAwardClassBindings(awardList, awardName) {
       return {
         active: this.amIAwarded(awardList),
-        disabled: !this.canAward,
+        disabled: !this.canInteractWithEmoji(awardList, awardName),
       };
     },
+    canInteractWithEmoji(awardList, awardName) {
+      let isAllowed = true;
+      const restrictedEmojis = ['thumbsup', 'thumbsdown'];
+      const { myUserId, noteAuthorId } = this;
+
+      // Users can not add :+1: and :-1: to their notes
+      if (myUserId === noteAuthorId && restrictedEmojis.indexOf(awardName) > -1) {
+        isAllowed = false;
+      }
+
+      return this.canAward && isAllowed;
+    },
     amIAwarded(awardList) {
-      const myUserId = window.gon.current_user_id;
-      const isAwarded = awardList.filter(award => award.user.id === myUserId);
+      const isAwarded = awardList.filter(award => award.user.id === this.myUserId);
 
       return isAwarded.length;
     },
     awardTitle(awardsList) {
       const amIAwarded = this.amIAwarded(awardsList);
-      const myUserId = window.gon.current_user_id;
       const TOOLTIP_NAME_COUNT = amIAwarded ? 9 : 10;
       let awardList = awardsList;
 
       // Filter myself from list if I am awarded.
       if (amIAwarded) {
-        awardList = awardList.filter(award => award.user.id !== myUserId);
+        awardList = awardList.filter(award => award.user.id !== this.myUserId);
       }
 
       // Get only 9-10 usernames to show in tooltip text.
@@ -120,7 +139,7 @@ export default {
       <button
         v-for="(awardList, awardName) in groupedAwards"
         class="btn award-control has-tooltip"
-        :class="getAwardClassBindings(awardList)"
+        :class="getAwardClassBindings(awardList, awardName)"
         :title="awardTitle(awardList)"
         data-placement="bottom"
         type="button">

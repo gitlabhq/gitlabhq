@@ -21,7 +21,7 @@ export default {
       note: this.noteBody,
       markdownPreviewUrl: '',
       markdownDocsUrl: '',
-    }
+    };
   },
   components: {
     MarkdownField,
