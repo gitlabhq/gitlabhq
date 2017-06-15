@@ -71,8 +71,6 @@ class Project < ActiveRecord::Base
 
   after_validation :check_pending_delete
 
-  after_validation :check_pending_delete
-
   acts_as_taggable
 
   attr_accessor :new_default_branch
