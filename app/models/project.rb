@@ -1456,7 +1456,7 @@ class Project < ActiveRecord::Base
   def pending_delete_twin
     return false unless path
 
-    Project.unscoped.where(pending_delete: true).find_by_full_path(path_with_namespace)
+    Project.with_deleted.find_by_full_path(path_with_namespace)
   end
 
   ##
