@@ -309,7 +309,7 @@ describe CommitStatus, :models do
 
     context 'when using a scope to select latest statuses' do
       before do
-        create_status(name: 'test', status: 'failed')
+        create_status(name: 'test', retried: true, status: 'failed')
         create_status(allow_failure: true, name: 'test', status: 'failed')
       end
 

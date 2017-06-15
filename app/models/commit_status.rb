@@ -103,12 +103,6 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  def self.status
-    super.tap do |status|
-      return 'success' if status == 'skipped' && all.failed_but_allowed.any?
-    end
-  end
-
   def locking_enabled?
     status_changed?
   end
