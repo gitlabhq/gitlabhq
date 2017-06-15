@@ -216,7 +216,6 @@ describe AutocompleteController do
         before do
           sign_in(user)
         end
-<<<<<<< HEAD
 
         it 'includes the author' do
           get(:users, author_id: non_member.id)
@@ -227,18 +226,6 @@ describe AutocompleteController do
         it 'rejects non existent user ids' do
           get(:users, author_id: 99999)
 
-=======
-
-        it 'includes the author' do
-          get(:users, author_id: non_member.id)
-
-          expect(body.first["username"]).to eq non_member.username
-        end
-
-        it 'rejects non existent user ids' do
-          get(:users, author_id: 99999)
-
->>>>>>> 9f999549099fb5b254a3892d3b88284c39a4e12d
           expect(body.collect { |u| u['id'] }).not_to include(99999)
         end
       end
