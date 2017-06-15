@@ -37,6 +37,14 @@ describe 'Milestone draggable', feature: true, js: true do
 
       expect(issue_target).to have_selector('.issuable-row')
     end
+
+    it 'assigns issue when it has been dragged to ongoing list' do
+      login_as(:admin)
+      create_and_drag_issue
+
+      expect(@issue.reload.assignees).not_to be_empty
+      expect(page).to have_selector("#sortable_issue_#{@issue.iid} .assignee-icon img", count: 1)
+    end
   end
 
   context 'merge requests' do
@@ -72,7 +80,7 @@ describe 'Milestone draggable', feature: true, js: true do
   end
 
   def create_and_drag_issue(params = {})
-    create(:issue, params.merge(title: 'Foo', project: project, milestone: milestone))
+    @issue = create(:issue, params.merge(title: 'Foo', project: project, milestone: milestone))
 
     visit namespace_project_milestone_path(project.namespace, project, milestone)
     scroll_into_view('.milestone-content')
