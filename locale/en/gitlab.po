@@ -85,6 +85,9 @@ msgstr ""
 msgid "ChangeTypeAction|Cherry-pick"
 msgstr ""
 
+msgid "ChangeTypeAction|Revert"
+msgstr ""
+
 msgid "Changelog"
 msgstr ""
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-06-15 14:00+0200\n"
+"PO-Revision-Date: 2017-06-15 15:05+0200\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -84,6 +84,9 @@ msgstr "Revertir en la rama"
 
 msgid "ChangeTypeAction|Cherry-pick"
 msgstr "Cherry-pick"
+
+msgid "ChangeTypeAction|Revert"
+msgstr "Revertir"
 
 msgid "Changelog"
 msgstr "Changelog"
