@@ -28,6 +28,7 @@ class GpgKey < ActiveRecord::Base
     unless: -> { errors.has_key?(:key) }
 
   before_validation :extract_fingerprint, :extract_primary_keyid
+  after_create :update_invalid_gpg_signatures
   after_create :notify_user
 
   def key=(value)
@@ -64,6 +65,10 @@ class GpgKey < ActiveRecord::Base
     # we can assume that the result only contains one item as the validation
     # only allows one key
     self.primary_keyid = Gitlab::Gpg.primary_keyids_from_key(key).first
+  end
+
+  def update_invalid_gpg_signatures
+    run_after_commit { Gitlab::Gpg::InvalidGpgSignatureUpdater.new(self).run }
   end
 
   def notify_user
