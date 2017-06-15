@@ -54,7 +54,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def block
-    if user.block
+    if update_user { |user| user.block }
       redirect_back_or_admin_user(notice: "Successfully blocked")
     else
       redirect_back_or_admin_user(alert: "Error occurred. User was not blocked")
@@ -64,7 +64,7 @@ class Admin::UsersController < Admin::ApplicationController
   def unblock
     if user.ldap_blocked?
       redirect_back_or_admin_user(alert: "This user cannot be unlocked manually from GitLab")
-    elsif user.activate
+    elsif update_user { |user| user.activate }
       redirect_back_or_admin_user(notice: "Successfully unblocked")
     else
       redirect_back_or_admin_user(alert: "Error occurred. User was not unblocked")
@@ -72,7 +72,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def unlock
-    if user.unlock_access!
+    if update_user { |user| user.unlock_access! }
       redirect_back_or_admin_user(alert: "Successfully unlocked")
     else
       redirect_back_or_admin_user(alert: "Error occurred. User was not unlocked")
@@ -80,7 +80,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def confirm
-    if user.confirm
+    if update_user { |user| user.confirm }
       redirect_back_or_admin_user(notice: "Successfully confirmed")
     else
       redirect_back_or_admin_user(alert: "Error occurred. User was not confirmed")
@@ -88,7 +88,8 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def disable_two_factor
-    user.disable_two_factor!
+    update_user { |user| user.disable_two_factor! }
+
     redirect_to admin_user_path(user),
       notice: 'Two-factor Authentication has been disabled for this user'
   end
@@ -126,9 +127,9 @@ class Admin::UsersController < Admin::ApplicationController
     respond_to do |format|
       user.skip_reconfirmation!
 
-      result = Users::UpdateService.new(current_user, @user, user_params_with_pass).execute
+      result = Users::UpdateService.new(current_user, user, user_params_with_pass).execute
 
-      if result[:succcess]
+      if result[:status] == :success
         format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
         format.json { head :ok }
       else
@@ -153,11 +154,17 @@ class Admin::UsersController < Admin::ApplicationController
     email = user.emails.find(params[:email_id])
     email.destroy
 
-    user.update_secondary_emails!
+    result = Users::UpdateService.new(current_user, @user).execute do
+      user.update_secondary_emails!
+    end
 
-    respond_to do |format|
+    if result[:status] == :success
       format.html { redirect_back_or_admin_user(notice: "Successfully removed email.") }
-      format.js { head :ok }
+      format.json { head :ok }
+    else
+      # restore username to keep form action url.
+      format.html { redirect_back_or_admin_user(notice: result[:message]) }
+      format.json { render json: result[:message], status: result[:status] }
     end
   end
 
@@ -204,5 +211,13 @@ class Admin::UsersController < Admin::ApplicationController
       :username,
       :website_url
     ]
+  end
+
+  def update_user
+    result = Users::UpdateService.new(current_user, user).execute do
+      yield(user)
+    end
+
+    result[:status] == :success
   end
 end
