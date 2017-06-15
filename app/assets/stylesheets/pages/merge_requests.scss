@@ -515,51 +515,46 @@
   margin: 10px 0 $gl-padding 12px;
 
   p {
-    margin: 6px 0;
+    margin: 0;
     position: relative;
-    padding-left: 15px;
+    padding: 6px 0 6px 15px;
+
+    $border-width: 2px;
 
     &::before {
       content: '';
       position: absolute;
+      background-color: $border-color;
+      height: 100%;
+      top: 0;
+      width: $border-width;
+      left: 0;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
       border-top: 2px solid $border-color;
-      height: 1px;
-      top: 9px;
+      height: $border-width;
+      top: calc(50% - #{$border-width} / 2);
       width: 8px;
       left: 0;
     }
 
-    &:last-child {
+    &:last-of-type {
       margin-bottom: 0;
-    }
-  }
 
-  .legend {
-    height: 100%;
-    width: 2px;
-    background: $border-color;
-    position: absolute;
-    top: -9px;
+      &::before {
+        height: 50%;
+      }
+    }
   }
 }
 
 .mr-info-list.mr-memory-usage {
-  .legend {
-    height: 65%;
-    top: 0;
-
-    @media (max-width: $screen-xs-max) {
-      height: 20px;
-    }
-  }
-
   p {
     float: left;
     padding-left: 21px;
-
-    &::before {
-      top: 13px;
-    }
   }
 
   .memory-graph-container {

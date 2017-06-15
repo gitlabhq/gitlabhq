@@ -81,7 +81,6 @@ export default {
         </a>
       </h4>
       <section class="mr-info-list">
-        <div class="legend"></div>
         <p>The changes will be merged into
           <a
             :href="mr.targetBranchPath"

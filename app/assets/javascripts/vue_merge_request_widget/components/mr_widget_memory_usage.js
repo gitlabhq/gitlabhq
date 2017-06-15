@@ -113,7 +113,6 @@ export default {
   },
   template: `
     <div class="mr-info-list clearfix mr-memory-usage js-mr-memory-usage">
-      <div class="legend"></div>
       <p
         v-if="shouldShowLoading"
         class="usage-info js-usage-info usage-info-loading">

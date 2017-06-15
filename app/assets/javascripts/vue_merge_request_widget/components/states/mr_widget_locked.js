@@ -11,7 +11,6 @@ export default {
         class="fa fa-spinner fa-spin"
         aria-hidden="true" />
       <section class="mr-info-list mr-links">
-        <div class="legend"></div>
         <p>
           The changes will be merged into
           <span class="label-branch">
