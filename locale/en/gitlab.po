@@ -562,6 +562,12 @@ msgstr ""
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr ""
 
+msgid "Pipeline|with stage"
+msgstr ""
+
+msgid "Pipeline|with stages"
+msgstr ""
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr ""
 
@@ -1018,10 +1024,5 @@ msgstr ""
 
 msgid "parent"
 msgid_plural "parents"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "with stage"
-msgid_plural "with stages"
 msgstr[0] ""
 msgstr[1] ""
