@@ -9,62 +9,33 @@ describe 'projects/notes/_more_actions_dropdown', :view do
   let!(:note) { create(:note_on_issue, author: author_user, noteable: issue, project: project) }
 
   before do
-    allow(view).to receive(:note).and_return(note)
     assign(:project, project)
   end
 
-  context 'not editable and not current users comment' do
-    before do
-      allow(view).to receive(:note_editable).and_return(false)
-      allow(view).to receive(:current_user).and_return(not_author_user)
+  it 'shows Report as abuse button if not editable and not current users comment' do
+    render 'projects/notes/more_actions_dropdown', current_user: not_author_user, note_editable: false, note: note
 
-      render
-    end
-
-    it 'shows Report as abuse button' do
-      expect(rendered).to have_link('Report as abuse')
-    end
+    expect(rendered).to have_link('Report as abuse')
   end
 
-  context 'not editable and current users comment' do
-    before do
-      allow(view).to receive(:note_editable).and_return(false)
-      allow(view).to receive(:current_user).and_return(author_user)
+  it 'does not show the More actions button if not editable and current users comment' do
+    render 'projects/notes/more_actions_dropdown', current_user: author_user, note_editable: false, note: note
 
-      render
-    end
-
-    it 'does not show the More actions button' do
-      expect(rendered).not_to have_selector('.dropdown.more-actions')
-    end
+    expect(rendered).not_to have_selector('.dropdown.more-actions')
   end
 
-  context 'editable and not current users comment' do
-    before do
-      allow(view).to receive(:note_editable).and_return(true)
-      allow(view).to receive(:current_user).and_return(not_author_user)
+  it 'shows Report as abuse, Edit and Delete buttons if editable and not current users comment' do
+    render 'projects/notes/more_actions_dropdown', current_user: not_author_user, note_editable: true, note: note
 
-      render
-    end
-
-    it 'shows Report as abuse, Edit and Delete buttons' do
-      expect(rendered).to have_link('Report as abuse')
-      expect(rendered).to have_button('Edit comment')
-      expect(rendered).to have_link('Delete comment')
-    end
+    expect(rendered).to have_link('Report as abuse')
+    expect(rendered).to have_button('Edit comment')
+    expect(rendered).to have_link('Delete comment')
   end
 
-  context 'editable and current users comment' do
-    before do
-      allow(view).to receive(:note_editable).and_return(true)
-      allow(view).to receive(:current_user).and_return(author_user)
+  it 'shows Edit and Delete buttons if editable and current users comment' do
+    render 'projects/notes/more_actions_dropdown', current_user: author_user, note_editable: true, note: note
 
-      render
-    end
-
-    it 'shows Edit and Delete buttons' do
-      expect(rendered).to have_button('Edit comment')
-      expect(rendered).to have_link('Delete comment')
-    end
+    expect(rendered).to have_button('Edit comment')
+    expect(rendered).to have_link('Delete comment')
   end
 end
