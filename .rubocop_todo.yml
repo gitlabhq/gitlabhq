@@ -6,6 +6,81 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+# Offense count: 54
+RSpec/BeforeAfterAll:
+  Enabled: false
+
+# Offense count: 233
+RSpec/EmptyLineAfterFinalLet:
+  Enabled: false
+
+# Offense count: 167
+RSpec/EmptyLineAfterSubject:
+  Enabled: false
+
+# Offense count: 72
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: implicit, each, example
+RSpec/HookArgument:
+  Enabled: false
+
+# Offense count: 12
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: is_expected, should
+RSpec/ImplicitExpect:
+  Enabled: false
+
+# Offense count: 11
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: it_behaves_like, it_should_behave_like
+RSpec/ItBehavesLike:
+  Enabled: false
+
+# Offense count: 4
+RSpec/IteratedExpectation:
+  Enabled: false
+
+# Offense count: 3
+RSpec/OverwritingSetup:
+  Enabled: false
+
+# Offense count: 34
+RSpec/RepeatedExample:
+  Enabled: false
+
+# Offense count: 43
+RSpec/ScatteredLet:
+  Enabled: false
+
+# Offense count: 32
+RSpec/ScatteredSetup:
+  Enabled: false
+
+# Offense count: 1
+RSpec/SharedContext:
+  Enabled: false
+
+# Offense count: 150
+Rails/FilePath:
+  Enabled: false
+
+# Offense count: 2
+# Configuration parameters: Include.
+# Include: db/migrate/*.rb
+Rails/ReversibleMigration:
+  Enabled: false
+
+# Offense count: 302
+# Configuration parameters: Blacklist.
+# Blacklist: decrement!, decrement_counter, increment!, increment_counter, toggle!, touch, update_all, update_attribute, update_column, update_columns, update_counters
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# Offense count: 7
+# Cop supports --auto-correct.
+Security/YAMLLoad:
+  Enabled: false
+
 # Offense count: 59
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -95,6 +170,11 @@ Style/Lambda:
 # Offense count: 6
 # Cop supports --auto-correct.
 Style/LineEndConcatenation:
+  Enabled: false
+
+# Offense count: 34
+# Cop supports --auto-correct.
+Style/MethodCallWithoutArgsParentheses:
   Enabled: false
 
 # Offense count: 10
