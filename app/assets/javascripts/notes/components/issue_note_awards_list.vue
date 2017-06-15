@@ -22,21 +22,37 @@ export default {
   computed: {
     // `this.awards` is an array with emojis but they are not grouped by emoji name. See below.
     // [ { name: foo, user: user1 }, { name: bar, user: user1 }, { name: foo, user: user2 } ]
-    // This method will group emojis by name their name as an Object. See below.
+    // This method will group emojis by their name as an Object. See below.
     // {
     //   foo: [ { name: foo, user: user1 }, { name: foo, user: user2 } ],
     //   bar: [ { name: bar, user: user1 } ]
     // }
-    // We need to do this otherwise will will render the same emoji over and over again.
+    // We need to do this otherwise we will render the same emoji over and over again.
     groupedAwards() {
       const awards = {};
+      const orderedAwards = {};
 
       this.awards.forEach((award) => {
         awards[award.name] = awards[award.name] || [];
         awards[award.name].push(award);
       });
 
-      return awards;
+      // Always show thumbsup and thumbsdown first
+      const { thumbsup, thumbsdown } = awards;
+      if (thumbsup) {
+        orderedAwards.thumbsup = thumbsup;
+        delete awards.thumbsup;
+      }
+      if (thumbsdown) {
+        orderedAwards.thumbsdown = thumbsdown;
+        delete awards.thumbsdown;
+      }
+
+      for (let key in awards) {
+        orderedAwards[key] = awards[key];
+      };
+
+      return orderedAwards;
     },
   },
   methods: {
