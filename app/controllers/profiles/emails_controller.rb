@@ -20,7 +20,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
     @email = current_user.emails.find(params[:id])
     @email.destroy
 
-    current_user.update_secondary_emails!
+    Users::UpdateService.new(current_user, current_user).execute { |user| user.update_secondary_emails! }
 
     respond_to do |format|
       format.html { redirect_to profile_emails_url, status: 302 }
