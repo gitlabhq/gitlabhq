@@ -1,8 +1,8 @@
 <script>
 import { glEmojiTag } from '~/behaviors/gl_emoji';
-import emojiSmiling from '../icons/emoji_slightly_smiling_face.svg';
-import emojiSmile from '../icons/emoji_smile.svg';
-import emojiSmiley from '../icons/emoji_smiley.svg';
+import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
+import emojiSmile from 'icons/_emoji_smile.svg';
+import emojiSmiley from 'icons/_emoji_smiley.svg';
 
 export default {
   props: {
