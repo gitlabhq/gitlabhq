@@ -182,10 +182,10 @@ Once you set them, they will be available for all subsequent pipelines.
 [Introduced][ee-2112] in [GitLab Enterprise Edition Premium][eep] 9.4.
 
 You can limit the scope of a secret variable by [defining which environments][envs]
-it should be available for.
+it can be available for.
 
-Regular expressions can be used, and the default scope is `*` which means any
-jobs will have this variable, not matter if an environment is defined or not.
+Wildcards can be used, and the default scope is `*` which means any jobs will
+have this variable, not matter if an environment is defined or not.
 
 For example, if the scope is `production`, then only the jobs having the
 environment `production` defined would have this specific variable. Wildcards (`*`)
