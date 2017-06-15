@@ -264,7 +264,7 @@ $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-San
 */
 $dropdown-width: 300px;
 $dropdown-link-color: #555;
-$dropdown-link-hover-bg: $row-hover;
+$dropdown-hover-bg: $blue-400;
 $dropdown-empty-row-bg: rgba(#000, .04);
 $dropdown-border-color: $border-color;
 $dropdown-shadow-color: rgba(#000, .1);
@@ -277,12 +277,6 @@ $dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
-
-
-/*
-* Filtered Search
-*/
-$dropdown-hover-color: $blue-400;
 
 /*
 * Buttons

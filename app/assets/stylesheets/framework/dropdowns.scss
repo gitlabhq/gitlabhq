@@ -1,9 +1,28 @@
 .dropdown {
   position: relative;
 
-  .btn-link {
-    &:hover {
-      cursor: pointer;
+  li {
+    a,
+    .btn-link {
+      padding: 8px 16px;
+
+      &:hover,
+      &:focus,
+      &.is-focused {
+        background-color: $dropdown-hover-bg;
+        color: $white-light;
+        cursor: pointer;
+        text-decoration: none;
+
+        .avatar {
+          border-color: $white-light;
+        }
+
+        .dropdown-menu-inner-content,
+        .dropdown-menu-inner-title {
+          color: inherit;
+        }
+      }
     }
   }
 }
@@ -145,22 +164,17 @@
 @mixin dropdown-link {
   display: block;
   position: relative;
-  padding: 5px 8px;
   color: $gl-text-color;
   line-height: initial;
   text-overflow: ellipsis;
-  border-radius: 2px;
   white-space: nowrap;
   overflow: hidden;
 
   &:hover,
   &:focus,
   &.is-focused {
-    background-color: $dropdown-link-hover-bg;
-    text-decoration: none;
-
     .badge {
-      background-color: darken($dropdown-link-hover-bg, 5%);
+      background-color: $white-light;
     }
   }
 
@@ -238,7 +252,6 @@
   li {
     text-align: left;
     list-style: none;
-    padding: 0 10px;
   }
 
   .divider {
@@ -291,7 +304,7 @@
   .badge {
     position: absolute;
     right: 8px;
-    top: 5px;
+    top: 8px;
   }
 }
 
@@ -397,38 +410,39 @@
   right: 0;
 }
 
-.dropdown-menu-selectable {
-  a {
-    padding-left: 26px;
-    position: relative;
+.dropdown {
+  .dropdown-menu-selectable {
+    a {
+      padding-left: 26px;
+      position: relative;
 
-    &.is-indeterminate,
-    &.is-active {
-      font-weight: 600;
-      color: $gl-text-color;
+      &.is-indeterminate,
+      &.is-active {
+        font-weight: 600;
 
-      &::before {
+        &::before {
+          position: absolute;
+          left: 6px;
+          top: 50%;
+          transform: translateY(-50%);
+          font: normal normal normal 14px/1 FontAwesome;
+          font-size: inherit;
+          text-rendering: auto;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      }
+
+      &.is-indeterminate::before {
+        content: "\f068";
+      }
+
+      &.is-active::before {
+        content: "\f00c";
         position: absolute;
-        left: 6px;
         top: 50%;
         transform: translateY(-50%);
-        font: normal normal normal 14px/1 FontAwesome;
-        font-size: inherit;
-        text-rendering: auto;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
       }
-    }
-
-    &.is-indeterminate::before {
-      content: "\f068";
-    }
-
-    &.is-active::before {
-      content: "\f00c";
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
     }
   }
 }
@@ -456,10 +470,6 @@
   border: 0;
   background: none;
   outline: 0;
-
-  &:hover {
-    color: darken($dropdown-title-btn-color, 15%);
-  }
 }
 
 .dropdown-menu-close {

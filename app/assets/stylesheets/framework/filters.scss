@@ -399,22 +399,11 @@
   }
 }
 
-%filter-dropdown-item-btn-hover {
-  background-color: $dropdown-hover-color;
-  color: $white-light;
-  text-decoration: none;
-
-  .avatar {
-    border-color: $white-light;
-  }
-}
-
 .filter-dropdown-item {
   .btn {
     border: none;
     width: 100%;
     text-align: left;
-    padding: 8px 16px;
     text-overflow: ellipsis;
     overflow: hidden;
     border-radius: 0;
@@ -429,11 +418,6 @@
       border-width: 1px;
       width: 17px;
       height: 17px;
-    }
-
-    &:hover,
-    &:focus {
-      @extend %filter-dropdown-item-btn-hover;
     }
   }
 
@@ -458,10 +442,6 @@
       word-break: break-all;
     }
   }
-}
-
-.filter-dropdown-item.droplab-item-active .btn {
-  @extend %filter-dropdown-item-btn-hover;
 }
 
 .filter-dropdown-loading {
