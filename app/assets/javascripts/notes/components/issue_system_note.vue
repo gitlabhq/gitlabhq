@@ -12,12 +12,12 @@ export default {
   data() {
     return {
       svg: iconsMap[this.note.system_note_icon_name],
-    }
+    };
   },
   components: {
     IssueNoteHeader,
   },
-}
+};
 </script>
 
 <template>

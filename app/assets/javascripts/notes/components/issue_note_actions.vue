@@ -26,6 +26,10 @@ export default {
       type: Function,
       required: true,
     },
+    deleteHandler: {
+      type: Function,
+      required: true,
+    },
   },
   data() {
     return {
@@ -92,7 +96,10 @@ export default {
           </a>
         </li>
         <li>
-          <a class="js-note-delete">
+          <a
+            @click.prevent="deleteHandler"
+            class="js-note-delete"
+            href="#">
             <span class="text-danger">
               Delete comment
             </span>

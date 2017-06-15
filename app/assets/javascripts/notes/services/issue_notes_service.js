@@ -7,4 +7,7 @@ export default {
   fetchNotes(endpoint) {
     return Vue.http.get(endpoint);
   },
+  deleteNote(endpoint) {
+    return Vue.http.get(endpoint);
+  },
 };

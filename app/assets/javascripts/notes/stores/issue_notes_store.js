@@ -3,9 +3,7 @@
 
 import service from '../services/issue_notes_service';
 
-const findNoteObjectById = (notes, id) => {
-  return notes.filter(n => n.id === id)[0];
-};
+const findNoteObjectById = (notes, id) => notes.filter(n => n.id === id)[0];
 
 const state = {
   notes: [],
@@ -26,6 +24,20 @@ const mutations = {
 
     discussion.expanded = !discussion.expanded;
   },
+  deleteNote(storeState, note) {
+    const noteObj = findNoteObjectById(storeState.notes, note.discussion_id);
+
+    if (noteObj.individual_note) {
+      storeState.notes.splice(storeState.notes.indexOf(noteObj), 1);
+    } else {
+      const comment = findNoteObjectById(noteObj.notes, note.id);
+      noteObj.notes.splice(noteObj.notes.indexOf(comment), 1);
+
+      if (!noteObj.notes.length) {
+        storeState.notes.splice(storeState.notes.indexOf(noteObj), 1);
+      }
+    }
+  },
 };
 
 const actions = {
@@ -38,6 +50,18 @@ const actions = {
       })
       .catch(() => {
         new Flash('Something went wrong while fetching issue comments. Please try again.'); // eslint-disable-line
+      });
+  },
+  deleteNote(context, note) {
+    // FIXME: Implement request, remove fake delete timer...
+    return service
+      .deleteNote(`${document.location.href}.json`)
+      .then(res => res.json)
+      .then(() => {
+        context.commit('deleteNote', note);
+      })
+      .catch(() => {
+        new Flash('Something went wrong while deleting your note. Please try again.'); // eslint-disable-line
       });
   },
 };

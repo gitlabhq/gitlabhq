@@ -48,7 +48,7 @@ export default {
       this.$store.commit('toggleDiscussion', {
         discussionId: this.note.id,
       });
-    }
+    },
   },
 };
 </script>

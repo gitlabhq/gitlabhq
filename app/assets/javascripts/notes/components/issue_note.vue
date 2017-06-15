@@ -14,6 +14,7 @@ export default {
   data() {
     return {
       isEditing: false,
+      isDeleting: false,
     };
   },
   components: {
@@ -26,10 +27,27 @@ export default {
     author() {
       return this.note.author;
     },
+    classNameBindings() {
+      return {
+        'is-editing': this.isEditing,
+        'disabled-content': this.isDeleting,
+      };
+    },
   },
   methods: {
     editHandler() {
       this.isEditing = true;
+    },
+    deleteHandler() {
+      this.isDeleting = true;
+      this.$store
+        .dispatch('deleteNote', this.note)
+        .then(() => {
+          this.isDeleting = false;
+        })
+        .catch(() => {
+          this.isDeleting = false;
+        });
     },
     formUpdateHandler() {
       // console.log('update requested', data);
@@ -44,7 +62,7 @@ export default {
 <template>
   <li
     class="note timeline-entry"
-    :class="{ 'is-editing': isEditing }">
+    :class="classNameBindings">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -66,7 +84,8 @@ export default {
             :canEdit="note.can_edit"
             :canDelete="note.can_edit"
             :reportAbusePath="note.report_abuse_path"
-            :editHandler="editHandler" />
+            :editHandler="editHandler"
+            :deleteHandler="deleteHandler" />
         </div>
         <issue-note-body
           :note="note"
