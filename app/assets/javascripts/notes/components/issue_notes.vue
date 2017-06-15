@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import storeOptions from '../stores/issue_notes_store';
 import IssueNote from './issue_note.vue';
 import IssueDiscussion from './issue_discussion.vue';
+import IssueSystemNote from './issue_system_note.vue';
 
 Vue.use(Vuex);
 const store = new Vuex.Store(storeOptions);
@@ -19,10 +20,15 @@ export default {
   components: {
     IssueNote,
     IssueDiscussion,
+    IssueSystemNote,
   },
   methods: {
     component(note) {
-      return note.individual_note ? IssueNote : IssueDiscussion;
+      if (note.individual_note) {
+        return note.notes[0].system ? IssueSystemNote : IssueNote;
+      }
+
+      return IssueDiscussion;
     },
     componentData(note) {
       return note.individual_note ? note.notes[0] : note;
