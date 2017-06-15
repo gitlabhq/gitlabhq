@@ -7,6 +7,7 @@ describe 'instrument_classes', lib: true do
   before do
     allow(config).to receive(:instrument_method)
     allow(config).to receive(:instrument_methods)
+    allow(config).to receive(:instrument_instance_method)
     allow(config).to receive(:instrument_instance_methods)
   end
 
