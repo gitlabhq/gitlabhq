@@ -88,11 +88,6 @@
 }
 
 .right-sidebar {
-  a,
-  .btn-link {
-    color: inherit;
-  }
-
   .btn-link {
     outline: none;
   }
@@ -411,12 +406,6 @@
       .avatar {
         border-color: rgba($avatar-border, .2);
       }
-    }
-  }
-
-  .dropdown-content {
-    a:hover {
-      color: inherit;
     }
   }
 
