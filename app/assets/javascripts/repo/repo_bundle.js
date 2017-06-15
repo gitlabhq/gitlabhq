@@ -1,0 +1,1 @@
+import monaco from 'monaco'
