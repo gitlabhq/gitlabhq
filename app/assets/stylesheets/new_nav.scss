@@ -131,9 +131,12 @@ header.navbar-gitlab-new {
     background-color: $gl-gray-light;
   }
 
-  .search-input,
-  .search-input::placeholder {
+  .search-input {
     color: $gray-normal;
+  }
+
+  .search-input::placeholder {
+    color: $gray-dark;
   }
 
   .location-badge {
