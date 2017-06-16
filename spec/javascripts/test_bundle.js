@@ -16,6 +16,14 @@ window.gl = window.gl || {};
 window.gl.TEST_HOST = 'http://test.host';
 window.gon = window.gon || {};
 
+// HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
+// because it appears to lock up the thread that communicates to Karma's socket
+// This async beforeEach gets called on every spec and releases the JS thread long
+// enough for the socket to continue to communicate.
+// The downside is that it creates a minor performance penalty in the time it takes
+// to run our unit tests.
+beforeEach(done => done()); // eslint-disable-line jasmine/no-global-setup
+
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
 testsContext.keys().forEach(function (path) {
