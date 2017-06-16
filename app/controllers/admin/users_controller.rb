@@ -154,7 +154,7 @@ class Admin::UsersController < Admin::ApplicationController
     email = user.emails.find(params[:email_id])
     email.destroy
 
-    result = Users::UpdateService.new(current_user, @user).execute do
+    result = Users::UpdateService.new(current_user, @user).execute do |user|
       user.update_secondary_emails!
     end
 
@@ -215,7 +215,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def update_user
-    result = Users::UpdateService.new(current_user, user).execute do
+    result = Users::UpdateService.new(current_user, user).execute do |user|
       yield(user)
     end
 
