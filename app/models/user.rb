@@ -153,7 +153,7 @@ class User < ActiveRecord::Base
 
   after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
   before_save :ensure_authentication_token, :ensure_incoming_email_token
-  before_save :ensure_external_user_rights
+  before_save :ensure_user_rights_and_limits, if: ->(user) { user.external_changed? }
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
   after_destroy :post_destroy_hook
@@ -1033,11 +1033,14 @@ class User < ActiveRecord::Base
     super
   end
 
-  def ensure_external_user_rights
-    return unless external?
-
-    self.can_create_group   = false
-    self.projects_limit     = 0
+  def ensure_user_rights_and_limits
+    if external?
+      self.can_create_group = false
+      self.projects_limit   = 0
+    else
+      self.can_create_group = true
+      self.projects_limit = current_application_settings.default_projects_limit
+    end
   end
 
   def signup_domain_valid?
