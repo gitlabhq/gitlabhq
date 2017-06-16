@@ -137,16 +137,13 @@ ActiveRecord::Schema.define(version: 20170606202615) do
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
     t.boolean "prometheus_metrics_enabled", default: false, null: false
-<<<<<<< HEAD
     t.boolean "check_namespace_plan", default: false, null: false
     t.integer "mirror_max_delay", default: 5, null: false
     t.integer "mirror_max_capacity", default: 100, null: false
     t.integer "mirror_capacity_threshold", default: 50, null: false
     t.boolean "authorized_keys_enabled"
-=======
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
->>>>>>> ce/master
   end
 
   create_table "approvals", force: :cascade do |t|

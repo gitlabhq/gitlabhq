@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 require 'rubocop-rspec'
 
->>>>>>> ce/master
 module RuboCop
   module Cop
     module RSpec
@@ -22,11 +19,7 @@ module RuboCop
       #   after(:each) do
       #     undo_something
       #   end
-<<<<<<< HEAD
-      class SingleLineHook < RuboCop::Cop::RSpec::Cop
-=======
       class SingleLineHook < Cop
->>>>>>> ce/master
         MESSAGE = "Don't use single-line hook blocks.".freeze
 
         def_node_search :rspec_hook?, <<~PATTERN
