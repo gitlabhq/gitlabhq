@@ -54,6 +54,7 @@ module.exports = function(config) {
       subdir: '.',
       fixWebpackSourcePaths: true
     };
+    karmaConfig.browserNoActivityTimeout = 60000; // 60 seconds
   }
 
   if (process.env.DEBUG) {
