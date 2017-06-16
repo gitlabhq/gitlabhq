@@ -55,7 +55,7 @@ const Keyboard = function () {
   };
   var selectItem = function selectItem(list) {
     var listItems = removeHighlight(list);
-    var currentItem = listItems[list.currentIndex-1];
+    var currentItem = listItems[list.currentIndex-1] || {};
     var listEvent = new CustomEvent('click.dl', {
       detail: {
         list: list,
