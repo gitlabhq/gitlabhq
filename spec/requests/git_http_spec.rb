@@ -316,6 +316,26 @@ describe 'Git HTTP requests', lib: true do
             it_behaves_like 'pushes require Basic HTTP Authentication'
           end
         end
+
+        context 'and the user requests a redirected path' do
+          let!(:redirect) { project.route.create_redirect('foo/bar') }
+          let(:path) { "#{redirect.path}.git" }
+          let(:project_moved_message) do
+            <<-MSG.strip_heredoc
+              Project '#{redirect.path}' was moved to '#{project.full_path}'.
+
+              Please update your Git remote and try again:
+
+                git remote set-url origin #{project.http_url_to_repo}
+            MSG
+          end
+
+          it 'downloads get status 404 with "project was moved" message' do
+            clone_get(path, {})
+            expect(response).to have_http_status(:not_found)
+            expect(response.body).to match(project_moved_message)
+          end
+        end
       end
 
       context "when the project is private" do
