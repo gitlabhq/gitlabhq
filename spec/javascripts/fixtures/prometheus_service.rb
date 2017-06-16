@@ -11,14 +11,14 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
   render_views
 
   before(:all) do
-    clean_frontend_fixtures('services/')
+    clean_frontend_fixtures('services/prometheus')
   end
 
   before(:each) do
     sign_in(admin)
   end
 
-  it 'services/prometheus_service.html.raw' do |example|
+  it 'services/prometheus/prometheus_service.html.raw' do |example|
     get :edit,
       namespace_id: namespace,
       project_id: project,

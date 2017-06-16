@@ -3,7 +3,7 @@ import PANEL_STATE from '~/prometheus_metrics/constants';
 import { metrics, missingVarMetrics } from './mock_data';
 
 describe('PrometheusMetrics', () => {
-  const FIXTURE = 'services/prometheus_service.html.raw';
+  const FIXTURE = 'services/prometheus/prometheus_service.html.raw';
   preloadFixtures(FIXTURE);
 
   beforeEach(() => {
