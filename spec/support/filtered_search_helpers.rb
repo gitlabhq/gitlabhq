@@ -14,7 +14,7 @@ module FilteredSearchHelpers
     filtered_search.set(search)
 
     if submit
-      filtered_search.send_keys(:enter)
+      keydown_enter_search_input
     end
   end
 
@@ -22,7 +22,7 @@ module FilteredSearchHelpers
   def input_filtered_search_keys(search_term)
     # Add an extra space to engage visual tokens
     filtered_search.send_keys("#{search_term} ")
-    filtered_search.send_keys(:enter)
+    keydown_enter_search_input
   end
 
   def expect_filtered_search_input(input)
@@ -35,7 +35,7 @@ module FilteredSearchHelpers
 
   def reset_filters
     clear_search_field
-    filtered_search.send_keys(:enter)
+    keydown_enter_search_input
   end
 
   def init_label_search
@@ -84,5 +84,16 @@ module FilteredSearchHelpers
     Timeout.timeout(Capybara.default_max_wait_time) do
       loop until find('.filtered-search').value.strip == text
     end
+  end
+
+  def keydown_enter_search_input
+    execute_script %{
+      (function () {
+        var keyboardEvent = document.createEvent('KeyboardEvent');
+        keyboardEvent.initKeyboardEvent('keydown', false, false, window, '', 13, null, false);
+        keyboardEvent.key = 'Enter';
+        document.querySelector('.filtered-search').dispatchEvent(keyboardEvent);
+      }).call(this);
+    }
   end
 end

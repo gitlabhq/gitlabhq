@@ -199,7 +199,7 @@ class FilteredSearchManager {
       this.filteredSearchInput.setSelectionRange(selectionStart, selectionStart);
     }
 
-    if (e.keyCode === 13) {
+    if (e.key === 'Enter') {
       const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
       const dropdownEl = dropdown.element;
       const activeElements = dropdownEl.querySelectorAll('.droplab-item-active');
