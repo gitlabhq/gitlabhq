@@ -374,16 +374,6 @@ feature 'Jobs', :feature do
         expect(page).to have_content 'Retry'
       end
     end
-
-    context "Job from other project" do
-      before do
-        job.run!
-        visit namespace_project_job_path(project.namespace, project, job)
-        page.driver.post(cancel_namespace_project_job_path(project.namespace, project, job2))
-      end
-
-      it { expect(page.status_code).to eq(404) }
-    end
   end
 
   describe "POST /:project/jobs/:id/retry" do
@@ -403,17 +393,6 @@ feature 'Jobs', :feature do
           expect(page).to have_content 'Cancel'
         end
       end
-    end
-
-    context "Job from other project" do
-      before do
-        job.run!
-        visit namespace_project_job_path(project.namespace, project, job)
-        find('.js-cancel-job').click()
-        page.driver.post(retry_namespace_project_job_path(project.namespace, project, job2))
-      end
-
-      it { expect(page).to have_http_status(404) }
     end
 
     context "Job that current user is not allowed to retry" do
