@@ -55,31 +55,39 @@
   };
 </script>
 <template>
-  <td class="pipelines-time-ago">
-    <p
-      class="duration"
-      v-if="hasDuration">
-      <span v-html="iconTimerSvg">
-      </span>
-      {{durationFormated}}
-    </p>
+  <div class="table-section section-15 pipelines-time-ago">
+    <div
+      class="table-mobile-header"
+      role="rowheader">
+      Duration
+    </div>
+    <div class="table-mobile-content">
+      <p
+        class="duration"
+        v-if="hasDuration">
+        <span
+          v-html="iconTimerSvg">
+        </span>
+        {{durationFormated}}
+      </p>
 
-    <p
-      class="finished-at"
-      v-if="hasFinishedTime">
+      <p
+        class="finished-at hidden-xs hidden-sm"
+        v-if="hasFinishedTime">
 
-      <i
-        class="fa fa-calendar"
-        aria-hidden="true">
-      </i>
+        <i
+          class="fa fa-calendar"
+          aria-hidden="true">
+        </i>
 
-      <time
-        ref="tooltip"
-        data-placement="top"
-        data-container="body"
-        :title="tooltipTitle(finishedTime)">
-        {{timeFormated(finishedTime)}}
-      </time>
-    </p>
-  </td>
+        <time
+          ref="tooltip"
+          data-placement="top"
+          data-container="body"
+          :title="tooltipTitle(finishedTime)">
+          {{timeFormated(finishedTime)}}
+        </time>
+      </p>
+    </div>
+  </div>
 </script>

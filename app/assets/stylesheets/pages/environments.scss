@@ -124,43 +124,6 @@
 }
 
 .gl-responsive-table-row {
-  .environments-actions {
-    @media (min-width: $screen-md-min) {
-      text-align: right;
-    }
-
-    @media (max-width: $screen-sm-max) {
-      background-color: $gray-normal;
-      align-self: stretch;
-      border-top: 1px solid $border-color;
-
-      .environment-action-buttons {
-        padding: 10px 5px;
-        display: flex;
-
-        .btn {
-          border-radius: 3px;
-        }
-
-        > .btn-group,
-        > .external-url,
-        > .btn {
-          flex: 1;
-          flex-basis: 28px;
-          margin: 0 5px;
-        }
-
-        .dropdown-new {
-          width: 100%;
-        }
-
-        .dropdown-menu {
-          min-width: initial;
-        }
-      }
-    }
-  }
-
   .branch-commit {
     max-width: 100%;
   }
