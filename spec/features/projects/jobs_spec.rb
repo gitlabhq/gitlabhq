@@ -118,10 +118,13 @@ feature 'Jobs', :feature do
 
       before do
         visit namespace_project_job_path(project.namespace, project, job)
+<<<<<<< HEAD
       end
 
       it 'shows status name', :js do
         expect(page).to have_css('.ci-status.ci-success', text: 'passed')
+=======
+>>>>>>> upstream/master
       end
 
       it 'shows commit`s data' do
@@ -353,12 +356,12 @@ feature 'Jobs', :feature do
       end
     end
 
-    context 'build project is over shared runners limit' do
+    context 'job project is over shared runners limit' do
       let(:group) { create(:group, :with_used_build_minutes_limit) }
       let(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
 
       it 'displays a warning message' do
-        visit namespace_project_build_path(project.namespace, project, build)
+        visit namespace_project_job_path(project.namespace, project, job)
 
         expect(page).to have_content('You have used all your shared Runners pipeline minutes.')
       end
@@ -370,7 +373,11 @@ feature 'Jobs', :feature do
       before do
         job.run!
         visit namespace_project_job_path(project.namespace, project, job)
+<<<<<<< HEAD
         find('.js-cancel-job').click()
+=======
+        click_link "Cancel"
+>>>>>>> upstream/master
       end
 
       it 'loads the page and shows all needed controls' do
@@ -378,6 +385,19 @@ feature 'Jobs', :feature do
         expect(page).to have_content 'Retry'
       end
     end
+<<<<<<< HEAD
+=======
+
+    context "Job from other project" do
+      before do
+        job.run!
+        visit namespace_project_job_path(project.namespace, project, job)
+        page.driver.post(cancel_namespace_project_job_path(project.namespace, project, job2))
+      end
+
+      it { expect(page.status_code).to eq(404) }
+    end
+>>>>>>> upstream/master
   end
 
   describe "POST /:project/jobs/:id/retry" do
@@ -385,8 +405,15 @@ feature 'Jobs', :feature do
       before do
         job.run!
         visit namespace_project_job_path(project.namespace, project, job)
+<<<<<<< HEAD
         find('.js-cancel-job').click()
         find('.js-retry-button').trigger('click')
+=======
+        click_link 'Cancel'
+        page.within('.build-header') do
+          click_link 'Retry job'
+        end
+>>>>>>> upstream/master
       end
 
       it 'shows the right status and buttons', :js do
@@ -397,6 +424,20 @@ feature 'Jobs', :feature do
       end
     end
 
+<<<<<<< HEAD
+=======
+    context "Job from other project" do
+      before do
+        job.run!
+        visit namespace_project_job_path(project.namespace, project, job)
+        click_link 'Cancel'
+        page.driver.post(retry_namespace_project_job_path(project.namespace, project, job2))
+      end
+
+      it { expect(page).to have_http_status(404) }
+    end
+
+>>>>>>> upstream/master
     context "Job that current user is not allowed to retry" do
       before do
         job.run!
@@ -470,9 +511,24 @@ feature 'Jobs', :feature do
         Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
 
         job.run!
+<<<<<<< HEAD
       end
 
       context 'when job has trace in file', :js do
+=======
+
+        allow_any_instance_of(Gitlab::Ci::Trace).to receive(:paths)
+          .and_return(paths)
+
+        visit namespace_project_job_path(project.namespace, project, job)
+      end
+
+      context 'when job has trace in file', :js do
+        let(:paths) do
+          [existing_file]
+        end
+
+>>>>>>> upstream/master
         before do
           allow_any_instance_of(Gitlab::Ci::Trace)
             .to receive(:paths)

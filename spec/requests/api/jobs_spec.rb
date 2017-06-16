@@ -11,7 +11,11 @@ describe API::Jobs, :api do
                                ref: project.default_branch)
   end
 
+<<<<<<< HEAD
   let!(:job) { create(:ci_build, pipeline: pipeline) }
+=======
+  let(:job) { create(:ci_build, pipeline: pipeline) }
+>>>>>>> upstream/master
 
   let(:user) { create(:user) }
   let(:api_user) { user }
@@ -26,6 +30,10 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
+<<<<<<< HEAD
+=======
+      job
+>>>>>>> upstream/master
       get api("/projects/#{project.id}/jobs", api_user), query
     end
 
@@ -89,6 +97,10 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
+<<<<<<< HEAD
+=======
+      job
+>>>>>>> upstream/master
       get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
     end
 
