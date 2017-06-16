@@ -84,7 +84,7 @@ module Gitlab
           name: 'gitlab-deploy',
           cluster: {
             server: url
-          },
+          }
         ],
         contexts: [
           name: 'gitlab-deploy',
@@ -92,14 +92,14 @@ module Gitlab
             cluster: 'gitlab-deploy',
             namespace: namespace,
             user: 'gitlab-deploy'
-          },
+          }
         ],
-        :'current-context' => 'gitlab-deploy',
+        'current-context': 'gitlab-deploy',
         kind: 'Config',
         users: [
           {
             name: 'gitlab-deploy',
-            user: {token: token}
+            user: { token: token }
           }
         ]
       }
