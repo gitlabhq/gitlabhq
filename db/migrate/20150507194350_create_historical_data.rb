@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Timestamps
 class CreateHistoricalData < ActiveRecord::Migration
   DOWNTIME = false
 

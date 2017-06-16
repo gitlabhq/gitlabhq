@@ -1,5 +1,6 @@
 # Migration type: online without errors (works on previous version and new one)
 # rubocop:disable Migration/AddColumnWithDefaultToLargeTable
+# rubocop:disable Migration/Datetime
 class AddLdapSyncStateToGroups < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
