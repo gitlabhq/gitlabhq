@@ -27,7 +27,7 @@ module Gitlab
       end
 
       def load_yaml_file
-        YAML.load_file(Rails.root.join('config/additional_metrics.yml'))
+        YAML.load_file(Rails.root.join('config/prometheus/additional_metrics.yml'))
       end
     end
   end

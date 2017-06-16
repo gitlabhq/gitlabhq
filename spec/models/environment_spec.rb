@@ -475,7 +475,7 @@ describe Environment, models: true do
       end
 
       it 'returns the additional metrics from the deployment service' do
-        expect(environment.prometheus_service).to receive(:additional_environment_metrics)
+        expect(project.prometheus_service).to receive(:additional_environment_metrics)
                                                 .with(environment)
                                                 .and_return(:fake_metrics)
 
