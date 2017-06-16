@@ -511,7 +511,7 @@ module API
         not_found!('Email') unless email
 
         email.destroy
-        ::Users::UpdateService.new(current_user, user).execute  do |user|
+        ::Users::UpdateService.new(current_user, current_user).execute  do |user|
           user.update_secondary_emails!
         end
       end

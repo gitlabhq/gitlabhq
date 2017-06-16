@@ -12,12 +12,14 @@ describe Emails::DestroyService, services: true do
     end
 
     it 'does not remove an email if the user has no permissions' do
-      expect { described_class.new(create(:user), user, opts).execute }.not_to change { Email.count }
+      expect do
+        described_class.new(create(:user), user, email: email.email).execute
+      end.to raise_error(Gitlab::Access::AccessDeniedError)
     end
 
     it 'removes an email if we skip authorization' do
       expect do
-        described_class.new(create(:user), user, opts).execute(skip_authorization: true)
+        described_class.new(create(:user), user, email: email.email).execute(skip_authorization: true)
       end.to change { Email.count }.by(-1)
     end
   end
