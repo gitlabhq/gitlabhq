@@ -73,7 +73,6 @@ controller-specific endpoints. GraphQL has a number of benefits:
 
 It will co-exist with the current v4 REST API. If we have a v5 API, this should
 be a compatibility layer on top of GraphQL.
-<<<<<<< HEAD
 
 ## Authentication
 
@@ -83,17 +82,6 @@ for each individual endpoint. For example, the [`/projects/:id` endpoint](projec
 
 There are three types of access tokens available:
 
-=======
-
-## Authentication
-
-Most API requests require authentication via a session cookie or token. For
-those cases where it is not required, this will be mentioned in the documentation
-for each individual endpoint. For example, the [`/projects/:id` endpoint](projects.md).
-
-There are three types of access tokens available:
-
->>>>>>> ce/master
 1. [OAuth2 tokens](#oauth2-tokens)
 1. [Private tokens](#private-tokens)
 1. [Personal access tokens](#personal-access-tokens)

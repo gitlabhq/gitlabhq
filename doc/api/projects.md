@@ -348,12 +348,9 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
-<<<<<<< HEAD
+| `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `avatar`    | mixed   | no      | Image file for avatar of the project                |
->>>>>>> ce/master
 
 ### Create project for user
 
@@ -387,12 +384,9 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
-<<<<<<< HEAD
+| `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `avatar`    | mixed   | no      | Image file for avatar of the project                |
->>>>>>> ce/master
 
 ### Edit project
 
@@ -426,12 +420,9 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
-<<<<<<< HEAD
+| `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `avatar`    | mixed   | no      | Image file for avatar of the project                |
->>>>>>> ce/master
 
 ### Fork project
 
