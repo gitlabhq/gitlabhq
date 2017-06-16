@@ -1,0 +1,4 @@
+---
+title: 'Geo: prevent Gitlab::Git::Repository::NoRepository from stucking replication'
+merge_request: 2115
+author:
