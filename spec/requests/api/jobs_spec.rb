@@ -237,7 +237,6 @@ describe API::Jobs, :api do
     end
   end
 
-
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
     let(:api_user) { reporter }
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
