@@ -338,11 +338,13 @@ describe Projects::EnvironmentsController do
 
     context 'when environment has some metrics' do
       before do
-        expect(environment).to receive(:additional_metrics).and_return({
-                                                              success: true,
-                                                              data: {},
-                                                              last_update: 42
-                                                            })
+        expect(environment)
+          .to receive(:additional_metrics)
+                .and_return({
+                              success: true,
+                              data: {},
+                              last_update: 42
+                            })
       end
 
       it 'returns a metrics JSON document' do

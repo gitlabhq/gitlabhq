@@ -42,6 +42,7 @@ describe Projects::DeploymentsController do
     before do
       allow(controller).to receive(:deployment).and_return(deployment)
     end
+
     context 'when metrics are disabled' do
       before do
         allow(deployment).to receive(:has_metrics?).and_return false
@@ -114,6 +115,7 @@ describe Projects::DeploymentsController do
     before do
       allow(controller).to receive(:deployment).and_return(deployment)
     end
+
     context 'when metrics are disabled' do
       before do
         allow(deployment).to receive(:has_metrics?).and_return false
