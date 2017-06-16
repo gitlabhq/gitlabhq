@@ -28,7 +28,7 @@ class BuildDetailsEntity < BuildEntity
   end
 
   expose :raw_path do |build|
-    raw_namespace_project_build_path(project.namespace, project, build)
+    raw_namespace_project_job_path(project.namespace, project, build)
   end
 
   private
