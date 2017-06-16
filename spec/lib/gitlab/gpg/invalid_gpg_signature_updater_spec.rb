@@ -4,13 +4,18 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
   describe '#run' do
     let!(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
     let!(:project) { create :project, :repository, path: 'sample-project' }
-    let!(:commit) do
+    let!(:raw_commit) do
       raw_commit = double(:raw_commit, signature: [
         GpgHelpers::User1.signed_commit_signature,
         GpgHelpers::User1.signed_commit_base_data
       ], sha: commit_sha)
+
       allow(raw_commit).to receive :save!
 
+      raw_commit
+    end
+
+    let!(:commit) do
       create :commit, git_commit: raw_commit, project: project
     end
 
@@ -24,7 +29,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
     end
 
     before do
-      allow(Gitlab::Git::Commit).to receive(:find).with(kind_of(Repository), commit_sha).and_return(commit)
+      allow(Gitlab::Git::Commit).to receive(:find).with(kind_of(Repository), commit_sha).and_return(raw_commit)
     end
 
     context 'gpg signature did not have an associated gpg key' do
