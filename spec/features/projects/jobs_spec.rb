@@ -381,9 +381,9 @@ feature 'Jobs', :feature do
       before do
         job.run!
         visit namespace_project_job_path(project.namespace, project, job)
-        click_link 'Cancel'
+        find('.js-cancel-job').click()
         page.within('.build-header') do
-          click_link 'Retry'
+          find('.js-retry-button').click()
         end
       end
 
