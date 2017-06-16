@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'Issue Boards', feature: true, js: true do
   include DragTo
+  include FilteredSearchHelpers
 
   let(:project) { create(:empty_project, :public) }
   let(:board)   { create(:board, project: project) }
@@ -110,7 +111,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     it 'search closed list' do
       find('.filtered-search').set(issue8.title)
-      find('.filtered-search').native.send_keys(:enter)
+      keydown_enter_search_input
 
       wait_for_requests
 
@@ -121,7 +122,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     it 'search list' do
       find('.filtered-search').set(issue5.title)
-      find('.filtered-search').native.send_keys(:enter)
+      keydown_enter_search_input
 
       wait_for_requests
 
@@ -580,7 +581,7 @@ describe 'Issue Boards', feature: true, js: true do
   end
 
   def submit_filter
-    find('.filtered-search').native.send_keys(:enter)
+    keydown_enter_search_input
   end
 
   def click_filter_link(link_text)
