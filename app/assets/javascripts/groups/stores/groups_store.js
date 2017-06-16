@@ -122,6 +122,7 @@ export default class GroupsStore {
       canEdit: rawGroup.can_edit,
       description: rawGroup.description,
       webUrl: rawGroup.web_url,
+      groupPath: rawGroup.group_path,
       parentId: rawGroup.parent_id,
       visibility: rawGroup.visibility,
       leavePath: rawGroup.leave_path,
