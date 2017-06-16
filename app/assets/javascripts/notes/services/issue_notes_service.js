@@ -8,6 +8,6 @@ export default {
     return Vue.http.get(endpoint);
   },
   deleteNote(endpoint) {
-    return Vue.http.get(endpoint);
+    return Vue.http.delete(endpoint);
   },
 };

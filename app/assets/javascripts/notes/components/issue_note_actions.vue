@@ -97,6 +97,7 @@ export default {
         </li>
         <li>
           <a
+            v-if="canEdit"
             @click.prevent="deleteHandler"
             class="js-note-delete"
             href="#">

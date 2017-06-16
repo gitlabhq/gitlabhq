@@ -39,15 +39,20 @@ export default {
       this.isEditing = true;
     },
     deleteHandler() {
-      this.isDeleting = true;
-      this.$store
-        .dispatch('deleteNote', this.note)
-        .then(() => {
-          this.isDeleting = false;
-        })
-        .catch(() => {
-          this.isDeleting = false;
-        });
+      const msg = 'Are you sure you want to delete this list?';
+      const isConfirmed = confirm(msg); // eslint-disable-line
+
+      if (isConfirmed) {
+        this.isDeleting = true;
+        this.$store
+          .dispatch('deleteNote', this.note)
+          .then(() => {
+            this.isDeleting = false;
+          })
+          .catch(() => {
+            this.isDeleting = false;
+          });
+      }
     },
     formUpdateHandler() {
       // console.log('update requested', data);
@@ -66,10 +71,10 @@ export default {
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
-          :link-href="author.path"
-          :img-src="author.avatar_url"
-          :img-alt="author.name"
-          :img-size="40" />
+          :linkHref="author.path"
+          :imgSrc="author.avatar_url"
+          :imgAlt="author.name"
+          :imgSize="40" />
       </div>
       <div class="timeline-content">
         <div class="note-header">

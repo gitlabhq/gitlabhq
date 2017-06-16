@@ -58,10 +58,10 @@ export default {
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
-          :link-href="author.path"
-          :img-src="author.avatar_url"
-          :img-alt="author.name"
-          :img-size="40" />
+          :linkHref="author.path"
+          :imgSrc="author.avatar_url"
+          :imgAlt="author.name"
+          :imgSize="40" />
       </div>
       <div class="timeline-content">
         <div class="discussion">

@@ -53,10 +53,8 @@ const actions = {
       });
   },
   deleteNote(context, note) {
-    // FIXME: Implement request, remove fake delete timer...
     return service
-      .deleteNote(`${document.location.href}.json`)
-      .then(res => res.json)
+      .deleteNote(note.path)
       .then(() => {
         context.commit('deleteNote', note);
       })
