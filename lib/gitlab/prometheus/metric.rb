@@ -1,14 +1,15 @@
 module Gitlab
   module Prometheus
     class Metric
-      attr_reader :group, :title, :required_metrics, :weight, :y_label, :queries
+      include ActiveModel::Model
 
-      def initialize(title, required_metrics, weight, y_label, queries = [])
-        @title = title
-        @required_metrics = required_metrics
-        @weight = weight
-        @y_label = y_label || 'Values'
-        @queries = queries
+      attr_accessor :title, :required_metrics, :weight, :y_label, :queries
+
+      validates :title, :required_metrics, :weight, :y_label, :queries, presence: true
+
+      def initialize(params = {})
+        super(params)
+        @y_label ||= 'Values'
       end
     end
   end

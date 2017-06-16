@@ -26,7 +26,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
             priority: 1
             metrics: 
               - title: title
-                required_metrics: []
+                required_metrics: ['metric_a']
                 weight: 1
                 queries: [{query_range: query_range_a}]
         EOF
@@ -54,7 +54,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
         expect(metrics.count).to eq(3)
         expect(metrics[0]).to have_attributes(title: 'title', required_metrics: %w(metric_a metric_b), weight: 1)
         expect(metrics[1]).to have_attributes(title: 'title', required_metrics: %w(metric_a), weight: 1)
-        expect(metrics[2]).to have_attributes(title: 'title', required_metrics: [], weight: 1)
+        expect(metrics[2]).to have_attributes(title: 'title', required_metrics: %w{metric_a}, weight: 1)
       end
 
       it 'provides query data' do
@@ -78,7 +78,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
         end
 
         it 'throws parsing error' do
-          expect { subject }.to raise_error(parser_error_class, /missing.*#{field_name}/)
+          expect { subject }.to raise_error(parser_error_class, /#{field_name} can't be blank/i)
         end
       end
 
@@ -88,13 +88,13 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
         end
 
         it 'throws parsing error' do
-          expect { subject }.to raise_error(parser_error_class, /missing.*#{field_name}/)
+          expect { subject }.to raise_error(parser_error_class, /#{field_name} can't be blank/i)
         end
       end
     end
 
     describe 'group required fields' do
-      it_behaves_like 'required field', :metrics do
+      it_behaves_like 'required field', 'metrics' do
         let(:field_nil) do
           <<-EOF.strip_heredoc
             - group: group_a
@@ -111,10 +111,11 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
         end
       end
 
-      it_behaves_like 'required field', :group do
+      it_behaves_like 'required field', 'name' do
         let(:field_nil) do
           <<-EOF.strip_heredoc
-            - priority: 1
+            - group:
+              priority: 1
               metrics: []
           EOF
         end
@@ -127,7 +128,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
         end
       end
 
-      it_behaves_like 'required field', :priority do
+      it_behaves_like 'required field', 'priority' do
         let(:field_nil) do
           <<-EOF.strip_heredoc
             - group: group_a
@@ -146,7 +147,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
     end
 
     describe 'metrics fields parsing' do
-      it_behaves_like 'required field', :title do
+      it_behaves_like 'required field', 'title' do
         let(:field_nil) do
           <<-EOF.strip_heredoc
             - group: group_a
@@ -171,7 +172,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
         end
       end
 
-      it_behaves_like 'required field', :required_metrics do
+      it_behaves_like 'required field', 'required metrics' do
         let(:field_nil) do
           <<-EOF.strip_heredoc
             - group: group_a
@@ -196,7 +197,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
         end
       end
 
-      it_behaves_like 'required field', :weight do
+      it_behaves_like 'required field', 'weight' do
         let(:field_nil) do
           <<-EOF.strip_heredoc
             - group: group_a

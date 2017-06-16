@@ -9,26 +9,17 @@ module Gitlab
 
       private
 
-      def metrics_from_list(list)
-        list.map { |entry| metric_from_entry(entry) }
-      end
-
-      def metric_from_entry(entry)
-        required_fields = [:title, :required_metrics, :weight, :queries]
-        missing_fields = required_fields.select { |key| entry[key].nil? }
-        raise ParsingError.new("entry missing required fields #{missing_fields}") unless missing_fields.empty?
-
-        Metric.new(entry[:title], entry[:required_metrics], entry[:weight], entry[:y_label], entry[:queries])
+      def validate!(obj)
+        raise ParsingError.new(obj.errors.full_messages.join('\n')) unless obj.valid?
       end
 
       def group_from_entry(entry)
-        required_fields = [:group, :priority, :metrics]
-        missing_fields = required_fields.select { |key| entry[key].nil? }
+        entry[:name] = entry.delete(:group)
+        entry[:metrics]&.map! do |entry|
+          Metric.new(entry).tap(&method(:validate!))
+        end
 
-        raise ParsingError.new("entry missing required fields #{missing_fields.map(&:to_s)}") unless missing_fields.empty?
-
-        group = MetricGroup.new(entry[:group], entry[:priority])
-        group.tap { |g| g.metrics = metrics_from_list(entry[:metrics]) }
+        MetricGroup.new(entry).tap(&method(:validate!))
       end
 
       def additional_metrics_raw
