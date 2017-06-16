@@ -141,7 +141,7 @@ header.navbar-gitlab-new {
 
   .location-badge {
     color: $gray-normal;
-    background-color: #2d2d2d;
+    background-color: $new-navbar-bg;
   }
 
   &.search-active {
