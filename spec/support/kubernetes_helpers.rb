@@ -9,7 +9,6 @@ module KubernetesHelpers
     kube_response(kube_pods_body)
   end
 
-<<<<<<< HEAD
   def kube_deployments_response
     kube_response(kube_deployments_body)
   end
@@ -17,10 +16,6 @@ module KubernetesHelpers
   def stub_kubeclient_discover
     WebMock.stub_request(:get, service.api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
     WebMock.stub_request(:get, service.api_url + '/apis/extensions/v1beta1').to_return(kube_response(kube_v1beta1_discovery_body))
-=======
-  def stub_kubeclient_discover
-    WebMock.stub_request(:get, service.api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
->>>>>>> ce/master
   end
 
   def stub_kubeclient_pods(response = nil)
@@ -30,7 +25,6 @@ module KubernetesHelpers
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
   end
 
-<<<<<<< HEAD
   def stub_kubeclient_deployments(response = nil)
     stub_kubeclient_discover
     deployments_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{service.actual_namespace}/deployments"
@@ -49,9 +43,6 @@ module KubernetesHelpers
   end
 
   def kube_v1beta1_discovery_body
-=======
-  def kube_v1_discovery_body
->>>>>>> ce/master
     {
       "kind" => "APIResourceList",
       "resources" => [
@@ -66,7 +57,6 @@ module KubernetesHelpers
       "kind" => "PodList",
       "items" => [kube_pod]
     }
-<<<<<<< HEAD
   end
 
   def kube_deployments_body
@@ -74,8 +64,6 @@ module KubernetesHelpers
       "kind" => "DeploymentList",
       "items" => [kube_deployment]
     }
-=======
->>>>>>> ce/master
   end
 
   # This is a partial response, it will have many more elements in reality but
