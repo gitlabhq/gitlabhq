@@ -3,11 +3,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-12 19:29-0500\n"
+"POT-Creation-Date: 2017-06-15 14:57+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-15 06:23-0400\n"
+"PO-Revision-Date: 2017-06-15 10:34-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
 "Language-Team: Chinese (Hong Kong) (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: zh-HK\n"
@@ -86,11 +86,8 @@ msgstr "還原分支"
 msgid "ChangeTypeAction|Cherry-pick"
 msgstr "優選"
 
-msgid "ChangeType|commit"
-msgstr "提交"
-
-msgid "ChangeType|merge request"
-msgstr "合併請求"
+msgid "ChangeTypeAction|Revert"
+msgstr "還原"
 
 msgid "Changelog"
 msgstr "更新日誌"
@@ -101,7 +98,7 @@ msgstr "統計圖"
 msgid "Cherry-pick this commit"
 msgstr "優選此提交"
 
-msgid "Cherry-pick this merge-request"
+msgid "Cherry-pick this merge request"
 msgstr "優選此合併請求"
 
 msgid "CiStatusLabel|canceled"
@@ -165,6 +162,9 @@ msgstr[0] "提交"
 msgid "Commit message"
 msgstr "提交信息"
 
+msgid "CommitBoxTitle|Commit"
+msgstr "提交"
+
 msgid "CommitMessage|Add %{file_name}"
 msgstr "添加 %{file_name}"
 
@@ -218,9 +218,6 @@ msgstr "Cron 時區"
 
 msgid "Cron syntax"
 msgstr "Cron 語法"
-
-msgid "Custom"
-msgstr "自定義"
 
 msgid "Custom notification events"
 msgstr "自定義通知事件"
@@ -399,6 +396,9 @@ msgstr "最後提交"
 msgid "Learn more in the"
 msgstr "了解更多"
 
+msgid "Learn more in the|pipeline schedules documentation"
+msgstr "流水線計劃文檔"
+
 msgid "Leave group"
 msgstr "退出群組"
 
@@ -563,6 +563,15 @@ msgstr "取得所有者"
 msgid "PipelineSchedules|Target"
 msgstr "目標"
 
+msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr "自定義"
+
+msgid "Pipeline|with stage"
+msgstr "於階段"
+
+msgid "Pipeline|with stages"
+msgstr "於階段"
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "項目 '%{project_name}' 已進入刪除隊列。"
 
@@ -658,7 +667,7 @@ msgstr "申請訪問"
 msgid "Revert this commit"
 msgstr "還原此提交"
 
-msgid "Revert this merge-request"
+msgid "Revert this merge request"
 msgstr "還原此合併請求"
 
 msgid "Save pipeline schedule"
@@ -706,6 +715,9 @@ msgstr "源代碼"
 
 msgid "StarProject|Star"
 msgstr "星標"
+
+msgid "Start a  %{new_merge_request} with these changes"
+msgstr "由此更改 %{new_merge_request}"
 
 msgid "Start a <strong>new merge request</strong> with these changes"
 msgstr "由此更改創建<strong>新合併請求</strong>"
@@ -1047,17 +1059,13 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "天"
 
+msgid "new merge request"
+msgstr "新建合併請求"
+
 msgid "notification emails"
 msgstr "通知郵件"
 
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] "父級"
-
-msgid "pipeline schedules documentation"
-msgstr "流水線計劃文檔"
-
-msgid "with stage"
-msgid_plural "with stages"
-msgstr[0] "於階段"
 
