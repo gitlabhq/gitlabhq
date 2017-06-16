@@ -92,10 +92,12 @@ module SlashCommands
 
     desc 'Assign'
     explanation do |users|
+      ## EE-specific
       users = issuable.is_a?(Issue) ? users : users.take(1)
       "Assigns #{users.map(&:to_reference).to_sentence}."
     end
     params do
+      ## EE-specific
       issuable.is_a?(Issue) ? '@user1 @user2' : '@user'
     end
     condition do

@@ -26,7 +26,7 @@ describe 'Board with milestone', :feature, :js do
 
       find('.card', match: :first)
 
-      expect(all('.board')[1]).to have_selector('.card', count: 1)
+      expect(all('.board').last).to have_selector('.card', count: 1)
     end
   end
 
@@ -51,7 +51,7 @@ describe 'Board with milestone', :feature, :js do
 
       find('.card', match: :first)
 
-      expect(all('.board')[1]).to have_selector('.card', count: 1)
+      expect(all('.board').last).to have_selector('.card', count: 1)
     end
 
     it 'sets board to any milestone' do
@@ -62,8 +62,8 @@ describe 'Board with milestone', :feature, :js do
 
       find('.card', match: :first)
 
-      expect(page).to have_selector('.board', count: 2)
-      expect(all('.board')[1]).to have_selector('.card', count: 2)
+      expect(page).to have_selector('.board', count: 3)
+      expect(all('.board').last).to have_selector('.card', count: 2)
     end
 
     it 'sets board to upcoming milestone' do

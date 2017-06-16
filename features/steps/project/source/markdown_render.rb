@@ -90,6 +90,8 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
       click_link "api"
     end
 
+    wait_for_requests
+
     page.within '.tree-table' do
       click_link "README.md"
     end

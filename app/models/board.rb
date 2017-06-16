@@ -6,6 +6,10 @@ class Board < ActiveRecord::Base
 
   validates :name, :project, presence: true
 
+  def backlog_list
+    lists.merge(List.backlog).take
+  end
+
   def closed_list
     lists.merge(List.closed).take
   end

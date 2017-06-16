@@ -8,7 +8,7 @@ module GroupsHelper
       group = Group.find_by_full_path(group)
     end
 
-    group.try(:avatar_url) || image_path('no_group_avatar.png')
+    group.try(:avatar_url) || ActionController::Base.helpers.image_path('no_group_avatar.png')
   end
 
   def group_title(group, name = nil, url = nil)

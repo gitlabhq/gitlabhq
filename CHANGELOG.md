@@ -2,19 +2,31 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.2.6 (2017-06-16)
+
+- Fix the last coverage in trace log should be extracted. !11128 (dosuken123)
+- Respect merge, instead of push, permissions for protected actions. !11648
+- Fix pipeline_schedules pages throwing error 500. !11706 (dosuken123)
+- Make backup task to continue on corrupt repositories. !11962
+- Fix incorrect ETag cache key when relative instance URL is used. !11964
+- Fix math rendering on blob pages.
+- Invalidate cache for issue and MR counters more granularly.
+- Fix terminals support for Kubernetes Service.
+- Fix LFS timeouts when trying to save large files.
+- Strip trailing whitespaces in submodule URLs.
+- Make sure reCAPTCHA configuration is loaded when spam checks are initiated.
+- Remove foreigh key on ci_trigger_schedules only if it exists.
+
 ## 9.2.5 (2017-06-07)
 
 - No changes.
 
 ## 9.2.4 (2017-06-02)
 
-- No changes.
 - Fix visibility when referencing snippets.
 
 ## 9.2.3 (2017-05-31)
 
-- No changes.
-- No changes.
 - Move uploads from 'public/uploads' to 'public/uploads/system'.
 - Escapes html content before appending it to the DOM.
 - Restrict API X-Frame-Options to same origin.

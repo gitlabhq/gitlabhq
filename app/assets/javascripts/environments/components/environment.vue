@@ -252,7 +252,7 @@ export default {
       </div>
     </div>
 
-    <div class="content-list environments-container">
+    <div class="environments-container">
       <loading-icon
         label="Loading environments"
         size="3"

@@ -47,7 +47,7 @@ class Event < ActiveRecord::Base
 
   belongs_to :author, class_name: "User"
   belongs_to :project
-  belongs_to :target, polymorphic: true
+  belongs_to :target, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   # For Hash only
   serialize :data # rubocop:disable Cop/ActiverecordSerialize

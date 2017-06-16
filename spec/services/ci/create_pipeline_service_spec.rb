@@ -38,6 +38,14 @@ describe Ci::CreatePipelineService, :services do
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
       end
 
+      it 'increments the prometheus counter' do
+        expect(Gitlab::Metrics).to receive(:counter)
+          .with(:pipelines_created_count, "Pipelines created count")
+          .and_call_original
+
+        pipeline
+      end
+
       context 'when merge requests already exist for this source branch' do
         it 'updates head pipeline of each merge request' do
           merge_request_1 = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)

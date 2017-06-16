@@ -67,8 +67,8 @@ describe 'Unicorn' do
   end
 
   def wait_unicorn_boot!(master_pid, ready_file)
-    # Unicorn should boot in under 60 seconds so 120 seconds seems like a good timeout.
-    timeout = 120
+    # We have seen the boot timeout after 2 minutes in CI so let's set it to 5 minutes.
+    timeout = 5 * 60
     timeout.times do
       return if File.exist?(ready_file)
       pid = Process.waitpid(master_pid, Process::WNOHANG)

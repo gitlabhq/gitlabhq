@@ -128,6 +128,7 @@
       a {
         width: 100%;
         font-size: 18px;
+        margin-right: 0;
 
         &:hover {
           border: 1px solid transparent;
@@ -140,6 +141,7 @@
         a {
           border: none;
           border-bottom: 2px solid $link-underline-blue;
+          margin-right: 0;
           color: $black;
 
           &:hover {

@@ -4,6 +4,5 @@ module BlobViewer
     include ServerSide
 
     self.partial_name = 'empty'
-    self.binary = true
   end
 end

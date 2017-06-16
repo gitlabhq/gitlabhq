@@ -23,9 +23,10 @@ You can use the 'New project' button to add a project to the new group.
 
 ## Transferring an existing project into a group
 
-You can transfer an existing project into a group you own from the project settings page. The option to transfer a project is only available if you are the Owner of the project.
+You can transfer an existing project into a group you have at least Master access in from the project settings page. 
+The option to transfer a project is only available if you are the Owner of the project.
 First scroll down to the 'Dangerous settings' and click 'Show them to me'.
-Now you can pick any of the groups you manage as the new namespace for the group.
+Now you can pick any of the groups you have at least Master access in as the new namespace for the group.
 
 ![Transfer a project to a new namespace](groups/transfer_project.png)
 

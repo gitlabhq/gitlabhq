@@ -123,6 +123,7 @@ module Gitlab
         @loaded_all_data = true
         @data = repository.lookup(id).content
         @loaded_size = @data.bytesize
+        @binary = nil
       end
 
       def name

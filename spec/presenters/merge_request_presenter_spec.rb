@@ -132,6 +132,11 @@ describe MergeRequestPresenter do
       it 'does not present related issues links' do
         is_expected.not_to match("#{project.full_path}/issues/#{issue_b.iid}")
       end
+
+      it 'appends status when closing issue is already closed' do
+        issue_a.close
+        is_expected.to match('(closed)')
+      end
     end
 
     describe '#mentioned_issues_links' do
@@ -146,6 +151,11 @@ describe MergeRequestPresenter do
 
       it 'does not present closing issues links' do
         is_expected.not_to match("#{project.full_path}/issues/#{issue_a.iid}")
+      end
+
+      it 'appends status when mentioned issue is already closed' do
+        issue_b.close
+        is_expected.to match('(closed)')
       end
     end
 

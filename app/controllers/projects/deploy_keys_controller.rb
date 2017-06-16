@@ -4,6 +4,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   # Authorize
   before_action :authorize_admin_project!
+  before_action :authorize_update_deploy_key!, only: [:edit, :update]
 
   layout "project_settings"
 
@@ -21,7 +22,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def create
-    @key = DeployKey.new(deploy_key_params.merge(user: current_user))
+    @key = DeployKey.new(create_params.merge(user: current_user))
 
     unless @key.valid? && @project.deploy_keys << @key
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
@@ -30,6 +31,18 @@ class Projects::DeployKeysController < Projects::ApplicationController
     end
 
     redirect_to_repository_settings(@project)
+  end
+
+  def edit
+  end
+
+  def update
+    if deploy_key.update_attributes(update_params)
+      flash[:notice] = 'Deploy key was successfully updated.'
+      redirect_to_repository_settings(@project)
+    else
+      render 'edit'
+    end
   end
 
   def enable
@@ -59,8 +72,20 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   protected
 
-  def deploy_key_params
+  def deploy_key
+    @deploy_key ||= @project.deploy_keys.find(params[:id])
+  end
+
+  def create_params
     params.require(:deploy_key).permit(:key, :title, :can_push)
+  end
+
+  def update_params
+    params.require(:deploy_key).permit(:title, :can_push)
+  end
+
+  def authorize_update_deploy_key!
+    access_denied! unless can?(current_user, :update_deploy_key, deploy_key)
   end
 
   def log_audit_event(key_title, options = {})

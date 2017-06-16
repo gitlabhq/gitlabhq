@@ -167,9 +167,6 @@ import AuditLogs from './audit_logs';
         case 'admin:projects:index':
           new ProjectsList();
           break;
-        case 'dashboard:groups:index':
-          new GroupsList();
-          break;
         case 'explore:groups:index':
           new GroupsList();
 
@@ -343,24 +340,13 @@ import AuditLogs from './audit_logs';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
           break;
-        case 'projects:blob:new':
-          gl.TargetBranchDropDown.bootstrap();
-          break;
-        case 'projects:blob:create':
-          gl.TargetBranchDropDown.bootstrap();
-          break;
         case 'projects:blob:show':
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
           initBlob();
-          break;
-        case 'projects:blob:edit':
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blame:show':
           initBlob();
@@ -385,9 +371,11 @@ import AuditLogs from './audit_logs';
           new ProjectFork();
           break;
         case 'projects:artifacts:browse':
+          new ShortcutsNavigation();
           new BuildArtifacts();
           break;
         case 'projects:artifacts:file':
+          new ShortcutsNavigation();
           new BlobViewer();
           break;
         case 'help:index':
