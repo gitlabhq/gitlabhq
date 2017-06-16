@@ -107,6 +107,14 @@ module Routable
     RequestStore[key] ||= uncached_full_path
   end
 
+  def build_full_path
+    if parent && path
+      parent.full_path + '/' + path
+    else
+      path
+    end
+  end
+
   private
 
   def uncached_full_path
@@ -132,14 +140,6 @@ module Routable
       parent.human_name + ' / ' + name
     else
       name
-    end
-  end
-
-  def build_full_path
-    if parent && path
-      parent.full_path + '/' + path
-    else
-      path
     end
   end
 
