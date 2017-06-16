@@ -505,6 +505,33 @@ describe 'Git HTTP requests', lib: true do
                   Rack::Attack::Allow2Ban.reset(ip, options)
                 end
               end
+
+              context 'and the user requests a redirected path' do
+                let!(:redirect) { project.route.create_redirect('foo/bar') }
+                let(:path) { "#{redirect.path}.git" }
+                let(:project_moved_message) do
+                  <<-MSG.strip_heredoc
+                    Project '#{redirect.path}' was moved to '#{project.full_path}'.
+
+                    Please update your Git remote and try again:
+
+                      git remote set-url origin #{project.http_url_to_repo}
+                  MSG
+                end
+
+                it 'downloads get status 404 with "project was moved" message' do
+                  clone_get(path, env)
+                  expect(response).to have_http_status(:not_found)
+                  expect(response.body).to match(project_moved_message)
+                end
+
+                it 'uploads get status 404 with "project was moved" message' do
+                  upload(path, env) do |response|
+                    expect(response).to have_http_status(:not_found)
+                    expect(response.body).to match(project_moved_message)
+                  end
+                end
+              end
             end
 
             context "when the user doesn't have access to the project" do
@@ -680,7 +707,7 @@ describe 'Git HTTP requests', lib: true do
         end
 
         context "POST git-receive-pack" do
-          it "failes to find a route" do
+          it "fails to find a route" do
             expect { push_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
           end
         end
