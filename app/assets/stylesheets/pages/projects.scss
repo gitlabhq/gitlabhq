@@ -642,6 +642,31 @@ pre.light-well {
   margin: 0;
 }
 
+.projects-table {
+  width: 100%;
+
+  .avatar-container .project {
+    width: 100%;
+  }
+
+  h3 {
+    font-size: $gl-font-size;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+
+  .project-row {
+    padding: 10px 0;
+    border-bottom: 1px solid $list-border-light;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+  }
+}
+
 .commits-search-form {
   .input-short {
     min-width: 200px;

@@ -11,7 +11,7 @@
 
 .js-projects-list-holder
   - if projects.any?
-    %ul.projects-list
+    %table.projects-table
       - projects.each_with_index do |project, i|
         - css_class = (i >= projects_limit) ? 'hide' : nil
         = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
@@ -19,7 +19,7 @@
           forks: forks, show_last_commit_as_description: show_last_commit_as_description
 
       - if @private_forks_count && @private_forks_count > 0
-        %li.project-row.private-forks-notice
+        %tr.project-row.private-forks-notice
           = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
           %strong= pluralize(@private_forks_count, 'private fork')
           %span you have no access to.
