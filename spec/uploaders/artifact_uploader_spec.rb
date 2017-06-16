@@ -18,20 +18,14 @@ describe ArtifactUploader do
 
   describe '.artifacts_upload_path' do
     subject { described_class.artifacts_upload_path }
-<<<<<<< HEAD
     
     it { is_expected.to start_with(local_path) }
-=======
-
-    it { is_expected.to start_with(path) }
->>>>>>> ce/master
     it { is_expected.to end_with('tmp/uploads/') }
   end
 
   describe '#store_dir' do
     subject { uploader.store_dir }
 
-<<<<<<< HEAD
     let(:path) { "#{job.created_at.utc.strftime('%Y_%m')}/#{job.project_id}/#{job.id}" }
 
     context 'when using local storage' do
@@ -48,28 +42,19 @@ describe ArtifactUploader do
 
       it { is_expected.to eq(path) }
     end
-=======
-    it { is_expected.to start_with(path) }
-    it { is_expected.to end_with("#{job.project_id}/#{job.id}") }
->>>>>>> ce/master
   end
 
   describe '#cache_dir' do
     subject { uploader.cache_dir }
-<<<<<<< HEAD
-    
-    it { is_expected.to start_with(local_path) }
-    it { is_expected.to end_with('tmp/cache') }
-=======
 
-    it { is_expected.to start_with(path) }
+    it { is_expected.to start_with(local_path) }
     it { is_expected.to end_with('/tmp/cache') }
   end
 
   describe '#work_dir' do
     subject { uploader.work_dir }
 
-    it { is_expected.to start_with(path) }
+    it { is_expected.to start_with(local_path) }
     it { is_expected.to end_with('/tmp/work') }
   end
 
@@ -87,6 +72,5 @@ describe ArtifactUploader do
 
       it { is_expected.not_to be_nil }
     end
->>>>>>> ce/master
   end
 end

@@ -7,7 +7,6 @@ feature 'Projected Tags', feature: true, js: true do
   before do
     login_as(user)
   end
-<<<<<<< HEAD
 
   def set_allowed_to(operation, option = 'Masters', form: '.new-protected-tag')
     within form do
@@ -19,8 +18,6 @@ feature 'Projected Tags', feature: true, js: true do
       find(".js-allowed-to-#{operation}").click # needed to submit form in some cases
     end
   end
-=======
->>>>>>> ce/master
 
   def set_protected_tag_name(tag_name)
     find(".js-protected-tag-select").click

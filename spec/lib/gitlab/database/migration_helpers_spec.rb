@@ -10,8 +10,6 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
   before do
     allow(model).to receive(:puts)
   end
-<<<<<<< HEAD
-=======
 
   describe '#add_timestamps_with_timezone' do
     before do
@@ -45,7 +43,6 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       end
     end
   end
->>>>>>> ce/master
 
   describe '#add_concurrent_index' do
     context 'outside a transaction' do

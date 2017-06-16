@@ -470,10 +470,7 @@ describe Ci::API::Builds do
       let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => token) }
 
       before do
-<<<<<<< HEAD
         stub_artifacts_object_storage
-=======
->>>>>>> ce/master
         build.run!
       end
 

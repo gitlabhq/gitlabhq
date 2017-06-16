@@ -11,11 +11,7 @@ describe API::Jobs, :api do
                                ref: project.default_branch)
   end
 
-<<<<<<< HEAD
-  let(:build) { create(:ci_build, pipeline: pipeline) }
-=======
   let!(:job) { create(:ci_build, pipeline: pipeline) }
->>>>>>> ce/master
 
   let(:user) { create(:user) }
   let(:api_user) { user }
@@ -30,7 +26,6 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
-      build
       get api("/projects/#{project.id}/jobs", api_user), query
     end
 
@@ -94,7 +89,6 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
-      build
       get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
     end
 
@@ -196,21 +190,13 @@ describe API::Jobs, :api do
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
     before do
-<<<<<<< HEAD
       stub_artifacts_object_storage
-      get api("/projects/#{project.id}/jobs/#{build.id}/artifacts", api_user)
-    end
-
-    context 'job with artifacts' do
-      context 'when artifacts are stored locally' do
-        let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
-=======
       get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
     end
 
     context 'job with artifacts' do
-      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
->>>>>>> ce/master
+      context 'when artifacts are stored locally' do
+        let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
         context 'authorized user' do
           let(:download_headers) do
@@ -221,28 +207,21 @@ describe API::Jobs, :api do
           it 'returns specific job artifacts' do
             expect(response).to have_http_status(200)
             expect(response.headers).to include(download_headers)
-            expect(response.body).to match_file(build.artifacts_file.file.file)
+            expect(response.body).to match_file(job.artifacts_file.file.file)
           end
         end
 
-<<<<<<< HEAD
         context 'unauthorized user' do
           let(:api_user) { nil }
 
           it 'does not return specific job artifacts' do
             expect(response).to have_http_status(401)
           end
-=======
-        it 'returns specific job artifacts' do
-          expect(response).to have_http_status(200)
-          expect(response.headers).to include(download_headers)
-          expect(response.body).to match_file(job.artifacts_file.file.file)
->>>>>>> ce/master
         end
       end
 
       context 'when artifacts are stored remotely' do
-        let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
 
         it 'returns location redirect' do
           expect(response).to have_http_status(302)
@@ -255,17 +234,14 @@ describe API::Jobs, :api do
     end
   end
 
+
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
     let(:api_user) { reporter }
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     before do
-<<<<<<< HEAD
       stub_artifacts_object_storage
-      build.success
-=======
       job.success
->>>>>>> ce/master
     end
 
     def get_for_ref(ref = pipeline.ref, job_name = job.name)
@@ -320,26 +296,19 @@ describe API::Jobs, :api do
 
     context 'find proper job' do
       shared_examples 'a valid file' do
-<<<<<<< HEAD
         context 'when artifacts are stored locally' do
           let(:download_headers) do
             { 'Content-Transfer-Encoding' => 'binary',
               'Content-Disposition' =>
-                "attachment; filename=#{build.artifacts_file.filename}" }
+                "attachment; filename=#{job.artifacts_file.filename}" }
           end
 
           it { expect(response).to have_http_status(200) }
           it { expect(response.headers).to include(download_headers) }
-=======
-        let(:download_headers) do
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' =>
-              "attachment; filename=#{job.artifacts_file.filename}" }
->>>>>>> ce/master
         end
 
         context 'when artifacts are stored remotely' do
-          let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+          let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
 
           it 'returns location redirect' do
             expect(response).to have_http_status(302)

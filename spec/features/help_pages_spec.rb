@@ -51,15 +51,13 @@ describe 'Help Pages', feature: true do
     it 'hides the version check image if the image request fails' do
       # We use '--load-images=yes' with poltergeist so the image fails to load
       expect(find('.js-version-status-badge', visible: false)).not_to be_visible
-<<<<<<< HEAD
-=======
     end
   end
 
   describe 'when help page is customized' do
     before do
       allow_any_instance_of(ApplicationSetting).to receive(:help_page_hide_commercial_content?) { true }
-      allow_any_instance_of(ApplicationSetting).to receive(:help_page_text) { "My Custom Text" }
+      allow_any_instance_of(ApplicationSetting).to receive(:help_text) { "My Custom Text" }
       allow_any_instance_of(ApplicationSetting).to receive(:help_page_support_url) { "http://example.com/help" }
 
       login_as :user
@@ -76,7 +74,6 @@ describe 'Help Pages', feature: true do
 
     it 'should use a custom support url' do
       expect(page).to have_link "See our website for getting help", href: "http://example.com/help"
->>>>>>> ce/master
     end
   end
 end

@@ -31,33 +31,21 @@ describe Gitlab::Saml::User, lib: true do
       allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} } })
     end
 
-<<<<<<< HEAD
     def stub_saml_admin_group_config(groups)
       allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', admin_groups: groups, args: {} } })
     end
 
-=======
->>>>>>> ce/master
     before do
       stub_basic_saml_config
     end
 
     describe 'account exists on server' do
-<<<<<<< HEAD
-      let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
-
-      before do
-        stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true })
-      end
-
-=======
       before do
         stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true })
       end
 
       let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
 
->>>>>>> ce/master
       context 'and should bind with SAML' do
         it 'adds the SAML identity to the existing user' do
           saml_user.save

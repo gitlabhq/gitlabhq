@@ -200,10 +200,6 @@ describe API::Runner do
       let(:user_agent) { 'gitlab-runner 9.0.0 (9-0-stable; go1.7.4; linux/amd64)' }
 
       before do
-<<<<<<< HEAD
-        job
-=======
->>>>>>> ce/master
         stub_container_registry_config(enabled: false)
       end
 
@@ -818,10 +814,7 @@ describe API::Runner do
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
 
       before do
-<<<<<<< HEAD
         stub_artifacts_object_storage
-=======
->>>>>>> ce/master
         job.run!
       end
 

@@ -41,15 +41,10 @@ describe API::Settings, 'Settings' do
           plantuml_url: 'http://plantuml.example.com',
           default_snippet_visibility: 'internal',
           restricted_visibility_levels: ['public'],
-<<<<<<< HEAD
-          default_artifacts_expire_in: '2 days'
-
-=======
           default_artifacts_expire_in: '2 days',
           help_page_text: 'custom help text',
           help_page_hide_commercial_content: true,
           help_page_support_url: 'http://example.com/help'
->>>>>>> ce/master
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['signin_enabled']).to be_falsey

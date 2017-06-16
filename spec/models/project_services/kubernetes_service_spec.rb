@@ -129,11 +129,7 @@ describe KubernetesService, models: true, caching: true do
     it "returns the default namespace" do
       is_expected.to eq(service.send(:default_namespace))
     end
-<<<<<<< HEAD
-
-=======
     
->>>>>>> ce/master
     context 'when namespace is specified' do
       before do
         service.namespace = 'my-namespace'
@@ -314,7 +310,6 @@ describe KubernetesService, models: true, caching: true do
       it { is_expected.to be_nil }
     end
 
-<<<<<<< HEAD
     context 'when kubernetes responds with valid pods and deployments' do
       before do
         stub_kubeclient_pods
@@ -322,23 +317,12 @@ describe KubernetesService, models: true, caching: true do
       end
 
       it { is_expected.to eq(pods: [kube_pod], deployments: [kube_deployment]) }
-=======
-    context 'when kubernetes responds with valid pods' do
-      before do
-        stub_kubeclient_pods
-      end
-
-      it { is_expected.to eq(pods: [kube_pod]) }
->>>>>>> ce/master
     end
 
     context 'when kubernetes responds with 500s' do
       before do
         stub_kubeclient_pods(status: 500)
-<<<<<<< HEAD
         stub_kubeclient_deployments(status: 500)
-=======
->>>>>>> ce/master
       end
 
       it { expect { subject }.to raise_error(KubeException) }
@@ -347,10 +331,7 @@ describe KubernetesService, models: true, caching: true do
     context 'when kubernetes responds with 404s' do
       before do
         stub_kubeclient_pods(status: 404)
-<<<<<<< HEAD
         stub_kubeclient_deployments(status: 404)
-=======
->>>>>>> ce/master
       end
 
       it { is_expected.to eq(pods: [], deployments: []) }

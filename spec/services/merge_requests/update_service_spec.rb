@@ -384,11 +384,7 @@ describe MergeRequests::UpdateService, services: true do
         should_not_email(non_subscriber)
       end
 
-<<<<<<< HEAD
-      context 'when the merge request has the `label` label' do
-=======
       context 'when issue has the `label` label' do
->>>>>>> ce/master
         before do
           merge_request.labels << label
         end
