@@ -118,13 +118,6 @@ feature 'Jobs', :feature do
 
       before do
         visit namespace_project_job_path(project.namespace, project, job)
-<<<<<<< HEAD
-      end
-
-      it 'shows status name', :js do
-        expect(page).to have_css('.ci-status.ci-success', text: 'passed')
-=======
->>>>>>> upstream/master
       end
 
       it 'shows commit`s data' do
@@ -373,11 +366,7 @@ feature 'Jobs', :feature do
       before do
         job.run!
         visit namespace_project_job_path(project.namespace, project, job)
-<<<<<<< HEAD
         find('.js-cancel-job').click()
-=======
-        click_link "Cancel"
->>>>>>> upstream/master
       end
 
       it 'loads the page and shows all needed controls' do
@@ -385,8 +374,6 @@ feature 'Jobs', :feature do
         expect(page).to have_content 'Retry'
       end
     end
-<<<<<<< HEAD
-=======
 
     context "Job from other project" do
       before do
@@ -397,7 +384,6 @@ feature 'Jobs', :feature do
 
       it { expect(page.status_code).to eq(404) }
     end
->>>>>>> upstream/master
   end
 
   describe "POST /:project/jobs/:id/retry" do
@@ -405,15 +391,10 @@ feature 'Jobs', :feature do
       before do
         job.run!
         visit namespace_project_job_path(project.namespace, project, job)
-<<<<<<< HEAD
-        find('.js-cancel-job').click()
-        find('.js-retry-button').trigger('click')
-=======
         click_link 'Cancel'
         page.within('.build-header') do
           click_link 'Retry job'
         end
->>>>>>> upstream/master
       end
 
       it 'shows the right status and buttons', :js do
@@ -424,8 +405,6 @@ feature 'Jobs', :feature do
       end
     end
 
-<<<<<<< HEAD
-=======
     context "Job from other project" do
       before do
         job.run!
@@ -437,7 +416,6 @@ feature 'Jobs', :feature do
       it { expect(page).to have_http_status(404) }
     end
 
->>>>>>> upstream/master
     context "Job that current user is not allowed to retry" do
       before do
         job.run!
@@ -511,16 +489,6 @@ feature 'Jobs', :feature do
         Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
 
         job.run!
-<<<<<<< HEAD
-      end
-
-      context 'when job has trace in file', :js do
-=======
-
-        allow_any_instance_of(Gitlab::Ci::Trace).to receive(:paths)
-          .and_return(paths)
-
-        visit namespace_project_job_path(project.namespace, project, job)
       end
 
       context 'when job has trace in file', :js do
@@ -528,7 +496,6 @@ feature 'Jobs', :feature do
           [existing_file]
         end
 
->>>>>>> upstream/master
         before do
           allow_any_instance_of(Gitlab::Ci::Trace)
             .to receive(:paths)

@@ -11,11 +11,7 @@ describe API::Jobs, :api do
                                ref: project.default_branch)
   end
 
-<<<<<<< HEAD
-  let!(:job) { create(:ci_build, pipeline: pipeline) }
-=======
   let(:job) { create(:ci_build, pipeline: pipeline) }
->>>>>>> upstream/master
 
   let(:user) { create(:user) }
   let(:api_user) { user }
@@ -30,10 +26,7 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
-<<<<<<< HEAD
-=======
       job
->>>>>>> upstream/master
       get api("/projects/#{project.id}/jobs", api_user), query
     end
 
@@ -97,10 +90,7 @@ describe API::Jobs, :api do
     let(:query) { Hash.new }
 
     before do
-<<<<<<< HEAD
-=======
       job
->>>>>>> upstream/master
       get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
     end
 
@@ -203,6 +193,7 @@ describe API::Jobs, :api do
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
     before do
       stub_artifacts_object_storage
+      job
       get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
     end
 
