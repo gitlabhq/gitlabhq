@@ -28,3 +28,6 @@
         = nav_link(controller: 'dashboard/snippets') do
           = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
             Snippets
+        %li.divider
+        %li
+          = link_to "Help", help_path, title: 'About GitLab CE'

@@ -13,6 +13,8 @@
 
         - if current_user
           = render "layouts/nav/new_dashboard"
+        - else
+          = render "layouts/nav/new_explore"
 
       %button.navbar-toggle.navbar-toggle-left.hide.hidden-sm.hidden-md.hidden-lg.js-navbar-toggle-left{ type: 'button' }
         %span.sr-only Toggle navigation
