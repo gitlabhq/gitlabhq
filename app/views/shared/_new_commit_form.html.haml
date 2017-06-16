@@ -10,11 +10,7 @@
         = text_field_tag 'branch_name', @branch_name || tree_edit_branch, required: true, class: "form-control js-branch-name ref-name"
 
         .js-create-merge-request-container
-          .checkbox
-            - nonce = SecureRandom.hex
-            = label_tag "create_merge_request-#{nonce}" do
-              = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: "create_merge_request-#{nonce}"
-              #{ _('Start a <strong>new merge request</strong> with these changes').html_safe }
+          = render 'shared/new_merge_request_checkbox'
   - else
     = hidden_field_tag 'branch_name', @branch_name || tree_edit_branch
     = hidden_field_tag 'create_merge_request', 1

@@ -25,12 +25,7 @@
               = dropdown_tag(@project.default_branch, options: { title: n_("BranchSwitcherTitle|Switch branch"), filter: true, placeholder: n_("BranchSwitcherPlaceholder|Search branches"), toggle_class: 'js-project-refs-dropdown dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "start_branch", selected: @project.default_branch, start_branch: @project.default_branch, refs_url: namespace_project_branches_path(@project.namespace, @project), submit_form_on_click: false } })
 
               - if can?(current_user, :push_code, @project)
-                .checkbox
-                  = label_tag do
-                    = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: nil
-                    - translation_variables = { new_merge_request: "<strong>#{_('new merge request')}</strong>" }
-                    - translation = _('Start a  %{new_merge_request} with these changes') % translation_variables
-                    #{ translation.html_safe }
+                = render 'shared/new_merge_request_checkbox'
               - else
                 = hidden_field_tag 'create_merge_request', 1, id: nil
           .form-actions
