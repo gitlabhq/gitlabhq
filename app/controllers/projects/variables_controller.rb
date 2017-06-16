@@ -22,9 +22,9 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def create
-    @variable = Ci::Variable.new(variable_params)
+    @variable = @project.variables.new(variable_params)
 
-    if @variable.valid? && @project.variables << @variable
+    if @variable.save
       flash[:notice] = 'Variables were successfully updated.'
       redirect_to namespace_project_settings_ci_cd_path(project.namespace, project)
     else

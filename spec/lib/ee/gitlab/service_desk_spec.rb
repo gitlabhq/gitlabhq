@@ -2,8 +2,7 @@ require 'spec_helper'
 
 describe EE::Gitlab::ServiceDesk, lib: true do
   before do
-    allow_any_instance_of(License).to receive(:feature_available?).and_call_original
-    allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
+    stub_feature(:service_desk)
     allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
   end

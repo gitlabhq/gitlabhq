@@ -1412,6 +1412,8 @@ describe Ci::Build, :models do
         end
 
         before do
+          stub_feature(:variable_environment_scope)
+
           build.update(environment: 'staging')
           create(:environment, name: 'staging', project: build.project)
 

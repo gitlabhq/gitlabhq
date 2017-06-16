@@ -9,6 +9,7 @@ class License < ActiveRecord::Base
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
   RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
+  VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VARIABLE_ENVIRONMENT_SCOPE'.freeze
 
   FEATURE_CODES = {
     geo: GEO_FEATURE,
@@ -17,6 +18,7 @@ class License < ActiveRecord::Base
     object_storage: OBJECT_STORAGE_FEATURE,
     elastic_search: ELASTIC_SEARCH_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
+    variable_environment_scope: VARIABLE_ENVIRONMENT_SCOPE_FEATURE,
     # Features that make sense to Namespace:
     deploy_board: DEPLOY_BOARD_FEATURE,
     file_lock: FILE_LOCK_FEATURE
@@ -39,7 +41,8 @@ class License < ActiveRecord::Base
     { GEO_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 },
-    { OBJECT_STORAGE_FEATURE => 1 }
+    { OBJECT_STORAGE_FEATURE => 1 },
+    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 }
   ].freeze
 
   EEU_FEATURES = [

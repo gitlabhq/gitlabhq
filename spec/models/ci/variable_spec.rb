@@ -12,8 +12,14 @@ describe Ci::Variable, models: true do
   it { is_expected.not_to allow_value('foo/bar').for(:key) }
 
   # EE
-  it { is_expected.to allow_value('review/*').for(:environment_scope) }
-  it { is_expected.not_to allow_value('').for(:environment_scope) }
+  context 'with variable_environment_scope enabled' do
+    before do
+      stub_feature(:variable_environment_scope)
+    end
+
+    it { is_expected.to allow_value('review/*').for(:environment_scope) }
+    it { is_expected.not_to allow_value('').for(:environment_scope) }
+  end
 
   let(:key_scope) do
     [:project_id, :environment_scope] # EE

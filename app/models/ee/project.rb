@@ -78,7 +78,8 @@ module EE
     end
 
     def secret_variables_for(ref:, environment: nil)
-      return super.where(environment_scope: '*') unless environment
+      return super.where(environment_scope: '*') unless
+        environment && feature_available?(:variable_environment_scope)
 
       query = super
 

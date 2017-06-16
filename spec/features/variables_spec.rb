@@ -6,6 +6,9 @@ describe 'Project variables', js: true do
   let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
 
   before do
+    # EE
+    stub_feature(:variable_environment_scope)
+
     login_as(user)
     project.team << [user, :master]
     project.variables << variable

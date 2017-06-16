@@ -92,6 +92,8 @@ describe API::Variables do
 
       # EE
       it 'creates variable with a specific environment scope' do
+        stub_feature(:variable_environment_scope)
+
         expect do
           post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2', environment_scope: 'review/*'
         end.to change{project.variables.count}.by(1)
@@ -104,6 +106,8 @@ describe API::Variables do
 
       # EE
       it 'allows duplicated variable key given different environment scopes' do
+        stub_feature(:variable_environment_scope)
+
         expect do
           post api("/projects/#{project.id}/variables", user), key: variable.key, value: 'VALUE_2', environment_scope: 'review/*'
         end.to change{project.variables.count}.by(1)

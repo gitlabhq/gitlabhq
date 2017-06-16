@@ -2293,6 +2293,10 @@ describe Project, models: true do
         project.secret_variables_for(ref: 'ref', environment: environment)
       end
 
+      before do
+        stub_feature(:variable_environment_scope)
+      end
+
       context 'when environment scope is exactly matched' do
         before do
           secret_variable.update(environment_scope: 'review/name')
