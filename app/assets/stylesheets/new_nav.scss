@@ -18,11 +18,19 @@ header.navbar-gitlab-new {
 
     .title {
       padding-top: 14px;
-      padding-right: 10px;
+      padding-right: 9px;
       color: currentColor;
 
       @media (min-width: $screen-sm-min) {
-        padding-right: 20px;
+        padding-right: 15px;
+      }
+
+      a {
+        &:hover,
+        &:focus {
+          color: currentColor;
+          text-decoration: none;
+        }
       }
     }
 
@@ -35,6 +43,11 @@ header.navbar-gitlab-new {
     .dropdown-menu {
       margin-top: 4px;
       min-width: 130px;
+
+      @media (max-width: $screen-xs-max) {
+        left: auto;
+        right: 0;
+      }
     }
   }
 
@@ -121,5 +134,18 @@ header.navbar-gitlab-new {
   .search-input,
   .search-input::placeholder {
     color: $gray-normal;
+  }
+
+  .location-badge {
+    color: $gray-normal;
+    background-color: #2d2d2d;
+  }
+
+  &.search-active {
+    .search-input-wrap {
+      i {
+        color: $gray-normal;
+      }
+    }
   }
 }

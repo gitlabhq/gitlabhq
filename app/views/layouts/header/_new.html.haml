@@ -8,7 +8,8 @@
 
       .title-container
         %h1.title
-          GitLab
+          = link_to root_path, title: 'Dashboard' do
+            GitLab
 
         - if current_user
           = render "layouts/nav/new_dashboard"
