@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
 /* global Build */
-import { bytesToKiB } from '~/lib/utils/number_utils';
+import { formatRelevantDigits, bytesToKiB } from './lib/utils/number_utils';
 import '~/lib/utils/datetime_utility';
 import '~/lib/utils/url_utility';
 import '~/build';
@@ -145,7 +145,7 @@ describe('Build', () => {
             html: '<span>Update</span>',
             status: 'success',
             append: false,
-            size: 50,
+            size: 50.0,
             total: 100,
           });
 
@@ -155,7 +155,7 @@ describe('Build', () => {
         });
 
         it('shows the size in KiB', () => {
-          const size = 50;
+          const size = 50.0;
           spyOn(gl.utils, 'visitUrl');
           const deferred = $.Deferred();
 
@@ -172,7 +172,7 @@ describe('Build', () => {
 
           expect(
             document.querySelector('.js-truncated-info-size').textContent.trim(),
-          ).toEqual(`${bytesToKiB(size)}`);
+          ).toEqual(`${formatRelevantDigits(bytesToKiB(size))}`);
         });
 
         it('shows incremented size', () => {
@@ -188,7 +188,7 @@ describe('Build', () => {
             html: '<span>Update</span>',
             status: 'success',
             append: false,
-            size: 50,
+            size: 50.0,
             total: 100,
           });
 
@@ -198,7 +198,7 @@ describe('Build', () => {
 
           expect(
             document.querySelector('.js-truncated-info-size').textContent.trim(),
-          ).toEqual(`${bytesToKiB(50)}`);
+          ).toEqual(`${formatRelevantDigits(bytesToKiB(50.0))}`);
 
           jasmine.clock().tick(4001);
 
@@ -206,13 +206,13 @@ describe('Build', () => {
             html: '<span>Update</span>',
             status: 'success',
             append: true,
-            size: 10,
+            size: 10.0,
             total: 100,
           });
 
           expect(
             document.querySelector('.js-truncated-info-size').textContent.trim(),
-          ).toEqual(`${bytesToKiB(60)}`);
+          ).toEqual(`${formatRelevantDigits(bytesToKiB(60.0))}`);
         });
 
         it('renders the raw link', () => {
@@ -224,7 +224,7 @@ describe('Build', () => {
             html: '<span>Update</span>',
             status: 'success',
             append: false,
-            size: 50,
+            size: 50.0,
             total: 100,
           });
 
@@ -246,7 +246,7 @@ describe('Build', () => {
             html: '<span>Update</span>',
             status: 'success',
             append: false,
-            size: 100,
+            size: 100.0,
             total: 100,
           });
 
@@ -267,7 +267,7 @@ describe('Build', () => {
           html: '<span>Update</span>',
           status: 'success',
           append: false,
-          size: 50,
+          size: 50.0,
           total: 100,
         });
 
