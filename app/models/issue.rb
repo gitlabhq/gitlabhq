@@ -9,6 +9,9 @@ class Issue < ActiveRecord::Base
   include Spammable
   include FasterCacheKeys
   include RelativePositioning
+  include IgnorableColumn
+
+  ignore_column :position
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -44,7 +47,7 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
-  scope :include_associations, -> { includes(:labels, project: :namespace) }
+  scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   after_save :expire_etag_cache
 
