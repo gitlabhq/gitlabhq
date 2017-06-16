@@ -1397,7 +1397,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#mergeable_with_slash_command?' do
+  describe '#mergeable_with_quick_action?' do
     def create_pipeline(status)
       pipeline = create(:ci_pipeline_with_one_job,
         project: project,
@@ -1421,21 +1421,21 @@ describe MergeRequest, models: true do
 
     context 'when autocomplete_precheck is set to true' do
       it 'is mergeable by developer' do
-        expect(merge_request.mergeable_with_slash_command?(developer, autocomplete_precheck: true)).to be_truthy
+        expect(merge_request.mergeable_with_quick_action?(developer, autocomplete_precheck: true)).to be_truthy
       end
 
       it 'is not mergeable by normal user' do
-        expect(merge_request.mergeable_with_slash_command?(user, autocomplete_precheck: true)).to be_falsey
+        expect(merge_request.mergeable_with_quick_action?(user, autocomplete_precheck: true)).to be_falsey
       end
     end
 
     context 'when autocomplete_precheck is set to false' do
       it 'is mergeable by developer' do
-        expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+        expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
       end
 
       it 'is not mergeable by normal user' do
-        expect(merge_request.mergeable_with_slash_command?(user, last_diff_sha: mr_sha)).to be_falsey
+        expect(merge_request.mergeable_with_quick_action?(user, last_diff_sha: mr_sha)).to be_falsey
       end
 
       context 'closed MR'  do
@@ -1444,7 +1444,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
       end
 
@@ -1454,19 +1454,19 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
       end
 
       context 'sha differs from the MR diff_head_sha'  do
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: 'some other sha')).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: 'some other sha')).to be_falsey
         end
       end
 
       context 'sha is not provided'  do
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer)).to be_falsey
         end
       end
 
@@ -1476,7 +1476,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
         end
       end
 
@@ -1486,7 +1486,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
       end
 
@@ -1496,7 +1496,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
         end
       end
     end

@@ -1,10 +1,10 @@
-- supports_slash_commands = local_assigns.fetch(:supports_slash_commands, false)
+- supports_quick_actions = local_assigns.fetch(:supports_quick_actions, false)
 .comment-toolbar.clearfix
   .toolbar-text
     = link_to 'Markdown', help_page_path('user/markdown'), target: '_blank', tabindex: -1
-    - if supports_slash_commands
+    - if supports_quick_actions
       and
-      = link_to 'slash commands', help_page_path('user/project/slash_commands'), target: '_blank', tabindex: -1
+      = link_to 'quick actions', help_page_path('user/project/quick_actions'), target: '_blank', tabindex: -1
       are
     - else
       is
