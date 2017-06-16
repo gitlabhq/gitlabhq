@@ -2,9 +2,11 @@
 @import 'framework/tw_bootstrap_variables';
 @import "bootstrap/variables";
 
+$new-navbar-bg: #2d2d2d;
+
 header.navbar-gitlab-new {
-  color: #f5f5f5;
-  background-color: #2d2d2d;
+  color: $gray-normal;
+  background-color: $new-navbar-bg;
 
   .header-content {
     padding-left: 0;
@@ -26,7 +28,7 @@ header.navbar-gitlab-new {
 
     .dropdown.open {
       > a {
-        border-bottom-color: #4180ec;
+        border-bottom-color: $blue-400;
       }
     }
 
@@ -37,7 +39,7 @@ header.navbar-gitlab-new {
   }
 
   .navbar-collapse {
-    color: #d5d5d5;
+    color: $gray-dark;
   }
 
   .container-fluid {
@@ -66,10 +68,10 @@ header.navbar-gitlab-new {
 
     .nav > li > a:hover,
     .nav > li > a:focus {
-      color: #f5f5f5;
+      color: $gray-normal;
 
       > svg {
-        fill: #f5f5f5;
+        fill: $gray-normal;
       }
     }
   }
@@ -78,11 +80,11 @@ header.navbar-gitlab-new {
 .navbar-sub-nav {
   display: flex;
   margin-bottom: 0;
-  color: #d5d5d5;
+  color: $gray-dark;
 
   > li {
     &.active > a {
-      border-bottom-color: #4180ec;
+      border-bottom-color: $blue-400;
     }
 
     > a {
@@ -99,7 +101,7 @@ header.navbar-gitlab-new {
 
       &:hover,
       &:focus {
-        color: #f5f5f5;
+        color: $gray-normal;
         text-decoration: none;
       }
     }
@@ -113,11 +115,11 @@ header.navbar-gitlab-new {
 .search {
   form,
   .search-input {
-    background-color: #525252;
+    background-color: $gl-gray-light;
   }
 
   .search-input,
   .search-input::placeholder {
-    color: #f5f5f5;
+    color: $gray-normal;
   }
 }
