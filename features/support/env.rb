@@ -32,6 +32,7 @@ end
 
 Spinach.hooks.after_scenario do |scenario_data, step_definitions|
   if scenario_data.tags.include?('javascript')
+    include Capybara::DSL
     include WaitForRequests
     block_and_wait_for_requests_complete
   end
