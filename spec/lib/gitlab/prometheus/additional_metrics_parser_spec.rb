@@ -33,7 +33,6 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
       end
 
       before do
-        described_class.instance_variable_set :@additional_metrics_raw, nil
         allow(described_class).to receive(:load_yaml_file) { YAML.load(sample_yaml) }
       end
 
@@ -68,10 +67,6 @@ describe Gitlab::Prometheus::AdditionalMetricsParser, lib: true do
     end
 
     shared_examples 'required field' do |field_name|
-      before do
-        described_class.instance_variable_set :@additional_metrics_raw, nil
-      end
-
       context "when #{field_name} is nil" do
         before do
           allow(described_class).to receive(:load_yaml_file) { YAML.load(field_missing) }

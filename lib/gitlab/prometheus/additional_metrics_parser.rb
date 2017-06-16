@@ -23,11 +23,11 @@ module Gitlab
       end
 
       def additional_metrics_raw
-        @additional_metrics_raw ||= load_yaml_file&.map(&:deep_symbolize_keys).freeze
+        load_yaml_file&.map(&:deep_symbolize_keys).freeze
       end
 
       def load_yaml_file
-        YAML.load_file(Rails.root.join('config/prometheus/additional_metrics.yml'))
+        @loaded_yaml_file ||= YAML.load_file(Rails.root.join('config/prometheus/additional_metrics.yml'))
       end
     end
   end
