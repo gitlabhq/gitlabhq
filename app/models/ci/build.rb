@@ -218,7 +218,7 @@ module Ci
             .reorder(iid: :desc)
 
           merge_requests.find do |merge_request|
-            merge_request.commits_sha.include?(pipeline.sha)
+            merge_request.commit_shas.include?(pipeline.sha)
           end
         end
     end
