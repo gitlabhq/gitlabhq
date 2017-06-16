@@ -34,7 +34,7 @@ class GfmAutoComplete {
       const $input = $(input);
       $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
       // This triggers at.js again
-      // Needed for slash commands with suffixes (ex: /label ~)
+      // Needed for quick actions with suffixes (ex: /label ~)
       $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
       $input.on('clear-commands-cache.atwho', () => this.clearCache());
     });
@@ -48,8 +48,8 @@ class GfmAutoComplete {
     if (this.enableMap.mergeRequests) this.setupMergeRequests($input);
     if (this.enableMap.labels) this.setupLabels($input);
 
-    // We don't instantiate the slash commands autocomplete for note and issue/MR edit forms
-    $input.filter('[data-supports-slash-commands="true"]').atwho({
+    // We don't instantiate the quick actions autocomplete for note and issue/MR edit forms
+    $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
       alias: 'commands',
       searchKey: 'search',

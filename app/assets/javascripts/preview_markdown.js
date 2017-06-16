@@ -3,7 +3,7 @@
 // MarkdownPreview
 //
 // Handles toggling the "Write" and "Preview" tab clicks, rendering the preview
-// (including the explanation of slash commands), and showing a warning when
+// (including the explanation of quick actions), and showing a warning when
 // more than `x` users are referenced.
 //
 (function () {

@@ -87,7 +87,7 @@ RSpec.shared_examples 'chat slash commands service' do
         end
 
         it 'triggers the command' do
-          expect_any_instance_of(Gitlab::ChatCommands::Command).to receive(:execute)
+          expect_any_instance_of(Gitlab::SlashCommands::Command).to receive(:execute)
 
           subject.trigger(params)
         end
