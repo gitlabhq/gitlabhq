@@ -191,6 +191,8 @@ describe API::Runner do
     end
 
     before do
+      stub_artifacts_object_storage
+      job
       project.runners << runner
     end
 
