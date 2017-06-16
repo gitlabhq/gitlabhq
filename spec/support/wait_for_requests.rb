@@ -3,6 +3,8 @@ require_relative './wait_for_requests'
 module WaitForRequests
   extend self
 
+  include Capybara::DSL
+
   # This is inspired by http://www.salsify.com/blog/engineering/tearing-capybara-ajax-tests
   def block_and_wait_for_requests_complete
     Gitlab::Testing::RequestBlockerMiddleware.block_requests!
