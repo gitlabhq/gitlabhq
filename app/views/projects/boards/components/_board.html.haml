@@ -10,11 +10,7 @@
           data: { container: "body", placement: "bottom" } }
           {{ list.title }}
         .issue-count-badge.pull-right.clearfix{ "v-if" => 'list.type !== "blank"' }
-<<<<<<< HEAD
-          %span.issue-count-badge-count{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
-=======
           %span.issue-count-badge-count.pull-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
->>>>>>> ce/master
             {{ list.issuesSize }}
           - if can?(current_user, :admin_issue, @project)
             %button.issue-count-badge-add-button.btn.btn-small.btn-default.has-tooltip.js-no-trigger-collapse{ type: "button",

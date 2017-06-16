@@ -1,6 +1,6 @@
 %div
-- if current_application_settings.help_page_text.present?
-  = markdown_field(current_application_settings, :help_page_text)
+- if current_application_settings.help_text.present?
+  = markdown(current_application_settings.help_text)
   %hr
 
 - unless current_application_settings.help_page_hide_commercial_content?
@@ -12,33 +12,19 @@
       %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ee', Gitlab::REVISION)
       - if current_application_settings.version_check_enabled
         = version_status_badge
-  %br
+  %p.slead
+    GitLab is open source software to collaborate on code.
+    %br
+    Manage git repositories with fine-grained access controls that keep your code secure.
+    %br
+    Perform code reviews and enhance collaboration with merge requests.
+    %br
+    Each project can also have an issue tracker and a wiki.
+    %br
+    Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
+    %br
     Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer'}.
-<<<<<<< HEAD
-  - if current_application_settings.help_text.present?
-    %hr
-    %p.slead
-      = markdown(current_application_settings.help_text)
-  - else
-    %p.slead
-      GitLab is open source software to collaborate on code.
-      %br
-      Manage git repositories with fine grained access controls that keep your code secure.
-      %br
-      Perform code reviews and enhance collaboration with merge requests.
-      %br
-      Each project can also have an issue tracker and a wiki.
-      %br
-      Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
-
-    - if current_application_settings.help_page_text.present?
-      %hr
-      = markdown_field(current_application_settings, :help_page_text)
-
-%hr
-=======
   %hr
->>>>>>> ce/master
 
 .row.prepend-top-default
   .col-md-8
