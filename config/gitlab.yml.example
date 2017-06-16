@@ -454,6 +454,8 @@ production: &base
     # introduced in 9.0). Eventually Gitaly use will become mandatory and
     # this option will disappear.
     enabled: true
+    # Default Gitaly authentication token. Can be overriden per storage.
+    token: ""
 
   #
   # 4. Advanced settings
@@ -469,6 +471,7 @@ production: &base
       default:
         path: /home/git/repositories/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
+        # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
 
   ## Backup settings
   backup:

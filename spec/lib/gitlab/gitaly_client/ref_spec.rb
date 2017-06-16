@@ -21,7 +21,7 @@ describe Gitlab::GitalyClient::Ref do
     it 'sends a find_all_branch_names message' do
       expect_any_instance_of(Gitaly::Ref::Stub).
         to receive(:find_all_branch_names).
-          with(gitaly_request_with_path(storage_name, relative_path)).
+          with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash)).
           and_return([])
 
       client.branch_names
@@ -32,7 +32,7 @@ describe Gitlab::GitalyClient::Ref do
     it 'sends a find_all_tag_names message' do
       expect_any_instance_of(Gitaly::Ref::Stub).
         to receive(:find_all_tag_names).
-          with(gitaly_request_with_path(storage_name, relative_path)).
+          with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash)).
           and_return([])
 
       client.tag_names
@@ -43,7 +43,7 @@ describe Gitlab::GitalyClient::Ref do
     it 'sends a find_default_branch_name message' do
       expect_any_instance_of(Gitaly::Ref::Stub).
         to receive(:find_default_branch_name).
-          with(gitaly_request_with_path(storage_name, relative_path)).
+          with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash)).
         and_return(double(name: 'foo'))
 
       client.default_branch_name
@@ -54,7 +54,7 @@ describe Gitlab::GitalyClient::Ref do
     it 'sends a find_local_branches message' do
       expect_any_instance_of(Gitaly::Ref::Stub).
         to receive(:find_local_branches).
-          with(gitaly_request_with_path(storage_name, relative_path)).
+          with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash)).
           and_return([])
 
       client.local_branches
@@ -63,7 +63,7 @@ describe Gitlab::GitalyClient::Ref do
     it 'parses and sends the sort parameter' do
       expect_any_instance_of(Gitaly::Ref::Stub).
         to receive(:find_local_branches).
-          with(gitaly_request_with_params(sort_by: :UPDATED_DESC)).
+          with(gitaly_request_with_params(sort_by: :UPDATED_DESC), kind_of(Hash)).
           and_return([])
 
       client.local_branches(sort_by: 'updated_desc')
