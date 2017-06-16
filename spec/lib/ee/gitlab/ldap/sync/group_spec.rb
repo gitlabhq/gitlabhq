@@ -235,6 +235,15 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
           expect(group.members.find_by(user_id: user.id).access_level)
             .to eq(::Gitlab::Access::OWNER)
         end
+
+        it 'updates projects authorizations' do
+          project = create(:empty_project, namespace: group)
+          group.add_user(user, Gitlab::Access::MASTER)
+
+          sync_group.update_permissions
+
+          expect(project.authorized_users.find_by(id: user.id)).to be_nil
+        end
       end
 
       context 'when the user is the last owner' do
