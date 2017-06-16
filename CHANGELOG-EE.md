@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.2.6 (2017-06-16)
+
+- Geo: backported fix from 9.3 for big repository sync issues. !2000
+- Geo - Properly set tracking database connection and cron jobs on secondary nodes.
+- Fix approvers dropdown when creating a merge request from a fork.
+- Fixed header being over issue boards when in focus mode.
+- Fix bug where files over 2 GB would not be saved in Geo tracking DB.
+
 ## 9.2.5 (2017-06-07)
 
 - No changes.
