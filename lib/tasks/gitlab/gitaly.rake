@@ -30,11 +30,7 @@ namespace :gitlab do
       puts "# Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}"
       puts "# This is in TOML format suitable for use in Gitaly's config.toml file."
 
-      config = Gitlab.config.repositories.storages.map do |key, val|
-        { name: key, path: val['path'] }
-      end
-
-      puts TOML.dump(storage: config)
+      puts gitaly_configuration_toml
     end
 
     private
@@ -42,10 +38,10 @@ namespace :gitlab do
     # We cannot create config.toml files for all possible Gitaly configuations.
     # For instance, if Gitaly is running on another machine then it makes no
     # sense to write a config.toml file on the current machine. This method will
-    # only write a config.toml file in the most common and simplest case: the
-    # case where we have exactly one Gitaly process and we are sure it is
-    # running locally because it uses a Unix socket.
-    def create_gitaly_configuration
+    # only generate a configuration for the most common and simplest case: when
+    # we have exactly one Gitaly process and we are sure it is running locally
+    # because it uses a Unix socket.
+    def gitaly_configuration_toml
       storages = []
       address = nil
 
@@ -63,8 +59,12 @@ namespace :gitlab do
         storages << { name: key, path: val['path'] }
       end
 
+      TOML.dump(socket_path: address.sub(%r{\Aunix:}, ''), storage: storages)
+    end
+
+    def create_gitaly_configuration
       File.open("config.toml", "w") do |f|
-        f.puts TOML.dump(socket_path: address.sub(%r{\Aunix:}, ''), storages: storages)
+        f.puts gitaly_configuration_toml
       end
     rescue ArgumentError => e
       puts "Skipping config.toml generation:"

@@ -4,7 +4,7 @@ module TodosHelper
   end
 
   def todos_count_format(count)
-    count > 99 ? '99+' : count
+    count > 99 ? '99+' : count.to_s
   end
 
   def todos_done_count

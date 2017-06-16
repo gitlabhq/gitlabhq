@@ -58,6 +58,7 @@ module API
         requires :title, type: String, desc: 'The title of a snippet'
         requires :file_name, type: String, desc: 'The name of a snippet file'
         requires :content, type: String, desc: 'The content of a snippet'
+        optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               default: 'internal',
@@ -85,6 +86,7 @@ module API
         optional :title, type: String, desc: 'The title of a snippet'
         optional :file_name, type: String, desc: 'The name of a snippet file'
         optional :content, type: String, desc: 'The content of a snippet'
+        optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'

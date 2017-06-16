@@ -43,6 +43,7 @@ describe('Header CI Component', () => {
           isLoading: false,
         },
       ],
+      hasSidebarButton: true,
     };
 
     vm = new HeaderCi({
@@ -86,8 +87,12 @@ describe('Header CI Component', () => {
     vm.actions[0].isLoading = true;
 
     Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.btn .fa-spinner').getAttribute('style')).toEqual('');
+      expect(vm.$el.querySelector('.btn .fa-spinner').getAttribute('style')).toBeFalsy();
       done();
     });
+  });
+
+  it('should render sidebar toggle button', () => {
+    expect(vm.$el.querySelector('.js-sidebar-build-toggle')).toBeDefined();
   });
 });

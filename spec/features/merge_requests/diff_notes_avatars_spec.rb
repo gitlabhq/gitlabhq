@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Diff note avatars', feature: true, js: true do
+  include NoteInteractionHelpers
+
   let(:user)          { create(:user) }
   let(:project)       { create(:project, :public) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
@@ -110,6 +112,8 @@ feature 'Diff note avatars', feature: true, js: true do
       end
 
       it 'removes avatar when note is deleted' do
+        open_more_actions_dropdown(note)
+
         page.within find(".note-row-#{note.id}") do
           find('.js-note-delete').click
         end

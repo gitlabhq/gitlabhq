@@ -51,7 +51,6 @@ if (process.env.BABEL_ENV === 'coverage') {
     './environments/environments_bundle.js',
     './filtered_search/filtered_search_bundle.js',
     './graphs/graphs_bundle.js',
-    './issuable/issuable_bundle.js',
     './issuable/time_tracking/time_tracking_bundle.js',
     './main.js',
     './merge_conflicts/merge_conflicts_bundle.js',

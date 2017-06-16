@@ -251,12 +251,18 @@ describe Issues::MoveService, services: true do
       end
 
       context 'user is reporter only in new project' do
-        before { new_project.team << [user, :reporter] }
+        before do
+          new_project.team << [user, :reporter]
+        end
+
         it { expect { move }.to raise_error(StandardError, /permissions/) }
       end
 
       context 'user is reporter only in old project' do
-        before { old_project.team << [user, :reporter] }
+        before do
+          old_project.team << [user, :reporter]
+        end
+
         it { expect { move }.to raise_error(StandardError, /permissions/) }
       end
 

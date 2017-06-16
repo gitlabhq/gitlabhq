@@ -18,6 +18,15 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
+// optional dependency `node-zopfli` is unavailable on CentOS 6
+var ZOPFLI_AVAILABLE;
+try {
+  require.resolve('node-zopfli');
+  ZOPFLI_AVAILABLE = true;
+} catch(err) {
+  ZOPFLI_AVAILABLE = false;
+}
+
 var config = {
   // because sqljs requires fs.
   node: {
@@ -40,9 +49,11 @@ var config = {
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     graphs:               './graphs/graphs_bundle.js',
     group:                './group.js',
+    groups:               './groups/index.js',
     groups_list:          './groups_list.js',
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
+    job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -50,7 +61,7 @@ var config = {
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-    pipelines:            './pipelines/index.js',
+    pipelines:            './pipelines/pipelines_bundle.js',
     pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     prometheus_metrics:   './prometheus_metrics',
@@ -68,6 +79,7 @@ var config = {
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
+    peek:                 './peek.js',
   },
 
   output: {
@@ -156,7 +168,9 @@ var config = {
         'environments',
         'environments_folder',
         'filtered_search',
+        'groups',
         'issue_show',
+        'job_details',
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
@@ -184,15 +198,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'common', 'runtime'],
-    }),
-
-    // locale common library
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'locale',
-      chunks: [
-        'cycle_analytics',
-      ],
+      names: ['main', 'locale', 'common', 'runtime'],
     }),
   ],
 
@@ -231,7 +237,7 @@ if (IS_PRODUCTION) {
     config.plugins.push(
       new CompressionPlugin({
         asset: '[path].gz[query]',
-        algorithm: 'zopfli',
+        algorithm: ZOPFLI_AVAILABLE ? 'zopfli' : 'gzip',
       })
     );
   }

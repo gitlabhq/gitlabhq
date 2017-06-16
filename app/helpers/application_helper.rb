@@ -204,6 +204,10 @@ module ApplicationHelper
     'https://' + promo_host
   end
 
+  def support_url
+    current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
+  end
+
   def page_filter_path(options = {})
     without = options.delete(:without)
     add_label = options.delete(:label)

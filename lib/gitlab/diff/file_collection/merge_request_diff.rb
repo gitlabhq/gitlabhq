@@ -66,10 +66,7 @@ module Gitlab
         end
 
         def cacheable?(diff_file)
-          @merge_request_diff.present? &&
-            diff_file.blob &&
-            diff_file.blob.text? &&
-            @project.repository.diffable?(diff_file.blob)
+          @merge_request_diff.present? && diff_file.text? && diff_file.diffable?
         end
 
         def cache_key

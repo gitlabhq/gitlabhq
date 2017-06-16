@@ -812,7 +812,7 @@ describe Project, models: true do
 
     context 'when avatar file is uploaded' do
       let(:project) { create(:empty_project, :with_avatar) }
-      let(:avatar_path) { "/uploads/project/avatar/#{project.id}/dk.png" }
+      let(:avatar_path) { "/uploads/system/project/avatar/#{project.id}/dk.png" }
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
       it 'shows correct url' do
@@ -1005,13 +1005,17 @@ describe Project, models: true do
     subject { project.shared_runners_enabled }
 
     context 'are enabled' do
-      before { stub_application_setting(shared_runners_enabled: true) }
+      before do
+        stub_application_setting(shared_runners_enabled: true)
+      end
 
       it { is_expected.to be_truthy }
     end
 
     context 'are disabled' do
-      before { stub_application_setting(shared_runners_enabled: false) }
+      before do
+        stub_application_setting(shared_runners_enabled: false)
+      end
 
       it { is_expected.to be_falsey }
     end
@@ -1107,7 +1111,9 @@ describe Project, models: true do
     subject { project.pages_deployed? }
 
     context 'if public folder does exist' do
-      before { allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true) }
+      before do
+        allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true)
+      end
 
       it { is_expected.to be_truthy }
     end
@@ -1365,7 +1371,9 @@ describe Project, models: true do
 
     subject { project.container_registry_url }
 
-    before { stub_container_registry_config(**registry_settings) }
+    before do
+      stub_container_registry_config(**registry_settings)
+    end
 
     context 'for enabled registry' do
       let(:registry_settings) do
@@ -1389,7 +1397,9 @@ describe Project, models: true do
     let(:project) { create(:empty_project) }
 
     context 'when container registry is enabled' do
-      before { stub_container_registry_config(enabled: true) }
+      before do
+        stub_container_registry_config(enabled: true)
+      end
 
       context 'when tags are present for multi-level registries' do
         before do
@@ -1427,7 +1437,9 @@ describe Project, models: true do
     end
 
     context 'when container registry is disabled' do
-      before { stub_container_registry_config(enabled: false) }
+      before do
+        stub_container_registry_config(enabled: false)
+      end
 
       it 'should not have image tags' do
         expect(project).not_to have_container_registry_tags
@@ -1945,7 +1957,9 @@ describe Project, models: true do
   describe '#parent_changed?' do
     let(:project) { create(:empty_project) }
 
-    before { project.namespace_id = 7 }
+    before do
+      project.namespace_id = 7
+    end
 
     it { expect(project.parent_changed?).to be_truthy }
   end

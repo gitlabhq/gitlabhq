@@ -126,6 +126,7 @@ import '~/notes';
         const deferred = $.Deferred();
         spyOn($, 'ajax').and.returnValue(deferred.promise());
         spyOn(this.notes, 'revertNoteEditForm');
+        spyOn(this.notes, 'setupNewNote');
 
         $('.js-comment-button').click();
         deferred.resolve(noteEntity);
@@ -136,6 +137,46 @@ import '~/notes';
         this.notes.updateNote(updatedNote, $targetNote);
 
         expect(this.notes.revertNoteEditForm).toHaveBeenCalledWith($targetNote);
+        expect(this.notes.setupNewNote).toHaveBeenCalled();
+      });
+    });
+
+    describe('updateNoteTargetSelector', () => {
+      const hash = 'note_foo';
+      let $note;
+
+      beforeEach(() => {
+        $note = $(`<div id="${hash}"></div>`);
+        spyOn($note, 'filter').and.callThrough();
+        spyOn($note, 'toggleClass').and.callThrough();
+      });
+
+      it('sets target when hash matches', () => {
+        spyOn(gl.utils, 'getLocationHash');
+        gl.utils.getLocationHash.and.returnValue(hash);
+
+        Notes.updateNoteTargetSelector($note);
+
+        expect($note.filter).toHaveBeenCalledWith(`#${hash}`);
+        expect($note.toggleClass).toHaveBeenCalledWith('target', true);
+      });
+
+      it('unsets target when hash does not match', () => {
+        spyOn(gl.utils, 'getLocationHash');
+        gl.utils.getLocationHash.and.returnValue('note_doesnotexist');
+
+        Notes.updateNoteTargetSelector($note);
+
+        expect($note.toggleClass).toHaveBeenCalledWith('target', false);
+      });
+
+      it('unsets target when there is not a hash fragment anymore', () => {
+        spyOn(gl.utils, 'getLocationHash');
+        gl.utils.getLocationHash.and.returnValue(null);
+
+        Notes.updateNoteTargetSelector($note);
+
+        expect($note.toggleClass).toHaveBeenCalledWith('target', null);
       });
     });
 
@@ -189,9 +230,13 @@ import '~/notes';
           Notes.isUpdatedNote.and.returnValue(true);
           const $note = $('<div>');
           $notesList.find.and.returnValue($note);
+          const $newNote = $(note.html);
+          Notes.animateUpdateNote.and.returnValue($newNote);
+
           Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
           expect(Notes.animateUpdateNote).toHaveBeenCalledWith(note.html, $note);
+          expect(notes.setupNewNote).toHaveBeenCalledWith($newNote);
         });
 
         describe('while editing', () => {
@@ -378,6 +423,23 @@ import '~/notes';
       });
     });
 
+    describe('putEditFormInPlace', () => {
+      it('should call gl.GLForm with GFM parameter passed through', () => {
+        spyOn(gl, 'GLForm');
+
+        const $el = jasmine.createSpyObj('$form', ['find', 'closest']);
+        $el.find.and.returnValue($('<div>'));
+        $el.closest.and.returnValue($('<div>'));
+
+        Notes.prototype.putEditFormInPlace.call({
+          getEditFormSelector: () => '',
+          enableGFM: true
+        }, $el);
+
+        expect(gl.GLForm).toHaveBeenCalledWith(jasmine.any(Object), true);
+      });
+    });
+
     describe('postComment & updateComment', () => {
       const sampleComment = 'foo';
       const updatedComment = 'bar';
@@ -458,6 +520,45 @@ import '~/notes';
         expect($updatedNoteEl.hasClass('.being-posted')).toEqual(false); // Remove being-posted visuals
         expect($updatedNoteEl.find('.note-text').text().trim()).toEqual(sampleComment); // See if comment reverted back to original
         expect($('.flash-container').is(':visible')).toEqual(true); // Flash error message shown
+      });
+    });
+
+    describe('update comment with script tags', () => {
+      const sampleComment = '<script></script>';
+      const updatedComment = '<script></script>';
+      const note = {
+        id: 1234,
+        html: `<li class="note note-row-1234 timeline-entry" id="note_1234">
+                <div class="note-text">${sampleComment}</div>
+               </li>`,
+        note: sampleComment,
+        valid: true
+      };
+      let $form;
+      let $notesContainer;
+
+      beforeEach(() => {
+        this.notes = new Notes('', []);
+        window.gon.current_username = 'root';
+        window.gon.current_user_fullname = 'Administrator';
+        $form = $('form.js-main-target-form');
+        $notesContainer = $('ul.main-notes-list');
+        $form.find('textarea.js-note-text').html(sampleComment);
+      });
+
+      it('should not render a script tag', () => {
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        $('.js-comment-button').click();
+
+        deferred.resolve(note);
+        const $noteEl = $notesContainer.find(`#note_${note.id}`);
+        $noteEl.find('.js-note-edit').click();
+        $noteEl.find('textarea.js-note-text').html(updatedComment);
+        $noteEl.find('.js-comment-save-button').click();
+
+        const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`).find('.js-task-list-container');
+        expect($updatedNoteEl.find('.note-text').text().trim()).toEqual('');
       });
     });
 

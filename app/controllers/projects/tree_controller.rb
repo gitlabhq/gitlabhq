@@ -36,7 +36,6 @@ class Projects::TreeController < Projects::ApplicationController
   def create_dir
     return render_404 unless @commit_params.values.all?
 
-    set_start_branch_to_branch_name
     create_commit(Files::CreateDirService,  success_notice: "The directory has been successfully created.",
                                             success_path: namespace_project_tree_path(@project.namespace, @project, File.join(@branch_name, @dir_name)),
                                             failure_path: namespace_project_tree_path(@project.namespace, @project, @ref))

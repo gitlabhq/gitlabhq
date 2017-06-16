@@ -431,3 +431,4 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
+[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"

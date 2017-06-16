@@ -15,11 +15,15 @@ describe JSONWebToken::RSAToken do
   let(:rsa_token) { described_class.new(nil) }
   let(:rsa_encoded) { rsa_token.encoded }
 
-  before { allow_any_instance_of(described_class).to receive(:key).and_return(rsa_key) }
+  before do
+    allow_any_instance_of(described_class).to receive(:key).and_return(rsa_key)
+  end
 
   context 'token' do
     context 'for valid key to be validated' do
-      before { rsa_token['key'] = 'value' }
+      before do
+        rsa_token['key'] = 'value'
+      end
 
       subject { JWT.decode(rsa_encoded, rsa_key) }
 

@@ -56,6 +56,7 @@ const normalizeNewlines = function(str) {
       this.toggleCommitList = this.toggleCommitList.bind(this);
       this.postComment = this.postComment.bind(this);
       this.clearFlashWrapper = this.clearFlash.bind(this);
+      this.onHashChange = this.onHashChange.bind(this);
 
       this.notes_url = notes_url;
       this.note_ids = note_ids;
@@ -127,7 +128,9 @@ const normalizeNewlines = function(str) {
       $(document).on('ajax:success', '.js-main-target-form', this.resetMainTargetForm);
       $(document).on('ajax:complete', '.js-main-target-form', this.reenableTargetFormSubmitButton);
       // when a key is clicked on the notes
-      return $(document).on('keydown', '.js-note-text', this.keydownNoteText);
+      $(document).on('keydown', '.js-note-text', this.keydownNoteText);
+      // When the URL fragment/hash has changed, `#note_xxx`
+      return $(window).on('hashchange', this.onHashChange);
     };
 
     Notes.prototype.cleanBinding = function() {
@@ -148,6 +151,7 @@ const normalizeNewlines = function(str) {
       $(document).off('ajax:success', '.js-main-target-form');
       $(document).off('ajax:success', '.js-discussion-note-form');
       $(document).off('ajax:complete', '.js-main-target-form');
+      $(window).off('hashchange', this.onHashChange);
     };
 
     Notes.initCommentTypeToggle = function (form) {
@@ -298,8 +302,27 @@ const normalizeNewlines = function(str) {
     Notes.prototype.setupNewNote = function($note) {
       // Update datetime format on the recent note
       gl.utils.localTimeAgo($note.find('.js-timeago'), false);
+
       this.collapseLongCommitList();
       this.taskList.init();
+
+      // This stops the note highlight, #note_xxx`, from being removed after real time update
+      // The `:target` selector does not re-evaluate after we replace element in the DOM
+      Notes.updateNoteTargetSelector($note);
+      this.$noteToCleanHighlight = $note;
+    };
+
+    Notes.prototype.onHashChange = function() {
+      if (this.$noteToCleanHighlight) {
+        Notes.updateNoteTargetSelector(this.$noteToCleanHighlight);
+      }
+
+      this.$noteToCleanHighlight = null;
+    };
+
+    Notes.updateNoteTargetSelector = function($note) {
+      const hash = gl.utils.getLocationHash();
+      $note.toggleClass('target', hash && $note.filter(`#${hash}`).length > 0);
     };
 
     /*
@@ -597,13 +620,12 @@ const normalizeNewlines = function(str) {
       $noteEntityEl = $(noteEntity.html);
       $noteEntityEl.addClass('fade-in-full');
       this.revertNoteEditForm($targetNote);
-      gl.utils.localTimeAgo($('.js-timeago', $noteEntityEl));
       $noteEntityEl.renderGFM();
-      $noteEntityEl.find('.js-task-list-container').taskList('enable');
       // Find the note's `li` element by ID and replace it with the updated HTML
       $note_li = $('.note-row-' + noteEntity.id);
 
       $note_li.replaceWith($noteEntityEl);
+      this.setupNewNote($noteEntityEl);
 
       if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         gl.diffNotesCompileComponents();
@@ -1060,7 +1082,7 @@ const normalizeNewlines = function(str) {
       var targetId = $originalContentEl.data('target-id');
       var targetType = $originalContentEl.data('target-type');
 
-      new gl.GLForm($editForm.find('form'));
+      new gl.GLForm($editForm.find('form'), this.enableGFM);
 
       $editForm.find('form')
         .attr('action', postUrl)
@@ -1478,7 +1500,7 @@ const normalizeNewlines = function(str) {
       const cachedNoteBodyText = $noteBodyText.html();
 
       // Show updated comment content temporarily
-      $noteBodyText.html(formContent);
+      $noteBodyText.html(_.escape(formContent));
       $editingNote.removeClass('is-editing fade-in-full').addClass('being-posted fade-in-half');
       $editingNote.find('.note-headline-meta a').html('<i class="fa fa-spinner fa-spin" aria-label="Comment is being updated" aria-hidden="true"></i>');
 
@@ -1491,7 +1513,7 @@ const normalizeNewlines = function(str) {
         })
         .fail(() => {
           // Submission failed, revert back to original note
-          $noteBodyText.html(cachedNoteBodyText);
+          $noteBodyText.html(_.escape(cachedNoteBodyText));
           $editingNote.removeClass('being-posted fade-in');
           $editingNote.find('.fa.fa-spinner').remove();
 

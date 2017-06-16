@@ -30,6 +30,13 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    def find_notes(action)
+      @merge_request
+        .notes
+        .joins(:system_note_metadata)
+        .where(system_note_metadata: { action: action })
+    end
+
     def update_merge_request(opts)
       @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
       @merge_request.reload
@@ -349,7 +356,9 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       context 'when issue has the `label` label' do
-        before { merge_request.labels << label }
+        before do
+          merge_request.labels << label
+        end
 
         it 'does not send notifications for existing labels' do
           opts = { label_ids: [label.id, label2.id] }
@@ -381,12 +390,16 @@ describe MergeRequests::UpdateService, services: true do
     end
 
     context 'when MergeRequest has tasks' do
-      before { update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
+      before do
+        update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" })
+      end
 
       it { expect(@merge_request.tasks?).to eq(true) }
 
       context 'when tasks are marked as completed' do
-        before { update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" }) }
+        before do
+          update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" })
+        end
 
         it 'creates system note about task status change' do
           note1 = find_note('marked the task **Task 1** as completed')
@@ -394,6 +407,9 @@ describe MergeRequests::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -409,6 +425,9 @@ describe MergeRequests::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
     end

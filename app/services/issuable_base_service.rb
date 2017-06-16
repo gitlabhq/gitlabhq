@@ -236,8 +236,9 @@ class IssuableBaseService < BaseService
         )
 
         if old_assignees != issuable.assignees
-          assignees = old_assignees + issuable.assignees.to_a
-          invalidate_cache_counts(assignees.compact, issuable)
+          new_assignees = issuable.assignees.to_a
+          affected_assignees = (old_assignees + new_assignees) - (old_assignees & new_assignees)
+          invalidate_cache_counts(affected_assignees.compact, issuable)
         end
 
         after_update(issuable)
@@ -313,11 +314,13 @@ class IssuableBaseService < BaseService
     end
 
     if issuable.previous_changes.include?('description')
-      create_description_change_note(issuable)
-    end
-
-    if issuable.previous_changes.include?('description') && issuable.tasks?
-      create_task_status_note(issuable)
+      if issuable.tasks? && issuable.updated_tasks.any?
+        create_task_status_note(issuable)
+      else
+        # TODO: Show this note if non-task content was modified.
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/33577
+        create_description_change_note(issuable)
+      end
     end
 
     if issuable.previous_changes.include?('time_estimate')

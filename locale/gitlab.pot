@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-04 19:24-0500\n"
-"PO-Revision-Date: 2017-05-04 19:24-0500\n"
+"POT-Creation-Date: 2017-06-07 21:22+0200\n"
+"PO-Revision-Date: 2017-06-07 21:22+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,13 +18,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
 msgid "ByAuthor|by"
+msgstr ""
+
+msgid "Cancel"
 msgstr ""
 
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Cron Timezone"
+msgstr ""
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
@@ -50,10 +59,31 @@ msgstr ""
 msgid "CycleAnalyticsStage|Test"
 msgstr ""
 
+msgid "Delete"
+msgstr ""
+
 msgid "Deploy"
 msgid_plural "Deploys"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Edit Pipeline Schedule %{id}"
+msgstr ""
+
+msgid "Failed to change the owner"
+msgstr ""
+
+msgid "Failed to remove the pipeline schedule"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
 
 msgid "FirstPushedBy|First"
 msgstr ""
@@ -67,6 +97,9 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
+msgid "Interval Pattern"
+msgstr ""
+
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
@@ -74,6 +107,9 @@ msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Last Pipeline"
+msgstr ""
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
@@ -88,6 +124,12 @@ msgid_plural "New Issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "New Pipeline Schedule"
+msgstr ""
+
+msgid "No schedules"
+msgstr ""
+
 msgid "Not available"
 msgstr ""
 
@@ -97,7 +139,43 @@ msgstr ""
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
+msgid "Owner"
+msgstr ""
+
 msgid "Pipeline Health"
+msgstr ""
+
+msgid "Pipeline Schedule"
+msgstr ""
+
+msgid "Pipeline Schedules"
+msgstr ""
+
+msgid "PipelineSchedules|Activated"
+msgstr ""
+
+msgid "PipelineSchedules|Active"
+msgstr ""
+
+msgid "PipelineSchedules|All"
+msgstr ""
+
+msgid "PipelineSchedules|Inactive"
+msgstr ""
+
+msgid "PipelineSchedules|Next Run"
+msgstr ""
+
+msgid "PipelineSchedules|None"
+msgstr ""
+
+msgid "PipelineSchedules|Provide a short description for this pipeline"
+msgstr ""
+
+msgid "PipelineSchedules|Take ownership"
+msgstr ""
+
+msgid "PipelineSchedules|Target"
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
@@ -124,10 +202,25 @@ msgstr ""
 msgid "Related Merged Requests"
 msgstr ""
 
+msgid "Save pipeline schedule"
+msgstr ""
+
+msgid "Schedule a new pipeline"
+msgstr ""
+
+msgid "Select a timezone"
+msgstr ""
+
+msgid "Select target branch"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Target Branch"
+msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr ""

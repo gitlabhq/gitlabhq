@@ -82,6 +82,42 @@ _The artifacts are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
+## Expiring artifacts
+
+If an expiry date is used for the artifacts, they are marked for deletion
+right after that date passes. Artifacts are cleaned up by the
+`expire_build_artifacts_worker` cron job which is run by Sidekiq every hour at
+50 minutes (`50 * * * *`).
+
+To change the default schedule on which the artifacts are expired, follow the
+steps below.
+
+---
+
+**In Omnibus installations:**
+
+1. Edit `/etc/gitlab/gitlab.rb` and comment out or add the following line
+
+    ```ruby
+    gitlab_rails['expire_build_artifacts_worker_cron'] = "50 * * * *"
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**In installations from source:**
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
+   lines:
+
+    ```yaml
+    expire_build_artifacts_worker:
+      cron: "50 * * * *"
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
+
 ## Set the maximum file size of the artifacts
 
 Provided the artifacts are enabled, you can change the maximum file size of the

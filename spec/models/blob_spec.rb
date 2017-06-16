@@ -199,6 +199,14 @@ describe Blob do
     end
   end
 
+  describe '#file_type' do
+    it 'returns the file type' do
+      blob = fake_blob(path: 'README.md')
+
+      expect(blob.file_type).to eq(:readme)
+    end
+  end
+
   describe '#simple_viewer' do
     context 'when the blob is empty' do
       it 'returns an empty viewer' do

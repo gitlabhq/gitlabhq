@@ -77,7 +77,7 @@ constraints(ProjectUrlConstrainer.new) do
         get :active_metrics
       end
 
-      resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
+      resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
         member do
           put :enable
           put :disable

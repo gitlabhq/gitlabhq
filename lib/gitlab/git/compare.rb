@@ -3,7 +3,7 @@ module Gitlab
     class Compare
       attr_reader :head, :base, :straight
 
-      def initialize(repository, base, head, straight = false)
+      def initialize(repository, base, head, straight: false)
         @repository = repository
         @straight = straight
 

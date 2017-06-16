@@ -2,7 +2,6 @@
 /* global UsernameValidator */
 /* global ActiveTabMemoizer */
 /* global ShortcutsNavigation */
-/* global Build */
 /* global IssuableIndex */
 /* global ShortcutsIssuable */
 /* global ZenMode */
@@ -119,9 +118,6 @@ import initSettingsPanels from './settings_panels';
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
           break;
-        case 'projects:jobs:show':
-          new Build();
-          break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
@@ -159,9 +155,6 @@ import initSettingsPanels from './settings_panels';
         case 'explore:projects:starred':
         case 'admin:projects:index':
           new ProjectsList();
-          break;
-        case 'dashboard:groups:index':
-          new GroupsList();
           break;
         case 'explore:groups:index':
           new GroupsList();
@@ -217,6 +210,16 @@ import initSettingsPanels from './settings_panels';
           new ZenMode();
           new gl.GLForm($('.tag-form'));
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          break;
+        case 'projects:snippets:new':
+        case 'projects:snippets:edit':
+        case 'projects:snippets:create':
+        case 'projects:snippets:update':
+        case 'snippets:new':
+        case 'snippets:edit':
+        case 'snippets:create':
+        case 'snippets:update':
+          new gl.GLForm($('.snippet-form'));
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -322,24 +325,13 @@ import initSettingsPanels from './settings_panels';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
           break;
-        case 'projects:blob:new':
-          gl.TargetBranchDropDown.bootstrap();
-          break;
-        case 'projects:blob:create':
-          gl.TargetBranchDropDown.bootstrap();
-          break;
         case 'projects:blob:show':
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
           initBlob();
-          break;
-        case 'projects:blob:edit':
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blame:show':
           initBlob();
@@ -364,9 +356,11 @@ import initSettingsPanels from './settings_panels';
           new ProjectFork();
           break;
         case 'projects:artifacts:browse':
+          new ShortcutsNavigation();
           new BuildArtifacts();
           break;
         case 'projects:artifacts:file':
+          new ShortcutsNavigation();
           new BlobViewer();
           break;
         case 'help:index':

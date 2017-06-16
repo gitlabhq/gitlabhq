@@ -398,6 +398,15 @@ describe API::Projects do
       expect(json_response['tag_list']).to eq(%w[tagFirst tagSecond])
     end
 
+    it 'uploads avatar for project a project' do
+      project = attributes_for(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif'))
+
+      post api('/projects', user), project
+
+      project_id = json_response['id']
+      expect(json_response['avatar_url']).to eq("http://localhost/uploads/system/project/avatar/#{project_id}/banana_sample.gif")
+    end
+
     it 'sets a project as allowing merge even if build fails' do
       project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: false })
       post api('/projects', user), project
@@ -467,8 +476,9 @@ describe API::Projects do
   end
 
   describe 'POST /projects/user/:id' do
-    before { project }
-    before { admin }
+    before do
+      expect(project).to be_persisted
+    end
 
     it 'creates new project without path but with name and return 201' do
       expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change {Project.count}.by(1)
@@ -572,7 +582,9 @@ describe API::Projects do
   end
 
   describe "POST /projects/:id/uploads" do
-    before { project }
+    before do
+      project
+    end
 
     it "uploads the file and returns its info" do
       post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
@@ -720,7 +732,9 @@ describe API::Projects do
 
       describe 'permissions' do
         context 'all projects' do
-          before { project.team << [user, :master] }
+          before do
+            project.team << [user, :master]
+          end
 
           it 'contains permission information' do
             get api("/projects", user)
@@ -747,7 +761,9 @@ describe API::Projects do
         context 'group project' do
           let(:project2) { create(:empty_project, group: create(:group)) }
 
-          before { project2.group.add_owner(user) }
+          before do
+            project2.group.add_owner(user)
+          end
 
           it 'sets the owner and return 200' do
             get api("/projects/#{project2.id}", user)
@@ -813,7 +829,9 @@ describe API::Projects do
   end
 
   describe 'GET /projects/:id/snippets' do
-    before { snippet }
+    before do
+      snippet
+    end
 
     it 'returns an array of project snippets' do
       get api("/projects/#{project.id}/snippets", user)
@@ -870,7 +888,9 @@ describe API::Projects do
   end
 
   describe 'DELETE /projects/:id/snippets/:snippet_id' do
-    before { snippet }
+    before do
+      snippet
+    end
 
     it 'deletes existing project snippet' do
       expect do
@@ -1065,14 +1085,16 @@ describe API::Projects do
   end
 
   describe 'PUT /projects/:id' do
-    before { project }
-    before { user }
-    before { user3 }
-    before { user4 }
-    before { project3 }
-    before { project4 }
-    before { project_member2 }
-    before { project_member }
+    before do
+      expect(project).to be_persisted
+      expect(user).to be_persisted
+      expect(user3).to be_persisted
+      expect(user4).to be_persisted
+      expect(project3).to be_persisted
+      expect(project4).to be_persisted
+      expect(project_member2).to be_persisted
+      expect(project_member).to be_persisted
+    end
 
     it 'returns 400 when nothing sent' do
       project_param = {}

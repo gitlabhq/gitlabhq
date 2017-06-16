@@ -77,7 +77,10 @@ describe ExtractsPath, lib: true do
 
       context 'without a path' do
         let(:params) { { ref: 'v1.0.0.atom' } }
-        before { assign_ref_vars }
+
+        before do
+          assign_ref_vars
+        end
 
         it 'sets the un-suffixed version as @ref' do
           expect(@ref).to eq('v1.0.0')

@@ -46,7 +46,9 @@ describe Projects::SnippetsController do
       end
 
       context 'when signed in as the author' do
-        before { sign_in(user) }
+        before do
+          sign_in(user)
+        end
 
         it 'renders the snippet' do
           get :index, namespace_id: project.namespace, project_id: project
@@ -57,7 +59,9 @@ describe Projects::SnippetsController do
       end
 
       context 'when signed in as a project member' do
-        before { sign_in(user2) }
+        before do
+          sign_in(user2)
+        end
 
         it 'renders the snippet' do
           get :index, namespace_id: project.namespace, project_id: project
@@ -78,8 +82,18 @@ describe Projects::SnippetsController do
       post :create, {
         namespace_id: project.namespace.to_param,
         project_id: project,
-        project_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
+        project_snippet: { title: 'Title', content: 'Content', description: 'Description' }.merge(snippet_params)
       }.merge(additional_params)
+
+      Snippet.last
+    end
+
+    it 'creates the snippet correctly' do
+      snippet = create_snippet(project, visibility_level: Snippet::PRIVATE)
+
+      expect(snippet.title).to eq('Title')
+      expect(snippet.content).to eq('Content')
+      expect(snippet.description).to eq('Description')
     end
 
     context 'when the snippet is spam' do
@@ -307,7 +321,9 @@ describe Projects::SnippetsController do
         end
 
         context 'when signed in as the author' do
-          before { sign_in(user) }
+          before do
+            sign_in(user)
+          end
 
           it 'renders the snippet' do
             get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
@@ -318,7 +334,9 @@ describe Projects::SnippetsController do
         end
 
         context 'when signed in as a project member' do
-          before { sign_in(user2) }
+          before do
+            sign_in(user2)
+          end
 
           it 'renders the snippet' do
             get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
@@ -339,7 +357,9 @@ describe Projects::SnippetsController do
         end
 
         context 'when signed in' do
-          before { sign_in(user) }
+          before do
+            sign_in(user)
+          end
 
           it 'responds with status 404' do
             get action, namespace_id: project.namespace, project_id: project, id: 42

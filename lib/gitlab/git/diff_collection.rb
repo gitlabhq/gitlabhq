@@ -97,7 +97,7 @@ module Gitlab
 
           diff = Gitlab::Git::Diff.new(raw, expanded: expanded)
 
-          if !expanded && over_safe_limits?(i)
+          if !expanded && over_safe_limits?(i) && diff.line_count > 0
             diff.collapse!
           end
 

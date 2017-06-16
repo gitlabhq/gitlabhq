@@ -25,8 +25,10 @@ class JwtController < ApplicationController
     authenticate_with_http_basic do |login, password|
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, ip: request.ip)
 
-      render_unauthorized unless @authentication_result.success? &&
-          (@authentication_result.actor.nil? || @authentication_result.actor.is_a?(User))
+      if @authentication_result.failed? ||
+          (@authentication_result.actor.present? && !@authentication_result.actor.is_a?(User))
+        render_unauthorized
+      end
     end
   rescue Gitlab::Auth::MissingPersonalTokenError
     render_missing_personal_token
@@ -37,7 +39,7 @@ class JwtController < ApplicationController
       errors: [
         { code: 'UNAUTHORIZED',
           message: "HTTP Basic: Access denied\n" \
-                   "You have 2FA enabled, please use a personal access token for Git over HTTP.\n" \
+                   "You must use a personal access token with 'api' scope for Git over HTTP.\n" \
                    "You can generate one at #{profile_personal_access_tokens_url}" }
       ]
     }, status: 401

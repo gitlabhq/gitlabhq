@@ -10,7 +10,7 @@
                 Pipelines
 
         - if project_nav_tab? :builds
-          = nav_link(controller: [:builds, :artifacts]) do
+          = nav_link(controller: [:jobs, :artifacts]) do
             = link_to project_jobs_path(@project), title: 'Jobs', class: 'shortcuts-builds' do
               %span
                 Jobs

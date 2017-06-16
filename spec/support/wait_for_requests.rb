@@ -7,7 +7,7 @@ module WaitForRequests
   def block_and_wait_for_requests_complete
     Gitlab::Testing::RequestBlockerMiddleware.block_requests!
     wait_for('pending requests complete') do
-      Gitlab::Testing::RequestBlockerMiddleware.num_active_requests.zero?
+      Gitlab::Testing::RequestBlockerMiddleware.num_active_requests.zero? && finished_all_requests?
     end
   ensure
     Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
@@ -40,13 +40,13 @@ module WaitForRequests
   end
 
   def finished_all_vue_resource_requests?
-    page.evaluate_script('window.activeVueResources || 0').zero?
+    Capybara.page.evaluate_script('window.activeVueResources || 0').zero?
   end
 
   def finished_all_ajax_requests?
-    return true if page.evaluate_script('typeof jQuery === "undefined"')
+    return true if Capybara.page.evaluate_script('typeof jQuery === "undefined"')
 
-    page.evaluate_script('jQuery.active').zero?
+    Capybara.page.evaluate_script('jQuery.active').zero?
   end
 
   def javascript_test?

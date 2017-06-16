@@ -43,6 +43,7 @@ Parameters:
   "id": 1,
   "title": "test",
   "file_name": "add.rb",
+  "description": "Ruby test snippet",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -70,6 +71,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `title` (required) - The title of a snippet
 - `file_name` (required) - The name of a snippet file
+- `description` (optional) - The description of a snippet
 - `code` (required) - The content of a snippet
 - `visibility` (required) - The snippet's visibility
 
@@ -87,6 +89,7 @@ Parameters:
 - `snippet_id` (required) - The ID of a project's snippet
 - `title` (optional) - The title of a snippet
 - `file_name` (optional) - The name of a snippet file
+- `description` (optional) - The description of a snippet
 - `code` (optional) - The content of a snippet
 - `visibility` (optional) - The snippet's visibility
 

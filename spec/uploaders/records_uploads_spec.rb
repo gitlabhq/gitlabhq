@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe RecordsUploads do
-  let(:uploader) do
+  let!(:uploader) do
     class RecordsUploadsExampleUploader < GitlabUploader
       include RecordsUploads
 
@@ -53,6 +53,13 @@ describe RecordsUploads do
     it 'creates an Upload record after store' do
       expect(Upload).to receive(:record)
         .with(uploader)
+
+      uploader.store!(upload_fixture('rails_sample.jpg'))
+    end
+
+    it 'does not create an Upload record if model is missing' do
+      expect_any_instance_of(RecordsUploadsExampleUploader).to receive(:model).and_return(nil)
+      expect(Upload).not_to receive(:record).with(uploader)
 
       uploader.store!(upload_fixture('rails_sample.jpg'))
     end

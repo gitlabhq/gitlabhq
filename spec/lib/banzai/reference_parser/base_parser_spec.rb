@@ -30,7 +30,7 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
       it 'checks if user can read the resource' do
         link['data-project'] = project.id.to_s
 
-        expect(subject).to receive(:can_read_reference?).with(user, project)
+        expect(subject).to receive(:can_read_reference?).with(user, project, link)
 
         subject.nodes_visible_to_user(user, [link])
       end
@@ -114,7 +114,7 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
       expect(hash).to eq({ link => user })
     end
 
-    it 'returns an empty Hash when entry does not exist in the database' do
+    it 'returns an empty Hash when entry does not exist in the database', :request_store do
       link = double(:link)
 
       expect(link).to receive(:has_attribute?).

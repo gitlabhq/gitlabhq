@@ -10,11 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
-  before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch, :realtime_changes, :create_merge_request]
-
-  # Allow read any issue
-  before_action :authorize_read_issue!, only: [:show, :realtime_changes]
+  before_action :issue, except: [:index, :new, :create, :bulk_update]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -55,7 +51,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.atom { render layout: false }
+      format.atom { render layout: 'xml.atom' }
       format.json do
         render json: {
           html: view_to_html_string("projects/issues/_issues"),
@@ -229,17 +225,18 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
+    return @issue if defined?(@issue)
     # The Sortable default scope causes performance issues when used with find_by
     @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+
+    return render_404 unless can?(current_user, :read_issue, @issue)
+
+    @issue
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue
   alias_method :spammable, :issue
-
-  def authorize_read_issue!
-    return render_404 unless can?(current_user, :read_issue, @issue)
-  end
 
   def authorize_update_issue!
     return render_404 unless can?(current_user, :update_issue, @issue)

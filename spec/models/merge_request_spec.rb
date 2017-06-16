@@ -892,7 +892,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
@@ -944,7 +946,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when not open' do
-      before { subject.close }
+      before do
+        subject.close
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -952,7 +956,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when working in progress' do
-      before { subject.title = 'WIP MR' }
+      before do
+        subject.title = 'WIP MR'
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -960,7 +966,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey

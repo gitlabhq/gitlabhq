@@ -378,13 +378,15 @@ describe SlashCommands::InterpretService, services: true do
     context 'assign command with multiple assignees' do
       let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
 
-      before{ project.team << [developer2, :developer] }
+      before do
+        project.team << [developer2, :developer]
+      end
 
       context 'Issue' do
         it 'fetches assignee and populates assignee_id if content contains /assign' do
           _, updates = service.execute(content, issue)
 
-          expect(updates[:assignee_ids]).to match_array([developer.id, developer2.id])
+          expect(updates[:assignee_ids]).to match_array([developer.id])
         end
       end
 
@@ -798,7 +800,11 @@ describe SlashCommands::InterpretService, services: true do
 
       context 'if the project has multiple boards' do
         let(:issuable) { issue }
-        before { create(:board, project: project) }
+
+        before do
+          create(:board, project: project)
+        end
+
         it_behaves_like 'empty command'
       end
 

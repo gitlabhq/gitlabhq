@@ -25,7 +25,7 @@ records should use stubs/doubles as much as possible.
 | --------- | ---------- | -------------- | ----- |
 | `app/finders/` | `spec/finders/` | RSpec | |
 | `app/helpers/` | `spec/helpers/` | RSpec | |
-| `app/db/{post_,}migrate/` | `spec/migrations/` | RSpec | |
+| `app/db/{post_,}migrate/` | `spec/migrations/` | RSpec | More details at [`spec/migrations/README.md`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md). |
 | `app/policies/` | `spec/policies/` | RSpec | |
 | `app/presenters/` | `spec/presenters/` | RSpec | |
 | `app/routing/` | `spec/routing/` | RSpec | |
