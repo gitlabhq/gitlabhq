@@ -158,13 +158,14 @@ class Admin::UsersController < Admin::ApplicationController
       user.update_secondary_emails!
     end
 
-    if result[:status] == :success
-      format.html { redirect_back_or_admin_user(notice: "Successfully removed email.") }
-      format.json { head :ok }
-    else
-      # restore username to keep form action url.
-      format.html { redirect_back_or_admin_user(notice: result[:message]) }
-      format.json { render json: result[:message], status: result[:status] }
+    respond_to do |format|
+      if result[:status] == :success
+        format.html { redirect_back_or_admin_user(notice: "Successfully removed email.") }
+        format.json { head :ok }
+      else
+        format.html { redirect_back_or_admin_user(alert: result[:message]) }
+        format.json { render json: result[:message], status: result[:status] }
+      end
     end
   end
 
