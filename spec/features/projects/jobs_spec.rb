@@ -393,7 +393,7 @@ feature 'Jobs', :feature do
         visit namespace_project_job_path(project.namespace, project, job)
         click_link 'Cancel'
         page.within('.build-header') do
-          click_link 'Retry job'
+          click_link 'Retry'
         end
       end
 
@@ -409,7 +409,7 @@ feature 'Jobs', :feature do
       before do
         job.run!
         visit namespace_project_job_path(project.namespace, project, job)
-        click_link 'Cancel'
+        find('.js-cancel-job').click()
         page.driver.post(retry_namespace_project_job_path(project.namespace, project, job2))
       end
 
