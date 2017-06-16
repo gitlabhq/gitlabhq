@@ -158,17 +158,13 @@ class Environment < ActiveRecord::Base
   end
 
   def has_additional_metrics?
-    prometheus_service.present? && available? && last_deployment.present?
+    project.prometheus_service.present? && available? && last_deployment.present?
   end
 
   def additional_metrics
     if has_additional_metrics?
-      prometheus_service.additional_environment_metrics(self)
+      project.prometheus_service.additional_environment_metrics(self)
     end
-  end
-
-  def prometheus_service
-    @prometheus_service ||= project.monitoring_services.reorder(nil).find_by(active: true, type: PrometheusService.name)
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS

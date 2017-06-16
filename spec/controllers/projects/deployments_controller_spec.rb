@@ -132,7 +132,7 @@ describe Projects::DeploymentsController do
       let(:prometheus_service) { double('prometheus_service') }
 
       before do
-        allow(deployment).to receive(:prometheus_service).and_return(prometheus_service)
+        allow(deployment.project).to receive(:prometheus_service).and_return(prometheus_service)
       end
 
       context 'when environment has no metrics' do

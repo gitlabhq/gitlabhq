@@ -23,7 +23,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
   end
 
   def additional_metrics
-    return render_404 unless deployment.prometheus_service.present?
+    return render_404 unless deployment.has_additional_metrics?
 
     metrics = deployment.additional_metrics
 

@@ -114,15 +114,15 @@ class Deployment < ActiveRecord::Base
     project.monitoring_service.deployment_metrics(self)
   end
 
-  def additional_metrics
-    return {} unless prometheus_service.present?
-
-    metrics = prometheus_service.additional_deployment_metrics(self)
-    metrics&.merge(deployment_time: created_at.to_i) || {}
+  def has_additional_metrics?
+    project.prometheus_service.present?
   end
 
-  def prometheus_service
-    @prometheus_service ||= project.monitoring_services.reorder(nil).find_by(active: true, type: PrometheusService.name)
+  def additional_metrics
+    return {} unless project.prometheus_service.present?
+
+    metrics = project.prometheus_service.additional_deployment_metrics(self)
+    metrics&.merge(deployment_time: created_at.to_i) || {}
   end
 
   private
