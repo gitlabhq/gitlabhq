@@ -7,7 +7,7 @@
   .form-group
     .col-md-9
       = f.label :description, _('Description'), class: 'label-light'
-      = f.text_field :description, class: 'form-control', required: true, autofocus: true, placeholder: _('PipelineSchedules|Provide a short description for this pipeline')
+      = f.text_field :description, class: 'form-control', required: true, autofocus: true, placeholder: s_('PipelineSchedules|Provide a short description for this pipeline')
   .form-group
     .col-md-9
       = f.label :cron, _('Interval Pattern'), class: 'label-light'
@@ -15,19 +15,19 @@
   .form-group
     .col-md-9
       = f.label :cron_timezone, _('Cron Timezone'), class: 'label-light'
-      = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'btn js-timezone-dropdown', title: _("Select a timezone"), filter: true, placeholder: _("Filter"), data: { data: timezone_data } } )
+      = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'btn js-timezone-dropdown', title: _("Select a timezone"), filter: true, placeholder: _("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
       = f.text_field :cron_timezone, value: @schedule.cron_timezone, id: 'schedule_cron_timezone', class: 'hidden', name: 'schedule[cron_timezone]', required: true
   .form-group
     .col-md-9
       = f.label :ref, _('Target Branch'), class: 'label-light'
-      = dropdown_tag(_("Select target branch"), options: { toggle_class: 'btn js-target-branch-dropdown git-revision-dropdown-toggle', dropdown_class: 'git-revision-dropdown', title: _("Select target branch"), filter: true, placeholder: _("Filter"), data: { data: @project.repository.branch_names, default_branch: @project.default_branch } } )
+      = dropdown_tag(_("Select target branch"), options: { toggle_class: 'btn js-target-branch-dropdown git-revision-dropdown-toggle', dropdown_class: 'git-revision-dropdown', title: _("Select target branch"), filter: true, placeholder: _("OfSearchInADropdown|Filter"), data: { data: @project.repository.branch_names, default_branch: @project.default_branch } } )
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
   .form-group
     .col-md-9
-      = f.label  :active, _('PipelineSchedules|Activated'), class: 'label-light'
+      = f.label  :active, s_('PipelineSchedules|Activated'), class: 'label-light'
       %div
         = f.check_box :active, required: false, value: @schedule.active?
-        Active
+        = _('Active')
   .footer-block.row-content-block
     = f.submit _('Save pipeline schedule'), class: 'btn btn-create', tabindex: 3
     = link_to _('Cancel'), pipeline_schedules_path(@project), class: 'btn btn-cancel'

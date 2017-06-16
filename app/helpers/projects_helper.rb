@@ -80,7 +80,7 @@ module ProjectsHelper
   end
 
   def remove_fork_project_message(project)
-    _("You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?") %
+    _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
       { forked_from_project: @project.forked_from_project.name_with_namespace }
   end
 
