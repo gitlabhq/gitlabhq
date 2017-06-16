@@ -3,7 +3,7 @@ class Profiles::AvatarsController < Profiles::ApplicationController
     @user = current_user
     @user.remove_avatar!
 
-    @user.save
+    Users::UpdateService.new(@user, @user).execute
 
     redirect_to profile_path, status: 302
   end

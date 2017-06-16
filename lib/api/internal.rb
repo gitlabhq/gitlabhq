@@ -133,7 +133,7 @@ module API
         end
 
         codes = user.generate_otp_backup_codes!
-        user.save!
+        ::Users::UpdateService.new(user, user).execute!
 
         { success: true, recovery_codes: codes }
       end

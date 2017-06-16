@@ -1,5 +1,5 @@
 module Users
-  # Service for creating a new user.
+  # Service for updating a user.
   class UpdateService < BaseService
     def initialize(current_user, user, params = {})
       @current_user = current_user
@@ -7,10 +7,10 @@ module Users
       @params = params.dup
     end
 
-    def execute(skip_authorization: false, &block)
+    def execute(skip_authorization: false, validate: true, &block)
       assign_attributes(skip_authorization, &block)
 
-      if @user.save || !@user.changed? && @user.errors.empty?
+      if @user.save(validate: validate) || !@user.changed? && @user.errors.empty?
         success
       else
         error(@user.errors.full_messages.uniq.join('. '))
