@@ -28,28 +28,37 @@
   };
 </script>
 <template>
-  <table class="table ci-table">
-    <thead>
-      <tr>
-        <th class="js-pipeline-status pipeline-status">Status</th>
-        <th class="js-pipeline-info pipeline-info">Pipeline</th>
-        <th class="js-pipeline-commit pipeline-commit">Commit</th>
-        <th class="js-pipeline-stages pipeline-stages">Stages</th>
-        <th class="js-pipeline-date pipeline-date"></th>
-        <th class="js-pipeline-actions pipeline-actions"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <template
-        v-for="model in pipelines"
-        :model="model">
-        <tr
-          is="pipelines-table-row-component"
-          :pipeline="model"
-          :service="service"
-          :update-graph-dropdown="updateGraphDropdown"
-          />
-      </template>
-    </tbody>
-  </table>
+  <div class="ci-table">
+    <div
+      class="gl-responsive-table-row table-row-header"
+      role="row">
+      <div
+        class="table-section section-10 js-pipeline-status pipeline-status"
+        role="rowheader">
+        Status
+      </div>
+      <div
+        class="table-section section-15 js-pipeline-info pipeline-info"
+        role="rowheader">
+        Pipeline
+      </div>
+      <div
+        class="table-section section-25 js-pipeline-commit pipeline-commit"
+        role="rowheader">
+        Commit
+      </div>
+      <div
+        class="table-section section-15 js-pipeline-stages pipeline-stages"
+        role="rowheader">
+        Stages
+      </div>
+    </div>
+    <pipelines-table-row-component
+      v-for="model in pipelines"
+      :key="model.id"
+      :pipeline="model"
+      :service="service"
+      :update-graph-dropdown="updateGraphDropdown"
+    />
+  </div>
 </template>

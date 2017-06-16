@@ -28,7 +28,7 @@ feature 'Pipelines for Merge Requests', feature: true, js: true do
       end
       wait_for_requests
 
-      expect(page).to have_selector('.pipeline-actions')
+      expect(page).to have_selector('.stage-cell')
     end
   end
 
