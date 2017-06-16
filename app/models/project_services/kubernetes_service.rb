@@ -122,7 +122,6 @@ class KubernetesService < DeploymentService
     end
   end
 
-<<<<<<< HEAD
   def rollout_status(environment)
     with_reactive_cache do |data|
       specs = filter_by_label(data[:deployments], app: environment.slug)
@@ -131,21 +130,13 @@ class KubernetesService < DeploymentService
     end
   end
 
-  # Caches all pods & deployments in the namespace so other calls don't need to
-  # block on network access.
-=======
   # Caches resources in the namespace so other calls don't need to block on
   # network access
->>>>>>> ce/master
   def calculate_reactive_cache
     return unless active? && project && !project.pending_delete?
 
     # We may want to cache extra things in the future
-<<<<<<< HEAD
     { pods: read_pods, deployments: read_deployments }
-=======
-    { pods: read_pods }
->>>>>>> ce/master
   end
 
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
@@ -182,7 +173,6 @@ class KubernetesService < DeploymentService
     []
   end
 
-<<<<<<< HEAD
   def read_deployments
     kubeclient = build_kubeclient!(api_path: 'apis/extensions', api_version: 'v1beta1')
 
@@ -192,8 +182,6 @@ class KubernetesService < DeploymentService
     []
   end
 
-=======
->>>>>>> ce/master
   def kubeclient_ssl_options
     opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
 

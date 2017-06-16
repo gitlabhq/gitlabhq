@@ -282,7 +282,6 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
-<<<<<<< HEAD
   def elasticsearch_indexing
     License.feature_available?(:elastic_search) && super
   end
@@ -313,10 +312,7 @@ class ApplicationSetting < ActiveRecord::Base
     }
   end
 
-  def home_page_url_column_exist
-=======
   def home_page_url_column_exists?
->>>>>>> ce/master
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
   end
 

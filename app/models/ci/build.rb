@@ -36,12 +36,8 @@ module Ci
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
-<<<<<<< HEAD
-    scope :manual_actions, ->() { where(when: :manual).relevant }
-    scope :codeclimate, ->() { where(name: 'codeclimate') }
-=======
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
->>>>>>> ce/master
+    scope :codeclimate, ->() { where(name: 'codeclimate') }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
