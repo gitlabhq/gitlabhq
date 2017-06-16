@@ -53,14 +53,18 @@ describe Gitlab::Database, lib: true do
 
   describe '.nulls_last_order' do
     context 'when using PostgreSQL' do
-      before { expect(described_class).to receive(:postgresql?).and_return(true) }
+      before do
+        expect(described_class).to receive(:postgresql?).and_return(true)
+      end
 
       it { expect(described_class.nulls_last_order('column', 'ASC')).to eq 'column ASC NULLS LAST'}
       it { expect(described_class.nulls_last_order('column', 'DESC')).to eq 'column DESC NULLS LAST'}
     end
 
     context 'when using MySQL' do
-      before { expect(described_class).to receive(:postgresql?).and_return(false) }
+      before do
+        expect(described_class).to receive(:postgresql?).and_return(false)
+      end
 
       it { expect(described_class.nulls_last_order('column', 'ASC')).to eq 'column IS NULL, column ASC'}
       it { expect(described_class.nulls_last_order('column', 'DESC')).to eq 'column DESC'}
@@ -69,14 +73,18 @@ describe Gitlab::Database, lib: true do
 
   describe '.nulls_first_order' do
     context 'when using PostgreSQL' do
-      before { expect(described_class).to receive(:postgresql?).and_return(true) }
+      before do
+        expect(described_class).to receive(:postgresql?).and_return(true)
+      end
 
       it { expect(described_class.nulls_first_order('column', 'ASC')).to eq 'column ASC NULLS FIRST'}
       it { expect(described_class.nulls_first_order('column', 'DESC')).to eq 'column DESC NULLS FIRST'}
     end
 
     context 'when using MySQL' do
-      before { expect(described_class).to receive(:postgresql?).and_return(false) }
+      before do
+        expect(described_class).to receive(:postgresql?).and_return(false)
+      end
 
       it { expect(described_class.nulls_first_order('column', 'ASC')).to eq 'column ASC'}
       it { expect(described_class.nulls_first_order('column', 'DESC')).to eq 'column IS NULL, column DESC'}

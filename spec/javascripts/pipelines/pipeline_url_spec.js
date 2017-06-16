@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import pipelineUrlComp from '~/pipelines/components/pipeline_url';
+import pipelineUrlComp from '~/pipelines/components/pipeline_url.vue';
 
 describe('Pipeline Url Component', () => {
   let PipelineUrlComponent;
@@ -19,7 +19,7 @@ describe('Pipeline Url Component', () => {
       },
     }).$mount();
 
-    expect(component.$el.tagName).toEqual('TD');
+    expect(component.$el.getAttribute('class')).toContain('table-section');
   });
 
   it('should render a link the provided path and id', () => {
@@ -47,6 +47,7 @@ describe('Pipeline Url Component', () => {
           web_url: '/',
           name: 'foo',
           avatar_url: '/',
+          path: '/',
         },
       },
     };
@@ -60,7 +61,7 @@ describe('Pipeline Url Component', () => {
     expect(
       component.$el.querySelector('.js-pipeline-url-user').getAttribute('href'),
     ).toEqual(mockData.pipeline.user.web_url);
-    expect(image.getAttribute('title')).toEqual(mockData.pipeline.user.name);
+    expect(image.getAttribute('data-original-title')).toEqual(mockData.pipeline.user.name);
     expect(image.getAttribute('src')).toEqual(mockData.pipeline.user.avatar_url);
   });
 
@@ -93,7 +94,7 @@ describe('Pipeline Url Component', () => {
       },
     }).$mount();
 
-    expect(component.$el.querySelector('.js-pipeline-url-lastest').textContent).toContain('latest');
+    expect(component.$el.querySelector('.js-pipeline-url-latest').textContent).toContain('latest');
     expect(component.$el.querySelector('.js-pipeline-url-yaml').textContent).toContain('yaml invalid');
     expect(component.$el.querySelector('.js-pipeline-url-stuck').textContent).toContain('stuck');
   });

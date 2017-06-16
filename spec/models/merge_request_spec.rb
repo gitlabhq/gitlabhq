@@ -238,10 +238,10 @@ describe MergeRequest, models: true do
     end
 
     context 'when there are no MR diffs' do
-      it 'delegates to the compare object, setting no_collapse: true' do
+      it 'delegates to the compare object, setting expanded: true' do
         merge_request.compare = double(:compare)
 
-        expect(merge_request.compare).to receive(:diffs).with(options.merge(no_collapse: true))
+        expect(merge_request.compare).to receive(:diffs).with(options.merge(expanded: true))
 
         merge_request.diffs(options)
       end
@@ -718,8 +718,7 @@ describe MergeRequest, models: true do
   describe '#head_pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
-        pipeline = create(:ci_empty_pipeline, project: subject.source_project, ref: 'master', status: 'running', sha: "123abc")
-        subject.update(head_pipeline: pipeline)
+        pipeline = create(:ci_empty_pipeline, project: subject.source_project, ref: 'master', status: 'running', sha: "123abc", head_pipeline_of: subject)
 
         expect(subject.head_pipeline).to eq(pipeline)
       end
@@ -893,7 +892,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
@@ -945,7 +946,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when not open' do
-      before { subject.close }
+      before do
+        subject.close
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -953,7 +956,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when working in progress' do
-      before { subject.title = 'WIP MR' }
+      before do
+        subject.title = 'WIP MR'
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -961,7 +966,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -1179,7 +1186,7 @@ describe MergeRequest, models: true do
   end
 
   describe "#reload_diff" do
-    let(:note) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject) }
+    let(:discussion) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject).to_discussion }
 
     let(:commit) { subject.project.commit(sample_commit.id) }
 
@@ -1198,7 +1205,7 @@ describe MergeRequest, models: true do
       subject.reload_diff
     end
 
-    it "updates diff note positions" do
+    it "updates diff discussion positions" do
       old_diff_refs = subject.diff_refs
 
       # Update merge_request_diff so that #diff_refs will return commit.diff_refs
@@ -1212,18 +1219,18 @@ describe MergeRequest, models: true do
         subject.merge_request_diff(true)
       end
 
-      expect(Notes::DiffPositionUpdateService).to receive(:new).with(
+      expect(Discussions::UpdateDiffPositionService).to receive(:new).with(
         subject.project,
-        nil,
+        subject.author,
         old_diff_refs: old_diff_refs,
         new_diff_refs: commit.diff_refs,
-        paths: note.position.paths
+        paths: discussion.position.paths
       ).and_call_original
 
-      expect_any_instance_of(Notes::DiffPositionUpdateService).to receive(:execute).with(note)
+      expect_any_instance_of(Discussions::UpdateDiffPositionService).to receive(:execute).with(discussion).and_call_original
       expect_any_instance_of(DiffNote).to receive(:save).once
 
-      subject.reload_diff
+      subject.reload_diff(subject.author)
     end
   end
 
@@ -1244,7 +1251,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#diff_sha_refs" do
+  describe "#diff_refs" do
     context "with diffs" do
       subject { create(:merge_request, :with_diffs) }
 
@@ -1253,7 +1260,7 @@ describe MergeRequest, models: true do
 
         expect_any_instance_of(Repository).not_to receive(:commit)
 
-        subject.diff_sha_refs
+        subject.diff_refs
       end
 
       it "returns expected diff_refs" do
@@ -1263,7 +1270,7 @@ describe MergeRequest, models: true do
           head_sha:  subject.merge_request_diff.head_commit_sha
         )
 
-        expect(subject.diff_sha_refs).to eq(expected_diff_refs)
+        expect(subject.diff_refs).to eq(expected_diff_refs)
       end
     end
   end
@@ -1396,9 +1403,8 @@ describe MergeRequest, models: true do
         project: project,
         ref:     merge_request.source_branch,
         sha:     merge_request.diff_head_sha,
-        status:  status)
-
-      merge_request.update(head_pipeline: pipeline)
+        status:  status,
+        head_pipeline_of: merge_request)
 
       pipeline
     end
@@ -1533,6 +1539,38 @@ describe MergeRequest, models: true do
     context 'with a commit SHA' do
       it 'returns the diffs' do
         expect(subject.merge_request_diff_for(merge_request_diff3.head_commit_sha)).to eq(merge_request_diff3)
+      end
+    end
+  end
+
+  describe '#version_params_for' do
+    subject { create(:merge_request, importing: true) }
+    let(:project) { subject.project }
+    let!(:merge_request_diff1) { subject.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+    let!(:merge_request_diff2) { subject.merge_request_diffs.create(head_commit_sha: nil) }
+    let!(:merge_request_diff3) { subject.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+
+    context 'when the diff refs are for an older merge request version' do
+      let(:diff_refs) { merge_request_diff1.diff_refs }
+
+      it 'returns the diff ID for the version to show' do
+        expect(subject.version_params_for(diff_refs)).to eq(diff_id: merge_request_diff1.id)
+      end
+    end
+
+    context 'when the diff refs are for a comparison between merge request versions' do
+      let(:diff_refs) { merge_request_diff3.compare_with(merge_request_diff1.head_commit_sha).diff_refs }
+
+      it 'returns the diff ID and start sha of the versions to compare' do
+        expect(subject.version_params_for(diff_refs)).to eq(diff_id: merge_request_diff3.id, start_sha: merge_request_diff1.head_commit_sha)
+      end
+    end
+
+    context 'when the diff refs are not for a merge request version' do
+      let(:diff_refs) { project.commit(sample_commit.id).diff_refs }
+
+      it 'returns nil' do
+        expect(subject.version_params_for(diff_refs)).to be_nil
       end
     end
   end

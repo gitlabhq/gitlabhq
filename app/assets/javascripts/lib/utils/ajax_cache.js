@@ -1,23 +1,13 @@
-class AjaxCache {
+import Cache from './cache';
+
+class AjaxCache extends Cache {
   constructor() {
-    this.internalStorage = { };
+    super();
     this.pendingRequests = { };
   }
 
-  get(endpoint) {
-    return this.internalStorage[endpoint];
-  }
-
-  hasData(endpoint) {
-    return Object.prototype.hasOwnProperty.call(this.internalStorage, endpoint);
-  }
-
-  remove(endpoint) {
-    delete this.internalStorage[endpoint];
-  }
-
-  retrieve(endpoint) {
-    if (this.hasData(endpoint)) {
+  retrieve(endpoint, forceRetrieve) {
+    if (this.hasData(endpoint) && !forceRetrieve) {
       return Promise.resolve(this.get(endpoint));
     }
 

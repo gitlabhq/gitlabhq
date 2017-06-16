@@ -390,6 +390,15 @@ Style/OpMethod:
 Style/ParenthesesAroundCondition:
   Enabled: true
 
+# This cop (by default) checks for uses of methods Hash#has_key? and
+# Hash#has_value? where it enforces Hash#key? and Hash#value?
+# It is configurable to enforce the inverse, using `verbose` method
+# names also.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: short, verbose
+Style/PreferredHashMethods:
+  Enabled: false
+
 # Checks for an obsolete RuntimeException argument in raise/fail.
 Style/RedundantException:
   Enabled: true
@@ -969,6 +978,12 @@ RSpec/DescribeSymbol:
 RSpec/DescribedClass:
   Enabled: true
 
+# Checks if an example group does not include any tests.
+RSpec/EmptyExampleGroup:
+  Enabled: true
+  CustomIncludeMethods:
+    - run_permission_checks
+
 # Checks for long example.
 RSpec/ExampleLength:
   Enabled: false
@@ -985,6 +1000,10 @@ RSpec/ExampleWording:
 
 # Checks for `expect(...)` calls containing literal values.
 RSpec/ExpectActual:
+  Enabled: true
+
+# Checks for opportunities to use `expect { … }.to output`.
+RSpec/ExpectOutput:
   Enabled: true
 
 # Checks the file and folder naming of the spec file.
@@ -1044,6 +1063,13 @@ RSpec/NotToNot:
 # Check for repeated description strings in example groups.
 RSpec/RepeatedDescription:
   Enabled: false
+
+# Ensure RSpec hook blocks are always multi-line.
+RSpec/SingleLineHook:
+  Enabled: true
+  Exclude:
+    - 'spec/factories/*'
+    - 'spec/requests/api/v3/*'
 
 # Checks for stubbed test subjects.
 RSpec/SubjectStub:

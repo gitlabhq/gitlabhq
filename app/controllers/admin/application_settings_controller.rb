@@ -100,6 +100,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :enabled_git_access_protocol,
       :gravatar_enabled,
       :help_page_text,
+      :help_page_hide_commercial_content,
+      :help_page_support_url,
       :home_page_url,
       :housekeeping_bitmaps_enabled,
       :housekeeping_enabled,
@@ -149,6 +151,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :version_check_enabled,
       :terminal_max_session_time,
       :polling_interval_multiplier,
+      :prometheus_metrics_enabled,
       :usage_ping_enabled,
 
       disabled_oauth_sign_in_sources: [],

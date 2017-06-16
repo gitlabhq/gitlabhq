@@ -50,9 +50,9 @@ export default class BlobViewer {
 
     if (this.copySourceBtn) {
       this.copySourceBtn.addEventListener('click', () => {
-        if (this.copySourceBtn.classList.contains('disabled')) return;
+        if (this.copySourceBtn.classList.contains('disabled')) return this.copySourceBtn.blur();
 
-        this.switchToViewer('simple');
+        return this.switchToViewer('simple');
       });
     }
   }
@@ -111,7 +111,7 @@ export default class BlobViewer {
 
     BlobViewer.loadViewer(newViewer)
     .then((viewer) => {
-      $(viewer).syntaxHighlight();
+      $(viewer).renderGFM();
 
       this.$fileHolder.trigger('highlight:line');
       gl.utils.handleLocationHash();

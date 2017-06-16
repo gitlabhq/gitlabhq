@@ -202,10 +202,12 @@ feature 'Login', feature: true do
     #  TODO: otp_grace_period_started_at
 
     context 'global setting' do
-      before(:each) { stub_application_setting(require_two_factor_authentication: true) }
+      before do
+        stub_application_setting(require_two_factor_authentication: true)
+      end
 
       context 'with grace period defined' do
-        before(:each) do
+        before do
           stub_application_setting(two_factor_grace_period: 48)
           login_with(user)
         end
@@ -242,7 +244,7 @@ feature 'Login', feature: true do
       end
 
       context 'without grace period defined' do
-        before(:each) do
+        before do
           stub_application_setting(two_factor_grace_period: 0)
           login_with(user)
         end
@@ -265,7 +267,7 @@ feature 'Login', feature: true do
       end
 
       context 'with grace period defined' do
-        before(:each) do
+        before do
           stub_application_setting(two_factor_grace_period: 48)
           login_with(user)
         end
@@ -306,7 +308,7 @@ feature 'Login', feature: true do
       end
 
       context 'without grace period defined' do
-        before(:each) do
+        before do
           stub_application_setting(two_factor_grace_period: 0)
           login_with(user)
         end

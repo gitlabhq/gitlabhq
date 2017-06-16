@@ -4,7 +4,7 @@ class Deployment < ActiveRecord::Base
   belongs_to :project, required: true, validate: true
   belongs_to :environment, required: true, validate: true
   belongs_to :user
-  belongs_to :deployable, polymorphic: true
+  belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :sha, presence: true
   validates :ref, presence: true
@@ -12,6 +12,7 @@ class Deployment < ActiveRecord::Base
   delegate :name, to: :environment, prefix: true
 
   after_create :create_ref
+  after_create :invalidate_cache
 
   def commit
     project.commit(sha)
@@ -31,6 +32,10 @@ class Deployment < ActiveRecord::Base
 
   def create_ref
     project.repository.create_ref(ref, ref_path)
+  end
+
+  def invalidate_cache
+    environment.expire_etag_cache
   end
 
   def manual_actions

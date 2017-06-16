@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::MergeRequestsController do
   let(:project) { create(:project) }
-  let(:user)    { create(:user) }
+  let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do
     create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) do |mr|
@@ -12,7 +12,6 @@ describe Projects::MergeRequestsController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
   end
 
   describe 'GET new' do
@@ -20,7 +19,10 @@ describe Projects::MergeRequestsController do
       render_views
 
       let(:fork_project) { create(:forked_project_with_submodules) }
-      before { fork_project.team << [user, :master] }
+
+      before do
+        fork_project.team << [user, :master]
+      end
 
       context 'when rendering HTML response' do
         it 'renders new merge request widget template' do
@@ -117,6 +119,18 @@ describe Projects::MergeRequestsController do
           go(format: :json)
 
           expect(response).to match_response_schema('entities/merge_request')
+        end
+      end
+
+      context 'number of queries', :request_store do
+        it 'verifies number of queries' do
+          # pre-create objects
+          merge_request
+
+          recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
+
+          expect(recorded.count).to be_within(5).of(30)
+          expect(recorded.cached_count).to eq(0)
         end
       end
     end
@@ -292,6 +306,8 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when user cannot access' do
+      let(:user) { create(:user) }
+
       before do
         project.add_reporter(user)
         xhr :post, :merge, base_params
@@ -315,7 +331,9 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when the sha parameter does not match the source SHA' do
-      before { post :merge, base_params.merge(sha: 'foo') }
+      before do
+        post :merge, base_params.merge(sha: 'foo')
+      end
 
       it 'returns :sha_mismatch' do
         expect(json_response).to eq('status' => 'sha_mismatch')
@@ -345,8 +363,7 @@ describe Projects::MergeRequestsController do
         end
 
         before do
-          pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
-          merge_request.update(head_pipeline: pipeline)
+          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -448,6 +465,8 @@ describe Projects::MergeRequestsController do
   end
 
   describe "DELETE destroy" do
+    let(:user) { create(:user) }
+
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
@@ -459,7 +478,9 @@ describe Projects::MergeRequestsController do
       let(:namespace) { create(:namespace, owner: owner) }
       let(:project)   { create(:project, namespace: namespace) }
 
-      before { sign_in owner }
+      before do
+        sign_in owner
+      end
 
       it "deletes the merge request" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
@@ -491,7 +512,9 @@ describe Projects::MergeRequestsController do
 
     context 'with default params' do
       context 'as html' do
-        before { go(format: 'html') }
+        before do
+          go(format: 'html')
+        end
 
         it 'renders the diff template' do
           expect(response).to render_template('diffs')
@@ -499,7 +522,9 @@ describe Projects::MergeRequestsController do
       end
 
       context 'as json' do
-        before { go(format: 'json') }
+        before do
+          go(format: 'json')
+        end
 
         it 'renders the diffs template to a string' do
           expect(response).to render_template('projects/merge_requests/show/_diffs')
@@ -530,7 +555,9 @@ describe Projects::MergeRequestsController do
 
     context 'with ignore_whitespace_change' do
       context 'as html' do
-        before { go(format: 'html', w: 1) }
+        before do
+          go(format: 'html', w: 1)
+        end
 
         it 'renders the diff template' do
           expect(response).to render_template('diffs')
@@ -538,7 +565,9 @@ describe Projects::MergeRequestsController do
       end
 
       context 'as json' do
-        before { go(format: 'json', w: 1) }
+        before do
+          go(format: 'json', w: 1)
+        end
 
         it 'renders the diffs template to a string' do
           expect(response).to render_template('projects/merge_requests/show/_diffs')
@@ -548,7 +577,9 @@ describe Projects::MergeRequestsController do
     end
 
     context 'with view' do
-      before { go(view: 'parallel') }
+      before do
+        go(view: 'parallel')
+      end
 
       it 'saves the preferred diff view in a cookie' do
         expect(response.cookies['diff_view']).to eq('parallel')
@@ -591,7 +622,9 @@ describe Projects::MergeRequestsController do
           end
 
           context 'when the path does not exist in the diff' do
-            before { diff_for_path(id: merge_request.iid, old_path: 'files/ruby/nopen.rb', new_path: 'files/ruby/nopen.rb') }
+            before do
+              diff_for_path(id: merge_request.iid, old_path: 'files/ruby/nopen.rb', new_path: 'files/ruby/nopen.rb')
+            end
 
             it 'returns a 404' do
               expect(response).to have_http_status(404)
@@ -612,7 +645,9 @@ describe Projects::MergeRequestsController do
       end
 
       context 'when the merge request does not exist' do
-        before { diff_for_path(id: merge_request.iid.succ, old_path: existing_path, new_path: existing_path) }
+        before do
+          diff_for_path(id: merge_request.iid.succ, old_path: existing_path, new_path: existing_path)
+        end
 
         it 'returns a 404' do
           expect(response).to have_http_status(404)
@@ -656,7 +691,9 @@ describe Projects::MergeRequestsController do
       context 'when the source branch is in a different project to the target' do
         let(:other_project) { create(:project) }
 
-        before { other_project.team << [user, :master] }
+        before do
+          other_project.team << [user, :master]
+        end
 
         context 'when the path exists in the diff' do
           it 'disables diff notes' do
@@ -676,7 +713,9 @@ describe Projects::MergeRequestsController do
         end
 
         context 'when the path does not exist in the diff' do
-          before { diff_for_path(old_path: 'files/ruby/nopen.rb', new_path: 'files/ruby/nopen.rb', merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' }) }
+          before do
+            diff_for_path(old_path: 'files/ruby/nopen.rb', new_path: 'files/ruby/nopen.rb', merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })
+          end
 
           it 'returns a 404' do
             expect(response).to have_http_status(404)
@@ -899,7 +938,9 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when the file does not exist cannot be resolved in the UI' do
-      before { conflict_for_path('files/ruby/regexp.rb') }
+      before do
+        conflict_for_path('files/ruby/regexp.rb')
+      end
 
       it 'returns a 404 status code' do
         expect(response).to have_http_status(:not_found)
@@ -909,7 +950,9 @@ describe Projects::MergeRequestsController do
     context 'with an existing file' do
       let(:path) { 'files/ruby/regex.rb' }
 
-      before { conflict_for_path(path) }
+      before do
+        conflict_for_path(path)
+      end
 
       it 'returns a 200 status code' do
         expect(response).to have_http_status(:ok)
@@ -1161,13 +1204,13 @@ describe Projects::MergeRequestsController do
       let!(:pipeline) do
         create(:ci_pipeline, project: merge_request.source_project,
                              ref: merge_request.source_branch,
-                             sha: merge_request.diff_head_sha)
+                             sha: merge_request.diff_head_sha,
+                             head_pipeline_of: merge_request)
       end
 
       let(:status) { pipeline.detailed_status(double('user')) }
 
       before do
-        merge_request.update(head_pipeline: pipeline)
         get_pipeline_status
       end
 
@@ -1181,7 +1224,9 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when head_pipeline does not exist' do
-      before { get_pipeline_status }
+      before do
+        get_pipeline_status
+      end
 
       it 'return empty' do
         expect(response).to have_http_status(:ok)

@@ -2,11 +2,10 @@
 
 import Ajax from '~/droplab/plugins/ajax';
 import Filter from '~/droplab/plugins/filter';
-
-require('./filtered_search_dropdown');
+import './filtered_search_dropdown';
 
 class DropdownNonUser extends gl.FilteredSearchDropdown {
-  constructor(droplab, dropdown, input, filter, endpoint, symbol) {
+  constructor(droplab, dropdown, input, tokenKeys, filter, endpoint, symbol) {
     super(droplab, dropdown, input, filter);
     this.symbol = symbol;
     this.config = {

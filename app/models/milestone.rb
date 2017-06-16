@@ -107,7 +107,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def participants
-    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id)
+    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).uniq
   end
 
   def self.sort(method)

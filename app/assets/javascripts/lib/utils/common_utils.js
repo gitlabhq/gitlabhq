@@ -167,8 +167,8 @@
       if the name does not exist this function will return `null`
       otherwise it will return the value of the param key provided
     */
-    w.gl.utils.getParameterByName = (name) => {
-      const url = window.location.href;
+    w.gl.utils.getParameterByName = (name, parseUrl) => {
+      const url = parseUrl || window.location.href;
       name = name.replace(/[[\]]/g, '\\$&');
       const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
       const results = regex.exec(url);
@@ -198,10 +198,12 @@
 
       const textBefore = value.substring(0, selectionStart);
       const textAfter = value.substring(selectionEnd, value.length);
-      const newText = textBefore + text + textAfter;
+
+      const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
+      const newText = textBefore + insertedText + textAfter;
 
       target.value = newText;
-      target.selectionStart = target.selectionEnd = selectionStart + text.length;
+      target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
       // Trigger autosave
       $(target).trigger('input');

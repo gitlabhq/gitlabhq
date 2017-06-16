@@ -7,7 +7,7 @@ feature tests with Capybara for e2e (end-to-end) integration testing.
 Unit and feature tests need to be written for all new features.
 Most of the time, you should use rspec for your feature tests.
 There are cases where the behaviour you are testing is not worth the time spent running the full application,
-for example, if you are testing styling, animation or small actions that don't involve the backend,
+for example, if you are testing styling, animation, edge cases or small actions that don't involve the backend,
 you should write an integration test using Jasmine.
 
 ![Testing priority triangle](img/testing_triangle.png)
@@ -66,6 +66,69 @@ describe('.methodName', () => {
   it('passes', () => {
     expect(true).toEqual(true);
   });
+});
+```
+#### Testing Promises
+
+When testing Promises you should always make sure that the test is asynchronous and rejections are handled.
+Your Promise chain should therefore end with a call of the `done` callback and `done.fail` in case an error occurred.
+
+```javascript
+// Good
+it('tests a promise', (done) => {
+  promise
+    .then((data) => {
+      expect(data).toBe(asExpected);
+    })
+    .then(done)
+    .catch(done.fail);
+});
+
+// Good
+it('tests a promise rejection', (done) => {
+  promise
+    .then(done.fail)
+    .catch((error) => {
+      expect(error).toBe(expectedError);
+    })
+    .then(done)
+    .catch(done.fail);
+});
+
+// Bad (missing done callback)
+it('tests a promise', () => {
+  promise
+    .then((data) => {
+      expect(data).toBe(asExpected);
+    })
+});
+
+// Bad (missing catch)
+it('tests a promise', (done) => {
+  promise
+    .then((data) => {
+      expect(data).toBe(asExpected);
+    })
+    .then(done)
+});
+
+// Bad (use done.fail in asynchronous tests)
+it('tests a promise', (done) => {
+  promise
+    .then((data) => {
+      expect(data).toBe(asExpected);
+    })
+    .then(done)
+    .catch(fail)
+});
+
+// Bad (missing catch)
+it('tests a promise rejection', (done) => {
+  promise
+    .catch((error) => {
+      expect(error).toBe(expectedError);
+    })
+    .then(done)
 });
 ```
 

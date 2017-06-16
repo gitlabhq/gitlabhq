@@ -36,7 +36,9 @@ describe MergeRequestDiff, models: true do
     end
 
     context 'when the raw diffs are empty' do
-      before { mr_diff.update_attributes(st_diffs: '') }
+      before do
+        mr_diff.update_attributes(st_diffs: '')
+      end
 
       it 'returns an empty DiffCollection' do
         expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
@@ -45,7 +47,9 @@ describe MergeRequestDiff, models: true do
     end
 
     context 'when the raw diffs have invalid content' do
-      before { mr_diff.update_attributes(st_diffs: ["--broken-diff"]) }
+      before do
+        mr_diff.update_attributes(st_diffs: ["--broken-diff"])
+      end
 
       it 'returns an empty DiffCollection' do
         expect(mr_diff.raw_diffs.to_a).to be_empty
@@ -137,6 +141,17 @@ describe MergeRequestDiff, models: true do
       ]
 
       expect(subject.commits_count).to eq 2
+    end
+  end
+
+  describe '#utf8_st_diffs' do
+    it 'does not raise error when a hash value is in binary' do
+      subject.st_diffs = [
+        { diff: "\0" },
+        { diff: "\x05\x00\x68\x65\x6c\x6c\x6f" }
+      ]
+
+      expect { subject.utf8_st_diffs }.not_to raise_error
     end
   end
 end

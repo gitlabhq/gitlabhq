@@ -7,7 +7,42 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     )
   end
 
-  before { allow(model).to receive(:puts) }
+  before do
+    allow(model).to receive(:puts)
+  end
+
+  describe '#add_timestamps_with_timezone' do
+    before do
+      allow(model).to receive(:transaction_open?).and_return(false)
+    end
+
+    context 'using PostgreSQL' do
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+        allow(model).to receive(:disable_statement_timeout)
+      end
+
+      it 'adds "created_at" and "updated_at" fields with the "datetime_with_timezone" data type' do
+        expect(model).to receive(:add_column).with(:foo, :created_at, :datetime_with_timezone, { null: false })
+        expect(model).to receive(:add_column).with(:foo, :updated_at, :datetime_with_timezone, { null: false })
+
+        model.add_timestamps_with_timezone(:foo)
+      end
+    end
+
+    context 'using MySQL' do
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+      end
+
+      it 'adds "created_at" and "updated_at" fields with "datetime_with_timezone" data type' do
+        expect(model).to receive(:add_column).with(:foo, :created_at, :datetime_with_timezone, { null: false })
+        expect(model).to receive(:add_column).with(:foo, :updated_at, :datetime_with_timezone, { null: false })
+
+        model.add_timestamps_with_timezone(:foo)
+      end
+    end
+  end
 
   describe '#add_concurrent_index' do
     context 'outside a transaction' do
@@ -66,15 +101,22 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
       context 'using PostgreSQL' do
         before do
-          allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+          allow(model).to receive(:supports_drop_index_concurrently?).and_return(true)
           allow(model).to receive(:disable_statement_timeout)
         end
 
-        it 'removes the index concurrently' do
+        it 'removes the index concurrently by column name' do
           expect(model).to receive(:remove_index).
             with(:users, { algorithm: :concurrently, column: :foo })
 
           model.remove_concurrent_index(:users, :foo)
+        end
+
+        it 'removes the index concurrently by index name' do
+          expect(model).to receive(:remove_index).
+            with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+
+          model.remove_concurrent_index_by_name(:users, "index_x_by_y")
         end
       end
 
@@ -245,6 +287,14 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         end
 
         expect(Project.where(archived: true).count).to eq(1)
+      end
+    end
+
+    context 'when the value is Arel.sql (Arel::Nodes::SqlLiteral)' do
+      it 'updates the value as a SQL expression' do
+        model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
+
+        expect(Project.sum(:star_count)).to eq(2 * Project.count)
       end
     end
   end

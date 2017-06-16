@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe ApplicationHelper do
@@ -58,13 +59,13 @@ describe ApplicationHelper do
   describe 'project_icon' do
     it 'returns an url for the avatar' do
       project = create(:empty_project, avatar: File.open(uploaded_image_temp_path))
-      avatar_url = "/uploads/project/avatar/#{project.id}/banana_sample.gif"
+      avatar_url = "/uploads/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s).
         to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
 
       allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-      avatar_url = "#{gitlab_host}/uploads/project/avatar/#{project.id}/banana_sample.gif"
+      avatar_url = "#{gitlab_host}/uploads/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s).
         to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
@@ -84,12 +85,12 @@ describe ApplicationHelper do
     it 'returns an url for the avatar' do
       user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
-      avatar_url = "/uploads/user/avatar/#{user.id}/banana_sample.gif"
+      avatar_url = "/uploads/system/user/avatar/#{user.id}/banana_sample.gif"
 
       expect(helper.avatar_icon(user.email).to_s).to match(avatar_url)
 
       allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-      avatar_url = "#{gitlab_host}/uploads/user/avatar/#{user.id}/banana_sample.gif"
+      avatar_url = "#{gitlab_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif"
 
       expect(helper.avatar_icon(user.email).to_s).to match(avatar_url)
     end
@@ -102,7 +103,7 @@ describe ApplicationHelper do
       user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
       expect(helper.avatar_icon(user.email).to_s).
-        to match("/gitlab/uploads/user/avatar/#{user.id}/banana_sample.gif")
+        to match("/gitlab/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
     end
 
     it 'calls gravatar_icon when no User exists with the given email' do
@@ -116,7 +117,7 @@ describe ApplicationHelper do
         user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
         expect(helper.avatar_icon(user).to_s).
-          to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")
+          to match("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
       end
     end
   end
@@ -255,5 +256,25 @@ describe ApplicationHelper do
   describe '#active_when' do
     it { expect(helper.active_when(true)).to eq('active') }
     it { expect(helper.active_when(false)).to eq(nil) }
+  end
+
+  describe '#support_url' do
+    context 'when alternate support url is specified' do
+      let(:alternate_url) { 'http://company.example.com/getting-help' }
+
+      before do
+        allow(current_application_settings).to receive(:help_page_support_url) { alternate_url }
+      end
+
+      it 'returns the alternate support url' do
+        expect(helper.support_url).to eq(alternate_url)
+      end
+    end
+
+    context 'when alternate support url is not specified' do
+      it 'builds the support url from the promo_url' do
+        expect(helper.support_url).to eq(helper.promo_url + '/getting-help/')
+      end
+    end
   end
 end

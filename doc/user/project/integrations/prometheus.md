@@ -17,6 +17,7 @@ the settings page with a default template. To configure the template, see the
 Integration with Prometheus requires the following:
 
 1. GitLab 9.0 or higher
+1. The [Kubernetes integration must be enabled][kube] on your project
 1. Your app must be deployed on [Kubernetes][]
 1. Prometheus must be configured to collect Kubernetes metrics
 1. Each metric must be have a label to indicate the environment
@@ -159,23 +160,28 @@ The queries utilized by GitLab are shown in the following table.
 ## Monitoring CI/CD Environments
 
 Once configured, GitLab will attempt to retrieve performance metrics for any
-environment which has had a successful deployment. If monitoring data was
-successfully retrieved, a Monitoring button will appear on the environment's
-detail page.
+environment which has had a successful deployment.
 
-![Environment Detail with Metrics](img/prometheus_environment_detail_with_metrics.png)
+[Learn more about monitoring environments.](../../../ci/environments.md#monitoring-environments)
 
-Clicking on the Monitoring button will display a new page, showing up to the last
-8 hours of performance data. It may take a minute or two for data to appear
-after initial deployment.
+## Determining the performance impact of a merge
 
-## Determining performance impact of a merge
+> [Introduced][ce-10408] in GitLab 9.2.
 
-> [Introduced][ce-10408] in GitLab 9.1.
+Developers can view the performance impact of their changes within the merge
+request workflow. When a source branch has been deployed to an environment, a
+sparkline will appear showing the average memory consumption of the app. The dot
+indicates when the current changes were deployed, with up to 30 minutes of
+performance data displayed before and after. The sparkline will be updated after
+each commit has been deployed.
 
-After a merge request has been approved, a sparkline will appear on the merge request page displaying the average memory usage of the application. The sparkline includes thirty minutes of data prior to the merge, a dot to indicate the merge itself, and then will begin capturing thirty minutes of data after the merge.
+Once merged and the target branch has been redeployed, the sparkline will switch
+to show the new environments this revision has been deployed to.
 
-This sparkline serves as a quick indicator of the impact on memory consumption of the recently merged changes. If there is a problem, action can then be taken to troubleshoot or revert the merge. 
+Performance data will be available for the duration it is persisted on the
+Prometheus server.
+
+![Merge Request with Performance Impact](img/merge_request_performance.png)
 
 ## Troubleshooting
 
@@ -189,6 +195,7 @@ If the "Attempting to load performance data" screen continues to appear, it coul
 
 [autodeploy]: ../../../ci/autodeploy/index.md
 [kubernetes]: https://kubernetes.io
+[kube]: ./kubernetes.md
 [prometheus-k8s-sd]: https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>
 [prometheus]: https://prometheus.io
 [gitlab-prometheus-k8s-monitor]: ../../../administration/monitoring/prometheus/index.md#configuring-prometheus-to-monitor-kubernetes

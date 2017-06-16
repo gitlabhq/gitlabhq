@@ -5,6 +5,6 @@ class Profiles::AvatarsController < Profiles::ApplicationController
 
     @user.save
 
-    redirect_to profile_path
+    redirect_to profile_path, status: 302
   end
 end

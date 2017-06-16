@@ -181,7 +181,7 @@ module ApplicationHelper
   end
 
   def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)
-    return if object.last_edited_at == object.created_at || object.last_edited_at.blank?
+    return unless object.is_edited?
 
     content_tag :small, class: 'edited-text' do
       output = content_tag(:span, 'Edited ')
@@ -202,6 +202,10 @@ module ApplicationHelper
 
   def promo_url
     'https://' + promo_host
+  end
+
+  def support_url
+    current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
   end
 
   def page_filter_path(options = {})
@@ -275,8 +279,8 @@ module ApplicationHelper
     'active' if condition
   end
 
-  def show_user_callout?
-    cookies[:user_callout_dismissed] == 'true'
+  def show_callout?(name)
+    cookies[name] != 'true'
   end
 
   def linkedin_url(user)

@@ -206,7 +206,9 @@ describe MergeRequests::BuildService, services: true do
       context 'branch starts with external issue IID followed by a hyphen' do
         let(:source_branch) { '12345-fix-issue' }
 
-        before { allow(project).to receive(:default_issues_tracker?).and_return(false) }
+        before do
+          allow(project).to receive(:default_issues_tracker?).and_return(false)
+        end
 
         it 'sets the title to: Resolves External Issue $issue-iid' do
           expect(merge_request.title).to eq('Resolve External Issue 12345')

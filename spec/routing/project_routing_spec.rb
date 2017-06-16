@@ -93,13 +93,17 @@ describe 'project routing' do
       end
 
       context 'name with dot' do
-        before { allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq.keys', any_args).and_return(true) }
+        before do
+          allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq.keys', any_args).and_return(true)
+        end
 
         it { expect(get('/gitlab/gitlabhq.keys')).to route_to('projects#show', namespace_id: 'gitlab', id: 'gitlabhq.keys') }
       end
 
       context 'with nested group' do
-        before { allow(Project).to receive(:find_by_full_path).with('gitlab/subgroup/gitlabhq', any_args).and_return(true) }
+        before do
+          allow(Project).to receive(:find_by_full_path).with('gitlab/subgroup/gitlabhq', any_args).and_return(true)
+        end
 
         it { expect(get('/gitlab/subgroup/gitlabhq')).to route_to('projects#show', namespace_id: 'gitlab/subgroup', id: 'gitlabhq') }
       end
@@ -201,10 +205,12 @@ describe 'project routing' do
   #                         POST   /:project_id/deploy_keys(.:format)          deploy_keys#create
   #  new_project_deploy_key GET    /:project_id/deploy_keys/new(.:format)      deploy_keys#new
   #      project_deploy_key GET    /:project_id/deploy_keys/:id(.:format)      deploy_keys#show
+  # edit_project_deploy_key GET    /:project_id/deploy_keys/:id/edit(.:format) deploy_keys#edit
+  #      project_deploy_key PATCH  /:project_id/deploy_keys/:id(.:format)      deploy_keys#update
   #                         DELETE /:project_id/deploy_keys/:id(.:format)      deploy_keys#destroy
   describe Projects::DeployKeysController, 'routing' do
     it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :new, :create] }
+      let(:actions)    { [:index, :new, :create, :edit, :update] }
       let(:controller) { 'deploy_keys' }
     end
   end
@@ -243,7 +249,6 @@ describe 'project routing' do
   #               diffs_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/diffs(.:format)               projects/merge_requests#diffs
   #             commits_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/commits(.:format)             projects/merge_requests#commits
   #           merge_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/merge(.:format)           projects/merge_requests#merge
-  #     merge_check_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/merge_check(.:format)     projects/merge_requests#merge_check
   #           ci_status_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/ci_status(.:format)           projects/merge_requests#ci_status
   # toggle_subscription_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/toggle_subscription(.:format) projects/merge_requests#toggle_subscription
   #        branch_from_namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests/branch_from(.:format)             projects/merge_requests#branch_from
@@ -270,10 +275,6 @@ describe 'project routing' do
         'projects/merge_requests#merge',
         namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1'
       )
-    end
-
-    it 'to #merge_check' do
-      expect(get('/gitlab/gitlabhq/merge_requests/1/merge_check')).to route_to('projects/merge_requests#merge_check', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
     it 'to #branch_from' do
@@ -351,6 +352,18 @@ describe 'project routing' do
     it_behaves_like 'RESTful project resources' do
       let(:actions)    { [:index, :create, :destroy, :edit, :update] }
       let(:controller) { 'hooks' }
+    end
+  end
+
+  # retry_namespace_project_hook_hook_log GET /:project_id/hooks/:hook_id/hook_logs/:id/retry(.:format) projects/hook_logs#retry
+  # namespace_project_hook_hook_log       GET /:project_id/hooks/:hook_id/hook_logs/:id(.:format)       projects/hook_logs#show
+  describe Projects::HookLogsController, 'routing' do
+    it 'to #retry' do
+      expect(get('/gitlab/gitlabhq/hooks/1/hook_logs/1/retry')).to route_to('projects/hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
+    end
+
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/hooks/1/hook_logs/1')).to route_to('projects/hook_logs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
     end
   end
 
@@ -467,6 +480,8 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/blob/master/app/models/compare.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/compare.rb')
       expect(get('/gitlab/gitlabhq/blob/master/app/models/diff.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/diff.js')
       expect(get('/gitlab/gitlabhq/blob/master/files.scss')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
+      expect(get('/gitlab/gitlabhq/blob/master/blob/index.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/blob/index.js')
+      expect(get('/gitlab/gitlabhq/blob/blob/master/blob/index.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'blob/master/blob/index.js')
     end
   end
 
@@ -475,6 +490,8 @@ describe 'project routing' do
     it 'to #show' do
       expect(get('/gitlab/gitlabhq/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
       expect(get('/gitlab/gitlabhq/tree/master/files.scss')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
+      expect(get('/gitlab/gitlabhq/tree/master/tree/files')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/tree/files')
+      expect(get('/gitlab/gitlabhq/tree/tree/master/tree/files')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'tree/master/tree/files')
     end
   end
 

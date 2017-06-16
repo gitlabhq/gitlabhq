@@ -1,0 +1,4 @@
+---
+title: Fix duplication of commits header on commits page
+merge_request: 11006
+author: @blackst0ne

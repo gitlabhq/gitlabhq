@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
-  before { allow_any_instance_of(U2fHelper).to receive(:inject_u2f_api?).and_return(true) }
+  before do
+    allow_any_instance_of(U2fHelper).to receive(:inject_u2f_api?).and_return(true)
+  end
 
   def manage_two_factor_authentication
     click_on 'Manage two-factor authentication'
     expect(page).to have_content("Setup new U2F device")
-    wait_for_ajax
+    wait_for_requests
   end
 
   def register_u2f_device(u2f_device = nil, name: 'My device')
@@ -28,7 +30,9 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     end
 
     describe 'when 2FA via OTP is disabled' do
-      before { user.update_attribute(:otp_required_for_login, false) }
+      before do
+        user.update_attribute(:otp_required_for_login, false)
+      end
 
       it 'does not allow registering a new device' do
         visit profile_account_path

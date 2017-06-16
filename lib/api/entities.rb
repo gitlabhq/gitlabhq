@@ -100,6 +100,8 @@ module API
       expose :creator_id
       expose :namespace, using: 'API::Entities::Namespace'
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
+      expose :import_status
+      expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :avatar_url do |user, options|
         user.avatar_url(only_path: false)
       end
@@ -152,7 +154,10 @@ module API
       expose :web_url
       expose :request_access_enabled
       expose :full_name, :full_path
-      expose :parent_id
+
+      if ::Group.supports_nested_groups?
+        expose :parent_id
+      end
 
       expose :statistics, if: :statistics do
         with_options format_with: -> (value) { value.to_i } do
@@ -221,7 +226,7 @@ module API
     end
 
     class ProjectSnippet < Grape::Entity
-      expose :id, :title, :file_name
+      expose :id, :title, :file_name, :description
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
 
@@ -231,7 +236,7 @@ module API
     end
 
     class PersonalSnippet < Grape::Entity
-      expose :id, :title, :file_name
+      expose :id, :title, :file_name, :description
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
 
@@ -252,7 +257,9 @@ module API
 
     class RepoDiff < Grape::Entity
       expose :old_path, :new_path, :a_mode, :b_mode, :diff
-      expose :new_file, :renamed_file, :deleted_file
+      expose :new_file?, as: :new_file
+      expose :renamed_file?, as: :renamed_file
+      expose :deleted_file?, as: :deleted_file
     end
 
     class Milestone < ProjectEntity
@@ -326,7 +333,7 @@ module API
 
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
-        compare.raw_diffs(all_diffs: true).to_a
+        compare.raw_diffs(limits: false).to_a
       end
     end
 
@@ -339,7 +346,7 @@ module API
       expose :commits, using: Entities::RepoCommit
 
       expose :diffs, using: Entities::RepoDiff do |compare, _|
-        compare.raw_diffs(all_diffs: true).to_a
+        compare.raw_diffs(limits: false).to_a
       end
     end
 
@@ -543,7 +550,7 @@ module API
       end
 
       expose :diffs, using: Entities::RepoDiff do |compare, options|
-        compare.diffs(all_diffs: true).to_a
+        compare.diffs(limits: false).to_a
       end
 
       expose :compare_timeout do |compare, options|
@@ -596,6 +603,9 @@ module API
       expose :plantuml_url
       expose :terminal_max_session_time
       expose :polling_interval_multiplier
+      expose :help_page_hide_commercial_content
+      expose :help_page_text
+      expose :help_page_support_url
     end
 
     class Release < Grape::Entity
@@ -670,6 +680,7 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
+      expose :protected?, as: :protected
     end
 
     class Pipeline < PipelineBasic
@@ -679,6 +690,17 @@ module API
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
       expose :duration
       expose :coverage
+    end
+
+    class PipelineSchedule < Grape::Entity
+      expose :id
+      expose :description, :ref, :cron, :cron_timezone, :next_run_at, :active
+      expose :created_at, :updated_at
+      expose :owner, using: Entities::UserBasic
+    end
+
+    class PipelineScheduleDetails < PipelineSchedule
+      expose :last_pipeline, using: Entities::PipelineBasic
     end
 
     class EnvironmentBasic < Grape::Entity
@@ -737,6 +759,28 @@ module API
       expose :impersonation
     end
 
+    class FeatureGate < Grape::Entity
+      expose :key
+      expose :value
+    end
+
+    class Feature < Grape::Entity
+      expose :name
+      expose :state
+      expose :gates, using: FeatureGate do |model|
+        model.gates.map do |gate|
+          value = model.gate_values[gate.key]
+
+          # By default all gate values are populated. Only show relevant ones.
+          if (value.is_a?(Integer) && value.zero?) || (value.is_a?(Set) && value.empty?)
+            next
+          end
+
+          { key: gate.key, value: value }
+        end.compact
+      end
+    end
+
     module JobRequest
       class JobInfo < Grape::Entity
         expose :name, :stage
@@ -763,7 +807,11 @@ module API
       end
 
       class Image < Grape::Entity
-        expose :name
+        expose :name, :entrypoint
+      end
+
+      class Service < Image
+        expose :alias, :command
       end
 
       class Artifacts < Grape::Entity
@@ -807,7 +855,7 @@ module API
         expose :variables
         expose :steps, using: Step
         expose :image, using: Image
-        expose :services, using: Image
+        expose :services, using: Service
         expose :artifacts, using: Artifacts
         expose :cache, using: Cache
         expose :credentials, using: Credentials

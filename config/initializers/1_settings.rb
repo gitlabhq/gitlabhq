@@ -156,6 +156,7 @@ Settings.omniauth['external_providers'] = [] if Settings.omniauth['external_prov
 Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block_auto_created_users'].nil?
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
 Settings.omniauth['auto_link_saml_user'] = false if Settings.omniauth['auto_link_saml_user'].nil?
+Settings.omniauth['sync_email_from_provider'] ||= nil
 
 Settings.omniauth['providers'] ||= []
 Settings.omniauth['cas3'] ||= Settingslogic.new({})
@@ -325,7 +326,7 @@ Settings.cron_jobs['stuck_ci_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
 Settings.cron_jobs['pipeline_schedule_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['pipeline_schedule_worker']['cron'] ||= '0 */12 * * *'
+Settings.cron_jobs['pipeline_schedule_worker']['cron'] ||= '19 * * * *'
 Settings.cron_jobs['pipeline_schedule_worker']['job_class'] = 'PipelineScheduleWorker'
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
@@ -368,10 +369,13 @@ Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_random_weekly_time)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
-# Every day at 00:30
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
 Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
+
+Settings.cron_jobs['remove_old_web_hook_logs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_old_web_hook_logs_worker']['cron'] ||= '40 0 * * *'
+Settings.cron_jobs['remove_old_web_hook_logs_worker']['job_class'] = 'RemoveOldWebHookLogsWorker'
 
 #
 # GitLab Shell
@@ -479,7 +483,7 @@ Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 # Gitaly
 #
 Settings['gitaly'] ||= Settingslogic.new({})
-Settings.gitaly['enabled'] ||= false
+Settings.gitaly['enabled'] = true if Settings.gitaly['enabled'].nil?
 
 #
 # Webpack settings

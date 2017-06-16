@@ -27,6 +27,7 @@
   },
   "rules": {
     "filenames/match-regex": [2, "^[a-z0-9_]+$"],
+    "import/no-commonjs": "error",
     "no-multiple-empty-lines": ["error", { "max": 1 }],
     "promise/catch-or-return": "error"
   }

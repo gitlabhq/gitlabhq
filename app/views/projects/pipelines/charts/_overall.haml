@@ -2,13 +2,13 @@
 %ul
   %li
     Total:
-    %strong= pluralize @project.builds.count(:all), 'build'
+    %strong= pluralize @project.builds.count(:all), 'job'
   %li
     Successful:
-    %strong= pluralize @project.builds.success.count(:all), 'build'
+    %strong= pluralize @project.builds.success.count(:all), 'job'
   %li
     Failed:
-    %strong= pluralize @project.builds.failed.count(:all), 'build'
+    %strong= pluralize @project.builds.failed.count(:all), 'job'
   %li
     Success ratio:
     %strong

@@ -1,3 +1,5 @@
+require_relative '../support/test_env'
+
 FactoryGirl.define do
   # Project without repository
   #
@@ -22,6 +24,22 @@ FactoryGirl.define do
 
     trait :private do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
+    end
+
+    trait :import_scheduled do
+      import_status :scheduled
+    end
+
+    trait :import_started do
+      import_status :started
+    end
+
+    trait :import_finished do
+      import_status :finished
+    end
+
+    trait :import_failed do
+      import_status :failed
     end
 
     trait :archived do
@@ -60,7 +78,9 @@ FactoryGirl.define do
 
     trait :test_repo do
       after :create do |project|
-        TestEnv.copy_repo(project)
+        TestEnv.copy_repo(project,
+          bare_repo: TestEnv.factory_repo_path_bare,
+          refs: TestEnv::BRANCH_SHA)
       end
     end
 
@@ -107,6 +127,18 @@ FactoryGirl.define do
           merge_requests_access_level: merge_requests_access_level,
           repository_access_level: evaluator.repository_access_level
         )
+
+      # Normally the class Projects::CreateService is used for creating
+      # projects, and this class takes care of making sure the owner and current
+      # user have access to the project. Our specs don't use said service class,
+      # thus we must manually refresh things here.
+      owner = project.owner
+
+      if owner && owner.is_a?(User) && !project.pending_delete
+        project.members.create!(user: owner, access_level: Gitlab::Access::MASTER)
+      end
+
+      project.group&.refresh_members_authorized_projects
     end
   end
 
@@ -139,7 +171,9 @@ FactoryGirl.define do
     end
 
     after :create do |project, evaluator|
-      TestEnv.copy_repo(project)
+      TestEnv.copy_repo(project,
+        bare_repo: TestEnv.factory_repo_path_bare,
+        refs: TestEnv::BRANCH_SHA)
 
       if evaluator.create_template
         args = evaluator.create_template
@@ -172,7 +206,9 @@ FactoryGirl.define do
     path { 'forked-gitlabhq' }
 
     after :create do |project|
-      TestEnv.copy_forked_repo_with_submodules(project)
+      TestEnv.copy_repo(project,
+        bare_repo: TestEnv.forked_repo_path_bare,
+        refs: TestEnv::FORKED_BRANCH_SHA)
     end
   end
 

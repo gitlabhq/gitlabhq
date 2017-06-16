@@ -1,5 +1,5 @@
 .stage-cell
-  - pipeline.stages.each do |stage|
+  - pipeline.legacy_stages.each do |stage|
     - if stage.status
       - detailed_status = stage.detailed_status(current_user)
       - icon_status = "#{detailed_status.icon}_borderless"

@@ -29,6 +29,13 @@ class Projects::ApplicationController < ApplicationController
     @project = find_routable!(Project, path, extra_authorization_proc: auth_proc)
   end
 
+  def build_canonical_path(project)
+    params[:namespace_id] = project.namespace.to_param
+    params[:project_id] = project.to_param
+
+    url_for(params)
+  end
+
   def repository
     @repository ||= project.repository
   end
@@ -71,10 +78,6 @@ class Projects::ApplicationController < ApplicationController
 
   def apply_diff_view_cookie!
     cookies.permanent[:diff_view] = params.delete(:view) if params[:view].present?
-  end
-
-  def builds_enabled
-    return render_404 unless @project.feature_available?(:builds, current_user)
   end
 
   def require_pages_enabled!

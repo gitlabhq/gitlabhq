@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Visibility from 'visibilityjs';
-import pipelinesTableComponent from '../../vue_shared/components/pipelines_table';
+import pipelinesTableComponent from '../../vue_shared/components/pipelines_table.vue';
 import PipelinesService from '../../pipelines/services/pipelines_service';
 import PipelineStore from '../../pipelines/stores/pipelines_store';
 import eventHub from '../../pipelines/event_hub';
@@ -118,7 +118,7 @@ export default Vue.component('pipelines-table', {
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
 
-  beforeDestroyed() {
+  beforeDestroy() {
     eventHub.$off('refreshPipelines');
   },
 

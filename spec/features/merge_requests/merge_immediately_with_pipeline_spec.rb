@@ -18,7 +18,9 @@ feature 'Merge immediately', :feature, :js do
                          sha: project.repository.commit('master').id)
   end
 
-  before { project.team << [user, :master] }
+  before do
+    project.team << [user, :master]
+  end
 
   context 'when there is active pipeline for merge request' do
     background do
@@ -39,7 +41,7 @@ feature 'Merge immediately', :feature, :js do
 
           expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
 
-          wait_for_vue_resource
+          wait_for_requests
         end
       end
     end

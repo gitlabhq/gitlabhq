@@ -287,6 +287,7 @@ table.u2f-registrations {
 
 .user-callout {
   margin: 0 auto;
+  max-width: $screen-lg-min;
 
   .bordered-box {
     border: 1px solid $blue-300;
@@ -295,14 +296,15 @@ table.u2f-registrations {
     position: relative;
     display: flex;
     justify-content: center;
+    align-items: center;
   }
 
   .landing {
-    margin-top: $gl-padding;
-    margin-bottom: $gl-padding;
+    padding: 32px;
 
     .close {
       position: absolute;
+      top: 20px;
       right: 20px;
       opacity: 1;
 
@@ -330,11 +332,20 @@ table.u2f-registrations {
         height: 110px;
         vertical-align: top;
       }
+
+      &.convdev {
+        margin: 0 0 0 30px;
+
+        svg {
+          height: 127px;
+        }
+      }
     }
 
     .user-callout-copy {
       display: inline-block;
       vertical-align: top;
+      max-width: 570px;
     }
   }
 
@@ -348,11 +359,19 @@ table.u2f-registrations {
     .landing {
       .svg-container,
       .user-callout-copy {
-        margin: 0;
+        margin: 0 auto;
         display: block;
 
         svg {
           height: 75px;
+        }
+
+        &.convdev {
+          margin: $gl-padding auto 0;
+
+          svg {
+            height: 120px;
+          }
         }
       }
     }

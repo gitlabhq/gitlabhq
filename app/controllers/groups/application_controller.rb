@@ -31,4 +31,10 @@ class Groups::ApplicationController < ApplicationController
       return render_403
     end
   end
+
+  def build_canonical_path(group)
+    params[:group_id] = group.to_param
+    
+    url_for(params)
+  end
 end

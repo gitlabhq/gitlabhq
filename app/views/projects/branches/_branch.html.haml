@@ -61,7 +61,7 @@
             = icon("trash-o")
 
     - if branch.name != @repository.root_ref
-      .divergence-graph{ title: "#{number_commits_ahead} commits ahead, #{number_commits_behind} commits behind #{@repository.root_ref}" }
+      .divergence-graph{ title: "#{number_commits_behind} commits behind #{@repository.root_ref}, #{number_commits_ahead} commits ahead" }
         .graph-side
           .bar.bar-behind{ style: "width: #{number_commits_behind * bar_graph_width_factor}%" }
           %span.count.count-behind= number_commits_behind

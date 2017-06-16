@@ -8,8 +8,8 @@ module DiffHelper
     [marked_old_line, marked_new_line]
   end
 
-  def expand_all_diffs?
-    params[:expand_all_diffs].present?
+  def diffs_expanded?
+    params[:expanded].present?
   end
 
   def diff_view
@@ -22,10 +22,10 @@ module DiffHelper
   end
 
   def diff_options
-    options = { ignore_whitespace_change: hide_whitespace?, no_collapse: expand_all_diffs? }
+    options = { ignore_whitespace_change: hide_whitespace?, expanded: diffs_expanded? }
 
     if action_name == 'diff_for_path'
-      options[:no_collapse] = true
+      options[:expanded] = true
       options[:paths] = params.values_at(:old_path, :new_path)
     end
 
@@ -66,12 +66,12 @@ module DiffHelper
 
     discussions_left = discussions_right = nil
 
-    if left && (left.unchanged? || left.removed?)
+    if left && (left.unchanged? || left.discussable?)
       line_code = diff_file.line_code(left)
       discussions_left = @grouped_diff_discussions[line_code]
     end
 
-    if right && right.added?
+    if right&.discussable?
       line_code = diff_file.line_code(right)
       discussions_right = @grouped_diff_discussions[line_code]
     end
@@ -102,14 +102,14 @@ module DiffHelper
     ].join(' ').html_safe
   end
 
-  def commit_for_diff(diff_file)
-    return diff_file.content_commit if diff_file.content_commit
+  def diff_file_blob_raw_path(diff_file)
+    namespace_project_raw_path(@project.namespace, @project, tree_join(diff_file.content_sha, diff_file.file_path))
+  end
 
-    if diff_file.deleted_file
-      @base_commit || @commit.parent || @commit
-    else
-      @commit
-    end
+  def diff_file_old_blob_raw_path(diff_file)
+    sha = diff_file.old_content_sha
+    return unless sha
+    namespace_project_raw_path(@project.namespace, @project, tree_join(diff_file.old_content_sha, diff_file.old_path))
   end
 
   def diff_file_html_data(project, diff_file_path, diff_commit_id)
@@ -120,8 +120,32 @@ module DiffHelper
     }
   end
 
-  def editable_diff?(diff)
-    !diff.deleted_file && @merge_request && @merge_request.source_project
+  def editable_diff?(diff_file)
+    !diff_file.deleted_file? && @merge_request && @merge_request.source_project
+  end
+
+  def diff_render_error_reason(viewer)
+    case viewer.render_error
+    when :too_large
+      "it is too large"
+    when :server_side_but_stored_externally
+      case viewer.diff_file.external_storage
+      when :lfs
+        'it is stored in LFS'
+      else
+        'it is stored externally'
+      end
+    end
+  end
+
+  def diff_render_error_options(viewer)
+    diff_file = viewer.diff_file
+    options = []
+
+    blob_url = namespace_project_blob_path(@project.namespace, @project, tree_join(diff_file.content_sha, diff_file.file_path))
+    options << link_to('view the blob', blob_url)
+
+    options
   end
 
   private

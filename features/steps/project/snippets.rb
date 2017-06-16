@@ -3,7 +3,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   include SharedProject
   include SharedNote
   include SharedPaths
-  include WaitForAjax
+  include WaitForRequests
 
   step 'project "Shop" have "Snippet one" snippet' do
     create(:project_snippet,
@@ -23,7 +23,9 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I click link "New snippet"' do
-    first(:link, "New snippet").click
+    page.within '#content-body' do
+      first(:link, "New snippet").click
+    end
   end
 
   step 'I click link "Snippet one"' do
@@ -59,7 +61,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
       find('.ace_editor').native.send_keys 'Content of snippet three'
     end
     click_button "Create snippet"
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I should see snippet "Snippet three"' do
@@ -81,7 +83,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
       fill_in "note_note", with: "Good snippet!"
       click_button "Comment"
     end
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I should see comment "Good snippet!"' do

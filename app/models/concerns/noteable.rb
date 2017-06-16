@@ -43,7 +43,12 @@ module Noteable
   end
 
   def resolvable_discussions
-    @resolvable_discussions ||= discussion_notes.resolvable.discussions(self)
+    @resolvable_discussions ||=
+      if defined?(@discussions)
+        @discussions.select(&:resolvable?)
+      else
+        discussion_notes.resolvable.discussions(self)
+      end
   end
 
   def discussions_resolvable?

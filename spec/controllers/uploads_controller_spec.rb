@@ -92,6 +92,40 @@ describe UploadsController do
           end
         end
       end
+
+      context 'temporal with valid image' do
+        subject do
+          post :create, model: 'personal_snippet', file: jpg, format: :json
+        end
+
+        it 'returns a content with original filename, new link, and correct type.' do
+          subject
+
+          expect(response.body).to match '\"alt\":\"rails_sample\"'
+          expect(response.body).to match "\"url\":\"/uploads/temp"
+        end
+
+        it 'does not create an Upload record' do
+          expect { subject }.not_to change { Upload.count }
+        end
+      end
+
+      context 'temporal with valid non-image file' do
+        subject do
+          post :create, model: 'personal_snippet', file: txt, format: :json
+        end
+
+        it 'returns a content with original filename, new link, and correct type.' do
+          subject
+
+          expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
+          expect(response.body).to match "\"url\":\"/uploads/temp"
+        end
+
+        it 'does not create an Upload record' do
+          expect { subject }.not_to change { Upload.count }
+        end
+      end
     end
   end
 
@@ -468,6 +502,46 @@ describe UploadsController do
               get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
               expect(response).to have_http_status(404)
+            end
+          end
+        end
+      end
+    end
+
+    context 'Appearance' do
+      context 'when viewing a custom header logo' do
+        let!(:appearance) { create :appearance, header_logo: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+
+        context 'when not signed in' do
+          it 'responds with status 200' do
+            get :show, model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png'
+
+            expect(response).to have_http_status(200)
+          end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png'
+              response
+            end
+          end
+        end
+      end
+
+      context 'when viewing a custom logo' do
+        let!(:appearance) { create :appearance, logo: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+
+        context 'when not signed in' do
+          it 'responds with status 200' do
+            get :show, model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png'
+
+            expect(response).to have_http_status(200)
+          end
+
+          it_behaves_like 'content not cached without revalidation' do
+            subject do
+              get :show, model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png'
+              response
             end
           end
         end

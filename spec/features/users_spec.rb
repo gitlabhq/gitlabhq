@@ -45,7 +45,9 @@ feature 'Users', feature: true, js: true do
   end
 
   describe 'redirect alias routes' do
-    before { user }
+    before do
+      expect(user).to be_persisted
+    end
 
     scenario '/u/user1 redirects to user page' do
       visit '/u/user1'
@@ -78,25 +80,25 @@ feature 'Users', feature: true, js: true do
 
     scenario 'doesn\'t show an error border if the username is available' do
       fill_in username_input, with: 'new-user'
-      wait_for_ajax
+      wait_for_requests
       expect(find('.username')).not_to have_css '.gl-field-error-outline'
     end
 
     scenario 'does not show an error border if the username contains dots (.)' do
       fill_in username_input, with: 'new.user.username'
-      wait_for_ajax
+      wait_for_requests
       expect(find('.username')).not_to have_css '.gl-field-error-outline'
     end
 
     scenario 'shows an error border if the username already exists' do
       fill_in username_input, with: user.username
-      wait_for_ajax
+      wait_for_requests
       expect(find('.username')).to have_css '.gl-field-error-outline'
     end
 
     scenario 'shows an  error border if the username contains special characters' do
       fill_in username_input, with: 'new$user!username'
-      wait_for_ajax
+      wait_for_requests
       expect(find('.username')).to have_css '.gl-field-error-outline'
     end
   end

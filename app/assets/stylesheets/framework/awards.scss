@@ -1,4 +1,7 @@
 .awards {
+  display: flex;
+  flex-wrap: wrap;
+
   .emoji-icon {
     width: 20px;
     height: 20px;
@@ -10,7 +13,7 @@
   top: 0;
   margin-top: 3px;
   padding: $gl-padding;
-  z-index: 9;
+  z-index: 300;
   width: 300px;
   font-size: 14px;
   background-color: $white-light;
@@ -100,7 +103,6 @@
 
 .award-menu-holder {
   display: inline-block;
-  position: absolute;
 
   .tooltip {
     white-space: nowrap;
@@ -108,8 +110,11 @@
 }
 
 .award-control {
-  margin-right: 5px;
+  margin: 4px 8px 4px 0;
   outline: 0;
+  position: relative;
+  display: block;
+  float: left;
 
   &.disabled {
     cursor: default;
@@ -227,8 +232,8 @@
   .award-control-icon-positive,
   .award-control-icon-super-positive {
     position: absolute;
-    left: 11px;
-    bottom: 7px;
+    left: 10px;
+    bottom: 6px;
     opacity: 0;
     @include transition(opacity, transform);
   }
@@ -236,8 +241,4 @@
   .award-control-text {
     vertical-align: middle;
   }
-}
-
-.note-awards .award-control-icon-positive {
-  left: 6px;
 }

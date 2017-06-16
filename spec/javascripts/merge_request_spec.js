@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, no-return-assign */
 /* global MergeRequest */
 
-require('~/merge_request');
+import '~/merge_request';
 
 (function() {
   describe('MergeRequest', function() {
@@ -13,7 +13,9 @@ require('~/merge_request');
       });
       it('modifies the Markdown field', function() {
         spyOn(jQuery, 'ajax').and.stub();
-        $('input[type=checkbox]').attr('checked', true).trigger('change');
+        const changeEvent = document.createEvent('HTMLEvents');
+        changeEvent.initEvent('change', true, true);
+        $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
         return expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
       return it('submits an ajax request on tasklist:changed', function() {

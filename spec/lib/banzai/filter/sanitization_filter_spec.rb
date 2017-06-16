@@ -97,6 +97,22 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       expect(filter(act).to_html).to eq exp
     end
 
+    it 'allows `data-math-style` attribute on `code` and `pre` elements' do
+      html = <<-HTML
+      <pre class="code" data-math-style="inline">something</pre>
+      <code class="code" data-math-style="inline">something</code>
+      <div class="code" data-math-style="inline">something</div>
+      HTML
+
+      output = <<-HTML
+      <pre data-math-style="inline">something</pre>
+      <code data-math-style="inline">something</code>
+      <div>something</div>
+      HTML
+
+      expect(filter(html).to_html).to eq(output)
+    end
+
     it 'removes `rel` attribute from `a` elements' do
       act = %q{<a href="#" rel="nofollow">Link</a>}
       exp = %q{<a href="#">Link</a>}

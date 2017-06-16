@@ -1,6 +1,39 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      # Adds `created_at` and `updated_at` columns with timezone information.
+      #
+      # This method is an improved version of Rails' built-in method `add_timestamps`.
+      #
+      # Available options are:
+      # default - The default value for the column.
+      # null - When set to `true` the column will allow NULL values.
+      #        The default is to not allow NULL values.
+      def add_timestamps_with_timezone(table_name, options = {})
+        options[:null] = false if options[:null].nil?
+
+        [:created_at, :updated_at].each do |column_name|
+          if options[:default] && transaction_open?
+            raise '`add_timestamps_with_timezone` with default value cannot be run inside a transaction. ' \
+              'You can disable transactions by calling `disable_ddl_transaction!` ' \
+              'in the body of your migration class'
+          end
+
+          # If default value is presented, use `add_column_with_default` method instead.
+          if options[:default]
+            add_column_with_default(
+              table_name,
+              column_name,
+              :datetime_with_timezone,
+              default: options[:default],
+              allow_null: options[:null]
+            )
+          else
+            add_column(table_name, column_name, :datetime_with_timezone, options)
+          end
+        end
+      end
+
       # Creates a new index, concurrently when supported
       #
       # On PostgreSQL this method creates an index concurrently, on MySQL this
@@ -42,12 +75,45 @@ module Gitlab
             'in the body of your migration class'
         end
 
-        if Database.postgresql?
+        if supports_drop_index_concurrently?
           options = options.merge({ algorithm: :concurrently })
           disable_statement_timeout
         end
 
         remove_index(table_name, options.merge({ column: column_name }))
+      end
+
+      # Removes an existing index, concurrently when supported
+      #
+      # On PostgreSQL this method removes an index concurrently.
+      #
+      # Example:
+      #
+      #     remove_concurrent_index :users, "index_X_by_Y"
+      #
+      # See Rails' `remove_index` for more info on the available arguments.
+      def remove_concurrent_index_by_name(table_name, index_name, options = {})
+        if transaction_open?
+          raise 'remove_concurrent_index_by_name can not be run inside a transaction, ' \
+            'you can disable transactions by calling disable_ddl_transaction! ' \
+            'in the body of your migration class'
+        end
+
+        if supports_drop_index_concurrently?
+          options = options.merge({ algorithm: :concurrently })
+          disable_statement_timeout
+        end
+
+        remove_index(table_name, options.merge({ name: index_name }))
+      end
+
+      # Only available on Postgresql >= 9.2
+      def supports_drop_index_concurrently?
+        return false unless Database.postgresql?
+
+        version = select_one("SELECT current_setting('server_version_num') AS v")['v'].to_i
+
+        version >= 90200
       end
 
       # Adds a foreign key with only minimal locking on the tables involved.

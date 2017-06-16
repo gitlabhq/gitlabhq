@@ -65,6 +65,7 @@ module Gitlab
       hook
       import_url
       incoming_email_token
+      rss_token
       key
       otp_attempt
       password
@@ -104,6 +105,7 @@ module Gitlab
     config.assets.precompile << "katex.css"
     config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
+    config.assets.precompile << "peek.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"

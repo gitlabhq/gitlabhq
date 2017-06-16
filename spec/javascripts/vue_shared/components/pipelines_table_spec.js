@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import pipelinesTableComp from '~/vue_shared/components/pipelines_table';
+import pipelinesTableComp from '~/vue_shared/components/pipelines_table.vue';
 import '~/lib/utils/datetime_utility';
 
 describe('Pipelines Table', () => {
@@ -32,16 +32,14 @@ describe('Pipelines Table', () => {
     });
 
     it('should render a table', () => {
-      expect(component.$el).toEqual('TABLE');
+      expect(component.$el.getAttribute('class')).toContain('ci-table');
     });
 
     it('should render table head with correct columns', () => {
-      expect(component.$el.querySelector('th.js-pipeline-status').textContent).toEqual('Status');
-      expect(component.$el.querySelector('th.js-pipeline-info').textContent).toEqual('Pipeline');
-      expect(component.$el.querySelector('th.js-pipeline-commit').textContent).toEqual('Commit');
-      expect(component.$el.querySelector('th.js-pipeline-stages').textContent).toEqual('Stages');
-      expect(component.$el.querySelector('th.js-pipeline-date').textContent).toEqual('');
-      expect(component.$el.querySelector('th.js-pipeline-actions').textContent).toEqual('');
+      expect(component.$el.querySelector('.table-section.js-pipeline-status').textContent.trim()).toEqual('Status');
+      expect(component.$el.querySelector('.table-section.js-pipeline-info').textContent.trim()).toEqual('Pipeline');
+      expect(component.$el.querySelector('.table-section.js-pipeline-commit').textContent.trim()).toEqual('Commit');
+      expect(component.$el.querySelector('.table-section.js-pipeline-stages').textContent.trim()).toEqual('Stages');
     });
   });
 
@@ -53,7 +51,7 @@ describe('Pipelines Table', () => {
           service: {},
         },
       }).$mount();
-      expect(component.$el.querySelectorAll('tbody tr').length).toEqual(0);
+      expect(component.$el.querySelectorAll('.commit.gl-responsive-table-row').length).toEqual(0);
     });
   });
 
@@ -67,7 +65,7 @@ describe('Pipelines Table', () => {
         },
       }).$mount();
 
-      expect(component.$el.querySelectorAll('tbody tr').length).toEqual(1);
+      expect(component.$el.querySelectorAll('.commit.gl-responsive-table-row').length).toEqual(1);
     });
   });
 });

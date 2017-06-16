@@ -39,7 +39,9 @@ module API
         :email_author_in_body,
         :enabled_git_access_protocol,
         :gravatar_enabled,
+        :help_page_hide_commercial_content,
         :help_page_text,
+        :help_page_support_url,
         :home_page_url,
         :housekeeping_enabled,
         :html_emails_enabled,
@@ -101,7 +103,9 @@ module API
       optional :home_page_url, type: String, desc: 'We will redirect non-logged in users to this page'
       optional :after_sign_out_path, type: String, desc: 'We will redirect users to this page after they sign out'
       optional :sign_in_text, type: String, desc: 'The sign in text of the GitLab application'
+      optional :help_page_hide_commercial_content, type: Boolean, desc: 'Hide marketing-related entries from help'
       optional :help_page_text, type: String, desc: 'Custom text displayed on the help page'
+      optional :help_page_support_url, type: String, desc: 'Alternate support URL for help page'
       optional :shared_runners_enabled, type: Boolean, desc: 'Enable shared runners for new projects'
       given shared_runners_enabled: ->(val) { val } do
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
@@ -110,6 +114,7 @@ module API
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
+      optional :prometheus_metrics_enabled, type: Boolean, desc: 'Enable Prometheus metrics'
       optional :metrics_enabled, type: Boolean, desc: 'Enable the InfluxDB metrics'
       given metrics_enabled: ->(val) { val } do
         requires :metrics_host, type: String, desc: 'The InfluxDB host'

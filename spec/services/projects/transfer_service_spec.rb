@@ -26,6 +26,7 @@ describe Projects::TransferService, services: true do
 
     it { expect(@result).to eq false }
     it { expect(project.namespace).to eq(user.namespace) }
+    it { expect(project.errors.messages[:new_namespace].first).to eq 'Please select a new namespace for your project.' }
   end
 
   context 'disallow transfering of project with tags' do
@@ -58,12 +59,16 @@ describe Projects::TransferService, services: true do
   context 'visibility level' do
     let(:internal_group) { create(:group, :internal) }
 
-    before { internal_group.add_owner(user) }
+    before do
+      internal_group.add_owner(user)
+    end
 
     context 'when namespace visibility level < project visibility level' do
       let(:public_project) { create(:project, :public, :repository, namespace: user.namespace) }
 
-      before { transfer_project(public_project, user, internal_group) }
+      before do
+        transfer_project(public_project, user, internal_group)
+      end
 
       it { expect(public_project.visibility_level).to eq(internal_group.visibility_level) }
     end
@@ -71,7 +76,9 @@ describe Projects::TransferService, services: true do
     context 'when namespace visibility level > project visibility level' do
       let(:private_project) { create(:project, :private, :repository, namespace: user.namespace) }
 
-      before { transfer_project(private_project, user, internal_group) }
+      before do
+        transfer_project(private_project, user, internal_group)
+      end
 
       it { expect(private_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE) }
     end

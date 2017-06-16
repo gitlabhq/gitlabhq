@@ -43,7 +43,19 @@ class Blob < SimpleDelegator
     BlobViewer::Readme,
     BlobViewer::License,
     BlobViewer::Contributing,
-    BlobViewer::Changelog
+    BlobViewer::Changelog,
+
+    BlobViewer::Cartfile,
+    BlobViewer::ComposerJson,
+    BlobViewer::Gemfile,
+    BlobViewer::Gemspec,
+    BlobViewer::GodepsJson,
+    BlobViewer::PackageJson,
+    BlobViewer::Podfile,
+    BlobViewer::Podspec,
+    BlobViewer::PodspecJson,
+    BlobViewer::RequirementsTxt,
+    BlobViewer::YarnLock
   ].freeze
 
   attr_reader :project
@@ -82,16 +94,16 @@ class Blob < SimpleDelegator
     end
   end
 
+  def load_all_data!
+    super(project.repository) if project
+  end
+
   def no_highlighting?
     raw_size && raw_size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
   end
 
   def empty?
     raw_size == 0
-  end
-
-  def too_large?
-    size && truncated?
   end
 
   def external_storage_error?
@@ -143,12 +155,16 @@ class Blob < SimpleDelegator
     @extension ||= extname.downcase.delete('.')
   end
 
+  def file_type
+    Gitlab::FileDetector.type_of(path)
+  end
+
   def video?
     UploaderHelper::VIDEO_EXT.include?(extension)
   end
 
   def readable_text?
-    text? && !stored_externally? && !too_large?
+    text? && !stored_externally? && !truncated?
   end
 
   def simple_viewer
@@ -168,16 +184,19 @@ class Blob < SimpleDelegator
   end
 
   def rendered_as_text?(ignore_errors: true)
-    simple_viewer.text? && (ignore_errors || simple_viewer.render_error.nil?)
+    simple_viewer.is_a?(BlobViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
   end
 
   def show_viewer_switcher?
     rendered_as_text? && rich_viewer
   end
 
-  def override_max_size!
-    simple_viewer&.override_max_size = true
-    rich_viewer&.override_max_size = true
+  def expanded?
+    !!@expanded
+  end
+
+  def expand!
+    @expanded = true
   end
 
   private

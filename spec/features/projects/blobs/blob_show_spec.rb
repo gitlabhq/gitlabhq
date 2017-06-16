@@ -3,10 +3,10 @@ require 'spec_helper'
 feature 'File blob', :js, feature: true do
   let(:project) { create(:project, :public) }
 
-  def visit_blob(path, fragment = nil)
-    visit namespace_project_blob_path(project.namespace, project, File.join('master', path), anchor: fragment)
+  def visit_blob(path, anchor: nil, ref: 'master')
+    visit namespace_project_blob_path(project.namespace, project, File.join(ref, path), anchor: anchor)
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   context 'Ruby file' do
@@ -17,6 +17,7 @@ feature 'File blob', :js, feature: true do
     it 'displays the blob' do
       aggregate_failures do
         # shows highlighted Ruby code
+        expect(page).to have_css(".js-syntax-highlight")
         expect(page).to have_content("require 'fileutils'")
 
         # does not show a viewer switcher
@@ -61,7 +62,7 @@ feature 'File blob', :js, feature: true do
         before do
           find('.js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays the blob using the simple viewer' do
@@ -71,6 +72,7 @@ feature 'File blob', :js, feature: true do
             expect(page).to have_selector('.blob-viewer[data-type="rich"]', visible: false)
 
             # shows highlighted Markdown code
+            expect(page).to have_css(".js-syntax-highlight")
             expect(page).to have_content("[PEP-8](http://www.python.org/dev/peps/pep-0008/)")
 
             # shows an enabled copy button
@@ -82,7 +84,7 @@ feature 'File blob', :js, feature: true do
           before do
             find('.js-blob-viewer-switch-btn[data-viewer=rich]').click
 
-            wait_for_ajax
+            wait_for_requests
           end
 
           it 'displays the blob using the rich viewer' do
@@ -101,7 +103,7 @@ feature 'File blob', :js, feature: true do
 
     context 'visiting with a line number anchor' do
       before do
-        visit_blob('files/markdown/ruby-style-guide.md', 'L1')
+        visit_blob('files/markdown/ruby-style-guide.md', anchor: 'L1')
       end
 
       it 'displays the blob using the simple viewer' do
@@ -114,6 +116,7 @@ feature 'File blob', :js, feature: true do
           expect(page).to have_selector('#LC1.hll')
 
           # shows highlighted Markdown code
+          expect(page).to have_css(".js-syntax-highlight")
           expect(page).to have_content("[PEP-8](http://www.python.org/dev/peps/pep-0008/)")
 
           # shows an enabled copy button
@@ -170,7 +173,7 @@ feature 'File blob', :js, feature: true do
         before do
           find('.js-blob-viewer-switcher .js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays an error' do
@@ -352,6 +355,37 @@ feature 'File blob', :js, feature: true do
     end
   end
 
+  context 'binary file that appears to be text in the first 1024 bytes' do
+    before do
+      visit_blob('encoding/binary-1.bin', ref: 'binary-encoding')
+    end
+
+    it 'displays the blob' do
+      aggregate_failures do
+        # shows a download link
+        expect(page).to have_link('Download (23.8 KB)')
+
+        # does not show a viewer switcher
+        expect(page).not_to have_selector('.js-blob-viewer-switcher')
+
+        # The specs below verify an arguably incorrect result, but since we only
+        # learn that the file is not actually text once the text viewer content
+        # is loaded asynchronously, there is no straightforward way to get these
+        # synchronously loaded elements to display correctly.
+        #
+        # Clicking the copy button will result in nothing being copied.
+        # Clicking the raw button will result in the binary file being downloaded,
+        # as expected.
+
+        # shows an enabled copy button, incorrectly
+        expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
+
+        # shows a raw button, incorrectly
+        expect(page).to have_link('Open raw')
+      end
+    end
+  end
+
   context '.gitlab-ci.yml' do
     before do
       project.add_master(project.creator)
@@ -423,7 +457,43 @@ feature 'File blob', :js, feature: true do
         expect(page).to have_content('This project is licensed under the MIT License.')
 
         # shows a learn more link
-        expect(page).to have_link('Learn more about this license', 'http://choosealicense.com/licenses/mit/')
+        expect(page).to have_link('Learn more', 'http://choosealicense.com/licenses/mit/')
+      end
+    end
+  end
+
+  context '*.gemspec' do
+    before do
+      project.add_master(project.creator)
+
+      Files::CreateService.new(
+        project,
+        project.creator,
+        start_branch: 'master',
+        branch_name: 'master',
+        commit_message: "Add activerecord.gemspec",
+        file_path: 'activerecord.gemspec',
+        file_content: <<-SPEC.strip_heredoc
+          Gem::Specification.new do |s|
+            s.platform    = Gem::Platform::RUBY
+            s.name        = "activerecord"
+          end
+        SPEC
+      ).execute
+
+      visit_blob('activerecord.gemspec')
+    end
+
+    it 'displays an auxiliary viewer' do
+      aggregate_failures do
+        # shows names of dependency manager and package
+        expect(page).to have_content('This project manages its dependencies using RubyGems and defines a gem named activerecord.')
+
+        # shows a link to the gem
+        expect(page).to have_link('activerecord', 'https://rubygems.org/gems/activerecord')
+
+        # shows a learn more link
+        expect(page).to have_link('Learn more', 'http://choosealicense.com/licenses/mit/')
       end
     end
   end

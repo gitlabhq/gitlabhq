@@ -1,6 +1,5 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
-require 'constraints/group_url_constrainer'
 
 Rails.application.routes.draw do
   concern :access_requestable do
@@ -39,10 +38,11 @@ Rails.application.routes.draw do
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
-  scope path: '-', controller: 'health' do
-    get :liveness
-    get :readiness
-    get :metrics
+  scope path: '-' do
+    get 'liveness' => 'health#liveness'
+    get 'readiness' => 'health#readiness'
+    resources :metrics, only: [:index]
+    mount Peek::Railtie => '/peek'
   end
 
   # Koding route
@@ -84,20 +84,6 @@ Rails.application.routes.draw do
   draw :project
 
   root to: "root#index"
-
-  # Since group show page is wildcard routing
-  # we want all other routing to be checked before matching this one
-  constraints(GroupUrlConstrainer.new) do
-    scope(path: '*id',
-          as: :group,
-          constraints: { id: Gitlab::Regex.namespace_route_regex, format: /(html|json|atom)/ },
-          controller: :groups) do
-      get '/', action: :show
-      patch '/', action: :update
-      put '/', action: :update
-      delete '/', action: :destroy
-    end
-  end
 
   draw :test if Rails.env.test?
 

@@ -1,0 +1,4 @@
+---
+title: Avoid repeated queries for pipeline builds on merge requests
+merge_request:
+author:

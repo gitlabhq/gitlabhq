@@ -10,21 +10,12 @@
 RSpec/BeforeAfterAll:
   Enabled: false
 
-# Offense count: 15
-# Configuration parameters: CustomIncludeMethods.
-RSpec/EmptyExampleGroup:
-  Enabled: false
-
 # Offense count: 233
 RSpec/EmptyLineAfterFinalLet:
   Enabled: false
 
 # Offense count: 167
 RSpec/EmptyLineAfterSubject:
-  Enabled: false
-
-# Offense count: 3
-RSpec/ExpectOutput:
   Enabled: false
 
 # Offense count: 72
@@ -243,13 +234,6 @@ Style/PerlBackrefs:
 # NamePrefixBlacklist: is_, has_, have_
 # NameWhitelist: is_a?
 Style/PredicateName:
-  Enabled: false
-
-# Offense count: 45
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: short, verbose
-Style/PreferredHashMethods:
   Enabled: false
 
 # Offense count: 65

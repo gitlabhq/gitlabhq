@@ -1,7 +1,6 @@
 class MergeRequestEntity < IssuableEntity
   include RequestAwareEntity
 
-  expose :assignee_id
   expose :in_progress_merge_commit_sha
   expose :locked_at
   expose :merge_commit_sha
@@ -30,7 +29,7 @@ class MergeRequestEntity < IssuableEntity
 
   expose :merge_commit_sha
   expose :merge_commit_message
-  expose :head_pipeline, with: PipelineEntity, as: :pipeline
+  expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
 
   # Booleans
   expose :work_in_progress?, as: :work_in_progress
@@ -40,6 +39,7 @@ class MergeRequestEntity < IssuableEntity
   expose :commits_count
   expose :cannot_be_merged?, as: :has_conflicts
   expose :can_be_merged?, as: :can_be_merged
+  expose :remove_source_branch?, as: :remove_source_branch
 
   expose :project_archived do |merge_request|
     merge_request.project.archived?
@@ -152,12 +152,6 @@ class MergeRequestEntity < IssuableEntity
                                          merge_request.target_project,
                                          merge_request,
                                          format: :json)
-  end
-
-  expose :merge_check_path do |merge_request|
-    merge_check_namespace_project_merge_request_path(merge_request.project.namespace,
-                                                     merge_request.project,
-                                                     merge_request)
   end
 
   expose :ci_environments_status_path do |merge_request|

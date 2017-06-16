@@ -31,23 +31,40 @@ describe CommitStatus, :models do
 
   describe '#author' do
     subject { commit_status.author }
-    before { commit_status.author = User.new }
+
+    before do
+      commit_status.author = User.new
+    end
 
     it { is_expected.to eq(commit_status.user) }
+  end
+
+  describe 'status state machine' do
+    let!(:commit_status) { create(:commit_status, :running, project: project) }
+
+    it 'invalidates the cache after a transition' do
+      expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
+
+      commit_status.success!
+    end
   end
 
   describe '#started?' do
     subject { commit_status.started? }
 
     context 'without started_at' do
-      before { commit_status.started_at = nil }
+      before do
+        commit_status.started_at = nil
+      end
 
       it { is_expected.to be_falsey }
     end
 
     %w[running success failed].each do |status|
       context "if commit status is #{status}" do
-        before { commit_status.status = status }
+        before do
+          commit_status.status = status
+        end
 
         it { is_expected.to be_truthy }
       end
@@ -55,7 +72,9 @@ describe CommitStatus, :models do
 
     %w[pending canceled].each do |status|
       context "if commit status is #{status}" do
-        before { commit_status.status = status }
+        before do
+          commit_status.status = status
+        end
 
         it { is_expected.to be_falsey }
       end
@@ -67,7 +86,9 @@ describe CommitStatus, :models do
 
     %w[pending running].each do |state|
       context "if commit_status.status is #{state}" do
-        before { commit_status.status = state }
+        before do
+          commit_status.status = state
+        end
 
         it { is_expected.to be_truthy }
       end
@@ -75,7 +96,9 @@ describe CommitStatus, :models do
 
     %w[success failed canceled].each do |state|
       context "if commit_status.status is #{state}" do
-        before { commit_status.status = state }
+        before do
+          commit_status.status = state
+        end
 
         it { is_expected.to be_falsey }
       end
@@ -87,7 +110,9 @@ describe CommitStatus, :models do
 
     %w[success failed canceled].each do |state|
       context "if commit_status.status is #{state}" do
-        before { commit_status.status = state }
+        before do
+          commit_status.status = state
+        end
 
         it { is_expected.to be_truthy }
       end
@@ -95,7 +120,9 @@ describe CommitStatus, :models do
 
     %w[pending running].each do |state|
       context "if commit_status.status is #{state}" do
-        before { commit_status.status = state }
+        before do
+          commit_status.status = state
+        end
 
         it { is_expected.to be_falsey }
       end
@@ -261,7 +288,9 @@ describe CommitStatus, :models do
     subject { commit_status.before_sha }
 
     context 'when no before_sha is set for pipeline' do
-      before { pipeline.before_sha = nil }
+      before do
+        pipeline.before_sha = nil
+      end
 
       it 'returns blank sha' do
         is_expected.to eq(Gitlab::Git::BLANK_SHA)
@@ -270,7 +299,10 @@ describe CommitStatus, :models do
 
     context 'for before_sha set for pipeline' do
       let(:value) { '1234' }
-      before { pipeline.before_sha = value }
+
+      before do
+        pipeline.before_sha = value
+      end
 
       it 'returns the set value' do
         is_expected.to eq(value)

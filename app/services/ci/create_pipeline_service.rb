@@ -2,8 +2,9 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
       @pipeline = Ci::Pipeline.new(
+        source: source,
         project: project,
         ref: ref,
         sha: sha,
@@ -42,24 +43,33 @@ module Ci
         return pipeline
       end
 
-      unless pipeline.config_builds_attributes.present?
-        return error('No builds for this pipeline.')
+      unless pipeline.has_stage_seeds?
+        return error('No stages / jobs for this pipeline.')
       end
 
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
 
-        Ci::CreatePipelineBuildsService
+        Ci::CreatePipelineStagesService
           .new(project, current_user)
           .execute(pipeline)
       end
 
       cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
 
+      pipeline_created_counter.increment(source: source)
+
       pipeline.tap(&:process!)
     end
 
     private
+
+    def update_merge_requests_head_pipeline
+      return unless pipeline.latest?
+
+      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref).
+        update_all(head_pipeline_id: @pipeline.id)
+    end
 
     def skip_ci?
       return false unless pipeline.git_commit_message
@@ -118,15 +128,14 @@ module Ci
       origin_sha && origin_sha != Gitlab::Git::BLANK_SHA
     end
 
-    def update_merge_requests_head_pipeline
-      MergeRequest.where(source_branch: @pipeline.ref, source_project: @pipeline.project).
-        update_all(head_pipeline_id: @pipeline.id)
-    end
-
     def error(message, save: false)
       pipeline.errors.add(:base, message)
       pipeline.drop if save
       pipeline
+    end
+
+    def pipeline_created_counter
+      @pipeline_created_counter ||= Gitlab::Metrics.counter(:pipelines_created_count, "Pipelines created count")
     end
   end
 end

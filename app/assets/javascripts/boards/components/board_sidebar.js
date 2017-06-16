@@ -7,11 +7,9 @@
 
 import Vue from 'vue';
 import eventHub from '../../sidebar/event_hub';
-
 import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
 import Assignees from '../../sidebar/components/assignees/assignees';
-
-require('./sidebar/remove_issue');
+import './sidebar/remove_issue';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -33,9 +31,6 @@ gl.issueBoards.BoardSidebar = Vue.extend({
   computed: {
     showSidebar () {
       return Object.keys(this.issue).length;
-    },
-    assigneeId() {
-      return this.issue.assignee ? this.issue.assignee.id : 0;
     },
     milestoneTitle() {
       return this.issue.milestone ? this.issue.milestone.title : 'No Milestone';

@@ -29,7 +29,7 @@ module FormHelper
         current_user: true,
         project_id: issuable.project.try(:id),
         field_name: "#{issuable.class.model_name.param_key}[assignee_ids][]",
-        default_label: 'Assignee',
+        default_label: 'Unassigned',
         'max-select': 1,
         'dropdown-header': 'Assignee',
         multi_select: true,

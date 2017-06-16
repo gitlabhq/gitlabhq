@@ -15,6 +15,10 @@ module Gitlab
       def success?
         actor.present? || type == :ci
       end
+
+      def failed?
+        !success?
+      end
     end
   end
 end

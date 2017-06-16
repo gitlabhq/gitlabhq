@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Diff note avatars', feature: true, js: true do
+  include NoteInteractionHelpers
+
   let(:user)          { create(:user) }
   let(:project)       { create(:project, :public) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
@@ -60,7 +62,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
         click_button 'Comment'
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
@@ -76,7 +78,7 @@ feature 'Diff note avatars', feature: true, js: true do
       before do
         visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: view)
 
-        wait_for_ajax
+        wait_for_requests
       end
 
       it 'shows note avatar' do
@@ -91,7 +93,7 @@ feature 'Diff note avatars', feature: true, js: true do
         page.within find("[id='#{position.line_code(project.repository)}']") do
           find('.diff-notes-collapse').click
 
-          expect(first('img.js-diff-comment-avatar')["title"]).to eq("#{note.author.name}: #{note.note.truncate(17)}")
+          expect(first('img.js-diff-comment-avatar')["data-original-title"]).to eq("#{note.author.name}: #{note.note.truncate(17)}")
         end
       end
 
@@ -110,11 +112,13 @@ feature 'Diff note avatars', feature: true, js: true do
       end
 
       it 'removes avatar when note is deleted' do
+        open_more_actions_dropdown(note)
+
         page.within find(".note-row-#{note.id}") do
           find('.js-note-delete').click
         end
 
-        wait_for_ajax
+        wait_for_requests
 
         page.within find("[id='#{position.line_code(project.repository)}']") do
           expect(page).not_to have_selector('img.js-diff-comment-avatar')
@@ -129,7 +133,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
           click_button 'Comment'
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         page.within find("[id='#{position.line_code(project.repository)}']") do
@@ -148,7 +152,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
             find('.js-comment-button').trigger 'click'
 
-            wait_for_ajax
+            wait_for_requests
           end
         end
 
@@ -166,7 +170,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
           visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: view)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'shows extra comment count' do

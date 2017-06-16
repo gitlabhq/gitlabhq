@@ -39,10 +39,6 @@ import './shortcuts_network';
 // behaviors
 import './behaviors/';
 
-// blob
-import './blob/create_branch_dropdown';
-import './blob/target_branch_dropdown';
-
 // templates
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
@@ -56,7 +52,6 @@ import './lib/utils/animate';
 import './lib/utils/bootstrap_linked_tabs';
 import './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
-import './lib/utils/notify';
 import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
 import './lib/utils/url_utility';
@@ -105,12 +100,11 @@ import './group_label_subscription';
 import './groups_select';
 import './header';
 import './importer_status';
-import './issuable';
+import './issuable_index';
 import './issuable_context';
 import './issuable_form';
 import './issue';
 import './issue_status_select';
-import './issues_bulk_assignment';
 import './label_manager';
 import './labels';
 import './labels_select';
@@ -170,7 +164,7 @@ import './visibility_select';
 import './wikis';
 import './zen_mode';
 
-// eslint-disable-next-line global-require
+// eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 document.addEventListener('beforeunload', function () {

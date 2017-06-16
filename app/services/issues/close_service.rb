@@ -28,6 +28,7 @@ module Issues
         notification_service.close_issue(issue, current_user) if notifications
         todo_service.close_issue(issue, current_user)
         execute_hooks(issue, 'close')
+        invalidate_cache_counts(issue.assignees, issue)
       end
 
       issue

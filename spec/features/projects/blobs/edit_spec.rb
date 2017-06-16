@@ -18,7 +18,7 @@ feature 'Editing file blob', feature: true, js: true do
     end
 
     def edit_and_commit
-      wait_for_ajax
+      wait_for_requests
       find('.js-edit-blob').click
       execute_script('ace.edit("editor").setValue("class NextFeature\nend\n")')
       click_button 'Commit changes'
@@ -102,7 +102,7 @@ feature 'Editing file blob', feature: true, js: true do
 
         it 'shows blob editor with same branch' do
           expect(page).to have_current_path(namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path)))
-          expect(find('.js-target-branch .dropdown-toggle-text').text).to eq(branch)
+          expect(find('.js-branch-name').value).to eq(branch)
         end
       end
 
@@ -112,7 +112,7 @@ feature 'Editing file blob', feature: true, js: true do
         end
 
         it 'shows blob editor with patch branch' do
-          expect(find('.js-target-branch .dropdown-toggle-text').text).to eq('patch-1')
+          expect(find('.js-branch-name').value).to eq('patch-1')
         end
       end
     end
@@ -128,7 +128,7 @@ feature 'Editing file blob', feature: true, js: true do
 
       it 'shows blob editor with same branch' do
         expect(page).to have_current_path(namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path)))
-        expect(find('.js-target-branch .dropdown-toggle-text').text).to eq(branch)
+        expect(find('.js-branch-name').value).to eq(branch)
       end
     end
   end

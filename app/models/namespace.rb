@@ -6,6 +6,7 @@ class Namespace < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::CurrentSettings
   include Routable
+  include AfterCommitQueue
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -46,7 +47,7 @@ class Namespace < ActiveRecord::Base
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
-  scope :root, -> { where('type IS NULL') }
+  scope :for_user, -> { where('type IS NULL') }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -176,26 +177,20 @@ class Namespace < ActiveRecord::Base
     projects.with_shared_runners.any?
   end
 
-  # Scopes the model on ancestors of the record
+  # Returns all the ancestors of the current namespaces.
   def ancestors
-    if parent_id
-      path = route ? route.path : full_path
-      paths = []
+    return self.class.none unless parent_id
 
-      until path.blank?
-        path = path.rpartition('/').first
-        paths << path
-      end
-
-      self.class.joins(:route).where('routes.path IN (?)', paths).reorder('routes.path ASC')
-    else
-      self.class.none
-    end
+    Gitlab::GroupHierarchy.
+      new(self.class.where(id: parent_id)).
+      base_and_ancestors
   end
 
-  # Scopes the model on direct and indirect children of the record
+  # Returns all the descendants of the current namespace.
   def descendants
-    self.class.joins(:route).merge(Route.inside_path(route.path)).reorder('routes.path ASC')
+    Gitlab::GroupHierarchy.
+      new(self.class.where(parent_id: id)).
+      base_and_descendants
   end
 
   def user_ids_for_project_authorizations
@@ -248,7 +243,9 @@ class Namespace < ActiveRecord::Base
 
         # Remove namespace directroy async with delay so
         # GitLab has time to remove all projects first
-        GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
+        run_after_commit do
+          GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
+        end
       end
     end
 

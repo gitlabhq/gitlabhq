@@ -3,7 +3,9 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Entry::Environment do
   let(:entry) { described_class.new(config) }
 
-  before { entry.compose! }
+  before do
+    entry.compose!
+  end
 
   context 'when configuration is a string' do
     let(:config) { 'production' }

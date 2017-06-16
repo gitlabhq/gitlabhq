@@ -9,17 +9,23 @@ class UploadsController < ApplicationController
   private
 
   def find_model
+    return nil unless params[:id]
+
     return render_404 unless upload_model && upload_mount
 
     @model = upload_model.find(params[:id])
   end
 
   def authorize_access!
+    return nil unless model
+
     authorized =
       case model
       when Note
         can?(current_user, :read_project, model.project)
       when User
+        true
+      when Appearance
         true
       else
         permission = "read_#{model.class.to_s.underscore}".to_sym
@@ -31,6 +37,8 @@ class UploadsController < ApplicationController
   end
 
   def authorize_create_access!
+    return nil unless model
+
     # for now we support only personal snippets comments
     authorized = can?(current_user, :comment_personal_snippet, model)
 
@@ -71,7 +79,12 @@ class UploadsController < ApplicationController
   def uploader
     return @uploader if defined?(@uploader)
 
-    if model.is_a?(PersonalSnippet)
+    case model
+    when nil
+      @uploader = PersonalFileUploader.new(nil, params[:secret])
+
+      @uploader.retrieve_from_store!(params[:filename])
+    when PersonalSnippet
       @uploader = PersonalFileUploader.new(model, params[:secret])
 
       @uploader.retrieve_from_store!(params[:filename])

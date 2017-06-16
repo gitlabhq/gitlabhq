@@ -62,7 +62,7 @@ module Banzai
 
         nodes.select do |node|
           if node.has_attribute?(project_attr)
-            can_read_reference?(user, projects[node])
+            can_read_reference?(user, projects[node], node)
           else
             true
           end
@@ -163,14 +163,15 @@ module Banzai
       # been queried the object is returned from the cache.
       def collection_objects_for_ids(collection, ids)
         if RequestStore.active?
+          ids = ids.map(&:to_i)
           cache = collection_cache[collection_cache_key(collection)]
-          to_query = ids.map(&:to_i) - cache.keys
+          to_query = ids - cache.keys
 
           unless to_query.empty?
             collection.where(id: to_query).each { |row| cache[row.id] = row }
           end
 
-          cache.values
+          cache.values_at(*ids).compact
         else
           collection.where(id: ids)
         end
@@ -230,7 +231,7 @@ module Banzai
       # see reference comments.
       # Override this method on subclasses
       # to check if user can read resource
-      def can_read_reference?(user, ref_project)
+      def can_read_reference?(user, ref_project, node)
         raise NotImplementedError
       end
 

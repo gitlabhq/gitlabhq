@@ -23,13 +23,13 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       end
 
       click_button 'Commit conflict resolution'
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
 
       click_on 'Changes'
-      wait_for_ajax
+      wait_for_requests
 
       within find('.diff-file', text: 'files/ruby/popen.rb') do
         expect(page).to have_selector('.line_content.new', text: "vars = { 'PWD' => path }")
@@ -53,23 +53,23 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
         click_button 'Edit inline'
-        wait_for_ajax
+        wait_for_requests
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("One morning");')
       end
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
         click_button 'Edit inline'
-        wait_for_ajax
+        wait_for_requests
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
       end
 
       click_button 'Commit conflict resolution'
-      wait_for_ajax
+      wait_for_requests
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
 
       click_on 'Changes'
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content('One morning')
       expect(page).to have_content('Gregor Samsa woke from troubled dreams')
@@ -85,14 +85,18 @@ feature 'Merge request conflict resolution', js: true, feature: true do
     context 'the conflicts are resolvable' do
       let(:merge_request) { create_merge_request('conflict-resolvable') }
 
-      before { visit namespace_project_merge_request_path(project.namespace, project, merge_request) }
+      before do
+        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      end
 
       it 'shows a link to the conflict resolution page' do
         expect(page).to have_link('conflicts', href: /\/conflicts\Z/)
       end
 
       context 'in Inline view mode' do
-        before { click_link('conflicts', href: /\/conflicts\Z/) }
+        before do
+          click_link('conflicts', href: /\/conflicts\Z/)
+        end
 
         include_examples "conflicts are resolved in Interactive mode"
         include_examples "conflicts are resolved in Edit inline mode"
@@ -100,7 +104,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       context 'in Parallel view mode' do
         before do
-          click_link('conflicts', href: /\/conflicts\Z/) 
+          click_link('conflicts', href: /\/conflicts\Z/)
           click_button 'Side-by-side'
         end
 
@@ -126,21 +130,21 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       it 'conflicts are resolved in Edit inline mode' do
         within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
-          wait_for_ajax
+          wait_for_requests
           execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
         end
 
         click_button 'Commit conflict resolution'
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content('All merge conflicts were resolved')
 
         merge_request.reload_diff
 
         click_on 'Changes'
-        wait_for_ajax
+        wait_for_requests
         click_link 'Expand all'
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content('Gregor Samsa woke from troubled dreams')
       end
@@ -171,7 +175,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       it 'shows an error if the conflicts page is visited directly' do
         visit current_url + '/conflicts'
-        wait_for_ajax
+        wait_for_requests
 
         expect(find('#conflicts')).to have_content('Please try to resolve them locally.')
       end

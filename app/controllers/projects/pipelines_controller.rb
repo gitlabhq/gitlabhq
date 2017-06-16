@@ -4,7 +4,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
-  before_action :builds_enabled, only: :charts
 
   wrap_parameters Ci::Pipeline
 
@@ -58,7 +57,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def create
     @pipeline = Ci::CreatePipelineService
       .new(project, current_user, create_params)
-      .execute(ignore_skip_ci: true, save_on_errors: false)
+      .execute(:web, ignore_skip_ci: true, save_on_errors: false)
 
     if @pipeline.persisted?
       redirect_to namespace_project_pipeline_path(project.namespace, project, @pipeline)
@@ -99,7 +98,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def stage
-    @stage = pipeline.stage(params[:stage])
+    @stage = pipeline.legacy_stage(params[:stage])
     return not_found unless @stage
 
     respond_to do |format|

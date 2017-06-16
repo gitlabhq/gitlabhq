@@ -76,6 +76,27 @@ module API
         end
       end
 
+      desc 'Update an existing deploy key for a project' do
+        success Entities::SSHKey
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        optional :title, type: String, desc: 'The name of the deploy key'
+        optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
+        at_least_one_of :title, :can_push
+      end
+      put ":id/deploy_keys/:key_id" do
+        key = user_project.deploy_keys.find(params.delete(:key_id))
+
+        authorize!(:update_deploy_key, key)
+
+        if key.update_attributes(declared_params(include_missing: false))
+          present key, with: Entities::SSHKey
+        else
+          render_validation_error!(key)
+        end
+      end
+
       desc 'Enable a deploy key for a project' do
         detail 'This feature was added in GitLab 8.11'
         success Entities::SSHKey

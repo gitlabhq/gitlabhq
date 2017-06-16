@@ -192,6 +192,9 @@ describe('gl_emoji', () => {
   });
 
   describe('isFlagEmoji', () => {
+    it('should gracefully handle empty string', () => {
+      expect(isFlagEmoji('')).toBeFalsy();
+    });
     it('should detect flag_ac', () => {
       expect(isFlagEmoji('🇦🇨')).toBeTruthy();
     });
@@ -216,6 +219,9 @@ describe('gl_emoji', () => {
   });
 
   describe('isKeycapEmoji', () => {
+    it('should gracefully handle empty string', () => {
+      expect(isKeycapEmoji('')).toBeFalsy();
+    });
     it('should detect one(keycap)', () => {
       expect(isKeycapEmoji('1️⃣')).toBeTruthy();
     });
@@ -231,6 +237,9 @@ describe('gl_emoji', () => {
   });
 
   describe('isSkinToneComboEmoji', () => {
+    it('should gracefully handle empty string', () => {
+      expect(isSkinToneComboEmoji('')).toBeFalsy();
+    });
     it('should detect hand_splayed_tone5', () => {
       expect(isSkinToneComboEmoji('🖐🏿')).toBeTruthy();
     });
@@ -255,6 +264,9 @@ describe('gl_emoji', () => {
   });
 
   describe('isHorceRacingSkinToneComboEmoji', () => {
+    it('should gracefully handle empty string', () => {
+      expect(isHorceRacingSkinToneComboEmoji('')).toBeFalsy();
+    });
     it('should detect horse_racing_tone2', () => {
       expect(isHorceRacingSkinToneComboEmoji('🏇🏼')).toBeTruthy();
     });
@@ -264,6 +276,9 @@ describe('gl_emoji', () => {
   });
 
   describe('isPersonZwjEmoji', () => {
+    it('should gracefully handle empty string', () => {
+      expect(isPersonZwjEmoji('')).toBeFalsy();
+    });
     it('should detect couple_mm', () => {
       expect(isPersonZwjEmoji('👨‍❤️‍👨')).toBeTruthy();
     });
@@ -300,6 +315,22 @@ describe('gl_emoji', () => {
   });
 
   describe('isEmojiUnicodeSupported', () => {
+    it('should gracefully handle empty string with unicode support', () => {
+      const isSupported = isEmojiUnicodeSupported(
+        { '1.0': true },
+        '',
+        '1.0',
+      );
+      expect(isSupported).toBeTruthy();
+    });
+    it('should gracefully handle empty string without unicode support', () => {
+      const isSupported = isEmojiUnicodeSupported(
+        {},
+        '',
+        '1.0',
+      );
+      expect(isSupported).toBeFalsy();
+    });
     it('bomb(6.0) with 6.0 support', () => {
       const emojiKey = 'bomb';
       const unicodeSupportMap = Object.assign({}, emptySupportMap, {

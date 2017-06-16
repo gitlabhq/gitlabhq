@@ -1,8 +1,9 @@
-%article.file-holder.readme-holder
-  .js-file-title.file-title
-    = blob_icon readme.mode, readme.name
-    = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, readme.path)) do
-      %strong
-        = readme.name
+- if readme.rich_viewer
+  %article.file-holder.readme-holder
+    .js-file-title.file-title
+      = blob_icon readme.mode, readme.name
+      = link_to namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, readme.path)) do
+        %strong
+          = readme.name
 
-  = render 'projects/blob/viewer', viewer: readme.rich_viewer, viewer_url: namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, readme.path), viewer: :rich, format: :json)
+    = render 'projects/blob/viewer', viewer: readme.rich_viewer, viewer_url: namespace_project_blob_path(@project.namespace, @project, tree_join(@ref, readme.path), viewer: :rich, format: :json)

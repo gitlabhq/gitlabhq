@@ -58,7 +58,7 @@ describe 'Dropdown assignee', :feature, :js do
     it 'should load all the assignees when opened' do
       filtered_search.set('assignee:')
 
-      expect(dropdown_assignee_size).to eq(3)
+      expect(dropdown_assignee_size).to eq(4)
     end
 
     it 'shows current user at top of dropdown' do
@@ -153,6 +153,25 @@ describe 'Dropdown assignee', :feature, :js do
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
       expect_tokens([{ name: 'assignee', value: 'none' }])
+      expect_filtered_search_input_empty
+    end
+  end
+
+  describe 'selecting from dropdown without Ajax call' do
+    before do
+      Gitlab::Testing::RequestBlockerMiddleware.block_requests!
+      filtered_search.set('assignee:')
+    end
+
+    after do
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
+    end
+
+    it 'selects current user' do
+      find('#js-dropdown-assignee .filter-dropdown-item', text: user.username).click
+
+      expect(page).to have_css(js_dropdown_assignee, visible: false)
+      expect_tokens([{ name: 'assignee', value: user.username }])
       expect_filtered_search_input_empty
     end
   end

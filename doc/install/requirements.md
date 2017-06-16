@@ -129,7 +129,8 @@ We _highly_ recommend the use of PostgreSQL instead of MySQL/MariaDB as not all
 features of GitLab may work with MySQL/MariaDB. For example, MySQL does not have
 the right features to support nested groups in an efficient manner; see
 <https://gitlab.com/gitlab-org/gitlab-ce/issues/30472> for more information
-about this. Existing users using GitLab with MySQL/MariaDB are advised to
+about this. GitLab Geo also does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
+Existing users using GitLab with MySQL/MariaDB are advised to
 migrate to PostgreSQL instead.
 
 The server running the database should have _at least_ 5-10 GB of storage
@@ -138,7 +139,7 @@ installation (e.g. the number of users, projects, etc).
 
 ### PostgreSQL Requirements
 
-As of GitLab 9.0, PostgreSQL 9.2 or newer is required, and earlier versions are
+As of GitLab 9.3, PostgreSQL 9.2 or newer is required, and earlier versions are
 not supported. We highly recommend users to use at least PostgreSQL 9.6 as this
 is the PostgreSQL version used for development and testing.
 

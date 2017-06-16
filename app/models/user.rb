@@ -10,11 +10,15 @@ class User < ActiveRecord::Base
   include Sortable
   include CaseSensitivity
   include TokenAuthenticatable
+  include IgnorableColumn
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
+  ignore_column :authorized_projects_populated
+
   add_authentication_token_field :authentication_token
   add_authentication_token_field :incoming_email_token
+  add_authentication_token_field :rss_token
 
   default_value_for :admin, false
   default_value_for(:external) { current_application_settings.user_default_external }
@@ -36,7 +40,7 @@ class User < ActiveRecord::Base
          otp_secret_encryption_key: Gitlab::Application.secrets.otp_key_base
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
-  serialize :otp_backup_codes, JSON
+  serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiverecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
@@ -62,7 +66,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id
+  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, autosave: true
 
   # Profile
   has_many :keys, -> do
@@ -97,6 +101,7 @@ class User < ActiveRecord::Base
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
+  has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
@@ -115,11 +120,6 @@ class User < ActiveRecord::Base
   has_many :issue_assignees
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
-
-  # Issues that a user owns are expected to be moved to the "ghost" user before
-  # the user is destroyed. If the user owns any issues during deletion, this
-  # should be treated as an exceptional condition.
-  has_many :issues,                   dependent: :restrict_with_exception, foreign_key: :author_id
 
   #
   # Validations
@@ -166,8 +166,13 @@ class User < ActiveRecord::Base
   enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity, :groups, :todos]
 
   # User's Project preference
-  # Note: When adding an option, it MUST go on the end of the array.
-  enum project_view: [:readme, :activity, :files]
+  #
+  # Note: When adding an option, it MUST go on the end of the hash with a
+  # number higher than the current max. We cannot move options and/or change
+  # their numbers.
+  #
+  # We skip 0 because this was used by an option that has since been removed.
+  enum project_view: { activity: 1, files: 2 }
 
   alias_attribute :private_token, :authentication_token
 
@@ -212,7 +217,6 @@ class User < ActiveRecord::Base
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active).non_internal }
-  scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
@@ -350,7 +354,7 @@ class User < ActiveRecord::Base
     end
 
     def find_by_full_path(path, follow_redirects: false)
-      namespace = Namespace.find_by_full_path(path, follow_redirects: follow_redirects)
+      namespace = Namespace.for_user.find_by_full_path(path, follow_redirects: follow_redirects)
       namespace&.owner
     end
 
@@ -361,8 +365,9 @@ class User < ActiveRecord::Base
     # Pattern used to extract `@user` user references from text
     def reference_pattern
       %r{
+        (?<!\w)
         #{Regexp.escape(reference_prefix)}
-        (?<user>#{Gitlab::Regex::FULL_NAMESPACE_REGEX_STR})
+        (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
       }x
     end
 
@@ -504,21 +509,14 @@ class User < ActiveRecord::Base
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
-  def nested_groups
-    Group.member_descendants(id)
-  end
-
+  # Returns a relation of groups the user has access to, including their parent
+  # and child groups (recursively).
   def all_expanded_groups
-    Group.member_hierarchy(id)
+    Gitlab::GroupHierarchy.new(groups).all_groups
   end
 
   def expanded_groups_requiring_two_factor_authentication
     all_expanded_groups.where(require_two_factor_authentication: true)
-  end
-
-  def nested_groups_projects
-    Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
-      member_descendants(id)
   end
 
   def refresh_authorized_projects
@@ -529,18 +527,15 @@ class User < ActiveRecord::Base
     project_authorizations.where(project_id: project_ids).delete_all
   end
 
-  def set_authorized_projects_column
-    unless authorized_projects_populated
-      update_column(:authorized_projects_populated, true)
-    end
-  end
-
   def authorized_projects(min_access_level = nil)
-    refresh_authorized_projects unless authorized_projects_populated
-
-    # We're overriding an association, so explicitly call super with no arguments or it would be passed as `force_reload` to the association
+    # We're overriding an association, so explicitly call super with no
+    # arguments or it would be passed as `force_reload` to the association
     projects = super()
-    projects = projects.where('project_authorizations.access_level >= ?', min_access_level) if min_access_level
+
+    if min_access_level
+      projects = projects.
+        where('project_authorizations.access_level >= ?', min_access_level)
+    end
 
     projects
   end
@@ -557,12 +552,6 @@ class User < ActiveRecord::Base
   # access.
   def projects_with_reporter_access_limited_to(projects)
     authorized_projects(Gitlab::Access::REPORTER).where(id: projects)
-  end
-
-  def viewable_starred_projects
-    starred_projects.where("projects.visibility_level IN (?) OR projects.id IN (?)",
-                           [Project::PUBLIC, Project::INTERNAL],
-                           authorized_projects.select(:project_id))
   end
 
   def owned_projects
@@ -788,7 +777,7 @@ class User < ActiveRecord::Base
   def avatar_url(size: nil, scale: 2, **args)
     # We use avatar_path instead of overriding avatar_url because of carrierwave.
     # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args) || GravatarService.new.execute(email, size, scale)
+    avatar_path(args) || GravatarService.new.execute(email, size, scale, username: username)
   end
 
   def all_emails
@@ -818,6 +807,11 @@ class User < ActiveRecord::Base
   def post_destroy_hook
     log_info("User \"#{name}\" (#{email})  was removed")
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def delete_async(deleted_by:, params: {})
+    block if params[:hard_delete]
+    DeleteUserWorker.perform_async(deleted_by.id, id, params)
   end
 
   def notification_service
@@ -913,13 +907,13 @@ class User < ActiveRecord::Base
   end
 
   def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force, expires_in: 20.minutes) do
       MergeRequestsFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
 
   def assigned_open_issues_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'assigned_open_issues_count'], force: force, expires_in: 20.minutes) do
       IssuesFinder.new(self, assignee_id: self.id, state: 'opened').execute.count
     end
   end
@@ -997,6 +991,13 @@ class User < ActiveRecord::Base
     self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
 
     save
+  end
+
+  # each existing user needs to have an `rss_token`.
+  # we do this on read since migrating all existing users is not a feasible
+  # solution.
+  def rss_token
+    ensure_rss_token!
   end
 
   protected

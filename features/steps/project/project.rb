@@ -2,7 +2,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
-  include WaitForAjax
+  include WaitForRequests
 
   step 'change project settings' do
     fill_in 'project_name_edit', with: 'NewName'
@@ -38,7 +38,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   step 'I should see new project avatar' do
     expect(@project.avatar).to be_instance_of AvatarUploader
     url = @project.avatar.url
-    expect(url).to eq "/uploads/project/avatar/#{@project.id}/banana_sample.gif"
+    expect(url).to eq "/uploads/system/project/avatar/#{@project.id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -87,7 +87,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project "Shop" README' do
-    wait_for_ajax
+    wait_for_requests
     page.within('.readme-holder') do
       expect(page).to have_content 'testme'
     end

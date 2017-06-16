@@ -1,8 +1,8 @@
 /* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
 
-require('~/gl_dropdown');
-require('~/lib/utils/common_utils');
-require('~/lib/utils/url_utility');
+import '~/gl_dropdown';
+import '~/lib/utils/common_utils';
+import '~/lib/utils/url_utility';
 
 (() => {
   const NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';
@@ -185,7 +185,7 @@ require('~/lib/utils/url_utility');
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
 
-      it('should focus on input when opening for the second time', () => {
+      it('should focus on input when opening for the second time after transition', () => {
         remoteCallback();
         this.dropdownContainerElement.trigger({
           type: 'keyup',
@@ -193,6 +193,7 @@ require('~/lib/utils/url_utility');
           keyCode: ARROW_KEYS.ESC
         });
         this.dropdownButtonElement.click();
+        this.dropdownContainerElement.trigger('transitionend');
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
     });
@@ -201,6 +202,7 @@ require('~/lib/utils/url_utility');
       it('should focus input when passing array data to drop down', () => {
         initDropDown.call(this, false, true);
         this.dropdownButtonElement.click();
+        this.dropdownContainerElement.trigger('transitionend');
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
     });

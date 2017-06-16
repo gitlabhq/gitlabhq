@@ -21,6 +21,9 @@ describe "Admin::Users", feature: true do
       expect(page).to have_content(current_user.name)
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_link('Block', href: block_admin_user_path(user))
+      expect(page).to have_link('Remove user', href: admin_user_path(user))
+      expect(page).to have_link('Remove user and contributions', href: admin_user_path(user, hard_delete: true))
     end
 
     describe 'Two-factor Authentication filters' do
@@ -114,11 +117,17 @@ describe "Admin::Users", feature: true do
 
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_link('Block user', href: block_admin_user_path(user))
+      expect(page).to have_link('Remove user', href: admin_user_path(user))
+      expect(page).to have_link('Remove user and contributions', href: admin_user_path(user, hard_delete: true))
     end
 
     describe 'Impersonation' do
       let(:another_user) { create(:user) }
-      before { visit admin_user_path(another_user) }
+
+      before do
+        visit admin_user_path(another_user)
+      end
 
       context 'before impersonating' do
         it 'shows impersonate button for other users' do
@@ -143,7 +152,9 @@ describe "Admin::Users", feature: true do
       end
 
       context 'when impersonating' do
-        before { click_link 'Impersonate' }
+        before do
+          click_link 'Impersonate'
+        end
 
         it 'logs in as the user when impersonate is clicked' do
           expect(page.find(:css, '.header-user .profile-link')['data-user']).to eql(another_user.username)
@@ -277,7 +288,7 @@ describe "Admin::Users", feature: true do
       page.within(first('.group_member')) do
         find('.btn-remove').click
       end
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).not_to have_selector('.group_member')
     end

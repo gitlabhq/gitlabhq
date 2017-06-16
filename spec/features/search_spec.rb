@@ -28,7 +28,7 @@ describe "Search", feature: true  do
 
     it 'shows group name after filtering' do
       find('.js-search-group-dropdown').trigger('click')
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.search-holder' do
         click_link group.name
@@ -39,7 +39,7 @@ describe "Search", feature: true  do
 
     it 'filters by group projects after filtering by group' do
       find('.js-search-group-dropdown').trigger('click')
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.search-holder' do
         click_link group.name
@@ -49,7 +49,7 @@ describe "Search", feature: true  do
 
       page.within('.project-filter') do
         find('.js-search-project-dropdown').trigger('click')
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_link(group_project.name_with_namespace)
       end
@@ -58,7 +58,7 @@ describe "Search", feature: true  do
     it 'shows project name after filtering' do
       page.within('.project-filter') do
         find('.js-search-project-dropdown').trigger('click')
-        wait_for_ajax
+        wait_for_requests
 
         click_link project.name_with_namespace
       end
@@ -83,7 +83,9 @@ describe "Search", feature: true  do
       let(:project) { create(:project, :repository) }
       let(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'Bug here') }
 
-      before { note.update_attributes(commit_id: 12345678) }
+      before do
+        note.update_attributes(commit_id: 12345678)
+      end
 
       it 'finds comment' do
         visit namespace_project_path(project.namespace, project)

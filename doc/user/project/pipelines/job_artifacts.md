@@ -12,7 +12,7 @@
    to GitLab using GitLab Runner version 1.0 and up. It will not be possible to
    browse old artifacts already uploaded to GitLab.
 >- This is the user documentation. For the administration guide see
-   [administration/job_artifacts.md](../../../administration/job_artifacts.md).
+   [administration/job_artifacts](../../../administration/job_artifacts.md).
 
 Artifacts is a list of files and directories which are attached to a job
 after it completes successfully. This feature is enabled by default in all
@@ -29,21 +29,31 @@ pdf:
   artifacts:
     paths:
     - mycv.pdf
+    expire_in: 1 week
 ```
 
 A job named `pdf` calls the `xelatex` command in order to build a pdf file from
 the latex source file `mycv.tex`. We then define the `artifacts` paths which in
 turn are defined with the `paths` keyword. All paths to files and directories
-are relative to the repository that was cloned during the build.
+are relative to the repository that was cloned during the build. These uploaded
+artifacts will be kept in GitLab for 1 week as defined by the `expire_in`
+definition. You have the option to keep the artifacts from expiring via the
+[web interface](#browsing-job-artifacts). If you don't define an expiry date,
+the artifacts will be kept forever.
 
-For more examples on artifacts, follow the artifacts reference in
-[`.gitlab-ci.yml` documentation](../../../ci/yaml/README.md#artifacts).
+For more examples on artifacts, follow the [artifacts reference in
+`.gitlab-ci.yml`](../../../ci/yaml/README.md#artifacts).
 
 ## Browsing job artifacts
 
-After a job finishes, if you visit the job's specific page, you can see
-that there are two buttons. One is for downloading the artifacts archive and
-the other for browsing its contents.
+>**Note:**
+With GitLab 9.2, PDFs, images, videos and other formats can be previewed
+directly in the job artifacts browser without the need to download them.
+
+After a job finishes, if you visit the job's specific page, there are three
+buttons. You can download the artifacts archive or browse its contents, whereas
+the **Keep** button appears only if you have set an [expiry date] to the
+artifacts in case you changed your mind and want to keep them.
 
 ![Job artifacts browser button](img/job_artifacts_browser_button.png)
 
@@ -99,7 +109,7 @@ https://example.com/<namespace>/<project>/builds/artifacts/<ref>/download?job=<j
 To download a single file from the artifacts use the following URL:
 
 ```
-https://example.com/<namespace>/<project>/builds/artifacts/<ref>/file/<path_to_file>?job=<job_name>
+https://example.com/<namespace>/<project>/builds/artifacts/<ref>/raw/<path_to_file>?job=<job_name>
 ```
 
 For example, to download the latest artifacts of the job named `coverage` of
@@ -114,7 +124,7 @@ To download the file `coverage/index.html` from the same
 artifacts use the following URL:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/file/coverage/index.html?job=coverage
+https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/raw/coverage/index.html?job=coverage
 ```
 
 There is also a URL to browse the latest job artifacts:
@@ -141,3 +151,5 @@ information in the UI.
 
 ![Latest artifacts button](img/job_latest_artifacts_browser.png)
 
+
+[expiry date]: ../../../ci/yaml/README.md#artifacts-expire_in

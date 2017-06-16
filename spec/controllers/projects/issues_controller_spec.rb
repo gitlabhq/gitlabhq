@@ -156,6 +156,32 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'Redirect after sign in' do
+    context 'with an AJAX request' do
+      it 'does not store the visited URL' do
+        xhr :get,
+          :show,
+          format: :json,
+          namespace_id: project.namespace,
+          project_id: project,
+          id: issue.iid
+
+        expect(session['user_return_to']).to be_blank
+      end
+    end
+
+    context 'without an AJAX request' do
+      it 'stores the visited URL' do
+        get :show,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: issue.iid
+
+        expect(session['user_return_to']).to eq("/#{project.namespace.to_param}/#{project.to_param}/issues/#{issue.iid}")
+      end
+    end
+  end
+
   describe 'PUT #update' do
     before do
       sign_in(user)
@@ -178,7 +204,7 @@ describe Projects::IssuesController do
         body = JSON.parse(response.body)
 
         expect(body['assignees'].first.keys)
-          .to match_array(%w(id name username avatar_url))
+          .to match_array(%w(id name username avatar_url state web_url))
       end
     end
 
@@ -186,7 +212,9 @@ describe Projects::IssuesController do
       let(:another_project) { create(:empty_project, :private) }
 
       context 'when user has access to move issue' do
-        before { another_project.team << [user, :reporter] }
+        before do
+          another_project.team << [user, :reporter]
+        end
 
         it 'moves issue to another project' do
           move_issue
@@ -224,16 +252,21 @@ describe Projects::IssuesController do
         end
 
         context 'when an issue is identified as spam' do
-          before { allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true) }
+          before do
+            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+          end
 
           context 'when captcha is not verified' do
             def update_spam_issue
               update_issue(title: 'Spam Title', description: 'Spam lives here')
             end
 
-            before { allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false) }
+            before do
+              allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+            end
 
             it 'rejects an issue recognized as a spam' do
+              expect(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
               expect { update_spam_issue }.not_to change{ issue.reload.title }
             end
 
@@ -593,14 +626,18 @@ describe Projects::IssuesController do
       end
 
       context 'when an issue is identified as spam' do
-        before { allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true) }
+        before do
+          allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+        end
 
         context 'when captcha is not verified' do
           def post_spam_issue
             post_new_issue(title: 'Spam Title', description: 'Spam lives here')
           end
 
-          before { allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false) }
+          before do
+            allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+          end
 
           it 'rejects an issue recognized as a spam' do
             expect { post_spam_issue }.not_to change(Issue, :count)
@@ -712,7 +749,10 @@ describe Projects::IssuesController do
 
   describe "DELETE #destroy" do
     context "when the user is a developer" do
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
+
       it "rejects a developer to destroy an issue" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
         expect(response).to have_http_status(404)
@@ -724,7 +764,9 @@ describe Projects::IssuesController do
       let(:namespace) { create(:namespace, owner: owner) }
       let(:project)   { create(:empty_project, namespace: namespace) }
 
-      before { sign_in(owner) }
+      before do
+        sign_in(owner)
+      end
 
       it "deletes the issue" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
