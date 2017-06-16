@@ -1,0 +1,123 @@
+@import "framework/variables";
+@import 'framework/tw_bootstrap_variables';
+@import "bootstrap/variables";
+
+header.navbar-gitlab-new {
+  color: #f5f5f5;
+  background-color: #2d2d2d;
+
+  .header-content {
+    padding-left: 0;
+
+    .title-container {
+      padding-top: 0;
+      overflow: visible;
+    }
+
+    .title {
+      padding-top: 14px;
+      padding-right: 10px;
+      color: currentColor;
+
+      @media (min-width: $screen-sm-min) {
+        padding-right: 20px;
+      }
+    }
+
+    .dropdown.open {
+      > a {
+        border-bottom-color: #4180ec;
+      }
+    }
+
+    .dropdown-menu {
+      margin-top: 4px;
+      min-width: 130px;
+    }
+  }
+
+  .navbar-collapse {
+    color: #d5d5d5;
+  }
+
+  .container-fluid {
+    .navbar-toggle {
+      border-left: 1px solid currentColor;
+
+      &:hover,
+      &:focus,
+      &.active {
+        color: currentColor;
+        background-color: transparent;
+      }
+    }
+
+    .navbar-toggle-left {
+      right: 0;
+      border-left: 0;
+      border-right: 1px solid currentColor;
+    }
+
+    .navbar-nav {
+      @media (max-width: $screen-xs-max) {
+        padding-right: 10px;
+      }
+    }
+
+    .nav > li > a:hover,
+    .nav > li > a:focus {
+      color: #f5f5f5;
+
+      > svg {
+        fill: #f5f5f5;
+      }
+    }
+  }
+}
+
+.navbar-sub-nav {
+  display: flex;
+  margin-bottom: 0;
+  color: #d5d5d5;
+
+  > li {
+    &.active > a {
+      border-bottom-color: #4180ec;
+    }
+
+    > a {
+      display: block;
+      padding: 16px 9px 13px;
+      font-size: 13px;
+      color: currentColor;
+      border-bottom: 3px solid transparent;
+
+      @media (min-width: $screen-sm-min) {
+        padding: 15px 15px 12px;
+        font-size: 14px;
+      }
+
+      &:hover,
+      &:focus {
+        color: #f5f5f5;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .dropdown-chevron {
+    font-size: 12px;
+  }
+}
+
+.search {
+  form,
+  .search-input {
+    background-color: #525252;
+  }
+
+  .search-input,
+  .search-input::placeholder {
+    color: #f5f5f5;
+  }
+}

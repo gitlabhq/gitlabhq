@@ -300,4 +300,8 @@ module ApplicationHelper
       "https://www.twitter.com/#{name}"
     end
   end
+
+  def show_new_nav?
+    cookies["new_nav"] == "true"
+  end
 end
