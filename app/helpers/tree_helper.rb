@@ -12,6 +12,10 @@ module TreeHelper
     tree.html_safe
   end
 
+  def repo_url()
+    url_for(params.merge(format: :json))
+  end
+
   # Return an image icon depending on the file type and mode
   #
   # type - String type of the tree item; either 'folder' or 'file'

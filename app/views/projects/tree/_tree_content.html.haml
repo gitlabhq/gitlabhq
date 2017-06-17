@@ -1,5 +1,5 @@
 .tree-content-holder
-  #ide{ style: "height:400px;" }
+  #ide{ data: { url: repo_url }, style: "height:400px;" }
 
   - if tree.readme
     = render "projects/tree/readme", readme: tree.readme
