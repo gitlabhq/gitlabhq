@@ -20,6 +20,10 @@ Capybara.ignore_hidden_elements = false
 
 # Keep only the screenshots generated from the last failing test suite
 Capybara::Screenshot.prune_strategy = :keep_last_run
+# From https://github.com/mattheworiordan/capybara-screenshot/issues/84#issuecomment-41219326
+Capybara::Screenshot.register_driver(:chrome) do |driver, path|
+  driver.browser.save_screenshot(path)
+end
 
 Spinach.hooks.before_run do
   TestEnv.eager_load_driver_server
