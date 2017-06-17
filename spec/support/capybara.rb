@@ -1,25 +1,22 @@
 # rubocop:disable Style/GlobalVars
 require 'capybara/rails'
 require 'capybara/rspec'
-require 'capybara/poltergeist'
 require 'capybara-screenshot/rspec'
+require 'selenium-webdriver'
 
 # Give CI some extra time
 timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 60 : 30
 
-Capybara.javascript_driver = :poltergeist
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(
-    app,
-    js_errors: true,
-    timeout: timeout,
-    window_size: [1366, 768],
-    url_whitelist: %w[localhost 127.0.0.1],
-    url_blacklist: %w[.mp4 .png .gif .avi .bmp .jpg .jpeg],
-    phantomjs_options: [
-      '--load-images=yes'
-    ]
+Capybara.javascript_driver = :chrome
+Capybara.register_driver :chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    'chromeOptions' => {
+      'args' => %w[headless no-sandbox disable-gpu]
+    }
   )
+
+  Capybara::Selenium::Driver
+    .new(app, browser: :chrome, desired_capabilities: capabilities)
 end
 
 Capybara.default_max_wait_time = timeout

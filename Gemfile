@@ -325,7 +325,7 @@ group :development, :test do
 
   gem 'capybara', '~> 2.6.2'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist', '~> 1.9.0'
+  gem 'selenium-webdriver', '~> 2.53'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
