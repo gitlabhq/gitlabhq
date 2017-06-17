@@ -8,7 +8,7 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
     login_as(user)
 
     visit namespace_project_path(project.namespace, project)
-    find('.shortcuts-wiki').trigger('click')
+    find('.shortcuts-wiki').click
   end
 
   context 'in the user namespace' do

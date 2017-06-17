@@ -74,12 +74,12 @@ shared_examples 'discussion comments' do |resource_name|
     end
 
     it 'clicking the ul padding or divider should not change the text' do
-      find(menu_selector).trigger 'click'
+      find(menu_selector).click
 
       expect(page).to have_selector menu_selector
       expect(find(dropdown_selector)).to have_content 'Comment'
 
-      find("#{menu_selector} .divider").trigger 'click'
+      find("#{menu_selector} .divider").click
 
       expect(page).to have_selector menu_selector
       expect(find(dropdown_selector)).to have_content 'Comment'

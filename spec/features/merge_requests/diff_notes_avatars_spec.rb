@@ -150,7 +150,7 @@ feature 'Diff note avatars', feature: true, js: true do
           page.within '.js-discussion-note-form' do
             find('.js-note-text').native.send_keys('Test')
 
-            find('.js-comment-button').trigger 'click'
+            find('.js-comment-button').click
 
             wait_for_requests
           end

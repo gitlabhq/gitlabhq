@@ -7,7 +7,7 @@ RSpec.describe 'Dashboard Active Tab', js: true, feature: true do
 
   shared_examples 'page has active tab' do |title|
     it "#{title} tab" do
-      find('.global-dropdown-toggle').trigger('click')
+      find('.global-dropdown-toggle').click
       expect(page).to have_selector('.global-dropdown-menu li.active', count: 1)
       expect(find('.global-dropdown-menu li.active')).to have_content(title)
     end

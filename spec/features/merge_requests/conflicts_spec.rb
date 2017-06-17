@@ -18,7 +18,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
         all('button', text: 'Use ours').each do |button|
-          button.trigger('click')
+          button.click
         end
       end
 

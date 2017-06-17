@@ -21,7 +21,7 @@ feature 'Project group links', :feature, :js do
       select2 group.id, from: '#link_group_id'
       fill_in 'expires_at_groups', with: (Time.current + 4.5.days).strftime('%Y-%m-%d')
       page.find('body').click
-      find('.btn-create').trigger('click')
+      find('.btn-create').click
     end
 
     it 'shows the expiration time with a warning class' do

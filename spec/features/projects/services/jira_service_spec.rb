@@ -68,7 +68,7 @@ feature 'Setup Jira service', :feature, :js do
         expect(find('.flash-container-page')).to have_content 'Test failed.'
         expect(find('.flash-container-page')).to have_content 'Save anyway'
 
-        find('.flash-alert .flash-action').trigger('click')
+        find('.flash-alert .flash-action').click
         wait_for_requests
 
         expect(page).to have_content('JIRA activated.')

@@ -375,7 +375,7 @@ feature 'Jobs', :feature do
         job.run!
         visit namespace_project_job_path(project.namespace, project, job)
         find('.js-cancel-job').click()
-        find('.js-retry-button').trigger('click')
+        find('.js-retry-button').click
       end
 
       it 'shows the right status and buttons', :js do

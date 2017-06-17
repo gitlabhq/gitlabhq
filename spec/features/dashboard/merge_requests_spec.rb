@@ -17,7 +17,7 @@ describe 'Dashboard Merge Requests' do
     end
 
     it 'shows projects only with merge requests feature enabled', js: true do
-      find('.new-project-item-select-button').trigger('click')
+      find('.new-project-item-select-button').click
 
       page.within('.select2-results') do
         expect(page).to have_content(project.name_with_namespace)

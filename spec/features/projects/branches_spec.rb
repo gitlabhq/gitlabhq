@@ -55,7 +55,7 @@ describe 'Branches', feature: true do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        find('.js-branch-fix .btn-remove').trigger(:click)
+        find('.js-branch-fix .btn-remove').click
 
         expect(page).not_to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 0)
@@ -109,7 +109,7 @@ describe 'Branches', feature: true do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        page.find('[data-target="#modal-delete-branch"]').trigger(:click)
+        page.find('[data-target="#modal-delete-branch"]').click
 
         expect(page).to have_css('.js-delete-branch[disabled]')
         fill_in 'delete_branch_input', with: 'fix'

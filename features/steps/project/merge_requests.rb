@@ -34,7 +34,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Merged"' do
-    find('#state-merged').trigger('click')
+    find('#state-merged').click
   end
 
   step 'I click link "Closed"' do
@@ -336,7 +336,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click on the Discussion tab' do
     page.within '.merge-request-tabs' do
-      find('.notes-tab').trigger('click')
+      find('.notes-tab').click
     end
 
     # Waits for load
@@ -420,7 +420,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Reopen"' do
-    first(:css, '.reopen-mr-link').trigger('click')
+    first(:css, '.reopen-mr-link').click
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
@@ -432,13 +432,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click link "Hide inline discussion" of the third file' do
     page.within '.files>div:nth-child(3)' do
-      find('.js-toggle-diff-comments').trigger('click')
+      find('.js-toggle-diff-comments').click
     end
   end
 
   step 'I click link "Show inline discussion" of the third file' do
     page.within '.files>div:nth-child(3)' do
-      find('.js-toggle-diff-comments').trigger('click')
+      find('.js-toggle-diff-comments').click
     end
   end
 
@@ -510,7 +510,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click Side-by-side Diff tab' do
-    find('a', text: 'Side-by-side').trigger('click')
+    find('a', text: 'Side-by-side').click
 
     # Waits for load
     expect(page).to have_css('.parallel')

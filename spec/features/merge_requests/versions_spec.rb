@@ -68,7 +68,7 @@ feature 'Merge Request versions', js: true, feature: true do
 
       page.within(diff_file_selector) do
         find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").trigger 'mouseover'
-        find(".line_holder[id='#{line_code}'] button").trigger 'click'
+        find(".line_holder[id='#{line_code}'] button").click
 
         page.within("form[data-line-code='#{line_code}']") do
           fill_in "note[note]", with: "Typo, please fix"
@@ -139,7 +139,7 @@ feature 'Merge Request versions', js: true, feature: true do
 
       page.within(diff_file_selector) do
         find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").trigger 'mouseover'
-        find(".line_holder[id='#{line_code}'] button").trigger 'click'
+        find(".line_holder[id='#{line_code}'] button").click
 
         page.within("form[data-line-code='#{line_code}']") do
           fill_in "note[note]", with: "Typo, please fix"

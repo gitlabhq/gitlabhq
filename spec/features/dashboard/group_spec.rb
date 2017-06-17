@@ -7,7 +7,7 @@ RSpec.describe 'Dashboard Group', feature: true do
 
   it 'creates new group', js: true do
     visit dashboard_groups_path
-    find('.btn-new').trigger('click')
+    find('.btn-new').click
     new_path = 'Samurai'
     new_description = 'Tokugawa Shogunate'
 

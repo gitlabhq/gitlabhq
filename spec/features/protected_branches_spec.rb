@@ -9,7 +9,7 @@ feature 'Protected Branches', feature: true, js: true do
   end
 
   def set_protected_branch_name(branch_name)
-    find(".js-protected-branch-select").trigger('click')
+    find(".js-protected-branch-select").click
     find(".dropdown-input-field").set(branch_name)
     click_on("Create wildcard #{branch_name}")
   end

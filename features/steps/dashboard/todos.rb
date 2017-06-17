@@ -55,7 +55,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     merge_request_reference = merge_request.to_reference(full: true)
     issue_reference = issue.to_reference(full: true)
 
-    find('.js-todos-mark-all').trigger('click')
+    find('.js-todos-mark-all').click
 
     page.within('.todos-count') { expect(page).to have_content '0' }
     expect(page).to have_content 'To do 0'
@@ -69,7 +69,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   step 'I should see the todo marked as done' do
-    find('.todos-done a').trigger('click')
+    find('.todos-done a').click
 
     expect(page).to have_link project.name_with_namespace
     should_see_todo(1, "John Doe assigned you merge request #{merge_request.to_reference(full: true)}", merge_request.title, state: :done_irreversible)
@@ -79,7 +79,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     merge_request_reference = merge_request.to_reference(full: true)
     issue_reference = issue.to_reference(full: true)
 
-    find('.todos-done a').trigger('click')
+    find('.todos-done a').click
 
     expect(page).to have_link project.name_with_namespace
     should_see_todo(1, "John Doe assigned you merge request #{merge_request_reference}", merge_request.title, state: :done_irreversible)

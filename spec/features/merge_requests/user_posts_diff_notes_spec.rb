@@ -221,7 +221,7 @@ feature 'Merge requests > User posts diff notes', :js do
   def should_allow_dismissing_a_comment(line_holder, diff_side = nil)
     write_comment_on_line(line_holder, diff_side)
 
-    find('.js-close-discussion-note-form').trigger('click')
+    find('.js-close-discussion-note-form').click
 
     assert_comment_dismissal(line_holder)
   end
@@ -259,7 +259,7 @@ feature 'Merge requests > User posts diff notes', :js do
 
     expect(line[:num]).to have_css comment_button_class
 
-    line[:num].find(comment_button_class).trigger 'click'
+    line[:num].find(comment_button_class).click
   end
 
   def write_comment_on_line(line_holder, diff_side)

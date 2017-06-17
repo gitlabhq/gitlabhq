@@ -80,7 +80,7 @@ describe 'Recent searches', js: true, feature: true do
     set_recent_searches(project_1_local_storage_key, '["foo", "bar"]')
     visit namespace_project_issues_path(project_1.namespace, project_1)
 
-    all('.filtered-search-history-dropdown-item', visible: false)[0].trigger('click')
+    all('.filtered-search-history-dropdown-item', visible: false)[0].click
     wait_for_filtered_search('foo')
 
     expect(find('.filtered-search').value.strip).to eq('foo')
@@ -94,7 +94,7 @@ describe 'Recent searches', js: true, feature: true do
 
     expect(items_before.count).to eq(1)
 
-    find('.filtered-search-history-clear-button', visible: false).trigger('click')
+    find('.filtered-search-history-clear-button', visible: false).click
     items_after = all('.filtered-search-history-dropdown-item', visible: false)
 
     expect(items_after.count).to eq(0)

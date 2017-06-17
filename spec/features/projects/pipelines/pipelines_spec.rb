@@ -222,7 +222,7 @@ describe 'Pipelines', :feature, :js do
 
           context 'when canceling' do
             before do
-              find('.js-pipelines-cancel-button').trigger('click')
+              find('.js-pipelines-cancel-button').click
             end
 
             it 'indicates that pipeline was canceled' do
@@ -335,14 +335,14 @@ describe 'Pipelines', :feature, :js do
 
         context 'when clicking a stage badge' do
           it 'should open a dropdown' do
-            find('.js-builds-dropdown-button').trigger('click')
+            find('.js-builds-dropdown-button').click
 
             expect(page).to have_link build.name
           end
 
           it 'should be possible to cancel pending build' do
-            find('.js-builds-dropdown-button').trigger('click')
-            find('a.js-ci-action-icon').trigger('click')
+            find('.js-builds-dropdown-button').click
+            find('a.js-ci-action-icon').click
 
             expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
@@ -351,11 +351,11 @@ describe 'Pipelines', :feature, :js do
 
         context 'dropdown jobs list' do
           it 'should keep the dropdown open when the user ctr/cmd + clicks in the job name' do
-            find('.js-builds-dropdown-button').trigger('click')
+            find('.js-builds-dropdown-button').click
 
             execute_script('var e = $.Event("keydown", { keyCode: 64 }); $("body").trigger(e);')
 
-            find('.mini-pipeline-graph-dropdown-item').trigger('click')
+            find('.mini-pipeline-graph-dropdown-item').click
 
             expect(page).to have_selector('.js-ci-action-icon')
           end
