@@ -32,6 +32,37 @@ describe Gitlab::CurrentSettings do
 
         expect(current_application_settings).to be_a(ApplicationSetting)
       end
+
+      context 'with migrations pending' do
+        before do
+          expect(ActiveRecord::Migrator).to receive(:needs_migration?).and_return(true)
+        end
+
+        it 'returns an in-memory ApplicationSetting object' do
+          settings = current_application_settings
+
+          expect(settings).to be_a(OpenStruct)
+          expect(settings.sign_in_enabled?).to eq(settings.sign_in_enabled)
+          expect(settings.sign_up_enabled?).to eq(settings.sign_up_enabled)
+        end
+
+        it 'uses the existing database settings and falls back to defaults' do
+          db_settings = create(:application_setting,
+                               home_page_url: 'http://mydomain.com',
+                               signup_enabled: false)
+          settings = current_application_settings
+          app_defaults = ApplicationSetting.last
+
+          expect(settings).to be_a(OpenStruct)
+          expect(settings.home_page_url).to eq(db_settings.home_page_url)
+          expect(settings.signup_enabled?).to be_falsey
+          expect(settings.signup_enabled).to be_falsey
+
+          # Check that unspecified values use the defaults
+          settings.reject! { |key, _| [:home_page_url, :signup_enabled].include? key }
+          settings.each { |key, _| expect(settings[key]).to eq(app_defaults[key]) }
+        end
+      end
     end
 
     context 'with DB unavailable' do
