@@ -1,6 +1,6 @@
 . scripts/utils.sh
 
-wget -q https://chromedriver.storage.googleapis.com/2.29/chromedriver_linux64.zip
+wget -q https://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip
 unzip chromedriver_linux64.zip -d /usr/local/bin
 
 export SETUP_DB=${SETUP_DB:-true}
