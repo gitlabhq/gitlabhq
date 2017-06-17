@@ -62,7 +62,8 @@ module Gitlab
       active_db_connection = ActiveRecord::Base.connection.active? rescue false
 
       active_db_connection &&
-        ActiveRecord::Base.connection.table_exists?('application_settings')
+        ActiveRecord::Base.connection.table_exists?('application_settings') &&
+        !ActiveRecord::Migrator.needs_migration?
     rescue ActiveRecord::NoDatabaseError
       false
     end
