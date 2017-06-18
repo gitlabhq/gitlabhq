@@ -7,7 +7,7 @@ let RepoService = {
     this.url = url;
   },
 
-  getTree() {
+  getContent() {
     return axios.get(this.url);
   }
 };

@@ -55,6 +55,7 @@ import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import initSettingsPanels from './settings_panels';
+import RepoBundle from './repo/repo_bundle';
 
 (function() {
   var Dispatcher;
@@ -323,15 +324,13 @@ import initSettingsPanels from './settings_panels';
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
-          new TreeView();
-          new BlobViewer();
+          new RepoBundle();
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          new BlobViewer();
-          initBlob();
+          new RepoBundle();
           break;
         case 'projects:blame:show':
           initBlob();

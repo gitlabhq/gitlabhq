@@ -1,26 +1,16 @@
 /* global monaco */
 import Sidebar from './repo_sidebar'
+import Editor from './repo_editor'
 import Service from './repo_service'
+import Store from './repo_store'
 
-class RepoBundle {
-  constructor(id, url) {
-    this.service = Service;
-    this.service.url = url;
-    this.sidebar = new Sidebar(url);
+export default class RepoBundle {
+  constructor() {
+    const url = document.getElementById('ide').dataset.url;
+    Store.service = Service;
+    Store.service.url = url;
+    Store.sidebar = new Sidebar(url);
+    Store.editor = new Editor();
+    Store.sidebar.getContent();
   }
 }
-
-window.require.config({ paths: { vs: '/monaco-editor/min/vs' } });
-window.require(['vs/editor/editor.main'], () => {
-  var editor = monaco.editor.create(document.getElementById('ide'), {
-    value: "function hello() {\n\talert('Hello world!');\n}",
-    language: 'javascript',
-  });
-});
-document.addEventListener('DOMContentLoaded', ()=> {
-  const ideRoot = document.getElementById('ide');
-  const bundle = new RepoBundle(
-    ideRoot,
-    ideRoot.dataset.url
-  );
-});
