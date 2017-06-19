@@ -222,7 +222,7 @@ class Project < ActiveRecord::Base
   has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
-  scope :with_deleted, -> { where(pending_delete: true) }
+  scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
@@ -375,7 +375,6 @@ class Project < ActiveRecord::Base
           .or(ptable[:name].matches(pattern))
           .or(ptable[:description].matches(pattern))
       )
-
 
       namespaces = unscoped.select(:id)
         .joins(:namespace)
@@ -1456,7 +1455,7 @@ class Project < ActiveRecord::Base
   def pending_delete_twin
     return false unless path
 
-    Project.with_deleted.find_by_full_path(path_with_namespace)
+    Project.pending_delete.find_by_full_path(path_with_namespace)
   end
 
   ##

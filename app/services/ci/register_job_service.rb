@@ -54,9 +54,9 @@ module Ci
     def builds_for_shared_runner
       new_builds.
         # don't run projects which have not enabled shared runners and builds
-        joins(:project).where(projects: { shared_runners_enabled: true, pending_delete: false }).
-        joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id').
-        where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
+        joins(:project).where(projects: { shared_runners_enabled: true, pending_delete: false })
+        .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
+        .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
 
         # Implement fair scheduling
         # this returns builds that are ordered by number of running builds

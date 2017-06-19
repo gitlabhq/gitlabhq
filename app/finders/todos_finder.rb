@@ -78,7 +78,6 @@ class TodosFinder
   end
 
   def project
-    return nil if @project&.pending_delete?
     return @project if defined?(@project)
 
     if project?
@@ -98,7 +97,7 @@ class TodosFinder
 
   def projects(items)
     item_project_ids = items.reorder(nil).select(:project_id)
-    ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids).execute.without_deleted
+    ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids).execute
   end
 
   def type?
