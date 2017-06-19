@@ -12,17 +12,17 @@ export default class OAuthRememberMe {
   }
 
   bindEvents() {
-    this.container.on('click', this.toggleRememberMe);
+    this.container.on('click', this.constructor.toggleRememberMe);
   }
 
-  toggleRememberMe(event) {
-    var rememberMe = $(event.target).is(":checked");
+  static toggleRememberMe(event) {
+    const rememberMe = $(event.target).is(':checked');
 
-    $('.oauth-login').each(function(i, element) {
-      var href = $(element).attr('href');
+    $('.oauth-login').each((i, element) => {
+      const href = $(element).attr('href');
 
       if (rememberMe) {
-        $(element).attr('href', href + '?remember_me=1');
+        $(element).attr('href', `${href}?remember_me=1`);
       } else {
         $(element).attr('href', href.replace('?remember_me=1', ''));
       }
