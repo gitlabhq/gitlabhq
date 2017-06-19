@@ -1,4 +1,4 @@
 ---
-title: Restored missing function inside dropzone_input.js
+title: Fix for cut & pasted images not working
 merge_request:
 author:
