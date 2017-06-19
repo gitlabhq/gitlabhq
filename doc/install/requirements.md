@@ -100,7 +100,7 @@ We currently support the following databases:
 We **highly recommend** the use of PostgreSQL instead of MySQL/MariaDB as not all
 features of GitLab may work with MySQL/MariaDB:
 
-1. MySQL support for subgroups was dropped with GitLab 9.3.
+1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
    See [issue #30472][30472] for more information.
 1. GitLab Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
 1. [Zero downtime migrations][zero] do not work with MySQL
@@ -110,6 +110,7 @@ Existing users using GitLab with MySQL/MariaDB are advised to
 
 [30472]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30472
 [zero]: ../update/README.md#upgrading-without-downtime
+[post]: https://about.gitlab.com/2017/06/22/gitlab-9-3-released/#dropping-support-for-subgroups-in-mysql
 
 ### PostgreSQL Requirements
 
