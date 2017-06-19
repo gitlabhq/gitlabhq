@@ -226,6 +226,8 @@ import initSettingsPanels from './settings_panels';
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
         case 'projects:snippets:update':
+          new gl.GLForm($('.snippet-form'), true);
+          break;
         case 'snippets:new':
         case 'snippets:edit':
         case 'snippets:create':

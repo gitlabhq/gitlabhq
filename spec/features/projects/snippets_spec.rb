@@ -33,20 +33,11 @@ describe 'Project snippets', :js, feature: true do
         visit namespace_project_snippet_path(project.namespace, project, snippets[0])
       end
 
-      it 'should not have autocomplete' do
-        wait_for_requests
-        request_count_before = page.driver.network_traffic.count
-
+      it 'should have autocomplete' do
         find('#note_note').native.send_keys('')
         fill_in 'note[note]', with: '@'
 
-        wait_for_requests
-        request_count_after = page.driver.network_traffic.count
-
-        # This selector probably won't be in place even if autocomplete was enabled
-        # but we want to make sure
-        expect(page).not_to have_selector('.atwho-view')
-        expect(request_count_before).to eq(request_count_after)
+        expect(page).to have_selector('.atwho-view')
       end
     end
   end
