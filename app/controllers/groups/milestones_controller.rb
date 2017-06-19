@@ -18,14 +18,15 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def new
-    @milestone = Milestone.new
+    @milestone = GroupMilestone.new
   end
 
   def create
-    project_ids = params[:milestone][:project_ids].reject(&:blank?)
+    # Use a service to create the milestone here
     title = milestone_params[:title]
+    @milestone = GroupMilestone.new(milestone_params)
 
-    if create_milestones(project_ids)
+    if @milestone.save
       redirect_to milestone_path(title)
     else
       render_new_with_error(project_ids.empty?)
@@ -45,20 +46,20 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   private
 
-  def create_milestones(project_ids)
-    return false unless project_ids.present?
+  # def create_milestones(project_ids)
+  #   return false unless project_ids.present?
 
-    ActiveRecord::Base.transaction do
-      @projects.where(id: project_ids).each do |project|
-        Milestones::CreateService.new(project, current_user, milestone_params).execute
-      end
-    end
+  #   ActiveRecord::Base.transaction do
+  #     @projects.where(id: project_ids).each do |project|
+  #       Milestones::CreateService.new(project, current_user, milestone_params).execute
+  #     end
+  #   end
 
-    true
-  rescue ActiveRecord::ActiveRecordError => e
-    flash.now[:alert] = "An error occurred while creating the milestone: #{e.message}"
-    false
-  end
+  #   true
+  # rescue ActiveRecord::ActiveRecordError => e
+  #   flash.now[:alert] = "An error occurred while creating the milestone: #{e.message}"
+  #   false
+  # end
 
   def render_new_with_error(empty_project_ids)
     @milestone = Milestone.new(milestone_params)
@@ -71,7 +72,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestone_params
-    params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
+    params.require(:group_milestone).permit(:title, :description, :start_date, :due_date, :state_event)
   end
 
   def milestone_path(title)
@@ -79,11 +80,12 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestones
-    @milestones = GroupMilestone.build_collection(@group, @projects, params)
+    @milestones = GroupMilestone.all
   end
 
   def milestone
-    @milestone = GroupMilestone.build(@group, @projects, params[:title])
+    # Use a finder here
+    @milestone = GroupMilestone.find(params[:id])
     render_404 unless @milestone
   end
 end
