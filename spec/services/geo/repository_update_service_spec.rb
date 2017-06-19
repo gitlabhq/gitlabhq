@@ -50,8 +50,15 @@ describe Geo::RepositoryUpdateService, services: true do
       subject.execute
     end
 
-    it 'does not raise exception when git failures occurs' do
+    it 'rescues Gitlab::Shell::Error failures' do
       expect(project.repository).to receive(:fetch_geo_mirror).and_raise(Gitlab::Shell::Error)
+
+      expect { subject.execute }.not_to raise_error
+    end
+
+    it 'rescues Gitlab::Git::Repository::NoRepository failures and fires after_create hook' do
+      expect(project.repository).to receive(:fetch_geo_mirror).and_raise(Gitlab::Git::Repository::NoRepository)
+      expect_any_instance_of(Repository).to receive(:after_create)
 
       expect { subject.execute }.not_to raise_error
     end
