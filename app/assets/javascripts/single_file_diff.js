@@ -1,5 +1,7 @@
 /* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, max-len */
 
+import BlobViewer from './blob/viewer';
+
 (function() {
   window.SingleFileDiff = (function() {
     var COLLAPSED_HTML, ERROR_HTML, LOADING_HTML, WRAPPER;
@@ -15,6 +17,8 @@
     function SingleFileDiff(file) {
       this.file = file;
       this.toggleDiff = this.toggleDiff.bind(this);
+      this.switcherBtns = $('.js-diff-viewer-switch-btn', this.file);
+      this.viewers = $('.diff-viewer', this.file);
       this.content = $('.diff-content', this.file);
       this.$toggleIcon = $('.diff-toggle-caret', this.file);
       this.diffForPath = this.content.find('[data-diff-for-path]').data('diff-for-path');
@@ -25,15 +29,19 @@
         this.content = null;
         this.collapsedContent.after(this.loadingContent);
         this.$toggleIcon.addClass('fa-caret-right');
+        this.switcherBtns.disable();
       } else {
         this.collapsedContent = $(WRAPPER).html(COLLAPSED_HTML).hide();
         this.content.after(this.collapsedContent);
         this.$toggleIcon.addClass('fa-caret-down');
+        this.switcherBtns.filter('[data-viewer="rich"]').toggleClass('active');
       }
 
       $('.js-file-title, .click-to-expand', this.file).on('click', (function (e) {
         this.toggleDiff($(e.target));
       }).bind(this));
+
+      this.viewer = new BlobViewer(this.file, 'diff');
     }
 
     SingleFileDiff.prototype.toggleDiff = function($target, cb) {
@@ -62,25 +70,31 @@
     SingleFileDiff.prototype.getContentHTML = function(cb) {
       this.collapsedContent.hide();
       this.loadingContent.show();
-      $.get(this.diffForPath, (function(_this) {
-        return function(data) {
-          _this.loadingContent.hide();
-          if (data.html) {
-            _this.content = $(data.html);
-            _this.content.syntaxHighlight();
-          } else {
-            _this.hasError = true;
-            _this.content = $(ERROR_HTML);
-          }
-          _this.collapsedContent.after(_this.content);
+      $.get(this.diffForPath, (data) => {
+        this.loadingContent.hide();
+        if (data.html) {
+          const content = $(data.html);
+          content.syntaxHighlight();
 
-          if (typeof gl.diffNotesCompileComponents !== 'undefined') {
-            gl.diffNotesCompileComponents();
-          }
+          this.viewers.replaceWith(function() {
+            return content.find(`[data-type="${$(this).attr('data-type')}"]`);
+          });
 
-          if (cb) cb();
-        };
-      })(this));
+          this.collapsedContent.show();
+
+          this.switcherBtns.enable();
+          this.viewer.switchToInitialViewer();
+        } else {
+          this.hasError = true;
+          this.collapsedContent.after(ERROR_HTML);
+        }
+
+        if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+          gl.diffNotesCompileComponents();
+        }
+
+        if (cb) cb();
+      });
     };
 
     return SingleFileDiff;

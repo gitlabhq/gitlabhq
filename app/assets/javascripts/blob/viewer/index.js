@@ -1,28 +1,31 @@
 /* global Flash */
 export default class BlobViewer {
-  constructor() {
-    BlobViewer.initAuxiliaryViewer();
+  constructor(container = document.body, type = 'blob') {
+    this.container = container;
+    this.type = type;
+
+    this.initAuxiliaryViewer();
 
     this.initMainViewers();
   }
 
-  static initAuxiliaryViewer() {
-    const auxiliaryViewer = document.querySelector('.blob-viewer[data-type="auxiliary"]');
+  initAuxiliaryViewer() {
+    const auxiliaryViewer = this.container.querySelector(`.${this.type}-viewer[data-type="auxiliary"]`);
     if (!auxiliaryViewer) return;
 
     BlobViewer.loadViewer(auxiliaryViewer);
   }
 
   initMainViewers() {
-    this.$fileHolder = $('.file-holder');
-    if (!this.$fileHolder.length) return;
+    this.fileHolder = this.container.classList.contains('file-holder') ? this.container : this.container.querySelector('.file-holder');
+    if (!this.fileHolder) return;
 
-    this.switcher = document.querySelector('.js-blob-viewer-switcher');
-    this.switcherBtns = document.querySelectorAll('.js-blob-viewer-switch-btn');
-    this.copySourceBtn = document.querySelector('.js-copy-blob-source-btn');
+    this.switcher = this.container.querySelector(`.js-${this.type}-viewer-switcher`);
+    this.switcherBtns = this.container.querySelectorAll(`.js-${this.type}-viewer-switch-btn`);
+    this.copySourceBtn = this.container.querySelector('.js-copy-blob-source-btn');
 
-    this.simpleViewer = this.$fileHolder[0].querySelector('.blob-viewer[data-type="simple"]');
-    this.richViewer = this.$fileHolder[0].querySelector('.blob-viewer[data-type="rich"]');
+    this.simpleViewer = this.fileHolder.querySelector(`.${this.type}-viewer[data-type="simple"]`);
+    this.richViewer = this.fileHolder.querySelector(`.${this.type}-viewer[data-type="rich"]`);
 
     this.initBindings();
 
@@ -30,10 +33,12 @@ export default class BlobViewer {
   }
 
   switchToInitialViewer() {
-    const initialViewer = this.$fileHolder[0].querySelector('.blob-viewer:not(.hidden)');
+    const locationHash = gl.utils.getLocationHash();
+    const initialViewer = this.fileHolder.querySelector(`.${this.type}-viewer:not(.hidden)`);
+    const simpleLine = document.getElementById(locationHash);
     let initialViewerName = initialViewer.getAttribute('data-type');
 
-    if (this.switcher && location.hash.indexOf('#L') === 0) {
+    if (this.switcher && (simpleLine !== null || (locationHash && locationHash.indexOf('L') === 0))) {
       initialViewerName = 'simple';
     }
 
@@ -83,12 +88,12 @@ export default class BlobViewer {
   }
 
   switchToViewer(name) {
-    const newViewer = this.$fileHolder[0].querySelector(`.blob-viewer[data-type='${name}']`);
+    const newViewer = this.fileHolder.querySelector(`.${this.type}-viewer[data-type='${name}']`);
     if (this.activeViewer === newViewer) return;
 
-    const oldButton = document.querySelector('.js-blob-viewer-switch-btn.active');
-    const newButton = document.querySelector(`.js-blob-viewer-switch-btn[data-viewer='${name}']`);
-    const oldViewer = this.$fileHolder[0].querySelector(`.blob-viewer:not([data-type='${name}'])`);
+    const oldButton = this.container.querySelector(`.js-${this.type}-viewer-switch-btn.active`);
+    const newButton = this.container.querySelector(`.js-${this.type}-viewer-switch-btn[data-viewer='${name}']`);
+    const oldViewer = this.fileHolder.querySelector(`.${this.type}-viewer:not([data-type='${name}'])`);
 
     if (oldButton) {
       oldButton.classList.remove('active');
@@ -113,7 +118,7 @@ export default class BlobViewer {
     .then((viewer) => {
       $(viewer).renderGFM();
 
-      this.$fileHolder.trigger('highlight:line');
+      $(this.fileHolder).trigger('highlight:line');
       gl.utils.handleLocationHash();
 
       this.toggleCopyButtonState();
