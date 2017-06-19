@@ -29,7 +29,7 @@ describe BuildDetailsEntity do
 
       it 'contains the needed key value pairs' do
         expect(subject).to include(:coverage, :erased_at, :duration)
-        expect(subject).to include(:artifacts, :runner, :pipeline)
+        expect(subject).to include(:runner, :pipeline)
         expect(subject).to include(:raw_path, :merge_request)
         expect(subject).to include(:new_issue_path)
       end

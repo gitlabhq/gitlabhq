@@ -171,7 +171,7 @@ module Banzai
             collection.where(id: to_query).each { |row| cache[row.id] = row }
           end
 
-          cache.values_at(*ids)
+          cache.values_at(*ids).compact
         else
           collection.where(id: ids)
         end

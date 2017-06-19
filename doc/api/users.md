@@ -804,7 +804,7 @@ Example response:
 
 It creates a new impersonation token. Note that only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform
-both API calls and Git reads and writes. The user will not see these tokens in his profile
+both API calls and Git reads and writes. The user will not see these tokens in their profile
 settings page.
 
 ```

@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.8'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+gem 'bootsnap', '~> 1.0.0'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
@@ -262,6 +263,17 @@ gem 'ruby_parser', '~> 3.8.4', require: false
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
+
+# Perf bar
+gem 'peek', '~> 1.0.1'
+gem 'peek-gc', '~> 0.0.2'
+gem 'peek-host', '~> 1.0.0'
+gem 'peek-mysql2', '~> 1.1.0', group: :mysql
+gem 'peek-performance_bar', '~> 1.2.1'
+gem 'peek-pg', '~> 1.3.0', group: :postgres
+gem 'peek-rblineprof', '~> 0.2.0'
+gem 'peek-redis', '~> 1.2.0'
+gem 'peek-sidekiq', '~> 1.0.3'
 
 # Metrics
 group :metrics do

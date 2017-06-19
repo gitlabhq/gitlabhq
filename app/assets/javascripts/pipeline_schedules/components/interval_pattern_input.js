@@ -1,4 +1,7 @@
 import Vue from 'vue';
+import Translate from '../../vue_shared/translate';
+
+Vue.use(Translate);
 
 const inputNameAttribute = 'schedule[cron]';
 
@@ -72,11 +75,11 @@ export default {
         />
 
         <label for="custom">
-          Custom
+          {{ s__('PipelineSheduleIntervalPattern|Custom') }}
         </label>
 
         <span class="cron-syntax-link-wrap">
-          (<a :href="cronSyntaxUrl" target="_blank">Cron syntax</a>)
+          (<a :href="cronSyntaxUrl" target="_blank">{{ __('Cron syntax') }}</a>)
         </span>
       </div>
 
@@ -92,7 +95,7 @@ export default {
         />
 
         <label class="label-light" for="every-day">
-          Every day (at 4:00am)
+          {{ __('Every day (at 4:00am)') }}
         </label>
       </div>
 
@@ -108,7 +111,7 @@ export default {
         />
 
         <label class="label-light" for="every-week">
-          Every week (Sundays at 4:00am)
+          {{ __('Every week (Sundays at 4:00am)') }}
         </label>
       </div>
 
@@ -124,7 +127,7 @@ export default {
         />
 
         <label class="label-light" for="every-month">
-          Every month (on the 1st at 4:00am)
+          {{ __('Every month (on the 1st at 4:00am)') }}
         </label>
       </div>
 
@@ -133,7 +136,7 @@ export default {
           id="schedule_cron"
           class="form-control inline cron-interval-input"
           type="text"
-          placeholder="Define a custom pattern with cron syntax"
+          :placeholder="__('Define a custom pattern with cron syntax')"
           required="true"
           v-model="cronInterval"
           :name="inputNameAttribute"

@@ -42,6 +42,7 @@ Rails.application.routes.draw do
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
     resources :metrics, only: [:index]
+    mount Peek::Railtie => '/peek'
   end
 
   # Koding route

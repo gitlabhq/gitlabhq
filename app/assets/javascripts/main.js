@@ -39,10 +39,6 @@ import './shortcuts_network';
 // behaviors
 import './behaviors/';
 
-// blob
-import './blob/create_branch_dropdown';
-import './blob/target_branch_dropdown';
-
 // templates
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';

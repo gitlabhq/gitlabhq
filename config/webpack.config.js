@@ -18,6 +18,15 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
+// optional dependency `node-zopfli` is unavailable on CentOS 6
+var ZOPFLI_AVAILABLE;
+try {
+  require.resolve('node-zopfli');
+  ZOPFLI_AVAILABLE = true;
+} catch(err) {
+  ZOPFLI_AVAILABLE = false;
+}
+
 var config = {
   // because sqljs requires fs.
   node: {
@@ -68,6 +77,7 @@ var config = {
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
+    peek:                 './peek.js',
   },
 
   output: {
@@ -224,7 +234,7 @@ if (IS_PRODUCTION) {
     config.plugins.push(
       new CompressionPlugin({
         asset: '[path].gz[query]',
-        algorithm: 'zopfli',
+        algorithm: ZOPFLI_AVAILABLE ? 'zopfli' : 'gzip',
       })
     );
   }

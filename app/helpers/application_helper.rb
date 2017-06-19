@@ -167,9 +167,9 @@ module ApplicationHelper
     css_classes = short_format ? 'js-short-timeago' : 'js-timeago'
     css_classes << " #{html_class}" unless html_class.blank?
 
-    element = content_tag :time, time.strftime("%b %d, %Y"),
+    element = content_tag :time, l(time, format: "%b %d, %Y"),
       class: css_classes,
-      title: time.to_time.in_time_zone.to_s(:medium),
+      title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
       datetime: time.to_time.getutc.iso8601,
       data: {
         toggle: 'tooltip',
