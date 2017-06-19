@@ -30,7 +30,7 @@
       },
       triggeredBy() {
         const response = this.pipeline.triggered_by;
-        return response ? [ response ] : [];
+        return response ? [response] : [];
       },
       hasTriggered() {
         return !!this.triggered.length;
