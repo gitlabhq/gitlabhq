@@ -462,6 +462,8 @@ describe User, models: true do
       end
 
       it 'ensures correct rights and limits for user' do
+        stub_config_setting(default_can_create_group: true)
+
         expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
           .and change { user.projects_limit }.to(current_application_settings.default_projects_limit)
       end
