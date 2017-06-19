@@ -158,7 +158,7 @@ gem 'rufus-scheduler', '~> 3.4'
 gem 'httparty', '~> 0.13.3'
 
 # Colored output to console
-gem 'rainbow', '~> 2.1.0'
+gem 'rainbow', '~> 2.2'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'

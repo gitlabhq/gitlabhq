@@ -651,7 +651,8 @@ GEM
       activesupport (= 4.2.8)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rainbow (2.1.0)
+    rainbow (2.2.2)
+      rake
     raindrops (0.17.0)
     rake (10.5.0)
     rblineprof (0.3.6)
@@ -1053,7 +1054,7 @@ DEPENDENCIES
   rack-proxy (~> 0.6.0)
   rails (= 4.2.8)
   rails-deprecated_sanitizer (~> 1.0.3)
-  rainbow (~> 2.1.0)
+  rainbow (~> 2.2)
   rblineprof (~> 0.3.6)
   rdoc (~> 4.2)
   recaptcha (~> 3.0)
@@ -1119,4 +1120,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.15.0
+   1.15.1
