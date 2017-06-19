@@ -276,7 +276,7 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        Emails::DestroyService.new(current_user, self, email: email.email).execute
+        Emails::DestroyService.new(current_user, user, email: email.email).execute
 
         ::Users::UpdateService.new(current_user, user).execute do |user|
           user.update_secondary_emails!
@@ -510,7 +510,7 @@ module API
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        Emails::DestroyService.new(current_user, self, email: email.email).execute
+        Emails::DestroyService.new(current_user, current_user, email: email.email).execute
 
         ::Users::UpdateService.new(current_user, current_user).execute  do |user|
           user.update_secondary_emails!

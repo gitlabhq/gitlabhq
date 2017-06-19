@@ -1,5 +1,5 @@
 module Emails
-  class CreateService < BaseService
+  class CreateService < ::Emails::BaseService
     def execute(skip_authorization: false)
       raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_manage_emails?
 
