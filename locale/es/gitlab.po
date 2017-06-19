@@ -987,6 +987,9 @@ msgstr "Solo puedes agregar archivos cuando estás en una rama"
 msgid "You must sign in to star a project"
 msgstr "Debes iniciar sesión para destacar un proyecto"
 
+msgid "You have reached your project limit"
+msgstr ""
+
 msgid "You need permission."
 msgstr "Necesitas permisos."
 
