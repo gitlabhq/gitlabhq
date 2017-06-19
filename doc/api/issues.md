@@ -221,7 +221,8 @@ GET /projects/:id/issues?search=issue+title+or+description
 | `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
 | `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
 | `search`    | string         | no       | Search project issues against their `title` and `description`                                                                |
-
+| `created_after` | datetime | no | Return issues created after the given time (inclusive) |
+| `created_before` | datetime | no | Return issues created before the given time (inclusive) |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues

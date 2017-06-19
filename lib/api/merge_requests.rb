@@ -72,6 +72,8 @@ module API
         optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
         optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
         use :pagination
       end
       get ":id/merge_requests" do
