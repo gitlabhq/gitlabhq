@@ -8,4 +8,5 @@ import 'vendor/jquery.atwho';
 import 'vendor/jquery.scrollTo';
 import 'vendor/jquery.nicescroll';
 import 'vendor/jquery.waitforimages';
+import 'vendor/jquery_nested_form';
 import 'select2/select2';

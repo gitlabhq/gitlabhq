@@ -2,7 +2,7 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'schedule_form'
 
-= form_for [@project.namespace.becomes(Namespace), @project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form" } do |f|
+= nested_form_for [@project.namespace.becomes(Namespace), @project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form" } do |f|
   = form_errors(@schedule)
   .form-group
     .col-md-9
@@ -22,38 +22,23 @@
       = f.label :ref, _('Target Branch'), class: 'label-light'
       = dropdown_tag(_("Select target branch"), options: { toggle_class: 'btn js-target-branch-dropdown', dropdown_class: 'git-revision-dropdown', title: _("Select target branch"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: @project.repository.branch_names, default_branch: @project.default_branch } } )
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
-  -# TODO: Test code
-  = @schedule.variables.inspect
-  - if @schedule.variables.present?
-    - @schedule.variables.each_with_index do |variable, i|
-      .form-group
-        .col-md-9
-          %label.label-light Key
-          %input.form-control{:name => "schedule[variables_attributes][#{i}][key]", :type => "text", :value => variable.key}/
-          %p.gl-field-error.hide This field is required.
-          %label.label-light Value
-          %input.form-control{:name => "schedule[variables_attributes][#{i}][value]", :type => "text", :value => variable.value}/
-          %p.gl-field-error.hide This field is required.
-    - if @schedule.variables.count == 1
-      - (1..1).each do |i|
-        .form-group
-          .col-md-9
-            %label.label-light Key
-            %input.form-control{:name => "schedule[variables_attributes][#{i}][key]", :type => "text"}/
-            %p.gl-field-error.hide This field is required.
-            %label.label-light Value
-            %input.form-control{:name => "schedule[variables_attributes][#{i}][value]", :type => "text"}/
-            %p.gl-field-error.hide This field is required.
-  - else
-    - (0..0).each do |i|
-      .form-group
-        .col-md-9
-          %label.label-light Key
-          %input.form-control{:name => "schedule[variables_attributes][#{i}][key]", :type => "text"}/
-          %p.gl-field-error.hide This field is required.
-          %label.label-light Value
-          %input.form-control{:name => "schedule[variables_attributes][#{i}][value]", :type => "text"}/
-          %p.gl-field-error.hide This field is required.
+  .form-group
+    .col-md-9
+      %label.label-light
+        #{ _('Variables') }
+      %ul.js-pipeline-variable-list.pipeline-variable-list
+        = f.fields_for :variables, :wrapper => false do |variable_form|
+          %li.pipeline-variable-row.fields
+            = variable_form.text_field :key, class: 'pipeline-variable-key-input form-control', placeholder: _('Input variable key')
+            = variable_form.text_area :value, class: 'pipeline-variable-value-input form-control', rows: 1, placeholder: _('Input variable value')
+            = variable_form.link_to_remove class: 'pipeline-variable-row-remove-button' do
+              %i.fa.fa-minus-circle{ aria: { hidden: "true" } }
+            = f.link_to_add :variables, 'data-target': '.js-pipeline-variable-list', class: 'pipeline-variable-row-add-button' do
+              %i.fa.fa-plus-circle{ aria: { hidden: "true" } }
+      = f.link_to_add :variables, class: '', 'data-target': '.js-pipeline-variable-list' do
+        Add variable
+        %i.fa.fa-plus-circle{ aria: { hidden: "true" } }
+
   .form-group
     .col-md-9
       = f.label  :active, s_('PipelineSchedules|Activated'), class: 'label-light'
