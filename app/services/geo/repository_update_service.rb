@@ -21,7 +21,11 @@ module Geo
         project.repository.expire_content_cache
       end
     rescue Gitlab::Shell::Error => e
-      logger.error "Error fetching repository for project #{project.path_with_namespace}: #{e}"
+      logger.error "#{self.class.name}: Error fetching repository for project #{project.path_with_namespace}: #{e}"
+    rescue Gitlab::Git::Repository::NoRepository => e
+      logger.error "#{self.class.name}: Error invalid repository for project #{project.path_with_namespace}: #{e}"
+      logger.warn "#{self.class.name}: Invalidating cache for project #{project.path_with_namespace}"
+      project.repository.after_create
     end
 
     private
