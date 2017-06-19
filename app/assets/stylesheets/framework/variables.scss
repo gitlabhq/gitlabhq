@@ -575,6 +575,12 @@ $stage-hover-border: #d1e7fc;
 $action-icon-color: #d6d6d6;
 
 /*
+Pipeline Schedules
+*/
+$pipeline-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
+
+
+/*
 Filtered Search
 */
 $filter-name-resting-color: #f8f8f8;
