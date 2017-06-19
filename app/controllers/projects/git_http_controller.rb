@@ -56,7 +56,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access
-    @access ||= access_klass.new(access_actor, project, 'http', authentication_abilities: authentication_abilities)
+    @access ||= access_klass.new(access_actor, project, 'http', authentication_abilities: authentication_abilities, redirected_path: redirected_path)
   end
 
   def access_actor
