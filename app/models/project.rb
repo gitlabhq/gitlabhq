@@ -798,10 +798,6 @@ class Project < ActiveRecord::Base
     @monitoring_service ||= monitoring_services.reorder(nil).find_by(active: true)
   end
 
-  def prometheus_service
-    @prometheus_service ||= monitoring_services.find_by(active: true, type: PrometheusService.name)
-  end
-
   def jira_tracker?
     issues_tracker.to_param == 'jira'
   end
