@@ -65,7 +65,9 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
 
     if description.present?
       description = description.gsub(source_markdown, destination_markdown)
-      execute("UPDATE snippets SET description = '#{description}', description_html = NULL "\
+      quoted_description = ActiveRecord::Base.connection.quote_string(description)
+
+      execute("UPDATE snippets SET description = '#{quoted_description}', description_html = NULL "\
               "WHERE id = #{snippet_id}")
     end
 
@@ -73,8 +75,9 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
             "AND noteable_type = 'Snippet' AND note IS NOT NULL"
     select_all(query).each do |note|
       text = note['note'].gsub(source_markdown, destination_markdown)
+      quoted_text = ActiveRecord::Base.connection.quote_string(text)
 
-      execute("UPDATE notes SET note = '#{text}', note_html = NULL WHERE id = #{note['id']}")
+      execute("UPDATE notes SET note = '#{quoted_text}', note_html = NULL WHERE id = #{note['id']}")
     end
   end
 
