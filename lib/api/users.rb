@@ -98,7 +98,7 @@ module API
         authenticated_as_admin!
 
         params = declared_params(include_missing: false)
-        user = ::Users::CreateService.new(current_user, params).execute
+        user = ::Users::CreateService.new(current_user, params).execute(skip_authorization: true)
 
         if user.persisted?
           present user, with: Entities::UserPublic
@@ -236,9 +236,7 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        email = user.emails.new(declared_params(include_missing: false))
-
-        if email.save
+        if Emails::CreateService.new(current_user, user, declared_params(include_missing: false)).execute(skip_authorization: true)
           NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
@@ -276,7 +274,7 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        Emails::DestroyService.new(current_user, user, email: email.email).execute
+        Emails::DestroyService.new(current_user, user, email: email.email).execute(skip_authorization: true)
 
         ::Users::UpdateService.new(current_user, user).execute do |user|
           user.update_secondary_emails!
@@ -494,7 +492,7 @@ module API
       post "emails" do
         email = current_user.emails.new(declared_params)
 
-        if email.save
+        if Emails::CreateService.new(current_user, current_user, declared_params).execute
           NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
