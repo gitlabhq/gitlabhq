@@ -7,7 +7,10 @@ let RepoService = {
     this.url = url;
   },
 
-  getContent() {
+  getContent(url) {
+    if(url){
+      return axios.get(url);  
+    }
     return axios.get(this.url);
   }
 };
