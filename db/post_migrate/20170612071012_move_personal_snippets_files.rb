@@ -43,7 +43,10 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
     source_file_path = File.join(source_dir, file_name)
     destination_file_path = File.join(destination_dir, file_name)
 
-    return unless File.exist?(source_file_path)
+    unless File.exist?(source_file_path)
+      say "Source file `#{source_file_path}` doesn't exists. Skipping."
+      return
+    end
 
     say "Moving file #{source_file_path} -> #{destination_file_path}"
 
