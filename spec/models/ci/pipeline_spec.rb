@@ -672,6 +672,12 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '.internal_sources' do
+    subject { described_class.internal_sources }
+
+    it { is_expected.to be_an(Array) }
+  end
+
   describe '#status' do
     let(:build) do
       create(:ci_build, :created, pipeline: pipeline, name: 'test')

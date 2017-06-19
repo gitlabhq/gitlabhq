@@ -20,7 +20,8 @@ module Gitlab
           counts: {
             boards: Board.count,
             ci_builds: ::Ci::Build.count,
-            ci_pipelines: ::Ci::Pipeline.count,
+            ci_internal_pipelines: ::Ci::Pipeline.internal.count,
+            ci_external_pipelines: ::Ci::Pipeline.external.count,
             ci_runners: ::Ci::Runner.count,
             ci_triggers: ::Ci::Trigger.count,
             ci_pipeline_schedules: ::Ci::PipelineSchedule.count,
