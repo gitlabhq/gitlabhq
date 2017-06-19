@@ -60,8 +60,8 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
     source_markdown_path = File.join(@source_relative_location, snippet_id.to_s, secret, file_name)
     destination_markdown_path = File.join(@destination_relative_location, snippet_id.to_s, secret, file_name)
 
-    source_markdown = markdown_string(source_markdown_path, file_name)
-    destination_markdown = markdown_string(destination_markdown_path, file_name)
+    source_markdown = "(#{source_markdown_path})"
+    destination_markdown = "(#{destination_markdown_path})"
 
     if description.present?
       description = description.gsub(source_markdown, destination_markdown)
@@ -76,37 +76,6 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
 
       execute("UPDATE notes SET note = '#{text}', note_html = NULL WHERE id = #{note['id']}")
     end
-  end
-
-  def markdown_string(path, file_name)
-    parts = file_name.split('.')
-    base_name = parts.first
-    extension = parts.second
-
-    file_name = image_or_video?(extension) ? base_name : file_name
-    escaped_filename = file_name.gsub("]", "\\]")
-
-    markdown = "[#{escaped_filename}](#{path})"
-    markdown.prepend("!") if image_or_video?(extension) || dangerous?(extension)
-
-    markdown
-  end
-
-  def image_or_video?(extension)
-    return unless extension
-
-    images = %w[png jpg jpeg gif bmp tiff]
-    videos = %w[mp4 m4v mov webm ogv]
-
-    images.include?(extension.downcase) || videos.include?(extension.downcase)
-  end
-
-  def dangerous?(extension)
-    return unless extension
-
-    dangerous = %w[svg]
-
-    dangerous.include?(extension.downcase)
   end
 
   def base_directory
