@@ -51,6 +51,8 @@ describe 'Admin::AuditLogs', feature: true, js: true do
       wait_for_requests
       find('.select2-results').click
 
+      find('#events-table td', match: :first)
+
       expect(page).to have_content('Added user access as Owner')
     end
   end
@@ -72,6 +74,8 @@ describe 'Admin::AuditLogs', feature: true, js: true do
       find('.project-item-select').click
       wait_for_requests
       find('.select2-results').click
+
+      find('#events-table td', match: :first)
 
       expect(page).to have_content('Removed user access')
     end
