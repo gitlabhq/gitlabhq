@@ -157,7 +157,7 @@ describe('MRWidgetPipeline', () => {
       }).$mount();
     });
 
-    it('should coerce triggeredBy into a collection', function() {
+    it('should coerce triggeredBy into a collection', function () {
       expect(this.vm.triggeredBy.length).toBe(1);
     });
 
