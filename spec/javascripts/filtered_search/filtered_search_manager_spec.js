@@ -106,6 +106,7 @@ describe('Filtered Search Manager', () => {
 
     it('should blur button', () => {
       const e = {
+        preventDefault: () => {},
         currentTarget: {
           blur: () => {},
         },
@@ -118,6 +119,7 @@ describe('Filtered Search Manager', () => {
 
     it('should not call search if there is no state', () => {
       const e = {
+        preventDefault: () => {},
         currentTarget: {
           blur: () => {},
         },
@@ -129,6 +131,7 @@ describe('Filtered Search Manager', () => {
 
     it('should call search when there is state', () => {
       const e = {
+        preventDefault: () => {},
         currentTarget: {
           blur: () => {},
           dataset: {
