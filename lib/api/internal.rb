@@ -34,7 +34,7 @@ module API
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
         access_checker = access_checker_klass
-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
+          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path)
 
         begin
           access_checker.check(params[:action], params[:changes])
