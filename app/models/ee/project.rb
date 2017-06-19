@@ -55,8 +55,13 @@ module EE
       end
     end
 
+    def service_desk_enabled
+      ::EE::Gitlab::ServiceDesk.enabled?(project: self) && super
+    end
+    alias_method :service_desk_enabled?, :service_desk_enabled
+
     def service_desk_address
-      return nil unless service_desk_available?
+      return nil unless service_desk_enabled?
 
       config = ::Gitlab.config.incoming_email
       wildcard = ::Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER
@@ -80,7 +85,7 @@ module EE
     private
 
     def licensed_feature_available?(feature)
-      globally_available = License.current&.feature_available?(feature)
+      globally_available = License.feature_available?(feature)
 
       if current_application_settings.should_check_namespace_plan?
         globally_available &&
@@ -92,12 +97,6 @@ module EE
 
     def destroy_mirror_data
       mirror_data.destroy
-    end
-
-    def service_desk_available?
-      return @service_desk_available if defined?(@service_desk_available)
-
-      @service_desk_available = EE::Gitlab::ServiceDesk.enabled? && service_desk_enabled?
     end
   end
 end

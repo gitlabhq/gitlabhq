@@ -145,7 +145,7 @@ module EE
               elsif group.last_owner?(user)
                 warn_cannot_remove_last_owner(user, group)
               else
-                group.users.delete(user)
+                group.users.destroy(user)
               end
             end
           end

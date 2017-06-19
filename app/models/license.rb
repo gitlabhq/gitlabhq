@@ -203,6 +203,10 @@ class License < ActiveRecord::Base
      restricted_attr(:trueup_to)].all?(&:present?)
   end
 
+  def trial?
+    restricted_attr(:trial)
+  end
+
   private
 
   def restricted_attr(name, default = nil)
