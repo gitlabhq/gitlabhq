@@ -10,6 +10,12 @@ feature 'Protected Branches', feature: true, js: true do
     login_as(user)
   end
 
+  def set_protected_branch_name(branch_name)
+    find(".js-protected-branch-select").trigger('click')
+    find(".dropdown-input-field").set(branch_name)
+    click_on("Create wildcard #{branch_name}")
+  end
+
   describe "explicit protected branches" do
     it "allows creating explicit protected branches" do
       visit namespace_project_protected_branches_path(project.namespace, project)

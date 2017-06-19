@@ -129,7 +129,7 @@ describe KubernetesService, models: true, caching: true do
     it "returns the default namespace" do
       is_expected.to eq(service.send(:default_namespace))
     end
-
+    
     context 'when namespace is specified' do
       before do
         service.namespace = 'my-namespace'

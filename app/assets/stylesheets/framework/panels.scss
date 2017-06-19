@@ -31,6 +31,14 @@
     align-items: center;
   }
 
+  .panel-empty-heading {
+    border-bottom: 0;
+  }
+
+  .panel-body {
+    padding: $gl-padding;
+  }
+
   .left {
     flex: 1 1 auto;
   }

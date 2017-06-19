@@ -11,6 +11,39 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     allow(model).to receive(:puts)
   end
 
+  describe '#add_timestamps_with_timezone' do
+    before do
+      allow(model).to receive(:transaction_open?).and_return(false)
+    end
+
+    context 'using PostgreSQL' do
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+        allow(model).to receive(:disable_statement_timeout)
+      end
+
+      it 'adds "created_at" and "updated_at" fields with the "datetime_with_timezone" data type' do
+        expect(model).to receive(:add_column).with(:foo, :created_at, :datetime_with_timezone, { null: false })
+        expect(model).to receive(:add_column).with(:foo, :updated_at, :datetime_with_timezone, { null: false })
+
+        model.add_timestamps_with_timezone(:foo)
+      end
+    end
+
+    context 'using MySQL' do
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+      end
+
+      it 'adds "created_at" and "updated_at" fields with "datetime_with_timezone" data type' do
+        expect(model).to receive(:add_column).with(:foo, :created_at, :datetime_with_timezone, { null: false })
+        expect(model).to receive(:add_column).with(:foo, :updated_at, :datetime_with_timezone, { null: false })
+
+        model.add_timestamps_with_timezone(:foo)
+      end
+    end
+  end
+
   describe '#add_concurrent_index' do
     context 'outside a transaction' do
       before do

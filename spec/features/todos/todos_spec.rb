@@ -333,29 +333,6 @@ describe 'Dashboard Todos', feature: true do
       end
     end
 
-    context 'User have large number of todos' do
-      before do
-        create_list(:todo, 101, :mentioned, user: user, project: project, target: issue, author: author)
-
-        login_as(user)
-        visit dashboard_todos_path
-      end
-
-      it 'shows 99+ for count >= 100 in notification' do
-        expect(page).to have_selector('.todos-count', text: '99+')
-      end
-
-      it 'shows exact number in To do tab' do
-        expect(page).to have_selector('.todos-pending .badge', text: '101')
-      end
-
-      it 'shows exact number for count < 100' do
-        3.times { first('.js-done-todo').click }
-
-        expect(page).to have_selector('.todos-count', text: '98')
-      end
-    end
-
     context 'User has a Build Failed todo' do
       let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: author) }
 

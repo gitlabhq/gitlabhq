@@ -1,17 +1,14 @@
-class BuildDetailsEntity < BuildEntity
+class BuildDetailsEntity < JobEntity
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
-
   expose :user, using: UserEntity
+  expose :runner, using: RunnerEntity
+  expose :pipeline, using: PipelineEntity
 
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :update_build, project) } do |build|
     erase_namespace_project_job_path(project.namespace, project, build)
   end
-
-  expose :artifacts, using: BuildArtifactEntity
-  expose :runner, using: RunnerEntity
-  expose :pipeline, using: PipelineEntity
 
   expose :merge_request, if: -> (*) { can?(current_user, :read_merge_request, build.merge_request) } do
     expose :iid do |build|
@@ -34,10 +31,8 @@ class BuildDetailsEntity < BuildEntity
   private
 
   def build_failed_issue_options
-    {
-      title: "Build Failed ##{build.id}",
-      description: namespace_project_job_url(project.namespace, project, build)
-    }
+    { title: "Build Failed ##{build.id}",
+      description: namespace_project_job_path(project.namespace, project, build) }
   end
 
   def current_user

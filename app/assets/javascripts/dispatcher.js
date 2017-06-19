@@ -2,7 +2,6 @@
 /* global UsernameValidator */
 /* global ActiveTabMemoizer */
 /* global ShortcutsNavigation */
-/* global Build */
 /* global IssuableIndex */
 /* global ShortcutsIssuable */
 /* global ZenMode */
@@ -136,9 +135,6 @@ import AuditLogs from './audit_logs';
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
-          break;
-        case 'projects:jobs:show':
-          new Build();
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':

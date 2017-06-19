@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Timestamps
 class CreatePathLocksTable < ActiveRecord::Migration
   def change
     create_table :path_locks do |t|

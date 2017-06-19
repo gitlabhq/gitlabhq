@@ -5,6 +5,7 @@ feature 'Jobs', :feature do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project) }
+  let(:namespace) { project.namespace }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
@@ -128,6 +129,48 @@ feature 'Jobs', :feature do
 
       it 'shows active job' do
         expect(page).to have_selector('.build-job.active')
+      end
+    end
+
+    context 'when job is not running', :js do
+      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+
+      before do
+        visit namespace_project_job_path(project.namespace, project, job)
+      end
+
+      it 'shows retry button' do
+        expect(page).to have_link('Retry')
+      end
+
+      context 'if job passed' do
+        it 'does not show New issue button' do
+          expect(page).not_to have_link('New issue')
+        end
+      end
+
+      context 'if job failed' do
+        let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+
+        before do
+          visit namespace_project_job_path(namespace, project, job)
+        end
+
+        it 'shows New issue button' do
+          expect(page).to have_link('New issue')
+        end
+
+        it 'links to issues/new with the title and description filled in' do
+          button_title = "Build Failed ##{job.id}"
+          job_path = namespace_project_job_path(namespace, project, job)
+          options = { issue: { title: button_title, description: job_path } }
+
+          href = new_namespace_project_issue_path(namespace, project, options)
+
+          page.within('.header-action-buttons') do
+            expect(find('.js-new-issue')['href']).to include(href)
+          end
+        end
       end
     end
 
@@ -318,61 +361,36 @@ feature 'Jobs', :feature do
     end
   end
 
-  describe "POST /:project/jobs/:id/cancel" do
+  describe "POST /:project/jobs/:id/cancel", :js do
     context "Job from project" do
       before do
         job.run!
         visit namespace_project_job_path(project.namespace, project, job)
-        click_link "Cancel"
+        find('.js-cancel-job').click()
       end
 
       it 'loads the page and shows all needed controls' do
         expect(page.status_code).to eq(200)
-        expect(page).to have_content 'canceled'
         expect(page).to have_content 'Retry'
       end
-    end
-
-    context "Job from other project" do
-      before do
-        job.run!
-        visit namespace_project_job_path(project.namespace, project, job)
-        page.driver.post(cancel_namespace_project_job_path(project.namespace, project, job2))
-      end
-
-      it { expect(page.status_code).to eq(404) }
     end
   end
 
   describe "POST /:project/jobs/:id/retry" do
-    context "Job from project" do
+    context "Job from project", :js do
       before do
         job.run!
         visit namespace_project_job_path(project.namespace, project, job)
-        click_link 'Cancel'
-        page.within('.build-header') do
-          click_link 'Retry job'
-        end
+        find('.js-cancel-job').click()
+        find('.js-retry-button').trigger('click')
       end
 
-      it 'shows the right status and buttons' do
+      it 'shows the right status and buttons', :js do
         expect(page).to have_http_status(200)
-        expect(page).to have_content 'pending'
         page.within('aside.right-sidebar') do
           expect(page).to have_content 'Cancel'
         end
       end
-    end
-
-    context "Job from other project" do
-      before do
-        job.run!
-        visit namespace_project_job_path(project.namespace, project, job)
-        click_link 'Cancel'
-        page.driver.post(retry_namespace_project_job_path(project.namespace, project, job2))
-      end
-
-      it { expect(page).to have_http_status(404) }
     end
 
     context "Job that current user is not allowed to retry" do
@@ -448,11 +466,6 @@ feature 'Jobs', :feature do
         Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
 
         job.run!
-
-        allow_any_instance_of(Gitlab::Ci::Trace).to receive(:paths)
-          .and_return(paths)
-
-        visit namespace_project_job_path(project.namespace, project, job)
       end
 
       context 'when job has trace in file', :js do
@@ -461,7 +474,13 @@ feature 'Jobs', :feature do
         end
 
         before do
-          find('.js-raw-link-controller').click()
+          allow_any_instance_of(Gitlab::Ci::Trace)
+            .to receive(:paths)
+            .and_return([existing_file])
+
+          visit namespace_project_job_path(namespace, project, job)
+
+          find('.js-raw-link-controller').click
         end
 
         it 'sends the right headers' do
@@ -471,11 +490,17 @@ feature 'Jobs', :feature do
         end
       end
 
-      context 'when job has trace in DB' do
-        let(:paths) { [] }
+      context 'when job has trace in the database', :js do
+        before do
+          allow_any_instance_of(Gitlab::Ci::Trace)
+            .to receive(:paths)
+            .and_return([])
+
+          visit namespace_project_job_path(namespace, project, job)
+        end
 
         it 'sends the right headers' do
-          expect(page.status_code).not_to have_selector('.js-raw-link-controller')
+          expect(page).not_to have_selector('.js-raw-link-controller')
         end
       end
     end

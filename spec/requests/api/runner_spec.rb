@@ -191,6 +191,8 @@ describe API::Runner do
     end
 
     before do
+      stub_artifacts_object_storage
+      job
       project.runners << runner
     end
 
@@ -200,7 +202,6 @@ describe API::Runner do
       let(:user_agent) { 'gitlab-runner 9.0.0 (9-0-stable; go1.7.4; linux/amd64)' }
 
       before do
-        job
         stub_container_registry_config(enabled: false)
       end
 
@@ -365,8 +366,11 @@ describe API::Runner do
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
-            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1' })
-            expect(json_response['services']).to eq([{ 'name' => 'postgres' }])
+            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh' })
+            expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
+                                                       'alias' => nil, 'command' => nil },
+                                                     { 'name' => 'docker:dind', 'entrypoint' => '/bin/sh',
+                                                       'alias' => 'docker', 'command' => 'sleep 30' }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to eq(expected_cache)
@@ -440,8 +444,29 @@ describe API::Runner do
               expect(response).to have_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(2)
-              expect(json_response['dependencies']).to include({ 'id' => job.id, 'name' => job.name, 'token' => job.token },
-                                                               { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+              expect(json_response['dependencies']).to include(
+                { 'id' => job.id, 'name' => job.name, 'token' => job.token },
+                { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+            end
+          end
+
+          context 'when pipeline have jobs with artifacts' do
+            let!(:job) { create(:ci_build_tag, :artifacts, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
+
+            before do
+              job.success
+            end
+
+            it 'returns dependent jobs' do
+              request_job
+
+              expect(response).to have_http_status(201)
+              expect(json_response['id']).to eq(test_job.id)
+              expect(json_response['dependencies'].count).to eq(1)
+              expect(json_response['dependencies']).to include(
+                { 'id' => job.id, 'name' => job.name, 'token' => job.token,
+                  'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => 106365 } })
             end
           end
 

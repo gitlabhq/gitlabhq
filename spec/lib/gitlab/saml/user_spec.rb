@@ -40,11 +40,11 @@ describe Gitlab::Saml::User, lib: true do
     end
 
     describe 'account exists on server' do
-      let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
-
       before do
         stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true })
       end
+
+      let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
 
       context 'and should bind with SAML' do
         it 'adds the SAML identity to the existing user' do

@@ -17,10 +17,18 @@ module SpammableActions
 
   private
 
+  def ensure_spam_config_loaded!
+    return @spam_config_loaded if defined?(@spam_config_loaded)
+
+    @spam_config_loaded = Gitlab::Recaptcha.load_configurations!
+  end
+
   def recaptcha_check_with_fallback(&fallback)
     if spammable.valid?
       redirect_to spammable
     elsif render_recaptcha?
+      ensure_spam_config_loaded!
+
       if params[:recaptcha_verification]
         flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
       end
@@ -35,7 +43,7 @@ module SpammableActions
     default_params = { request: request }
 
     recaptcha_check = params[:recaptcha_verification] &&
-      Gitlab::Recaptcha.load_configurations! &&
+      ensure_spam_config_loaded! &&
       verify_recaptcha
 
     return default_params unless recaptcha_check

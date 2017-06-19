@@ -54,6 +54,7 @@
   - [system_hook_push, 1]
   - [update_user_activity, 1]
   - [propagate_service_template, 1]
+  - [background_migration, 1]
   # EE specific queues
   - [ldap_group_sync, 2]
   - [geo, 1]

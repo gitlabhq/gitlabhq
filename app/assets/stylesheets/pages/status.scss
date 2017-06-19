@@ -19,8 +19,7 @@
       overflow: visible;
     }
 
-    &.ci-failed,
-    &.ci-failed_with_warnings {
+    &.ci-failed {
       color: $red-500;
       border-color: $red-500;
 
@@ -39,8 +38,7 @@
       }
     }
 
-    &.ci-success,
-    &.ci-success_with_warnings {
+    &.ci-success {
       color: $green-600;
       border-color: $green-500;
 
@@ -73,7 +71,9 @@
       }
     }
 
-    &.ci-pending {
+    &.ci-pending,
+    &.ci-success_with_warnings,
+    &.ci-failed_with_warnings {
       color: $orange-600;
       border-color: $orange-500;
 

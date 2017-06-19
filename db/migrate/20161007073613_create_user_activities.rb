@@ -1,3 +1,5 @@
+# rubocop:disable Migration/Timestamps
+# rubocop:disable Migration/Datetime
 class CreateUserActivities < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = true
