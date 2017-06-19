@@ -12,13 +12,24 @@ describe Ci::Variable, models: true do
   it { is_expected.not_to allow_value('foo/bar').for(:key) }
 
   # EE
-  context 'with variable_environment_scope enabled' do
+  context 'when variable_environment_scope available' do
     before do
-      stub_feature(:variable_environment_scope)
+      stub_feature(:variable_environment_scope, true)
     end
 
+    it { is_expected.to allow_value('*').for(:environment_scope) }
     it { is_expected.to allow_value('review/*').for(:environment_scope) }
     it { is_expected.not_to allow_value('').for(:environment_scope) }
+  end
+
+  # EE
+  context 'when variable_environment_scope unavailable' do
+    before do
+      stub_feature(:variable_environment_scope, false)
+    end
+
+    it { is_expected.to allow_value('*').for(:environment_scope) }
+    it { is_expected.not_to allow_value('review/*').for(:environment_scope) }
   end
 
   let(:key_scope) do

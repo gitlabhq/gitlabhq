@@ -1412,17 +1412,37 @@ describe Ci::Build, :models do
         end
 
         before do
-          stub_feature(:variable_environment_scope)
-
           build.update(environment: 'staging')
           create(:environment, name: 'staging', project: build.project)
 
-          create(:ci_variable,
-                 environment_varialbe.slice(:key, :value)
-                   .merge(project: project, environment_scope: 'stag*'))
+          variable =
+            FactoryGirl.build( # TODO: Just use `build` after build is renamed
+              :ci_variable,
+              environment_varialbe.slice(:key, :value)
+                .merge(project: project, environment_scope: 'stag*'))
+
+          # Skip this validation so that we could test for existing data
+          allow(variable).to receive(:validate_updating_environment_scope)
+            .and_return(true)
+
+          variable.save!
         end
 
-        it { is_expected.to include(environment_varialbe) }
+        context 'when variable environment scope is available' do
+          before do
+            stub_feature(:variable_environment_scope, true)
+          end
+
+          it { is_expected.to include(environment_varialbe) }
+        end
+
+        context 'when variable environment scope is not available' do
+          before do
+            stub_feature(:variable_environment_scope, false)
+          end
+
+          it { is_expected.not_to include(environment_varialbe) }
+        end
       end
     end
 

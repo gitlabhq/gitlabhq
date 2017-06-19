@@ -19,11 +19,11 @@ module EE
                     message: ::Gitlab::Regex.environment_scope_regex_message }
         )
 
-        validate :updating_environment_scope
+        validate :validate_updating_environment_scope
 
         private
 
-        def updating_environment_scope
+        def validate_updating_environment_scope
           return unless environment_scope_changed?
 
           unless project.feature_available?(:variable_environment_scope)

@@ -2294,7 +2294,53 @@ describe Project, models: true do
       end
 
       before do
-        stub_feature(:variable_environment_scope)
+        # Skip this validation so that we could test for existing data
+        allow_any_instance_of(Ci::Variable)
+          .to receive(:validate_updating_environment_scope).and_return(true)
+      end
+
+      shared_examples 'matching environment scope' do
+        context 'when variable environment scope is available' do
+          before do
+            stub_feature(:variable_environment_scope, true)
+          end
+
+          it 'contains the secret variable' do
+            is_expected.to contain_exactly(secret_variable)
+          end
+        end
+
+        context 'when variable environment scope is unavailable' do
+          before do
+            stub_feature(:variable_environment_scope, false)
+          end
+
+          it 'does not contain the secret variable' do
+            is_expected.not_to contain_exactly(secret_variable)
+          end
+        end
+      end
+
+      shared_examples 'not matching environment scope' do
+        context 'when variable environment scope is available' do
+          before do
+            stub_feature(:variable_environment_scope, true)
+          end
+
+          it 'does not contain the secret variable' do
+            is_expected.not_to contain_exactly(secret_variable)
+          end
+        end
+
+        context 'when variable environment scope is unavailable' do
+          before do
+            stub_feature(:variable_environment_scope, false)
+          end
+
+          it 'does not contain the secret variable' do
+            is_expected.not_to contain_exactly(secret_variable)
+          end
+        end
       end
 
       context 'when environment scope is exactly matched' do
@@ -2302,9 +2348,7 @@ describe Project, models: true do
           secret_variable.update(environment_scope: 'review/name')
         end
 
-        it 'contains the secret variable' do
-          is_expected.to contain_exactly(secret_variable)
-        end
+        it_behaves_like 'matching environment scope'
       end
 
       context 'when environment scope is matched by wildcard' do
@@ -2312,9 +2356,7 @@ describe Project, models: true do
           secret_variable.update(environment_scope: 'review/*')
         end
 
-        it 'contains the secret variable' do
-          is_expected.to contain_exactly(secret_variable)
-        end
+        it_behaves_like 'matching environment scope'
       end
 
       context 'when environment scope does not match' do
@@ -2322,12 +2364,14 @@ describe Project, models: true do
           secret_variable.update(environment_scope: 'review/*/special')
         end
 
-        it 'does not contain the secret variable' do
-          is_expected.not_to contain_exactly(secret_variable)
-        end
+        it_behaves_like 'not matching environment scope'
       end
 
       context 'when environment scope has _' do
+        before do
+          stub_feature(:variable_environment_scope, true)
+        end
+
         it 'does not treat it as wildcard' do
           secret_variable.update(environment_scope: '*_*')
 
@@ -2357,6 +2401,10 @@ describe Project, models: true do
                  value: 'prefect',
                  environment_scope: 'review/name',
                  project: project)
+        end
+
+        before do
+          stub_feature(:variable_environment_scope, true)
         end
 
         it 'puts variables matching environment scope more in the end' do
