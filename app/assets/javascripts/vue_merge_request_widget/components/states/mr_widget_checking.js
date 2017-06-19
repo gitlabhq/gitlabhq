@@ -9,7 +9,7 @@ export default {
         Merge
       </button>
       <span class="bold">
-        Checking ability to merge automatically.
+        Checking ability to merge automatically
         <i
           class="fa fa-spinner fa-spin"
           aria-hidden="true" />

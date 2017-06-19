@@ -9,7 +9,7 @@ export default {
         Merge
       </button>
       <span class="bold">
-        This project is archived, write access has been disabled.
+        This project is archived, write access has been disabled
       </span>
     </div>
   `,

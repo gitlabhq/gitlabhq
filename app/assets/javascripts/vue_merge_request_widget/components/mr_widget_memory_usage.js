@@ -119,7 +119,7 @@ export default {
         class="usage-info js-usage-info usage-info-loading">
         <i
           class="fa fa-spinner fa-spin usage-info-load-spinner"
-          aria-hidden="true" />Loading deployment statistics.
+          aria-hidden="true" />Loading deployment statistics
       </p>
       <p
         v-if="shouldShowMemoryGraph"
@@ -129,12 +129,12 @@ export default {
       <p
         v-if="shouldShowLoadFailure"
         class="usage-info js-usage-info usage-info-failed">
-        Failed to load deployment statistics.
+        Failed to load deployment statistics
       </p>
       <p
         v-if="shouldShowMetricsUnavailable"
         class="usage-info js-usage-info usage-info-unavailable">
-        Deployment statistics are not available currently.
+        Deployment statistics are not available currently
       </p>
       <mr-memory-graph
         v-if="shouldShowMemoryGraph"

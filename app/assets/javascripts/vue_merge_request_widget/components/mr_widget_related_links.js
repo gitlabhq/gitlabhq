@@ -27,12 +27,12 @@ export default {
       <div class="legend"></div>
       <p v-if="relatedLinks.closing">
         Closes {{issueLabel('closing')}}
-        <span v-html="relatedLinks.closing"></span>.
+        <span v-html="relatedLinks.closing"></span>
       </p>
       <p v-if="relatedLinks.mentioned">
         <span class="capitalize">{{issueLabel('mentioned')}}</span>
         <span v-html="relatedLinks.mentioned"></span>
-        {{verbLabel('mentioned')}} mentioned but will not be closed.
+        {{verbLabel('mentioned')}} mentioned but will not be closed
       </p>
       <p v-if="relatedLinks.assignToMe">
         <span v-html="relatedLinks.assignToMe"></span>

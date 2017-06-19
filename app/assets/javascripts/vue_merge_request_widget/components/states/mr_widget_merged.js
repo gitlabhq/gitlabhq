@@ -69,9 +69,9 @@ export default {
             <a :href="mr.targetBranchPath">{{mr.targetBranch}}</a>
           </span>
         </p>
-        <p v-if="mr.sourceBranchRemoved">The source branch has been removed.</p>
+        <p v-if="mr.sourceBranchRemoved">The source branch has been removed</p>
         <p v-if="shouldShowRemoveSourceBranch">
-          You can remove source branch now.
+          You can remove source branch now
           <button
             @click="removeSourceBranch"
             :class="{ disabled: isMakingRequest }"
@@ -84,7 +84,7 @@ export default {
           <i
             class="fa fa-spinner fa-spin"
             aria-hidden="true" />
-          The source branch is being removed.
+          The source branch is being removed
         </p>
       </section>
       <div

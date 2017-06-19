@@ -87,15 +87,15 @@ export default {
             :href="mr.targetBranchPath"
             class="label-branch">
             {{mr.targetBranch}}
-          </a>.
+          </a>
         </p>
         <p v-if="mr.shouldRemoveSourceBranch">
-          The source branch will be removed.
+          The source branch will be removed
         </p>
         <p
           v-else
           class="with-button">
-          The source branch will not be removed.
+          The source branch will not be removed
           <a
             v-if="canRemoveSourceBranch"
             :disabled="isRemovingSourceBranch"
