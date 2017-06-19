@@ -2296,7 +2296,7 @@ describe Project, models: true do
       before do
         # Skip this validation so that we could test for existing data
         allow_any_instance_of(Ci::Variable)
-          .to receive(:validate_updating_environment_scope).and_return(true)
+          .to receive(:verify_updating_environment_scope).and_return(true)
       end
 
       shared_examples 'matching environment scope' do

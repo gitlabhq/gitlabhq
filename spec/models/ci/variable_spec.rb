@@ -20,6 +20,11 @@ describe Ci::Variable, models: true do
     it { is_expected.to allow_value('*').for(:environment_scope) }
     it { is_expected.to allow_value('review/*').for(:environment_scope) }
     it { is_expected.not_to allow_value('').for(:environment_scope) }
+
+    it do
+      is_expected.to validate_uniqueness_of(:key)
+        .scoped_to(:project_id, :environment_scope)
+    end
   end
 
   # EE
@@ -29,14 +34,13 @@ describe Ci::Variable, models: true do
     end
 
     it { is_expected.to allow_value('*').for(:environment_scope) }
-    it { is_expected.not_to allow_value('review/*').for(:environment_scope) }
-  end
 
-  let(:key_scope) do
-    [:project_id, :environment_scope] # EE
+    it 'ignores the changes to environment_scope' do
+      expect do
+        subject.update!(environment_scope: 'review/*')
+      end.not_to change { subject.environment_scope }
+    end
   end
-
-  it { is_expected.to validate_uniqueness_of(:key).scoped_to(key_scope) }
 
   describe '.unprotected' do
     subject { described_class.unprotected }

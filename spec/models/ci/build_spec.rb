@@ -1422,7 +1422,7 @@ describe Ci::Build, :models do
                 .merge(project: project, environment_scope: 'stag*'))
 
           # Skip this validation so that we could test for existing data
-          allow(variable).to receive(:validate_updating_environment_scope)
+          allow(variable).to receive(:verify_updating_environment_scope)
             .and_return(true)
 
           variable.save!
