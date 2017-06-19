@@ -211,12 +211,49 @@ describe Project, models: true do
     end
   end
 
+  describe '#service_desk_enabled?' do
+    let!(:license) { create(:license, data: build(:gitlab_license, restrictions: { plan: License::PREMIUM_PLAN }).export) }
+    let(:namespace) { create(:namespace) }
+
+    subject(:project) { build(:empty_project, :private, namespace: namespace, service_desk_enabled: true) }
+
+    before do
+      allow(::Gitlab).to receive(:com?).and_return(true)
+      allow(::Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+    end
+
+    it 'is enabled' do
+      expect(project.service_desk_enabled?).to be_truthy
+      expect(project.service_desk_enabled).to be_truthy
+    end
+
+    context 'namespace plans active' do
+      before do
+        stub_application_setting(check_namespace_plan: true)
+      end
+
+      it 'is disabled' do
+        expect(project.service_desk_enabled?).to be_falsy
+        expect(project.service_desk_enabled).to be_falsy
+      end
+
+      context 'Service Desk available in namespace plan' do
+        let(:namespace) { create(:namespace, plan: Namespace::SILVER_PLAN) }
+
+        it 'is enabled' do
+          expect(project.service_desk_enabled?).to be_truthy
+          expect(project.service_desk_enabled).to be_truthy
+        end
+      end
+    end
+  end
+
   describe '#service_desk_address' do
     let(:project) { create(:empty_project, service_desk_enabled: true) }
 
     before do
-      allow_any_instance_of(License).to receive(:feature_available?).and_call_original
-      allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
+      allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(true)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
       allow(Gitlab.config.incoming_email).to receive(:address).and_return("test+%{key}@mail.com")
     end

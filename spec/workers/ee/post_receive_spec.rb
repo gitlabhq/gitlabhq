@@ -46,8 +46,8 @@ describe PostReceive do
     end
 
     it 'triggers wiki index update when ElasticSearch is enabled' do
-      expect(Project).to receive(:find_by_full_path).with("#{project.full_path}.wiki").and_return(nil)
-      expect(Project).to receive(:find_by_full_path).with(project.full_path).and_return(project)
+      expect(Project).to receive(:find_by_full_path).with("#{project.full_path}.wiki", follow_redirects: true).and_return(nil)
+      expect(Project).to receive(:find_by_full_path).with(project.full_path, follow_redirects: true).and_return(project)
       stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
 
       expect_any_instance_of(ProjectWiki).to receive(:index_blobs)

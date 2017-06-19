@@ -130,7 +130,7 @@
 
         = render 'merge_request_settings', form: f
 
-        - if EE::Gitlab::ServiceDesk.enabled?
+        - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
           %hr
           %fieldset.js-service-desk-setting-wrapper.features.append-bottom-default
             %h5.prepend-top-0

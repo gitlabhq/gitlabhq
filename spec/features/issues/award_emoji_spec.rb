@@ -81,13 +81,13 @@ describe 'Awards Emoji', feature: true do
         end
       end
 
-      context 'execute /award slash command' do
+      context 'execute /award quick action' do
         it 'toggles the emoji award on noteable', js: true do
-          execute_slash_command('/award :100:')
+          execute_quick_action('/award :100:')
 
           expect(find(noteable_award_counter)).to have_text("1")
 
-          execute_slash_command('/award :100:')
+          execute_quick_action('/award :100:')
 
           expect(page).not_to have_selector(noteable_award_counter)
         end
@@ -105,7 +105,7 @@ describe 'Awards Emoji', feature: true do
     end
   end
 
-  def execute_slash_command(cmd)
+  def execute_quick_action(cmd)
     within('.js-main-target-form') do
       fill_in 'note[note]', with: cmd
       click_button 'Comment'
