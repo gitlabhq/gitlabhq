@@ -546,8 +546,8 @@ GEM
       rubypants (~> 0.2)
     orm_adapter (0.5.0)
     os (0.9.6)
-    paranoia (2.2.0)
-      activerecord (>= 4.0, < 5.1)
+    paranoia (2.3.1)
+      activerecord (>= 4.0, < 5.2)
     parser (2.4.0.0)
       ast (~> 2.2)
     path_expander (1.0.1)
@@ -1031,7 +1031,7 @@ DEPENDENCIES
   omniauth-twitter (~> 1.2.0)
   omniauth_crowd (~> 2.2.0)
   org-ruby (~> 0.9.12)
-  paranoia (~> 2.2)
+  paranoia (~> 2.3.1)
   peek (~> 1.0.1)
   peek-gc (~> 0.0.2)
   peek-host (~> 1.0.0)
@@ -1119,4 +1119,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.15.0
+   1.15.1
