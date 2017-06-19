@@ -26,7 +26,7 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
 
   def move_personal_snippet_files
     query = "SELECT uploads.path, uploads.model_id, snippets.description FROM uploads "\
-             "INNER JOIN snippets ON snippets.id = uploads.model_id WHERE uploader = 'PersonalFileUploader'"
+            "INNER JOIN snippets ON snippets.id = uploads.model_id WHERE uploader = 'PersonalFileUploader'"
     select_all(query).each do |upload|
       secret = upload['path'].split('/').first
       file_name = upload['path'].split('/').second
@@ -69,11 +69,12 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
               "WHERE id = #{snippet_id}")
     end
 
-    query = "SELECT id, note FROM notes WHERE noteable_id = #{snippet_id}"
+    query = "SELECT id, note FROM notes WHERE noteable_id = #{snippet_id} "\
+            "AND noteable_type = 'Snippet' AND note IS NOT NULL"
     select_all(query).each do |note|
       text = note['note'].gsub(source_markdown, destination_markdown)
 
-      execute("UPDATE notes SET note = '#{text}' WHERE id = #{note['id']}")
+      execute("UPDATE notes SET note = '#{text}', note_html = NULL WHERE id = #{note['id']}")
     end
   end
 
