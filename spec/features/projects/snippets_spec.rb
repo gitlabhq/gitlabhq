@@ -26,5 +26,19 @@ describe 'Project snippets', feature: true do
         expect(page).to have_content(snippets[1].title)
       end
     end
+
+    context 'when submitting a note' do
+      before do
+        login_as :admin
+        visit namespace_project_snippet_path(project.namespace, project, snippets[0])
+      end
+
+      it 'should have autocomplete' do
+        find('#note_note').native.send_keys('')
+        fill_in 'note[note]', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
+      end
+    end
   end
 end
