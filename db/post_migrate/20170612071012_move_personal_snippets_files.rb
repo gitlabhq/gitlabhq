@@ -106,7 +106,7 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
   end
 
   def base_directory
-    Rails.root
+    File.join(Rails.root, 'public')
   end
 
   def file_storage?
