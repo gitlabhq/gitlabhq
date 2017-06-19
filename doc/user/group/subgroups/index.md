@@ -1,6 +1,8 @@
 # Subgroups
 
-> [Introduced][ce-2772] in GitLab 9.0.
+>**Notes:**
+- [Introduced][ce-2772] in GitLab 9.0.
+- MySQL support for subgroups was dropped in GitLab 9.3.
 
 With subgroups (aka nested groups or hierarchical groups) you can have
 up to 20 levels of nested groups, which among other things can help you to:
