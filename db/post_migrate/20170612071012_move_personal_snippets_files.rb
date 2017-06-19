@@ -63,8 +63,11 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
     source_markdown = markdown_string(source_markdown_path, file_name)
     destination_markdown = markdown_string(destination_markdown_path, file_name)
 
-    description = description.gsub(source_markdown, destination_markdown)
-    execute("UPDATE snippets SET description = '#{description}' WHERE id = #{snippet_id}")
+    if description.present?
+      description = description.gsub(source_markdown, destination_markdown)
+      execute("UPDATE snippets SET description = '#{description}', description_html = NULL "\
+              "WHERE id = #{snippet_id}")
+    end
 
     query = "SELECT id, note FROM notes WHERE noteable_id = #{snippet_id}"
     select_all(query).each do |note|
