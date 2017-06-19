@@ -133,6 +133,22 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
           expect(page).to have_content('My awesome wiki!')
         end
       end
+
+      scenario 'content has autocomplete', :js do
+        click_link 'New page'
+
+        page.within '#modal-new-wiki' do
+          fill_in :new_wiki_path, with: 'test-autocomplete'
+          click_button 'Create page'
+        end
+
+        page.within '.wiki-form' do
+          find('#wiki_content').native.send_keys('')
+          fill_in :wiki_content, with: '@'
+        end
+
+        expect(page).to have_selector('.atwho-view')
+      end
     end
   end
 
