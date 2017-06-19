@@ -24,6 +24,17 @@ feature 'Master updates tag', feature: true do
       expect(page).to have_content 'v1.1.0'
       expect(page).to have_content 'Awesome release notes'
     end
+
+    scenario 'description has autocomplete', :js do
+      page.within(first('.content-list .controls')) do
+        click_link 'Edit release notes'
+      end
+
+      find('#release_description').native.send_keys('')
+      fill_in 'release_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
+    end
   end
 
   context 'from a specific tag page' do
