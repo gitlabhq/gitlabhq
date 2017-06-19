@@ -509,11 +509,6 @@ ul.notes {
   display: inline;
   line-height: 20px;
 
-  @include notes-media('min', $screen-sm-min) {
-    margin-left: 10px;
-    line-height: 24px;
-  }
-
   .fa {
     color: $gray-darkest;
     position: relative;
