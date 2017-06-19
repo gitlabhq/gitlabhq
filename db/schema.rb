@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170614115405) do
+ActiveRecord::Schema.define(version: 20170619184243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -511,6 +511,20 @@ ActiveRecord::Schema.define(version: 20170614115405) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
+  create_table "group_milestones", force: :cascade do |t|
+    t.integer "group_id"
+    t.string "title"
+    t.text "description"
+    t.date "start_date"
+    t.date "due_date"
+    t.string "state"
+    t.string "title_html"
+    t.string "description_html"
+    t.integer "cached_markdown_version"
+  end
+
+  add_index "group_milestones", ["group_id"], name: "index_group_milestones_on_group_id", using: :btree
+
   create_table "identities", force: :cascade do |t|
     t.string "extern_uid"
     t.string "provider"
@@ -566,6 +580,7 @@ ActiveRecord::Schema.define(version: 20170614115405) do
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
+    t.integer "group_milestone_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -575,6 +590,7 @@ ActiveRecord::Schema.define(version: 20170614115405) do
   add_index "issues", ["deleted_at"], name: "index_issues_on_deleted_at", using: :btree
   add_index "issues", ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "issues", ["due_date"], name: "index_issues_on_due_date", using: :btree
+  add_index "issues", ["group_milestone_id"], name: "index_issues_on_group_milestone_id", using: :btree
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
   add_index "issues", ["relative_position"], name: "index_issues_on_relative_position", using: :btree
@@ -770,6 +786,7 @@ ActiveRecord::Schema.define(version: 20170614115405) do
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.integer "head_pipeline_id"
+    t.integer "group_milestone_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -777,6 +794,7 @@ ActiveRecord::Schema.define(version: 20170614115405) do
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
   add_index "merge_requests", ["deleted_at"], name: "index_merge_requests_on_deleted_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "merge_requests", ["group_milestone_id"], name: "index_merge_requests_on_group_milestone_id", using: :btree
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
   add_index "merge_requests", ["source_project_id"], name: "index_merge_requests_on_source_project_id", using: :btree
@@ -1538,9 +1556,11 @@ ActiveRecord::Schema.define(version: 20170614115405) do
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
+  add_foreign_key "group_milestones", "namespaces", column: "group_id"
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
+  add_foreign_key "issues", "namespaces", column: "group_milestone_id"
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
@@ -1549,6 +1569,7 @@ ActiveRecord::Schema.define(version: 20170614115405) do
   add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_requests", "namespaces", column: "group_milestone_id"
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
