@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170623080805) do
+ActiveRecord::Schema.define(version: 20170624184243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -771,7 +771,14 @@ ActiveRecord::Schema.define(version: 20170623080805) do
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.integer "head_pipeline_id"
+<<<<<<< bce6d12bb9365ec2e8ffd5f40f0d1f03f88b315a
+<<<<<<< 5af1fcd6f329858d757bab0d67cb50af6c820160
     t.boolean "ref_fetched"
+=======
+    t.integer "group_milestone_id"
+>>>>>>> Add group milestones table
+=======
+>>>>>>> Native group milestones
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -779,7 +786,14 @@ ActiveRecord::Schema.define(version: 20170623080805) do
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
   add_index "merge_requests", ["deleted_at"], name: "index_merge_requests_on_deleted_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+<<<<<<< bce6d12bb9365ec2e8ffd5f40f0d1f03f88b315a
+<<<<<<< 5af1fcd6f329858d757bab0d67cb50af6c820160
   add_index "merge_requests", ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id", using: :btree
+=======
+  add_index "merge_requests", ["group_milestone_id"], name: "index_merge_requests_on_group_milestone_id", using: :btree
+>>>>>>> Add group milestones table
+=======
+>>>>>>> Native group milestones
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
   add_index "merge_requests", ["source_project_id"], name: "index_merge_requests_on_source_project_id", using: :btree
@@ -800,7 +814,7 @@ ActiveRecord::Schema.define(version: 20170623080805) do
 
   create_table "milestones", force: :cascade do |t|
     t.string "title", null: false
-    t.integer "project_id", null: false
+    t.integer "project_id"
     t.text "description"
     t.date "due_date"
     t.datetime "created_at"
@@ -811,10 +825,12 @@ ActiveRecord::Schema.define(version: 20170623080805) do
     t.text "description_html"
     t.date "start_date"
     t.integer "cached_markdown_version"
+    t.integer "group_id"
   end
 
   add_index "milestones", ["description"], name: "index_milestones_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "milestones", ["due_date"], name: "index_milestones_on_due_date", using: :btree
+  add_index "milestones", ["group_id"], name: "index_milestones_on_group_id", using: :btree
   add_index "milestones", ["project_id", "iid"], name: "index_milestones_on_project_id_and_iid", unique: true, using: :btree
   add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
   add_index "milestones", ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
@@ -1554,6 +1570,7 @@ ActiveRecord::Schema.define(version: 20170623080805) do
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
+  add_foreign_key "milestones", "namespaces", column: "group_id", name: "fk_95650a40d4", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
