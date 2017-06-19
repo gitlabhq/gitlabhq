@@ -144,6 +144,10 @@ ActiveRecord::Schema.define(version: 20170627211700) do
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
+    t.boolean "slack_app_enabled", default: false
+    t.string "slack_app_id"
+    t.string "slack_app_secret"
+    t.string "slack_app_verification_token"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1512,6 +1516,19 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
   add_index "services", ["template"], name: "index_services_on_template", using: :btree
 
+  create_table "slack_integrations", force: :cascade do |t|
+    t.integer "service_id", null: false
+    t.string "team_id", null: false
+    t.string "team_name", null: false
+    t.string "alias", null: false
+    t.string "user_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "slack_integrations", ["team_id", "alias"], name: "index_slack_integrations_on_team_id_and_alias", unique: true, using: :btree
+  add_index "slack_integrations", ["service_id"], name: "index_slack_integrations_on_service_id", using: :btree
+  
   create_table "snippets", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -1898,6 +1915,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
+  add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade

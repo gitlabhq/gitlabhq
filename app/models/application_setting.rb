@@ -266,7 +266,11 @@ class ApplicationSetting < ActiveRecord::Base
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1,
-      usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
+      usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+      slack_app_enabled: false,
+      slack_app_id: nil,
+      slack_app_secret: nil,
+      slack_app_verification_token: nil
     }
   end
 

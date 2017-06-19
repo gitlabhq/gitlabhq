@@ -89,6 +89,7 @@ class Project < ActiveRecord::Base
   # Project services
   has_one :campfire_service
   has_one :drone_ci_service
+  has_one :gitlab_slack_application_service, dependent: :destroy
   has_one :emails_on_push_service
   has_one :pipelines_email_service
   has_one :irker_service
