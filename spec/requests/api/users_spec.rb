@@ -377,6 +377,16 @@ describe API::Users do
       expect(user.reload.organization).to eq('GitLab')
     end
 
+    it 'updates user with avatar' do
+      put api("/users/#{user.id}", admin), { avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+
+      user.reload
+
+      expect(user.avatar).to be_present
+      expect(response).to have_http_status(200)
+      expect(json_response['avatar_url']).to include(user.avatar_path)
+    end
+
     it 'updates user with his own email' do
       put api("/users/#{user.id}", admin), email: user.email
       expect(response).to have_http_status(200)

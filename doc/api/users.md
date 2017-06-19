@@ -251,6 +251,7 @@ Parameters:
 - `can_create_group` (optional) - User can create groups - true or false
 - `confirm` (optional)          - Require confirmation - true (default) or false
 - `external` (optional)         - Flags the user as external - true or false(default)
+- `avatar` (optional)           - Image file for user's avatar
 
 ## User modification
 
@@ -279,6 +280,7 @@ Parameters:
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
+- `avatar` (optional)           - Image file for user's avatar
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
