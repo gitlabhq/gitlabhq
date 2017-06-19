@@ -93,6 +93,15 @@ feature 'Pipeline Schedules', :feature, js: true do
 
       expect(page).to have_content('This field is required')
     end
+
+    it 'sets a variable' do
+      fill_in_schedule_form
+      fill_in_variable
+
+      save_pipeline_schedule
+
+      expect(Ci::PipelineSchedule.last.job_variables).to eq([{ key: 'foo', value: 'bar', public: false }])
+    end
   end
 
   describe 'PATCH /projects/pipelines_schedules/:id/edit' do
@@ -115,6 +124,14 @@ feature 'Pipeline Schedules', :feature, js: true do
       expect(page).to have_content('my brand new description')
     end
 
+    it 'adds a new variable' do
+      fill_in_variable
+
+      save_pipeline_schedule
+
+      expect(Ci::PipelineSchedule.last.job_variables).to eq([{ key: 'foo', value: 'bar', public: false }])
+    end
+
     context 'when ref is nil' do
       before do
         pipeline_schedule.update_attribute(:ref, nil)
@@ -125,6 +142,40 @@ feature 'Pipeline Schedules', :feature, js: true do
         page.within('.js-target-branch-dropdown') do
           expect(first('.dropdown-toggle-text').text).to eq('master')
         end
+      end
+    end
+
+    context 'when variables already exist' do
+      before do
+        create(:ci_pipeline_schedule_variable, key: 'some_key', value: 'some_value', pipeline_schedule: pipeline_schedule)
+        edit_pipeline_schedule
+      end
+
+      it 'edits existing variable' do
+        expect(first('[name="schedule[variables_attributes][][key]"]').value).to eq('some_key')
+        expect(first('[name="schedule[variables_attributes][][value]"]').value).to eq('some_value')
+
+        fill_in_variable
+        save_pipeline_schedule
+
+        expect(Ci::PipelineSchedule.last.job_variables).to eq([{ key: 'foo', value: 'bar', public: false }])
+      end
+
+      it 'removes an existing variable' do
+        remove_variable
+        save_pipeline_schedule
+
+        expect(Ci::PipelineSchedule.last.job_variables).to eq([])
+      end
+
+      it 'adds another variable' do
+        fill_in_variable(1)
+        save_pipeline_schedule
+
+        expect(Ci::PipelineSchedule.last.job_variables).to eq([
+          { key: 'some_key', value: 'some_value', public: false },
+          { key: 'foo', value: 'bar', public: false }
+        ])
       end
     end
   end
@@ -217,6 +268,15 @@ feature 'Pipeline Schedules', :feature, js: true do
 
   def save_pipeline_schedule
     click_button 'Save pipeline schedule'
+  end
+
+  def fill_in_variable(index = 0)
+    all('[name="schedule[variables_attributes][][key]"]')[index].set('foo')
+    all('[name="schedule[variables_attributes][][value]"]')[index].set('bar')
+  end
+
+  def remove_variable
+    first('.js-pipeline-variable-list .js-row-remove-button').click
   end
 
   def fill_in_schedule_form
