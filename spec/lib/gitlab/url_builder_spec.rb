@@ -4,7 +4,7 @@ describe Gitlab::UrlBuilder, lib: true do
   describe '.build' do
     context 'when passing a Commit' do
       it 'returns a proper URL' do
-        commit = build_stubbed(:commit)
+        commit = build(:commit)
 
         url = described_class.build(commit)
 
@@ -14,7 +14,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
     context 'when passing an Issue' do
       it 'returns a proper URL' do
-        issue = build_stubbed(:issue, iid: 42)
+        issue = build(:issue, iid: 42)
 
         url = described_class.build(issue)
 
@@ -24,7 +24,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
     context 'when passing a MergeRequest' do
       it 'returns a proper URL' do
-        merge_request = build_stubbed(:merge_request, iid: 42)
+        merge_request = build(:merge_request, iid: 42)
 
         url = described_class.build(merge_request)
 
@@ -35,7 +35,7 @@ describe Gitlab::UrlBuilder, lib: true do
     context 'when passing a Note' do
       context 'on a Commit' do
         it 'returns a proper URL' do
-          note = build_stubbed(:note_on_commit)
+          note = create(:note_on_commit)
 
           url = described_class.build(note)
 
@@ -45,7 +45,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
       context 'on a Commit Diff' do
         it 'returns a proper URL' do
-          note = build_stubbed(:diff_note_on_commit)
+          note = create(:diff_note_on_commit)
 
           url = described_class.build(note)
 
