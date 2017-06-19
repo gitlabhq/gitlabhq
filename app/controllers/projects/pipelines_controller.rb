@@ -4,7 +4,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
-  before_action :builds_enabled, only: :charts
 
   wrap_parameters Ci::Pipeline
 

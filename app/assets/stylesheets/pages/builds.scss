@@ -71,7 +71,9 @@
       height: 35px;
       display: flex;
       justify-content: flex-end;
-      border-bottom: 1px outset $white-light;
+      background: $gray-light;
+      border: 1px solid $border-color;
+      color: $gl-text-color;
 
       .truncated-info {
         margin: 0 auto;
@@ -82,7 +84,7 @@
         }
 
         .raw-link {
-          color: inherit;
+          color: $gl-text-color;
           margin-left: 5px;
           text-decoration: underline;
         }
@@ -93,17 +95,25 @@
       display: flex;
       align-self: center;
       font-size: 15px;
+      margin-bottom: 4px;
 
       svg {
         height: 15px;
         display: block;
-        fill: $white-light;
+        fill: $gl-text-color;
       }
 
-      a,
+      .controllers-buttons,
       .btn-scroll {
-        margin: 0 8px;
-        color: $white-light;
+        color: $gl-text-color;
+        height: 15px;
+        vertical-align: middle;
+        padding: 0;
+        width: 12px;
+      }
+
+      .controllers-buttons {
+        margin: 1px 10px;
       }
 
       .btn-scroll.animate {
@@ -137,9 +147,10 @@
     top: 35px;
     left: 10px;
     bottom: 0;
-    overflow-y: hidden;
-    padding-bottom: 20px;
-    padding-right: 20px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px 20px 20px 5px;
+    white-space: pre;
   }
 
   .environment-information {

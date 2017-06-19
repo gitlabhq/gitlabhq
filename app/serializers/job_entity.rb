@@ -1,11 +1,11 @@
-class BuildEntity < Grape::Entity
+class JobEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id
   expose :name
 
   expose :build_path do |build|
-    path_to(:namespace_project_job, build)
+    build.target_url || path_to(:namespace_project_job, build)
   end
 
   expose :retry_path, if: -> (*) { build&.retryable? } do |build|

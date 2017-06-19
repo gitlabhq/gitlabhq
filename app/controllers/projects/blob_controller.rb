@@ -26,8 +26,6 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
-    set_start_branch_to_branch_name
-
     create_commit(Files::CreateService, success_notice: "The file has been successfully created.",
                                         success_path: -> { namespace_project_blob_path(@project.namespace, @project, File.join(@branch_name, @file_path)) },
                                         failure_view: :new,

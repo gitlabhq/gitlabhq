@@ -329,24 +329,13 @@ import initSettingsPanels from './settings_panels';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
           break;
-        case 'projects:blob:new':
-          gl.TargetBranchDropDown.bootstrap();
-          break;
-        case 'projects:blob:create':
-          gl.TargetBranchDropDown.bootstrap();
-          break;
         case 'projects:blob:show':
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
           initBlob();
-          break;
-        case 'projects:blob:edit':
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blame:show':
           initBlob();

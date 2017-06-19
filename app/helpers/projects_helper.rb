@@ -80,7 +80,7 @@ module ProjectsHelper
   end
 
   def remove_fork_project_message(project)
-    _("You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?") %
+    _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
       { forked_from_project: @project.forked_from_project.name_with_namespace }
   end
 
@@ -218,6 +218,10 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
+    if project.builds_enabled? && can?(current_user, :read_pipeline, project)
+      nav_tabs << :pipelines
+    end
+
     tab_ability_map.each do |tab, ability|
       if can?(current_user, ability, project)
         nav_tabs << tab
@@ -231,7 +235,6 @@ module ProjectsHelper
     {
       environments: :read_environment,
       milestones:   :read_milestone,
-      pipelines:    :read_pipeline,
       snippets:     :read_project_snippet,
       settings:     :admin_project,
       builds:       :read_build,
