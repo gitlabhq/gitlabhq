@@ -1,9 +1,13 @@
 .dropdown {
   position: relative;
+}
 
+.dropdown-menu,
+.dropdown-menu-nav {
   li {
     a,
-    .btn-link {
+    .btn {
+      border-radius: 0;
       padding: 8px 16px;
 
       &:hover,
