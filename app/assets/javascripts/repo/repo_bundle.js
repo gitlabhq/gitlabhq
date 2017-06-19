@@ -1,4 +1,3 @@
-/* global monaco */
 import Sidebar from './repo_sidebar'
 import Editor from './repo_editor'
 import Service from './repo_service'

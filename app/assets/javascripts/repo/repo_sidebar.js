@@ -24,9 +24,5 @@ export default class RepoSidebar {
     });
   }
 
-  initVue() {
-    this.vue = new Vue({
-
-    });
-  }
+  initVue() {}
 }

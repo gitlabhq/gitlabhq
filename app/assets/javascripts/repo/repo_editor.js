@@ -1,3 +1,4 @@
+/* global monaco */
 import Vue from 'vue';
 import Store from './repo_store'
 
@@ -9,26 +10,30 @@ export default class RepoEditor {
   initMonaco() {
     window.require.config({ paths: { vs: '/monaco-editor/min/vs' } });
     window.require(['vs/editor/editor.main'], () => {
-      this.monaco = monaco.
-      create(
+      this.monacoEditor = monaco.editor
+      .create(
         document.getElementById('ide'), {
           model: null
         }
       )
-      console.log("HELLLOOOO!!!")
       this.initVue();
     });
   }
 
   initVue() {
-    const editor = this.editor;
+    const monacoEditor = this.monacoEditor;
     this.vue = new Vue({
-      el: '#ide',
       data: () => Store,
       
       created () {
         if(this.blobRaw !== ''){
-          console.log('models', this.monaco.getModels());
+          console.log(monacoEditor)
+          monacoEditor.setModel(
+            monaco.editor.createModel(
+              this.blobRaw,
+              'plain'
+            )
+          );
         }
       },
 
@@ -37,7 +42,7 @@ export default class RepoEditor {
           if(this.isTree) {
           } else {
             // this.blobRaw
-            console.log('models', editor.getModels())
+            // console.log('models', editor.getModels())
           }
         }
       }
