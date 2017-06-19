@@ -1042,7 +1042,8 @@ describe Ci::Build, :models do
       'a' * 64                => 'a' * 63,
       'FOO'                   => 'foo',
       '-' + 'a' * 61 + '-'    => 'a' * 61,
-      '-' + 'a' * 63          => 'a' * 63,
+      '-' + 'a' * 62 + '-'    => 'a' * 62,
+      '-' + 'a' * 63 + '-'    => 'a' * 62,
       'a' * 62 + ' '          => 'a' * 62
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
