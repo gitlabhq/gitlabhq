@@ -494,7 +494,7 @@ class User < ActiveRecord::Base
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
-      primary_email_record.destroy
+      Emails::DestroyService.new(self, self, email: email).execute
       emails.create(email: email_was)
 
       update_secondary_emails!

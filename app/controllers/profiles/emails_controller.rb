@@ -18,7 +18,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def destroy
     @email = current_user.emails.find(params[:id])
-    @email.destroy
+    Emails::DestroyService.new(self, self, email: @email.email).execute
 
     Users::UpdateService.new(current_user, current_user).execute { |user| user.update_secondary_emails! }
 

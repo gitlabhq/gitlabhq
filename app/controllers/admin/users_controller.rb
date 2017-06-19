@@ -152,7 +152,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def remove_email
     email = user.emails.find(params[:email_id])
-    email.destroy
+    Emails::DestroyService.new(current_user, self, email: email.email).execute
 
     result = Users::UpdateService.new(current_user, @user).execute do |user|
       user.update_secondary_emails!
