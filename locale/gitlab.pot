@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 21:59-0500\n"
-"PO-Revision-Date: 2017-06-15 21:59-0500\n"
+"POT-Creation-Date: 2017-06-19 15:13-0500\n"
+"PO-Revision-Date: 2017-06-19 15:13-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -60,6 +60,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
+msgstr ""
+
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr ""
+
+msgid "BranchSwitcherTitle|Switch branch"
 msgstr ""
 
 msgid "Branches"
@@ -944,6 +950,9 @@ msgid "Upload New File"
 msgstr ""
 
 msgid "Upload file"
+msgstr ""
+
+msgid "UploadLink|click to upload"
 msgstr ""
 
 msgid "Use your global notification setting"
