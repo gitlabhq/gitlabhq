@@ -3,7 +3,7 @@ import eventHub from '~/issuable/related_issues/event_hub';
 import relatedIssuesBlock from '~/issuable/related_issues/components/related_issues_block.vue';
 
 const issuable1 = {
-  id: '200',
+  id: 200,
   reference: 'foo/bar#123',
   displayReference: '#123',
   title: 'some title',
@@ -12,7 +12,7 @@ const issuable1 = {
 };
 
 const issuable2 = {
-  id: '201',
+  id: 201,
   reference: 'foo/bar#124',
   displayReference: '#124',
   title: 'some other thing',
