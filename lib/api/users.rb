@@ -67,7 +67,7 @@ module API
           users = users.external if params[:external]
         end
 
-        entity = current_user.admin? ? Entities::UserPublic : Entities::UserBasic
+        entity = current_user.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         present paginate(users), with: entity
       end
 
