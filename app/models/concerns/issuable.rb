@@ -67,7 +67,6 @@ module Issuable
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :recent, -> { reorder(id: :desc) }
-    scope :order_position_asc, -> { reorder(position: :asc) }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
     scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
@@ -142,7 +141,6 @@ module Issuable
                when 'upvotes_desc' then order_upvotes_desc
                when 'label_priority' then order_labels_priority(excluded_labels: excluded_labels)
                when 'priority' then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
-               when 'position_asc' then  order_position_asc
                else
                  order_by(method)
                end

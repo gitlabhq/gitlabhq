@@ -42,10 +42,17 @@
         - if current_user.ldap_user?
           Some options are unavailable for LDAP accounts
     .col-lg-9
-      .form-group
-        = f.label :name, class: "label-light"
-        = f.text_field :name, class: "form-control", required: true
-        %span.help-block Enter your name, so people you know can recognize you.
+      .row
+        .form-group.col-md-9
+          = f.label :name, class: "label-light"
+          = f.text_field :name, class: "form-control", required: true
+          %span.help-block Enter your name, so people you know can recognize you.
+
+        .form-group.col-md-3
+          = f.label :id, class: 'label-light' do
+            User ID
+          = f.text_field :id, class: 'form-control', readonly: true
+
 
       .form-group
         = f.label :email, class: "label-light"

@@ -1,15 +1,6 @@
 import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
 
 (() => {
-  // TODO: remove this hack!
-  // PhantomJS causes spyOn to panic because replaceState isn't "writable"
-  let phantomjs;
-  try {
-    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
-  } catch (err) {
-    phantomjs = false;
-  }
-
   describe('Linked Tabs', () => {
     preloadFixtures('static/linked_tabs.html.raw');
 
@@ -19,9 +10,7 @@ import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
 
     describe('when is initialized', () => {
       beforeEach(() => {
-        if (!phantomjs) {
-          spyOn(window.history, 'replaceState').and.callFake(function () {});
-        }
+        spyOn(window.history, 'replaceState').and.callFake(function () {});
       });
 
       it('should activate the tab correspondent to the given action', () => {
@@ -47,7 +36,7 @@ import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
 
     describe('on click', () => {
       it('should change the url according to the clicked tab', () => {
-        const historySpy = !phantomjs && spyOn(history, 'replaceState').and.callFake(() => {});
+        const historySpy = spyOn(history, 'replaceState').and.callFake(() => {});
 
         const linkedTabs = new LinkedTabs({
           action: 'show',

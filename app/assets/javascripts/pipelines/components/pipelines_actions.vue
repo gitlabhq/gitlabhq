@@ -56,7 +56,7 @@
   <div class="btn-group">
     <button
       type="button"
-      class="dropdown-toggle btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
+      class="dropdown-new btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
       title="Manual job"
       data-toggle="dropdown"
       data-placement="top"

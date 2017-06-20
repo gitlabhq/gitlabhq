@@ -60,7 +60,7 @@ describe 'Help Pages', feature: true do
       allow_any_instance_of(ApplicationSetting).to receive(:help_text) { "My Custom Text" }
       allow_any_instance_of(ApplicationSetting).to receive(:help_page_support_url) { "http://example.com/help" }
 
-      login_as :user
+      gitlab_sign_in(:user)
       visit help_path
     end
 

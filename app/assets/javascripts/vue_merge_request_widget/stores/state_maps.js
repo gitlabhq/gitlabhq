@@ -19,19 +19,6 @@ const stateToComponentMap = {
   shaMismatch: 'mr-widget-sha-mismatch',
 };
 
-const statesToShowHelpWidget = [
-  'locked',
-  'conflicts',
-  'workInProgress',
-  'readyToMerge',
-  'checking',
-  'unresolvedDiscussions',
-  'pipelineFailed',
-  'pipelineBlocked',
-  'autoMergeFailed',
-];
-
 export default {
   stateToComponentMap,
-  statesToShowHelpWidget,
 };

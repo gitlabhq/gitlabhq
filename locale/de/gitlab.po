@@ -853,6 +853,7 @@ msgstr "Um diese Daten einsehen zu können, wenden Sie sich bitte an Ihren Admin
 msgid "We don't have enough data to show this stage."
 msgstr "Es liegen nicht genügend Daten vor, um diese Phase anzuzeigen."
 
+<<<<<<< HEAD
 msgid "Withdraw Access Request"
 msgstr ""
 
@@ -872,6 +873,9 @@ msgid "You can only add files when you are on a branch"
 msgstr ""
 
 msgid "You must sign in to star a project"
+=======
+msgid "You have reached your project limit"
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgstr ""
 
 msgid "You need permission."

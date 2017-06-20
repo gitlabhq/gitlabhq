@@ -16,9 +16,14 @@ do.
 | `/reopen`                  | Reopen the issue or merge request |
 | `/merge`                   | Merge (when pipeline succeeds) |
 | `/title <New title>`       | Change title |
+<<<<<<< HEAD
 | `/assign @user1 @user2 `   | Add assignee(s) |
 | `/reassign @user1 @user2 ` | Change assignee(s) |
 | `/unassign @user1 @user2`  | Remove all or specific assignee(s) |
+=======
+| `/assign @username`        | Assign |
+| `/unassign`                | Remove assignee |
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 | `/milestone %milestone`    | Set milestone |
 | `/remove_milestone`        | Remove milestone |
 | `/label ~foo ~"bar baz"`   | Add label(s) |
@@ -37,9 +42,13 @@ do.
 | `/remove_time_spent`       | Remove time spent |
 | `/target_branch <Branch Name>` | Set target branch for current merge request |
 | `/award :emoji:`  | Toggle award for :emoji: |
+<<<<<<< HEAD
 | `/weight <1-9>` | Set the weight of the issue |
 | `/clear_weight` | Clears the issue weight |
 | `/board_move ~column`      | Move issue to column on the board |
 
 Note: In GitLab EES every issue can have more than one assignee, so commands `/assign`, `/unassign` and `/reassign`
 support multiple assignees.
+=======
+| `/board_move ~column`      | Move issue to column on the board |
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31

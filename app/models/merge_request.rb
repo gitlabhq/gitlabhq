@@ -4,8 +4,14 @@ class MergeRequest < ActiveRecord::Base
   include Noteable
   include Referable
   include Sortable
+<<<<<<< HEAD
   include Elastic::MergeRequestsSearch
   include Approvable
+=======
+  include IgnorableColumn
+
+  ignore_column :position
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"

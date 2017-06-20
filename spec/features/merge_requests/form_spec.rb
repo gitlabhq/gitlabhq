@@ -96,6 +96,13 @@ describe 'New/edit merge request', feature: true, js: true do
             .to end_with(merge_request_path(merge_request))
         end
       end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
+      end
     end
 
     context 'edit merge request' do
@@ -156,6 +163,13 @@ describe 'New/edit merge request', feature: true, js: true do
             expect(page).to have_content label2.title
           end
         end
+      end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
       end
     end
   end

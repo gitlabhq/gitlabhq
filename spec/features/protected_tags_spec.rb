@@ -6,6 +6,7 @@ feature 'Projected Tags', feature: true, js: true do
 
   before do
     gitlab_sign_in(user)
+<<<<<<< HEAD
   end
 
   def set_allowed_to(operation, option = 'Masters', form: '.new-protected-tag')
@@ -17,6 +18,8 @@ feature 'Projected Tags', feature: true, js: true do
 
       find(".js-allowed-to-#{operation}").click # needed to submit form in some cases
     end
+=======
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
   end
 
   def set_protected_tag_name(tag_name)

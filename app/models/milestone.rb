@@ -166,38 +166,6 @@ class Milestone < ActiveRecord::Base
     write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
-  # Sorts the issues for the given IDs.
-  #
-  # This method runs a single SQL query using a CASE statement to update the
-  # position of all issues in the current milestone (scoped to the list of IDs).
-  #
-  # Given the ids [10, 20, 30] this method produces a SQL query something like
-  # the following:
-  #
-  #     UPDATE issues
-  #     SET position = CASE
-  #       WHEN id = 10 THEN 1
-  #       WHEN id = 20 THEN 2
-  #       WHEN id = 30 THEN 3
-  #       ELSE position
-  #     END
-  #     WHERE id IN (10, 20, 30);
-  #
-  # This method expects that the IDs given in `ids` are already Fixnums.
-  def sort_issues(ids)
-    pairs = []
-
-    ids.each_with_index do |id, index|
-      pairs << id
-      pairs << index + 1
-    end
-
-    conditions = 'WHEN id = ? THEN ? ' * ids.length
-
-    issues.where(id: ids).
-      update_all(["position = CASE #{conditions} ELSE position END", *pairs])
-  end
-
   private
 
   def milestone_format_reference(format = :iid)

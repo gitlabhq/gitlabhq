@@ -1980,6 +1980,7 @@ describe MergeRequest, models: true do
 
         it 'is mergeable' do
           expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
+<<<<<<< HEAD
         end
       end
 
@@ -1996,6 +1997,8 @@ describe MergeRequest, models: true do
           merge_request.approvals.create(user: user)
 
           expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
+=======
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
         end
       end
     end

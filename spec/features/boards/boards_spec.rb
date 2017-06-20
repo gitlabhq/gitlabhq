@@ -249,13 +249,13 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'issue moves from closed' do
-        drag(list_from_index: 3, list_to_index: 2)
-
-        expect(find('.board:nth-child(3)')).to have_content(issue8.title)
+        drag(list_from_index: 2, list_to_index: 3)
 
         wait_for_board_cards(2, 8)
-        wait_for_board_cards(3, 3)
-        wait_for_board_cards(4, 0)
+        wait_for_board_cards(3, 1)
+        wait_for_board_cards(4, 2)
+
+        expect(find('.board:nth-child(4)')).to have_content(issue8.title)
       end
 
       context 'issue card' do
@@ -538,7 +538,11 @@ describe 'Issue Boards', feature: true, js: true do
   context 'signed out user' do
     before do
       gitlab_sign_out
+<<<<<<< HEAD
       visit namespace_project_boards_path(project.namespace, project)
+=======
+      visit namespace_project_board_path(project.namespace, project, board)
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
       wait_for_requests
     end
 
@@ -562,7 +566,11 @@ describe 'Issue Boards', feature: true, js: true do
       project.team << [user_guest, :guest]
       gitlab_sign_out
       gitlab_sign_in(user_guest)
+<<<<<<< HEAD
       visit namespace_project_boards_path(project.namespace, project)
+=======
+      visit namespace_project_board_path(project.namespace, project, board)
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
       wait_for_requests
     end
 

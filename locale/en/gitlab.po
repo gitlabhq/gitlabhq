@@ -17,9 +17,21 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "\n"
 
+<<<<<<< HEAD
 msgid "About auto deploy"
 msgstr ""
 
+=======
+msgid "%{commit_author_link} committed %{commit_timeago}"
+msgstr ""
+
+msgid "About auto deploy"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Activity"
 msgstr ""
 
@@ -44,6 +56,12 @@ msgstr ""
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Attach a file by drag &amp; drop or %{upload_link}"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -55,6 +73,12 @@ msgstr ""
 msgid "Branches"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Browse files"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "ByAuthor|by"
 msgstr ""
 
@@ -64,12 +88,36 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "ChangeTypeActionLabel|Pick into branch"
+msgstr ""
+
+msgid "ChangeTypeActionLabel|Revert in branch"
+msgstr ""
+
+msgid "ChangeTypeAction|Cherry-pick"
+msgstr ""
+
+msgid "ChangeTypeAction|Revert"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Changelog"
 msgstr ""
 
 msgid "Charts"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Cherry-pick this commit"
+msgstr ""
+
+msgid "Cherry-pick this merge request"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -129,6 +177,15 @@ msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
 
+<<<<<<< HEAD
+=======
+msgid "Commit message"
+msgstr ""
+
+msgid "CommitBoxTitle|Commit"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "CommitMessage|Add %{file_name}"
 msgstr ""
 
@@ -138,6 +195,12 @@ msgstr ""
 msgid "Commits|History"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Committed by"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Compare"
 msgstr ""
 
@@ -165,12 +228,30 @@ msgstr ""
 msgid "Create merge request"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "CreateNewFork|Fork"
 msgstr ""
 
 msgid "Cron Timezone"
 msgstr ""
 
+=======
+msgid "Create new..."
+msgstr ""
+
+msgid "CreateNewFork|Fork"
+msgstr ""
+
+msgid "CreateTag|Tag"
+msgstr ""
+
+msgid "Cron Timezone"
+msgstr ""
+
+msgid "Cron syntax"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Custom notification events"
 msgstr ""
 
@@ -204,6 +285,9 @@ msgstr ""
 msgid "CycleAnalyticsStage|Test"
 msgstr ""
 
+msgid "Define a custom pattern with cron syntax"
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 
@@ -221,6 +305,12 @@ msgstr ""
 msgid "Don't show again"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Download"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Download tar"
 msgstr ""
 
@@ -236,6 +326,15 @@ msgstr ""
 msgid "DownloadArtifacts|Download"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "DownloadCommit|Email Patches"
+msgstr ""
+
+msgid "DownloadCommit|Plain Diff"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "DownloadSource|Download"
 msgstr ""
 
@@ -243,6 +342,15 @@ msgid "Edit"
 msgstr ""
 
 msgid "Edit Pipeline Schedule %{id}"
+msgstr ""
+
+msgid "Every day (at 4:00am)"
+msgstr ""
+
+msgid "Every month (on the 1st at 4:00am)"
+msgstr ""
+
+msgid "Every week (Sundays at 4:00am)"
 msgstr ""
 
 msgid "Failed to change the owner"
@@ -254,7 +362,14 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Filter"
+=======
+msgid "Find by path"
+msgstr ""
+
+msgid "Find file"
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgstr ""
 
 msgid "Find by path"
@@ -269,10 +384,19 @@ msgstr ""
 msgid "FirstPushedBy|pushed by"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
 msgid "Forks"
+=======
+msgid "Fork"
+msgid_plural "Forks"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ForkedFromProjectPath|Forked from"
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgstr ""
 
 msgid "From issue creation until deploy to production"
@@ -322,6 +446,15 @@ msgstr ""
 msgid "Last commit"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Learn more in the"
+msgstr ""
+
+msgid "Learn more in the|pipeline schedules documentation"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Leave group"
 msgstr ""
 
@@ -362,6 +495,12 @@ msgstr ""
 msgid "New merge request"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "New schedule"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "New snippet"
 msgstr ""
 
@@ -434,10 +573,22 @@ msgstr ""
 msgid "NotificationLevel|Watch"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "OfSearchInADropdown|Filter"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
+msgid "Options"
+msgstr ""
+
 msgid "Owner"
+msgstr ""
+
+msgid "Pipeline"
 msgstr ""
 
 msgid "Pipeline Health"
@@ -476,6 +627,18 @@ msgstr ""
 msgid "PipelineSchedules|Target"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr ""
+
+msgid "Pipeline|with stage"
+msgstr ""
+
+msgid "Pipeline|with stages"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Project '%{project_name}' queued for deletion."
 msgstr ""
 
@@ -566,12 +729,27 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Revert this commit"
+msgstr ""
+
+msgid "Revert this merge request"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Save pipeline schedule"
 msgstr ""
 
 msgid "Schedule a new pipeline"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Scheduling Pipelines"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Search branches and tags"
 msgstr ""
 
@@ -610,6 +788,15 @@ msgstr ""
 msgid "StarProject|Star"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Start a  %{new_merge_request} with these changes"
+msgstr ""
+
+msgid "Start a <strong>new merge request</strong> with these changes"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -637,6 +824,9 @@ msgid "The issue stage shows the time it takes from creating an issue to assigni
 msgstr ""
 
 msgid "The phase of the development lifecycle."
+msgstr ""
+
+msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
 msgstr ""
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
@@ -862,7 +1052,11 @@ msgid ""
 "Are you ABSOLUTELY sure?"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?"
+=======
+msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgstr ""
 
 msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
@@ -871,6 +1065,12 @@ msgstr ""
 msgid "You can only add files when you are on a branch"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "You have reached your project limit"
+msgstr ""
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "You must sign in to star a project"
 msgstr ""
 
@@ -901,13 +1101,29 @@ msgstr ""
 msgid "Your name"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "committed"
 msgstr ""
 
+=======
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
+<<<<<<< HEAD
 msgid "notification emails"
 msgstr ""
+=======
+msgid "new merge request"
+msgstr ""
+
+msgid "notification emails"
+msgstr ""
+
+msgid "parent"
+msgid_plural "parents"
+msgstr[0] ""
+msgstr[1] ""
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31

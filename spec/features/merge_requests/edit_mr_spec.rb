@@ -5,9 +5,16 @@ feature 'Edit Merge Request', feature: true do
   let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
 
+<<<<<<< HEAD
   context 'editing a MR' do
     before do
       project.team << [user, :master]
+=======
+  before do
+    project.team << [user, :master]
+
+    gitlab_sign_in user
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 
       visit_edit_mr_page
     end

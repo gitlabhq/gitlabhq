@@ -46,6 +46,7 @@ class IssuableFinder
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
+    items = by_created_at(items)
 
     # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
     items = by_project(items)
@@ -430,6 +431,18 @@ class IssuableFinder
 
   def by_non_archived(items)
     params[:non_archived].present? ? items.non_archived : items
+  end
+
+  def by_created_at(items)
+    if params[:created_after].present?
+      items = items.where(items.klass.arel_table[:created_at].gteq(params[:created_after]))
+    end
+
+    if params[:created_before].present?
+      items = items.where(items.klass.arel_table[:created_at].lteq(params[:created_before]))
+    end
+
+    items
   end
 
   def current_user_related?

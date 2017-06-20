@@ -1,6 +1,7 @@
 .panel {
   margin-bottom: $gl-padding;
 }
+<<<<<<< HEAD
 
 .panel-slim {
   @extend .panel;
@@ -29,16 +30,45 @@
   &.split {
     display: flex;
     align-items: center;
+=======
+
+.panel-slim {
+  @extend .panel;
+  margin-bottom: $gl-vert-padding;
+}
+
+
+.panel-heading {
+  padding: $gl-vert-padding $gl-padding;
+  line-height: 36px;
+
+  .controls {
+    margin-top: -2px;
+    float: right;
   }
 
-  .panel-empty-heading {
-    border-bottom: 0;
+  .dropdown-menu-toggle {
+    line-height: 20px;
   }
 
+  .badge {
+    margin-top: -2px;
+    margin-left: 5px;
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
+  }
+
+  &.split {
+    display: flex;
+    align-items: center;
+  }
+
+<<<<<<< HEAD
   .panel-body {
     padding: $gl-padding;
   }
 
+=======
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
   .left {
     flex: 1 1 auto;
   }
@@ -52,10 +82,17 @@
 .panel-empty-heading {
   border-bottom: 0;
 }
+<<<<<<< HEAD
 
 .panel-body {
   padding: $gl-padding;
 
+=======
+
+.panel-body {
+  padding: $gl-padding;
+
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
   .form-actions {
     margin: -$gl-padding;
     margin-top: $gl-padding;

@@ -845,6 +845,7 @@ msgstr "權限不足。如需查看相關數據，請向管理員申請權限。
 msgid "We don't have enough data to show this stage."
 msgstr "該階段的數據不足，無法顯示。"
 
+<<<<<<< HEAD
 msgid "Withdraw Access Request"
 msgstr ""
 
@@ -864,6 +865,9 @@ msgid "You can only add files when you are on a branch"
 msgstr ""
 
 msgid "You must sign in to star a project"
+=======
+msgid "You have reached your project limit"
+>>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 msgstr ""
 
 msgid "You need permission."

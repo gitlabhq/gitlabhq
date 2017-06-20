@@ -129,6 +129,55 @@ describe Gitlab::Database, lib: true do
     end
   end
 
+  describe '.bulk_insert' do
+    before do
+      allow(described_class).to receive(:connection).and_return(connection)
+      allow(connection).to receive(:quote_column_name, &:itself)
+      allow(connection).to receive(:quote, &:itself)
+      allow(connection).to receive(:execute)
+    end
+
+    let(:connection) { double(:connection) }
+
+    let(:rows) do
+      [
+        { a: 1, b: 2, c: 3 },
+        { c: 6, a: 4, b: 5 }
+      ]
+    end
+
+    it 'does nothing with empty rows' do
+      expect(connection).not_to receive(:execute)
+
+      described_class.bulk_insert('test', [])
+    end
+
+    it 'uses the ordering from the first row' do
+      expect(connection).to receive(:execute) do |sql|
+        expect(sql).to include('(1, 2, 3)')
+        expect(sql).to include('(4, 5, 6)')
+      end
+
+      described_class.bulk_insert('test', rows)
+    end
+
+    it 'quotes column names' do
+      expect(connection).to receive(:quote_column_name).with(:a)
+      expect(connection).to receive(:quote_column_name).with(:b)
+      expect(connection).to receive(:quote_column_name).with(:c)
+
+      described_class.bulk_insert('test', rows)
+    end
+
+    it 'quotes values' do
+      1.upto(6) do |i|
+        expect(connection).to receive(:quote).with(i)
+      end
+
+      described_class.bulk_insert('test', rows)
+    end
+  end
+
   describe '.create_connection_pool' do
     it 'creates a new connection pool with specific pool size' do
       pool = described_class.create_connection_pool(5)
