@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
     lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
     return unless lease.try_obtain
 
-    save(validate: false)
+    Users::UpdateService.new(self, self).execute(validate: false)
   end
 
   attr_accessor :force_random_password
@@ -965,7 +965,7 @@ class User < ActiveRecord::Base
     if attempts_exceeded?
       lock_access! unless access_locked?
     else
-      save(validate: false)
+      Users::UpdateService.new(self, self).execute(validate: false)
     end
   end
 
@@ -1123,7 +1123,8 @@ class User < ActiveRecord::Base
       email: email,
       &creation_block
     )
-    user.save(validate: false)
+
+    Users::UpdateService.new(user, user).execute(validate: false)
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
