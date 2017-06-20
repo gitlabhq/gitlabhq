@@ -20,6 +20,8 @@ import ApprovalsBody from '~/vue_merge_request_widget/ee/components/approvals/ap
     `);
 
     this.initialData = {
+      mr: {},
+      service: {},
       suggestedApprovers: [{ name: 'Approver 1' }],
       userCanApprove: false,
       userHasApproved: true,
