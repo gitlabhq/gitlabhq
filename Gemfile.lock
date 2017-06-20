@@ -108,7 +108,7 @@ GEM
     capybara-screenshot (1.0.14)
       capybara (>= 1.0, < 3)
       launchy
-    carrierwave (1.0.0)
+    carrierwave (1.1.0)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
@@ -932,7 +932,7 @@ DEPENDENCIES
   bundler-audit (~> 0.5.0)
   capybara (~> 2.6.2)
   capybara-screenshot (~> 1.0.0)
-  carrierwave (~> 1.0)
+  carrierwave (~> 1.1)
   charlock_holmes (~> 0.7.3)
   chronic (~> 0.10.2)
   chronic_duration (~> 0.10.6)
@@ -1119,4 +1119,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.15.0
+   1.15.1
