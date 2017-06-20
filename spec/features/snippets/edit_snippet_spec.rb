@@ -33,6 +33,6 @@ feature 'Edit Snippet', :js, feature: true do
     wait_for_requests
 
     link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
-    expect(link).to match(%r{/uploads/personal_snippet/#{snippet.id}/\h{32}/banana_sample\.gif\z})
+    expect(link).to match(%r{/uploads/system/personal_snippet/#{snippet.id}/\h{32}/banana_sample\.gif\z})
   end
 end

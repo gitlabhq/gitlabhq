@@ -4,11 +4,11 @@ describe FileMover do
   let(:filename) { 'banana_sample.gif' }
   let(:file) { fixture_file_upload(Rails.root.join('spec', 'fixtures', filename)) }
   let(:temp_description) do
-    'test ![banana_sample](/uploads/temp/secret55/banana_sample.gif) same ![banana_sample]'\
-    '(/uploads/temp/secret55/banana_sample.gif)'
+    'test ![banana_sample](/uploads/system/temp/secret55/banana_sample.gif) same ![banana_sample]'\
+    '(/uploads/system/temp/secret55/banana_sample.gif)'
   end
   let(:temp_file_path) { File.join('secret55', filename).to_s }
-  let(:file_path) { File.join('uploads', 'personal_snippet', snippet.id.to_s, 'secret55', filename).to_s }
+  let(:file_path) { File.join('uploads', 'system', 'personal_snippet', snippet.id.to_s, 'secret55', filename).to_s }
 
   let(:snippet) { create(:personal_snippet, description: temp_description) }
 
@@ -28,8 +28,8 @@ describe FileMover do
 
         expect(snippet.reload.description)
           .to eq(
-            "test ![banana_sample](/uploads/personal_snippet/#{snippet.id}/secret55/banana_sample.gif)"\
-            " same ![banana_sample](/uploads/personal_snippet/#{snippet.id}/secret55/banana_sample.gif)"
+            "test ![banana_sample](/uploads/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif)"\
+            " same ![banana_sample](/uploads/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif)"
           )
       end
 
@@ -50,8 +50,8 @@ describe FileMover do
 
         expect(snippet.reload.description)
           .to eq(
-            "test ![banana_sample](/uploads/temp/secret55/banana_sample.gif)"\
-            " same ![banana_sample](/uploads/temp/secret55/banana_sample.gif)"
+            "test ![banana_sample](/uploads/system/temp/secret55/banana_sample.gif)"\
+            " same ![banana_sample](/uploads/system/temp/secret55/banana_sample.gif)"
           )
       end
 
