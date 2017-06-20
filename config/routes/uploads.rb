@@ -10,7 +10,7 @@ scope path: :uploads do
     constraints: { model: /personal_snippet/, id: /\d+/, filename: /[^\/]+/ }
 
   # show temporary uploads
-  get 'temp/:secret/:filename',
+  get 'system/temp/:secret/:filename',
     to: 'uploads#show',
     constraints: { filename: /[^\/]+/ }
 
