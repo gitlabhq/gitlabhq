@@ -26,7 +26,7 @@ which is used to authenticate with the [GitLab Container Registry][registry].
 
 This way of triggering can only be used when invoked inside `.gitlab-ci.yml`,
 and it creates a dependent pipeline relation visible on the
-[pipeline graph](../pipelines.md#pipelines-graphs). For example:
+[pipeline graph](../pipelines.md#multi-project-pipelines-graphs). For example:
 
 ```yaml
 build_docs:
