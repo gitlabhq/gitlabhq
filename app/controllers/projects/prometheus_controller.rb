@@ -18,10 +18,6 @@ class Projects::PrometheusController < Projects::ApplicationController
 
   private
 
-  rescue_from(ActionController::UnknownFormat) do
-    render_404
-  end
-
   def require_prometheus_metrics!
     render_404 unless project.prometheus_service.present?
   end
