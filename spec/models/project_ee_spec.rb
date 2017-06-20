@@ -119,6 +119,29 @@ describe Project, models: true do
         end
       end
 
+      # The environment name and scope cannot have % at the moment,
+      # but we're considering relaxing it and we should also make sure
+      # it doesn't break in case some data sneaked in somehow as we're
+      # not checking this integrity in database level.
+      context 'when environment scope has %' do
+        before do
+          stub_feature(:variable_environment_scope, true)
+        end
+
+        it 'does not treat it as wildcard' do
+          secret_variable.update_attribute(:environment_scope, '*%*')
+
+          is_expected.not_to contain_exactly(secret_variable)
+        end
+
+        it 'matches literally for _' do
+          secret_variable.update(environment_scope: 'foo%bar/*')
+          environment.update_attribute(:name, 'foo%bar/test')
+
+          is_expected.to contain_exactly(secret_variable)
+        end
+      end
+
       context 'when variables with the same name have different environment scopes' do
         let!(:partially_matched_variable) do
           create(:ci_variable,

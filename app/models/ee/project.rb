@@ -91,9 +91,10 @@ module EE
       where = <<~SQL
         environment_scope IN (:wildcard, :environment_name) OR
           :environment_name LIKE
-            REPLACE(REPLACE(environment_scope, :wildcard, :percent),
-                    :underscore,
-                    :escaped_underscore)
+            REPLACE(REPLACE(REPLACE(environment_scope,
+                                    :underscore, :escaped_underscore),
+                            :percent, :escaped_percent),
+                    :wildcard, :percent)
       SQL
 
       order = <<~SQL
@@ -108,6 +109,7 @@ module EE
         wildcard: '*',
         environment_name: environment.name,
         percent: '%',
+        escaped_percent: '\\%',
         underscore: '_',
         escaped_underscore: '\\_'
       }
