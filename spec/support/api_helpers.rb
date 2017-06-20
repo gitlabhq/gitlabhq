@@ -34,8 +34,8 @@ module ApiHelpers
   end
 
   # Temporary helper method for simplifying V3 exclusive API specs
-  def v3_api(path, user = nil)
-    api(path, user, version: 'v3')
+  def v3_api(path, user = nil, personal_access_token: nil)
+    api(path, user, version: 'v3', personal_access_token: personal_access_token)
   end
 
   def ci_api(path, user = nil)

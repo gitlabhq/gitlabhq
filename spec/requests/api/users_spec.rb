@@ -50,28 +50,6 @@ describe API::Users do
         end['username']).to eq(username)
       end
 
-      context "scopes" do
-        context 'when the requesting token has the "read_user" scope' do
-          let(:token) { create(:personal_access_token, scopes: ['read_user']) }
-
-          it 'returns a "200" response' do
-            get api("/users", user, personal_access_token: token)
-
-            expect(response).to have_http_status(200)
-          end
-        end
-
-        context 'when the requesting token does not have any required scope' do
-          let(:token) { create(:personal_access_token, scopes: ['read_registry']) }
-
-          it 'returns a "401" response' do
-            get api("/users", user, personal_access_token: token)
-
-            expect(response).to have_http_status(401)
-          end
-        end
-      end
-
       it "returns an array of blocked users" do
         ldap_blocked_user
         create(:user, state: 'blocked')
@@ -103,6 +81,13 @@ describe API::Users do
         get api('/users', user)
 
         expect(json_response.first.keys).not_to include 'is_admin'
+      end
+
+      context "scopes" do
+        let(:path) { "/users" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
       end
     end
 
@@ -185,6 +170,13 @@ describe API::Users do
       get api("/users/1ASDF", user)
 
       expect(response).to have_http_status(404)
+    end
+
+    context "scopes" do
+      let(:path) { "/users/#{user.id}" }
+      let(:api_call) { method(:api) }
+
+      include_examples 'allows the "read_user" scope'
     end
   end
 
@@ -321,16 +313,6 @@ describe API::Users do
         .to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
-    context 'when the requesting token has the "read_user" scope' do
-      let(:token) { create(:personal_access_token, scopes: ['read_user'], user: admin) }
-
-      it 'returns a "401" response' do
-        post api("/users", admin, personal_access_token: token), attributes_for(:user, projects_limit: 3)
-
-        expect(response).to have_http_status(401)
-      end
-    end
-
     it "is not available for non admin users" do
       post api("/users", user), attributes_for(:user)
       expect(response).to have_http_status(403)
@@ -376,6 +358,14 @@ describe API::Users do
         expect(json_response['identities'].first['extern_uid']).to eq('67890')
         expect(json_response['identities'].first['provider']).to eq('github')
       end
+    end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { '/users' }
+      let(:api_call) { method(:api) }
+
+      include_examples 'does not allow the "read_user" scope'
     end
   end
 
