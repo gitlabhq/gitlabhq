@@ -32,7 +32,7 @@ and it creates a dependent pipeline relation visible on the
 build_docs:
   stage: deploy
   script:
-  - "curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline"
+  - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
   only:
   - tags
 ```
