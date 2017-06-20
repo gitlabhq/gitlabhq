@@ -1,18 +1,20 @@
 # Huang Tao <htve@outlook.com>, 2017. #zanata
+# Victor Wu <anonymous@domain.com>, 2017.
+# Hazel Yang <anonymous@domain.com>, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 14:57+0200\n"
+"POT-Creation-Date: 2017-06-15 21:59-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-15 10:34-0400\n"
+"PO-Revision-Date: 2017-06-19 09:57-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
 "Language-Team: Chinese (Hong Kong) (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: zh-HK\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "由 %{commit_author_link} 提交於 %{commit_timeago}"
@@ -299,7 +301,7 @@ msgid "DownloadCommit|Email Patches"
 msgstr "電子郵件補丁"
 
 msgid "DownloadCommit|Plain Diff"
-msgstr "Diff 文件"
+msgstr "差異文件"
 
 msgid "DownloadSource|Download"
 msgstr "下載"
@@ -311,13 +313,13 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr "編輯 %{id} 流水線計劃"
 
 msgid "Every day (at 4:00am)"
-msgstr "每日執行（淩晨4點）"
+msgstr "每日執行（淩晨 4 點）"
 
 msgid "Every month (on the 1st at 4:00am)"
-msgstr "每月執行（每月1日淩晨4點）"
+msgstr "每月執行（每月 1 日淩晨 4 點）"
 
 msgid "Every week (Sundays at 4:00am)"
-msgstr "每週執行（周日淩晨4點）"
+msgstr "每週執行（周日淩晨 4 點）"
 
 msgid "Failed to change the owner"
 msgstr "無法變更所有者"
@@ -369,7 +371,7 @@ msgid "Import repository"
 msgstr "導入存儲庫"
 
 msgid "Interval Pattern"
-msgstr "重複週期"
+msgstr "循環週期"
 
 msgid "Introducing Cycle Analytics"
 msgstr "週期分析簡介"
@@ -489,7 +491,7 @@ msgid "NotificationEvent|Reassign merge request"
 msgstr "重新指派合併請求"
 
 msgid "NotificationEvent|Reopen issue"
-msgstr "重新打開議題"
+msgstr "重啟議題"
 
 msgid "NotificationEvent|Successful pipeline"
 msgstr "流水線成功完成"
@@ -662,7 +664,7 @@ msgid "Remove project"
 msgstr "刪除項目"
 
 msgid "Request Access"
-msgstr "申請訪問"
+msgstr "申請權限"
 
 msgid "Revert this commit"
 msgstr "還原此提交"
@@ -716,11 +718,8 @@ msgstr "源代碼"
 msgid "StarProject|Star"
 msgstr "星標"
 
-msgid "Start a  %{new_merge_request} with these changes"
+msgid "Start a %{new_merge_request} with these changes"
 msgstr "由此更改 %{new_merge_request}"
-
-msgid "Start a <strong>new merge request</strong> with these changes"
-msgstr "由此更改創建<strong>新合併請求</strong>"
 
 msgid "Switch branch/tag"
 msgstr "切換分支/標籤"
@@ -751,7 +750,7 @@ msgid ""
 "The issue stage shows the time it takes from creating an issue to assigning "
 "the issue to a milestone, or add the issue to a list on your Issue Board. "
 "Begin creating issues to see data for this stage."
-msgstr "議題階段概述了從創建議題到將議題添加到裏程碑或議題看板的時間。創建第壹個議題後，數據將自動添加到此處.。"
+msgstr "議題階段概述了從創建議題到將議題添加到裏程碑或議題看板所花費的時間。創建第壹個議題後，數據將自動添加到此處.。"
 
 msgid "The phase of the development lifecycle."
 msgstr "項目生命週期中的各個階段。"
@@ -828,7 +827,7 @@ msgid "Time until first merge request"
 msgstr "創建第壹個合併請求之前的時間"
 
 msgid "Timeago|%s days ago"
-msgstr "%s 天前"
+msgstr " %s 天前"
 
 msgid "Timeago|%s days remaining"
 msgstr "剩餘 %s 天"
@@ -837,13 +836,13 @@ msgid "Timeago|%s hours remaining"
 msgstr "剩餘 %s 小時"
 
 msgid "Timeago|%s minutes ago"
-msgstr "%s 分鐘前"
+msgstr " %s 分鐘前"
 
 msgid "Timeago|%s minutes remaining"
 msgstr "剩餘 %s 分鐘"
 
 msgid "Timeago|%s months ago"
-msgstr "%s 個月前"
+msgstr " %s 個月前"
 
 msgid "Timeago|%s months remaining"
 msgstr "剩餘 %s 月"
@@ -852,13 +851,13 @@ msgid "Timeago|%s seconds remaining"
 msgstr "剩餘 %s 秒"
 
 msgid "Timeago|%s weeks ago"
-msgstr "%s 星期前"
+msgstr " %s 星期前"
 
 msgid "Timeago|%s weeks remaining"
 msgstr "剩餘 %s 星期"
 
 msgid "Timeago|%s years ago"
-msgstr "%s 年前"
+msgstr " %s 年前"
 
 msgid "Timeago|%s years remaining"
 msgstr "剩餘 %s 年"
@@ -885,19 +884,19 @@ msgid "Timeago|Past due"
 msgstr "逾期"
 
 msgid "Timeago|a day ago"
-msgstr "1 天前"
+msgstr " 1 天前"
 
 msgid "Timeago|a month ago"
-msgstr "1 個月前"
+msgstr " 1 個月前"
 
 msgid "Timeago|a week ago"
-msgstr "1 星期前"
+msgstr " 1 星期前"
 
 msgid "Timeago|a while"
-msgstr "剛剛"
+msgstr " 剛剛"
 
 msgid "Timeago|a year ago"
-msgstr "1 年前"
+msgstr " 1 年前"
 
 msgid "Timeago|about %s hours ago"
 msgstr "約 %s 小時前"
@@ -995,7 +994,7 @@ msgid "We don't have enough data to show this stage."
 msgstr "該階段的數據不足，無法顯示。"
 
 msgid "Withdraw Access Request"
-msgstr "取消訪問請求"
+msgstr "取消權限申请"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
@@ -1017,6 +1016,9 @@ msgstr "即將 %{project_name_with_namespace} 轉義給另壹個所有者。確�
 
 msgid "You can only add files when you are on a branch"
 msgstr "只能在分支上添加文件"
+
+msgid "You have reached your project limit"
+msgstr "您已達到項目數量限制"
 
 msgid "You must sign in to star a project"
 msgstr "必須登錄才能對項目加星標"
