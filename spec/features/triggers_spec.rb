@@ -7,7 +7,7 @@ feature 'Triggers', feature: true, js: true do
   let(:guest_user) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
 
     @project = create(:empty_project)
     @project.team << [user, :master]
@@ -33,7 +33,7 @@ feature 'Triggers', feature: true, js: true do
       # See if "trigger creation successful" message displayed and description and owner are correct
       expect(page.find('.flash-notice')).to have_content 'Trigger was created successfully.'
       expect(page.find('.triggers-list')).to have_content 'trigger desc'
-      expect(page.find('.triggers-list .trigger-owner')).to have_content @user.name
+      expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
     end
   end
 
@@ -61,7 +61,7 @@ feature 'Triggers', feature: true, js: true do
       # See if "trigger updated successfully" message displayed and description and owner are correct
       expect(page.find('.flash-notice')).to have_content 'Trigger was successfully updated.'
       expect(page.find('.triggers-list')).to have_content new_trigger_title
-      expect(page.find('.triggers-list .trigger-owner')).to have_content @user.name
+      expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
     end
 
     scenario 'edit "legacy" trigger and save' do
@@ -98,7 +98,7 @@ feature 'Triggers', feature: true, js: true do
       page.accept_confirm do
         expect(page.find('.flash-notice')).to have_content 'Trigger was re-assigned.'
         expect(page.find('.triggers-list')).to have_content trigger_title
-        expect(page.find('.triggers-list .trigger-owner')).to have_content @user.name
+        expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
       end
     end
   end
@@ -157,7 +157,7 @@ feature 'Triggers', feature: true, js: true do
       expect(page.find('.triggers-list')).not_to have_selector('button.btn-clipboard')
 
       # See if trigger owner name doesn't match with current_user and trigger is non-editable
-      expect(page.find('.triggers-list .trigger-owner')).not_to have_content @user.name
+      expect(page.find('.triggers-list .trigger-owner')).not_to have_content user.name
       expect(page.find('.triggers-list')).not_to have_selector('a[title="Edit"]')
     end
 
@@ -170,7 +170,7 @@ feature 'Triggers', feature: true, js: true do
       expect(page.find('.triggers-list')).to have_selector('button.btn-clipboard')
 
       # See if trigger owner name matches with current_user and is editable
-      expect(page.find('.triggers-list .trigger-owner')).to have_content @user.name
+      expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
       expect(page.find('.triggers-list')).to have_selector('a[title="Edit"]')
     end
   end

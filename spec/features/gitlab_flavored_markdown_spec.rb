@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "GitLab Flavored Markdown", feature: true do
+  let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, project: project) }
   let(:fred) do
@@ -10,8 +11,8 @@ describe "GitLab Flavored Markdown", feature: true do
   end
 
   before do
-    gitlab_sign_in(:user)
-    project.add_developer(@user)
+    sign_in(user)
+    project.add_developer(user)
   end
 
   describe "for commits" do
@@ -51,12 +52,12 @@ describe "GitLab Flavored Markdown", feature: true do
   describe "for issues", feature: true, js: true do
     before do
       @other_issue = create(:issue,
-                            author: @user,
-                            assignees: [@user],
+                            author: user,
+                            assignees: [user],
                             project: project)
       @issue = create(:issue,
-                      author: @user,
-                      assignees: [@user],
+                      author: user,
+                      assignees: [user],
                       project: project,
                       title: "fix #{@other_issue.to_reference}",
                       description: "ask #{fred.to_reference} for details")
