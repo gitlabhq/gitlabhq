@@ -66,12 +66,12 @@ module DiffHelper
 
     discussions_left = discussions_right = nil
 
-    if left && (left.unchanged? || left.discussable?)
+    if left && left.discussable? && (left.unchanged? || left.removed?)
       line_code = diff_file.line_code(left)
       discussions_left = @grouped_diff_discussions[line_code]
     end
 
-    if right&.discussable?
+    if right && right.discussable? && right.added?
       line_code = diff_file.line_code(right)
       discussions_right = @grouped_diff_discussions[line_code]
     end
