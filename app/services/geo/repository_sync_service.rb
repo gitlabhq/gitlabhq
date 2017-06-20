@@ -129,7 +129,7 @@ module Geo
     end
 
     def update_registry(type, started_at, finished_at)
-      log('Updating #{type} sync information')
+      log("Updating #{type} sync information")
       registry.public_send("last_#{type}_synced_at=", started_at)
 
       if finished_at
