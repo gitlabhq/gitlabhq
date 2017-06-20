@@ -37,11 +37,11 @@ In this experimental phase, only a few metrics are available:
 | filesystem_writable | gauge | Whether or not the filesystem is writable |
 | filesystem_read_latency | gauge | Read latency of a specific filesystem |
 | filesystem_readable | gauge | Whether or not the filesystem is readable |
-| user_sessions_logins | Counter | Counter of how many users have logged in | 
+| user_sessions_logins | Counter | Counter of how many users have logged in |
 
 [← Back to the main Prometheus page](index.md)
 
 [29118]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29118
 [Prometheus]: https://prometheus.io
 [restart]: ../../restart_gitlab.md#omnibus-gitlab-restart
-[health-check]: ../../user/admin_area/monitoring/health_check.md
+[health-check]: ../../../user/admin_area/monitoring/health_check.md
