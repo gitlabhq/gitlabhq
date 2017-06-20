@@ -132,13 +132,13 @@ module Gitlab
 
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
-        if token && valid_scoped_token?(token, AVAILABLE_SCOPES.map(&:to_s))
+        if token && valid_scoped_token?(token, AVAILABLE_SCOPES)
           Gitlab::Auth::Result.new(token.user, nil, :personal_token, abilities_for_scope(token.scopes))
         end
       end
 
       def valid_oauth_token?(token)
-        token && token.accessible? && valid_scoped_token?(token, ["api"])
+        token && token.accessible? && valid_scoped_token?(token, [:api])
       end
 
       def valid_scoped_token?(token, scopes)

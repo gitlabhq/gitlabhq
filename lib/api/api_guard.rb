@@ -23,6 +23,23 @@ module API
       install_error_responders(base)
     end
 
+    class_methods do
+      # Set the authorization scope(s) allowed for an API endpoint.
+      #
+      # A call to this method maps the given scope(s) to the current API
+      # endpoint class. If this method is called multiple times on the same class,
+      # the scopes are all aggregated.
+      def allow_access_with_scope(scopes, options = {})
+        Array(scopes).each do |scope|
+          allowed_scopes << Scope.new(scope, options)
+        end
+      end
+
+      def allowed_scopes
+        @scopes ||= []
+      end
+    end
+
     # Helper Methods for Grape Endpoint
     module HelperMethods
       # Invokes the doorkeeper guard.
@@ -47,7 +64,7 @@ module API
         access_token = find_access_token
         return nil unless access_token
 
-        case AccessTokenValidationService.new(access_token).validate(scopes: scopes)
+        case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
           raise InsufficientScopeError.new(scopes)
 
@@ -74,18 +91,6 @@ module API
         @current_user
       end
 
-      # Set the authorization scope(s) allowed for the current request.
-      #
-      # Note: A call to this method adds to any previous scopes in place. This is done because
-      # `Grape` callbacks run from the outside-in: the top-level callback (API::API) runs first, then
-      # the next-level callback (API::API::Users, for example) runs. All these scopes are valid for the
-      # given endpoint (GET `/api/users` is accessible by the `api` and `read_user` scopes), and so they
-      # need to be stored.
-      def allow_access_with_scope(*scopes)
-        @scopes ||= []
-        @scopes.concat(scopes.map(&:to_s))
-      end
-
       private
 
       def find_user_by_authentication_token(token_string)
@@ -96,7 +101,7 @@ module API
         access_token = PersonalAccessToken.active.find_by_token(token_string)
         return unless access_token
 
-        if AccessTokenValidationService.new(access_token).include_any_scope?(scopes)
+        if AccessTokenValidationService.new(access_token, request: request).include_any_scope?(scopes)
           User.find(access_token.user_id)
         end
       end
