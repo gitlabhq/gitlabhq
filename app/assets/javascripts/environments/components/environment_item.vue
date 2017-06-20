@@ -403,6 +403,14 @@ export default {
       return '';
     },
 
+    displayEnvironmentActions() {
+      return this.hasManualActions ||
+             this.externalURL ||
+             this.monitoringUrl ||
+             this.hasStopAction ||
+             this.canRetry;
+    },
+
     /**
      * Constructs folder URL based on the current location and the folder id.
      *
@@ -535,9 +543,12 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-30 table-button-footer" role="gridcell">
+    <div
+      v-if="!model.isFolder && displayEnvironmentActions"
+      class="table-section section-30 table-button-footer"
+      role="gridcell">
+
       <div
-        v-if="!model.isFolder"
         class="btn-group table-action-buttons"
         role="group">
 
