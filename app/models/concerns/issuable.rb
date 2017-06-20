@@ -113,11 +113,7 @@ module Issuable
     end
 
     def has_multiple_assignees?
-      supports_multiple_assignees? && assignees.count > 1
-    end
-
-    def supports_multiple_assignees?
-      respond_to?(:assignee_ids)
+      assignees.count > 1
     end
   end
 

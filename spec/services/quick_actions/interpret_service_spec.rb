@@ -410,10 +410,10 @@ describe QuickActions::InterpretService, services: true do
       end
 
       context 'Merge Request' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, merge_request)
 
-          expect(updates).to eq(assignee_id: developer.id)
+          expect(updates).to eq(assignee_ids: [developer.id])
         end
       end
     end
@@ -426,7 +426,7 @@ describe QuickActions::InterpretService, services: true do
       end
 
       context 'Issue' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, issue)
 
           expect(updates[:assignee_ids]).to match_array([developer.id, developer2.id])
@@ -434,10 +434,10 @@ describe QuickActions::InterpretService, services: true do
       end
 
       context 'Merge Request' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, merge_request)
 
-          expect(updates).to eq(assignee_id: developer.id)
+          expect(updates).to eq(assignee_ids: [developer.id])
         end
       end
     end
@@ -484,11 +484,11 @@ describe QuickActions::InterpretService, services: true do
       end
 
       context 'Merge Request' do
-        it 'populates assignee_id: nil if content contains /unassign' do
-          merge_request.update(assignee_id: developer.id)
+        it 'populates assignee_ids: [] if content contains /unassign' do
+          merge_request.update(assignee_ids: [developer.id])
           _, updates = service.execute(content, merge_request)
 
-          expect(updates).to eq(assignee_id: nil)
+          expect(updates).to eq(assignee_ids: [])
         end
       end
     end

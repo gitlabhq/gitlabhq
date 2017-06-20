@@ -106,6 +106,22 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#assignee_ids' do
+    it 'returns an array of the assigned user id' do
+      subject.assignee_id = 123
+
+      expect(subject.assignee_ids).to eq([123])
+    end
+  end
+
+  describe '#assignee_ids=' do
+    it 'sets assignee_id to the last id in the array' do
+      subject.assignee_ids = [123, 456]
+
+      expect(subject.assignee_id).to eq(456)
+    end
+  end
+
   describe '#assignee_or_author?' do
     let(:user) { create(:user) }
 
