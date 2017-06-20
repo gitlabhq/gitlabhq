@@ -28,7 +28,7 @@ module Gitlab
         if Gitlab.config.gitaly.enabled
           server = {
             address: Gitlab::GitalyClient.address(project.repository_storage),
-            token: Gitlab::GitalyClient.token(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
           }
           params[:Repository] = repository.gitaly_repository.to_h
 

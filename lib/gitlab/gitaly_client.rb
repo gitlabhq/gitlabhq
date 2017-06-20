@@ -50,8 +50,8 @@ module Gitlab
       address
     end
 
-    # All RPC calls should use GitalyClient.call. This method makes sure
-    # that per-request authentication headers are set.
+    # All Gitaly RPC call sites should use GitalyClient.call. This method
+    # makes sure that per-request authentication headers are set.
     def self.call(storage, service, rpc, request)
       metadata = request_metadata(storage)
       metadata = yield(metadata) if block_given?
