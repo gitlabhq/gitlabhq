@@ -107,13 +107,12 @@ module QuickActions
     command :assign do |users|
       next if users.empty?
 
-      if issuable.allows_multiple_assignees?
-        @updates[:assignee_ids] = issuable.assignees.pluck(:id) + users.map(&:id)
-      elsif issuable.supports_multiple_assignees?
-        @updates[:assignee_ids] = [users.last.id]
-      else
-        @updates[:assignee_id] = users.last.id
-      end
+      @updates[:assignee_ids] =
+        if issuable.allows_multiple_assignees?
+          issuable.assignees.pluck(:id) + users.map(&:id)
+        else
+          [users.last.id]
+        end
     end
 
     desc do
@@ -138,16 +137,12 @@ module QuickActions
       # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
       users = extract_users(unassign_param) if issuable.allows_multiple_assignees?
 
-      if issuable.supports_multiple_assignees?
-        @updates[:assignee_ids] =
-          if users&.any?
-            issuable.assignees.pluck(:id) - users.map(&:id)
-          else
-            []
-          end
-      else
-        @updates[:assignee_id] = nil
-      end
+      @updates[:assignee_ids] =
+        if users&.any?
+          issuable.assignees.pluck(:id) - users.map(&:id)
+        else
+          []
+        end
     end
 
     desc do
