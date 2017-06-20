@@ -57,7 +57,7 @@ describe 'Unsubscribe links', feature: true do
 
   context 'when logged in' do
     before do
-      login_as(recipient)
+      sign_in(recipient)
     end
 
     it 'unsubscribes from the issue when visiting the link from the email body' do

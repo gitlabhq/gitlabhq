@@ -6,7 +6,7 @@ feature 'Environment', :feature do
   given(:role) { :developer }
 
   background do
-    login_as(user)
+    gitlab_sign_in(user)
     project.team << [user, role]
   end
 

@@ -8,7 +8,7 @@ describe 'Project settings > [EE] repository', feature: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe 'editing a push rule' do

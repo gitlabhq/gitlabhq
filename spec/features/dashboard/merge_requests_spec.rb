@@ -8,7 +8,7 @@ describe 'Dashboard Merge Requests' do
   before do
     [project, project_with_merge_requests_disabled].each { |project| project.team << [current_user, :master] }
 
-    login_as(current_user)
+    gitlab_sign_in(current_user)
   end
 
   describe 'new merge request dropdown' do

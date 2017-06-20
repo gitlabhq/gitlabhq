@@ -8,7 +8,7 @@ feature 'Groups > Audit Events', js: true, feature: true do
   before do
     group.add_owner(user)
     group.add_developer(pete)
-    login_with(user)
+    gitlab_sign_in(user)
   end
 
   describe 'changing a user access level' do

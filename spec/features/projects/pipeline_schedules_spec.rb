@@ -12,7 +12,7 @@ feature 'Pipeline Schedules', :feature do
   before do
     project.add_master(user)
 
-    login_as(user)
+    gitlab_sign_in(user)
     visit_page
   end
 
