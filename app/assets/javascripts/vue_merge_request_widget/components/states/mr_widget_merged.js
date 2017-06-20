@@ -94,7 +94,7 @@ export default {
         </p>
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
-          :is-merged="mr.isMerged()"
+          :is-merged="mr.isMerged"
           :related-links="mr.relatedLinks" />
       </section>
       <div

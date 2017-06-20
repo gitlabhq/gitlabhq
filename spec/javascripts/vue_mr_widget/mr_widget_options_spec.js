@@ -86,9 +86,16 @@ describe('mrWidgetOptions', () => {
         expect(vm.shouldRenderRelatedLinks).toBeFalsy();
       });
 
-      it('should return true if there is relatedLinks in MR', () => {
+      it('should return true if there is relatedLinks in MR and it is not merged', () => {
         vm.mr.relatedLinks = {};
+        vm.mr.isMerged = false;
         expect(vm.shouldRenderRelatedLinks).toBeTruthy();
+      });
+
+      it('should return false if isMerged is true', () => {
+        vm.mr.relatedLinks = {};
+        vm.mr.isMerged = true;
+        expect(vm.shouldRenderRelatedLinks).toBeFalsy();
       });
     });
 
