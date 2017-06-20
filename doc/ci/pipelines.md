@@ -190,9 +190,12 @@ by name. The order of severity is:
 
 > [Introduced][ee-2121] in [GitLab Enterprise Edition Premium][eep] 9.3.
 
-When projects are connected via [triggers], those connections are displayed in
-the pipeline graph by showing inbound and outbound connections for upstream and
-downstream pipeline dependencies.
+Using the [`CI_JOB_TOKEN` when triggering pipelines][triggers], GitLab
+recognizes the source of the job token, and thus internally ties these pipelines
+together which makes it easy to start visualizing their relationships.
+
+Those relationships are displayed in the pipeline graph by showing inbound and
+outbound connections for upstream and downstream pipeline dependencies.
 
 ![Multi-projects pipelines graphs](img/multi_project_pipelines_graph.png)
 
