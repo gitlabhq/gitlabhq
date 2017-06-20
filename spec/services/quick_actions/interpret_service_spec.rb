@@ -411,9 +411,6 @@ describe QuickActions::InterpretService, services: true do
 
       context 'Merge Request' do
         it 'fetches assignee and populates assignee_id if content contains /assign' do
-          user = create(:user)
-          merge_request.update(assignee: user)
-
           _, updates = service.execute(content, merge_request)
 
           expect(updates).to eq(assignee_id: developer.id)
@@ -486,28 +483,28 @@ describe QuickActions::InterpretService, services: true do
         end
       end
 
-      context 'reassign command' do
-        let(:content) { '/reassign' }
-
-        context 'Issue' do
-          it 'reassigns user if content contains /reassign @user' do
-            user = create(:user)
-
-            issue.update(assignee_ids: [developer.id, developer2.id])
-
-            _, updates = service.execute("/reassign @#{user.username}", issue)
-
-            expect(updates).to eq(assignee_ids: [user.id])
-          end
-        end
-      end
-
       context 'Merge Request' do
         it 'populates assignee_id: nil if content contains /unassign' do
           merge_request.update(assignee_id: developer.id)
           _, updates = service.execute(content, merge_request)
 
           expect(updates).to eq(assignee_id: nil)
+        end
+      end
+    end
+
+    context 'reassign command' do
+      let(:content) { '/reassign' }
+
+      context 'Issue' do
+        it 'reassigns user if content contains /reassign @user' do
+          user = create(:user)
+
+          issue.update(assignee_ids: [developer.id])
+
+          _, updates = service.execute("/reassign @#{user.username}", issue)
+
+          expect(updates).to eq(assignee_ids: [user.id])
         end
       end
     end
@@ -1000,7 +997,7 @@ describe QuickActions::InterpretService, services: true do
       it 'includes current assignee reference' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(["Removes assignee #{developer.to_reference}"])
+        expect(explanations).to eq(["Removes assignee #{developer.to_reference}."])
       end
     end
 
