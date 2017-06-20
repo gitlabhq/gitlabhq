@@ -26,7 +26,15 @@ describe GeoRepositorySyncWorker do
         last_repository_successful_sync_at: nil
       )
 
-      expect(Geo::RepositorySyncService).to receive(:new).twice.and_return(spy)
+      Geo::ProjectRegistry.create(
+        project: project_2,
+        last_repository_synced_at: DateTime.now,
+        last_repository_successful_sync_at: DateTime.now,
+        resync_repository: false,
+        resync_wiki: false
+      )
+
+      expect(Geo::RepositorySyncService).to receive(:new).once.and_return(spy)
 
       subject.perform
     end

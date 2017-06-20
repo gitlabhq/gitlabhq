@@ -60,7 +60,7 @@ class GeoRepositorySyncWorker
       first.zip(second)
     else
       second.zip(first).map(&:reverse)
-    end.flatten(1).compact.take(BATCH_SIZE)
+    end.flatten(1).uniq.compact.take(BATCH_SIZE)
   end
 
   def over_time?(start_time)
