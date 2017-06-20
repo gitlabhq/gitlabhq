@@ -135,7 +135,7 @@ describe('MRWidgetPipeline', () => {
     });
 
     it('should set triggeredBy to an empty array', () => {
-      expect(vm.triggered.length).toBe(0);
+      expect(vm.triggeredBy.length).toBe(0);
     });
 
     it('should not render upstream or downstream pipelines', () => {
