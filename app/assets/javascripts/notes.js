@@ -1267,7 +1267,6 @@ const normalizeNewlines = function(str) {
      */
     Notes.prototype.createPlaceholderNote = function ({ formContent, uniqueId, isDiscussionNote, currentUsername, currentUserFullname, currentUserAvatar }) {
       const discussionClass = isDiscussionNote ? 'discussion' : '';
-      const escapedFormContent = _.escape(formContent);
       const $tempNote = $(
         `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
            <div class="timeline-entry-inner">
@@ -1287,7 +1286,7 @@ const normalizeNewlines = function(str) {
                  </div>
                  <div class="note-body">
                    <div class="note-text">
-                     <p>${escapedFormContent}</p>
+                     <p>${formContent}</p>
                    </div>
                  </div>
               </div>
