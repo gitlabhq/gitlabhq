@@ -42,7 +42,7 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
-      omniauth_providers = Gitlab.config.omniauth.providers
+      omniauth_providers = Gitlab.config.omniauth.providers.dup
       omniauth_providers.map! { |provider| provider['name'] }
 
       puts ""
