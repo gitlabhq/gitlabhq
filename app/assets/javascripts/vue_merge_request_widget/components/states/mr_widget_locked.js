@@ -4,7 +4,7 @@ export default {
     mr: { type: Object, required: true },
   },
   template: `
-    <div class="mr-widget-body mr-state-locked">
+    <div class="mr-state-locked">
       <span class="state-label">Locked</span>
       This merge request is in the process of being merged, during which time it is locked and cannot be closed.
       <i

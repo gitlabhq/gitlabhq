@@ -14,7 +14,7 @@ export default {
     },
   },
   template: `
-    <div class="mr-widget-body">
+    <div>
       <button
         type="button"
         class="btn btn-success btn-small"

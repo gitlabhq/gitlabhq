@@ -61,7 +61,7 @@ export default {
     },
   },
   template: `
-    <div class="mr-widget-body">
+    <div>
       <mr-widget-author-and-time
         actionText="Merged by"
         :author="mr.mergedBy"

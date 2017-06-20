@@ -4,7 +4,7 @@ export default {
     mr: { type: Object, required: true },
   },
   template: `
-    <div class="mr-widget-body">
+    <div>
       <button
         type="button"
         class="btn btn-success btn-small"

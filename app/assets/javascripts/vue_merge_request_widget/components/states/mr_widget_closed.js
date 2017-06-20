@@ -9,7 +9,7 @@ export default {
     'mr-widget-author-and-time': mrWidgetAuthorTime,
   },
   template: `
-    <div class="mr-widget-body">
+    <div>
       <mr-widget-author-and-time
         actionText="Closed by"
         :author="mr.closedBy"

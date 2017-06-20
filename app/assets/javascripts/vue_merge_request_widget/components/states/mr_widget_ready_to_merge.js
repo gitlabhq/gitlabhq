@@ -196,7 +196,7 @@ export default {
     },
   },
   template: `
-    <div class="mr-widget-body">
+    <div>
       <span class="btn-group">
         <button
           @click="handleMergeButtonClick()"

@@ -1,7 +1,7 @@
 export default {
   name: 'MRWidgetPipelineBlocked',
   template: `
-    <div class="mr-widget-body">
+    <div>
       <button
         class="btn btn-success btn-small"
         disabled="true"

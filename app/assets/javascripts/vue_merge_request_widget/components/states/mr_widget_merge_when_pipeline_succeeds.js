@@ -61,7 +61,7 @@ export default {
     },
   },
   template: `
-    <div class="mr-widget-body">
+    <div>
       <h4>
         Set by
         <mr-widget-author :author="mr.setToMWPSBy" />
