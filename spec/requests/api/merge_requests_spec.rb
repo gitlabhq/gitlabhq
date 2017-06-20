@@ -336,19 +336,14 @@ describe API::MergeRequests do
              author: user,
              labels: 'label, label2',
              milestone_id: milestone.id,
-             remove_source_branch: true,
              squash: true
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(%w(label label2))
         expect(json_response['milestone']['id']).to eq(milestone.id)
-<<<<<<< HEAD
-        expect(json_response['force_remove_source_branch']).to be_truthy
         expect(json_response['squash']).to be_truthy
-=======
         expect(json_response['force_remove_source_branch']).to be_falsy
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
       end
 
       it "returns 422 when source_branch equals target_branch" do
