@@ -24,13 +24,11 @@ module API
     end
 
     class_methods do
-      # Set the authorization scope(s) allowed for the current request.
+      # Set the authorization scope(s) allowed for an API endpoint.
       #
-      # A call to this method adds to any previous scopes in place, either from the same class, or
-      # higher up in the inheritance chain. For example, if we call `allow_access_with_scope :api` from
-      # `API::API`, and `allow_access_with_scope :read_user` from `API::Users` (which inherits from `API::API`),
-      # `API::Users` will allow access with either the `api` or `read_user` scope. `API::API` will allow
-      # access only with the `api` scope.
+      # A call to this method maps the given scope(s) to the current API
+      # endpoint class. If this method is called multiple times on the same class,
+      # the scopes are all aggregated.
       def allow_access_with_scope(scopes, options = {})
         @scopes ||= []
 
