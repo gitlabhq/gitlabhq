@@ -1554,8 +1554,7 @@ describe Ci::Build, :models do
 
         allow(project).to receive(:secret_variables_for)
           .with(ref: 'master', environment: nil) do
-            [create(:ci_variable, key: 'secret', value: 'value'),
-             create(:ci_variable, key: 'env', value: 'value')]
+            [create(:ci_variable, key: 'secret', value: 'value')]
           end
       end
 
@@ -1565,8 +1564,7 @@ describe Ci::Build, :models do
            project_pre_var,
            pipeline_pre_var,
            build_yaml_var,
-           { key: 'secret', value: 'value', public: false },
-           { key: 'env', value: 'value', public: false }])
+           { key: 'secret', value: 'value', public: false }])
       end
     end
   end
