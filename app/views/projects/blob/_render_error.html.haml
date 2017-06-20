@@ -1,3 +1,6 @@
+.file-loading.hidden
+  = render viewer.loading_partial_path, viewer: viewer
+
 .file-content.code
   .nothing-here-block
     The #{viewer.switcher_title} could not be displayed because #{blob_render_error_reason(viewer)}.

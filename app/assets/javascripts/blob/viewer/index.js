@@ -10,7 +10,7 @@ export default class BlobViewer {
   }
 
   initAuxiliaryViewer() {
-    const auxiliaryViewer = this.container.querySelector(`.${this.type}-viewer[data-type="auxiliary"]`);
+    const auxiliaryViewer = this.viewerForName('auxiliary', this.container);
     if (!auxiliaryViewer) return;
 
     BlobViewer.loadViewer(auxiliaryViewer);
@@ -22,10 +22,11 @@ export default class BlobViewer {
 
     this.switcher = this.container.querySelector(`.js-${this.type}-viewer-switcher`);
     this.switcherBtns = this.container.querySelectorAll(`.js-${this.type}-viewer-switch-btn`);
+    this.loadBtns = this.container.querySelectorAll(`.js-${this.type}-viewer-load-btn`);
     this.copySourceBtn = this.container.querySelector('.js-copy-blob-source-btn');
 
-    this.simpleViewer = this.fileHolder.querySelector(`.${this.type}-viewer[data-type="simple"]`);
-    this.richViewer = this.fileHolder.querySelector(`.${this.type}-viewer[data-type="rich"]`);
+    this.simpleViewer = this.viewerForName('simple');
+    this.richViewer = this.viewerForName('rich');
 
     this.initBindings();
 
@@ -34,15 +35,13 @@ export default class BlobViewer {
 
   switchToInitialViewer() {
     const locationHash = gl.utils.getLocationHash();
-    const initialViewer = this.fileHolder.querySelector(`.${this.type}-viewer:not(.hidden)`);
-    const simpleLine = document.getElementById(locationHash);
-    let initialViewerName = initialViewer.getAttribute('data-type');
+    let initialViewer = this.fileHolder.querySelector(`.${this.type}-viewer:not(.hidden)`);
 
-    if (this.switcher && (simpleLine !== null || (locationHash && locationHash.indexOf('L') === 0))) {
-      initialViewerName = 'simple';
+    if (this.switcher && locationHash && locationHash.indexOf('L') === 0) {
+      initialViewer = this.simpleViewer;
     }
 
-    this.switchToViewer(initialViewerName);
+    this.switchToViewer(initialViewer);
   }
 
   initBindings() {
@@ -53,11 +52,18 @@ export default class BlobViewer {
         });
     }
 
+    if (this.loadBtns.length) {
+      Array.from(this.loadBtns)
+        .forEach((el) => {
+          el.addEventListener('click', this.loadViewHandler.bind(this));
+        });
+    }
+
     if (this.copySourceBtn) {
       this.copySourceBtn.addEventListener('click', () => {
         if (this.copySourceBtn.classList.contains('disabled')) return this.copySourceBtn.blur();
 
-        return this.switchToViewer('simple');
+        return this.switchToViewer(this.simpleViewer);
       });
     }
   }
@@ -67,7 +73,23 @@ export default class BlobViewer {
 
     e.preventDefault();
 
-    this.switchToViewer(target.getAttribute('data-viewer'));
+    const viewer = this.viewerForName(target.getAttribute('data-viewer'));
+    if (!viewer) return;
+    this.switchToViewer(viewer);
+  }
+
+  loadViewHandler(e) {
+    const target = e.currentTarget;
+
+    e.preventDefault();
+
+    const viewer = this.viewerForName(target.getAttribute('data-viewer'));
+    if (!viewer) return;
+    this.loadViewer(viewer, true);
+  }
+
+  viewerForName(name, container = this.fileHolder) {
+    return container.querySelector(`.${this.type}-viewer[data-type='${name}']`);
   }
 
   toggleCopyButtonState() {
@@ -87,10 +109,10 @@ export default class BlobViewer {
     $(this.copySourceBtn).tooltip('fixTitle');
   }
 
-  switchToViewer(name) {
-    const newViewer = this.fileHolder.querySelector(`.${this.type}-viewer[data-type='${name}']`);
+  switchToViewer(newViewer) {
     if (this.activeViewer === newViewer) return;
 
+    const name = newViewer.getAttribute('data-type');
     const oldButton = this.container.querySelector(`.js-${this.type}-viewer-switch-btn.active`);
     const newButton = this.container.querySelector(`.js-${this.type}-viewer-switch-btn[data-viewer='${name}']`);
     const oldViewer = this.fileHolder.querySelector(`.${this.type}-viewer:not([data-type='${name}'])`);
@@ -114,7 +136,11 @@ export default class BlobViewer {
 
     this.toggleCopyButtonState();
 
-    BlobViewer.loadViewer(newViewer)
+    this.loadViewer(newViewer);
+  }
+
+  loadViewer(viewer, force = false) {
+    BlobViewer.loadViewer(viewer, force)
     .then((viewer) => {
       $(viewer).renderGFM();
 
@@ -126,7 +152,7 @@ export default class BlobViewer {
     .catch(() => new Flash('Error loading viewer'));
   }
 
-  static loadViewer(viewerParam) {
+  static loadViewer(viewerParam, force = false) {
     const viewer = viewerParam;
     const url = viewer.getAttribute('data-url');
 
@@ -136,7 +162,17 @@ export default class BlobViewer {
         return;
       }
 
+      if (viewer.getAttribute('data-autoload') === 'false' && !force) {
+        resolve(viewer);
+        return;
+      }
+
       viewer.setAttribute('data-loading', 'true');
+
+      const fileContent = viewer.querySelector('.file-content');
+      const loadingIndicator = viewer.querySelector('.file-loading');
+      if (fileContent) fileContent.classList.add('hidden');
+      if (loadingIndicator) loadingIndicator.classList.remove('hidden');
 
       $.ajax({
         url,

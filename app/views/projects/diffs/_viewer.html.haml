@@ -1,6 +1,8 @@
 - hidden = local_assigns.fetch(:hidden, false)
+- diff_file = viewer.diff_file
 
-.diff-viewer{ data: { type: viewer.type }, class: ('hidden' if hidden) }
+- viewer_url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier, viewer: viewer.type, format: :json))
+.diff-viewer{ data: { type: viewer.type, url: viewer_url, autoload: 'false' }, class: ('hidden' if hidden) }
   - if viewer.render_error
     = render 'projects/diffs/render_error', viewer: viewer
   - elsif viewer.collapsed?
