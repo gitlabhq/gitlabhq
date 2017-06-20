@@ -8,6 +8,8 @@ let RepoStore = {
   blobs: [],
   submodules: [],
   blobRaw: '',
-  blobRendered: ''
+  blobRendered: '',
+
+  files: []
 };
 export default RepoStore;

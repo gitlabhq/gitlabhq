@@ -1,0 +1,14 @@
+[v-cloak] {
+  display: none;
+}
+
+#sidebar {
+  ul {
+    list-style-type: none;
+    padding: 0;
+    li {
+      border-bottom: 1px solid $border-gray-normal;
+      padding: 10px 20px;
+    }
+  }
+}

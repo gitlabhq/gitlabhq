@@ -5,6 +5,7 @@ import Store from './repo_store'
 export default class RepoEditor {
   constructor() {
     this.initMonaco();
+    this.el = document.getElementById('ide');
   }
 
   initMonaco() {
@@ -21,19 +22,24 @@ export default class RepoEditor {
   }
 
   initVue() {
+    const self = this;
     const monacoEditor = this.monacoEditor;
     this.vue = new Vue({
       data: () => Store,
-      
       created () {
         if(this.blobRaw !== ''){
-          console.log(monacoEditor)
           monacoEditor.setModel(
             monaco.editor.createModel(
               this.blobRaw,
               'plain'
             )
           );
+        }
+
+        if(this.isTree) {
+          self.el.styles = 'display: none';
+        } else {
+          self.el.styles = 'display: inline-block';
         }
       },
 

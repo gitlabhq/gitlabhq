@@ -12,7 +12,7 @@ module RendersBlob
         blob.simple_viewer
       end
     return render_404 unless viewer
-
+    puts blob
     render json: {
       html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false),
       plain: blob.data,

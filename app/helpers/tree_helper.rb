@@ -13,7 +13,7 @@ module TreeHelper
   end
 
   def repo_url()
-    url_for(params.merge(format: :json))
+    request.original_url
   end
 
   # Return an image icon depending on the file type and mode
