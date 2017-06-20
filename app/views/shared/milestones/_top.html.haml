@@ -36,25 +36,26 @@
     - close_msg = group ? 'You may close the milestone now.' : 'Navigate to the project to close the milestone.'
     %span All issues for this milestone are closed. #{close_msg}
 
-.table-holder
-  %table.table
-    %thead
-      %tr
-        %th Project
-        %th Open issues
-        %th State
-        %th Due date
-    - milestone.milestones.each do |ms|
-      %tr
-        %td
-          - project_name = group ? ms.project.name : ms.project.name_with_namespace
-          = link_to project_name, namespace_project_milestone_path(ms.project.namespace, ms.project, ms)
-        %td
-          = ms.issues_visible_to_user(current_user).opened.count
-        %td
-          - if ms.closed?
-            Closed
-          - else
-            Open
-        %td
-          = ms.expires_at
+%h2 Only link to group milestone issues instead of list(for now)
+/ .table-holder
+/   %table.table
+/     %thead
+/       %tr
+/         %th Project
+/         %th Open issues
+/         %th State
+/         %th Due date
+/     - milestone.milestones.each do |ms|
+/       %tr
+/         %td
+/           - project_name = group ? ms.project.name : ms.project.name_with_namespace
+/           = link_to project_name, namespace_project_milestone_path(ms.project.namespace, ms.project, ms)
+/         %td
+/           = ms.issues_visible_to_user(current_user).opened.count
+/         %td
+/           - if ms.closed?
+/             Closed
+/           - else
+/             Open
+/         %td
+/           = ms.expires_at
