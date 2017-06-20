@@ -1,7 +1,13 @@
+/* eslint-disable jasmine/no-global-setup */
 import $ from 'jquery';
 import _ from 'underscore';
 import 'jasmine-jquery';
 import '~/commons';
+
+import Vue from 'vue';
+import VueResource from 'vue-resource';
+
+Vue.use(VueResource);
 
 // enable test fixtures
 jasmine.getFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
@@ -22,7 +28,25 @@ window.gon = window.gon || {};
 // enough for the socket to continue to communicate.
 // The downside is that it creates a minor performance penalty in the time it takes
 // to run our unit tests.
-beforeEach(done => done()); // eslint-disable-line jasmine/no-global-setup
+beforeEach(done => done());
+
+beforeAll(() => {
+  const origError = console.error;
+  spyOn(console, 'error').and.callFake((message) => {
+    if (/^\[Vue warn\]/.test(message)) {
+      fail(message);
+    } else {
+      origError(message);
+    }
+  });
+});
+
+const builtinVueHttpInterceptors = Vue.http.interceptors.slice();
+
+beforeEach(() => {
+  // restore interceptors so we have no remaining ones from previous tests
+  Vue.http.interceptors = builtinVueHttpInterceptors.slice();
+});
 
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
