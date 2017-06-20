@@ -5,7 +5,7 @@ feature 'Master views tags', feature: true do
 
   before do
     project.team << [user, :master]
-    login_with(user)
+    gitlab_sign_in(user)
   end
 
   context 'when project has no tags' do

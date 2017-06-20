@@ -12,7 +12,7 @@ feature 'Project Issues RSS' do
     before do
       user = create(:user)
       project.team << [user, :developer]
-      login_as(user)
+      gitlab_sign_in(user)
       visit path
     end
 

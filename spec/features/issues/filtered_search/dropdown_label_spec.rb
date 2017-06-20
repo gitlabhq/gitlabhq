@@ -34,7 +34,7 @@ describe 'Dropdown label', js: true, feature: true do
 
   before do
     project.add_master(user)
-    login_as(user)
+    gitlab_sign_in(user)
     create(:issue, project: project)
 
     visit namespace_project_issues_path(project.namespace, project)

@@ -4,7 +4,7 @@ describe 'Profile account page', feature: true do
   let(:user) { create(:user) }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe 'when signup is enabled' do

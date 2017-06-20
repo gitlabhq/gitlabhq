@@ -8,7 +8,7 @@ describe 'Reportable note on commit', :feature, :js do
 
   before do
     project.add_master(user)
-    login_as user
+    gitlab_sign_in(user)
   end
 
   context 'a normal note' do

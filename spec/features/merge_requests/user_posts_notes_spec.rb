@@ -13,7 +13,7 @@ describe 'Merge requests > User posts notes', :js do
   end
 
   before do
-    login_as :admin
+    gitlab_sign_in :admin
     visit namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 

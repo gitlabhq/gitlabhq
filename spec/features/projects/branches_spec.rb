@@ -12,7 +12,7 @@ describe 'Branches', feature: true do
 
   context 'logged in as developer' do
     before do
-      login_as :user
+      gitlab_sign_in :user
       project.team << [@user, :developer]
     end
 
@@ -87,7 +87,7 @@ describe 'Branches', feature: true do
 
   context 'logged in as master' do
     before do
-      login_as :user
+      gitlab_sign_in :user
       project.team << [@user, :master]
     end
 

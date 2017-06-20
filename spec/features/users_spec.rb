@@ -24,7 +24,7 @@ feature 'Users', feature: true, js: true do
     user.reload
     expect(user.reset_password_token).not_to be_nil
 
-    login_with(user)
+    gitlab_sign_in(user)
     expect(current_path).to eq root_path
 
     user.reload

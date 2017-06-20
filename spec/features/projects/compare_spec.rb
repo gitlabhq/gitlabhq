@@ -6,7 +6,7 @@ describe "Compare", js: true do
 
   before do
     project.team << [user, :master]
-    login_as user
+    gitlab_sign_in user
     visit namespace_project_compare_index_path(project.namespace, project, from: "master", to: "master")
   end
 

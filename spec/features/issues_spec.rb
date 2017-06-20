@@ -8,7 +8,7 @@ describe 'Issues', feature: true do
   let(:project) { create(:empty_project, :public) }
 
   before do
-    login_as :user
+    gitlab_sign_in :user
     user2 = create(:user)
 
     project.team << [[@user, user2], :developer]
@@ -483,8 +483,8 @@ describe 'Issues', feature: true do
       end
 
       it 'shows assignee text', js: true do
-        logout
-        login_with guest
+        gitlab_sign_out
+        gitlab_sign_in guest
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content issue.assignees.first.name
@@ -546,8 +546,8 @@ describe 'Issues', feature: true do
       end
 
       it 'shows milestone text', js: true do
-        logout
-        login_with guest
+        gitlab_sign_out
+        gitlab_sign_in guest
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content milestone.title
@@ -560,7 +560,7 @@ describe 'Issues', feature: true do
 
     context 'by unauthenticated user' do
       before do
-        logout
+        gitlab_sign_out
       end
 
       it 'redirects to signin then back to new issue after signin' do
@@ -570,7 +570,7 @@ describe 'Issues', feature: true do
 
         expect(current_path).to eq new_user_session_path
 
-        login_as :user
+        gitlab_sign_in :user
 
         expect(current_path).to eq new_namespace_project_issue_path(project.namespace, project)
       end

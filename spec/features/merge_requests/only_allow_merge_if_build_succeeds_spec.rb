@@ -5,7 +5,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
   let(:project)       { merge_request.target_project }
 
   before do
-    login_as merge_request.author
+    gitlab_sign_in merge_request.author
 
     project.team << [merge_request.author, :master]
   end

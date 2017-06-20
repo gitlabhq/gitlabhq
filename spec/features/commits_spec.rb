@@ -7,7 +7,7 @@ describe 'Commits' do
 
   describe 'CI' do
     before do
-      login_as :user
+      gitlab_sign_in :user
       stub_ci_pipeline_to_return_yaml_file
     end
 
@@ -191,7 +191,7 @@ describe 'Commits' do
 
     before do
       project.team << [user, :master]
-      login_with(user)
+      gitlab_sign_in(user)
       visit namespace_project_commits_path(project.namespace, project, branch_name)
     end
 
