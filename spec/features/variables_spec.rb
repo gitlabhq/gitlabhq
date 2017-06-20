@@ -5,13 +5,7 @@ describe 'Project variables', js: true do
   let(:project)  { create(:empty_project) }
   let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
 
-  # EE
-  let(:variable_environment_scope) { true }
-
   before do
-    # EE
-    stub_feature(:variable_environment_scope, variable_environment_scope)
-
     login_as(user)
     project.team << [user, :master]
     project.variables << variable
@@ -58,31 +52,6 @@ describe 'Project variables', js: true do
     page.within('.variables-table') do
       expect(page).to have_content('key')
       expect(page).to have_content('Yes')
-    end
-  end
-
-  # EE
-  it 'adds new variable with a special environment scope' do
-    expect(page).to have_selector('#variable_environment_scope')
-
-    fill_in('variable_key', with: 'key')
-    fill_in('variable_value', with: 'value')
-    fill_in('variable_environment_scope', with: 'review/*')
-    click_button('Add new variable')
-
-    expect(page).to have_content('Variables were successfully updated.')
-    page.within('.variables-table') do
-      expect(page).to have_content('key')
-      expect(page).to have_content('review/*')
-    end
-  end
-
-  # EE
-  context 'when variable environment scope is not available' do
-    let(:variable_environment_scope) { false }
-
-    it 'does not show variable environment scope element' do
-      expect(page).not_to have_selector('#variable_environment_scope')
     end
   end
 
@@ -172,33 +141,5 @@ describe 'Project variables', js: true do
 
     expect(page).to have_content('Variable was successfully updated.')
     expect(project.variables(true).first).not_to be_protected
-  end
-
-  # EE
-  context 'when editing a variable for environment' do
-    before do
-      page.within('.variables-table') do
-        find('.btn-variable-edit').click
-      end
-    end
-
-    it 'edits variable to be another environment scope' do
-      expect(page).to have_selector('#variable_environment_scope')
-
-      fill_in('variable_environment_scope', with: 'review/*')
-      click_button('Save variable')
-
-      expect(page).to have_content('Variable was successfully updated.')
-      expect(project.variables(true).first.environment_scope).to eq('review/*')
-    end
-
-    # EE
-    context 'when variable environment scope is not available' do
-      let(:variable_environment_scope) { false }
-
-      it 'does not show environment scope element' do
-        expect(page).not_to have_selector('#variable_environment_scope')
-      end
-    end
   end
 end

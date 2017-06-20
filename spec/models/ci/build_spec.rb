@@ -1404,46 +1404,6 @@ describe Ci::Build, :models do
       context 'when the ref is not protected' do
         it { is_expected.not_to include(protected_variable) }
       end
-
-      # EE
-      context 'when environment specific variable is defined' do
-        let(:environment_varialbe) do
-          { key: 'ENV_KEY', value: 'environment', public: false }
-        end
-
-        before do
-          build.update(environment: 'staging')
-          create(:environment, name: 'staging', project: build.project)
-
-          variable =
-            FactoryGirl.build( # TODO: Just use `build` after build is renamed
-              :ci_variable,
-              environment_varialbe.slice(:key, :value)
-                .merge(project: project, environment_scope: 'stag*'))
-
-          # Skip this validation so that we could test for existing data
-          allow(variable).to receive(:verify_updating_environment_scope)
-            .and_return(true)
-
-          variable.save!
-        end
-
-        context 'when variable environment scope is available' do
-          before do
-            stub_feature(:variable_environment_scope, true)
-          end
-
-          it { is_expected.to include(environment_varialbe) }
-        end
-
-        context 'when variable environment scope is not available' do
-          before do
-            stub_feature(:variable_environment_scope, false)
-          end
-
-          it { is_expected.not_to include(environment_varialbe) }
-        end
-      end
     end
 
     context 'when build is for triggers' do
