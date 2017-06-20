@@ -55,6 +55,7 @@ import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import initSettingsPanels from './settings_panels';
+import SearchTextbox from './search_textbox';
 
 (function() {
   var Dispatcher;
@@ -308,6 +309,7 @@ import initSettingsPanels from './settings_panels';
           new gl.MemberExpirationDate();
           new gl.Members();
           new UsersSelect();
+          new SearchTextbox();
           break;
         case 'groups:new':
         case 'admin:groups:new':
