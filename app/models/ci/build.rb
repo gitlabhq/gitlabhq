@@ -139,14 +139,7 @@ module Ci
     end
 
     def environment_url
-      return @environment_url if defined?(@environment_url)
-
-      @environment_url =
-        if unexpanded_url = options&.dig(:environment, :url)
-          ExpandVariables.expand(unexpanded_url, simple_variables)
-        else
-          persisted_environment&.external_url
-        end
+      options&.dig(:environment, :url)
     end
 
     def has_environment?
@@ -194,17 +187,20 @@ module Ci
 
     # Variables whose value does not depend on other variables
     def simple_variables
-      variables = predefined_variables
-      variables += project.predefined_variables
-      variables += pipeline.predefined_variables
-      variables += runner.predefined_variables if runner
-      variables += project.container_registry_variables
-      variables += project.deployment_variables if has_environment?
-      variables += yaml_variables
-      variables += user_variables
-      variables += project.secret_variables_for(ref).map(&:to_runner_variable)
-      variables += trigger_request.user_variables if trigger_request
-      variables
+      return @simple_variables if defined?(@simple_variables)
+
+      @simple_variables = predefined_variables
+      @simple_variables += legacy_variables
+      @simple_variables += project.predefined_variables
+      @simple_variables += pipeline.predefined_variables
+      @simple_variables += runner.predefined_variables if runner
+      @simple_variables += project.container_registry_variables
+      @simple_variables += project.deployment_variables if has_environment?
+      @simple_variables += yaml_variables
+      @simple_variables += user_variables
+      @simple_variables += project.secret_variables_for(ref).map(&:to_runner_variable)
+      @simple_variables += trigger_request.user_variables if trigger_request
+      @simple_variables
     end
 
     # All variables, including those dependent on other variables
@@ -473,7 +469,7 @@ module Ci
       variables << { key: "CI_COMMIT_TAG", value: ref, public: true } if tag?
       variables << { key: "CI_PIPELINE_TRIGGERED", value: 'true', public: true } if trigger_request
       variables << { key: "CI_JOB_MANUAL", value: 'true', public: true } if action?
-      variables.concat(legacy_variables)
+      variables
     end
 
     def persisted_environment_variables
@@ -481,7 +477,7 @@ module Ci
 
       variables = persisted_environment.predefined_variables
 
-      if url = environment_url
+      if url = environment_url || persisted_environment&.external_url
         variables << { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
       end
 
