@@ -67,12 +67,9 @@ Manage files and branches from the UI (user interface):
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
   - [Protected branches](user/project/protected_branches.md#protected-branches)
   - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
-<<<<<<< HEAD
 - **(EES/EEP)** [Repository Mirroring](workflow/repository_mirroring.md)
 - **(EES/EEP)** [Push rules](push_rules/push_rules.md): Additional control over pushes to your project.
 - **(EEP)** [File Locking](user/project/file_lock.md): Lock a file to avoid merge conflicts.
-=======
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 
 ### Issues and Merge Requests (MRs)
 

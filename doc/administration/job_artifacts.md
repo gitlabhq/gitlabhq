@@ -46,10 +46,7 @@ To disable artifacts site-wide, follow the steps below.
 After a successful job, GitLab Runner uploads an archive containing the job
 artifacts to GitLab.
 
-### Using local storage
-
-To change the location where the artifacts are stored locally, follow the steps
-below.
+To change the location where the artifacts are stored, follow the steps below.
 
 ---
 
@@ -85,7 +82,6 @@ _The artifacts are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
-<<<<<<< HEAD
 ---
 
 **Using Object Store**
@@ -93,7 +89,7 @@ _The artifacts are stored by default in
 The previously mentioned methods use the local disk to store artifacts. However,
 there is the option to use object stores like AWS' S3. To do this, set the
 `object_store` in your `gitlab.yml`. This relies on valid AWS
-credentials to be configured already. 
+credentials to be configured already.
 
     ```yaml
     artifacts:
@@ -121,14 +117,6 @@ for all new files. Currently the artifacts migration has to be executed manually
 Please note, that enabling this feature
 will have the effect that artifacts are _not_ browsable anymore through the web
 interface. This limitation will be removed in one of the upcoming releases.
-=======
-### Using object storage
-
-In [GitLab Enterprise Edition Premium][eep] you can use an object storage like
-AWS S3 to store the artifacts.
-
-[Learn how to use the object storage option.][ee-os]
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 
 ## Expiring artifacts
 
@@ -196,5 +184,3 @@ memory and disk I/O.
 [reconfigure gitlab]: restart_gitlab.md "How to restart GitLab"
 [restart gitlab]: restart_gitlab.md "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
-[ee-os]: https://docs.gitlab.com/ee/administration/job_artifacts.html#using-object-storage
-[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"
