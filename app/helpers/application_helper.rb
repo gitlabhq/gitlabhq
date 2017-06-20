@@ -68,7 +68,7 @@ module ApplicationHelper
     end
   end
 
-  def avatar_icon(user_or_email = nil, size = nil, scale = 2)
+  def avatar_icon(user_or_email = nil, size = nil, scale = 2, only_path: true)
     user =
       if user_or_email.is_a?(User)
         user_or_email
@@ -77,7 +77,7 @@ module ApplicationHelper
       end
 
     if user
-      user.avatar_url(size: size) || default_avatar
+      user.avatar_url(size: size, only_path: only_path) || default_avatar
     else
       gravatar_icon(user_or_email, size, scale)
     end
