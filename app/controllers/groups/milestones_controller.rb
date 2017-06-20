@@ -22,14 +22,13 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def create
-    # Use a service to create the milestone here
     title = milestone_params[:title]
-    @milestone = GroupMilestone.new(milestone_params)
+    @milestone = Milestones::CreateService.new(group, current_user, milestone_params).execute
 
     if @milestone.save
       redirect_to milestone_path(title)
     else
-      render_new_with_error(project_ids.empty?)
+      render_new_with_error
     end
   end
 
@@ -45,21 +44,6 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   private
-
-  # def create_milestones(project_ids)
-  #   return false unless project_ids.present?
-
-  #   ActiveRecord::Base.transaction do
-  #     @projects.where(id: project_ids).each do |project|
-  #       Milestones::CreateService.new(project, current_user, milestone_params).execute
-  #     end
-  #   end
-
-  #   true
-  # rescue ActiveRecord::ActiveRecordError => e
-  #   flash.now[:alert] = "An error occurred while creating the milestone: #{e.message}"
-  #   false
-  # end
 
   def render_new_with_error(empty_project_ids)
     @milestone = Milestone.new(milestone_params)
@@ -80,12 +64,15 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestones
-    @milestones = GroupMilestone.all
+    @group_milestones = GroupMilestone.all
+    @project_milestones = Milestone.where(project_id: group.projects.pluck(:id))
+
+    @group_milestones + @project_milestones
   end
 
   def milestone
     # Use a finder here
-    @milestone = GroupMilestone.find(params[:id])
+    @milestone = @group.milestones.find_by_title(params[:title])
     render_404 unless @milestone
   end
 end

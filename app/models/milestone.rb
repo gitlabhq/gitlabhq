@@ -7,47 +7,17 @@ class Milestone < ActiveRecord::Base
   Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
   Started = MilestoneStruct.new('Started', '#started', -3)
 
-  include CacheMarkdownField
+  include MilestoneModelProperties
   include InternalId
   include Sortable
   include Referable
-  include StripAttribute
   include Milestoneish
 
-  cache_markdown_field :title, pipeline: :single_line
-  cache_markdown_field :description
-
   belongs_to :project
-  has_many :issues
-  has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
-  has_many :merge_requests
+
   has_many :events, as: :target, dependent: :destroy
 
-  scope :active, -> { with_state(:active) }
-  scope :closed, -> { with_state(:closed) }
   scope :of_projects, ->(ids) { where(project_id: ids) }
-
-  validates :title, presence: true, uniqueness: { scope: :project_id }
-  validates :project, presence: true
-  validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
-
-  strip_attributes :title
-
-  state_machine :state, initial: :active do
-    event :close do
-      transition active: :closed
-    end
-
-    event :activate do
-      transition closed: :active
-    end
-
-    state :closed
-
-    state :active
-  end
-
-  alias_attribute :name, :title
 
   class << self
     # Searches for milestones matching the given query.
@@ -160,10 +130,6 @@ class Milestone < ActiveRecord::Base
     nil
   end
 
-  def title=(value)
-    write_attribute(:title, sanitize_title(value)) if value.present?
-  end
-
   private
 
   def milestone_format_reference(format = :iid)
@@ -173,16 +139,6 @@ class Milestone < ActiveRecord::Base
       %("#{name}")
     else
       iid
-    end
-  end
-
-  def sanitize_title(value)
-    CGI.unescape_html(Sanitize.clean(value.to_s))
-  end
-
-  def start_date_should_be_less_than_due_date
-    if due_date <= start_date
-      errors.add(:start_date, "Can't be greater than due date")
     end
   end
 
