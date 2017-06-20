@@ -150,6 +150,24 @@ module QuickActions
       end
     end
 
+    desc do
+      "Change assignee#{'(s)' if issuable.allows_multiple_assignees?}"
+    end
+    explanation do |users|
+      users = issuable.allows_multiple_assignees? ? users : users.take(1)
+      "Change #{'assignee'.pluralize(users.size)} to #{users.map(&:to_reference).to_sentence}."
+    end
+    params do
+      issuable.allows_multiple_assignees? ? '@user1 @user2' : '@user'
+    end
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :reassign do |unassign_param|
+      @updates[:assignee_ids] = extract_users(unassign_param).map(&:id)
+    end
+
     desc 'Set milestone'
     explanation do |milestone|
       "Sets the milestone to #{milestone.to_reference}." if milestone
