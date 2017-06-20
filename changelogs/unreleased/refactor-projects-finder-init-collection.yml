@@ -1,0 +1,5 @@
+---
+title: Refactor ProjectsFinder#init_collection to produce more efficient queries for
+  retrieving projects
+merge_request:
+author:
