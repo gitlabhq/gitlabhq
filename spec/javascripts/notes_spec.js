@@ -176,7 +176,7 @@ import '~/notes';
 
         Notes.updateNoteTargetSelector($note);
 
-        expect($note.toggleClass).toHaveBeenCalledWith('target', null);
+        expect($note.toggleClass).toHaveBeenCalledWith('target', false);
       });
     });
 

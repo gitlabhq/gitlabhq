@@ -322,7 +322,9 @@ const normalizeNewlines = function(str) {
 
     Notes.updateNoteTargetSelector = function($note) {
       const hash = gl.utils.getLocationHash();
-      $note.toggleClass('target', hash && $note.filter(`#${hash}`).length > 0);
+      // Needs to be an explicit true/false for the jQuery `toggleClass(force)`
+      const addTargetClass = Boolean(hash && $note.filter(`#${hash}`).length > 0);
+      $note.toggleClass('target', addTargetClass);
     };
 
     /*
