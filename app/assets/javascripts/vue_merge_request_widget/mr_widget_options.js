@@ -54,7 +54,7 @@ export default {
       return Object.keys(this.mr.pipeline).length || this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      return !!this.mr.relatedLinks && !this.mr.isMerged;
+      return !!this.mr.relatedLinks;
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
