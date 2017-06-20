@@ -133,10 +133,11 @@ module QuickActions
         issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :unassign do |unassign_param = nil|
+    parse_params do |unassign_param|
       # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
-      users = extract_users(unassign_param) if issuable.allows_multiple_assignees?
-
+      extract_users(unassign_param) if issuable.allows_multiple_assignees?
+    end
+    command :unassign do |users = nil|
       @updates[:assignee_ids] =
         if users&.any?
           issuable.assignees.pluck(:id) - users.map(&:id)
@@ -159,8 +160,16 @@ module QuickActions
       issuable.persisted? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :reassign do |unassign_param|
-      @updates[:assignee_ids] = extract_users(unassign_param).map(&:id)
+    parse_params do |assignee_param|
+      extract_users(assignee_param)
+    end
+    command :reassign do |users|
+      @updates[:assignee_ids] =
+        if issuable.allows_multiple_assignees?
+          users.map(&:id)
+        else
+          [users.last.id]
+        end
     end
 
     desc 'Set milestone'
