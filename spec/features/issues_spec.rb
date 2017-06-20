@@ -9,11 +9,7 @@ describe 'Issues', feature: true do
   let(:project) { create(:empty_project, :public) }
 
   before do
-<<<<<<< HEAD
-    gitlab_sign_in :user
-=======
     sign_in(user)
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
     user2 = create(:user)
 
     project.team << [[user, user2], :developer]
@@ -503,13 +499,8 @@ describe 'Issues', feature: true do
       end
 
       it 'shows assignee text', js: true do
-<<<<<<< HEAD
-        gitlab_sign_out
-        gitlab_sign_in guest
-=======
         sign_out(:user)
         sign_in(guest)
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content issue.assignees.first.name
@@ -592,13 +583,8 @@ describe 'Issues', feature: true do
       end
 
       it 'shows milestone text', js: true do
-<<<<<<< HEAD
-        gitlab_sign_out
-        gitlab_sign_in guest
-=======
         sign_out(:user)
         sign_in(guest)
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content milestone.title
@@ -611,11 +597,7 @@ describe 'Issues', feature: true do
 
     context 'by unauthenticated user' do
       before do
-<<<<<<< HEAD
-        gitlab_sign_out
-=======
         sign_out(:user)
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
       end
 
       it 'redirects to signin then back to new issue after signin' do
@@ -625,13 +607,9 @@ describe 'Issues', feature: true do
 
         expect(current_path).to eq new_user_session_path
 
-<<<<<<< HEAD
-        gitlab_sign_in :user
-=======
         # NOTE: This is specifically testing the redirect after login, so we
         # need the full login flow
         gitlab_sign_in(create(:user))
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 
         expect(current_path).to eq new_namespace_project_issue_path(project.namespace, project)
       end

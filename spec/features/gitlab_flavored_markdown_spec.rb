@@ -11,13 +11,8 @@ describe "GitLab Flavored Markdown", feature: true do
   end
 
   before do
-<<<<<<< HEAD
-    gitlab_sign_in(:user)
-    project.add_developer(@user)
-=======
     sign_in(user)
     project.add_developer(user)
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
   end
 
   describe "for commits" do

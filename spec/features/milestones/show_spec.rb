@@ -8,11 +8,7 @@ describe 'Milestone show', feature: true do
   let(:issue_params) { { project: project, assignees: [user], author: user, milestone: milestone, labels: labels } }
 
   before do
-<<<<<<< HEAD
-    project.add_user(user, :developer)
-=======
     project.add_user(user, :developer) 
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
     gitlab_sign_in(user)
   end
 

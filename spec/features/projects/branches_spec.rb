@@ -1,24 +1,16 @@
 require 'spec_helper'
 
 describe 'Branches', feature: true do
-<<<<<<< HEAD
   include ProtectedBranchHelpers
 
-=======
   let(:user) { create(:user) }
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
   let(:project) { create(:project, :public) }
   let(:repository) { project.repository }
 
   context 'logged in as developer' do
     before do
-<<<<<<< HEAD
-      gitlab_sign_in :user
-      project.team << [@user, :developer]
-=======
       sign_in(user)
       project.team << [user, :developer]
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
     end
 
     describe 'Initial branches page' do
@@ -94,13 +86,8 @@ describe 'Branches', feature: true do
 
   context 'logged in as master' do
     before do
-<<<<<<< HEAD
-      gitlab_sign_in :user
-      project.team << [@user, :master]
-=======
       sign_in(user)
       project.team << [user, :master]
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
     end
 
     describe 'Delete protected branch' do

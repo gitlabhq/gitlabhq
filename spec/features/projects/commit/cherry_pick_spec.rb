@@ -8,13 +8,8 @@ describe 'Cherry-pick Commits' do
   let(:master_pickable_merge)  { project.commit('e56497bb5f03a90a51293fc6d516788730953899') }
 
   before do
-<<<<<<< HEAD
-    gitlab_sign_in :user
-    project.team << [@user, :master]
-=======
     sign_in(user)
     project.team << [user, :master]
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
     visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
   end
 
