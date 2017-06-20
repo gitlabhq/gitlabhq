@@ -23,6 +23,27 @@ module API
       install_error_responders(base)
     end
 
+    class_methods do
+      # Set the authorization scope(s) allowed for the current request.
+      #
+      # A call to this method adds to any previous scopes in place, either from the same class, or
+      # higher up in the inheritance chain. For example, if we call `allow_access_with_scope :api` from
+      # `API::API`, and `allow_access_with_scope :read_user` from `API::Users` (which inherits from `API::API`),
+      # `API::Users` will allow access with either the `api` or `read_user` scope. `API::API` will allow
+      # access only with the `api` scope.
+      def allow_access_with_scope(scopes, options = {})
+        @scopes ||= []
+
+        params = Array.wrap(scopes).map { |scope| { name: scope, if: options[:if] } }
+
+        @scopes.concat(params)
+      end
+
+      def scopes
+        @scopes
+      end
+    end
+
     # Helper Methods for Grape Endpoint
     module HelperMethods
       # Invokes the doorkeeper guard.
@@ -72,18 +93,6 @@ module API
 
       def current_user
         @current_user
-      end
-
-      # Set the authorization scope(s) allowed for the current request.
-      #
-      # Note: A call to this method adds to any previous scopes in place. This is done because
-      # `Grape` callbacks run from the outside-in: the top-level callback (API::API) runs first, then
-      # the next-level callback (API::API::Users, for example) runs. All these scopes are valid for the
-      # given endpoint (GET `/api/users` is accessible by the `api` and `read_user` scopes), and so they
-      # need to be stored.
-      def allow_access_with_scope(*scopes)
-        @scopes ||= []
-        @scopes.concat(scopes.map(&:to_s))
       end
 
       private

@@ -340,10 +340,12 @@ module API
     end
 
     def initial_current_user
+      endpoint_class = options[:for]
+
       return @initial_current_user if defined?(@initial_current_user)
       Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-        @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
-        @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
+        @initial_current_user ||= find_user_by_private_token(scopes: endpoint_class.scopes)
+        @initial_current_user ||= doorkeeper_guard(scopes: endpoint_class.scopes)
         @initial_current_user ||= find_user_from_warden
 
         unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?

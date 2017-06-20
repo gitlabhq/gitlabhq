@@ -50,6 +50,28 @@ describe API::Users do
         end['username']).to eq(username)
       end
 
+      context "scopes" do
+        context 'when the requesting token has the "read_user" scope' do
+          let(:token) { create(:personal_access_token, scopes: ['read_user']) }
+
+          it 'returns a "200" response' do
+            get api("/users", user, personal_access_token: token)
+
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        context 'when the requesting token does not have any required scope' do
+          let(:token) { create(:personal_access_token, scopes: ['read_registry']) }
+
+          it 'returns a "401" response' do
+            get api("/users", user, personal_access_token: token)
+
+            expect(response).to have_http_status(401)
+          end
+        end
+      end
+
       it "returns an array of blocked users" do
         ldap_blocked_user
         create(:user, state: 'blocked')

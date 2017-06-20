@@ -17,14 +17,16 @@ module ApiHelpers
   #   => "/api/v2/issues?foo=bar&private_token=..."
   #
   # Returns the relative path to the requested API resource
-  def api(path, user = nil, version: API::API.version)
+  def api(path, user = nil, version: API::API.version, personal_access_token: nil)
     "/api/#{version}#{path}" +
 
       # Normalize query string
       (path.index('?') ? '' : '?') +
 
+      if personal_access_token.present?
+        "&private_token=#{personal_access_token.token}"
       # Append private_token if given a User object
-      if user.respond_to?(:private_token)
+      elsif user.respond_to?(:private_token)
         "&private_token=#{user.private_token}"
       else
         ''

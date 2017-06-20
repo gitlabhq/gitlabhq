@@ -31,8 +31,11 @@ class AccessTokenValidationService
     if scopes.blank?
       true
     else
+      #scopes = scopes.reject { |scope| scope[:if].presence && !scope[:if].call(request) }
       # Check whether the token is allowed access to any of the required scopes.
-      Set.new(scopes).intersection(Set.new(token.scopes)).present?
+
+      scope_names = scopes.map { |scope| scope[:name].to_s }
+      Set.new(scope_names).intersection(Set.new(token.scopes)).present?
     end
   end
 end
