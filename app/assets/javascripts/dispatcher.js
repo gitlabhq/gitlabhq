@@ -323,7 +323,6 @@ import RepoBundle from './repo/repo_bundle';
           new GroupAvatar();
           break;
         case 'projects:tree:show':
-          shortcut_handler = new ShortcutsNavigation();
           new RepoBundle();
           break;
         case 'projects:find_file:show':
