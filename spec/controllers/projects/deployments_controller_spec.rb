@@ -141,7 +141,7 @@ describe Projects::DeploymentsController do
         end
 
         it 'returns a empty response 204 response' do
-          get :additional_metrics, deployment_params(id: deployment.id)
+          get :additional_metrics, deployment_params(id: deployment.id, format: :json)
           expect(response).to have_http_status(204)
           expect(response.body).to eq('')
         end
@@ -161,7 +161,7 @@ describe Projects::DeploymentsController do
         end
 
         it 'returns a metrics JSON document' do
-          get :additional_metrics, deployment_params(id: deployment.id)
+          get :additional_metrics, deployment_params(id: deployment.id, format: :json)
 
           expect(response).to be_ok
           expect(json_response['success']).to be(true)
