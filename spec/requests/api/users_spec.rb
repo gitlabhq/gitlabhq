@@ -321,6 +321,16 @@ describe API::Users do
         .to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
+    context 'when the requesting token has the "read_user" scope' do
+      let(:token) { create(:personal_access_token, scopes: ['read_user'], user: admin) }
+
+      it 'returns a "401" response' do
+        post api("/users", admin, personal_access_token: token), attributes_for(:user, projects_limit: 3)
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
     it "is not available for non admin users" do
       post api("/users", user), attributes_for(:user)
       expect(response).to have_http_status(403)

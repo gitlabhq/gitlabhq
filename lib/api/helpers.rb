@@ -340,7 +340,7 @@ module API
     end
 
     def initial_current_user
-      endpoint_class = options[:for]
+      endpoint_class = options[:for].presence || ::API::API
 
       return @initial_current_user if defined?(@initial_current_user)
       Gitlab::Auth::UniqueIpsLimiter.limit_user! do

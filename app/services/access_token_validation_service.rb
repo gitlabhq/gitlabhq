@@ -5,10 +5,11 @@ class AccessTokenValidationService
   REVOKED = :revoked
   INSUFFICIENT_SCOPE = :insufficient_scope
 
-  attr_reader :token
+  attr_reader :token, :request
 
-  def initialize(token)
+  def initialize(token, request)
     @token = token
+    @request = request
   end
 
   def validate(scopes: [])
@@ -31,11 +32,13 @@ class AccessTokenValidationService
     if scopes.blank?
       true
     else
-      #scopes = scopes.reject { |scope| scope[:if].presence && !scope[:if].call(request) }
-      # Check whether the token is allowed access to any of the required scopes.
+      # Remove any scopes whose `if` condition does not return `true`
+      scopes = scopes.reject { |scope| scope[:if].presence && !scope[:if].call(request) }
 
-      scope_names = scopes.map { |scope| scope[:name].to_s }
-      Set.new(scope_names).intersection(Set.new(token.scopes)).present?
+      # Check whether the token is allowed access to any of the required scopes.
+      passed_scope_names = scopes.map { |scope| scope[:name].to_sym }
+      token_scope_names = token.scopes.map(&:to_sym)
+      Set.new(passed_scope_names).intersection(Set.new(token_scope_names)).present?
     end
   end
 end
