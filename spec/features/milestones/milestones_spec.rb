@@ -39,7 +39,7 @@ describe 'Milestone draggable', feature: true, js: true do
     end
 
     it 'assigns issue when it has been dragged to ongoing list' do
-      login_as(:admin)
+      gitlab_sign_in(:admin)
       create_and_drag_issue
 
       expect(@issue.reload.assignees).not_to be_empty
