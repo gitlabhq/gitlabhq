@@ -37,7 +37,7 @@ export default {
   mounted() {
     const path = this.$el.parentNode.dataset.discussionsPath;
     this.$store.dispatch('fetchNotes', path)
-      .finally(() => {
+      .then(() => {
         this.isLoading = false;
       });
   },
