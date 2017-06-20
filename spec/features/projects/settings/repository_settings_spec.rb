@@ -65,6 +65,23 @@ feature 'Repository settings', feature: true do
         expect(page).to have_content('Write access allowed')
       end
 
+      scenario 'edit a deploy key from projects user has access to' do
+        project2 = create(:project_empty_repo)
+        project2.team << [user, role]
+        project2.deploy_keys << private_deploy_key
+
+        visit namespace_project_settings_repository_path(project.namespace, project)
+
+        find('li', text: private_deploy_key.title).click_link('Edit')
+
+        fill_in 'deploy_key_title', with: 'updated_deploy_key'
+        check 'deploy_key_can_push'
+        click_button 'Save changes'
+
+        expect(page).to have_content('updated_deploy_key')
+        expect(page).to have_content('Write access allowed')
+      end
+
       scenario 'remove an existing deploy key' do
         project.deploy_keys << private_deploy_key
         visit namespace_project_settings_repository_path(project.namespace, project)
