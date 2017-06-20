@@ -5,7 +5,8 @@ export default {
   props: {
     noteBody: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     updateHandler: {
       type: Function,
@@ -15,6 +16,11 @@ export default {
       type: Function,
       required: true,
     },
+    saveButtonTitle: {
+      type: String,
+      required: false,
+      default: 'Save comment',
+    }
   },
   data() {
     return {
@@ -40,6 +46,7 @@ export default {
 
     this.markdownDocsUrl = markdownDocs;
     this.markdownPreviewUrl = markdownPreviewUrl;
+    this.$refs.textarea.focus();
   },
 };
 </script>
@@ -68,7 +75,7 @@ export default {
           @click="handleUpdate"
           type="button"
           class="btn btn-nr btn-save">
-          Save comment
+          {{saveButtonTitle}}
         </button>
         <button
           @click="cancelHandler"

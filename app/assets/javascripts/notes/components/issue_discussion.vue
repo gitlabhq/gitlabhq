@@ -4,6 +4,7 @@ import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_
 import IssueNoteHeader from './issue_note_header.vue';
 import IssueNoteActions from './issue_note_actions.vue';
 import IssueNoteEditedText from './issue_note_edited_text.vue';
+import IssueNoteForm from './issue_note_form.vue';
 
 export default {
   props: {
@@ -16,6 +17,7 @@ export default {
     return {
       registerLink: '#',
       signInLink: '#',
+      isReplying: false,
     };
   },
   computed: {
@@ -32,6 +34,7 @@ export default {
     IssueNoteHeader,
     IssueNoteActions,
     IssueNoteEditedText,
+    IssueNoteForm,
   },
   mounted() {
     // We need to grab the register and sign in links from DOM for the time being.
@@ -48,6 +51,15 @@ export default {
       this.$store.commit('toggleDiscussion', {
         discussionId: this.note.id,
       });
+    },
+    showReplyForm() {
+      this.isReplying = true;
+    },
+    cancelReplyForm() {
+      this.isReplying = false;
+    },
+    saveReply() {
+      this.isReplying = false;
     },
   },
 };
@@ -95,10 +107,16 @@ export default {
                 <div class="flash-container"></div>
                 <div class="discussion-reply-holder">
                   <button
-                    v-if="note.can_reply"
+                    v-if="note.can_reply && !isReplying"
+                    @click="showReplyForm"
                     type="button"
-                    class="btn btn-text-field js-discussion-reply-button"
+                    class="btn btn-text-field"
                     title="Add a reply">Reply...</button>
+                    <issue-note-form
+                      v-if="isReplying"
+                      saveButtonTitle="Comment"
+                      :updateHandler="saveReply"
+                      :cancelHandler="cancelReplyForm" />
                   <div
                     v-if="!note.can_reply"
                     class="disabled-comment text-center">
