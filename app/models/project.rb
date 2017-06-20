@@ -350,7 +350,7 @@ class Project < ActiveRecord::Base
       project.run_after_commit { add_import_job }
     end
 
-    after_transition started: :finished, do: :reset_cache_and_import_attrs
+    after_transition started: :finished, do: :perform_housekeeping
   end
 
   class << self
@@ -502,9 +502,14 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def reset_cache_and_import_attrs
+  def perform_housekeeping
     run_after_commit do
-      ProjectCacheWorker.perform_async(self.id)
+      begin
+        ProjectCacheWorker.perform_async(self.id)
+        Projects::HousekeepingService.new(self).execute
+      rescue Projects::HousekeepingService::LeaseTaken => e
+        Rails.logger.info("Could not perform housekeeping for project #{self.path_with_namespace} (#{self.id}): #{e}")
+      end
     end
 
     remove_import_data
