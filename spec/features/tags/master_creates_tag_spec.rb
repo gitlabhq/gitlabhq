@@ -7,10 +7,7 @@ feature 'Master creates tag', feature: true do
   before do
     project.team << [user, :master]
     gitlab_sign_in(user)
-<<<<<<< HEAD
     visit namespace_project_tags_path(project.namespace, project)
-=======
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
   end
 
   context 'from tag list' do

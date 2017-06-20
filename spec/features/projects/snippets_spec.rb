@@ -29,11 +29,7 @@ describe 'Project snippets', :js, feature: true do
 
     context 'when submitting a note' do
       before do
-<<<<<<< HEAD
-        login_as :admin
-=======
         gitlab_sign_in :admin
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
         visit namespace_project_snippet_path(project.namespace, project, snippets[0])
       end
 

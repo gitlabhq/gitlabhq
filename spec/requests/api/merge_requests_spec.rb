@@ -335,13 +335,9 @@ describe API::MergeRequests do
              target_branch: 'master',
              author: user,
              labels: 'label, label2',
-<<<<<<< HEAD
              milestone_id: milestone.id,
              remove_source_branch: true,
              squash: true
-=======
-             milestone_id: milestone.id
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
