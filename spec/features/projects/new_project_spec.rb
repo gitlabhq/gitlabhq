@@ -4,7 +4,7 @@ feature "New project", feature: true do
   let(:user) { create(:admin) }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context "Visibility level selector" do

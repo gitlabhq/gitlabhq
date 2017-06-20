@@ -7,7 +7,7 @@ feature 'Project snippet', :js, feature: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'Ruby file' do

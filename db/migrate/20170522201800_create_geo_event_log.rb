@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Datetime
 class CreateGeoEventLog < ActiveRecord::Migration
   DOWNTIME = false
 

@@ -30,6 +30,13 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    def find_notes(action)
+      @merge_request
+        .notes
+        .joins(:system_note_metadata)
+        .where(system_note_metadata: { action: action })
+    end
+
     def update_merge_request(opts)
       @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
       @merge_request.reload
@@ -377,7 +384,7 @@ describe MergeRequests::UpdateService, services: true do
         should_not_email(non_subscriber)
       end
 
-      context 'when the merge request has the `label` label' do
+      context 'when issue has the `label` label' do
         before do
           merge_request.labels << label
         end
@@ -481,6 +488,9 @@ describe MergeRequests::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -496,6 +506,9 @@ describe MergeRequests::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
     end

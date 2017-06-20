@@ -6,7 +6,7 @@ describe 'Issues sub nav EE', :feature do
 
   before do
     project.add_master(user)
-    login_as(user)
+    gitlab_sign_in(user)
 
     visit namespace_project_issues_path(project.namespace, project)
   end

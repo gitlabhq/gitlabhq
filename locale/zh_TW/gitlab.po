@@ -634,7 +634,7 @@ msgid "The phase of the development lifecycle."
 msgstr "專案開發生命週期的各個階段。"
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
-msgstr "計劃階段顯示從議題添加到日程後至推送第一個送交的時間。當第一次推送送交後，資料將自動填入。"
+msgstr "計劃階段所顯示的是議題被排程後至第一個送交被推送的時間。一旦完成（或執行）首次的推送，資料將自動填入。"
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
 msgstr "上線階段顯示從建立一個議題到部署程式至線上的總時間。當完成從想法到產品實現的循環後，資料將自動填入。"
@@ -667,7 +667,7 @@ msgid "This means you can not push code until you create an empty repository or 
 msgstr ""
 
 msgid "Time before an issue gets scheduled"
-msgstr "議題被列入日程表的時間"
+msgstr "議題等待排程的時間"
 
 msgid "Time before an issue starts implementation"
 msgstr "議題等待開始實作的時間"

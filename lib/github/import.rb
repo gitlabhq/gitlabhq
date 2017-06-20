@@ -92,7 +92,7 @@ module Github
     end
 
     def fetch_wiki_repository
-      wiki_url  = "https://{options.fetch(:token)}@github.com/#{repo}.wiki.git"
+      wiki_url  = "https://#{options.fetch(:token)}@github.com/#{repo}.wiki.git"
       wiki_path = "#{project.path_with_namespace}.wiki"
 
       unless project.wiki.repository_exists?

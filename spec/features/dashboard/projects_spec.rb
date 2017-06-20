@@ -7,7 +7,7 @@ RSpec.describe 'Dashboard Projects', feature: true do
 
   before do
     project.team << [user, :developer]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   it 'shows the project the user in a member of in the list' do

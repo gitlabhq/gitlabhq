@@ -130,8 +130,8 @@ class KubernetesService < DeploymentService
     end
   end
 
-  # Caches all pods & deployments in the namespace so other calls don't need to
-  # block on network access.
+  # Caches resources in the namespace so other calls don't need to block on
+  # network access
   def calculate_reactive_cache
     return unless active? && project && !project.pending_delete?
 

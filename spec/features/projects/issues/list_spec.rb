@@ -7,7 +7,7 @@ feature 'Issues List' do
   background do
     project.team << [user, :developer]
 
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   scenario 'user does not see create new list button' do

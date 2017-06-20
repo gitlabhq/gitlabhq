@@ -193,6 +193,7 @@ describe API::Jobs, :api do
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
     before do
       stub_artifacts_object_storage
+      job
       get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
     end
 

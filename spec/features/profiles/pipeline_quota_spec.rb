@@ -6,7 +6,7 @@ feature 'Profile > Pipeline Quota', feature: true do
   let!(:project) { create(:empty_project, namespace: namespace, shared_runners_enabled: true) }
 
   before do
-    login_with(user)
+    gitlab_sign_in(user)
   end
 
   it 'is linked within the profile page' do

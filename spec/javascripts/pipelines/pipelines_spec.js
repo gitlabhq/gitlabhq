@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import pipelinesComp from '~/pipelines/pipelines';
+import pipelinesComp from '~/pipelines/components/pipelines.vue';
 import Store from '~/pipelines/stores/pipelines_store';
 
 describe('Pipelines', () => {

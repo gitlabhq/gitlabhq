@@ -1,4 +1,5 @@
 # Migration type: online without errors (works on previous version and new one)
+# rubocop:disable Migration/Datetime
 class RemoveLastLdapSyncStatusFromGroups < ActiveRecord::Migration
   DOWNTIME = false
 

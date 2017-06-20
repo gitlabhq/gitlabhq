@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Timestamps
 class AddLdapGroupsTable < ActiveRecord::Migration
   DOWNTIME = false
 

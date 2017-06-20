@@ -137,6 +137,18 @@ describe Ci::API::Builds do
             end
           end
         end
+
+        context 'when docker configuration options are used' do
+          let!(:build) { create(:ci_build, :extended_options, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+
+          it 'starts a build' do
+            register_builds info: { platform: :darwin }
+
+            expect(response).to have_http_status(201)
+            expect(json_response['options']['image']).to eq('ruby:2.1')
+            expect(json_response['options']['services']).to eq(['postgres', 'docker:dind'])
+          end
+        end
       end
 
       context 'when builds are finished' do

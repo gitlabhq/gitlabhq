@@ -38,6 +38,10 @@ module Geo
         finished_at = DateTime.now
       rescue Gitlab::Shell::Error => e
         Rails.logger.error("#{self.class.name}: Error syncing repository for project #{project.path_with_namespace}: #{e}")
+      rescue Gitlab::Git::Repository::NoRepository => e
+        Rails.logger.error("#{self.class.name}: Error invalid repository for project #{project.path_with_namespace}: #{e}")
+        log('Expiring caches')
+        project.repository.after_create
       end
 
       [started_at, finished_at]

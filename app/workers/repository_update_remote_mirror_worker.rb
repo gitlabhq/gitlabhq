@@ -41,7 +41,8 @@ class RepositoryUpdateRemoteMirrorWorker
   private
 
   def fail_remote_mirror(remote_mirror, message)
-    Rails.logger.error(message)
     remote_mirror.mark_as_failed(message)
+
+    Rails.logger.error(message)
   end
 end

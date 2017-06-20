@@ -43,6 +43,7 @@ describe('Header CI Component', () => {
           isLoading: false,
         },
       ],
+      hasSidebarButton: true,
     };
 
     vm = new HeaderCi({
@@ -89,5 +90,9 @@ describe('Header CI Component', () => {
       expect(vm.$el.querySelector('.btn .fa-spinner').getAttribute('style')).toEqual('');
       done();
     });
+  });
+
+  it('should render sidebar toggle button', () => {
+    expect(vm.$el.querySelector('.js-sidebar-build-toggle')).toBeDefined();
   });
 });

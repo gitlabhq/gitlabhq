@@ -97,7 +97,7 @@ PAYLOAD=$(cat << 'JSON'
     },
     {
       "action": "delete",
-      "file_path": "foo/bar2",
+      "file_path": "foo/bar2"
     },
     {
       "action": "move",

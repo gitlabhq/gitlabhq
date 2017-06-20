@@ -10,7 +10,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
     allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
 
-    login_as :admin
+    gitlab_sign_in :admin
 
     # Ensure that undiffable.md is in .gitattributes
     project.repository.copy_gitattributes(branch)
@@ -264,7 +264,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
       # Wait for elements to appear to ensure full page reload
       expect(page).to have_content('This diff was suppressed by a .gitattributes entry')
-      expect(page).to have_content('This diff could not be displayed because it is too large.')
+      expect(page).to have_content('This source diff could not be displayed because it is too large.')
       expect(page).to have_content('too_large_image.jpg')
       find('.note-textarea')
 

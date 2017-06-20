@@ -142,6 +142,8 @@ ActiveRecord::Schema.define(version: 20170612150426) do
     t.integer "mirror_max_capacity", default: 100, null: false
     t.integer "mirror_capacity_threshold", default: 50, null: false
     t.boolean "authorized_keys_enabled"
+    t.boolean "help_page_hide_commercial_content", default: false
+    t.string "help_page_support_url"
   end
 
   create_table "approvals", force: :cascade do |t|

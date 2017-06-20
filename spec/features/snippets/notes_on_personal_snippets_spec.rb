@@ -14,7 +14,7 @@ describe 'Comments on personal snippets', :js, feature: true do
   let!(:other_note) { create(:note_on_personal_snippet) }
 
   before do
-    login_as user
+    gitlab_sign_in user
     visit snippet_path(snippet)
   end
 
@@ -69,6 +69,22 @@ describe 'Comments on personal snippets', :js, feature: true do
       click_button 'Comment'
 
       expect(find('div#notes')).to have_content('This is awesome!')
+    end
+
+    it 'should not have autocomplete' do
+      wait_for_requests
+      request_count_before = page.driver.network_traffic.count
+
+      find('#note_note').native.send_keys('')
+      fill_in 'note[note]', with: '@'
+
+      wait_for_requests
+      request_count_after = page.driver.network_traffic.count
+
+      # This selector probably won't be in place even if autocomplete was enabled
+      # but we want to make sure
+      expect(page).not_to have_selector('.atwho-view')
+      expect(request_count_before).to eq(request_count_after)
     end
   end
 

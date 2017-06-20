@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Admin::Emails", feature: true, js: true do
-  let!(:current_user) { login_as :admin }
+  let!(:current_user) { gitlab_sign_in :admin }
   let!(:group) { create(:group) }
   let!(:project) { create(:project, namespace: group) }
 

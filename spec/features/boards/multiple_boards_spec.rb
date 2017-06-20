@@ -11,7 +11,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
     before do
       project.team << [user, :master]
 
-      login_as(user)
+      gitlab_sign_in(user)
 
       visit namespace_project_boards_path(project.namespace, project)
       wait_for_requests

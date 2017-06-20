@@ -7,7 +7,7 @@ describe 'Edit Project Settings', feature: true do
   let(:project) { create(:empty_project, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe 'Project settings section', js: true do

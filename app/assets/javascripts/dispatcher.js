@@ -2,7 +2,6 @@
 /* global UsernameValidator */
 /* global ActiveTabMemoizer */
 /* global ShortcutsNavigation */
-/* global Build */
 /* global IssuableIndex */
 /* global ShortcutsIssuable */
 /* global ZenMode */
@@ -87,7 +86,18 @@ import AuditLogs from './audit_logs';
       path = page.split(':');
       shortcut_handler = null;
 
-      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
+      $('.js-gfm-input').each((i, el) => {
+        const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+        const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+        gfm.setup($(el), {
+          emojis: true,
+          members: enableGFM,
+          issues: enableGFM,
+          milestones: enableGFM,
+          mergeRequests: enableGFM,
+          labels: enableGFM,
+        });
+      });
 
       function initBlob() {
         new LineHighlighter();
@@ -125,9 +135,6 @@ import AuditLogs from './audit_logs';
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
-          break;
-        case 'projects:jobs:show':
-          new Build();
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
@@ -227,6 +234,8 @@ import AuditLogs from './audit_logs';
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
         case 'projects:snippets:update':
+          new gl.GLForm($('.snippet-form'), true);
+          break;
         case 'snippets:new':
         case 'snippets:edit':
         case 'snippets:create':

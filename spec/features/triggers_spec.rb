@@ -7,14 +7,13 @@ feature 'Triggers', feature: true, js: true do
   let(:guest_user) { create(:user) }
 
   before do
-    login_as(user)
-  end
+    gitlab_sign_in(user)
 
-  before do
     @project = create(:empty_project)
     @project.team << [user, :master]
     @project.team << [user2, :master]
     @project.team << [guest_user, :guest]
+
     visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 

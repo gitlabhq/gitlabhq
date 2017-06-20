@@ -79,7 +79,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
   context 'can be resolved in the UI' do
     before do
       project.team << [user, :developer]
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     context 'the conflicts are resolvable' do
@@ -164,7 +164,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       before do
         project.team << [user, :developer]
-        login_as(user)
+        gitlab_sign_in(user)
 
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
       end

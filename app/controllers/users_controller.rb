@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
       format.atom do
         load_events
-        render layout: false
+        render layout: 'xml.atom'
       end
 
       format.json do

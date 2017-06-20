@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import pipelinesActionsComp from '~/pipelines/components/pipelines_actions';
+import pipelinesActionsComp from '~/pipelines/components/pipelines_actions.vue';
 
 describe('Pipelines Actions dropdown', () => {
   let component;

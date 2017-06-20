@@ -65,14 +65,18 @@
     };
 
     Milestone.successCallback = function(data, element) {
-      var img_tag;
-      if (data.assignee) {
-        img_tag = $('<img/>');
-        img_tag.attr('src', data.assignee.avatar_url);
-        img_tag.addClass('avatar s16');
-        $(element).find('.assignee-icon img').replaceWith(img_tag);
-      } else {
-        $(element).find('.assignee-icon').empty();
+      const $avatarContainer = $(element).find('.assignee-icon');
+      $avatarContainer.empty();
+
+      if (data.assignees && data.assignees.length > 0) {
+        const $avatars = data.assignees.map((assignee) => {
+          const img_tag = $('<img/>');
+          img_tag.attr('src', assignee.avatar_url);
+          img_tag.addClass('avatar s16');
+          return img_tag;
+        });
+
+        $avatarContainer.append($avatars);
       }
     };
 
@@ -161,9 +165,9 @@
           data = (function() {
             switch (newState) {
               case 'ongoing':
-                return opts.fieldName + '[assignee_id]=' + gon.current_user_id;
+                return `${opts.fieldName}[assignee_ids][]=${gon.current_user_id}`;
               case 'unassigned':
-                return opts.fieldName + '[assignee_id]=';
+                return `${opts.fieldName}[assignee_ids][]=0`;
               case 'closed':
                 return opts.fieldName + '[state_event]=close';
             }

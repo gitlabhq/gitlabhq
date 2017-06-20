@@ -14,7 +14,7 @@ module IssuesAction
 
     respond_to do |format|
       format.html
-      format.atom { render layout: false }
+      format.atom { render layout: 'xml.atom' }
     end
   end
 end

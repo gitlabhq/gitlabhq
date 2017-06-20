@@ -8,7 +8,7 @@ describe 'Subgroup Issuables', :feature, :js, :nested_groups do
 
   before do
     project.add_master(user)
-    login_as user
+    gitlab_sign_in user
   end
 
   it 'shows the full subgroup title when issues index page is empty' do

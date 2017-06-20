@@ -205,5 +205,26 @@ describe Geo::RepositorySyncService, services: true do
         end
       end
     end
+
+    context 'when Gitlab::Shell::Error is raised' do
+      let(:project) { create(:empty_project) }
+
+      it 'rescues exception' do
+        expect(subject).to receive(:fetch_project_repository).and_raise(Gitlab::Shell::Error)
+
+        expect { subject.execute }.not_to raise_error
+      end
+    end
+
+    context 'when Gitlab::Git::Repository::NoRepository is raised' do
+      let(:project) { create(:empty_project) }
+
+      it 'rescues exception and fires after_create hook' do
+        expect(subject).to receive(:fetch_project_repository).and_raise(Gitlab::Git::Repository::NoRepository)
+        expect_any_instance_of(Repository).to receive(:after_create)
+
+        expect { subject.execute }.not_to raise_error
+      end
+    end
   end
 end

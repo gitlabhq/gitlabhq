@@ -18,6 +18,15 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
+// optional dependency `node-zopfli` is unavailable on CentOS 6
+var ZOPFLI_AVAILABLE;
+try {
+  require.resolve('node-zopfli');
+  ZOPFLI_AVAILABLE = true;
+} catch(err) {
+  ZOPFLI_AVAILABLE = false;
+}
+
 var config = {
   // because sqljs requires fs.
   node: {
@@ -47,6 +56,7 @@ var config = {
     issues:               './issues/issues_bundle.js',
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
+    job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -54,7 +64,7 @@ var config = {
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-    pipelines:            './pipelines/index.js',
+    pipelines:            './pipelines/pipelines_bundle.js',
     pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
@@ -164,6 +174,7 @@ var config = {
         'groups',
         'issuable',
         'issue_show',
+        'job_details',
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
@@ -232,7 +243,7 @@ if (IS_PRODUCTION) {
     config.plugins.push(
       new CompressionPlugin({
         asset: '[path].gz[query]',
-        algorithm: 'zopfli',
+        algorithm: ZOPFLI_AVAILABLE ? 'zopfli' : 'gzip',
       })
     );
   }

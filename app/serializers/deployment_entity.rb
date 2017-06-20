@@ -24,6 +24,6 @@ class DeploymentEntity < Grape::Entity
 
   expose :user, using: UserEntity
   expose :commit, using: CommitEntity
-  expose :deployable, using: BuildEntity
-  expose :manual_actions, using: BuildEntity
+  expose :deployable, using: JobEntity
+  expose :manual_actions, using: JobEntity
 end

@@ -76,7 +76,7 @@ We have split this stage in steps so it is easier to follow.
 
      ![JIRA add user to group](img/jira_add_user_to_group.png)
 
----
+     ---
 
 The JIRA configuration is over. Write down the new JIRA username and its
 password as they will be needed when configuring GitLab in the next section.
