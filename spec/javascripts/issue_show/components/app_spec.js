@@ -51,7 +51,6 @@ describe('Issuable output', () => {
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, issueShowInterceptor);
   });
 
   it('should render a title/description/edited and update title/description/edited on update', (done) => {
