@@ -2,7 +2,6 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-<<<<<<< HEAD
   hello: "Hello world"
   activerecord:
     attributes:
@@ -15,8 +14,6 @@ en:
       wrong_size: "is the wrong size (should be %{file_size})"
       size_too_small: "is too small (should be at least %{file_size})"
       size_too_big: "is too big (should be at most %{file_size})"
-=======
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
   views:
     pagination:
       previous: "Prev"

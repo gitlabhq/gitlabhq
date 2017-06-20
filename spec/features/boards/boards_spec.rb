@@ -538,11 +538,7 @@ describe 'Issue Boards', feature: true, js: true do
   context 'signed out user' do
     before do
       gitlab_sign_out
-<<<<<<< HEAD
       visit namespace_project_boards_path(project.namespace, project)
-=======
-      visit namespace_project_board_path(project.namespace, project, board)
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
       wait_for_requests
     end
 
@@ -566,11 +562,7 @@ describe 'Issue Boards', feature: true, js: true do
       project.team << [user_guest, :guest]
       gitlab_sign_out
       gitlab_sign_in(user_guest)
-<<<<<<< HEAD
       visit namespace_project_boards_path(project.namespace, project)
-=======
-      visit namespace_project_board_path(project.namespace, project, board)
->>>>>>> bf57a7e80c44080dc7ec0fd774148afdae29cc31
       wait_for_requests
     end
 
