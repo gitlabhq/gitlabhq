@@ -9,6 +9,12 @@
       %li
         %a.js-md-preview-button{ href: "#md-preview-holder", tabindex: -1 }
           Preview
+
+      - if defined?(@issue) && @issue.confidential?
+        %li.confidential-issue-warning
+          = icon('warning')
+          %span This is a confidential issue. Your comment will not be visible to the public.
+
       %li.pull-right
         .toolbar-group
           = markdown_toolbar_button({ icon: "bold fw", data: { "md-tag" => "**" }, title: "Add bold text" })
