@@ -92,13 +92,11 @@ module Geo
       finished_at = nil
 
       begin
-        # Second .wiki call returns a Gollum::Wiki, and it will always create the physical repository when not found
-        if project.wiki.wiki.exist?
-          project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
-        end
+        project.wiki.create_repo! unless project.wiki.repository_exists?
+        project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
 
         finished_at = DateTime.now
-      rescue Gitlab::Shell::Error => e
+      rescue Gitlab::Shell::Error, ProjectWiki::CouldNotCreateWikiError => e
         Rails.logger.error("#{self.class.name}: Error syncing wiki repository for project #{project.path_with_namespace}: #{e}")
       end
 
