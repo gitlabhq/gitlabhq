@@ -176,7 +176,7 @@ msgid "Commits|History"
 msgstr "历史"
 
 msgid "Committed by"
-msgstr "提交于"
+msgstr "提交者："
 
 msgid "Compare"
 msgstr "比较"
