@@ -14,7 +14,9 @@ describe API::Helpers do
   let(:request) { Rack::Request.new(env) }
   let(:header) { }
 
-  before { allow_any_instance_of(self.class).to receive(:options).and_return({}) }
+  before do
+    allow_any_instance_of(self.class).to receive(:options).and_return({})
+  end
 
   def set_env(user_or_token, identifier)
     clear_env
