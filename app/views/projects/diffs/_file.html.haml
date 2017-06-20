@@ -17,7 +17,7 @@
         - if @merge_request && @merge_request.source_project && editable_diff?(diff_file)
           - link_opts = @merge_request.persisted? ? { from_merge_request_iid: @merge_request.iid } : {}
           = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
-                           blob: blob, link_opts: link_opts)
+                           blob: diff_file.blob, link_opts: link_opts)
 
         = view_file_button(diff_file.content_sha, diff_file.file_path, project)
         = view_on_environment_button(diff_file.content_sha, diff_file.file_path, environment) if environment
