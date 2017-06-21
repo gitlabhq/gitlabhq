@@ -39,7 +39,6 @@ export default class GroupsStore {
     this.state.pageInfo = paginationInfo;
   }
 
-  // Here be dragons
   buildTree(rawGroups, parentGroup) {
     const groups = this.decorateGroups(rawGroups);
     const tree = {};
@@ -69,8 +68,7 @@ export default class GroupsStore {
           // e.g. If this group is `one / two / three` we are going to put it inside `one`
           orphans.push(currentGroup);
 
-          // Add
-          // Lo metemos a tree para conservar el orden original
+          // Add to tree to preserve original order
           tree[`id${currentGroup.id}`] = currentGroup;
         }
       } else {
