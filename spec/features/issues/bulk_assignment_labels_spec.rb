@@ -16,6 +16,21 @@ feature 'Issues > Labels bulk assignment', feature: true do
       login_as user
     end
 
+    context 'sidebar' do
+      before do
+        enable_bulk_update
+      end
+
+      it 'is present when bulk edit is enabled' do
+        expect(page).to have_css('.issuable-sidebar')
+      end
+
+      it 'is not present when bulk edit is disabled' do
+        disable_bulk_update
+        expect(page).not_to have_css('.issuable-sidebar')
+      end
+    end
+
     context 'can bulk assign' do
       before do
         enable_bulk_update
@@ -397,5 +412,9 @@ feature 'Issues > Labels bulk assignment', feature: true do
   def enable_bulk_update
     visit namespace_project_issues_path(project.namespace, project)
     click_button 'Edit Issues'
+  end
+
+  def disable_bulk_update
+    click_button 'Cancel'
   end
 end
