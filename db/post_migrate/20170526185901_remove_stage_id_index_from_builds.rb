@@ -7,6 +7,7 @@ class RemoveStageIdIndexFromBuilds < ActiveRecord::Migration
 
   def up
     if index_exists?(:ci_builds, :stage_id)
+      remove_foreign_key(:ci_builds, column: :stage_id)
       remove_concurrent_index(:ci_builds, :stage_id)
     end
   end
