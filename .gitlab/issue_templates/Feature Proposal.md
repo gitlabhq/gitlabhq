@@ -3,7 +3,13 @@ Please read this!
 Before opening a new issue, make sure to search for keywords in the issues
 filtered by the "feature proposal" label:
 
+For the Community Edition issue tracker:
+
 - https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=feature+proposal
+
+For the Enterprise Edition issue tracker:
+
+- https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name%5B%5D=feature+proposal
 
 and verify the issue you're about to submit isn't a duplicate.
 
