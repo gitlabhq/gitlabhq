@@ -138,17 +138,6 @@ module Ci
       ExpandVariables.expand(environment, simple_variables) if environment
     end
 
-    def expanded_environment_url
-      return @expanded_environment_url if defined?(@expanded_environment_url)
-
-      @expanded_environment_url =
-        if unexpanded_url = environment_url
-          ExpandVariables.expand(unexpanded_url, simple_variables)
-        else
-          persisted_environment&.external_url
-        end
-    end
-
     def has_environment?
       environment.present?
     end
@@ -482,15 +471,10 @@ module Ci
 
       variables = persisted_environment.predefined_variables
 
-      if url = environment_url
-        # Note that CI_ENVIRONMENT_URL should be the last variable, because
-        # here we're passing unexpanded environment_url for runner to expand,
-        # and the runner would expand in order. In order to make sure that
-        # CI_ENVIRONMENT_URL has everything available, such as variables
-        # from Environment#predefined_variables, we need to make sure it's
-        # the last variable.
-        variables << { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
-      end
+        # Here we're passing unexpanded environment_url for runner to expand,
+        # and we need to make sure that CI_ENVIRONMENT_NAME and
+        # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
+      variables << { key: 'CI_ENVIRONMENT_URL', value: environment_url, public: true } if environment_url
 
       variables
     end
@@ -514,7 +498,11 @@ module Ci
     end
 
     def environment_url
-      options&.dig(:environment, :url)
+      return @environment_url if defined?(@environment_url)
+
+      @environment_url =
+        options&.dig(:environment, :url) ||
+          persisted_environment&.external_url
     end
 
     def build_attributes_from_config

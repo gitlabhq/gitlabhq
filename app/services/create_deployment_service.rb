@@ -2,7 +2,7 @@ class CreateDeploymentService
   attr_reader :job
 
   delegate :expanded_environment_name,
-           :expanded_environment_url,
+           :simple_variables,
            :project,
            to: :job
 
@@ -48,6 +48,17 @@ class CreateDeploymentService
 
   def environment_options
     @environment_options ||= job.options&.dig(:environment) || {}
+  end
+
+  def expanded_environment_url
+    return @expanded_environment_url if defined?(@expanded_environment_url)
+
+    @expanded_environment_url =
+      if unexpanded_url = environment_options[:url]
+        ExpandVariables.expand(unexpanded_url, simple_variables)
+      else
+        environment&.external_url
+      end
   end
 
   def on_stop
