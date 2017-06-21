@@ -28,7 +28,7 @@ module Gitlab
       def levels_for_user(user = nil)
         return [PUBLIC] unless user
 
-        if user.admin?
+        if user.admin_or_auditor?
           [PRIVATE, INTERNAL, PUBLIC]
         elsif user.external?
           [PUBLIC]
