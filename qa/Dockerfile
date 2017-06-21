@@ -2,7 +2,7 @@ FROM ruby:2.3
 LABEL maintainer "Grzegorz Bizon <grzegorz@gitlab.com>"
 
 ENV CHROME_VERSION 59.0.3071.104-1
-ENV DRIVER_VERSION 2.30
+ENV CHROME_DRIVER_VERSION 2.30
 
 ##
 # Update APT sources and install some dependencies
@@ -20,7 +20,7 @@ RUN apt-get update -q && DEBIAN_FRONTEND=noninteractive apt-get install -y googl
 ##
 # Install chromedriver to make it work with Selenium
 #
-RUN wget -q https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_linux64.zip
+RUN wget -q https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
 RUN unzip chromedriver_linux64.zip -d /usr/local/bin
 
 RUN apt-get clean
