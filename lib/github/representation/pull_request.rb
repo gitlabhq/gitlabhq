@@ -103,6 +103,12 @@ module Github
       end
 
       def remove_source_branch!
+        # We should remove the source/target branches only if they were
+        # restored. Otherwise, we'll remove branches like 'master' that
+        # target_branch_exists? returns true. In other words, we need
+        # to clean up only the restored branches that (source|target)_branch_exists?
+        # returns false for the first time it has been called, because of
+        # this that is important to memoize these values.
         source_branch.remove!(source_branch_name) unless source_branch_exists?
       end
 
