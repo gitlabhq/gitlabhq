@@ -19,10 +19,7 @@ class Project < ActiveRecord::Base
   include Routable
 
   # EE specific modules
-  include Elastic::ProjectsSearch
-  prepend EE::GeoAwareAvatar
   prepend EE::Project
-  prepend EE::Project::ImportStatusStateMachine
 
   extend Gitlab::ConfigHelper
 

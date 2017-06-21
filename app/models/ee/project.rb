@@ -8,6 +8,9 @@ module EE
 
     prepended do
       include IgnorableColumn
+      include Elastic::ProjectsSearch
+      prepend GeoAwareAvatar
+      prepend ImportStatusStateMachine
 
       ignore_column :sync_time
 
