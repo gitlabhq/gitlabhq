@@ -1,63 +1,42 @@
 export default {
   name: 'MRWidgetRelatedLinks',
   props: {
-    isMerged: { type: Boolean, required: true },
     relatedLinks: { type: Object, required: true },
   },
   computed: {
-    // TODO: the following should be handled by i18n
-    closingText() {
-      if (this.isMerged) {
-        return `Closed ${this.issueLabel('closing')}`;
-      }
-
-      return `Closes ${this.issueLabel('closing')}`;
-    },
     hasLinks() {
       const { closing, mentioned, assignToMe } = this.relatedLinks;
       return closing || mentioned || assignToMe;
     },
-    // TODO: the following should be handled by i18n
-    mentionedText() {
-      if (this.isMerged) {
-        if (this.hasMultipleIssues(this.relatedLinks.mentioned)) {
-          return 'are mentioned but were not closed';
-        }
-
-        return 'is mentioned but was not closed';
-      }
-
-      if (this.hasMultipleIssues(this.relatedLinks.mentioned)) {
-        return 'are mentioned but will not be closed';
-      }
-
-      return 'is mentioned but will not be closed';
-    },
   },
   methods: {
     hasMultipleIssues(text) {
-      return /<\/a>,? and <a/.test(text);
+      return !text ? false : text.match(/<\/a> and <a/);
     },
-    // TODO: the following should be handled by i18n
     issueLabel(field) {
       return this.hasMultipleIssues(this.relatedLinks[field]) ? 'issues' : 'issue';
     },
+    verbLabel(field) {
+      return this.hasMultipleIssues(this.relatedLinks[field]) ? 'are' : 'is';
+    },
   },
   template: `
-    <div v-if="hasLinks">
+    <section
+      v-if="hasLinks"
+      class="mr-info-list mr-links">
       <div class="legend"></div>
       <p v-if="relatedLinks.closing">
-        {{closingText}}
+        Closes {{issueLabel('closing')}}
         <span v-html="relatedLinks.closing"></span>.
       </p>
       <p v-if="relatedLinks.mentioned">
         <span class="capitalize">{{issueLabel('mentioned')}}</span>
         <span v-html="relatedLinks.mentioned"></span>
-        {{mentionedText}}
+        {{verbLabel('mentioned')}} mentioned but will not be closed.
       </p>
       <p v-if="relatedLinks.assignToMe">
         <span v-html="relatedLinks.assignToMe"></span>
       </p>
-    </div>
+    </section>
   `,
 };
