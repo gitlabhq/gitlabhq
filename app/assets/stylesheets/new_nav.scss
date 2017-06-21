@@ -20,7 +20,7 @@ header.navbar-gitlab-new {
       color: currentColor;
 
       @media (min-width: $screen-sm-min) {
-        padding-right: 15px;
+        padding-right: $gl-padding;
       }
 
       a {
@@ -55,6 +55,7 @@ header.navbar-gitlab-new {
 
   .container-fluid {
     .navbar-toggle {
+      color: currentColor;
       border-left: 1px solid currentColor;
 
       &:hover,
@@ -119,7 +120,7 @@ header.navbar-gitlab-new {
       will-change: opacity;
 
       @media (min-width: $screen-sm-min) {
-        padding: 15px 15px 12px;
+        padding: 15px $gl-padding 12px;
         font-size: 14px;
       }
     }
