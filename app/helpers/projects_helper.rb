@@ -194,8 +194,8 @@ module ProjectsHelper
   end
 
   def load_pipeline_status(projects)
-    Gitlab::Cache::Ci::ProjectPipelineStatus.
-      load_in_batch_for_projects(projects)
+    Gitlab::Cache::Ci::ProjectPipelineStatus
+      .load_in_batch_for_projects(projects)
   end
 
   private

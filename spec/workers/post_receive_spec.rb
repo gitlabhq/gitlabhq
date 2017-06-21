@@ -123,9 +123,9 @@ describe PostReceive do
     end
 
     it "does not run if the author is not in the project" do
-      allow_any_instance_of(Gitlab::GitPostReceive).
-        to receive(:identify_using_ssh_key).
-        and_return(nil)
+      allow_any_instance_of(Gitlab::GitPostReceive)
+        .to receive(:identify_using_ssh_key)
+        .and_return(nil)
 
       expect(project).not_to receive(:execute_hooks)
 

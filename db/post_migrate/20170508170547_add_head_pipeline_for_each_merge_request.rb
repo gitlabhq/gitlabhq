@@ -9,11 +9,11 @@ class AddHeadPipelineForEachMergeRequest < ActiveRecord::Migration
     pipelines = Arel::Table.new(:ci_pipelines)
     merge_requests = Arel::Table.new(:merge_requests)
 
-    head_id = pipelines.
-      project(Arel::Nodes::NamedFunction.new('max', [pipelines[:id]])).
-      from(pipelines).
-      where(pipelines[:ref].eq(merge_requests[:source_branch])).
-      where(pipelines[:project_id].eq(merge_requests[:source_project_id]))
+    head_id = pipelines
+      .project(Arel::Nodes::NamedFunction.new('max', [pipelines[:id]]))
+      .from(pipelines)
+      .where(pipelines[:ref].eq(merge_requests[:source_branch]))
+      .where(pipelines[:project_id].eq(merge_requests[:source_project_id]))
 
     sub_query = Arel::Nodes::SqlLiteral.new(Arel::Nodes::Grouping.new(head_id).to_sql)
 

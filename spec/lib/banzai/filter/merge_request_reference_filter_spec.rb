@@ -36,8 +36,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_merge_request_url(project.namespace, project, merge)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_merge_request_url(project.namespace, project, merge)
     end
 
     it 'links with adjacent text' do
@@ -107,8 +107,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_merge_request_url(project2.namespace,
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.namespace_project_merge_request_url(project2.namespace,
                                                        project2, merge)
     end
 
@@ -141,8 +141,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_merge_request_url(project2.namespace,
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.namespace_project_merge_request_url(project2.namespace,
                                                       project2, merge)
     end
 
@@ -175,8 +175,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_merge_request_url(project2.namespace,
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.namespace_project_merge_request_url(project2.namespace,
                                                       project2, merge)
     end
 
@@ -208,8 +208,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq reference
+      expect(doc.css('a').first.attr('href'))
+        .to eq reference
     end
 
     it 'links with adjacent text' do

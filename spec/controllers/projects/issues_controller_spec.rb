@@ -328,8 +328,8 @@ describe Projects::IssuesController do
             it 'redirect to issue page' do
               update_verified_issue
 
-              expect(response).
-                to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+              expect(response)
+                .to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
             end
 
             it 'accepts an issue after recaptcha is verified' do
@@ -343,8 +343,8 @@ describe Projects::IssuesController do
             it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
               spam_log = create(:spam_log)
 
-              expect { update_issue(spam_log_id: spam_log.id, recaptcha_verification: true) }.
-                not_to change { SpamLog.last.recaptcha_verified }
+              expect { update_issue(spam_log_id: spam_log.id, recaptcha_verification: true) }
+                .not_to change { SpamLog.last.recaptcha_verified }
             end
           end
         end
@@ -685,8 +685,8 @@ describe Projects::IssuesController do
           it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
             spam_log = create(:spam_log)
 
-            expect { post_new_issue({}, { spam_log_id: spam_log.id, recaptcha_verification: true } ) }.
-              not_to change { SpamLog.last.recaptcha_verified }
+            expect { post_new_issue({}, { spam_log_id: spam_log.id, recaptcha_verification: true } ) }
+              .not_to change { SpamLog.last.recaptcha_verified }
           end
         end
       end

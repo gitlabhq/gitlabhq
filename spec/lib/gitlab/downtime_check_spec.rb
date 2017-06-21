@@ -11,12 +11,12 @@ describe Gitlab::DowntimeCheck do
 
     context 'when a migration does not specify if downtime is required' do
       it 'raises RuntimeError' do
-        expect(subject).to receive(:class_for_migration_file).
-          with(path).
-          and_return(Class.new)
+        expect(subject).to receive(:class_for_migration_file)
+          .with(path)
+          .and_return(Class.new)
 
-        expect { subject.check([path]) }.
-          to raise_error(RuntimeError, /it requires downtime/)
+        expect { subject.check([path]) }
+          .to raise_error(RuntimeError, /it requires downtime/)
       end
     end
 
@@ -25,12 +25,12 @@ describe Gitlab::DowntimeCheck do
         it 'raises RuntimeError' do
           stub_const('TestMigration::DOWNTIME', true)
 
-          expect(subject).to receive(:class_for_migration_file).
-            with(path).
-            and_return(TestMigration)
+          expect(subject).to receive(:class_for_migration_file)
+            .with(path)
+            .and_return(TestMigration)
 
-          expect { subject.check([path]) }.
-            to raise_error(RuntimeError, /no reason was given/)
+          expect { subject.check([path]) }
+            .to raise_error(RuntimeError, /no reason was given/)
         end
       end
 
@@ -39,9 +39,9 @@ describe Gitlab::DowntimeCheck do
           stub_const('TestMigration::DOWNTIME', true)
           stub_const('TestMigration::DOWNTIME_REASON', 'foo')
 
-          expect(subject).to receive(:class_for_migration_file).
-            with(path).
-            and_return(TestMigration)
+          expect(subject).to receive(:class_for_migration_file)
+            .with(path)
+            .and_return(TestMigration)
 
           messages = subject.check([path])
 
@@ -65,9 +65,9 @@ describe Gitlab::DowntimeCheck do
 
       expect(subject).to receive(:require).with(path)
 
-      expect(subject).to receive(:class_for_migration_file).
-        with(path).
-        and_return(TestMigration)
+      expect(subject).to receive(:class_for_migration_file)
+        .with(path)
+        .and_return(TestMigration)
 
       expect(subject).to receive(:puts).with(an_instance_of(String))
 

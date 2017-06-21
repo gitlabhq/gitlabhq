@@ -93,8 +93,8 @@ describe IssuesHelper do
       award = build_stubbed(:award_emoji, user: build_stubbed(:user, name: 'Jane'))
       awards = Array.new(5, award).push(my_award)
 
-      expect(award_user_list(awards, current_user, limit: 2)).
-        to eq("You, Jane, and 4 more.")
+      expect(award_user_list(awards, current_user, limit: 2))
+        .to eq("You, Jane, and 4 more.")
     end
   end
 

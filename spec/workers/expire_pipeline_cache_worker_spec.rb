@@ -37,8 +37,8 @@ describe ExpirePipelineCacheWorker do
     end
 
     it 'updates the cached status for a project' do
-      expect(Gitlab::Cache::Ci::ProjectPipelineStatus).to receive(:update_for_pipeline).
-                                                            with(pipeline)
+      expect(Gitlab::Cache::Ci::ProjectPipelineStatus).to receive(:update_for_pipeline)
+                                                            .with(pipeline)
 
       subject.perform(pipeline.id)
     end
