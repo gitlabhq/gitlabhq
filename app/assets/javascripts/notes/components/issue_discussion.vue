@@ -1,4 +1,6 @@
 <script>
+/* global Flash */
+
 import IssueNote from './issue_note.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueNoteHeader from './issue_note_header.vue';
@@ -76,6 +78,9 @@ export default {
       this.$store.dispatch('replyToDiscussion', data)
         .then(() => {
           this.isReplying = false;
+        })
+        .catch(() => {
+          new Flash('Something went wrong while adding your reply. Please try again.'); // eslint-disable-line
         });
     },
   },

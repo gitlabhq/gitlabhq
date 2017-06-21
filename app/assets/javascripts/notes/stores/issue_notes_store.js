@@ -1,4 +1,3 @@
-/* global Flash */
 /* eslint-disable no-param-reassign */
 
 import service from '../services/issue_notes_service';
@@ -52,9 +51,6 @@ const actions = {
       .then(res => res.json())
       .then((res) => {
         context.commit('setNotes', res);
-      })
-      .catch(() => {
-        new Flash('Something went wrong while fetching issue comments. Please try again.'); // eslint-disable-line
       });
   },
   deleteNote(context, note) {
@@ -62,9 +58,6 @@ const actions = {
       .deleteNote(note.path)
       .then(() => {
         context.commit('deleteNote', note);
-      })
-      .catch(() => {
-        new Flash('Something went wrong while deleting your note. Please try again.'); // eslint-disable-line
       });
   },
   replyToDiscussion(context, data) {
@@ -72,12 +65,9 @@ const actions = {
 
     return service
       .replyToDiscussion(endpoint, reply)
-      .then((res) => res.json())
+      .then(res => res.json())
       .then((res) => {
         context.commit('addNewReplyToDiscussion', res);
-      })
-      .catch(() => {
-        new Flash('Something went wrong while adding your reply. Please try again.'); // eslint-disable-line
       });
   },
 };

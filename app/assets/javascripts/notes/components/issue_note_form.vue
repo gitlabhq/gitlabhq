@@ -20,7 +20,7 @@ export default {
       type: String,
       required: false,
       default: 'Save comment',
-    }
+    },
   },
   data() {
     return {

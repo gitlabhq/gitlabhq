@@ -1,4 +1,6 @@
 <script>
+/* global Flash */
+
 import Vue from 'vue';
 import Vuex from 'vuex';
 import storeOptions from '../stores/issue_notes_store';
@@ -39,6 +41,9 @@ export default {
     this.$store.dispatch('fetchNotes', path)
       .then(() => {
         this.isLoading = false;
+      })
+      .catch(() => {
+        new Flash('Something went wrong while fetching issue comments. Please try again.'); // eslint-disable-line
       });
   },
 };

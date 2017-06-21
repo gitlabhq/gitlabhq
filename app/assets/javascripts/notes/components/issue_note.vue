@@ -1,4 +1,6 @@
 <script>
+/* global Flash */
+
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueNoteHeader from './issue_note_header.vue';
 import IssueNoteActions from './issue_note_actions.vue';
@@ -50,6 +52,7 @@ export default {
             this.isDeleting = false;
           })
           .catch(() => {
+            new Flash('Something went wrong while deleting your note. Please try again.'); // eslint-disable-line
             this.isDeleting = false;
           });
       }
