@@ -82,6 +82,30 @@ describe API::IssueLinks do
         end
       end
 
+      context 'when trying to relate to a confidential issue' do
+        it 'returns 404' do
+          project = create(:empty_project, :public)
+          target_issue = create(:issue, :confidential, project: project)
+
+          post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
+               target_project_id: project.id, target_issue_iid: target_issue.iid
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'when trying to relate to a private project issue' do
+        it 'returns 404' do
+          project = create(:empty_project, :private)
+          target_issue = create(:issue, project: project)
+
+          post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
+               target_project_id: project.id, target_issue_iid: target_issue.iid
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
       context 'when user has ability to create an issue link' do
         it 'returns 201' do
           target_issue = create(:issue, project: project)
@@ -141,7 +165,19 @@ describe API::IssueLinks do
         end
       end
 
-      context 'success' do
+      context 'when trying to delete a link with a private project issue' do
+        it 'returns 401' do
+          project = create(:empty_project, :private)
+          target_issue = create(:issue, project: project)
+          issue_link = create(:issue_link, source: issue, target: target_issue)
+
+          delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
+
+          expect(response).to have_http_status(401)
+        end
+      end
+
+      context 'when user has ability to delete the issue link' do
         it 'returns 200' do
           target_issue = create(:issue, project: project)
           issue_link = create(:issue_link, source: issue, target: target_issue)
