@@ -609,11 +609,12 @@ ActiveRecord::Schema.define(version: 20170614061551) do
 
   create_table "geo_repository_deleted_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
-    t.datetime "created_at", null: false
     t.text "repository_storage_path", null: false
     t.text "deleted_path", null: false
     t.text "deleted_wiki_path"
     t.text "deleted_project_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_index "geo_repository_deleted_events", ["project_id"], name: "index_geo_repository_deleted_events_on_project_id", using: :btree
