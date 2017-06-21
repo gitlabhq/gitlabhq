@@ -300,7 +300,7 @@ describe API::V3::Users do
     end
 
     it 'returns a 404 error if not found' do
-      get v3_api('/users/42/events', user)
+      get v3_api('/users/420/events', user)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')

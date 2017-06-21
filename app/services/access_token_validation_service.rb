@@ -7,7 +7,7 @@ class AccessTokenValidationService
 
   attr_reader :token, :request
 
-  def initialize(token, request)
+  def initialize(token, request: nil)
     @token = token
     @request = request
   end

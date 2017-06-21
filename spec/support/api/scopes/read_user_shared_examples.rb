@@ -32,7 +32,6 @@ shared_examples_for 'allows the "read_user" scope' do
   end
 
   context 'for doorkeeper (OAuth) tokens' do
-    let!(:user) {create(:user)}
     let!(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
 
     context 'when the requesting token has the "api" scope' do
