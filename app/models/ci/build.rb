@@ -176,12 +176,9 @@ module Ci
     #   * Lowercased
     #   * Anything not matching [a-z0-9-] is replaced with a -
     #   * Maximum length is 63 bytes
-    #   * First/Last Character is not a hyphen
     def ref_slug
-      ref.to_s
-          .downcase
-          .gsub(/[^a-z0-9]/, '-')[0..62]
-          .gsub(/(\A-+|-+\z)/, '')
+      slugified = ref.to_s.downcase
+      slugified.gsub(/[^a-z0-9]/, '-')[0..62]
     end
 
     # Variables whose value does not depend on environment
@@ -195,8 +192,11 @@ module Ci
       variables += yaml_variables
       variables += user_variables
       variables += project.secret_variables_for(ref).map(&:to_runner_variable)
-      variables += trigger_request.user_variables if trigger_request
-      variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
+      if trigger_request
+        variables += trigger_request.user_variables
+      elsif pipeline.pipeline_schedule
+        variables += pipeline.pipeline_schedule.variables.map(&:to_runner_variable)
+      end
       variables
     end
 

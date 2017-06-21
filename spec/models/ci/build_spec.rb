@@ -998,17 +998,13 @@ describe Ci::Build, :models do
 
   describe '#ref_slug' do
     {
-      'master'                => 'master',
-      '1-foo'                 => '1-foo',
-      'fix/1-foo'             => 'fix-1-foo',
-      'fix-1-foo'             => 'fix-1-foo',
-      'a' * 63                => 'a' * 63,
-      'a' * 64                => 'a' * 63,
-      'FOO'                   => 'foo',
-      '-' + 'a' * 61 + '-'    => 'a' * 61,
-      '-' + 'a' * 62 + '-'    => 'a' * 62,
-      '-' + 'a' * 63 + '-'    => 'a' * 62,
-      'a' * 62 + ' '          => 'a' * 62
+      'master'    => 'master',
+      '1-foo'     => '1-foo',
+      'fix/1-foo' => 'fix-1-foo',
+      'fix-1-foo' => 'fix-1-foo',
+      'a' * 63    => 'a' * 63,
+      'a' * 64    => 'a' * 63,
+      'FOO'       => 'foo'
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
@@ -1373,21 +1369,20 @@ describe Ci::Build, :models do
       it { is_expected.to include(predefined_trigger_variable) }
     end
 
-    context 'when a job was triggered by a pipeline schedule' do
-      let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
-
-      let!(:pipeline_schedule_variable) do
-        create(:ci_pipeline_schedule_variable,
-          key: 'SCHEDULE_VARIABLE_KEY',
-          pipeline_schedule: pipeline_schedule)
+    context 'when build was triggered by scheduled pipeline' do
+      let(:secret_variable) do
+        { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
+
+      let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
       before do
         pipeline_schedule.pipelines << pipeline
-        pipeline_schedule.reload
+        create(:ci_pipeline_schedule_variable,
+               secret_variable.slice(:key, :value).merge(pipeline_schedule: pipeline_schedule))
       end
 
-      it { is_expected.to include(pipeline_schedule_variable.to_runner_variable) }
+      it { is_expected.to include(secret_variable) }
     end
 
     context 'when yaml_variables are undefined' do
