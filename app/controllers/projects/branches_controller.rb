@@ -37,8 +37,8 @@ class Projects::BranchesController < Projects::ApplicationController
 
     redirect_to_autodeploy = project.empty_repo? && project.deployment_services.present?
 
-    result = CreateBranchService.new(project, current_user).
-        execute(branch_name, ref)
+    result = CreateBranchService.new(project, current_user)
+        .execute(branch_name, ref)
 
     if params[:issue_iid]
       issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])

@@ -17,9 +17,9 @@ describe EE::API::Helpers::Runner do
     it 'handles sticking of a build when a build ID is specified' do
       allow(helper).to receive(:params).and_return(id: build.id)
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware).
-        to receive(:stick_or_unstick).
-        with({}, :build, build.id)
+      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
+        .to receive(:stick_or_unstick)
+        .with({}, :build, build.id)
 
       helper.authenticate_job!
     end
@@ -27,8 +27,8 @@ describe EE::API::Helpers::Runner do
     it 'does not handle sticking if no build ID was specified' do
       allow(helper).to receive(:params).and_return({})
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware).
-        not_to receive(:stick_or_unstick)
+      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
+        .not_to receive(:stick_or_unstick)
 
       helper.authenticate_job!
     end
@@ -46,9 +46,9 @@ describe EE::API::Helpers::Runner do
     it 'handles sticking of a runner if a token is specified' do
       allow(helper).to receive(:params).and_return(token: runner.token)
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware).
-        to receive(:stick_or_unstick).
-        with({}, :runner, runner.token)
+      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
+        .to receive(:stick_or_unstick)
+        .with({}, :runner, runner.token)
 
       helper.current_runner
     end
@@ -56,8 +56,8 @@ describe EE::API::Helpers::Runner do
     it 'does not handle sticking if no token was specified' do
       allow(helper).to receive(:params).and_return({})
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware).
-        not_to receive(:stick_or_unstick)
+      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
+        .not_to receive(:stick_or_unstick)
 
       helper.current_runner
     end

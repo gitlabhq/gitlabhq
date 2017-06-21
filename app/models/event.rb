@@ -382,9 +382,9 @@ class Event < ActiveRecord::Base
     # At this point it's possible for multiple threads/processes to try to
     # update the project. Only one query should actually perform the update,
     # hence we add the extra WHERE clause for last_activity_at.
-    Project.unscoped.where(id: project_id).
-      where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago).
-      update_all(last_activity_at: created_at)
+    Project.unscoped.where(id: project_id)
+      .where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago)
+      .update_all(last_activity_at: created_at)
   end
 
   def authored_by?(user)
@@ -398,7 +398,7 @@ class Event < ActiveRecord::Base
   end
 
   def set_last_repository_updated_at
-    Project.unscoped.where(id: project_id).
-      update_all(last_repository_updated_at: created_at)
+    Project.unscoped.where(id: project_id)
+      .update_all(last_repository_updated_at: created_at)
   end
 end

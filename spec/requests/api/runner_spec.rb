@@ -416,8 +416,8 @@ describe API::Runner do
 
           context 'when concurrently updating a job' do
             before do
-              expect_any_instance_of(Ci::Build).to receive(:run!).
-                  and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+              expect_any_instance_of(Ci::Build).to receive(:run!)
+                  .and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
             end
 
             it 'returns a conflict' do

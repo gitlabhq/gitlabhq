@@ -11,8 +11,8 @@ describe 'Admin::AuditLogs', feature: true, js: true do
 
   describe 'user events' do
     before do
-      AuditEventService.new(user, user, with: :ldap).
-        for_authentication.security_event
+      AuditEventService.new(user, user, with: :ldap)
+        .for_authentication.security_event
 
       visit admin_audit_logs_path
     end
@@ -37,8 +37,8 @@ describe 'Admin::AuditLogs', feature: true, js: true do
     let(:group_member) { create(:group_member, user: user) }
 
     before do
-      AuditEventService.new(user, group_member.group, { action: :create }).
-        for_member(group_member).security_event
+      AuditEventService.new(user, group_member.group, { action: :create })
+        .for_member(group_member).security_event
 
       visit admin_audit_logs_path
     end
@@ -61,8 +61,8 @@ describe 'Admin::AuditLogs', feature: true, js: true do
     let(:project_member) { create(:project_member, user: user) }
 
     before do
-      AuditEventService.new(user, project_member.project, { action: :destroy }).
-        for_member(project_member).security_event
+      AuditEventService.new(user, project_member.project, { action: :destroy })
+        .for_member(project_member).security_event
 
       visit admin_audit_logs_path
     end

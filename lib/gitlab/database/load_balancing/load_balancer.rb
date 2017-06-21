@@ -51,8 +51,8 @@ module Gitlab
             end
           end
 
-          LoadBalancing.
-            log(:warn, 'No secondaries were available, using primary instead')
+          LoadBalancing
+            .log(:warn, 'No secondaries were available, using primary instead')
 
           read_write(&block)
         end
@@ -88,9 +88,9 @@ module Gitlab
         # Returns the transaction write location of the primary.
         def primary_write_location
           read_write do |connection|
-            row = connection.
-              select_all('SELECT pg_current_xlog_insert_location()::text AS location').
-              first
+            row = connection
+              .select_all('SELECT pg_current_xlog_insert_location()::text AS location')
+              .first
 
             if row
               row['location']

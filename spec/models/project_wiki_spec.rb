@@ -157,15 +157,15 @@ describe ProjectWiki, models: true do
   describe '#find_file' do
     before do
       file = Gollum::File.new(subject.wiki)
-      allow_any_instance_of(Gollum::Wiki).
-                   to receive(:file).with('image.jpg', 'master', true).
-                   and_return(file)
-      allow_any_instance_of(Gollum::File).
-                   to receive(:mime_type).
-                   and_return('image/jpeg')
-      allow_any_instance_of(Gollum::Wiki).
-                   to receive(:file).with('non-existant', 'master', true).
-                   and_return(nil)
+      allow_any_instance_of(Gollum::Wiki)
+                   .to receive(:file).with('image.jpg', 'master', true)
+                   .and_return(file)
+      allow_any_instance_of(Gollum::File)
+                   .to receive(:mime_type)
+                   .and_return('image/jpeg')
+      allow_any_instance_of(Gollum::Wiki)
+                   .to receive(:file).with('non-existant', 'master', true)
+                   .and_return(nil)
     end
 
     after do
@@ -276,9 +276,9 @@ describe ProjectWiki, models: true do
 
   describe '#create_repo!' do
     it 'creates a repository' do
-      expect(subject).to receive(:init_repo).
-        with(subject.path_with_namespace).
-        and_return(true)
+      expect(subject).to receive(:init_repo)
+        .with(subject.path_with_namespace)
+        .and_return(true)
 
       expect(subject.repository).to receive(:after_create)
 

@@ -49,7 +49,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   private
 
   def load_projects
-    ProjectsFinder.new(current_user: current_user, params: params).
-      execute.includes(:route, namespace: :route)
+    ProjectsFinder.new(current_user: current_user, params: params)
+      .execute.includes(:route, namespace: :route)
   end
 end

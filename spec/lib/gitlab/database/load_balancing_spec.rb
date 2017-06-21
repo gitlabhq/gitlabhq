@@ -11,9 +11,9 @@ describe Gitlab::Database::LoadBalancing do
 
   describe '.hosts' do
     it 'returns a list of hosts' do
-      allow(ActiveRecord::Base.configurations[Rails.env]).to receive(:[]).
-        with('load_balancing').
-        and_return({ 'hosts' => %w(foo bar baz) })
+      allow(ActiveRecord::Base.configurations[Rails.env]).to receive(:[])
+        .with('load_balancing')
+        .and_return({ 'hosts' => %w(foo bar baz) })
 
       expect(described_class.hosts).to eq(%w(foo bar baz))
     end
@@ -76,14 +76,14 @@ describe Gitlab::Database::LoadBalancing do
     it 'configures the connection proxy' do
       model = double(:model)
 
-      expect(ActiveRecord::Base.singleton_class).to receive(:prepend).
-        with(Gitlab::Database::LoadBalancing::ActiveRecordProxy)
+      expect(ActiveRecord::Base.singleton_class).to receive(:prepend)
+        .with(Gitlab::Database::LoadBalancing::ActiveRecordProxy)
 
-      expect(described_class).to receive(:active_record_models).
-        and_return([model])
+      expect(described_class).to receive(:active_record_models)
+        .and_return([model])
 
-      expect(model.singleton_class).to receive(:prepend).
-        with(Gitlab::Database::LoadBalancing::ModelProxy)
+      expect(model.singleton_class).to receive(:prepend)
+        .with(Gitlab::Database::LoadBalancing::ModelProxy)
 
       described_class.configure_proxy
     end

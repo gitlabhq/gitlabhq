@@ -19,13 +19,13 @@ module EE
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
       scope :mirrors_to_sync, -> do
-        mirror.joins(:mirror_data).where("next_execution_timestamp <= ? AND import_status NOT IN ('scheduled', 'started')", Time.now).
-          order_by(:next_execution_timestamp).limit(::Gitlab::Mirror.available_capacity)
+        mirror.joins(:mirror_data).where("next_execution_timestamp <= ? AND import_status NOT IN ('scheduled', 'started')", Time.now)
+          .order_by(:next_execution_timestamp).limit(::Gitlab::Mirror.available_capacity)
       end
 
       scope :stuck_mirrors, -> do
-        mirror.joins(:mirror_data).
-          where("(import_status = 'started' AND project_mirror_data.last_update_started_at < :limit) OR (import_status = 'scheduled' AND project_mirror_data.last_update_scheduled_at < :limit)",
+        mirror.joins(:mirror_data)
+          .where("(import_status = 'started' AND project_mirror_data.last_update_started_at < :limit) OR (import_status = 'scheduled' AND project_mirror_data.last_update_scheduled_at < :limit)",
                 { limit: 20.minutes.ago })
       end
 

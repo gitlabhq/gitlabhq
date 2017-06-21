@@ -241,9 +241,9 @@ module Gitlab
 
       def guest_project_ids
         if current_user
-          current_user.authorized_projects.
-            where('project_authorizations.access_level = ?', Gitlab::Access::GUEST).
-            pluck(:id)
+          current_user.authorized_projects
+            .where('project_authorizations.access_level = ?', Gitlab::Access::GUEST)
+            .pluck(:id)
         else
           []
         end

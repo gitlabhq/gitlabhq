@@ -7,10 +7,10 @@ describe Projects::TransferService, services: true do
 
   context 'namespace -> namespace' do
     before do
-      allow_any_instance_of(Gitlab::UploadsTransfer).
-        to receive(:move_project).and_return(true)
-      allow_any_instance_of(Gitlab::PagesTransfer).
-        to receive(:move_project).and_return(true)
+      allow_any_instance_of(Gitlab::UploadsTransfer)
+        .to receive(:move_project).and_return(true)
+      allow_any_instance_of(Gitlab::PagesTransfer)
+        .to receive(:move_project).and_return(true)
       group.add_owner(user)
       @result = transfer_project(project, user, group)
     end
@@ -112,9 +112,9 @@ describe Projects::TransferService, services: true do
     end
 
     it 'only schedules a single job for every user' do
-      expect(UserProjectAccessChangedService).to receive(:new).
-        with([owner.id, group_member.id]).
-        and_call_original
+      expect(UserProjectAccessChangedService).to receive(:new)
+        .with([owner.id, group_member.id])
+        .and_call_original
 
       transfer_project(project, owner, group)
     end

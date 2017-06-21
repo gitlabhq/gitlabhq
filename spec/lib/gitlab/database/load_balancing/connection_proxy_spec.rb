@@ -16,8 +16,8 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
       it 'runs the query on a secondary' do
         arel = double(:arel)
 
-        expect(proxy).to receive(:read_using_load_balancer).
-          with(:select_all, arel, 'foo', [])
+        expect(proxy).to receive(:read_using_load_balancer)
+          .with(:select_all, arel, 'foo', [])
 
         proxy.select_all(arel, 'foo')
       end
@@ -27,8 +27,8 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
       it 'runs the query on the primary and sticks to it' do
         arel = double(:arel, locked: true)
 
-        expect(proxy).to receive(:write_using_load_balancer).
-          with(:select_all, arel, 'foo', [], sticky: true)
+        expect(proxy).to receive(:write_using_load_balancer)
+          .with(:select_all, arel, 'foo', [], sticky: true)
 
         proxy.select_all(arel, 'foo')
       end
@@ -38,8 +38,8 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
   Gitlab::Database::LoadBalancing::ConnectionProxy::STICKY_WRITES.each do |name|
     describe "#{name}" do
       it 'runs the query on the primary and sticks to it' do
-        expect(proxy).to receive(:write_using_load_balancer).
-          with(name, 'foo', sticky: true)
+        expect(proxy).to receive(:write_using_load_balancer)
+          .with(name, 'foo', sticky: true)
 
         proxy.send(name, 'foo')
       end
@@ -59,23 +59,23 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
       allow(primary).to receive(:transaction).and_yield
       allow(primary).to receive(:select)
 
-      expect(proxy.load_balancer).to receive(:read_write).
-        twice.and_yield(primary)
+      expect(proxy.load_balancer).to receive(:read_write)
+        .twice.and_yield(primary)
 
       # This expectation is put in place to ensure no read is performed.
       expect(proxy.load_balancer).not_to receive(:read)
 
       proxy.transaction { proxy.select('true') }
 
-      expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).
-        to eq(true)
+      expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?)
+        .to eq(true)
     end
   end
 
   describe '#method_missing' do
     it 'runs the query on the primary without sticking to it' do
-      expect(proxy).to receive(:write_using_load_balancer).
-        with(:foo, 'foo')
+      expect(proxy).to receive(:write_using_load_balancer)
+        .with(:foo, 'foo')
 
       proxy.foo('foo')
     end
@@ -86,8 +86,8 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
     let(:connection) { double(:connection) }
 
     before do
-      allow(Gitlab::Database::LoadBalancing::Session).to receive(:current).
-        and_return(session)
+      allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
+        .and_return(session)
     end
 
     describe 'with a regular session' do
@@ -107,8 +107,8 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
 
         expect(connection).to receive(:foo).with('foo')
 
-        expect(proxy.load_balancer).to receive(:read_write).
-          and_yield(connection)
+        expect(proxy.load_balancer).to receive(:read_write)
+          .and_yield(connection)
 
         proxy.read_using_load_balancer(:foo, 'foo')
       end
@@ -120,8 +120,8 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
     let(:connection) { double(:connection) }
 
     before do
-      allow(Gitlab::Database::LoadBalancing::Session).to receive(:current).
-        and_return(session)
+      allow(Gitlab::Database::LoadBalancing::Session).to receive(:current)
+        .and_return(session)
     end
 
     it 'it uses but does not stick to the primary when sticking is disabled' do

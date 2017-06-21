@@ -382,9 +382,9 @@ describe Environment, models: true do
       end
 
       it 'returns the rollout status from the deployment service' do
-        expect(project.deployment_service).
-          to receive(:rollout_status).with(environment).
-          and_return(:fake_rollout_status)
+        expect(project.deployment_service)
+          .to receive(:rollout_status).with(environment)
+          .and_return(:fake_rollout_status)
 
         is_expected.to eq(:fake_rollout_status)
       end

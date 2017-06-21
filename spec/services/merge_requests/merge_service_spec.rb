@@ -157,9 +157,9 @@ describe MergeRequests::MergeService, services: true do
       end
 
       it 'removes the source branch' do
-        expect(DeleteBranchService).to receive(:new).
-          with(merge_request.source_project, merge_request.author).
-          and_call_original
+        expect(DeleteBranchService).to receive(:new)
+          .with(merge_request.source_project, merge_request.author)
+          .and_call_original
         service.execute(merge_request)
       end
     end

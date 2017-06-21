@@ -61,14 +61,14 @@ describe ApplicationHelper do
       project = create(:empty_project, avatar: File.open(uploaded_image_temp_path))
       avatar_url = "/uploads/system/project/avatar/#{project.id}/banana_sample.gif"
 
-      expect(helper.project_icon(project.full_path).to_s).
-        to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
+      expect(helper.project_icon(project.full_path).to_s)
+        .to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
 
       allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
       avatar_url = "#{gitlab_host}/uploads/system/project/avatar/#{project.id}/banana_sample.gif"
 
-      expect(helper.project_icon(project.full_path).to_s).
-        to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
+      expect(helper.project_icon(project.full_path).to_s)
+        .to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
     end
 
     it 'gives uploaded icon when present' do
@@ -102,8 +102,8 @@ describe ApplicationHelper do
 
       user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
-      expect(helper.avatar_icon(user.email).to_s).
-        to match("/gitlab/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+      expect(helper.avatar_icon(user.email).to_s)
+        .to match("/gitlab/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
     end
 
     it 'calls gravatar_icon when no User exists with the given email' do
@@ -116,8 +116,8 @@ describe ApplicationHelper do
       it 'returns an URL for the avatar' do
         user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
-        expect(helper.avatar_icon(user).to_s).
-          to match("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+        expect(helper.avatar_icon(user).to_s)
+          .to match("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
       end
     end
   end
@@ -147,22 +147,22 @@ describe ApplicationHelper do
       it 'returns a valid Gravatar URL' do
         stub_config_setting(https: false)
 
-        expect(helper.gravatar_icon(user_email)).
-          to match('http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
+        expect(helper.gravatar_icon(user_email))
+          .to match('http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
       end
 
       it 'uses HTTPs when configured' do
         stub_config_setting(https: true)
 
-        expect(helper.gravatar_icon(user_email)).
-          to match('https://secure.gravatar.com')
+        expect(helper.gravatar_icon(user_email))
+          .to match('https://secure.gravatar.com')
       end
 
       it 'returns custom gravatar path when gravatar_url is set' do
         stub_gravatar_setting(plain_url: 'http://example.local/?s=%{size}&hash=%{hash}')
 
-        expect(gravatar_icon(user_email, 20)).
-          to eq('http://example.local/?s=40&hash=b58c6f14d292556214bd64909bcdb118')
+        expect(gravatar_icon(user_email, 20))
+          .to eq('http://example.local/?s=40&hash=b58c6f14d292556214bd64909bcdb118')
       end
 
       it 'accepts a custom size argument' do
@@ -234,8 +234,8 @@ describe ApplicationHelper do
     end
 
     it 'accepts a custom html_class' do
-      expect(element(html_class: 'custom_class').attr('class')).
-        to eq 'js-timeago custom_class'
+      expect(element(html_class: 'custom_class').attr('class'))
+        .to eq 'js-timeago custom_class'
     end
 
     it 'accepts a custom tooltip placement' do

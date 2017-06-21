@@ -1103,8 +1103,8 @@ describe Projects::MergeRequestsController do
   describe 'GET conflicts' do
     context 'when the conflicts cannot be resolved in the UI' do
       before do
-        allow_any_instance_of(Gitlab::Conflict::Parser).
-          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
+        allow_any_instance_of(Gitlab::Conflict::Parser)
+          .to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
 
         get :conflicts,
             namespace_id: merge_request_with_conflicts.project.namespace.to_param,
@@ -1246,8 +1246,8 @@ describe Projects::MergeRequestsController do
 
     context 'when the conflicts cannot be resolved in the UI' do
       before do
-        allow_any_instance_of(Gitlab::Conflict::Parser).
-          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
+        allow_any_instance_of(Gitlab::Conflict::Parser)
+          .to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
 
         conflict_for_path('files/ruby/regex.rb')
       end
@@ -1279,9 +1279,9 @@ describe Projects::MergeRequestsController do
       end
 
       it 'returns the file in JSON format' do
-        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts).
-                    file_for_path(path, path).
-                    content
+        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts)
+                    .file_for_path(path, path)
+                    .content
 
         expect(json_response).to include('old_path' => path,
                                          'new_path' => path,
@@ -1405,9 +1405,9 @@ describe Projects::MergeRequestsController do
 
     context 'when a file has identical content to the conflict' do
       before do
-        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts).
-                    file_for_path('files/ruby/popen.rb', 'files/ruby/popen.rb').
-                    content
+        content = MergeRequests::Conflicts::ListService.new(merge_request_with_conflicts)
+                    .file_for_path('files/ruby/popen.rb', 'files/ruby/popen.rb')
+                    .content
 
         resolved_files = [
           {
@@ -1473,9 +1473,9 @@ describe Projects::MergeRequestsController do
     end
 
     it 'calls MergeRequests::AssignIssuesService' do
-      expect(MergeRequests::AssignIssuesService).to receive(:new).
-        with(project, user, merge_request: merge_request).
-        and_return(double(execute: { count: 1 }))
+      expect(MergeRequests::AssignIssuesService).to receive(:new)
+        .with(project, user, merge_request: merge_request)
+        .and_return(double(execute: { count: 1 }))
 
       post_assign_issues
     end

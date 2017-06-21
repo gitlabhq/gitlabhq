@@ -100,8 +100,8 @@ EOT
 
       context 'using a diff that is too large' do
         it 'prunes the diff' do
-          expect_any_instance_of(String).to receive(:bytesize).
-            and_return(1024 * 1024 * 1024)
+          expect_any_instance_of(String).to receive(:bytesize)
+            .and_return(1024 * 1024 * 1024)
 
           diff = described_class.new(@rugged_diff)
 
@@ -130,8 +130,8 @@ EOT
 
       context 'using a large binary diff' do
         it 'does not prune the diff' do
-          expect_any_instance_of(Rugged::Diff::Delta).to receive(:binary?).
-            and_return(true)
+          expect_any_instance_of(Rugged::Diff::Delta).to receive(:binary?)
+            .and_return(true)
 
           diff = described_class.new(@rugged_diff)
 

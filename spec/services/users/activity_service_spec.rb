@@ -53,8 +53,8 @@ describe Users::ActivityService, services: true do
   end
 
   def last_hour_user_ids
-    Gitlab::UserActivities.new.
-      select { |k, v| v >= 1.hour.ago.to_i.to_s }.
-      map { |k, _| k.to_i }
+    Gitlab::UserActivities.new
+      .select { |k, v| v >= 1.hour.ago.to_i.to_s }
+      .map { |k, _| k.to_i }
   end
 end

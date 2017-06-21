@@ -32,30 +32,30 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
         it 'returns an Array of commits' do
           commit = double(:commit)
 
-          allow_any_instance_of(Project).to receive(:valid_repo?).
-            and_return(true)
+          allow_any_instance_of(Project).to receive(:valid_repo?)
+            .and_return(true)
 
-          expect(subject).to receive(:find_commits).
-            with(project, ['123']).
-            and_return([commit])
+          expect(subject).to receive(:find_commits)
+            .with(project, ['123'])
+            .and_return([commit])
 
           expect(subject.referenced_by([link])).to eq([commit])
         end
 
         it 'returns an empty Array when the commit could not be found' do
-          allow_any_instance_of(Project).to receive(:valid_repo?).
-            and_return(true)
+          allow_any_instance_of(Project).to receive(:valid_repo?)
+            .and_return(true)
 
-          expect(subject).to receive(:find_commits).
-            with(project, ['123']).
-            and_return([])
+          expect(subject).to receive(:find_commits)
+            .with(project, ['123'])
+            .and_return([])
 
           expect(subject.referenced_by([link])).to eq([])
         end
 
         it 'skips projects without valid repositories' do
-          allow_any_instance_of(Project).to receive(:valid_repo?).
-            and_return(false)
+          allow_any_instance_of(Project).to receive(:valid_repo?)
+            .and_return(false)
 
           expect(subject.referenced_by([link])).to eq([])
         end
@@ -63,8 +63,8 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
 
       context 'when the link does not have a data-commit attribute' do
         it 'returns an empty Array' do
-          allow_any_instance_of(Project).to receive(:valid_repo?).
-            and_return(true)
+          allow_any_instance_of(Project).to receive(:valid_repo?)
+            .and_return(true)
 
           expect(subject.referenced_by([link])).to eq([])
         end
@@ -73,8 +73,8 @@ describe Banzai::ReferenceParser::CommitParser, lib: true do
 
     context 'when the link does not have a data-project attribute' do
       it 'returns an empty Array' do
-        allow_any_instance_of(Project).to receive(:valid_repo?).
-          and_return(true)
+        allow_any_instance_of(Project).to receive(:valid_repo?)
+          .and_return(true)
 
         expect(subject.referenced_by([link])).to eq([])
       end
