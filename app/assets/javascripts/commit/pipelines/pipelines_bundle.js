@@ -10,6 +10,11 @@ import commitPipelinesTable from './pipelines_table.vue';
 
 const CommitPipelinesTable = Vue.extend(commitPipelinesTable);
 
+// export for use in merge_request_tabs.js (TODO: remove this hack when we understand how to load
+// vue.js in merge_request_tabs.js)
+window.gl = window.gl || {};
+window.gl.CommitPipelinesTable = CommitPipelinesTable;
+
 document.addEventListener('DOMContentLoaded', () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
 
