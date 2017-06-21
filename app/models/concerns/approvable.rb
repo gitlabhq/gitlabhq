@@ -36,23 +36,28 @@ module Approvable
     #
     def number_of_potential_approvers
       has_access = ['access_level > ?', Member::REPORTER]
+      users_with_access = { id: project.project_authorizations.where(has_access).select(:user_id) }
       all_approvers = all_approvers_including_groups
 
-      wheres = [
-        "id IN (#{project.project_authorizations.where(has_access).select(:user_id).to_sql})"
-      ]
+      users_relation = User.active.where.not(id: approvals.select(:user_id))
+      users_relation = users_relation.where.not(id: author.id) if author
 
+      # This is an optimisation for large instances. Instead of getting the
+      # count of all users who meet the conditions in a single query, which
+      # produces a slow query plan, we get the union of all users with access
+      # and all users in the approvers list, and count them.
       if all_approvers.any?
-        wheres << "id IN (#{all_approvers.map(&:id).join(', ')})"
+        specific_approvers = { id: all_approvers.map(&:id) }
+
+        union = Gitlab::SQL::Union.new([
+          users_relation.where(users_with_access).select(:id),
+          users_relation.where(specific_approvers).select(:id)
+        ])
+
+        User.from("(#{union.to_sql}) subquery").count
+      else
+        users_relation.where(users_with_access).count
       end
-
-      users = User
-        .active
-        .where("(#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql})")
-
-      users = users.where.not(id: author.id) if author
-
-      users.count
     end
 
     # Users in the list of approvers who have not already approved this MR.
