@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard Activity', feature: true do
+  let(:user) { create(:user) }
+
   before do
-    gitlab_sign_in(create :user)
+    sign_in(user)
     visit activity_dashboard_path
   end
 

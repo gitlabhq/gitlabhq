@@ -10,7 +10,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
     allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
 
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
 
     # Ensure that undiffable.md is in .gitattributes
     project.repository.copy_gitattributes(branch)

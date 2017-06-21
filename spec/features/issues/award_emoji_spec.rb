@@ -12,7 +12,7 @@ describe 'Awards Emoji', feature: true do
   context 'authorized user' do
     before do
       project.team << [user, :master]
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     describe 'visiting an issue with a legacy award emoji that is not valid anymore' do

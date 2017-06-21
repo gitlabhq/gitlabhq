@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Admin::Hooks', feature: true do
   before do
     @project = create(:project)
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
 
     @system_hook = create(:system_hook)
   end

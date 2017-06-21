@@ -6,7 +6,7 @@ feature 'Master creates tag', feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'from tag list' do

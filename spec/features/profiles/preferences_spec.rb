@@ -4,7 +4,7 @@ describe 'Profile > Preferences', feature: true do
   let(:user) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
     visit profile_preferences_path
   end
 

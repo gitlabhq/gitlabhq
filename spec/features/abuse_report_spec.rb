@@ -4,7 +4,7 @@ feature 'Abuse reports', feature: true do
   let(:another_user) { create(:user) }
 
   before do
-    gitlab_sign_in :user
+    sign_in(create(:user))
   end
 
   scenario 'Report abuse' do

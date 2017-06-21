@@ -10,7 +10,7 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
 
   background do
     project.team << [master, :master]
-    gitlab_sign_in(master)
+    sign_in(master)
   end
 
   scenario 'expiration date is displayed in the members list' do

@@ -4,7 +4,7 @@ describe 'Admin browse spam logs' do
   let!(:spam_log) { create(:spam_log, description: 'abcde ' * 20) }
 
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   scenario 'Browse spam logs' do

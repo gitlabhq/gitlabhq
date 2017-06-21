@@ -4,7 +4,7 @@ describe 'Profile > Applications', feature: true do
   let(:user) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'User manages applications', js: true do

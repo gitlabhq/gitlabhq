@@ -8,7 +8,7 @@ feature 'Group milestones', :feature, :js do
   before do
     Timecop.freeze
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   after do

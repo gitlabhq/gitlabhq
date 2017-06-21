@@ -83,7 +83,7 @@ feature 'Dashboard > User sorts todos' do
       create(:todo, user: user, project: project, target: issue_2)
       create(:todo, user: user, project: project, target: merge_request_1)
 
-      gitlab_sign_in(user)
+      sign_in(user)
       visit dashboard_todos_path
     end
 

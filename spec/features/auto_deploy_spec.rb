@@ -7,7 +7,7 @@ describe 'Auto deploy' do
   before do
     create :kubernetes_service, project: project
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
   end
 
   context 'when no deployment service is active' do

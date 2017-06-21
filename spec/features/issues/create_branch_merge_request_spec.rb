@@ -8,7 +8,7 @@ feature 'Create Branch/Merge Request Dropdown on issue page', feature: true, js:
   context 'for team members' do
     before do
       project.team << [user, :developer]
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     it 'allows creating a merge request from the issue page' do

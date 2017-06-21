@@ -13,7 +13,7 @@ feature 'Merge request issue assignment', js: true, feature: true do
   end
 
   def visit_merge_request(current_user = nil)
-    gitlab_sign_in(current_user || user)
+    sign_in(current_user || user)
     visit namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 

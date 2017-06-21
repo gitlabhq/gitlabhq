@@ -5,7 +5,7 @@ feature 'Mini Pipeline Graph in Commit View', :js, :feature do
   let(:project) { create(:project, :public) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when commit has pipelines' do

@@ -5,7 +5,7 @@ feature 'Admin updates settings', feature: true do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
     visit admin_application_settings_path
   end
 

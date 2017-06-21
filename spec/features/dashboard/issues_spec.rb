@@ -2,6 +2,7 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Issues', feature: true do
   let(:current_user) { create :user }
+  let(:user) { current_user } # Shared examples depend on this being available
   let!(:public_project) { create(:empty_project, :public) }
   let(:project) { create(:empty_project) }
   let(:project_with_issues_disabled) { create(:empty_project, :issues_disabled) }
@@ -12,7 +13,7 @@ RSpec.describe 'Dashboard Issues', feature: true do
 
   before do
     [project, project_with_issues_disabled].each { |project| project.team << [current_user, :master] }
-    gitlab_sign_in(current_user)
+    sign_in(current_user)
     visit issues_dashboard_path(assignee_id: current_user.id)
   end
 

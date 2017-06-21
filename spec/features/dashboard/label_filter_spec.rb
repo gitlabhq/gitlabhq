@@ -11,7 +11,7 @@ describe 'Dashboard > label filter', feature: true, js: true do
     project.labels << label
     project2.labels << label2
 
-    gitlab_sign_in(user)
+    sign_in(user)
     visit issues_dashboard_path
   end
 

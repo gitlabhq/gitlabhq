@@ -9,7 +9,7 @@ feature 'Projects > Slack service > Setup events', feature: true do
     service.fields
     service.update_attributes(push_channel: 1, issue_channel: 2, merge_request_channel: 3, note_channel: 4, tag_push_channel: 5, pipeline_channel: 6, wiki_page_channel: 7)
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   scenario 'user can filter events by channel' do

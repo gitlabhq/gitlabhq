@@ -7,7 +7,7 @@ feature 'Merge requests > User posts diff notes', :js do
 
   before do
     project.add_developer(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   let(:comment_button_class) { '.add-diff-note' }

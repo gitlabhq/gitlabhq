@@ -7,7 +7,7 @@ describe 'Cherry-pick Merge Requests', js: true do
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user) }
 
   before do
-    gitlab_sign_in user
+    sign_in user
     project.team << [user, :master]
   end
 

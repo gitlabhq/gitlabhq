@@ -5,9 +5,12 @@ feature 'Group show page', feature: true do
   let(:path) { group_path(group) }
 
   context 'when signed in' do
+    let(:user) do
+      create(:group_member, :developer, user: create(:user), group: group ).user
+    end
+
     before do
-      user = create(:group_member, :developer, user: create(:user), group: group ).user
-      gitlab_sign_in(user)
+      sign_in(user)
       visit path
     end
 

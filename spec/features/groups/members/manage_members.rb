@@ -8,7 +8,7 @@ feature 'Groups > Members > Manage members', feature: true do
   let(:group) { create(:group) }
 
   background do
-    gitlab_sign_in(user1)
+    sign_in(user1)
   end
 
   scenario 'update user to owner level', :js do

@@ -9,7 +9,7 @@ feature 'Groups > Members > Sort members', feature: true do
     create(:group_member, :owner, user: owner, group: group, created_at: 5.days.ago)
     create(:group_member, :developer, user: developer, group: group, created_at: 3.days.ago)
 
-    gitlab_sign_in(owner)
+    sign_in(owner)
   end
 
   scenario 'sorts alphabetically by default' do

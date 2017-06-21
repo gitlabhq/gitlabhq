@@ -9,7 +9,7 @@ describe 'Milestone show', feature: true do
 
   before do
     project.add_user(user, :developer) 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   def visit_milestone

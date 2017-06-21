@@ -6,7 +6,7 @@ feature 'project commit pipelines', js: true do
   background do
     user = create(:user)
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when no builds triggered yet' do

@@ -10,7 +10,7 @@ feature 'Edit Snippet', :js, feature: true do
   let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, author: user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit edit_snippet_path(snippet)
     wait_for_requests

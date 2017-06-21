@@ -4,7 +4,7 @@ feature 'Create Snippet', :js, feature: true do
   include DropzoneHelper
 
   before do
-    gitlab_sign_in :user
+    sign_in(create(:user))
     visit new_snippet_path
   end
 

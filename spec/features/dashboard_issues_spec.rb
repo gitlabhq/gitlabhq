@@ -8,7 +8,7 @@ describe "Dashboard Issues filtering", feature: true, js: true do
   context 'filtering by milestone' do
     before do
       project.team << [user, :master]
-      gitlab_sign_in(user)
+      sign_in(user)
 
       create(:issue, project: project, author: user, assignees: [user])
       create(:issue, project: project, author: user, assignees: [user], milestone: milestone)
