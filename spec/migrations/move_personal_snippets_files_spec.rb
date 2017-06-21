@@ -144,6 +144,26 @@ describe MovePersonalSnippetsFiles do
     end
   end
 
+  describe '#update_markdown' do
+    it 'escapes sql in the snippet description' do
+      migration.instance_variable_set('@source_relative_location', '/uploads/personal_snippet')
+      migration.instance_variable_set('@destination_relative_location', '/uploads/system/personal_snippet')
+
+      secret = '123456789'
+      filename = 'hello.jpg'
+      snippet = create(:personal_snippet)
+
+      path_before = "/uploads/personal_snippet/#{snippet.id}/#{secret}/#{filename}"
+      path_after = "/uploads/system/personal_snippet/#{snippet.id}/#{secret}/#{filename}"
+      description_before = "Hello world; ![image](#{path_before})'; select * from users;"
+      description_after = "Hello world; ![image](#{path_after})'; select * from users;"
+
+      migration.update_markdown(snippet.id, secret, filename, description_before)
+
+      expect(snippet.reload.description).to eq(description_after)
+    end
+  end
+
   def create_upload(file)
     snippet = file[:snippet]
     secret = "secret#{snippet.id}"
@@ -165,7 +185,7 @@ describe MovePersonalSnippetsFiles do
 
     create(:upload, model: file[:snippet], path: "#{secret}/#{file[:name]}", uploader: PersonalFileUploader)
 
-    snippet.update_attribute(:description, "Description with #{markdown}") unless file[:skip_description_update]
+    snippet.update_attribute(:description, "Description with #{markdown}'; select * from users;") unless file[:skip_description_update]
     create(:note_on_personal_snippet, noteable: snippet, note: "with #{markdown}") if file[:in_note]
   end
 
