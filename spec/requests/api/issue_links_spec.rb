@@ -54,22 +54,24 @@ describe API::IssueLinks do
                target_project_id: 999, target_issue_iid: target_issue.iid
 
           expect(response).to have_http_status(404)
+          expect(json_response['message']).to eq('404 Project Not Found')
         end
       end
 
       context 'given target issue not found' do
         it 'returns 404' do
-          target_project = create(:empty_project)
+          target_project = create(:empty_project, :public)
 
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
                target_project_id: target_project.id, target_issue_iid: 999
 
           expect(response).to have_http_status(404)
+          expect(json_response['message']).to eq('404 Not found')
         end
       end
 
       context 'when user does not have write access to given issue' do
-        it 'returns 401' do
+        it 'returns 404' do
           unauthorized_project = create(:empty_project)
           target_issue = create(:issue, project: unauthorized_project)
           unauthorized_project.add_guest(user)
@@ -77,8 +79,8 @@ describe API::IssueLinks do
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
                target_project_id: unauthorized_project.id, target_issue_iid: target_issue.iid
 
-          expect(response).to have_http_status(401)
-          expect(json_response['message']).to eq('No Issue found for given params')
+          expect(response).to have_http_status(404)
+          expect(json_response['message']).to eq('404 Not Found')
         end
       end
 
@@ -91,6 +93,7 @@ describe API::IssueLinks do
                target_project_id: project.id, target_issue_iid: target_issue.iid
 
           expect(response).to have_http_status(404)
+          expect(json_response['message']).to eq('404 Not found')
         end
       end
 
@@ -103,6 +106,7 @@ describe API::IssueLinks do
                target_project_id: project.id, target_issue_iid: target_issue.iid
 
           expect(response).to have_http_status(404)
+          expect(json_response['message']).to eq('404 Project Not Found')
         end
       end
 
@@ -145,7 +149,7 @@ describe API::IssueLinks do
 
     context 'when authenticated' do
       context 'when user does not have write access to given issue link' do
-        it 'returns 401' do
+        it 'returns 404' do
           unauthorized_project = create(:empty_project)
           target_issue = create(:issue, project: unauthorized_project)
           issue_link = create(:issue_link, source: issue, target: target_issue)
@@ -153,7 +157,8 @@ describe API::IssueLinks do
 
           delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
 
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(404)
+          expect(json_response['message']).to eq('404 Not Found')
         end
       end
 
@@ -162,18 +167,20 @@ describe API::IssueLinks do
           delete api("/projects/#{project.id}/issues/#{issue.iid}/links/999", user)
 
           expect(response).to have_http_status(404)
+          expect(json_response['message']).to eq('404 Not found')
         end
       end
 
       context 'when trying to delete a link with a private project issue' do
-        it 'returns 401' do
+        it 'returns 404' do
           project = create(:empty_project, :private)
           target_issue = create(:issue, project: project)
           issue_link = create(:issue_link, source: issue, target: target_issue)
 
           delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
 
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(404)
+          expect(json_response['message']).to eq('404 Not Found')
         end
       end
 

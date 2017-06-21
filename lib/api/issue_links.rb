@@ -46,7 +46,7 @@ module API
 
           present issue_link, with: Entities::IssueLink
         else
-          render_api_error!(result[:message], result[:http_status])
+          not_found!
         end
       end
 
@@ -66,7 +66,7 @@ module API
         if result[:status] == :success
           present issue_link, with: Entities::IssueLink
         else
-          render_api_error!(result[:message], result[:http_status])
+          not_found!
         end
       end
     end

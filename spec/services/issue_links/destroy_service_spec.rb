@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe IssueLinks::DestroyService, service: true do
   describe '#execute' do
-    let(:project) { create :empty_project }
-    let(:user) { create :user }
+    let(:project) { create(:empty_project) }
+    let(:user) { create(:user) }
 
     subject { described_class.new(issue_link, user).execute }
 
     context 'when successfully removes an issue link' do
-      let(:issue_a) { create :issue, project: project }
-      let(:issue_b) { create :issue, project: project }
+      let(:issue_a) { create(:issue, project: project) }
+      let(:issue_b) { create(:issue, project: project) }
 
-      let!(:issue_link) { create :issue_link, source: issue_a, target: issue_b }
+      let!(:issue_link) { create(:issue_link, source: issue_a, target: issue_b) }
 
       before do
         project.add_reporter(user)
@@ -37,11 +37,11 @@ describe IssueLinks::DestroyService, service: true do
     end
 
     context 'when failing to remove an issue link' do
-      let(:unauthorized_project) { create :empty_project }
-      let(:issue_a) { create :issue, project: project }
-      let(:issue_b) { create :issue, project: unauthorized_project }
+      let(:unauthorized_project) { create(:empty_project) }
+      let(:issue_a) { create(:issue, project: project) }
+      let(:issue_b) { create(:issue, project: unauthorized_project) }
 
-      let!(:issue_link) { create :issue_link, source: issue_a, target: issue_b }
+      let!(:issue_link) { create(:issue_link, source: issue_a, target: issue_b) }
 
       it 'does not remove relation' do
         expect { subject }.not_to change(IssueLink, :count).from(1)
