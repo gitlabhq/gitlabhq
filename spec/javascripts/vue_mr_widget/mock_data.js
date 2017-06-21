@@ -30,6 +30,7 @@ export default {
   "merge_user_id": null,
   "merge_when_pipeline_succeeds": false,
   "source_branch": "daaaa",
+  "source_branch_link": "daaaa",
   "source_project_id": 19,
   "target_branch": "master",
   "target_project_id": 19,
