@@ -18,7 +18,7 @@ module Github
       end
 
       def source_branch_exists?
-        return if defined?(@source_branch_exists)
+        return @source_branch_exists if defined?(@source_branch_exists)
 
         @source_branch_exists = !cross_project? && source_branch.exists?
       end
