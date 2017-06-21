@@ -2,7 +2,7 @@
 @import 'framework/tw_bootstrap_variables';
 @import "bootstrap/variables";
 
-$new-navbar-bg: #2d2d2d;
+$new-navbar-bg: #380D75;
 
 header.navbar-gitlab-new {
   color: $gray-normal;
@@ -36,7 +36,7 @@ header.navbar-gitlab-new {
 
     .dropdown.open {
       > a {
-        border-bottom-color: $blue-400;
+        border-bottom-color: $white-light;
       }
     }
 
@@ -52,7 +52,7 @@ header.navbar-gitlab-new {
   }
 
   .navbar-collapse {
-    color: $gray-dark;
+    color: $white-light;
   }
 
   .container-fluid {
@@ -79,12 +79,18 @@ header.navbar-gitlab-new {
       }
     }
 
+    .nav > li > a {
+      opacity: .9;
+      will-change: opacity;
+    }
+
     .nav > li > a:hover,
     .nav > li > a:focus {
-      color: $gray-normal;
+      color: $white-light;
+      opacity: 1;
 
       > svg {
-        fill: $gray-normal;
+        fill: $white-light;
       }
     }
   }
@@ -93,11 +99,16 @@ header.navbar-gitlab-new {
 .navbar-sub-nav {
   display: flex;
   margin-bottom: 0;
-  color: $gray-dark;
+  color: $white-light;
 
   > li {
-    &.active > a {
-      border-bottom-color: $blue-400;
+    &.active > a,
+    a:hover,
+    a:focus {
+      border-bottom-color: $white-light;
+      text-decoration: none;
+      outline: 0;
+      opacity: 1;
     }
 
     > a {
@@ -106,16 +117,12 @@ header.navbar-gitlab-new {
       font-size: 13px;
       color: currentColor;
       border-bottom: 3px solid transparent;
+      opacity: .9;
+      will-change: opacity;
 
       @media (min-width: $screen-sm-min) {
         padding: 15px 15px 12px;
         font-size: 14px;
-      }
-
-      &:hover,
-      &:focus {
-        color: $gray-normal;
-        text-decoration: none;
       }
     }
   }
@@ -126,28 +133,40 @@ header.navbar-gitlab-new {
 }
 
 .search {
+  form {
+    border-color: #2D0573;
+
+    &:hover {
+      border-color: rgba($white-light, .5);
+    }
+  }
+
+  &.search-active form {
+    border-color: $white-light;
+  }
+
   form,
   .search-input {
-    background-color: $gl-gray-light;
+    background-color: #451C7F;
   }
 
   .search-input {
-    color: $gray-normal;
+    color: $white-light;
   }
 
   .search-input::placeholder {
-    color: $gray-dark;
+    color: $white-light;
   }
 
   .location-badge {
-    color: $gray-normal;
+    color: $white-light;
     background-color: $new-navbar-bg;
   }
 
   &.search-active {
     .search-input-wrap {
       i {
-        color: $gray-normal;
+        color: $white-light;
       }
     }
   }
