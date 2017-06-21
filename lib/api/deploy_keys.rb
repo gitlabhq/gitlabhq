@@ -86,7 +86,7 @@ module API
         at_least_one_of :title, :can_push
       end
       put ":id/deploy_keys/:key_id" do
-        key = user_project.deploy_keys.find(params.delete(:key_id))
+        key = DeployKey.find(params.delete(:key_id))
 
         authorize!(:update_deploy_key, key)
 
