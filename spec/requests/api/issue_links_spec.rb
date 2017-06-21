@@ -82,7 +82,7 @@ describe API::IssueLinks do
         end
       end
 
-      context 'success' do
+      context 'when user has ability to create an issue link' do
         it 'returns 201' do
           target_issue = create(:issue, project: project)
           project.add_reporter(user)
