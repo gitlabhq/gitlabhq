@@ -102,24 +102,26 @@ module Gitlab
           end
 
           def remove_cached_html_for_projects(project_ids)
-            update_column_in_batches(:projects, :description_html, nil) do |table, query|
-              query.where(table[:id].in(project_ids))
-            end
+            project_ids.each do |project_id|
+              update_column_in_batches(:projects, :description_html, nil) do |table, query|
+                query.where(table[:id].eq(project_id))
+              end
 
-            update_column_in_batches(:issues, :description_html, nil) do |table, query|
-              query.where(table[:project_id].in(project_ids))
-            end
+              update_column_in_batches(:issues, :description_html, nil) do |table, query|
+                query.where(table[:project_id].eq(project_id))
+              end
 
-            update_column_in_batches(:merge_requests, :description_html, nil) do |table, query|
-              query.where(table[:target_project_id].in(project_ids))
-            end
+              update_column_in_batches(:merge_requests, :description_html, nil) do |table, query|
+                query.where(table[:target_project_id].eq(project_id))
+              end
 
-            update_column_in_batches(:notes, :note_html, nil) do |table, query|
-              query.where(table[:project_id].in(project_ids))
-            end
+              update_column_in_batches(:notes, :note_html, nil) do |table, query|
+                query.where(table[:project_id].eq(project_id))
+              end
 
-            update_column_in_batches(:milestones, :description_html, nil) do |table, query|
-              query.where(table[:project_id].in(project_ids))
+              update_column_in_batches(:milestones, :description_html, nil) do |table, query|
+                query.where(table[:project_id].eq(project_id))
+              end
             end
           end
 
