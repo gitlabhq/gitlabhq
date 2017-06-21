@@ -88,7 +88,7 @@ _The artifacts are stored by default in
 ### Using object storage
 
 >**Notes:**
-- [Introduced][ee-1762] in [GitLab Enterprise Edition Premium][eep] 9.3.
+- [Introduced][ee-1762] in [GitLab Enterprise Edition Premium][eep] 9.4.
 - By enabling this feature the artifacts will **not** be [browsable] anymore
   through the web interface. This limitation will be removed in one of the
   upcoming releases.
