@@ -1373,6 +1373,22 @@ describe Ci::Build, :models do
       it { is_expected.to include(predefined_trigger_variable) }
     end
 
+    context 'when build was triggered by scheduled pipeline' do
+      let(:secret_variable) do
+        { key: 'SECRET_KEY', value: 'secret_value', public: false }
+      end
+
+      let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+
+      before do
+        pipeline_schedule.pipelines << pipeline
+        create(:ci_pipeline_schedule_variable,
+               secret_variable.slice(:key, :value).merge(pipeline_schedule: pipeline_schedule))
+      end
+
+      it { is_expected.to include(secret_variable) }
+    end
+
     context 'when yaml_variables are undefined' do
       before do
         build.yaml_variables = nil
