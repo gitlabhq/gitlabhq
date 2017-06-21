@@ -70,9 +70,66 @@ POST /projects/:id/issues/:issue_iid/links
 
 ```json
 {
-  "id": 1,
-  "source_issue_id": 2,
-  "target_issue_id": 3
+  "source_issue" : {
+    "id" : 83,
+    "iid" : 11,
+    "project_id" : 4,
+    "created_at" : "2016-01-07T12:44:33.959Z",
+    "title" : "Issues with auth",
+    "state" : "opened",
+    "assignees" : [],
+    "assignee" : null,
+    "labels" : [
+      "bug"
+    ],
+    "author" : {
+      "name" : "Alexandra Bashirian",
+      "avatar_url" : null,
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/eileen.lowe",
+      "id" : 18,
+      "username" : "eileen.lowe"
+    },
+    "description" : null,
+    "updated_at" : "2016-01-07T12:44:33.959Z",
+    "milestone" : null,
+    "subscribed" : true,
+    "user_notes_count": 0,
+    "due_date": null,
+    "web_url": "http://example.com/example/example/issues/11",
+    "confidential": false,
+    "weight": null,
+  },
+  "target_issue" : {
+    "id" : 84,
+    "iid" : 14,
+    "project_id" : 4,
+    "created_at" : "2016-01-07T12:44:33.959Z",
+    "title" : "Issues with auth",
+    "state" : "opened",
+    "assignees" : [],
+    "assignee" : null,
+    "labels" : [
+      "bug"
+    ],
+    "author" : {
+      "name" : "Alexandra Bashirian",
+      "avatar_url" : null,
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/eileen.lowe",
+      "id" : 18,
+      "username" : "eileen.lowe"
+    },
+    "description" : null,
+    "updated_at" : "2016-01-07T12:44:33.959Z",
+    "milestone" : null,
+    "subscribed" : true,
+    "user_notes_count": 0,
+    "due_date": null,
+    "web_url": "http://example.com/example/example/issues/14",
+    "confidential": false,
+    "weight": null,
+  }
 }
 ```
 
@@ -94,9 +151,65 @@ DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
 
 ```json
 {
-  "id": 1,
-  "source_issue_id": 2,
-  "target_issue_id": 3
+  "source_issue" : {
+    "id" : 83,
+    "iid" : 11,
+    "project_id" : 4,
+    "created_at" : "2016-01-07T12:44:33.959Z",
+    "title" : "Issues with auth",
+    "state" : "opened",
+    "assignees" : [],
+    "assignee" : null,
+    "labels" : [
+      "bug"
+    ],
+    "author" : {
+      "name" : "Alexandra Bashirian",
+      "avatar_url" : null,
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/eileen.lowe",
+      "id" : 18,
+      "username" : "eileen.lowe"
+    },
+    "description" : null,
+    "updated_at" : "2016-01-07T12:44:33.959Z",
+    "milestone" : null,
+    "subscribed" : true,
+    "user_notes_count": 0,
+    "due_date": null,
+    "web_url": "http://example.com/example/example/issues/11",
+    "confidential": false,
+    "weight": null,
+  },
+  "target_issue" : {
+    "id" : 84,
+    "iid" : 14,
+    "project_id" : 4,
+    "created_at" : "2016-01-07T12:44:33.959Z",
+    "title" : "Issues with auth",
+    "state" : "opened",
+    "assignees" : [],
+    "assignee" : null,
+    "labels" : [
+      "bug"
+    ],
+    "author" : {
+      "name" : "Alexandra Bashirian",
+      "avatar_url" : null,
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/eileen.lowe",
+      "id" : 18,
+      "username" : "eileen.lowe"
+    },
+    "description" : null,
+    "updated_at" : "2016-01-07T12:44:33.959Z",
+    "milestone" : null,
+    "subscribed" : true,
+    "user_notes_count": 0,
+    "due_date": null,
+    "web_url": "http://example.com/example/example/issues/14",
+    "confidential": false,
+    "weight": null,
+  }
 }
 ```
-

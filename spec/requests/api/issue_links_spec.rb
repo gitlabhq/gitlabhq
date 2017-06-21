@@ -119,7 +119,7 @@ describe API::IssueLinks do
                target_project_id: project.id, target_issue_iid: target_issue.iid
 
           expect(response).to have_http_status(201)
-          expect(json_response).to include('id', 'source_issue_id', 'target_issue_id')
+          expect(json_response).to include('source_issue', 'target_issue')
         end
 
         it 'returns 201 when sending full path of target project' do
@@ -130,7 +130,7 @@ describe API::IssueLinks do
                target_project_id: project.to_reference(full: true), target_issue_iid: target_issue.iid
 
           expect(response).to have_http_status(201)
-          expect(json_response).to include('id', 'source_issue_id', 'target_issue_id')
+          expect(json_response).to include('source_issue', 'target_issue')
         end
       end
     end
@@ -193,7 +193,7 @@ describe API::IssueLinks do
           delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
 
           expect(response).to have_http_status(200)
-          expect(json_response).to include('id', 'source_issue_id', 'target_issue_id')
+          expect(json_response).to include('source_issue', 'target_issue')
         end
       end
     end

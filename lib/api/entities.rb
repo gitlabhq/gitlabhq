@@ -325,9 +325,8 @@ module API
     end
 
     class IssueLink < Grape::Entity
-      expose :id
-      expose :source_id, as: :source_issue_id
-      expose :target_id, as: :target_issue_id
+      expose :source, as: :source_issue, using: Entities::IssueBasic
+      expose :target, as: :target_issue, using: Entities::IssueBasic
     end
 
     class IssuableTimeStats < Grape::Entity
