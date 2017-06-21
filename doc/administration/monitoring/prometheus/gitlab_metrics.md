@@ -44,4 +44,4 @@ In this experimental phase, only a few metrics are available:
 [29118]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29118
 [Prometheus]: https://prometheus.io
 [restart]: ../../restart_gitlab.md#omnibus-gitlab-restart
-[health-check]: ../../user/admin_area/monitoring/health_check.md
+[health-check]: ../../../user/admin_area/monitoring/health_check.md
