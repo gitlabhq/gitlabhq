@@ -168,8 +168,8 @@ describe HasStatus do
 
           describe ".#{status}" do
             it 'contains the job' do
-              expect(CommitStatus.public_send(status).all).
-                to contain_exactly(job)
+              expect(CommitStatus.public_send(status).all)
+                .to contain_exactly(job)
             end
           end
 

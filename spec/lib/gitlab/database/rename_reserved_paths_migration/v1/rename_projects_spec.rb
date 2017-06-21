@@ -13,8 +13,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
       namespace = create(:namespace, path: 'hello')
       project = create(:empty_project, path: 'THE-path', namespace: namespace)
 
-      result_ids = described_class.new(['Hello/the-path'], migration).
-                     projects_for_paths.map(&:id)
+      result_ids = described_class.new(['Hello/the-path'], migration)
+                     .projects_for_paths.map(&:id)
 
       expect(result_ids).to contain_exactly(project.id)
     end
@@ -39,8 +39,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
     end
 
     it 'invalidates the markdown cache of related projects' do
-      expect(subject).to receive(:remove_cached_html_for_projects).
-                           with(projects.map(&:id))
+      expect(subject).to receive(:remove_cached_html_for_projects)
+                           .with(projects.map(&:id))
 
       subject.rename_projects
     end
@@ -54,9 +54,9 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
     end
 
     it 'renames path & route for the project' do
-      expect(subject).to receive(:rename_path_for_routable).
-                           with(project).
-                           and_call_original
+      expect(subject).to receive(:rename_path_for_routable)
+                           .with(project)
+                           .and_call_original
 
       subject.rename_project(project)
 
@@ -64,24 +64,24 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
     end
 
     it 'moves the wiki & the repo' do
-      expect(subject).to receive(:move_repository).
-                           with(project, 'known-parent/the-path.wiki', 'known-parent/the-path0.wiki')
-      expect(subject).to receive(:move_repository).
-                           with(project, 'known-parent/the-path', 'known-parent/the-path0')
+      expect(subject).to receive(:move_repository)
+                           .with(project, 'known-parent/the-path.wiki', 'known-parent/the-path0.wiki')
+      expect(subject).to receive(:move_repository)
+                           .with(project, 'known-parent/the-path', 'known-parent/the-path0')
 
       subject.rename_project(project)
     end
 
     it 'moves uploads' do
-      expect(subject).to receive(:move_uploads).
-                           with('known-parent/the-path', 'known-parent/the-path0')
+      expect(subject).to receive(:move_uploads)
+                           .with('known-parent/the-path', 'known-parent/the-path0')
 
       subject.rename_project(project)
     end
 
     it 'moves pages' do
-      expect(subject).to receive(:move_pages).
-                           with('known-parent/the-path', 'known-parent/the-path0')
+      expect(subject).to receive(:move_pages)
+                           .with('known-parent/the-path', 'known-parent/the-path0')
 
       subject.rename_project(project)
     end

@@ -55,8 +55,8 @@ describe "User Feed", feature: true  do
       end
 
       it 'has issue comment event' do
-        expect(body).
-          to have_content("#{safe_name} commented on issue ##{issue.iid}")
+        expect(body)
+          .to have_content("#{safe_name} commented on issue ##{issue.iid}")
       end
 
       it 'has XHTML summaries in issue descriptions' do

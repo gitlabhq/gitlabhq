@@ -67,8 +67,8 @@ describe Projects::ServicesController do
         put :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, service: service_params
 
         expect(response.status).to eq(200)
-        expect(JSON.parse(response.body)).
-          to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test')
+        expect(JSON.parse(response.body))
+          .to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test')
       end
     end
   end

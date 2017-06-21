@@ -4,8 +4,8 @@ describe Mattermost::Team do
   before do
     Mattermost::Session.base_uri('http://mattermost.example.com')
 
-    allow_any_instance_of(Mattermost::Client).to receive(:with_session).
-      and_yield(Mattermost::Session.new(nil))
+    allow_any_instance_of(Mattermost::Client).to receive(:with_session)
+      .and_yield(Mattermost::Session.new(nil))
   end
 
   describe '#all' do
@@ -30,8 +30,8 @@ describe Mattermost::Team do
       end
 
       before do
-        stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all').
-          to_return(
+        stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all')
+          .to_return(
             status: 200,
             headers: { 'Content-Type' => 'application/json' },
             body: response.to_json
@@ -45,8 +45,8 @@ describe Mattermost::Team do
 
     context 'for error message' do
       before do
-        stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all').
-          to_return(
+        stub_request(:get, 'http://mattermost.example.com/api/v3/teams/all')
+          .to_return(
             status: 500,
             headers: { 'Content-Type' => 'application/json' },
             body: {

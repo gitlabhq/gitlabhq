@@ -54,8 +54,8 @@ describe RuboCop::Cop::Migration::UpdateColumnInBatches do
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.map(&:line)).to eq([2])
-        expect(cop.offenses.first.message).
-          to include("`#{relative_spec_filepath}`")
+        expect(cop.offenses.first.message)
+          .to include("`#{relative_spec_filepath}`")
       end
     end
   end
