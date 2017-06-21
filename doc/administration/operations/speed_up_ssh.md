@@ -128,7 +128,7 @@ OpenSSH 7.5 for CentOS 6 and 7:
     -rw-r--r--. 1 root root 367516 Jun 20 19:37 openssh-server-7.5p1-1.x86_64.rpm
     ```
 
-5. Install the packages. OpenSSH packages will replace the `/etc/pamd.sshd`
+5. Install the packages. OpenSSH packages will replace `/etc/pam.d/sshd`
    with its own version, which may prevent users from logging in, so be sure
    that the file is backed up and restored after installation:
 
