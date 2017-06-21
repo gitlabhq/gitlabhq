@@ -18,18 +18,6 @@ describe('MergeRequestStore', () => {
       store.setData({ ...mockData, work_in_progress: !mockData.work_in_progress });
       expect(store.hasSHAChanged).toBe(false);
     });
-
-    it('sets isMerged to true for merged state', () => {
-      store.setData({ ...mockData, state: 'merged' });
-
-      expect(store.isMerged).toBe(true);
-    });
-
-    it('sets isMerged to false for readyToMerge state', () => {
-      store.setData({ ...mockData, state: 'readyToMerge' });
-
-      expect(store.isMerged).toBe(false);
-    });
   });
 
   describe('setCodeclimateHeadMetrics', () => {

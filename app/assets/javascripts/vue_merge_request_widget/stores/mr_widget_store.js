@@ -1,18 +1,6 @@
 import Timeago from 'timeago.js';
 import { getStateKey } from '../dependencies';
 
-const unmergedStates = [
-  'locked',
-  'conflicts',
-  'workInProgress',
-  'readyToMerge',
-  'checking',
-  'unresolvedDiscussions',
-  'pipelineFailed',
-  'pipelineBlocked',
-  'autoMergeFailed',
-];
-
 export default class MergeRequestStore {
   constructor(data) {
     this.sha = data.diff_head_sha;
@@ -79,7 +67,6 @@ export default class MergeRequestStore {
     this.mergeActionsContentPath = data.commit_change_content_path;
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
     this.isOpen = data.state === 'opened' || data.state === 'reopened' || false;
-    this.isMerged = unmergedStates.indexOf(data.state) === -1;
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canMerge = !!data.merge_path;

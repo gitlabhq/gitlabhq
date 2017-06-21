@@ -48,7 +48,7 @@ export default {
       return stateMaps.stateToComponentMap[this.mr.state];
     },
     shouldRenderMergeHelp() {
-      return !this.mr.isMerged;
+      return stateMaps.statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
     shouldRenderPipelines() {
       return Object.keys(this.mr.pipeline).length || this.mr.hasCI;
@@ -236,14 +236,9 @@ export default {
         :is="componentName"
         :mr="mr"
         :service="service" />
-      <section
+      <mr-widget-related-links
         v-if="shouldRenderRelatedLinks"
-        class="mr-info-list mr-links">
-        <div class="legend"></div>
-        <mr-widget-related-links
-          :is-merged="mr.isMerged"
-          :related-links="mr.relatedLinks" />
-      </section>
+        :related-links="mr.relatedLinks" />
       <mr-widget-merge-help v-if="shouldRenderMergeHelp" />
     </div>
   `,
