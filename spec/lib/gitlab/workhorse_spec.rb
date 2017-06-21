@@ -202,7 +202,11 @@ describe Gitlab::Workhorse, lib: true do
     context 'when Gitaly is enabled' do
       let(:gitaly_params) do
         {
-          GitalyAddress: Gitlab::GitalyClient.address('default')
+          GitalyAddress: Gitlab::GitalyClient.address('default'),
+          GitalyServer: {
+            address: Gitlab::GitalyClient.address('default'),
+            token: Gitlab::GitalyClient.token('default')
+          }
         }
       end
 
