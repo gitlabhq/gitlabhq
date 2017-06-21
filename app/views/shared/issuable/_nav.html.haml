@@ -17,7 +17,7 @@
         #{issuables_state_counter_text(type, :closed)}
   - else
     %li{ class: active_when(params[:state] == 'closed') }>
-      = link_to page_filter_path(state: 'closed', label: true), id: 'state-all', title: 'Filter by issues that are currently closed.', data: { state: 'closed' } do
+      = link_to page_filter_path(state: 'closed', label: true), id: 'state-closed', title: 'Filter by issues that are currently closed.', data: { state: 'closed' } do
         #{issuables_state_counter_text(type, :closed)}
 
   %li{ class: active_when(params[:state] == 'all') }>
