@@ -142,17 +142,6 @@ module Ci
       ExpandVariables.expand(environment, simple_variables) if environment
     end
 
-    def environment_url
-      return @environment_url if defined?(@environment_url)
-
-      @environment_url =
-        if unexpanded_url = options&.dig(:environment, :url)
-          ExpandVariables.expand(unexpanded_url, simple_variables)
-        else
-          persisted_environment&.external_url
-        end
-    end
-
     def has_environment?
       environment.present?
     end
@@ -196,25 +185,27 @@ module Ci
       slugified.gsub(/[^a-z0-9]/, '-')[0..62]
     end
 
-    # Variables whose value does not depend on other variables
+    # Variables whose value does not depend on environment
     def simple_variables
-      variables(with_environment: false)
-    end
-
-    # All variables, including those dependent on other variables
-    def variables(with_environment: true)
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
       variables += project.deployment_variables if has_environment?
-      variables += persisted_environment_variables if with_environment
       variables += yaml_variables
       variables += user_variables
-      variables += secret_variables(with_environment: with_environment)
+      variables += project.secret_variables_for(
+                     ref: ref, environment: persisted_environment)
+                       .map(&:to_runner_variable)
       variables += trigger_request.user_variables if trigger_request
       variables
+    end
+
+    # All variables, including those dependent on environment, which could
+    # contain unexpanded variables.
+    def variables
+      simple_variables.concat(persisted_environment_variables)
     end
 
     def merge_request
@@ -513,9 +504,10 @@ module Ci
 
       variables = persisted_environment.predefined_variables
 
-      if url = environment_url
-        variables << { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
-      end
+      # Here we're passing unexpanded environment_url for runner to expand,
+      # and we need to make sure that CI_ENVIRONMENT_NAME and
+      # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
+      variables << { key: 'CI_ENVIRONMENT_URL', value: environment_url, public: true } if environment_url
 
       variables
     end
@@ -536,6 +528,10 @@ module Ci
       variables << { key: "CI_BUILD_TRIGGERED", value: 'true', public: true } if trigger_request
       variables << { key: "CI_BUILD_MANUAL", value: 'true', public: true } if action?
       variables
+    end
+
+    def environment_url
+      options&.dig(:environment, :url) || persisted_environment&.external_url
     end
 
     def build_attributes_from_config
