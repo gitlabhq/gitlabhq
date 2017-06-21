@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.2.7 (2017-06-21)
+
+- Geo: fixed Dynamic Backoff strategy that was not being used by workers. !2128
+- fix Rebase being disabled for unapproved MRs.
+
 ## 9.2.6 (2017-06-16)
 
 - Geo: backported fix from 9.3 for big repository sync issues. !2000
