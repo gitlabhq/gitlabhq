@@ -68,7 +68,6 @@ export default {
         :dateTitle="mr.updatedAt"
         :dateReadable="mr.mergedAt" />
       <section class="mr-info-list">
-        <div class="legend"></div>
         <p>
           The changes were merged into
           <span class="label-branch">

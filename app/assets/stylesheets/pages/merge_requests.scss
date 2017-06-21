@@ -519,47 +519,16 @@
     position: relative;
     padding-left: 15px;
 
-    &::before {
-      content: '';
-      position: absolute;
-      border-top: 2px solid $border-color;
-      height: 1px;
-      top: 9px;
-      width: 8px;
-      left: 0;
-    }
-
     &:last-child {
       margin-bottom: 0;
     }
   }
-
-  .legend {
-    height: 100%;
-    width: 2px;
-    background: $border-color;
-    position: absolute;
-    top: -9px;
-  }
 }
 
 .mr-info-list.mr-memory-usage {
-  .legend {
-    height: 65%;
-    top: 0;
-
-    @media (max-width: $screen-xs-max) {
-      height: 20px;
-    }
-  }
-
   p {
     float: left;
     padding-left: 21px;
-
-    &::before {
-      top: 13px;
-    }
   }
 
   .memory-graph-container {
@@ -804,11 +773,5 @@
   p.usage-info-loading .usage-info-load-spinner {
     margin-right: 10px;
     font-size: 16px;
-  }
-
-  @media (max-width: $screen-md-min) {
-    .mr-info-list.mr-memory-usage .legend {
-      height: 80%;
-    }
   }
 }

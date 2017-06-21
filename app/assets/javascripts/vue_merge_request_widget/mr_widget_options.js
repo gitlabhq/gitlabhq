@@ -241,7 +241,6 @@ export default {
       <section
         v-if="shouldRenderRelatedLinks"
         class="mr-info-list mr-links">
-        <div class="legend"></div>
         <mr-widget-related-links
           :is-merged="mr.isMerged"
           :related-links="mr.relatedLinks" />

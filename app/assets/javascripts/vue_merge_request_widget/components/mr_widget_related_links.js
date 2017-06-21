@@ -45,7 +45,6 @@ export default {
   },
   template: `
     <div v-if="hasLinks">
-      <div class="legend"></div>
       <p v-if="relatedLinks.closing">
         {{closingText}}
         <span v-html="relatedLinks.closing"></span>.
