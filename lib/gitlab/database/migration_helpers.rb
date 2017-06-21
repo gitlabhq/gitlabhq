@@ -222,6 +222,12 @@ module Gitlab
       #
       # rubocop: disable Metrics/AbcSize
       def update_column_in_batches(table, column, value)
+        if transaction_open?
+          raise 'update_column_in_batches can not be run inside a transaction, ' \
+            'you can disable transactions by calling disable_ddl_transaction! ' \
+            'in the body of your migration class'
+        end
+
         table = Arel::Table.new(table)
 
         count_arel = table.project(Arel.star.count.as('count'))

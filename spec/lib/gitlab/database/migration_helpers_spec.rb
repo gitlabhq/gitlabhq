@@ -262,39 +262,53 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
   end
 
   describe '#update_column_in_batches' do
-    before do
-      create_list(:empty_project, 5)
-    end
+    context 'when running outside of a transaction' do
+      before do
+        expect(model).to receive(:transaction_open?).and_return(false)
 
-    it 'updates all the rows in a table' do
-      model.update_column_in_batches(:projects, :import_error, 'foo')
+        create_list(:empty_project, 5)
+      end
 
-      expect(Project.where(import_error: 'foo').count).to eq(5)
-    end
+      it 'updates all the rows in a table' do
+        model.update_column_in_batches(:projects, :import_error, 'foo')
 
-    it 'updates boolean values correctly' do
-      model.update_column_in_batches(:projects, :archived, true)
+        expect(Project.where(import_error: 'foo').count).to eq(5)
+      end
 
-      expect(Project.where(archived: true).count).to eq(5)
-    end
+      it 'updates boolean values correctly' do
+        model.update_column_in_batches(:projects, :archived, true)
 
-    context 'when a block is supplied' do
-      it 'yields an Arel table and query object to the supplied block' do
-        first_id = Project.first.id
+        expect(Project.where(archived: true).count).to eq(5)
+      end
 
-        model.update_column_in_batches(:projects, :archived, true) do |t, query|
-          query.where(t[:id].eq(first_id))
+      context 'when a block is supplied' do
+        it 'yields an Arel table and query object to the supplied block' do
+          first_id = Project.first.id
+
+          model.update_column_in_batches(:projects, :archived, true) do |t, query|
+            query.where(t[:id].eq(first_id))
+          end
+
+          expect(Project.where(archived: true).count).to eq(1)
         end
+      end
 
-        expect(Project.where(archived: true).count).to eq(1)
+      context 'when the value is Arel.sql (Arel::Nodes::SqlLiteral)' do
+        it 'updates the value as a SQL expression' do
+          model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
+
+          expect(Project.sum(:star_count)).to eq(2 * Project.count)
+        end
       end
     end
 
-    context 'when the value is Arel.sql (Arel::Nodes::SqlLiteral)' do
-      it 'updates the value as a SQL expression' do
-        model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
+    context 'when running inside the transaction' do
+      it 'raises RuntimeError' do
+        expect(model).to receive(:transaction_open?).and_return(true)
 
-        expect(Project.sum(:star_count)).to eq(2 * Project.count)
+        expect do
+          model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
+        end.to raise_error(RuntimeError)
       end
     end
   end
