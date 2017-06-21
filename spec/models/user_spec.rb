@@ -430,6 +430,20 @@ describe User, models: true do
     end
   end
 
+  describe '#flipper_id' do
+    context 'when user is not persisted' do
+      let(:user) { build(:user) }
+
+      it { expect(user.flipper_id).to be_nil }
+    end
+
+    context 'when user is persisted' do
+      let(:user) { create(:user) }
+
+      it { expect(user.flipper_id).to eq "User:#{user.id}" }
+    end
+  end
+
   describe '#generate_password' do
     it "does not generate password by default" do
       user = create(:user, password: 'abcdefghe')

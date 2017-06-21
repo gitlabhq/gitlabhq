@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
   include IgnorableColumn
+  include Flippable
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 

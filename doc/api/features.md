@@ -58,6 +58,8 @@ POST /features/:name
 | --------- | ---- | -------- | ----------- |
 | `name` | string | yes | Name of the feature to create or update |
 | `value` | integer/string | yes | `true` or `false` to enable/disable, or an integer for percentage of time |
+| `flipper_group` | string | no | A Flipper group name |
+| `user` | string | no | A GitLab username |
 
 ```bash
 curl --data "value=30" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/new_library
