@@ -2,11 +2,9 @@
 @import 'framework/tw_bootstrap_variables';
 @import "bootstrap/variables";
 
-$new-navbar-bg: #380D75;
-
 header.navbar-gitlab-new {
   color: $gray-normal;
-  background-color: $new-navbar-bg;
+  background-color: $purple-900;
 
   .header-content {
     padding-left: 0;
@@ -134,7 +132,7 @@ header.navbar-gitlab-new {
 
 .search {
   form {
-    border-color: #2D0573;
+    border-color: $purple-700;
 
     &:hover {
       border-color: rgba($white-light, .5);
@@ -147,7 +145,7 @@ header.navbar-gitlab-new {
 
   form,
   .search-input {
-    background-color: #451C7F;
+    background-color: $purple-800;
   }
 
   .search-input {
@@ -160,7 +158,7 @@ header.navbar-gitlab-new {
 
   .location-badge {
     color: $white-light;
-    background-color: $new-navbar-bg;
+    background-color: $purple-900;
   }
 
   &.search-active {
