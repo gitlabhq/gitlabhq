@@ -135,7 +135,8 @@ module Ci
     end
 
     def expanded_environment_name
-      ExpandVariables.expand(environment, simple_variables) if environment
+      ExpandVariables.expand(
+        environment, variables(with_environment: false)) if environment
     end
 
     def environment_url
@@ -143,7 +144,8 @@ module Ci
 
       @environment_url =
         if unexpanded_url = options&.dig(:environment, :url)
-          ExpandVariables.expand(unexpanded_url, simple_variables)
+          ExpandVariables.expand(
+            unexpanded_url, variables(with_environment_url: false))
         else
           persisted_environment&.external_url
         end
@@ -192,24 +194,31 @@ module Ci
       slugified.gsub(/[^a-z0-9]/, '-')[0..62]
     end
 
-    # Variables whose value does not depend on other variables
-    def simple_variables
+    # All variables, however variables from environment could be omitted
+    # in case we want to use other variables to find the environment or
+    # expand the environment URL. In those case if we don't exclude
+    # variables from environment, we end up with mutual recursion.
+    def variables(with_environment: true, with_environment_url: true)
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
       variables += project.deployment_variables if has_environment?
+
+      if with_environment
+        variables += persisted_environment_predefined_variables
+
+        if with_environment_url
+          variables += persisted_environment_url_variables
+        end
+      end
+
       variables += yaml_variables
       variables += user_variables
       variables += project.secret_variables_for(ref).map(&:to_runner_variable)
       variables += trigger_request.user_variables if trigger_request
       variables
-    end
-
-    # All variables, including those dependent on other variables
-    def variables
-      simple_variables.concat(persisted_environment_variables)
     end
 
     def merge_request
@@ -476,16 +485,16 @@ module Ci
       variables.concat(legacy_variables)
     end
 
-    def persisted_environment_variables
-      return [] unless persisted_environment
+    def persisted_environment_predefined_variables
+      persisted_environment&.predefined_variables || []
+    end
 
-      variables = persisted_environment.predefined_variables
-
+    def persisted_environment_url_variables
       if url = environment_url
-        variables << { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
+        [{ key: 'CI_ENVIRONMENT_URL', value: url, public: true }]
+      else
+        []
       end
-
-      variables
     end
 
     def legacy_variables

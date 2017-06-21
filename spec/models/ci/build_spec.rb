@@ -485,6 +485,24 @@ describe Ci::Build, :models do
           is_expected.to eq(environment.external_url)
         end
       end
+
+      context 'when predefined variables from environment are used' do
+        let(:url) do
+          'http://$CI_ENVIRONMENT_NAME-$CI_ENVIRONMENT_SLUG'
+        end
+
+        let(:job) do
+          create(:ci_build,
+                 environment: '0review',
+                 options: { environment: { url: url } })
+        end
+
+        let!(:environment) do
+          create(:environment, project: job.project, name: '0review')
+        end
+
+        it { is_expected.to eq("http://#{environment.name}-#{environment.slug}") }
+      end
     end
 
     describe '#starts_environment?' do
