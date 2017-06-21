@@ -151,14 +151,21 @@ module ProjectsHelper
       disabled: disabled_option
     )
 
-    content_tag(
-      :select,
-      options,
-      name: "project[project_feature_attributes][#{field}]",
-      id: "project_project_feature_attributes_#{field}",
-      class: "pull-right form-control #{repo_children_classes(field)}",
-      data: { field: field }
-    ).html_safe
+    content_tag :div, class: "select-wrapper" do
+      concat(
+        content_tag(
+          :select,
+          options,
+          name: "project[project_feature_attributes][#{field}]",
+          id: "project_project_feature_attributes_#{field}",
+          class: "pull-right form-control select-control #{repo_children_classes(field)} ",
+          data: { field: field }
+        )
+      )
+      concat(
+        icon('chevron-down')
+      )
+    end.html_safe
   end
 
   def link_to_autodeploy_doc
@@ -187,8 +194,8 @@ module ProjectsHelper
   end
 
   def load_pipeline_status(projects)
-    Gitlab::Cache::Ci::ProjectPipelineStatus.
-      load_in_batch_for_projects(projects)
+    Gitlab::Cache::Ci::ProjectPipelineStatus
+      .load_in_batch_for_projects(projects)
   end
 
   private

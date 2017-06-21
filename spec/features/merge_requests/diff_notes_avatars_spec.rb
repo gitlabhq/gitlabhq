@@ -20,7 +20,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    login_as user
+    gitlab_sign_in user
   end
 
   context 'discussion tab' do

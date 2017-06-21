@@ -19,8 +19,8 @@ module Tags
 
       if new_tag
         if release_description
-          CreateReleaseService.new(@project, @current_user).
-            execute(tag_name, release_description)
+          CreateReleaseService.new(@project, @current_user)
+            .execute(tag_name, release_description)
         end
 
         success.merge(tag: new_tag)

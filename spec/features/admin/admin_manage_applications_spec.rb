@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe 'admin manage applications', feature: true do
   before do
-    login_as :admin
+    gitlab_sign_in :admin
   end
 
   it do

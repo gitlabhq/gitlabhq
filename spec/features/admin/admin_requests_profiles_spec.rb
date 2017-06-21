@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Admin::RequestsProfilesController', feature: true do
   before do
     FileUtils.mkdir_p(Gitlab::RequestProfiler::PROFILES_DIR)
-    login_as(:admin)
+    gitlab_sign_in(:admin)
   end
 
   after do

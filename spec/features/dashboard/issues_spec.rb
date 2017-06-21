@@ -12,7 +12,7 @@ RSpec.describe 'Dashboard Issues', feature: true do
 
   before do
     [project, project_with_issues_disabled].each { |project| project.team << [current_user, :master] }
-    login_as(current_user)
+    gitlab_sign_in(current_user)
     visit issues_dashboard_path(assignee_id: current_user.id)
   end
 

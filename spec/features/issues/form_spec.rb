@@ -16,7 +16,7 @@ describe 'New/edit issue', :feature, :js do
   before do
     project.team << [user, :master]
     project.team << [user2, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'new issue' do
@@ -210,6 +210,13 @@ describe 'New/edit issue', :feature, :js do
 
       expect(find('.js-assignee-search')).to have_content(user2.name)
     end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
+    end
   end
 
   context 'edit issue' do
@@ -257,6 +264,13 @@ describe 'New/edit issue', :feature, :js do
           expect(page).to have_content label2.title
         end
       end
+    end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
     end
   end
 

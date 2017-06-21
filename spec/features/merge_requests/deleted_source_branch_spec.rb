@@ -8,7 +8,7 @@ describe 'Deleted source branch', feature: true, js: true do
   let(:merge_request) { create(:merge_request) }
 
   before do
-    login_as user
+    gitlab_sign_in user
     merge_request.project.team << [user, :master]
     merge_request.update!(source_branch: 'this-branch-does-not-exist')
     visit namespace_project_merge_request_path(

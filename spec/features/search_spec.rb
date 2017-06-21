@@ -9,7 +9,7 @@ describe "Search", feature: true  do
   let!(:issue2) { create(:issue, project: project, author: user) }
 
   before do
-    login_with(user)
+    gitlab_sign_in(user)
     project.team << [user, :reporter]
     visit search_path
   end

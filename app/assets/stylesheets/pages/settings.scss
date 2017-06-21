@@ -29,6 +29,10 @@
   &:first-of-type {
     margin-top: 10px;
   }
+
+  &.expanded {
+    overflow: visible;
+  }
 }
 
 .settings-header {

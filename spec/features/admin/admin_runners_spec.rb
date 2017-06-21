@@ -5,7 +5,7 @@ describe "Admin Runners" do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    login_as :admin
+    gitlab_sign_in :admin
   end
 
   describe "Runners page" do

@@ -1,8 +1,8 @@
 module Gitlab
   class Highlight
     def self.highlight(blob_name, blob_content, repository: nil, plain: false)
-      new(blob_name, blob_content, repository: repository).
-        highlight(blob_content, continue: false, plain: plain)
+      new(blob_name, blob_content, repository: repository)
+        .highlight(blob_content, continue: false, plain: plain)
     end
 
     attr_reader :blob_name

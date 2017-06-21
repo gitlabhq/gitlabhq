@@ -984,6 +984,9 @@ msgstr ""
 msgid "You can only add files when you are on a branch"
 msgstr ""
 
+msgid "You have reached your project limit"
+msgstr ""
+
 msgid "You must sign in to star a project"
 msgstr ""
 

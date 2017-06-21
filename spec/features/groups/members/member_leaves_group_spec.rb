@@ -8,7 +8,7 @@ feature 'Groups > Members > Member leaves group', feature: true do
   background do
     group.add_owner(owner)
     group.add_developer(user)
-    login_as(user)
+    gitlab_sign_in(user)
     visit group_path(group)
   end
 

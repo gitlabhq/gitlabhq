@@ -99,9 +99,9 @@
                   Git Large File Storage
                   = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
               .col-md-3
-                = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control project-repo-select', data: { field: 'lfs_enabled' }
-
-
+                .select-wrapper
+                  = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control project-repo-select select-control', data: { field: 'lfs_enabled' }
+                  = icon('chevron-down')
         - if Gitlab.config.registry.enabled
           .form-group.js-container-registry{ style: ("display: none;" if @project.project_feature.send(:repository_access_level) == 0) }
             .checkbox

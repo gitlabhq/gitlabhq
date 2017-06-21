@@ -25,7 +25,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     let(:user) { create(:user) }
 
     before do
-      login_as(user)
+      gitlab_sign_in(user)
       user.update_attribute(:otp_required_for_login, true)
     end
 
@@ -93,10 +93,10 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
       manage_two_factor_authentication
       u2f_device = register_u2f_device
       expect(page).to have_content('Your U2F device was registered')
-      logout
+      gitlab_sign_out
 
       # Second user
-      user = login_as(:user)
+      user = gitlab_sign_in(:user)
       user.update_attribute(:otp_required_for_login, true)
       visit profile_account_path
       manage_two_factor_authentication
@@ -147,18 +147,18 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
 
     before do
       # Register and logout
-      login_as(user)
+      gitlab_sign_in(user)
       user.update_attribute(:otp_required_for_login, true)
       visit profile_account_path
       manage_two_factor_authentication
       @u2f_device = register_u2f_device
-      logout
+      gitlab_sign_out
     end
 
     describe "when 2FA via OTP is disabled" do
       it "allows logging in with the U2F device" do
         user.update_attribute(:otp_required_for_login, false)
-        login_with(user)
+        gitlab_sign_in(user)
 
         @u2f_device.respond_to_u2f_authentication
 
@@ -170,7 +170,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     describe "when 2FA via OTP is enabled" do
       it "allows logging in with the U2F device" do
         user.update_attribute(:otp_required_for_login, true)
-        login_with(user)
+        gitlab_sign_in(user)
 
         @u2f_device.respond_to_u2f_authentication
 
@@ -180,7 +180,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     end
 
     it 'persists remember_me value via hidden field' do
-      login_with(user, remember: true)
+      gitlab_sign_in(user, remember: true)
 
       @u2f_device.respond_to_u2f_authentication
       expect(page).to have_content('We heard back from your U2F device')
@@ -195,15 +195,15 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
       describe "but not the current user" do
         it "does not allow logging in with that particular device" do
           # Register current user with the different U2F device
-          current_user = login_as(:user)
+          current_user = gitlab_sign_in(:user)
           current_user.update_attribute(:otp_required_for_login, true)
           visit profile_account_path
           manage_two_factor_authentication
           register_u2f_device(name: 'My other device')
-          logout
+          gitlab_sign_out
 
           # Try authenticating user with the old U2F device
-          login_as(current_user)
+          gitlab_sign_in(current_user)
           @u2f_device.respond_to_u2f_authentication
           expect(page).to have_content('We heard back from your U2F device')
           expect(page).to have_content('Authentication via U2F device failed')
@@ -213,15 +213,15 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
       describe "and also the current user" do
         it "allows logging in with that particular device" do
           # Register current user with the same U2F device
-          current_user = login_as(:user)
+          current_user = gitlab_sign_in(:user)
           current_user.update_attribute(:otp_required_for_login, true)
           visit profile_account_path
           manage_two_factor_authentication
           register_u2f_device(@u2f_device)
-          logout
+          gitlab_sign_out
 
           # Try authenticating user with the same U2F device
-          login_as(current_user)
+          gitlab_sign_in(current_user)
           @u2f_device.respond_to_u2f_authentication
           expect(page).to have_content('We heard back from your U2F device')
 
@@ -233,7 +233,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     describe "when a given U2F device has not been registered" do
       it "does not allow logging in with that particular device" do
         unregistered_device = FakeU2fDevice.new(page, 'My device')
-        login_as(user)
+        gitlab_sign_in(user)
         unregistered_device.respond_to_u2f_authentication
         expect(page).to have_content('We heard back from your U2F device')
 
@@ -244,7 +244,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
     describe "when more than one device has been registered by the same user" do
       it "allows logging in with either device" do
         # Register first device
-        user = login_as(:user)
+        user = gitlab_sign_in(:user)
         user.update_attribute(:otp_required_for_login, true)
         visit profile_two_factor_auth_path
         expect(page).to have_content("Your U2F device needs to be set up.")
@@ -254,17 +254,17 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
         visit profile_two_factor_auth_path
         expect(page).to have_content("Your U2F device needs to be set up.")
         second_device = register_u2f_device(name: 'My other device')
-        logout
+        gitlab_sign_out
 
         # Authenticate as both devices
         [first_device, second_device].each do |device|
-          login_as(user)
+          gitlab_sign_in(user)
           device.respond_to_u2f_authentication
           expect(page).to have_content('We heard back from your U2F device')
 
           expect(page).to have_css('.sign-out-link', visible: false)
 
-          logout
+          gitlab_sign_out
         end
       end
     end
@@ -273,7 +273,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
       let(:user) { create(:user) }
 
       before do
-        user = login_as(:user)
+        user = gitlab_sign_in(:user)
         user.update_attribute(:otp_required_for_login, true)
         visit profile_account_path
         manage_two_factor_authentication
@@ -300,15 +300,15 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
 
     before do
       # Register and logout
-      login_as(user)
+      gitlab_sign_in(user)
       user.update_attribute(:otp_required_for_login, true)
       visit profile_account_path
     end
 
     describe 'when no u2f device is registered' do
       before do
-        logout
-        login_with(user)
+        gitlab_sign_out
+        gitlab_sign_in(user)
       end
 
       it 'shows the fallback otp code UI' do
@@ -320,8 +320,8 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
       before do
         manage_two_factor_authentication
         @u2f_device = register_u2f_device
-        logout
-        login_with(user)
+        gitlab_sign_out
+        gitlab_sign_in(user)
       end
 
       it 'provides a button that shows the fallback otp code UI' do

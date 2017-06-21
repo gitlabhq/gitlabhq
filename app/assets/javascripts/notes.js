@@ -187,7 +187,7 @@ const normalizeNewlines = function(str) {
           if ($textarea.val() !== '') {
             return;
           }
-          myLastNote = $(`li.note[data-author-id='${gon.current_user_id}'][data-editable]:last`, $textarea.closest('.note, #notes'));
+          myLastNote = $(`li.note[data-author-id='${gon.current_user_id}'][data-editable]:last`, $textarea.closest('.note, .notes_holder, #notes'));
           if (myLastNote.length) {
             myLastNoteEditBtn = myLastNote.find('.js-note-edit');
             return myLastNoteEditBtn.trigger('click', [true, myLastNote]);
@@ -322,7 +322,9 @@ const normalizeNewlines = function(str) {
 
     Notes.updateNoteTargetSelector = function($note) {
       const hash = gl.utils.getLocationHash();
-      $note.toggleClass('target', hash && $note.filter(`#${hash}`).length > 0);
+      // Needs to be an explicit true/false for the jQuery `toggleClass(force)`
+      const addTargetClass = Boolean(hash && $note.filter(`#${hash}`).length > 0);
+      $note.toggleClass('target', addTargetClass);
     };
 
     /*

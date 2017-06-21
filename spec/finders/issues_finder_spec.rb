@@ -7,9 +7,9 @@ describe IssuesFinder do
   set(:project2) { create(:empty_project) }
   set(:milestone) { create(:milestone, project: project1) }
   set(:label) { create(:label, project: project2) }
-  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab') }
+  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago) }
   set(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab') }
-  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki') }
+  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 1.week.from_now) }
 
   describe '#execute' do
     set(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
@@ -211,6 +211,24 @@ describe IssuesFinder do
 
           it 'returns all issues' do
             expect(issues).to contain_exactly(issue1, issue2, issue3, closed_issue)
+          end
+        end
+      end
+
+      context 'filtering by created_at' do
+        context 'through created_after' do
+          let(:params) { { created_after: issue3.created_at } }
+
+          it 'returns issues created on or after the given date' do
+            expect(issues).to contain_exactly(issue3)
+          end
+        end
+
+        context 'through created_before' do
+          let(:params) { { created_before: issue1.created_at + 1.second } }
+
+          it 'returns issues created on or before the given date' do
+            expect(issues).to contain_exactly(issue1)
           end
         end
       end

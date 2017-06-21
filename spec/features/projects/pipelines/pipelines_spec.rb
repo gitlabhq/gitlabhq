@@ -7,7 +7,7 @@ describe 'Pipelines', :feature, :js do
     let(:user) { create(:user) }
 
     before do
-      login_as(user)
+      gitlab_sign_in(user)
       project.team << [user, :developer]
     end
 

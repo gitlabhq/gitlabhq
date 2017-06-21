@@ -31,8 +31,8 @@ describe Import::BitbucketController do
                             expires_at: expires_at,
                             expires_in: expires_in,
                             refresh_token: refresh_token)
-      allow_any_instance_of(OAuth2::Client).
-        to receive(:get_token).and_return(access_token)
+      allow_any_instance_of(OAuth2::Client)
+        .to receive(:get_token).and_return(access_token)
       stub_omniauth_provider('bitbucket')
 
       get :callback
@@ -93,9 +93,9 @@ describe Import::BitbucketController do
     context "when the repository owner is the Bitbucket user" do
       context "when the Bitbucket user and GitLab user's usernames match" do
         it "takes the current user's namespace" do
-          expect(Gitlab::BitbucketImport::ProjectCreator).
-            to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params).
-            and_return(double(execute: true))
+          expect(Gitlab::BitbucketImport::ProjectCreator)
+            .to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params)
+            .and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -105,9 +105,9 @@ describe Import::BitbucketController do
         let(:bitbucket_username) { "someone_else" }
 
         it "takes the current user's namespace" do
-          expect(Gitlab::BitbucketImport::ProjectCreator).
-            to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params).
-            and_return(double(execute: true))
+          expect(Gitlab::BitbucketImport::ProjectCreator)
+            .to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params)
+            .and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -141,9 +141,9 @@ describe Import::BitbucketController do
           end
 
           it "takes the existing namespace" do
-            expect(Gitlab::BitbucketImport::ProjectCreator).
-              to receive(:new).with(bitbucket_repo, bitbucket_repo.name, existing_namespace, user, access_params).
-              and_return(double(execute: true))
+            expect(Gitlab::BitbucketImport::ProjectCreator)
+              .to receive(:new).with(bitbucket_repo, bitbucket_repo.name, existing_namespace, user, access_params)
+              .and_return(double(execute: true))
 
             post :create, format: :js
           end
@@ -151,8 +151,8 @@ describe Import::BitbucketController do
 
         context "when the namespace is not owned by the GitLab user" do
           it "doesn't create a project" do
-            expect(Gitlab::BitbucketImport::ProjectCreator).
-              not_to receive(:new)
+            expect(Gitlab::BitbucketImport::ProjectCreator)
+              .not_to receive(:new)
 
             post :create, format: :js
           end
@@ -162,16 +162,16 @@ describe Import::BitbucketController do
       context "when a namespace with the Bitbucket user's username doesn't exist" do
         context "when current user can create namespaces" do
           it "creates the namespace" do
-            expect(Gitlab::BitbucketImport::ProjectCreator).
-              to receive(:new).and_return(double(execute: true))
+            expect(Gitlab::BitbucketImport::ProjectCreator)
+              .to receive(:new).and_return(double(execute: true))
 
             expect { post :create, format: :js }.to change(Namespace, :count).by(1)
           end
 
           it "takes the new namespace" do
-            expect(Gitlab::BitbucketImport::ProjectCreator).
-              to receive(:new).with(bitbucket_repo, bitbucket_repo.name, an_instance_of(Group), user, access_params).
-              and_return(double(execute: true))
+            expect(Gitlab::BitbucketImport::ProjectCreator)
+              .to receive(:new).with(bitbucket_repo, bitbucket_repo.name, an_instance_of(Group), user, access_params)
+              .and_return(double(execute: true))
 
             post :create, format: :js
           end
@@ -183,16 +183,16 @@ describe Import::BitbucketController do
           end
 
           it "doesn't create the namespace" do
-            expect(Gitlab::BitbucketImport::ProjectCreator).
-              to receive(:new).and_return(double(execute: true))
+            expect(Gitlab::BitbucketImport::ProjectCreator)
+              .to receive(:new).and_return(double(execute: true))
 
             expect { post :create, format: :js }.not_to change(Namespace, :count)
           end
 
           it "takes the current user's namespace" do
-            expect(Gitlab::BitbucketImport::ProjectCreator).
-              to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params).
-              and_return(double(execute: true))
+            expect(Gitlab::BitbucketImport::ProjectCreator)
+              .to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params)
+              .and_return(double(execute: true))
 
             post :create, format: :js
           end
@@ -210,9 +210,9 @@ describe Import::BitbucketController do
       end
 
       it 'takes the selected namespace and name' do
-        expect(Gitlab::BitbucketImport::ProjectCreator).
-          to receive(:new).with(bitbucket_repo, test_name, nested_namespace, user, access_params).
-            and_return(double(execute: true))
+        expect(Gitlab::BitbucketImport::ProjectCreator)
+          .to receive(:new).with(bitbucket_repo, test_name, nested_namespace, user, access_params)
+            .and_return(double(execute: true))
 
         post :create, { target_namespace: nested_namespace.full_path, new_name: test_name, format: :js }
       end
@@ -222,26 +222,26 @@ describe Import::BitbucketController do
       let(:test_name) { 'test_name' }
 
       it 'takes the selected namespace and name' do
-        expect(Gitlab::BitbucketImport::ProjectCreator).
-          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
-            and_return(double(execute: true))
+        expect(Gitlab::BitbucketImport::ProjectCreator)
+          .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
+            .and_return(double(execute: true))
 
         post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js }
       end
 
       it 'creates the namespaces' do
-        allow(Gitlab::BitbucketImport::ProjectCreator).
-          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
-            and_return(double(execute: true))
+        allow(Gitlab::BitbucketImport::ProjectCreator)
+          .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
+            .and_return(double(execute: true))
 
         expect { post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js } }
           .to change { Namespace.count }.by(2)
       end
 
       it 'new namespace has the right parent' do
-        allow(Gitlab::BitbucketImport::ProjectCreator).
-          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
-            and_return(double(execute: true))
+        allow(Gitlab::BitbucketImport::ProjectCreator)
+          .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
+            .and_return(double(execute: true))
 
         post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js }
 
@@ -254,17 +254,17 @@ describe Import::BitbucketController do
       let!(:parent_namespace) { create(:group, name: 'foo', owner: user) }
 
       it 'takes the selected namespace and name' do
-        expect(Gitlab::BitbucketImport::ProjectCreator).
-          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
-            and_return(double(execute: true))
+        expect(Gitlab::BitbucketImport::ProjectCreator)
+          .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
+            .and_return(double(execute: true))
 
         post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js }
       end
 
       it 'creates the namespaces' do
-        allow(Gitlab::BitbucketImport::ProjectCreator).
-          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
-            and_return(double(execute: true))
+        allow(Gitlab::BitbucketImport::ProjectCreator)
+          .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
+            .and_return(double(execute: true))
 
         expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js } }
           .to change { Namespace.count }.by(2)

@@ -8,7 +8,7 @@ feature 'Merge Request versions', js: true, feature: true do
   let!(:merge_request_diff3) { merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
   before do
-    login_as :admin
+    gitlab_sign_in :admin
     visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 

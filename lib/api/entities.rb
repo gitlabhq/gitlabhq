@@ -43,9 +43,12 @@ module API
       expose :external
     end
 
-    class UserWithPrivateDetails < UserPublic
-      expose :private_token
+    class UserWithAdmin < UserPublic
       expose :admin?, as: :is_admin
+    end
+
+    class UserWithPrivateDetails < UserWithAdmin
+      expose :private_token
     end
 
     class Email < Grape::Entity
@@ -115,6 +118,7 @@ module API
       expose :only_allow_merge_if_pipeline_succeeds
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
+      expose :printing_merge_request_link_enabled
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end
@@ -480,9 +484,9 @@ module API
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
-        field_names = service.fields.
-          select { |field| options[:include_passwords] || field[:type] != 'password' }.
-          map { |field| field[:name] }
+        field_names = service.fields
+          .select { |field| options[:include_passwords] || field[:type] != 'password' }
+          .map { |field| field[:name] }
         service.properties.slice(*field_names)
       end
     end

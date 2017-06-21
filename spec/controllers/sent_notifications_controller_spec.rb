@@ -87,8 +87,8 @@ describe SentNotificationsController, type: :controller do
         end
 
         it 'redirects to the issue page' do
-          expect(response).
-            to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+          expect(response)
+            .to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
         end
       end
 
@@ -113,8 +113,8 @@ describe SentNotificationsController, type: :controller do
         end
 
         it 'redirects to the merge request page' do
-          expect(response).
-            to redirect_to(namespace_project_merge_request_path(project.namespace, project, merge_request))
+          expect(response)
+            .to redirect_to(namespace_project_merge_request_path(project.namespace, project, merge_request))
         end
       end
     end

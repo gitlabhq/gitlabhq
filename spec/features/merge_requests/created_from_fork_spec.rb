@@ -16,7 +16,7 @@ feature 'Merge request created from fork' do
 
   background do
     fork_project.team << [user, :master]
-    login_as user
+    gitlab_sign_in user
   end
 
   scenario 'user can access merge request' do

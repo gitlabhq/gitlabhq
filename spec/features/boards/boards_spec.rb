@@ -12,7 +12,7 @@ describe 'Issue Boards', feature: true, js: true do
     project.team << [user, :master]
     project.team << [user2, :master]
 
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'no lists' do
@@ -519,7 +519,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'signed out user' do
     before do
-      logout
+      gitlab_sign_out
       visit namespace_project_board_path(project.namespace, project, board)
       wait_for_requests
     end
@@ -542,8 +542,8 @@ describe 'Issue Boards', feature: true, js: true do
 
     before do
       project.team << [user_guest, :guest]
-      logout
-      login_as(user_guest)
+      gitlab_sign_out
+      gitlab_sign_in(user_guest)
       visit namespace_project_board_path(project.namespace, project, board)
       wait_for_requests
     end

@@ -11,7 +11,7 @@ feature 'Mini Pipeline Graph', :js, :feature do
   before do
     build.run
 
-    login_as(user)
+    gitlab_sign_in(user)
     visit_merge_request
   end
 

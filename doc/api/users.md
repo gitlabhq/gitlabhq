@@ -62,6 +62,7 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
+    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -94,6 +95,7 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
     "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
+    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -197,6 +199,7 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
+  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -251,6 +254,7 @@ Parameters:
 - `can_create_group` (optional) - User can create groups - true or false
 - `confirm` (optional)          - Require confirmation - true (default) or false
 - `external` (optional)         - Flags the user as external - true or false(default)
+- `avatar` (optional)           - Image file for user's avatar
 
 ## User modification
 
@@ -279,6 +283,7 @@ Parameters:
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
+- `avatar` (optional)           - Image file for user's avatar
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,

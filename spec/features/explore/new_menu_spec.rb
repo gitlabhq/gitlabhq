@@ -16,7 +16,7 @@ feature 'Top Plus Menu', feature: true, js: true do
 
   context 'used by full user' do
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     scenario 'click on New project shows new project page' do
@@ -103,7 +103,7 @@ feature 'Top Plus Menu', feature: true, js: true do
 
   context 'used by guest user' do
     before do
-      login_as(guest_user)
+      gitlab_sign_in(guest_user)
     end
 
     scenario 'click on New issue shows new issue page' do

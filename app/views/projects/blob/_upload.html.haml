@@ -9,7 +9,7 @@
           .dropzone
             .dropzone-previews.blob-upload-dropzone-previews
               %p.dz-message.light
-                - upload_link = link_to n_('UploadLink|click to upload'), '#', class: "markdown-selector"
+                - upload_link = link_to s_('UploadLink|click to upload'), '#', class: "markdown-selector"
                 - dropzone_text = _('Attach a file by drag &amp; drop or %{upload_link}') % { upload_link: upload_link }
                 #{ dropzone_text.html_safe }
 

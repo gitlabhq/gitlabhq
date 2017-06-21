@@ -46,5 +46,47 @@ describe MergeRequestsFinder do
 
       expect(merge_requests).to contain_exactly(merge_request1)
     end
+
+    context 'with created_after and created_before params' do
+      let(:project4) { create(:empty_project, forked_from_project: project1) }
+
+      let!(:new_merge_request) do
+        create(:merge_request,
+               :simple,
+               author: user,
+               created_at: 1.week.from_now,
+               source_project: project4,
+               target_project: project1)
+      end
+
+      let!(:old_merge_request) do
+        create(:merge_request,
+               :simple,
+               author: user,
+               created_at: 1.week.ago,
+               source_project: project4,
+               target_project: project4)
+      end
+
+      before do
+        project4.add_master(user)
+      end
+
+      it 'filters by created_after' do
+        params = { project_id: project1.id, created_after: new_merge_request.created_at }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(new_merge_request)
+      end
+
+      it 'filters by created_before' do
+        params = { project_id: project4.id, created_before: old_merge_request.created_at + 1.second }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(old_merge_request)
+      end
+    end
   end
 end

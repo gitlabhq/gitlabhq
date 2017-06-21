@@ -17,7 +17,7 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
 
     project_1.team << [user_1, :developer]
     project_2.team << [user_1, :developer]
-    login_as(user_1)
+    gitlab_sign_in(user_1)
     visit dashboard_todos_path
   end
 

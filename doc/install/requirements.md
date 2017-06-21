@@ -86,6 +86,79 @@ if your available memory changes.
 
 Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about many you need of those.
 
+## Database
+
+The server running the database should have _at least_ 5-10 GB of storage
+available, though the exact requirements depend on the size of the GitLab
+installation (e.g. the number of users, projects, etc).
+
+We currently support the following databases:
+
+- PostgreSQL
+- MySQL/MariaDB
+
+We **highly recommend** the use of PostgreSQL instead of MySQL/MariaDB as not all
+features of GitLab may work with MySQL/MariaDB:
+
+1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
+   See [issue #30472][30472] for more information.
+1. GitLab Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
+1. [Zero downtime migrations][zero] do not work with MySQL
+
+Existing users using GitLab with MySQL/MariaDB are advised to
+[migrate to PostgreSQL](../update/mysql_to_postgresql.md) instead.
+
+[30472]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30472
+[zero]: ../update/README.md#upgrading-without-downtime
+[post]: https://about.gitlab.com/2017/06/22/gitlab-9-3-released/#dropping-support-for-subgroups-in-mysql
+
+### PostgreSQL Requirements
+
+As of GitLab 9.3, PostgreSQL 9.2 or newer is required, and earlier versions are
+not supported. We highly recommend users to use at least PostgreSQL 9.6 as this
+is the PostgreSQL version used for development and testing.
+
+Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
+GitLab database. This extension can be enabled (using a PostgreSQL super user)
+by running the following query for every database:
+
+```
+CREATE EXTENSION pg_trgm;
+```
+
+On some systems you may need to install an additional package (e.g.
+`postgresql-contrib`) for this extension to become available.
+
+## Unicorn Workers
+
+It's possible to increase the amount of unicorn workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
+
+For most instances we recommend using: CPU cores + 1 = unicorn workers.
+So for a machine with 2 cores, 3 unicorn workers is ideal.
+
+For all machines that have 2GB and up we recommend a minimum of three unicorn workers.
+If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
+
+To change the Unicorn workers when you have the Omnibus package please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
+
+## Redis and Sidekiq
+
+Redis stores all user sessions and the background task queue.
+The storage requirements for Redis are minimal, about 25kB per user.
+Sidekiq processes the background jobs with a multithreaded process.
+This process starts with the entire Rails stack (200MB+) but it can grow over time due to memory leaks.
+On a very active server (10,000 active users) the Sidekiq process can use 1GB+ of memory.
+
+## Prometheus and its exporters
+
+As of Omnibus GitLab 9.0, [Prometheus](https://prometheus.io) and its related
+exporters are enabled by default, to enable easy and in depth monitoring of
+GitLab. Approximately 200MB of memory will be consumed by these processes, with
+default settings.
+
+If you would like to disable Prometheus and it's exporters or read more information
+about it, check the [Prometheus documentation](../administration/monitoring/prometheus/index.md).
+
 ## GitLab Runner
 
 We strongly advise against installing GitLab Runner on the same machine you plan
@@ -105,72 +178,6 @@ We recommend using a separate machine for each GitLab Runner, if you plan to
 use the CI features.
 
 [security reasons]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/security/index.md
-
-## Unicorn Workers
-
-It's possible to increase the amount of unicorn workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
-
-For most instances we recommend using: CPU cores + 1 = unicorn workers.
-So for a machine with 2 cores, 3 unicorn workers is ideal.
-
-For all machines that have 2GB and up we recommend a minimum of three unicorn workers.
-If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
-
-To change the Unicorn workers when you have the Omnibus package please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
-
-## Database
-
-We currently support the following databases:
-
-- PostgreSQL
-- MySQL/MariaDB
-
-We _highly_ recommend the use of PostgreSQL instead of MySQL/MariaDB as not all
-features of GitLab may work with MySQL/MariaDB. For example, MySQL does not have
-the right features to support nested groups in an efficient manner; see
-<https://gitlab.com/gitlab-org/gitlab-ce/issues/30472> for more information
-about this. GitLab Geo also does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
-Existing users using GitLab with MySQL/MariaDB are advised to
-migrate to PostgreSQL instead.
-
-The server running the database should have _at least_ 5-10 GB of storage
-available, though the exact requirements depend on the size of the GitLab
-installation (e.g. the number of users, projects, etc).
-
-### PostgreSQL Requirements
-
-As of GitLab 9.3, PostgreSQL 9.2 or newer is required, and earlier versions are
-not supported. We highly recommend users to use at least PostgreSQL 9.6 as this
-is the PostgreSQL version used for development and testing.
-
-Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
-GitLab database. This extension can be enabled (using a PostgreSQL super user)
-by running the following query for every database:
-
-```
-CREATE EXTENSION pg_trgm;
-```
-
-On some systems you may need to install an additional package (e.g.
-`postgresql-contrib`) for this extension to become available.
-
-## Redis and Sidekiq
-
-Redis stores all user sessions and the background task queue.
-The storage requirements for Redis are minimal, about 25kB per user.
-Sidekiq processes the background jobs with a multithreaded process.
-This process starts with the entire Rails stack (200MB+) but it can grow over time due to memory leaks.
-On a very active server (10,000 active users) the Sidekiq process can use 1GB+ of memory.
-
-## Prometheus and its exporters
-
-As of Omnibus GitLab 9.0, [Prometheus](https://prometheus.io) and its related
-exporters are enabled by default, to enable easy and in depth monitoring of
-GitLab. Approximately 200MB of memory will be consumed by these processes, with
-default settings.
-
-If you would like to disable Prometheus and it's exporters or read more information
-about it, check the [Prometheus documentation](../administration/monitoring/prometheus/index.md).
 
 ## Supported web browsers
 

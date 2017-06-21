@@ -29,6 +29,7 @@ module API
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
+          optional :avatar, type: File, desc: 'Avatar image for user'
           all_or_none_of :extern_uid, :provider
         end
       end
@@ -58,7 +59,7 @@ module API
 
         users = UsersFinder.new(current_user, params).execute
 
-        entity = current_user.admin? ? Entities::UserPublic : Entities::UserBasic
+        entity = current_user.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         present paginate(users), with: entity
       end
 
@@ -102,13 +103,13 @@ module API
         if user.persisted?
           present user, with: Entities::UserPublic
         else
-          conflict!('Email has already been taken') if User.
-              where(email: user.email).
-              count > 0
+          conflict!('Email has already been taken') if User
+              .where(email: user.email)
+              .count > 0
 
-          conflict!('Username has already been taken') if User.
-              where(username: user.username).
-              count > 0
+          conflict!('Username has already been taken') if User
+              .where(username: user.username)
+              .count > 0
 
           render_validation_error!(user)
         end
@@ -132,12 +133,12 @@ module API
         not_found!('User') unless user
 
         conflict!('Email has already been taken') if params[:email] &&
-            User.where(email: params[:email]).
-                where.not(id: user.id).count > 0
+            User.where(email: params[:email])
+                .where.not(id: user.id).count > 0
 
         conflict!('Username has already been taken') if params[:username] &&
-            User.where(username: params[:username]).
-                where.not(id: user.id).count > 0
+            User.where(username: params[:username])
+                .where.not(id: user.id).count > 0
 
         user_params = declared_params(include_missing: false)
         identity_attrs = user_params.slice(:provider, :extern_uid)
@@ -516,9 +517,9 @@ module API
       get "activities" do
         authenticated_as_admin!
 
-        activities = User.
-          where(User.arel_table[:last_activity_on].gteq(params[:from])).
-          reorder(last_activity_on: :asc)
+        activities = User
+          .where(User.arel_table[:last_activity_on].gteq(params[:from]))
+          .reorder(last_activity_on: :asc)
 
         present paginate(activities), with: Entities::UserActivity
       end

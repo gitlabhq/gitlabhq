@@ -5,7 +5,7 @@ feature 'Protected Branches', feature: true, js: true do
   let(:project) { create(:project, :repository) }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   def set_protected_branch_name(branch_name)

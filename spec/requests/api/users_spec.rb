@@ -11,7 +11,7 @@ describe API::Users do
   let(:not_existing_user_id) { (User.maximum('id') || 0 ) + 10 }
   let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
 
-  describe "GET /users" do
+  describe 'GET /users' do
     context "when unauthenticated" do
       it "returns authentication error" do
         get api("/users")
@@ -76,6 +76,12 @@ describe API::Users do
 
         expect(response).to have_http_status(403)
       end
+
+      it 'does not reveal the `is_admin` flag of the user' do
+        get api('/users', user)
+
+        expect(json_response.first.keys).not_to include 'is_admin'
+      end
     end
 
     context "when admin" do
@@ -92,6 +98,7 @@ describe API::Users do
         expect(json_response.first.keys).to include 'two_factor_enabled'
         expect(json_response.first.keys).to include 'last_sign_in_at'
         expect(json_response.first.keys).to include 'confirmed_at'
+        expect(json_response.first.keys).to include 'is_admin'
       end
 
       it "returns an array of external users" do
@@ -282,14 +289,14 @@ describe API::Users do
            bio: 'g' * 256,
            projects_limit: -1
       expect(response).to have_http_status(400)
-      expect(json_response['message']['password']).
-        to eq(['is too short (minimum is 8 characters)'])
-      expect(json_response['message']['bio']).
-        to eq(['is too long (maximum is 255 characters)'])
-      expect(json_response['message']['projects_limit']).
-        to eq(['must be greater than or equal to 0'])
-      expect(json_response['message']['username']).
-        to eq([Gitlab::PathRegex.namespace_format_message])
+      expect(json_response['message']['password'])
+        .to eq(['is too short (minimum is 8 characters)'])
+      expect(json_response['message']['bio'])
+        .to eq(['is too long (maximum is 255 characters)'])
+      expect(json_response['message']['projects_limit'])
+        .to eq(['must be greater than or equal to 0'])
+      expect(json_response['message']['username'])
+        .to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
     it "is not available for non admin users" do
@@ -377,6 +384,16 @@ describe API::Users do
       expect(user.reload.organization).to eq('GitLab')
     end
 
+    it 'updates user with avatar' do
+      put api("/users/#{user.id}", admin), { avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+
+      user.reload
+
+      expect(user.avatar).to be_present
+      expect(response).to have_http_status(200)
+      expect(json_response['avatar_url']).to include(user.avatar_path)
+    end
+
     it 'updates user with his own email' do
       put api("/users/#{user.id}", admin), email: user.email
       expect(response).to have_http_status(200)
@@ -461,14 +478,14 @@ describe API::Users do
           bio: 'g' * 256,
           projects_limit: -1
       expect(response).to have_http_status(400)
-      expect(json_response['message']['password']).
-        to eq(['is too short (minimum is 8 characters)'])
-      expect(json_response['message']['bio']).
-        to eq(['is too long (maximum is 255 characters)'])
-      expect(json_response['message']['projects_limit']).
-        to eq(['must be greater than or equal to 0'])
-      expect(json_response['message']['username']).
-        to eq([Gitlab::PathRegex.namespace_format_message])
+      expect(json_response['message']['password'])
+        .to eq(['is too short (minimum is 8 characters)'])
+      expect(json_response['message']['bio'])
+        .to eq(['is too long (maximum is 255 characters)'])
+      expect(json_response['message']['projects_limit'])
+        .to eq(['must be greater than or equal to 0'])
+      expect(json_response['message']['username'])
+        .to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
     it 'returns 400 if provider is missing for identity update' do

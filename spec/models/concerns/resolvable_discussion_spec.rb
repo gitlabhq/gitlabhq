@@ -306,22 +306,22 @@ describe Discussion, ResolvableDiscussion, models: true do
         it "doesn't change resolved_at on the resolved note" do
           expect(first_note.resolved_at).not_to be_nil
 
-          expect { subject.resolve!(current_user) }.
-            not_to change { first_note.reload.resolved_at }
+          expect { subject.resolve!(current_user) }
+            .not_to change { first_note.reload.resolved_at }
         end
 
         it "doesn't change resolved_by on the resolved note" do
           expect(first_note.resolved_by).to eq(user)
 
-          expect { subject.resolve!(current_user) }.
-            not_to change { first_note.reload && first_note.resolved_by }
+          expect { subject.resolve!(current_user) }
+            .not_to change { first_note.reload && first_note.resolved_by }
         end
 
         it "doesn't change the resolved state on the resolved note" do
           expect(first_note.resolved?).to be true
 
-          expect { subject.resolve!(current_user) }.
-            not_to change { first_note.reload && first_note.resolved? }
+          expect { subject.resolve!(current_user) }
+            .not_to change { first_note.reload && first_note.resolved? }
         end
 
         it "sets resolved_at on the unresolved note" do

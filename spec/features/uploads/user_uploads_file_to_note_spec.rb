@@ -8,7 +8,7 @@ feature 'User uploads file to note', feature: true do
   let(:issue) { create(:issue, project: project, author: user) }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
     visit namespace_project_issue_path(project.namespace, project, issue)
   end
 

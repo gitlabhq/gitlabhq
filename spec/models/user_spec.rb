@@ -451,6 +451,40 @@ describe User, models: true do
     end
   end
 
+  describe '#ensure_user_rights_and_limits' do
+    describe 'with external user' do
+      let(:user) { create(:user, external: true) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: false)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        stub_config_setting(default_can_create_group: true)
+
+        expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
+          .and change { user.projects_limit }.to(current_application_settings.default_projects_limit)
+      end
+    end
+
+    describe 'without external user' do
+      let(:user) { create(:user, external: false) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: true)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        expect { user.update_attributes(external: true) }.to change { user.can_create_group }.to(false)
+          .and change { user.projects_limit }.to(0)
+      end
+    end
+  end
+
   describe 'rss token' do
     it 'ensures an rss token on read' do
       user = create(:user, rss_token: nil)
@@ -878,8 +912,8 @@ describe User, models: true do
 
   describe '.find_by_username!' do
     it 'raises RecordNotFound' do
-      expect { described_class.find_by_username!('JohnDoe') }.
-        to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.find_by_username!('JohnDoe') }
+        .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'is case-insensitive' do
@@ -1523,8 +1557,8 @@ describe User, models: true do
     end
 
     it 'returns the projects when using an ActiveRecord relation' do
-      projects = user.
-        projects_with_reporter_access_limited_to(Project.select(:id))
+      projects = user
+        .projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end

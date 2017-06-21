@@ -9,7 +9,7 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
   describe 'as a user with access to the project' do
     before do
       project.team << [user, :master]
-      login_as user
+      gitlab_sign_in user
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
@@ -82,7 +82,7 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
   describe 'as a reporter' do
     before do
       project.team << [user, :reporter]
-      login_as user
+      gitlab_sign_in user
       visit new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
     end
 
