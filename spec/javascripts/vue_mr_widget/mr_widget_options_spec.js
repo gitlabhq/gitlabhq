@@ -48,13 +48,12 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('shouldRenderMergeHelp', () => {
-      it('should return false after merging', () => {
-        vm.mr.isMerged = true;
+      it('should return false for the initial merged state', () => {
         expect(vm.shouldRenderMergeHelp).toBeFalsy();
       });
 
-      it('should return true before merging', () => {
-        vm.mr.isMerged = false;
+      it('should return true for a state which requires help widget', () => {
+        vm.mr.state = 'conflicts';
         expect(vm.shouldRenderMergeHelp).toBeTruthy();
       });
     });
