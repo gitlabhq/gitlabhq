@@ -471,9 +471,9 @@ module Ci
 
       variables = persisted_environment.predefined_variables
 
-        # Here we're passing unexpanded environment_url for runner to expand,
-        # and we need to make sure that CI_ENVIRONMENT_NAME and
-        # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
+      # Here we're passing unexpanded environment_url for runner to expand,
+      # and we need to make sure that CI_ENVIRONMENT_NAME and
+      # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
       variables << { key: 'CI_ENVIRONMENT_URL', value: environment_url, public: true } if environment_url
 
       variables
@@ -498,11 +498,7 @@ module Ci
     end
 
     def environment_url
-      return @environment_url if defined?(@environment_url)
-
-      @environment_url =
-        options&.dig(:environment, :url) ||
-          persisted_environment&.external_url
+      options&.dig(:environment, :url) || persisted_environment&.external_url
     end
 
     def build_attributes_from_config

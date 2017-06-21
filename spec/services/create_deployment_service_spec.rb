@@ -135,6 +135,25 @@ describe CreateDeploymentService, services: true do
       it { is_expected.to eq('http://review/master') }
     end
 
+    context 'when yaml environment uses $CI_ENVIRONMENT_SLUG' do
+      let(:job) do
+        create(:ci_build,
+               ref: 'master',
+               environment: 'production',
+               options: { environment: { url: 'http://review/$CI_ENVIRONMENT_SLUG' } })
+      end
+
+      let!(:environment) do
+        create(:environment,
+          project: job.project,
+          name: 'production',
+          slug: 'prod-slug',
+          external_url: 'http://review/old')
+      end
+
+      it { is_expected.to eq('http://review/prod-slug') }
+    end
+
     context 'when yaml environment uses yaml_variables containing symbol keys' do
       let(:job) do
         create(:ci_build,
@@ -153,7 +172,7 @@ describe CreateDeploymentService, services: true do
       end
 
       it 'returns the external_url from persisted environment' do
-        is_expected.to eq(environment.external_url)
+        is_expected.to be_nil
       end
     end
   end
