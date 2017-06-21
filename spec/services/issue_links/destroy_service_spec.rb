@@ -7,7 +7,7 @@ describe IssueLinks::DestroyService, service: true do
 
     subject { described_class.new(issue_link, user).execute }
 
-    context 'success' do
+    context 'when successfully removes an issue link' do
       let(:issue_a) { create :issue, project: project }
       let(:issue_b) { create :issue, project: project }
 
@@ -36,7 +36,7 @@ describe IssueLinks::DestroyService, service: true do
       end
     end
 
-    context 'failure' do
+    context 'when failing to remove an issue link' do
       let(:unauthorized_project) { create :empty_project }
       let(:issue_a) { create :issue, project: project }
       let(:issue_b) { create :issue, project: unauthorized_project }
