@@ -122,6 +122,61 @@ describe CreateDeploymentService, services: true do
     end
   end
 
+  describe '#expanded_environment_url' do
+    subject { service.send(:expanded_environment_url) }
+
+    context 'when yaml environment uses $CI_COMMIT_REF_NAME' do
+      let(:job) do
+        create(:ci_build,
+               ref: 'master',
+               options: { environment: { url: 'http://review/$CI_COMMIT_REF_NAME' } })
+      end
+
+      it { is_expected.to eq('http://review/master') }
+    end
+
+    context 'when yaml environment uses $CI_ENVIRONMENT_SLUG' do
+      let(:job) do
+        create(:ci_build,
+               ref: 'master',
+               environment: 'production',
+               options: { environment: { url: 'http://review/$CI_ENVIRONMENT_SLUG' } })
+      end
+
+      let!(:environment) do
+        create(:environment,
+          project: job.project,
+          name: 'production',
+          slug: 'prod-slug',
+          external_url: 'http://review/old')
+      end
+
+      it { is_expected.to eq('http://review/prod-slug') }
+    end
+
+    context 'when yaml environment uses yaml_variables containing symbol keys' do
+      let(:job) do
+        create(:ci_build,
+               yaml_variables: [{ key: :APP_HOST, value: 'host' }],
+               options: { environment: { url: 'http://review/$APP_HOST' } })
+      end
+
+      it { is_expected.to eq('http://review/host') }
+    end
+
+    context 'when yaml environment does not have url' do
+      let(:job) { create(:ci_build, environment: 'staging') }
+
+      let!(:environment) do
+        create(:environment, project: job.project, name: job.environment)
+      end
+
+      it 'returns the external_url from persisted environment' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe 'processing of builds' do
     shared_examples 'does not create deployment' do
       it 'does not create a new deployment' do
