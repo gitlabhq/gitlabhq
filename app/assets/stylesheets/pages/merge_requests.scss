@@ -7,6 +7,14 @@
   border: 1px solid $border-color;
   border-radius: 2px;
 
+  > * {
+    padding: $gl-padding;
+  }
+
+  > * + * {
+    border-top: solid 1px $border-color;
+  }
+
   form {
     margin-bottom: 0;
 
@@ -84,11 +92,8 @@
 
   .ci-widget {
     color: $gl-text-color;
-    display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
     align-items: center;
-    padding: $gl-padding-top $gl-padding 0;
 
     svg {
       position: relative;
@@ -113,11 +118,6 @@
     .ci-error {
       margin-right: $btn-side-margin;
     }
-  }
-
-  .mr-widget-body,
-  .mr-widget-footer {
-    margin: 16px;
   }
 
   .mr-widget-pipeline-graph {
@@ -153,8 +153,8 @@
   }
 
   .normal {
-    color: $gl-text-color;
     font-size: 15px;
+    line-height: 28px;
   }
 
   .capitalize {
@@ -570,11 +570,8 @@
 
 .mr-source-target {
   background-color: $gray-light;
-  border-radius: 3px 3px 0 0;
-  border-bottom: 1px solid $border-color;
-  padding: 0 $gl-padding;
-  margin-bottom: 6px;
-  line-height: 44px;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+  padding: $gl-padding-top $gl-padding;
 
   .dropdown-toggle .fa {
     color: $gl-text-color;
