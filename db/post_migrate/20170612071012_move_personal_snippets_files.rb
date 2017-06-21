@@ -60,8 +60,8 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
     source_markdown_path = File.join(@source_relative_location, snippet_id.to_s, secret, file_name)
     destination_markdown_path = File.join(@destination_relative_location, snippet_id.to_s, secret, file_name)
 
-    source_markdown = "(#{source_markdown_path})"
-    destination_markdown = "(#{destination_markdown_path})"
+    source_markdown = "](#{source_markdown_path})"
+    destination_markdown = "](#{destination_markdown_path})"
 
     if description.present?
       description = description.gsub(source_markdown, destination_markdown)
