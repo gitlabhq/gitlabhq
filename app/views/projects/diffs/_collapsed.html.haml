@@ -1,4 +1,8 @@
-.nothing-here-block.diff-collapsed
-  This diff is collapsed.
+.file-loading.hidden
+  = render 'projects/blob/viewers/loading', viewer: viewer
 
-  = link_to('Click to expand it.', '#', class: 'js-blob-viewer-load-btn', data: { viewer: viewer.type })
+.file-content
+  .nothing-here-block.diff-collapsed
+    This diff is collapsed.
+
+    = link_to('Click to expand it.', '#', class: 'js-diff-viewer-load-btn', data: { viewer: viewer.type })
