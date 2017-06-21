@@ -461,6 +461,7 @@ karma:
     - coverage-javascript/
 
 codeclimate:
+  <<: *except-docs
   before_script: []
   image: docker:latest
   stage: test
