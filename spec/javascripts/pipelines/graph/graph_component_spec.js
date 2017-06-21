@@ -7,7 +7,7 @@ const GraphComponent = Vue.extend(graphComponent);
 
 const pipelineJSON = Object.assign(graphJSON, {
   triggered: linkedPipelineJSON.triggered,
-  triggeredBy: linkedPipelineJSON.triggered_by,
+  triggered_by: linkedPipelineJSON.triggered_by,
 });
 
 const defaultPropsData = {
@@ -83,6 +83,10 @@ describe('graph component', function () {
     });
 
     describe('linked pipelines components', function () {
+      it('should coerce triggeredBy into a collection', function () {
+        expect(this.component.triggeredBy.length).toBe(1);
+      });
+
       it('should render an upstream pipelines column', function () {
         expect(this.component.$el.querySelector('.linked-pipelines-column')).not.toBeNull();
         expect(this.component.$el.innerHTML).toContain('Upstream');
@@ -97,7 +101,7 @@ describe('graph component', function () {
 
   describe('when linked pipelines are not present', function () {
     beforeEach(function () {
-      const pipeline = Object.assign(graphJSON, { triggered: [], triggeredBy: [] });
+      const pipeline = Object.assign(graphJSON, { triggered: [], triggered_by: [] });
       this.component = new GraphComponent({
         propsData: { pipeline, isLoading: false },
       }).$mount();

@@ -82,6 +82,7 @@ describe ApplicationHelper do
   end
 
   describe 'avatar_icon' do
+<<<<<<< HEAD
     it 'returns an url for the avatar' do
       user = create(:user, avatar: File.open(uploaded_image_temp_path))
 
@@ -105,19 +106,73 @@ describe ApplicationHelper do
       expect(helper.avatar_icon(user.email).to_s)
         .to match("/gitlab/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
     end
+=======
+    let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
 
-    it 'calls gravatar_icon when no User exists with the given email' do
-      expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20, 2)
+    context 'using an email' do
+      context 'when there is a matching user' do
+        it 'returns a relative URL for the avatar' do
+          expect(helper.avatar_icon(user.email).to_s)
+            .to eq("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+        end
 
-      helper.avatar_icon('foo@example.com', 20, 2)
+        context 'when an asset_host is set in the config' do
+          let(:asset_host) { 'http://assets' }
+
+          before do
+            allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
+          end
+
+          it 'returns an absolute URL on that asset host' do
+            expect(helper.avatar_icon(user.email, only_path: false).to_s)
+              .to eq("#{asset_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+          end
+        end
+
+        context 'when only_path is set to false' do
+          it 'returns an absolute URL for the avatar' do
+            expect(helper.avatar_icon(user.email, only_path: false).to_s)
+              .to eq("#{gitlab_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+          end
+        end
+
+        context 'when the GitLab instance is at a relative URL' do
+          before do
+            stub_config_setting(relative_url_root: '/gitlab')
+            # Must be stubbed after the stub above, and separately
+            stub_config_setting(url: Settings.send(:build_gitlab_url))
+          end
+
+          it 'returns a relative URL with the correct prefix' do
+            expect(helper.avatar_icon(user.email).to_s)
+              .to eq("/gitlab/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+          end
+        end
+      end
+
+      context 'when no user exists for the email' do
+        it 'calls gravatar_icon' do
+          expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20, 2)
+
+          helper.avatar_icon('foo@example.com', 20, 2)
+        end
+      end
     end
 
-    describe 'using a User' do
-      it 'returns an URL for the avatar' do
-        user = create(:user, avatar: File.open(uploaded_image_temp_path))
+    describe 'using a user' do
+      context 'when only_path is true' do
+        it 'returns a relative URL for the avatar' do
+          expect(helper.avatar_icon(user, only_path: true).to_s).
+            to eq("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+        end
+      end
 
-        expect(helper.avatar_icon(user).to_s)
-          .to match("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+      context 'when only_path is false' do
+        it 'returns an absolute URL for the avatar' do
+          expect(helper.avatar_icon(user, only_path: false).to_s).
+            to eq("#{gitlab_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+        end
+>>>>>>> master
       end
     end
   end

@@ -72,6 +72,34 @@ describe('Merge Request Code Quality', () => {
       }, 0);
     });
 
+    describe('text connector', () => {
+      it('should only render information about fixed issues', (done) => {
+        setTimeout(() => {
+          vm.mr.codeclimateMetrics.newIssues = [];
+
+          Vue.nextTick(() => {
+            expect(
+              vm.$el.querySelector('span:nth-child(2)').textContent.trim(),
+            ).toEqual('Code quality improved on 1 point.');
+            done();
+          });
+        }, 0);
+      });
+
+      it('should only render information about added issues', (done) => {
+        setTimeout(() => {
+          vm.mr.codeclimateMetrics.resolvedIssues = [];
+
+          Vue.nextTick(() => {
+            expect(
+              vm.$el.querySelector('span:nth-child(2)').textContent.trim(),
+            ).toEqual('Code quality degraded on 1 point.');
+            done();
+          });
+        }, 0);
+      });
+    });
+
     describe('toggleCollapsed', () => {
       it('toggles issues', (done) => {
         setTimeout(() => {

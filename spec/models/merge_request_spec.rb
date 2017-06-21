@@ -536,10 +536,16 @@ describe MergeRequest, models: true do
 
     it "includes project members with developer access and up" do
       expect do
+        developer = create(:user)
+
         project.add_guest(create(:user))
         project.add_reporter(create(:user))
-        project.add_developer(create(:user))
+        project.add_developer(developer)
         project.add_master(create(:user))
+
+        # Add this user as both someone with access, and an explicit approver,
+        # to ensure they aren't double-counted.
+        create(:approver, user: developer, target: merge_request)
       end.to change { merge_request.reload.number_of_potential_approvers }.by(2)
     end
 

@@ -22,6 +22,9 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 
 ## Configure using Omnibus
 
+**Note**: We're working on a new version that will help automate the setup of a PostgreSQL cluster.
+You can use the [alpha version of the document](alpha_database.md) to try it out now.
+
 1. Download/install GitLab Omnibus using **steps 1 and 2** from
    [GitLab downloads](https://about.gitlab.com/downloads). Do not complete other
    steps on the download page.
