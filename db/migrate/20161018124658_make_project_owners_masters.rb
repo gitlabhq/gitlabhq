@@ -4,6 +4,8 @@ class MakeProjectOwnersMasters < ActiveRecord::Migration
 
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
     update_column_in_batches(:members, :access_level, 40) do |table, query|
       query.where(table[:access_level].eq(50).and(table[:source_type].eq('Project')))
