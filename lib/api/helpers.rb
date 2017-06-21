@@ -328,33 +328,6 @@ module API
 
     private
 
-    def xor_byte_strings(s1, s2)
-      s2_bytes = s2.bytes
-      s1.each_byte.with_index { |c1, i| s2_bytes[i] ^= c1 }
-      s2_bytes.pack('C*')
-    end
-
-    # Check if CSRF tokens are equal.
-    # The header token is masked.
-    # So, before the comparison it must be unmasked.
-    def csrf_tokens_valid?(request)
-      session_token = request.session['_csrf_token']
-      header_token  = request.headers['X-Csrf-Token']
-
-      session_token = Base64.strict_decode64(session_token)
-      header_token  = Base64.strict_decode64(header_token)
-
-      # Decoded CSRF token passed from the frontend has to be 64 symbols long.
-      return false if header_token.size != 64
-
-      header_token = xor_byte_strings(header_token[0...32], header_token[32..-1])
-
-      ActiveSupport::SecurityUtils.secure_compare(session_token, header_token)
-
-    rescue
-      false
-    end
-
     def private_token
       params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
     end
@@ -363,10 +336,9 @@ module API
       env['warden']
     end
 
+    # Check if CSRF tokens are valid.
     def verified_request?
-      request = Grape::Request.new(env)
-
-      request.head? || request.get? || csrf_tokens_valid?(request)
+      GitLab::RequestForgeryProtection.call(env)
     end
 
     # Check the Rails session for valid authentication details
