@@ -20,8 +20,8 @@ class MattermostSlashCommandsService < SlashCommandsService
   end
 
   def configure(user, params)
-    token = Mattermost::Command.new(user).
-      create(command(params))
+    token = Mattermost::Command.new(user)
+      .create(command(params))
 
     update(active: true, token: token) if token
   rescue Mattermost::Error => e

@@ -100,9 +100,9 @@ class Member < ActiveRecord::Base
       users = User.arel_table
       members = Member.arel_table
 
-      member_users = members.join(users, Arel::Nodes::OuterJoin).
-                             on(members[:user_id].eq(users[:id])).
-                             join_sources
+      member_users = members.join(users, Arel::Nodes::OuterJoin)
+                             .on(members[:user_id].eq(users[:id]))
+                             .join_sources
 
       joins(member_users)
     end

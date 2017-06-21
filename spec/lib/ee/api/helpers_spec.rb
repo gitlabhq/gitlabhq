@@ -18,8 +18,8 @@ describe EE::API::Helpers do
     it 'handles sticking when a user could be found' do
       allow(helper).to receive(:initial_current_user).and_return(user)
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware).
-        to receive(:stick_or_unstick).with({}, :user, 42)
+      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
+        .to receive(:stick_or_unstick).with({}, :user, 42)
 
       helper.current_user
     end
@@ -27,8 +27,8 @@ describe EE::API::Helpers do
     it 'does not handle sticking if no user could be found' do
       allow(helper).to receive(:initial_current_user).and_return(nil)
 
-      expect(Gitlab::Database::LoadBalancing::RackMiddleware).
-        not_to receive(:stick_or_unstick)
+      expect(Gitlab::Database::LoadBalancing::RackMiddleware)
+        .not_to receive(:stick_or_unstick)
 
       helper.current_user
     end

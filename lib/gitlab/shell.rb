@@ -30,8 +30,8 @@ module Gitlab
       end
 
       def version_required
-        @version_required ||= File.read(Rails.root.
-                                        join('GITLAB_SHELL_VERSION')).strip
+        @version_required ||= File.read(Rails.root
+                                        .join('GITLAB_SHELL_VERSION')).strip
       end
 
       def strip_key(key)

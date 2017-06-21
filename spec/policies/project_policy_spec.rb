@@ -96,8 +96,8 @@ describe ProjectPolicy, models: true do
 
     expect(project.team.member?(issue.author)).to eq(false)
 
-    expect(BasePolicy.class_for(project).abilities(user, project).can_set).
-      not_to include(:read_issue)
+    expect(BasePolicy.class_for(project).abilities(user, project).can_set)
+      .not_to include(:read_issue)
 
     expect(Ability.allowed?(user, :read_issue, project)).to be_falsy
   end

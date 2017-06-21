@@ -3,11 +3,11 @@ require 'spec_helper'
 shared_examples 'renames child namespaces' do |type|
   it 'renames namespaces' do
     rename_namespaces = double
-    expect(described_class::RenameNamespaces).
-      to receive(:new).with(['first-path', 'second-path'], subject).
-           and_return(rename_namespaces)
-    expect(rename_namespaces).to receive(:rename_namespaces).
-                                   with(type: :child)
+    expect(described_class::RenameNamespaces)
+      .to receive(:new).with(['first-path', 'second-path'], subject)
+           .and_return(rename_namespaces)
+    expect(rename_namespaces).to receive(:rename_namespaces)
+                                   .with(type: :child)
 
     subject.rename_wildcard_paths(['first-path', 'second-path'])
   end
@@ -29,9 +29,9 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1 do
 
     it 'should rename projects' do
       rename_projects = double
-      expect(described_class::RenameProjects).
-        to receive(:new).with(['the-path'], subject).
-             and_return(rename_projects)
+      expect(described_class::RenameProjects)
+        .to receive(:new).with(['the-path'], subject)
+             .and_return(rename_projects)
 
       expect(rename_projects).to receive(:rename_projects)
 
@@ -42,11 +42,11 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1 do
   describe '#rename_root_paths' do
     it 'should rename namespaces' do
       rename_namespaces = double
-      expect(described_class::RenameNamespaces).
-        to receive(:new).with(['the-path'], subject).
-             and_return(rename_namespaces)
-      expect(rename_namespaces).to receive(:rename_namespaces).
-                           with(type: :top_level)
+      expect(described_class::RenameNamespaces)
+        .to receive(:new).with(['the-path'], subject)
+             .and_return(rename_namespaces)
+      expect(rename_namespaces).to receive(:rename_namespaces)
+                           .with(type: :top_level)
 
       subject.rename_root_paths('the-path')
     end

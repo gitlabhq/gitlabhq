@@ -483,8 +483,8 @@ describe 'Git HTTP requests', lib: true do
                 context 'when LDAP is configured' do
                   before do
                     allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
-                    allow_any_instance_of(Gitlab::LDAP::Authentication).
-                      to receive(:login).and_return(nil)
+                    allow_any_instance_of(Gitlab::LDAP::Authentication)
+                      .to receive(:login).and_return(nil)
                   end
 
                   it 'does not display the personal access token error message' do

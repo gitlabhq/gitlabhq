@@ -32,8 +32,8 @@ module Ci
       return error("400 Job has to be running", 400) unless job.running?
       return error("400 Variables not supported", 400) if params[:variables].any?
 
-      pipeline = Ci::CreatePipelineService.new(project, job.user, ref: params[:ref]).
-        execute(:pipeline, ignore_skip_ci: true) do |pipeline|
+      pipeline = Ci::CreatePipelineService.new(project, job.user, ref: params[:ref])
+        .execute(:pipeline, ignore_skip_ci: true) do |pipeline|
           job.sourced_pipelines.create!(
             source_pipeline: job.pipeline,
             source_project: job.project,

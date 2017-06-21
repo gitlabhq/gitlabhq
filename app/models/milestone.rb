@@ -100,11 +100,11 @@ class Milestone < ActiveRecord::Base
     if Gitlab::Database.postgresql?
       rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
     else
-      rel.
-        group(:project_id).
-        having('due_date = MIN(due_date)').
-        pluck(:id, :project_id, :due_date).
-        map(&:first)
+      rel
+        .group(:project_id)
+        .having('due_date = MIN(due_date)')
+        .pluck(:id, :project_id, :due_date)
+        .map(&:first)
     end
   end
 
@@ -194,8 +194,8 @@ class Milestone < ActiveRecord::Base
 
     conditions = 'WHEN id = ? THEN ? ' * ids.length
 
-    issues.where(id: ids).
-      update_all(["position = CASE #{conditions} ELSE position END", *pairs])
+    issues.where(id: ids)
+      .update_all(["position = CASE #{conditions} ELSE position END", *pairs])
   end
 
   private

@@ -77,8 +77,8 @@ module Ci
     def update_merge_requests_head_pipeline
       return unless pipeline.latest?
 
-      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref).
-        update_all(head_pipeline_id: @pipeline.id)
+      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref)
+        .update_all(head_pipeline_id: @pipeline.id)
     end
 
     def skip_ci?

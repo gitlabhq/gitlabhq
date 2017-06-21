@@ -139,9 +139,9 @@ class Note < ActiveRecord::Base
     end
 
     def count_for_collection(ids, type)
-      user.select('noteable_id', 'COUNT(*) as count').
-        group(:noteable_id).
-        where(noteable_type: type, noteable_id: ids)
+      user.select('noteable_id', 'COUNT(*) as count')
+        .group(:noteable_id)
+        .where(noteable_type: type, noteable_id: ids)
     end
   end
 

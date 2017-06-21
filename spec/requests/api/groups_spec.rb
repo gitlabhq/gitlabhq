@@ -593,8 +593,8 @@ describe API::Groups do
     let(:project_path) { project.full_path.gsub('/', '%2F') }
 
     before(:each) do
-      allow_any_instance_of(Projects::TransferService).
-        to receive(:execute).and_return(true)
+      allow_any_instance_of(Projects::TransferService)
+        .to receive(:execute).and_return(true)
     end
 
     context "when authenticated as user" do

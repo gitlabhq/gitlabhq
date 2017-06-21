@@ -248,11 +248,11 @@ class Repository
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
-      number_commits_behind = raw_repository.
-        count_commits_between(branch.dereferenced_target.sha, root_ref_hash)
+      number_commits_behind = raw_repository
+        .count_commits_between(branch.dereferenced_target.sha, root_ref_hash)
 
-      number_commits_ahead = raw_repository.
-        count_commits_between(root_ref_hash, branch.dereferenced_target.sha)
+      number_commits_ahead = raw_repository
+        .count_commits_between(root_ref_hash, branch.dereferenced_target.sha)
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end

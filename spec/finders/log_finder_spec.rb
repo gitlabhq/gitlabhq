@@ -16,35 +16,35 @@ describe LogFinder do
 
     context 'filtering by ID' do
       it 'finds the right user event' do
-        expect(described_class.new(event_type: 'User', user_id: 1).
-          execute.map(&:entity_type)).to all(eq 'User')
+        expect(described_class.new(event_type: 'User', user_id: 1)
+          .execute.map(&:entity_type)).to all(eq 'User')
       end
 
       it 'finds the right project event' do
-        expect(described_class.new(event_type: 'Project', project_id: 1).
-          execute.map(&:entity_type)).to all(eq 'Project')
+        expect(described_class.new(event_type: 'Project', project_id: 1)
+          .execute.map(&:entity_type)).to all(eq 'Project')
       end
 
       it 'finds the right group event' do
-        expect(described_class.new(event_type: 'Group', group_id: 1).
-          execute.map(&:entity_type)).to all(eq 'Group')
+        expect(described_class.new(event_type: 'Group', group_id: 1)
+          .execute.map(&:entity_type)).to all(eq 'Group')
       end
     end
 
     context 'filtering by type' do
       it 'finds the right user event' do
-        expect(described_class.new(event_type: 'User').
-          execute.map(&:entity_type)).to all(eq 'User')
+        expect(described_class.new(event_type: 'User')
+          .execute.map(&:entity_type)).to all(eq 'User')
       end
 
       it 'finds the right project event' do
-        expect(described_class.new(event_type: 'Project').
-          execute.map(&:entity_type)).to all(eq 'Project')
+        expect(described_class.new(event_type: 'Project')
+          .execute.map(&:entity_type)).to all(eq 'Project')
       end
 
       it 'finds the right group event' do
-        expect(described_class.new(event_type: 'Group').
-          execute.map(&:entity_type)).to all(eq 'Group')
+        expect(described_class.new(event_type: 'Group')
+          .execute.map(&:entity_type)).to all(eq 'Group')
       end
 
       it 'finds all the events with no valid even type' do

@@ -47,24 +47,24 @@ describe 'gitlab:app namespace rake task' do
         allow(Kernel).to receive(:system).and_return(true)
         allow(FileUtils).to receive(:cp_r).and_return(true)
         allow(FileUtils).to receive(:mv).and_return(true)
-        allow(Rake::Task["gitlab:shell:setup"]).
-          to receive(:invoke).and_return(true)
+        allow(Rake::Task["gitlab:shell:setup"])
+          .to receive(:invoke).and_return(true)
         ENV['force'] = 'yes'
       end
 
       let(:gitlab_version) { Gitlab::VERSION }
 
       it 'fails on mismatch' do
-        allow(YAML).to receive(:load_file).
-          and_return({ gitlab_version: "not #{gitlab_version}" })
+        allow(YAML).to receive(:load_file)
+          .and_return({ gitlab_version: "not #{gitlab_version}" })
 
-        expect { run_rake_task('gitlab:backup:restore') }.
-          to raise_error(SystemExit)
+        expect { run_rake_task('gitlab:backup:restore') }
+          .to raise_error(SystemExit)
       end
 
       it 'invokes restoration on match' do
-        allow(YAML).to receive(:load_file).
-          and_return({ gitlab_version: gitlab_version })
+        allow(YAML).to receive(:load_file)
+          .and_return({ gitlab_version: gitlab_version })
         expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:db:restore']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:repo:restore']).to receive(:invoke)
@@ -313,8 +313,8 @@ describe 'gitlab:app namespace rake task' do
     end
 
     it 'does not invoke repositories restore' do
-      allow(Rake::Task['gitlab:shell:setup']).
-        to receive(:invoke).and_return(true)
+      allow(Rake::Task['gitlab:shell:setup'])
+        .to receive(:invoke).and_return(true)
       allow($stdout).to receive :write
 
       expect(Rake::Task['gitlab:db:drop_tables']).to receive :invoke

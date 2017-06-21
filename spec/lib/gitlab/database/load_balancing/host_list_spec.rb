@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::Database::LoadBalancing::HostList do
   before do
-    allow(Gitlab::Database).to receive(:create_connection_pool).
-      and_return(ActiveRecord::Base.connection_pool)
+    allow(Gitlab::Database).to receive(:create_connection_pool)
+      .and_return(ActiveRecord::Base.connection_pool)
   end
 
   let(:host_list) do
@@ -22,8 +22,8 @@ describe Gitlab::Database::LoadBalancing::HostList do
 
   describe '#next' do
     it 'returns a host' do
-      expect(host_list.next).
-        to be_an_instance_of(Gitlab::Database::LoadBalancing::Host)
+      expect(host_list.next)
+        .to be_an_instance_of(Gitlab::Database::LoadBalancing::Host)
     end
 
     it 'cycles through all available hosts' do
