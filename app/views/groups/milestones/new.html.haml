@@ -30,11 +30,6 @@
             = render 'projects/zen', f: f, attr: :description, classes: 'note-textarea', placeholder: 'Write milestone description...'
             .clearfix
             .error-alert
-      .form-group
-        = f.label :projects, "Projects", class: "control-label"
-        .col-sm-10
-          = f.collection_select :project_ids, @group.projects.non_archived, :id, :name,
-            { selected: @group.projects.non_archived.pluck(:id) }, required: true, multiple: true, class: 'select2'
 
     = render "shared/milestones/form_dates", f: f
 
