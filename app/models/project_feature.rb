@@ -27,6 +27,13 @@ class ProjectFeature < ActiveRecord::Base
 
       "#{feature}_access_level".to_sym
     end
+
+    def quoted_access_level_column(feature)
+      attribute = connection.quote_column_name(access_level_attribute(feature))
+      table = connection.quote_table_name(table_name)
+
+      "#{table}.#{attribute}"
+    end
   end
 
   # Default scopes force us to unscope here since a service may need to check
