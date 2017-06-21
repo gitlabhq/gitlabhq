@@ -57,8 +57,23 @@ export default {
           });
       }
     },
-    formUpdateHandler() {
-      // console.log('update requested', data);
+    formUpdateHandler(note) {
+      const data = {
+        endpoint: `${this.note.path}?full_data=1`,
+        note: {
+          target_type: 'issue',
+          target_id: this.note.noteable_id,
+          note,
+        },
+      };
+
+      this.$store.dispatch('updateNote', data)
+        .then(() => {
+          this.isEditing = false;
+        })
+        .catch(() => {
+          new Flash('Something went wrong while editing your comment. Please try again.'); // eslint-disable-line
+        });
     },
     formCancelHandler() {
       this.isEditing = false;

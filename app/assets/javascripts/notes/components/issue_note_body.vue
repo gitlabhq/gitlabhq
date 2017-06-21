@@ -32,6 +32,11 @@ export default {
     renderGFM() {
       $(this.$refs['note-body']).renderGFM();
     },
+    handleFormUpdate() {
+      this.formUpdateHandler({
+        note: this.$refs.noteForm.note,
+      });
+    },
   },
   mounted() {
     this.renderGFM();
@@ -48,7 +53,8 @@ export default {
       class="note-text md"></div>
     <issue-note-form
       v-if="isEditing"
-      :updateHandler="formUpdateHandler"
+      ref="noteForm"
+      :updateHandler="handleFormUpdate"
       :cancelHandler="formCancelHandler"
       :noteBody="note.note" />
     <issue-note-edited-text

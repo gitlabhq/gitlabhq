@@ -42,6 +42,16 @@ const mutations = {
 
     noteObj.notes.push(note);
   },
+  updateNote(storeState, note) {
+    const noteObj = findNoteObjectById(storeState.notes, note.discussion_id);
+
+    if (noteObj.individual_note) {
+      noteObj.notes.splice(0, 1, note);
+    } else {
+      const comment = findNoteObjectById(noteObj.notes, note.id);
+      noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
+    }
+  },
 };
 
 const actions = {
@@ -68,6 +78,16 @@ const actions = {
       .then(res => res.json())
       .then((res) => {
         context.commit('addNewReplyToDiscussion', res);
+      });
+  },
+  updateNote(context, data) {
+    const { endpoint, note } = data;
+
+    return service
+      .updateNote(endpoint, note)
+      .then(res => res.json())
+      .then((res) => {
+        context.commit('updateNote', res);
       });
   },
 };
