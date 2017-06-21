@@ -13,12 +13,12 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
-  include Elastic::ProjectsSearch
   include ValidAttribute
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
-  prepend EE::GeoAwareAvatar
+
+  # EE specific modules
   prepend EE::Project
 
   extend Gitlab::ConfigHelper
@@ -66,8 +66,6 @@ class Project < ActiveRecord::Base
 
   # update visibility_level of forks
   after_update :update_forks_visibility_level
-  after_update :remove_mirror_repository_reference,
-               if: ->(project) { project.mirror? && project.import_url_updated? }
 
   after_validation :check_pending_delete
 
@@ -83,9 +81,7 @@ class Project < ActiveRecord::Base
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
-  belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
-  has_one :push_rule, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, dependent: :destroy
 
@@ -103,10 +99,8 @@ class Project < ActiveRecord::Base
   has_one :gemnasium_service, dependent: :destroy
   has_one :mattermost_slash_commands_service, dependent: :destroy
   has_one :mattermost_service, dependent: :destroy
-  has_one :slack_service, dependent: :destroy
-  has_one :jenkins_service, dependent: :destroy
-  has_one :jenkins_deprecated_service, dependent: :destroy
   has_one :slack_slash_commands_service, dependent: :destroy
+  has_one :slack_service, dependent: :destroy
   has_one :buildkite_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
   has_one :teamcity_service, dependent: :destroy
@@ -119,7 +113,6 @@ class Project < ActiveRecord::Base
   has_one :external_wiki_service, dependent: :destroy
   has_one :kubernetes_service, dependent: :destroy, inverse_of: :project
   has_one :prometheus_service, dependent: :destroy, inverse_of: :project
-  has_one :index_status, dependent: :destroy
   has_one :mock_ci_service, dependent: :destroy
   has_one :mock_deployment_service, dependent: :destroy
   has_one :mock_monitoring_service, dependent: :destroy
@@ -156,8 +149,6 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
-  has_many :approvers, as: :target, dependent: :destroy
-  has_many :approver_groups, as: :target, dependent: :destroy
   has_many :releases, dependent: :destroy
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
@@ -165,7 +156,6 @@ class Project < ActiveRecord::Base
   has_many :invited_groups, through: :project_group_links, source: :group
   has_many :pages_domains, dependent: :destroy
   has_many :todos, dependent: :destroy
-  has_many :audit_events, as: :entity, dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source
 
   has_one :import_data, dependent: :delete, class_name: 'ProjectImportData'
@@ -180,7 +170,6 @@ class Project < ActiveRecord::Base
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
-  has_many :remote_mirrors, inverse_of: :project, dependent: :destroy
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
   has_many :pipeline_schedules, dependent: :destroy, class_name: 'Ci::PipelineSchedule'
@@ -188,14 +177,9 @@ class Project < ActiveRecord::Base
   has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_project_id
 
   has_many :source_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :project_id
-
-  has_many :path_locks, dependent: :destroy
-
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
-  accepts_nested_attributes_for :remote_mirrors,
-    allow_destroy: true, reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
   accepts_nested_attributes_for :project_feature
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
@@ -230,7 +214,6 @@ class Project < ActiveRecord::Base
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
-  validates :approvals_before_merge, numericality: true, allow_blank: true
   validate :visibility_level_allowed_by_group
   validate :visibility_level_allowed_as_fork
   validate :check_wiki_path_conflict
@@ -238,17 +221,8 @@ class Project < ActiveRecord::Base
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
 
-  validates :repository_size_limit,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
-
-  with_options if: :mirror? do |project|
-    project.validates :import_url, presence: true
-    project.validates :mirror_user, presence: true
-  end
-
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
-  before_validation :mark_remote_mirrors_for_removal
 
   mount_uploader :avatar, AvatarUploader
   has_many :uploads, as: :model, dependent: :destroy
@@ -267,10 +241,8 @@ class Project < ActiveRecord::Base
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :non_archived, -> { where(archived: false) }
-  scope :mirror, -> { where(mirror: true) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
-  scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
@@ -296,9 +268,6 @@ class Project < ActiveRecord::Base
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
-
-  # EE
-  scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
@@ -349,61 +318,11 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    before_transition [:none, :finished, :failed] => :scheduled do |project, _|
-      project.mirror_data&.last_update_scheduled_at = Time.now
-    end
-
     after_transition [:none, :finished, :failed] => :scheduled do |project, _|
       project.run_after_commit { add_import_job }
     end
 
-    before_transition scheduled: :started do |project, _|
-      project.mirror_data&.last_update_started_at = Time.now
-    end
-
-    before_transition scheduled: :failed do |project, _|
-      if project.mirror?
-        timestamp = Time.now
-        project.mirror_last_update_at = timestamp
-        project.mirror_data.next_execution_timestamp = timestamp
-      end
-    end
-
-    after_transition [:scheduled, :started] => [:finished, :failed] do |project, _|
-      Gitlab::Mirror.decrement_capacity(project.id) if project.mirror?
-    end
-
-    before_transition started: :failed do |project, _|
-      if project.mirror?
-        project.mirror_last_update_at = Time.now
-
-        mirror_data = project.mirror_data
-        mirror_data.increment_retry_count!
-        mirror_data.set_next_execution_timestamp!
-      end
-    end
-
-    before_transition started: :finished do |project, _|
-      if project.mirror?
-        timestamp = Time.now
-        project.mirror_last_update_at = timestamp
-        project.mirror_last_successful_update_at = timestamp
-
-        mirror_data = project.mirror_data
-        mirror_data.reset_retry_count!
-        mirror_data.set_next_execution_timestamp!
-      end
-
-      if current_application_settings.elasticsearch_indexing?
-        ElasticCommitIndexerWorker.perform_async(project.id)
-      end
-    end
-
     after_transition started: :finished, do: :reset_cache_and_import_attrs
-
-    after_transition [:finished, :failed] => [:scheduled, :started] do |project, _|
-      Gitlab::Mirror.increment_capacity(project.id) if project.mirror?
-    end
   end
 
   class << self
@@ -564,7 +483,7 @@ class Project < ActiveRecord::Base
   end
 
   def remove_import_data
-    import_data&.destroy unless mirror?
+    import_data&.destroy
   end
 
   def import_url=(value)
@@ -642,65 +561,6 @@ class Project < ActiveRecord::Base
 
   def safe_import_url
     Gitlab::UrlSanitizer.new(import_url).masked_url
-  end
-
-  def mirror_updated?
-    mirror? && self.mirror_last_update_at
-  end
-
-  def updating_mirror?
-    return false unless mirror? && !empty_repo?
-    return true if import_in_progress?
-
-    self.mirror_data.next_execution_timestamp < Time.now
-  end
-
-  def mirror_last_update_status
-    return unless mirror_updated?
-
-    if self.mirror_last_update_at == self.mirror_last_successful_update_at
-      :success
-    else
-      :failed
-    end
-  end
-
-  def mirror_last_update_success?
-    mirror_last_update_status == :success
-  end
-
-  def mirror_last_update_failed?
-    mirror_last_update_status == :failed
-  end
-
-  def mirror_ever_updated_successfully?
-    mirror_updated? && self.mirror_last_successful_update_at
-  end
-
-  def has_remote_mirror?
-    remote_mirrors.enabled.exists?
-  end
-
-  def updating_remote_mirror?
-    remote_mirrors.enabled.started.exists?
-  end
-
-  def update_remote_mirrors
-    remote_mirrors.each(&:sync)
-  end
-
-  def mark_stuck_remote_mirrors_as_failed!
-    remote_mirrors.stuck.update_all(
-      update_status: :failed,
-      last_error: 'The remote mirror took to long to complete.',
-      last_update_at: Time.now
-    )
-  end
-
-  def fetch_mirror
-    return unless mirror?
-
-    repository.fetch_upstream(self.import_url)
   end
 
   def gitlab_project_import?
@@ -855,7 +715,7 @@ class Project < ActiveRecord::Base
   end
 
   def cache_has_external_issue_tracker
-    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?) unless Gitlab::Geo.secondary?
+    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
   end
 
   def has_wiki?
@@ -875,7 +735,7 @@ class Project < ActiveRecord::Base
   end
 
   def cache_has_external_wiki
-    update_column(:has_external_wiki, services.external_wikis.any?) unless Gitlab::Geo.secondary?
+    update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
   def find_or_initialize_services
@@ -943,10 +803,6 @@ class Project < ActiveRecord::Base
     issues_tracker.to_param == 'jira'
   end
 
-  def redmine_tracker?
-    issues_tracker.to_param == 'redmine'
-  end
-
   def avatar_type
     unless self.avatar.image?
       self.errors.add :avatar, 'only images allowed'
@@ -995,11 +851,6 @@ class Project < ActiveRecord::Base
     hooks.send(hooks_scope).each do |hook|
       hook.async_execute(data, hooks_scope.to_s)
     end
-    if group
-      group.hooks.send(hooks_scope).each do |hook|
-        hook.async_execute(data, hooks_scope.to_s)
-      end
-    end
   end
 
   def execute_services(data, hooks_scope = :push_hooks)
@@ -1040,11 +891,6 @@ class Project < ActiveRecord::Base
 
   def http_url_to_repo
     "#{web_url}.git"
-  end
-
-  # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
-  def kerberos_url_to_repo
-    "#{Gitlab.config.build_gitlab_kerberos_url + Gitlab::Application.routes.url_helpers.namespace_project_path(self.namespace, self)}.git"
   end
 
   def user_can_push_to_empty_repo?(user)
@@ -1192,14 +1038,6 @@ class Project < ActiveRecord::Base
     merge_requests.where(source_project_id: self.id)
   end
 
-  def group_ldap_synced?
-    if group
-      group.ldap_synced?
-    else
-      false
-    end
-  end
-
   def create_repository
     # Forked import is handled asynchronously
     unless forked?
@@ -1217,6 +1055,17 @@ class Project < ActiveRecord::Base
     !!repository.exists?
   end
 
+  def update_forks_visibility_level
+    return unless visibility_level < visibility_level_was
+
+    forks.each do |forked_project|
+      if forked_project.visibility_level > visibility_level
+        forked_project.visibility_level = visibility_level
+        forked_project.save!
+      end
+    end
+  end
+
   def create_wiki
     ProjectWiki.new(self, self.owner).wiki
     true
@@ -1231,18 +1080,6 @@ class Project < ActiveRecord::Base
 
   def jira_tracker_active?
     jira_tracker? && jira_service.active
-  end
-
-  def approver_ids=(value)
-    value.split(",").map(&:strip).each do |user_id|
-      approvers.find_or_create_by(user_id: user_id, target_id: id)
-    end
-  end
-
-  def approver_group_ids=(value)
-    value.split(",").map(&:strip).each do |group_id|
-      approver_groups.find_or_initialize_by(group_id: group_id, target_id: id)
-    end
   end
 
   def allowed_to_share_with_group?
@@ -1322,11 +1159,6 @@ class Project < ActiveRecord::Base
     Dir.exist?(public_pages_path)
   end
 
-  def find_path_lock(path, exact_match: false, downstream: false)
-    @path_lock_finder ||= Gitlab::PathLocksFinder.new(self)
-    @path_lock_finder.find(path, exact_match: exact_match, downstream: downstream)
-  end
-
   def pages_url
     subdomain, _, url_path = full_path.partition('/')
 
@@ -1366,64 +1198,6 @@ class Project < ActiveRecord::Base
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.full_path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
-  end
-
-  def merge_method
-    if self.merge_requests_ff_only_enabled
-      :ff
-    elsif self.merge_requests_rebase_enabled
-      :rebase_merge
-    else
-      :merge
-    end
-  end
-
-  def merge_method=(method)
-    case method.to_s
-    when "ff"
-      self.merge_requests_ff_only_enabled = true
-      self.merge_requests_rebase_enabled = true
-    when "rebase_merge"
-      self.merge_requests_ff_only_enabled = false
-      self.merge_requests_rebase_enabled = true
-    when "merge"
-      self.merge_requests_ff_only_enabled = false
-      self.merge_requests_rebase_enabled = false
-    end
-  end
-
-  def ff_merge_must_be_possible?
-    self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
-  end
-
-  def import_url_updated?
-    # check if import_url has been updated and it's not just the first assignment
-    import_url_changed? && changes['import_url'].first
-  end
-
-  def update_forks_visibility_level
-    return unless visibility_level < visibility_level_was
-
-    forks.each do |forked_project|
-      if forked_project.visibility_level > visibility_level
-        forked_project.visibility_level = visibility_level
-        forked_project.save!
-      end
-    end
-  end
-
-  def remove_mirror_repository_reference
-    repository.remove_remote(Repository::MIRROR_REMOTE)
-  end
-
-  def import_url_availability
-    if remote_mirrors.find_by(url: import_url)
-      errors.add(:import_url, 'is already in use by a remote mirror')
-    end
-  end
-
-  def mark_remote_mirrors_for_removal
-    remote_mirrors.each(&:mark_for_delete_if_blank_url)
   end
 
   def running_or_pending_build_count(force: false)
@@ -1533,16 +1307,6 @@ class Project < ActiveRecord::Base
     handle_update_attribute_error(e, value)
   end
 
-  def change_repository_storage(new_repository_storage_key)
-    return if repository_read_only?
-    return if repository_storage == new_repository_storage_key
-
-    raise ArgumentError unless Gitlab.config.repositories.storages.keys.include?(new_repository_storage_key)
-
-    run_after_commit { ProjectUpdateRepositoryStorageWorker.perform_async(id, new_repository_storage_key) }
-    self.repository_read_only = true
-  end
-
   def pushes_since_gc
     Gitlab::Redis.with { |redis| redis.get(pushes_since_gc_redis_key).to_i }
   end
@@ -1553,36 +1317,6 @@ class Project < ActiveRecord::Base
 
   def reset_pushes_since_gc
     Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
-  end
-
-  def repository_and_lfs_size
-    statistics.total_repository_size
-  end
-
-  def above_size_limit?
-    return false unless size_limit_enabled?
-
-    repository_and_lfs_size > actual_size_limit
-  end
-
-  def size_to_remove
-    repository_and_lfs_size - actual_size_limit
-  end
-
-  def actual_size_limit
-    return namespace.actual_size_limit if repository_size_limit.nil?
-
-    repository_size_limit
-  end
-
-  def size_limit_enabled?
-    actual_size_limit != 0
-  end
-
-  def changes_will_exceed_size_limit?(size_in_bytes)
-    size_limit_enabled? &&
-      (size_in_bytes > actual_size_limit ||
-       size_in_bytes + repository_and_lfs_size > actual_size_limit)
   end
 
   def route_map_for(commit_sha)

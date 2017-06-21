@@ -176,7 +176,9 @@ describe ProjectsController do
 
       context 'project repo over limit' do
         before do
-          allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
+          allow_any_instance_of(EE::Project).
+            to receive(:above_size_limit?).and_return(true)
+
           project.team << [user, :master]
         end
 

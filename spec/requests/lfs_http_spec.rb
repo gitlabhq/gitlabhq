@@ -710,7 +710,7 @@ describe 'Git LFS API and storage' do
 
             context 'and project is above the limit' do
               let(:update_lfs_permissions) do
-                allow_any_instance_of(Project).to receive_messages(
+                allow_any_instance_of(EE::Project).to receive_messages(
                   repository_and_lfs_size: 100.megabytes,
                   actual_size_limit: 99.megabytes)
               end
@@ -726,7 +726,7 @@ describe 'Git LFS API and storage' do
 
             context 'and project will go over the limit' do
               let(:update_lfs_permissions) do
-                allow_any_instance_of(Project).to receive_messages(
+                allow_any_instance_of(EE::Project).to receive_messages(
                   repository_and_lfs_size: 200.megabytes,
                   actual_size_limit: 300.megabytes)
               end
@@ -982,7 +982,10 @@ describe 'Git LFS API and storage' do
 
           context 'and project has limit enabled but will stay under the limit' do
             before do
-              allow_any_instance_of(Project).to receive_messages(actual_size_limit: 200, size_limit_enabled?: true)
+              allow_any_instance_of(EE::Project).to receive_messages(
+                actual_size_limit: 200,
+                size_limit_enabled?: true)
+
               put_finalize
             end
 
