@@ -80,7 +80,7 @@ describe API::IssueLinks do
                target_project_id: unauthorized_project.id, target_issue_iid: target_issue.iid
 
           expect(response).to have_http_status(404)
-          expect(json_response['message']).to eq('404 Not Found')
+          expect(json_response['message']).to eq('No Issue found for given params')
         end
       end
 
@@ -158,7 +158,7 @@ describe API::IssueLinks do
           delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
 
           expect(response).to have_http_status(404)
-          expect(json_response['message']).to eq('404 Not Found')
+          expect(json_response['message']).to eq('No Issue Link found')
         end
       end
 
@@ -180,7 +180,7 @@ describe API::IssueLinks do
           delete api("/projects/#{project.id}/issues/#{issue.iid}/links/#{issue_link.id}", user)
 
           expect(response).to have_http_status(404)
-          expect(json_response['message']).to eq('404 Not Found')
+          expect(json_response['message']).to eq('404 Project Not Found')
         end
       end
 

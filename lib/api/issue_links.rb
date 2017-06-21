@@ -31,7 +31,6 @@ module API
       end
       post ':id/issues/:issue_iid/links' do
         source_issue = find_project_issue(params[:issue_iid])
-
         target_issue = find_project_issue(declared_params[:target_issue_iid],
                                           declared_params[:target_project_id])
 
@@ -46,7 +45,7 @@ module API
 
           present issue_link, with: Entities::IssueLink
         else
-          not_found!
+          render_api_error!(result[:message], result[:http_status])
         end
       end
 
@@ -59,6 +58,9 @@ module API
       delete ':id/issues/:issue_iid/links/:issue_link_id' do
         issue_link = IssueLink.find(declared_params[:issue_link_id])
 
+        find_project_issue(params[:issue_iid])
+        find_project_issue(issue_link.target.iid.to_s, issue_link.target.project_id.to_s)
+
         result = ::IssueLinks::DestroyService
                    .new(issue_link, current_user)
                    .execute
@@ -66,7 +68,7 @@ module API
         if result[:status] == :success
           present issue_link, with: Entities::IssueLink
         else
-          not_found!
+          render_api_error!(result[:message], result[:http_status])
         end
       end
     end

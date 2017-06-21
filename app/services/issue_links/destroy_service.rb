@@ -8,7 +8,7 @@ module IssueLinks
     end
 
     def execute
-      return error('Unauthorized', 401) unless permission_to_remove_relation?
+      return error('No Issue Link found', 404) unless permission_to_remove_relation?
 
       remove_relation
       create_notes

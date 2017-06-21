@@ -73,7 +73,7 @@ describe Projects::IssueLinksController do
 
           list_service_response = IssueLinks::ListService.new(issue, user).execute
 
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(404)
           expect(json_response).to eq('message' => 'No Issue found for given params', 'issues' => list_service_response.as_json)
         end
       end
@@ -105,10 +105,10 @@ describe Projects::IssueLinksController do
         let(:referenced_issue) { create :issue }
         let(:user_role) { :developer }
 
-        it 'returns 401' do
+        it 'returns 404' do
           delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
 
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(404)
         end
       end
     end

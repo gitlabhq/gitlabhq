@@ -6,7 +6,7 @@ module IssueLinks
 
     def execute
       if referenced_issues.blank?
-        return error('No Issue found for given params', 401)
+        return error('No Issue found for given params', 404)
       end
 
       create_issue_links

@@ -52,7 +52,7 @@ describe IssueLinks::DestroyService, service: true do
       end
 
       it 'returns error message' do
-        is_expected.to eq(message: 'Unauthorized', status: :error, http_status: 401)
+        is_expected.to eq(message: 'No Issue Link found', status: :error, http_status: 404)
       end
     end
   end
