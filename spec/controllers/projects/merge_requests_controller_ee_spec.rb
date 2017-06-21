@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
-  let(:project) { create(:project) }
-  let(:user)    { project.owner }
+  let(:project)       { create(:project) }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+  let(:user)          { project.owner }
+  let(:viewer)        { user }
 
   before do
-    sign_in(user)
+    sign_in(viewer)
   end
 
   describe 'POST #create' do
@@ -344,6 +345,65 @@ describe Projects::MergeRequestsController do
 
           expect(merge_request.reload.squash).to be_falsey
         end
+      end
+    end
+  end
+
+  describe 'POST #rebase' do
+    def post_rebase
+      post :rebase, namespace_id: project.namespace, project_id: project, id: merge_request
+    end
+
+    def expect_rebase_worker
+      expect(RebaseWorker).to receive(:perform_async).with(merge_request.id, viewer.id)
+    end
+
+    context 'successfully' do
+      it 'enqeues a RebaseWorker' do
+        expect_rebase_worker
+
+        post_rebase
+
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'approvals pending' do
+      let(:project) { create(:project, approvals_before_merge: 1) }
+
+      it 'returns 404' do
+        expect_rebase_worker.never
+
+        post_rebase
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'user cannot merge' do
+      let(:viewer) { create(:user) }
+
+      before do
+        project.add_reporter(viewer)
+      end
+
+      it 'returns 404' do
+        expect_rebase_worker.never
+
+        post_rebase
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'rebase unavailable in license' do
+      it 'returns 404' do
+        stub_licensed_features(merge_request_rebase: false)
+        expect_rebase_worker.never
+
+        post_rebase
+
+        expect(response.status).to eq(404)
       end
     end
   end

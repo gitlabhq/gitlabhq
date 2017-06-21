@@ -5,7 +5,9 @@ module EE
     end
 
     def should_be_rebased?
-      self.project.ff_merge_must_be_possible? && !ff_merge_possible?
+      project.feature_available?(:merge_request_rebase) &&
+        project.ff_merge_must_be_possible? &&
+        !ff_merge_possible?
     end
 
     def rebase_dir_path

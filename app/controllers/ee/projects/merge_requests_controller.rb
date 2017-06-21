@@ -4,12 +4,13 @@ module EE
       extend ActiveSupport::Concern
 
       prepended do
-        # This module is prepended to `Projects::MergeRequstController`, which
+        # This module is prepended to `Projects::MergeRequestController`, which
         # already calls `before_action :merge_request, only: [...]`. Calling it
         # again here would *replace* the restriction, rather than extending it.
         before_action(only: [:approve, :approvals, :unapprove, :rebase]) { merge_request }
 
         before_action :set_suggested_approvers, only: [:new, :new_diffs, :edit]
+        before_action :check_merge_request_rebase_available!, only: [:rebase]
       end
 
       def rebase

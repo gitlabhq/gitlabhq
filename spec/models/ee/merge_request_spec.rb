@@ -1,7 +1,33 @@
 require 'spec_helper'
 
 describe MergeRequest, models: true do
-  subject { create(:merge_request) }
+  let(:project) { create(:project) }
+
+  subject(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+  describe '#should_be_rebased?' do
+    subject { merge_request.should_be_rebased? }
+
+    context 'project forbids rebase' do
+      it { is_expected.to be_falsy }
+    end
+
+    context 'project allows rebase' do
+      let(:project) { create(:project, merge_requests_rebase_enabled: true) }
+
+      it 'returns false when the project feature is unavailable' do
+        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).and_return(false)
+
+        is_expected.to be_falsy
+      end
+
+      it 'returns true when the project feature is available' do
+        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).and_return(true)
+
+        is_expected.to be_truthy
+      end
+    end
+  end
 
   describe '#rebase_in_progress?' do
     it 'returns true when there is a current rebase directory' do
