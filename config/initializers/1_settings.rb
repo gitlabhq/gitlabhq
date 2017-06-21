@@ -486,6 +486,12 @@ Settings['gitaly'] ||= Settingslogic.new({})
 Settings.gitaly['enabled'] = true if Settings.gitaly['enabled'].nil?
 
 #
+# Performance bar
+#
+Settings['performance_bar'] ||= Settingslogic.new({})
+Settings.performance_bar['allowed_group'] = 'gitlab-org' if Settings.performance_bar['allowed_group'].nil?
+
+#
 # Webpack settings
 #
 Settings['webpack'] ||= Settingslogic.new({})

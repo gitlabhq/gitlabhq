@@ -459,6 +459,11 @@ production: &base
     # is the normal way to deploy Gitaly.
     token:
 
+  # Performance bar settings
+  performance_bar:
+    # This setting controls what group can see the performance bar.
+    # allowed_group: performance-group
+
   #
   # 4. Advanced settings
   # ==========================
