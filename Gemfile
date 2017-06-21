@@ -15,7 +15,7 @@ gem 'default_value_for', '~> 3.0.0'
 gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.25.1.1'
+gem 'rugged', '~> 0.26.0'
 gem 'grape-route-helpers', '~> 2.0.0'
 
 gem 'faraday', '~> 0.12'

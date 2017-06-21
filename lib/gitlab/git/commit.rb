@@ -336,7 +336,7 @@ module Gitlab
         begin
           raw_commit.to_mbox(options)
         rescue Rugged::InvalidError => ex
-          if ex.message =~ /Commit \w+ is a merge commit/
+          if ex.message =~ /commit \w+ is a merge commit/i
             'Patch format is not currently supported for merge commits.'
           end
         end
