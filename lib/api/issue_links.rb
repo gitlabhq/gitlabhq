@@ -57,9 +57,7 @@ module API
         requires :issue_link_id, type: Integer, desc: 'The ID of an issue link'
       end
       delete ':id/issues/:issue_iid/links/:issue_link_id' do
-        issue_link = IssueLink.find_by(id: declared_params[:issue_link_id])
-
-        not_found! unless issue_link
+        issue_link = IssueLink.find(declared_params[:issue_link_id])
 
         result = ::IssueLinks::DestroyService
                    .new(issue_link, current_user)
