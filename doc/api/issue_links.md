@@ -3,7 +3,7 @@
 ## List issue relations
 
 Get a list of related issues of a given issue, sorted by the relationship creation datetime (ascending).
-Issues will be filtered according users authorization.
+Issues will be filtered according to the user authorizations.
 
 ```
 GET /projects/:id/issues/:issue_iid/links
@@ -54,8 +54,7 @@ Parameters:
 
 ## Create an issue link
 
-Creates a two-way relation between an issue to another. Users must have write access on both issues
-in order to succeed.
+Creates a two-way relation between two issues. User must be allowed to update both issues in order to succeed.
 
 ```
 POST /projects/:id/issues/:issue_iid/links
