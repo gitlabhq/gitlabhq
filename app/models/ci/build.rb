@@ -192,7 +192,7 @@ module Ci
       slugified.gsub(/[^a-z0-9]/, '-')[0..62]
     end
 
-    # Variables whose value does not depend on other variables
+    # Variables whose value does not depend on environment
     def simple_variables
       variables = predefined_variables
       variables += project.predefined_variables
@@ -207,7 +207,8 @@ module Ci
       variables
     end
 
-    # All variables, including those dependent on other variables
+    # All variables, including those dependent on environment, which could
+    # contain unexpanded variables.
     def variables
       simple_variables.concat(persisted_environment_variables)
     end
@@ -482,6 +483,12 @@ module Ci
       variables = persisted_environment.predefined_variables
 
       if url = environment_url
+        # Note that CI_ENVIRONMENT_URL should be the last variable, because
+        # here we're passing unexpanded environment_url for runner to expand,
+        # and the runner would expand in order. In order to make sure that
+        # CI_ENVIRONMENT_URL has everything available, such as variables
+        # from Environment#predefined_variables, we need to make sure it's
+        # the last variable.
         variables << { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
       end
 
