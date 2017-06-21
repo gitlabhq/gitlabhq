@@ -3,12 +3,10 @@
 /* global Flash */
 /* global notes */
 
-import Vue from 'vue';
 import Cookies from 'js-cookie';
 import './breakpoints';
 import './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
-import commitPipelinesTable from './commit/pipelines/pipelines_table.vue';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -236,7 +234,7 @@ import commitPipelinesTable from './commit/pipelines/pipelines_table.vue';
 
     mountPipelinesView() {
       const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-      const CommitPipelinesTable = Vue.extend(commitPipelinesTable);
+      const CommitPipelinesTable = gl.CommitPipelinesTable;
       this.commitPipelinesTable = new CommitPipelinesTable({
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
