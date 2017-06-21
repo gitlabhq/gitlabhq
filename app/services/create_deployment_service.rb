@@ -14,10 +14,8 @@ class CreateDeploymentService
     return unless executable?
 
     ActiveRecord::Base.transaction do
-      if external_url = expanded_environment_url
-        environment.external_url = external_url
-      end
-
+      environment.external_url = expanded_environment_url if
+        expanded_environment_url
       environment.fire_state_event(action)
 
       return unless environment.save
@@ -53,8 +51,14 @@ class CreateDeploymentService
   end
 
   def expanded_environment_url
-    ExpandVariables.expand(environment_options[:url], variables) if
-      environment_options[:url]
+    return @expanded_environment_url if defined?(@expanded_environment_url)
+
+    @expanded_environment_url =
+      ExpandVariables.expand(environment_url, variables) if environment_url
+  end
+
+  def environment_url
+    environment_options[:url]
   end
 
   def on_stop
