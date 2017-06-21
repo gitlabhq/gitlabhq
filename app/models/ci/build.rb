@@ -138,11 +138,11 @@ module Ci
       ExpandVariables.expand(environment, simple_variables) if environment
     end
 
-    def environment_url
-      return @environment_url if defined?(@environment_url)
+    def expanded_environment_url
+      return @expanded_environment_url if defined?(@expanded_environment_url)
 
-      @environment_url =
-        if unexpanded_url = options&.dig(:environment, :url)
+      @expanded_environment_url =
+        if unexpanded_url = environment_url
           ExpandVariables.expand(unexpanded_url, simple_variables)
         else
           persisted_environment&.external_url
@@ -504,6 +504,10 @@ module Ci
       variables << { key: "CI_BUILD_TRIGGERED", value: 'true', public: true } if trigger_request
       variables << { key: "CI_BUILD_MANUAL", value: 'true', public: true } if action?
       variables
+    end
+
+    def environment_url
+      options&.dig(:environment, :url)
     end
 
     def build_attributes_from_config

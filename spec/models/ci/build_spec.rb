@@ -451,8 +451,8 @@ describe Ci::Build, :models do
       end
     end
 
-    describe '#environment_url' do
-      subject { job.environment_url }
+    describe '#expanded_environment_url' do
+      subject { job.expanded_environment_url }
 
       context 'when yaml environment uses $CI_COMMIT_REF_NAME' do
         let(:job) do
@@ -1292,10 +1292,20 @@ describe Ci::Build, :models do
 
         context 'when the URL was set from the job' do
           before do
-            build.update(options: { environment: { url: 'http://host/$CI_JOB_NAME' } })
+            build.update(options: { environment: { url: url } })
           end
 
           it_behaves_like 'containing environment variables'
+
+          context 'when variables are used in the URL, it does not expand' do
+            let(:url) { 'http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG' }
+
+            it_behaves_like 'containing environment variables'
+
+            it 'puts $CI_ENVIRONMENT_URL in the last so all other variables are available to be used when runners are trying to expand it' do
+              expect(subject.last).to eq(environment_variables.last)
+            end
+          end
         end
 
         context 'when the URL was not set from the job, but environment' do
