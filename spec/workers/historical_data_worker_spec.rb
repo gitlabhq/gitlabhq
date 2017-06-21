@@ -6,7 +6,7 @@ describe HistoricalDataWorker do
   describe '#perform' do
     context 'with a trial license' do
       before do
-        FactoryGirl.create(:trial_license)
+        FactoryGirl.create(:license, trial: true)
       end
 
       it 'does not track historical data' do

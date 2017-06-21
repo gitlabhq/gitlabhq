@@ -292,8 +292,24 @@ describe License do
           allow(described_class).to receive(:current).and_return(nil)
         end
 
-        it "returns true" do
-          expect(described_class.block_changes?).to be_truthy
+        it "returns false" do
+          expect(described_class.block_changes?).to eq(false)
+        end
+      end
+
+      context 'with an expired trial license' do
+        let!(:license) { create(:license, trial: true) }
+
+        it 'returns false' do
+          expect(described_class.block_changes?).to eq(false)
+        end
+      end
+
+      context 'with an expired normal license' do
+        let!(:license) { create(:license, expired: true) }
+
+        it 'returns true' do
+          expect(described_class.block_changes?).to eq(true)
         end
       end
 
