@@ -5,6 +5,7 @@ describe Ci::PipelineSchedule, models: true do
   it { is_expected.to belong_to(:owner) }
 
   it { is_expected.to have_many(:pipelines) }
+  it { is_expected.to have_many(:variables) }
 
   it { is_expected.to respond_to(:ref) }
   it { is_expected.to respond_to(:cron) }
