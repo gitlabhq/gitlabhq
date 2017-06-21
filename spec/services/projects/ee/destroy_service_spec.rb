@@ -1,3 +1,4 @@
+# rubocop:disable RSpec/FilePath
 require 'spec_helper'
 
 describe Projects::DestroyService, services: true do
