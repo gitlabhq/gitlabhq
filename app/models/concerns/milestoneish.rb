@@ -71,11 +71,11 @@ module Milestoneish
   end
 
   def is_group_milestone?
-    responds_to(:group_id)
+    respond_to(:group_id)
   end
 
   def is_project_milestone?
-    responds_to(:project_id)
+    respond_to(:project_id)
   end
 
   def title=(value)
