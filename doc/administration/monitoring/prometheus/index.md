@@ -110,6 +110,14 @@ To disable the monitoring of Kubernetes:
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect
 
+## GitLab Prometheus metrics
+
+> Introduced as an experimental feature in GitLab 9.3.
+
+GitLab monitors its own internal service metrics, and makes them available at the `/-/metrics` endpoint. Unlike other exporters, this endpoint requires authentication as it is available on the same URL and port as user traffic.
+
+[➔ Read more about the GitLab Metrics.](gitlab_metrics.md)
+
 ## Prometheus exporters
 
 There are a number of libraries and servers which help in exporting existing
@@ -143,7 +151,7 @@ The Postgres exporter allows you to measure various PostgreSQL metrics.
 
 ### GitLab monitor exporter
 
-The GitLab monitor exporter allows you to measure various GitLab metrics.
+The GitLab monitor exporter allows you to measure various GitLab metrics, pulled from Redis and the database.
 
 [➔ Read more about the GitLab monitor exporter.](gitlab_monitor_exporter.md)
 

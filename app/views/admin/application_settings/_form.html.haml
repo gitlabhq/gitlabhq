@@ -311,6 +311,10 @@
           = f.label :prometheus_metrics_enabled do
             = f.check_box :prometheus_metrics_enabled
             Enable Prometheus Metrics
+            - unless Gitlab::Metrics.metrics_folder_present?
+              .help-block
+                %strong.cred WARNING:
+                Environment variable `prometheus_multiproc_dir` does not exist or is not pointing to a valid directory.
 
   %fieldset
     %legend Background Jobs

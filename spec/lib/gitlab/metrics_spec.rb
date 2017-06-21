@@ -15,6 +15,36 @@ describe Gitlab::Metrics do
     end
   end
 
+  describe '.prometheus_metrics_enabled_unmemoized' do
+    subject { described_class.send(:prometheus_metrics_enabled_unmemoized) }
+
+    context 'prometheus metrics enabled in config' do
+      before do
+        allow(described_class).to receive(:current_application_settings).and_return(prometheus_metrics_enabled: true)
+      end
+
+      context 'when metrics folder is present' do
+        before do
+          allow(described_class).to receive(:metrics_folder_present?).and_return(true)
+        end
+
+        it 'metrics are enabled' do
+          expect(subject).to eq(true)
+        end
+      end
+
+      context 'when metrics folder is missing' do
+        before do
+          allow(described_class).to receive(:metrics_folder_present?).and_return(false)
+        end
+
+        it 'metrics are disabled' do
+          expect(subject).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '.prometheus_metrics_enabled?' do
     it 'returns a boolean' do
       expect(described_class.prometheus_metrics_enabled?).to be_in([true, false])
