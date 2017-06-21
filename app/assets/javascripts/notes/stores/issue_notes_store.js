@@ -38,6 +38,11 @@ const mutations = {
       }
     }
   },
+  addNewReplyToDiscussion(storeState, note) {
+    const noteObj = findNoteObjectById(storeState.notes, note.discussion_id);
+
+    noteObj.notes.push(note);
+  },
 };
 
 const actions = {
@@ -60,6 +65,19 @@ const actions = {
       })
       .catch(() => {
         new Flash('Something went wrong while deleting your note. Please try again.'); // eslint-disable-line
+      });
+  },
+  replyToDiscussion(context, data) {
+    const { endpoint, reply } = data;
+
+    return service
+      .replyToDiscussion(endpoint, reply)
+      .then((res) => res.json())
+      .then((res) => {
+        context.commit('addNewReplyToDiscussion', res);
+      })
+      .catch(() => {
+        new Flash('Something went wrong while adding your reply. Please try again.'); // eslint-disable-line
       });
   },
 };

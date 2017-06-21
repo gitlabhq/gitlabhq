@@ -10,4 +10,7 @@ export default {
   deleteNote(endpoint) {
     return Vue.http.delete(endpoint);
   },
+  replyToDiscussion(endpoint, data) {
+    return Vue.http.post(endpoint, data, { emulateJSON: true });
+  },
 };

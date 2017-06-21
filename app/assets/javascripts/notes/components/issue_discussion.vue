@@ -17,6 +17,7 @@ export default {
     return {
       registerLink: '#',
       signInLink: '#',
+      newNotePath: '',
       isReplying: false,
     };
   },
@@ -45,6 +46,9 @@ export default {
       this.registerLink = registerLink.getAttribute('href');
       this.signInLink = signInLink.getAttribute('href');
     }
+
+    const newNotePath = document.querySelector('.js-main-target-form').getAttribute('action');
+    this.newNotePath = `${newNotePath}?full_data=1`;
   },
   methods: {
     toggleDiscussion() {
@@ -58,8 +62,21 @@ export default {
     cancelReplyForm() {
       this.isReplying = false;
     },
-    saveReply() {
-      this.isReplying = false;
+    saveReply({ note }) {
+      const data = {
+        endpoint: this.newNotePath,
+        reply: {
+          in_reply_to_discussion_id: this.note.reply_id,
+          target_type: 'issue',
+          target_id: this.discussion.noteable_id,
+          note: { note },
+        },
+      };
+
+      this.$store.dispatch('replyToDiscussion', data)
+        .then(() => {
+          this.isReplying = false;
+        });
     },
   },
 };
