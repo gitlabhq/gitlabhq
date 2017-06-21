@@ -6,7 +6,7 @@ module Ci
 
     validates :key,
       presence: true,
-      uniqueness: { scope: :project_id },
+      uniqueness: { scope: [:project_id, :environment_scope] },
       length: { maximum: 255 },
       format: { with: /\A[a-zA-Z0-9_]+\z/,
                 message: "can contain only letters, digits and '_'." }
