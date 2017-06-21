@@ -138,8 +138,8 @@ module IssuablesHelper
     end
 
     output << "&ensp;".html_safe
-    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "hidden-xs hidden-sm")
-    output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "hidden-md hidden-lg")
+    output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs hidden-sm")
+    output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-md hidden-lg")
 
     output
   end
@@ -216,8 +216,7 @@ module IssuablesHelper
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,
       initialDescriptionHtml: markdown_field(issuable, :description),
-      initialDescriptionText: issuable.description,
-      initialTaskStatus: issuable.task_status
+      initialDescriptionText: issuable.description
     }
 
     data.merge!(updated_at_by(issuable))

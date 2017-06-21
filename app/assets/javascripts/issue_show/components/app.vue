@@ -51,11 +51,6 @@ export default {
       required: false,
       default: '',
     },
-    initialTaskStatus: {
-      type: String,
-      required: false,
-      default: '',
-    },
     updatedAt: {
       type: String,
       required: false,
@@ -110,7 +105,6 @@ export default {
       updatedAt: this.updatedAt,
       updatedByName: this.updatedByName,
       updatedByPath: this.updatedByPath,
-      taskStatus: this.initialTaskStatus,
     });
 
     return {

@@ -37,7 +37,18 @@
         });
       },
       taskStatus() {
-        this.updateTaskStatusText();
+        const taskRegexMatches = this.taskStatus.match(/(\d+) of (\d+)/);
+        const $issuableHeader = $('.issuable-meta');
+        const $tasks = $('#task_status', $issuableHeader);
+        const $tasksShort = $('#task_status_short', $issuableHeader);
+
+        if (taskRegexMatches) {
+          $tasks.text(this.taskStatus);
+          $tasksShort.text(`${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`);
+        } else {
+          $tasks.text('');
+          $tasksShort.text('');
+        }
       },
     },
     methods: {
@@ -53,24 +64,9 @@
           });
         }
       },
-      updateTaskStatusText() {
-        const taskRegexMatches = this.taskStatus.match(/(\d+) of ((?!0)\d+)/);
-        const $issuableHeader = $('.issuable-meta');
-        const $tasks = $('#task_status', $issuableHeader);
-        const $tasksShort = $('#task_status_short', $issuableHeader);
-
-        if (taskRegexMatches) {
-          $tasks.text(this.taskStatus);
-          $tasksShort.text(`${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`);
-        } else {
-          $tasks.text('');
-          $tasksShort.text('');
-        }
-      },
     },
     mounted() {
       this.renderGFM();
-      this.updateTaskStatusText();
     },
   };
 </script>

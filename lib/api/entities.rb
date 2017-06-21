@@ -43,12 +43,9 @@ module API
       expose :external
     end
 
-    class UserWithAdmin < UserPublic
-      expose :admin?, as: :is_admin
-    end
-
-    class UserWithPrivateDetails < UserWithAdmin
+    class UserWithPrivateDetails < UserPublic
       expose :private_token
+      expose :admin?, as: :is_admin
     end
 
     class Email < Grape::Entity

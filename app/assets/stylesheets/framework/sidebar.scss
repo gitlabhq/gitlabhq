@@ -97,19 +97,17 @@
 
 .issues-bulk-update.right-sidebar {
   @include maintain-sidebar-dimensions;
-  width: 0;
-  padding: 0;
-  transition: width $sidebar-transition-duration;
+  transition: right $sidebar-transition-duration;
+  right: -$gutter-width;
 
   &.right-sidebar-expanded {
     @include maintain-sidebar-dimensions;
-    width: $gutter-width;
+    right: 0;
   }
 
   &.right-sidebar-collapsed {
     @include maintain-sidebar-dimensions;
-    width: 0;
-    padding: 0;
+    right: -$gutter-width;
 
     .block {
       padding: 16px 0;
@@ -120,6 +118,5 @@
 
   .issuable-sidebar {
     padding: 0 3px;
-    width: calc(100% + 35px);
   }
 }

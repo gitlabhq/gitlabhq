@@ -59,7 +59,7 @@ module API
 
         users = UsersFinder.new(current_user, params).execute
 
-        entity = current_user.admin? ? Entities::UserWithAdmin : Entities::UserBasic
+        entity = current_user.admin? ? Entities::UserPublic : Entities::UserBasic
         present paginate(users), with: entity
       end
 

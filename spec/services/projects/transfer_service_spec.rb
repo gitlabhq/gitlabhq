@@ -19,67 +19,6 @@ describe Projects::TransferService, services: true do
     it { expect(project.namespace).to eq(group) }
   end
 
-  context 'when transfer succeeds' do
-    before do
-      group.add_owner(user)
-    end
-
-    it 'sends notifications' do
-      expect_any_instance_of(NotificationService).to receive(:project_was_moved)
-
-      transfer_project(project, user, group)
-    end
-
-    it 'executes system hooks' do
-      expect_any_instance_of(Projects::TransferService).to receive(:execute_system_hooks)
-
-      transfer_project(project, user, group)
-    end
-  end
-
-  context 'when transfer fails' do
-    let!(:original_path) { project_path(project) }
-
-    def attempt_project_transfer
-      expect do
-        transfer_project(project, user, group)
-      end.to raise_error(ActiveRecord::ActiveRecordError)
-    end
-
-    before do
-      group.add_owner(user)
-
-      expect_any_instance_of(Labels::TransferService).to receive(:execute).and_raise(ActiveRecord::StatementInvalid, "PG ERROR")
-    end
-
-    def project_path(project)
-      File.join(project.repository_storage_path, "#{project.path_with_namespace}.git")
-    end
-
-    def current_path
-      project_path(project)
-    end
-
-    it 'rolls back repo location' do
-      attempt_project_transfer
-
-      expect(Dir.exist?(original_path)).to be_truthy
-      expect(original_path).to eq current_path
-    end
-
-    it "doesn't send move notifications" do
-      expect_any_instance_of(NotificationService).not_to receive(:project_was_moved)
-
-      attempt_project_transfer
-    end
-
-    it "doesn't run system hooks" do
-      expect_any_instance_of(Projects::TransferService).not_to receive(:execute_system_hooks)
-
-      attempt_project_transfer
-    end
-  end
-
   context 'namespace -> no namespace' do
     before do
       @result = transfer_project(project, user, nil)

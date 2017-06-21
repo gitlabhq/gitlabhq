@@ -1,15 +1,15 @@
 import Vue from 'vue';
-import pipelinesTable from '~/commit/pipelines/pipelines_table.vue';
+import PipelinesTable from '~/commit/pipelines/pipelines_table';
 
 describe('Pipelines table in Commits and Merge requests', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';
   let pipeline;
-  let PipelinesTable;
 
+  preloadFixtures('static/pipelines_table.html.raw');
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    PipelinesTable = Vue.extend(pipelinesTable);
+    loadFixtures('static/pipelines_table.html.raw');
     const pipelines = getJSONFixture(jsonFixtureName).pipelines;
     pipeline = pipelines.find(p => p.id === 1);
   });
@@ -26,11 +26,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
         Vue.http.interceptors.push(pipelinesEmptyResponse);
 
         this.component = new PipelinesTable({
-          propsData: {
-            endpoint: 'endpoint',
-            helpPagePath: 'foo',
-          },
-        }).$mount();
+          el: document.querySelector('#commit-pipeline-table-view'),
+        });
       });
 
       afterEach(function () {
@@ -61,11 +58,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
         Vue.http.interceptors.push(pipelinesResponse);
 
         this.component = new PipelinesTable({
-          propsData: {
-            endpoint: 'endpoint',
-            helpPagePath: 'foo',
-          },
-        }).$mount();
+          el: document.querySelector('#commit-pipeline-table-view'),
+        });
       });
 
       afterEach(() => {
@@ -98,11 +92,8 @@ describe('Pipelines table in Commits and Merge requests', () => {
       Vue.http.interceptors.push(pipelinesErrorResponse);
 
       this.component = new PipelinesTable({
-        propsData: {
-          endpoint: 'endpoint',
-          helpPagePath: 'foo',
-        },
-      }).$mount();
+        el: document.querySelector('#commit-pipeline-table-view'),
+      });
     });
 
     afterEach(function () {

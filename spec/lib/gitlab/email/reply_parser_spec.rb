@@ -208,9 +208,5 @@ describe Gitlab::Email::ReplyParser, lib: true do
     it "properly renders html-only email from MS Outlook" do
       expect(test_parse_body(fixture_file("emails/outlook_html.eml"))).to eq("Microsoft Outlook 2010")
     end
-
-    it "does not wrap links with no href in unnecessary brackets" do
-      expect(test_parse_body(fixture_file("emails/html_empty_link.eml"))).to eq("no brackets!")
-    end
   end
 end

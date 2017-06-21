@@ -1,9 +1,6 @@
 # Subgroups
 
->**Notes:**
-- [Introduced][ce-2772] in GitLab 9.0.
-- Not available when using MySQL as external database (support removed in
-  GitLab 9.3 [due to performance reasons][issue]).
+> [Introduced][ce-2772] in GitLab 9.0.
 
 With subgroups (aka nested groups or hierarchical groups) you can have
 up to 20 levels of nested groups, which among other things can help you to:
@@ -176,4 +173,3 @@ Here's a list of what you can't do with subgroups:
 [ce-2772]: https://gitlab.com/gitlab-org/gitlab-ce/issues/2772
 [permissions]: ../../permissions.md#group
 [reserved]:  https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/path_regex.rb
-[issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30472#note_27747600

@@ -12,6 +12,10 @@
         type: Array,
         required: true,
       },
+      service: {
+        type: Object,
+        required: true,
+      },
       updateGraphDropdown: {
         type: Boolean,
         required: false,
@@ -53,6 +57,7 @@
       v-for="model in pipelines"
       :key="model.id"
       :pipeline="model"
+      :service="service"
       :update-graph-dropdown="updateGraphDropdown"
     />
   </div>

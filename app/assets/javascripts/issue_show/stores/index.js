@@ -1,6 +1,23 @@
 export default class Store {
-  constructor(initialState) {
-    this.state = initialState;
+  constructor({
+    titleHtml,
+    titleText,
+    descriptionHtml,
+    descriptionText,
+    updatedAt,
+    updatedByName,
+    updatedByPath,
+  }) {
+    this.state = {
+      titleHtml,
+      titleText,
+      descriptionHtml,
+      descriptionText,
+      taskStatus: '',
+      updatedAt,
+      updatedByName,
+      updatedByPath,
+    };
     this.formState = {
       title: '',
       confidential: false,

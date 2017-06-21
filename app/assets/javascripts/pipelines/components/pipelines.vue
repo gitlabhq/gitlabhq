@@ -1,9 +1,15 @@
 <script>
+  import Visibility from 'visibilityjs';
   import PipelinesService from '../services/pipelines_service';
-  import pipelinesMixin from '../mixins/pipelines';
+  import eventHub from '../event_hub';
+  import pipelinesTableComponent from '../../vue_shared/components/pipelines_table.vue';
   import tablePagination from '../../vue_shared/components/table_pagination.vue';
+  import emptyState from './empty_state.vue';
+  import errorState from './error_state.vue';
   import navigationTabs from './navigation_tabs.vue';
   import navigationControls from './nav_controls.vue';
+  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import Poll from '../../lib/utils/poll';
 
   export default {
     props: {
@@ -14,12 +20,13 @@
     },
     components: {
       tablePagination,
+      pipelinesTableComponent,
+      emptyState,
+      errorState,
       navigationTabs,
       navigationControls,
+      loadingIcon,
     },
-    mixins: [
-      pipelinesMixin,
-    ],
     data() {
       const pipelinesData = document.querySelector('#pipelines-list-vue').dataset;
 
@@ -40,6 +47,11 @@
         state: this.store.state,
         apiScope: 'all',
         pagenum: 1,
+        isLoading: false,
+        hasError: false,
+        isMakingRequest: false,
+        updateGraphDropdown: false,
+        hasMadeRequest: false,
       };
     },
     computed: {
@@ -49,6 +61,9 @@
       scope() {
         const scope = gl.utils.getParameterByName('scope');
         return scope === null ? 'all' : scope;
+      },
+      shouldRenderErrorState() {
+        return this.hasError && !this.isLoading;
       },
 
       /**
@@ -91,6 +106,7 @@
           this.state.pipelines.length &&
           this.state.pageInfo.total > this.state.pageInfo.perPage;
       },
+
       hasCiEnabled() {
         return this.hasCi !== undefined;
       },
@@ -113,7 +129,37 @@
     },
     created() {
       this.service = new PipelinesService(this.endpoint);
-      this.requestData = { page: this.pageParameter, scope: this.scopeParameter };
+
+      const poll = new Poll({
+        resource: this.service,
+        method: 'getPipelines',
+        data: { page: this.pageParameter, scope: this.scopeParameter },
+        successCallback: this.successCallback,
+        errorCallback: this.errorCallback,
+        notificationCallback: this.setIsMakingRequest,
+      });
+
+      if (!Visibility.hidden()) {
+        this.isLoading = true;
+        poll.makeRequest();
+      } else {
+        // If tab is not visible we need to make the first request so we don't show the empty
+        // state without knowing if there are any pipelines
+        this.fetchPipelines();
+      }
+
+      Visibility.change(() => {
+        if (!Visibility.hidden()) {
+          poll.restart();
+        } else {
+          poll.stop();
+        }
+      });
+
+      eventHub.$on('refreshPipelines', this.fetchPipelines);
+    },
+    beforeDestroy() {
+      eventHub.$off('refreshPipelines');
     },
     methods: {
       /**
@@ -128,6 +174,15 @@
         return param;
       },
 
+      fetchPipelines() {
+        if (!this.isMakingRequest) {
+          this.isLoading = true;
+
+          this.service.getPipelines({ scope: this.scopeParameter, page: this.pageParameter })
+            .then(response => this.successCallback(response))
+            .catch(() => this.errorCallback());
+        }
+      },
       successCallback(resp) {
         const response = {
           headers: resp.headers,
@@ -135,14 +190,33 @@
         };
 
         this.store.storeCount(response.body.count);
+        this.store.storePipelines(response.body.pipelines);
         this.store.storePagination(response.headers);
-        this.setCommonData(response.body.pipelines);
+
+        this.isLoading = false;
+        this.updateGraphDropdown = true;
+        this.hasMadeRequest = true;
+      },
+
+      errorCallback() {
+        this.hasError = true;
+        this.isLoading = false;
+        this.updateGraphDropdown = false;
+      },
+
+      setIsMakingRequest(isMakingRequest) {
+        this.isMakingRequest = isMakingRequest;
+
+        if (isMakingRequest) {
+          this.updateGraphDropdown = false;
+        }
       },
     },
   };
 </script>
 <template>
   <div :class="cssClass">
+
     <div
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
       v-if="!isLoading && !shouldRenderEmptyState">
@@ -200,6 +274,7 @@
 
         <pipelines-table-component
           :pipelines="state.pipelines"
+          :service="service"
           :update-graph-dropdown="updateGraphDropdown"
           />
       </div>

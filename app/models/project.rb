@@ -266,49 +266,20 @@ class Project < ActiveRecord::Base
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
-  # Returns a collection of projects that is either public or visible to the
-  # logged in user.
-  def self.public_or_visible_to_user(user = nil)
-    if user
-      authorized = user.
-        project_authorizations.
-        select(1).
-        where('project_authorizations.project_id = projects.id')
-
-      levels = Gitlab::VisibilityLevel.levels_for_user(user)
-
-      where('EXISTS (?) OR projects.visibility_level IN (?)', authorized, levels)
-    else
-      public_to_user
-    end
-  end
-
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
   # the feature is either enabled, or internal with permission for the user.
-  #
-  # This method uses an optimised version of `with_feature_access_level` for
-  # logged in users to more efficiently get private projects with the given
-  # feature.
   def self.with_feature_available_for_user(feature, user)
-    visible = [nil, ProjectFeature::ENABLED]
+    return with_feature_enabled(feature) if user.try(:admin?)
 
-    if user&.admin?
-      with_feature_enabled(feature)
-    elsif user
-      column = ProjectFeature.quoted_access_level_column(feature)
+    unconditional = with_feature_access_level(feature, [nil, ProjectFeature::ENABLED])
+    return unconditional if user.nil?
 
-      authorized = user.project_authorizations.select(1).
-        where('project_authorizations.project_id = projects.id')
+    conditional = with_feature_access_level(feature, ProjectFeature::PRIVATE)
+    authorized = user.authorized_projects.merge(conditional.reorder(nil))
 
-      with_project_feature.
-        where("#{column} IN (?) OR (#{column} = ? AND EXISTS (?))",
-              visible,
-              ProjectFeature::PRIVATE,
-              authorized)
-    else
-      with_feature_access_level(feature, visible)
-    end
+    union = Gitlab::SQL::Union.new([unconditional.select(:id), authorized.select(:id)])
+    where(arel_table[:id].in(Arel::Nodes::SqlLiteral.new(union.to_sql)))
   end
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }

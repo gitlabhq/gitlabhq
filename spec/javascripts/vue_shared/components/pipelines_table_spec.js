@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import pipelinesTableComp from '~/pipelines/components/pipelines_table.vue';
+import pipelinesTableComp from '~/vue_shared/components/pipelines_table.vue';
 import '~/lib/utils/datetime_utility';
 
 describe('Pipelines Table', () => {
@@ -22,6 +22,7 @@ describe('Pipelines Table', () => {
       component = new PipelinesTableComponent({
         propsData: {
           pipelines: [],
+          service: {},
         },
       }).$mount();
     });
@@ -47,6 +48,7 @@ describe('Pipelines Table', () => {
       const component = new PipelinesTableComponent({
         propsData: {
           pipelines: [],
+          service: {},
         },
       }).$mount();
       expect(component.$el.querySelectorAll('.commit.gl-responsive-table-row').length).toEqual(0);
@@ -56,8 +58,10 @@ describe('Pipelines Table', () => {
   describe('with data', () => {
     it('should render rows', () => {
       const component = new PipelinesTableComponent({
+        el: document.querySelector('.test-dom-element'),
         propsData: {
           pipelines: [pipeline],
+          service: {},
         },
       }).$mount();
 

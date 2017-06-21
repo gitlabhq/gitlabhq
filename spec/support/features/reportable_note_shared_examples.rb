@@ -13,7 +13,9 @@ shared_examples 'reportable note' do
 
   it 'dropdown has Edit, Report and Delete links' do
     dropdown = comment.find(more_actions_selector)
-    open_dropdown(dropdown)
+
+    dropdown.click
+    dropdown.find('.dropdown-menu li', match: :first)
 
     expect(dropdown).to have_button('Edit comment')
     expect(dropdown).to have_link('Report as abuse', href: abuse_report_path)
@@ -22,16 +24,13 @@ shared_examples 'reportable note' do
 
   it 'Report button links to a report page' do
     dropdown = comment.find(more_actions_selector)
-    open_dropdown(dropdown)
+
+    dropdown.click
+    dropdown.find('.dropdown-menu li', match: :first)
 
     dropdown.click_link('Report as abuse')
 
     expect(find('#user_name')['value']).to match(note.author.username)
     expect(find('#abuse_report_message')['value']).to match(noteable_note_url(note))
-  end
-
-  def open_dropdown(dropdown)
-    dropdown.click
-    dropdown.find('.dropdown-menu li', match: :first)
   end
 end

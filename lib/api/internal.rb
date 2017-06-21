@@ -71,16 +71,11 @@ module API
       end
 
       #
-      # Discover user by ssh key or user id
+      # Discover user by ssh key
       #
       get "/discover" do
-        if params[:key_id]
-          key = Key.find(params[:key_id])
-          user = key.user
-        elsif params[:user_id]
-          user = User.find_by(id: params[:user_id])
-        end
-        present user, with: Entities::UserSafe
+        key = Key.find(params[:key_id])
+        present key.user, with: Entities::UserSafe
       end
 
       get "/check" do

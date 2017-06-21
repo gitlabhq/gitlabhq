@@ -1,4 +1,0 @@
----
-title: Fix an email parsing bug where brackets would be inserted in emails from some Outlook clients
-merge_request: 9045
-author: jneen

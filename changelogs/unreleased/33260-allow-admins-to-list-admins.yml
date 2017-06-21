@@ -1,4 +1,0 @@
----
-title: Reinstate is_admin flag in users api when authenticated user is an admin
-merge_request: 12211
-author: rickettm

@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
           updatedAt: this.updatedAt,
           updatedByName: this.updatedByName,
           updatedByPath: this.updatedByPath,
-          initialTaskStatus: this.initialTaskStatus,
         },
       });
     },
