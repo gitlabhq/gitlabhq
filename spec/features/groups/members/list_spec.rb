@@ -9,7 +9,7 @@ feature 'Groups members list', feature: true do
   let(:nested_group) { create(:group, parent: group) }
 
   background do
-    gitlab_sign_in(user1)
+    sign_in(user1)
   end
 
   scenario 'show members from current group and parent', :nested_groups do

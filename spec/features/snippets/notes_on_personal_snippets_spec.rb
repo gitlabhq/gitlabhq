@@ -14,7 +14,7 @@ describe 'Comments on personal snippets', :js, feature: true do
   let!(:other_note) { create(:note_on_personal_snippet) }
 
   before do
-    gitlab_sign_in user
+    sign_in user
     visit snippet_path(snippet)
   end
 

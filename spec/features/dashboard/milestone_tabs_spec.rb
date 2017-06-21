@@ -15,7 +15,7 @@ describe 'Dashboard milestone tabs', :js, :feature do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit dashboard_milestone_path(milestone.safe_title, title: milestone.title)
   end

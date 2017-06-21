@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Dashboard shortcuts', :feature, :js do
   context 'logged in' do
     before do
-      gitlab_sign_in :user
+      sign_in(create(:user))
       visit root_dashboard_path
     end
 

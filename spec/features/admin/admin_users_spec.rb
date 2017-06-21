@@ -5,7 +5,11 @@ describe "Admin::Users", feature: true do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
 
-  let!(:current_user) { gitlab_sign_in :admin }
+  let!(:current_user) { create(:admin) }
+
+  before do
+    sign_in(current_user)
+  end
 
   describe "GET /admin/users" do
     before do

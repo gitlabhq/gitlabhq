@@ -57,7 +57,7 @@ describe 'User can display performacne bar', :js do
 
   context 'when user is logged-in' do
     before do
-      gitlab_sign_in(create(:user))
+      sign_in(create(:user))
 
       visit root_path
     end

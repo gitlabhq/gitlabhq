@@ -21,7 +21,7 @@ describe 'Issue Boards', feature: true, js: true do
     project.team << [user, :master]
     project.team.add_developer(user2)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit namespace_project_board_path(project.namespace, project, board)
     wait_for_requests

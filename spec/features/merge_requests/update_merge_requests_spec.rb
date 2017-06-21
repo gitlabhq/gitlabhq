@@ -7,7 +7,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'status', js: true do

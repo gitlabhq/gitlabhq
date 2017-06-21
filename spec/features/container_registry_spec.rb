@@ -9,7 +9,7 @@ describe "Container Registry" do
   end
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.add_developer(user)
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])

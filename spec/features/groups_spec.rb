@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Group', feature: true do
   before do
-    gitlab_sign_in(:admin)
+    sign_in(create(:admin))
   end
 
   matcher :have_namespace_error_message do
@@ -108,8 +108,8 @@ feature 'Group', feature: true do
 
       before do
         group.add_owner(user)
-        gitlab_sign_out
-        gitlab_sign_in(user)
+        sign_out(:user)
+        sign_in(user)
 
         visit subgroups_group_path(group)
         click_link 'New Subgroup'
@@ -128,8 +128,8 @@ feature 'Group', feature: true do
   it 'checks permissions to avoid exposing groups by parent_id' do
     group = create(:group, :private, path: 'secret-group')
 
-    gitlab_sign_out
-    gitlab_sign_in(:user)
+    sign_out(:user)
+    sign_in(create(:user))
     visit new_group_path(parent_id: group.id)
 
     expect(page).not_to have_content('secret-group')

@@ -6,7 +6,7 @@ feature 'Project milestone', :feature do
   let(:milestone) { create(:milestone, project: project) }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   context 'when project has enabled issues' do

@@ -7,7 +7,7 @@ feature 'Repository settings', feature: true do
 
   background do
     project.team << [user, role]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'for developer' do

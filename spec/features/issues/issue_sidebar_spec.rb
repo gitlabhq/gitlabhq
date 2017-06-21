@@ -10,7 +10,7 @@ feature 'Issue Sidebar', feature: true do
   let!(:label) { create(:label, project: project, title: 'bug') }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'assignee', js: true do

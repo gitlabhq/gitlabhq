@@ -20,7 +20,7 @@ feature 'Setup Jira service', :feature, :js do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit namespace_project_settings_integrations_path(project.namespace, project)
   end

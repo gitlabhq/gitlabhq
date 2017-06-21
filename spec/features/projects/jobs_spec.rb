@@ -17,7 +17,7 @@ feature 'Jobs', :feature do
 
   before do
     project.team << [user, user_access_level]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe "GET /:project/jobs" do
@@ -400,7 +400,7 @@ feature 'Jobs', :feature do
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
         gitlab_sign_out_direct
-        gitlab_sign_in(create(:user))
+        sign_in(create(:user))
         visit namespace_project_job_path(project.namespace, project, job)
       end
 

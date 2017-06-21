@@ -5,7 +5,7 @@ feature 'Projected Tags', feature: true, js: true do
   let(:project) { create(:project, :repository) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   def set_allowed_to(operation, option = 'Masters', form: '.new-protected-tag')

@@ -9,7 +9,7 @@ feature 'Project members list', feature: true do
   let(:project) { create(:project, namespace: group) }
 
   background do
-    gitlab_sign_in(user1)
+    sign_in(user1)
     group.add_owner(user1)
   end
 

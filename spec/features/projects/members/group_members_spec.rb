@@ -13,7 +13,7 @@ feature 'Projects members', feature: true do
   background do
     project.team << [developer, :developer]
     group.add_owner(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'with a group invitee' do

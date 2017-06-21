@@ -13,7 +13,7 @@ feature 'Tooltips on .timeago dates', feature: true, js: true do
       Event.create( project: project, author_id: user.id, action: Event::JOINED,
                     updated_at: created_date, created_at: created_date)
 
-      gitlab_sign_in user
+      sign_in user
       visit user_path(user)
       wait_for_requests()
 
@@ -30,7 +30,7 @@ feature 'Tooltips on .timeago dates', feature: true, js: true do
       project.team << [user, :master]
       create(:snippet, author: user, updated_at: created_date, created_at: created_date)
 
-      gitlab_sign_in user
+      sign_in user
       visit user_snippets_path(user)
       wait_for_requests()
 

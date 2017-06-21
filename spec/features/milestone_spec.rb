@@ -6,7 +6,7 @@ feature 'Milestone', feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   feature 'Create a milestone' do

@@ -28,7 +28,7 @@ feature 'Merge immediately', :feature, :js do
     end
 
     before do
-      gitlab_sign_in user
+      sign_in user
       visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
     end
 

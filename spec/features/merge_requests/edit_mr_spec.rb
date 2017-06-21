@@ -9,6 +9,8 @@ feature 'Edit Merge Request', feature: true do
     before do
       project.team << [user, :master]
 
+      sign_in user
+
       visit_edit_mr_page
     end
 

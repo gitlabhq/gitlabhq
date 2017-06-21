@@ -6,7 +6,7 @@ feature 'Groups > Members > Last owner cannot leave group', feature: true do
 
   background do
     group.add_owner(owner)
-    gitlab_sign_in(owner)
+    sign_in(owner)
     visit group_path(group)
   end
 

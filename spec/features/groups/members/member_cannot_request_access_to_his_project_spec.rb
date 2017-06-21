@@ -6,7 +6,7 @@ feature 'Groups > Members > Member cannot request access to his project', featur
 
   background do
     group.add_developer(member)
-    gitlab_sign_in(member)
+    sign_in(member)
     visit group_path(group)
   end
 

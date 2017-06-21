@@ -6,7 +6,7 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
   let!(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
 
   before do
-    gitlab_sign_in user
+    sign_in user
     project.team << [user, :master]
   end
 

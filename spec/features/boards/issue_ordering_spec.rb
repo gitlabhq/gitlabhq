@@ -15,7 +15,7 @@ describe 'Issue Boards', :feature, :js do
   before do
     project.team << [user, :master]
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'un-ordered issues' do

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Admin browses logs' do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   it 'shows available log files' do

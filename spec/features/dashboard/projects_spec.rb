@@ -7,7 +7,13 @@ RSpec.describe 'Dashboard Projects', feature: true do
 
   before do
     project.team << [user, :developer]
-    gitlab_sign_in(user)
+    sign_in(user)
+  end
+
+  it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token" do
+    before do
+      visit dashboard_projects_path
+    end
   end
 
   it 'shows the project the user in a member of in the list' do
@@ -51,6 +57,4 @@ RSpec.describe 'Dashboard Projects', feature: true do
       expect(page).to have_xpath("//a[@href='#{pipelines_namespace_project_commit_path(project.namespace, project, project.commit)}']")
     end
   end
-
-  it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
 end
