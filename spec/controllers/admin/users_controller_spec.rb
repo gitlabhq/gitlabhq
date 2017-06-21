@@ -116,8 +116,8 @@ describe Admin::UsersController do
     it 'displays an alert' do
       go
 
-      expect(flash[:notice]).
-        to eq 'Two-factor Authentication has been disabled for this user'
+      expect(flash[:notice])
+        .to eq 'Two-factor Authentication has been disabled for this user'
     end
 
     def go

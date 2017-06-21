@@ -1,7 +1,7 @@
 import RelatedIssuesStore from '~/issuable/related_issues/stores/related_issues_store';
 
 const issuable1 = {
-  id: '200',
+  id: 200,
   reference: 'foo/bar#123',
   title: 'issue1',
   path: '/foo/bar/issues/123',
@@ -10,7 +10,7 @@ const issuable1 = {
 };
 
 const issuable2 = {
-  id: '201',
+  id: 201,
   reference: 'foo/bar#124',
   title: 'issue1',
   path: '/foo/bar/issues/124',

@@ -38,7 +38,8 @@ export default {
       return this.mr.pipeline.triggered || [];
     },
     triggeredBy() {
-      return this.mr.pipeline.triggered_by || [];
+      const response = this.mr.pipeline.triggered_by;
+      return response ? [response] : [];
     },
   },
   template: `

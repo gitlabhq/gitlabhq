@@ -130,6 +130,14 @@ describe('MRWidgetPipeline', () => {
       });
     });
 
+    it('should set triggered to an empty array', () => {
+      expect(vm.triggered.length).toBe(0);
+    });
+
+    it('should set triggeredBy to an empty array', () => {
+      expect(vm.triggeredBy.length).toBe(0);
+    });
+
     it('should not render upstream or downstream pipelines', () => {
       expect(el.querySelector('.linked-pipeline-mini-list')).toBeNull();
     });
@@ -147,6 +155,10 @@ describe('MRWidgetPipeline', () => {
         hasCI: true,
         ciStatus: 'success',
       }).$mount();
+    });
+
+    it('should coerce triggeredBy into a collection', function () {
+      expect(this.vm.triggeredBy.length).toBe(1);
     });
 
     it('should render the linked pipelines mini list', function (done) {

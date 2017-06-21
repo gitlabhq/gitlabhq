@@ -10,12 +10,12 @@ describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
   describe '.stick_or_unstick' do
     it 'sticks or unsticks and updates the Rack environment' do
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?).
-        and_return(true)
+      allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
+        .and_return(true)
 
-      expect(Gitlab::Database::LoadBalancing::Sticking).
-        to receive(:unstick_or_continue_sticking).
-        with(:user, 42)
+      expect(Gitlab::Database::LoadBalancing::Sticking)
+        .to receive(:unstick_or_continue_sticking)
+        .with(:user, 42)
 
       env = {}
 
@@ -42,8 +42,8 @@ describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
   describe '#unstick_or_continue_sticking' do
     it 'does not stick if no namespace and identifier could be found' do
-      expect(Gitlab::Database::LoadBalancing::Sticking).
-        not_to receive(:unstick_or_continue_sticking)
+      expect(Gitlab::Database::LoadBalancing::Sticking)
+        .not_to receive(:unstick_or_continue_sticking)
 
       middleware.unstick_or_continue_sticking({})
     end
@@ -51,9 +51,9 @@ describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'sticks to the primary if a sticking namespace and identifier were found' do
       env = { described_class::STICK_OBJECT => [:user, 42] }
 
-      expect(Gitlab::Database::LoadBalancing::Sticking).
-        to receive(:unstick_or_continue_sticking).
-        with(:user, 42)
+      expect(Gitlab::Database::LoadBalancing::Sticking)
+        .to receive(:unstick_or_continue_sticking)
+        .with(:user, 42)
 
       middleware.unstick_or_continue_sticking(env)
     end
@@ -61,8 +61,8 @@ describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
   describe '#stick_if_necessary' do
     it 'does not stick to the primary if not necessary' do
-      expect(Gitlab::Database::LoadBalancing::Sticking).
-        not_to receive(:stick_if_necessary)
+      expect(Gitlab::Database::LoadBalancing::Sticking)
+        .not_to receive(:stick_if_necessary)
 
       middleware.stick_if_necessary({})
     end
@@ -70,9 +70,9 @@ describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'sticks to the primary if necessary' do
       env = { described_class::STICK_OBJECT => [:user, 42] }
 
-      expect(Gitlab::Database::LoadBalancing::Sticking).
-        to receive(:stick_if_necessary).
-        with(:user, 42)
+      expect(Gitlab::Database::LoadBalancing::Sticking)
+        .to receive(:stick_if_necessary)
+        .with(:user, 42)
 
       middleware.stick_if_necessary(env)
     end
@@ -100,8 +100,8 @@ describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     it 'returns a the load balancer' do
       proxy = double(:proxy)
 
-      expect(Gitlab::Database::LoadBalancing).to receive(:proxy).
-        and_return(proxy)
+      expect(Gitlab::Database::LoadBalancing).to receive(:proxy)
+        .and_return(proxy)
 
       expect(proxy).to receive(:load_balancer)
 

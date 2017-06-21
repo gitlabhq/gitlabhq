@@ -6,6 +6,8 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
+  include ::EE::Projects::IssuesController
+
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
@@ -154,13 +156,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   rescue ActiveRecord::StaleObjectError
     render_conflict_response
-  end
-
-  def export_csv
-    ExportCsvWorker.perform_async(@current_user.id, @project.id, filter_params)
-
-    index_path = namespace_project_issues_path(@project.namespace, @project)
-    redirect_to(index_path, notice: "Your CSV export has started. It will be emailed to #{current_user.notification_email} when complete.")
   end
 
   def referenced_merge_requests

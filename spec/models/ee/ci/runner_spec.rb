@@ -5,11 +5,11 @@ describe EE::Ci::Runner, models: true do
     it 'sticks the runner to the primary and calls the original method' do
       runner = create(:ci_runner)
 
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?).
-        and_return(true)
+      allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
+        .and_return(true)
 
-      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick).
-        with(:runner, runner.token)
+      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
+        .with(:runner, runner.token)
 
       expect(Gitlab::Workhorse).to receive(:set_key_and_notify)
 

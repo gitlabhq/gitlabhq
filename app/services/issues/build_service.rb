@@ -62,9 +62,9 @@ module Issues
     # They take precedence over eachother like this
     # passed params > discussion params > template params
     def issue_params
-      @issue_params ||= issue_params_from_template.
-                          merge(issue_params_with_info_from_discussions).
-                          merge(whitelisted_issue_params)
+      @issue_params ||= issue_params_from_template
+                          .merge(issue_params_with_info_from_discussions)
+                          .merge(whitelisted_issue_params)
     end
 
     def whitelisted_issue_params

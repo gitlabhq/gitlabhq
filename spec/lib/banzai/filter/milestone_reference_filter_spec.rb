@@ -44,16 +44,16 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     link = doc.css('a').first.attr('href')
 
     expect(link).not_to match %r(https?://)
-    expect(link).to eq urls.
-      namespace_project_milestone_path(project.namespace, project, milestone)
+    expect(link).to eq urls
+      .namespace_project_milestone_path(project.namespace, project, milestone)
   end
 
   context 'Integer-based references' do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_milestone_url(project.namespace, project, milestone)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_milestone_url(project.namespace, project, milestone)
     end
 
     it 'links with adjacent text' do
@@ -75,8 +75,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_milestone_url(project.namespace, project, milestone)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_milestone_url(project.namespace, project, milestone)
       expect(doc.text).to eq 'See gfm'
     end
 
@@ -99,8 +99,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_milestone_url(project.namespace, project, milestone)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_milestone_url(project.namespace, project, milestone)
       expect(doc.text).to eq 'See gfm references'
     end
 
@@ -122,8 +122,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_milestone_url(project.namespace, project, milestone)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_milestone_url(project.namespace, project, milestone)
     end
 
     it 'links with adjacent text' do
@@ -156,8 +156,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     let!(:result)         { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
-      expect(result.css('a').first.attr('href')).to eq urls.
-        namespace_project_milestone_url(another_project.namespace,
+      expect(result.css('a').first.attr('href')).to eq urls
+        .namespace_project_milestone_url(another_project.namespace,
                                         another_project,
                                         milestone)
     end
@@ -165,15 +165,15 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.css('a').first.text).
-        to eq("#{milestone.name} in #{another_project.path_with_namespace}")
+      expect(doc.css('a').first.text)
+        .to eq("#{milestone.name} in #{another_project.path_with_namespace}")
     end
 
     it 'has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.text).
-        to eq("See (#{milestone.name} in #{another_project.path_with_namespace}.)")
+      expect(doc.text)
+        .to eq("See (#{milestone.name} in #{another_project.path_with_namespace}.)")
     end
 
     it 'escapes the name attribute' do
@@ -181,8 +181,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.text).
-        to eq "#{milestone.name} in #{another_project.path_with_namespace}"
+      expect(doc.css('a').first.text)
+        .to eq "#{milestone.name} in #{another_project.path_with_namespace}"
     end
   end
 
@@ -195,8 +195,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     let!(:result)         { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
-      expect(result.css('a').first.attr('href')).to eq urls.
-        namespace_project_milestone_url(another_project.namespace,
+      expect(result.css('a').first.attr('href')).to eq urls
+        .namespace_project_milestone_url(another_project.namespace,
                                         another_project,
                                         milestone)
     end
@@ -204,15 +204,15 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.css('a').first.text).
-        to eq("#{milestone.name} in #{another_project.path}")
+      expect(doc.css('a').first.text)
+        .to eq("#{milestone.name} in #{another_project.path}")
     end
 
     it 'has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.text).
-        to eq("See (#{milestone.name} in #{another_project.path}.)")
+      expect(doc.text)
+        .to eq("See (#{milestone.name} in #{another_project.path}.)")
     end
 
     it 'escapes the name attribute' do
@@ -220,8 +220,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.text).
-        to eq "#{milestone.name} in #{another_project.path}"
+      expect(doc.css('a').first.text)
+        .to eq "#{milestone.name} in #{another_project.path}"
     end
   end
 
@@ -234,8 +234,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     let!(:result)         { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
-      expect(result.css('a').first.attr('href')).to eq urls.
-        namespace_project_milestone_url(another_project.namespace,
+      expect(result.css('a').first.attr('href')).to eq urls
+        .namespace_project_milestone_url(another_project.namespace,
                                         another_project,
                                         milestone)
     end
@@ -243,15 +243,15 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
     it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.css('a').first.text).
-        to eq("#{milestone.name} in #{another_project.path}")
+      expect(doc.css('a').first.text)
+        .to eq("#{milestone.name} in #{another_project.path}")
     end
 
     it 'has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.text).
-        to eq("See (#{milestone.name} in #{another_project.path}.)")
+      expect(doc.text)
+        .to eq("See (#{milestone.name} in #{another_project.path}.)")
     end
 
     it 'escapes the name attribute' do
@@ -259,8 +259,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.text).
-        to eq "#{milestone.name} in #{another_project.path}"
+      expect(doc.css('a').first.text)
+        .to eq "#{milestone.name} in #{another_project.path}"
     end
   end
 

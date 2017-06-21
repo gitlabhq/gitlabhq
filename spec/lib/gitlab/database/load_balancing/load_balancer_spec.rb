@@ -4,8 +4,8 @@ describe Gitlab::Database::LoadBalancing::LoadBalancer do
   let(:lb) { described_class.new(%w(localhost localhost)) }
 
   before do
-    allow(Gitlab::Database).to receive(:create_connection_pool).
-      and_return(ActiveRecord::Base.connection_pool)
+    allow(Gitlab::Database).to receive(:create_connection_pool)
+      .and_return(ActiveRecord::Base.connection_pool)
   end
 
   after do
@@ -85,15 +85,15 @@ describe Gitlab::Database::LoadBalancing::LoadBalancer do
 
       expect(lb).to receive(:read_write).and_call_original
 
-      expect { |b| lb.read(&b) }.
-        to yield_with_args(ActiveRecord::Base.connection)
+      expect { |b| lb.read(&b) }
+        .to yield_with_args(ActiveRecord::Base.connection)
     end
   end
 
   describe '#read_write' do
     it 'yields a connection for a write' do
-      expect { |b| lb.read_write(&b) }.
-        to yield_with_args(ActiveRecord::Base.connection)
+      expect { |b| lb.read_write(&b) }
+        .to yield_with_args(ActiveRecord::Base.connection)
     end
 
     it 'uses a retry with exponential backoffs' do
@@ -162,13 +162,13 @@ describe Gitlab::Database::LoadBalancing::LoadBalancer do
     end
 
     it 'returns false if a host has not yet caught up' do
-      expect(lb.host_list.hosts[0]).to receive(:caught_up?).
-        with('foo').
-        and_return(true)
+      expect(lb.host_list.hosts[0]).to receive(:caught_up?)
+        .with('foo')
+        .and_return(true)
 
-      expect(lb.host_list.hosts[1]).to receive(:caught_up?).
-        with('foo').
-        and_return(false)
+      expect(lb.host_list.hosts[1]).to receive(:caught_up?)
+        .with('foo')
+        .and_return(false)
 
       expect(lb.all_caught_up?('foo')).to eq(false)
     end
@@ -184,8 +184,8 @@ describe Gitlab::Database::LoadBalancing::LoadBalancer do
     it 're-raises errors not related to database connections' do
       expect(lb).not_to receive(:sleep) # to make sure we're not retrying
 
-      expect { lb.retry_with_backoff { raise 'boop' } }.
-        to raise_error(RuntimeError)
+      expect { lb.retry_with_backoff { raise 'boop' } }
+        .to raise_error(RuntimeError)
     end
 
     it 'retries the block when a connection error is raised' do

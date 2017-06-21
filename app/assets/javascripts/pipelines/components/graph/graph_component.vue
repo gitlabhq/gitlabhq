@@ -29,7 +29,8 @@
         return this.pipeline.triggered || [];
       },
       triggeredBy() {
-        return this.pipeline.triggeredBy || [];
+        const response = this.pipeline.triggered_by;
+        return response ? [response] : [];
       },
       hasTriggered() {
         return !!this.triggered.length;

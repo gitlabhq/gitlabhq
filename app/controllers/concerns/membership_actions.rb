@@ -15,8 +15,8 @@ module MembershipActions
   end
 
   def destroy
-    Members::DestroyService.new(membershipable, current_user, params).
-      execute(:all)
+    Members::DestroyService.new(membershipable, current_user, params)
+      .execute(:all)
 
     respond_to do |format|
       format.html do
@@ -44,8 +44,8 @@ module MembershipActions
   end
 
   def leave
-    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id).
-      execute(:all)
+    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id)
+      .execute(:all)
 
     notice =
       if member.request?

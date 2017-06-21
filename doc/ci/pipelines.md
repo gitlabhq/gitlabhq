@@ -186,6 +186,23 @@ by name. The order of severity is:
 
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
+### Multi-project pipelines graphs
+
+> [Introduced][ee-2121] in [GitLab Enterprise Edition Premium][eep] 9.3.
+
+Using the [`CI_JOB_TOKEN` when triggering pipelines][triggers], GitLab
+recognizes the source of the job token, and thus internally ties these pipelines
+together which makes it easy to start visualizing their relationships.
+
+Those relationships are displayed in the pipeline graph by showing inbound and
+outbound connections for upstream and downstream pipeline dependencies.
+
+![Multi-projects pipelines graphs](img/multi_project_pipelines_graph.png)
+
+This is useful for larger projects, especially those adopting a micro-services
+architecture, that often have a set of interdependent components which form the
+complete product.
+
 ## How the pipeline duration is calculated
 
 Total running time for a given pipeline would exclude retries and pending
@@ -229,9 +246,11 @@ respective link in the [Pipelines settings] page.
 [stages]: yaml/README.md#stages
 [runners]: runners/README.html
 [pipelines settings]: ../user/project/pipelines/settings.md
-[triggers]: triggers/README.md
+[triggers]: triggers/README.md#ci-job-token
 [ce-5742]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5742
 [ce-6242]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6242
 [ce-7931]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7931
 [ce-9760]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9760
 [regexp]: https://gitlab.com/gitlab-org/gitlab-ce/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99
+[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"
+[ee-2121]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2121

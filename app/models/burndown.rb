@@ -68,8 +68,8 @@ class Burndown
 
   def milestone_closed_issues
     @milestone_closed_issues ||=
-      @milestone.issues.select("closed_at, weight, state").
-        where("state IN ('reopened', 'closed')").
-        order("closed_at ASC")
+      @milestone.issues.select("closed_at, weight, state")
+        .where("state IN ('reopened', 'closed')")
+        .order("closed_at ASC")
   end
 end

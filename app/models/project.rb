@@ -277,8 +277,8 @@ class Project < ActiveRecord::Base
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.
-    joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'").
-      where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
+    joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'")
+      .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
   end
 
   # "enabled" here means "not disabled". It includes private features!
@@ -422,14 +422,14 @@ class Project < ActiveRecord::Base
       # unscoping unnecessary conditions that'll be applied
       # when executing `where("projects.id IN (#{union.to_sql})")`
       projects = unscoped.select(:id).where(
-        ptable[:path].matches(pattern).
-          or(ptable[:name].matches(pattern)).
-          or(ptable[:description].matches(pattern))
+        ptable[:path].matches(pattern)
+          .or(ptable[:name].matches(pattern))
+          .or(ptable[:description].matches(pattern))
       )
 
-      namespaces = unscoped.select(:id).
-        joins(:namespace).
-        where(ntable[:name].matches(pattern))
+      namespaces = unscoped.select(:id)
+        .joins(:namespace)
+        .where(ntable[:name].matches(pattern))
 
       union = Gitlab::SQL::Union.new([projects, namespaces])
 
@@ -470,8 +470,8 @@ class Project < ActiveRecord::Base
     end
 
     def trending
-      joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id').
-        reorder('trending_projects.id ASC')
+      joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id')
+        .reorder('trending_projects.id ASC')
     end
 
     def cached_count

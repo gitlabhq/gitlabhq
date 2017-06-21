@@ -5,8 +5,8 @@ module EE
         def authenticate_build!
           id = params[:id]
 
-          ::Gitlab::Database::LoadBalancing::RackMiddleware.
-            stick_or_unstick(env, :build, id) if id
+          ::Gitlab::Database::LoadBalancing::RackMiddleware
+            .stick_or_unstick(env, :build, id) if id
 
           super
         end
@@ -14,8 +14,8 @@ module EE
         def current_runner
           token = params[:token]
 
-          ::Gitlab::Database::LoadBalancing::RackMiddleware.
-            stick_or_unstick(env, :runner, token) if token
+          ::Gitlab::Database::LoadBalancing::RackMiddleware
+            .stick_or_unstick(env, :runner, token) if token
 
           super
         end

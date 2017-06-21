@@ -8,8 +8,8 @@ describe Gitlab::GitalyClient::Notifications do
     subject { described_class.new(project.repository) }
 
     it 'sends a post_receive message' do
-      expect_any_instance_of(Gitaly::Notifications::Stub).
-        to receive(:post_receive).with(gitaly_request_with_path(storage_name, relative_path))
+      expect_any_instance_of(Gitaly::Notifications::Stub)
+        .to receive(:post_receive).with(gitaly_request_with_path(storage_name, relative_path))
 
       subject.post_receive
     end

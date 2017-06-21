@@ -186,16 +186,16 @@ class Namespace < ActiveRecord::Base
   def ancestors
     return self.class.none unless parent_id
 
-    Gitlab::GroupHierarchy.
-      new(self.class.where(id: parent_id)).
-      base_and_ancestors
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: parent_id))
+      .base_and_ancestors
   end
 
   # Returns all the descendants of the current namespace.
   def descendants
-    Gitlab::GroupHierarchy.
-      new(self.class.where(parent_id: id)).
-      base_and_descendants
+    Gitlab::GroupHierarchy
+      .new(self.class.where(parent_id: id))
+      .base_and_descendants
   end
 
   def user_ids_for_project_authorizations
@@ -258,10 +258,10 @@ class Namespace < ActiveRecord::Base
   end
 
   def refresh_access_of_projects_invited_groups
-    Group.
-      joins(project_group_links: :project).
-      where(projects: { namespace_id: id }).
-      find_each(&:refresh_members_authorized_projects)
+    Group
+      .joins(project_group_links: :project)
+      .where(projects: { namespace_id: id })
+      .find_each(&:refresh_members_authorized_projects)
   end
 
   def remove_exports!

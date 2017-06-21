@@ -28,34 +28,34 @@ module Gitlab
 
           # Projects that belong directly to any of the groups the user has
           # access to.
-          Namespace.
-            unscoped.
-            select([alias_as_column(projects[:id], 'project_id'),
-                    cte_alias[:access_level]]).
-            from(cte_alias).
-            joins(:projects),
+          Namespace
+            .unscoped
+            .select([alias_as_column(projects[:id], 'project_id'),
+                     cte_alias[:access_level]])
+            .from(cte_alias)
+            .joins(:projects),
 
           # Projects shared with any of the namespaces the user has access to.
-          Namespace.
-            unscoped.
-            select([links[:project_id],
-                    least(cte_alias[:access_level],
-                          links[:group_access],
-                          'access_level')]).
-            from(cte_alias).
-            joins('INNER JOIN project_group_links ON project_group_links.group_id = namespaces.id').
-            joins('INNER JOIN projects ON projects.id = project_group_links.project_id').
-            joins('INNER JOIN namespaces p_ns ON p_ns.id = projects.namespace_id').
-            where('p_ns.share_with_group_lock IS FALSE')
+          Namespace
+            .unscoped
+            .select([links[:project_id],
+                     least(cte_alias[:access_level],
+                           links[:group_access],
+                           'access_level')])
+            .from(cte_alias)
+            .joins('INNER JOIN project_group_links ON project_group_links.group_id = namespaces.id')
+            .joins('INNER JOIN projects ON projects.id = project_group_links.project_id')
+            .joins('INNER JOIN namespaces p_ns ON p_ns.id = projects.namespace_id')
+            .where('p_ns.share_with_group_lock IS FALSE')
         ]
 
         union = Gitlab::SQL::Union.new(relations)
 
-        ProjectAuthorization.
-          unscoped.
-          with.
-          recursive(cte.to_arel).
-          select_from_union(union)
+        ProjectAuthorization
+          .unscoped
+          .with
+          .recursive(cte.to_arel)
+          .select_from_union(union)
       end
 
       private
@@ -68,17 +68,17 @@ module Gitlab
         namespaces = Namespace.arel_table
 
         # Namespaces the user is a member of.
-        cte << user.groups.
-          select([namespaces[:id], members[:access_level]]).
-          except(:order)
+        cte << user.groups
+          .select([namespaces[:id], members[:access_level]])
+          .except(:order)
 
         # Sub groups of any groups the user is a member of.
         cte << Group.select([namespaces[:id],
                              greatest(members[:access_level],
-                                      cte.table[:access_level], 'access_level')]).
-          joins(join_cte(cte)).
-          joins(join_members).
-          except(:order)
+                                      cte.table[:access_level], 'access_level')])
+          .joins(join_cte(cte))
+          .joins(join_members)
+          .except(:order)
 
         cte
       end
@@ -88,11 +88,11 @@ module Gitlab
         members = Member.arel_table
         namespaces = Namespace.arel_table
 
-        cond = members[:source_id].
-          eq(namespaces[:id]).
-          and(members[:source_type].eq('Namespace')).
-          and(members[:requested_at].eq(nil)).
-          and(members[:user_id].eq(user.id))
+        cond = members[:source_id]
+          .eq(namespaces[:id])
+          .and(members[:source_type].eq('Namespace'))
+          .and(members[:requested_at].eq(nil))
+          .and(members[:user_id].eq(user.id))
 
         Arel::Nodes::OuterJoin.new(members, Arel::Nodes::On.new(cond))
       end

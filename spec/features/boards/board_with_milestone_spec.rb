@@ -109,14 +109,9 @@ describe 'Board with milestone', :feature, :js do
       first('.card .card-number').click
 
       click_button('Remove from board')
+      wait_for_requests
 
-      visit namespace_project_issue_path(project.namespace, project, issue)
-
-      expect(page).to have_content('removed milestone')
-
-      page.within('.milestone.block') do
-        expect(page).to have_content('None')
-      end
+      expect(issue.reload.milestone).to be_nil
     end
   end
 

@@ -147,8 +147,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         # Get commits from repository
         # or from cache if already merged
         @commits = @merge_request.commits
-        @note_counts = Note.where(commit_id: @commits.map(&:id)).
-          group(:commit_id).count
+        @note_counts = Note.where(commit_id: @commits.map(&:id))
+          .group(:commit_id).count
 
         render json: { html: view_to_html_string('projects/merge_requests/show/_commits') }
       end
@@ -196,9 +196,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     begin
-      MergeRequests::Conflicts::ResolveService.
-        new(merge_request).
-        execute(current_user, params)
+      MergeRequests::Conflicts::ResolveService
+        .new(merge_request)
+        .execute(current_user, params)
 
       flash[:notice] = 'All merge conflicts were resolved. The merge request can now be merged.'
 
@@ -621,8 +621,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.diff_head_commit
 
-    @note_counts = Note.where(commit_id: @commits.map(&:id)).
-      group(:commit_id).count
+    @note_counts = Note.where(commit_id: @commits.map(&:id))
+      .group(:commit_id).count
 
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 

@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.2.7 (2017-06-21)
+
+- Reinstate is_admin flag in users api when authenticated user is an admin. !12211 (rickettm)
+
 ## 9.2.6 (2017-06-16)
 
 - Fix the last coverage in trace log should be extracted. !11128 (dosuken123)

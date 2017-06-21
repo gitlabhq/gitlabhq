@@ -88,13 +88,6 @@ Security/YAMLLoad:
 Style/BarePercentLiterals:
   Enabled: false
 
-# Offense count: 1403
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: leading, trailing
-Style/DotPosition:
-  Enabled: false
-
 # Offense count: 5
 # Cop supports --auto-correct.
 Style/EachWithObject:

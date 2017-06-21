@@ -3,6 +3,7 @@ import Vue from 'vue';
 import RelatedIssuesService from '~/issuable/related_issues/services/related_issues_service';
 
 const issuable1 = {
+  id: 200,
   reference: 'foo/bar#123',
   title: 'some title',
   path: '/foo/bar/issues/123',
