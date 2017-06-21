@@ -28,6 +28,7 @@ describe API::IssueLinks do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
+        expect(json_response.first).to include('iid', 'title', 'issue_link_id')
       end
     end
   end
