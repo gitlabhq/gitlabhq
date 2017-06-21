@@ -12,7 +12,12 @@ OpenSSH searches for a key to authorize a user via a linear search. In the worst
 
 GitLab Shell provides a way to authorize SSH users via a fast, indexed lookup to the GitLab database. GitLab Shell uses the fingerprint of the SSH key to check whether the user is authorized to access GitLab.
 
-> **Warning:** OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be able to accept a fingerprint. These instructions will break installations using older versions of OpenSSH, such as those included with CentOS as of May 2017.
+> **Warning:** OpenSSH version 6.9+ is required because
+`AuthorizedKeysCommand` must be able to accept a fingerprint. These
+instructions will break installations using older versions of OpenSSH, such as
+those included with CentOS as of May 2017. If you want to use this feature for
+CentOS, follow [the instructions on how to build and install a custom OpenSSH package]
+(#compiling-a-custom-version-of-openssh-for-centos) before continuing.
 
 Create this file at `/opt/gitlab-shell/authorized_keys`:
 
