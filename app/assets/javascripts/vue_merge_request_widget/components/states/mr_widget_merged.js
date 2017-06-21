@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     shouldRenderRelatedLinks() {
-      return this.mr.relatedLinks && this.mr.isMerged;
+      return !!this.mr.relatedLinks;
     },
     shouldShowRemoveSourceBranch() {
       const { sourceBranchRemoved, isRemovingSourceBranch, canRemoveSourceBranch } = this.mr;
@@ -94,7 +94,7 @@ export default {
         </p>
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
-          :is-merged="mr.isMerged"
+          :is-merged="true"
           :related-links="mr.relatedLinks" />
       </section>
       <div

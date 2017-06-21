@@ -48,13 +48,13 @@ export default {
       return stateMaps.stateToComponentMap[this.mr.state];
     },
     shouldRenderMergeHelp() {
-      return !this.mr.isMerged;
+      return stateMaps.statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
     shouldRenderPipelines() {
       return Object.keys(this.mr.pipeline).length || this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      return !!this.mr.relatedLinks;
+      return !!this.mr.relatedLinks && (this.mr.state !== 'merged');
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
@@ -243,7 +243,7 @@ export default {
         class="mr-info-list mr-links">
         <div class="legend"></div>
         <mr-widget-related-links
-          :is-merged="mr.isMerged"
+          :is-merged="false"
           :related-links="mr.relatedLinks" />
       </section>
       <mr-widget-merge-help v-if="shouldRenderMergeHelp" />

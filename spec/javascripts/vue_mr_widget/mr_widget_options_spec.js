@@ -49,11 +49,13 @@ describe('mrWidgetOptions', () => {
 
     describe('shouldRenderMergeHelp', () => {
       it('should return false after merging', () => {
+        fail('TODO');
         vm.mr.isMerged = true;
         expect(vm.shouldRenderMergeHelp).toBeFalsy();
       });
 
       it('should return true before merging', () => {
+        fail('TODO');
         vm.mr.isMerged = false;
         expect(vm.shouldRenderMergeHelp).toBeTruthy();
       });

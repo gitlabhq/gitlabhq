@@ -65,7 +65,6 @@ export default class MergeRequestStore {
     this.mergeActionsContentPath = data.commit_change_content_path;
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
     this.isOpen = data.state === 'opened' || data.state === 'reopened' || false;
-    this.isMerged = !this.isOpen && stateMaps.statesToShowHelpWidget.indexOf(data.state) === -1;
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canMerge = !!data.merge_path;
