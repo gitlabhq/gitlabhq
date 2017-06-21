@@ -3,10 +3,12 @@
 /* global Flash */
 /* global notes */
 
+import Vue from 'vue';
 import Cookies from 'js-cookie';
 import './breakpoints';
 import './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
+import commitPipelinesTable from './commit/pipelines/pipelines_table.vue';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -233,11 +235,18 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
     }
 
     mountPipelinesView() {
-      this.commitPipelinesTable = new gl.CommitPipelinesTable().$mount();
+      const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
+      const CommitPipelinesTable = Vue.extend(commitPipelinesTable);
+      this.commitPipelinesTable = new CommitPipelinesTable({
+        propsData: {
+          endpoint: pipelineTableViewEl.dataset.endpoint,
+          helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+        },
+      }).$mount();
+
       // $mount(el) replaces the el with the new rendered component. We need it in order to mount
       // it everytime this tab is clicked - https://vuejs.org/v2/api/#vm-mount
-      document.querySelector('#commit-pipeline-table-view')
-        .appendChild(this.commitPipelinesTable.$el);
+      pipelineTableViewEl.appendChild(this.commitPipelinesTable.$el);
     }
 
     loadDiff(source) {

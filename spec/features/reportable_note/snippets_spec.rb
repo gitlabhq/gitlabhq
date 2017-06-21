@@ -19,15 +19,4 @@ describe 'Reportable note on snippets', :feature, :js do
 
     it_behaves_like 'reportable note'
   end
-
-  describe 'on personal snippet' do
-    let(:snippet) { create(:personal_snippet, :public, author: user) }
-    let!(:note) { create(:note_on_personal_snippet, noteable: snippet, author: user) }
-
-    before do
-      visit snippet_path(snippet)
-    end
-
-    it_behaves_like 'reportable note'
-  end
 end

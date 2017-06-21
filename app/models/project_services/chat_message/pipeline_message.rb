@@ -70,7 +70,7 @@ module ChatMessage
     end
 
     def branch_link
-      "`[#{ref}](#{branch_url})`"
+      "[#{ref}](#{branch_url})"
     end
 
     def project_link
