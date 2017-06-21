@@ -27,12 +27,24 @@ Please remove this notice if you're confident your issue isn't a duplicate.
 
 ### Documentation blurb
 
-(Write the start of the documentation of this feature here, include:
+#### Overview
 
-1. Why should someone use it; what's the underlying problem.
-2. What is the solution.
-3. How does someone use this
+What is it?
+Why should someone use this feature?
+What is the underlying (business) problem?
+How do you use this feature?
 
-During implementation, this can then be copied and used as a starter for the documentation.)
+#### Use cases
+
+Who is this for? Provide one or more use cases.
+
+### Feature checklist
+
+Make sure these are completed before closing the issue,
+with a link to the relevant commit.
+
+- [ ] [Feature assurance](https://about.gitlab.com/handbook/product/#feature-assurance)
+- [ ] Documentation
+- [ ] Added to [features.yml](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml)
 
 /label ~"feature proposal"
