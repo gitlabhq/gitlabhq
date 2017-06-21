@@ -82,31 +82,6 @@ describe ApplicationHelper do
   end
 
   describe 'avatar_icon' do
-<<<<<<< HEAD
-    it 'returns an url for the avatar' do
-      user = create(:user, avatar: File.open(uploaded_image_temp_path))
-
-      avatar_url = "/uploads/system/user/avatar/#{user.id}/banana_sample.gif"
-
-      expect(helper.avatar_icon(user.email).to_s).to match(avatar_url)
-
-      allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-      avatar_url = "#{gitlab_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif"
-
-      expect(helper.avatar_icon(user.email).to_s).to match(avatar_url)
-    end
-
-    it 'returns an url for the avatar with relative url' do
-      stub_config_setting(relative_url_root: '/gitlab')
-      # Must be stubbed after the stub above, and separately
-      stub_config_setting(url: Settings.send(:build_gitlab_url))
-
-      user = create(:user, avatar: File.open(uploaded_image_temp_path))
-
-      expect(helper.avatar_icon(user.email).to_s)
-        .to match("/gitlab/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
-    end
-=======
     let(:user) { create(:user, avatar: File.open(uploaded_image_temp_path)) }
 
     context 'using an email' do
@@ -162,17 +137,16 @@ describe ApplicationHelper do
     describe 'using a user' do
       context 'when only_path is true' do
         it 'returns a relative URL for the avatar' do
-          expect(helper.avatar_icon(user, only_path: true).to_s).
-            to eq("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+          expect(helper.avatar_icon(user, only_path: true).to_s)
+            .to eq("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
         end
       end
 
       context 'when only_path is false' do
         it 'returns an absolute URL for the avatar' do
-          expect(helper.avatar_icon(user, only_path: false).to_s).
-            to eq("#{gitlab_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+          expect(helper.avatar_icon(user, only_path: false).to_s)
+            .to eq("#{gitlab_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
         end
->>>>>>> master
       end
     end
   end
