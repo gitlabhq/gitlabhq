@@ -261,6 +261,7 @@ Parameters:
   ],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
+  "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
   "statistics": {
     "commit_count": 37,
@@ -344,6 +345,7 @@ Parameters:
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
+| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 
 ### Create project for user
 
@@ -379,6 +381,7 @@ Parameters:
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
+| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 
 ### Edit project
 

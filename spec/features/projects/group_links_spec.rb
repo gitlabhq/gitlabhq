@@ -9,7 +9,7 @@ feature 'Project group links', :feature, :js do
 
   background do
     project.add_master(master)
-    login_as(master)
+    gitlab_sign_in(master)
   end
 
   context 'setting an expiration date for a group link' do

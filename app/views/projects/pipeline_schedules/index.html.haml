@@ -14,7 +14,7 @@
 
     .nav-controls
       = link_to new_namespace_project_pipeline_schedule_path(@project.namespace, @project), class: 'btn btn-create' do
-        %span New schedule
+        %span= _('New schedule')
 
   - if @schedules.present?
     %ul.content-list

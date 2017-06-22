@@ -32,7 +32,7 @@ describe "Dashboard > User sorts todos", feature: true do
       issue_2.labels         << label_3
       issue_1.labels         << label_2
 
-      login_as(user)
+      gitlab_sign_in(user)
       visit dashboard_todos_path
     end
 
@@ -83,7 +83,7 @@ describe "Dashboard > User sorts todos", feature: true do
       create(:todo, user: user, project: project, target: issue_2)
       create(:todo, user: user, project: project, target: merge_request_1)
 
-      login_as(user)
+      gitlab_sign_in(user)
       visit dashboard_todos_path
     end
 

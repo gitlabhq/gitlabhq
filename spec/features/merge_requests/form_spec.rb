@@ -18,7 +18,7 @@ describe 'New/edit merge request', feature: true, js: true do
 
   context 'owned projects' do
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     context 'new merge request' do
@@ -96,6 +96,13 @@ describe 'New/edit merge request', feature: true, js: true do
             .to end_with(merge_request_path(merge_request))
         end
       end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
+      end
     end
 
     context 'edit merge request' do
@@ -157,13 +164,20 @@ describe 'New/edit merge request', feature: true, js: true do
           end
         end
       end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
+      end
     end
   end
 
   context 'forked project' do
     before do
       fork_project.team << [user, :master]
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     context 'new merge request' do

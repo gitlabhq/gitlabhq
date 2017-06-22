@@ -6,7 +6,7 @@ feature 'Master deletes tag', feature: true do
 
   before do
     project.team << [user, :master]
-    login_with(user)
+    gitlab_sign_in(user)
     visit namespace_project_tags_path(project.namespace, project)
   end
 

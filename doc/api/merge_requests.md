@@ -26,6 +26,8 @@ Parameters:
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 | `milestone`  | string  | no | Return merge requests for a specific milestone |
 | `labels`  | string  | no | Return merge requests matching a comma separated list of labels |
+| `created_after` | datetime | no | Return merge requests created after the given time (inclusive) |
+| `created_before` | datetime | no | Return merge requests created before the given time (inclusive) |
 
 ```json
 [

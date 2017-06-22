@@ -58,9 +58,11 @@ describe Projects::EnvironmentsController do
           expect(json_response['stopped_count']).to eq 1
         end
 
-        it 'sets the polling interval header' do
+        it 'does not set the polling interval header' do
+          # TODO, this is a temporary fix, see follow up issue:
+          # https://gitlab.com/gitlab-org/gitlab-ee/issues/2677
           expect(response).to have_http_status(:ok)
-          expect(response.headers['Poll-Interval']).to eq("3000")
+          expect(response.headers['Poll-Interval']).to be_nil
         end
       end
 
@@ -233,14 +235,14 @@ describe Projects::EnvironmentsController do
 
       context 'and valid id' do
         it 'returns the first terminal for the environment' do
-          expect_any_instance_of(Environment).
-            to receive(:terminals).
-            and_return([:fake_terminal])
+          expect_any_instance_of(Environment)
+            .to receive(:terminals)
+            .and_return([:fake_terminal])
 
-          expect(Gitlab::Workhorse).
-            to receive(:terminal_websocket).
-            with(:fake_terminal).
-            and_return(workhorse: :response)
+          expect(Gitlab::Workhorse)
+            .to receive(:terminal_websocket)
+            .with(:fake_terminal)
+            .and_return(workhorse: :response)
 
           get :terminal_websocket_authorize, environment_params
 

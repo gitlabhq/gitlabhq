@@ -29,8 +29,8 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def create
-    result = Tags::CreateService.new(@project, current_user).
-      execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
+    result = Tags::CreateService.new(@project, current_user)
+      .execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
     if result[:status] == :success
       @tag = result[:tag]

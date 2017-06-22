@@ -176,7 +176,7 @@ import '~/notes';
 
         Notes.updateNoteTargetSelector($note);
 
-        expect($note.toggleClass).toHaveBeenCalledWith('target', null);
+        expect($note.toggleClass).toHaveBeenCalledWith('target', false);
       });
     });
 
@@ -595,46 +595,46 @@ import '~/notes';
       });
     });
 
-    describe('hasSlashCommands', () => {
+    describe('hasQuickActions', () => {
       beforeEach(() => {
         this.notes = new Notes('', []);
       });
 
-      it('should return true when comment begins with a slash command', () => {
+      it('should return true when comment begins with a quick action', () => {
         const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
-        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
+        const hasQuickActions = this.notes.hasQuickActions(sampleComment);
 
-        expect(hasSlashCommands).toBeTruthy();
+        expect(hasQuickActions).toBeTruthy();
       });
 
-      it('should return false when comment does NOT begin with a slash command', () => {
+      it('should return false when comment does NOT begin with a quick action', () => {
         const sampleComment = 'Hey, /unassign Merging this';
-        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
+        const hasQuickActions = this.notes.hasQuickActions(sampleComment);
 
-        expect(hasSlashCommands).toBeFalsy();
+        expect(hasQuickActions).toBeFalsy();
       });
 
-      it('should return false when comment does NOT have any slash commands', () => {
+      it('should return false when comment does NOT have any quick actions', () => {
         const sampleComment = 'Looking good, Awesome!';
-        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
+        const hasQuickActions = this.notes.hasQuickActions(sampleComment);
 
-        expect(hasSlashCommands).toBeFalsy();
+        expect(hasQuickActions).toBeFalsy();
       });
     });
 
-    describe('stripSlashCommands', () => {
-      it('should strip slash commands from the comment which begins with a slash command', () => {
+    describe('stripQuickActions', () => {
+      it('should strip quick actions from the comment which begins with a quick action', () => {
         this.notes = new Notes();
         const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
-        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+        const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe('');
       });
 
-      it('should strip slash commands from the comment but leaves plain comment if it is present', () => {
+      it('should strip quick actions from the comment but leaves plain comment if it is present', () => {
         this.notes = new Notes();
         const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign\nMerging this';
-        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+        const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe('Merging this');
       });
@@ -642,14 +642,14 @@ import '~/notes';
       it('should NOT strip string that has slashes within', () => {
         this.notes = new Notes();
         const sampleComment = 'http://127.0.0.1:3000/root/gitlab-shell/issues/1';
-        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+        const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe(sampleComment);
       });
     });
 
-    describe('getSlashCommandDescription', () => {
-      const availableSlashCommands = [
+    describe('getQuickActionDescription', () => {
+      const availableQuickActions = [
         { name: 'close', description: 'Close this issue', params: [] },
         { name: 'title', description: 'Change title', params: [{}] },
         { name: 'estimate', description: 'Set time estimate', params: [{}] }
@@ -659,19 +659,19 @@ import '~/notes';
         this.notes = new Notes();
       });
 
-      it('should return executing slash command description when note has single slash command', () => {
+      it('should return executing quick action description when note has single quick action', () => {
         const sampleComment = '/close';
-        expect(this.notes.getSlashCommandDescription(sampleComment, availableSlashCommands)).toBe('Applying command to close this issue');
+        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe('Applying command to close this issue');
       });
 
-      it('should return generic multiple slash command description when note has multiple slash commands', () => {
+      it('should return generic multiple quick action description when note has multiple quick actions', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
-        expect(this.notes.getSlashCommandDescription(sampleComment, availableSlashCommands)).toBe('Applying multiple commands');
+        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe('Applying multiple commands');
       });
 
-      it('should return generic slash command description when available slash commands list is not populated', () => {
+      it('should return generic quick action description when available quick actions list is not populated', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
-        expect(this.notes.getSlashCommandDescription(sampleComment)).toBe('Applying command');
+        expect(this.notes.getQuickActionDescription(sampleComment)).toBe('Applying command');
       });
     });
 

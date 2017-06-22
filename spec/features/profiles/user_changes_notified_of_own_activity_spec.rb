@@ -4,7 +4,7 @@ feature 'Profile > Notifications > User changes notified_of_own_activity setting
   let(:user) { create(:user) }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   scenario 'User opts into receiving notifications about their own activity' do

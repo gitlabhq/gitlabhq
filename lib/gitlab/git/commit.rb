@@ -4,7 +4,7 @@ module Gitlab
     class Commit
       include Gitlab::EncodingHelper
 
-      attr_accessor :raw_commit, :head, :refs
+      attr_accessor :raw_commit, :head
 
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,

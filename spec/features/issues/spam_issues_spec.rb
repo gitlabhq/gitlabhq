@@ -18,7 +18,7 @@ describe 'New issue', feature: true, js: true do
     )
 
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'when identified as a spam' do

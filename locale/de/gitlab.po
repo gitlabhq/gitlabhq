@@ -291,6 +291,9 @@ msgstr "Um diese Daten einsehen zu können, wenden Sie sich bitte an Ihren Admin
 msgid "We don't have enough data to show this stage."
 msgstr "Es liegen nicht genügend Daten vor, um diese Phase anzuzeigen."
 
+msgid "You have reached your project limit"
+msgstr ""
+
 msgid "You need permission."
 msgstr "Sie benötigen Zugriffsrechte."
 

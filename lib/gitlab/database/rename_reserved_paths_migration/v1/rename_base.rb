@@ -27,8 +27,8 @@ module Gitlab
             new_full_path = join_routable_path(namespace_path, new_path)
 
             # skips callbacks & validations
-            routable.class.where(id: routable).
-              update_all(path: new_path)
+            routable.class.where(id: routable)
+              .update_all(path: new_path)
 
             rename_routes(old_full_path, new_full_path)
 

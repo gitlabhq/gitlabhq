@@ -17,7 +17,7 @@ feature 'User wants to edit a file', feature: true do
 
   background do
     project.team << [user, :master]
-    login_as user
+    gitlab_sign_in user
     visit namespace_project_edit_blob_path(project.namespace, project,
                                            File.join(project.default_branch, '.gitignore'))
   end

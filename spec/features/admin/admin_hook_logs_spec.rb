@@ -6,7 +6,7 @@ feature 'Admin::HookLogs', feature: true do
   let(:hook_log) { create(:web_hook_log, web_hook: system_hook, internal_error_message: 'some error') }
 
   before do
-    login_as :admin
+    gitlab_sign_in :admin
   end
 
   scenario 'show list of hook logs' do

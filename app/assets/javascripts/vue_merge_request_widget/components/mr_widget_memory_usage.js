@@ -1,5 +1,5 @@
-import statusCodes from '~/lib/utils/http_status';
-import { bytesToMiB } from '~/lib/utils/number_utils';
+import statusCodes from '../../lib/utils/http_status';
+import { bytesToMiB } from '../../lib/utils/number_utils';
 
 import MemoryGraph from '../../vue_shared/components/memory_graph';
 import MRWidgetService from '../services/mr_widget_service';

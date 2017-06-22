@@ -18,8 +18,8 @@ module Gitlab
                          when :top_level
                            MigrationClasses::Namespace.where(parent_id: nil)
                          end
-            with_paths = MigrationClasses::Route.arel_table[:path].
-                           matches_any(path_patterns)
+            with_paths = MigrationClasses::Route.arel_table[:path]
+                           .matches_any(path_patterns)
             namespaces.joins(:route).where(with_paths)
           end
 
@@ -52,15 +52,15 @@ module Gitlab
           end
 
           def repo_paths_for_namespace(namespace)
-            projects_for_namespace(namespace).distinct.select(:repository_storage).
-              map(&:repository_storage_path)
+            projects_for_namespace(namespace).distinct.select(:repository_storage)
+              .map(&:repository_storage_path)
           end
 
           def projects_for_namespace(namespace)
             namespace_ids = child_ids_for_parent(namespace, ids: [namespace.id])
-            namespace_or_children = MigrationClasses::Project.
-                                      arel_table[:namespace_id].
-                                      in(namespace_ids)
+            namespace_or_children = MigrationClasses::Project
+                                      .arel_table[:namespace_id]
+                                      .in(namespace_ids)
             MigrationClasses::Project.where(namespace_or_children)
           end
 

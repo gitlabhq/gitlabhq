@@ -144,35 +144,6 @@ describe Milestone, models: true do
     end
   end
 
-  describe '#sort_issues' do
-    let(:milestone) { create(:milestone) }
-
-    let(:issue1) { create(:issue, milestone: milestone, position: 1) }
-    let(:issue2) { create(:issue, milestone: milestone, position: 2) }
-    let(:issue3) { create(:issue, milestone: milestone, position: 3) }
-    let(:issue4) { create(:issue, position: 42) }
-
-    it 'sorts the given issues' do
-      milestone.sort_issues([issue3.id, issue2.id, issue1.id])
-
-      issue1.reload
-      issue2.reload
-      issue3.reload
-
-      expect(issue1.position).to eq(3)
-      expect(issue2.position).to eq(2)
-      expect(issue3.position).to eq(1)
-    end
-
-    it 'ignores issues not part of the milestone' do
-      milestone.sort_issues([issue3.id, issue2.id, issue1.id, issue4.id])
-
-      issue4.reload
-
-      expect(issue4.position).to eq(42)
-    end
-  end
-
   describe '.search' do
     let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
 
@@ -193,13 +164,13 @@ describe Milestone, models: true do
     end
 
     it 'returns milestones with a partially matching description' do
-      expect(described_class.search(milestone.description[0..2])).
-        to eq([milestone])
+      expect(described_class.search(milestone.description[0..2]))
+        .to eq([milestone])
     end
 
     it 'returns milestones with a matching description regardless of the casing' do
-      expect(described_class.search(milestone.description.upcase)).
-        to eq([milestone])
+      expect(described_class.search(milestone.description.upcase))
+        .to eq([milestone])
     end
   end
 

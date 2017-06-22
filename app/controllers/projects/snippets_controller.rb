@@ -5,7 +5,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   include SnippetsActions
   include RendersBlob
 
-  before_action :module_enabled
+  before_action :check_snippets_available!
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji, :mark_as_spam]
 
   # Allow read any snippet
@@ -100,10 +100,6 @@ class Projects::SnippetsController < Projects::ApplicationController
 
   def authorize_admin_project_snippet!
     return render_404 unless can?(current_user, :admin_project_snippet, @snippet)
-  end
-
-  def module_enabled
-    return render_404 unless @project.feature_available?(:snippets, current_user)
   end
 
   def snippet_params

@@ -9,7 +9,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
     project.team << [user, :master]
     @group_link = create(:project_group_link, project: project, group: group)
 
-    login_as(user)
+    gitlab_sign_in(user)
     visit namespace_project_settings_members_path(project.namespace, project)
   end
 

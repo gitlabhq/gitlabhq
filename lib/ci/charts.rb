@@ -2,10 +2,10 @@ module Ci
   module Charts
     module DailyInterval
       def grouped_count(query)
-        query.
-          group("DATE(#{Ci::Build.table_name}.created_at)").
-          count(:created_at).
-          transform_keys { |date| date.strftime(@format) }
+        query
+          .group("DATE(#{Ci::Build.table_name}.created_at)")
+          .count(:created_at)
+          .transform_keys { |date| date.strftime(@format) }
       end
 
       def interval_step
@@ -16,14 +16,14 @@ module Ci
     module MonthlyInterval
       def grouped_count(query)
         if Gitlab::Database.postgresql?
-          query.
-            group("to_char(#{Ci::Build.table_name}.created_at, '01 Month YYYY')").
-            count(:created_at).
-            transform_keys(&:squish)
+          query
+            .group("to_char(#{Ci::Build.table_name}.created_at, '01 Month YYYY')")
+            .count(:created_at)
+            .transform_keys(&:squish)
         else
-          query.
-            group("DATE_FORMAT(#{Ci::Build.table_name}.created_at, '01 %M %Y')").
-            count(:created_at)
+          query
+            .group("DATE_FORMAT(#{Ci::Build.table_name}.created_at, '01 %M %Y')")
+            .count(:created_at)
         end
       end
 
@@ -46,8 +46,8 @@ module Ci
       end
 
       def collect
-        query = project.builds.
-          where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", @to, @from)
+        query = project.builds
+          .where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", @to, @from)
 
         totals_count  = grouped_count(query)
         success_count = grouped_count(query.success)

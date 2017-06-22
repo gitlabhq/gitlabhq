@@ -6,7 +6,7 @@ feature 'issuable templates', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    login_as user
+    gitlab_sign_in user
   end
 
   context 'user creates an issue using templates' do
@@ -124,11 +124,11 @@ feature 'issuable templates', feature: true, js: true do
     let(:merge_request) { create(:merge_request, :with_diffs, source_project: fork_project, target_project: project) }
 
     background do
-      logout
+      gitlab_sign_out
       project.team << [fork_user, :developer]
       fork_project.team << [fork_user, :master]
       create(:forked_project_link, forked_to_project: fork_project, forked_from_project: project)
-      login_as fork_user
+      gitlab_sign_in fork_user
       project.repository.create_file(
         fork_user,
         '.gitlab/merge_request_templates/feature-proposal.md',

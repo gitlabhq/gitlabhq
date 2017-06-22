@@ -5,7 +5,7 @@ feature 'User uploads avatar to group', feature: true do
     user = create(:user)
     group = create(:group)
     group.add_owner(user)
-    login_as(user)
+    gitlab_sign_in(user)
 
     visit edit_group_path(group)
     attach_file(

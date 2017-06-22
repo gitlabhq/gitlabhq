@@ -33,8 +33,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       subject { metadata('other_artifacts_0.1.2/').find_entries! }
 
       it 'matches correct paths' do
-        expect(subject.keys).
-          to contain_exactly 'other_artifacts_0.1.2/',
+        expect(subject.keys)
+          .to contain_exactly 'other_artifacts_0.1.2/',
                              'other_artifacts_0.1.2/doc_sample.txt',
                              'other_artifacts_0.1.2/another-subdirectory/'
       end
@@ -44,8 +44,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       subject { metadata('other_artifacts_0.1.2/another-subdirectory/').find_entries! }
 
       it 'matches correct paths' do
-        expect(subject.keys).
-          to contain_exactly 'other_artifacts_0.1.2/another-subdirectory/',
+        expect(subject.keys)
+          .to contain_exactly 'other_artifacts_0.1.2/another-subdirectory/',
                              'other_artifacts_0.1.2/another-subdirectory/empty_directory/',
                              'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
       end
@@ -55,8 +55,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       subject { metadata('other_artifacts_0.1.2/', recursive: true).find_entries! }
 
       it 'matches correct paths' do
-        expect(subject.keys).
-          to contain_exactly 'other_artifacts_0.1.2/',
+        expect(subject.keys)
+          .to contain_exactly 'other_artifacts_0.1.2/',
                              'other_artifacts_0.1.2/doc_sample.txt',
                              'other_artifacts_0.1.2/another-subdirectory/',
                              'other_artifacts_0.1.2/another-subdirectory/empty_directory/',

@@ -5,7 +5,7 @@ feature 'list of badges' do
     user = create(:user)
     project = create(:project)
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
     visit namespace_project_pipelines_settings_path(project.namespace, project)
   end
 

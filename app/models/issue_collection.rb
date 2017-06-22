@@ -17,9 +17,9 @@ class IssueCollection
 
     # Given all the issue projects we get a list of projects that the current
     # user has at least reporter access to.
-    projects_with_reporter_access = user.
-      projects_with_reporter_access_limited_to(project_ids).
-      pluck(:id)
+    projects_with_reporter_access = user
+      .projects_with_reporter_access_limited_to(project_ids)
+      .pluck(:id)
 
     collection.select do |issue|
       if projects_with_reporter_access.include?(issue.project_id)

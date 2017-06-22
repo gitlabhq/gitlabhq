@@ -47,8 +47,8 @@ describe Ci::BuildPresenter do
     context 'when build is erased' do
       before do
         expect(presenter).to receive(:erased_by_user?).and_return(true)
-        expect(build).to receive(:erased_by).
-          and_return(double(:user, name: 'John Doe'))
+        expect(build).to receive(:erased_by)
+          .and_return(double(:user, name: 'John Doe'))
       end
 
       it 'returns the name of the eraser' do

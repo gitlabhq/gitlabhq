@@ -5,7 +5,7 @@ feature 'Internal Snippets', feature: true, js: true do
 
   describe 'normal user' do
     before do
-      login_as :user
+      gitlab_sign_in :user
     end
 
     scenario 'sees internal snippets' do

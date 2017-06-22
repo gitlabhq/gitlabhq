@@ -38,8 +38,8 @@ describe Gitlab::Metrics::Sampler do
 
   describe '#flush' do
     it 'schedules the metrics using Sidekiq' do
-      expect(Gitlab::Metrics).to receive(:submit_metrics).
-        with([an_instance_of(Hash)])
+      expect(Gitlab::Metrics).to receive(:submit_metrics)
+        .with([an_instance_of(Hash)])
 
       sampler.sample_memory_usage
       sampler.flush
@@ -48,12 +48,12 @@ describe Gitlab::Metrics::Sampler do
 
   describe '#sample_memory_usage' do
     it 'adds a metric containing the memory usage' do
-      expect(Gitlab::Metrics::System).to receive(:memory_usage).
-        and_return(9000)
+      expect(Gitlab::Metrics::System).to receive(:memory_usage)
+        .and_return(9000)
 
-      expect(sampler).to receive(:add_metric).
-        with(/memory_usage/, value: 9000).
-        and_call_original
+      expect(sampler).to receive(:add_metric)
+        .with(/memory_usage/, value: 9000)
+        .and_call_original
 
       sampler.sample_memory_usage
     end
@@ -61,12 +61,12 @@ describe Gitlab::Metrics::Sampler do
 
   describe '#sample_file_descriptors' do
     it 'adds a metric containing the amount of open file descriptors' do
-      expect(Gitlab::Metrics::System).to receive(:file_descriptor_count).
-        and_return(4)
+      expect(Gitlab::Metrics::System).to receive(:file_descriptor_count)
+        .and_return(4)
 
-      expect(sampler).to receive(:add_metric).
-        with(/file_descriptors/, value: 4).
-        and_call_original
+      expect(sampler).to receive(:add_metric)
+        .with(/file_descriptors/, value: 4)
+        .and_call_original
 
       sampler.sample_file_descriptors
     end
@@ -75,10 +75,10 @@ describe Gitlab::Metrics::Sampler do
   if Gitlab::Metrics.mri?
     describe '#sample_objects' do
       it 'adds a metric containing the amount of allocated objects' do
-        expect(sampler).to receive(:add_metric).
-          with(/object_counts/, an_instance_of(Hash), an_instance_of(Hash)).
-          at_least(:once).
-          and_call_original
+        expect(sampler).to receive(:add_metric)
+          .with(/object_counts/, an_instance_of(Hash), an_instance_of(Hash))
+          .at_least(:once)
+          .and_call_original
 
         sampler.sample_objects
       end
@@ -86,8 +86,8 @@ describe Gitlab::Metrics::Sampler do
       it 'ignores classes without a name' do
         expect(Allocations).to receive(:to_hash).and_return({ Class.new => 4 })
 
-        expect(sampler).not_to receive(:add_metric).
-          with('object_counts', an_instance_of(Hash), type: nil)
+        expect(sampler).not_to receive(:add_metric)
+          .with('object_counts', an_instance_of(Hash), type: nil)
 
         sampler.sample_objects
       end
@@ -98,9 +98,9 @@ describe Gitlab::Metrics::Sampler do
     it 'adds a metric containing garbage collection statistics' do
       expect(GC::Profiler).to receive(:total_time).and_return(0.24)
 
-      expect(sampler).to receive(:add_metric).
-        with(/gc_statistics/, an_instance_of(Hash)).
-        and_call_original
+      expect(sampler).to receive(:add_metric)
+        .with(/gc_statistics/, an_instance_of(Hash))
+        .and_call_original
 
       sampler.sample_gc
     end
@@ -110,9 +110,9 @@ describe Gitlab::Metrics::Sampler do
     it 'prefixes the series name for a Rails process' do
       expect(sampler).to receive(:sidekiq?).and_return(false)
 
-      expect(Gitlab::Metrics::Metric).to receive(:new).
-        with('rails_cats', { value: 10 }, {}).
-        and_call_original
+      expect(Gitlab::Metrics::Metric).to receive(:new)
+        .with('rails_cats', { value: 10 }, {})
+        .and_call_original
 
       sampler.add_metric('cats', value: 10)
     end
@@ -120,9 +120,9 @@ describe Gitlab::Metrics::Sampler do
     it 'prefixes the series name for a Sidekiq process' do
       expect(sampler).to receive(:sidekiq?).and_return(true)
 
-      expect(Gitlab::Metrics::Metric).to receive(:new).
-        with('sidekiq_cats', { value: 10 }, {}).
-        and_call_original
+      expect(Gitlab::Metrics::Metric).to receive(:new)
+        .with('sidekiq_cats', { value: 10 }, {})
+        .and_call_original
 
       sampler.add_metric('cats', value: 10)
     end
