@@ -17,13 +17,17 @@ describe Gitlab::Ci::Status::Build::Common do
 
   describe '#has_details?' do
     context 'when user has access to read build' do
-      before { project.team << [user, :developer] }
+      before do
+        project.team << [user, :developer]
+      end
 
       it { is_expected.to have_details }
     end
 
     context 'when user does not have access to read build' do
-      before { project.update(public_builds: false) }
+      before do
+        project.update(public_builds: false)
+      end
 
       it { is_expected.not_to have_details }
     end
@@ -31,7 +35,7 @@ describe Gitlab::Ci::Status::Build::Common do
 
   describe '#details_path' do
     it 'links to the build details page' do
-      expect(subject.details_path).to include "builds/#{build.id}"
+      expect(subject.details_path).to include "jobs/#{build.id}"
     end
   end
 end

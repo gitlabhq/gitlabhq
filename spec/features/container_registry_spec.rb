@@ -9,7 +9,7 @@ describe "Container Registry" do
   end
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
     project.add_developer(user)
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
@@ -19,7 +19,7 @@ describe "Container Registry" do
     scenario 'user visits container registry main page' do
       visit_container_registry
 
-      expect(page).to have_content 'No container image repositories'
+      expect(page).to have_content 'No container images'
     end
   end
 

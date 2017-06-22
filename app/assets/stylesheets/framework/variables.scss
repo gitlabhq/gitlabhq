@@ -187,6 +187,7 @@ $divergence-graph-bar-bg: #ccc;
 $divergence-graph-separator-bg: #ccc;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
+$highlight-changes-color: rgb(235, 255, 232);
 
 
 /*
@@ -281,6 +282,7 @@ $dropdown-toggle-active-border-color: darken($border-color, 14%);
 /*
 * Filtered Search
 */
+$filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
 $dropdown-hover-color: $blue-400;
 
 /*
@@ -293,7 +295,7 @@ $btn-white-active: #848484;
 /*
 * Badges
 */
-$badge-bg: #eee;
+$badge-bg: rgba(0, 0, 0, 0.07);
 $badge-color: $gl-text-color-secondary;
 
 /*
@@ -321,6 +323,7 @@ $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
 $note-line2-border: #ddd;
+$note-icon-gutter-width: 55px;
 
 
 /*
@@ -362,6 +365,13 @@ $issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
 $avatar_radius: 50%;
 $avatar-border: rgba(0, 0, 0, .1);
 $gl-avatar-size: 40px;
+
+/*
+* Blame
+*/
+$blame-gray: #ededed;
+$blame-cyan: #acd5f2;
+$blame-blue: #254e77;
 
 /*
 * Builds
@@ -569,3 +579,10 @@ $filter-value-selected-color: #d7d7d7;
 Animation Functions
 */
 $dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
+
+/*
+Convdev Index
+*/
+$color-high-score: $green-400;
+$color-average-score: $orange-400;
+$color-low-score: $red-400;

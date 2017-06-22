@@ -34,7 +34,8 @@ http://app.asana.com/-/account_api'
       {
         type: 'text',
         name: 'api_key',
-        placeholder: 'User Personal Access Token. User must have access to task, all comments will be attributed to this user.'
+        placeholder: 'User Personal Access Token. User must have access to task, all comments will be attributed to this user.',
+        required: true
       },
       {
         type: 'text',

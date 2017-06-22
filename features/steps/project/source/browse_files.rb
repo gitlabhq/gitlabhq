@@ -89,10 +89,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the new branch name' do
-    first('button.js-target-branch', visible: true).click
-    find('.create-new-branch', visible: true).click
-    find('#new_branch_name', visible: true).set('new_branch_name')
-    find('.js-new-branch-btn', visible: true).click
+    fill_in :branch_name, with: 'new_branch_name', visible: true
   end
 
   step 'I fill the new file name with an illegal name' do
@@ -372,6 +369,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       expect(page).to have_content 'Permalink'
       expect(page).not_to have_content 'Edit'
       expect(page).not_to have_content 'Blame'
+      expect(page).not_to have_content 'Annotate'
       expect(page).to have_content 'Delete'
       expect(page).to have_content 'Replace'
     end

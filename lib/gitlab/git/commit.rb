@@ -2,9 +2,9 @@
 module Gitlab
   module Git
     class Commit
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
-      attr_accessor :raw_commit, :head, :refs
+      attr_accessor :raw_commit, :head
 
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,

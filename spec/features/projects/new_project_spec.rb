@@ -4,7 +4,7 @@ feature "New project", feature: true do
   let(:user) { create(:admin) }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context "Visibility level selector" do
@@ -17,10 +17,10 @@ feature "New project", feature: true do
         expect(find_field("project_visibility_level_#{level}")).to be_checked
       end
 
-      it 'saves visibility level on validation error' do
+      it "saves visibility level #{level} on validation error" do
         visit new_project_path
 
-        choose(key)
+        choose(s_(key))
         click_button('Create project')
 
         expect(find_field("project_visibility_level_#{level}")).to be_checked

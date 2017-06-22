@@ -64,7 +64,8 @@ FactoryGirl.define do
     trait :teardown_environment do
       environment 'staging'
       options environment: { name: 'staging',
-                             action: 'stop' }
+                             action: 'stop',
+                             url: 'http://staging.example.com/$CI_JOB_NAME' }
     end
 
     trait :allowed_to_fail do
@@ -193,8 +194,8 @@ FactoryGirl.define do
     trait :extended_options do
       options do
         {
-            image: 'ruby:2.1',
-            services: ['postgres'],
+            image: { name: 'ruby:2.1', entrypoint: '/bin/sh' },
+            services: ['postgres', { name: 'docker:dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }],
             after_script: %w(ls date),
             artifacts: {
                 name: 'artifacts_file',

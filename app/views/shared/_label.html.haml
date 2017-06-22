@@ -64,7 +64,7 @@
                 %a.js-subscribe-button{ data: { url: toggle_subscription_group_label_path(label.group, label) } }
                   Group level
 
-    - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_group, label.project.group)
+    - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
       = link_to promote_namespace_project_label_path(label.project.namespace, label.project, label), title: "Promote to Group Label", class: 'btn btn-transparent btn-action', data: {confirm: "Promoting this label will make this label available to all projects inside this group. Existing project labels with the same name will be merged. Are you sure?", toggle: "tooltip"}, method: :post do
         %span.sr-only Promote to Group
         = icon('level-up')

@@ -1,0 +1,4 @@
+---
+title: Fix passing CI_ENVIRONMENT_NAME and CI_ENVIRONMENT_SLUG for CI_ENVIRONMENT_URL
+merge_request: 12344
+author:

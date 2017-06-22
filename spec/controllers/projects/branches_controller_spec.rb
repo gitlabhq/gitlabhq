@@ -32,8 +32,8 @@ describe Projects::BranchesController do
         let(:branch) { "merge_branch" }
         let(:ref) { "master" }
         it 'redirects' do
-          expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/merge_branch")
+          expect(subject)
+            .to redirect_to("/#{project.path_with_namespace}/tree/merge_branch")
         end
       end
 
@@ -41,8 +41,8 @@ describe Projects::BranchesController do
         let(:branch) { "<script>alert('merge');</script>" }
         let(:ref) { "master" }
         it 'redirects' do
-          expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/alert('merge');")
+          expect(subject)
+            .to redirect_to("/#{project.path_with_namespace}/tree/alert('merge');")
         end
       end
 
@@ -81,8 +81,8 @@ describe Projects::BranchesController do
           branch_name: branch,
           issue_iid: issue.iid
 
-        expect(subject).
-          to redirect_to("/#{project.path_with_namespace}/tree/1-feature-branch")
+        expect(subject)
+          .to redirect_to("/#{project.path_with_namespace}/tree/1-feature-branch")
       end
 
       it 'posts a system note' do
@@ -365,20 +365,6 @@ describe Projects::BranchesController do
 
         expect(parsed_response.length).to eq 1
         expect(parsed_response.first).to eq 'master'
-      end
-    end
-
-    context 'show_all = true' do
-      it 'returns all the branches name' do
-        get :index,
-            namespace_id: project.namespace,
-            project_id: project,
-            format: :json,
-            show_all: true
-
-        parsed_response = JSON.parse(response.body)
-
-        expect(parsed_response.length).to eq(project.repository.branches.count)
       end
     end
   end

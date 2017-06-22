@@ -164,6 +164,11 @@ Style/DefWithParentheses:
 Style/Documentation:
   Enabled: false
 
+# Multi-line method chaining should be done with leading dots.
+Style/DotPosition:
+  Enabled: true
+  EnforcedStyle: leading
+
 # This cop checks for uses of double negation (!!) to convert something
 # to a boolean value. As this is both cryptic and usually redundant, it
 # should be avoided.
@@ -389,6 +394,15 @@ Style/OpMethod:
 # Don't use parentheses around the condition of an if/unless/while.
 Style/ParenthesesAroundCondition:
   Enabled: true
+
+# This cop (by default) checks for uses of methods Hash#has_key? and
+# Hash#has_value? where it enforces Hash#key? and Hash#value?
+# It is configurable to enforce the inverse, using `verbose` method
+# names also.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: short, verbose
+Style/PreferredHashMethods:
+  Enabled: false
 
 # Checks for an obsolete RuntimeException argument in raise/fail.
 Style/RedundantException:
@@ -1054,6 +1068,13 @@ RSpec/NotToNot:
 # Check for repeated description strings in example groups.
 RSpec/RepeatedDescription:
   Enabled: false
+
+# Ensure RSpec hook blocks are always multi-line.
+RSpec/SingleLineHook:
+  Enabled: true
+  Exclude:
+    - 'spec/factories/*'
+    - 'spec/requests/api/v3/*'
 
 # Checks for stubbed test subjects.
 RSpec/SubjectStub:

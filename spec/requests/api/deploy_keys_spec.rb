@@ -13,7 +13,7 @@ describe API::DeployKeys do
 
   describe 'GET /deploy_keys' do
     context 'when unauthenticated' do
-      it 'should return authentication error' do
+      it 'returns authentication error' do
         get api('/deploy_keys')
 
         expect(response.status).to eq(401)
@@ -21,7 +21,7 @@ describe API::DeployKeys do
     end
 
     context 'when authenticated as non-admin user' do
-      it 'should return a 403 error' do
+      it 'returns a 403 error' do
         get api('/deploy_keys', user)
 
         expect(response.status).to eq(403)
@@ -29,7 +29,7 @@ describe API::DeployKeys do
     end
 
     context 'when authenticated as admin' do
-      it 'should return all deploy keys' do
+      it 'returns all deploy keys' do
         get api('/deploy_keys', admin)
 
         expect(response.status).to eq(200)
@@ -41,9 +41,11 @@ describe API::DeployKeys do
   end
 
   describe 'GET /projects/:id/deploy_keys' do
-    before { deploy_key }
+    before do
+      deploy_key
+    end
 
-    it 'should return array of ssh keys' do
+    it 'returns array of ssh keys' do
       get api("/projects/#{project.id}/deploy_keys", admin)
 
       expect(response).to have_http_status(200)
@@ -54,14 +56,14 @@ describe API::DeployKeys do
   end
 
   describe 'GET /projects/:id/deploy_keys/:key_id' do
-    it 'should return a single key' do
+    it 'returns a single key' do
       get api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
 
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq(deploy_key.title)
     end
 
-    it 'should return 404 Not Found with invalid ID' do
+    it 'returns 404 Not Found with invalid ID' do
       get api("/projects/#{project.id}/deploy_keys/404", admin)
 
       expect(response).to have_http_status(404)
@@ -69,26 +71,26 @@ describe API::DeployKeys do
   end
 
   describe 'POST /projects/:id/deploy_keys' do
-    it 'should not create an invalid ssh key' do
+    it 'does not create an invalid ssh key' do
       post api("/projects/#{project.id}/deploy_keys", admin), { title: 'invalid key' }
 
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq('key is missing')
     end
 
-    it 'should not create a key without title' do
+    it 'does not create a key without title' do
       post api("/projects/#{project.id}/deploy_keys", admin), key: 'some key'
 
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq('title is missing')
     end
 
-    it 'should create new ssh key' do
+    it 'creates new ssh key' do
       key_attrs = attributes_for :another_key
 
       expect do
         post api("/projects/#{project.id}/deploy_keys", admin), key_attrs
-      end.to change{ project.deploy_keys.count }.by(1)
+      end.to change { project.deploy_keys.count }.by(1)
     end
 
     it 'returns an existing ssh key when attempting to add a duplicate' do
@@ -117,10 +119,65 @@ describe API::DeployKeys do
     end
   end
 
-  describe 'DELETE /projects/:id/deploy_keys/:key_id' do
-    before { deploy_key }
+  describe 'PUT /projects/:id/deploy_keys/:key_id' do
+    let(:private_deploy_key) { create(:another_deploy_key, public: false) }
+    let(:project_private_deploy_key) do
+      create(:deploy_keys_project, project: project, deploy_key: private_deploy_key)
+    end
 
-    it 'should delete existing key' do
+    it 'updates a public deploy key as admin' do
+      expect do
+        put api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin), { title: 'new title' }
+      end.not_to change(deploy_key, :title)
+
+      expect(response).to have_http_status(200)
+    end
+
+    it 'does not update a public deploy key as non admin' do
+      expect do
+        put api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", user), { title: 'new title' }
+      end.not_to change(deploy_key, :title)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'does not update a private key with invalid title' do
+      project_private_deploy_key
+
+      expect do
+        put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), { title: '' }
+      end.not_to change(deploy_key, :title)
+
+      expect(response).to have_http_status(400)
+    end
+
+    it 'updates a private ssh key with correct attributes' do
+      project_private_deploy_key
+
+      put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), { title: 'new title', can_push: true }
+
+      expect(json_response['id']).to eq(private_deploy_key.id)
+      expect(json_response['title']).to eq('new title')
+      expect(json_response['can_push']).to eq(true)
+    end
+
+    it 'updates a private ssh key from projects user has access with correct attributes' do
+      create(:deploy_keys_project, project: project2, deploy_key: private_deploy_key)
+
+      put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), { title: 'new title', can_push: true }
+
+      expect(json_response['id']).to eq(private_deploy_key.id)
+      expect(json_response['title']).to eq('new title')
+      expect(json_response['can_push']).to eq(true)
+    end
+  end
+
+  describe 'DELETE /projects/:id/deploy_keys/:key_id' do
+    before do
+      deploy_key
+    end
+
+    it 'deletes existing key' do
       expect do
         delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
 
@@ -128,7 +185,7 @@ describe API::DeployKeys do
       end.to change{ project.deploy_keys.count }.by(-1)
     end
 
-    it 'should return 404 Not Found with invalid ID' do
+    it 'returns 404 Not Found with invalid ID' do
       delete api("/projects/#{project.id}/deploy_keys/404", admin)
 
       expect(response).to have_http_status(404)
@@ -150,7 +207,7 @@ describe API::DeployKeys do
     end
 
     context 'when authenticated as non-admin user' do
-      it 'should return a 404 error' do
+      it 'returns a 404 error' do
         post api("/projects/#{project2.id}/deploy_keys/#{deploy_key.id}/enable", user)
 
         expect(response).to have_http_status(404)

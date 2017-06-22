@@ -24,8 +24,8 @@ module Gitlab
       #   link_json('specific_package', '1.0.1', link: :key)
       #   # Will link `specific_package` in `"specific_package": "1.0.1"`
       def link_json(key, value = nil, link: :value, &url_proc)
-        key = regexp_for_value(key, default: /[^"]+/)
-        value = regexp_for_value(value, default: /[^"]+/)
+        key = regexp_for_value(key, default: /[^" ]+/)
+        value = regexp_for_value(value, default: /[^" ]+/)
 
         if link == :value
           value = /(?<name>#{value})/

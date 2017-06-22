@@ -9,12 +9,12 @@ module Gitlab
         @iterator = iterator
         @max_files = options.fetch(:max_files, DEFAULT_LIMITS[:max_files])
         @max_lines = options.fetch(:max_lines, DEFAULT_LIMITS[:max_lines])
-        @max_bytes = @max_files * 5120 # Average 5 KB per file
+        @max_bytes = @max_files * 5.kilobytes # Average 5 KB per file
         @safe_max_files = [@max_files, DEFAULT_LIMITS[:max_files]].min
         @safe_max_lines = [@max_lines, DEFAULT_LIMITS[:max_lines]].min
-        @safe_max_bytes = @safe_max_files * 5120 # Average 5 KB per file
-        @all_diffs = !!options.fetch(:all_diffs, false)
-        @no_collapse = !!options.fetch(:no_collapse, true)
+        @safe_max_bytes = @safe_max_files * 5.kilobytes # Average 5 KB per file
+        @enforce_limits = !!options.fetch(:limits, true)
+        @expanded = !!options.fetch(:expanded, true)
 
         @line_count = 0
         @byte_count = 0
@@ -88,23 +88,23 @@ module Gitlab
         @iterator.each do |raw|
           @empty = false
 
-          if !@all_diffs && i >= @max_files
+          if @enforce_limits && i >= @max_files
             @overflow = true
             break
           end
 
-          collapse = !@all_diffs && !@no_collapse
+          expanded = !@enforce_limits || @expanded
 
-          diff = Gitlab::Git::Diff.new(raw, collapse: collapse)
+          diff = Gitlab::Git::Diff.new(raw, expanded: expanded)
 
-          if collapse && over_safe_limits?(i)
-            diff.prune_collapsed_diff!
+          if !expanded && over_safe_limits?(i) && diff.line_count > 0
+            diff.collapse!
           end
 
           @line_count += diff.line_count
           @byte_count += diff.diff.bytesize
 
-          if !@all_diffs && (@line_count >= @max_lines || @byte_count >= @max_bytes)
+          if @enforce_limits && (@line_count >= @max_lines || @byte_count >= @max_bytes)
             # This last Diff instance pushes us over the lines limit. We stop and
             # discard it.
             @overflow = true

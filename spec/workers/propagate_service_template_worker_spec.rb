@@ -15,8 +15,8 @@ describe PropagateServiceTemplateWorker do
   end
 
   before do
-    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
-      and_return(true)
+    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
+      .and_return(true)
   end
 
   describe '#perform' do

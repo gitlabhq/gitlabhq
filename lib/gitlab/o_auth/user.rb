@@ -12,6 +12,7 @@ module Gitlab
 
       def initialize(auth_hash)
         self.auth_hash = auth_hash
+        update_email
       end
 
       def persisted?
@@ -172,6 +173,22 @@ module Gitlab
           password_confirmation:      auth_hash.password,
           password_automatically_set: true
         }
+      end
+
+      def sync_email_from_provider?
+        auth_hash.provider.to_s == Gitlab.config.omniauth.sync_email_from_provider.to_s
+      end
+
+      def update_email
+        if auth_hash.has_email? && sync_email_from_provider?
+          if persisted?
+            gl_user.skip_reconfirmation!
+            gl_user.email = auth_hash.email
+          end
+
+          gl_user.external_email = true
+          gl_user.email_provider = auth_hash.provider
+        end
       end
 
       def log

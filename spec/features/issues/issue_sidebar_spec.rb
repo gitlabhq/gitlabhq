@@ -10,7 +10,7 @@ feature 'Issue Sidebar', feature: true do
   let!(:label) { create(:label, project: project, title: 'bug') }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'assignee', js: true do
@@ -56,6 +56,23 @@ feature 'Issue Sidebar', feature: true do
         expect(page.find('.dropdown-header')).to be_visible
         expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
       end
+    end
+
+    it 'keeps your filtered term after filtering and dismissing the dropdown' do
+      find('.dropdown-input-field').native.send_keys user2.name
+
+      wait_for_requests
+
+      page.within '.dropdown-menu-user' do
+        expect(page).not_to have_content 'Unassigned'
+        click_link user2.name
+      end
+
+      find('.js-right-sidebar').click
+      find('.block.assignee .edit-link').click
+
+      expect(page.all('.dropdown-menu-user li').length).to eq(1)
+      expect(find('.dropdown-input-field').value).to eq(user2.name)
     end
   end
 

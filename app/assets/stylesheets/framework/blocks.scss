@@ -23,7 +23,6 @@
 
 .row-content-block {
   margin-top: 0;
-  margin-bottom: -$gl-padding;
   background-color: $gray-light;
   padding: $gl-padding;
   margin-bottom: 0;
@@ -255,7 +254,7 @@
 }
 
 .landing {
-  margin-bottom: $gl-padding;
+  margin: $gl-padding auto;
   overflow: hidden;
   display: flex;
   position: relative;

@@ -57,6 +57,13 @@ describe Projects::EnvironmentsController do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
+
+        it 'does not set the polling interval header' do
+          # TODO, this is a temporary fix, see follow up issue:
+          # https://gitlab.com/gitlab-org/gitlab-ee/issues/2677
+          expect(response).to have_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to be_nil
+        end
       end
 
       context 'when requesting stopped environments scope' do
@@ -177,7 +184,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/builds/#{action.id}" })
+              namespace_project_job_url(project.namespace, project, action) })
       end
     end
 
@@ -191,7 +198,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/environments/#{environment.id}" })
+              namespace_project_environment_url(project.namespace, project, environment) })
       end
     end
   end
@@ -228,14 +235,14 @@ describe Projects::EnvironmentsController do
 
       context 'and valid id' do
         it 'returns the first terminal for the environment' do
-          expect_any_instance_of(Environment).
-            to receive(:terminals).
-            and_return([:fake_terminal])
+          expect_any_instance_of(Environment)
+            .to receive(:terminals)
+            .and_return([:fake_terminal])
 
-          expect(Gitlab::Workhorse).
-            to receive(:terminal_websocket).
-            with(:fake_terminal).
-            and_return(workhorse: :response)
+          expect(Gitlab::Workhorse)
+            .to receive(:terminal_websocket)
+            .with(:fake_terminal)
+            .and_return(workhorse: :response)
 
           get :terminal_websocket_authorize, environment_params
 

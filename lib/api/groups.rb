@@ -70,7 +70,11 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
-        optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
+
+        if ::Group.supports_nested_groups?
+          optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
+        end
+
         use :optional_params
       end
       post do
@@ -79,7 +83,7 @@ module API
         group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
         if group.persisted?
-          present group, with: Entities::Group, current_user: current_user
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)
         end
@@ -97,8 +101,6 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
-        at_least_one_of :name, :path, :description, :visibility,
-                        :lfs_enabled, :request_access_enabled
       end
       put ':id' do
         group = find_group!(params[:id])
@@ -147,8 +149,8 @@ module API
       end
       get ":id/projects" do
         group = find_group!(params[:id])
-        projects = GroupProjectsFinder.new(group: group, current_user: current_user).execute
-        projects = filter_projects(projects)
+        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        projects = reorder_projects(projects)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
         present paginate(projects), with: entity, current_user: current_user
       end

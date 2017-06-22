@@ -14,6 +14,7 @@ describe('Deploy keys key', () => {
       propsData: {
         deployKey,
         store,
+        endpoint: 'https://test.host/dummy/endpoint',
       },
     }).$mount();
   };
@@ -39,9 +40,15 @@ describe('Deploy keys key', () => {
       ).toBe(`created ${gl.utils.getTimeago().format(deployKey.created_at)}`);
     });
 
+    it('shows edit button', () => {
+      expect(
+        vm.$el.querySelectorAll('.btn')[0].textContent.trim(),
+      ).toBe('Edit');
+    });
+
     it('shows remove button', () => {
       expect(
-        vm.$el.querySelector('.btn').textContent.trim(),
+        vm.$el.querySelectorAll('.btn')[1].textContent.trim(),
       ).toBe('Remove');
     });
 
@@ -71,9 +78,15 @@ describe('Deploy keys key', () => {
       setTimeout(done);
     });
 
+    it('shows edit button', () => {
+      expect(
+        vm.$el.querySelectorAll('.btn')[0].textContent.trim(),
+      ).toBe('Edit');
+    });
+
     it('shows enable button', () => {
       expect(
-        vm.$el.querySelector('.btn').textContent.trim(),
+        vm.$el.querySelectorAll('.btn')[1].textContent.trim(),
       ).toBe('Enable');
     });
 
@@ -82,7 +95,7 @@ describe('Deploy keys key', () => {
 
       Vue.nextTick(() => {
         expect(
-          vm.$el.querySelector('.btn').textContent.trim(),
+          vm.$el.querySelectorAll('.btn')[1].textContent.trim(),
         ).toBe('Disable');
 
         done();

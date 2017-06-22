@@ -12,4 +12,8 @@ class LfsObjectUploader < GitlabUploader
   def filename
     model.oid[4..-1]
   end
+
+  def work_dir
+    File.join(Gitlab.config.lfs.storage_path, 'tmp', 'work')
+  end
 end

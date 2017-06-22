@@ -8,10 +8,10 @@ module FormHelper
     content_tag(:div, class: 'alert alert-danger', id: 'error_explanation') do
       content_tag(:h4, headline) <<
         content_tag(:ul) do
-          model.errors.full_messages.
-            map { |msg| content_tag(:li, msg) }.
-            join.
-            html_safe
+          model.errors.full_messages
+            .map { |msg| content_tag(:li, msg) }
+            .join
+            .html_safe
         end
     end
   end
@@ -29,7 +29,7 @@ module FormHelper
         current_user: true,
         project_id: issuable.project.try(:id),
         field_name: "#{issuable.class.model_name.param_key}[assignee_ids][]",
-        default_label: 'Assignee',
+        default_label: 'Unassigned',
         'max-select': 1,
         'dropdown-header': 'Assignee',
         multi_select: true,

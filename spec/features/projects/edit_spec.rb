@@ -6,7 +6,7 @@ feature 'Project edit', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
 
     visit edit_namespace_project_path(project.namespace, project)
   end

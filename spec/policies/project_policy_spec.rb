@@ -80,8 +80,8 @@ describe ProjectPolicy, models: true do
 
     expect(project.team.member?(issue.author)).to eq(false)
 
-    expect(BasePolicy.class_for(project).abilities(user, project).can_set).
-      not_to include(:read_issue)
+    expect(BasePolicy.class_for(project).abilities(user, project).can_set)
+      .not_to include(:read_issue)
 
     expect(Ability.allowed?(user, :read_issue, project)).to be_falsy
   end
@@ -137,6 +137,18 @@ describe ProjectPolicy, models: true do
         it do
           is_expected.to include(*guest_permissions)
           is_expected.not_to include(:read_build, :read_pipeline)
+        end
+      end
+
+      context 'when builds are disabled' do
+        before do
+          project.project_feature.update(
+            builds_access_level: ProjectFeature::DISABLED)
+        end
+
+        it do
+          is_expected.not_to include(:read_build)
+          is_expected.to include(:read_pipeline)
         end
       end
     end

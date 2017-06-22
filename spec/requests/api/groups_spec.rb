@@ -429,7 +429,7 @@ describe API::Groups do
         expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
       end
 
-      it "creates a nested group" do
+      it "creates a nested group", :nested_groups do
         parent = create(:group)
         parent.add_owner(user3)
         group = attributes_for(:group, { parent_id: parent.id })
@@ -513,8 +513,8 @@ describe API::Groups do
     let(:project_path) { project.full_path.gsub('/', '%2F') }
 
     before(:each) do
-      allow_any_instance_of(Projects::TransferService).
-        to receive(:execute).and_return(true)
+      allow_any_instance_of(Projects::TransferService)
+        .to receive(:execute).and_return(true)
     end
 
     context "when authenticated as user" do

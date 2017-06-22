@@ -13,14 +13,14 @@ describe 'Issue Boards', feature: true, js: true do
   let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)        { create(:board, project: project) }
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
-  let(:card) { first('.board').first('.card') }
+  let(:card) { find('.board:nth-child(2)').first('.card') }
 
   before do
     Timecop.freeze
 
     project.team << [user, :master]
 
-    login_as(user)
+    gitlab_sign_in(user)
 
     visit namespace_project_board_path(project.namespace, project, board)
     wait_for_requests
@@ -74,7 +74,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     wait_for_requests
 
-    page.within(first('.board')) do
+    page.within(find('.board:nth-child(2)')) do
       expect(page).to have_selector('.card', count: 1)
     end
   end
@@ -101,7 +101,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'removes the assignee' do
-      card_two = first('.board').find('.card:nth-child(2)')
+      card_two = find('.board:nth-child(2)').find('.card:nth-child(2)')
       click_card(card_two)
 
       page.within('.assignee') do
@@ -154,7 +154,7 @@ describe 'Issue Boards', feature: true, js: true do
         expect(page).to have_content(user.name)
       end
 
-      page.within(first('.board')) do
+      page.within(find('.board:nth-child(2)')) do
         find('.card:nth-child(2)').trigger('click')
       end
 

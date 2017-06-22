@@ -1,16 +1,13 @@
 export default class Store {
-  constructor({
-    titleHtml,
-    descriptionHtml,
-    descriptionText,
-  }) {
-    this.state = {
-      titleHtml,
-      titleText: '',
-      descriptionHtml,
-      descriptionText,
-      taskStatus: '',
-      updatedAt: '',
+  constructor(initialState) {
+    this.state = initialState;
+    this.formState = {
+      title: '',
+      confidential: false,
+      description: '',
+      lockedWarningVisible: false,
+      move_to_project_id: 0,
+      updateLoading: false,
     };
   }
 
@@ -21,5 +18,18 @@ export default class Store {
     this.state.descriptionText = data.description_text;
     this.state.taskStatus = data.task_status;
     this.state.updatedAt = data.updated_at;
+    this.state.updatedByName = data.updated_by_name;
+    this.state.updatedByPath = data.updated_by_path;
+  }
+
+  stateShouldUpdate(data) {
+    return {
+      title: this.state.titleText !== data.title_text,
+      description: this.state.descriptionText !== data.description_text,
+    };
+  }
+
+  setFormState(state) {
+    this.formState = Object.assign(this.formState, state);
   }
 }

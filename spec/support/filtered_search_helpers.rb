@@ -14,6 +14,9 @@ module FilteredSearchHelpers
     filtered_search.set(search)
 
     if submit
+      # Wait for the lazy author/assignee tokens that
+      # swap out the username with an avatar and name
+      wait_for_requests
       filtered_search.send_keys(:enter)
     end
   end

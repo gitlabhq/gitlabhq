@@ -137,7 +137,10 @@ module API
         expose :web_url
         expose :request_access_enabled
         expose :full_name, :full_path
-        expose :parent_id
+
+        if ::Group.supports_nested_groups?
+          expose :parent_id
+        end
 
         expose :statistics, if: :statistics do
           with_options format_with: -> (value) { value.to_i } do
@@ -223,7 +226,7 @@ module API
 
       class MergeRequestChanges < MergeRequest
         expose :diffs, as: :changes, using: ::API::Entities::RepoDiff do |compare, _|
-          compare.raw_diffs(all_diffs: true).to_a
+          compare.raw_diffs(limits: false).to_a
         end
       end
 
@@ -242,9 +245,9 @@ module API
         expose :job_events, as: :build_events
         # Expose serialized properties
         expose :properties do |service, options|
-          field_names = service.fields.
-            select { |field| options[:include_passwords] || field[:type] != 'password' }.
-            map { |field| field[:name] }
+          field_names = service.fields
+            .select { |field| options[:include_passwords] || field[:type] != 'password' }
+            .map { |field| field[:name] }
           service.properties.slice(*field_names)
         end
       end

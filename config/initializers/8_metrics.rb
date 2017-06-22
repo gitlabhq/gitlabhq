@@ -113,6 +113,9 @@ def instrument_classes(instrumentation)
 
   # This is a Rails scope so we have to instrument it manually.
   instrumentation.instrument_method(Project, :visible_to_user)
+
+  # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/30224#note_32306159
+  instrumentation.instrument_instance_method(MergeRequestDiff, :load_commits)
 end
 # rubocop:enable Metrics/AbcSize
 
@@ -151,8 +154,8 @@ if Gitlab::Metrics.enabled?
       ActiveRecord::Querying.public_instance_methods(false).map(&:to_s)
     )
 
-    Gitlab::Metrics::Instrumentation.
-      instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
+    Gitlab::Metrics::Instrumentation
+      .instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
         # Instrumenting the ApplicationSetting class can lead to an infinite
         # loop. Since the data is cached any way we don't really need to
         # instrument it.

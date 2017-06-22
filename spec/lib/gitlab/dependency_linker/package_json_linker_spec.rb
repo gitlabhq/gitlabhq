@@ -24,12 +24,16 @@ describe Gitlab::DependencyLinker::PackageJsonLinker, lib: true do
             "url": "https://github.com/vuejs/vue.git"
           },
           "homepage": "https://github.com/vuejs/vue#readme",
+          "scripts": {
+            "karma": "karma start config/karma.config.js --single-run"
+          },
           "dependencies": {
             "primus": "*",
             "async": "~0.8.0",
             "express": "4.2.x",
             "bigpipe": "bigpipe/pagelet",
-            "plates": "https://github.com/flatiron/plates/tarball/master"
+            "plates": "https://github.com/flatiron/plates/tarball/master",
+            "karma": "^1.4.1"
           },
           "devDependencies": {
             "vows": "^0.7.0",
@@ -69,6 +73,7 @@ describe Gitlab::DependencyLinker::PackageJsonLinker, lib: true do
       expect(subject).to include(link('express', 'https://npmjs.com/package/express'))
       expect(subject).to include(link('bigpipe', 'https://npmjs.com/package/bigpipe'))
       expect(subject).to include(link('plates', 'https://npmjs.com/package/plates'))
+      expect(subject).to include(link('karma', 'https://npmjs.com/package/karma'))
       expect(subject).to include(link('vows', 'https://npmjs.com/package/vows'))
       expect(subject).to include(link('assume', 'https://npmjs.com/package/assume'))
       expect(subject).to include(link('pre-commit', 'https://npmjs.com/package/pre-commit'))
@@ -80,6 +85,10 @@ describe Gitlab::DependencyLinker::PackageJsonLinker, lib: true do
 
     it 'links Git repos' do
       expect(subject).to include(link('https://github.com/flatiron/plates/tarball/master', 'https://github.com/flatiron/plates/tarball/master'))
+    end
+
+    it 'does not link scripts with the same key as a package' do
+      expect(subject).not_to include(link('karma start config/karma.config.js --single-run', 'https://github.com/karma start config/karma.config.js --single-run'))
     end
   end
 end

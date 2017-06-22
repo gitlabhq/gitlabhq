@@ -4,7 +4,9 @@ describe Profiles::PersonalAccessTokensController do
   let(:user) { create(:user) }
   let(:token_attributes) { attributes_for(:personal_access_token) }
 
-  before { sign_in(user) }
+  before do
+    sign_in(user)
+  end
 
   describe '#create' do
     def created_token
@@ -38,7 +40,9 @@ describe Profiles::PersonalAccessTokensController do
     let!(:inactive_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
     let!(:impersonation_personal_access_token) { create(:personal_access_token, :impersonation, user: user) }
 
-    before { get :index }
+    before do
+      get :index
+    end
 
     it "retrieves active personal access tokens" do
       expect(assigns(:active_personal_access_tokens)).to include(active_personal_access_token)

@@ -5,7 +5,12 @@ feature 'Expand and collapse diffs', js: true, feature: true do
   let(:project) { create(:project, :repository) }
 
   before do
-    login_as :admin
+    # Set the limits to those when these specs were written, to avoid having to
+    # update the test repo every time we change them.
+    allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
+    allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
+
+    gitlab_sign_in :admin
 
     # Ensure that undiffable.md is in .gitattributes
     project.repository.copy_gitattributes(branch)
@@ -60,18 +65,6 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     it 'shows small diffs immediately' do
       expect(small_diff).to have_selector('.code')
       expect(small_diff).not_to have_selector('.nothing-here-block')
-    end
-
-    it 'collapses large diffs by default' do
-      expect(large_diff).not_to have_selector('.code')
-      expect(large_diff).to have_selector('.nothing-here-block')
-    end
-
-    it 'collapses large diffs for renamed files by default' do
-      expect(large_diff_renamed).not_to have_selector('.code')
-      expect(large_diff_renamed).to have_selector('.nothing-here-block')
-      expect(large_diff_renamed).to have_selector('.js-file-title .deletion')
-      expect(large_diff_renamed).to have_selector('.js-file-title .addition')
     end
 
     it 'shows non-renderable diffs as such immediately, regardless of their size' do
@@ -147,7 +140,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         end
 
         context 'reloading the page' do
-          before { refresh }
+          before do
+            refresh
+          end
 
           it 'collapses the large diff by default' do
             expect(large_diff).not_to have_selector('.code')
@@ -269,7 +264,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
       # Wait for elements to appear to ensure full page reload
       expect(page).to have_content('This diff was suppressed by a .gitattributes entry')
-      expect(page).to have_content('This diff could not be displayed because it is too large.')
+      expect(page).to have_content('This source diff could not be displayed because it is too large.')
       expect(page).to have_content('too_large_image.jpg')
       find('.note-textarea')
 

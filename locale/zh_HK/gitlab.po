@@ -1,0 +1,294 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gitlab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2017-05-04 19:24-0500\n"
+"Last-Translator: HuangTao <htve@outlook.com>, 2017\n"
+"Language-Team: Chinese (Hong Kong) (https://www.transifex.com/gitlab-zh/teams/"
+"75177/zh_HK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_HK\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
+msgid "ByAuthor|by"
+msgstr "作者:"
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] "提交"
+
+msgid "Cron Timezone"
+msgstr ""
+
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr "週期分析概述了項目從想法到產品實現的各階段所需的時間。"
+
+msgid "CycleAnalyticsStage|Code"
+msgstr "編碼"
+
+msgid "CycleAnalyticsStage|Issue"
+msgstr "議題"
+
+msgid "CycleAnalyticsStage|Plan"
+msgstr "計劃"
+
+msgid "CycleAnalyticsStage|Production"
+msgstr "生產"
+
+msgid "CycleAnalyticsStage|Review"
+msgstr "評審"
+
+msgid "CycleAnalyticsStage|Staging"
+msgstr "預發布"
+
+msgid "CycleAnalyticsStage|Test"
+msgstr "測試"
+
+msgid "Delete"
+msgstr ""
+
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] "部署"
+
+msgid "Description"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Edit Pipeline Schedule %{id}"
+msgstr ""
+
+msgid "Failed to change the owner"
+msgstr ""
+
+msgid "Failed to remove the pipeline schedule"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "FirstPushedBy|First"
+msgstr "首次推送"
+
+msgid "FirstPushedBy|pushed by"
+msgstr "推送者:"
+
+msgid "From issue creation until deploy to production"
+msgstr "從創建議題到部署到生產環境"
+
+msgid "From merge request merge until deploy to production"
+msgstr "從合併請求的合併到部署至生產環境"
+
+msgid "Interval Pattern"
+msgstr ""
+
+msgid "Introducing Cycle Analytics"
+msgstr "週期分析簡介"
+
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] "最後 %d 天"
+
+msgid "Last Pipeline"
+msgstr ""
+
+msgid "Limited to showing %d event at most"
+msgid_plural "Limited to showing %d events at most"
+msgstr[0] "最多顯示 %d 個事件"
+
+msgid "Median"
+msgstr "中位數"
+
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] "新議題"
+
+msgid "New Pipeline Schedule"
+msgstr ""
+
+msgid "No schedules"
+msgstr ""
+
+msgid "Not available"
+msgstr "不可用"
+
+msgid "Not enough data"
+msgstr "數據不足"
+
+msgid "OpenedNDaysAgo|Opened"
+msgstr "開始於"
+
+msgid "Owner"
+msgstr ""
+
+msgid "Pipeline Health"
+msgstr "流水線健康指標"
+
+msgid "Pipeline Schedule"
+msgstr ""
+
+msgid "Pipeline Schedules"
+msgstr ""
+
+msgid "PipelineSchedules|Activated"
+msgstr ""
+
+msgid "PipelineSchedules|Active"
+msgstr ""
+
+msgid "PipelineSchedules|All"
+msgstr ""
+
+msgid "PipelineSchedules|Inactive"
+msgstr ""
+
+msgid "PipelineSchedules|Next Run"
+msgstr ""
+
+msgid "PipelineSchedules|None"
+msgstr ""
+
+msgid "PipelineSchedules|Provide a short description for this pipeline"
+msgstr ""
+
+msgid "PipelineSchedules|Take ownership"
+msgstr ""
+
+msgid "PipelineSchedules|Target"
+msgstr ""
+
+msgid "ProjectLifecycle|Stage"
+msgstr "項目生命週期"
+
+msgid "Read more"
+msgstr "了解更多"
+
+msgid "Related Commits"
+msgstr "相關的提交"
+
+msgid "Related Deployed Jobs"
+msgstr "相關的部署作業"
+
+msgid "Related Issues"
+msgstr "相關的議題"
+
+msgid "Related Jobs"
+msgstr "相關的作業"
+
+msgid "Related Merge Requests"
+msgstr "相關的合併請求"
+
+msgid "Related Merged Requests"
+msgstr "相關已合併的合並請求"
+
+msgid "Save pipeline schedule"
+msgstr ""
+
+msgid "Schedule a new pipeline"
+msgstr ""
+
+msgid "Select a timezone"
+msgstr ""
+
+msgid "Select target branch"
+msgstr ""
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] "顯示 %d 個事件"
+
+msgid "Target Branch"
+msgstr ""
+
+msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
+msgstr "編碼階段概述了從第一次提交到創建合併請求的時間。創建第壹個合並請求後，數據將自動添加到此處。"
+
+msgid "The collection of events added to the data gathered for that stage."
+msgstr "與該階段相關的事件。"
+
+msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr "議題階段概述了從創建議題到將議題設置裏程碑或將議題添加到議題看板的時間。創建一個議題後，數據將自動添加到此處。"
+
+msgid "The phase of the development lifecycle."
+msgstr "項目生命週期中的各個階段。"
+
+msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
+msgstr "計劃階段概述了從議題添加到日程後到推送首次提交的時間。當首次推送提交後，數據將自動添加到此處。"
+
+msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
+msgstr "生產階段概述了從創建議題到將代碼部署到生產環境的時間。當完成完整的想法到部署生產，數據將自動添加到此處。"
+
+msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgstr "評審階段概述了從創建合並請求到合併的時間。當創建第壹個合並請求後，數據將自動添加到此處。"
+
+msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
+msgstr "預發布階段概述了合並請求的合併到部署代碼到生產環境的總時間。當首次部署到生產環境後，數據將自動添加到此處。"
+
+msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
+msgstr "測試階段概述了GitLab CI為相關合併請求運行每個流水線所需的時間。當第壹個流水線運行完成後，數據將自動添加到此處。"
+
+msgid "The time taken by each data entry gathered by that stage."
+msgstr "該階段每條數據所花的時間"
+
+msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgstr "中位數是一個數列中最中間的值。例如在 3、5、9 之間，中位數是 5。在 3、5、7、8 之間，中位數是 （5 + 7）/ 2 = 6。"
+
+msgid "Time before an issue gets scheduled"
+msgstr "議題被列入日程表的時間"
+
+msgid "Time before an issue starts implementation"
+msgstr "開始進行編碼前的時間"
+
+msgid "Time between merge request creation and merge/close"
+msgstr "從創建合併請求到被合並或關閉的時間"
+
+msgid "Time until first merge request"
+msgstr "創建第壹個合併請求之前的時間"
+
+msgid "Time|hr"
+msgid_plural "Time|hrs"
+msgstr[0] "小時"
+
+msgid "Time|min"
+msgid_plural "Time|mins"
+msgstr[0] "分鐘"
+
+msgid "Time|s"
+msgstr "秒"
+
+msgid "Total Time"
+msgstr "總時間"
+
+msgid "Total test time for all commits/merges"
+msgstr "所有提交和合併的總測試時間"
+
+msgid "Want to see the data? Please ask an administrator for access."
+msgstr "權限不足。如需查看相關數據，請向管理員申請權限。"
+
+msgid "We don't have enough data to show this stage."
+msgstr "該階段的數據不足，無法顯示。"
+
+msgid "You have reached your project limit"
+msgstr ""
+
+msgid "You need permission."
+msgstr "您需要相關的權限。"
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "天"

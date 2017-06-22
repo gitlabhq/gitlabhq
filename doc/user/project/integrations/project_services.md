@@ -6,18 +6,13 @@ functionality to GitLab.
 
 ## Accessing the project services
 
-You can find the available services under the **Integrations** page in your
-project's settings.
+You can find the available services under your project's
+**Settings ➔ Integrations** page.
 
-1. Navigate to the cog icon in the upper right corner of your project. You need
-   to have at least [master permission][permissions] on the project.
+There are more than 20 services to integrate with. Click on the one that you
+want to configure.
 
-    ![Accessing the services](img/accessing_integrations.png)
-
-1. There are more than 20 services to integrate with. Click on the one that you
-   want to configure.
-
-    ![Project services list](img/project_services.png)
+ ![Project services list](img/project_services.png)
 
 Below, you will find a list of the currently supported ones accompanied with
 comprehensive documentation.

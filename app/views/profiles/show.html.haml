@@ -42,17 +42,24 @@
         - if current_user.ldap_user?
           Some options are unavailable for LDAP accounts
     .col-lg-9
-      .form-group
-        = f.label :name, class: "label-light"
-        = f.text_field :name, class: "form-control", required: true
-        %span.help-block Enter your name, so people you know can recognize you.
+      .row
+        .form-group.col-md-9
+          = f.label :name, class: "label-light"
+          = f.text_field :name, class: "form-control", required: true
+          %span.help-block Enter your name, so people you know can recognize you.
+
+        .form-group.col-md-3
+          = f.label :id, class: 'label-light' do
+            User ID
+          = f.text_field :id, class: 'form-control', readonly: true
+
 
       .form-group
         = f.label :email, class: "label-light"
-        - if @user.ldap_user? && @user.ldap_email?
+        - if @user.external_email?
           = f.text_field :email, class: "form-control", required: true, readonly: true
           %span.help-block.light
-            Your email address was automatically set based on the LDAP server.
+            Your email address was automatically set based on your #{email_provider_label} account.
         - else
           - if @user.temp_oauth_email?
             = f.text_field :email, class: "form-control", required: true, value: nil

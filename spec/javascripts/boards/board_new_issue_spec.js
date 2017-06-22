@@ -19,6 +19,7 @@ describe('Issue boards new issue form', () => {
       };
     },
   };
+
   const submitIssue = () => {
     vm.$el.querySelector('.btn-success').click();
   };
@@ -107,7 +108,7 @@ describe('Issue boards new issue form', () => {
       setTimeout(() => {
         submitIssue();
 
-        expect(vm.$el.querySelector('.btn-success').disbled).not.toBe(true);
+        expect(vm.$el.querySelector('.btn-success').disabled).toBe(false);
         done();
       }, 0);
     });
@@ -115,36 +116,43 @@ describe('Issue boards new issue form', () => {
     it('clears title after submit', (done) => {
       vm.title = 'submit issue';
 
-      setTimeout(() => {
+      Vue.nextTick(() => {
         submitIssue();
 
-        expect(vm.title).toBe('');
-        done();
-      }, 0);
+        setTimeout(() => {
+          expect(vm.title).toBe('');
+          done();
+        }, 0);
+      });
     });
 
-    it('adds new issue to list after submit', (done) => {
+    it('adds new issue to top of list after submit request', (done) => {
       vm.title = 'submit issue';
 
       setTimeout(() => {
         submitIssue();
 
-        expect(list.issues.length).toBe(2);
-        expect(list.issues[1].title).toBe('submit issue');
-        expect(list.issues[1].subscribed).toBe(true);
-        done();
+        setTimeout(() => {
+          expect(list.issues.length).toBe(2);
+          expect(list.issues[0].title).toBe('submit issue');
+          expect(list.issues[0].subscribed).toBe(true);
+          done();
+        }, 0);
       }, 0);
     });
 
     it('sets detail issue after submit', (done) => {
+      expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe(undefined);
       vm.title = 'submit issue';
 
       setTimeout(() => {
         submitIssue();
 
-        expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe('submit issue');
-        done();
-      });
+        setTimeout(() => {
+          expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe('submit issue');
+          done();
+        }, 0);
+      }, 0);
     });
 
     it('sets detail list after submit', (done) => {
@@ -153,8 +161,10 @@ describe('Issue boards new issue form', () => {
       setTimeout(() => {
         submitIssue();
 
-        expect(gl.issueBoards.BoardsStore.detail.list.id).toBe(list.id);
-        done();
+        setTimeout(() => {
+          expect(gl.issueBoards.BoardsStore.detail.list.id).toBe(list.id);
+          done();
+        }, 0);
       }, 0);
     });
   });
@@ -169,13 +179,12 @@ describe('Issue boards new issue form', () => {
         setTimeout(() => {
           expect(list.issues.length).toBe(1);
           done();
-        }, 500);
+        }, 0);
       }, 0);
     });
 
     it('shows error', (done) => {
       vm.title = 'error';
-      submitIssue();
 
       setTimeout(() => {
         submitIssue();
@@ -183,7 +192,7 @@ describe('Issue boards new issue form', () => {
         setTimeout(() => {
           expect(vm.error).toBe(true);
           done();
-        }, 500);
+        }, 0);
       }, 0);
     });
   });

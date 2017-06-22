@@ -5,7 +5,7 @@ feature 'Search Snippets', feature: true do
     public_snippet = create(:personal_snippet, :public, title: 'Beginning and Middle')
     private_snippet = create(:personal_snippet, :private, title: 'Middle and End')
 
-    login_as private_snippet.author
+    gitlab_sign_in private_snippet.author
     visit dashboard_snippets_path
 
     page.within '.search' do
@@ -41,7 +41,7 @@ feature 'Search Snippets', feature: true do
            CONTENT
           )
 
-    login_as create(:user)
+    gitlab_sign_in create(:user)
     visit dashboard_snippets_path
 
     page.within '.search' do

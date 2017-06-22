@@ -8,7 +8,7 @@ feature 'Member autocomplete', :js do
 
   before do
     note # actually create the note
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   shared_examples "open suggestions when typing @" do

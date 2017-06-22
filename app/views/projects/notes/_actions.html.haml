@@ -37,8 +37,4 @@
       %span{ class: 'link-highlight award-control-icon-positive' }= custom_icon('emoji_smiley')
       %span{ class: 'link-highlight award-control-icon-super-positive' }= custom_icon('emoji_smile')
 
-  - if note_editable
-    = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit has-tooltip' do
-      = icon('pencil', class: 'link-highlight')
-    = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger has-tooltip' do
-      = icon('trash-o', class: 'danger-highlight')
+    = render 'projects/notes/more_actions_dropdown', note: note, note_editable: note_editable

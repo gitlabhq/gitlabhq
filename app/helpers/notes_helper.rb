@@ -10,8 +10,8 @@ module NotesHelper
     Ability.can_edit_note?(current_user, note)
   end
 
-  def note_supports_slash_commands?(note)
-    Notes::SlashCommandsService.supported?(note, current_user)
+  def note_supports_quick_actions?(note)
+    Notes::QuickActionsService.supported?(note, current_user)
   end
 
   def noteable_json(noteable)
@@ -50,7 +50,7 @@ module NotesHelper
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
-    data = { discussion_id: discussion.id, line_type: line_type }
+    data = { discussion_id: discussion.reply_id, line_type: line_type }
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'
@@ -90,12 +90,16 @@ module NotesHelper
     end
   end
 
-  def note_url(note)
+  def note_url(note, project = @project)
     if note.noteable.is_a?(PersonalSnippet)
       snippet_note_path(note.noteable, note)
     else
-      namespace_project_note_path(@project.namespace, @project, note)
+      namespace_project_note_path(project.namespace, project, note)
     end
+  end
+
+  def noteable_note_url(note)
+    Gitlab::UrlBuilder.build(note)
   end
 
   def form_resources

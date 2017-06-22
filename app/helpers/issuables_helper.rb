@@ -138,8 +138,8 @@ module IssuablesHelper
     end
 
     output << "&ensp;".html_safe
-    output << content_tag(:span, issuable.task_status, id: "task_status", class: "hidden-xs hidden-sm")
-    output << content_tag(:span, issuable.task_status_short, id: "task_status_short", class: "hidden-md hidden-lg")
+    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "hidden-xs hidden-sm")
+    output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "hidden-md hidden-lg")
 
     output
   end
@@ -197,6 +197,44 @@ module IssuablesHelper
 
   def issuable_filter_present?
     issuable_filter_params.any? { |k| params.key?(k) }
+  end
+
+  def issuable_initial_data(issuable)
+    data = {
+      endpoint: namespace_project_issue_path(@project.namespace, @project, issuable),
+      canUpdate: can?(current_user, :update_issue, issuable),
+      canDestroy: can?(current_user, :destroy_issue, issuable),
+      canMove: current_user ? issuable.can_move?(current_user) : false,
+      issuableRef: issuable.to_reference,
+      isConfidential: issuable.confidential,
+      markdownPreviewUrl: preview_markdown_path(@project),
+      markdownDocs: help_page_path('user/markdown'),
+      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
+      issuableTemplates: issuable_templates(issuable),
+      projectPath: ref_project.path,
+      projectNamespace: ref_project.namespace.full_path,
+      initialTitleHtml: markdown_field(issuable, :title),
+      initialTitleText: issuable.title,
+      initialDescriptionHtml: markdown_field(issuable, :description),
+      initialDescriptionText: issuable.description,
+      initialTaskStatus: issuable.task_status
+    }
+
+    data.merge!(updated_at_by(issuable))
+
+    data.to_json
+  end
+
+  def updated_at_by(issuable)
+    return {} unless issuable.is_edited?
+
+    {
+      updatedAt: issuable.updated_at.to_time.iso8601,
+      updatedBy: {
+        name: issuable.last_edited_by.name,
+        path: user_path(issuable.last_edited_by)
+      }
+    }
   end
 
   private

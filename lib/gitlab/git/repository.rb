@@ -617,9 +617,9 @@ module Gitlab
       #
       # Ex.
       #   {
-      #     "rack"  => {
+      #     "current_path/rack"  => {
+      #       "name" => "original_path/rack",
       #       "id" => "c67be4624545b4263184c4a0e8f887efd0a66320",
-      #       "path" => "rack",
       #       "url" => "git://github.com/chneukirchen/rack.git"
       #     },
       #     "encoding" => {
@@ -637,7 +637,8 @@ module Gitlab
           return {}
         end
 
-        parse_gitmodules(commit, content)
+        parser = GitmodulesParser.new(content)
+        fill_submodule_ids(commit, parser.parse)
       end
 
       # Return total commits count accessible from passed ref
@@ -962,11 +963,6 @@ module Gitlab
         end
       end
 
-      # Checks if the blob should be diffable according to its attributes
-      def diffable?(blob)
-        attributes(blob.path).fetch('diff') { blob.text? }
-      end
-
       # Returns the Git attributes for the given file path.
       #
       # See `Gitlab::Git::Attributes` for more information.
@@ -1003,34 +999,19 @@ module Gitlab
         end
       end
 
-      # Parses the contents of a .gitmodules file and returns a hash of
-      # submodule information.
-      def parse_gitmodules(commit, content)
-        results = {}
-
-        current = ""
-        content.split("\n").each do |txt|
-          if txt =~ /^\s*\[/
-            current = txt.match(/(?<=").*(?=")/)[0]
-            results[current] = {}
-          else
-            next unless results[current]
-            match_data = txt.match(/(\w+)\s*=\s*(.*)/)
-            next unless match_data
-            target = match_data[2].chomp
-            results[current][match_data[1]] = target
-
-            if match_data[1] == "path"
-              begin
-                results[current]["id"] = blob_content(commit, target)
-              rescue InvalidBlobName
-                results.delete(current)
-              end
-            end
+      # Fill in the 'id' field of a submodule hash from its values
+      # as-of +commit+. Return a Hash consisting only of entries
+      # from the submodule hash for which the 'id' field is filled.
+      def fill_submodule_ids(commit, submodule_data)
+        submodule_data.each do |path, data|
+          id = begin
+            blob_content(commit, path)
+          rescue InvalidBlobName
+            nil
           end
+          data['id'] = id
         end
-
-        results
+        submodule_data.select { |path, data| data['id'] }
       end
 
       # Returns true if +commit+ introduced changes to +path+, using commit
@@ -1086,7 +1067,12 @@ module Gitlab
           elsif tmp_entry.nil?
             return nil
           else
-            tmp_entry = rugged.lookup(tmp_entry[:oid])
+            begin
+              tmp_entry = rugged.lookup(tmp_entry[:oid])
+            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
+              return nil
+            end
+
             return nil unless tmp_entry.type == :tree
             tmp_entry = tmp_entry[dir]
           end

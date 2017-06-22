@@ -1,4 +1,6 @@
 class RepositoryImportWorker
+  ImportError = Class.new(StandardError)
+
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
@@ -10,6 +12,8 @@ class RepositoryImportWorker
     @project = Project.find(project_id)
     @current_user = @project.creator
 
+    project.import_start
+
     Gitlab::Metrics.add_event(:import_repository,
                               import_url: @project.import_url,
                               path: @project.path_with_namespace)
@@ -17,13 +21,23 @@ class RepositoryImportWorker
     project.update_columns(import_jid: self.jid, import_error: nil)
 
     result = Projects::ImportService.new(project, current_user).execute
-
-    if result[:status] == :error
-      project.mark_import_as_failed(result[:message])
-      return
-    end
+    raise ImportError, result[:message] if result[:status] == :error
 
     project.repository.after_import
     project.import_finish
+  rescue ImportError => ex
+    fail_import(project, ex.message)
+    raise
+  rescue => ex
+    return unless project
+
+    fail_import(project, ex.message)
+    raise ImportError, "#{ex.class} #{ex.message}"
+  end
+
+  private
+
+  def fail_import(project, message)
+    project.mark_import_as_failed(message)
   end
 end

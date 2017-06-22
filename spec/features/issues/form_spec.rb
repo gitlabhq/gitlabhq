@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'New/edit issue', :feature, :js do
   include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
+  include FormHelper
 
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
@@ -15,7 +16,7 @@ describe 'New/edit issue', :feature, :js do
   before do
     project.team << [user, :master]
     project.team << [user2, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'new issue' do
@@ -23,7 +24,47 @@ describe 'New/edit issue', :feature, :js do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
-    describe 'single assignee' do
+    describe 'shorten users API pagination limit (CE)' do
+      before do
+        # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
+        # somehow refer to the very block we defined to _wrap_ that method, instead of
+        # the original method, resulting in infinite recurison when called.
+        # This is likely a bug with helper modules included into dynamically generated view classes.
+        # To work around this, we have to hold on to and call to the original implementation manually.
+        original_issue_dropdown_options = FormHelper.instance_method(:issue_dropdown_options)
+        allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
+          options = original_issue_dropdown_options.bind(original.receiver).call(*args)
+          options[:data][:per_page] = 2
+
+          options
+        end
+
+        visit new_namespace_project_issue_path(project.namespace, project)
+
+        click_button 'Unassigned'
+
+        wait_for_requests
+      end
+
+      it 'should display selected users even if they are not part of the original API call' do
+        find('.dropdown-input-field').native.send_keys user2.name
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user2.name
+          click_link user2.name
+        end
+
+        find('.js-assignee-search').click
+        find('.js-dropdown-input-clear').click
+
+        page.within '.dropdown-menu-user' do
+          expect(page).to have_content user.name
+          expect(find('.dropdown-menu-user a.is-active').first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
+        end
+      end
+    end
+
+    describe 'single assignee (CE)' do
       before do
         click_button 'Unassigned'
 
@@ -169,6 +210,13 @@ describe 'New/edit issue', :feature, :js do
 
       expect(find('.js-assignee-search')).to have_content(user2.name)
     end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
+    end
   end
 
   context 'edit issue' do
@@ -216,6 +264,13 @@ describe 'New/edit issue', :feature, :js do
           expect(page).to have_content label2.title
         end
       end
+    end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
     end
   end
 

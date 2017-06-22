@@ -233,11 +233,18 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
     }
 
     mountPipelinesView() {
-      this.commitPipelinesTable = new gl.CommitPipelinesTable().$mount();
+      const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
+      const CommitPipelinesTable = gl.CommitPipelinesTable;
+      this.commitPipelinesTable = new CommitPipelinesTable({
+        propsData: {
+          endpoint: pipelineTableViewEl.dataset.endpoint,
+          helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+        },
+      }).$mount();
+
       // $mount(el) replaces the el with the new rendered component. We need it in order to mount
       // it everytime this tab is clicked - https://vuejs.org/v2/api/#vm-mount
-      document.querySelector('#commit-pipeline-table-view')
-        .appendChild(this.commitPipelinesTable.$el);
+      pipelineTableViewEl.appendChild(this.commitPipelinesTable.$el);
     }
 
     loadDiff(source) {

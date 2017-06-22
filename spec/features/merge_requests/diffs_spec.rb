@@ -68,9 +68,13 @@ feature 'Diffs URL', js: true, feature: true do
     let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
     let(:changelog_id) { Digest::SHA1.hexdigest("CHANGELOG") }
 
+    before do
+      forked_project.repository.after_import
+    end
+
     context 'as author' do
       it 'shows direct edit link' do
-        login_as(author_user)
+        gitlab_sign_in(author_user)
         visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
@@ -80,7 +84,7 @@ feature 'Diffs URL', js: true, feature: true do
 
     context 'as user who needs to fork' do
       it 'shows fork/cancel confirmation' do
-        login_as(user)
+        gitlab_sign_in(user)
         visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax

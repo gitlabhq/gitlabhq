@@ -19,7 +19,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
     let!(:namespace) { create(:namespace, name: "asd", owner: user) }
 
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     scenario 'user imports an exported project successfully' do
@@ -77,7 +77,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
   context 'when limited to the default user namespace' do
     let(:user) { create(:user) }
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     scenario 'passes correct namespace ID in the URL' do

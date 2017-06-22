@@ -14,7 +14,7 @@ class Commit
   participant :committer
   participant :notes_with_associations
 
-  attr_accessor :project
+  attr_accessor :project, :author
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
@@ -114,16 +114,16 @@ class Commit
   #
   # Usually, the commit title is the first line of the commit message.
   # In case this first line is longer than 100 characters, it is cut off
-  # after 80 characters and ellipses (`&hellp;`) are appended.
+  # after 80 characters + `...`
   def title
-    full_title.length > 100 ? full_title[0..79] << "…" : full_title
+    return full_title if full_title.length < 100
+
+    full_title.truncate(81, separator: ' ', omission: '…')
   end
 
   # Returns the full commits title
   def full_title
-    return @full_title if @full_title
-
-    @full_title =
+    @full_title ||=
       if safe_message.blank?
         no_commit_message
       else
@@ -131,19 +131,14 @@ class Commit
       end
   end
 
-  # Returns the commits description
-  #
-  # cut off, ellipses (`&hellp;`) are prepended to the commit message.
+  # Returns full commit message if title is truncated (greater than 99 characters)
+  # otherwise returns commit message without first line
   def description
-    title_end = safe_message.index("\n")
-    @description ||=
-      if (!title_end && safe_message.length > 100) || (title_end && title_end > 100)
-        "…" << safe_message[80..-1]
-      else
-        safe_message.split("\n", 2)[1].try(:chomp)
-      end
-  end
+    return safe_message if full_title.length >= 100
 
+    safe_message.split("\n", 2)[1].try(:chomp)
+  end
+  
   def description?
     description.present?
   end
@@ -177,7 +172,7 @@ class Commit
     if RequestStore.active?
       key = "commit_author:#{author_email.downcase}"
       # nil is a valid value since no author may exist in the system
-      if RequestStore.store.has_key?(key)
+      if RequestStore.store.key?(key)
         @author = RequestStore.store[key]
       else
         @author = find_author_by_any_email

@@ -14,11 +14,12 @@ feature 'Projects > Wiki > User previews markdown changes', feature: true, js: t
 
   background do
     project.team << [user, :master]
-    login_as(user)
+    WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
+
+    gitlab_sign_in(user)
 
     visit namespace_project_path(project.namespace, project)
     find('.shortcuts-wiki').trigger('click')
-    WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
   end
 
   context "while creating a new wiki page" do

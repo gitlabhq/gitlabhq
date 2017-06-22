@@ -1,4 +1,7 @@
 .awards {
+  display: flex;
+  flex-wrap: wrap;
+
   .emoji-icon {
     width: 20px;
     height: 20px;
@@ -100,7 +103,6 @@
 
 .award-menu-holder {
   display: inline-block;
-  position: absolute;
 
   .tooltip {
     white-space: nowrap;
@@ -108,9 +110,11 @@
 }
 
 .award-control {
-  margin: 0 5px 6px 0;
+  margin: 4px 8px 4px 0;
   outline: 0;
   position: relative;
+  display: block;
+  float: left;
 
   &.disabled {
     cursor: default;

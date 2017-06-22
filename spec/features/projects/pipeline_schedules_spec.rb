@@ -12,7 +12,7 @@ feature 'Pipeline Schedules', :feature do
   before do
     project.add_master(user)
 
-    login_as(user)
+    gitlab_sign_in(user)
     visit_page
   end
 
@@ -65,6 +65,17 @@ feature 'Pipeline Schedules', :feature do
         expect(page).not_to have_content('pipeline schedule')
       end
     end
+
+    context 'when ref is nil' do
+      before do
+        pipeline_schedule.update_attribute(:ref, nil)
+        visit_pipelines_schedules
+      end
+
+      it 'shows a list of the pipeline schedules with empty ref column' do
+        expect(first('.branch-name-cell').text).to eq('')
+      end
+    end
   end
 
   describe 'POST /projects/pipeline_schedules/new', js: true do
@@ -107,6 +118,19 @@ feature 'Pipeline Schedules', :feature do
       save_pipeline_schedule
 
       expect(page).to have_content('my brand new description')
+    end
+
+    context 'when ref is nil' do
+      before do
+        pipeline_schedule.update_attribute(:ref, nil)
+        edit_pipeline_schedule
+      end
+
+      it 'shows the pipeline schedule with default ref' do
+        page.within('.js-target-branch-dropdown') do
+          expect(first('.dropdown-toggle-text').text).to eq('master')
+        end
+      end
     end
   end
 

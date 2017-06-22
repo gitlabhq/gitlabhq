@@ -49,6 +49,7 @@ module Gitlab
       sent_notifications
       services
       snippets
+      system
       teams
       u
       unicorn_test
@@ -80,6 +81,7 @@ module Gitlab
     # By rejecting `badges` the router can _count_ on the fact that `badges` will
     # be preceded by the `namespace/project`.
     PROJECT_WILDCARD_ROUTES = %w[
+      -
       badges
       blame
       blob

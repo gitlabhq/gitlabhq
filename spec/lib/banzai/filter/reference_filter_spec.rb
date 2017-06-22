@@ -8,8 +8,8 @@ describe Banzai::Filter::ReferenceFilter, lib: true do
       document = Nokogiri::HTML.fragment('<a href="foo">foo</a>')
       filter = described_class.new(document, project: project)
 
-      expect { |b| filter.each_node(&b) }.
-        to yield_with_args(an_instance_of(Nokogiri::XML::Element))
+      expect { |b| filter.each_node(&b) }
+        .to yield_with_args(an_instance_of(Nokogiri::XML::Element))
     end
 
     it 'returns an Enumerator when no block is given' do

@@ -26,6 +26,10 @@ describe MergeRequests::Conflicts::ResolveService do
   describe '#execute' do
     let(:service) { described_class.new(merge_request) }
 
+    def blob_content(project, ref, path)
+      project.repository.blob_at(ref, path).data
+    end
+
     context 'with section params' do
       let(:params) do
         {
@@ -60,9 +64,38 @@ describe MergeRequests::Conflicts::ResolveService do
         end
 
         it 'creates a commit with the correct parents' do
-          expect(merge_request.source_branch_head.parents.map(&:id)).
-            to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
-                     824be604a34828eb682305f0d963056cfac87b2d))
+          expect(merge_request.source_branch_head.parents.map(&:id))
+            .to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
+                      824be604a34828eb682305f0d963056cfac87b2d))
+        end
+      end
+
+      context 'when some files have trailing newlines' do
+        let!(:source_head) do
+          branch = 'conflict-resolvable'
+          path = 'files/ruby/popen.rb'
+          popen_content = blob_content(project, branch, path)
+
+          project.repository.update_file(
+            user,
+            path,
+            popen_content.chomp("\n"),
+            message: 'Remove trailing newline from popen.rb',
+            branch_name: branch
+          )
+        end
+
+        before do
+          service.execute(user, params)
+        end
+
+        it 'preserves trailing newlines from our side of the conflicts' do
+          head_sha = merge_request.source_branch_head.sha
+          popen_content = blob_content(project, head_sha, 'files/ruby/popen.rb')
+          regex_content = blob_content(project, head_sha, 'files/ruby/regex.rb')
+
+          expect(popen_content).not_to end_with("\n")
+          expect(regex_content).to end_with("\n")
         end
       end
 
@@ -96,9 +129,8 @@ describe MergeRequests::Conflicts::ResolveService do
         it 'creates a commit with the correct parents' do
           resolve_conflicts
 
-          expect(merge_request_from_fork.source_branch_head.parents.map(&:id)).
-            to eq(['404fa3fc7c2c9b5dacff102f353bdf55b1be2813',
-                   target_head])
+          expect(merge_request_from_fork.source_branch_head.parents.map(&:id))
+            .to eq(['404fa3fc7c2c9b5dacff102f353bdf55b1be2813', target_head])
         end
       end
     end
@@ -136,16 +168,19 @@ describe MergeRequests::Conflicts::ResolveService do
       end
 
       it 'creates a commit with the correct parents' do
-        expect(merge_request.source_branch_head.parents.map(&:id)).
-          to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
-                   824be604a34828eb682305f0d963056cfac87b2d))
+        expect(merge_request.source_branch_head.parents.map(&:id))
+          .to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
+                    824be604a34828eb682305f0d963056cfac87b2d))
       end
 
       it 'sets the content to the content given' do
-        blob = merge_request.source_project.repository.blob_at(merge_request.source_branch_head.sha,
-                                                               'files/ruby/popen.rb')
+        blob = blob_content(
+          merge_request.source_project,
+          merge_request.source_branch_head.sha,
+          'files/ruby/popen.rb'
+        )
 
-        expect(blob.data).to eq(popen_content)
+        expect(blob).to eq(popen_content)
       end
     end
 
@@ -168,8 +203,8 @@ describe MergeRequests::Conflicts::ResolveService do
       end
 
       it 'raises a MissingResolution error' do
-        expect { service.execute(user, invalid_params) }.
-          to raise_error(Gitlab::Conflict::File::MissingResolution)
+        expect { service.execute(user, invalid_params) }
+          .to raise_error(Gitlab::Conflict::File::MissingResolution)
       end
     end
 
@@ -194,8 +229,8 @@ describe MergeRequests::Conflicts::ResolveService do
       end
 
       it 'raises a MissingResolution error' do
-        expect { service.execute(user, invalid_params) }.
-          to raise_error(Gitlab::Conflict::File::MissingResolution)
+        expect { service.execute(user, invalid_params) }
+          .to raise_error(Gitlab::Conflict::File::MissingResolution)
       end
     end
 
@@ -214,8 +249,8 @@ describe MergeRequests::Conflicts::ResolveService do
       end
 
       it 'raises a MissingFiles error' do
-        expect { service.execute(user, invalid_params) }.
-          to raise_error(described_class::MissingFiles)
+        expect { service.execute(user, invalid_params) }
+          .to raise_error(described_class::MissingFiles)
       end
     end
   end

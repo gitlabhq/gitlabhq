@@ -153,4 +153,9 @@ export default class EnvironmentsStore {
     return updatedEnvironments;
   }
 
+  getOpenFolders() {
+    const environments = this.state.environments;
+
+    return environments.filter(env => env.isFolder && env.isOpen);
+  }
 }

@@ -297,6 +297,15 @@ cache:
   untracked: true
 ```
 
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+cache:
+  key: "$env:CI_JOB_STAGE/$env:CI_COMMIT_REF_NAME"
+  untracked: true
+```
+
 ## Jobs
 
 `.gitlab-ci.yml` allows you to specify an unlimited number of jobs. Each job
@@ -384,7 +393,8 @@ There are a few rules that apply to the usage of refs policy:
 * `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
 * `only` and `except` allow the use of regular expressions.
-* `only` and `except` allow the use of special keywords: `branches`, `tags`, and `triggers`.
+* `only` and `except` allow the use of special keywords:
+`api`, `branches`, `external`, `tags`, `pushes`, `schedules`, `triggers`, and `web`
 * `only` and `except` allow to specify a repository path to filter jobs for
    forks.
 
@@ -402,7 +412,7 @@ job:
 ```
 
 In this example, `job` will run only for refs that are tagged, or if a build is
-explicitly requested via an API trigger.
+explicitly requested via an API trigger or a [Pipeline Schedule](../../user/project/pipelines/schedules.md).
 
 ```yaml
 job:
@@ -410,6 +420,7 @@ job:
   only:
     - tags
     - triggers
+    - schedules
 ```
 
 The repository path can be used to have jobs executed only for the parent
@@ -434,11 +445,11 @@ but allows you to define job-specific variables.
 
 When the `variables` keyword is used on a job level, it overrides the global YAML
 job variables and predefined ones. To turn off global defined variables
-in your job, define an empty array:
+in your job, define an empty hash:
 
 ```yaml
 job_name:
-  variables: []
+  variables: {}
 ```
 
 Job variables priority is defined in the [variables documentation][variables].
@@ -591,7 +602,7 @@ Optional manual actions have `allow_failure: true` set by default.
 **Manual actions are considered to be write actions, so permissions for
 protected branches are used when user wants to trigger an action. In other
 words, in order to trigger a manual action assigned to a branch that the
-pipeline is running for, user needs to have ability to push to this branch.**
+pipeline is running for, user needs to have ability to merge to this branch.**
 
 ### environment
 
@@ -909,6 +920,16 @@ job:
     untracked: true
 ```
 
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+job:
+  artifacts:
+    name: "$env:CI_JOB_STAGE_$env:CI_COMMIT_REF_NAME"
+    untracked: true
+```
+
 #### artifacts:when
 
 > Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
@@ -1103,6 +1124,36 @@ rely on files brought into the project workspace from cache or artifacts.
 ```yaml
 variables:
   GIT_STRATEGY: none
+```
+
+## Git Checkout
+
+> Introduced in GitLab Runner 9.3
+
+The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
+`clone` or `fetch` to specify whether a `git checkout` should be run. If not
+specified, it defaults to true. Like `GIT_STRATEGY`, it can be set in either the
+global [`variables`](#variables) section or the [`variables`](#job-variables)
+section for individual jobs.
+
+If set to `false`, the Runner will:
+
+- when doing `fetch` - update the repository and leave working copy on
+  the current revision,
+- when doing `clone` - clone the repository and leave working copy on the
+  default branch.
+
+Having this setting set to `true` will mean that for both `clone` and `fetch`
+strategies the Runner will checkout the working copy to a revision related
+to the CI pipeline:
+
+```yaml
+variables:
+  GIT_STRATEGY: clone
+  GIT_CHECKOUT: false
+script:
+  - git checkout master
+  - git merge $CI_BUILD_REF_NAME
 ```
 
 ## Git Submodule Strategy

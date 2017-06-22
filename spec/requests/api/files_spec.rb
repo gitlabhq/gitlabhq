@@ -13,7 +13,9 @@ describe API::Files do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   def route(file_path = nil)
     "/projects/#{project.id}/repository/files/#{file_path}"
@@ -203,8 +205,8 @@ describe API::Files do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:create_file).
-        and_raise(Repository::CommitError, 'Cannot create file')
+      allow_any_instance_of(Repository).to receive(:create_file)
+        .and_raise(Repository::CommitError, 'Cannot create file')
 
       post api(route("any%2Etxt"), user), valid_params
 
@@ -256,6 +258,25 @@ describe API::Files do
       last_commit = project.repository.commit.raw
       expect(last_commit.author_email).to eq(user.email)
       expect(last_commit.author_name).to eq(user.name)
+    end
+
+    it "returns a 400 bad request if update existing file with stale last commit id" do
+      params_with_stale_id = valid_params.merge(last_commit_id: 'stale')
+
+      put api(route(file_path), user), params_with_stale_id
+
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq('You are attempting to update a file that has changed since you started editing it.')
+    end
+
+    it "updates existing file in project repo with accepts correct last commit id" do
+      last_commit = Gitlab::Git::Commit
+                        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+      params_with_correct_id = valid_params.merge(last_commit_id: last_commit.id)
+
+      put api(route(file_path), user), params_with_correct_id
+
+      expect(response).to have_http_status(200)
     end
 
     it "returns a 400 bad request if no params given" do

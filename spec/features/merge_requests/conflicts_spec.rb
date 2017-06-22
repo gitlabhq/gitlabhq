@@ -79,20 +79,24 @@ feature 'Merge request conflict resolution', js: true, feature: true do
   context 'can be resolved in the UI' do
     before do
       project.team << [user, :developer]
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     context 'the conflicts are resolvable' do
       let(:merge_request) { create_merge_request('conflict-resolvable') }
 
-      before { visit namespace_project_merge_request_path(project.namespace, project, merge_request) }
+      before do
+        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      end
 
       it 'shows a link to the conflict resolution page' do
         expect(page).to have_link('conflicts', href: /\/conflicts\Z/)
       end
 
       context 'in Inline view mode' do
-        before { click_link('conflicts', href: /\/conflicts\Z/) }
+        before do
+          click_link('conflicts', href: /\/conflicts\Z/)
+        end
 
         include_examples "conflicts are resolved in Interactive mode"
         include_examples "conflicts are resolved in Edit inline mode"
@@ -100,7 +104,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       context 'in Parallel view mode' do
         before do
-          click_link('conflicts', href: /\/conflicts\Z/) 
+          click_link('conflicts', href: /\/conflicts\Z/)
           click_button 'Side-by-side'
         end
 
@@ -160,7 +164,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       before do
         project.team << [user, :developer]
-        login_as(user)
+        gitlab_sign_in(user)
 
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
       end

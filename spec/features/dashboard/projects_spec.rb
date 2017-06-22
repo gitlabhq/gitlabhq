@@ -3,15 +3,36 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Projects', feature: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: "awesome stuff") }
+  let(:project2) { create(:project, :public, name: 'Community project') }
 
   before do
     project.team << [user, :developer]
-    login_as user
+    gitlab_sign_in(user)
   end
 
   it 'shows the project the user in a member of in the list' do
     visit dashboard_projects_path
     expect(page).to have_content('awesome stuff')
+  end
+
+  it 'shows the last_activity_at attribute as the update date' do
+    now = Time.now
+    project.update_column(:last_activity_at, now)
+
+    visit dashboard_projects_path
+
+    expect(page).to have_xpath("//time[@datetime='#{now.getutc.iso8601}']")
+  end
+
+  context 'when on Starred projects tab' do
+    it 'shows only starred projects' do
+      user.toggle_star(project2)
+
+      visit(starred_dashboard_projects_path)
+
+      expect(page).not_to have_content(project.name)
+      expect(page).to have_content(project2.name)
+    end
   end
 
   describe "with a pipeline", redis: true do

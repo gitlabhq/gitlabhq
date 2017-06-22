@@ -334,10 +334,12 @@ describe "Internal Project Access", feature: true  do
   end
 
   describe "GET /:project_path/builds" do
-    subject { namespace_project_builds_path(project.namespace, project) }
+    subject { namespace_project_jobs_path(project.namespace, project) }
 
     context "when allowed for public and internal" do
-      before { project.update(public_builds: true) }
+      before do
+        project.update(public_builds: true)
+      end
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -351,7 +353,9 @@ describe "Internal Project Access", feature: true  do
     end
 
     context "when disallowed for public and internal" do
-      before { project.update(public_builds: false) }
+      before do
+        project.update(public_builds: false)
+      end
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -368,10 +372,12 @@ describe "Internal Project Access", feature: true  do
   describe "GET /:project_path/builds/:id" do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
-    subject { namespace_project_build_path(project.namespace, project, build.id) }
+    subject { namespace_project_job_path(project.namespace, project, build.id) }
 
     context "when allowed for public and internal" do
-      before { project.update(public_builds: true) }
+      before do
+        project.update(public_builds: true)
+      end
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -385,7 +391,9 @@ describe "Internal Project Access", feature: true  do
     end
 
     context "when disallowed for public and internal" do
-      before { project.update(public_builds: false) }
+      before do
+        project.update(public_builds: false)
+      end
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -402,7 +410,7 @@ describe "Internal Project Access", feature: true  do
   describe 'GET /:project_path/builds/:id/trace' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
-    subject { trace_namespace_project_build_path(project.namespace, project, build.id) }
+    subject { trace_namespace_project_job_path(project.namespace, project, build.id) }
 
     context 'when allowed for public and internal' do
       before do

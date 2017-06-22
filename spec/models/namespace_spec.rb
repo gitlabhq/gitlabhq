@@ -43,6 +43,12 @@ describe Namespace, models: true do
         end
       end
 
+      context "is case insensitive" do
+        let(:group) { build(:group, path: "System") }
+
+        it { expect(group).not_to be_valid }
+      end
+
       context 'top-level group' do
         let(:group) { build(:group, path: 'tree') }
 
@@ -178,8 +184,8 @@ describe Namespace, models: true do
       let(:parent) { create(:group, name: 'parent', path: 'parent') }
       let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
       let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child) }
-      let(:uploads_dir) { File.join(CarrierWave.root, 'uploads') }
-      let(:pages_dir) { TestEnv.pages_path }
+      let(:uploads_dir) { File.join(CarrierWave.root, FileUploader.base_dir) }
+      let(:pages_dir) { File.join(TestEnv.pages_path) }
 
       before do
         FileUtils.mkdir_p(File.join(uploads_dir, 'parent', 'child', 'the-project'))
@@ -287,21 +293,21 @@ describe Namespace, models: true do
     end
   end
 
-  describe '#ancestors' do
+  describe '#ancestors', :nested_groups do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
     let(:deep_nested_group) { create(:group, parent: nested_group) }
     let(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
 
     it 'returns the correct ancestors' do
-      expect(very_deep_nested_group.ancestors).to eq([group, nested_group, deep_nested_group])
-      expect(deep_nested_group.ancestors).to eq([group, nested_group])
-      expect(nested_group.ancestors).to eq([group])
+      expect(very_deep_nested_group.ancestors).to include(group, nested_group, deep_nested_group)
+      expect(deep_nested_group.ancestors).to include(group, nested_group)
+      expect(nested_group.ancestors).to include(group)
       expect(group.ancestors).to eq([])
     end
   end
 
-  describe '#descendants' do
+  describe '#descendants', :nested_groups do
     let!(:group) { create(:group, path: 'git_lab') }
     let!(:nested_group) { create(:group, parent: group) }
     let!(:deep_nested_group) { create(:group, parent: nested_group) }
@@ -311,16 +317,16 @@ describe Namespace, models: true do
 
     it 'returns the correct descendants' do
       expect(very_deep_nested_group.descendants.to_a).to eq([])
-      expect(deep_nested_group.descendants.to_a).to eq([very_deep_nested_group])
-      expect(nested_group.descendants.to_a).to eq([deep_nested_group, very_deep_nested_group])
-      expect(group.descendants.to_a).to eq([nested_group, deep_nested_group, very_deep_nested_group])
+      expect(deep_nested_group.descendants.to_a).to include(very_deep_nested_group)
+      expect(nested_group.descendants.to_a).to include(deep_nested_group, very_deep_nested_group)
+      expect(group.descendants.to_a).to include(nested_group, deep_nested_group, very_deep_nested_group)
     end
   end
 
   describe '#user_ids_for_project_authorizations' do
     it 'returns the user IDs for which to refresh authorizations' do
-      expect(namespace.user_ids_for_project_authorizations).
-        to eq([namespace.owner_id])
+      expect(namespace.user_ids_for_project_authorizations)
+        .to eq([namespace.owner_id])
     end
   end
 

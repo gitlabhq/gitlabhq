@@ -77,7 +77,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def destroy
     current_user.disable_two_factor!
 
-    redirect_to profile_account_path
+    redirect_to profile_account_path, status: 302
   end
 
   def skip

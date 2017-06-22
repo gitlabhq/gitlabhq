@@ -150,6 +150,14 @@ import '~/lib/utils/common_utils';
         const value = gl.utils.getParameterByName('fakeParameter');
         expect(value).toBe(null);
       });
+
+      it('should return valid paramentes if URL is provided', () => {
+        let value = gl.utils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
+        expect(value).toBe('bar');
+
+        value = gl.utils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
+        expect(value).toBe('canchu');
+      });
     });
 
     describe('gl.utils.normalizedHeaders', () => {
@@ -356,7 +364,7 @@ import '~/lib/utils/common_utils';
 
     describe('gl.utils.setCiStatusFavicon', () => {
       it('should set page favicon to CI status favicon based on provided status', () => {
-        const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1/status.json`;
+        const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
         const FAVICON_PATH = '//icon_status_success';
         const spySetFavicon = spyOn(gl.utils, 'setFavicon').and.stub();
         const spyResetFavicon = spyOn(gl.utils, 'resetFavicon').and.stub();

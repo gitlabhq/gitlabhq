@@ -12,7 +12,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
   before do
     project.team << [user, :master]
 
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   it 'shows empty state when no results found' do
@@ -89,7 +89,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       page.within('.add-issues-modal') do
         wait_for_requests
 
-        expect(page).to have_selector('.js-visual-token', text: user2.username)
+        expect(page).to have_selector('.js-visual-token', text: user2.name)
         expect(page).to have_selector('.card', count: 1)
       end
     end
@@ -125,7 +125,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       page.within('.add-issues-modal') do
         wait_for_requests
 
-        expect(page).to have_selector('.js-visual-token', text: user2.username)
+        expect(page).to have_selector('.js-visual-token', text: user2.name)
         expect(page).to have_selector('.card', count: 1)
       end
     end

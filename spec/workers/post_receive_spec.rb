@@ -32,7 +32,7 @@ describe PostReceive do
 
   context "with an absolute path as the project identifier" do
     it "searches the project by full path" do
-      expect(Project).to receive(:find_by_full_path).with(project.full_path).and_call_original
+      expect(Project).to receive(:find_by_full_path).with(project.full_path, follow_redirects: true).and_call_original
 
       described_class.new.perform(pwd(project), key_id, base64_changes)
     end
@@ -89,31 +89,30 @@ describe PostReceive do
       end
 
       context "does not create a Ci::Pipeline" do
-        before { stub_ci_pipeline_yaml_file(nil) }
+        before do
+          stub_ci_pipeline_yaml_file(nil)
+        end
 
         it { expect{ subject }.not_to change{ Ci::Pipeline.count } }
       end
     end
-  end
 
-  describe '#process_repository_update' do
-    let(:changes) {'123456 789012 refs/heads/tést'}
-    let(:fake_hook_data) do
-      { event_name: 'repository_update' }
-    end
+    context 'after project changes hooks' do
+      let(:changes) { '123456 789012 refs/heads/tést' }
+      let(:fake_hook_data) { Hash.new(event_name: 'repository_update') }
 
-    before do
-      allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
-      allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
-      # silence hooks so we can isolate
-      allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
-      allow(subject).to receive(:process_project_changes).and_return(true)
-    end
+      before do
+        allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
+        # silence hooks so we can isolate
+        allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
+        allow_any_instance_of(GitPushService).to receive(:execute).and_return(true)
+      end
 
-    it 'calls SystemHooksService' do
-      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(fake_hook_data, :repository_update_hooks).and_return(true)
+      it 'calls SystemHooksService' do
+        expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(fake_hook_data, :repository_update_hooks).and_return(true)
 
-      subject.perform(pwd(project), key_id, base64_changes)
+        described_class.new.perform(project_identifier, key_id, base64_changes)
+      end
     end
   end
 
@@ -124,9 +123,9 @@ describe PostReceive do
     end
 
     it "does not run if the author is not in the project" do
-      allow_any_instance_of(Gitlab::GitPostReceive).
-        to receive(:identify_using_ssh_key).
-        and_return(nil)
+      allow_any_instance_of(Gitlab::GitPostReceive)
+        .to receive(:identify_using_ssh_key)
+        .and_return(nil)
 
       expect(project).not_to receive(:execute_hooks)
 

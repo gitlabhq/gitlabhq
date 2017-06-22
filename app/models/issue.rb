@@ -9,6 +9,9 @@ class Issue < ActiveRecord::Base
   include Spammable
   include FasterCacheKeys
   include RelativePositioning
+  include IgnorableColumn
+
+  ignore_column :position
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -44,7 +47,7 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
-  scope :include_associations, -> { includes(:labels, project: :namespace) }
+  scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   after_save :expire_etag_cache
 
@@ -121,8 +124,8 @@ class Issue < ActiveRecord::Base
   end
 
   def self.order_by_position_and_priority
-    order_labels_priority.
-      reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
+    order_labels_priority
+      .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
   end
@@ -251,9 +254,9 @@ class Issue < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:subscribed] = subscribed?(options[:user], project) if options.has_key?(:user) && options[:user]
+      json[:subscribed] = subscribed?(options[:user], project) if options.key?(:user) && options[:user]
 
-      if options.has_key?(:labels)
+      if options.key?(:labels)
         json[:labels] = labels.as_json(
           project: project,
           only: [:id, :title, :description, :color, :priority],

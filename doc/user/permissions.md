@@ -89,6 +89,7 @@ group.
 | Create project in group |       |          |           | ✓      | ✓     |
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
+| Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 
 ## External Users
 
@@ -126,7 +127,7 @@ which visibility level you select on project settings.
 ## GitLab CI
 
 GitLab CI permissions rely on the role the user has in GitLab. There are four
-permission levels it total:
+permission levels in total:
 
 - admin
 - master

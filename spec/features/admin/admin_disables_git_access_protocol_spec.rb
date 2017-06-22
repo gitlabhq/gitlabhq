@@ -8,7 +8,7 @@ feature 'Admin disables Git access protocol', feature: true do
 
   background do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    login_as(admin)
+    gitlab_sign_in(admin)
   end
 
   context 'with HTTP disabled' do
@@ -32,7 +32,7 @@ feature 'Admin disables Git access protocol', feature: true do
     scenario 'shows only HTTP url' do
       visit_project
 
-      expect(page).to have_content("git clone #{project.http_url_to_repo(admin)}")
+      expect(page).to have_content("git clone #{project.http_url_to_repo}")
       expect(page).not_to have_selector('#clone-dropdown')
     end
   end

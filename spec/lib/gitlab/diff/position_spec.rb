@@ -381,6 +381,54 @@ describe Gitlab::Diff::Position, lib: true do
     end
   end
 
+  describe "position for a file in a straight comparison" do
+    let(:diff_refs) do
+      Gitlab::Diff::DiffRefs.new(
+        start_sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9', # feature
+        base_sha: '0b4bc9a49b562e85de7cc9e834518ea6828729b9',
+        head_sha: 'e63f41fe459e62e1228fcef60d7189127aeba95a' # master
+      )
+    end
+
+    subject do
+      described_class.new(
+        old_path: "files/ruby/feature.rb",
+        new_path: "files/ruby/feature.rb",
+        old_line: 3,
+        new_line: nil,
+        diff_refs: diff_refs
+      )
+    end
+
+    describe "#diff_file" do
+      it "returns the correct diff file" do
+        diff_file = subject.diff_file(project.repository)
+
+        expect(diff_file.deleted_file?).to be true
+        expect(diff_file.old_path).to eq(subject.old_path)
+        expect(diff_file.diff_refs).to eq(subject.diff_refs)
+      end
+    end
+
+    describe "#diff_line" do
+      it "returns the correct diff line" do
+        diff_line = subject.diff_line(project.repository)
+
+        expect(diff_line.removed?).to be true
+        expect(diff_line.old_line).to eq(subject.old_line)
+        expect(diff_line.text).to eq("-    puts 'bar'")
+      end
+    end
+
+    describe "#line_code" do
+      it "returns the correct line code" do
+        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, 0, subject.old_line)
+
+        expect(subject.line_code(project.repository)).to eq(line_code)
+      end
+    end
+  end
+
   describe "#to_json" do
     let(:hash) do
       {

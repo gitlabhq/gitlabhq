@@ -58,7 +58,7 @@
   }
 
   .emoji-block {
-    padding: 10px 0 4px;
+    padding: 10px 0;
   }
 }
 
@@ -204,7 +204,7 @@
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: 100%;
+    height: calc(100% - #{$header-height});
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
@@ -431,7 +431,7 @@
 }
 
 .detail-page-description {
-  padding: 16px 0 0;
+  padding: 16px 0;
 
   small {
     color: $gray-darkest;
@@ -441,7 +441,7 @@
 .edited-text {
   color: $gray-darkest;
   display: block;
-  margin: 0 0 16px;
+  margin: 16px 0 0;
 
   .author_link {
     color: $gray-darkest;

@@ -2,6 +2,7 @@ import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
 import { glEmojiTag } from '~/behaviors/gl_emoji';
 import glRegexp from '~/lib/utils/regexp';
+import AjaxCache from '~/lib/utils/ajax_cache';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
@@ -33,8 +34,9 @@ class GfmAutoComplete {
       const $input = $(input);
       $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
       // This triggers at.js again
-      // Needed for slash commands with suffixes (ex: /label ~)
+      // Needed for quick actions with suffixes (ex: /label ~)
       $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
+      $input.on('clear-commands-cache.atwho', () => this.clearCache());
     });
   }
 
@@ -46,8 +48,8 @@ class GfmAutoComplete {
     if (this.enableMap.mergeRequests) this.setupMergeRequests($input);
     if (this.enableMap.labels) this.setupLabels($input);
 
-    // We don't instantiate the slash commands autocomplete for note and issue/MR edit forms
-    $input.filter('[data-supports-slash-commands="true"]').atwho({
+    // We don't instantiate the quick actions autocomplete for note and issue/MR edit forms
+    $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
       alias: 'commands',
       searchKey: 'search',
@@ -375,11 +377,14 @@ class GfmAutoComplete {
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
       this.loadData($input, at, Object.keys(emojiMap).concat(Object.keys(emojiAliases)));
     } else {
-      $.getJSON(this.dataSources[GfmAutoComplete.atTypeMap[at]], (data) => {
-        this.loadData($input, at, data);
-      }).fail(() => { this.isLoadingData[at] = false; });
+      AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
+        .then((data) => {
+          this.loadData($input, at, data);
+        })
+        .catch(() => { this.isLoadingData[at] = false; });
     }
   }
+
   loadData($input, at, data) {
     this.isLoadingData[at] = false;
     this.cachedData[at] = data;
@@ -387,6 +392,10 @@ class GfmAutoComplete {
     // This trigger at.js again
     // otherwise we would be stuck with loading until the user types
     return $input.trigger('keyup');
+  }
+
+  clearCache() {
+    this.cachedData = {};
   }
 
   static isLoading(data) {

@@ -10,6 +10,10 @@ module API
         set_project unless defined?(@project)
         @project
       end
+      
+      def redirected_path
+        @redirected_path
+      end
 
       def ssh_authentication_abilities
         [
@@ -38,8 +42,25 @@ module API
       def set_project
         if params[:gl_repository]
           @project, @wiki = Gitlab::GlRepository.parse(params[:gl_repository])
+          @redirected_path = nil
         else
-          @project, @wiki = Gitlab::RepoPath.parse(params[:project])
+          @project, @wiki, @redirected_path = Gitlab::RepoPath.parse(params[:project])
+        end
+      end
+
+      # Project id to pass between components that don't share/don't have
+      # access to the same filesystem mounts
+      def gl_repository
+        Gitlab::GlRepository.gl_repository(project, wiki?)
+      end
+
+      # Return the repository full path so that gitlab-shell has it when
+      # handling ssh commands
+      def repository_path
+        if wiki?
+          project.wiki.repository.path_to_repo
+        else
+          project.repository.path_to_repo
         end
       end
     end

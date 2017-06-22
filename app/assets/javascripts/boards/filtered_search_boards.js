@@ -2,7 +2,7 @@
 import FilteredSearchContainer from '../filtered_search/container';
 
 export default class FilteredSearchBoards extends gl.FilteredSearchManager {
-  constructor(store, updateUrl = false) {
+  constructor(store, updateUrl = false, cantEdit = []) {
     super('boards');
 
     this.store = store;
@@ -11,6 +11,7 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
     // Issue boards is slightly different, we handle all the requests async
     // instead or reloading the page, we just re-fire the list ajax requests
     this.isHandledAsync = true;
+    this.cantEdit = cantEdit;
   }
 
   updateObject(path) {
@@ -39,5 +40,9 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
 
     // Get the placeholder back if search is empty
     this.filteredSearchInput.dispatchEvent(new Event('input'));
+  }
+
+  canEdit(tokenName) {
+    return this.cantEdit.indexOf(tokenName) === -1;
   }
 }

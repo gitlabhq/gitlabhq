@@ -7,7 +7,7 @@ describe 'Pipeline', :feature, :js do
   let(:user) { create(:user) }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
     project.team << [user, :developer]
   end
 
@@ -47,7 +47,9 @@ describe 'Pipeline', :feature, :js do
     let(:project) { create(:project) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
 
-    before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
+    before do
+      visit namespace_project_pipeline_path(project.namespace, project, pipeline)
+    end
 
     it 'shows the pipeline graph' do
       expect(page).to have_selector('.pipeline-visualization')
@@ -164,7 +166,9 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
-        before { find('.js-retry-button').trigger('click') }
+        before do
+          find('.js-retry-button').trigger('click')
+        end
 
         it { expect(page).not_to have_content('Retry') }
       end
@@ -174,7 +178,9 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_selector('.ci-canceled') }
 
       context 'when canceling' do
-        before { click_on 'Cancel running' }
+        before do
+          click_on 'Cancel running'
+        end
 
         it { expect(page).not_to have_content('Cancel running') }
       end
@@ -226,10 +232,11 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
-        before { find('.js-retry-button').trigger('click') }
+        before do
+          find('.js-retry-button').trigger('click')
+        end
 
         it { expect(page).not_to have_content('Retry') }
-        it { expect(page).to have_selector('.retried') }
       end
     end
 
@@ -237,10 +244,11 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_selector('.ci-canceled') }
 
       context 'when canceling' do
-        before { click_on 'Cancel running' }
+        before do
+          click_on 'Cancel running'
+        end
 
         it { expect(page).not_to have_content('Cancel running') }
-        it { expect(page).to have_selector('.ci-canceled') }
       end
     end
 

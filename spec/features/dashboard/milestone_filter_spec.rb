@@ -9,7 +9,7 @@ describe 'Dashboard > milestone filter', :feature, :js do
   let!(:issue2) { create :issue, author: user, project: project, milestone: milestone2 }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
     visit issues_dashboard_path(author_id: user.id)
   end
 

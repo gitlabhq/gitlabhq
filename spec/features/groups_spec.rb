@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Group', feature: true do
   before do
-    login_as(:admin)
+    gitlab_sign_in(:admin)
   end
 
   matcher :have_namespace_error_message do
@@ -12,7 +12,9 @@ feature 'Group', feature: true do
   end
 
   describe 'create a group' do
-    before { visit new_group_path }
+    before do
+      visit new_group_path
+    end
 
     describe 'with space in group path' do
       it 'renders new group form with validation errors' do
@@ -83,7 +85,7 @@ feature 'Group', feature: true do
     end
   end
 
-  describe 'create a nested group', js: true do
+  describe 'create a nested group', :nested_groups, js: true do
     let(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
@@ -106,8 +108,8 @@ feature 'Group', feature: true do
 
       before do
         group.add_owner(user)
-        logout
-        login_as(user)
+        gitlab_sign_out
+        gitlab_sign_in(user)
 
         visit subgroups_group_path(group)
         click_link 'New Subgroup'
@@ -126,8 +128,8 @@ feature 'Group', feature: true do
   it 'checks permissions to avoid exposing groups by parent_id' do
     group = create(:group, :private, path: 'secret-group')
 
-    logout
-    login_as(:user)
+    gitlab_sign_out
+    gitlab_sign_in(:user)
     visit new_group_path(parent_id: group.id)
 
     expect(page).not_to have_content('secret-group')
@@ -138,7 +140,9 @@ feature 'Group', feature: true do
     let(:path)  { edit_group_path(group) }
     let(:new_name) { 'new-name' }
 
-    before { visit path }
+    before do
+      visit path
+    end
 
     it 'saves new settings' do
       fill_in 'group_name', with: new_name
@@ -196,7 +200,7 @@ feature 'Group', feature: true do
     end
   end
 
-  describe 'group page with nested groups', js: true do
+  describe 'group page with nested groups', :nested_groups, js: true do
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
     let!(:path)  { group_path(group) }

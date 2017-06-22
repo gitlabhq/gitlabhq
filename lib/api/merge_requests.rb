@@ -72,6 +72,8 @@ module API
         optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
         optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
         use :pagination
       end
       get ":id/merge_requests" do
@@ -97,7 +99,7 @@ module API
         authorize! :create_merge_request, user_project
 
         mr_params = declared_params(include_missing: false)
-        mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
+        mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch)
 
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 

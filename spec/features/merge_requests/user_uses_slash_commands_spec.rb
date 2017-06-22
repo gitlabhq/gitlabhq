@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-feature 'Merge Requests > User uses slash commands', feature: true, js: true do
-  include SlashCommandsHelpers
+feature 'Merge Requests > User uses quick actions', feature: true, js: true do
+  include QuickActionsHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
 
-  it_behaves_like 'issuable record that supports slash commands in its description and notes', :merge_request do
+  it_behaves_like 'issuable record that supports quick actions in its description and notes', :merge_request do
     let(:issuable) { create(:merge_request, source_project: project) }
     let(:new_url_opts) { { merge_request: { source_branch: 'feature', target_branch: 'master' } } }
   end
@@ -16,7 +16,7 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
   describe 'merge-request-only commands' do
     before do
       project.team << [user, :master]
-      login_with(user)
+      gitlab_sign_in(user)
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
@@ -51,8 +51,8 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit namespace_project_merge_request_path(project.namespace, project, merge_request)
         end
 
@@ -97,8 +97,8 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit namespace_project_merge_request_path(project.namespace, project, merge_request)
         end
 
@@ -125,9 +125,9 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
       let(:new_url_opts) { { merge_request: { source_branch: 'feature' } } }
 
       before do
-        logout
+        gitlab_sign_out
         another_project.team << [user, :master]
-        login_with(user)
+        gitlab_sign_in(user)
       end
 
       it 'changes target_branch in new merge_request' do
@@ -181,8 +181,8 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit namespace_project_merge_request_path(project.namespace, project, merge_request)
         end
 

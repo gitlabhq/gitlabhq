@@ -34,8 +34,8 @@ module API
                 # paginate() only works with a relation. This could lead to a
                 # mismatch between the pagination headers info and the actual notes
                 # array returned, but this is really a edge-case.
-                paginate(noteable.notes).
-                reject { |n| n.cross_reference_not_visible_for?(current_user) }
+                paginate(noteable.notes)
+                .reject { |n| n.cross_reference_not_visible_for?(current_user) }
               present notes, with: ::API::V3::Entities::Note
             else
               not_found!("Notes")

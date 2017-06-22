@@ -13,13 +13,13 @@ class ApplicationSetting < ActiveRecord::Base
                             [\r\n]          # any number of newline characters
                           }x
 
-  serialize :restricted_visibility_levels
-  serialize :import_sources
-  serialize :disabled_oauth_sign_in_sources, Array
-  serialize :domain_whitelist, Array
-  serialize :domain_blacklist, Array
-  serialize :repository_storages
-  serialize :sidekiq_throttling_queues, Array
+  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiverecordSerialize
+  serialize :import_sources # rubocop:disable Cop/ActiverecordSerialize
+  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :repository_storages # rubocop:disable Cop/ActiverecordSerialize
+  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiverecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -37,7 +37,12 @@ class ApplicationSetting < ActiveRecord::Base
   validates :home_page_url,
             allow_blank: true,
             url: true,
-            if: :home_page_url_column_exist
+            if: :home_page_url_column_exists?
+
+  validates :help_page_support_url,
+            allow_blank: true,
+            url: true,
+            if: :help_page_support_url_column_exists?
 
   validates :after_sign_out_path,
             allow_blank: true,
@@ -143,7 +148,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
-      unless Gitlab::VisibilityLevel.options.has_value?(level)
+      unless Gitlab::VisibilityLevel.options.value?(level)
         record.errors.add(attr, "'#{level}' is not a valid visibility level")
       end
     end
@@ -151,7 +156,7 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates_each :import_sources do |record, attr, value|
     value&.each do |source|
-      unless Gitlab::ImportSources.options.has_value?(source)
+      unless Gitlab::ImportSources.options.value?(source)
         record.errors.add(attr, "'#{source}' is not a import source")
       end
     end
@@ -189,8 +194,9 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.cached
-    ensure_cache_setup
-    Rails.cache.fetch(CACHE_KEY)
+    value = Rails.cache.read(CACHE_KEY)
+    ensure_cache_setup if value.present?
+    value
   end
 
   def self.ensure_cache_setup
@@ -199,7 +205,7 @@ class ApplicationSetting < ActiveRecord::Base
     ApplicationSetting.define_attribute_methods
   end
 
-  def self.defaults_ce
+  def self.defaults
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
@@ -214,6 +220,7 @@ class ApplicationSetting < ActiveRecord::Base
       domain_whitelist: Settings.gitlab['domain_whitelist'],
       gravatar_enabled: Settings.gravatar['enabled'],
       help_page_text: nil,
+      help_page_hide_commercial_content: false,
       unique_ips_limit_per_user: 10,
       unique_ips_limit_time_window: 3600,
       unique_ips_limit_enabled: false,
@@ -250,10 +257,6 @@ class ApplicationSetting < ActiveRecord::Base
     }
   end
 
-  def self.defaults
-    defaults_ce
-  end
-
   def self.create_from_defaults
     create(defaults)
   end
@@ -266,8 +269,12 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
-  def home_page_url_column_exist
+  def home_page_url_column_exists?
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
+  end
+
+  def help_page_support_url_column_exists?
+    ActiveRecord::Base.connection.column_exists?(:application_settings, :help_page_support_url)
   end
 
   def sidekiq_throttling_column_exists?

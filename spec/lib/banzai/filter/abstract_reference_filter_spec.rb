@@ -23,11 +23,11 @@ describe Banzai::Filter::AbstractReferenceFilter do
       doc = Nokogiri::HTML.fragment('')
       filter = described_class.new(doc, project: project)
 
-      expect(filter).to receive(:references_per_project).
-        and_return({ project.path_with_namespace => Set.new(%w[1]) })
+      expect(filter).to receive(:references_per_project)
+        .and_return({ project.path_with_namespace => Set.new(%w[1]) })
 
-      expect(filter.projects_per_reference).
-        to eq({ project.path_with_namespace => project })
+      expect(filter.projects_per_reference)
+        .to eq({ project.path_with_namespace => project })
     end
   end
 
@@ -37,35 +37,26 @@ describe Banzai::Filter::AbstractReferenceFilter do
 
     context 'with RequestStore disabled' do
       it 'returns a list of Projects for a list of paths' do
-        expect(filter.find_projects_for_paths([project.path_with_namespace])).
-          to eq([project])
+        expect(filter.find_projects_for_paths([project.path_with_namespace]))
+          .to eq([project])
       end
 
       it "return an empty array for paths that don't exist" do
-        expect(filter.find_projects_for_paths(['nonexistent/project'])).
-          to eq([])
+        expect(filter.find_projects_for_paths(['nonexistent/project']))
+          .to eq([])
       end
     end
 
-    context 'with RequestStore enabled' do
-      before do
-        RequestStore.begin!
-      end
-
-      after do
-        RequestStore.end!
-        RequestStore.clear!
-      end
-
+    context 'with RequestStore enabled', :request_store do
       it 'returns a list of Projects for a list of paths' do
-        expect(filter.find_projects_for_paths([project.path_with_namespace])).
-          to eq([project])
+        expect(filter.find_projects_for_paths([project.path_with_namespace]))
+          .to eq([project])
       end
 
       context "when no project with that path exists" do
         it "returns no value" do
-          expect(filter.find_projects_for_paths(['nonexistent/project'])).
-            to eq([])
+          expect(filter.find_projects_for_paths(['nonexistent/project']))
+            .to eq([])
         end
 
         it "adds the ref to the project refs cache" do
@@ -84,8 +75,8 @@ describe Banzai::Filter::AbstractReferenceFilter do
           end
 
           it "return an empty array for paths that don't exist" do
-            expect(filter.find_projects_for_paths(['nonexistent/project'])).
-              to eq([])
+            expect(filter.find_projects_for_paths(['nonexistent/project']))
+              .to eq([])
           end
         end
       end

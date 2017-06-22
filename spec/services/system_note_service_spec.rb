@@ -333,8 +333,8 @@ describe SystemNoteService, services: true do
       end
 
       it 'sets the note text' do
-        expect(subject.note).
-          to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
+        expect(subject.note)
+          .to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
       end
     end
   end
@@ -521,8 +521,8 @@ describe SystemNoteService, services: true do
     context 'when mentioner is not a MergeRequest' do
       it 'is falsey' do
         mentioner = noteable.dup
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_falsey
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_falsey
       end
     end
 
@@ -533,14 +533,14 @@ describe SystemNoteService, services: true do
 
       it 'is truthy when noteable is in commits' do
         expect(mentioner).to receive(:commits).and_return([noteable])
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_truthy
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_truthy
       end
 
       it 'is falsey when noteable is not in commits' do
         expect(mentioner).to receive(:commits).and_return([])
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_falsey
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_falsey
       end
     end
 
@@ -548,8 +548,8 @@ describe SystemNoteService, services: true do
       let(:noteable) { ExternalIssue.new('EXT-1234', project) }
       it 'is truthy' do
         mentioner = noteable.dup
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_truthy
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_truthy
       end
     end
   end
@@ -566,13 +566,13 @@ describe SystemNoteService, services: true do
       end
 
       it 'is truthy when already mentioned' do
-        expect(described_class.cross_reference_exists?(noteable, commit0)).
-          to be_truthy
+        expect(described_class.cross_reference_exists?(noteable, commit0))
+          .to be_truthy
       end
 
       it 'is falsey when not already mentioned' do
-        expect(described_class.cross_reference_exists?(noteable, commit1)).
-          to be_falsey
+        expect(described_class.cross_reference_exists?(noteable, commit1))
+          .to be_falsey
       end
 
       context 'legacy capitalized cross reference' do
@@ -583,8 +583,8 @@ describe SystemNoteService, services: true do
         end
 
         it 'is truthy when already mentioned' do
-          expect(described_class.cross_reference_exists?(noteable, commit0)).
-            to be_truthy
+          expect(described_class.cross_reference_exists?(noteable, commit0))
+            .to be_truthy
         end
       end
     end
@@ -596,13 +596,13 @@ describe SystemNoteService, services: true do
       end
 
       it 'is truthy when already mentioned' do
-        expect(described_class.cross_reference_exists?(commit0, commit1)).
-          to be_truthy
+        expect(described_class.cross_reference_exists?(commit0, commit1))
+          .to be_truthy
       end
 
       it 'is falsey when not already mentioned' do
-        expect(described_class.cross_reference_exists?(commit1, commit0)).
-          to be_falsey
+        expect(described_class.cross_reference_exists?(commit1, commit0))
+          .to be_falsey
       end
 
       context 'legacy capitalized cross reference' do
@@ -613,8 +613,8 @@ describe SystemNoteService, services: true do
         end
 
         it 'is truthy when already mentioned' do
-          expect(described_class.cross_reference_exists?(commit0, commit1)).
-            to be_truthy
+          expect(described_class.cross_reference_exists?(commit0, commit1))
+            .to be_truthy
         end
       end
     end
@@ -629,8 +629,8 @@ describe SystemNoteService, services: true do
       end
 
       it 'is true when a fork mentions an external issue' do
-        expect(described_class.cross_reference_exists?(noteable, commit2)).
-            to be true
+        expect(described_class.cross_reference_exists?(noteable, commit2))
+            .to be true
       end
 
       context 'legacy capitalized cross reference' do
@@ -640,8 +640,8 @@ describe SystemNoteService, services: true do
         end
 
         it 'is true when a fork mentions an external issue' do
-          expect(described_class.cross_reference_exists?(noteable, commit2)).
-              to be true
+          expect(described_class.cross_reference_exists?(noteable, commit2))
+              .to be true
         end
       end
     end
@@ -733,6 +733,26 @@ describe SystemNoteService, services: true do
       jira_service_settings
     end
 
+    def cross_reference(type, link_exists = false)
+      noteable = type == 'commit' ? commit : merge_request
+
+      links = []
+      if link_exists
+        url = if type == 'commit'
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/commit/#{commit.id}"
+              else
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/merge_requests/#{merge_request.iid}"
+              end
+        link = double(object: { 'url' => url })
+        links << link
+        expect(link).to receive(:save!)
+      end
+
+      allow(JIRA::Resource::Remotelink).to receive(:all).and_return(links)
+
+      described_class.cross_reference(jira_issue, noteable, author)
+    end
+
     noteable_types = %w(merge_requests commit)
 
     noteable_types.each do |type|
@@ -740,24 +760,39 @@ describe SystemNoteService, services: true do
         it "blocks cross reference when #{type.underscore}_events is false" do
           jira_tracker.update("#{type}_events" => false)
 
-          noteable = type == "commit" ? commit : merge_request
-          result = described_class.cross_reference(jira_issue, noteable, author)
-
-          expect(result).to eq("Events for #{noteable.class.to_s.underscore.humanize.pluralize.downcase} are disabled.")
+          expect(cross_reference(type)).to eq("Events for #{type.pluralize.humanize.downcase} are disabled.")
         end
 
         it "blocks cross reference when #{type.underscore}_events is true" do
           jira_tracker.update("#{type}_events" => true)
 
-          noteable = type == "commit" ? commit : merge_request
-          result = described_class.cross_reference(jira_issue, noteable, author)
+          expect(cross_reference(type)).to eq(success_message)
+        end
+      end
 
-          expect(result).to eq(success_message)
+      context 'when a new cross reference is created' do
+        it 'creates a new comment and remote link' do
+          cross_reference(type)
+
+          expect(WebMock).to have_requested(:post, jira_api_comment_url(jira_issue))
+          expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue))
+        end
+      end
+
+      context 'when a link exists' do
+        it 'updates a link but does not create a new comment' do
+          expect(WebMock).not_to have_requested(:post, jira_api_comment_url(jira_issue))
+
+          cross_reference(type, true)
         end
       end
     end
 
     describe "new reference" do
+      before do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
+      end
+
       context 'for commits' do
         it "creates comment" do
           result = described_class.cross_reference(jira_issue, commit, author)
@@ -837,6 +872,7 @@ describe SystemNoteService, services: true do
 
     describe "existing reference" do
       before do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
         message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
       end
@@ -1016,7 +1052,7 @@ describe SystemNoteService, services: true do
       let(:action) { 'task' }
     end
 
-    it "posts the 'marked as a Work In Progress from commit' system note" do
+    it "posts the 'marked the task as complete' system note" do
       expect(subject.note).to eq("marked the task **task** as completed")
     end
   end

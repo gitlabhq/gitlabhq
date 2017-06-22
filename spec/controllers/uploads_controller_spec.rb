@@ -92,6 +92,40 @@ describe UploadsController do
           end
         end
       end
+
+      context 'temporal with valid image' do
+        subject do
+          post :create, model: 'personal_snippet', file: jpg, format: :json
+        end
+
+        it 'returns a content with original filename, new link, and correct type.' do
+          subject
+
+          expect(response.body).to match '\"alt\":\"rails_sample\"'
+          expect(response.body).to match "\"url\":\"/uploads/temp"
+        end
+
+        it 'does not create an Upload record' do
+          expect { subject }.not_to change { Upload.count }
+        end
+      end
+
+      context 'temporal with valid non-image file' do
+        subject do
+          post :create, model: 'personal_snippet', file: txt, format: :json
+        end
+
+        it 'returns a content with original filename, new link, and correct type.' do
+          subject
+
+          expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
+          expect(response.body).to match "\"url\":\"/uploads/temp"
+        end
+
+        it 'does not create an Upload record' do
+          expect { subject }.not_to change { Upload.count }
+        end
+      end
     end
   end
 

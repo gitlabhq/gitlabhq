@@ -1,3 +1,4 @@
+# rubocop:disable Migration/UpdateColumnInBatches
 class AddTypeToLabels < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

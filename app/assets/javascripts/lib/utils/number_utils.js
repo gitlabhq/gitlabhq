@@ -42,3 +42,13 @@ export function formatRelevantDigits(number) {
 export function bytesToKiB(number) {
   return number / BYTES_IN_KIB;
 }
+
+/**
+ * Utility function that calculates MiB of the given bytes.
+ *
+ * @param  {Number} number bytes
+ * @return {Number}        MiB
+ */
+export function bytesToMiB(number) {
+  return number / (BYTES_IN_KIB * BYTES_IN_KIB);
+}

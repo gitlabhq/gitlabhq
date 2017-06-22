@@ -26,13 +26,15 @@ module Gitlab
         }
 
         if Gitlab.config.gitaly.enabled
-          address = Gitlab::GitalyClient.address(project.repository_storage)
+          server = {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          }
           params[:Repository] = repository.gitaly_repository.to_h
 
           feature_enabled = case action.to_s
                             when 'git_receive_pack'
-                              # Disabled for now, see https://gitlab.com/gitlab-org/gitaly/issues/172
-                              false
+                              Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
                             when 'git_upload_pack'
                               Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
                             when 'info_refs'
@@ -40,8 +42,10 @@ module Gitlab
                             else
                               raise "Unsupported action: #{action}"
                             end
-
-          params[:GitalyAddress] = address if feature_enabled
+          if feature_enabled
+            params[:GitalyAddress] = server[:address] # This field will be deprecated
+            params[:GitalyServer] = server
+          end
         end
 
         params
@@ -130,7 +134,7 @@ module Gitlab
             'MaxSessionTime' => terminal[:max_session_time]
           }
         }
-        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.key?(:ca_pem)
 
         details
       end

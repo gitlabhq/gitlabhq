@@ -4,7 +4,9 @@ feature 'Projected Tags', feature: true, js: true do
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 
-  before { login_as(user) }
+  before do
+    gitlab_sign_in(user)
+  end
 
   def set_protected_tag_name(tag_name)
     find(".js-protected-tag-select").click

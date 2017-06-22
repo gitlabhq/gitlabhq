@@ -13,7 +13,7 @@ module NavHelper
       else
         "page-gutter right-sidebar-expanded"
       end
-    elsif current_path?('builds#show')
+    elsif current_path?('jobs#show')
       "page-gutter build-sidebar right-sidebar-expanded"
     elsif current_path?('wikis#show') ||
         current_path?('wikis#edit') ||
@@ -27,6 +27,7 @@ module NavHelper
   def nav_header_class
     class_name = ''
     class_name << " with-horizontal-nav" if defined?(nav) && nav
+    class_name << " with-peek" if peek_enabled?
 
     class_name
   end

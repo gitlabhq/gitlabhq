@@ -50,7 +50,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
     it { is_expected.to have_one(:project_feature).dependent(:destroy) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics').dependent(:delete) }
-    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:destroy) }
+    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:delete) }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
@@ -812,7 +812,7 @@ describe Project, models: true do
 
     context 'when avatar file is uploaded' do
       let(:project) { create(:empty_project, :with_avatar) }
-      let(:avatar_path) { "/uploads/project/avatar/#{project.id}/dk.png" }
+      let(:avatar_path) { "/uploads/system/project/avatar/#{project.id}/dk.png" }
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
       it 'shows correct url' do
@@ -948,6 +948,20 @@ describe Project, models: true do
     end
   end
 
+  describe '.starred_by' do
+    it 'returns only projects starred by the given user' do
+      user1 = create(:user)
+      user2 = create(:user)
+      project1 = create(:empty_project)
+      project2 = create(:empty_project)
+      create(:empty_project)
+      user1.toggle_star(project1)
+      user2.toggle_star(project2)
+
+      expect(Project.starred_by(user1)).to contain_exactly(project1)
+    end
+  end
+
   describe '.visible_to_user' do
     let!(:project) { create(:empty_project, :private) }
     let!(:user)    { create(:user) }
@@ -991,13 +1005,17 @@ describe Project, models: true do
     subject { project.shared_runners_enabled }
 
     context 'are enabled' do
-      before { stub_application_setting(shared_runners_enabled: true) }
+      before do
+        stub_application_setting(shared_runners_enabled: true)
+      end
 
       it { is_expected.to be_truthy }
     end
 
     context 'are disabled' do
-      before { stub_application_setting(shared_runners_enabled: false) }
+      before do
+        stub_application_setting(shared_runners_enabled: false)
+      end
 
       it { is_expected.to be_falsey }
     end
@@ -1093,7 +1111,9 @@ describe Project, models: true do
     subject { project.pages_deployed? }
 
     context 'if public folder does exist' do
-      before { allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true) }
+      before do
+        allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true)
+      end
 
       it { is_expected.to be_truthy }
     end
@@ -1175,23 +1195,23 @@ describe Project, models: true do
     it 'renames a repository' do
       stub_container_registry_config(enabled: false)
 
-      expect(gitlab_shell).to receive(:mv_repository).
-        ordered.
-        with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}").
-        and_return(true)
+      expect(gitlab_shell).to receive(:mv_repository)
+        .ordered
+        .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+        .and_return(true)
 
-      expect(gitlab_shell).to receive(:mv_repository).
-        ordered.
-        with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki").
-        and_return(true)
+      expect(gitlab_shell).to receive(:mv_repository)
+        .ordered
+        .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+        .and_return(true)
 
-      expect_any_instance_of(SystemHooksService).
-        to receive(:execute_hooks_for).
-        with(project, :rename)
+      expect_any_instance_of(SystemHooksService)
+        .to receive(:execute_hooks_for)
+        .with(project, :rename)
 
-      expect_any_instance_of(Gitlab::UploadsTransfer).
-        to receive(:rename_project).
-        with('foo', project.path, project.namespace.full_path)
+      expect_any_instance_of(Gitlab::UploadsTransfer)
+        .to receive(:rename_project)
+        .with('foo', project.path, project.namespace.full_path)
 
       expect(project).to receive(:expire_caches_before_rename)
 
@@ -1219,13 +1239,13 @@ describe Project, models: true do
     let(:wiki)    { double(:wiki, exists?: true) }
 
     it 'expires the caches of the repository and wiki' do
-      allow(Repository).to receive(:new).
-        with('foo', project).
-        and_return(repo)
+      allow(Repository).to receive(:new)
+        .with('foo', project)
+        .and_return(repo)
 
-      allow(Repository).to receive(:new).
-        with('foo.wiki', project).
-        and_return(wiki)
+      allow(Repository).to receive(:new)
+        .with('foo.wiki', project)
+        .and_return(wiki)
 
       expect(repo).to receive(:before_delete)
       expect(wiki).to receive(:before_delete)
@@ -1276,9 +1296,9 @@ describe Project, models: true do
 
     context 'using a regular repository' do
       it 'creates the repository' do
-        expect(shell).to receive(:add_repository).
-          with(project.repository_storage_path, project.path_with_namespace).
-          and_return(true)
+        expect(shell).to receive(:add_repository)
+          .with(project.repository_storage_path, project.path_with_namespace)
+          .and_return(true)
 
         expect(project.repository).to receive(:after_create)
 
@@ -1286,9 +1306,9 @@ describe Project, models: true do
       end
 
       it 'adds an error if the repository could not be created' do
-        expect(shell).to receive(:add_repository).
-          with(project.repository_storage_path, project.path_with_namespace).
-          and_return(false)
+        expect(shell).to receive(:add_repository)
+          .with(project.repository_storage_path, project.path_with_namespace)
+          .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
 
@@ -1351,7 +1371,9 @@ describe Project, models: true do
 
     subject { project.container_registry_url }
 
-    before { stub_container_registry_config(**registry_settings) }
+    before do
+      stub_container_registry_config(**registry_settings)
+    end
 
     context 'for enabled registry' do
       let(:registry_settings) do
@@ -1375,7 +1397,9 @@ describe Project, models: true do
     let(:project) { create(:empty_project) }
 
     context 'when container registry is enabled' do
-      before { stub_container_registry_config(enabled: true) }
+      before do
+        stub_container_registry_config(enabled: true)
+      end
 
       context 'when tags are present for multi-level registries' do
         before do
@@ -1413,7 +1437,9 @@ describe Project, models: true do
     end
 
     context 'when container registry is disabled' do
-      before { stub_container_registry_config(enabled: false) }
+      before do
+        stub_container_registry_config(enabled: false)
+      end
 
       it 'should not have image tags' do
         expect(project).not_to have_container_registry_tags
@@ -1428,6 +1454,27 @@ describe Project, models: true do
         expect(project).to receive(:container_repositories)
         expect(project).not_to have_container_registry_tags
       end
+    end
+  end
+
+  describe 'Project import job' do
+    let(:project) { create(:empty_project, import_url: generate(:url)) }
+
+    before do
+      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
+        .with(project.repository_storage_path, project.path_with_namespace, project.import_url)
+        .and_return(true)
+
+      expect_any_instance_of(Repository).to receive(:after_import)
+        .and_call_original
+    end
+
+    it 'imports a project' do
+      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
+
+      project.import_schedule
+
+      expect(project.reload.import_status).to eq('finished')
     end
   end
 
@@ -1512,13 +1559,13 @@ describe Project, models: true do
 
   describe '#add_import_job' do
     context 'forked' do
-      let(:forked_project_link) { create(:forked_project_link) }
+      let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
       let(:forked_from_project) { forked_project_link.forked_from_project }
       let(:project) { forked_project_link.forked_to_project }
 
       it 'schedules a RepositoryForkWorker job' do
-        expect(RepositoryForkWorker).to receive(:perform_async).
-          with(project.id, forked_from_project.repository_storage_path,
+        expect(RepositoryForkWorker).to receive(:perform_async)
+          .with(project.id, forked_from_project.repository_storage_path,
               forked_from_project.path_with_namespace, project.namespace.full_path)
 
         project.add_import_job
@@ -1526,9 +1573,9 @@ describe Project, models: true do
     end
 
     context 'not forked' do
-      let(:project) { create(:empty_project) }
-
       it 'schedules a RepositoryImportWorker job' do
+        project = create(:empty_project, import_url: generate(:url))
+
         expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
 
         project.add_import_job
@@ -1710,6 +1757,90 @@ describe Project, models: true do
     end
   end
 
+  describe '#secret_variables_for' do
+    let(:project) { create(:empty_project) }
+
+    let!(:secret_variable) do
+      create(:ci_variable, value: 'secret', project: project)
+    end
+
+    let!(:protected_variable) do
+      create(:ci_variable, :protected, value: 'protected', project: project)
+    end
+
+    subject { project.secret_variables_for('ref') }
+
+    shared_examples 'ref is protected' do
+      it 'contains all the variables' do
+        is_expected.to contain_exactly(secret_variable, protected_variable)
+      end
+    end
+
+    context 'when the ref is not protected' do
+      before do
+        stub_application_setting(
+          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+      end
+
+      it 'contains only the secret variables' do
+        is_expected.to contain_exactly(secret_variable)
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        create(:protected_branch, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+
+    context 'when the ref is a protected tag' do
+      before do
+        create(:protected_tag, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+  end
+
+  describe '#protected_for?' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.protected_for?('ref') }
+
+    context 'when the ref is not protected' do
+      before do
+        stub_application_setting(
+          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        create(:protected_branch, name: 'ref', project: project)
+      end
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when the ref is a protected tag' do
+      before do
+        create(:protected_tag, name: 'ref', project: project)
+      end
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+  end
+
   describe '#update_project_statistics' do
     let(:project) { create(:empty_project) }
 
@@ -1826,7 +1957,9 @@ describe Project, models: true do
   describe '#parent_changed?' do
     let(:project) { create(:empty_project) }
 
-    before { project.namespace_id = 7 }
+    before do
+      project.namespace_id = 7
+    end
 
     it { expect(project.parent_changed?).to be_truthy }
   end
@@ -1884,19 +2017,9 @@ describe Project, models: true do
   describe '#http_url_to_repo' do
     let(:project) { create :empty_project }
 
-    context 'when no user is given' do
-      it 'returns the url to the repo without a username' do
-        expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
-        expect(project.http_url_to_repo).not_to include('@')
-      end
-    end
-
-    context 'when user is given' do
-      it 'returns the url to the repo with the username' do
-        user = build_stubbed(:user)
-
-        expect(project.http_url_to_repo(user)).to start_with("http://#{user.username}@")
-      end
+    it 'returns the url to the repo without a username' do
+      expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
+      expect(project.http_url_to_repo).not_to include('@')
     end
   end
 
@@ -1918,15 +2041,15 @@ describe Project, models: true do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
                       ' Validate fork Source project is not a fork of the target project'
 
-      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }.
-        to raise_error(ActiveRecord::RecordNotSaved, error_message)
+      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
+        .to raise_error(ActiveRecord::RecordNotSaved, error_message)
     end
 
     it 'updates the project succesfully' do
       merge_request = create(:merge_request, target_project: project, source_project: project)
 
-      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }.
-        not_to raise_error
+      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
+        .not_to raise_error
     end
   end
 
@@ -1935,6 +2058,38 @@ describe Project, models: true do
       project = create(:empty_project, created_at: 2.hours.ago)
 
       expect(project.last_repository_updated_at.to_i).to eq(project.created_at.to_i)
+    end
+  end
+
+  describe '.public_or_visible_to_user' do
+    let!(:user) { create(:user) }
+
+    let!(:private_project) do
+      create(:empty_project, :private, creator: user, namespace: user.namespace)
+    end
+
+    let!(:public_project) { create(:empty_project, :public) }
+
+    context 'with a user' do
+      let(:projects) do
+        Project.all.public_or_visible_to_user(user)
+      end
+
+      it 'includes projects the user has access to' do
+        expect(projects).to include(private_project)
+      end
+
+      it 'includes projects the user can see' do
+        expect(projects).to include(public_project)
+      end
+    end
+
+    context 'without a user' do
+      it 'only includes public projects' do
+        projects = Project.all.public_or_visible_to_user
+
+        expect(projects).to eq([public_project])
+      end
     end
   end
 end

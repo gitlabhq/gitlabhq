@@ -29,6 +29,20 @@
     & > .form-group {
       padding-left: 0;
     }
+
+    select option[disabled] {
+      display: none;
+    }
+  }
+
+  select {
+    background: transparent;
+    transition: background 2s ease-out;
+
+    &.highlight-changes {
+      background: $highlight-changes-color;
+      transition: none;
+    }
   }
 
   .help-block {
@@ -247,7 +261,6 @@
       font-size: 13px;
       font-weight: 600;
       line-height: 13px;
-      padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
       padding: 6px 14px;
       text-align: center;
@@ -676,14 +689,16 @@ pre.light-well {
   }
 }
 
-.new_protected_branch {
+.new_protected_branch,
+.new-protected-tag {
   label {
     margin-top: 6px;
     font-weight: normal;
   }
 }
 
-.create-new-protected-branch-button {
+.create-new-protected-branch-button,
+.create-new-protected-tag-button {
   @include dropdown-link;
 
   width: 100%;
@@ -754,8 +769,7 @@ pre.light-well {
 }
 
 .project-refs-form .dropdown-menu,
-.dropdown-menu-projects,
-.dropdown-menu-branches {
+.dropdown-menu-projects {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {

@@ -6,7 +6,7 @@ describe "Admin::Projects", feature: true  do
   let(:user) { create :user }
   let!(:project) { create(:project) }
   let!(:current_user) do
-    login_as :admin
+    gitlab_sign_in :admin
   end
 
   describe "GET /admin/projects" do
@@ -57,8 +57,8 @@ describe "Admin::Projects", feature: true  do
     before do
       create(:group, name: 'Web')
 
-      allow_any_instance_of(Projects::TransferService).
-        to receive(:move_uploads_to_new_namespace).and_return(true)
+      allow_any_instance_of(Projects::TransferService)
+        .to receive(:move_uploads_to_new_namespace).and_return(true)
     end
 
     it 'transfers project to group web', js: true do
