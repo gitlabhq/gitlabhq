@@ -236,7 +236,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        if Emails::CreateService.new(current_user, user, declared_params(include_missing: false)).execute(skip_authorization: true)
+        email = Emails::CreateService.new(current_user, user, declared_params(include_missing: false)).execute
+
+        if email.errors.blank?
           NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
@@ -274,7 +276,7 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        Emails::DestroyService.new(current_user, user, email: email.email).execute(skip_authorization: true)
+        Emails::DestroyService.new(current_user, user, email: email.email).execute
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -486,9 +488,9 @@ module API
         requires :email, type: String, desc: 'The new email'
       end
       post "emails" do
-        email = current_user.emails.new(declared_params)
+        email = Emails::CreateService.new(current_user, current_user, declared_params).execute
 
-        if Emails::CreateService.new(current_user, current_user, declared_params).execute
+        if email.errors.blank?
           NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
