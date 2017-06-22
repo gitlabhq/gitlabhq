@@ -130,8 +130,7 @@ class GeoNode < ActiveRecord::Base
 
   def build_dependents
     unless persisted?
-      self.build_geo_node_key if geo_node_key.nil?
-      update_system_hook!
+      self.build_geo_node_key unless geo_node_key.present?
     end
   end
 
@@ -141,8 +140,6 @@ class GeoNode < ActiveRecord::Base
     if self.primary?
       self.oauth_application = nil
       update_clone_url
-      self.system_hook.push_events = false
-      self.system_hook.tag_push_events = false
     else
       update_oauth_application!
       update_system_hook!
@@ -169,6 +166,8 @@ class GeoNode < ActiveRecord::Base
   end
 
   def update_system_hook!
+    return if self.primary?
+
     self.build_system_hook if system_hook.nil?
     self.system_hook.token = SecureRandom.hex(20) unless self.system_hook.token.present?
     self.system_hook.url = geo_events_url if uri.present?

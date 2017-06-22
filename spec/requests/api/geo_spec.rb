@@ -6,12 +6,13 @@ describe API::Geo, api: true do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let!(:primary_node) { create(:geo_node, :primary) }
+  let!(:secondary_node) { create(:geo_node) }
   let(:geo_token_header) do
-    { 'X-Gitlab-Token' => primary_node.system_hook.token }
+    { 'X-Gitlab-Token' => secondary_node.system_hook.token }
   end
 
   before(:each) do
-    allow(Gitlab::Geo).to receive(:current_node) { primary_node }
+    allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
   end
 
   describe 'POST /geo/receive_events authentication' do
@@ -30,7 +31,7 @@ describe API::Geo, api: true do
 
   describe 'POST /geo/refresh_wikis disabled node' do
     it 'responds with forbidden' do
-      primary_node.enabled = false
+      secondary_node.enabled = false
 
       post api('/geo/refresh_wikis', admin), nil
 
@@ -40,7 +41,7 @@ describe API::Geo, api: true do
 
   describe 'POST /geo/receive_events disabled node' do
     it 'responds with forbidden' do
-      primary_node.enabled = false
+      secondary_node.enabled = false
 
       post api('/geo/receive_events'), nil, geo_token_header
 
