@@ -9,42 +9,31 @@
 - cache_key = project_list_cache_key(project)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_at)
 
-%tr.project-row{ class: css_class }
+%tr.project-row.top{ class: css_class }
   = cache(cache_key) do
     - if avatar
-      %td
+      %td{ rowspan: '2' }
         .avatar-container.s40
           = link_to project_path(project), class: dom_class(project) do
             - if use_creator_avatar
               = image_tag avatar_icon(project.creator.email, 40), class: "avatar s40", alt:''
             - else
               = project_icon(project, alt: '', class: 'avatar project-avatar s40')
-    %td
-      .project-details
-        %h3
-          = link_to project_path(project), class: dom_class(project) do
-            %span.project-full-name
-              %span.namespace-name
-                - if project.namespace && !skip_namespace
-                  = project.namespace.human_name
-                  \/
-              %span.project-name
-                = project.name
-
-        - if show_last_commit_as_description
-          .description
-            = link_to_gfm project.commit.title, namespace_project_commit_path(project.namespace, project, project.commit),
-              class: "commit-row-message"
-        - elsif project.description.present?
-          .description
-            = markdown_field(project, :description)
-    %td
+    %td.project-details
+      %h3
+        = link_to project_path(project), class: dom_class(project) do
+          %span.project-full-name
+            %span.namespace-name
+              - if project.namespace && !skip_namespace
+                = project.namespace.human_name
+                \/
+            %span.project-name
+              = project.name
       - if project.archived
         %span.label.label-warning archived
     %td
       - if project.pipeline_status.has_status?
-        %span
-          = render_project_pipeline_status(project.pipeline_status)
+        %span= render_project_pipeline_status(project.pipeline_status)
     %td
       - if forks
         %span
@@ -58,5 +47,11 @@
     %td
       %span.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(project) }
         = visibility_level_icon(project.visibility_level, fw: true)
-    %td
-      updated #{updated_tooltip}
+%tr.project-row.bottom{ class: css_class }
+  %td
+    - if show_last_commit_as_description
+      = link_to_gfm project.commit.title, namespace_project_commit_path(project.namespace, project, project.commit),
+        class: "commit-row-message"
+    - elsif project.description.present?
+      = markdown_field(project, :description)
+  %td.project-updated{ colspan: '5' } updated #{updated_tooltip}

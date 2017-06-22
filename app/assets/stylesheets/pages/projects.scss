@@ -651,6 +651,7 @@ pre.light-well {
 
   h3 {
     font-size: $gl-font-size;
+    margin: 0;
   }
 
   a {
@@ -658,12 +659,19 @@ pre.light-well {
   }
 
   .project-row {
-    padding: 10px 0;
-    border-bottom: 1px solid $list-border-light;
+    height: 30px;
 
-    &:last-of-type {
-      border-bottom: none;
+    &.bottom {
+      border-bottom: 1px solid $list-border-light;
+
+      &:last-of-type {
+        border-bottom: none;
+      }
     }
+  }
+
+  .project-updated {
+    text-align: right;
   }
 }
 
