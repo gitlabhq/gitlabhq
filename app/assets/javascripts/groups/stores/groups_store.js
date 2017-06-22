@@ -86,7 +86,6 @@ export default class GroupsStore {
           const group = tree[key];
 
           if (
-           // Make sure `group` exists since it can be deleted below
            group &&
            currentOrphan.fullPath.lastIndexOf(group.fullPath) === 0 &&
            // Make sure the currently selected orphan is not the same as the group
