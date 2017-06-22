@@ -1,0 +1,4 @@
+---
+title: 'Geo: fix removal of repositories from disk on secondary nodes'
+merge_request: 2210
+author:
