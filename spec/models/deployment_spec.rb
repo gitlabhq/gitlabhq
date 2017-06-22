@@ -76,8 +76,7 @@ describe Deployment, models: true do
         {
           success: true,
           metrics: {},
-          last_update: 42,
-          deployment_time: 1494408956
+          last_update: 42
         }
       end
 
@@ -86,7 +85,7 @@ describe Deployment, models: true do
                                        .with(any_args).and_return(simple_metrics)
       end
 
-      it { is_expected.to eq(simple_metrics) }
+      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }
     end
   end
 

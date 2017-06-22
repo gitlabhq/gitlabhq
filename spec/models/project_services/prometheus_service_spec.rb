@@ -89,7 +89,7 @@ describe PrometheusService, models: true, caching: true do
       it 'returns reactive data' do
         expect(deployment).to receive(:created_at).and_return(fake_deployment_time)
 
-        expect(subject).to eq(prometheus_metrics_data.merge(deployment_time: fake_deployment_time))
+        expect(subject).to eq(prometheus_metrics_data)
       end
     end
   end
