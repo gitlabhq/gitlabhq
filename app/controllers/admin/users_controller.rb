@@ -125,9 +125,9 @@ class Admin::UsersController < Admin::ApplicationController
     end
 
     respond_to do |format|
-      user.skip_reconfirmation!
-
-      result = Users::UpdateService.new(current_user, user, user_params_with_pass).execute
+      result = Users::UpdateService.new(current_user, user, user_params_with_pass).execute do |user|
+        user.skip_reconfirmation!
+      end
 
       if result[:status] == :success
         format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
