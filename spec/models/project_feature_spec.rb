@@ -4,6 +4,18 @@ describe ProjectFeature do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 
+  describe '.quoted_access_level_column' do
+    it 'returns the table name and quoted column name for a feature' do
+      expected = if Gitlab::Database.postgresql?
+                   '"project_features"."issues_access_level"'
+                 else
+                   '`project_features`.`issues_access_level`'
+                 end
+
+      expect(described_class.quoted_access_level_column(:issues)).to eq(expected)
+    end
+  end
+
   describe '#feature_available?' do
     let(:features) { %w(issues wiki builds merge_requests snippets repository) }
 

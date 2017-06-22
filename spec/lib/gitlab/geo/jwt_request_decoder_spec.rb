@@ -27,10 +27,16 @@ describe Gitlab::Geo::JwtRequestDecoder do
       expect(described_class.new(data).decode).to be_nil
     end
 
-    it 'returns nil when clocks are not in sync' do
-      allow(JWT).to receive(:decode).and_raise(JWT::InvalidIatError)
+    it 'successfully decodes when clocks are off by IAT leeway' do
+      subject
 
-      expect(subject.decode).to be_nil
+      Timecop.travel(30.seconds.ago) { expect(subject.decode).to eq(data) }
+    end
+
+    it 'returns nil when clocks are not in sync' do
+      subject
+
+      Timecop.travel(2.minutes.ago) { expect(subject.decode).to be_nil }
     end
 
     it 'raises invalid decryption key error' do

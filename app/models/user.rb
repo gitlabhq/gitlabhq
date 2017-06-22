@@ -1003,8 +1003,6 @@ class User < ActiveRecord::Base
   def access_level
     if admin?
       :admin
-    elsif auditor?
-      :auditor
     else
       :regular
     end
@@ -1012,10 +1010,14 @@ class User < ActiveRecord::Base
 
   def access_level=(new_level)
     new_level = new_level.to_s
-    return unless %w(admin auditor regular).include?(new_level)
+    return unless %w(admin regular).include?(new_level)
 
     self.admin = (new_level == 'admin')
-    self.auditor = (new_level == 'auditor')
+  end
+
+  # Does the user have access to all private groups & projects?
+  def has_full_private_access?
+    admin?
   end
 
   def update_two_factor_requirement
