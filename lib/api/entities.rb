@@ -494,8 +494,11 @@ module API
     end
 
     class Namespace < Grape::Entity
+      expose :id, :name, :path, :kind, :full_path
+
+      # EE-only
+      expose :shared_runners_minutes_limit
       expose :plan, if: lambda { |_, options| options[:current_user] && options[:current_user].admin? }
-      expose :id, :name, :path, :kind, :full_path, :shared_runners_minutes_limit
     end
 
     class MemberAccess < Grape::Entity
