@@ -22,6 +22,38 @@
       = f.label :ref, _('Target Branch'), class: 'label-light'
       = dropdown_tag(_("Select target branch"), options: { toggle_class: 'btn js-target-branch-dropdown', dropdown_class: 'git-revision-dropdown', title: _("Select target branch"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: @project.repository.branch_names, default_branch: @project.default_branch } } )
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
+  -# TODO: Test code
+  = @schedule.variables.inspect
+  - if @schedule.variables.present?
+    - @schedule.variables.each_with_index do |variable, i|
+      .form-group
+        .col-md-9
+          %label.label-light Key
+          %input.form-control{:name => "schedule[variables_attributes][#{i}][key]", :type => "text", :value => variable.key}/
+          %p.gl-field-error.hide This field is required.
+          %label.label-light Value
+          %input.form-control{:name => "schedule[variables_attributes][#{i}][value]", :type => "text", :value => variable.value}/
+          %p.gl-field-error.hide This field is required.
+    - if @schedule.variables.count == 1
+      - (1..1).each do |i|
+        .form-group
+          .col-md-9
+            %label.label-light Key
+            %input.form-control{:name => "schedule[variables_attributes][#{i}][key]", :type => "text"}/
+            %p.gl-field-error.hide This field is required.
+            %label.label-light Value
+            %input.form-control{:name => "schedule[variables_attributes][#{i}][value]", :type => "text"}/
+            %p.gl-field-error.hide This field is required.
+  - else
+    - (0..0).each do |i|
+      .form-group
+        .col-md-9
+          %label.label-light Key
+          %input.form-control{:name => "schedule[variables_attributes][#{i}][key]", :type => "text"}/
+          %p.gl-field-error.hide This field is required.
+          %label.label-light Value
+          %input.form-control{:name => "schedule[variables_attributes][#{i}][value]", :type => "text"}/
+          %p.gl-field-error.hide This field is required.
   .form-group
     .col-md-9
       = f.label  :active, s_('PipelineSchedules|Activated'), class: 'label-light'
