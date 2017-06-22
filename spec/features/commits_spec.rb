@@ -206,25 +206,37 @@ describe 'Commits' do
   end
 
   describe 'GPG signed commits' do
-    let!(:user) { create :user, email: GpgHelpers::User1.emails.first }
-    let!(:gpg_key) { create :gpg_key, key: GpgHelpers::User1.public_key, user: user }
-
     before do
-      project.team << [user, :master]
-      login_with(user)
-    end
-
-    it 'shows the signed status', :gpg do
       # FIXME: add this to the test repository directly
       remote_path = project.repository.path_to_repo
       Dir.mktmpdir do |dir|
         FileUtils.cd dir do
           `git clone --quiet #{remote_path} .`
-          `git commit --quiet -S#{GpgHelpers::User1.primary_keyid} --allow-empty -m "signed commit, verified key/email"`
-          `git commit --quiet -S#{GpgHelpers::User2.primary_keyid} --allow-empty -m "signed commit, unverified key/email"`
+          `git commit --quiet -S#{GpgHelpers::User1.primary_keyid} --allow-empty -m "signed commit by nannie bernhard"`
+          `git commit --quiet -S#{GpgHelpers::User2.primary_keyid} --allow-empty -m "signed commit by bette cartwright"`
           `git push --quiet`
         end
       end
+    end
+
+    it 'changes from unverified to verified when the user changes his email to match the gpg key' do
+      user = create :user, email: 'unrelated.user@example.org'
+      project.team << [user, :master]
+
+      create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+
+      login_with(user)
+
+      visit namespace_project_commits_path(project.namespace, project, :master)
+
+      within '#commits-list' do
+        expect(page).to have_content 'Unverified'
+        expect(page).not_to have_content 'Verified'
+      end
+
+      # user changes his email which makes the gpg key verified
+      user.skip_reconfirmation!
+      user.update_attributes!(email: GpgHelpers::User1.emails.first)
 
       visit namespace_project_commits_path(project.namespace, project, :master)
 
@@ -232,16 +244,29 @@ describe 'Commits' do
         expect(page).to have_content 'Unverified'
         expect(page).to have_content 'Verified'
       end
+    end
 
-      # user changes his email which makes the gpg key unverified
-      user.skip_reconfirmation!
-      user.update_attributes!(email: 'bette.cartwright@example.org')
+    it 'changes from unverified to verified when the user adds the missing gpg key' do
+      user = create :user, email: GpgHelpers::User1.emails.first
+      project.team << [user, :master]
+
+      login_with(user)
 
       visit namespace_project_commits_path(project.namespace, project, :master)
 
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
         expect(page).not_to have_content 'Verified'
+      end
+
+      # user adds the gpg key which makes the signature valid
+      create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+
+      visit namespace_project_commits_path(project.namespace, project, :master)
+
+      within '#commits-list' do
+        expect(page).to have_content 'Unverified'
+        expect(page).to have_content 'Verified'
       end
     end
   end
