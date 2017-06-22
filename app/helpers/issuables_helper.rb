@@ -165,11 +165,7 @@ module IssuablesHelper
     }
 
     state_title = titles[state] || state.to_s.humanize
-
-    count =
-      Rails.cache.fetch(issuables_state_counter_cache_key(issuable_type, state), expires_in: 2.minutes) do
-        issuables_count_for_state(issuable_type, state)
-      end
+    count = issuables_count_for_state(issuable_type, state)
 
     html = content_tag(:span, state_title)
     html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
@@ -255,22 +251,35 @@ module IssuablesHelper
     end
   end
 
-  def issuables_count_for_state(issuable_type, state)
+  def issuables_count_for_state(issuable_type, state, finder: nil)
+    finder ||= public_send("#{issuable_type}_finder")
+    cache_key = issuables_state_counter_cache_key(issuable_type, finder, state)
+
     @counts ||= {}
-    @counts[issuable_type] ||= public_send("#{issuable_type}_finder").count_by_state
-    @counts[issuable_type][state]
+    @counts[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
+      finder.count_by_state
+    end
+
+    @counts[cache_key][state]
   end
 
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
   private_constant :IRRELEVANT_PARAMS_FOR_CACHE_KEY
 
-  def issuables_state_counter_cache_key(issuable_type, state)
+  def issuables_state_counter_cache_key(issuable_type, finder, state)
     opts = params.with_indifferent_access
     opts[:state] = state
     opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
     opts.delete_if { |_, value| value.blank? }
 
-    hexdigest(['issuables_count', issuable_type, opts.sort].flatten.join('-'))
+    key_components = ['issuables_count', issuable_type, opts.sort]
+
+    if issuable_type == :issues
+      key_components << finder.user_can_see_all_confidential_issues?
+      key_components << finder.user_cannot_see_confidential_issues?
+    end
+
+    hexdigest(key_components.flatten.join('-'))
   end
 
   def issuable_templates(issuable)
