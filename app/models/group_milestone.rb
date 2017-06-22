@@ -3,6 +3,16 @@ class GroupMilestone < ActiveRecord::Base
   include Milestoneish
   include CacheMarkdownField
 
+  class << self
+    # Build legacy group milestone which consists on all project milestones
+    # with the same title.
+    def build(group, projects, title)
+      GlobalMilestone.build(projects, title).tap do |milestone|
+        milestone&.group = group
+      end
+    end
+  end
+
   def milestoneish_ids
     id
   end

@@ -8,7 +8,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @milestone_states = GlobalMilestone.states_count(@projects)
+        @milestone_states = GlobalMilestone.states_count(@projects, group)
         @milestones = Kaminari.paginate_array(milestones).page(params[:page])
       end
       format.json do
@@ -68,11 +68,14 @@ class Groups::MilestonesController < Groups::ApplicationController
     @project_milestones = Milestone.where(project_id: group.projects.pluck(:id))
 
     @group_milestones + @project_milestones
+    #@milestones = GroupMilestone.build_collection(@group, @projects, params)
   end
 
   def milestone
-    # Use a finder here
-    @milestone = @group.milestones.find_by_title(params[:title])
+    @milestone =
+      @group.milestones.find_by_title(params[:title]) ||
+      GroupMilestone.build(@group, @projects, params[:title])
+
     render_404 unless @milestone
   end
 end

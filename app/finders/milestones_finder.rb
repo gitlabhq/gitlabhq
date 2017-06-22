@@ -1,9 +1,12 @@
 class MilestonesFinder
-  def execute(projects, params)
-    milestones = Milestone.of_projects(projects)
-    milestones = milestones.reorder("due_date ASC")
+  def execute(projects, group = nil, params)
+    milestones = group ? group.milestones : Milestone.of_projects(projects)
 
-    case params[:state]
+    filter_by_state(milestones, params[:state])
+  end
+
+  def filter_by_state(milestones, state)
+    case state
     when 'closed' then milestones.closed
     when 'all' then milestones
     else milestones.active
