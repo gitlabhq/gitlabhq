@@ -48,13 +48,13 @@ $ bundle exec rails runner "Service.where(type: ['JenkinsService', 'JenkinsDepre
 
 ### Secret variables environment scopes
 
-If you're using this feature, and if you have variables sharing the same
-key however having different scopes in a project, then you might want to
-revisit the setting for those variables.
+If you're using this feature and there are variables sharing the same
+key, but they have different scopes in a project, then you might want to
+revisit the environment scope setting for those variables.
 
-In CE scopes are completely ignored, therefore you could accidentally get a
-variable which you're not expecting for a particular environment. Make sure
-that you have the right variables in this case.
+In CE, environment scopes are completely ignored, therefore you could
+accidentally get a variable which you're not expecting for a particular
+environment. Make sure that you have the right variables in this case.
 
 Data is completely preserved, so you could always upgrade back to EE and
 restore the behavior if you leave it alone.
