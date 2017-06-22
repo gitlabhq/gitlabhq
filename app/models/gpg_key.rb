@@ -4,6 +4,7 @@ class GpgKey < ActiveRecord::Base
   KEY_PREFIX = '-----BEGIN PGP PUBLIC KEY BLOCK-----'.freeze
 
   belongs_to :user
+  has_many :gpg_signatures, dependent: :nullify
 
   validates :key,
     presence: true,
