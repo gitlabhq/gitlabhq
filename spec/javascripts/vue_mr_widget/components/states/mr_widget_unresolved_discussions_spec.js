@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import unresolvedDiscussionsComponent from '~/vue_merge_request_widget/components/states/mr_widget_unresolved_discussions';
 
-describe('MRWidgetUnresolvedDiscussions', () => {
+fdescribe('MRWidgetUnresolvedDiscussions', () => {
   describe('props', () => {
     it('should have props', () => {
       const { mr } = unresolvedDiscussionsComponent.props;
@@ -30,7 +30,7 @@ describe('MRWidgetUnresolvedDiscussions', () => {
 
     it('should have correct elements', () => {
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.innerText).toContain('There are unresolved discussions. Please resolve these discussions');
+      expect(el.innerText).toContain('There are unresolved discussions. Please resolve these discussions or');
       expect(el.innerText).toContain('Create an issue to resolve them later');
       expect(el.querySelector('.js-create-issue').getAttribute('href')).toEqual(path);
     });
@@ -40,6 +40,7 @@ describe('MRWidgetUnresolvedDiscussions', () => {
 
       Vue.nextTick(() => {
         expect(el.querySelector('.js-create-issue')).toEqual(null);
+        expect(el.innerText).toContain('There are unresolved discussions. Please resolve these discussions.');
         done();
       });
     });

@@ -3,6 +3,12 @@ export default {
   props: {
     mr: { type: Object, required: true },
   },
+  computed: {
+    text() {
+      const sep = this.mr.createIssueToResolveDiscussionsPath ? ' or' : '.';
+      return `There are unresolved discussions. Please resolve these discussions${sep}`;
+    },
+  },
   template: `
     <div class="mr-widget-body">
       <button
@@ -11,11 +17,9 @@ export default {
         disabled="true">
         Merge
       </button>
-      <span class="bold">
-        There are unresolved discussions. Please resolve these discussions
-        <span v-if="mr.canCreateIssue">or</span>
-        <span v-else>.</span>
-      </span>
+      <strong>
+        {{text}}
+      </strong>
       <a
         v-if="mr.createIssueToResolveDiscussionsPath"
         :href="mr.createIssueToResolveDiscussionsPath"
