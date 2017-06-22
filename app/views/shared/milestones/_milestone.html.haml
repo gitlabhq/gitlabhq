@@ -5,6 +5,10 @@
   .row
     .col-sm-6
       %strong= link_to_gfm truncate(milestone.title, length: 100), milestone_path
+      - if milestone.is_group_milestone?
+        %span - Group Milestone
+      - else
+        %span - Project Milestone 
     .col-sm-6
       .pull-right.light #{milestone.percent_complete(current_user)}% complete
   .row
