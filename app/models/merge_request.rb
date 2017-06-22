@@ -15,9 +15,9 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_many :approvals, dependent: :destroy
-  has_many :approvers, as: :target, dependent: :destroy
-  has_many :approver_groups, as: :target, dependent: :destroy
+  has_many :approvals
+  has_many :approvers, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :approver_groups, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_request_diffs
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }

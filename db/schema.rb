@@ -1814,6 +1814,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
+  add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
@@ -1846,6 +1847,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
+  add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
@@ -1870,7 +1872,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
-  add_foreign_key "path_locks", "projects"
+  add_foreign_key "path_locks", "projects", name: "fk_5265c98f24", on_delete: :cascade
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
@@ -1891,8 +1893,9 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_foreign_key "protected_tag_create_access_levels", "protected_tags"
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
+  add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
-  add_foreign_key "remote_mirrors", "projects"
+  add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
