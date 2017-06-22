@@ -136,6 +136,11 @@ class Projects::PipelinesController < Projects::ApplicationController
     @charts[:month] = Ci::Charts::MonthChart.new(project)
     @charts[:year] = Ci::Charts::YearChart.new(project)
     @charts[:build_times] = Ci::Charts::BuildTime.new(project)
+
+    @counts = {}
+    @counts[:total] = @project.pipelines.count(:all)
+    @counts[:success] = @project.pipelines.success.count(:all)
+    @counts[:failed] = @project.pipelines.failed.count(:all)
   end
 
   private

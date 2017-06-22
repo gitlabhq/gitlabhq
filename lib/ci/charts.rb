@@ -3,7 +3,7 @@ module Ci
     module DailyInterval
       def grouped_count(query)
         query
-          .group("DATE(#{Ci::Build.table_name}.created_at)")
+          .group("DATE(#{Ci::Pipeline.table_name}.created_at)")
           .count(:created_at)
           .transform_keys { |date| date.strftime(@format) }
       end
@@ -17,12 +17,12 @@ module Ci
       def grouped_count(query)
         if Gitlab::Database.postgresql?
           query
-            .group("to_char(#{Ci::Build.table_name}.created_at, '01 Month YYYY')")
+            .group("to_char(#{Ci::Pipeline.table_name}.created_at, '01 Month YYYY')")
             .count(:created_at)
             .transform_keys(&:squish)
         else
           query
-            .group("DATE_FORMAT(#{Ci::Build.table_name}.created_at, '01 %M %Y')")
+            .group("DATE_FORMAT(#{Ci::Pipeline.table_name}.created_at, '01 %M %Y')")
             .count(:created_at)
         end
       end
@@ -46,8 +46,8 @@ module Ci
       end
 
       def collect
-        query = project.builds
-          .where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", @to, @from)
+        query = project.pipelines
+          .where("? > #{Ci::Pipeline.table_name}.created_at AND #{Ci::Pipeline.table_name}.created_at > ?", @to, @from)
 
         totals_count  = grouped_count(query)
         success_count = grouped_count(query.success)
