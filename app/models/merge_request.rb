@@ -6,6 +6,9 @@ class MergeRequest < ActiveRecord::Base
   include Sortable
   include Elastic::MergeRequestsSearch
   include Approvable
+  include IgnorableColumn
+
+  ignore_column :position
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"

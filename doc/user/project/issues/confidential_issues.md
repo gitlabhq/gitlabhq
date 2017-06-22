@@ -43,9 +43,8 @@ next to the issues that are marked as confidential.
 
 ---
 
-Likewise, while inside the issue, you can see the eye-slash icon right next to
-the issue number, but there is also an indicator in the comment area that the
-issue you are commenting on is confidential.
+While inside the issue, you can see a persistent dark banner at the top of the
+screen.
 
 ![Confidential issue page](img/confidential_issues_issue_page.png)
 

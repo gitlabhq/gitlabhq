@@ -14,7 +14,7 @@ module Gitlab
     # timeout - The maximum amount of seconds to block the caller for. This
     #           ensures we don't indefinitely block a caller in case a job takes
     #           long to process, or is never processed.
-    def wait(timeout = 60)
+    def wait(timeout = 10)
       start = Time.current
 
       while (Time.current - start) <= timeout

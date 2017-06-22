@@ -12,15 +12,6 @@ import '~/notes';
 import 'vendor/jquery.scrollTo';
 
 (function () {
-  // TODO: remove this hack!
-  // PhantomJS causes spyOn to panic because replaceState isn't "writable"
-  var phantomjs;
-  try {
-    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
-  } catch (err) {
-    phantomjs = false;
-  }
-
   describe('MergeRequestTabs', function () {
     var stubLocation = {};
     var setLocation = function (stubs) {
@@ -31,17 +22,23 @@ import 'vendor/jquery.scrollTo';
       };
       $.extend(stubLocation, defaults, stubs || {});
     };
-    preloadFixtures('merge_requests/merge_request_with_task_list.html.raw', 'merge_requests/diff_comment.html.raw');
+
+    const inlineChangesTabJsonFixture = 'merge_requests/inline_changes_tab_with_comments.json';
+    const parallelChangesTabJsonFixture = 'merge_requests/parallel_changes_tab_with_comments.json';
+    preloadFixtures(
+      'merge_requests/merge_request_with_task_list.html.raw',
+      'merge_requests/diff_comment.html.raw',
+      inlineChangesTabJsonFixture,
+      parallelChangesTabJsonFixture
+    );
 
     beforeEach(function () {
       this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
       setLocation();
 
-      if (!phantomjs) {
-        this.spies = {
-          history: spyOn(window.history, 'replaceState').and.callFake(function () {})
-        };
-      }
+      this.spies = {
+        history: spyOn(window.history, 'replaceState').and.callFake(function () {})
+      };
     });
 
     afterEach(function () {
@@ -208,11 +205,9 @@ import 'vendor/jquery.scrollTo';
           pathname: '/foo/bar/merge_requests/1'
         });
         newState = this.subject('commits');
-        if (!phantomjs) {
-          expect(this.spies.history).toHaveBeenCalledWith({
-            url: newState
-          }, document.title, newState);
-        }
+        expect(this.spies.history).toHaveBeenCalledWith({
+          url: newState
+        }, document.title, newState);
       });
 
       it('treats "show" like "notes"', function () {
@@ -284,6 +279,19 @@ import 'vendor/jquery.scrollTo';
     });
 
     describe('loadDiff', function () {
+      beforeEach(() => {
+        loadFixtures('merge_requests/diff_comment.html.raw');
+        spyOn(window.gl.utils, 'getPagePath').and.returnValue('merge_requests');
+        window.gl.ImageFile = () => {};
+        window.notes = new Notes('', []);
+        spyOn(window.notes, 'toggleDiffNote').and.callThrough();
+      });
+
+      afterEach(() => {
+        delete window.gl.ImageFile;
+        delete window.notes;
+      });
+
       it('requires an absolute pathname', function () {
         spyOn($, 'ajax').and.callFake(function (options) {
           expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');
@@ -292,43 +300,112 @@ import 'vendor/jquery.scrollTo';
         this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
       });
 
-      describe('with note fragment hash', () => {
+      describe('with inline diff', () => {
+        let noteId;
+        let noteLineNumId;
+
         beforeEach(() => {
-          loadFixtures('merge_requests/diff_comment.html.raw');
-          spyOn(window.gl.utils, 'getPagePath').and.returnValue('merge_requests');
-          window.notes = new Notes('', []);
-          spyOn(window.notes, 'toggleDiffNote').and.callThrough();
-        });
+          const diffsResponse = getJSONFixture(inlineChangesTabJsonFixture);
 
-        afterEach(() => {
-          delete window.notes;
-        });
+          const $html = $(diffsResponse.html);
+          noteId = $html.find('.note').attr('id');
+          noteLineNumId = $html
+            .find('.note')
+            .closest('.notes_holder')
+            .prev('.line_holder')
+            .find('a[data-linenumber]')
+            .attr('href')
+            .replace('#', '');
 
-        it('should expand and scroll to linked fragment hash #note_xxx', function () {
-          const noteId = 'note_1';
-          spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
           spyOn($, 'ajax').and.callFake(function (options) {
-            options.success({ html: `<div id="${noteId}">foo</div>` });
-          });
-
-          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
-
-          expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
-            target: jasmine.any(Object),
-            lineType: 'old',
-            forceShow: true,
+            options.success(diffsResponse);
           });
         });
 
-        it('should gracefully ignore non-existant fragment hash', function () {
-          spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
-          spyOn($, 'ajax').and.callFake(function (options) {
-            options.success({ html: '' });
+        describe('with note fragment hash', () => {
+          it('should expand and scroll to linked fragment hash #note_xxx', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(noteId.length).toBeGreaterThan(0);
+            expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
+              target: jasmine.any(Object),
+              lineType: 'old',
+              forceShow: true,
+            });
           });
 
-          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+          it('should gracefully ignore non-existant fragment hash', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
-          expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+          });
+        });
+
+        describe('with line number fragment hash', () => {
+          it('should gracefully ignore line number fragment hash', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteLineNumId);
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(noteLineNumId.length).toBeGreaterThan(0);
+            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+          });
+        });
+      });
+
+      describe('with parallel diff', () => {
+        let noteId;
+        let noteLineNumId;
+
+        beforeEach(() => {
+          const diffsResponse = getJSONFixture(parallelChangesTabJsonFixture);
+
+          const $html = $(diffsResponse.html);
+          noteId = $html.find('.note').attr('id');
+          noteLineNumId = $html
+            .find('.note')
+            .closest('.notes_holder')
+            .prev('.line_holder')
+            .find('a[data-linenumber]')
+            .attr('href')
+            .replace('#', '');
+
+          spyOn($, 'ajax').and.callFake(function (options) {
+            options.success(diffsResponse);
+          });
+        });
+
+        describe('with note fragment hash', () => {
+          it('should expand and scroll to linked fragment hash #note_xxx', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
+
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(noteId.length).toBeGreaterThan(0);
+            expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
+              target: jasmine.any(Object),
+              lineType: 'new',
+              forceShow: true,
+            });
+          });
+
+          it('should gracefully ignore non-existant fragment hash', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+          });
+        });
+
+        describe('with line number fragment hash', () => {
+          it('should gracefully ignore line number fragment hash', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteLineNumId);
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(noteLineNumId.length).toBeGreaterThan(0);
+            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+          });
         });
       });
     });

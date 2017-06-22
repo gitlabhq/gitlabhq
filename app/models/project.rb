@@ -275,10 +275,10 @@ class Project < ActiveRecord::Base
   # logged in user.
   def self.public_or_visible_to_user(user = nil)
     if user
-      authorized = user.
-        project_authorizations.
-        select(1).
-        where('project_authorizations.project_id = projects.id')
+      authorized = user
+        .project_authorizations
+        .select(1)
+        .where('project_authorizations.project_id = projects.id')
 
       levels = Gitlab::VisibilityLevel.levels_for_user(user)
 
@@ -303,11 +303,11 @@ class Project < ActiveRecord::Base
     elsif user
       column = ProjectFeature.quoted_access_level_column(feature)
 
-      authorized = user.project_authorizations.select(1).
-        where('project_authorizations.project_id = projects.id')
+      authorized = user.project_authorizations.select(1)
+        .where('project_authorizations.project_id = projects.id')
 
-      with_project_feature.
-        where("#{column} IN (?) OR (#{column} = ? AND EXISTS (?))",
+      with_project_feature
+        .where("#{column} IN (?) OR (#{column} = ? AND EXISTS (?))",
               visible,
               ProjectFeature::PRIVATE,
               authorized)

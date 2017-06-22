@@ -89,6 +89,7 @@ group.
 | Create project in group |       |          |           | ✓      | ✓     |
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
+| Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 
 ## External Users
 

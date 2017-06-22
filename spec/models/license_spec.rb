@@ -315,6 +315,26 @@ describe License do
     end
   end
 
+  describe "#md5" do
+    it "returns the same MD5 for licenses with carriage returns and those without" do
+      other_license = build(:license, data: license.data.gsub("\n", "\r\n"))
+
+      expect(other_license.md5).to eq(license.md5)
+    end
+
+    it "returns the same MD5 for licenses with trailing newlines and those without" do
+      other_license = build(:license, data: license.data.chomp)
+
+      expect(other_license.md5).to eq(license.md5)
+    end
+
+    it "returns the same MD5 for licenses with multiple trailing newlines and those with a single trailing newline" do
+      other_license = build(:license, data: "#{license.data}\n\n\n")
+
+      expect(other_license.md5).to eq(license.md5)
+    end
+  end
+
   describe "#license" do
     context "when no data is provided" do
       before do

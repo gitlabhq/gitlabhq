@@ -6,10 +6,11 @@ class GroupEntity < Grape::Entity
 
   expose :id, :name, :path, :description, :visibility
   expose :full_name, :full_path
+  expose :web_url
   expose :parent_id
   expose :created_at, :updated_at
 
-  expose :web_url do |group|
+  expose :group_path do |group|
     group_path(group)
   end
 

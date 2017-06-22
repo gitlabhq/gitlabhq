@@ -90,7 +90,7 @@ EOT
         let(:diff) { described_class.new(@rugged_diff) }
 
         it 'initializes the diff' do
-          expect(diff.to_hash).to eq(@raw_diff_hash.merge(too_large: nil))
+          expect(diff.to_hash).to eq(@raw_diff_hash)
         end
 
         it 'does not prune the diff' do

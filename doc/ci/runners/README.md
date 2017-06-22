@@ -117,21 +117,21 @@ lowest number of jobs currently running on shared Runners.
 
 We have following jobs in queue:
 
-- job 1 for project 1
-- job 2 for project 1
-- job 3 for project 1
-- job 4 for project 2
-- job 5 for project 2
-- job 6 for project 3
+- Job 1 for Project 1
+- Job 2 for Project 1
+- Job 3 for Project 1
+- Job 4 for Project 2
+- Job 5 for Project 2
+- Job 6 for Project 3
 
 With the fair usage algorithm jobs are assigned in following order:
 
-1. We choose job 1, because project 1 doesn't run currently any jobs and has the lowest job number from projects that doesn't run jobs
-1. We choose job 4, because project 2 doesn't run currently any jobs and has the lowest job number from projects that doesn't run jobs
-1. We choose job 6, because project 3 doesn't run currently any jobs and has the lowest job number from projects that doesn't run jobs
-1. We choose job 2, because project 1 as other it runs 1 job
-1. We choose job 5, because project 2 runs 1 job, where project 1 runs 2 jobs now
-1. We choose job 3, because project 1 and runs 2 jobs
+1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (i.e. all projects)
+1. Job 4 is next, because 4 is now the lowest job number from projects with no running jobs (Project 1 has a job running)
+1. Job 6 is next, because 6 is now the lowest job number from projects with no running jobs (Projects 1 and 2 have jobs running)
+1. Job 2 is next, because, of projects with the lowest number of jobs running (each has 1), it is the lowest job number
+1. Job 5 is next, because Project 1 now has 2 jobs running, and between Projects 2 and 3, Job 5 is the lowest remaining job number
+1. Lastly we choose Job 3... because it's the only job left
 
 ---
 
@@ -139,23 +139,23 @@ With the fair usage algorithm jobs are assigned in following order:
 
 We have following jobs in queue:
 
-- job 1 for project 1
-- job 2 for project 1
-- job 3 for project 1
-- job 4 for project 2
-- job 5 for project 2
-- job 6 for project 3
+- Job 1 for project 1
+- Job 2 for project 1
+- Job 3 for project 1
+- Job 4 for project 2
+- Job 5 for project 2
+- Job 6 for project 3
 
 With the fair usage algorithm jobs are assigned in following order:
 
-1. We choose job 1, because project 1 doesn't run currently any jobs and has the lowest job number from projects that doesn't run jobs
+1. Job 1 is chosen first, because it has the lowest job number from projects with no running jobs (i.e. all projects)
 1. We finish job 1
-1. We choose job 2, because project 1 doesn't run currently any jobs and has the lowest job number from projects that doesn't run jobs
-1. We choose job 4, because project 2 doesn't run currently any jobs and has the lowest job number from projects that doesn't run jobs
+1. Job 2 is next, because, having finished Job 1, all projects have 0 jobs running again, and 2 is the lowest available job number
+1. Job 4 is next, because with Project 1 running a job, 4 is the lowest number from projects running no jobs (Projects 2 and 3)
 1. We finish job 4
-1. We choose job 5, because project 2 doesn't run currently any jobs and has the lowest job number from projects that doesn't run jobs
-1. We choose job 6, because project 3 doesn't run currently any jobs
-1. We choose job 3, because project 1, 2 and 3 runs exactly one job now
+1. Job 5 is next, because having finished Job 4, Project 2 has no jobs running again
+1. Job 6 is next, because Project 3 is the only project left with no running jobs
+1. Lastly we choose Job 3... because, again, it's the only job left (who says 1 is the loneliest number?)
 
 ## Using shared Runners effectively
 

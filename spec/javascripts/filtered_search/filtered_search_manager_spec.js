@@ -1,6 +1,7 @@
 import * as recentSearchesStoreSrc from '~/filtered_search/stores/recent_searches_store';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
+import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 import '~/lib/utils/url_utility';
 import '~/lib/utils/common_utils';
 import '~/filtered_search/filtered_search_token_keys';
@@ -71,6 +72,7 @@ describe('Filtered Search Manager', () => {
     beforeEach(() => {
       spyOn(RecentSearchesService, 'isAvailable').and.returnValue(isLocalStorageAvailable);
       spyOn(recentSearchesStoreSrc, 'default');
+      spyOn(RecentSearchesRoot.prototype, 'render');
 
       filteredSearchManager = new gl.FilteredSearchManager();
       filteredSearchManager.setup();
