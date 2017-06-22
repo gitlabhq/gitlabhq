@@ -18,9 +18,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def destroy
     @email = current_user.emails.find(params[:id])
-    Emails::DestroyService.new(self, self, email: @email.email).execute
-
-    Users::UpdateService.new(current_user, current_user).execute { |user| user.update_secondary_emails! }
+    Emails::DestroyService.new(current_user, current_user, email: @email.email).execute
 
     respond_to do |format|
       format.html { redirect_to profile_emails_url, status: 302 }

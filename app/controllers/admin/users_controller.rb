@@ -136,7 +136,7 @@ class Admin::UsersController < Admin::ApplicationController
         # restore username to keep form action url.
         user.username = params[:id]
         format.html { render "edit" }
-        format.json { render json: result[:message], status: result[:status] }
+        format.json { render json: [result[:message]], status: result[:status] }
       end
     end
   end
@@ -152,11 +152,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def remove_email
     email = user.emails.find(params[:email_id])
-    Emails::DestroyService.new(current_user, self, email: email.email).execute
-
-    result = Users::UpdateService.new(current_user, @user).execute do |user|
-      user.update_secondary_emails!
-    end
+    Emails::DestroyService.new(current_user, user, email: email.email).execute
 
     respond_to do |format|
       if result[:status] == :success

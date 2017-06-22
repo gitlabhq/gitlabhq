@@ -275,10 +275,6 @@ module API
         not_found!('Email') unless email
 
         Emails::DestroyService.new(current_user, user, email: email.email).execute(skip_authorization: true)
-
-        ::Users::UpdateService.new(current_user, user).execute do |user|
-          user.update_secondary_emails!
-        end
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -509,10 +505,6 @@ module API
         not_found!('Email') unless email
 
         Emails::DestroyService.new(current_user, current_user, email: email.email).execute
-
-        ::Users::UpdateService.new(current_user, current_user).execute  do |user|
-          user.update_secondary_emails!
-        end
       end
 
       desc 'Get a list of user activities'
