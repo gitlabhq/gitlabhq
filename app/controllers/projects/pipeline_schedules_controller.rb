@@ -66,6 +66,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def schedule_params
     params.require(:schedule)
-      .permit(:description, :cron, :cron_timezone, :ref, :active)
+      .permit(:description, :cron, :cron_timezone, :ref, :active,
+        variables_attributes: [:key, :value] )
   end
 end
