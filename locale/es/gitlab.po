@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-06-19 15:22-0500\n"
+"PO-Revision-Date: 2017-06-21 12:09-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -16,6 +16,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "Last-Translator: Bob Van Landuyt <bob@gitlab.com>\n"
 "X-Generator: Poedit 2.0.2\n"
+
+msgid "%d additional commit has been omitted to prevent performance issues."
+msgid_plural "%d additional commits have been omitted to prevent performance issues."
+msgstr[0] "%d cambio adicional ha sido omitido para evitar problemas de rendimiento."
+msgstr[1] "%d cambios adicionales han sido omitidos para evitar problemas de rendimiento."
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d cambio"
+msgstr[1] "%d cambios"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} cambió %{commit_timeago}"
@@ -70,8 +80,17 @@ msgstr "Cambiar rama"
 msgid "Branches"
 msgstr "Ramas"
 
+msgid "Browse Directory"
+msgstr "Examinar directorio"
+
+msgid "Browse File"
+msgstr "Examinar archivo"
+
+msgid "Browse Files"
+msgstr "Examinar archivos"
+
 msgid "Browse files"
-msgstr "Examinar los archivos"
+msgstr "Examinar archivos"
 
 msgid "ByAuthor|by"
 msgstr "por"
@@ -176,6 +195,9 @@ msgstr "Agregar %{file_name}"
 
 msgid "Commits"
 msgstr "Cambios"
+
+msgid "Commits feed"
+msgstr "Feed de cambios"
 
 msgid "Commits|History"
 msgstr "Historial"
@@ -328,6 +350,9 @@ msgstr "Error al eliminar la programación del pipeline"
 
 msgid "Files"
 msgstr "Archivos"
+
+msgid "Filter by commit message"
+msgstr "Filtrar por mensaje del cambio"
 
 msgid "Find by path"
 msgstr "Buscar por ruta"
@@ -957,6 +982,9 @@ msgstr "Hacer clic para subir"
 msgid "Use your global notification setting"
 msgstr "Utiliza tu configuración de notificación global"
 
+msgid "View open merge request"
+msgstr "Ver solicitud de fusión abierta"
+
 msgid "VisibilityLevel|Internal"
 msgstr "Interno"
 
@@ -993,11 +1021,11 @@ msgstr "Vas a transferir %{project_name_with_namespace} a otro propietario. ¿Es
 msgid "You can only add files when you are on a branch"
 msgstr "Solo puedes agregar archivos cuando estás en una rama"
 
+msgid "You have reached your project limit"
+msgstr "Has alcanzado el límite de tu proyecto"
+
 msgid "You must sign in to star a project"
 msgstr "Debes iniciar sesión para destacar un proyecto"
-
-msgid "You have reached your project limit"
-msgstr ""
 
 msgid "You need permission."
 msgstr "Necesitas permisos."
