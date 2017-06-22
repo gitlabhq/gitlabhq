@@ -1,0 +1,4 @@
+---
+title: Remove uploads/appearance symlink. A leftover from a previous migration.
+merge_request:
+author:
