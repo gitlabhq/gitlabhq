@@ -24,17 +24,17 @@ module EE
 
       belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
-      has_one :mirror_data, dependent: :delete, autosave: true, class_name: 'ProjectMirrorData'
-      has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }, dependent: :destroy
-      has_one :index_status, dependent: :destroy
-      has_one :jenkins_service, dependent: :destroy
-      has_one :jenkins_deprecated_service, dependent: :destroy
+      has_one :mirror_data, autosave: true, class_name: 'ProjectMirrorData'
+      has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }
+      has_one :index_status
+      has_one :jenkins_service
+      has_one :jenkins_deprecated_service
 
-      has_many :approvers, as: :target, dependent: :destroy
-      has_many :approver_groups, as: :target, dependent: :destroy
-      has_many :audit_events, as: :entity, dependent: :destroy
-      has_many :remote_mirrors, inverse_of: :project, dependent: :destroy
-      has_many :path_locks, dependent: :destroy
+      has_many :approvers, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :approver_groups, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :audit_events, as: :entity, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :remote_mirrors, inverse_of: :project
+      has_many :path_locks
 
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 

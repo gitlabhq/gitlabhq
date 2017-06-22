@@ -19,7 +19,7 @@ module EE
     }.freeze
 
     prepended do
-      has_one :namespace_statistics, dependent: :destroy
+      has_one :namespace_statistics
 
       scope :with_plan, -> { where.not(plan: [nil, '']) }
 

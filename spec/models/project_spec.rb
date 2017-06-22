@@ -51,7 +51,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:project_feature) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
-    it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData').dependent(:delete) }
+    it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
@@ -63,7 +63,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
-    it { is_expected.to have_many(:path_locks).dependent(:destroy) }
+    it { is_expected.to have_many(:path_locks) }
     it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
     it { is_expected.to have_many(:users_star_projects) }
     it { is_expected.to have_many(:environments) }
