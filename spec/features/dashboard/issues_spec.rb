@@ -59,6 +59,11 @@ RSpec.describe 'Dashboard Issues', feature: true do
       expect(page).to have_content(other_issue.title)
     end
 
+    it 'state filter tabs work' do
+      find('#state-closed').click
+      expect(page).to have_current_path(issues_dashboard_url(assignee_id: current_user.id, scope: 'all', state: 'closed'), url: true)
+    end
+
     it_behaves_like "it has an RSS button with current_user's RSS token"
     it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
   end
