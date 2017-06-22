@@ -768,8 +768,8 @@ describe 'Git HTTP requests', lib: true do
           end
 
           it 'responds with status 403 Forbidden' do
-            allow_any_instance_of(EE::Project).
-              to receive(:above_size_limit?).and_return(true)
+            allow_any_instance_of(EE::Project)
+              .to receive(:above_size_limit?).and_return(true)
 
             upload(path, env) do |response|
               expect(response).to have_http_status(:forbidden)
