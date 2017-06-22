@@ -24,15 +24,15 @@ describe 'New/edit issue (EE)', :feature, :js do
       visit new_project_issue_path(project)
     end
 
-    describe 'shorten users API pagination limit (CE)' do
+    describe 'shorten users API pagination limit' do
       before do
         # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
         # somehow refer to the very block we defined to _wrap_ that method, instead of
         # the original method, resulting in infinite recurison when called.
         # This is likely a bug with helper modules included into dynamically generated view classes.
         # To work around this, we have to hold on to and call to the original implementation manually.
-        original_issue_dropdown_options = FormHelper.instance_method(:issue_dropdown_options)
-        allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
+        original_issue_dropdown_options = EE::FormHelper.instance_method(:issue_assignees_dropdown_options)
+        allow_any_instance_of(EE::FormHelper).to receive(:issue_assignees_dropdown_options).and_wrap_original do |original, *args|
           options = original_issue_dropdown_options.bind(original.receiver).call(*args)
           options[:data][:per_page] = 2
 
