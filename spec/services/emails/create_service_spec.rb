@@ -17,15 +17,5 @@ describe Emails::CreateService, services: true do
 
       expect(user.emails).to eq(Email.where(opts))
     end
-
-    it 'does not create an email if the user has no permissions' do
-      expect { described_class.new(create(:user), user, opts).execute }.to raise_error(Gitlab::Access::AccessDeniedError)
-    end
-
-    it 'creates an email if we skip authorization' do
-      expect do
-        described_class.new(create(:user), user, opts).execute(skip_authorization: true)
-      end.to change { Email.count }.by(1)
-    end
   end
 end

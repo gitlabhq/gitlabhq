@@ -17,10 +17,12 @@ module Users
       end
     end
 
-    def execute!(skip_authorization: false, &block)
+    def execute!(*args, &block)
       result = execute(*args, &block)
 
-      raise SomeCustomException(result[:message]) unless result[:status] == :success
+      raise ActiveRecord::RecordInvalid(result[:message]) unless result[:status] == :success
+
+      true
     end
 
     private

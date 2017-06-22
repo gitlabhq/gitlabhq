@@ -5,9 +5,9 @@ class Profiles::EmailsController < Profiles::ApplicationController
   end
 
   def create
-    @email = current_user.emails.new(email_params)
+    @email = Emails::CreateService.new(current_user, current_user, email_params).execute
 
-    if Emails::CreateService.new(current_user, current_user, email_params).execute
+    if @email.errors.blank?
       NotificationService.new.new_email(@email)
     else
       flash[:alert] = @email.errors.full_messages.first
@@ -18,6 +18,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def destroy
     @email = current_user.emails.find(params[:id])
+
     Emails::DestroyService.new(current_user, current_user, email: @email.email).execute
 
     respond_to do |format|

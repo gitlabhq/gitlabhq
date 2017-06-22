@@ -41,8 +41,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def create
     if current_user.validate_and_consume_otp!(params[:pin_code])
-      Users::UpdateService.new(current_user, current_user).execute! do |user|
-        user.otp_required_for_login = true
+      Users::UpdateService.new(current_user, current_user, otp_required_for_login: true).execute! do |user|
         @codes = user.generate_otp_backup_codes!
       end
 
