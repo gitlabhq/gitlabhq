@@ -63,9 +63,7 @@ export default class GroupsStore {
         } else if (parentGroup && parentGroup.id === currentGroup.parentId) {
           tree[`id${currentGroup.id}`] = currentGroup;
         } else {
-          // No parent found. We save it for later processing.
-          // We should put it inside a group where it's contained.
-          // e.g. If this group is `one / two / three` we are going to put it inside `one`
+          // No parent found. We save it for later processing
           orphans.push(currentGroup);
 
           // Add to tree to preserve original order
@@ -79,7 +77,6 @@ export default class GroupsStore {
       return key;
     });
 
-    // Hopefully this array will be empty for most cases
     if (orphans.length) {
       orphans.map((orphan) => {
         let found = false;
@@ -92,8 +89,8 @@ export default class GroupsStore {
            // Make sure `group` exists since it can be deleted below
            group &&
            currentOrphan.fullPath.lastIndexOf(group.fullPath) === 0 &&
-           // Make sure is not the same we are not comparing the same group.
-           // If we don't do this it will cause and infinite loop when rendering on vue
+           // Make sure the currently selected orphan is not the same as the group
+           // we are checking here otherwise it will end up in an infinite loop
            currentOrphan.id !== group.id
            ) {
             group.subGroups[currentOrphan.id] = currentOrphan;
