@@ -1,4 +1,4 @@
-# Code quality diff using Code Climate
+# Code Quality
 
 > [Introduced][ee-1984] in [GitLab Enterprise Edition Starter][ee] 9.3.
 
