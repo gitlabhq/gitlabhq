@@ -58,9 +58,11 @@ describe Projects::EnvironmentsController do
           expect(json_response['stopped_count']).to eq 1
         end
 
-        it 'sets the polling interval header' do
+        it 'does not set the polling interval header' do
+          # TODO, this is a temporary fix, see follow up issue:
+          # https://gitlab.com/gitlab-org/gitlab-ee/issues/2677
           expect(response).to have_http_status(:ok)
-          expect(response.headers['Poll-Interval']).to eq("3000")
+          expect(response.headers['Poll-Interval']).to be_nil
         end
       end
 

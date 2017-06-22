@@ -1,0 +1,4 @@
+---
+title: Disable environment list refresh due to bug https://gitlab.com/gitlab-org/gitlab-ee/issues/2677
+merge_request: 12347
+author:

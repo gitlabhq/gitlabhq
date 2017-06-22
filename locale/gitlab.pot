@@ -77,9 +77,6 @@ msgstr ""
 msgid "ByAuthor|by"
 msgstr ""
 
-msgid "CI configuration"
-msgstr ""
-
 msgid "Cancel"
 msgstr ""
 
@@ -356,31 +353,10 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
-msgid "Go to your fork"
-msgstr ""
-
-msgid "GoToYourFork|Fork"
-msgstr ""
-
-msgid "Home"
-msgstr ""
-
-msgid "Housekeeping successfully started"
-msgstr ""
-
-msgid "Import repository"
-msgstr ""
-
 msgid "Interval Pattern"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
-msgstr ""
-
-msgid "LFSStatus|Disabled"
-msgstr ""
-
-msgid "LFSStatus|Enabled"
 msgstr ""
 
 msgid "Last %d day"
@@ -415,9 +391,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Median"
-msgstr ""
-
-msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr ""
 
 msgid "New Issue"
@@ -626,19 +599,7 @@ msgstr ""
 msgid "ProjectLifecycle|Stage"
 msgstr ""
 
-msgid "ProjectNetworkGraph|Graph"
-msgstr ""
-
 msgid "Read more"
-msgstr ""
-
-msgid "Readme"
-msgstr ""
-
-msgid "RefSwitcher|Branches"
-msgstr ""
-
-msgid "RefSwitcher|Tags"
 msgstr ""
 
 msgid "Related Commits"
@@ -695,21 +656,6 @@ msgstr ""
 msgid "Select target branch"
 msgstr ""
 
-msgid "Set a password on your account to pull or push via %{protocol}"
-msgstr ""
-
-msgid "Set up CI"
-msgstr ""
-
-msgid "Set up Koding"
-msgstr ""
-
-msgid "Set up auto deploy"
-msgstr ""
-
-msgid "SetPasswordToCloneLink|set a password"
-msgstr ""
-
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
@@ -744,9 +690,6 @@ msgstr ""
 msgid "The collection of events added to the data gathered for that stage."
 msgstr ""
 
-msgid "The fork relationship has been removed."
-msgstr ""
-
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr ""
 
@@ -760,15 +703,6 @@ msgid "The planning stage shows the time from the previous step to pushing your 
 msgstr ""
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
-msgstr ""
-
-msgid "The project can be accessed by any logged in user."
-msgstr ""
-
-msgid "The project can be accessed without any authentication."
-msgstr ""
-
-msgid "The repository for this project does not exist."
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
@@ -786,9 +720,6 @@ msgstr ""
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
-msgid "This means you can not push code until you create an empty repository or import existing one."
-msgstr ""
-
 msgid "Time before an issue gets scheduled"
 msgstr ""
 
@@ -799,129 +730,6 @@ msgid "Time between merge request creation and merge/close"
 msgstr ""
 
 msgid "Time until first merge request"
-msgstr ""
-
-msgid "Timeago|%s days ago"
-msgstr ""
-
-msgid "Timeago|%s days remaining"
-msgstr ""
-
-msgid "Timeago|%s hours remaining"
-msgstr ""
-
-msgid "Timeago|%s minutes ago"
-msgstr ""
-
-msgid "Timeago|%s minutes remaining"
-msgstr ""
-
-msgid "Timeago|%s months ago"
-msgstr ""
-
-msgid "Timeago|%s months remaining"
-msgstr ""
-
-msgid "Timeago|%s seconds remaining"
-msgstr ""
-
-msgid "Timeago|%s weeks ago"
-msgstr ""
-
-msgid "Timeago|%s weeks remaining"
-msgstr ""
-
-msgid "Timeago|%s years ago"
-msgstr ""
-
-msgid "Timeago|%s years remaining"
-msgstr ""
-
-msgid "Timeago|1 day remaining"
-msgstr ""
-
-msgid "Timeago|1 hour remaining"
-msgstr ""
-
-msgid "Timeago|1 minute remaining"
-msgstr ""
-
-msgid "Timeago|1 month remaining"
-msgstr ""
-
-msgid "Timeago|1 week remaining"
-msgstr ""
-
-msgid "Timeago|1 year remaining"
-msgstr ""
-
-msgid "Timeago|Past due"
-msgstr ""
-
-msgid "Timeago|a day ago"
-msgstr ""
-
-msgid "Timeago|a month ago"
-msgstr ""
-
-msgid "Timeago|a week ago"
-msgstr ""
-
-msgid "Timeago|a while"
-msgstr ""
-
-msgid "Timeago|a year ago"
-msgstr ""
-
-msgid "Timeago|about %s hours ago"
-msgstr ""
-
-msgid "Timeago|about a minute ago"
-msgstr ""
-
-msgid "Timeago|about an hour ago"
-msgstr ""
-
-msgid "Timeago|in %s days"
-msgstr ""
-
-msgid "Timeago|in %s hours"
-msgstr ""
-
-msgid "Timeago|in %s minutes"
-msgstr ""
-
-msgid "Timeago|in %s months"
-msgstr ""
-
-msgid "Timeago|in %s seconds"
-msgstr ""
-
-msgid "Timeago|in %s weeks"
-msgstr ""
-
-msgid "Timeago|in %s years"
-msgstr ""
-
-msgid "Timeago|in 1 day"
-msgstr ""
-
-msgid "Timeago|in 1 hour"
-msgstr ""
-
-msgid "Timeago|in 1 minute"
-msgstr ""
-
-msgid "Timeago|in 1 month"
-msgstr ""
-
-msgid "Timeago|in 1 week"
-msgstr ""
-
-msgid "Timeago|in 1 year"
-msgstr ""
-
-msgid "Timeago|less than a minute ago"
 msgstr ""
 
 msgid "Time|hr"
