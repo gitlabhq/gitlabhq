@@ -1,4 +1,0 @@
----
-title: Return nil when looking up config for unknown LDAP provider
-merge_request:
-author:
