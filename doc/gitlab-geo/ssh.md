@@ -16,5 +16,5 @@ SSH authorization via database
 lookups](../administration/operations/speed_up_ssh.html).
 
 Note that the 'Write to "authorized keys" file' checkbox only needs
-to be selected on the primary node since it will be reflected automatically
+to be unchecked on the primary node since it will be reflected automatically
 in the secondary if database replication is working.
