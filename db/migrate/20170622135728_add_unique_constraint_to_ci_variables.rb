@@ -12,7 +12,7 @@ class AddUniqueConstraintToCiVariables < ActiveRecord::Migration
   end
 
   def down
-    if index_exists?(:ci_variables, columns)
+    if index_exists?(:ci_variables, columns) && Gitlab::Database.postgresql?
       remove_concurrent_index(:ci_variables, columns)
     end
   end
