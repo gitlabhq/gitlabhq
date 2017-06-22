@@ -16,10 +16,6 @@
         - else
           = render "layouts/nav/new_explore"
 
-      %button.navbar-toggle.navbar-toggle-left.hide.hidden-sm.hidden-md.hidden-lg.js-navbar-toggle-left{ type: 'button' }
-        %span.sr-only Toggle navigation
-        = icon('chevron-left')
-
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
           %li.hidden-sm.hidden-xs
@@ -84,9 +80,10 @@
               %div
                 = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
 
-      %button.navbar-toggle.hidden-sm.hidden-md.hidden-lg.js-navbar-toggle-right{ type: 'button' }
+      %button.navbar-toggle.hidden-sm.hidden-md.hidden-lg{ type: 'button' }
         %span.sr-only Toggle navigation
-        = icon('chevron-right')
+        = icon('ellipsis-v', class: 'js-navbar-toggle-right')
+        = icon('times', class: 'js-navbar-toggle-left', style: 'display: none;')
 
       = yield :header_content
 

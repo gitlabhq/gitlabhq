@@ -50,15 +50,19 @@ header.navbar-gitlab-new {
   }
 
   .navbar-collapse {
+    padding-left: 0;
     color: $white-light;
   }
 
   .container-fluid {
     .navbar-toggle {
+      min-width: 45px;
       padding: 6px $gl-padding;
       margin-right: -5px;
+      font-size: 14px;
+      text-align: center;
       color: currentColor;
-      border-left: 1px solid $white-light;
+      border-left: 1px solid lighten($purple-700, 10%);
 
       &:hover,
       &:focus,
@@ -66,14 +70,6 @@ header.navbar-gitlab-new {
         color: currentColor;
         background-color: transparent;
       }
-    }
-
-    .navbar-toggle-left {
-      right: 0;
-      margin-right: 0;
-      margin-left: -16px;
-      border-left: 0;
-      border-right: 1px solid $white-light;
     }
 
     .navbar-nav {
@@ -116,7 +112,7 @@ header.navbar-gitlab-new {
 
     > a {
       display: block;
-      padding: 16px 9px 13px;
+      padding: 16px 10px 13px;
       font-size: 13px;
       color: currentColor;
       border-bottom: 3px solid transparent;
@@ -133,6 +129,10 @@ header.navbar-gitlab-new {
   .dropdown-chevron {
     font-size: 10px;
   }
+}
+
+.header-user .dropdown-menu-nav {
+  margin-top: 4px;
 }
 
 .search {
