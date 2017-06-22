@@ -47,7 +47,7 @@ module EE
             end
 
             if current_application_settings.elasticsearch_indexing?
-              ElasticCommitIndexerWorker.perform_async(project.id)
+              project.run_after_commit { ElasticCommitIndexerWorker.perform_async(project.id) }
             end
           end
 
