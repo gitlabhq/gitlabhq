@@ -152,8 +152,8 @@ describe Note, models: true do
     let!(:note2) { create(:note_on_issue) }
 
     it "reads the rendered note body from the cache" do
-      expect(Banzai::Renderer).to receive(:cache_collection_render).
-        with([{
+      expect(Banzai::Renderer).to receive(:cache_collection_render)
+        .with([{
           text: note1.note,
           context: {
             skip_project_check: false,
@@ -164,8 +164,8 @@ describe Note, models: true do
           }
         }]).and_call_original
 
-      expect(Banzai::Renderer).to receive(:cache_collection_render).
-        with([{
+      expect(Banzai::Renderer).to receive(:cache_collection_render)
+        .with([{
           text: note2.note,
           context: {
             skip_project_check: false,
@@ -406,8 +406,8 @@ describe Note, models: true do
       let(:note) { build(:note_on_project_snippet) }
 
       before do
-        expect(Banzai::Renderer).to receive(:cacheless_render_field).
-          with(note, :note, { skip_project_check: false }).and_return(html)
+        expect(Banzai::Renderer).to receive(:cacheless_render_field)
+          .with(note, :note, { skip_project_check: false }).and_return(html)
 
         note.save
       end
@@ -421,8 +421,8 @@ describe Note, models: true do
       let(:note) { build(:note_on_personal_snippet) }
 
       before do
-        expect(Banzai::Renderer).to receive(:cacheless_render_field).
-          with(note, :note, { skip_project_check: true }).and_return(html)
+        expect(Banzai::Renderer).to receive(:cacheless_render_field)
+          .with(note, :note, { skip_project_check: true }).and_return(html)
 
         note.save
       end

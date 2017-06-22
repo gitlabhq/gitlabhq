@@ -82,7 +82,7 @@ module Gitlab
 
         if license
           usage_data[:edition] = license_edition(license.plan)
-          usage_data[:license_md5] = Digest::MD5.hexdigest(license.data)
+          usage_data[:license_md5] = license.md5
           usage_data[:historical_max_users] = ::HistoricalData.max_historical_user_count
           usage_data[:licensee] = license.licensee
           usage_data[:license_user_count] = license.restricted_user_count

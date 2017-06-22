@@ -93,16 +93,16 @@ describe MergeRequest, models: true do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignee).and_return(nil)
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => nil })
     end
 
     it 'includes the assignee name' do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignee).and_return(double(name: 'Douwe'))
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 
@@ -362,8 +362,8 @@ describe MergeRequest, models: true do
     end
 
     it 'accesses the set of issues that will be closed on acceptance' do
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       closed = subject.closes_issues
 
@@ -389,8 +389,8 @@ describe MergeRequest, models: true do
       subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
 
       allow(subject).to receive(:commits).and_return([commit])
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
@@ -536,10 +536,16 @@ describe MergeRequest, models: true do
 
     it "includes project members with developer access and up" do
       expect do
+        developer = create(:user)
+
         project.add_guest(create(:user))
         project.add_reporter(create(:user))
-        project.add_developer(create(:user))
+        project.add_developer(developer)
         project.add_master(create(:user))
+
+        # Add this user as both someone with access, and an explicit approver,
+        # to ensure they aren't double-counted.
+        create(:approver, user: developer, target: merge_request)
       end.to change { merge_request.reload.number_of_potential_approvers }.by(2)
     end
 
@@ -740,8 +746,8 @@ describe MergeRequest, models: true do
       subject.project.team << [subject.author, :developer]
       subject.description = "This issue Closes #{issue.to_reference}"
 
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       expect(subject.merge_commit_message)
         .to match("Closes #{issue.to_reference}")
@@ -866,18 +872,18 @@ describe MergeRequest, models: true do
       end
 
       it 'caches the output' do
-        expect(subject).to receive(:compute_diverged_commits_count).
-          once.
-          and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count)
+          .once
+          .and_return(2)
 
         subject.diverged_commits_count
         subject.diverged_commits_count
       end
 
       it 'invalidates the cache when the source sha changes' do
-        expect(subject).to receive(:compute_diverged_commits_count).
-          twice.
-          and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count)
+          .twice
+          .and_return(2)
 
         subject.diverged_commits_count
         allow(subject).to receive(:source_branch_sha).and_return('123abc')
@@ -885,9 +891,9 @@ describe MergeRequest, models: true do
       end
 
       it 'invalidates the cache when the target sha changes' do
-        expect(subject).to receive(:compute_diverged_commits_count).
-          twice.
-          and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count)
+          .twice
+          .and_return(2)
 
         subject.diverged_commits_count
         allow(subject).to receive(:target_branch_sha).and_return('123abc')
@@ -971,8 +977,8 @@ describe MergeRequest, models: true do
 
   describe '#commits_sha' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_sha).
-        and_return(['sha1'])
+      allow(subject.merge_request_diff).to receive(:commits_sha)
+        .and_return(['sha1'])
     end
 
     it 'delegates to merge request diff' do
@@ -2003,8 +2009,8 @@ describe MergeRequest, models: true do
 
   describe '#has_commits?' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_count).
-        and_return(2)
+      allow(subject.merge_request_diff).to receive(:commits_count)
+        .and_return(2)
     end
 
     it 'returns true when merge request diff has commits' do
@@ -2014,8 +2020,8 @@ describe MergeRequest, models: true do
 
   describe '#has_no_commits?' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_count).
-        and_return(0)
+      allow(subject.merge_request_diff).to receive(:commits_count)
+        .and_return(0)
     end
 
     it 'returns true when merge request diff has 0 commits' do
@@ -2082,8 +2088,8 @@ describe MergeRequest, models: true do
 
   describe '#base_codeclimate_artifact' do
     before do
-      allow(subject.base_pipeline).to receive(:codeclimate_artifact).
-        and_return(1)
+      allow(subject.base_pipeline).to receive(:codeclimate_artifact)
+        .and_return(1)
     end
 
     it 'delegates to merge request diff' do
@@ -2093,8 +2099,8 @@ describe MergeRequest, models: true do
 
   describe '#head_codeclimate_artifact' do
     before do
-      allow(subject.head_pipeline).to receive(:codeclimate_artifact).
-        and_return(1)
+      allow(subject.head_pipeline).to receive(:codeclimate_artifact)
+        .and_return(1)
     end
 
     it 'delegates to merge request diff' do

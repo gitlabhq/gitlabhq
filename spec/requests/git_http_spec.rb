@@ -483,8 +483,8 @@ describe 'Git HTTP requests', lib: true do
                 context 'when LDAP is configured' do
                   before do
                     allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
-                    allow_any_instance_of(Gitlab::LDAP::Authentication).
-                      to receive(:login).and_return(nil)
+                    allow_any_instance_of(Gitlab::LDAP::Authentication)
+                      .to receive(:login).and_return(nil)
                   end
 
                   it 'does not display the personal access token error message' do
@@ -665,7 +665,7 @@ describe 'Git HTTP requests', lib: true do
             end
           end
         end
-        
+
         context "when Kerberos token is provided" do
           let(:env) { { spnego_request_token: 'opaque_request_token' } }
 
@@ -768,7 +768,8 @@ describe 'Git HTTP requests', lib: true do
           end
 
           it 'responds with status 403 Forbidden' do
-            allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
+            allow_any_instance_of(EE::Project)
+              .to receive(:above_size_limit?).and_return(true)
 
             upload(path, env) do |response|
               expect(response).to have_http_status(:forbidden)

@@ -245,19 +245,19 @@ module Gitlab
         start_id = exec_query(start_arel.to_sql).to_hash.first['id'].to_i
 
         loop do
-          stop_arel = table.project(table[:id]).
-            where(table[:id].gteq(start_id)).
-            order(table[:id].asc).
-            take(1).
-            skip(batch_size)
+          stop_arel = table.project(table[:id])
+            .where(table[:id].gteq(start_id))
+            .order(table[:id].asc)
+            .take(1)
+            .skip(batch_size)
 
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_arel = Arel::UpdateManager.new(ActiveRecord::Base).
-            table(table).
-            set([[table[column], value]]).
-            where(table[:id].gteq(start_id))
+          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
+            .table(table)
+            .set([[table[column], value]])
+            .where(table[:id].gteq(start_id))
 
           if stop_row
             stop_id = stop_row['id'].to_i
@@ -586,15 +586,15 @@ module Gitlab
         quoted_replacement = Arel::Nodes::Quoted.new(replacement.to_s)
 
         if Database.mysql?
-          locate = Arel::Nodes::NamedFunction.
-            new('locate', [quoted_pattern, column])
-          insert_in_place = Arel::Nodes::NamedFunction.
-            new('insert', [column, locate, pattern.size, quoted_replacement])
+          locate = Arel::Nodes::NamedFunction
+            .new('locate', [quoted_pattern, column])
+          insert_in_place = Arel::Nodes::NamedFunction
+            .new('insert', [column, locate, pattern.size, quoted_replacement])
 
           Arel::Nodes::SqlLiteral.new(insert_in_place.to_sql)
         else
-          replace = Arel::Nodes::NamedFunction.
-            new("regexp_replace", [column, quoted_pattern, quoted_replacement])
+          replace = Arel::Nodes::NamedFunction
+            .new("regexp_replace", [column, quoted_pattern, quoted_replacement])
           Arel::Nodes::SqlLiteral.new(replace.to_sql)
         end
       end

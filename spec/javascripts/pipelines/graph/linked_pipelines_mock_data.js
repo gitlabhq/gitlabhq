@@ -1,7 +1,7 @@
 /* eslint-disable quote-props, quotes, comma-dangle */
 
 export default {
-  "triggered_by": [{
+  "triggered_by": {
     "id": 129,
     "active": true,
     "path": "/gitlab-org/gitlab-ce/pipelines/129",
@@ -56,7 +56,7 @@ export default {
     "cancel_path": "/gitlab-org/gitlab-ce/pipelines/129/cancel",
     "created_at": "2017-05-24T14:46:20.090Z",
     "updated_at": "2017-05-24T14:46:29.906Z"
-  }],
+  },
   "triggered": [{
     "id": 132,
     "active": true,

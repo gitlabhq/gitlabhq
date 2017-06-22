@@ -9,7 +9,7 @@ describe('Linked pipeline mini list', () => {
     beforeEach(() => {
       this.component = new ListComponent({
         propsData: {
-          triggeredBy: mockData.triggered_by,
+          triggeredBy: [mockData.triggered_by],
         },
       }).$mount();
     });

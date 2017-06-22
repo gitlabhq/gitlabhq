@@ -40,9 +40,9 @@ class Environment < ActiveRecord::Base
   scope :stopped, -> { with_state(:stopped) }
   scope :order_by_last_deployed_at, -> do
     max_deployment_id_sql =
-      Deployment.select(Deployment.arel_table[:id].maximum).
-      where(Deployment.arel_table[:environment_id].eq(arel_table[:id])).
-      to_sql
+      Deployment.select(Deployment.arel_table[:id].maximum)
+      .where(Deployment.arel_table[:environment_id].eq(arel_table[:id]))
+      .to_sql
     order(Gitlab::Database.nulls_first_order("(#{max_deployment_id_sql})", 'ASC'))
   end
 

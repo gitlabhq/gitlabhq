@@ -241,13 +241,13 @@ class User < ActiveRecord::Base
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
 
   def self.with_two_factor
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
-      where("u2f.id IS NOT NULL OR otp_required_for_login = ?", true).distinct(arel_table[:id])
+    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
+      .where("u2f.id IS NOT NULL OR otp_required_for_login = ?", true).distinct(arel_table[:id])
   end
 
   def self.without_two_factor
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
-      where("u2f.id IS NULL AND otp_required_for_login = ?", false)
+    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
+      .where("u2f.id IS NULL AND otp_required_for_login = ?", false)
   end
 
   #
@@ -322,9 +322,9 @@ class User < ActiveRecord::Base
       pattern = "%#{query}%"
 
       where(
-        table[:name].matches(pattern).
-          or(table[:email].matches(pattern)).
-          or(table[:username].matches(pattern))
+        table[:name].matches(pattern)
+          .or(table[:email].matches(pattern))
+          .or(table[:username].matches(pattern))
       )
     end
 
@@ -339,10 +339,10 @@ class User < ActiveRecord::Base
       matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].matches(pattern))
 
       where(
-        table[:name].matches(pattern).
-          or(table[:email].matches(pattern)).
-          or(table[:username].matches(pattern)).
-          or(table[:id].in(matched_by_emails_user_ids))
+        table[:name].matches(pattern)
+          .or(table[:email].matches(pattern))
+          .or(table[:username].matches(pattern))
+          .or(table[:id].in(matched_by_emails_user_ids))
       )
     end
 
@@ -530,8 +530,8 @@ class User < ActiveRecord::Base
 
   # Returns the groups a user has access to
   def authorized_groups
-    union = Gitlab::SQL::Union.
-      new([groups.select(:id), authorized_projects.select(:namespace_id)])
+    union = Gitlab::SQL::Union
+      .new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
@@ -560,8 +560,8 @@ class User < ActiveRecord::Base
     projects = super()
 
     if min_access_level
-      projects = projects.
-        where('project_authorizations.access_level >= ?', min_access_level)
+      projects = projects
+        .where('project_authorizations.access_level >= ?', min_access_level)
     end
 
     projects
@@ -646,9 +646,9 @@ class User < ActiveRecord::Base
       next unless project
 
       if project.repository.branch_exists?(event.branch_name)
-        merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
-          where(source_project_id: project.id,
-                source_branch: event.branch_name)
+        merge_requests = MergeRequest.where("created_at >= ?", event.created_at)
+          .where(source_project_id: project.id,
+                 source_branch: event.branch_name)
         merge_requests.empty?
       end
     end
@@ -863,8 +863,8 @@ class User < ActiveRecord::Base
 
   def toggle_star(project)
     UsersStarProject.transaction do
-      user_star_project = users_star_projects.
-          where(project: project, user: self).lock(true).first
+      user_star_project = users_star_projects
+          .where(project: project, user: self).lock(true).first
 
       if user_star_project
         user_star_project.destroy
@@ -900,11 +900,11 @@ class User < ActiveRecord::Base
   # ms on a database with a similar size to GitLab.com's database. On the other
   # hand, using a subquery means we can get the exact same data in about 40 ms.
   def contributed_projects
-    events = Event.select(:project_id).
-      contributions.where(author_id: self).
-      where("created_at > ?", Time.now - 1.year).
-      uniq.
-      reorder(nil)
+    events = Event.select(:project_id)
+      .contributions.where(author_id: self)
+      .where("created_at > ?", Time.now - 1.year)
+      .uniq
+      .reorder(nil)
 
     Project.where(id: events)
   end
@@ -915,9 +915,9 @@ class User < ActiveRecord::Base
 
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
-      runner_ids = Ci::RunnerProject.
-        where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})").
-        select(:runner_id)
+      runner_ids = Ci::RunnerProject
+        .where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})")
+        .select(:runner_id)
       Ci::Runner.specific.where(id: runner_ids)
     end
   end
@@ -1003,8 +1003,6 @@ class User < ActiveRecord::Base
   def access_level
     if admin?
       :admin
-    elsif auditor?
-      :auditor
     else
       :regular
     end
@@ -1012,10 +1010,14 @@ class User < ActiveRecord::Base
 
   def access_level=(new_level)
     new_level = new_level.to_s
-    return unless %w(admin auditor regular).include?(new_level)
+    return unless %w(admin regular).include?(new_level)
 
     self.admin = (new_level == 'admin')
-    self.auditor = (new_level == 'auditor')
+  end
+
+  # Does the user have access to all private groups & projects?
+  def has_full_private_access?
+    admin?
   end
 
   def update_two_factor_requirement

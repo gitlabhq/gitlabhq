@@ -79,6 +79,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
 1. [Upload the GitLab License](../user/admin_area/license.md) to the **primary** Geo Node to unlock GitLab Geo.
 1. [Setup the database replication](database.md)  (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
+1. [Configure SSH authorizations to use the database](ssh.md)
 1. Optional: [Configure a secondary LDAP server](../administration/auth/ldap.md) for the secondary. See [notes on LDAP](#ldap).
 1. [Follow the after setup steps](after_setup.md).
 

@@ -167,8 +167,8 @@ describe Gitlab::LDAP::User, lib: true do
 
   describe 'blocking' do
     def configure_block(value)
-      allow_any_instance_of(Gitlab::LDAP::Config).
-        to receive(:block_auto_created_users).and_return(value)
+      allow_any_instance_of(Gitlab::LDAP::Config)
+        .to receive(:block_auto_created_users).and_return(value)
     end
 
     context 'signup' do

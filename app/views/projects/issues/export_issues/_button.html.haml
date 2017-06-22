@@ -1,0 +1,3 @@
+- if current_user && @project.feature_available?(:export_issues)
+  %button.csv_download_link.btn.append-right-10.has-tooltip{ title: 'Export as CSV' }
+    = icon('download')

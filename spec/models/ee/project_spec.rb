@@ -22,73 +22,77 @@ describe Project, models: true do
       before do
         stub_application_setting('check_namespace_plan?' => check_namespace_plan)
         allow(Gitlab).to receive(:com?) { true }
-        expect_any_instance_of(License).to receive(:feature_available?).with(feature) { allowed_on_global_license }
+        expect(License).to receive(:feature_available?).with(feature) { allowed_on_global_license }
         allow(namespace).to receive(:plan) { plan_license }
       end
 
       License::FEATURE_CODES.each do |feature_sym, feature_code|
-        let(:feature) { feature_sym }
-        let(:feature_code) { feature_code }
+        context feature_sym.to_s do
+          let(:feature) { feature_sym }
+          let(:feature_code) { feature_code }
 
-        context "checking #{feature} availabily both on Global and Namespace license" do
-          let(:check_namespace_plan) { true }
+          context "checking #{feature_sym} availability both on Global and Namespace license" do
+            let(:check_namespace_plan) { true }
 
-          context 'allowed by Plan License AND Global License' do
-            let(:allowed_on_global_license) { true }
-            let(:plan_license) { Namespace::GOLD_PLAN }
+            context 'allowed by Plan License AND Global License' do
+              let(:allowed_on_global_license) { true }
+              let(:plan_license) { Namespace::GOLD_PLAN }
 
-            it 'returns true' do
-              is_expected.to eq(true)
+              it 'returns true' do
+                is_expected.to eq(true)
+              end
+            end
+
+            context 'not allowed by Plan License but project and namespace are public' do
+              let(:allowed_on_global_license) { true }
+              let(:plan_license) { Namespace::BRONZE_PLAN }
+
+              it 'returns true' do
+                allow(namespace).to receive(:public?) { true }
+                allow(project).to receive(:public?) { true }
+
+                is_expected.to eq(true)
+              end
+            end
+
+            unless License.plan_includes_feature?(License::STARTER_PLAN, feature_sym)
+              context 'not allowed by Plan License' do
+                let(:allowed_on_global_license) { true }
+                let(:plan_license) { Namespace::BRONZE_PLAN }
+
+                it 'returns false' do
+                  is_expected.to eq(false)
+                end
+              end
+            end
+
+            context 'not allowed by Global License' do
+              let(:allowed_on_global_license) { false }
+              let(:plan_license) { Namespace::GOLD_PLAN }
+
+              it 'returns false' do
+                is_expected.to eq(false)
+              end
             end
           end
 
-          context 'not allowed by Plan License but project and namespace are public' do
-            let(:allowed_on_global_license) { true }
-            let(:plan_license) { Namespace::BRONZE_PLAN }
+          context "when checking #{feature_code} only for Global license" do
+            let(:check_namespace_plan) { false }
 
-            it 'returns true' do
-              allow(namespace).to receive(:public?) { true }
-              allow(project).to receive(:public?) { true }
+            context 'allowed by Global License' do
+              let(:allowed_on_global_license) { true }
 
-              is_expected.to eq(true)
+              it 'returns true' do
+                is_expected.to eq(true)
+              end
             end
-          end
 
-          context 'not allowed by Plan License' do
-            let(:allowed_on_global_license) { true }
-            let(:plan_license) { Namespace::BRONZE_PLAN }
+            context 'not allowed by Global License' do
+              let(:allowed_on_global_license) { false }
 
-            it 'returns false' do
-              is_expected.to eq(false)
-            end
-          end
-
-          context 'not allowed by Global License' do
-            let(:allowed_on_global_license) { false }
-            let(:plan_license) { Namespace::GOLD_PLAN }
-
-            it 'returns false' do
-              is_expected.to eq(false)
-            end
-          end
-        end
-
-        context "when checking #{feature_code} only for Global license" do
-          let(:check_namespace_plan) { false }
-
-          context 'allowed by Global License' do
-            let(:allowed_on_global_license) { true }
-
-            it 'returns true' do
-              is_expected.to eq(true)
-            end
-          end
-
-          context 'not allowed by Global License' do
-            let(:allowed_on_global_license) { false }
-
-            it 'returns false' do
-              is_expected.to eq(false)
+              it 'returns false' do
+                is_expected.to eq(false)
+              end
             end
           end
         end

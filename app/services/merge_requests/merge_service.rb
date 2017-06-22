@@ -89,8 +89,8 @@ module MergeRequests
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
 
       if params[:should_remove_source_branch].present? || @merge_request.force_remove_source_branch?
-        DeleteBranchService.new(@merge_request.source_project, branch_deletion_user).
-          execute(merge_request.source_branch)
+        DeleteBranchService.new(@merge_request.source_project, branch_deletion_user)
+          .execute(merge_request.source_branch)
       end
     end
 

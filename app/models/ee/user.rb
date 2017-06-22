@@ -56,6 +56,27 @@ module EE
       admin? || auditor?
     end
 
+    def access_level
+      if auditor?
+        :auditor
+      else
+        super
+      end
+    end
+
+    def access_level=(new_level)
+      new_level = new_level.to_s
+      return unless %w(admin auditor regular).include?(new_level)
+
+      self.admin = (new_level == 'admin')
+      self.auditor = (new_level == 'auditor')
+    end
+
+    # Does the user have access to all private groups & projects?
+    def has_full_private_access?
+      admin_or_auditor?
+    end
+
     def remember_me!
       return if ::Gitlab::Geo.secondary?
       super

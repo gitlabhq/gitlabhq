@@ -164,9 +164,9 @@ module Issuable
       #
       milestones_due_date = 'MIN(milestones.due_date)'
 
-      order_milestone_due_asc.
-        order_labels_priority(excluded_labels: excluded_labels, extra_select_columns: [milestones_due_date]).
-        reorder(Gitlab::Database.nulls_last_order(milestones_due_date, 'ASC'),
+      order_milestone_due_asc
+        .order_labels_priority(excluded_labels: excluded_labels, extra_select_columns: [milestones_due_date])
+        .reorder(Gitlab::Database.nulls_last_order(milestones_due_date, 'ASC'),
                 Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
 
@@ -185,9 +185,9 @@ module Issuable
         "(#{highest_priority}) AS highest_priority"
       ] + extra_select_columns
 
-      select(select_columns.join(', ')).
-        group(arel_table[:id]).
-        reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+      select(select_columns.join(', '))
+        .group(arel_table[:id])
+        .reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
 
     def with_label(title, sort = nil)

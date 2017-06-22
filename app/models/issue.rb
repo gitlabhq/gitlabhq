@@ -136,8 +136,8 @@ class Issue < ActiveRecord::Base
   end
 
   def self.order_by_position_and_priority
-    order_labels_priority.
-      reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
+    order_labels_priority
+      .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
   end

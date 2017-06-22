@@ -5,9 +5,9 @@ describe Gitlab::BackgroundMigration do
     it 'steals jobs from a queue' do
       queue = [double(:job, args: ['Foo', [10, 20]])]
 
-      allow(Sidekiq::Queue).to receive(:new).
-        with(BackgroundMigrationWorker.sidekiq_options['queue']).
-        and_return(queue)
+      allow(Sidekiq::Queue).to receive(:new)
+        .with(BackgroundMigrationWorker.sidekiq_options['queue'])
+        .and_return(queue)
 
       expect(queue[0]).to receive(:delete)
 
@@ -19,9 +19,9 @@ describe Gitlab::BackgroundMigration do
     it 'does not steal jobs for a different migration' do
       queue = [double(:job, args: ['Foo', [10, 20]])]
 
-      allow(Sidekiq::Queue).to receive(:new).
-        with(BackgroundMigrationWorker.sidekiq_options['queue']).
-        and_return(queue)
+      allow(Sidekiq::Queue).to receive(:new)
+        .with(BackgroundMigrationWorker.sidekiq_options['queue'])
+        .and_return(queue)
 
       expect(described_class).not_to receive(:perform)
 
@@ -36,9 +36,9 @@ describe Gitlab::BackgroundMigration do
       instance = double(:instance)
       klass = double(:klass, new: instance)
 
-      expect(described_class).to receive(:const_get).
-        with('Foo').
-        and_return(klass)
+      expect(described_class).to receive(:const_get)
+        .with('Foo')
+        .and_return(klass)
 
       expect(instance).to receive(:perform).with(10, 20)
 

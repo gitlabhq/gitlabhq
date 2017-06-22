@@ -1437,23 +1437,23 @@ describe Project, models: true do
     it 'renames a repository' do
       stub_container_registry_config(enabled: false)
 
-      expect(gitlab_shell).to receive(:mv_repository).
-        ordered.
-        with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}").
-        and_return(true)
+      expect(gitlab_shell).to receive(:mv_repository)
+        .ordered
+        .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+        .and_return(true)
 
-      expect(gitlab_shell).to receive(:mv_repository).
-        ordered.
-        with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki").
-        and_return(true)
+      expect(gitlab_shell).to receive(:mv_repository)
+        .ordered
+        .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+        .and_return(true)
 
-      expect_any_instance_of(SystemHooksService).
-        to receive(:execute_hooks_for).
-        with(project, :rename)
+      expect_any_instance_of(SystemHooksService)
+        .to receive(:execute_hooks_for)
+        .with(project, :rename)
 
-      expect_any_instance_of(Gitlab::UploadsTransfer).
-        to receive(:rename_project).
-        with('foo', project.path, project.namespace.full_path)
+      expect_any_instance_of(Gitlab::UploadsTransfer)
+        .to receive(:rename_project)
+        .with('foo', project.path, project.namespace.full_path)
 
       expect(project).to receive(:expire_caches_before_rename)
 
@@ -1481,13 +1481,13 @@ describe Project, models: true do
     let(:wiki)    { double(:wiki, exists?: true) }
 
     it 'expires the caches of the repository and wiki' do
-      allow(Repository).to receive(:new).
-        with('foo', project).
-        and_return(repo)
+      allow(Repository).to receive(:new)
+        .with('foo', project)
+        .and_return(repo)
 
-      allow(Repository).to receive(:new).
-        with('foo.wiki', project).
-        and_return(wiki)
+      allow(Repository).to receive(:new)
+        .with('foo.wiki', project)
+        .and_return(wiki)
 
       expect(repo).to receive(:before_delete)
       expect(wiki).to receive(:before_delete)
@@ -1538,9 +1538,9 @@ describe Project, models: true do
 
     context 'using a regular repository' do
       it 'creates the repository' do
-        expect(shell).to receive(:add_repository).
-          with(project.repository_storage_path, project.path_with_namespace).
-          and_return(true)
+        expect(shell).to receive(:add_repository)
+          .with(project.repository_storage_path, project.path_with_namespace)
+          .and_return(true)
 
         expect(project.repository).to receive(:after_create)
 
@@ -1548,9 +1548,9 @@ describe Project, models: true do
       end
 
       it 'adds an error if the repository could not be created' do
-        expect(shell).to receive(:add_repository).
-          with(project.repository_storage_path, project.path_with_namespace).
-          and_return(false)
+        expect(shell).to receive(:add_repository)
+          .with(project.repository_storage_path, project.path_with_namespace)
+          .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
 
@@ -1892,8 +1892,8 @@ describe Project, models: true do
       let(:project) { forked_project_link.forked_to_project }
 
       it 'schedules a RepositoryForkWorker job' do
-        expect(RepositoryForkWorker).to receive(:perform_async).
-          with(project.id, forked_from_project.repository_storage_path,
+        expect(RepositoryForkWorker).to receive(:perform_async)
+          .with(project.id, forked_from_project.repository_storage_path,
               forked_from_project.path_with_namespace, project.namespace.full_path)
 
         project.add_import_job
@@ -2533,15 +2533,15 @@ describe Project, models: true do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
                       ' Validate fork Source project is not a fork of the target project'
 
-      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }.
-        to raise_error(ActiveRecord::RecordNotSaved, error_message)
+      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
+        .to raise_error(ActiveRecord::RecordNotSaved, error_message)
     end
 
     it 'updates the project succesfully' do
       merge_request = create(:merge_request, target_project: project, source_project: project)
 
-      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }.
-        not_to raise_error
+      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
+        .not_to raise_error
     end
   end
 
@@ -2550,6 +2550,38 @@ describe Project, models: true do
       project = create(:empty_project, created_at: 2.hours.ago)
 
       expect(project.last_repository_updated_at.to_i).to eq(project.created_at.to_i)
+    end
+  end
+
+  describe '.public_or_visible_to_user' do
+    let!(:user) { create(:user) }
+
+    let!(:private_project) do
+      create(:empty_project, :private, creator: user, namespace: user.namespace)
+    end
+
+    let!(:public_project) { create(:empty_project, :public) }
+
+    context 'with a user' do
+      let(:projects) do
+        Project.all.public_or_visible_to_user(user)
+      end
+
+      it 'includes projects the user has access to' do
+        expect(projects).to include(private_project)
+      end
+
+      it 'includes projects the user can see' do
+        expect(projects).to include(public_project)
+      end
+    end
+
+    context 'without a user' do
+      it 'only includes public projects' do
+        projects = Project.all.public_or_visible_to_user
+
+        expect(projects).to eq([public_project])
+      end
     end
   end
 end

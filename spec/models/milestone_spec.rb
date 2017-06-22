@@ -166,13 +166,13 @@ describe Milestone, models: true do
     end
 
     it 'returns milestones with a partially matching description' do
-      expect(described_class.search(milestone.description[0..2])).
-        to eq([milestone])
+      expect(described_class.search(milestone.description[0..2]))
+        .to eq([milestone])
     end
 
     it 'returns milestones with a matching description regardless of the casing' do
-      expect(described_class.search(milestone.description.upcase)).
-        to eq([milestone])
+      expect(described_class.search(milestone.description.upcase))
+        .to eq([milestone])
     end
   end
 

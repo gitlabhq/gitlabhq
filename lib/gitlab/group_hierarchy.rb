@@ -67,11 +67,11 @@ module Gitlab
       union = SQL::Union.new([model.unscoped.from(ancestors_table),
                               model.unscoped.from(descendants_table)])
 
-      model.
-        unscoped.
-        with.
-        recursive(ancestors.to_arel, descendants.to_arel).
-        from("(#{union.to_sql}) #{model.table_name}")
+      model
+        .unscoped
+        .with
+        .recursive(ancestors.to_arel, descendants.to_arel)
+        .from("(#{union.to_sql}) #{model.table_name}")
     end
 
     private
@@ -82,10 +82,10 @@ module Gitlab
       cte << ancestors_base.except(:order)
 
       # Recursively get all the ancestors of the base set.
-      cte << model.
-        from([groups_table, cte.table]).
-        where(groups_table[:id].eq(cte.table[:parent_id])).
-        except(:order)
+      cte << model
+        .from([groups_table, cte.table])
+        .where(groups_table[:id].eq(cte.table[:parent_id]))
+        .except(:order)
 
       cte
     end
@@ -96,10 +96,10 @@ module Gitlab
       cte << descendants_base.except(:order)
 
       # Recursively get all the descendants of the base set.
-      cte << model.
-        from([groups_table, cte.table]).
-        where(groups_table[:parent_id].eq(cte.table[:id])).
-        except(:order)
+      cte << model
+        .from([groups_table, cte.table])
+        .where(groups_table[:parent_id].eq(cte.table[:id]))
+        .except(:order)
 
       cte
     end

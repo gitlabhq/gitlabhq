@@ -333,8 +333,8 @@ describe SystemNoteService, services: true do
       end
 
       it 'sets the note text' do
-        expect(subject.note).
-          to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
+        expect(subject.note)
+          .to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
       end
     end
   end
@@ -521,8 +521,8 @@ describe SystemNoteService, services: true do
     context 'when mentioner is not a MergeRequest' do
       it 'is falsey' do
         mentioner = noteable.dup
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_falsey
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_falsey
       end
     end
 
@@ -533,14 +533,14 @@ describe SystemNoteService, services: true do
 
       it 'is truthy when noteable is in commits' do
         expect(mentioner).to receive(:commits).and_return([noteable])
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_truthy
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_truthy
       end
 
       it 'is falsey when noteable is not in commits' do
         expect(mentioner).to receive(:commits).and_return([])
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_falsey
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_falsey
       end
     end
 
@@ -548,8 +548,8 @@ describe SystemNoteService, services: true do
       let(:noteable) { ExternalIssue.new('EXT-1234', project) }
       it 'is truthy' do
         mentioner = noteable.dup
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_truthy
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_truthy
       end
     end
   end
@@ -566,13 +566,13 @@ describe SystemNoteService, services: true do
       end
 
       it 'is truthy when already mentioned' do
-        expect(described_class.cross_reference_exists?(noteable, commit0)).
-          to be_truthy
+        expect(described_class.cross_reference_exists?(noteable, commit0))
+          .to be_truthy
       end
 
       it 'is falsey when not already mentioned' do
-        expect(described_class.cross_reference_exists?(noteable, commit1)).
-          to be_falsey
+        expect(described_class.cross_reference_exists?(noteable, commit1))
+          .to be_falsey
       end
 
       context 'legacy capitalized cross reference' do
@@ -583,8 +583,8 @@ describe SystemNoteService, services: true do
         end
 
         it 'is truthy when already mentioned' do
-          expect(described_class.cross_reference_exists?(noteable, commit0)).
-            to be_truthy
+          expect(described_class.cross_reference_exists?(noteable, commit0))
+            .to be_truthy
         end
       end
     end
@@ -596,13 +596,13 @@ describe SystemNoteService, services: true do
       end
 
       it 'is truthy when already mentioned' do
-        expect(described_class.cross_reference_exists?(commit0, commit1)).
-          to be_truthy
+        expect(described_class.cross_reference_exists?(commit0, commit1))
+          .to be_truthy
       end
 
       it 'is falsey when not already mentioned' do
-        expect(described_class.cross_reference_exists?(commit1, commit0)).
-          to be_falsey
+        expect(described_class.cross_reference_exists?(commit1, commit0))
+          .to be_falsey
       end
 
       context 'legacy capitalized cross reference' do
@@ -613,8 +613,8 @@ describe SystemNoteService, services: true do
         end
 
         it 'is truthy when already mentioned' do
-          expect(described_class.cross_reference_exists?(commit0, commit1)).
-            to be_truthy
+          expect(described_class.cross_reference_exists?(commit0, commit1))
+            .to be_truthy
         end
       end
     end
@@ -636,8 +636,8 @@ describe SystemNoteService, services: true do
       end
 
       it 'is true when a fork mentions an external issue' do
-        expect(described_class.cross_reference_exists?(noteable, commit2)).
-            to be true
+        expect(described_class.cross_reference_exists?(noteable, commit2))
+            .to be true
       end
 
       context 'legacy capitalized cross reference' do
@@ -647,8 +647,8 @@ describe SystemNoteService, services: true do
         end
 
         it 'is true when a fork mentions an external issue' do
-          expect(described_class.cross_reference_exists?(noteable, commit2)).
-              to be true
+          expect(described_class.cross_reference_exists?(noteable, commit2))
+              .to be true
         end
       end
     end

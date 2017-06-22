@@ -603,8 +603,8 @@ class MergeRequest < ActiveRecord::Base
       messages = [title, description]
       messages.concat(commits.map(&:safe_message)) if merge_request_diff
 
-      Gitlab::ClosingIssueExtractor.new(project, current_user).
-        closed_by_message(messages.join("\n"))
+      Gitlab::ClosingIssueExtractor.new(project, current_user)
+        .closed_by_message(messages.join("\n"))
     else
       []
     end

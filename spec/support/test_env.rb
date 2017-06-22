@@ -85,13 +85,13 @@ module TestEnv
   end
 
   def disable_mailer
-    allow_any_instance_of(NotificationService).to receive(:mailer).
-      and_return(double.as_null_object)
+    allow_any_instance_of(NotificationService).to receive(:mailer)
+      .and_return(double.as_null_object)
   end
 
   def enable_mailer
-    allow_any_instance_of(NotificationService).to receive(:mailer).
-      and_call_original
+    allow_any_instance_of(NotificationService).to receive(:mailer)
+      .and_call_original
   end
 
   def disable_pre_receive

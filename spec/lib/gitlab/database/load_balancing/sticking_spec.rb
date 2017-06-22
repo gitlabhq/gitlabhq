@@ -16,14 +16,14 @@ describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
     context 'when sticking is enabled' do
       before do
-        allow(Gitlab::Database::LoadBalancing).to receive(:enable?).
-          and_return(true)
+        allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
+          .and_return(true)
       end
 
       it 'does not stick if no write was performed' do
-        allow(Gitlab::Database::LoadBalancing::Session.current).
-          to receive(:performed_write?).
-          and_return(false)
+        allow(Gitlab::Database::LoadBalancing::Session.current)
+          .to receive(:performed_write?)
+          .and_return(false)
 
         expect(described_class).not_to receive(:stick)
 
@@ -31,9 +31,9 @@ describe Gitlab::Database::LoadBalancing::Sticking, :redis do
       end
 
       it 'sticks to the primary if a write was performed' do
-        allow(Gitlab::Database::LoadBalancing::Session.current).
-          to receive(:performed_write?).
-          and_return(true)
+        allow(Gitlab::Database::LoadBalancing::Session.current)
+          .to receive(:performed_write?)
+          .and_return(true)
 
         expect(described_class).to receive(:stick).with(:user, 42)
 
@@ -50,9 +50,9 @@ describe Gitlab::Database::LoadBalancing::Sticking, :redis do
     end
 
     it 'simply returns if no write location could be found' do
-      allow(described_class).to receive(:last_write_location_for).
-        with(:user, 42).
-        and_return(nil)
+      allow(described_class).to receive(:last_write_location_for)
+        .with(:user, 42)
+        .and_return(nil)
 
       expect(lb).not_to receive(:all_caught_up?)
 
@@ -60,9 +60,9 @@ describe Gitlab::Database::LoadBalancing::Sticking, :redis do
     end
 
     it 'unsticks if all secondaries have caught up' do
-      allow(described_class).to receive(:last_write_location_for).
-        with(:user, 42).
-        and_return('foo')
+      allow(described_class).to receive(:last_write_location_for)
+        .with(:user, 42)
+        .and_return('foo')
 
       allow(lb).to receive(:all_caught_up?).with('foo').and_return(true)
 
@@ -72,14 +72,14 @@ describe Gitlab::Database::LoadBalancing::Sticking, :redis do
     end
 
     it 'continues using the primary if the secondaries have not yet caught up' do
-      allow(described_class).to receive(:last_write_location_for).
-        with(:user, 42).
-        and_return('foo')
+      allow(described_class).to receive(:last_write_location_for)
+        .with(:user, 42)
+        .and_return('foo')
 
       allow(lb).to receive(:all_caught_up?).with('foo').and_return(false)
 
-      expect(Gitlab::Database::LoadBalancing::Session.current).
-        to receive(:use_primary!)
+      expect(Gitlab::Database::LoadBalancing::Session.current)
+        .to receive(:use_primary!)
 
       described_class.unstick_or_continue_sticking(:user, 42)
     end
@@ -96,18 +96,18 @@ describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
     context 'when sticking is enabled' do
       it 'sticks an entity to the primary' do
-        allow(Gitlab::Database::LoadBalancing).to receive(:enable?).
-          and_return(true)
+        allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
+          .and_return(true)
 
         lb = double(:lb, primary_write_location: 'foo')
 
         allow(described_class).to receive(:load_balancer).and_return(lb)
 
-        expect(described_class).to receive(:set_write_location_for).
-          with(:user, 42, 'foo')
+        expect(described_class).to receive(:set_write_location_for)
+          .with(:user, 42, 'foo')
 
-        expect(Gitlab::Database::LoadBalancing::Session.current).
-          to receive(:use_primary!)
+        expect(Gitlab::Database::LoadBalancing::Session.current)
+          .to receive(:use_primary!)
 
         described_class.stick(:user, 42)
       end
@@ -133,8 +133,8 @@ describe Gitlab::Database::LoadBalancing::Sticking, :redis do
 
   describe '.redis_key_for' do
     it 'returns a String' do
-      expect(described_class.redis_key_for(:user, 42)).
-        to eq('database-load-balancing/write-location/user/42')
+      expect(described_class.redis_key_for(:user, 42))
+        .to eq('database-load-balancing/write-location/user/42')
     end
   end
 
@@ -142,8 +142,8 @@ describe Gitlab::Database::LoadBalancing::Sticking, :redis do
     it 'returns a the load balancer' do
       proxy = double(:proxy)
 
-      expect(Gitlab::Database::LoadBalancing).to receive(:proxy).
-        and_return(proxy)
+      expect(Gitlab::Database::LoadBalancing).to receive(:proxy)
+        .and_return(proxy)
 
       expect(proxy).to receive(:load_balancer)
 

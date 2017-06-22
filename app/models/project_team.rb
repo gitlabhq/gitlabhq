@@ -174,10 +174,10 @@ class ProjectTeam
 
     return access if user_ids.empty?
 
-    users_access = project.project_authorizations.
-      where(user: user_ids).
-      group(:user_id).
-      maximum(:access_level)
+    users_access = project.project_authorizations
+      .where(user: user_ids)
+      .group(:user_id)
+      .maximum(:access_level)
 
     access.merge!(users_access)
 

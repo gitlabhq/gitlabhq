@@ -940,8 +940,8 @@ describe User, models: true do
 
   describe '.find_by_username!' do
     it 'raises RecordNotFound' do
-      expect { described_class.find_by_username!('JohnDoe') }.
-        to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.find_by_username!('JohnDoe') }
+        .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'is case-insensitive' do
@@ -1625,8 +1625,8 @@ describe User, models: true do
     end
 
     it 'returns the projects when using an ActiveRecord relation' do
-      projects = user.
-        projects_with_reporter_access_limited_to(Project.select(:id))
+      projects = user
+        .projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end
@@ -1771,18 +1771,11 @@ describe User, models: true do
   describe '#access_level=' do
     let(:user) { build(:user) }
 
-    before do
-      # `auditor?` returns true only when the user is an auditor _and_ the auditor license
-      # add-on is present. We aren't testing this here, so we can assume that the add-on exists.
-      allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
-    end
-
     it 'does nothing for an invalid access level' do
       user.access_level = :invalid_access_level
 
       expect(user.access_level).to eq(:regular)
       expect(user.admin).to be false
-      expect(user.auditor).to be false
     end
 
     it "assigns the 'admin' access level" do
@@ -1790,41 +1783,6 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
-      expect(user.auditor).to be false
-    end
-
-    it "assigns the 'auditor' access level" do
-      user.access_level = :auditor
-
-      expect(user.access_level).to eq(:auditor)
-      expect(user.admin).to be false
-      expect(user.auditor).to be true
-    end
-
-    it "assigns the 'auditor' access level" do
-      user.access_level = :regular
-
-      expect(user.access_level).to eq(:regular)
-      expect(user.admin).to be false
-      expect(user.auditor).to be false
-    end
-
-    it "clears the 'admin' access level when a user is made an auditor" do
-      user.access_level = :admin
-      user.access_level = :auditor
-
-      expect(user.access_level).to eq(:auditor)
-      expect(user.admin).to be false
-      expect(user.auditor).to be true
-    end
-
-    it "clears the 'auditor' access level when a user is made an admin" do
-      user.access_level = :auditor
-      user.access_level = :admin
-
-      expect(user.access_level).to eq(:admin)
-      expect(user.admin).to be true
-      expect(user.auditor).to be false
     end
 
     it "doesn't clear existing access levels when an invalid access level is passed in" do
@@ -1833,7 +1791,6 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
-      expect(user.auditor).to be false
     end
 
     it "accepts string values in addition to symbols" do
@@ -1841,7 +1798,20 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
-      expect(user.auditor).to be false
+    end
+  end
+
+  describe '#has_full_private_access?' do
+    it 'returns false for regular user' do
+      user = build(:user)
+
+      expect(user.has_full_private_access?).to be_falsy
+    end
+
+    it 'returns true for admin user' do
+      user = build(:user, :admin)
+
+      expect(user.has_full_private_access?).to be_truthy
     end
   end
 

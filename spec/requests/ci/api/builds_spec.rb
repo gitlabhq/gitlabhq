@@ -91,8 +91,8 @@ describe Ci::API::Builds do
 
         context 'when concurrently updating build' do
           before do
-            expect_any_instance_of(Ci::Build).to receive(:run!).
-              and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+            expect_any_instance_of(Ci::Build).to receive(:run!)
+              .and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
           end
 
           it 'returns a conflict' do
@@ -671,8 +671,8 @@ describe Ci::API::Builds do
                 build.reload
                 expect(response).to have_http_status(201)
                 expect(json_response['artifacts_expire_at']).not_to be_empty
-                expect(build.artifacts_expire_at).
-                  to be_within(5.minutes).of(7.days.from_now)
+                expect(build.artifacts_expire_at)
+                  .to be_within(5.minutes).of(7.days.from_now)
               end
             end
 

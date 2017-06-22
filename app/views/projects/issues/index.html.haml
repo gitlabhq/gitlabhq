@@ -15,17 +15,18 @@
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
 
 - if project_issues(@project).exists?
-  - if current_user
-    = render "projects/issues/export_issues/csv_download"
+
+  = render 'projects/issues/export_issues/csv_download'
+
   %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
       .nav-controls.inline
         = link_to params.merge(rss_url_options), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
           = icon('rss')
-        - if current_user
-          %button.csv_download_link.btn.append-right-10.has-tooltip{ title: 'Export as CSV' }
-            = icon('download')
+
+        = render 'projects/issues/export_issues/button'
+
         - if @can_bulk_update
           = button_tag "Edit Issues", class: "btn btn-default js-bulk-update-toggle"
         = link_to new_namespace_project_issue_path(@project.namespace,

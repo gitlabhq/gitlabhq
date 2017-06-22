@@ -179,8 +179,8 @@ module Ci
     end
 
     def stages_names
-      statuses.order(:stage_idx).distinct.
-        pluck(:stage, :stage_idx).map(&:first)
+      statuses.order(:stage_idx).distinct
+        .pluck(:stage, :stage_idx).map(&:first)
     end
 
     def legacy_stage(name)

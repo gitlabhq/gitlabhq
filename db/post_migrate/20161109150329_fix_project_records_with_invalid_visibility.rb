@@ -13,13 +13,13 @@ class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
     namespaces = Arel::Table.new(:namespaces)
 
     finder_sql =
-      projects.
-        join(namespaces, Arel::Nodes::InnerJoin).
-        on(projects[:namespace_id].eq(namespaces[:id])).
-        where(projects[:visibility_level].gt(namespaces[:visibility_level])).
-        project(projects[:id], namespaces[:visibility_level]).
-        take(BATCH_SIZE).
-        to_sql
+      projects
+        .join(namespaces, Arel::Nodes::InnerJoin)
+        .on(projects[:namespace_id].eq(namespaces[:id]))
+        .where(projects[:visibility_level].gt(namespaces[:visibility_level]))
+        .project(projects[:id], namespaces[:visibility_level])
+        .take(BATCH_SIZE)
+        .to_sql
 
     # Update matching rows in batches. Each batch can cause up to 3 UPDATE
     # statements, in addition to the SELECT: one per visibility_level
@@ -33,10 +33,10 @@ class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
       end
 
       updates.each do |visibility_level, project_ids|
-        updater = Arel::UpdateManager.new(ActiveRecord::Base).
-          table(projects).
-          set(projects[:visibility_level] => visibility_level).
-          where(projects[:id].in(project_ids))
+        updater = Arel::UpdateManager.new(ActiveRecord::Base)
+          .table(projects)
+          .set(projects[:visibility_level] => visibility_level)
+          .where(projects[:id].in(project_ids))
 
         ActiveRecord::Base.connection.exec_update(updater.to_sql, self.class.name, [])
       end

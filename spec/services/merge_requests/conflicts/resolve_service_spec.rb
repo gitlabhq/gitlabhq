@@ -64,9 +64,9 @@ describe MergeRequests::Conflicts::ResolveService do
         end
 
         it 'creates a commit with the correct parents' do
-          expect(merge_request.source_branch_head.parents.map(&:id)).
-            to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
-                     824be604a34828eb682305f0d963056cfac87b2d))
+          expect(merge_request.source_branch_head.parents.map(&:id))
+            .to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
+                      824be604a34828eb682305f0d963056cfac87b2d))
         end
       end
 
@@ -129,9 +129,8 @@ describe MergeRequests::Conflicts::ResolveService do
         it 'creates a commit with the correct parents' do
           resolve_conflicts
 
-          expect(merge_request_from_fork.source_branch_head.parents.map(&:id)).
-            to eq(['404fa3fc7c2c9b5dacff102f353bdf55b1be2813',
-                   target_head])
+          expect(merge_request_from_fork.source_branch_head.parents.map(&:id))
+            .to eq(['404fa3fc7c2c9b5dacff102f353bdf55b1be2813', target_head])
         end
       end
     end
@@ -169,9 +168,9 @@ describe MergeRequests::Conflicts::ResolveService do
       end
 
       it 'creates a commit with the correct parents' do
-        expect(merge_request.source_branch_head.parents.map(&:id)).
-          to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
-                   824be604a34828eb682305f0d963056cfac87b2d))
+        expect(merge_request.source_branch_head.parents.map(&:id))
+          .to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
+                    824be604a34828eb682305f0d963056cfac87b2d))
       end
 
       it 'sets the content to the content given' do
@@ -204,8 +203,8 @@ describe MergeRequests::Conflicts::ResolveService do
       end
 
       it 'raises a MissingResolution error' do
-        expect { service.execute(user, invalid_params) }.
-          to raise_error(Gitlab::Conflict::File::MissingResolution)
+        expect { service.execute(user, invalid_params) }
+          .to raise_error(Gitlab::Conflict::File::MissingResolution)
       end
     end
 
@@ -230,8 +229,8 @@ describe MergeRequests::Conflicts::ResolveService do
       end
 
       it 'raises a MissingResolution error' do
-        expect { service.execute(user, invalid_params) }.
-          to raise_error(Gitlab::Conflict::File::MissingResolution)
+        expect { service.execute(user, invalid_params) }
+          .to raise_error(Gitlab::Conflict::File::MissingResolution)
       end
     end
 
@@ -250,8 +249,8 @@ describe MergeRequests::Conflicts::ResolveService do
       end
 
       it 'raises a MissingFiles error' do
-        expect { service.execute(user, invalid_params) }.
-          to raise_error(described_class::MissingFiles)
+        expect { service.execute(user, invalid_params) }
+          .to raise_error(described_class::MissingFiles)
       end
     end
   end
