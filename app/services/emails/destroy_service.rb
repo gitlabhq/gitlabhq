@@ -1,8 +1,6 @@
 module Emails
   class DestroyService < ::Emails::BaseService
-    def execute(skip_authorization: false)
-      raise Gitlab::Access::AccessDeniedError unless skip_authorization || can_manage_emails?
-
+    def execute
       Email.find_by_email(@email).destroy && update_secondary_emails!
     end
 

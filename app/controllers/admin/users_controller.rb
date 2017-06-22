@@ -152,10 +152,10 @@ class Admin::UsersController < Admin::ApplicationController
 
   def remove_email
     email = user.emails.find(params[:email_id])
-    Emails::DestroyService.new(current_user, user, email: email.email).execute
+    success = Emails::DestroyService.new(current_user, user, email: email.email).execute
 
     respond_to do |format|
-      if result[:status] == :success
+      if success
         format.html { redirect_back_or_admin_user(notice: "Successfully removed email.") }
         format.json { head :ok }
       else

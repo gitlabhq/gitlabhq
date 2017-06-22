@@ -10,7 +10,7 @@ module Users
     def execute(skip_authorization: false, validate: true, &block)
       assign_attributes(skip_authorization, &block)
 
-      if @user.save(validate: validate) || !@user.changed? && @user.errors.empty?
+      if @user.save(validate: validate) || @user.errors.empty?
         success
       else
         error(@user.errors.full_messages.uniq.join('. '))
@@ -18,9 +18,9 @@ module Users
     end
 
     def execute!(skip_authorization: false, &block)
-      assign_attributes(skip_authorization, &block)
+      result = execute(*args, &block)
 
-      @user.save! if @user.changed?
+      raise SomeCustomException(result[:message]) unless result[:status] == :success
     end
 
     private

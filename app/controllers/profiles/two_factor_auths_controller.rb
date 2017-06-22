@@ -41,9 +41,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def create
     if current_user.validate_and_consume_otp!(params[:pin_code])
-      current_user.otp_required_for_login = true
-      @codes = current_user.generate_otp_backup_codes!
-      Users::UpdateService.new(current_user, current_user).execute!
+      Users::UpdateService.new(current_user, current_user).execute! do |user|
+        user.otp_required_for_login = true
+        @codes = user.generate_otp_backup_codes!
+      end
 
       render 'create'
     else
@@ -70,8 +71,9 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def codes
-    @codes = current_user.generate_otp_backup_codes!
-    Users::UpdateService.new(current_user, current_user).execute!
+    Users::UpdateService.new(current_user, current_user).execute! do |user|
+      @codes = user.generate_otp_backup_codes!
+    end
   end
 
   def destroy
