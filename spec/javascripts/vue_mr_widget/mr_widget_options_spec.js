@@ -1,12 +1,15 @@
 import Vue from 'vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
+import MRWidgetStore from '~/vue_merge_request_widget/stores/mr_widget_store';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
 import mockData from './mock_data';
 
 const createComponent = () => {
-  delete mrWidgetOptions.el; // Prevent component mounting
+  if (!document.querySelector(mrWidgetOptions.el)) {
+    delete mrWidgetOptions.el; // Prevent component mounting
+  }
   gl.mrWidgetData = mockData;
   const Component = Vue.extend(mrWidgetOptions);
   return new Component();
@@ -24,11 +27,15 @@ const returnPromise = data => new Promise((resolve) => {
 describe('mrWidgetOptions', () => {
   let vm;
 
-  beforeEach(() => {
-    vm = createComponent();
+  afterEach(() => {
+    vm.$destroy();
   });
 
   describe('data', () => {
+    beforeEach(() => {
+      vm = createComponent();
+    });
+
     it('should instantiate Store and Service', () => {
       expect(vm.mr).toBeDefined();
       expect(vm.service).toBeDefined();
@@ -36,6 +43,10 @@ describe('mrWidgetOptions', () => {
   });
 
   describe('computed', () => {
+    beforeEach(() => {
+      vm = createComponent();
+    });
+
     describe('componentName', () => {
       it('should return merged component', () => {
         expect(vm.componentName).toEqual('mr-widget-merged');
@@ -85,7 +96,14 @@ describe('mrWidgetOptions', () => {
         expect(vm.shouldRenderRelatedLinks).toBeFalsy();
       });
 
-      it('should return true if there is relatedLinks in MR', () => {
+      it('should return false if there are related links and state is merged', () => {
+        vm.mr.state = 'merged';
+        vm.mr.relatedLinks = {};
+        expect(vm.shouldRenderRelatedLinks).toBeFalsy();
+      });
+
+      it('should return true if there are relatedLinks and state is not merged', () => {
+        vm.mr.state = 'definitely not merged';
         vm.mr.relatedLinks = {};
         expect(vm.shouldRenderRelatedLinks).toBeTruthy();
       });
@@ -104,6 +122,10 @@ describe('mrWidgetOptions', () => {
   });
 
   describe('methods', () => {
+    beforeEach(() => {
+      vm = createComponent();
+    });
+
     describe('checkStatus', () => {
       it('should tell service to check status', (done) => {
         spyOn(vm.service, 'checkStatus').and.returnValue(returnPromise(mockData));
@@ -333,6 +355,10 @@ describe('mrWidgetOptions', () => {
   });
 
   describe('components', () => {
+    beforeEach(() => {
+      vm = createComponent();
+    });
+
     it('should register all components', () => {
       const comps = mrWidgetOptions.components;
       expect(comps['mr-widget-header']).toBeDefined();
@@ -356,6 +382,52 @@ describe('mrWidgetOptions', () => {
       expect(comps['mr-widget-pipeline-blocked']).toBeDefined();
       expect(comps['mr-widget-pipeline-failed']).toBeDefined();
       expect(comps['mr-widget-merge-when-pipeline-succeeds']).toBeDefined();
+    });
+  });
+
+  describe('template', () => {
+    beforeEach(() => {
+      setFixtures('<div id="#js-vue-mr-widget"></div>');
+      vm = createComponent();
+      vm.$mount();
+    });
+
+    it('contains related links for open state', (done) => {
+      vm.mr = new MRWidgetStore({
+        ...mockData,
+        state: 'open',
+        issues_links: {
+          closing: '<a>the very closed issue</a>',
+        },
+      });
+
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.$el.innerText).toContain('Closes issue');
+          expect(vm.$el.innerText).toContain('the very closed issue');
+          expect(vm.$el.innerText).not.toContain('Closed issue');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('contains related links for merged state', (done) => {
+      vm.mr = new MRWidgetStore({
+        ...mockData,
+        state: 'merged',
+        issues_links: {
+          closing: '<a>another very closed issue</a>',
+        },
+      });
+
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.$el.innerText).toContain('Closed issue');
+          expect(vm.$el.innerText).toContain('another very closed issue');
+          expect(vm.$el.innerText).not.toContain('Closes issue');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

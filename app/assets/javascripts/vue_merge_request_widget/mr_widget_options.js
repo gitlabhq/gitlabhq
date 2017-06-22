@@ -54,7 +54,7 @@ export default {
       return Object.keys(this.mr.pipeline).length || this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      return this.mr.relatedLinks;
+      return !!this.mr.relatedLinks && this.mr.state !== 'merged';
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
@@ -238,9 +238,13 @@ export default {
         :is="componentName"
         :mr="mr"
         :service="service" />
-      <mr-widget-related-links
+      <section
         v-if="shouldRenderRelatedLinks"
-        :related-links="mr.relatedLinks" />
+        class="mr-info-list mr-links">
+        <div class="legend"></div>
+        <mr-widget-related-links
+          :related-links="mr.relatedLinks" />
+      </section>
       <mr-widget-merge-help v-if="shouldRenderMergeHelp" />
     </div>
   `,

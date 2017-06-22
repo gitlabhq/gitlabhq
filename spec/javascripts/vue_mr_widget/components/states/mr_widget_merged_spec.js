@@ -4,9 +4,11 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 
 const targetBranch = 'foo';
 
+let mrStore;
+
 const createComponent = () => {
   const Component = Vue.extend(mergedComponent);
-  const mr = {
+  mrStore = {
     isRemovingSourceBranch: false,
     cherryPickInForkPath: false,
     canCherryPickInCurrentMR: true,
@@ -19,6 +21,7 @@ const createComponent = () => {
     updatedAt: '',
     targetBranch,
   };
+  const mr = mrStore;
 
   const service = {
     removeSourceBranch() {},
@@ -58,6 +61,40 @@ describe('MRWidgetMerged', () => {
   });
 
   describe('computed', () => {
+    describe('shouldRenderRelatedLinks', () => {
+      it('returns true if related links exist', (done) => {
+        const vm = createComponent();
+        vm.mr = {
+          ...mrStore,
+          relatedLinks: {
+            veryRelated: 'links',
+          },
+        };
+
+        Vue.nextTick()
+        .then(() => {
+          expect(vm.shouldRenderRelatedLinks).toBe(true);
+        })
+        .then(done)
+        .catch(done.fail);
+      });
+
+      it('returns false without related links', (done) => {
+        const vm = createComponent();
+        vm.mr = {
+          ...mrStore,
+          relatedLinks: null,
+        };
+
+        Vue.nextTick()
+        .then(() => {
+          expect(vm.shouldRenderRelatedLinks).toBe(false);
+        })
+        .then(done)
+        .catch(done.fail);
+      });
+    });
+
     describe('shouldShowRemoveSourceBranch', () => {
       it('should correct value when fields changed', () => {
         const vm = createComponent();
@@ -169,6 +206,25 @@ describe('MRWidgetMerged', () => {
         expect(el.innerText).not.toContain('The source branch has been removed.');
         done();
       });
+    });
+
+    it('should render related links', (done) => {
+      vm.mr.relatedLinks = {
+        closing: '<a>BIG bug</a>',
+      };
+      vm.mr = {
+        ...mrStore,
+        relatedLinks: {
+          closing: '<a>BIG bug</a> and <a>another bug</a>',
+        },
+      };
+
+      Vue.nextTick()
+      .then(() => {
+        expect(el.innerText).toMatch('Closed issues\\s+BIG bug');
+      })
+      .then(done)
+      .catch(done.fail);
     });
   });
 });

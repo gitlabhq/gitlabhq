@@ -1,7 +1,9 @@
 /* global Flash */
 
 import mrWidgetAuthorTime from '../../components/mr_widget_author_time';
+import mrWidgetRelatedLinks from '../../components/mr_widget_related_links';
 import eventHub from '../../event_hub';
+import '../../../flash';
 
 export default {
   name: 'MRWidgetMerged',
@@ -11,6 +13,7 @@ export default {
   },
   components: {
     'mr-widget-author-and-time': mrWidgetAuthorTime,
+    'mr-widget-related-links': mrWidgetRelatedLinks,
   },
   data() {
     return {
@@ -18,6 +21,9 @@ export default {
     };
   },
   computed: {
+    shouldRenderRelatedLinks() {
+      return !!this.mr.relatedLinks;
+    },
     shouldShowRemoveSourceBranch() {
       const { sourceBranchRemoved, isRemovingSourceBranch, canRemoveSourceBranch } = this.mr;
 
@@ -86,6 +92,9 @@ export default {
             aria-hidden="true" />
           The source branch is being removed.
         </p>
+        <mr-widget-related-links
+          v-if="shouldRenderRelatedLinks"
+          :related-links="mr.relatedLinks" />
       </section>
       <div
         v-if="shouldShowMergedButtons"

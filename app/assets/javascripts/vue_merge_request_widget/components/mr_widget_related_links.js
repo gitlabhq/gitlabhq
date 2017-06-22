@@ -21,10 +21,7 @@ export default {
     },
   },
   template: `
-    <section
-      v-if="hasLinks"
-      class="mr-info-list mr-links">
-      <div class="legend"></div>
+    <div v-if="hasLinks">
       <p v-if="relatedLinks.closing">
         Closes {{issueLabel('closing')}}
         <span v-html="relatedLinks.closing"></span>.
@@ -37,6 +34,6 @@ export default {
       <p v-if="relatedLinks.assignToMe">
         <span v-html="relatedLinks.assignToMe"></span>
       </p>
-    </section>
+    </div>
   `,
 };
