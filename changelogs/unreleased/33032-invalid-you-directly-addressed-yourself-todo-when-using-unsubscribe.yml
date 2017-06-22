@@ -1,5 +1,0 @@
----
-title: Fix /unsubscribe slash command creating extra todos when you were already mentioned
-  in an issue
-merge_request:
-author:
