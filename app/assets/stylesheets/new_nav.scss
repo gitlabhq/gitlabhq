@@ -55,8 +55,10 @@ header.navbar-gitlab-new {
 
   .container-fluid {
     .navbar-toggle {
+      padding: 6px $gl-padding;
+      margin-right: -5px;
       color: currentColor;
-      border-left: 1px solid currentColor;
+      border-left: 1px solid $white-light;
 
       &:hover,
       &:focus,
@@ -68,8 +70,10 @@ header.navbar-gitlab-new {
 
     .navbar-toggle-left {
       right: 0;
+      margin-right: 0;
+      margin-left: -16px;
       border-left: 0;
-      border-right: 1px solid currentColor;
+      border-right: 1px solid $white-light;
     }
 
     .navbar-nav {
@@ -81,15 +85,15 @@ header.navbar-gitlab-new {
     .nav > li > a {
       opacity: .9;
       will-change: opacity;
-    }
 
-    .nav > li > a:hover,
-    .nav > li > a:focus {
-      color: $white-light;
-      opacity: 1;
+      &:hover,
+      &:focus {
+        color: $white-light;
+        opacity: 1;
 
-      > svg {
-        fill: $white-light;
+        > svg {
+          fill: $white-light;
+        }
       }
     }
   }
@@ -127,13 +131,13 @@ header.navbar-gitlab-new {
   }
 
   .dropdown-chevron {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 
 .search {
   form {
-    border-color: $purple-700;
+    border-color: $purple-800;
 
     &:hover {
       border-color: rgba($white-light, .5);
@@ -146,7 +150,7 @@ header.navbar-gitlab-new {
 
   form,
   .search-input {
-    background-color: $purple-800;
+    background-color: $purple-700;
   }
 
   .search-input {
