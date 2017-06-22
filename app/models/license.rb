@@ -9,8 +9,8 @@ class License < ActiveRecord::Base
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
   RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
-  VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VARIABLE_ENVIRONMENT_SCOPE'.freeze
   EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
+  VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VARIABLE_ENVIRONMENT_SCOPE'.freeze
 
   FEATURE_CODES = {
     geo: GEO_FEATURE,
