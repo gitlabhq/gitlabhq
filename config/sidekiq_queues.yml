@@ -29,6 +29,7 @@
   - [email_receiver, 2]
   - [emails_on_push, 2]
   - [mailers, 2]
+  - [invalid_gpg_signature_update, 2]
   - [upload_checksum, 1]
   - [use_key, 1]
   - [repository_fork, 1]

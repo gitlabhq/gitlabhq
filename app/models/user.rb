@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include FeatureGate
   include CreatedAtFilterable
+  include AfterCommitQueue
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -515,7 +516,7 @@ class User < ActiveRecord::Base
   end
 
   def update_invalid_gpg_signatures
-    gpg_keys.each(&:update_invalid_gpg_signatures)
+    run_after_commit { gpg_keys.each(&:update_invalid_gpg_signatures) }
   end
 
   # Returns the groups a user has access to

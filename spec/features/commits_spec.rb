@@ -223,7 +223,9 @@ describe 'Commits' do
       user = create :user, email: 'unrelated.user@example.org'
       project.team << [user, :master]
 
-      create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+      Sidekiq::Testing.inline! do
+        create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+      end
 
       login_with(user)
 
@@ -235,8 +237,10 @@ describe 'Commits' do
       end
 
       # user changes his email which makes the gpg key verified
-      user.skip_reconfirmation!
-      user.update_attributes!(email: GpgHelpers::User1.emails.first)
+      Sidekiq::Testing.inline! do
+        user.skip_reconfirmation!
+        user.update_attributes!(email: GpgHelpers::User1.emails.first)
+      end
 
       visit namespace_project_commits_path(project.namespace, project, :master)
 
@@ -260,7 +264,9 @@ describe 'Commits' do
       end
 
       # user adds the gpg key which makes the signature valid
-      create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+      Sidekiq::Testing.inline! do
+        create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+      end
 
       visit namespace_project_commits_path(project.namespace, project, :master)
 

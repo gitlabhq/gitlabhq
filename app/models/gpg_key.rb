@@ -28,7 +28,7 @@ class GpgKey < ActiveRecord::Base
     unless: -> { errors.has_key?(:key) }
 
   before_validation :extract_fingerprint, :extract_primary_keyid
-  after_create :update_invalid_gpg_signatures
+  after_create :update_invalid_gpg_signatures_after_create
   after_create :notify_user
 
   def key=(value)
@@ -54,7 +54,7 @@ class GpgKey < ActiveRecord::Base
   end
 
   def update_invalid_gpg_signatures
-    Gitlab::Gpg::InvalidGpgSignatureUpdater.new(self).run
+    InvalidGpgSignatureUpdateWorker.perform_async(self.id)
   end
 
   private
@@ -73,5 +73,9 @@ class GpgKey < ActiveRecord::Base
 
   def notify_user
     run_after_commit { NotificationService.new.new_gpg_key(self) }
+  end
+
+  def update_invalid_gpg_signatures_after_create
+    run_after_commit { update_invalid_gpg_signatures }
   end
 end
