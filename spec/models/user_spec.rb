@@ -1733,6 +1733,20 @@ describe User, models: true do
     end
   end
 
+  describe '#full_private_access?' do
+    it 'returns false for regular user' do
+      user = build(:user)
+
+      expect(user.full_private_access?).to be_falsy
+    end
+
+    it 'returns true for admin user' do
+      user = build(:user, :admin)
+
+      expect(user.full_private_access?).to be_truthy
+    end
+  end
+
   describe '.ghost' do
     it "creates a ghost user if one isn't already present" do
       ghost = User.ghost
