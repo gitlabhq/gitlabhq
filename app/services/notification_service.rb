@@ -403,7 +403,7 @@ class NotificationService
   end
 
   def approve_mr_email(merge_request, project, current_user)
-    recipients = NotificationRecipientService.new(project).build_recipients(merge_request, current_user)
+    recipients = NotificationRecipientService.new(project).build_recipients(merge_request, current_user, action: 'approve')
 
     recipients.each do |recipient|
       mailer.approved_merge_request_email(recipient.id, merge_request.id, current_user.id).deliver_later
@@ -411,7 +411,7 @@ class NotificationService
   end
 
   def unapprove_mr_email(merge_request, project, current_user)
-    recipients = NotificationRecipientService.new(project).build_recipients(merge_request, current_user)
+    recipients = NotificationRecipientService.new(project).build_recipients(merge_request, current_user, action: 'unapprove')
 
     recipients.each do |recipient|
       mailer.unapproved_merge_request_email(recipient.id, merge_request.id, current_user.id).deliver_later
