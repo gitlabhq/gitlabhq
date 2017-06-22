@@ -15,7 +15,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
     end
   end
 
-  describe '.find' do
+  shared_examples 'finding blobs' do
     context 'file in subdir' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb") }
 
@@ -98,6 +98,16 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
         expect(blob).to be_binary
       end
+    end
+  end
+
+  describe '.find' do
+    context 'when project_raw_show Gitaly feature is enabled' do
+      it_behaves_like 'finding blobs'
+    end
+
+    context 'when project_raw_show Gitaly feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'finding blobs'
     end
   end
 

@@ -36,6 +36,26 @@ module Gitlab
         end
       end
 
+      def tree_entry(ref, path, limit = nil)
+        request = Gitaly::TreeEntryRequest.new(
+          repository: @gitaly_repo,
+          revision: ref,
+          path: path.dup.force_encoding(Encoding::ASCII_8BIT),
+          limit: limit.to_i
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit, :tree_entry, request)
+        entry = response.first
+        return unless entry.oid.present?
+
+        if entry.type == :BLOB
+          rest_of_data = response.reduce("") { |memo, msg| memo << msg.data }
+          entry.data += rest_of_data
+        end
+
+        entry
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})
