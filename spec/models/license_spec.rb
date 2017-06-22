@@ -425,6 +425,15 @@ describe License do
           expect(license.add_ons.keys).to include(License::DEPLOY_BOARD_FEATURE, *eep_features)
         end
       end
+
+      context 'with an expired trial license' do
+        it 'returns an empty Hash' do
+          License.destroy_all
+          create(:license, trial: true, expired: true)
+
+          expect(License.current.add_ons).to be_empty
+        end
+      end
     end
 
     describe '#feature_available?' do

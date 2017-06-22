@@ -158,7 +158,7 @@ class License < ActiveRecord::Base
 
     def block_changes?
       return false if current.nil?
-      return false if License&.current&.trial?
+      return false if current&.trial?
 
       current.block_changes?
     end
@@ -226,6 +226,8 @@ class License < ActiveRecord::Base
   # keep `add_ons`, therefore this method needs to be backward-compatible in that sense.
   # See https://gitlab.com/gitlab-org/gitlab-ee/issues/2019
   def add_ons
+    return {} if trial? && expired?
+
     explicit_add_ons = restricted_attr(:add_ons, {})
     plan_features = self.class.features_for_plan(plan)
 
