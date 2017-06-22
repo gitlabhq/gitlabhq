@@ -317,7 +317,9 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     context 'outside of a transaction' do
       context 'when a column limit is not set' do
         before do
-          expect(model).to receive(:transaction_open?).and_return(false)
+          expect(model).to receive(:transaction_open?)
+            .and_return(false)
+            .at_least(:once)
 
           expect(model).to receive(:transaction).and_yield
 
@@ -824,7 +826,11 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       let!(:user) { create(:user, name: 'Kathy Alice Aliceson') }
 
       it 'replaces the correct part of the string' do
-        model.update_column_in_batches(:users, :name, model.replace_sql(Arel::Table.new(:users)[:name], 'Alice', 'Eve'))
+        allow(model).to receive(:transaction_open?).and_return(false)
+        query =  model.replace_sql(Arel::Table.new(:users)[:name], 'Alice', 'Eve')
+
+        model.update_column_in_batches(:users, :name, query)
+
         expect(user.reload.name).to eq('Kathy Eve Aliceson')
       end
     end
