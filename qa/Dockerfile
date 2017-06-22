@@ -1,7 +1,7 @@
 FROM ruby:2.3
 LABEL maintainer "Grzegorz Bizon <grzegorz@gitlab.com>"
 
-ENV CHROME_VERSION 59.0.3071.104-1
+ENV CHROME_VERSION 59.0.3071.109-1
 ENV CHROME_DRIVER_VERSION 2.30
 
 ##
