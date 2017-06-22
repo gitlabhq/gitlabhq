@@ -156,11 +156,11 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       if success
-        format.html { redirect_back_or_admin_user(notice: "Successfully removed email.") }
+        format.html { redirect_back_or_admin_user(notice: 'Successfully removed email.') }
         format.json { head :ok }
       else
-        format.html { redirect_back_or_admin_user(alert: result[:message]) }
-        format.json { render json: result[:message], status: result[:status] }
+        format.html { redirect_back_or_admin_user(alert: 'There was an error removing the e-mail.') }
+        format.json { render json: 'There was an error removing the e-mail.', status: 400 }
       end
     end
   end
