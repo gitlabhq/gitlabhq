@@ -59,18 +59,20 @@ describe API::Namespaces do
 
   describe 'PUT /namespaces/:id' do
     context 'when authenticated as admin' do
-      it 'updates plan using full_path' do
-        put api("/namespaces/#{group1.full_path}", admin), plan: 'silver'
+      it 'updates namespace using full_path' do
+        put api("/namespaces/#{group1.full_path}", admin), plan: 'silver', shared_runners_minutes_limit: 9001
 
         expect(response).to have_http_status(200)
         expect(json_response['plan']).to eq('silver')
+        expect(json_response['shared_runners_minutes_limit']).to eq(9001)
       end
 
-      it 'updates plan using id' do
-        put api("/namespaces/#{group1.id}", admin), plan: 'silver'
+      it 'updates namespace using id' do
+        put api("/namespaces/#{group1.id}", admin), plan: 'silver', shared_runners_minutes_limit: 9001
 
         expect(response).to have_http_status(200)
         expect(json_response['plan']).to eq('silver')
+        expect(json_response['shared_runners_minutes_limit']).to eq(9001)
       end
     end
 

@@ -495,7 +495,7 @@ module API
 
     class Namespace < Grape::Entity
       expose :plan, if: lambda { |_, options| options[:current_user] && options[:current_user].admin? }
-      expose :id, :name, :path, :kind, :full_path
+      expose :id, :name, :path, :kind, :full_path, :shared_runners_minutes_limit
     end
 
     class MemberAccess < Grape::Entity
