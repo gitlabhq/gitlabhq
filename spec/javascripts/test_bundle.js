@@ -2,6 +2,11 @@ import $ from 'jquery';
 import _ from 'underscore';
 import 'jasmine-jquery';
 import '~/commons';
+import Vue from 'vue';
+
+const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
+Vue.config.devtools = !isHeadlessChrome;
+Vue.config.productionTip = false;
 
 // enable test fixtures
 jasmine.getFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
