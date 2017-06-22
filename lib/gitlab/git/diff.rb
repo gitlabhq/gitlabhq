@@ -319,7 +319,7 @@ module Gitlab
       end
 
       def init_from_gitaly(diff)
-        @diff = diff.patch if diff.respond_to?(:patch)
+        @diff = encode!(diff.patch) if diff.respond_to?(:patch)
         @new_path = encode!(diff.to_path.dup)
         @old_path = encode!(diff.from_path.dup)
         @a_mode = diff.old_mode.to_s(8)
