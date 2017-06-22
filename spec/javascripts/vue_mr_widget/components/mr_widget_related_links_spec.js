@@ -9,6 +9,7 @@ describe('MRWidgetRelatedLinks', () => {
     vm = new Component({
       el: document.createElement('div'),
       propsData: {
+        isMerged: false,
         relatedLinks: {},
       },
     });
@@ -20,8 +21,11 @@ describe('MRWidgetRelatedLinks', () => {
 
   describe('props', () => {
     it('should have props', () => {
-      const { relatedLinks } = MRWidgetRelatedLinks.props;
+      const { isMerged, relatedLinks } = MRWidgetRelatedLinks.props;
 
+      expect(isMerged).toBeDefined();
+      expect(isMerged.type).toBe(Boolean);
+      expect(isMerged.required).toBeTruthy();
       expect(relatedLinks).toBeDefined();
       expect(relatedLinks.type instanceof Object).toBeTruthy();
       expect(relatedLinks.required).toBeTruthy();
@@ -29,6 +33,30 @@ describe('MRWidgetRelatedLinks', () => {
   });
 
   describe('computed', () => {
+    describe('closingText', () => {
+      const dummyIssueLabel = 'dummy label';
+
+      beforeEach(() => {
+        spyOn(vm, 'issueLabel').and.returnValue(dummyIssueLabel);
+      });
+
+      it('outputs text for closing issues', () => {
+        vm.isMerged = false;
+
+        const text = vm.closingText;
+
+        expect(text).toBe(`Closes ${dummyIssueLabel}`);
+      });
+
+      it('outputs text for closed issues', () => {
+        vm.isMerged = true;
+
+        const text = vm.closingText;
+
+        expect(text).toBe(`Closed ${dummyIssueLabel}`);
+      });
+    });
+
     describe('hasLinks', () => {
       it('should return correct value when we have links reference', () => {
         vm.relatedLinks = {
@@ -47,6 +75,44 @@ describe('MRWidgetRelatedLinks', () => {
 
         vm.relatedLinks.assignToMe = null;
         expect(vm.hasLinks).toBeFalsy();
+      });
+    });
+
+    describe('mentionedText', () => {
+      it('outputs text for one mentioned issue before merging', () => {
+        vm.isMerged = false;
+        spyOn(vm, 'hasMultipleIssues').and.returnValue(false);
+
+        const text = vm.mentionedText;
+
+        expect(text).toBe('is mentioned but will not be closed');
+      });
+
+      it('outputs text for one mentioned issue after merging', () => {
+        vm.isMerged = true;
+        spyOn(vm, 'hasMultipleIssues').and.returnValue(false);
+
+        const text = vm.mentionedText;
+
+        expect(text).toBe('is mentioned but was not closed');
+      });
+
+      it('outputs text for multiple mentioned issue before merging', () => {
+        vm.isMerged = false;
+        spyOn(vm, 'hasMultipleIssues').and.returnValue(true);
+
+        const text = vm.mentionedText;
+
+        expect(text).toBe('are mentioned but will not be closed');
+      });
+
+      it('outputs text for multiple mentioned issue after merging', () => {
+        vm.isMerged = true;
+        spyOn(vm, 'hasMultipleIssues').and.returnValue(true);
+
+        const text = vm.mentionedText;
+
+        expect(text).toBe('are mentioned but were not closed');
       });
     });
   });
@@ -80,16 +146,6 @@ describe('MRWidgetRelatedLinks', () => {
         expect(vm.issueLabel('mentioned')).toEqual('issue');
       });
     });
-
-    describe('verbLabel', () => {
-      it('should return true if the given text has multiple issues', () => {
-        expect(vm.verbLabel('closing')).toEqual('are');
-      });
-
-      it('should return false if the given text has one issue', () => {
-        expect(vm.verbLabel('mentioned')).toEqual('is');
-      });
-    });
   });
 
   describe('template', () => {
@@ -117,7 +173,7 @@ describe('MRWidgetRelatedLinks', () => {
       Vue.nextTick()
       .then(() => {
         expect(vm.$el.innerText).toContain('issue #7');
-        expect(vm.$el.innerText).toContain('is mentioned but will not be closed.');
+        expect(vm.$el.innerText).toContain('is mentioned but will not be closed');
         expect(vm.$el.innerText).not.toContain('Closes');
       })
       .then(done)
@@ -136,7 +192,7 @@ describe('MRWidgetRelatedLinks', () => {
 
         expect(content).toContain('Closes issue #7.');
         expect(content).toContain('issues #23 and #42');
-        expect(content).toContain('are mentioned but will not be closed.');
+        expect(content).toContain('are mentioned but will not be closed');
       })
       .then(done)
       .catch(done.fail);
@@ -150,6 +206,25 @@ describe('MRWidgetRelatedLinks', () => {
       Vue.nextTick()
       .then(() => {
         expect(vm.$el.innerText).toContain('Assign yourself to these issues');
+      })
+      .then(done)
+      .catch(done.fail);
+    });
+
+    it('should use different wording after merging', (done) => {
+      vm.isMerged = true;
+      vm.relatedLinks = {
+        closing: '<a href="#">#7</a>',
+        mentioned: '<a href="#">#23</a> and <a>#42</a>',
+      };
+
+      Vue.nextTick()
+      .then(() => {
+        const content = vm.$el.textContent.replace(/\n(\s)+/g, ' ').trim();
+
+        expect(content).toContain('Closed issue #7.');
+        expect(content).toContain('issues #23 and #42');
+        expect(content).toContain('are mentioned but were not closed');
       })
       .then(done)
       .catch(done.fail);

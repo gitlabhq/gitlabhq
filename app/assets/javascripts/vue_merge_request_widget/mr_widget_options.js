@@ -243,6 +243,7 @@ export default {
         class="mr-info-list mr-links">
         <div class="legend"></div>
         <mr-widget-related-links
+          :is-merged="false"
           :related-links="mr.relatedLinks" />
       </section>
       <mr-widget-merge-help v-if="shouldRenderMergeHelp" />
