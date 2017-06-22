@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import eventHub from '~/groups/event_hub';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
 import groupsComponent from '~/groups/components/groups.vue';
@@ -46,6 +47,12 @@ describe('Groups Component', () => {
       expect(component.$el.querySelector('#group-1120')).toBeDefined();
     });
 
+    it('should respect the order of groups', () => {
+      const wrap = component.$el.querySelector('.groups-list-tree-container > .group-list-tree');
+      expect(wrap.querySelector('.group-row:nth-child(1)').id).toBe('group-12');
+      expect(wrap.querySelector('.group-row:nth-child(2)').id).toBe('group-1119');
+    });
+
     it('should render group and its subgroup', () => {
       const lists = component.$el.querySelectorAll('.group-list-tree');
 
@@ -54,11 +61,26 @@ describe('Groups Component', () => {
       expect(lists[0].querySelector('#group-1119').classList.contains('is-open')).toBe(true);
       expect(lists[0].querySelector('#group-1119').classList.contains('has-subgroups')).toBe(true);
 
-      expect(lists[2].querySelector('#group-1120').textContent).toContain(groups[1119].subGroups[1120].name);
+      expect(lists[2].querySelector('#group-1120').textContent).toContain(groups.id1119.subGroups.id1120.name);
     });
 
     it('should remove prefix of parent group', () => {
       expect(component.$el.querySelector('#group-12 #group-1128 .title').textContent).toContain('level2 / level3 / level4');
+    });
+
+    it('should remove the group after leaving the group', (done) => {
+      spyOn(window, 'confirm').and.returnValue(true);
+
+      eventHub.$on('leaveGroup', (group, collection) => {
+        store.removeGroup(group, collection);
+      });
+
+      component.$el.querySelector('#group-12 .leave-group').click();
+
+      Vue.nextTick(() => {
+        expect(component.$el.querySelector('#group-12')).toBeNull();
+        done();
+      });
     });
   });
 });
