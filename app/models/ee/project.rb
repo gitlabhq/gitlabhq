@@ -209,7 +209,7 @@ module EE
 
       values = {
         wildcard: '*',
-        environment_name: environment.name,
+        environment_name: environment.name
       }
 
       quoted_values =

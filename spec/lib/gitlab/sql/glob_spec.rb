@@ -32,19 +32,19 @@ describe Gitlab::SQL::Glob, lib: true do
   end
 
   def match(string, pattern)
-    query("SELECT #{quote(string)} LIKE #{pattern} AS match")
-      .first['match']
+    value = query("SELECT #{quote(string)} LIKE #{pattern}")
+              .rows.flatten.first
+
+    case value
+    when 't', 1
+      true
+    else
+      false
+    end
   end
 
   def query(sql)
-    result = ActiveRecord::Base.connection.exec_query(sql)
-
-    result.map do |row|
-      row.each_with_object({}) do |(column, value), hash|
-        hash[column] =
-          result.column_types[column].type_cast_from_database(value)
-      end
-    end
+    ActiveRecord::Base.connection.select_all(sql)
   end
 
   def quote(string)
