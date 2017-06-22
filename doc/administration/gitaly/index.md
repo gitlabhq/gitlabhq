@@ -87,8 +87,9 @@ Next, on the Gitaly server, we need to configure storage paths, enable
 the network listener and configure the token.
 
 Note: if you want to reduce the risk of downtime when you enable
-authentication you can temporarily disable enforcement, see
-https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication
+authentication you can temporarily disable enforcement, see [the
+documentation on configuring Gitaly
+authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication)
 .
 
 In most or all cases the storage paths below end in `/repositories`. Check the
