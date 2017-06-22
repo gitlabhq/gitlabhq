@@ -195,9 +195,7 @@ module Ci
       variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
-      variables += project.secret_variables_for(
-                     ref: ref, environment: persisted_environment)
-                       .map(&:to_runner_variable)
+      variables += secret_variables
       variables += trigger_request.user_variables if trigger_request
       variables
     end
@@ -383,16 +381,10 @@ module Ci
       ]
     end
 
-    def secret_variables(with_environment: true)
-      variables =
-        if with_environment
-          project.secret_variables_for(
-            ref: ref, environment: persisted_environment)
-        else
-          project.secret_variables_for(ref: ref)
-        end
-
-      variables.map(&:to_runner_variable)
+    def secret_variables
+      project.secret_variables_for(
+        ref: ref, environment: persisted_environment)
+        .map(&:to_runner_variable)
     end
 
     def steps
