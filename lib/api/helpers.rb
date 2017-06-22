@@ -338,7 +338,7 @@ module API
 
     # Check if CSRF tokens are valid.
     def verified_request?
-      GitLab::RequestForgeryProtection.call(env)
+      Gitlab::RequestForgeryProtection.call(env) rescue false
     end
 
     # Check the Rails session for valid authentication details

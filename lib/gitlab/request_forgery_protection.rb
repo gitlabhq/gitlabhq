@@ -2,7 +2,7 @@
 # It's used in API helpers and OmniAuth.
 # Usage: GitLab::RequestForgeryProtection.call(env)
 
-module GitLab
+module Gitlab
   module RequestForgeryProtection
     class Controller < ActionController::Base
       protect_from_forgery with: :exception
