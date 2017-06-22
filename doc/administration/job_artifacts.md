@@ -134,18 +134,11 @@ _The artifacts are stored by default in
 
 **In installations from source:**
 
-<<<<<<< HEAD
-The previously mentioned methods use the local disk to store artifacts. However,
-there is the option to use object stores like AWS' S3. To do this, set the
-`object_store` in your `gitlab.yml`. This relies on valid AWS
-credentials to be configured already.
-=======
 _The artifacts are stored by default in
 `/home/git/gitlab/shared/artifacts`._
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
->>>>>>> 0355488d4ac038c793dad96da2506b218b44f4a6
 
     ```yaml
     artifacts:
