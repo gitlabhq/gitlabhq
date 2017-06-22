@@ -36,6 +36,19 @@ class IssuesFinder < IssuableFinder
       project_ids: current_user.authorized_projects(CONFIDENTIAL_ACCESS_LEVEL).select(:id))
   end
 
+  def user_can_see_all_confidential_issues?
+    return false unless current_user
+    return true if current_user.full_private_access?
+
+    project? &&
+      project &&
+      project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
+  end
+
+  def user_cannot_see_confidential_issues?
+    current_user.blank?
+  end
+
   private
 
   def init_collection
@@ -56,18 +69,5 @@ class IssuesFinder < IssuableFinder
 
   def item_project_ids(items)
     items&.reorder(nil)&.select(:project_id)
-  end
-
-  def user_can_see_all_confidential_issues?
-    return false unless current_user
-    return true if current_user.full_private_access?
-
-    project? &&
-      project &&
-      project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
-  end
-
-  def user_cannot_see_confidential_issues?
-    current_user.blank?
   end
 end
