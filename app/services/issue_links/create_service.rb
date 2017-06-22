@@ -38,9 +38,11 @@ module IssueLinks
                    extract_issues_from_references
                  elsif target_issue
                    [target_issue]
+                 else
+                   []
                  end
 
-        issues&.select { |issue| can?(current_user, :admin_issue_link, issue) }
+        issues.select { |issue| can?(current_user, :admin_issue_link, issue) }
       end
     end
 
