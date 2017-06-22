@@ -827,7 +827,7 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
       it 'replaces the correct part of the string' do
         allow(model).to receive(:transaction_open?).and_return(false)
-        query =  model.replace_sql(Arel::Table.new(:users)[:name], 'Alice', 'Eve')
+        query = model.replace_sql(Arel::Table.new(:users)[:name], 'Alice', 'Eve')
 
         model.update_column_in_batches(:users, :name, query)
 
