@@ -9,17 +9,29 @@ module Ci
     belongs_to :owner, class_name: 'User'
     has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline'
     has_many :pipelines
-    has_many :variables, class_name: 'Ci::PipelineScheduleVariable'
+    has_many :variables, :dependent => :destroy, class_name: 'Ci::PipelineScheduleVariable'
 
     validates :cron, unless: :importing?, cron: true, presence: { unless: :importing? }
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :description, presence: true
+    validates_associated :variables
 
     before_save :set_next_run_at
 
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }
+
+    accepts_nested_attributes_for :variables, allow_destroy: true
+
+    before_validation(on: :update) do
+      # TODO: if validation failed, restore the deleted_obj
+      deleted_obj = Ci::PipelineScheduleVariable.where(pipeline_schedule_id: self).destroy_all
+    end
+
+    after_validation(on: :update) do
+      # TODO: if validation failed, restore the deleted_obj
+    end
 
     def owned_by?(current_user)
       owner == current_user
