@@ -1016,7 +1016,8 @@ class User < ActiveRecord::Base
   end
 
   # Does the user have access to all private groups & projects?
-  def has_full_private_access?
+  # Overridden in EE to also check auditor?
+  def full_private_access?
     admin?
   end
 

@@ -66,11 +66,11 @@ describe EE::User, models: true do
     end
   end
 
-  describe '#has_full_private_access?' do
+  describe '#full_private_access?' do
     it 'returns true for auditor user' do
       user = build(:user, :auditor)
 
-      expect(user.has_full_private_access?).to be_truthy
+      expect(user.full_private_access?).to be_truthy
     end
   end
 end
