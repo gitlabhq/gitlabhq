@@ -1,10 +1,10 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
-  before_action :schedule, except: [:index, :new, :create]
-
   before_action :authorize_read_pipeline_schedule!
   before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
-  before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create]
+  before_action :authorize_update_pipeline_schedule!, only: [:edit, :take_ownership, :update]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
+
+  before_action :schedule, only: [:edit, :update, :destroy, :take_ownership]
 
   def index
     @scope = params[:scope]
@@ -67,10 +67,6 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   def schedule_params
     params.require(:schedule)
       .permit(:description, :cron, :cron_timezone, :ref, :active,
-        variables_attributes: [:id, :key, :value, :_destroy] )
-  end
-
-  def authorize_update_pipeline_schedule!
-    return access_denied! unless can?(current_user, :update_pipeline_schedule, schedule)
+        variables_attributes: [:key, :value] )
   end
 end
