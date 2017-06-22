@@ -3,13 +3,14 @@ require 'spec_helper'
 describe 'Branches', feature: true do
   include ProtectedBranchHelpers
 
+  let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:repository) { project.repository }
 
   context 'logged in as developer' do
     before do
-      gitlab_sign_in :user
-      project.team << [@user, :developer]
+      sign_in(user)
+      project.team << [user, :developer]
     end
 
     describe 'Initial branches page' do
@@ -23,7 +24,7 @@ describe 'Branches', feature: true do
       it 'avoids a N+1 query in branches index' do
         control_count = ActiveRecord::QueryRecorder.new { visit namespace_project_branches_path(project.namespace, project) }.count
 
-        %w(one two three four five).each { |ref| repository.add_branch(@user, ref, 'master') }
+        %w(one two three four five).each { |ref| repository.add_branch(user, ref, 'master') }
 
         expect { visit namespace_project_branches_path(project.namespace, project) }.not_to exceed_query_limit(control_count)
       end
@@ -60,7 +61,7 @@ describe 'Branches', feature: true do
 
     describe 'Delete protected branch' do
       before do
-        project.add_user(@user, :master)
+        project.add_user(user, :master)
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('fix')
         set_allowed_to('merge')
@@ -69,7 +70,7 @@ describe 'Branches', feature: true do
 
         within(".protected-branches-list") { expect(page).to have_content('fix') }
         expect(ProtectedBranch.count).to eq(1)
-        project.add_user(@user, :developer)
+        project.add_user(user, :developer)
       end
 
       it 'does not allow devleoper to removes protected branch', js: true do
@@ -85,8 +86,8 @@ describe 'Branches', feature: true do
 
   context 'logged in as master' do
     before do
-      gitlab_sign_in :user
-      project.team << [@user, :master]
+      sign_in(user)
+      project.team << [user, :master]
     end
 
     describe 'Delete protected branch' do

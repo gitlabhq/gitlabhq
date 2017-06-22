@@ -5,20 +5,21 @@ describe 'Issues', feature: true do
   include IssueHelpers
   include SortingHelper
 
+  let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
 
   before do
-    gitlab_sign_in :user
+    sign_in(user)
     user2 = create(:user)
 
-    project.team << [[@user, user2], :developer]
+    project.team << [[user, user2], :developer]
   end
 
   describe 'Edit issue' do
     let!(:issue) do
       create(:issue,
-             author: @user,
-             assignees: [@user],
+             author: user,
+             assignees: [user],
              project: project)
     end
 
@@ -35,15 +36,15 @@ describe 'Issues', feature: true do
   describe 'Editing issue assignee' do
     let!(:issue) do
       create(:issue,
-             author: @user,
-             assignees: [@user],
+             author: user,
+             assignees: [user],
              project: project)
     end
 
     it 'allows user to select unassigned', js: true do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
 
-      expect(page).to have_content "Assignee #{@user.name}"
+      expect(page).to have_content "Assignee #{user.name}"
 
       first('.js-user-search').click
       click_link 'Unassigned'
@@ -86,7 +87,7 @@ describe 'Issues', feature: true do
     end
 
     context 'on edit form' do
-      let(:issue) { create(:issue, author: @user, project: project, due_date: Date.today.at_beginning_of_month.to_s) }
+      let(:issue) { create(:issue, author: user, project: project, due_date: Date.today.at_beginning_of_month.to_s) }
 
       before do
         visit edit_namespace_project_issue_path(project.namespace, project, issue)
@@ -131,17 +132,17 @@ describe 'Issues', feature: true do
 
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
-      issue = create(:issue, author: @user, assignees: [@user], project: project, title: 'foobar')
+      issue = create(:issue, author: user, assignees: [user], project: project, title: 'foobar')
       create(:award_emoji, awardable: issue)
 
-      visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
+      visit namespace_project_issues_path(project.namespace, project, assignee_id: user.id)
 
       expect(page).to have_content 'foobar'
       expect(page.all('.no-comments').first.text).to eq "0"
     end
 
     it 'shows weight on issue row' do
-      create(:issue, author: @user, project: project, weight: 2)
+      create(:issue, author: user, project: project, weight: 2)
 
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -156,8 +157,8 @@ describe 'Issues', feature: true do
     before do
       %w(foobar barbaz gitlab).each do |title|
         create(:issue,
-               author: @user,
-               assignees: [@user],
+               author: user,
+               assignees: [user],
                project: project,
                title: title)
       end
@@ -179,7 +180,7 @@ describe 'Issues', feature: true do
     end
 
     it 'allows filtering by a specified assignee' do
-      visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
+      visit namespace_project_issues_path(project.namespace, project, assignee_id: user.id)
 
       expect(page).not_to have_content 'foobar'
       expect(page).to have_content 'barbaz'
@@ -377,13 +378,13 @@ describe 'Issues', feature: true do
   end
 
   describe 'when I want to reset my incoming email token' do
-    let(:project1) { create(:empty_project, namespace: @user.namespace) }
+    let(:project1) { create(:empty_project, namespace: user.namespace) }
     let!(:issue) { create(:issue, project: project1) }
 
     before do
       stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
-      project1.team << [@user, :master]
-      visit namespace_project_issues_path(@user.namespace, project1)
+      project1.team << [user, :master]
+      visit namespace_project_issues_path(user.namespace, project1)
     end
 
     it 'changes incoming email address token', js: true do
@@ -394,7 +395,7 @@ describe 'Issues', feature: true do
       wait_for_requests
 
       expect(page).to have_no_field('issue_email', with: previous_token)
-      new_token = project1.new_issue_address(@user.reload)
+      new_token = project1.new_issue_address(user.reload)
       expect(page).to have_field(
         'issue_email',
         with: new_token
@@ -403,7 +404,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'update labels from issue#show', js: true do
-    let(:issue) { create(:issue, project: project, author: @user, assignees: [@user]) }
+    let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
     let!(:label) { create(:label, project: project) }
 
     before do
@@ -422,14 +423,14 @@ describe 'Issues', feature: true do
   end
 
   describe 'update assignee from issue#show' do
-    let(:issue) { create(:issue, project: project, author: @user, assignees: [@user]) }
+    let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 
     context 'by authorized user' do
       it 'allows user to select unassigned', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
         page.within('.assignee') do
-          expect(page).to have_content "#{@user.name}"
+          expect(page).to have_content "#{user.name}"
 
           click_link 'Edit'
           click_link 'Unassigned'
@@ -444,7 +445,7 @@ describe 'Issues', feature: true do
       end
 
       it 'allows user to select an assignee', js: true do
-        issue2 = create(:issue, project: project, author: @user)
+        issue2 = create(:issue, project: project, author: user)
         visit namespace_project_issue_path(project.namespace, project, issue2)
 
         page.within('.assignee') do
@@ -456,30 +457,30 @@ describe 'Issues', feature: true do
         end
 
         page.within '.dropdown-menu-user' do
-          click_link @user.name
+          click_link user.name
         end
 
         page.within('.assignee') do
-          expect(page).to have_content @user.name
+          expect(page).to have_content user.name
         end
       end
 
       it 'allows user to unselect themselves', js: true do
-        issue2 = create(:issue, project: project, author: @user)
+        issue2 = create(:issue, project: project, author: user)
         visit namespace_project_issue_path(project.namespace, project, issue2)
 
         page.within '.assignee' do
           click_link 'Edit'
-          click_link @user.name
+          click_link user.name
 
           find('.dropdown-menu-toggle').click
 
           page.within '.value .author' do
-            expect(page).to have_content @user.name
+            expect(page).to have_content user.name
           end
 
           click_link 'Edit'
-          click_link @user.name
+          click_link user.name
 
           find('.dropdown-menu-toggle').click
 
@@ -498,8 +499,8 @@ describe 'Issues', feature: true do
       end
 
       it 'shows assignee text', js: true do
-        gitlab_sign_out
-        gitlab_sign_in guest
+        sign_out(:user)
+        sign_in(guest)
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content issue.assignees.first.name
@@ -529,7 +530,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'update milestone from issue#show' do
-    let!(:issue) { create(:issue, project: project, author: @user) }
+    let!(:issue) { create(:issue, project: project, author: user) }
     let!(:milestone) { create(:milestone, project: project) }
 
     context 'by authorized user' do
@@ -582,8 +583,8 @@ describe 'Issues', feature: true do
       end
 
       it 'shows milestone text', js: true do
-        gitlab_sign_out
-        gitlab_sign_in guest
+        sign_out(:user)
+        sign_in(guest)
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content milestone.title
@@ -596,7 +597,7 @@ describe 'Issues', feature: true do
 
     context 'by unauthenticated user' do
       before do
-        gitlab_sign_out
+        sign_out(:user)
       end
 
       it 'redirects to signin then back to new issue after signin' do
@@ -606,7 +607,9 @@ describe 'Issues', feature: true do
 
         expect(current_path).to eq new_user_session_path
 
-        gitlab_sign_in :user
+        # NOTE: This is specifically testing the redirect after login, so we
+        # need the full login flow
+        gitlab_sign_in(create(:user))
 
         expect(current_path).to eq new_namespace_project_issue_path(project.namespace, project)
       end
@@ -635,7 +638,7 @@ describe 'Issues', feature: true do
 
       before do
         project.repository.create_file(
-          @user,
+          user,
           '.gitlab/issue_templates/bug.md',
           'this is a test "bug" template',
           message: 'added issue template',
@@ -664,7 +667,7 @@ describe 'Issues', feature: true do
 
       it 'click the button to show modal for the new email' do
         page.within '#issue-email-modal' do
-          email = project.new_issue_address(@user)
+          email = project.new_issue_address(user)
 
           expect(page).to have_selector("input[value='#{email}']")
         end
@@ -672,7 +675,7 @@ describe 'Issues', feature: true do
     end
 
     context 'with existing issues' do
-      let!(:issue) { create(:issue, project: project, author: @user) }
+      let!(:issue) { create(:issue, project: project, author: user) }
 
       it_behaves_like 'show the email in the modal'
     end
@@ -684,7 +687,7 @@ describe 'Issues', feature: true do
 
   describe 'due date' do
     context 'update due on issue#show', js: true do
-      let(:issue) { create(:issue, project: project, author: @user, assignees: [@user]) }
+      let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 
       before do
         visit namespace_project_issue_path(project.namespace, project, issue)
@@ -729,7 +732,7 @@ describe 'Issues', feature: true do
 
   describe 'title issue#show', js: true do
     it 'updates the title', js: true do
-      issue = create(:issue, author: @user, assignees: [@user], project: project, title: 'new title')
+      issue = create(:issue, author: user, assignees: [user], project: project, title: 'new title')
 
       visit namespace_project_issue_path(project.namespace, project, issue)
 

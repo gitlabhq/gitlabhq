@@ -23,7 +23,7 @@ describe 'Dashboard milestone tabs', :js, :feature do
   it 'loads merge requests async' do
     click_link 'Merge Requests'
 
-    expect(page).to have_selector('.merge_requests-sortable-list')
+    expect(page).to have_selector('.milestone-merge_requests-list')
   end
 
   it 'loads participants async' do

@@ -12,6 +12,9 @@ class Issue < ActiveRecord::Base
   include Elastic::IssuesSearch
   include FasterCacheKeys
   include RelativePositioning
+  include IgnorableColumn
+
+  ignore_column :position
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze
@@ -54,7 +57,7 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
-  scope :include_associations, -> { includes(:labels, project: :namespace) }
+  scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   after_save :expire_etag_cache
 

@@ -12,15 +12,6 @@ import '~/notes';
 import 'vendor/jquery.scrollTo';
 
 (function () {
-  // TODO: remove this hack!
-  // PhantomJS causes spyOn to panic because replaceState isn't "writable"
-  var phantomjs;
-  try {
-    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
-  } catch (err) {
-    phantomjs = false;
-  }
-
   describe('MergeRequestTabs', function () {
     var stubLocation = {};
     var setLocation = function (stubs) {
@@ -45,11 +36,9 @@ import 'vendor/jquery.scrollTo';
       this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
       setLocation();
 
-      if (!phantomjs) {
-        this.spies = {
-          history: spyOn(window.history, 'replaceState').and.callFake(function () {})
-        };
-      }
+      this.spies = {
+        history: spyOn(window.history, 'replaceState').and.callFake(function () {})
+      };
     });
 
     afterEach(function () {
@@ -216,11 +205,9 @@ import 'vendor/jquery.scrollTo';
           pathname: '/foo/bar/merge_requests/1'
         });
         newState = this.subject('commits');
-        if (!phantomjs) {
-          expect(this.spies.history).toHaveBeenCalledWith({
-            url: newState
-          }, document.title, newState);
-        }
+        expect(this.spies.history).toHaveBeenCalledWith({
+          url: newState
+        }, document.title, newState);
       });
 
       it('treats "show" like "notes"', function () {

@@ -150,21 +150,21 @@ class User < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  validate :namespace_uniq, if: ->(user) { user.username_changed? }
+  validate :namespace_uniq, if: :username_changed?
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
-  validate :unique_email, if: ->(user) { user.email_changed? }
-  validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
-  validate :owns_public_email, if: ->(user) { user.public_email_changed? }
+  validate :unique_email, if: :email_changed?
+  validate :owns_notification_email, if: :notification_email_changed?
+  validate :owns_public_email, if: :public_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :sanitize_attrs
-  before_validation :set_notification_email, if: ->(user) { user.email_changed? }
-  before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
+  before_validation :set_notification_email, if: :email_changed?
+  before_validation :set_public_email, if: :public_email_changed?
 
-  after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
+  after_update :update_emails_with_primary_email, if: :email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
-  before_save :ensure_external_user_rights
+  before_save :ensure_user_rights_and_limits, if: :external_changed?
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
   after_destroy :post_destroy_hook
@@ -1069,11 +1069,14 @@ class User < ActiveRecord::Base
     super
   end
 
-  def ensure_external_user_rights
-    return unless external?
-
-    self.can_create_group   = false
-    self.projects_limit     = 0
+  def ensure_user_rights_and_limits
+    if external?
+      self.can_create_group = false
+      self.projects_limit   = 0
+    else
+      self.can_create_group = gitlab_config.default_can_create_group
+      self.projects_limit = current_application_settings.default_projects_limit
+    end
   end
 
   def signup_domain_valid?

@@ -53,7 +53,7 @@
     },
     methods: {
       renderGFM() {
-        $(this.$refs['gfm-entry-content']).renderGFM();
+        $(this.$refs['gfm-content']).renderGFM();
 
         if (this.canUpdate) {
           // eslint-disable-next-line no-new

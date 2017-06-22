@@ -77,7 +77,7 @@ const Api = {
       dataType: 'json',
     })
       .done(label => callback(label))
-      .error(message => callback(message.responseJSON));
+      .fail(message => callback(message.responseJSON));
   },
 
   // Return group projects list. Filtered by query
@@ -134,7 +134,7 @@ const Api = {
       dataType: 'json',
     })
       .done(file => callback(null, file))
-      .error(callback);
+      .fail(callback);
   },
 
   users(query, options) {

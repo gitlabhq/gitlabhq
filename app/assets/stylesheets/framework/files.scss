@@ -63,6 +63,7 @@
     background-color: $gray-light;
     text-align: right;
     padding: 8px $gl-padding;
+    border-bottom: 1px solid $border-color;
 
     @media (max-width: $screen-xs-max) {
       text-align: left;

@@ -176,6 +176,17 @@ MergeRequestDiff:
 - real_size
 - head_commit_sha
 - start_commit_sha
+MergeRequestDiffFile:
+- merge_request_diff_id
+- relative_order
+- new_file
+- renamed_file
+- deleted_file
+- new_path
+- old_path
+- a_mode
+- b_mode
+- too_large
 Ci::Pipeline:
 - id
 - project_id

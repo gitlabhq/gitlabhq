@@ -27,7 +27,7 @@ export default {
         if (this.group.hasSubgroups) {
           eventHub.$emit('toggleSubGroups', this.group);
         } else {
-          window.location.href = this.group.webUrl;
+          window.location.href = this.group.groupPath;
         }
       }
     },
@@ -192,7 +192,7 @@ export default {
       <div
         class="avatar-container s40 hidden-xs">
         <a
-          :href="group.webUrl">
+          :href="group.groupPath">
           <img
             class="avatar s40"
             :src="group.avatarUrl"
@@ -202,7 +202,7 @@ export default {
       <div
         class="title">
         <a
-          :href="group.webUrl">{{fullPath}}</a>
+          :href="group.groupPath">{{fullPath}}</a>
         <template v-if="group.permissions.humanGroupAccess">
         as
         <span class="access-type">{{group.permissions.humanGroupAccess}}</span>

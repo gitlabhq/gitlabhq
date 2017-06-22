@@ -80,7 +80,7 @@ module ProjectsHelper
   end
 
   def remove_fork_project_message(project)
-    _("You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?") %
+    _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
       { forked_from_project: @project.forked_from_project.name_with_namespace }
   end
 
@@ -151,14 +151,21 @@ module ProjectsHelper
       disabled: disabled_option
     )
 
-    content_tag(
-      :select,
-      options,
-      name: "project[project_feature_attributes][#{field}]",
-      id: "project_project_feature_attributes_#{field}",
-      class: "pull-right form-control #{repo_children_classes(field)}",
-      data: { field: field }
-    ).html_safe
+    content_tag :div, class: "select-wrapper" do
+      concat(
+        content_tag(
+          :select,
+          options,
+          name: "project[project_feature_attributes][#{field}]",
+          id: "project_project_feature_attributes_#{field}",
+          class: "pull-right form-control select-control #{repo_children_classes(field)} ",
+          data: { field: field }
+        )
+      )
+      concat(
+        icon('chevron-down')
+      )
+    end.html_safe
   end
 
   def link_to_autodeploy_doc
