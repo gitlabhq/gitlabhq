@@ -1,7 +1,7 @@
 class Projects::LabelsController < Projects::ApplicationController
   include ToggleSubscriptionAction
 
-  before_action :module_enabled
+  before_action :check_issuables_available!
   before_action :label, only: [:edit, :update, :destroy, :promote]
   before_action :find_labels, only: [:index, :set_priorities, :remove_priority, :toggle_subscription]
   before_action :authorize_read_label!
@@ -134,12 +134,6 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   protected
-
-  def module_enabled
-    unless @project.feature_available?(:issues, current_user) || @project.feature_available?(:merge_requests, current_user)
-      return render_404
-    end
-  end
 
   def label_params
     params.require(:label).permit(:title, :description, :color)

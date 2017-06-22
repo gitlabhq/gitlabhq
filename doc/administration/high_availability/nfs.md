@@ -1,11 +1,34 @@
 # NFS
 
-## Required NFS Server features
+You can view information and options set for each of the mounted NFS file
+systems by running `sudo nfsstat -m`.
+
+## NFS Server features
+
+### Required features
 
 **File locking**: GitLab **requires** advisory file locking, which is only
 supported natively in NFS version 4. NFSv3 also supports locking as long as
 Linux Kernel 2.6.5+ is used. We recommend using version 4 and do not
 specifically test NFSv3.
+
+### Recommended options
+
+When you define your NFS exports, we recommend you also add the following
+options:
+
+- `no_root_squash` - NFS normally changes the `root` user to `nobody`. This is
+  a good security measure when NFS shares will be accessed by many different
+  users. However, in this case only GitLab will use the NFS share so it
+  is safe. GitLab recommends the `no_root_squash` setting because we need to
+  manage file permissions automatically. Without the setting you may receive
+  errors when the Omnibus package tries to alter permissions. Note that GitLab
+  and other bundled components do **not** run as `root` but as non-privileged
+  users. The recommendation for `no_root_squash` is to allow the Omnibus package
+  to set ownership and permissions on files, as needed.
+- `sync` - Force synchronous behavior. Default is asynchronous and under certain
+  circumstances it could lead to data loss if a failure occurs before data has
+  synced.
 
 ## AWS Elastic File System
 
@@ -26,27 +49,10 @@ GitLab does not recommend using EFS with GitLab.
 For more details on another person's experience with EFS, see
 [Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)
 
-### Recommended options
-
-When you define your NFS exports, we recommend you also add the following
-options:
-
-- `no_root_squash` - NFS normally changes the `root` user to `nobody`. This is
-  a good security measure when NFS shares will be accessed by many different
-  users. However, in this case only GitLab will use the NFS share so it
-  is safe. GitLab recommends the `no_root_squash` setting because we need to
-  manage file permissions automatically. Without the setting you may receive
-  errors when the Omnibus package tries to alter permissions. Note that GitLab
-  and other bundled components do **not** run as `root` but as non-privileged
-  users. The recommendation for `no_root_squash` is to allow the Omnibus package
-  to set ownership and permissions on files, as needed.
-- `sync` - Force synchronous behavior. Default is asynchronous and under certain
-  circumstances it could lead to data loss if a failure occurs before data has
-  synced.
-
 ## NFS Client mount options
 
-Below is an example of an NFS mount point we use on GitLab.com:
+Below is an example of an NFS mount point defined in `/etc/fstab` we use on
+GitLab.com:
 
 ```
 10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2

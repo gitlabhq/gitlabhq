@@ -7,7 +7,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleAwardEmoji
   include IssuableCollections
 
-  before_action :module_enabled
+  before_action :check_merge_requests_available!
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge,
     :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues, :commit_change_content
@@ -143,8 +143,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         # Get commits from repository
         # or from cache if already merged
         @commits = @merge_request.commits
-        @note_counts = Note.where(commit_id: @commits.map(&:id)).
-          group(:commit_id).count
+        @note_counts = Note.where(commit_id: @commits.map(&:id))
+          .group(:commit_id).count
 
         render json: { html: view_to_html_string('projects/merge_requests/show/_commits') }
       end
@@ -192,9 +192,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     begin
-      MergeRequests::Conflicts::ResolveService.
-        new(merge_request).
-        execute(current_user, params)
+      MergeRequests::Conflicts::ResolveService
+        .new(merge_request)
+        .execute(current_user, params)
 
       flash[:notice] = 'All merge conflicts were resolved. The merge request can now be merged.'
 
@@ -461,10 +461,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return render_404 unless @conflicts_list.can_be_resolved_by?(current_user)
   end
 
-  def module_enabled
-    return render_404 unless @project.feature_available?(:merge_requests, current_user)
-  end
-
   def validates_merge_request
     # Show git not found page
     # if there is no saved commits between source & target branch
@@ -562,8 +558,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.diff_head_commit
 
-    @note_counts = Note.where(commit_id: @commits.map(&:id)).
-      group(:commit_id).count
+    @note_counts = Note.where(commit_id: @commits.map(&:id))
+      .group(:commit_id).count
 
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 

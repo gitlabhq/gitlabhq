@@ -45,8 +45,7 @@
   li {
     display: flex;
 
-    a,
-    .btn-link {
+    a {
       padding: $gl-btn-padding;
       padding-bottom: 11px;
       font-size: 14px;
@@ -68,29 +67,7 @@
       }
     }
 
-    .btn-link {
-      padding-top: 16px;
-      padding-left: 15px;
-      padding-right: 15px;
-      border-left: none;
-      border-right: none;
-      border-top: none;
-      border-radius: 0;
-
-      &:hover,
-      &:active,
-      &:focus {
-        background-color: transparent;
-      }
-
-      &:active {
-        outline: 0;
-        box-shadow: none;
-      }
-    }
-
-    &.active a,
-    &.active .btn-link {
+    &.active a {
       border-bottom: 2px solid $link-underline-blue;
       color: $black;
       font-weight: 600;

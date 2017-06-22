@@ -608,8 +608,8 @@ describe Ci::Pipeline, models: true do
 
       it 'returns the latest pipeline for the same ref and different sha' do
         expect(pipelines.map(&:sha)).to contain_exactly('A', 'B', 'C')
-        expect(pipelines.map(&:status)).
-          to contain_exactly('success', 'failed', 'skipped')
+        expect(pipelines.map(&:status))
+          .to contain_exactly('success', 'failed', 'skipped')
       end
     end
 
@@ -618,8 +618,8 @@ describe Ci::Pipeline, models: true do
 
       it 'returns the latest pipeline for ref and different sha' do
         expect(pipelines.map(&:sha)).to contain_exactly('A', 'B')
-        expect(pipelines.map(&:status)).
-          to contain_exactly('success', 'failed')
+        expect(pipelines.map(&:status))
+          .to contain_exactly('success', 'failed')
       end
     end
   end
@@ -654,8 +654,8 @@ describe Ci::Pipeline, models: true do
     end
 
     it 'returns the latest successful pipeline' do
-      expect(described_class.latest_successful_for('ref')).
-        to eq(latest_successful_pipeline)
+      expect(described_class.latest_successful_for('ref'))
+        .to eq(latest_successful_pipeline)
     end
   end
 
@@ -1201,8 +1201,8 @@ describe Ci::Pipeline, models: true do
     before do
       project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
 
-      pipeline.user.global_notification_setting.
-        update(level: 'custom', failed_pipeline: true, success_pipeline: true)
+      pipeline.user.global_notification_setting
+        .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
 
       reset_delivered_emails!
 

@@ -66,14 +66,14 @@ describe Projects::HousekeepingService do
     allow(subject).to receive(:lease_key).and_return(:the_lease_key)
 
     # At push 200
-    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :gc, :the_lease_key, :the_uuid).
-      exactly(1).times
+    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :gc, :the_lease_key, :the_uuid)
+      .exactly(1).times
     # At push 50, 100, 150
-    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :full_repack, :the_lease_key, :the_uuid).
-      exactly(3).times
+    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :full_repack, :the_lease_key, :the_uuid)
+      .exactly(3).times
     # At push 10, 20, ... (except those above)
-    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid).
-      exactly(16).times
+    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid)
+      .exactly(16).times
 
     201.times do
       subject.increment!

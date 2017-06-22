@@ -3,8 +3,8 @@ module Gitlab
   module PerformanceBar
     module PeekQueryTracker
       def sorted_queries
-        PEEK_DB_CLIENT.query_details.
-          sort { |a, b| b[:duration] <=> a[:duration] }
+        PEEK_DB_CLIENT.query_details
+          .sort { |a, b| b[:duration] <=> a[:duration] }
       end
 
       def results

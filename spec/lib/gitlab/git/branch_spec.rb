@@ -45,8 +45,8 @@ describe Gitlab::Git::Branch, seed_helper: true do
     let(:branch) { described_class.new(repository, 'foo', gitaly_branch) }
 
     it 'parses Gitaly::FindLocalBranchResponse correctly' do
-      expect(Gitlab::Git::Commit).to receive(:decorate).
-        with(hash_including(attributes)).and_call_original
+      expect(Gitlab::Git::Commit).to receive(:decorate)
+        .with(hash_including(attributes)).and_call_original
 
       expect(branch.dereferenced_target.message.encoding).to be(Encoding::UTF_8)
     end

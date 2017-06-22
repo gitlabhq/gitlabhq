@@ -22,8 +22,8 @@ module Notes
     def extract_commands(note, options = {})
       return [note.note, {}] unless supported?(note)
 
-      QuickActions::InterpretService.new(project, current_user, options).
-        execute(note.note, note.noteable)
+      QuickActions::InterpretService.new(project, current_user, options)
+        .execute(note.note, note.noteable)
     end
 
     def execute(command_params, note)
