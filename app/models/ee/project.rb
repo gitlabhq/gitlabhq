@@ -196,10 +196,7 @@ module EE
       where = <<~SQL
         environment_scope IN (:wildcard, :environment_name) OR
           :environment_name LIKE
-            REPLACE(REPLACE(REPLACE(environment_scope,
-                                    :underscore, :escaped_underscore),
-                            :percent, :escaped_percent),
-                    :wildcard, :percent)
+            #{::Gitlab::SQL::Glob.to_like('environment_scope')}
       SQL
 
       order = <<~SQL
@@ -213,15 +210,28 @@ module EE
       values = {
         wildcard: '*',
         environment_name: environment.name,
-        percent: '%',
-        escaped_percent: '\\%',
-        underscore: '_',
-        escaped_underscore: '\\_'
       }
 
       quoted_values =
         values.transform_values(&self.class.connection.method(:quote))
 
+      # The query is trying to find variables with scopes matching the
+      # current environment name. Suppose the environment name is
+      # 'review/app', and we have variables with environment scopes like:
+      # * variable A: review
+      # * variable B: review/app
+      # * variable C: review/*
+      # * variable D: *
+      # And the query should find variable B, C, and D, because it would
+      # try to convert the scope into a LIKE pattern for each variable:
+      # * A: review
+      # * B: review/app
+      # * C: review/%
+      # * D: %
+      # Note that we'll match % and _ literally therefore we'll escape them.
+      # In this case, B, C, and D would match. We also want to prioritize
+      # the exact matched name, and put * last, and everything else in the
+      # middle. So the order should be: D < C < B
       query
         .where(where, values)
         .order(order % quoted_values) # `order` cannot escape for us!
