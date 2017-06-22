@@ -3,12 +3,6 @@ module EE
     module Variable
       extend ActiveSupport::Concern
 
-      module ClassMethods
-        def key_uniqueness_scope
-          %i[project_id environment_scope]
-        end
-      end
-
       prepended do
         validates(
           :environment_scope,

@@ -5,11 +5,19 @@ describe Ci::Variable, models: true do
 
   let(:secret_value) { 'secret' }
 
-  it { is_expected.to validate_presence_of(:key) }
-  it { is_expected.to validate_length_of(:key).is_at_most(255) }
-  it { is_expected.to allow_value('foo').for(:key) }
-  it { is_expected.not_to allow_value('foo bar').for(:key) }
-  it { is_expected.not_to allow_value('foo/bar').for(:key) }
+  describe 'validations' do
+    # EE
+    before do
+      stub_feature(:variable_environment_scope)
+    end
+
+    it { is_expected.to validate_presence_of(:key) }
+    it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope) }
+    it { is_expected.to validate_length_of(:key).is_at_most(255) }
+    it { is_expected.to allow_value('foo').for(:key) }
+    it { is_expected.not_to allow_value('foo bar').for(:key) }
+    it { is_expected.not_to allow_value('foo/bar').for(:key) }
+  end
 
   describe '.unprotected' do
     subject { described_class.unprotected }

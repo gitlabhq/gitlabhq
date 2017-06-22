@@ -3,15 +3,11 @@ module Ci
     extend Ci::Model
     prepend EE::Ci::Variable
 
-    def self.key_uniqueness_scope
-      :project_id
-    end
-
     belongs_to :project
 
     validates :key,
       presence: true,
-      uniqueness: { scope: key_uniqueness_scope },
+      uniqueness: { scope: [:project_id, :environment_scope] },
       length: { maximum: 255 },
       format: { with: /\A[a-zA-Z0-9_]+\z/,
                 message: "can contain only letters, digits and '_'." }
