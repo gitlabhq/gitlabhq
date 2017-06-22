@@ -142,7 +142,7 @@ describe 'Issues', feature: true do
     end
 
     it 'shows weight on issue row' do
-      create(:issue, author: @user, project: project, weight: 2)
+      create(:issue, author: user, project: project, weight: 2)
 
       visit namespace_project_issues_path(project.namespace, project)
 
