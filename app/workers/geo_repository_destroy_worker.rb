@@ -1,13 +1,14 @@
 class GeoRepositoryDestroyWorker
   include Sidekiq::Worker
   include GeoQueue
+  include Gitlab::ShellAdapter
 
-  def perform(id, name, path_with_namespace)
-    repository_storage = probe_repository_storage(path_with_namespace)
+  def perform(id, name, full_path)
+    repository_storage = probe_repository_storage(full_path)
 
     # We don't have access to the original model anymore, so we are
     # rebuilding only what our service class requires
-    project = ::Geo::DeletedProject.new(id: id, name: name, path_with_namespace: path_with_namespace, repository_storage: repository_storage)
+    project = ::Geo::DeletedProject.new(id: id, name: name, full_path: full_path, repository_storage: repository_storage)
 
     ::Projects::DestroyService.new(project, nil).geo_replicate
   end
@@ -20,11 +21,9 @@ class GeoRepositoryDestroyWorker
   # we need to probe on all existing ones.
   #
   # if we don't find it means it has already been deleted and we just return
-  def probe_repository_storage(path_with_namespace)
-    gitlab_shell = Gitlab::Shell.new
-
+  def probe_repository_storage(full_path)
     Gitlab.config.repositories.storages.each do |repository_storage, rs_data|
-      return repository_storage if gitlab_shell.exists?(rs_data['path'], path_with_namespace + '.git')
+      return repository_storage if gitlab_shell.exists?(rs_data['path'], full_path + '.git')
     end
 
     nil
