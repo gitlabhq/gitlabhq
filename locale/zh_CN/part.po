@@ -1,0 +1,52 @@
+# Huang Tao <htve@outlook.com>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-15 21:59-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-06-23 01:04-0400\n"
+"Last-Translator: Huang Tao <htve@outlook.com>\n"
+"Language-Team: Chinese (China)\n"
+"Language: zh-CN\n"
+"X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "%d additional commit have been omitted to prevent performance issues."
+msgid_plural ""
+"%d additional commits have been omitted to prevent performance issues."
+msgstr[0] "为提高页面加载速度及性能，已省略了 %d 次提交。"
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d 次提交"
+
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr "搜索分支"
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr "切换分支"
+
+msgid "Browse Directory"
+msgstr "浏览目录"
+
+msgid "Browse File"
+msgstr "浏览文件"
+
+msgid "Browse Files"
+msgstr "浏览文件"
+
+msgid "Commits feed"
+msgstr "提交动态"
+
+msgid "Filter by commit message"
+msgstr "按提交消息过滤"
+
+msgid "UploadLink|click to upload"
+msgstr "点击上传"
+
+msgid "View open merge request"
+msgstr "查看开启的合并请求"
+
