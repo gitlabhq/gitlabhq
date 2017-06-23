@@ -6,7 +6,7 @@ module IssueLinks
 
     def execute
       if referenced_issues.blank?
-        return error('No Issue found for given reference', 401)
+        return error('No Issue found for given params', 404)
       end
 
       create_issue_links
@@ -32,16 +32,28 @@ module IssueLinks
 
     def referenced_issues
       @referenced_issues ||= begin
-        issue_references = params[:issue_references]
-        text = issue_references.join(' ')
+        target_issue = params[:target_issue]
 
-        extractor = Gitlab::ReferenceExtractor.new(@issue.project, @current_user)
-        extractor.analyze(text)
+        issues = if params[:issue_references].present?
+                   extract_issues_from_references
+                 elsif target_issue
+                   [target_issue]
+                 else
+                   []
+                 end
 
-        extractor.issues.select do |issue|
-          can?(current_user, :admin_issue_link, issue)
-        end
+        issues.select { |issue| can?(current_user, :admin_issue_link, issue) }
       end
+    end
+
+    def extract_issues_from_references
+      issue_references = params[:issue_references]
+      text = issue_references.join(' ')
+
+      extractor = Gitlab::ReferenceExtractor.new(@issue.project, @current_user)
+      extractor.analyze(text)
+
+      extractor.issues
     end
   end
 end

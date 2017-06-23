@@ -22,16 +22,7 @@ module IssueLinks
     private
 
     def issues
-      related_issues = Issue
-                         .select(['issues.*', 'issue_links.id AS issue_links_id'])
-                         .joins("INNER JOIN issue_links ON
-                                 (issue_links.source_id = issues.id AND issue_links.target_id = #{@issue.id})
-                                 OR
-                                 (issue_links.target_id = issues.id AND issue_links.source_id = #{@issue.id})")
-                         .preload(project: :namespace)
-                         .reorder('issue_links_id')
-
-      Ability.issues_readable_by_user(related_issues, @current_user)
+      @issue.related_issues(@current_user, preload: { project: :namespace })
     end
 
     def destroy_relation_path(issue)
@@ -41,7 +32,7 @@ module IssueLinks
         namespace_project_issue_link_path(@project.namespace,
                                           @issue.project,
                                           @issue.iid,
-                                          issue.issue_links_id)
+                                          issue.issue_link_id)
       end
     end
 

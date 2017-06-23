@@ -187,6 +187,19 @@ class Issue < ActiveRecord::Base
     branches_with_iid - branches_with_merge_request
   end
 
+  def related_issues(current_user, preload: nil)
+    related_issues = Issue
+                       .select(['issues.*', 'issue_links.id AS issue_link_id'])
+                       .joins("INNER JOIN issue_links ON
+                                 (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
+                                 OR
+                                 (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
+                       .preload(preload)
+                       .reorder('issue_link_id')
+
+    Ability.issues_readable_by_user(related_issues, current_user)
+  end
+
   # Returns boolean if a related branch exists for the current issue
   # ignores merge requests branchs
   def has_related_branch?
