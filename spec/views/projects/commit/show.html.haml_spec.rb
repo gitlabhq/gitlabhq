@@ -21,24 +21,26 @@ describe 'projects/commit/show.html.haml', :view do
   context 'inline diff view' do
     before do
       allow(view).to receive(:diff_view).and_return(:inline)
+      allow(view).to receive(:diff_view).and_return(:inline)
 
       render
     end
 
-    it 'keeps container-limited' do
-      expect(rendered).not_to have_selector('.limit-container-width')
+    it 'has limited width' do
+      expect(rendered).to have_selector('.limit-container-width')
     end
   end
 
   context 'parallel diff view' do
     before do
       allow(view).to receive(:diff_view).and_return(:parallel)
+      allow(view).to receive(:fluid_layout).and_return(true)
 
       render
     end
 
     it 'spans full width' do
-      expect(rendered).to have_selector('.limit-container-width')
+      expect(rendered).not_to have_selector('.limit-container-width')
     end
   end
 end
