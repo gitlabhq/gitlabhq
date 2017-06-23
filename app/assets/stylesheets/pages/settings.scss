@@ -127,7 +127,6 @@
   }
 }
 
-<<<<<<< HEAD
 .nested-settings {
   padding-left: 20px;
 }
@@ -150,7 +149,9 @@
 
   .pull-right {
     margin-left: auto;
-=======
+  }
+}
+
 .prometheus-metrics-monitoring {
   .panel {
     .panel-toggle {
@@ -211,6 +212,5 @@
     li + li {
       border-top: 1px solid $border-color;
     }
->>>>>>> ce/master
   }
 }
