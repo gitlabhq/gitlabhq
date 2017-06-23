@@ -133,6 +133,10 @@ module LabelsHelper
     end
   end
 
+  def can_subscribe_to_label_in_different_levels?(label)
+    defined?(@project) || label.is_a?(GroupLabel)
+  end
+
   def label_subscription_status(label, project)
     return 'group-level' if label.subscribed?(current_user)
     return 'project-level' if label.subscribed?(current_user, project)
