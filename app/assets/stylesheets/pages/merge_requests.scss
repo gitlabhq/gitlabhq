@@ -15,14 +15,32 @@
     }
   }
 
+  .btn {
+    font-size: 15px;
+    padding: 5px 10px;
+
+    &.btn-xs {
+      line-height: 1;
+      padding: 4px 10px;
+    }
+
+    &.dropdown-toggle {
+      padding: 5px 7px;
+
+      .fa {
+        color: inherit;
+      }
+    }
+  }
+
+  * + .btn {
+    margin-left: 10px;
+  }
+
   .accept-merge-holder {
     .accept-action {
       display: inline-block;
       float: left;
-
-      .btn-success.dropdown-toggle .fa {
-        color: inherit;
-      }
 
       .accept-merge-request {
         &.ci-pending,
@@ -212,20 +230,6 @@
   .mr-widget-heading {
     .btn-default.btn-xs {
       margin-left: 5px;
-    }
-  }
-
-  .mr-widget-body {
-    .btn {
-      font-size: 15px;
-    }
-
-    .btn-group .btn {
-      padding: 5px 10px;
-
-      &.dropdown-toggle {
-        padding: 5px 7px;
-      }
     }
   }
 
@@ -497,8 +501,6 @@
   }
 
   .btn-clipboard {
-    @extend .pull-right;
-
     margin-right: 20px;
     margin-top: 5px;
     position: absolute;
@@ -683,10 +685,6 @@
 
   .btn {
     float: left;
-
-    &:not(:last-child) {
-      margin-right: 10px;
-    }
   }
 }
 
