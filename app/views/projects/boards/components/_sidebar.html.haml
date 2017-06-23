@@ -23,4 +23,4 @@
           = render "projects/boards/components/sidebar/labels"
           = render "projects/boards/components/sidebar/notifications"
           %remove-btn{ ":issue" => "issue",
-            ":list" => "list" }
+            ":list" => "list", "v-if" => "canRemove" }
