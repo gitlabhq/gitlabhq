@@ -6,7 +6,7 @@ module Gitlab
       private
 
       def link_dependencies
-        link_regex(/^(?<name>(?![a-z+]+:)[^#.-][^ ><=;\[]+)/) do |name|
+        link_regex(/^(?<name>(?![a-z+]+:)[^#.-][^ ><=~!;\[]+)/) do |name|
           "https://pypi.python.org/pypi/#{name}"
         end
 
