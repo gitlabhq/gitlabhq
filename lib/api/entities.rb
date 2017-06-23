@@ -129,11 +129,10 @@ module API
       expose :repository_storage, if: lambda { |_project, options| options[:current_user].try(:admin?) }
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
-<<<<<<< HEAD
-      expose :approvals_before_merge
-=======
       expose :printing_merge_request_link_enabled
->>>>>>> ce/master
+
+      # EE only
+      expose :approvals_before_merge
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end

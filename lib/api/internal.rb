@@ -71,7 +71,6 @@ module API
       end
 
       #
-<<<<<<< HEAD
       # Get a ssh key using the fingerprint
       #
       get "/authorized_keys" do
@@ -84,10 +83,7 @@ module API
       end
 
       #
-      # Discover user by ssh key
-=======
       # Discover user by ssh key or user id
->>>>>>> ce/master
       #
       get "/discover" do
         if params[:key_id]
