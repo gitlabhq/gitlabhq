@@ -6,6 +6,34 @@ Starting from GitLab 8.5:
 - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
 - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
 
+## Overview
+
+[Webhooks](https://en.wikipedia.org/wiki/Webhook) are "_user-defined HTTP
+callbacks_". They are usually triggered by some
+event, such as pushing code to a repository or a comment being posted to a blog.
+When that event occurs, the source app makes an HTTP request to the URI
+configured for the webhook. The action taken may be anything.
+Common uses are to trigger builds with continuous integration systems or to
+notify bug tracking systems. 
+
+Webhooks are available **per project** for GitLab Community Edition,
+and **per project and per group** for **GitLab Enterprise Edition**. 
+
+In most cases, you'll need to setup your own [webhook receiver](#example-webhook-receiver)
+to receive infomation from GitLab, and send it to another app, according to your needs.
+We already have a [built-in receiver](http://docs.gitlab.com/ce/project_services/slack.html)
+for sending [Slack](https://api.slack.com/incoming-webhooks) notifications _per project_.
+
+## Use-cases
+
+- You can setup a webhook in GitLab to send a notification to
+[Slack](https://api.slack.com/incoming-webhooks) every time a build fails, for example 
+- You can [integrate with Twilio to be notified via SMS](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
+every time an issue is created for a specific project or group within GitLab
+- You can use them to [automatically assign labels to merge requests](https://about.gitlab.com/2016/08/19/applying-gitlab-labels-automatically/).
+
+## Description
+
 Project webhooks allow you to trigger a URL if for example new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
 like pushes, issues or merge requests. GitLab will send a POST request with data
