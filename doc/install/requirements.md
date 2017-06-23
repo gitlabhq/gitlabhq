@@ -95,15 +95,16 @@ installation (e.g. the number of users, projects, etc).
 We currently support the following databases:
 
 - PostgreSQL (highly recommended)
-- MySQL/MariaDB (doesn't support all features)
+- MySQL/MariaDB (strongly discouraged, not all GitLab features are supported, no support for [MySQL GTID](https://dev.mysql.com/doc/refman/5.6/en/replication-gtids-concepts.html))
 
-We **highly recommend** the use of PostgreSQL instead of MySQL/MariaDB as not all
+We highly recommend the use of PostgreSQL instead of MySQL/MariaDB as not all
 features of GitLab work with MySQL/MariaDB:
 
 1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
    See [issue #30472][30472] for more information.
 1. GitLab Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
 1. [Zero downtime migrations][zero] do not work with MySQL
+1. We expect this list to grow over time.
 
 Existing users using GitLab with MySQL/MariaDB are advised to
 [migrate to PostgreSQL](../update/mysql_to_postgresql.md) instead.
