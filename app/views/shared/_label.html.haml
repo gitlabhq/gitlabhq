@@ -1,6 +1,7 @@
 - label_css_id = dom_id(label)
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
+- toggle_subscription_path = toggle_subscription_label_path(label, @project)
 
 %li{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
@@ -20,10 +21,10 @@
         - if current_user
           %li.label-subscription
             - if defined?(@group) || label.is_a?(ProjectLabel)
-              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', data: { status: status, url: toggle_subscription_label_path(label, @project) } }
+              %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', data: { status: status, url: toggle_subscription_path } }
                 %span= label_subscription_toggle_button_text(label, @project)
             - else
-              %a.js-unsubscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_label_path(label, @project) } }
+              %a.js-unsubscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path } }
                 %span Unsubscribe
               %a.js-subscribe-button.label-subscribe-button{ role: 'button', href: '#', class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
                 %span Subscribe at project level
@@ -45,11 +46,11 @@
     - if current_user
       .label-subscription.inline
         - if defined?(@group) || label.is_a?(ProjectLabel)
-          %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', data: { status: status, url: toggle_subscription_label_path(label, @project) } }
+          %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', data: { status: status, url: toggle_subscription_path } }
             %span= label_subscription_toggle_button_text(label, @project)
             = icon('spinner spin', class: 'label-subscribe-button-loading')
         - else
-          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_label_path(label, @project) } }
+          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path } }
             %span Unsubscribe
             = icon('spinner spin', class: 'label-subscribe-button-loading')
 
