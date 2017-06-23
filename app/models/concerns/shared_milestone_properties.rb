@@ -1,4 +1,4 @@
-module MilestoneModelProperties
+module SharedMilestoneProperties
   extend ActiveSupport::Concern
 
   include StripAttribute
@@ -37,6 +37,16 @@ module MilestoneModelProperties
 
     cache_markdown_field :title, pipeline: :single_line
     cache_markdown_field :description
+  end
+
+  module ClassMethods
+    def filter_by_state(milestones, state)
+      case state
+      when 'closed' then milestones.closed
+      when 'all' then milestones
+      else milestones.active
+      end
+    end
   end
 
   def start_date_should_be_less_than_due_date
