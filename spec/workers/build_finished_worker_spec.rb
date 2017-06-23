@@ -18,6 +18,12 @@ describe BuildFinishedWorker do
 
         described_class.new.perform(build.id)
       end
+
+      it 'clears the token field' do
+        described_class.new.perform(build.id)
+
+        expect(build.reload.token).to be(nil)
+      end
     end
 
     context 'when build does not exist' do

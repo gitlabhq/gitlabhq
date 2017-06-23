@@ -52,6 +52,10 @@ module TokenAuthenticatable
         write_new_token(token_field)
         save!
       end
+
+      define_method("clear_#{token_field}!") do
+        update_attribute(token_field, nil)
+      end
     end
   end
 end

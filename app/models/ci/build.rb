@@ -43,7 +43,7 @@ module Ci
     add_authentication_token_field :token
 
     before_save :update_artifacts_size, if: :artifacts_file_changed?
-    before_save :ensure_token
+    before_create :ensure_token
     before_destroy { unscoped_project }
 
     after_create :execute_hooks

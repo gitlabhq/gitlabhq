@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 describe API::Jobs, :api do
-  let!(:project) do
+  set(:project) do
     create(:project, :repository, public_builds: false)
   end
 
-  let!(:pipeline) do
+  set(:pipeline) do
     create(:ci_empty_pipeline, project: project,
                                sha: project.commit.id,
                                ref: project.default_branch)
   end
 
-  let!(:job) { create(:ci_build, pipeline: pipeline) }
+  set(:job) { create(:ci_build, pipeline: pipeline) }
 
-  let(:user) { create(:user) }
+  set(:user) { create(:user) }
   let(:api_user) { user }
   let(:reporter) { create(:project_member, :reporter, project: project).user }
   let(:guest) { create(:project_member, :guest, project: project).user }
@@ -189,12 +189,12 @@ describe API::Jobs, :api do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
-    before do
-      get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-    end
-
     context 'job with artifacts' do
       let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+      before do
+        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+      end
 
       context 'authorized user' do
         let(:download_headers) do
@@ -218,7 +218,28 @@ describe API::Jobs, :api do
       end
     end
 
+    context 'authorized by ci_job_token' do
+      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: user) }
+
+      let(:download_headers) do
+        { 'Content-Transfer-Encoding' => 'binary',
+          'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+      end
+
+      before do
+        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts"), ci_job_token: job.token
+      end
+
+      it 'returns specific job artifacts' do
+        expect(response).to have_http_status(200)
+        expect(response.headers).to include(download_headers)
+        expect(response.body).to match_file(job.artifacts_file.file.file)
+      end
+    end
+
     it 'does not return job artifacts if not uploaded' do
+      get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+
       expect(response).to have_http_status(404)
     end
   end

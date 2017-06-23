@@ -313,7 +313,7 @@ module API
 
     def present_artifacts!(artifacts_file)
       return not_found! unless artifacts_file.exists?
-  
+
       if artifacts_file.file_storage?
         present_file!(artifacts_file.path, artifacts_file.filename)
       else
@@ -341,10 +341,12 @@ module API
 
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
+
       Gitlab::Auth::UniqueIpsLimiter.limit_user! do
         @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
         @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
         @initial_current_user ||= find_user_from_warden
+        @initial_current_user ||= find_user_by_ci_token
 
         unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
           @initial_current_user = nil
