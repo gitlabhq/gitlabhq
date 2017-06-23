@@ -42,8 +42,7 @@ import '~/lib/utils/common_utils';
             resolve();
           } else {
             $('.js-add-award').eq(0).click();
-            const $menu = $('.emoji-menu');
-            $menu.one('build-emoji-menu-finish', () => {
+            $('.emoji-menu').one('build-emoji-menu-finish', () => {
               isEmojiMenuBuilt = true;
               resolve();
             });

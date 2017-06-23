@@ -224,7 +224,7 @@ export default class AwardsHandler {
               categoryLabelMap[categoryNameKey],
               emojisInCategory,
             );
-            requestAnimationFrame(() => {
+            setTimeout(() => {
               emojiContentElement.insertAdjacentHTML('beforeend', categoryMarkup);
               resolve();
             });
