@@ -588,6 +588,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
     t.datetime "created_at", null: false
     t.integer "repository_updated_event_id", limit: 8
     t.integer "repository_deleted_event_id", limit: 8
+    t.integer "repository_renamed_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
