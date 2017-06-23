@@ -16,18 +16,6 @@ engines:
     enabled: true
   rubocop:
     enabled: true
-ratings:
-  paths:
-  - Gemfile.lock
-  - "**.erb"
-  - "**.haml"
-  - "**.rb"
-  - "**.rhtml"
-  - "**.slim"
-  - "**.inc"
-  - "**.js"
-  - "**.jsx"
-  - "**.module"
 exclude_paths:
 - config/
 - db/
