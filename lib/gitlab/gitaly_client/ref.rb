@@ -72,7 +72,7 @@ module Gitlab
             Gitlab::Git::Branch.new(
               @repository,
               encode!(gitaly_branch.name.dup),
-              gitaly_branch.commit_id
+              gitaly_branch
             )
           end
         end
