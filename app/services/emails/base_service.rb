@@ -1,7 +1,6 @@
 module Emails
   class BaseService
-    def initialize(current_user, user, opts)
-      @current_user = current_user
+    def initialize(user, opts)
       @user = user
       @email = opts[:email]
     end
