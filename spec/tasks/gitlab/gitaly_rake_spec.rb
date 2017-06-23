@@ -89,6 +89,7 @@ describe 'gitlab:gitaly namespace rake task' do
         }
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(config)
+      allow(Rails.env).to receive(:test?).and_return(false)
 
       expected_output = ''
       Timecop.freeze do

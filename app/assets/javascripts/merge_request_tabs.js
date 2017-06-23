@@ -155,7 +155,10 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
     scrollToElement(container) {
       if (location.hash) {
-        const offset = -$('.js-tabs-affix').outerHeight();
+        const offset = 0 - (
+          $('.navbar-gitlab').outerHeight() +
+          $('.js-tabs-affix').outerHeight()
+        );
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {
           $.scrollTo($el[0], { offset });
@@ -233,11 +236,18 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
     }
 
     mountPipelinesView() {
-      this.commitPipelinesTable = new gl.CommitPipelinesTable().$mount();
+      const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
+      const CommitPipelinesTable = gl.CommitPipelinesTable;
+      this.commitPipelinesTable = new CommitPipelinesTable({
+        propsData: {
+          endpoint: pipelineTableViewEl.dataset.endpoint,
+          helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+        },
+      }).$mount();
+
       // $mount(el) replaces the el with the new rendered component. We need it in order to mount
       // it everytime this tab is clicked - https://vuejs.org/v2/api/#vm-mount
-      document.querySelector('#commit-pipeline-table-view')
-        .appendChild(this.commitPipelinesTable.$el);
+      pipelineTableViewEl.appendChild(this.commitPipelinesTable.$el);
     }
 
     loadDiff(source) {
@@ -294,6 +304,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
               forceShow: true,
             });
             anchor[0].scrollIntoView();
+            window.gl.utils.handleLocationHash();
             // We have multiple elements on the page with `#note_xxx`
             // (discussion and diff tabs) and `:target` only applies to the first
             anchor.addClass('target');

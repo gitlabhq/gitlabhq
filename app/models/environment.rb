@@ -161,6 +161,16 @@ class Environment < ActiveRecord::Base
     project.monitoring_service.environment_metrics(self) if has_metrics?
   end
 
+  def has_additional_metrics?
+    project.prometheus_service.present? && available? && last_deployment.present?
+  end
+
+  def additional_metrics
+    if has_additional_metrics?
+      project.prometheus_service.additional_environment_metrics(self)
+    end
+  end
+
   # An environment name is not necessarily suitable for use in URLs, DNS
   # or other third-party contexts, so provide a slugified version. A slug has
   # the following properties:
