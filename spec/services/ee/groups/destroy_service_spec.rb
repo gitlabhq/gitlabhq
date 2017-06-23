@@ -10,8 +10,15 @@ describe Groups::DestroyService, services: true do
     group.add_user(user, Gitlab::Access::OWNER)
   end
 
-  it 'creates a Geo event log for each project deleted' do
+  it 'creates a Geo event log when project is deleted synchronously' do
     Groups::DestroyService.new(group, user).execute
+
+    expect(Geo::EventLog.count).to eq(1)
+    expect(Geo::RepositoryDeletedEvent.count).to eq(1)
+  end
+
+  it 'creates a Geo event log when project is deleted asynchronously' do
+    Sidekiq::Testing.inline! { Groups::DestroyService.new(group, user).async_execute }
 
     expect(Geo::EventLog.count).to eq(1)
     expect(Geo::RepositoryDeletedEvent.count).to eq(1)
