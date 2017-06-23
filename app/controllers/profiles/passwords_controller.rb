@@ -21,10 +21,10 @@ class Profiles::PasswordsController < Profiles::ApplicationController
       password_automatically_set: false
     }
 
-    result = Users::UpdateService.new(current_user, @user, password_attributes).execute
+    result = Users::UpdateService.new(@user, password_attributes).execute
 
     if result[:status] == :success
-      Users::UpdateService.new(current_user, @user, password_expires_at: nil).execute
+      Users::UpdateService.new(@user, password_expires_at: nil).execute
 
       redirect_to root_path, notice: 'Password successfully changed'
     else
@@ -46,7 +46,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
       return
     end
 
-    result = Users::UpdateService.new(current_user, @user, password_attributes).execute
+    result = Users::UpdateService.new(@user, password_attributes).execute
 
     if result[:status] == :success
       flash[:notice] = "Password was successfully updated. Please login with it"

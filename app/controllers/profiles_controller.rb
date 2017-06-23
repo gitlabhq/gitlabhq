@@ -12,7 +12,7 @@ class ProfilesController < Profiles::ApplicationController
     user_params.except!(:email) if @user.external_email?
 
     respond_to do |format|
-      result = Users::UpdateService.new(current_user, @user, user_params).execute
+      result = Users::UpdateService.new(@user, user_params).execute
 
       if result[:status] == :success
         message = "Profile was successfully updated"
@@ -27,7 +27,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def reset_private_token
-    Users::UpdateService.new(current_user, @user).execute!(skip_authorization: true) do |user|
+    Users::UpdateService.new(@user).execute!(skip_authorization: true) do |user|
       user.reset_authentication_token!
     end
 
@@ -37,7 +37,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def reset_incoming_email_token
-    Users::UpdateService.new(current_user, @user).execute!(skip_authorization: true) do |user|
+    Users::UpdateService.new(@user).execute!(skip_authorization: true) do |user|
       user.reset_incoming_email_token!
     end
 
@@ -47,7 +47,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def reset_rss_token
-    Users::UpdateService.new(current_user, @user).execute!(skip_authorization: true) do |user|
+    Users::UpdateService.new(@user).execute!(skip_authorization: true) do |user|
       user.reset_rss_token!
     end
 
@@ -63,7 +63,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update_username
-    result = Users::UpdateService.new(current_user, @user, username: user_params[:username]).execute
+    result = Users::UpdateService.new(@user, username: user_params[:username]).execute
 
     options = if result[:status] == :success
                 { notice: "Username successfully changed" }

@@ -7,7 +7,7 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   end
 
   def update
-    result = Users::UpdateService.new(current_user, current_user, user_params).execute
+    result = Users::UpdateService.new(current_user, user_params).execute
 
     if result[:status] == :success
       flash[:notice] = "Notification settings saved"

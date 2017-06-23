@@ -60,7 +60,7 @@ class SessionsController < Devise::SessionsController
 
     return unless user && user.require_password?
 
-    Users::UpdateService.new(user, user).execute do |user|
+    Users::UpdateService.new(user).execute do |user|
       @token = user.generate_reset_token
     end
 

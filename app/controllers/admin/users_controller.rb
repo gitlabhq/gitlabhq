@@ -125,7 +125,7 @@ class Admin::UsersController < Admin::ApplicationController
     end
 
     respond_to do |format|
-      result = Users::UpdateService.new(current_user, user, user_params_with_pass).execute do |user|
+      result = Users::UpdateService.new(user, user_params_with_pass).execute do |user|
         user.skip_reconfirmation!
       end
 
@@ -211,7 +211,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def update_user
-    result = Users::UpdateService.new(current_user, user).execute do |user|
+    result = Users::UpdateService.new(user).execute do |user|
       yield(user)
     end
 
