@@ -187,6 +187,12 @@ module Ci
 
     # Variables whose value does not depend on environment
     def simple_variables
+      variables(environment: nil)
+    end
+
+    # All variables, including those dependent on environment, which could
+    # contain unexpanded variables.
+    def variables(environment: persisted_environment)
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
@@ -195,15 +201,11 @@ module Ci
       variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
-      variables += secret_variables
+      variables += secret_variables(environment: environment)
       variables += trigger_request.user_variables if trigger_request
-      variables
-    end
+      variables += persisted_environment_variables if environment
 
-    # All variables, including those dependent on environment, which could
-    # contain unexpanded variables.
-    def variables
-      simple_variables.concat(persisted_environment_variables)
+      variables
     end
 
     def merge_request
@@ -381,9 +383,8 @@ module Ci
       ]
     end
 
-    def secret_variables
-      project.secret_variables_for(
-        ref: ref, environment: persisted_environment)
+    def secret_variables(environment: persisted_environment)
+      project.secret_variables_for(ref: ref, environment: environment)
         .map(&:to_runner_variable)
     end
 
