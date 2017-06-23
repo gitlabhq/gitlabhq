@@ -21,13 +21,8 @@ describe Gitlab::GitalyClient::Ref do
     it 'sends a find_all_branch_names message' do
       expect_any_instance_of(Gitaly::Ref::Stub)
         .to receive(:find_all_branch_names)
-<<<<<<< HEAD
-          .with(gitaly_request_with_path(storage_name, relative_path))
-          .and_return([])
-=======
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
         .and_return([])
->>>>>>> ce/master
 
       client.branch_names
     end
@@ -37,13 +32,8 @@ describe Gitlab::GitalyClient::Ref do
     it 'sends a find_all_tag_names message' do
       expect_any_instance_of(Gitaly::Ref::Stub)
         .to receive(:find_all_tag_names)
-<<<<<<< HEAD
-          .with(gitaly_request_with_path(storage_name, relative_path))
-          .and_return([])
-=======
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
         .and_return([])
->>>>>>> ce/master
 
       client.tag_names
     end
@@ -53,11 +43,7 @@ describe Gitlab::GitalyClient::Ref do
     it 'sends a find_default_branch_name message' do
       expect_any_instance_of(Gitaly::Ref::Stub)
         .to receive(:find_default_branch_name)
-<<<<<<< HEAD
-          .with(gitaly_request_with_path(storage_name, relative_path))
-=======
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
->>>>>>> ce/master
         .and_return(double(name: 'foo'))
 
       client.default_branch_name
@@ -68,13 +54,8 @@ describe Gitlab::GitalyClient::Ref do
     it 'sends a find_local_branches message' do
       expect_any_instance_of(Gitaly::Ref::Stub)
         .to receive(:find_local_branches)
-<<<<<<< HEAD
-          .with(gitaly_request_with_path(storage_name, relative_path))
-          .and_return([])
-=======
         .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
         .and_return([])
->>>>>>> ce/master
 
       client.local_branches
     end
@@ -82,13 +63,8 @@ describe Gitlab::GitalyClient::Ref do
     it 'parses and sends the sort parameter' do
       expect_any_instance_of(Gitaly::Ref::Stub)
         .to receive(:find_local_branches)
-<<<<<<< HEAD
-          .with(gitaly_request_with_params(sort_by: :UPDATED_DESC))
-          .and_return([])
-=======
         .with(gitaly_request_with_params(sort_by: :UPDATED_DESC), kind_of(Hash))
         .and_return([])
->>>>>>> ce/master
 
       client.local_branches(sort_by: 'updated_desc')
     end

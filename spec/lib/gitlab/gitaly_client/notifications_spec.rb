@@ -9,11 +9,7 @@ describe Gitlab::GitalyClient::Notifications do
 
     it 'sends a post_receive message' do
       expect_any_instance_of(Gitaly::Notifications::Stub)
-<<<<<<< HEAD
-        .to receive(:post_receive).with(gitaly_request_with_path(storage_name, relative_path))
-=======
         .to receive(:post_receive).with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
->>>>>>> ce/master
 
       subject.post_receive
     end

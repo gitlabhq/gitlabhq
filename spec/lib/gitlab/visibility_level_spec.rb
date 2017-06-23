@@ -21,11 +21,7 @@ describe Gitlab::VisibilityLevel, lib: true do
 
   describe '.levels_for_user' do
     it 'returns all levels for an admin' do
-<<<<<<< HEAD
-      user = build(:user, :admin)
-=======
-      user = double(:user, admin?: true)
->>>>>>> ce/master
+      user = double(:user, has_full_private_access?: true)
 
       expect(described_class.levels_for_user(user))
         .to eq([Gitlab::VisibilityLevel::PRIVATE,
@@ -34,11 +30,7 @@ describe Gitlab::VisibilityLevel, lib: true do
     end
 
     it 'returns INTERNAL and PUBLIC for internal users' do
-<<<<<<< HEAD
-      user = build(:user)
-=======
-      user = double(:user, admin?: false, external?: false)
->>>>>>> ce/master
+      user = double(:user, has_full_private_access?: false, external?: false)
 
       expect(described_class.levels_for_user(user))
         .to eq([Gitlab::VisibilityLevel::INTERNAL,
@@ -46,11 +38,7 @@ describe Gitlab::VisibilityLevel, lib: true do
     end
 
     it 'returns PUBLIC for external users' do
-<<<<<<< HEAD
-      user = build(:user, :external)
-=======
-      user = double(:user, admin?: false, external?: true)
->>>>>>> ce/master
+      user = double(:user, has_full_private_access?: false, external?: true)
 
       expect(described_class.levels_for_user(user))
         .to eq([Gitlab::VisibilityLevel::PUBLIC])

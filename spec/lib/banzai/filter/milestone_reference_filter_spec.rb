@@ -261,7 +261,6 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
       expect(doc.css('a').first.text)
         .to eq "#{milestone.name} in #{another_project.path}"
-<<<<<<< HEAD
     end
   end
 
@@ -288,8 +287,6 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       allow_any_instance_of(Milestone).to receive(:title).and_return(%{"></a>whatever<a title="})
       doc = reference_filter("See #{reference}")
       expect(doc.css('a').first.text).to eq "#{milestone.name} in #{project_path}"
-=======
->>>>>>> ce/master
     end
   end
 end
