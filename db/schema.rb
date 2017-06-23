@@ -609,6 +609,7 @@ ActiveRecord::Schema.define(version: 20170614115405) do
 
   create_table "geo_repository_deleted_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
+    t.text "repository_storage_name", null: false
     t.text "repository_storage_path", null: false
     t.text "deleted_path", null: false
     t.text "deleted_wiki_path"

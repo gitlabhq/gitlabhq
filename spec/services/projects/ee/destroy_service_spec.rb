@@ -8,6 +8,7 @@ describe Projects::DestroyService, services: true do
   let!(:project_name) { project.name }
   let!(:project_path) { project.path_with_namespace }
   let!(:wiki_path) { project.path_with_namespace + '.wiki' }
+  let!(:storage_name) { project.repository_storage }
   let!(:storage_path) { project.repository_storage_path }
   let!(:geo_node) { create(:geo_node, :primary, :current) }
 
@@ -29,6 +30,7 @@ describe Projects::DestroyService, services: true do
       expect(event.deleted_path).to eq(project_path)
       expect(event.deleted_wiki_path).to eq(wiki_path)
       expect(event.deleted_project_name).to eq(project_name)
+      expect(event.repository_storage_name).to eq(storage_name)
       expect(event.repository_storage_path).to eq(storage_path)
     end
   end

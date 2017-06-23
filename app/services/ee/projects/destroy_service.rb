@@ -14,11 +14,13 @@ module EE
 
         Geo::EventLog.transaction do
           event_log = Geo::EventLog.new
-          deleted_event = Geo::RepositoryDeletedEvent.new(project: project,
-                                                          repository_storage_path: project.repository_storage_path,
-                                                          deleted_path: repo_path,
-                                                          deleted_wiki_path: wiki_path,
-                                                          deleted_project_name: project.name)
+          deleted_event = Geo::RepositoryDeletedEvent.new(
+            project: project,
+            repository_storage_name: project.repository.storage,
+            repository_storage_path: project.repository_storage_path,
+            deleted_path: repo_path,
+            deleted_wiki_path: wiki_path,
+            deleted_project_name: project.name)
           event_log.repository_deleted_event = deleted_event
           event_log.save
         end
