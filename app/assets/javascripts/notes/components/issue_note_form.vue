@@ -61,7 +61,8 @@ export default {
         <textarea
           id="note-body"
           class="note-textarea js-gfm-input js-autosize markdown-area"
-          data-supports-slash-commands="false"
+          data-supports-slash-commands="true"
+          data-supports-quick-actions="true"
           aria-label="Description"
           v-model="note"
           ref="textarea"

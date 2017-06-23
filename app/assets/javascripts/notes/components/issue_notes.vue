@@ -7,6 +7,7 @@ import storeOptions from '../stores/issue_notes_store';
 import IssueNote from './issue_note.vue';
 import IssueDiscussion from './issue_discussion.vue';
 import IssueSystemNote from './issue_system_note.vue';
+import IssueCommentForm from './issue_comment_form.vue';
 
 Vue.use(Vuex);
 const store = new Vuex.Store(storeOptions);
@@ -23,6 +24,7 @@ export default {
     IssueNote,
     IssueDiscussion,
     IssueSystemNote,
+    IssueCommentForm,
   },
   methods: {
     component(note) {
@@ -55,17 +57,19 @@ export default {
       v-if="isLoading"
       class="loading">
       <i
-        aria-hidden="true"
-        class="fa fa-spinner fa-spin"></i>
+        class="fa fa-spinner fa-spin"
+        aria-hidden="true"></i>
     </div>
     <ul
-      class="notes main-notes-list timeline"
-      id="notes-list">
+      v-if="!isLoading"
+      id="notes-list"
+      class="notes main-notes-list timeline">
       <component
         v-for="note in $store.getters.notes"
         :is="component(note)"
         :note="componentData(note)"
         :key="note.id" />
     </ul>
+    <issue-comment-form v-if="!isLoading" />
   </div>
 </template>

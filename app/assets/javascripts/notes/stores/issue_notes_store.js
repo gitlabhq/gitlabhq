@@ -52,6 +52,10 @@ const mutations = {
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
     }
   },
+  addNewNote(storeState, note) {
+    // TODO: @fatihacet - When we get the correct data from server update the store
+    // storeState.notes.push(note);
+  },
 };
 
 const actions = {
@@ -88,6 +92,15 @@ const actions = {
       .then(res => res.json())
       .then((res) => {
         context.commit('updateNote', res);
+      });
+  },
+  createNewNote(context, data) {
+    const { endpoint, noteData } = data;
+    return service
+      .createNewNote(endpoint, noteData)
+      .then(res => res.json())
+      .then((res) => {
+        context.commit('addNewNote', res);
       });
   },
 };

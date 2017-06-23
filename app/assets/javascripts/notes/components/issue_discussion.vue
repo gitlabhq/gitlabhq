@@ -49,8 +49,9 @@ export default {
       this.signInLink = signInLink.getAttribute('href');
     }
 
-    const newNotePath = document.querySelector('.js-main-target-form').getAttribute('action');
-    this.newNotePath = `${newNotePath}?full_data=1`;
+    // TODO: @fatihacet - Reimplement this when we have data for it.
+    // const newNotePath = document.querySelector('.js-main-target-form').getAttribute('action');
+    // this.newNotePath = `${newNotePath}?full_data=1`;
   },
   methods: {
     toggleDiscussion() {

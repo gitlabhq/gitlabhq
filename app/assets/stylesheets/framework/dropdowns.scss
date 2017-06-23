@@ -369,6 +369,10 @@
   transform: translateY(0);
 }
 
+.comment-type-dropdown.open .dropdown-menu {
+  display: block;
+}
+
 .filtered-search-box-input-container {
   .dropdown-menu,
   .dropdown-menu-nav {
