@@ -211,8 +211,11 @@ header.navbar-gitlab-new {
   }
 
   .location-badge {
-    color: $white-light;
-    background-color: $purple-900;
+    font-size: 12px;
+    color: rgba($white-light, .6);
+    background-color: $purple-800;
+    transition: color 0.15s;
+    will-change: color;
   }
 
   .search-input-wrap {
@@ -222,6 +225,11 @@ header.navbar-gitlab-new {
   }
 
   &.search-active {
+    .location-badge {
+      color: $white-light;
+      background-color: $purple-800;
+    }
+
     .search-input-wrap {
       .search-icon {
         color: rgba($white-light, .6);
