@@ -12,7 +12,12 @@ class AddUniqueConstraintToCiVariables < ActiveRecord::Migration
   end
 
   def down
-    if this_index_exists? && Gitlab::Database.postgresql?
+    if this_index_exists?
+      if Gitlab::Database.mysql? && !index_exists?(:ci_variables, :project_id)
+        # Need to add this index for MySQL project_id foreign key constraint
+        add_concurrent_index(:ci_variables, :project_id)
+      end
+
       remove_concurrent_index(:ci_variables, columns, name: index_name)
     end
   end
@@ -20,7 +25,7 @@ class AddUniqueConstraintToCiVariables < ActiveRecord::Migration
   private
 
   def this_index_exists?
-    index_exists?(:ci_variables, name: index_name)
+    index_exists?(:ci_variables, columns, name: index_name)
   end
 
   def columns
