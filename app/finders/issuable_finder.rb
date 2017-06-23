@@ -67,7 +67,7 @@ class IssuableFinder
   # grouping and counting within that query.
   #
   def count_by_state
-    count_params = params.merge(state: nil, sort: nil)
+    count_params = params.merge(state: nil, sort: nil, for_counting: true)
     labels_count = label_names.any? ? label_names.count : 1
     finder = self.class.new(current_user, count_params)
     counts = Hash.new(0)

@@ -23,8 +23,8 @@ class IssuesFinder < IssuableFinder
   end
 
   def not_restricted_by_confidentiality
-    return Issue.where('issues.confidential IS NOT TRUE') if user_cannot_see_confidential_issues?
     return Issue.all if user_can_see_all_confidential_issues?
+    return Issue.where('issues.confidential IS NOT TRUE') if user_cannot_see_confidential_issues?
 
     Issue.where('
       issues.confidential IS NOT TRUE
@@ -37,16 +37,19 @@ class IssuesFinder < IssuableFinder
   end
 
   def user_can_see_all_confidential_issues?
-    return false unless current_user
-    return true if current_user.full_private_access?
+    return @user_can_see_all_confidential_issues = false if current_user.blank?
+    return @user_can_see_all_confidential_issues = true if current_user.full_private_access?
 
-    project? &&
+    @user_can_see_all_confidential_issues =
+      project? &&
       project &&
       project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
   end
 
   def user_cannot_see_confidential_issues?
-    current_user.blank?
+    return false if user_can_see_all_confidential_issues?
+
+    current_user.blank? || params[:for_counting]
   end
 
   private
