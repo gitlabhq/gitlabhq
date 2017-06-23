@@ -6,6 +6,11 @@ $new-sidebar-width: 220px;
 
 .page-with-sidebar {
   padding-left: $new-sidebar-width;
+
+  .right-sidebar {
+    position: fixed;
+    height: 100%;
+  }
 }
 
 .nav-sidebar {
