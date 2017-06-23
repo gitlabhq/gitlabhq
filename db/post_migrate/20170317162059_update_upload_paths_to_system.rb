@@ -7,6 +7,8 @@ class UpdateUploadPathsToSystem < ActiveRecord::Migration
   DOWNTIME = false
   AFFECTED_MODELS = %w(User Project Note Namespace Appearance)
 
+  disable_ddl_transaction!
+
   def up
     update_column_in_batches(:uploads, :path, replace_sql(arel_table[:path], base_directory, new_upload_dir)) do |_table, query|
       query.where(uploads_to_switch_to_new_path)
