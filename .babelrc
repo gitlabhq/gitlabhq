@@ -1,7 +1,8 @@
 {
   "presets": [
     ["latest", { "es2015": { "modules": false } }],
-    "stage-2"
+    "stage-2",
+    "flow"
   ],
   "env": {
     "coverage": {

@@ -9,12 +9,16 @@
     "karma-coverage": "BABEL_ENV=coverage karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js",
     "webpack": "webpack --config config/webpack.config.js",
-    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
+    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js",
+    "flow": "flow",
+    "flow-stop": "flow stop"
   },
   "dependencies": {
+    "babel-cli": "^6.24.1",
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-define": "^1.2.0",
+    "babel-preset-flow": "^6.23.0",
     "babel-preset-latest": "^6.24.0",
     "babel-preset-stage-2": "^6.22.0",
     "bootstrap-sass": "^3.3.6",
@@ -29,6 +33,7 @@
     "eslint-plugin-html": "^2.0.1",
     "exports-loader": "^0.6.4",
     "file-loader": "^0.11.1",
+    "flow-bin": "^0.48.0",
     "jed": "^1.1.1",
     "jquery": "^2.2.1",
     "jquery-ujs": "^1.2.1",
