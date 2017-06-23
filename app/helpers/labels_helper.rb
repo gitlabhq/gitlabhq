@@ -134,20 +134,21 @@ module LabelsHelper
   end
 
   def label_subscription_status(label, project)
-    return 'project-level' if label.subscribed?(current_user, project)
     return 'group-level' if label.subscribed?(current_user)
+    return 'project-level' if label.subscribed?(current_user, project)
 
     'unsubscribed'
   end
 
-  def group_label_unsubscribe_path(label, project)
-    case label_subscription_status(label, project)
-    when 'project-level' then toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)
-    when 'group-level' then toggle_subscription_group_label_path(label.group, label)
+  def toggle_subscription_label_path(label, project)
+    if label.is_a?(GroupLabel)
+      toggle_subscription_group_label_path(label.group, label)
+    else
+      toggle_subscription_namespace_project_label_path(project.namespace, project, label)
     end
   end
 
-  def label_subscription_toggle_button_text(label, project)
+  def label_subscription_toggle_button_text(label, project = nil)
     label.subscribed?(current_user, project) ? 'Unsubscribe' : 'Subscribe'
   end
 
