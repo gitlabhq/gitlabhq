@@ -64,11 +64,10 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestones
-    @group_milestones = GroupMilestone.all
-    @project_milestones = Milestone.where(project_id: group.projects.pluck(:id))
+    @group_milestones = GroupMilestonesFinder.new(group, params).execute
+    @project_milestones = ProjectMilestonesFinder.new(@projects, params).execute
 
     @group_milestones + @project_milestones
-    #@milestones = GroupMilestone.build_collection(@group, @projects, params)
   end
 
   def milestone
