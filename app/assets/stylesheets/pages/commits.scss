@@ -283,3 +283,46 @@
     color: $gl-text-color;
   }
 }
+
+.gpg-badge {
+  &.valid {
+    color: $brand-success;
+  }
+
+  &.invalid {
+    color: $gray;
+  }
+}
+
+.gpg-badge-popover-title {
+  font-weight: normal;
+}
+
+.gpg-badge-popover-icon {
+  float: left;
+  font-size: 35px;
+  line-height: 35px;
+  width: 32px;
+  margin-right: $btn-side-margin;
+
+  &.valid {
+    color: $brand-success;
+  }
+
+  &.invalid {
+    color: $gray;
+  }
+}
+
+.gpg-badge-popover-avatar {
+  float: left;
+  margin-bottom: $gl-padding;
+
+  .avatar {
+    margin-left: 0;
+  }
+}
+
+.gpg-badge-popover-username {
+  font-weight: bold;
+}

@@ -275,5 +275,30 @@ describe 'Commits' do
         expect(page).to have_content 'Verified'
       end
     end
+
+    it 'shows popover badges', :js do
+      user = create :user, email: GpgHelpers::User1.emails.first, username: 'nannie.bernhard', name: 'Nannie Bernhard'
+      project.team << [user, :master]
+      Sidekiq::Testing.inline! do
+        create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+      end
+
+      login_with(user)
+      visit namespace_project_commits_path(project.namespace, project, :master)
+
+      click_on 'Verified'
+      within '.popover' do
+        expect(page).to have_content 'This commit was signed with a verified signature.'
+        expect(page).to have_content 'nannie.bernhard'
+        expect(page).to have_content 'Nannie Bernhard'
+        expect(page).to have_content "GPG key ID: #{GpgHelpers::User1.primary_keyid}"
+      end
+
+      click_on 'Unverified', match: :first
+      within '.popover' do
+        expect(page).to have_content 'This commit was signed with an unverified signature.'
+        expect(page).to have_content "GPG key ID: #{GpgHelpers::User2.primary_keyid}"
+      end
+    end
   end
 end

@@ -1,4 +1,2 @@
 - if signature
-  %a.btn.disabled.btn-xs{ class: ('btn-success' if signature.valid_signature?) }
-    %i.fa.fa-key{ class: ('fa-inverse' if signature.valid_signature?) }
-    = signature.valid_signature? ? 'Verified' : 'Unverified'
+  = commit_gpg_signature_badge(signature)
