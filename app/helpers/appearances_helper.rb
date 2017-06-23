@@ -36,4 +36,11 @@ module AppearancesHelper
     #  File.read(Rails.root.join("app/views/shared/icons/_#{icon_name}.svg")).html_safe
     render "shared/icons/#{icon_name}.svg", size: size
   end
+
+  def content_class_ref(content_class = @content_class)
+    content_class
+      .split(/\s/)
+      .map {|klass| "content-#{klass}"}
+      .join(' ')
+  end
 end

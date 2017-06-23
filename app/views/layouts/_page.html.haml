@@ -5,6 +5,8 @@
         = render "layouts/nav/#{nav}"
   - if content_for?(:sub_nav)
     = yield :sub_nav
+  - if content_for?(:sticky_nav)
+    = yield :sticky_nav
   .content-wrapper{ class: layout_nav_class }
     .alert-wrapper
       = render "layouts/broadcast"
