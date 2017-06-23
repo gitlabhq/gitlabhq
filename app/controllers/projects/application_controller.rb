@@ -57,14 +57,11 @@ class Projects::ApplicationController < ApplicationController
     render_404 unless project.feature_available?(feature, current_user)
   end
 
-<<<<<<< HEAD
-=======
   def check_issuables_available!
     render_404 unless project.feature_available?(:issues, current_user) ||
         project.feature_available?(:merge_requests, current_user)
   end
 
->>>>>>> ce/master
   def method_missing(method_sym, *arguments, &block)
     case method_sym.to_s
     when /\Aauthorize_(.*)!\z/

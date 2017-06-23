@@ -11,13 +11,8 @@ class Projects::IssuesController < Projects::ApplicationController
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
-<<<<<<< HEAD
-  before_action :module_enabled
-  before_action :issue, except: [:index, :new, :create, :bulk_update, :export_csv]
-=======
   before_action :check_issues_available!
-  before_action :issue, except: [:index, :new, :create, :bulk_update]
->>>>>>> ce/master
+  before_action :issue, except: [:index, :new, :create, :bulk_update, :export_csv]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]

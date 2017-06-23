@@ -130,7 +130,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
-<<<<<<< HEAD
   # The rollout status of an enviroment
   def status
     unless @environment.deployment_service_ready?
@@ -147,7 +146,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     else
       serializer = RolloutStatusSerializer.new(project: @project, current_user: @current_user)
       render json: serializer.represent(rollout_status)
-=======
+    end
+  end
+
   def additional_metrics
     respond_to do |format|
       format.json do
@@ -155,7 +156,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
         render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
       end
->>>>>>> ce/master
     end
   end
 
