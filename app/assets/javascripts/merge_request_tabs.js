@@ -155,7 +155,10 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
     scrollToElement(container) {
       if (location.hash) {
-        const offset = -$('.js-tabs-affix').outerHeight();
+        const offset = 0 - (
+          $('.navbar-gitlab').outerHeight() +
+          $('.js-tabs-affix').outerHeight()
+        );
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {
           $.scrollTo($el[0], { offset });
@@ -301,6 +304,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
               forceShow: true,
             });
             anchor[0].scrollIntoView();
+            window.gl.utils.handleLocationHash();
             // We have multiple elements on the page with `#note_xxx`
             // (discussion and diff tabs) and `:target` only applies to the first
             anchor.addClass('target');
