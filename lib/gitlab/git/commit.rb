@@ -98,7 +98,15 @@ module Gitlab
         #   Commit.between(repo, '29eda46b', 'master')
         #
         def between(repo, base, head)
-          repo.commits_between(base, head).map do |commit|
+          commits = Gitlab::GitalyClient.migrate(:commits_between) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.between(base, head)
+            else
+              repo.commits_between(base, head)
+            end
+          end
+
+          commits.map do |commit|
             decorate(commit)
           end
         rescue Rugged::ReferenceError
@@ -376,12 +384,10 @@ module Gitlab
       def init_from_gitaly(commit)
         @raw_commit = commit
         @id = commit.id
-        # NOTE: For ease of parsing in Gitaly, we have only the subject of
-        # the commit and not the full message.
         # TODO: Once gitaly "takes over" Rugged consider separating the
         # subject from the message to make it clearer when there's one
         # available but not the other.
-        @message = commit.subject.dup
+        @message = (commit.body.presence || commit.subject).dup
         @authored_date = Time.at(commit.author.date.seconds)
         @author_name = commit.author.name.dup
         @author_email = commit.author.email.dup
