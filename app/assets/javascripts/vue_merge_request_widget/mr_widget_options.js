@@ -1,3 +1,4 @@
+// @flow
 /* global Flash */
 
 import {
@@ -32,6 +33,9 @@ import {
   notify,
 } from './dependencies';
 
+declare var gl: Object;
+declare var Flash: function;
+
 export default {
   el: '#js-vue-mr-widget',
   name: 'MRWidget',
@@ -61,7 +65,7 @@ export default {
     },
   },
   methods: {
-    createService(store) {
+    createService(store: Object) {
       const endpoints = {
         mergePath: store.mergePath,
         mergeCheckPath: store.mergeCheckPath,
@@ -74,7 +78,7 @@ export default {
       };
       return new MRWidgetService(endpoints);
     },
-    checkStatus(cb) {
+    checkStatus(cb: Object) {
       this.service.checkStatus()
         .then(res => res.json())
         .then((res) => {
@@ -132,14 +136,16 @@ export default {
           if (res.body) {
             const el = document.createElement('div');
             el.innerHTML = res.body;
-            document.body.appendChild(el);
+            if (document.body) {
+              document.body.appendChild(el);
+            }
           }
         })
         .catch(() => {
           new Flash('Something went wrong. Please try again.'); // eslint-disable-line
         });
     },
-    handleNotification(data) {
+    handleNotification(data: Object) {
       if (data.ci_status === this.mr.ciStatus) return;
 
       const label = data.pipeline.details.status.label;
