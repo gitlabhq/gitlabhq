@@ -7,8 +7,7 @@ describe IssueLinks::ListService, service: true do
   let(:user_role) { :developer }
 
   before do
-    allow_any_instance_of(License).to receive(:feature_available?) { false }
-    allow_any_instance_of(License).to receive(:feature_available?).with(:related_issues) { true }
+    stub_licensed_features(related_issues: true)
 
     project.team << [user, user_role]
   end

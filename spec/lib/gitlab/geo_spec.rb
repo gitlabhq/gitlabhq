@@ -96,12 +96,12 @@ describe Gitlab::Geo, lib: true do
 
   describe 'license_allows?' do
     it 'returns true if license has Geo addon' do
-      allow_any_instance_of(License).to receive(:feature_available?).with(:geo) { true }
+      stub_licensed_features(geo: true)
       expect(described_class.license_allows?).to be_truthy
     end
 
     it 'returns false if license doesnt have Geo addon' do
-      allow_any_instance_of(License).to receive(:feature_available?).with(:geo) { false }
+      stub_licensed_features(geo: false)
       expect(described_class.license_allows?).to be_falsey
     end
 

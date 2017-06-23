@@ -6,8 +6,7 @@ describe Projects::IssueLinksController do
   let(:issue) { create :issue, project: project }
 
   before do
-    allow_any_instance_of(License).to receive(:feature_available?) { false }
-    allow_any_instance_of(License).to receive(:feature_available?).with(:related_issues) { true }
+    stub_licensed_features(related_issues: true)
   end
 
   describe 'GET /*namespace_id/:project_id/issues/:issue_id/links' do
