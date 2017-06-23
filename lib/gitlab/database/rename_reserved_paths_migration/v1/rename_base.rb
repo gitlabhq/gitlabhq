@@ -6,6 +6,7 @@ module Gitlab
           attr_reader :paths, :migration
 
           delegate :update_column_in_batches,
+                   :execute,
                    :replace_sql,
                    :say,
                    to: :migration
@@ -42,14 +43,21 @@ module Gitlab
           end
 
           def rename_routes(old_full_path, new_full_path)
+            routes = Route.arel_table
+            main_route_ids = routes.project(routes[:id]).where(routes[:path].matches(old_full_path))
+            child_route_ids = routes.project(routes[:id]).where(routes[:path].matches("#{old_full_path}/%"))
+            matching_ids = main_route_ids.union(child_route_ids)
+            ids = execute(matching_ids.to_sql).map { |entry| entry['id'] }
+
             replace_statement = replace_sql(Route.arel_table[:path],
                                             old_full_path,
                                             new_full_path)
 
-            update_column_in_batches(:routes, :path, replace_statement)  do |table, query|
-              path_or_children = table[:path].matches_any([old_full_path, "#{old_full_path}/%"])
-              query.where(path_or_children)
-            end
+            update = Arel::UpdateManager.new(ActiveRecord::Base)
+                       .table(routes)
+                       .set([[routes[:path], replace_statement]])
+                       .where(routes[:id].in(ids))
+            execute(update.to_sql)
           end
 
           def rename_path(namespace_path, path_was)
