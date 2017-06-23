@@ -30,15 +30,13 @@ module API
       # endpoint class. If this method is called multiple times on the same class,
       # the scopes are all aggregated.
       def allow_access_with_scope(scopes, options = {})
-        @scopes ||= []
-
-        params = Array.wrap(scopes).map { |scope| { name: scope, if: options[:if] } }
-
-        @scopes.concat(params)
+        Array(scopes).each do |scope|
+          allowed_scopes << { name: scope, if: options[:if] }
+        end
       end
 
-      def scopes
-        @scopes
+      def allowed_scopes
+        @scopes ||= []
       end
     end
 

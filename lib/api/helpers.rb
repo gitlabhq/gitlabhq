@@ -416,8 +416,8 @@ module API
         begin
           endpoint_classes = [options[:for].presence, ::API::API].compact
           endpoint_classes.reduce([]) do |memo, endpoint|
-            if endpoint.respond_to?(:scopes)
-              memo.concat(endpoint.scopes)
+            if endpoint.respond_to?(:allowed_scopes)
+              memo.concat(endpoint.allowed_scopes)
             else
               memo
             end
