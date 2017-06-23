@@ -51,7 +51,7 @@ module Gitlab
     end
 
     def self.license_allows?
-      ::License.current&.feature_available?(:geo)
+      ::License.feature_available?(:geo)
     end
 
     def self.primary?

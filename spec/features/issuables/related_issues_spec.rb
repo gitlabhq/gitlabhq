@@ -19,8 +19,7 @@ describe 'Related issues', feature: true, js: true do
 
     context 'with related_issues enabled' do
       before do
-        allow_any_instance_of(License).to receive(:feature_available?).and_call_original
-        allow_any_instance_of(License).to receive(:feature_available?).with(:related_issues) { true }
+        stub_licensed_features(related_issues: true)
       end
 
       context 'with existing related issues' do
@@ -79,8 +78,7 @@ describe 'Related issues', feature: true, js: true do
 
     context 'with related_issues enabled' do
       before do
-        allow_any_instance_of(License).to receive(:feature_available?).and_call_original
-        allow_any_instance_of(License).to receive(:feature_available?).with(:related_issues) { true }
+        stub_licensed_features(related_issues: true)
       end
 
       context 'without existing related issues' do

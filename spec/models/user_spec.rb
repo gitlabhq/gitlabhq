@@ -1816,15 +1816,9 @@ describe User, models: true do
   end
 
   describe 'the GitLab_Auditor_User add-on' do
-    let(:license) { build(:license) }
-
-    before do
-      allow(::License).to receive(:current).and_return(license)
-    end
-
     context 'creating an auditor user' do
       it "does not allow creating an auditor user if the addon isn't enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user, :auditor)).to be_invalid
       end
@@ -1836,13 +1830,13 @@ describe User, models: true do
       end
 
       it "allows creating an auditor user if the addon is enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+        stub_licensed_features(auditor_user: true)
 
         expect(build(:user, :auditor)).to be_valid
       end
 
       it "allows creating a regular user if the addon isn't enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user)).to be_valid
       end
@@ -1850,25 +1844,25 @@ describe User, models: true do
 
     context '#auditor?' do
       it "returns true for an auditor user if the addon is enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+        stub_licensed_features(auditor_user: true)
 
         expect(build(:user, :auditor)).to be_auditor
       end
 
       it "returns false for an auditor user if the addon is not enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user, :auditor)).not_to be_auditor
       end
 
       it "returns false for an auditor user if a license is not present" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user, :auditor)).not_to be_auditor
       end
 
       it "returns false for a non-auditor user even if the addon is present" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+        stub_licensed_features(auditor_user: true)
 
         expect(build(:user)).not_to be_auditor
       end

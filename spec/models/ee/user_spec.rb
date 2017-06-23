@@ -7,7 +7,7 @@ describe EE::User, models: true do
     before do
       # `auditor?` returns true only when the user is an auditor _and_ the auditor license
       # add-on is present. We aren't testing this here, so we can assume that the add-on exists.
-      allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+      stub_licensed_features(auditor_user: true)
     end
 
     it "does not set 'auditor' for an invalid access level" do

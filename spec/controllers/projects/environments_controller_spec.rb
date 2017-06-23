@@ -9,8 +9,6 @@ describe Projects::EnvironmentsController do
   end
 
   before do
-    allow_any_instance_of(License).to receive(:feature_available?).and_return(false)
-
     project.add_master(user)
 
     sign_in(user)
@@ -46,7 +44,7 @@ describe Projects::EnvironmentsController do
 
       context 'when requesting available environments scope' do
         before do
-          allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
+          stub_licensed_features(deploy_board: true)
 
           get :index, environment_params(format: :json, scope: :available)
         end
@@ -94,7 +92,7 @@ describe Projects::EnvironmentsController do
 
       context 'when license does not has the GitLab_DeployBoard add-on' do
         before do
-          allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(false)
+          stub_licensed_features(deploy_board: false)
 
           get :index, environment_params(format: :json)
         end
@@ -307,7 +305,7 @@ describe Projects::EnvironmentsController do
       let(:environment) { create(:environment, name: 'production', project: project) }
 
       before do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(true)
+        stub_licensed_features(deploy_board: true)
         allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
       end
 
@@ -335,7 +333,7 @@ describe Projects::EnvironmentsController do
 
     context 'when license does not has the GitLab_DeployBoard add-on' do
       before do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:deploy_board).and_return(false)
+        stub_licensed_features(deploy_board: false)
       end
 
       it 'does not return any data' do
