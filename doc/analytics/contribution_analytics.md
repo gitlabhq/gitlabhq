@@ -2,6 +2,20 @@
 
 _**Note:** This feature was introduced in GitLab EE 8.3._
 
+## Overview
+
+With Contribution Analytics, you are able to track your team members' activity
+across your organization.
+
+## Use-cases
+
+- Analise your team's contributions along a period of time and offer a bonus
+for the top contributors
+- If you are unhappy with a particular team member, you can use the analytics
+as argument for demanding efficiency from this person
+
+## Description
+
 With contribution analytics you can have an overview for the activity of
 issues, merge requests and push events of your organization and its members.
 
