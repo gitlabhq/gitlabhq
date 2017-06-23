@@ -35,13 +35,8 @@ module LoginHelpers
   def gitlab_sign_out
     find(".header-user-dropdown-toggle").click
     click_link "Sign out"
-    # check the sign_in button
-    expect(page).to have_button('Sign in')
-  end
 
-  # Logout without JavaScript driver
-  def gitlab_sign_out_direct
-    page.driver.submit :delete, '/users/sign_out', {}
+    expect(page).to have_button('Sign in')
   end
 
   private
