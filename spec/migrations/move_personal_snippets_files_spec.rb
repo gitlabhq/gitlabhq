@@ -7,18 +7,6 @@ describe MovePersonalSnippetsFiles do
   let(:uploads_dir) { File.join(test_dir, 'uploads') }
   let(:new_uploads_dir) { File.join(uploads_dir, 'system') }
 
-  let(:snippets) { create_list(:personal_snippet, 5) }
-
-  let(:files) do
-    [
-      { name: 'picture.jpg', snippet: snippets[0] },
-      { name: 'text_file.txt', snippet: snippets[1] },
-      { name: 'another_text_file.txt', snippet: snippets[2], skip_description_update: true },
-      { name: 'note_text.txt', snippet: snippets[2], in_note: true },
-      { name: 'non_existing_file.txt', snippet: snippets[3], skip_file_creation: true }
-    ]
-  end
-
   before do
     allow(CarrierWave).to receive(:root).and_return(test_dir)
     allow(migration).to receive(:base_directory).and_return(test_dir)
@@ -27,119 +15,115 @@ describe MovePersonalSnippetsFiles do
   end
 
   describe "#up" do
-    before do
-      @revert_mode = false
+    let(:snippet) do
+      snippet = create(:personal_snippet)
+      create_upload('picture.jpg', snippet)
+      snippet.update(description: markdown_linking_file('picture.jpg', snippet))
+      snippet
+    end
 
-      FileUtils.mkdir_p(uploads_dir)
-      files.each { |file| create_upload(file) }
+    let(:snippet_with_missing_file) do
+      snippet = create(:snippet)
+      create_upload('picture.jpg', snippet, create_file: false)
+      snippet.update(description: markdown_linking_file('picture.jpg', snippet))
+      snippet
     end
 
     it 'moves the files' do
+      source_path = File.join(uploads_dir, model_file_path('picture.jpg', snippet))
+      destination_path = File.join(new_uploads_dir, model_file_path('picture.jpg', snippet))
+
       migration.up
 
-      files.each do |file|
-        old_path = File.join(uploads_dir, model_file_path(file))
-        new_path = File.join(new_uploads_dir, model_file_path(file))
-
-        unless file[:skip_file_creation]
-          expect(File.exist?(old_path)).to be_falsey
-          expect(File.exist?(new_path)).to be_truthy
-        end
-      end
+      expect(File.exist?(source_path)).to be_falsy
+      expect(File.exist?(destination_path)).to be_truthy
     end
 
     describe 'updating the markdown' do
-      before do
-        migration.up
-      end
-
       it 'includes the new path when the file exists' do
-        files.values_at(0, 1).each do |file|
-          snippet = file[:snippet]
-          secret = "secret#{file[:snippet].id}"
-          file_location = "/uploads/system/personal_snippet/#{snippet.id}/#{secret}/#{file[:name]}"
+        secret = "secret#{snippet.id}"
+        file_location = "/uploads/system/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
 
-          expect(snippet.reload.description).to include(file_location)
-        end
+        migration.up
+
+        expect(snippet.reload.description).to include(file_location)
       end
 
-      it 'does not include the new path when the file exists' do
-        files.values_at(2, 4).each do |file|
-          snippet = file[:snippet]
-          secret = "secret#{file[:snippet].id}"
-          file_location = "/uploads/system/personal_snippet/#{snippet.id}/#{secret}/#{file[:name]}"
+      it 'does not update the markdown when the file is missing' do
+        secret = "secret#{snippet_with_missing_file.id}"
+        file_location = "/uploads/personal_snippet/#{snippet_with_missing_file.id}/#{secret}/picture.jpg"
 
-          expect(snippet.reload.description).not_to include(file_location)
-        end
+        migration.up
+
+        expect(snippet_with_missing_file.reload.description).to include(file_location)
       end
 
       it 'updates the note markdown' do
-        files.values_at(3).each do |file|
-          snippet = file[:snippet]
-          secret = "secret#{file[:snippet].id}"
-          file_location = "/uploads/system/personal_snippet/#{snippet.id}/#{secret}/#{file[:name]}"
+        secret = "secret#{snippet.id}"
+        file_location = "/uploads/system/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
+        markdown = markdown_linking_file('picture.jpg', snippet)
+        note = create(:note_on_personal_snippet, noteable: snippet, note: "with #{markdown}")
 
-          expect(snippet.notes[0].reload.note).to include(file_location)
-        end
+        migration.up
+
+        expect(note.reload.note).to include(file_location)
       end
     end
   end
 
   describe "#down" do
-    before do
-      @revert_mode = true
+    let(:snippet) do
+      snippet = create(:personal_snippet)
+      create_upload('picture.jpg', snippet, in_new_path: true)
+      snippet.update(description: markdown_linking_file('picture.jpg', snippet, in_new_path: true))
+      snippet
+    end
 
-      FileUtils.mkdir_p(uploads_dir)
-      files.each { |file| create_upload(file) }
+    let(:snippet_with_missing_file) do
+      snippet = create(:personal_snippet)
+      create_upload('picture.jpg', snippet, create_file: false, in_new_path: true)
+      snippet.update(description: markdown_linking_file('picture.jpg', snippet, in_new_path: true))
+      snippet
     end
 
     it 'moves the files' do
+      source_path = File.join(new_uploads_dir, model_file_path('picture.jpg', snippet))
+      destination_path = File.join(uploads_dir, model_file_path('picture.jpg', snippet))
+
       migration.down
 
-      files.each do |file|
-        old_path = File.join(new_uploads_dir, model_file_path(file))
-        new_path = File.join(uploads_dir, model_file_path(file))
-
-        unless file[:skip_file_creation]
-          expect(File.exist?(old_path)).to be_falsey
-          expect(File.exist?(new_path)).to be_truthy
-        end
-      end
+      expect(File.exist?(source_path)).to be_falsey
+      expect(File.exist?(destination_path)).to be_truthy
     end
 
     describe 'updating the markdown' do
-      before do
-        migration.down
-      end
-
       it 'includes the new path when the file exists' do
-        files.values_at(0, 1).each do |file|
-          snippet = file[:snippet]
-          secret = "secret#{file[:snippet].id}"
-          file_location = "/uploads/personal_snippet/#{snippet.id}/#{secret}/#{file[:name]}"
+        secret = "secret#{snippet.id}"
+        file_location = "/uploads/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
 
-          expect(snippet.reload.description).to include(file_location)
-        end
+        migration.down
+
+        expect(snippet.reload.description).to include(file_location)
       end
 
-      it 'does not include the new path when the file exists' do
-        files.values_at(2, 4).each do |file|
-          snippet = file[:snippet]
-          secret = "secret#{file[:snippet].id}"
-          file_location = "/uploads/personal_snippet/#{snippet.id}/#{secret}/#{file[:name]}"
+      it 'keeps the markdown as is when the file is missing' do
+        secret = "secret#{snippet_with_missing_file.id}"
+        file_location = "/uploads/system/personal_snippet/#{snippet_with_missing_file.id}/#{secret}/picture.jpg"
 
-          expect(snippet.reload.description).not_to include(file_location)
-        end
+        migration.down
+
+        expect(snippet_with_missing_file.reload.description).to include(file_location)
       end
 
       it 'updates the note markdown' do
-        files.values_at(3).each do |file|
-          snippet = file[:snippet]
-          secret = "secret#{file[:snippet].id}"
-          file_location = "/uploads/personal_snippet/#{snippet.id}/#{secret}/#{file[:name]}"
+        markdown = markdown_linking_file('picture.jpg', snippet, in_new_path: true)
+        secret = "secret#{snippet.id}"
+        file_location = "/uploads/personal_snippet/#{snippet.id}/#{secret}/picture.jpg"
+        note = create(:note_on_personal_snippet, noteable: snippet, note: "with #{markdown}")
 
-          expect(snippet.notes[0].reload.note).to include(file_location)
-        end
+        migration.down
+
+        expect(note.reload.note).to include(file_location)
       end
     end
   end
@@ -164,35 +148,33 @@ describe MovePersonalSnippetsFiles do
     end
   end
 
-  def create_upload(file)
-    snippet = file[:snippet]
+  def create_upload(filename, snippet, create_file: true, in_new_path: false)
     secret = "secret#{snippet.id}"
-    absolute_path = if @revert_mode
-                      File.join(new_uploads_dir, model_file_path(file))
+    absolute_path = if in_new_path
+                      File.join(new_uploads_dir, model_file_path(filename, snippet))
                     else
-                      File.join(uploads_dir, model_file_path(file))
+                      File.join(uploads_dir, model_file_path(filename, snippet))
                     end
 
-    markdown = file[:name].include?('.jpg') ? "![#{file[:name].split('.')[0]}]" : "[#{file[:name]}]"
-    markdown += '(/uploads'
-    markdown += '/system' if @revert_mode
-    markdown += "/#{model_file_path(file)})"
-
-    unless file[:skip_file_creation]
+    if create_file
       FileUtils.mkdir_p(File.dirname(absolute_path))
       FileUtils.touch(absolute_path)
     end
 
-    create(:upload, model: file[:snippet], path: "#{secret}/#{file[:name]}", uploader: PersonalFileUploader)
-
-    snippet.update_attribute(:description, "Description with #{markdown}'; select * from users;") unless file[:skip_description_update]
-    create(:note_on_personal_snippet, noteable: snippet, note: "with #{markdown}") if file[:in_note]
+    create(:upload, model: snippet, path: "#{secret}/#{filename}", uploader: PersonalFileUploader)
   end
 
-  def model_file_path(file)
-    snippet = file[:snippet]
-    secret = "secret#{file[:snippet].id}"
+  def markdown_linking_file(filename, snippet, in_new_path: false)
+    markdown =  "![#{filename.split('.')[0]}]"
+    markdown += '(/uploads'
+    markdown += '/system' if in_new_path
+    markdown += "/#{model_file_path(filename, snippet)})"
+    markdown
+  end
 
-    File.join('personal_snippet', snippet.id.to_s, secret, file[:name])
+  def model_file_path(filename, snippet)
+    secret = "secret#{snippet.id}"
+
+    File.join('personal_snippet', snippet.id.to_s, secret, filename)
   end
 end
