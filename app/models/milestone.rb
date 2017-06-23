@@ -7,7 +7,7 @@ class Milestone < ActiveRecord::Base
   Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
   Started = MilestoneStruct.new('Started', '#started', -3)
 
-  include MilestoneModelProperties
+  include SharedMilestoneProperties
   include InternalId
   include Sortable
   include Referable
