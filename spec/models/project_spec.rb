@@ -1744,9 +1744,9 @@ describe Project, models: true do
     context 'with a mirrored project' do
       let(:project) { create(:empty_project, :mirror) }
 
-      it 'first calls RepositoryImportWorker and RepositoryUpdateMirrorWorker after' do
+      it 'calls RepositoryImportWorker and inserts in front of the mirror scheduler queue' do
         allow_any_instance_of(Project).to receive(:repository_exists?).and_return(false, true)
-        expect_any_instance_of(RepositoryUpdateMirrorWorker).to receive(:perform).with(project.id)
+        expect_any_instance_of(EE::Project).to receive(:force_import_job!)
         expect_any_instance_of(RepositoryImportWorker).to receive(:perform).with(project.id).and_call_original
 
         project.import_schedule
