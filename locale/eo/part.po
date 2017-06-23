@@ -1,0 +1,54 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-15 21:59-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: Esperanto\n"
+"Language: eo\n"
+"X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "%d additional commit have been omitted to prevent performance issues."
+msgid_plural ""
+"%d additional commits have been omitted to prevent performance issues."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr ""
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr ""
+
+msgid "Browse Directory"
+msgstr ""
+
+msgid "Browse File"
+msgstr ""
+
+msgid "Browse Files"
+msgstr ""
+
+msgid "Commits feed"
+msgstr ""
+
+msgid "Filter by commit message"
+msgstr ""
+
+msgid "UploadLink|click to upload"
+msgstr ""
+
+msgid "View open merge request"
+msgstr ""
+
