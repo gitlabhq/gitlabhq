@@ -15,4 +15,6 @@ class IssuableEntity < Grape::Entity
   expose :total_time_spent
   expose :human_time_estimate
   expose :human_total_time_spent
+  expose :milestone, using: API::Entities::Milestone
+  expose :labels, using: LabelEntity
 end

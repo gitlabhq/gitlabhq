@@ -12,3 +12,9 @@
 
 / #notes{style: "margin-top: 150px"}
 /   = render 'shared/notes/notes_with_form', :autocomplete => true
+
+:javascript
+  window.gl.issueData = #{serialize_issuable(@issue)};
+  window.gl.currentUserData = #{UserSerializer.new.represent(current_user).to_json};
+
+%section#note-form{ data: { new_session_path: new_session_path(:user, redirect_to_referer: 'yes') } }

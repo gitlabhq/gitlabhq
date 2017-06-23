@@ -35,7 +35,7 @@ module IssuablesHelper
   def serialize_issuable(issuable)
     case issuable
     when Issue
-      IssueSerializer.new.represent(issuable).to_json
+      IssueSerializer.new(current_user: current_user, project: issuable.project).represent(issuable).to_json
     when MergeRequest
       MergeRequestSerializer
         .new(current_user: current_user, project: issuable.project)
