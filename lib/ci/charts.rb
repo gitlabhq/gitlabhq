@@ -33,13 +33,13 @@ module Ci
     end
 
     class Chart
-      attr_reader :labels, :total, :success, :project, :build_times
+      attr_reader :labels, :total, :success, :project, :pipeline_times
 
       def initialize(project)
         @labels = []
         @total = []
         @success = []
-        @build_times = []
+        @pipeline_times = []
         @project = project
 
         collect
@@ -101,14 +101,14 @@ module Ci
       end
     end
 
-    class BuildTime < Chart
+    class PipelineTime < Chart
       def collect
         commits = project.pipelines.last(30)
 
         commits.each do |commit|
           @labels << commit.short_sha
           duration = commit.duration || 0
-          @build_times << (duration / 60)
+          @pipeline_times << (duration / 60)
         end
       end
     end
