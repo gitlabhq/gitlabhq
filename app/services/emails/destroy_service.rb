@@ -7,7 +7,7 @@ module Emails
     private
 
     def update_secondary_emails!
-      result = ::Users::UpdateService.new(@current_user).execute do |user|
+      result = ::Users::UpdateService.new(@user).execute do |user|
         user.update_secondary_emails!
       end
 
