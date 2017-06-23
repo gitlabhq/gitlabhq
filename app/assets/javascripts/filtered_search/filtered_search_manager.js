@@ -40,6 +40,10 @@ class FilteredSearchManager {
         return [];
       })
       .then((searches) => {
+        if (!searches) {
+          return;
+        }
+
         // Put any searches that may have come in before
         // we fetched the saved searches ahead of the already saved ones
         const resultantSearches = this.recentSearchesStore.setRecentSearches(
