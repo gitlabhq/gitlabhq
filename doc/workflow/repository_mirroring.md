@@ -2,6 +2,29 @@
 
 >[Introduced][ee-51] in GitLab Enterprise Edition 8.2.
 
+## Overview
+
+Repository Mirroring is a way to mirror repositories from external sources.
+It's going to mirror all branches, tags, and commits that you have
+in your project within another Git platform.
+
+It's very useful when, for some reason, you cannot simply remove a project
+from another source.
+
+Your mirror at GitLab will be updated automatically once an hour. You can manually
+update it whenever you need.
+
+## Use-cases
+
+- You migrated to GitLab but still needs to keep you project in another source.
+You simple set it up to mirror to GitLab and all the essential history of
+commits, tags and branches will be reproduced in your GitLab EE instance.
+- You have old projects in another source that you don't use actively anymore.
+You create a mirror to your active GitLab EE instance to be able to be aware of
+any eventual changes in your project.
+
+## Description
+
 There are two kinds of repository mirroring features supported by GitLab:
 **push** and **pull**. The **push** method mirrors the repository in GitLab
 to another location, whereas the **pull** method mirrors an external repository
