@@ -350,12 +350,9 @@ Parameters:
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
-<<<<<<< HEAD
+| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
->>>>>>> ce/master
 
 ### Create project for user
 
@@ -390,12 +387,9 @@ Parameters:
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
-<<<<<<< HEAD
+| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
->>>>>>> ce/master
 
 ### Edit project
 
