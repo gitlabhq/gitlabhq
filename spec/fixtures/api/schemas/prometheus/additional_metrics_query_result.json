@@ -1,0 +1,58 @@
+{
+  "items": {
+    "properties": {
+      "group": {
+        "type": "string"
+      },
+      "metrics": {
+        "items": {
+          "properties": {
+            "queries": {
+              "items": {
+                "properties": {
+                  "query_range": {
+                    "type": "string"
+                  },
+                  "query": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "type": "any"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "title": {
+              "type": "string"
+            },
+            "weight": {
+              "type": "integer"
+            },
+            "y_label": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "required": [
+          "metrics",
+          "title",
+          "weight"
+        ],
+        "type": "array"
+      },
+      "priority": {
+        "type": "integer"
+      }
+    },
+    "type": "object"
+  },
+  "required": [
+    "group",
+    "priority",
+    "metrics"
+  ],
+  "type": "array"
+}

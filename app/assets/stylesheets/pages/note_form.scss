@@ -148,8 +148,20 @@
   padding: 6px 0;
 }
 
-.notes-form > li {
-  border: 0;
+.notes.notes-form > li.timeline-entry {
+  @include notes-media('max', $screen-sm-max) {
+    padding: 0;
+  }
+
+  .timeline-content {
+    @include notes-media('max', $screen-sm-max) {
+      margin: 0;
+    }
+  }
+
+  .timeline-entry-inner {
+    border: 0;
+  }
 }
 
 .note-edit-form {

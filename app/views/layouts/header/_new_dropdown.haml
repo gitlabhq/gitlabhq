@@ -4,7 +4,7 @@
     = icon('caret-down')
   .dropdown-menu-nav.dropdown-menu-align-right
     %ul
-      - if @group
+      - if @group&.persisted?
         - create_group_project = can?(current_user, :create_projects, @group)
         - create_group_subgroup = can?(current_user, :create_subgroup, @group)
         - if create_group_project || create_group_subgroup
@@ -18,7 +18,7 @@
           %li.divider
           %li.dropdown-bold-header GitLab
 
-      - if @project && @project.persisted?
+      - if @project&.persisted?
         - create_project_issue = can?(current_user, :create_issue, @project)
         - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
         - create_project_snippet = can?(current_user, :create_project_snippet, @project)

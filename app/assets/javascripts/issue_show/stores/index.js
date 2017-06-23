@@ -12,6 +12,10 @@ export default class Store {
   }
 
   updateState(data) {
+    if (this.stateShouldUpdate(data)) {
+      this.formState.lockedWarningVisible = true;
+    }
+
     this.state.titleHtml = data.title;
     this.state.titleText = data.title_text;
     this.state.descriptionHtml = data.description;
@@ -23,10 +27,8 @@ export default class Store {
   }
 
   stateShouldUpdate(data) {
-    return {
-      title: this.state.titleText !== data.title_text,
-      description: this.state.descriptionText !== data.description_text,
-    };
+    return this.state.titleText !== data.title_text ||
+      this.state.descriptionText !== data.description_text;
   }
 
   setFormState(state) {

@@ -38,7 +38,10 @@ module API
           projects = projects.where(visibility_level: Gitlab::VisibilityLevel.level_value(params[:visibility]))
         end
 
-        projects = projects.where(archived: params[:archived])
+        unless params[:archived].nil?
+          projects = projects.where(archived: to_boolean(params[:archived]))
+        end
+
         projects.reorder(params[:order_by] => params[:sort])
       end
     end

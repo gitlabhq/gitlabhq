@@ -114,6 +114,17 @@ class Deployment < ActiveRecord::Base
     project.monitoring_service.deployment_metrics(self)
   end
 
+  def has_additional_metrics?
+    project.prometheus_service.present?
+  end
+
+  def additional_metrics
+    return {} unless project.prometheus_service.present?
+
+    metrics = project.prometheus_service.additional_deployment_metrics(self)
+    metrics&.merge(deployment_time: created_at.to_i) || {}
+  end
+
   private
 
   def ref_path

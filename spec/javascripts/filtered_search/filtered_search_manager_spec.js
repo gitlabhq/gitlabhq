@@ -48,18 +48,23 @@ describe('Filtered Search Manager', () => {
       </div>
     `);
 
+    spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
+  });
+
+  const initializeManager = () => {
+    /* eslint-disable jasmine/no-unsafe-spy */
     spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
     spyOn(gl.FilteredSearchManager.prototype, 'tokenChange').and.callFake(() => {});
-    spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
     spyOn(gl.FilteredSearchDropdownManager.prototype, 'updateDropdownOffset').and.callFake(() => {});
     spyOn(gl.utils, 'getParameterByName').and.returnValue(null);
     spyOn(gl.FilteredSearchVisualTokens, 'unselectTokens').and.callThrough();
+    /* eslint-enable jasmine/no-unsafe-spy */
 
     input = document.querySelector('.filtered-search');
     tokensContainer = document.querySelector('.tokens-container');
     manager = new gl.FilteredSearchManager();
     manager.setup();
-  });
+  };
 
   afterEach(() => {
     manager.cleanup();
@@ -67,33 +72,34 @@ describe('Filtered Search Manager', () => {
 
   describe('class constructor', () => {
     const isLocalStorageAvailable = 'isLocalStorageAvailable';
-    let filteredSearchManager;
 
     beforeEach(() => {
       spyOn(RecentSearchesService, 'isAvailable').and.returnValue(isLocalStorageAvailable);
       spyOn(recentSearchesStoreSrc, 'default');
       spyOn(RecentSearchesRoot.prototype, 'render');
-
-      filteredSearchManager = new gl.FilteredSearchManager();
-      filteredSearchManager.setup();
-
-      return filteredSearchManager;
     });
 
     it('should instantiate RecentSearchesStore with isLocalStorageAvailable', () => {
+      manager = new gl.FilteredSearchManager();
+
       expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
       expect(recentSearchesStoreSrc.default).toHaveBeenCalledWith({
         isLocalStorageAvailable,
         allowedKeys: gl.FilteredSearchTokenKeys.getKeys(),
       });
     });
+  });
+
+  describe('setup', () => {
+    beforeEach(() => {
+      manager = new gl.FilteredSearchManager();
+    });
 
     it('should not instantiate Flash if an RecentSearchesServiceError is caught', () => {
       spyOn(RecentSearchesService.prototype, 'fetch').and.callFake(() => Promise.reject(new RecentSearchesServiceError()));
       spyOn(window, 'Flash');
 
-      filteredSearchManager = new gl.FilteredSearchManager();
-      filteredSearchManager.setup();
+      manager.setup();
 
       expect(window.Flash).not.toHaveBeenCalled();
     });
@@ -102,10 +108,12 @@ describe('Filtered Search Manager', () => {
   describe('searchState', () => {
     beforeEach(() => {
       spyOn(gl.FilteredSearchManager.prototype, 'search').and.callFake(() => {});
+      initializeManager();
     });
 
     it('should blur button', () => {
       const e = {
+        preventDefault: () => {},
         currentTarget: {
           blur: () => {},
         },
@@ -118,6 +126,7 @@ describe('Filtered Search Manager', () => {
 
     it('should not call search if there is no state', () => {
       const e = {
+        preventDefault: () => {},
         currentTarget: {
           blur: () => {},
         },
@@ -129,6 +138,7 @@ describe('Filtered Search Manager', () => {
 
     it('should call search when there is state', () => {
       const e = {
+        preventDefault: () => {},
         currentTarget: {
           blur: () => {},
           dataset: {
@@ -144,6 +154,10 @@ describe('Filtered Search Manager', () => {
 
   describe('search', () => {
     const defaultParams = '?scope=all&utf8=%E2%9C%93&state=opened';
+
+    beforeEach(() => {
+      initializeManager();
+    });
 
     it('should search with a single word', (done) => {
       input.value = 'searchTerm';
@@ -194,6 +208,10 @@ describe('Filtered Search Manager', () => {
   });
 
   describe('handleInputPlaceholder', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
     it('should render placeholder when there is no input', () => {
       expect(input.placeholder).toEqual(placeholder);
     });
@@ -220,6 +238,10 @@ describe('Filtered Search Manager', () => {
   });
 
   describe('checkForBackspace', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
     describe('tokens and no input', () => {
       beforeEach(() => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
@@ -257,6 +279,10 @@ describe('Filtered Search Manager', () => {
   });
 
   describe('removeToken', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
     it('removes token even when it is already selected', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
         FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
@@ -288,6 +314,7 @@ describe('Filtered Search Manager', () => {
 
   describe('removeSelectedTokenKeydown', () => {
     beforeEach(() => {
+      initializeManager();
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
         FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
       );
@@ -341,27 +368,39 @@ describe('Filtered Search Manager', () => {
       spyOn(gl.FilteredSearchVisualTokens, 'removeSelectedToken').and.callThrough();
       spyOn(gl.FilteredSearchManager.prototype, 'handleInputPlaceholder').and.callThrough();
       spyOn(gl.FilteredSearchManager.prototype, 'toggleClearSearchButton').and.callThrough();
-      manager.removeSelectedToken();
+      initializeManager();
     });
 
     it('calls FilteredSearchVisualTokens.removeSelectedToken', () => {
+      manager.removeSelectedToken();
+
       expect(gl.FilteredSearchVisualTokens.removeSelectedToken).toHaveBeenCalled();
     });
 
     it('calls handleInputPlaceholder', () => {
+      manager.removeSelectedToken();
+
       expect(manager.handleInputPlaceholder).toHaveBeenCalled();
     });
 
     it('calls toggleClearSearchButton', () => {
+      manager.removeSelectedToken();
+
       expect(manager.toggleClearSearchButton).toHaveBeenCalled();
     });
 
     it('calls update dropdown offset', () => {
+      manager.removeSelectedToken();
+
       expect(manager.dropdownManager.updateDropdownOffset).toHaveBeenCalled();
     });
   });
 
   describe('toggleInputContainerFocus', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
     it('toggles on focus', () => {
       input.focus();
       expect(document.querySelector('.filtered-search-box').classList.contains('focus')).toEqual(true);

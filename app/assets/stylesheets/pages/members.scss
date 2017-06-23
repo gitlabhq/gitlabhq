@@ -136,10 +136,6 @@
       width: 250px;
     }
 
-    @media (min-width: $screen-md-min) {
-      width: 350px;
-    }
-
     &.input-short {
       @media (min-width: $screen-md-min) {
         width: 170px;
