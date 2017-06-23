@@ -1,5 +1,5 @@
 class GroupMilestone < ActiveRecord::Base
-  include MilestoneModelProperties
+  include SharedMilestoneProperties
   include Milestoneish
   include CacheMarkdownField
 
