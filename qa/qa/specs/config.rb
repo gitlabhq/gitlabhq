@@ -55,7 +55,7 @@ module QA
         Capybara.register_driver :chrome do |app|
           capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
             'chromeOptions' => {
-              'binary' => '/opt/google/chrome-beta/google-chrome-beta',
+              'binary' => '/usr/bin/google-chrome-stable',
               'args' => %w[headless no-sandbox disable-gpu]
             }
           )
