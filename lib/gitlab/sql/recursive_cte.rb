@@ -52,10 +52,10 @@ module Gitlab
       # Applies the CTE to the given relation, returning a new one that will
       # query from it.
       def apply_to(relation)
-        relation.except(:where).
-          with.
-          recursive(to_arel).
-          from(alias_to(relation.model.arel_table))
+        relation.except(:where)
+          .with
+          .recursive(to_arel)
+          .from(alias_to(relation.model.arel_table))
       end
     end
   end

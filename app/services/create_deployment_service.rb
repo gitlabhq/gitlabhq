@@ -2,7 +2,7 @@ class CreateDeploymentService
   attr_reader :job
 
   delegate :expanded_environment_name,
-           :environment_url,
+           :variables,
            :project,
            to: :job
 
@@ -14,7 +14,8 @@ class CreateDeploymentService
     return unless executable?
 
     ActiveRecord::Base.transaction do
-      environment.external_url = environment_url if environment_url
+      environment.external_url = expanded_environment_url if
+        expanded_environment_url
       environment.fire_state_event(action)
 
       return unless environment.save
@@ -47,6 +48,17 @@ class CreateDeploymentService
 
   def environment_options
     @environment_options ||= job.options&.dig(:environment) || {}
+  end
+
+  def expanded_environment_url
+    return @expanded_environment_url if defined?(@expanded_environment_url)
+
+    @expanded_environment_url =
+      ExpandVariables.expand(environment_url, variables) if environment_url
+  end
+
+  def environment_url
+    environment_options[:url]
   end
 
   def on_stop

@@ -58,8 +58,8 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
     end
 
     it 'escapes the title attribute' do
-      allow(project.external_issue_tracker).to receive(:title).
-        and_return(%{"></a>whatever<a title="})
+      allow(project.external_issue_tracker).to receive(:title)
+        .and_return(%{"></a>whatever<a title="})
 
       doc = filter("Issue #{reference}")
       expect(doc.text).to eq "Issue #{reference}"

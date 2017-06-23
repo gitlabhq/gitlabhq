@@ -26,9 +26,9 @@ module Gitlab
 
         union = Gitlab::SQL::Union.new(relations)
 
-        ProjectAuthorization.
-          unscoped.
-          select_from_union(union)
+        ProjectAuthorization
+          .unscoped
+          .select_from_union(union)
       end
     end
   end

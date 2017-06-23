@@ -11,18 +11,18 @@ describe FormHelper do
     it 'renders an alert div' do
       model = double(errors: errors_stub('Error 1'))
 
-      expect(helper.form_errors(model)).
-        to include('<div class="alert alert-danger" id="error_explanation">')
+      expect(helper.form_errors(model))
+        .to include('<div class="alert alert-danger" id="error_explanation">')
     end
 
     it 'contains a summary message' do
       single_error = double(errors: errors_stub('A'))
       multi_errors = double(errors: errors_stub('A', 'B', 'C'))
 
-      expect(helper.form_errors(single_error)).
-        to include('<h4>The form contains the following error:')
-      expect(helper.form_errors(multi_errors)).
-        to include('<h4>The form contains the following errors:')
+      expect(helper.form_errors(single_error))
+        .to include('<h4>The form contains the following error:')
+      expect(helper.form_errors(multi_errors))
+        .to include('<h4>The form contains the following errors:')
     end
 
     it 'renders each message' do

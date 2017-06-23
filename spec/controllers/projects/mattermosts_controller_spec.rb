@@ -11,8 +11,8 @@ describe Projects::MattermostsController do
 
   describe 'GET #new' do
     before do
-      allow_any_instance_of(MattermostSlashCommandsService).
-        to receive(:list_teams).and_return([])
+      allow_any_instance_of(MattermostSlashCommandsService)
+        .to receive(:list_teams).and_return([])
     end
 
     it 'accepts the request' do

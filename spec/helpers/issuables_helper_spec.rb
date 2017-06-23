@@ -40,23 +40,23 @@ describe IssuablesHelper do
       end
 
       it 'returns "Open" when state is :opened' do
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
       end
 
       it 'returns "Closed" when state is :closed' do
-        expect(helper.issuables_state_counter_text(:issues, :closed)).
-          to eq('<span>Closed</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :closed))
+          .to eq('<span>Closed</span> <span class="badge">42</span>')
       end
 
       it 'returns "Merged" when state is :merged' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :merged)).
-          to eq('<span>Merged</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:merge_requests, :merged))
+          .to eq('<span>Merged</span> <span class="badge">42</span>')
       end
 
       it 'returns "All" when state is :all' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :all)).
-          to eq('<span>All</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:merge_requests, :all))
+          .to eq('<span>All</span> <span class="badge">42</span>')
       end
     end
 
@@ -81,13 +81,13 @@ describe IssuablesHelper do
         expect(helper).to receive(:params).twice.and_return(params)
         expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
 
         expect(helper).not_to receive(:issuables_count_for_state)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
       end
 
       it 'does not take some keys into account in the cache key' do
@@ -100,8 +100,8 @@ describe IssuablesHelper do
         }.with_indifferent_access)
         expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
 
         expect(helper).to receive(:params).and_return({
           author_id: '11',
@@ -112,22 +112,22 @@ describe IssuablesHelper do
         }.with_indifferent_access)
         expect(helper).not_to receive(:issuables_count_for_state)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
       end
 
       it 'does not take params order into account in the cache key' do
         expect(helper).to receive(:params).and_return('author_id' => '11', 'state' => 'opened')
         expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
 
         expect(helper).to receive(:params).and_return('state' => 'opened', 'author_id' => '11')
         expect(helper).not_to receive(:issuables_count_for_state)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
       end
     end
   end

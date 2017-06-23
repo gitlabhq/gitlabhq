@@ -9,7 +9,7 @@ class Projects::IssuesController < Projects::ApplicationController
   prepend_before_action :authenticate_user!, only: [:new]
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
-  before_action :module_enabled
+  before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update]
 
   # Allow write(create) issue
@@ -250,7 +250,7 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
   end
 
-  def module_enabled
+  def check_issues_available!
     return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
   end
 

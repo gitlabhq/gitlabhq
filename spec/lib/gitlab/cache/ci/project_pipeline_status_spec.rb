@@ -37,11 +37,11 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :redis do
             loaded_from_cache: false
           )
 
-          expect(described_class).to receive(:new).
-                                       with(project_without_status,
+          expect(described_class).to receive(:new)
+                                       .with(project_without_status,
                                             pipeline_info: empty_status,
-                                            loaded_from_cache: false).
-                                       and_return(fake_pipeline)
+                                            loaded_from_cache: false)
+                                       .and_return(fake_pipeline)
           expect(fake_pipeline).to receive(:load_from_project)
           expect(fake_pipeline).to receive(:store_in_cache)
 
@@ -112,12 +112,12 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :redis do
       pipeline = build_stubbed(:ci_pipeline,
                                sha: '123456', status: 'success', ref: 'master')
       fake_status = double
-      expect(described_class).to receive(:new).
-                                   with(pipeline.project,
+      expect(described_class).to receive(:new)
+                                   .with(pipeline.project,
                                         pipeline_info: {
                                           sha: '123456', status: 'success', ref: 'master'
-                                        }).
-                                   and_return(fake_status)
+                                        })
+                                   .and_return(fake_status)
 
       expect(fake_status).to receive(:store_in_cache_if_needed)
 

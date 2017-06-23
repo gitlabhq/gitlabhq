@@ -1,5 +1,5 @@
 .row.prepend-top-default
-  .col-lg-3.settings-sidebar
+  .col-lg-4.settings-sidebar
     %h4.prepend-top-0
       Project members
     - if can?(current_user, :admin_project_member, @project)
@@ -13,7 +13,7 @@
         %i Masters
         or
         %i Owners
-  .col-lg-9
+  .col-lg-8
     .light
       - if can?(current_user, :admin_project_member, @project)
         %ul.nav-links.project-member-tabs{ role: 'tablist' }

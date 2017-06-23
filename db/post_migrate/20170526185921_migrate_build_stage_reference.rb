@@ -3,23 +3,17 @@ class MigrateBuildStageReference < ActiveRecord::Migration
 
   DOWNTIME = false
 
+  ##
+  # This is an empty migration, content has been moved to a new one:
+  # post migrate 20170526190000 MigrateBuildStageReferenceAgain
+  #
+  # See gitlab-org/gitlab-ce!12337 for more details.
+
   def up
-    disable_statement_timeout
-
-    stage_id = Arel.sql <<-SQL.strip_heredoc
-      (SELECT id FROM ci_stages
-         WHERE ci_stages.pipeline_id = ci_builds.commit_id
-           AND ci_stages.name = ci_builds.stage)
-    SQL
-
-    update_column_in_batches(:ci_builds, :stage_id, stage_id) do |table, query|
-      query.where(table[:stage_id].eq(nil))
-    end
+    # noop
   end
 
   def down
-    disable_statement_timeout
-
-    update_column_in_batches(:ci_builds, :stage_id, nil)
+    # noop
   end
 end

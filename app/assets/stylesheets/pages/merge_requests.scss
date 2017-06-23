@@ -372,10 +372,6 @@
       margin-left: 12px;
     }
 
-    &.mr-state-locked + .mr-info-list.mr-links {
-      margin-top: -16px;
-    }
-
     &.empty-state {
       .artwork {
         margin-bottom: $gl-padding;
@@ -423,7 +419,7 @@
 
   .commit {
     margin: 0;
-    padding: 10px 0;
+    padding: 10px;
     list-style: none;
 
     &:hover {

@@ -30,8 +30,8 @@ module Issues
 
       Discussions::ResolveService.new(project, current_user,
                                       merge_request: merge_request_to_resolve_discussions_of,
-                                      follow_up_issue: issue).
-        execute(discussions_to_resolve)
+                                      follow_up_issue: issue)
+        .execute(discussions_to_resolve)
     end
 
     private

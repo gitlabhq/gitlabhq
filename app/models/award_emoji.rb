@@ -19,9 +19,9 @@ class AwardEmoji < ActiveRecord::Base
 
   class << self
     def votes_for_collection(ids, type)
-      select('name', 'awardable_id', 'COUNT(*) as count').
-        where('name IN (?) AND awardable_type = ? AND awardable_id IN (?)', [DOWNVOTE_NAME, UPVOTE_NAME], type, ids).
-        group('name', 'awardable_id')
+      select('name', 'awardable_id', 'COUNT(*) as count')
+        .where('name IN (?) AND awardable_type = ? AND awardable_id IN (?)', [DOWNVOTE_NAME, UPVOTE_NAME], type, ids)
+        .group('name', 'awardable_id')
     end
   end
 

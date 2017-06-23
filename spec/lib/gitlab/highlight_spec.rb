@@ -51,8 +51,8 @@ describe Gitlab::Highlight, lib: true do
     end
 
     it 'links dependencies via DependencyLinker' do
-      expect(Gitlab::DependencyLinker).to receive(:link).
-        with('file.name', 'Contents', anything).and_call_original
+      expect(Gitlab::DependencyLinker).to receive(:link)
+        .with('file.name', 'Contents', anything).and_call_original
 
       described_class.highlight('file.name', 'Contents')
     end
