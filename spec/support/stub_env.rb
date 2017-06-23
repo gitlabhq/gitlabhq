@@ -5,3 +5,9 @@ module StubENV
     allow(ENV).to receive(:[]).with(key).and_return(value)
   end
 end
+
+RSpec.configure do |config|
+  config.after(:each) do
+    @env_already_stubbed = nil
+  end
+end
