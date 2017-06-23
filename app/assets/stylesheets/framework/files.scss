@@ -12,6 +12,12 @@
 
   &.readme-holder {
     margin: $gl-padding 0;
+
+    &.limited-width-container .file-content {
+      max-width: $limited-layout-width-sm;
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 
   table {
