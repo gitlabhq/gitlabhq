@@ -629,8 +629,8 @@ ActiveRecord::Schema.define(version: 20170627211700) do
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
     t.text "repository_storage_path", null: false
-    t.text "old_path_with_namespace", null: false
-    t.text "new_path_with_namespace", null: false
+    t.text "old_repo_path_with_namespace", null: false
+    t.text "new_repo_path_with_namespace", null: false
     t.text "old_wiki_path_with_namespace", null: false
     t.text "new_wiki_path_with_namespace", null: false
     t.text "old_project_name", null: false
