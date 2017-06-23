@@ -1,0 +1,18 @@
+@import "framework/variables";
+@import 'framework/tw_bootstrap_variables';
+@import "bootstrap/variables";
+
+$new-sidebar-width: 220px;
+
+.page-with-sidebar {
+  padding-left: $new-sidebar-width;
+}
+
+.nav-sidebar {
+  position: fixed;
+  width: $new-sidebar-width;
+  top: 50px;
+  bottom: 0;
+  left: 0;
+  background-color: $gray-light;
+}
