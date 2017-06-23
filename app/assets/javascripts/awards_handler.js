@@ -7,10 +7,6 @@ import { emojiMap, emojiAliases, isEmojiNameValid } from './emoji';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
-const requestAnimationFrame = window.requestAnimationFrame ||
-  window.webkitRequestAnimationFrame ||
-  window.mozRequestAnimationFrame ||
-  window.setTimeout;
 
 const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; // For separating lists produced by ruby's Array#toSentence
 
@@ -74,9 +70,7 @@ export default class AwardsHandler {
     this.registerEventListener('one', $(document), 'mouseenter focus', '.js-add-award', 'mouseenter focus', () => {
       const $menu = $('.emoji-menu');
       if ($menu.length === 0) {
-        requestAnimationFrame(() => {
-          this.createEmojiMenu();
-        });
+        setTimeout(() => this.createEmojiMenu());
       }
       // Prebuild the categoryMap
       categoryMap = categoryMap || buildCategoryMap();
@@ -221,7 +215,7 @@ export default class AwardsHandler {
               categoryLabelMap[categoryNameKey],
               emojisInCategory,
             );
-            requestAnimationFrame(() => {
+            setTimeout(() => {
               emojiContentElement.insertAdjacentHTML('beforeend', categoryMarkup);
               resolve();
             });
