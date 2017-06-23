@@ -25,12 +25,9 @@ function assembleFallbackImageSrc(inputName) {
 
   return fallbackImageSrc;
 }
-const glEmojiTagDefaults = {
-  sprite: false,
-  forceFallback: false,
-};
+
 function glEmojiTag(inputName, options) {
-  const opts = Object.assign({}, glEmojiTagDefaults, options);
+  const opts = { sprite: false, forceFallback: false, ...options };
   let name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
     emojiAliases[inputName] : inputName;
   let emojiInfo = emojiMap[name];
