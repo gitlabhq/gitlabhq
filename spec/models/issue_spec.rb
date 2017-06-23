@@ -329,6 +329,27 @@ describe Issue, models: true do
     end
   end
 
+  describe '#related_issues' do
+    let(:user) { create(:user) }
+    let(:authorized_project) { create(:empty_project) }
+    let(:unauthorized_project) { create(:empty_project) }
+
+    let(:authorized_issue_a) { create(:issue, project: authorized_project) }
+    let(:authorized_issue_b) { create(:issue, project: authorized_project) }
+    let(:unauthorized_issue) { create(:issue, project: unauthorized_project) }
+
+    let!(:issue_link_a) { create(:issue_link, source: authorized_issue_a, target: authorized_issue_b) }
+    let!(:issue_link_b) { create(:issue_link, source: authorized_issue_a, target: unauthorized_issue) }
+
+    before do
+      authorized_project.add_developer(user)
+    end
+
+    it 'returns only authorized related issues for given user' do
+      expect(authorized_issue_a.related_issues(user)).to contain_exactly(authorized_issue_b)
+    end
+  end
+
   describe '#has_related_branch?' do
     let(:issue) { create(:issue, title: "Blue Bell Knoll") }
     subject { issue.has_related_branch? }

@@ -138,6 +138,12 @@ class License < ActiveRecord::Base
     self.data = file.read
   end
 
+  def md5
+    normalized_data = self.data.gsub("\r\n", "\n").gsub(/\n+$/, '') + "\n"
+
+    Digest::MD5.hexdigest(normalized_data)
+  end
+
   def license
     return nil unless self.data
 

@@ -8,7 +8,8 @@ describe 'Project variables EE', js: true do
   let(:variable_environment_scope) { true }
 
   before do
-    stub_feature(:variable_environment_scope, variable_environment_scope)
+    stub_licensed_features(
+      variable_environment_scope: variable_environment_scope)
 
     login_as(user)
     project.team << [user, :master]

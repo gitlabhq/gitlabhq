@@ -31,10 +31,11 @@ Below is a table of the definitions used for GitLab's Issue Board.
 | **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. You can re-order cards within a list. |
 
 There are two types of lists, the ones you create based on your labels, and
-one default:
+two defaults:
 
 - Label list: a list based on a label. It shows all opened issues with that label.
-- **Done** (default): shows all closed issues. Always appears on the very right.
+- **Backlog** (default): shows all open issues that does not belong to one of lists. Always appears on the very left.
+- **Closed** (default): shows all closed issues. Always appears on the very right.
 
 ![GitLab Issue Board](img/issue_board.png)
 

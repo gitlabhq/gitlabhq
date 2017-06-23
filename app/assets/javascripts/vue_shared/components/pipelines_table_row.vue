@@ -200,47 +200,74 @@ export default {
       }
       return {};
     },
+
+    displayPipelineActions() {
+      return this.pipeline.flags.retryable ||
+             this.pipeline.flags.cancelable ||
+             this.pipeline.details.manual_actions.length ||
+             this.pipeline.details.artifacts.length;
+    },
   },
 };
 </script>
 <template>
-  <tr class="commit">
-    <td class="commit-link">
-      <ci-badge :status="pipelineStatus" />
-    </td>
+  <div class="commit gl-responsive-table-row">
+    <div class="table-section section-10 commit-link">
+      <div class="table-mobile-header"
+        role="rowheader">
+        Status
+      </div>
+      <div class="table-mobile-content">
+        <ci-badge :status="pipelineStatus"/>
+      </div>
+    </div>
 
     <pipeline-url :pipeline="pipeline" />
 
-    <td>
-      <commit-component
-        :tag="commitTag"
-        :commit-ref="commitRef"
-        :commit-url="commitUrl"
-        :short-sha="commitShortSha"
-        :title="commitTitle"
-        :author="commitAuthor"
-        />
-    </td>
-
-    <td class="stage-cell">
-      <div class="stage-container dropdown js-mini-pipeline-graph"
-        v-if="pipeline.details.stages.length > 0"
-        v-for="stage in pipeline.details.stages">
-
-        <pipeline-stage
-          :stage="stage"
-          :update-dropdown="updateGraphDropdown"
-          />
+    <div class="table-section section-25">
+      <div
+        class="table-mobile-header"
+        role="rowheader">
+        Commit
       </div>
-    </td>
+      <div class="table-mobile-content">
+        <commit-component
+          :tag="commitTag"
+          :commit-ref="commitRef"
+          :commit-url="commitUrl"
+          :short-sha="commitShortSha"
+          :title="commitTitle"
+          :author="commitAuthor"/>
+      </div>
+    </div>
+
+    <div class="table-section section-wrap section-15 stage-cell">
+      <div
+        class="table-mobile-header"
+        role="rowheader">
+        Stages
+      </div>
+      <div class="table-mobile-content">
+        <div class="stage-container dropdown js-mini-pipeline-graph"
+          v-if="pipeline.details.stages.length > 0"
+          v-for="stage in pipeline.details.stages">
+          <pipeline-stage
+            :stage="stage"
+            :update-dropdown="updateGraphDropdown"
+            />
+        </div>
+      </div>
+    </div>
 
     <pipelines-timeago
       :duration="pipelineDuration"
       :finished-time="pipelineFinishedAt"
       />
 
-    <td class="pipeline-actions">
-      <div class="pull-right btn-group">
+    <div
+      v-if="displayPipelineActions"
+      class="table-section section-20 table-button-footer pipeline-actions">
+      <div class="btn-group table-action-buttons">
         <pipelines-actions-component
           v-if="pipeline.details.manual_actions.length"
           :actions="pipeline.details.manual_actions"
@@ -249,6 +276,7 @@ export default {
 
         <pipelines-artifacts-component
           v-if="pipeline.details.artifacts.length"
+          class="hidden-xs hidden-sm"
           :artifacts="pipeline.details.artifacts"
           />
 
@@ -271,6 +299,6 @@ export default {
           confirm-action-message="Are you sure you want to cancel this pipeline?"
           />
       </div>
-    </td>
-  </tr>
+    </div>
+  </div>
 </template>

@@ -301,7 +301,7 @@ describe Project, models: true do
       shared_examples 'matching environment scope' do
         context 'when variable environment scope is available' do
           before do
-            stub_feature(:variable_environment_scope, true)
+            stub_licensed_features(variable_environment_scope: true)
           end
 
           it 'contains the secret variable' do
@@ -311,7 +311,7 @@ describe Project, models: true do
 
         context 'when variable environment scope is unavailable' do
           before do
-            stub_feature(:variable_environment_scope, false)
+            stub_licensed_features(variable_environment_scope: false)
           end
 
           it 'does not contain the secret variable' do
@@ -323,7 +323,7 @@ describe Project, models: true do
       shared_examples 'not matching environment scope' do
         context 'when variable environment scope is available' do
           before do
-            stub_feature(:variable_environment_scope, true)
+            stub_licensed_features(variable_environment_scope: true)
           end
 
           it 'does not contain the secret variable' do
@@ -333,7 +333,7 @@ describe Project, models: true do
 
         context 'when variable environment scope is unavailable' do
           before do
-            stub_feature(:variable_environment_scope, false)
+            stub_licensed_features(variable_environment_scope: false)
           end
 
           it 'does not contain the secret variable' do
@@ -368,7 +368,7 @@ describe Project, models: true do
 
       context 'when environment scope has _' do
         before do
-          stub_feature(:variable_environment_scope, true)
+          stub_licensed_features(variable_environment_scope: true)
         end
 
         it 'does not treat it as wildcard' do
@@ -391,7 +391,7 @@ describe Project, models: true do
       # not checking this integrity in database level.
       context 'when environment scope has %' do
         before do
-          stub_feature(:variable_environment_scope, true)
+          stub_licensed_features(variable_environment_scope: true)
         end
 
         it 'does not treat it as wildcard' do
@@ -426,7 +426,7 @@ describe Project, models: true do
         end
 
         before do
-          stub_feature(:variable_environment_scope, true)
+          stub_licensed_features(variable_environment_scope: true)
         end
 
         it 'puts variables matching environment scope more in the end' do

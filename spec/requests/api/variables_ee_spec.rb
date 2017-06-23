@@ -7,7 +7,7 @@ describe API::Variables do
   describe 'POST /projects/:id/variables' do
     context 'with variable environment scope available' do
       before do
-        stub_feature(:variable_environment_scope)
+        stub_licensed_features(variable_environment_scope: true)
 
         project.add_master(user)
       end

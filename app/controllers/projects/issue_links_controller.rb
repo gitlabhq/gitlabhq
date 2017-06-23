@@ -15,12 +15,9 @@ module Projects
 
     def destroy
       issue_link = IssueLink.find(params[:id])
+      result = IssueLinks::DestroyService.new(issue_link, current_user).execute
 
-      return render_403 unless can?(current_user, :admin_issue_link, issue_link.target.project)
-
-      IssueLinks::DestroyService.new(issue_link, current_user).execute
-
-      render json: { issues: issues }
+      render json: { issues: issues }, status: result[:http_status]
     end
 
     private

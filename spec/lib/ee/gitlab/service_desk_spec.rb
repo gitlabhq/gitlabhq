@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe EE::Gitlab::ServiceDesk, lib: true do
   before do
-    stub_feature(:service_desk, true)
+    stub_licensed_features(service_desk: true)
     allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
   end
@@ -13,7 +13,7 @@ describe EE::Gitlab::ServiceDesk, lib: true do
 
   context 'when license does not support service desk' do
     before do
-      stub_feature(:service_desk, false)
+      stub_licensed_features(service_desk: false)
     end
 
     it { is_expected.to be_falsy }

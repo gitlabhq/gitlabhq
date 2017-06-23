@@ -47,7 +47,7 @@ class LegacyDiffNote < Note
   end
 
   def for_line?(line)
-    !line.meta? && diff_file.line_code(line) == self.line_code
+    line.discussable? && diff_file.line_code(line) == self.line_code
   end
 
   def original_line_code

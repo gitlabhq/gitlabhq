@@ -255,6 +255,7 @@ Parameters:
 - `confirm` (optional)          - Require confirmation - true (default) or false
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
+- `avatar` (optional)           - Image file for user's avatar
 
 ## User modification
 
@@ -284,6 +285,7 @@ Parameters:
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
+- `avatar` (optional)           - Image file for user's avatar
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,

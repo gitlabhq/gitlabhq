@@ -6,6 +6,7 @@ module Gitlab
       'en' => 'English',
       'es' => 'Español',
       'de' => 'Deutsch',
+      'fr' => 'Français',
       'pt_BR' => 'Português(Brasil)',
       'zh_CN' => '简体中文',
       'zh_HK' => '繁體中文(香港)',

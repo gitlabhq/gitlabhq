@@ -88,7 +88,7 @@ gem 'kaminari', '~> 0.17.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 1.0'
+gem 'carrierwave', '~> 1.1'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -167,7 +167,7 @@ gem 'rufus-scheduler', '~> 3.4'
 gem 'httparty', '~> 0.13.3'
 
 # Colored output to console
-gem 'rainbow', '~> 2.1.0'
+gem 'rainbow', '~> 2.2'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -383,7 +383,7 @@ gem 'ruby-prof', '~> 0.16.2'
 gem 'oauth2', '~> 1.4'
 
 # Soft deletion
-gem 'paranoia', '~> 2.2'
+gem 'paranoia', '~> 2.3.1'
 
 # Health check
 gem 'health_check', '~> 2.6.0'

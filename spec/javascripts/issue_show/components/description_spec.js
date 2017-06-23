@@ -96,4 +96,20 @@ describe('Description component', () => {
       });
     });
   });
+
+  it('applies syntax highlighting and math when description changed', (done) => {
+    spyOn(vm, 'renderGFM').and.callThrough();
+    spyOn($.prototype, 'renderGFM').and.callThrough();
+    vm.descriptionHtml = 'changed';
+
+    Vue.nextTick(() => {
+      setTimeout(() => {
+        expect(vm.$refs['gfm-content']).toBeDefined();
+        expect(vm.renderGFM).toHaveBeenCalled();
+        expect($.prototype.renderGFM).toHaveBeenCalled();
+
+        done();
+      });
+    });
+  });
 });

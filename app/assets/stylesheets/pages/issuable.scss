@@ -200,6 +200,7 @@
   background: $gray-light;
   padding: 0 20px;
   z-index: 200;
+  overflow: hidden;
 
   .issuable-sidebar {
     width: calc(100% + 100px);

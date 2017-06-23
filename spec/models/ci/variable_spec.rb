@@ -8,7 +8,7 @@ describe Ci::Variable, models: true do
   describe 'validations' do
     # EE
     before do
-      stub_feature(:variable_environment_scope)
+      stub_licensed_features(variable_environment_scope: true)
     end
 
     it { is_expected.to validate_presence_of(:key) }

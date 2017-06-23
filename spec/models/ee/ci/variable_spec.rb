@@ -5,7 +5,7 @@ describe Ci::Variable, models: true do
 
   context 'when variable_environment_scope available' do
     before do
-      stub_feature(:variable_environment_scope, true)
+      stub_licensed_features(variable_environment_scope: true)
     end
 
     it { is_expected.to allow_value('*').for(:environment_scope) }
@@ -20,7 +20,7 @@ describe Ci::Variable, models: true do
 
   context 'when variable_environment_scope unavailable' do
     before do
-      stub_feature(:variable_environment_scope, false)
+      stub_licensed_features(variable_environment_scope: false)
     end
 
     it { is_expected.to allow_value('*').for(:environment_scope) }

@@ -233,6 +233,12 @@ module Gitlab
 
         # Update in batches of 5% until we run out of any rows to update.
         batch_size = ((total / 100.0) * 5.0).ceil
+        max_size = 1000
+
+        # The upper limit is 1000 to ensure we don't lock too many rows. For
+        # example, for "merge_requests" even 1% of the table is around 35 000
+        # rows for GitLab.com.
+        batch_size = max_size if batch_size > max_size
 
         start_arel = table.project(table[:id]).order(table[:id].asc).take(1)
         start_arel = yield table, start_arel if block_given?

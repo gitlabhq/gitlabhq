@@ -8,7 +8,6 @@ describe Gitlab::GitAccess, lib: true do
   let(:user) { create(:user) }
   let(:actor) { user }
   let(:protocol) { 'ssh' }
-
   let(:redirected_path) { nil }
   let(:authentication_abilities) do
     [

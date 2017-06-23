@@ -4,7 +4,7 @@ feature 'Tooltips on .timeago dates', feature: true, js: true do
   let(:user)            { create(:user) }
   let(:project)         { create(:project, name: 'test', namespace: user.namespace) }
   let(:created_date)    { Date.yesterday.to_time }
-  let(:expected_format) { created_date.strftime('%b %-d, %Y %l:%M%P') }
+  let(:expected_format) { created_date.in_time_zone.strftime('%b %-d, %Y %l:%M%P') }
 
   context 'on the activity tab' do
     before do
