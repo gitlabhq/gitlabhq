@@ -29,18 +29,14 @@ export default {
         assignees: [],
       });
 
-<<<<<<< HEAD
       if (Store.state.currentBoard) {
         issue.milestone_id = Store.state.currentBoard.milestone_id;
       }
 
-      this.list.newIssue(issue)
-=======
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.cancel();
 
       return this.list.newIssue(issue)
->>>>>>> ce/master
         .then(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
