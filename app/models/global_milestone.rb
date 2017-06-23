@@ -28,7 +28,7 @@ class GlobalMilestone
     new(title, child_milestones)
   end
 
-  def self.states_count(projects)
+  def self.states_count(projects, group = nil)
     relation = MilestonesFinder.new.execute(projects, state: 'all')
     milestones_by_state_and_title = relation.reorder(nil).group(:state, :title).count
 
