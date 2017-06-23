@@ -131,6 +131,19 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "Pipelines" do
+    subject { execute_service(project, user, @oldrev, @newrev, @ref) }
+
+    before do
+      stub_ci_pipeline_to_return_yaml_file
+    end
+
+    it "creates a new pipeline" do
+      expect{ subject }.to change{ Ci::Pipeline.count }
+      expect(Ci::Pipeline.last).to be_push
+    end
+  end
+
   describe "Push Event" do
     before do
       service = execute_service(project, user, @oldrev, @newrev, @ref )
@@ -436,6 +449,7 @@ describe GitPushService, services: true do
                                                     author_name: commit_author.name,
                                                     author_email: commit_author.email
                                                   })
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end
@@ -584,7 +598,7 @@ describe GitPushService, services: true do
         commit = double(:commit)
         diff = double(:diff, new_path: 'README.md')
 
-        expect(commit).to receive(:raw_diffs).with(deltas_only: true).
+        expect(commit).to receive(:raw_deltas).
           and_return([diff])
 
         service.push_commits = [commit]
@@ -622,9 +636,18 @@ describe GitPushService, services: true do
 
     it 'only schedules a limited number of commits' do
       allow(service).to receive(:push_commits).
-        and_return(Array.new(1000, double(:commit, to_hash: {})))
+        and_return(Array.new(1000, double(:commit, to_hash: {}, matches_cross_reference_regex?: true)))
 
       expect(ProcessCommitWorker).to receive(:perform_async).exactly(100).times
+
+      service.process_commit_messages
+    end
+
+    it "skips commits which don't include cross-references" do
+      allow(service).to receive(:push_commits).
+        and_return([double(:commit, to_hash: {}, matches_cross_reference_regex?: false)])
+
+      expect(ProcessCommitWorker).not_to receive(:perform_async)
 
       service.process_commit_messages
     end

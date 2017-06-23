@@ -3,12 +3,10 @@
 import d3 from 'd3';
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.Calendar = (function() {
     function Calendar(timestamps, calendar_activities_path) {
       this.calendar_activities_path = calendar_activities_path;
-      this.clickDay = bind(this.clickDay, this);
+      this.clickDay = this.clickDay.bind(this);
       this.currentSelectedDate = '';
       this.daySpace = 1;
       this.daySize = 15;

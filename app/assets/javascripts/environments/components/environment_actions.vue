@@ -1,6 +1,7 @@
 <script>
 import playIconSvg from 'icons/_icon_play.svg';
 import eventHub from '../event_hub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   props: {
@@ -9,6 +10,10 @@ export default {
       required: false,
       default: () => [],
     },
+  },
+
+  components: {
+    loadingIcon,
   },
 
   data() {
@@ -61,10 +66,7 @@ export default {
         <i
           class="fa fa-caret-down"
           aria-hidden="true"/>
-        <i
-          v-if="isLoading"
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true"/>
+        <loading-icon v-if="isLoading" />
       </span>
     </button>
 

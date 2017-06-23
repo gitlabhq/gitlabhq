@@ -156,6 +156,32 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'Redirect after sign in' do
+    context 'with an AJAX request' do
+      it 'does not store the visited URL' do
+        xhr :get,
+          :show,
+          format: :json,
+          namespace_id: project.namespace,
+          project_id: project,
+          id: issue.iid
+
+        expect(session['user_return_to']).to be_blank
+      end
+    end
+
+    context 'without an AJAX request' do
+      it 'stores the visited URL' do
+        get :show,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: issue.iid
+
+        expect(session['user_return_to']).to eq("/#{project.namespace.to_param}/#{project.to_param}/issues/#{issue.iid}")
+      end
+    end
+  end
+
   describe 'PUT #update' do
     before do
       sign_in(user)
@@ -178,7 +204,7 @@ describe Projects::IssuesController do
         body = JSON.parse(response.body)
 
         expect(body['assignees'].first.keys)
-          .to match_array(%w(id name username avatar_url))
+          .to match_array(%w(id name username avatar_url state web_url))
       end
     end
 
@@ -234,6 +260,7 @@ describe Projects::IssuesController do
             before { allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false) }
 
             it 'rejects an issue recognized as a spam' do
+              expect(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
               expect { update_spam_issue }.not_to change{ issue.reload.title }
             end
 

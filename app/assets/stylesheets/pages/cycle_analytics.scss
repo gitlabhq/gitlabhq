@@ -387,7 +387,7 @@
         padding: 0 3px 0 0;
       }
 
-      .branch-name {
+      .ref-name {
         color: $black;
         display: inline-block;
         max-width: 180px;
@@ -398,7 +398,7 @@
         vertical-align: top;
       }
 
-      .short-sha {
+      .commit-sha {
         color: $gl-link-color;
         line-height: 1.3;
         vertical-align: top;

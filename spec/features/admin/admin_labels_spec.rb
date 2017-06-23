@@ -34,11 +34,11 @@ RSpec.describe 'admin issues labels' do
       page.within '.labels' do
         page.all('.btn-remove').each do |remove|
           remove.click
-          wait_for_ajax
+          wait_for_requests
         end
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content("There are no labels yet")
       expect(page).not_to have_content('bug')

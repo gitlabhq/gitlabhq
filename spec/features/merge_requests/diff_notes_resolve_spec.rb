@@ -275,7 +275,7 @@ feature 'Diff notes resolve', feature: true, js: true do
         end
 
         page.within '.line-resolve-all-container' do
-          page.find('.discussion-next-btn').click
+          page.find('.discussion-next-btn').trigger('click')
         end
 
         expect(page.evaluate_script("$('body').scrollTop()")).to be > 0

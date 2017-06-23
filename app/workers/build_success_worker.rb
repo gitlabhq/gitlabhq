@@ -11,15 +11,6 @@ class BuildSuccessWorker
   private
 
   def create_deployment(build)
-    service = CreateDeploymentService.new(
-      build.project, build.user,
-      environment: build.environment,
-      sha: build.sha,
-      ref: build.ref,
-      tag: build.tag,
-      options: build.options.to_h[:environment],
-      variables: build.variables)
-
-    service.execute(build)
+    CreateDeploymentService.new(build).execute
   end
 end

@@ -6,7 +6,7 @@ Please read through the [GitLab Issue Documentation](index.md) for an overview o
 
 The image bellow illustrates how an issue looks like:
 
-![Issue view](img/issues_main_view_numbered.png)
+![Issue view](img/issues_main_view_numbered.jpg)
 
 You can find all the information on that issue on one screen.
 
@@ -147,7 +147,7 @@ or in the issue thread.
 
 #### 15. Award emoji
 
-- Award an emoji to that issue.
+- Award an emoji to that issue. 
 
 > **Tip:**
 Posting "+1" as comments in threads spam all
@@ -168,8 +168,9 @@ Once you wrote your comment, you can either:
 - Click "Start discussion": start a thread within that issue's thread to discuss specific points.
 - Click "Comment and close issue": post your comment and close that issue in one click.
 
-#### 18. New branch
+#### 18. New Merge Request
 
-- [New branch](../repository/web_editor.md#create-a-new-branch-from-an-issue):
-create a new branch, followed by a new merge request which will automatically close that
-issue as soon as that merge request is merged.
+- Create a new merge request (with a new source branch named after the issue) in one action.
+The merge request will automatically close that issue as soon as merged.
+- Optionally, you can just create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
+named after that issue.

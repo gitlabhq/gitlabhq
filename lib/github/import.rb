@@ -1,4 +1,5 @@
 require_relative 'error'
+
 module Github
   class Import
     include Gitlab::ShellAdapter
@@ -6,6 +7,7 @@ module Github
     class MergeRequest < ::MergeRequest
       self.table_name = 'merge_requests'
 
+      self.reset_callbacks :create
       self.reset_callbacks :save
       self.reset_callbacks :commit
       self.reset_callbacks :update
@@ -16,6 +18,7 @@ module Github
       self.table_name = 'issues'
 
       self.reset_callbacks :save
+      self.reset_callbacks :create
       self.reset_callbacks :commit
       self.reset_callbacks :update
       self.reset_callbacks :validate
@@ -79,7 +82,7 @@ module Github
     def fetch_repository
       begin
         project.create_repository unless project.repository.exists?
-        project.repository.add_remote('github', "https://{options.fetch(:token)}@github.com/#{repo}.git")
+        project.repository.add_remote('github', "https://#{options.fetch(:token)}@github.com/#{repo}.git")
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
       rescue Gitlab::Shell::Error => e
@@ -89,7 +92,7 @@ module Github
     end
 
     def fetch_wiki_repository
-      wiki_url  = "https://{options.fetch(:token)}@github.com/#{repo}.wiki.git"
+      wiki_url  = "https://#{options.fetch(:token)}@github.com/#{repo}.wiki.git"
       wiki_path = "#{project.path_with_namespace}.wiki"
 
       unless project.wiki.repository_exists?
@@ -169,7 +172,7 @@ module Github
           next unless merge_request.new_record? && pull_request.valid?
 
           begin
-            restore_branches(pull_request)
+            pull_request.restore_branches!
 
             author_id   = user_id(pull_request.author, project.creator_id)
             description = format_description(pull_request.description, pull_request.author)
@@ -205,7 +208,7 @@ module Github
           rescue => e
             error(:pull_request, pull_request.url, e.message)
           ensure
-            clean_up_restored_branches(pull_request)
+            pull_request.remove_restored_branches!
           end
         end
 
@@ -320,32 +323,6 @@ module Github
 
         url = response.rels[:next]
       end
-    end
-
-    def restore_branches(pull_request)
-      restore_source_branch(pull_request) unless pull_request.source_branch_exists?
-      restore_target_branch(pull_request) unless pull_request.target_branch_exists?
-    end
-
-    def restore_source_branch(pull_request)
-      repository.create_branch(pull_request.source_branch_name, pull_request.source_branch_sha)
-    end
-
-    def restore_target_branch(pull_request)
-      repository.create_branch(pull_request.target_branch_name, pull_request.target_branch_sha)
-    end
-
-    def remove_branch(name)
-      repository.delete_branch(name)
-    rescue Rugged::ReferenceError
-      errors << { type: :branch, url: nil, error: "Could not clean up restored branch: #{name}" }
-    end
-
-    def clean_up_restored_branches(pull_request)
-      return if pull_request.opened?
-
-      remove_branch(pull_request.source_branch_name) unless pull_request.source_branch_exists?
-      remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
     end
 
     def label_ids(labels)

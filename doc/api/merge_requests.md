@@ -1,4 +1,4 @@
-# Merge requests
+# Merge requests API
 
 ## List merge requests
 

@@ -80,10 +80,6 @@ class Projects::ApplicationController < ApplicationController
     cookies.permanent[:diff_view] = params.delete(:view) if params[:view].present?
   end
 
-  def builds_enabled
-    return render_404 unless @project.feature_available?(:builds, current_user)
-  end
-
   def require_pages_enabled!
     not_found unless Gitlab.config.pages.enabled
   end

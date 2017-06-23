@@ -42,21 +42,25 @@ module Gitlab
       end
 
       def added?
-        type == 'new' || type == 'new-nonewline'
+        %w[new new-nonewline].include?(type)
       end
 
       def removed?
-        type == 'old' || type == 'old-nonewline'
+        %w[old old-nonewline].include?(type)
+      end
+
+      def meta?
+        %w[match new-nonewline old-nonewline].include?(type)
+      end
+
+      def discussable?
+        !meta?
       end
 
       def rich_text
         @parent_file.highlight_lines! if @parent_file && !@rich_text
 
         @rich_text
-      end
-
-      def meta?
-        type == 'match'
       end
 
       def as_json(opts = nil)

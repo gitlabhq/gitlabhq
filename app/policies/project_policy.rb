@@ -98,7 +98,7 @@ class ProjectPolicy < BasePolicy
   end
 
   def master_access!
-    can! :push_code_to_protected_branches
+    can! :delete_protected_branch
     can! :update_project_snippet
     can! :update_environment
     can! :update_deployment
@@ -173,7 +173,7 @@ class ProjectPolicy < BasePolicy
   def archived_access!
     cannot! :create_merge_request
     cannot! :push_code
-    cannot! :push_code_to_protected_branches
+    cannot! :delete_protected_branch
     cannot! :update_merge_request
     cannot! :admin_merge_request
   end
@@ -203,7 +203,7 @@ class ProjectPolicy < BasePolicy
 
     unless project.feature_available?(:builds, user) && repository_enabled
       cannot!(*named_abilities(:build))
-      cannot!(*named_abilities(:pipeline))
+      cannot!(*named_abilities(:pipeline) - [:read_pipeline])
       cannot!(*named_abilities(:pipeline_schedule))
       cannot!(*named_abilities(:environment))
       cannot!(*named_abilities(:deployment))
@@ -211,7 +211,7 @@ class ProjectPolicy < BasePolicy
 
     unless repository_enabled
       cannot! :push_code
-      cannot! :push_code_to_protected_branches
+      cannot! :delete_protected_branch
       cannot! :download_code
       cannot! :fork_project
       cannot! :read_commit_status

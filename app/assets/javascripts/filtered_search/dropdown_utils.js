@@ -50,10 +50,12 @@ class DropdownUtils {
     return updatedItem;
   }
 
-  static filterHint(input, item) {
+  static filterHint(config, item) {
+    const { input, allowedKeys } = config;
     const updatedItem = item;
     const searchInput = gl.DropdownUtils.getSearchQuery(input);
-    const { lastToken, tokens } = gl.FilteredSearchTokenizer.processTokens(searchInput);
+    const { lastToken, tokens } =
+      gl.FilteredSearchTokenizer.processTokens(searchInput, allowedKeys);
     const lastKey = lastToken.key || lastToken || '';
     const allowMultiple = item.type === 'array';
     const itemInExistingTokens = tokens.some(t => t.key === item.hint);
@@ -100,10 +102,13 @@ class DropdownUtils {
       if (token.classList.contains('js-visual-token')) {
         const name = token.querySelector('.name');
         const value = token.querySelector('.value');
+        const valueContainer = token.querySelector('.value-container');
         const symbol = value && value.dataset.symbol ? value.dataset.symbol : '';
         let valueText = '';
 
-        if (value && value.innerText) {
+        if (valueContainer && valueContainer.dataset.originalValue) {
+          valueText = valueContainer.dataset.originalValue;
+        } else if (value && value.innerText) {
           valueText = value.innerText;
         }
 

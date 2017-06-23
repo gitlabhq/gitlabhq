@@ -33,11 +33,30 @@ class Blob < SimpleDelegator
     BlobViewer::PDF,
 
     BlobViewer::BinarySTL,
-    BlobViewer::TextSTL,
-  ].freeze
+    BlobViewer::TextSTL
+  ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
-  BINARY_VIEWERS = RICH_VIEWERS.select(&:binary?).freeze
-  TEXT_VIEWERS = RICH_VIEWERS.select(&:text?).freeze
+  AUXILIARY_VIEWERS = [
+    BlobViewer::GitlabCiYml,
+    BlobViewer::RouteMap,
+
+    BlobViewer::Readme,
+    BlobViewer::License,
+    BlobViewer::Contributing,
+    BlobViewer::Changelog,
+
+    BlobViewer::Cartfile,
+    BlobViewer::ComposerJson,
+    BlobViewer::Gemfile,
+    BlobViewer::Gemspec,
+    BlobViewer::GodepsJson,
+    BlobViewer::PackageJson,
+    BlobViewer::Podfile,
+    BlobViewer::Podspec,
+    BlobViewer::PodspecJson,
+    BlobViewer::RequirementsTxt,
+    BlobViewer::YarnLock
+  ].freeze
 
   attr_reader :project
 
@@ -75,16 +94,16 @@ class Blob < SimpleDelegator
     end
   end
 
+  def load_all_data!
+    super(project.repository) if project
+  end
+
   def no_highlighting?
     raw_size && raw_size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
   end
 
   def empty?
     raw_size == 0
-  end
-
-  def too_large?
-    size && truncated?
   end
 
   def external_storage_error?
@@ -136,12 +155,16 @@ class Blob < SimpleDelegator
     @extension ||= extname.downcase.delete('.')
   end
 
+  def file_type
+    Gitlab::FileDetector.type_of(path)
+  end
+
   def video?
     UploaderHelper::VIDEO_EXT.include?(extension)
   end
 
   def readable_text?
-    text? && !stored_externally? && !too_large?
+    text? && !stored_externally? && !truncated?
   end
 
   def simple_viewer
@@ -154,17 +177,23 @@ class Blob < SimpleDelegator
     @rich_viewer = rich_viewer_class&.new(self)
   end
 
+  def auxiliary_viewer
+    return @auxiliary_viewer if defined?(@auxiliary_viewer)
+
+    @auxiliary_viewer = auxiliary_viewer_class&.new(self)
+  end
+
   def rendered_as_text?(ignore_errors: true)
-    simple_viewer.text? && (ignore_errors || simple_viewer.render_error.nil?)
+    simple_viewer.is_a?(BlobViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
   end
 
   def show_viewer_switcher?
     rendered_as_text? && rich_viewer
   end
 
-  def override_max_size!
-    simple_viewer&.override_max_size = true
-    rich_viewer&.override_max_size = true
+  def expand!
+    simple_viewer&.expanded = true
+    rich_viewer&.expanded = true
   end
 
   private
@@ -180,17 +209,18 @@ class Blob < SimpleDelegator
   end
 
   def rich_viewer_class
+    viewer_class_from(RICH_VIEWERS)
+  end
+
+  def auxiliary_viewer_class
+    viewer_class_from(AUXILIARY_VIEWERS)
+  end
+
+  def viewer_class_from(classes)
     return if empty? || external_storage_error?
 
-    classes =
-      if stored_externally?
-        BINARY_VIEWERS + TEXT_VIEWERS
-      elsif binary?
-        BINARY_VIEWERS
-      else # text
-        TEXT_VIEWERS
-      end
+    verify_binary = !stored_externally?
 
-    classes.find { |viewer_class| viewer_class.can_render?(self) }
+    classes.find { |viewer_class| viewer_class.can_render?(self, verify_binary: verify_binary) }
   end
 end

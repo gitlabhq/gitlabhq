@@ -16,6 +16,19 @@ describe Deployment, models: true do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
 
+  describe 'after_create callbacks' do
+    let(:environment) { create(:environment) }
+    let(:store) { Gitlab::EtagCaching::Store.new }
+
+    it 'invalidates the environment etag cache' do
+      old_value = store.get(environment.etag_cache_key)
+
+      create(:deployment, environment: environment)
+
+      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+    end
+  end
+
   describe '#includes_commit?' do
     let(:project)     { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }
@@ -52,7 +65,7 @@ describe Deployment, models: true do
   describe '#metrics' do
     let(:deployment) { create(:deployment) }
 
-    subject { deployment.metrics(1.hour) }
+    subject { deployment.metrics }
 
     context 'metrics are disabled' do
       it { is_expected.to eq({}) }
@@ -63,16 +76,17 @@ describe Deployment, models: true do
         {
           success: true,
           metrics: {},
-          last_update: 42
+          last_update: 42,
+          deployment_time: 1494408956
         }
       end
 
       before do
-        allow(deployment.project).to receive_message_chain(:monitoring_service, :metrics)
+        allow(deployment.project).to receive_message_chain(:monitoring_service, :deployment_metrics)
                                        .with(any_args).and_return(simple_metrics)
       end
 
-      it { is_expected.to eq(simple_metrics.merge(deployment_time: deployment.created_at.utc.to_i)) }
+      it { is_expected.to eq(simple_metrics) }
     end
   end
 
@@ -88,7 +102,7 @@ describe Deployment, models: true do
     end
 
     context 'with other actions' do
-      let!(:close_action) { create(:ci_build, pipeline: build.pipeline, name: 'close_app', when: :manual) }
+      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
       context 'when matching action is defined' do
         let(:deployment) { FactoryGirl.build(:deployment, deployable: build, on_stop: 'close_other_app') }
@@ -116,7 +130,7 @@ describe Deployment, models: true do
     context 'when matching action is defined' do
       let(:build) { create(:ci_build) }
       let(:deployment) { FactoryGirl.build(:deployment, deployable: build, on_stop: 'close_app') }
-      let!(:close_action) { create(:ci_build, pipeline: build.pipeline, name: 'close_app', when: :manual) }
+      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
       it { is_expected.to be_truthy }
     end

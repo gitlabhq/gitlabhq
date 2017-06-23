@@ -29,7 +29,7 @@ class MergeRequestEntity < IssuableEntity
 
   expose :merge_commit_sha
   expose :merge_commit_message
-  expose :head_pipeline, with: PipelineEntity, as: :pipeline
+  expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
 
   # Booleans
   expose :work_in_progress?, as: :work_in_progress
@@ -39,6 +39,7 @@ class MergeRequestEntity < IssuableEntity
   expose :commits_count
   expose :cannot_be_merged?, as: :has_conflicts
   expose :can_be_merged?, as: :can_be_merged
+  expose :remove_source_branch?, as: :remove_source_branch
 
   expose :project_archived do |merge_request|
     merge_request.project.archived?
@@ -94,6 +95,14 @@ class MergeRequestEntity < IssuableEntity
   #
   expose :target_branch_commits_path do |merge_request|
     presenter(merge_request).target_branch_commits_path
+  end
+
+  expose :new_blob_path do |merge_request|
+    if can?(current_user, :push_code, merge_request.project)
+      namespace_project_new_blob_path(merge_request.project.namespace,
+                                      merge_request.project,
+                                      merge_request.source_branch)
+    end
   end
 
   expose :conflict_resolution_path do |merge_request|

@@ -68,7 +68,7 @@ module ApplicationHelper
     end
   end
 
-  def avatar_icon(user_or_email = nil, size = nil, scale = 2)
+  def avatar_icon(user_or_email = nil, size = nil, scale = 2, only_path: true)
     user =
       if user_or_email.is_a?(User)
         user_or_email
@@ -77,7 +77,7 @@ module ApplicationHelper
       end
 
     if user
-      user.avatar_url(size) || default_avatar
+      user.avatar_url(size: size, only_path: only_path) || default_avatar
     else
       gravatar_icon(user_or_email, size, scale)
     end
@@ -167,9 +167,9 @@ module ApplicationHelper
     css_classes = short_format ? 'js-short-timeago' : 'js-timeago'
     css_classes << " #{html_class}" unless html_class.blank?
 
-    element = content_tag :time, time.strftime("%b %d, %Y"),
+    element = content_tag :time, l(time, format: "%b %d, %Y"),
       class: css_classes,
-      title: time.to_time.in_time_zone.to_s(:medium),
+      title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
       datetime: time.to_time.getutc.iso8601,
       data: {
         toggle: 'tooltip',
@@ -275,7 +275,25 @@ module ApplicationHelper
     'active' if condition
   end
 
-  def show_user_callout?
-    cookies[:user_callout_dismissed] == 'true'
+  def show_callout?(name)
+    cookies[name] != 'true'
+  end
+
+  def linkedin_url(user)
+    name = user.linkedin
+    if name =~ %r{\Ahttps?:\/\/(www\.)?linkedin\.com\/in\/}
+      name
+    else
+      "https://www.linkedin.com/in/#{name}"
+    end
+  end
+
+  def twitter_url(user)
+    name = user.twitter
+    if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/}
+      name
+    else
+      "https://www.twitter.com/#{name}"
+    end
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User creates wiki page', feature: true do
+feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
   let(:user) { create(:user) }
 
   background do
@@ -8,7 +8,7 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
     login_as(user)
 
     visit namespace_project_path(project.namespace, project)
-    click_link 'Wiki'
+    find('.shortcuts-wiki').trigger('click')
   end
 
   context 'in the user namespace' do
@@ -27,6 +27,40 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
         expect(page).to have_content('Home')
         expect(page).to have_content("Last edited by #{user.name}")
         expect(page).to have_content('My awesome wiki!')
+      end
+
+      scenario 'creates ASCII wiki with LaTeX blocks' do
+        stub_application_setting(plantuml_url: 'http://localhost', plantuml_enabled: true)
+
+        ascii_content = <<~MD
+          :stem: latexmath
+
+          [stem]
+          ++++
+          \sqrt{4} = 2
+          ++++
+
+          another part
+
+          [latexmath]
+          ++++
+          \beta_x \gamma
+          ++++
+
+          stem:[2+2] is 4
+        MD
+
+        find('#wiki_format option[value=asciidoc]').select_option
+        fill_in :wiki_content, with: ascii_content
+
+        page.within '.wiki-form' do
+          click_button 'Create page'
+        end
+
+        page.within '.wiki' do
+          expect(page).to have_selector('.katex', count: 3)
+          expect(page).to have_content('2+2 is 4')
+        end
       end
     end
 
@@ -98,6 +132,22 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
           expect(page).to have_content("Last edited by #{user.name}")
           expect(page).to have_content('My awesome wiki!')
         end
+      end
+
+      scenario 'content has autocomplete', :js do
+        click_link 'New page'
+
+        page.within '#modal-new-wiki' do
+          fill_in :new_wiki_path, with: 'test-autocomplete'
+          click_button 'Create page'
+        end
+
+        page.within '.wiki-form' do
+          find('#wiki_content').native.send_keys('')
+          fill_in :wiki_content, with: '@'
+        end
+
+        expect(page).to have_selector('.atwho-view')
       end
     end
   end

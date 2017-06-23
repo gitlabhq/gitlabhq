@@ -3,7 +3,6 @@
 /* global notes */
 
 let $commentButtonTemplate;
-var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
 window.FilesCommentButton = (function() {
   var COMMENT_BUTTON_CLASS, EMPTY_CELL_CLASS, LINE_COLUMN_CLASSES, LINE_CONTENT_CLASS, LINE_HOLDER_CLASS, LINE_NUMBER_CLASS, OLD_LINE_CLASS, TEXT_FILE_SELECTOR, UNFOLDABLE_LINE_CLASS;
@@ -27,8 +26,8 @@ window.FilesCommentButton = (function() {
   TEXT_FILE_SELECTOR = '.text-file';
 
   function FilesCommentButton(filesContainerElement) {
-    this.render = bind(this.render, this);
-    this.hideButton = bind(this.hideButton, this);
+    this.render = this.render.bind(this);
+    this.hideButton = this.hideButton.bind(this);
     this.isParallelView = notes.isParallelView();
     filesContainerElement.on('mouseover', LINE_COLUMN_CLASSES, this.render)
       .on('mouseleave', LINE_COLUMN_CLASSES, this.hideButton);

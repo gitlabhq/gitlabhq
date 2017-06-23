@@ -14,7 +14,7 @@ feature 'Visibility settings', feature: true, js: true do
       visibility_select_container = find('.js-visibility-select')
 
       expect(visibility_select_container.find('.visibility-select').value).to eq project.visibility_level.to_s
-      expect(visibility_select_container).to have_content 'The project can be cloned without any authentication.'
+      expect(visibility_select_container).to have_content 'The project can be accessed without any authentication.'
     end
 
     scenario 'project visibility description updates on change' do
@@ -41,7 +41,7 @@ feature 'Visibility settings', feature: true, js: true do
 
       expect(visibility_select_container).not_to have_select '.visibility-select'
       expect(visibility_select_container).to have_content 'Public'
-      expect(visibility_select_container).to have_content 'The project can be cloned without any authentication.'
+      expect(visibility_select_container).to have_content 'The project can be accessed without any authentication.'
     end
   end
 end

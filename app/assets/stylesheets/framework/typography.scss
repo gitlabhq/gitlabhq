@@ -21,6 +21,10 @@
     margin-top: 0;
   }
 
+  > :last-child {
+    margin-bottom: 0;
+  }
+
   // Single code lines should wrap
   code {
     font-family: $monospace_font;
@@ -139,6 +143,15 @@
     line-height: 1.6em;
     overflow-x: auto;
     border-radius: 2px;
+
+
+    &.plain-readme {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
   }
 
   p > code {
@@ -148,7 +161,7 @@
   ul,
   ol {
     padding: 0;
-    margin: 0 0 16px !important;
+    margin: 0 0 16px;
   }
 
   ul:dir(rtl),
@@ -169,14 +182,14 @@
   }
 
   ul.task-list {
-    li.task-list-item {
+    > li.task-list-item {
       list-style-type: none;
       position: relative;
       min-height: 22px;
       padding-left: 28px;
       margin-left: 0 !important;
 
-      input.task-list-item-checkbox {
+      > input.task-list-item-checkbox {
         position: absolute;
         left: 8px;
         top: 5px;
@@ -279,19 +292,6 @@ h6 {
 /** CODE **/
 pre {
   font-family: $monospace_font;
-
-  &.plain-readme {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font-size: 14px;
-  }
-}
-
-.monospace {
-  font-family: $monospace_font;
-  font-size: 90%;
 }
 
 code {
@@ -303,6 +303,24 @@ code {
 
 a > code {
   color: $link-color;
+}
+
+.monospace {
+  font-family: $monospace_font;
+}
+
+.commit-sha,
+.ref-name {
+  @extend .monospace;
+  font-size: 95%;
+}
+
+.git-revision-dropdown-toggle {
+  @extend .monospace;
+}
+
+.git-revision-dropdown .dropdown-content ul li a {
+  @extend .ref-name;
 }
 
 /**

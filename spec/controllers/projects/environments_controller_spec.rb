@@ -1,25 +1,25 @@
 require 'spec_helper'
 
 describe Projects::EnvironmentsController do
-  let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  set(:user) { create(:user) }
+  set(:project) { create(:empty_project) }
 
-  let(:environment) do
+  set(:environment) do
     create(:environment, name: 'production', project: project)
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in(user)
   end
 
   describe 'GET index' do
-    context 'when standardrequest has been made' do
+    context 'when a request for the HTML is made' do
       it 'responds with status code 200' do
         get :index, environment_params
 
-        expect(response).to be_ok
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -57,6 +57,13 @@ describe Projects::EnvironmentsController do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
+
+        it 'does not set the polling interval header' do
+          # TODO, this is a temporary fix, see follow up issue:
+          # https://gitlab.com/gitlab-org/gitlab-ee/issues/2677
+          expect(response).to have_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to be_nil
+        end
       end
 
       context 'when requesting stopped environments scope' do
@@ -84,6 +91,9 @@ describe Projects::EnvironmentsController do
       create(:environment, project: project,
                            name: 'staging-1.0/review',
                            state: :available)
+      create(:environment, project: project,
+                           name: 'staging-1.0/zzz',
+                           state: :available)
     end
 
     context 'when using default format' do
@@ -98,7 +108,7 @@ describe Projects::EnvironmentsController do
     end
 
     context 'when using JSON format' do
-      it 'responds with JSON' do
+      it 'sorts the subfolders lexicographically' do
         get :folder, namespace_id: project.namespace,
                      project_id: project,
                      id: 'staging-1.0',
@@ -108,6 +118,8 @@ describe Projects::EnvironmentsController do
         expect(response).not_to render_template 'folder'
         expect(json_response['environments'][0])
           .to include('name' => 'staging-1.0/review')
+        expect(json_response['environments'][1])
+          .to include('name' => 'staging-1.0/zzz')
       end
     end
   end
@@ -172,7 +184,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/builds/#{action.id}" })
+              namespace_project_job_url(project.namespace, project, action) })
       end
     end
 
@@ -186,7 +198,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/environments/#{environment.id}" })
+              namespace_project_environment_url(project.namespace, project, environment) })
       end
     end
   end

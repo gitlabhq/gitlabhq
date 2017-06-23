@@ -14,11 +14,8 @@ to the webhook URL.
 Webhooks can be used to update an external issue tracker, trigger CI jobs,
 update a backup mirror, or even deploy to your production server.
 
-Navigate to the webhooks page by going to the **Integrations** page from your
-project's settings which can be found under the wheel icon in the upper right
-corner.
-
-![Accessing the integrations](img/accessing_integrations.png)
+Navigate to the webhooks page by going to your project's
+**Settings ➔ Integrations**.
 
 ## Webhook endpoint tips
 
@@ -74,6 +71,7 @@ X-Gitlab-Event: Push Hook
   "checkout_sha": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
   "user_id": 4,
   "user_name": "John Smith",
+  "user_username": "jsmith",
   "user_email": "john@example.com",
   "user_avatar": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
   "project_id": 15,
@@ -1015,6 +1013,22 @@ X-Gitlab-Event: Build Hook
   }
 }
 ```
+
+## Troubleshoot webhooks
+
+Gitlab stores each perform of the webhook.
+You can find records for last 2 days in "Recent Deliveries" section on the edit page of each webhook.
+
+![Recent deliveries](img/webhook_logs.png)
+
+In this section you can see HTTP status code (green for 200-299 codes, red for the others, `internal error` for failed deliveries ), triggered event, a time when the event was called, elapsed time of the request.
+
+If you need more information about execution, you can click `View details` link.
+On this page, you can see data that GitLab sends (request headers and body) and data that it received (response headers and body).
+
+From this page, you can repeat delivery with the same data by clicking `Resend Request` button.
+
+>**Note:** If URL or secret token of the webhook were updated, data will be delivered to the new address.
 
 ## Example webhook receiver
 

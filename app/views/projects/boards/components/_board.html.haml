@@ -1,8 +1,11 @@
-.board{ ":class" => '{ "is-draggable": !list.preset }',
+.board{ ":class" => '{ "is-draggable": !list.preset, "is-expandable": list.isExpandable, "is-collapsed": !list.isExpanded }',
   ":data-id" => "list.id" }
   .board-inner
-    %header.board-header{ ":class" => '{ "has-border": list.label }', ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
+    %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }", "@click" => "toggleExpanded($event)" }
       %h3.board-title.js-board-handle{ ":class" => '{ "user-can-drag": (!disabled && !list.preset) }' }
+        %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
+          ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded && list.position === -1, \"fa-caret-left\": !list.isExpanded && list.position !== -1 }",
+          "aria-hidden": "true" }
         %span.has-tooltip{ ":title" => '(list.label ? list.label.description : "")',
           data: { container: "body", placement: "bottom" } }
           {{ list.title }}
@@ -10,13 +13,13 @@
           %span.board-issue-count.pull-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
             {{ list.issuesSize }}
           - if can?(current_user, :admin_issue, @project)
-            %button.btn.btn-small.btn-default.pull-right.has-tooltip{ type: "button",
+            %button.btn.btn-small.btn-default.pull-right.has-tooltip.js-no-trigger-collapse{ type: "button",
               "@click" => "showNewIssueForm",
               "v-if" => 'list.type !== "closed"',
               "aria-label" => "New issue",
               "title" => "New issue",
               data: { placement: "top", container: "body" } }
-              = icon("plus")
+              = icon("plus", class: "js-no-trigger-collapse")
         - if can?(current_user, :admin_list, @project)
           %board-delete{ "inline-template" => true,
             ":list" => "list",

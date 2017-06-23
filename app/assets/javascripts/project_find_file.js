@@ -2,18 +2,16 @@
 /* global fuzzaldrinPlus */
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.ProjectFindFile = (function() {
     var highlighter;
 
     function ProjectFindFile(element1, options) {
       this.element = element1;
       this.options = options;
-      this.goToBlob = bind(this.goToBlob, this);
-      this.goToTree = bind(this.goToTree, this);
-      this.selectRowDown = bind(this.selectRowDown, this);
-      this.selectRowUp = bind(this.selectRowUp, this);
+      this.goToBlob = this.goToBlob.bind(this);
+      this.goToTree = this.goToTree.bind(this);
+      this.selectRowDown = this.selectRowDown.bind(this);
+      this.selectRowUp = this.selectRowUp.bind(this);
       this.filePaths = {};
       this.inputElement = this.element.find(".file-finder-input");
       // init event

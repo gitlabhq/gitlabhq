@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
 
-require('./lib/utils/common_utils');
+import './lib/utils/common_utils';
 
 const gfmRules = {
   // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert
@@ -18,12 +18,12 @@ const gfmRules = {
     },
   },
   TaskListFilter: {
-    'input[type=checkbox].task-list-item-checkbox'(el, text) {
+    'input[type=checkbox].task-list-item-checkbox'(el) {
       return `[${el.checked ? 'x' : ' '}]`;
     },
   },
   ReferenceFilter: {
-    '.tooltip'(el, text) {
+    '.tooltip'(el) {
       return '';
     },
     'a.gfm:not([data-link=true])'(el, text) {
@@ -39,15 +39,15 @@ const gfmRules = {
     },
   },
   TableOfContentsFilter: {
-    'ul.section-nav'(el, text) {
+    'ul.section-nav'(el) {
       return '[[_TOC_]]';
     },
   },
   EmojiFilter: {
-    'img.emoji'(el, text) {
+    'img.emoji'(el) {
       return el.getAttribute('alt');
     },
-    'gl-emoji'(el, text) {
+    'gl-emoji'(el) {
       return `:${el.getAttribute('data-name')}:`;
     },
   },
@@ -57,13 +57,13 @@ const gfmRules = {
     },
   },
   VideoLinkFilter: {
-    '.video-container'(el, text) {
+    '.video-container'(el) {
       const videoEl = el.querySelector('video');
       if (!videoEl) return false;
 
       return CopyAsGFM.nodeToGFM(videoEl);
     },
-    'video'(el, text) {
+    'video'(el) {
       return `![${el.dataset.title}](${el.getAttribute('src')})`;
     },
   },
@@ -74,19 +74,19 @@ const gfmRules = {
     'code.code.math[data-math-style=inline]'(el, text) {
       return `$\`${text}\`$`;
     },
-    'span.katex-display span.katex-mathml'(el, text) {
+    'span.katex-display span.katex-mathml'(el) {
       const mathAnnotation = el.querySelector('annotation[encoding="application/x-tex"]');
       if (!mathAnnotation) return false;
 
       return `\`\`\`math\n${CopyAsGFM.nodeToGFM(mathAnnotation)}\n\`\`\``;
     },
-    'span.katex-mathml'(el, text) {
+    'span.katex-mathml'(el) {
       const mathAnnotation = el.querySelector('annotation[encoding="application/x-tex"]');
       if (!mathAnnotation) return false;
 
       return `$\`${CopyAsGFM.nodeToGFM(mathAnnotation)}\`$`;
     },
-    'span.katex-html'(el, text) {
+    'span.katex-html'(el) {
       // We don't want to include the content of this element in the copied text.
       return '';
     },
@@ -95,7 +95,7 @@ const gfmRules = {
     },
   },
   SanitizationFilter: {
-    'a[name]:not([href]):empty'(el, text) {
+    'a[name]:not([href]):empty'(el) {
       return el.outerHTML;
     },
     'dl'(el, text) {
@@ -143,7 +143,7 @@ const gfmRules = {
     },
   },
   MarkdownFilter: {
-    'br'(el, text) {
+    'br'(el) {
       // Two spaces at the end of a line are turned into a BR
       return '  ';
     },
@@ -162,7 +162,7 @@ const gfmRules = {
     'blockquote'(el, text) {
       return text.trim().split('\n').map(s => `> ${s}`.trim()).join('\n');
     },
-    'img'(el, text) {
+    'img'(el) {
       return `![${el.getAttribute('alt')}](${el.getAttribute('src')})`;
     },
     'a.anchor'(el, text) {
@@ -222,10 +222,10 @@ const gfmRules = {
     'sup'(el, text) {
       return `^${text}`;
     },
-    'hr'(el, text) {
+    'hr'(el) {
       return '-----';
     },
-    'table'(el, text) {
+    'table'(el) {
       const theadEl = el.querySelector('thead');
       const tbodyEl = el.querySelector('tbody');
       if (!theadEl || !tbodyEl) return false;
@@ -233,11 +233,11 @@ const gfmRules = {
       const theadText = CopyAsGFM.nodeToGFM(theadEl);
       const tbodyText = CopyAsGFM.nodeToGFM(tbodyEl);
 
-      return theadText + tbodyText;
+      return [theadText, tbodyText].join('\n');
     },
     'thead'(el, text) {
       const cells = _.map(el.querySelectorAll('th'), (cell) => {
-        let chars = CopyAsGFM.nodeToGFM(cell).trim().length + 2;
+        let chars = CopyAsGFM.nodeToGFM(cell).length + 2;
 
         let before = '';
         let after = '';
@@ -262,10 +262,15 @@ const gfmRules = {
         return before + middle + after;
       });
 
-      return `${text}|${cells.join('|')}|`;
+      const separatorRow = `|${cells.join('|')}|`;
+
+      return [text, separatorRow].join('\n');
     },
-    'tr'(el, text) {
-      const cells = _.map(el.querySelectorAll('td, th'), cell => CopyAsGFM.nodeToGFM(cell).trim());
+    'tr'(el) {
+      const cellEls = el.querySelectorAll('td, th');
+      if (cellEls.length === 0) return false;
+
+      const cells = _.map(cellEls, cell => CopyAsGFM.nodeToGFM(cell));
       return `| ${cells.join(' | ')} |`;
     },
   },
@@ -273,12 +278,12 @@ const gfmRules = {
 
 class CopyAsGFM {
   constructor() {
-    $(document).on('copy', '.md, .wiki', (e) => { this.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
-    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { this.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
-    $(document).on('paste', '.js-gfm-input', this.pasteGFM.bind(this));
+    $(document).on('copy', '.md, .wiki', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
+    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
+    $(document).on('paste', '.js-gfm-input', CopyAsGFM.pasteGFM);
   }
 
-  copyAsGFM(e, transformer) {
+  static copyAsGFM(e, transformer) {
     const clipboardData = e.originalEvent.clipboardData;
     if (!clipboardData) return;
 
@@ -292,26 +297,59 @@ class CopyAsGFM {
     e.stopPropagation();
 
     clipboardData.setData('text/plain', el.textContent);
-    clipboardData.setData('text/x-gfm', CopyAsGFM.nodeToGFM(el));
+    clipboardData.setData('text/x-gfm', this.nodeToGFM(el));
   }
 
-  pasteGFM(e) {
+  static pasteGFM(e) {
     const clipboardData = e.originalEvent.clipboardData;
     if (!clipboardData) return;
 
+    const text = clipboardData.getData('text/plain');
     const gfm = clipboardData.getData('text/x-gfm');
     if (!gfm) return;
 
     e.preventDefault();
 
-    window.gl.utils.insertText(e.target, gfm);
+    window.gl.utils.insertText(e.target, (textBefore, textAfter) => {
+      // If the text before the cursor contains an odd number of backticks,
+      // we are either inside an inline code span that starts with 1 backtick
+      // or a code block that starts with 3 backticks.
+      // This logic still holds when there are one or more _closed_ code spans
+      // or blocks that will have 2 or 6 backticks.
+      // This will break down when the actual code block contains an uneven
+      // number of backticks, but this is a rare edge case.
+      const backtickMatch = textBefore.match(/`/g);
+      const insideCodeBlock = backtickMatch && (backtickMatch.length % 2) === 1;
+
+      if (insideCodeBlock) {
+        return text;
+      }
+
+      return gfm;
+    });
   }
 
   static transformGFMSelection(documentFragment) {
-    // If the documentFragment contains more than just Markdown, don't copy as GFM.
-    if (documentFragment.querySelector('.md, .wiki')) return null;
+    const gfmEls = documentFragment.querySelectorAll('.md, .wiki');
+    switch (gfmEls.length) {
+      case 0: {
+        return documentFragment;
+      }
+      case 1: {
+        return gfmEls[0];
+      }
+      default: {
+        const allGfmEl = document.createElement('div');
 
-    return documentFragment;
+        for (let i = 0; i < gfmEls.length; i += 1) {
+          const lineEl = gfmEls[i];
+          allGfmEl.appendChild(lineEl);
+          allGfmEl.appendChild(document.createTextNode('\n\n'));
+        }
+
+        return allGfmEl;
+      }
+    }
   }
 
   static transformCodeSelection(documentFragment) {
@@ -343,7 +381,7 @@ class CopyAsGFM {
     return codeEl;
   }
 
-  static nodeToGFM(node) {
+  static nodeToGFM(node, respectWhitespaceParam = false) {
     if (node.nodeType === Node.COMMENT_NODE) {
       return '';
     }
@@ -352,7 +390,9 @@ class CopyAsGFM {
       return node.textContent;
     }
 
-    const text = this.innerGFM(node);
+    const respectWhitespace = respectWhitespaceParam || (node.nodeName === 'PRE' || node.nodeName === 'CODE');
+
+    const text = this.innerGFM(node, respectWhitespace);
 
     if (node.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
       return text;
@@ -366,7 +406,17 @@ class CopyAsGFM {
 
         if (!window.gl.utils.nodeMatchesSelector(node, selector)) continue;
 
-        const result = func(node, text);
+        let result;
+        if (func.length === 2) {
+          // if `func` takes 2 arguments, it depends on text.
+          // if there is no text, we don't need to generate GFM for this node.
+          if (text.length === 0) continue;
+
+          result = func(node, text);
+        } else {
+          result = func(node);
+        }
+
         if (result === false) continue;
 
         return result;
@@ -376,7 +426,7 @@ class CopyAsGFM {
     return text;
   }
 
-  static innerGFM(parentNode) {
+  static innerGFM(parentNode, respectWhitespace = false) {
     const nodes = parentNode.childNodes;
 
     const clonedParentNode = parentNode.cloneNode(true);
@@ -386,13 +436,19 @@ class CopyAsGFM {
       const node = nodes[i];
       const clonedNode = clonedNodes[i];
 
-      const text = this.nodeToGFM(node);
+      const text = this.nodeToGFM(node, respectWhitespace);
 
       // `clonedNode.replaceWith(text)` is not yet widely supported
       clonedNode.parentNode.replaceChild(document.createTextNode(text), clonedNode);
     }
 
-    return clonedParentNode.innerText || clonedParentNode.textContent;
+    let nodeText = clonedParentNode.innerText || clonedParentNode.textContent;
+
+    if (!respectWhitespace) {
+      nodeText = nodeText.trim();
+    }
+
+    return nodeText;
   }
 }
 

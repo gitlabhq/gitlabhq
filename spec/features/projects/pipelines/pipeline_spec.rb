@@ -229,7 +229,6 @@ describe 'Pipeline', :feature, :js do
         before { find('.js-retry-button').trigger('click') }
 
         it { expect(page).not_to have_content('Retry') }
-        it { expect(page).to have_selector('.retried') }
       end
     end
 
@@ -240,7 +239,6 @@ describe 'Pipeline', :feature, :js do
         before { click_on 'Cancel running' }
 
         it { expect(page).not_to have_content('Cancel running') }
-        it { expect(page).to have_selector('.ci-canceled') }
       end
     end
 

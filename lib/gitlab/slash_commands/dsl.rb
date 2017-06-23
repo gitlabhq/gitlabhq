@@ -40,8 +40,8 @@ module Gitlab
         #   command :command_key do |arguments|
         #     # Awesome code block
         #   end
-        def params(*params)
-          @params = params
+        def params(*params, &block)
+          @params = block_given? ? block : params
         end
 
         # Allows to give an explanation of what the command will do when

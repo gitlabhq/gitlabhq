@@ -1,0 +1,260 @@
+# Lyubomir Vasilev <lyubomirv@abv.bg>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-04 19:24-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-06-05 09:40-0400\n"
+"Last-Translator: Lyubomir Vasilev <lyubomirv@abv.bg>\n"
+"Language-Team: Bulgarian\n"
+"Language: bg\n"
+"X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "ByAuthor|by"
+msgstr "от"
+
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] "Подаване"
+msgstr[1] "Подавания"
+
+msgid ""
+"Cycle Analytics gives an overview of how much time it takes to go from idea "
+"to production in your project."
+msgstr ""
+"Анализът на циклите дава общ поглед върху това колко време е нужно на една "
+"идея да се превърне в завършена функционалност в проекта."
+
+msgid "CycleAnalyticsStage|Code"
+msgstr "Програмиране"
+
+msgid "CycleAnalyticsStage|Issue"
+msgstr "Проблем"
+
+msgid "CycleAnalyticsStage|Plan"
+msgstr "Планиране"
+
+msgid "CycleAnalyticsStage|Production"
+msgstr "Издаване"
+
+msgid "CycleAnalyticsStage|Review"
+msgstr "Преглед и одобрение"
+
+msgid "CycleAnalyticsStage|Staging"
+msgstr "Подготовка за издаване"
+
+msgid "CycleAnalyticsStage|Test"
+msgstr "Тестване"
+
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] "Внедряване"
+msgstr[1] "Внедрявания"
+
+msgid "FirstPushedBy|First"
+msgstr "Първо"
+
+msgid "FirstPushedBy|pushed by"
+msgstr "изпращане на промени от"
+
+msgid "From issue creation until deploy to production"
+msgstr "От създаването на проблема до внедряването в крайната версия"
+
+msgid "From merge request merge until deploy to production"
+msgstr ""
+"От прилагането на заявката за сливане до внедряването в крайната версия"
+
+msgid "Introducing Cycle Analytics"
+msgstr "Представяме Ви анализът на циклите"
+
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] "Последния %d ден"
+msgstr[1] "Последните %d дни"
+
+msgid "Limited to showing %d event at most"
+msgid_plural "Limited to showing %d events at most"
+msgstr[0] "Ограничено до показване на последното %d събитие"
+msgstr[1] "Ограничено до показване на последните %d събития"
+
+msgid "Median"
+msgstr "Медиана"
+
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] "Нов проблем"
+msgstr[1] "Нови проблема"
+
+msgid "Not available"
+msgstr "Не е налично"
+
+msgid "Not enough data"
+msgstr "Няма достатъчно данни"
+
+msgid "OpenedNDaysAgo|Opened"
+msgstr "Отворен"
+
+msgid "Pipeline Health"
+msgstr "Състояние"
+
+msgid "ProjectLifecycle|Stage"
+msgstr "Етап"
+
+msgid "Read more"
+msgstr "Прочетете повече"
+
+msgid "Related Commits"
+msgstr "Свързани подавания"
+
+msgid "Related Deployed Jobs"
+msgstr "Свързани задачи за внедряване"
+
+msgid "Related Issues"
+msgstr "Свързани проблеми"
+
+msgid "Related Jobs"
+msgstr "Свързани задачи"
+
+msgid "Related Merge Requests"
+msgstr "Свързани заявки за сливане"
+
+msgid "Related Merged Requests"
+msgstr "Свързани приложени заявки за сливане"
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] "Показване на %d събитие"
+msgstr[1] "Показване на %d събития"
+
+msgid ""
+"The coding stage shows the time from the first commit to creating the merge "
+"request. The data will automatically be added here once you create your "
+"first merge request."
+msgstr ""
+"Етапът на програмиране показва времето от първото подаване до създаването на "
+"заявката за сливане. Данните ще бъдат добавени тук автоматично след като "
+"бъде създадена първата заявка за сливане."
+
+msgid "The collection of events added to the data gathered for that stage."
+msgstr "Съвкупността от събития добавени към данните събрани за този етап."
+
+msgid ""
+"The issue stage shows the time it takes from creating an issue to assigning "
+"the issue to a milestone, or add the issue to a list on your Issue Board. "
+"Begin creating issues to see data for this stage."
+msgstr ""
+"Етапът на проблемите показва колко е времето от създаването на проблем до "
+"определянето на целеви етап на проекта за него, или до добавянето му в "
+"списък на дъската за проблеми. Започнете да добавяте проблеми, за да видите "
+"данните за този етап."
+
+msgid "The phase of the development lifecycle."
+msgstr "Етапът от цикъла на разработка"
+
+msgid ""
+"The planning stage shows the time from the previous step to pushing your "
+"first commit. This time will be added automatically once you push your first "
+"commit."
+msgstr ""
+"Етапът на планиране показва колко е времето от преходната стъпка до "
+"изпращането на първото подаване. Това време ще бъде добавено автоматично "
+"след като изпратите първото си подаване."
+
+msgid ""
+"The production stage shows the total time it takes between creating an issue "
+"and deploying the code to production. The data will be automatically added "
+"once you have completed the full idea to production cycle."
+msgstr ""
+"Етапът на издаване показва общото време, което е нужно от създаването на "
+"проблем до внедряването на кода в крайната версия."
+
+msgid ""
+"The review stage shows the time from creating the merge request to merging "
+"it. The data will automatically be added after you merge your first merge "
+"request."
+msgstr ""
+"Етапът на преглед и одобрение показва времето от създаването на заявката за "
+"сливане до прилагането ѝ. Данните ще бъдат добавени автоматично след като "
+"приложите първата си заявка за сливане."
+
+msgid ""
+"The staging stage shows the time between merging the MR and deploying code "
+"to the production environment. The data will be automatically added once you "
+"deploy to production for the first time."
+msgstr ""
+"Етапът на подготовка за издаване показва времето между прилагането на "
+"заявката за сливане и внедряването на кода в средата на работещата крайна "
+"версия. Данните ще бъдат добавени автоматично след като направите първото си "
+"внедряване в крайната версия."
+
+msgid ""
+"The testing stage shows the time GitLab CI takes to run every pipeline for "
+"the related merge request. The data will automatically be added after your "
+"first pipeline finishes running."
+msgstr ""
+"Етапът на тестване показва времето, което е нужно на „Gitlab CI“ да изпълни "
+"всички задачи за свързаната заявка за сливане. Данните ще бъдат добавени "
+"автоматично след като приключи изпълнените на първата Ви такава задача."
+
+msgid "The time taken by each data entry gathered by that stage."
+msgstr "Времето, което отнема всеки запис от данни за съответния етап."
+
+msgid ""
+"The value lying at the midpoint of a series of observed values. E.g., "
+"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 ="
+" 6."
+msgstr ""
+"Стойността, която се намира в средата на последователността от наблюдавани "
+"данни. Например: медианата на 3, 5 и 9 е 5, а медианата на 3, 5, 7 и 8 е "
+"(5+7)/2 = 6."
+
+msgid "Time before an issue gets scheduled"
+msgstr "Време преди един проблем да бъде планиран за работа"
+
+msgid "Time before an issue starts implementation"
+msgstr "Време преди работата по проблем да започне"
+
+msgid "Time between merge request creation and merge/close"
+msgstr ""
+"Време между създаване на заявка за сливане и прилагането/отхвърлянето ѝ"
+
+msgid "Time until first merge request"
+msgstr "Време преди първата заявка за сливане"
+
+msgid "Time|hr"
+msgid_plural "Time|hrs"
+msgstr[0] "час"
+msgstr[1] "часа"
+
+msgid "Time|min"
+msgid_plural "Time|mins"
+msgstr[0] "мин"
+msgstr[1] "мин"
+
+msgid "Time|s"
+msgstr "сек"
+
+msgid "Total Time"
+msgstr "Общо време"
+
+msgid "Total test time for all commits/merges"
+msgstr "Общо време за тестване на всички подавания/сливания"
+
+msgid "Want to see the data? Please ask an administrator for access."
+msgstr "Искате ли да видите данните? Помолете администратор за достъп."
+
+msgid "We don't have enough data to show this stage."
+msgstr "Няма достатъчно данни за този етап."
+
+msgid "You need permission."
+msgstr "Нуждаете се от разрешение."
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "ден"
+msgstr[1] "дни"
+

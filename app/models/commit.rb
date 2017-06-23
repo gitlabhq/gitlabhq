@@ -14,7 +14,7 @@ class Commit
   participant :committer
   participant :notes_with_associations
 
-  attr_accessor :project
+  attr_accessor :project, :author
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
@@ -49,7 +49,7 @@ class Commit
     def max_diff_options
       {
         max_files: DIFF_HARD_LIMIT_FILES,
-        max_lines: DIFF_HARD_LIMIT_LINES,
+        max_lines: DIFF_HARD_LIMIT_LINES
       }
     end
 
@@ -114,16 +114,16 @@ class Commit
   #
   # Usually, the commit title is the first line of the commit message.
   # In case this first line is longer than 100 characters, it is cut off
-  # after 80 characters and ellipses (`&hellp;`) are appended.
+  # after 80 characters + `...`
   def title
-    full_title.length > 100 ? full_title[0..79] << "…" : full_title
+    return full_title if full_title.length < 100
+
+    full_title.truncate(81, separator: ' ', omission: '…')
   end
 
   # Returns the full commits title
   def full_title
-    return @full_title if @full_title
-
-    @full_title =
+    @full_title ||=
       if safe_message.blank?
         no_commit_message
       else
@@ -131,19 +131,14 @@ class Commit
       end
   end
 
-  # Returns the commits description
-  #
-  # cut off, ellipses (`&hellp;`) are prepended to the commit message.
+  # Returns full commit message if title is truncated (greater than 99 characters)
+  # otherwise returns commit message without first line
   def description
-    title_end = safe_message.index("\n")
-    @description ||=
-      if (!title_end && safe_message.length > 100) || (title_end && title_end > 100)
-        "…" << safe_message[80..-1]
-      else
-        safe_message.split("\n", 2)[1].try(:chomp)
-      end
-  end
+    return safe_message if full_title.length >= 100
 
+    safe_message.split("\n", 2)[1].try(:chomp)
+  end
+  
   def description?
     description.present?
   end
@@ -177,7 +172,7 @@ class Commit
     if RequestStore.active?
       key = "commit_author:#{author_email.downcase}"
       # nil is a valid value since no author may exist in the system
-      if RequestStore.store.has_key?(key)
+      if RequestStore.store.key?(key)
         @author = RequestStore.store[key]
       else
         @author = find_author_by_any_email
@@ -326,13 +321,20 @@ class Commit
   end
 
   def raw_diffs(*args)
-    use_gitaly = Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
-    deltas_only = args.last.is_a?(Hash) && args.last[:deltas_only]
-
-    if use_gitaly && !deltas_only
-      Gitlab::GitalyClient::Commit.diff_from_parent(self, *args)
+    if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
+      Gitlab::GitalyClient::Commit.new(project.repository).diff_from_parent(self, *args)
     else
       raw.diffs(*args)
+    end
+  end
+
+  def raw_deltas
+    @deltas ||= Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
+      if is_enabled
+        Gitlab::GitalyClient::Commit.new(project.repository).commit_deltas(self)
+      else
+        raw.deltas
+      end
     end
   end
 
@@ -373,7 +375,7 @@ class Commit
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
-    raw_diffs(deltas_only: true).each do |diff|
+    raw_deltas.each do |diff|
       if diff.deleted_file
         changes[:removed] << diff.old_path
       elsif diff.renamed_file || diff.new_file

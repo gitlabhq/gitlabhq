@@ -12,9 +12,13 @@
     }
 
     &.branch-info {
-      .monospace,
+      .commit-sha,
       .commit-info {
         margin-left: 4px;
+      }
+
+      .ref-name {
+        font-size: 12px;
       }
     }
   }

@@ -54,6 +54,7 @@ Note:
 - type
 - position
 - original_position
+- change_position
 - resolved_at
 - resolved_by_id
 - discussion_id
@@ -91,6 +92,7 @@ Milestone:
 ProjectSnippet:
 - id
 - title
+- description
 - content
 - author_id
 - project_id
@@ -158,6 +160,7 @@ MergeRequest:
 - time_estimate
 - last_edited_at
 - last_edited_by_id
+- head_pipeline_id
 MergeRequestDiff:
 - id
 - state
@@ -172,6 +175,7 @@ MergeRequestDiff:
 Ci::Pipeline:
 - id
 - project_id
+- source
 - ref
 - sha
 - before_sha
@@ -189,6 +193,13 @@ Ci::Pipeline:
 - lock_version
 - auto_canceled_by_id
 - pipeline_schedule_id
+Ci::Stage:
+- id
+- name
+- project_id
+- pipeline_id
+- created_at
+- updated_at
 CommitStatus:
 - id
 - project_id
@@ -210,6 +221,7 @@ CommitStatus:
 - stage
 - trigger_request_id
 - stage_idx
+- stage_id
 - tag
 - ref
 - user_id
@@ -291,7 +303,7 @@ Service:
 - tag_push_events
 - note_events
 - pipeline_events
-- build_events
+- job_events
 - category
 - default
 - wiki_page_events
@@ -311,11 +323,12 @@ ProjectHook:
 - note_events
 - pipeline_events
 - enable_ssl_verification
-- build_events
+- job_events
 - wiki_page_events
 - token
 - group_id
 - confidential_issues_events
+- repository_update_events
 ProtectedBranch:
 - id
 - project_id

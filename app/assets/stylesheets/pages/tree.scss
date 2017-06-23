@@ -138,11 +138,12 @@
 
 .blob-commit-info {
   list-style: none;
-  background: $gray-light;
-  padding: 16px 16px 16px 6px;
-  border: 1px solid $border-color;
-  border-bottom: none;
   margin: 0;
+  padding: 0;
+}
+
+.blob-content-holder {
+  margin-top: $gl-padding;
 }
 
 .blob-upload-dropzone-previews {

@@ -7,6 +7,38 @@ describe API::V3::Users do
   let(:email)   { create(:email, user: user) }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
 
+  describe 'GET /users' do
+    context 'when authenticated' do
+      it 'returns an array of users' do
+        get v3_api('/users', user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        username = user.username
+        expect(json_response.detect do |user|
+          user['username'] == username
+        end['username']).to eq(username)
+      end
+    end
+
+    context 'when authenticated as user' do
+      it 'does not reveal the `is_admin` flag of the user' do
+        get v3_api('/users', user)
+
+        expect(json_response.first.keys).not_to include 'is_admin'
+      end
+    end
+
+    context 'when authenticated as admin' do
+      it 'reveals the `is_admin` flag of the user' do
+        get v3_api('/users', admin)
+
+        expect(json_response.first.keys).to include 'is_admin'
+      end
+    end
+  end
+
   describe 'GET /user/:id/keys' do
     before { admin }
 

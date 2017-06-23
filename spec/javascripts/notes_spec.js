@@ -13,7 +13,25 @@ import '~/notes';
   window.gl = window.gl || {};
   gl.utils = gl.utils || {};
 
+  const htmlEscape = (comment) => {
+    const escapedString = comment.replace(/["&'<>]/g, (a) => {
+      const escapedToken = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '`': '&#x60;'
+      }[a];
+
+      return escapedToken;
+    });
+
+    return escapedString;
+  };
+
   describe('Notes', function() {
+    const FLASH_TYPE_ALERT = 'alert';
     var commentsTemplate = 'issues/issue_with_comment.html.raw';
     preloadFixtures(commentsTemplate);
 
@@ -33,7 +51,9 @@ import '~/notes';
       });
 
       it('modifies the Markdown field', function() {
-        $('input[type=checkbox]').attr('checked', true).trigger('change');
+        const changeEvent = document.createEvent('HTMLEvents');
+        changeEvent.initEvent('change', true, true);
+        $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
         expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
 
@@ -106,6 +126,7 @@ import '~/notes';
         const deferred = $.Deferred();
         spyOn($, 'ajax').and.returnValue(deferred.promise());
         spyOn(this.notes, 'revertNoteEditForm');
+        spyOn(this.notes, 'setupNewNote');
 
         $('.js-comment-button').click();
         deferred.resolve(noteEntity);
@@ -116,6 +137,46 @@ import '~/notes';
         this.notes.updateNote(updatedNote, $targetNote);
 
         expect(this.notes.revertNoteEditForm).toHaveBeenCalledWith($targetNote);
+        expect(this.notes.setupNewNote).toHaveBeenCalled();
+      });
+    });
+
+    describe('updateNoteTargetSelector', () => {
+      const hash = 'note_foo';
+      let $note;
+
+      beforeEach(() => {
+        $note = $(`<div id="${hash}"></div>`);
+        spyOn($note, 'filter').and.callThrough();
+        spyOn($note, 'toggleClass').and.callThrough();
+      });
+
+      it('sets target when hash matches', () => {
+        spyOn(gl.utils, 'getLocationHash');
+        gl.utils.getLocationHash.and.returnValue(hash);
+
+        Notes.updateNoteTargetSelector($note);
+
+        expect($note.filter).toHaveBeenCalledWith(`#${hash}`);
+        expect($note.toggleClass).toHaveBeenCalledWith('target', true);
+      });
+
+      it('unsets target when hash does not match', () => {
+        spyOn(gl.utils, 'getLocationHash');
+        gl.utils.getLocationHash.and.returnValue('note_doesnotexist');
+
+        Notes.updateNoteTargetSelector($note);
+
+        expect($note.toggleClass).toHaveBeenCalledWith('target', false);
+      });
+
+      it('unsets target when there is not a hash fragment anymore', () => {
+        spyOn(gl.utils, 'getLocationHash');
+        gl.utils.getLocationHash.and.returnValue(null);
+
+        Notes.updateNoteTargetSelector($note);
+
+        expect($note.toggleClass).toHaveBeenCalledWith('target', false);
       });
     });
 
@@ -127,7 +188,6 @@ import '~/notes';
       beforeEach(() => {
         note = {
           id: 1,
-          discussion_html: null,
           valid: true,
           note: 'heya',
           html: '<div>heya</div>',
@@ -170,9 +230,13 @@ import '~/notes';
           Notes.isUpdatedNote.and.returnValue(true);
           const $note = $('<div>');
           $notesList.find.and.returnValue($note);
+          const $newNote = $(note.html);
+          Notes.animateUpdateNote.and.returnValue($newNote);
+
           Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
           expect(Notes.animateUpdateNote).toHaveBeenCalledWith(note.html, $note);
+          expect(notes.setupNewNote).toHaveBeenCalledWith($newNote);
         });
 
         describe('while editing', () => {
@@ -359,6 +423,23 @@ import '~/notes';
       });
     });
 
+    describe('putEditFormInPlace', () => {
+      it('should call gl.GLForm with GFM parameter passed through', () => {
+        spyOn(gl, 'GLForm');
+
+        const $el = jasmine.createSpyObj('$form', ['find', 'closest']);
+        $el.find.and.returnValue($('<div>'));
+        $el.closest.and.returnValue($('<div>'));
+
+        Notes.prototype.putEditFormInPlace.call({
+          getEditFormSelector: () => '',
+          enableGFM: true
+        }, $el);
+
+        expect(gl.GLForm).toHaveBeenCalledWith(jasmine.any(Object), true);
+      });
+    });
+
     describe('postComment & updateComment', () => {
       const sampleComment = 'foo';
       const updatedComment = 'bar';
@@ -482,17 +563,35 @@ import '~/notes';
     });
 
     describe('getFormData', () => {
-      it('should return form metadata object from form reference', () => {
+      let $form;
+      let sampleComment;
+
+      beforeEach(() => {
         this.notes = new Notes('', []);
 
-        const $form = $('form');
-        const sampleComment = 'foobar';
+        $form = $('form');
+        sampleComment = 'foobar';
+      });
+
+      it('should return form metadata object from form reference', () => {
         $form.find('textarea.js-note-text').val(sampleComment);
         const { formData, formContent, formAction } = this.notes.getFormData($form);
 
         expect(formData.indexOf(sampleComment) > -1).toBe(true);
         expect(formContent).toEqual(sampleComment);
         expect(formAction).toEqual($form.attr('action'));
+      });
+
+      it('should return form metadata with sanitized formContent from form reference', () => {
+        spyOn(_, 'escape').and.callFake(htmlEscape);
+
+        sampleComment = '<script>alert("Boom!");</script>';
+        $form.find('textarea.js-note-text').val(sampleComment);
+
+        const { formContent } = this.notes.getFormData($form);
+
+        expect(_.escape).toHaveBeenCalledWith(sampleComment);
+        expect(formContent).toEqual('&lt;script&gt;alert(&quot;Boom!&quot;);&lt;/script&gt;');
       });
     });
 
@@ -549,30 +648,42 @@ import '~/notes';
       });
     });
 
+    describe('getSlashCommandDescription', () => {
+      const availableSlashCommands = [
+        { name: 'close', description: 'Close this issue', params: [] },
+        { name: 'title', description: 'Change title', params: [{}] },
+        { name: 'estimate', description: 'Set time estimate', params: [{}] }
+      ];
+
+      beforeEach(() => {
+        this.notes = new Notes();
+      });
+
+      it('should return executing slash command description when note has single slash command', () => {
+        const sampleComment = '/close';
+        expect(this.notes.getSlashCommandDescription(sampleComment, availableSlashCommands)).toBe('Applying command to close this issue');
+      });
+
+      it('should return generic multiple slash command description when note has multiple slash commands', () => {
+        const sampleComment = '/close\n/title [Duplicate] Issue foobar';
+        expect(this.notes.getSlashCommandDescription(sampleComment, availableSlashCommands)).toBe('Applying multiple commands');
+      });
+
+      it('should return generic slash command description when available slash commands list is not populated', () => {
+        const sampleComment = '/close\n/title [Duplicate] Issue foobar';
+        expect(this.notes.getSlashCommandDescription(sampleComment)).toBe('Applying command');
+      });
+    });
+
     describe('createPlaceholderNote', () => {
       const sampleComment = 'foobar';
       const uniqueId = 'b1234-a4567';
       const currentUsername = 'root';
       const currentUserFullname = 'Administrator';
+      const currentUserAvatar = 'avatar_url';
 
       beforeEach(() => {
         this.notes = new Notes('', []);
-        spyOn(_, 'escape').and.callFake((comment) => {
-          const escapedString = comment.replace(/["&'<>]/g, (a) => {
-            const escapedToken = {
-              '&': '&amp;',
-              '<': '&lt;',
-              '>': '&gt;',
-              '"': '&quot;',
-              "'": '&#x27;',
-              '`': '&#x60;'
-            }[a];
-
-            return escapedToken;
-          });
-
-          return escapedString;
-        });
       });
 
       it('should return constructed placeholder element for regular note based on form contents', () => {
@@ -581,33 +692,23 @@ import '~/notes';
           uniqueId,
           isDiscussionNote: false,
           currentUsername,
-          currentUserFullname
+          currentUserFullname,
+          currentUserAvatar,
         });
         const $tempNoteHeader = $tempNote.find('.note-header');
 
         expect($tempNote.prop('nodeName')).toEqual('LI');
         expect($tempNote.attr('id')).toEqual(uniqueId);
+        expect($tempNote.hasClass('being-posted')).toBeTruthy();
+        expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
         $tempNote.find('.timeline-icon > a, .note-header-info > a').each(function() {
           expect($(this).attr('href')).toEqual(`/${currentUsername}`);
         });
+        expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(currentUserAvatar);
         expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeFalsy();
         expect($tempNoteHeader.find('.hidden-xs').text().trim()).toEqual(currentUserFullname);
         expect($tempNoteHeader.find('.note-headline-light').text().trim()).toEqual(`@${currentUsername}`);
         expect($tempNote.find('.note-body .note-text p').text().trim()).toEqual(sampleComment);
-      });
-
-      it('should escape HTML characters from note based on form contents', () => {
-        const commentWithHtml = '<script>alert("Boom!");</script>';
-        const $tempNote = this.notes.createPlaceholderNote({
-          formContent: commentWithHtml,
-          uniqueId,
-          isDiscussionNote: false,
-          currentUsername,
-          currentUserFullname
-        });
-
-        expect(_.escape).toHaveBeenCalledWith(commentWithHtml);
-        expect($tempNote.find('.note-body .note-text p').html()).toEqual('&lt;script&gt;alert("Boom!");&lt;/script&gt;');
       });
 
       it('should return constructed placeholder element for discussion note based on form contents', () => {
@@ -621,6 +722,56 @@ import '~/notes';
 
         expect($tempNote.prop('nodeName')).toEqual('LI');
         expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeTruthy();
+      });
+    });
+
+    describe('createPlaceholderSystemNote', () => {
+      const sampleCommandDescription = 'Applying command to close this issue';
+      const uniqueId = 'b1234-a4567';
+
+      beforeEach(() => {
+        this.notes = new Notes('', []);
+        spyOn(_, 'escape').and.callFake(htmlEscape);
+      });
+
+      it('should return constructed placeholder element for system note based on form contents', () => {
+        const $tempNote = this.notes.createPlaceholderSystemNote({
+          formContent: sampleCommandDescription,
+          uniqueId,
+        });
+
+        expect($tempNote.prop('nodeName')).toEqual('LI');
+        expect($tempNote.attr('id')).toEqual(uniqueId);
+        expect($tempNote.hasClass('being-posted')).toBeTruthy();
+        expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
+        expect($tempNote.find('.timeline-content i').text().trim()).toEqual(sampleCommandDescription);
+      });
+    });
+
+    describe('appendFlash', () => {
+      beforeEach(() => {
+        this.notes = new Notes();
+      });
+
+      it('shows a flash message', () => {
+        this.notes.addFlash('Error message', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+
+        expect($('.flash-alert').is(':visible')).toBeTruthy();
+      });
+    });
+
+    describe('clearFlash', () => {
+      beforeEach(() => {
+        $(document).off('ajax:success');
+        this.notes = new Notes();
+      });
+
+      it('hides visible flash message', () => {
+        this.notes.addFlash('Error message 1', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+
+        this.notes.clearFlash();
+
+        expect($('.flash-alert').is(':visible')).toBeFalsy();
       });
     });
   });

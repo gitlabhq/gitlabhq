@@ -19,8 +19,8 @@ module Ci
       )
     end
 
-    serialize :options
-    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables
+    serialize :options # rubocop:disable Cop/ActiverecordSerialize
+    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiverecordSerialize
 
     delegate :name, to: :project, prefix: true
 
@@ -33,7 +33,7 @@ module Ci
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
-    scope :manual_actions, ->() { where(when: :manual).relevant }
+    scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -47,10 +47,16 @@ module Ci
     before_destroy { unscoped_project }
 
     after_create :execute_hooks
-    after_save :update_project_statistics, if: :artifacts_size_changed?
-    after_destroy :update_project_statistics
+    after_commit :update_project_statistics_after_save, on: [:create, :update]
+    after_commit :update_project_statistics, on: :destroy
 
     class << self
+      # This is needed for url_for to work,
+      # as the controller is JobsController
+      def model_name
+        ActiveModel::Name.new(self, nil, 'job')
+      end
+
       def first_pending
         pending.unstarted.order('created_at ASC').first
       end
@@ -103,7 +109,7 @@ module Ci
     end
 
     def playable?
-      action? && manual?
+      action? && (manual? || complete?)
     end
 
     def action?
@@ -175,7 +181,7 @@ module Ci
       slugified.gsub(/[^a-z0-9]/, '-')[0..62]
     end
 
-    # Variables whose value does not depend on other variables
+    # Variables whose value does not depend on environment
     def simple_variables
       variables = predefined_variables
       variables += project.predefined_variables
@@ -185,27 +191,31 @@ module Ci
       variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
-      variables += project.secret_variables
+      variables += project.secret_variables_for(ref).map(&:to_runner_variable)
       variables += trigger_request.user_variables if trigger_request
       variables
     end
 
-    # All variables, including those dependent on other variables
+    # All variables, including those dependent on environment, which could
+    # contain unexpanded variables.
     def variables
-      variables = simple_variables
-      variables += persisted_environment.predefined_variables if persisted_environment.present?
-      variables
+      simple_variables.concat(persisted_environment_variables)
     end
 
     def merge_request
-      merge_requests = MergeRequest.includes(:merge_request_diff)
-                                   .where(source_branch: ref,
-                                          source_project: pipeline.project)
-                                   .reorder(iid: :asc)
+      return @merge_request if defined?(@merge_request)
 
-      merge_requests.find do |merge_request|
-        merge_request.commits_sha.include?(pipeline.sha)
-      end
+      @merge_request ||=
+        begin
+          merge_requests = MergeRequest.includes(:merge_request_diff)
+            .where(source_branch: ref,
+                   source_project: pipeline.project)
+            .reorder(iid: :desc)
+
+          merge_requests.find do |merge_request|
+            merge_request.commits_sha.include?(pipeline.sha)
+          end
+        end
     end
 
     def repo_url
@@ -249,38 +259,6 @@ module Ci
       Time.now - updated_at > 15.minutes.to_i
     end
 
-    ##
-    # Deprecated
-    #
-    # This contains a hotfix for CI build data integrity, see #4246
-    #
-    # This method is used by `ArtifactUploader` to create a store_dir.
-    # Warning: Uploader uses it after AND before file has been stored.
-    #
-    # This method returns old path to artifacts only if it already exists.
-    #
-    def artifacts_path
-      # We need the project even if it's soft deleted, because whenever
-      # we're really deleting the project, we'll also delete the builds,
-      # and in order to delete the builds, we need to know where to find
-      # the artifacts, which is depending on the data of the project.
-      # We need to retain the project in this case.
-      the_project = project || unscoped_project
-
-      old = File.join(created_at.utc.strftime('%Y_%m'),
-                      the_project.ci_id.to_s,
-                      id.to_s)
-
-      old_store = File.join(ArtifactUploader.artifacts_path, old)
-      return old if the_project.ci_id && File.directory?(old_store)
-
-      File.join(
-        created_at.utc.strftime('%Y_%m'),
-        the_project.id.to_s,
-        id.to_s
-      )
-    end
-
     def valid_token?(token)
       self.token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
     end
@@ -300,8 +278,8 @@ module Ci
     def execute_hooks
       return unless project
       build_data = Gitlab::DataBuilder::Build.build(self)
-      project.execute_hooks(build_data.dup, :build_hooks)
-      project.execute_services(build_data.dup, :build_hooks)
+      project.execute_hooks(build_data.dup, :job_hooks)
+      project.execute_services(build_data.dup, :job_hooks)
       PagesService.new(build_data).execute
       project.running_or_pending_build_count(force: true)
     end
@@ -361,7 +339,7 @@ module Ci
     end
 
     def has_expiring_artifacts?
-      artifacts_expire_at.present?
+      artifacts_expire_at.present? && artifacts_expire_at > Time.now
     end
 
     def keep_artifacts!
@@ -488,6 +466,19 @@ module Ci
       variables.concat(legacy_variables)
     end
 
+    def persisted_environment_variables
+      return [] unless persisted_environment
+
+      variables = persisted_environment.predefined_variables
+
+      # Here we're passing unexpanded environment_url for runner to expand,
+      # and we need to make sure that CI_ENVIRONMENT_NAME and
+      # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
+      variables << { key: 'CI_ENVIRONMENT_URL', value: environment_url, public: true } if environment_url
+
+      variables
+    end
+
     def legacy_variables
       variables = [
         { key: 'CI_BUILD_ID', value: id.to_s, public: true },
@@ -506,6 +497,10 @@ module Ci
       variables
     end
 
+    def environment_url
+      options&.dig(:environment, :url) || persisted_environment&.external_url
+    end
+
     def build_attributes_from_config
       return {} unless pipeline.config_processor
 
@@ -516,6 +511,12 @@ module Ci
       return unless project
 
       ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
+    end
+
+    def update_project_statistics_after_save
+      if previous_changes.include?('artifacts_size')
+        update_project_statistics
+      end
     end
   end
 end

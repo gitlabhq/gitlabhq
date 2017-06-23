@@ -4,9 +4,22 @@ export SETUP_DB=${SETUP_DB:-true}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
 export BUNDLE_INSTALL_FLAGS="--without production --jobs $(nproc) --path vendor --retry 3 --quiet"
 
+if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
+    bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
+fi
+
+# Only install knapsack after bundle install! Otherwise oddly some native
+# gems could not be found under some circumstance. No idea why, hours wasted.
+retry gem install knapsack fog-aws mime-types
+
+cp config/resque.yml.example config/resque.yml
+sed -i 's/localhost/redis/g' config/resque.yml
+
+cp config/gitlab.yml.example config/gitlab.yml
+
 # Determine the database by looking at the job name.
-# For example, we'll get pg if the job is `rspec pg 19 20`
-export GITLAB_DATABASE=$(echo $CI_JOB_NAME | cut -f2 -d' ')
+# For example, we'll get pg if the job is `rspec-pg 19 20`
+export GITLAB_DATABASE=$(echo $CI_JOB_NAME | cut -f1 -d' ' | cut -f2 -d-)
 
 # This would make the default database postgresql, and we could also use
 # pg to mean postgresql.
@@ -23,19 +36,6 @@ else # Assume it's mysql
     sed -i 's/password:.*/password:/g' config/database.yml
     sed -i 's/# host:.*/host: mysql/g' config/database.yml
 fi
-
-cp config/resque.yml.example config/resque.yml
-sed -i 's/localhost/redis/g' config/resque.yml
-
-cp config/gitlab.yml.example config/gitlab.yml
-
-if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
-    bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
-fi
-
-# Only install knapsack after bundle install! Otherwise oddly some native
-# gems could not be found under some circumstance. No idea why, hours wasted.
-retry gem install knapsack fog-aws mime-types
 
 if [ "$SETUP_DB" != "false" ]; then
     bundle exec rake db:drop db:create db:schema:load db:migrate

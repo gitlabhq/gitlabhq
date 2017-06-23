@@ -1,14 +1,19 @@
 module SharedNote
   include Spinach::DSL
-  include WaitForAjax
+  include WaitForRequests
 
   after do
-    wait_for_ajax if javascript_test?
+    wait_for_requests if javascript_test?
   end
 
   step 'I delete a comment' do
     page.within('.main-notes-list') do
-      find('.note').hover
+      note = find('.note')
+      note.hover
+
+      note.find('.more-actions').click
+      note.find('.more-actions .dropdown-menu li', match: :first)
+
       find(".js-note-delete").click
     end
   end
@@ -25,7 +30,7 @@ module SharedNote
       click_button "Comment"
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I preview a comment text like "Bug fixed :smile:"' do
@@ -40,7 +45,7 @@ module SharedNote
       click_button "Comment"
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I write a comment like ":+1: Nice"' do
@@ -127,7 +132,7 @@ module SharedNote
       click_button "Comment"
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'The comment with the header should not have an ID' do
@@ -139,8 +144,13 @@ module SharedNote
 
   step 'I edit the last comment with a +1' do
     page.within(".main-notes-list") do
-      find(".note").hover
-      find('.js-note-edit').click
+      note = find('.note')
+      note.hover
+
+      note.find('.more-actions').click
+      note.find('.more-actions .dropdown-menu li', match: :first)
+
+      note.find('.js-note-edit').click
     end
 
     page.within(".current-note-edit-form") do

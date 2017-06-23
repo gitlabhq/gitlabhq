@@ -291,6 +291,7 @@
   border-bottom: 1px solid $border-color;
   transition: padding $sidebar-transition-duration;
   text-align: center;
+  margin-top: $header-height;
 
   .container-fluid {
     position: relative;
@@ -436,14 +437,14 @@
       top: ($header-height + 1) * 3;
 
       &.affix {
-        top: 0;
+        top: $header-height;
       }
     }
   }
 }
 
-.activities {
-  .nav-block {
+.nav-block {
+  &.activities {
     border-bottom: 1px solid $border-color;
 
     .nav-links {

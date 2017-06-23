@@ -20,8 +20,8 @@ describe Commit, models: true do
     end
 
     it 'caches the author' do
+      allow(RequestStore).to receive(:active?).and_return(true)
       user = create(:user, email: commit.author_email)
-      expect(RequestStore).to receive(:active?).twice.and_return(true)
       expect_any_instance_of(Commit).to receive(:find_author_by_any_email).and_call_original
 
       expect(commit.author).to eq(user)
@@ -67,11 +67,11 @@ describe Commit, models: true do
       expect(commit.title).to eq("--no commit message")
     end
 
-    it "truncates a message without a newline at 80 characters" do
+    it 'truncates a message without a newline at natural break to 80 characters' do
       message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.'
 
       allow(commit).to receive(:safe_message).and_return(message)
-      expect(commit.title).to eq("#{message[0..79]}…")
+      expect(commit.title).to eq('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis…')
     end
 
     it "truncates a message with a newline before 80 characters at the newline" do
@@ -110,6 +110,28 @@ eos
 
       allow(commit).to receive(:safe_message).and_return(message + "\n" + message)
       expect(commit.full_title).to eq(message)
+    end
+  end
+
+  describe 'description' do
+    it 'returns description of commit message if title less than 100 characters' do
+      message = <<eos
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
+Vivamus egestas lacinia lacus, sed rutrum mauris.
+eos
+
+      allow(commit).to receive(:safe_message).and_return(message)
+      expect(commit.description).to eq('Vivamus egestas lacinia lacus, sed rutrum mauris.')
+    end
+
+    it 'returns full commit message if commit title more than 100 characters' do
+      message = <<eos
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.
+Vivamus egestas lacinia lacus, sed rutrum mauris.
+eos
+
+      allow(commit).to receive(:safe_message).and_return(message)
+      expect(commit.description).to eq(message)
     end
   end
 
@@ -386,34 +408,6 @@ eos
       expect(described_class.valid_hash?('a' * 7)).to be true
       expect(described_class.valid_hash?('a' * 40)).to be true
       expect(described_class.valid_hash?('a' * 41)).to be false
-    end
-  end
-
-  describe '#raw_diffs' do
-    context 'Gitaly commit_raw_diffs feature enabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:commit_raw_diffs).and_return(true)
-      end
-
-      context 'when a truthy deltas_only is not passed to args' do
-        it 'fetches diffs from Gitaly server' do
-          expect(Gitlab::GitalyClient::Commit).to receive(:diff_from_parent).
-            with(commit)
-
-          commit.raw_diffs
-        end
-      end
-
-      context 'when a truthy deltas_only is passed to args' do
-        it 'fetches diffs using Rugged' do
-          opts = { deltas_only: true }
-
-          expect(Gitlab::GitalyClient::Commit).not_to receive(:diff_from_parent)
-          expect(commit.raw).to receive(:diffs).with(opts)
-
-          commit.raw_diffs(opts)
-        end
-      end
     end
   end
 end

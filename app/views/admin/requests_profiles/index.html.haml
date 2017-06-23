@@ -1,6 +1,6 @@
 - @no_container = true
 - page_title 'Requests Profiles'
-= render 'admin/background_jobs/head'
+= render 'admin/monitoring/head'
 
 %div{ class: container_class }
   %h3.page-title
@@ -20,7 +20,7 @@
           %ul.content-list
             - profiles.each do |profile|
               %li
-                = link_to profile.time.to_s(:long), admin_requests_profile_path(profile), data: {no_turbolink: true}
+                = link_to profile.time.to_s(:long), admin_requests_profile_path(profile)
   - else
     %p
       No profiles found

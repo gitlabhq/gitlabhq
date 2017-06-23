@@ -90,11 +90,18 @@ describe 'New/edit merge request', feature: true, js: true do
         page.within '.issuable-meta' do
           merge_request = MergeRequest.find_by(source_branch: 'fix')
 
-          expect(page).to have_text("Merge Request #{merge_request.to_reference}")
+          expect(page).to have_text("Merge request #{merge_request.to_reference}")
           # compare paths because the host differ in test
           expect(find_link(merge_request.to_reference)[:href])
             .to end_with(merge_request_path(merge_request))
         end
+      end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
       end
     end
 
@@ -156,6 +163,13 @@ describe 'New/edit merge request', feature: true, js: true do
             expect(page).to have_content label2.title
           end
         end
+      end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
       end
     end
   end

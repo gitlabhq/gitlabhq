@@ -133,6 +133,10 @@ class Label < ActiveRecord::Base
     template
   end
 
+  def color
+    super || DEFAULT_COLOR
+  end
+
   def text_color
     LabelsHelper.text_color_for_bg(self.color)
   end
@@ -168,7 +172,7 @@ class Label < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:priority] = priority(options[:project]) if options.has_key?(:project)
+      json[:priority] = priority(options[:project]) if options.key?(:project)
     end
   end
 

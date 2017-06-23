@@ -31,6 +31,26 @@ is installed on.
 
 ![Schedules list](img/pipeline_schedules_list.png)
 
+## Using only and except
+
+To configure that a job can be executed only when the pipeline has been
+scheduled (or the opposite), you can use
+[only and except](../../../ci/yaml/README.md#only-and-except) configuration keywords.
+
+```
+job:on-schedule:
+  only:
+    - schedules
+  script:
+    - make world
+
+job:
+  except:
+    - schedules
+  script:
+    - make build
+```
+
 ## Taking ownership
 
 Pipelines are executed as a user, who owns a schedule. This influences what
@@ -53,7 +73,7 @@ Sidekiq, which runs according to its interval. For example, if you set a
 schedule to create a pipeline every minute (`* * * * *`) and the Sidekiq worker
 runs on 00:00 and 12:00 every day (`0 */12 * * *`), only 2 pipelines will be
 created per day. To change the Sidekiq worker's frequency, you have to edit the
-`trigger_schedule_worker_cron` value in your `gitlab.rb` and restart GitLab.
+`pipeline_schedule_worker_cron` value in your `gitlab.rb` and restart GitLab.
 For GitLab.com, you can check the [dedicated settings page][settings]. If you
 don't have admin access to the server, ask your administrator.
 

@@ -1,6 +1,6 @@
 /* eslint-disable promise/catch-or-return */
 
-require('~/lib/utils/common_utils');
+import '~/lib/utils/common_utils';
 
 (() => {
   describe('common_utils', () => {
@@ -40,6 +40,16 @@ require('~/lib/utils/common_utils');
       it('should remove the question mark from the search params', () => {
         const paramsArray = gl.utils.getUrlParamsArray();
         expect(paramsArray[0][0] !== '?').toBe(true);
+      });
+
+      it('should decode params', () => {
+        history.pushState('', '', '?label_name%5B%5D=test');
+
+        expect(
+          gl.utils.getUrlParamsArray()[0],
+        ).toBe('label_name[]=test');
+
+        history.pushState('', '', '?');
       });
     });
 
@@ -139,6 +149,14 @@ require('~/lib/utils/common_utils');
       it('should return invalid parameter', () => {
         const value = gl.utils.getParameterByName('fakeParameter');
         expect(value).toBe(null);
+      });
+
+      it('should return valid paramentes if URL is provided', () => {
+        let value = gl.utils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
+        expect(value).toBe('bar');
+
+        value = gl.utils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
+        expect(value).toBe('canchu');
       });
     });
 
@@ -346,7 +364,7 @@ require('~/lib/utils/common_utils');
 
     describe('gl.utils.setCiStatusFavicon', () => {
       it('should set page favicon to CI status favicon based on provided status', () => {
-        const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1/status.json`;
+        const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
         const FAVICON_PATH = '//icon_status_success';
         const spySetFavicon = spyOn(gl.utils, 'setFavicon').and.stub();
         const spyResetFavicon = spyOn(gl.utils, 'resetFavicon').and.stub();

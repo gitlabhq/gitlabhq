@@ -26,16 +26,15 @@
               - commit = discussion.noteable
               - if commit
                 commit
-                = link_to commit.short_id, url, class: 'monospace'
+                = link_to commit.short_id, url, class: 'commit-sha'
               - else
                 a deleted commit
             - elsif discussion.diff_discussion?
               on
               = conditional_link_to url.present?, url do
-                - if discussion.active?
-                  the diff
-                - else
-                  an outdated diff
+                - unless discussion.active?
+                  an old version of
+                the diff
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
           = render "discussions/headline", discussion: discussion

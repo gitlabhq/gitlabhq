@@ -240,8 +240,49 @@ describe Gitlab::Ci::Trace::Stream do
     end
 
     context 'multiple results in content & regex' do
-      let(:data) { ' (98.39%) covered. (98.29%) covered' }
+      let(:data) do
+        <<~HEREDOC
+          (98.39%) covered
+          (98.29%) covered
+        HEREDOC
+      end
+
       let(:regex) { '\(\d+.\d+\%\) covered' }
+
+      it 'returns the last matched coverage' do
+        is_expected.to eq("98.29")
+      end
+    end
+
+    context 'when BUFFER_SIZE is smaller than stream.size' do
+      let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered\n' }
+      let(:regex) { '\(\d+.\d+\%\) covered' }
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 5)
+      end
+
+      it { is_expected.to eq("98.29") }
+    end
+
+    context 'when regex is multi-byte char' do
+      let(:data) { '95.0 ゴッドファット\n' }
+      let(:regex) { '\d+\.\d+ ゴッドファット' }
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', 5)
+      end
+
+      it { is_expected.to eq('95.0') }
+    end
+
+    context 'when BUFFER_SIZE is equal to stream.size' do
+      let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered\n' }
+      let(:regex) { '\(\d+.\d+\%\) covered' }
+
+      before do
+        stub_const('Gitlab::Ci::Trace::Stream::BUFFER_SIZE', data.length)
+      end
 
       it { is_expected.to eq("98.29") }
     end

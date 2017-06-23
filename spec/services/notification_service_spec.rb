@@ -350,7 +350,7 @@ describe NotificationService, services: true do
           create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_participant),
           create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_mentioned),
           create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_disabled),
-          create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_note_author),
+          create(:note_on_personal_snippet, noteable: snippet, note: 'note', author: @u_note_author)
         ]
       end
 

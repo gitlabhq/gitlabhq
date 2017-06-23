@@ -8,7 +8,7 @@ class Projects::LabelsController < Projects::ApplicationController
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update,
                                                  :generate, :destroy, :remove_priority,
                                                  :set_priorities]
-  before_action :authorize_admin_group!, only: [:promote]
+  before_action :authorize_admin_group_labels!, only: [:promote]
 
   respond_to :js, :html
 
@@ -74,7 +74,9 @@ class Projects::LabelsController < Projects::ApplicationController
     @label.destroy
     @labels = find_labels
 
-    redirect_to(namespace_project_labels_path(@project.namespace, @project), notice: 'Label was removed')
+    redirect_to namespace_project_labels_path(@project.namespace, @project),
+                status: 302,
+                notice: 'Label was removed'
   end
 
   def remove_priority
@@ -159,7 +161,7 @@ class Projects::LabelsController < Projects::ApplicationController
     return render_404 unless can?(current_user, :admin_label, @project)
   end
 
-  def authorize_admin_group!
-    return render_404 unless can?(current_user, :admin_group, @project.group)
+  def authorize_admin_group_labels!
+    return render_404 unless can?(current_user, :admin_label, @project.group)
   end
 end

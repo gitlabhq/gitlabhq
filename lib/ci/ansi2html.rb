@@ -20,7 +20,7 @@ module Ci
       italic:     0x02,
       underline:  0x04,
       conceal:    0x08,
-      cross:      0x10,
+      cross:      0x10
     }.freeze
 
     def self.convert(ansi, state = nil)

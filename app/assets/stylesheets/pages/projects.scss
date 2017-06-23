@@ -29,6 +29,20 @@
     & > .form-group {
       padding-left: 0;
     }
+
+    select option[disabled] {
+      display: none;
+    }
+  }
+
+  select {
+    background: transparent;
+    transition: background 2s ease-out;
+
+    &.highlight-changes {
+      background: $highlight-changes-color;
+      transition: none;
+    }
   }
 
   .help-block {
@@ -247,7 +261,6 @@
       font-size: 13px;
       font-weight: 600;
       line-height: 13px;
-      padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
       padding: 6px 14px;
       text-align: center;
@@ -382,10 +395,6 @@ a.deploy-project-label {
   .dropdown-menu {
     width: 240px;
   }
-}
-
-.last-push-widget {
-  margin-top: -1px;
 }
 
 .fork-namespaces {
@@ -639,59 +648,6 @@ pre.light-well {
   }
 }
 
-.project-last-commit {
-  background-color: $gray-light;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-base;
-  padding: 12px;
-
-  @media (min-width: $screen-sm-min) {
-    margin-top: $gl-padding;
-  }
-
-  .ci-status {
-    margin-right: $gl-padding;
-  }
-
-  .commit-row-message {
-    color: $gl-text-color;
-  }
-
-  .commit_short_id {
-    margin-right: 5px;
-    color: $gl-link-color;
-    font-weight: 600;
-  }
-
-  .commit-author-link {
-    .commit-author-name {
-      font-weight: 600;
-    }
-  }
-}
-
-.project-show-readme {
-  .row-content-block {
-    background-color: inherit;
-    border: none;
-  }
-
-  .readme-holder {
-    padding: $gl-padding 0;
-    border-top: 0;
-
-    .edit-project-readme {
-      z-index: 2;
-      position: relative;
-    }
-
-    .wiki h1 {
-      border-bottom: none;
-      padding: 0;
-    }
-  }
-}
-
 .git-clone-holder {
   width: 380px;
 
@@ -733,14 +689,16 @@ pre.light-well {
   }
 }
 
-.new_protected_branch {
+.new_protected_branch,
+.new-protected-tag {
   label {
     margin-top: 6px;
     font-weight: normal;
   }
 }
 
-.create-new-protected-branch-button {
+.create-new-protected-branch-button,
+.create-new-protected-tag-button {
   @include dropdown-link;
 
   width: 100%;
@@ -811,8 +769,7 @@ pre.light-well {
 }
 
 .project-refs-form .dropdown-menu,
-.dropdown-menu-projects,
-.dropdown-menu-branches {
+.dropdown-menu-projects {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {
@@ -825,7 +782,8 @@ pre.light-well {
 }
 
 .compare-form-group {
-  .dropdown-menu {
+  .dropdown-menu,
+  .inline-input-group {
     width: 100%;
 
     @media (min-width: $screen-sm-min) {
@@ -842,14 +800,6 @@ pre.light-well {
     @media (min-width: $screen-sm-min) {
       margin-top: 0;
       width: auto;
-    }
-  }
-
-  .inline-input-group {
-    width: 100%;
-
-    @media (min-width: $screen-sm-min) {
-      width: 250px;
     }
   }
 }

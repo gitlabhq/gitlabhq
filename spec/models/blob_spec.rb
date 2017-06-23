@@ -199,6 +199,14 @@ describe Blob do
     end
   end
 
+  describe '#file_type' do
+    it 'returns the file type' do
+      blob = fake_blob(path: 'README.md')
+
+      expect(blob.file_type).to eq(:readme)
+    end
+  end
+
   describe '#simple_viewer' do
     context 'when the blob is empty' do
       it 'returns an empty viewer' do
@@ -267,6 +275,52 @@ describe Blob do
         blob = fake_blob(path: 'file.md')
 
         expect(blob.rich_viewer).to be_a(BlobViewer::Markup)
+      end
+    end
+  end
+
+  describe '#auxiliary_viewer' do
+    context 'when the blob has an external storage error' do
+      before do
+        project.lfs_enabled = false
+      end
+
+      it 'returns nil' do
+        blob = fake_blob(path: 'LICENSE', lfs: true)
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is empty' do
+      it 'returns nil' do
+        blob = fake_blob(data: '')
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is stored externally' do
+      it 'returns a matching viewer' do
+        blob = fake_blob(path: 'LICENSE', lfs: true)
+
+        expect(blob.auxiliary_viewer).to be_a(BlobViewer::License)
+      end
+    end
+
+    context 'when the blob is binary' do
+      it 'returns nil' do
+        blob = fake_blob(path: 'LICENSE', binary: true)
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is text-based' do
+      it 'returns a matching text-based viewer' do
+        blob = fake_blob(path: 'LICENSE')
+
+        expect(blob.auxiliary_viewer).to be_a(BlobViewer::License)
       end
     end
   end

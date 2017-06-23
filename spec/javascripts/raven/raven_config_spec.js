@@ -140,24 +140,6 @@ describe('RavenConfig', () => {
     });
   });
 
-  describe('bindRavenErrors', () => {
-    let $document;
-    let $;
-
-    beforeEach(() => {
-      $document = jasmine.createSpyObj('$document', ['on']);
-      $ = jasmine.createSpy('$').and.returnValue($document);
-
-      window.$ = $;
-
-      RavenConfig.bindRavenErrors();
-    });
-
-    it('should call .on', function () {
-      expect($document.on).toHaveBeenCalledWith('ajaxError.raven', RavenConfig.handleRavenErrors);
-    });
-  });
-
   describe('handleRavenErrors', () => {
     let event;
     let req;

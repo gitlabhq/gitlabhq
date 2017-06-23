@@ -16,6 +16,8 @@ namespace :gitlab do
       redis_version = run_and_match(%w(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
       # check Git version
       git_version = run_and_match([Gitlab.config.git.bin_path, '--version'], /git version ([\d\.]+)/).to_a
+      # check Go version
+      go_version = run_and_match(%w(go version), /go version (.+)/).to_a
 
       puts ""
       puts "System information".color(:yellow)
@@ -30,6 +32,7 @@ namespace :gitlab do
       puts "Redis Version:\t#{redis_version[1] || "unknown".color(:red)}"
       puts "Git Version:\t#{git_version[1] || "unknown".color(:red)}"
       puts "Sidekiq Version:#{Sidekiq::VERSION}"
+      puts "Go Version:\t#{go_version[1] || "unknown".color(:red)}"
 
       # check database adapter
       database_adapter = ActiveRecord::Base.connection.adapter_name.downcase

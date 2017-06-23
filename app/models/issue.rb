@@ -174,7 +174,7 @@ class Issue < ActiveRecord::Base
 
   # Returns boolean if a related branch exists for the current issue
   # ignores merge requests branchs
-  def has_related_branch? 
+  def has_related_branch?
     project.repository.branch_names.any? do |branch|
       /\A#{iid}-(?!\d+-stable)/i =~ branch
     end
@@ -251,9 +251,9 @@ class Issue < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:subscribed] = subscribed?(options[:user], project) if options.has_key?(:user) && options[:user]
+      json[:subscribed] = subscribed?(options[:user], project) if options.key?(:user) && options[:user]
 
-      if options.has_key?(:labels)
+      if options.key?(:labels)
         json[:labels] = labels.as_json(
           project: project,
           only: [:id, :title, :description, :color, :priority],
@@ -292,7 +292,7 @@ class Issue < ActiveRecord::Base
   end
 
   def expire_etag_cache
-    key = Gitlab::Routing.url_helpers.rendered_title_namespace_project_issue_path(
+    key = Gitlab::Routing.url_helpers.realtime_changes_namespace_project_issue_path(
       project.namespace,
       project,
       self

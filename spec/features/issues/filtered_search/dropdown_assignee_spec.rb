@@ -157,6 +157,25 @@ describe 'Dropdown assignee', :feature, :js do
     end
   end
 
+  describe 'selecting from dropdown without Ajax call' do
+    before do
+      Gitlab::Testing::RequestBlockerMiddleware.block_requests!
+      filtered_search.set('assignee:')
+    end
+
+    after do
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
+    end
+
+    it 'selects current user' do
+      find('#js-dropdown-assignee .filter-dropdown-item', text: user.username).click
+
+      expect(page).to have_css(js_dropdown_assignee, visible: false)
+      expect_tokens([{ name: 'assignee', value: user.username }])
+      expect_filtered_search_input_empty
+    end
+  end
+
   describe 'input has existing content' do
     it 'opens assignee dropdown with existing search term' do
       filtered_search.set('searchTerm assignee:')

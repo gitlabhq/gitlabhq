@@ -109,14 +109,19 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-**Note:** The current supported Ruby version is 2.3.x. GitLab 9.0 dropped support
-for Ruby 2.1.x.
+The Ruby interpreter is required to run GitLab.
+
+**Note:** The current supported Ruby (MRI) version is 2.3.x. GitLab 9.0 dropped
+support for Ruby 2.1.x.
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
 GitLab Shell is called from OpenSSH, and having a version manager can prevent
 pushing and pulling over SSH. Version managers are not supported and we strongly
-advise everyone to follow the instructions below to use a system Ruby.
+advise everyone to follow the instructions below to use a system Ruby.  
+
+Linux distributions generally have older versions of Ruby available, so these
+instructions are designed to install Ruby from the official source code.
 
 Remove the old Ruby 1.8 if present:
 
@@ -132,26 +137,25 @@ Download Ruby and compile it:
     make
     sudo make install
 
-Install the Bundler Gem:
+Then install the Bundler Gem:
 
     sudo gem install bundler --no-ri --no-rdoc
 
 ## 3. Go
 
-Since GitLab 8.0, Git HTTP requests are handled by gitlab-workhorse (formerly
-gitlab-git-http-server). This is a small daemon written in Go. To install
-gitlab-workhorse we need a Go compiler. The instructions below assume you
-use 64-bit Linux. You can find downloads for other platforms at the [Go download
+Since GitLab 8.0, GitLab has several daemons written in Go. To install
+GitLab we need a Go compiler. The instructions below assume you use 64-bit
+Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
     # Remove former Go installation folder
     sudo rm -rf /usr/local/go
 
-    curl --remote-name --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
-    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
-      sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
+    curl --remote-name --progress https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
+    echo '1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772  go1.8.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
+      sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.3.linux-amd64.tar.gz
+    rm go1.8.3.linux-amd64.tar.gz
 
 ## 4. Node
 
@@ -161,7 +165,7 @@ In many distros the versions provided by the official package  repositories
 are out of date, so we'll need to install through the following commands:
 
     # install node v7.x
-    curl --location https://deb.nodesource.com/setup_7.x | bash -
+    curl --location https://deb.nodesource.com/setup_7.x | sudo bash -
     sudo apt-get install -y nodejs
 
     # install yarn
@@ -180,7 +184,8 @@ Create a `git` user for GitLab:
 We recommend using a PostgreSQL database. For MySQL check the
 [MySQL setup guide](database_mysql.md).
 
-> **Note**: because we need to make use of extensions you need at least pgsql 9.1.
+> **Note**: because we need to make use of extensions and concurrent index removal,
+you need at least PostgreSQL 9.2.
 
 1. Install the database packages:
 
@@ -464,10 +469,6 @@ Make GitLab start on boot:
 
 ### Install Gitaly
 
-As of GitLab 9.1 Gitaly is an **optional** component. Its
-configuration is still changing regularly. It is OK to wait
-with setting up Gitaly until you upgrade to GitLab 9.2 or later.
-
     # Fetch Gitaly source with Git and compile with Go
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
 
@@ -484,16 +485,6 @@ Next, make sure gitaly configured:
     # If you are using non-default settings you need to update config.toml
     cd /home/git/gitaly
     sudo -u git -H editor config.toml
-
-    # Enable Gitaly in the init script
-    echo 'gitaly_enabled=true' | sudo tee -a /etc/default/gitlab
-
-Next, edit `/home/git/gitlab/config/gitlab.yml` and make sure `enabled: true` in
-the `gitaly:` section is uncommented.
-
-    # <- gitlab.yml indentation starts here
-      gitaly:
-        enabled: true
 
 For more information about configuring Gitaly see
 [doc/administration/gitaly](../administration/gitaly).
@@ -512,6 +503,10 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H yarn install --production --pure-lockfile
     sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+
+### Compile GetText PO files
+
+    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 ### Start Your GitLab Instance
 

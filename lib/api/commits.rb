@@ -176,7 +176,7 @@ module API
         }
 
         if params[:path]
-          commit.raw_diffs(all_diffs: true).each do |diff|
+          commit.raw_diffs(limits: false).each do |diff|
             next unless diff.new_path == params[:path]
             lines = Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
 

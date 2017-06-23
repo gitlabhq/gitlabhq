@@ -163,3 +163,52 @@ describe Issue, "Mentionable" do
     end
   end
 end
+
+describe Commit, 'Mentionable' do
+  let(:project) { create(:project, :public, :repository) }
+  let(:commit)  { project.commit }
+
+  describe '#matches_cross_reference_regex?' do
+    it "is false when message doesn't reference anything" do
+      allow(commit.raw).to receive(:message).and_return "WIP: Do something"
+
+      expect(commit.matches_cross_reference_regex?).to be false
+    end
+
+    it 'is true if issue #number mentioned in title' do
+      allow(commit.raw).to receive(:message).and_return "#1"
+
+      expect(commit.matches_cross_reference_regex?).to be true
+    end
+
+    it 'is true if references an MR' do
+      allow(commit.raw).to receive(:message).and_return "See merge request !12"
+
+      expect(commit.matches_cross_reference_regex?).to be true
+    end
+
+    it 'is true if references a commit' do
+      allow(commit.raw).to receive(:message).and_return "a1b2c3d4"
+
+      expect(commit.matches_cross_reference_regex?).to be true
+    end
+
+    it 'is true if issue referenced by url' do
+      issue = create(:issue, project: project)
+
+      allow(commit.raw).to receive(:message).and_return Gitlab::UrlBuilder.build(issue)
+
+      expect(commit.matches_cross_reference_regex?).to be true
+    end
+
+    context 'with external issue tracker' do
+      let(:project) { create(:jira_project) }
+
+      it 'is true if external issues referenced' do
+        allow(commit.raw).to receive(:message).and_return 'JIRA-123'
+
+        expect(commit.matches_cross_reference_regex?).to be true
+      end
+    end
+  end
+end

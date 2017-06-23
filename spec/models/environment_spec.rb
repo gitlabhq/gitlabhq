@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment, models: true do
-  let(:project) { create(:empty_project) }
+  set(:project) { create(:empty_project) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -31,6 +31,26 @@ describe Environment, models: true do
 
     it 'returns the environments in order of having been last deployed' do
       expect(project.environments.order_by_last_deployed_at.to_a).to eq([environment3, environment2, environment1])
+    end
+  end
+
+  describe 'state machine' do
+    it 'invalidates the cache after a change' do
+      expect(environment).to receive(:expire_etag_cache)
+
+      environment.stop
+    end
+  end
+
+  describe '#expire_etag_cache' do
+    let(:store) { Gitlab::EtagCaching::Store.new }
+
+    it 'changes the cached value' do
+      old_value = store.get(environment.etag_cache_key)
+
+      environment.stop
+
+      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
     end
   end
 
@@ -150,7 +170,7 @@ describe Environment, models: true do
     context 'when matching action is defined' do
       let(:build) { create(:ci_build) }
       let!(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
-      let!(:close_action) { create(:ci_build, pipeline: build.pipeline, name: 'close_app', when: :manual) }
+      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
       context 'when environment is available' do
         before do
@@ -227,7 +247,10 @@ describe Environment, models: true do
 
       context 'when user is allowed to stop environment' do
         before do
-          project.add_master(user)
+          project.add_developer(user)
+
+          create(:protected_branch, :developers_can_merge,
+                 name: 'master', project: project)
         end
 
         context 'when action did not yet finish' do
@@ -393,7 +416,7 @@ describe Environment, models: true do
 
       it 'returns the metrics from the deployment service' do
         expect(project.monitoring_service)
-          .to receive(:metrics).with(environment)
+          .to receive(:environment_metrics).with(environment)
           .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
@@ -438,7 +461,7 @@ describe Environment, models: true do
       "foo**bar"                  => "foo-bar" + SUFFIX,
       "*-foo"                     => "env-foo" + SUFFIX,
       "staging-12345678-"         => "staging-12345678" + SUFFIX,
-      "staging-12345678-01234567" => "staging-12345678" + SUFFIX,
+      "staging-12345678-01234567" => "staging-12345678" + SUFFIX
     }.each do |name, matcher|
       it "returns a slug matching #{matcher}, given #{name}" do
         slug = described_class.new(name: name).generate_slug

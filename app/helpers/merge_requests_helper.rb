@@ -54,7 +54,7 @@ module MergeRequestsHelper
         source_project_id: merge_request.source_project_id,
         target_project_id: merge_request.target_project_id,
         source_branch: merge_request.source_branch,
-        target_branch: merge_request.target_branch,
+        target_branch: merge_request.target_branch
       },
       change_branches: true
     )

@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var, no-return-assign, comma-dangle, jasmine/no-spec-dupes, new-cap, max-len */
 
-require('~/behaviors/quick_submit');
+import '~/behaviors/quick_submit';
 
 (function() {
   describe('Quick Submit behavior', function() {

@@ -1,8 +1,8 @@
 /* global CommitsList */
 
-require('vendor/jquery.endless-scroll');
-require('~/pager');
-require('~/commits');
+import 'vendor/jquery.endless-scroll';
+import '~/pager';
+import '~/commits';
 
 (() => {
   // TODO: remove this hack!
@@ -26,6 +26,32 @@ require('~/commits');
 
     it('should be defined', () => {
       expect(CommitsList).toBeDefined();
+    });
+
+    describe('processCommits', () => {
+      it('should join commit headers', () => {
+        CommitsList.$contentList = $(`
+          <div>
+            <li class="commit-header" data-day="2016-09-20">
+              <span class="day">20 Sep, 2016</span>
+              <span class="commits-count">1 commit</span>
+            </li>
+            <li class="commit"></li>
+          </div>
+        `);
+
+        const data = `
+          <li class="commit-header" data-day="2016-09-20">
+            <span class="day">20 Sep, 2016</span>
+            <span class="commits-count">1 commit</span>
+          </li>
+          <li class="commit"></li>
+        `;
+
+        // The last commit header should be removed
+        // since the previous one has the same data-day value.
+        expect(CommitsList.processCommits(data).find('li.commit-header').length).toBe(0);
+      });
     });
 
     describe('on entering input', () => {

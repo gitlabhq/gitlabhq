@@ -1,0 +1,260 @@
+# Alexandre Alencar <alexandre.alencar@gmail.com>, 2017. #zanata
+# Fabio Beneditto <fabiobeneditto@gmail.com>, 2017. #zanata
+# Leandro Nunes dos Santos <leandronunes@gmail.com>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-04 19:24-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-06-05 03:29-0400\n"
+"Last-Translator: Alexandre Alencar <alexandre.alencar@gmail.com>\n"
+"Language-Team: Portuguese (Brazil)\n"
+"Language: pt-BR\n"
+"X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "ByAuthor|by"
+msgstr "por"
+
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] "Commit"
+msgstr[1] "Commits"
+
+msgid ""
+"Cycle Analytics gives an overview of how much time it takes to go from idea "
+"to production in your project."
+msgstr ""
+"A Análise de Ciclo fornece uma visão geral de quanto tempo uma ideia demora "
+"para ir para produção em seu projeto."
+
+msgid "CycleAnalyticsStage|Code"
+msgstr "Código"
+
+msgid "CycleAnalyticsStage|Issue"
+msgstr "Tarefa"
+
+msgid "CycleAnalyticsStage|Plan"
+msgstr "Plano"
+
+msgid "CycleAnalyticsStage|Production"
+msgstr "Produção"
+
+msgid "CycleAnalyticsStage|Review"
+msgstr "Revisão"
+
+msgid "CycleAnalyticsStage|Staging"
+msgstr "Homologação"
+
+msgid "CycleAnalyticsStage|Test"
+msgstr "Teste"
+
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] "Implantação"
+msgstr[1] "Implantações"
+
+msgid "FirstPushedBy|First"
+msgstr "Primeiro"
+
+msgid "FirstPushedBy|pushed by"
+msgstr "publicado por"
+
+msgid "From issue creation until deploy to production"
+msgstr "Da criação de tarefas até a implantação para a produção"
+
+msgid "From merge request merge until deploy to production"
+msgstr "Da incorporação do merge request  até a implantação em produção"
+
+msgid "Introducing Cycle Analytics"
+msgstr "Apresentando a Análise de Ciclo"
+
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] "Último %d dia"
+msgstr[1] "Últimos %d dias"
+
+msgid "Limited to showing %d event at most"
+msgid_plural "Limited to showing %d events at most"
+msgstr[0] "Limitado a mostrar %d evento no máximo"
+msgstr[1] "Limitado a mostrar %d eventos no máximo"
+
+msgid "Median"
+msgstr "Mediana"
+
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] "Nova Tarefa"
+msgstr[1] "Novas Tarefas"
+
+msgid "Not available"
+msgstr "Não disponível"
+
+msgid "Not enough data"
+msgstr "Dados insuficientes"
+
+msgid "OpenedNDaysAgo|Opened"
+msgstr "Aberto"
+
+msgid "Pipeline Health"
+msgstr "Saúde da Pipeline"
+
+msgid "ProjectLifecycle|Stage"
+msgstr "Etapa"
+
+msgid "Read more"
+msgstr "Ler mais"
+
+msgid "Related Commits"
+msgstr "Commits Relacionados"
+
+msgid "Related Deployed Jobs"
+msgstr "Jobs Relacionados Incorporados"
+
+msgid "Related Issues"
+msgstr "Tarefas Relacionadas"
+
+msgid "Related Jobs"
+msgstr "Jobs Relacionados"
+
+msgid "Related Merge Requests"
+msgstr "Merge Requests Relacionados"
+
+msgid "Related Merged Requests"
+msgstr "Merge Requests Relacionados"
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] "Mostrando %d evento"
+msgstr[1] "Mostrando %d eventos"
+
+msgid ""
+"The coding stage shows the time from the first commit to creating the merge "
+"request. The data will automatically be added here once you create your "
+"first merge request."
+msgstr ""
+"O estágio de codificação mostra o tempo desde o primeiro commit até a "
+"criação do merge request. \n"
+"Os dados serão automaticamente adicionados aqui uma vez que você tenha "
+"criado seu primeiro merge request."
+
+msgid "The collection of events added to the data gathered for that stage."
+msgstr ""
+"A coleção de eventos adicionados aos dados coletados para esse estágio."
+
+msgid ""
+"The issue stage shows the time it takes from creating an issue to assigning "
+"the issue to a milestone, or add the issue to a list on your Issue Board. "
+"Begin creating issues to see data for this stage."
+msgstr ""
+"O estágio em questão mostra o tempo que leva desde a criação de uma tarefa "
+"até a sua assinatura para um milestone, ou a sua adição para a lista no seu "
+"Painel de Tarefas. Comece a criar tarefas para ver dados para esta etapa."
+
+msgid "The phase of the development lifecycle."
+msgstr "A fase do ciclo de vida do desenvolvimento."
+
+msgid ""
+"The planning stage shows the time from the previous step to pushing your "
+"first commit. This time will be added automatically once you push your first "
+"commit."
+msgstr ""
+"A fase de planejamento mostra o tempo do passo anterior até empurrar o seu "
+"primeiro commit. Este tempo será adicionado automaticamente assim que você "
+"realizar seu primeiro commit."
+
+msgid ""
+"The production stage shows the total time it takes between creating an issue "
+"and deploying the code to production. The data will be automatically added "
+"once you have completed the full idea to production cycle."
+msgstr ""
+"O estágio de produção mostra o tempo total que leva entre criar uma tarefa e "
+"implantar o código na produção. Os dados serão adicionados automaticamente "
+"até que você complete todo o ciclo de produção."
+
+msgid ""
+"The review stage shows the time from creating the merge request to merging "
+"it. The data will automatically be added after you merge your first merge "
+"request."
+msgstr ""
+"A etapa de revisão mostra o tempo de criação de um merge request até que o "
+"merge seja feito. Os dados serão automaticamente adicionados depois que você "
+"fizer seu primeiro merge request."
+
+msgid ""
+"The staging stage shows the time between merging the MR and deploying code "
+"to the production environment. The data will be automatically added once you "
+"deploy to production for the first time."
+msgstr ""
+"O estágio de estágio mostra o tempo entre a fusão do MR e o código de "
+"implantação para o ambiente de produção. Os dados serão automaticamente "
+"adicionados depois de implantar na produção pela primeira vez."
+
+msgid ""
+"The testing stage shows the time GitLab CI takes to run every pipeline for "
+"the related merge request. The data will automatically be added after your "
+"first pipeline finishes running."
+msgstr ""
+"A fase de teste mostra o tempo que o GitLab CI leva para executar cada "
+"pipeline para o merge request relacionado. Os dados serão automaticamente "
+"adicionados após a conclusão do primeiro pipeline."
+
+msgid "The time taken by each data entry gathered by that stage."
+msgstr "O tempo necessário para cada entrada de dados reunida por essa etapa."
+
+msgid ""
+"The value lying at the midpoint of a series of observed values. E.g., "
+"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 ="
+" 6."
+msgstr ""
+"O valor situado no ponto médio de uma série de valores observados. Ex., "
+"entre 3, 5, 9, a mediana é 5. Entre 3, 5, 7, 8, a mediana é (5 + 7) / 2 = 6."
+
+msgid "Time before an issue gets scheduled"
+msgstr "Tempo até que uma tarefa seja planejada"
+
+msgid "Time before an issue starts implementation"
+msgstr "Tempo até que uma tarefa comece a ser implementada"
+
+msgid "Time between merge request creation and merge/close"
+msgstr "Tempo entre a criação do merge request e o merge/fechamento"
+
+msgid "Time until first merge request"
+msgstr "Tempo até o primeiro merge request"
+
+msgid "Time|hr"
+msgid_plural "Time|hrs"
+msgstr[0] "h"
+msgstr[1] "hs"
+
+msgid "Time|min"
+msgid_plural "Time|mins"
+msgstr[0] "min"
+msgstr[1] "mins"
+
+msgid "Time|s"
+msgstr "s"
+
+msgid "Total Time"
+msgstr "Tempo Total"
+
+msgid "Total test time for all commits/merges"
+msgstr "Tempo de teste total para todos os commits/merges"
+
+msgid "Want to see the data? Please ask an administrator for access."
+msgstr "Precisa visualizar os dados? Solicite acesso ao administrador."
+
+msgid "We don't have enough data to show this stage."
+msgstr "Não temos dados suficientes para mostrar esta fase."
+
+msgid "You need permission."
+msgstr "Você precisa de permissão."
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "dia"
+msgstr[1] "dias"
+

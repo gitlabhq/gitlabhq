@@ -89,7 +89,7 @@ to steal the tokens of other jobs.
 
 ## Pipeline triggers
 
-Since 9.0 [pipelnie triggers][triggers] do support the new permission model.
+Since 9.0 [pipeline triggers][triggers] do support the new permission model.
 The new triggers do impersonate their associated user including their access
 to projects and their project permissions. To migrate trigger to use new permisison
 model use **Take ownership**.
@@ -100,7 +100,7 @@ In versions before GitLab 8.12, all CI jobs would use the CI Runner's token
 to checkout project sources.
 
 The project's Runner's token was a token that you could find under the
-project's **Settings > CI/CD Pipelines** and was limited to access only that
+project's **Settings > Pipelines** and was limited to access only that
 project.
 It could be used for registering new specific Runners assigned to the project
 and to checkout project sources.
@@ -212,9 +212,9 @@ Container Registries for private projects.
   access token created explicitly for this purpose). This issue is resolved with
   latest changes in GitLab Runner 1.8 which receives GitLab credentials with
   build data.
-- Starting with GitLab 8.12, if you have 2FA enabled in your account, you need
-  to pass a personal access token instead of your password in order to login to
-  GitLab's Container Registry.
+- Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
+  to pass a [personal access token][pat] instead of your password in order to
+  login to GitLab's Container Registry.
 
 Your jobs can access all container images that you would normally have access
 to. The only implication is that you can push to the Container Registry of the
@@ -239,3 +239,5 @@ test:
 [update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 [workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
 [jobenv]: ../../ci/variables/README.md#predefined-variables-environment-variables
+[2fa]: ../profile/account/two_factor_authentication.md
+[pat]: ../profile/personal_access_tokens.md

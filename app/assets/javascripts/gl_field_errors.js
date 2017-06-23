@@ -1,6 +1,6 @@
 /* eslint-disable comma-dangle, class-methods-use-this, max-len, space-before-function-paren, arrow-parens, no-param-reassign */
 
-require('./gl_field_error');
+import './gl_field_error';
 
 const customValidationFlag = 'gl-field-error-ignore';
 
@@ -31,9 +31,13 @@ class GlFieldErrors {
    * and prevents disabling of invalid submit button by application.js */
 
   catchInvalidFormSubmit (event) {
-    if (!event.currentTarget.checkValidity()) {
-      event.preventDefault();
-      event.stopPropagation();
+    const $form = $(event.currentTarget);
+
+    if (!$form.attr('novalidate')) {
+      if (!event.currentTarget.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
     }
   }
 

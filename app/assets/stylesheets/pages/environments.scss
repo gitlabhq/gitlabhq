@@ -5,45 +5,13 @@
   }
 }
 
-.environments-list-loading {
-  width: 100%;
-  font-size: 34px;
-}
-
 .environments-folder-name {
   font-weight: normal;
   padding-top: 20px;
 }
 
 .environments-container {
-  .table-holder {
-    width: 100%;
-
-    @media (max-width: $screen-sm-max) {
-      overflow: auto;
-    }
-  }
-
-  .table.ci-table {
-    .environments-actions {
-      min-width: 300px;
-    }
-
-    .environments-commit,
-    .environments-actions {
-      width: 20%;
-    }
-
-    .environments-date {
-      width: 10%;
-    }
-
-    .environments-name,
-    .environments-deploy,
-    .environments-build {
-      width: 15%;
-    }
-
+  .ci-table {
     .deployment-column {
       > span {
         word-break: break-all;
@@ -69,12 +37,12 @@
       }
     }
 
-    .commit-title {
-      margin: 0;
+    .btn .text-center {
+      display: inline;
     }
 
-    .avatar-image-container {
-      text-decoration: none;
+    .commit-title {
+      margin: 0;
     }
 
     .icon-play {
@@ -95,7 +63,7 @@
     }
 
     .build-link,
-    .branch-name {
+    .ref-name {
       color: $gl-text-color;
     }
 
@@ -140,7 +108,7 @@
     }
 
     .branch-commit {
-      .commit-id {
+      .commit-sha {
         margin-right: 0;
       }
     }
@@ -152,6 +120,59 @@
       width: 100%;
       text-align: left;
     }
+  }
+}
+
+.gl-responsive-table-row {
+  .environments-actions {
+    @media (min-width: $screen-md-min) {
+      text-align: right;
+    }
+
+    @media (max-width: $screen-sm-max) {
+      background-color: $gray-normal;
+      align-self: stretch;
+      border-top: 1px solid $border-color;
+
+      .environment-action-buttons {
+        padding: 10px 5px;
+        display: flex;
+
+        .btn {
+          border-radius: 3px;
+        }
+
+        > .btn-group,
+        > .external-url,
+        > .btn {
+          flex: 1;
+          flex-basis: 28px;
+          margin: 0 5px;
+        }
+
+        .dropdown-new {
+          width: 100%;
+        }
+
+        .dropdown-menu {
+          min-width: initial;
+        }
+      }
+    }
+  }
+
+  .branch-commit {
+    max-width: 100%;
+  }
+}
+
+.folder-row {
+  padding: 15px 0;
+  border-bottom: 1px solid $white-normal;
+
+  @media (max-width: $screen-sm-max) {
+    border-top: 1px solid $white-normal;
+    margin-top: 10px;
   }
 }
 

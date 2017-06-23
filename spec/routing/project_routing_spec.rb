@@ -201,10 +201,12 @@ describe 'project routing' do
   #                         POST   /:project_id/deploy_keys(.:format)          deploy_keys#create
   #  new_project_deploy_key GET    /:project_id/deploy_keys/new(.:format)      deploy_keys#new
   #      project_deploy_key GET    /:project_id/deploy_keys/:id(.:format)      deploy_keys#show
+  # edit_project_deploy_key GET    /:project_id/deploy_keys/:id/edit(.:format) deploy_keys#edit
+  #      project_deploy_key PATCH  /:project_id/deploy_keys/:id(.:format)      deploy_keys#update
   #                         DELETE /:project_id/deploy_keys/:id(.:format)      deploy_keys#destroy
   describe Projects::DeployKeysController, 'routing' do
     it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :new, :create] }
+      let(:actions)    { [:index, :new, :create, :edit, :update] }
       let(:controller) { 'deploy_keys' }
     end
   end
@@ -346,6 +348,18 @@ describe 'project routing' do
     it_behaves_like 'RESTful project resources' do
       let(:actions)    { [:index, :create, :destroy, :edit, :update] }
       let(:controller) { 'hooks' }
+    end
+  end
+
+  # retry_namespace_project_hook_hook_log GET /:project_id/hooks/:hook_id/hook_logs/:id/retry(.:format) projects/hook_logs#retry
+  # namespace_project_hook_hook_log       GET /:project_id/hooks/:hook_id/hook_logs/:id(.:format)       projects/hook_logs#show
+  describe Projects::HookLogsController, 'routing' do
+    it 'to #retry' do
+      expect(get('/gitlab/gitlabhq/hooks/1/hook_logs/1/retry')).to route_to('projects/hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
+    end
+
+    it 'to #show' do
+      expect(get('/gitlab/gitlabhq/hooks/1/hook_logs/1')).to route_to('projects/hook_logs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
     end
   end
 

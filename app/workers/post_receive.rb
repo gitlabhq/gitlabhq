@@ -17,16 +17,19 @@ class PostReceive
     post_received = Gitlab::GitPostReceive.new(project, identifier, changes)
 
     if is_wiki
-      # Nothing defined here yet.
+      process_wiki_changes(post_received)
     else
       process_project_changes(post_received)
     end
   end
 
-  def process_project_changes(post_received)
-    post_received.changes.each do |change|
-      oldrev, newrev, ref = change.strip.split(' ')
+  private
 
+  def process_project_changes(post_received)
+    changes = []
+    refs = Set.new
+
+    post_received.changes_refs do |oldrev, newrev, ref|
       @user ||= post_received.identify(newrev)
 
       unless @user
@@ -39,10 +42,22 @@ class PostReceive
       elsif Gitlab::Git.branch_ref?(ref)
         GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       end
+
+      changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
+      refs << ref
     end
+
+    after_project_changes_hooks(post_received, @user, refs.to_a, changes)
   end
 
-  private
+  def after_project_changes_hooks(post_received, user, refs, changes)
+    hook_data = Gitlab::DataBuilder::Repository.update(post_received.project, user, changes, refs)
+    SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
+  end
+
+  def process_wiki_changes(post_received)
+    # Nothing defined here yet.
+  end
 
   # To maintain backwards compatibility, we accept both gl_repository or
   # repository paths as project identifiers. Our plan is to migrate to
