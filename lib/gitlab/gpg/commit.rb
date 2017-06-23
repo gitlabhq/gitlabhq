@@ -32,7 +32,8 @@ module Gitlab
       def update_signature!(cached_signature)
         using_keychain do |gpg_key|
           cached_signature.update_attributes!(
-            valid_signature: gpg_signature_valid_signature_value(gpg_key)
+            valid_signature: gpg_signature_valid_signature_value(gpg_key),
+            gpg_key: gpg_key
           )
         end
       end
