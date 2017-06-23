@@ -3,7 +3,7 @@
 @import "bootstrap/variables";
 
 header.navbar-gitlab-new {
-  color: $gray-normal;
+  color: $white-light;
   background-color: $purple-900;
   border-bottom: 0;
 
@@ -26,20 +26,22 @@ header.navbar-gitlab-new {
         align-items: center;
         height: 100%;
         padding-top: 3px;
-        padding-left: 9px;
-        padding-right: 9px;
-        margin-left: -9px;
+        padding-right: $gl-padding;
+        padding-left: $gl-padding;
+        margin-left: -$gl-padding;
         border-bottom: 3px solid transparent;
 
         @media (min-width: $screen-sm-min) {
           padding-right: $gl-padding;
           padding-left: $gl-padding;
-          margin-left: -16px;
         }
 
         svg {
           margin-top: -3px;
-          margin-right: 10px;
+
+          @media (min-width: $screen-sm-min) {
+            margin-right: 10px;
+          }
         }
 
         &:hover,
@@ -71,10 +73,15 @@ header.navbar-gitlab-new {
   .navbar-collapse {
     padding-left: 0;
     color: $white-light;
+    box-shadow: 0;
 
     @media (max-width: $screen-xs-max) {
       margin-left: -$gl-padding;
       margin-right: -10px;
+    }
+
+    .dropdown-bold-header {
+      color: initial;
     }
 
     .nav {
@@ -91,7 +98,7 @@ header.navbar-gitlab-new {
     .navbar-toggle {
       min-width: 45px;
       padding: 6px $gl-padding;
-      margin-right: -5px;
+      margin-right: -7px;
       font-size: 14px;
       text-align: center;
       color: currentColor;
@@ -107,6 +114,7 @@ header.navbar-gitlab-new {
 
     .navbar-nav {
       @media (max-width: $screen-xs-max) {
+        display: flex;
         padding-right: 10px;
       }
 
@@ -117,22 +125,37 @@ header.navbar-gitlab-new {
       }
     }
 
-    .nav > li > a {
-      opacity: .9;
-      will-change: opacity;
-
-      &:hover,
-      &:focus {
-        color: $white-light;
-        opacity: 1;
-
-        > svg {
-          fill: $white-light;
+    .nav > li {
+      &.header-user {
+        @media (max-width: $screen-xs-max) {
+          padding-left: 10px;
         }
+      }
+
+      > a {
+        background: none;
+        opacity: .9;
+        will-change: opacity;
 
         &.header-user-dropdown-toggle {
           .header-user-avatar {
-            border: 0;
+            border-color: $white-light;
+          }
+        }
+
+        &:hover,
+        &:focus {
+          color: $white-light;
+          opacity: 1;
+
+          > svg {
+            fill: $white-light;
+          }
+
+          &.header-user-dropdown-toggle {
+            .header-user-avatar {
+              border-color: $white-light;
+            }
           }
         }
       }
@@ -219,7 +242,8 @@ header.navbar-gitlab-new {
   }
 
   .search-input-wrap {
-    .search-icon {
+    .search-icon,
+    .clear-icon {
       color: rgba($white-light, .6);
     }
   }
