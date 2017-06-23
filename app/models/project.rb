@@ -514,6 +514,8 @@ class Project < ActiveRecord::Base
   end
 
   def perform_housekeeping
+    return unless repo_exists?
+
     run_after_commit do
       begin
         Projects::HousekeepingService.new(self).execute
