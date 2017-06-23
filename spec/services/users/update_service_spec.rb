@@ -7,7 +7,7 @@ describe Users::UpdateService, services: true do
     it 'updates the name' do
       result = update_user(user, name: 'New Name')
 
-      expect(result).to eq({ status: :success })
+      expect(result).to eq(status: :success)
       expect(user.name).to eq('New Name')
     end
 
@@ -30,9 +30,9 @@ describe Users::UpdateService, services: true do
       expect(user.name).to eq('New Name')
     end
 
-    it 'returns an error result when record cannot be updated' do
+    it 'raises an error when record cannot be updated' do
       expect do
-        update_user(user, { email: 'invalid' })
+        update_user(user, email: 'invalid')
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
 

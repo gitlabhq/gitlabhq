@@ -1,5 +1,4 @@
 module Users
-  # Service for updating a user.
   class UpdateService < BaseService
     def initialize(user, params = {})
       @user = user
@@ -7,6 +6,8 @@ module Users
     end
 
     def execute(validate: true, &block)
+      yield(@user) if block_given?
+
       assign_attributes(&block)
 
       if @user.save(validate: validate)
@@ -27,8 +28,6 @@ module Users
     private
 
     def assign_attributes(&block)
-      yield(@user) if block_given?
-
       @user.assign_attributes(params) if params.any?
     end
   end

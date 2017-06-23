@@ -217,10 +217,8 @@ class Admin::UsersController < Admin::ApplicationController
     ]
   end
 
-  def update_user
-    result = Users::UpdateService.new(user).execute do |user|
-      yield(user)
-    end
+  def update_user(&block)
+    result = Users::UpdateService.new(user).execute(&block)
 
     result[:status] == :success
   end
