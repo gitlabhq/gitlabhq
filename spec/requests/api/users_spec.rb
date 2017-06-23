@@ -11,7 +11,7 @@ describe API::Users do
   let(:not_existing_user_id) { (User.maximum('id') || 0 ) + 10 }
   let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
 
-  describe "GET /users" do
+  describe 'GET /users' do
     context "when unauthenticated" do
       it "returns authentication error" do
         get api("/users")
@@ -76,6 +76,12 @@ describe API::Users do
 
         expect(response).to have_http_status(403)
       end
+
+      it 'does not reveal the `is_admin` flag of the user' do
+        get api('/users', user)
+
+        expect(json_response.first.keys).not_to include 'is_admin'
+      end
     end
 
     context "when admin" do
@@ -92,6 +98,7 @@ describe API::Users do
         expect(json_response.first.keys).to include 'two_factor_enabled'
         expect(json_response.first.keys).to include 'last_sign_in_at'
         expect(json_response.first.keys).to include 'confirmed_at'
+        expect(json_response.first.keys).to include 'is_admin'
       end
 
       it "returns an array of external users" do

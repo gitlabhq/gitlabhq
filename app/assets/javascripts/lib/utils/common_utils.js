@@ -86,18 +86,25 @@
       // This is required to handle non-unicode characters in hash
       hash = decodeURIComponent(hash);
 
+      var fixedTabs = document.querySelector('.js-tabs-affix');
+      var fixedNav = document.querySelector('.navbar-gitlab');
+
+      var adjustment = 0;
+      if (fixedNav) adjustment -= fixedNav.offsetHeight;
+
       // scroll to user-generated markdown anchor if we cannot find a match
       if (document.getElementById(hash) === null) {
         var target = document.getElementById('user-content-' + hash);
         if (target && target.scrollIntoView) {
           target.scrollIntoView(true);
+          window.scrollBy(0, adjustment);
         }
       } else {
         // only adjust for fixedTabs when not targeting user-generated content
-        var fixedTabs = document.querySelector('.js-tabs-affix');
         if (fixedTabs) {
-          window.scrollBy(0, -fixedTabs.offsetHeight);
+          adjustment -= fixedTabs.offsetHeight;
         }
+        window.scrollBy(0, adjustment);
       }
     };
 

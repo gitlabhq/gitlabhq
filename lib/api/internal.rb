@@ -71,6 +71,7 @@ module API
       end
 
       #
+<<<<<<< HEAD
       # Get a ssh key using the fingerprint
       #
       get "/authorized_keys" do
@@ -84,10 +85,18 @@ module API
 
       #
       # Discover user by ssh key
+=======
+      # Discover user by ssh key or user id
+>>>>>>> ce/master
       #
       get "/discover" do
-        key = Key.find(params[:key_id])
-        present key.user, with: Entities::UserSafe
+        if params[:key_id]
+          key = Key.find(params[:key_id])
+          user = key.user
+        elsif params[:user_id]
+          user = User.find_by(id: params[:user_id])
+        end
+        present user, with: Entities::UserSafe
       end
 
       get "/check" do

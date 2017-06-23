@@ -1,13 +1,13 @@
 <script>
 /* eslint-disable no-param-reassign */
-import asyncButtonComponent from '../../pipelines/components/async_button.vue';
-import pipelinesActionsComponent from '../../pipelines/components/pipelines_actions.vue';
-import pipelinesArtifactsComponent from '../../pipelines/components/pipelines_artifacts.vue';
-import ciBadge from './ci_badge_link.vue';
-import pipelineStage from '../../pipelines/components/stage.vue';
-import pipelineUrl from '../../pipelines/components/pipeline_url.vue';
-import pipelinesTimeago from '../../pipelines/components/time_ago.vue';
-import commitComponent from './commit.vue';
+import asyncButtonComponent from './async_button.vue';
+import pipelinesActionsComponent from './pipelines_actions.vue';
+import pipelinesArtifactsComponent from './pipelines_artifacts.vue';
+import ciBadge from '../../vue_shared/components/ci_badge_link.vue';
+import pipelineStage from './stage.vue';
+import pipelineUrl from './pipeline_url.vue';
+import pipelinesTimeago from './time_ago.vue';
+import commitComponent from '../../vue_shared/components/commit.vue';
 
 /**
  * Pipeline table row.
@@ -17,10 +17,6 @@ import commitComponent from './commit.vue';
 export default {
   props: {
     pipeline: {
-      type: Object,
-      required: true,
-    },
-    service: {
       type: Object,
       required: true,
     },
@@ -271,7 +267,6 @@ export default {
         <pipelines-actions-component
           v-if="pipeline.details.manual_actions.length"
           :actions="pipeline.details.manual_actions"
-          :service="service"
           />
 
         <pipelines-artifacts-component
@@ -282,7 +277,6 @@ export default {
 
         <async-button-component
           v-if="pipeline.flags.retryable"
-          :service="service"
           :endpoint="pipeline.retry_path"
           css-class="js-pipelines-retry-button btn-default btn-retry"
           title="Retry"
@@ -291,7 +285,6 @@ export default {
 
         <async-button-component
           v-if="pipeline.flags.cancelable"
-          :service="service"
           :endpoint="pipeline.cancel_path"
           css-class="js-pipelines-cancel-button btn-remove"
           title="Cancel"

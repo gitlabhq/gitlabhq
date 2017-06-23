@@ -16,8 +16,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        Gitlab::PollingInterval.set_header(response, interval: 3_000)
-
         render json: {
           environments: EnvironmentSerializer
             .new(project: @project, current_user: @current_user)
@@ -132,6 +130,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+<<<<<<< HEAD
   # The rollout status of an enviroment
   def status
     unless @environment.deployment_service_ready?
@@ -148,6 +147,15 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     else
       serializer = RolloutStatusSerializer.new(project: @project, current_user: @current_user)
       render json: serializer.represent(rollout_status)
+=======
+  def additional_metrics
+    respond_to do |format|
+      format.json do
+        additional_metrics = environment.additional_metrics || {}
+
+        render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
+      end
+>>>>>>> ce/master
     end
   end
 

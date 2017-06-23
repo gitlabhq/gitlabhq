@@ -26,7 +26,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
   end
 
   def path_valid_for_record?(record, value)
-    full_path = record.respond_to?(:full_path) ? record.full_path : value
+    full_path = record.respond_to?(:build_full_path) ? record.build_full_path : value
 
     return true unless full_path
 

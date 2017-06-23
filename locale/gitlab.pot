@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 21:59-0500\n"
-"PO-Revision-Date: 2017-06-15 21:59-0500\n"
+"POT-Creation-Date: 2017-06-19 15:50-0500\n"
+"PO-Revision-Date: 2017-06-19 15:50-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,6 +17,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid "%d additional commit have been omitted to prevent performance issues."
+msgid_plural "%d additional commits have been omitted to prevent performance issues."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr ""
@@ -62,7 +72,22 @@ msgstr[1] ""
 msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
 msgstr ""
 
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr ""
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr ""
+
 msgid "Branches"
+msgstr ""
+
+msgid "Browse Directory"
+msgstr ""
+
+msgid "Browse File"
+msgstr ""
+
+msgid "Browse Files"
 msgstr ""
 
 msgid "Browse files"
@@ -170,6 +195,9 @@ msgid "CommitMessage|Add %{file_name}"
 msgstr ""
 
 msgid "Commits"
+msgstr ""
+
+msgid "Commits feed"
 msgstr ""
 
 msgid "Commits|History"
@@ -322,6 +350,9 @@ msgid "Failed to remove the pipeline schedule"
 msgstr ""
 
 msgid "Files"
+msgstr ""
+
+msgid "Filter by commit message"
 msgstr ""
 
 msgid "Find by path"
@@ -946,7 +977,13 @@ msgstr ""
 msgid "Upload file"
 msgstr ""
 
+msgid "UploadLink|click to upload"
+msgstr ""
+
 msgid "Use your global notification setting"
+msgstr ""
+
+msgid "View open merge request"
 msgstr ""
 
 msgid "VisibilityLevel|Internal"

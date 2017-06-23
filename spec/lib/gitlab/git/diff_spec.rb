@@ -175,6 +175,14 @@ EOT
           expect(diff).to be_too_large
         end
       end
+
+      context 'when the patch passed is not UTF-8-encoded' do
+        let(:raw_patch) { @raw_diff_hash[:diff].encode(Encoding::ASCII_8BIT) }
+
+        it 'encodes diff patch to UTF-8' do
+          expect(diff.diff.encoding).to eq(Encoding::UTF_8)
+        end
+      end
     end
   end
 

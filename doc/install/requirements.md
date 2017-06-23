@@ -87,6 +87,14 @@ if your available memory changes.
 Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about many you need of those.
 
 ## Database
+<<<<<<< HEAD
+
+The server running the database should have _at least_ 5-10 GB of storage
+available, though the exact requirements depend on the size of the GitLab
+installation (e.g. the number of users, projects, etc).
+
+We currently support the following databases:
+=======
 
 The server running the database should have _at least_ 5-10 GB of storage
 available, though the exact requirements depend on the size of the GitLab
@@ -94,9 +102,19 @@ installation (e.g. the number of users, projects, etc).
 
 We currently support the following databases:
 
-- PostgreSQL
-- MySQL/MariaDB
+- PostgreSQL (highly recommended)
+- MySQL/MariaDB (doesn't support all features)
 
+We **highly recommend** the use of PostgreSQL instead of MySQL/MariaDB as not all
+features of GitLab work with MySQL/MariaDB:
+>>>>>>> ce/master
+
+1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
+   See [issue #30472][30472] for more information.
+1. GitLab Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
+1. [Zero downtime migrations][zero] do not work with MySQL
+
+<<<<<<< HEAD
 We **highly recommend** the use of PostgreSQL instead of MySQL/MariaDB as not all
 features of GitLab may work with MySQL/MariaDB:
 
@@ -105,6 +123,8 @@ features of GitLab may work with MySQL/MariaDB:
 1. GitLab Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
 1. [Zero downtime migrations][zero] do not work with MySQL
 
+=======
+>>>>>>> ce/master
 Existing users using GitLab with MySQL/MariaDB are advised to
 [migrate to PostgreSQL](../update/mysql_to_postgresql.md) instead.
 

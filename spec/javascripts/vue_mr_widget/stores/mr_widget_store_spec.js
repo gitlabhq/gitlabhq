@@ -18,6 +18,7 @@ describe('MergeRequestStore', () => {
       store.setData({ ...mockData, work_in_progress: !mockData.work_in_progress });
       expect(store.hasSHAChanged).toBe(false);
     });
+<<<<<<< HEAD
   });
 
   describe('setCodeclimateHeadMetrics', () => {
@@ -59,5 +60,7 @@ describe('MergeRequestStore', () => {
     it('should return the resolved issues', () => {
       expect(store.codeclimateMetrics.resolvedIssues[0]).toEqual(baseIssues[1]);
     });
+=======
+>>>>>>> ce/master
   });
 });

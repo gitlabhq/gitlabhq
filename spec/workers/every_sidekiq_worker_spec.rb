@@ -7,7 +7,11 @@ describe 'Every Sidekiq worker' do
     ee_modules = root.join('ee').to_s
 
     workers = Dir[root.join('**', '*.rb')]
+<<<<<<< HEAD
       .reject { |path| path.start_with?(concerns, ee_modules) }
+=======
+      .reject { |path| path.start_with?(concerns) }
+>>>>>>> ce/master
 
     workers.map do |path|
       ns = Pathname.new(path).relative_path_from(root).to_s.gsub('.rb', '')

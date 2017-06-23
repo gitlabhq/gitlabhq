@@ -7,7 +7,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleAwardEmoji
   include IssuableCollections
 
-  before_action :module_enabled
+  before_action :check_merge_requests_available!
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge,
     :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds,
@@ -520,10 +520,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return render_404 unless @conflicts_list.can_be_resolved_by?(current_user)
   end
 
-  def module_enabled
-    return render_404 unless @project.feature_available?(:merge_requests, current_user)
-  end
-
   def validates_merge_request
     # Show git not found page
     # if there is no saved commits between source & target branch
@@ -647,10 +643,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge_request_params
     params.require(:merge_request)
+<<<<<<< HEAD
       .permit(merge_request_params_ce << merge_request_params_ee)
+=======
+      .permit(merge_request_params_attributes)
+>>>>>>> ce/master
   end
 
-  def merge_request_params_ce
+  def merge_request_params_attributes
     [
       :assignee_id,
       :description,
@@ -695,7 +695,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_params
+<<<<<<< HEAD
     params.permit(:should_remove_source_branch, :commit_message, :squash)
+=======
+    params.permit(merge_params_attributes)
+  end
+
+  def merge_params_attributes
+    [:should_remove_source_branch, :commit_message]
+>>>>>>> ce/master
   end
 
   # Make sure merge requests created before 8.0

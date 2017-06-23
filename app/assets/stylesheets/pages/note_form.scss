@@ -103,6 +103,42 @@
   }
 }
 
+.confidential-issue-warning {
+  background-color: $gray-normal;
+  border-radius: 3px;
+  padding: 3px 12px;
+  margin: auto;
+  margin-top: 0;
+  text-align: center;
+  font-size: 12px;
+  align-items: center;
+
+  @media (max-width: $screen-md-max) {
+    // On smaller devices the warning becomes the fourth item in the list,
+    // rather than centering, and grows to span the full width of the
+    // comment area.
+    order: 4;
+    margin: 6px auto;
+    width: 100%;
+  }
+
+  .fa {
+    margin-right: 8px;
+  }
+}
+
+.right-sidebar-expanded {
+  .confidential-issue-warning {
+    // When the sidebar is open the warning becomes the fourth item in the list,
+    // rather than centering, and grows to span the full width of the
+    // comment area.
+    order: 4;
+    margin: 6px auto;
+    width: 100%;
+  }
+}
+
+
 .discussion-form {
   padding: $gl-padding-top $gl-padding $gl-padding;
   background-color: $white-light;
@@ -112,8 +148,20 @@
   padding: 6px 0;
 }
 
-.notes-form > li {
-  border: 0;
+.notes.notes-form > li.timeline-entry {
+  @include notes-media('max', $screen-sm-max) {
+    padding: 0;
+  }
+
+  .timeline-content {
+    @include notes-media('max', $screen-sm-max) {
+      margin: 0;
+    }
+  }
+
+  .timeline-entry-inner {
+    border: 0;
+  }
 }
 
 .note-edit-form {
