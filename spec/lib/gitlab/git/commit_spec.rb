@@ -67,6 +67,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
   describe "Commit info from gitaly commit" do
     let(:id) { 'f00' }
     let(:subject) { "My commit".force_encoding('ASCII-8BIT') }
+    let(:body) { subject + "My body".force_encoding('ASCII-8BIT') }
     let(:committer) do
       Gitaly::CommitAuthor.new(
         name: generate(:name),
@@ -83,7 +84,11 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
     let(:gitaly_commit) do
       Gitaly::GitCommit.new(
-        id: id, subject: subject, author: author, committer: committer
+        id: id,
+        subject: subject,
+        body: body,
+        author: author,
+        committer: committer
       )
     end
     let(:commit) { described_class.new(gitaly_commit) }
@@ -91,12 +96,18 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(commit.short_id).to eq(id[0..10]) }
     it { expect(commit.id).to eq(id) }
     it { expect(commit.sha).to eq(id) }
-    it { expect(commit.safe_message).to eq(subject) }
+    it { expect(commit.safe_message).to eq(body) }
     it { expect(commit.created_at).to eq(Time.at(committer.date.seconds)) }
     it { expect(commit.author_email).to eq(author.email) }
     it { expect(commit.author_name).to eq(author.name) }
     it { expect(commit.committer_name).to eq(committer.name) }
     it { expect(commit.committer_email).to eq(committer.email) }
+
+    context 'no body' do
+      let(:body) { "".force_encoding('ASCII-8BIT') }
+
+      it { expect(commit.safe_message).to eq(subject) }
+    end
   end
 
   context 'Class methods' do

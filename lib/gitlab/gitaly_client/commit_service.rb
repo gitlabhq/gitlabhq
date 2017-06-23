@@ -65,6 +65,17 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request).count
       end
 
+      def between(from, to)
+        request = Gitaly::CommitsBetweenRequest.new(
+          repository: @gitaly_repo,
+          from: from,
+          to: to
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :commits_between, request)
+        consume_commits_response(response)
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})
@@ -76,6 +87,10 @@ module Gitlab
           right_commit_id: commit.id,
           paths: options.fetch(:paths, [])
         }
+      end
+
+      def consume_commits_response(response)
+        response.flat_map { |r| r.commits }
       end
     end
   end
