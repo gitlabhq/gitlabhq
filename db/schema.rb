@@ -625,6 +625,20 @@ ActiveRecord::Schema.define(version: 20170627211700) do
 
   add_index "geo_repository_deleted_events", ["project_id"], name: "index_geo_repository_deleted_events_on_project_id", using: :btree
 
+  create_table "geo_repository_renamed_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
+    t.text "old_path_with_namespace", null: false
+    t.text "new_path_with_namespace", null: false
+    t.text "old_wiki_path_with_namespace", null: false
+    t.text "new_wiki_path_with_namespace", null: false
+    t.text "old_project_name", null: false
+    t.text "new_project_name", null: false
+  end
+
+  add_index "geo_repository_renamed_events", ["project_id"], name: "index_geo_repository_renamed_events_on_project_id", using: :btree
+
   create_table "geo_repository_updated_events", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "branches_affected", null: false
@@ -1863,6 +1877,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
+  add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
