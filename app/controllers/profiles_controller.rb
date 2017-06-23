@@ -27,7 +27,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def reset_private_token
-    Users::UpdateService.new(@user).execute!(skip_authorization: true) do |user|
+    Users::UpdateService.new(@user).execute! do |user|
       user.reset_authentication_token!
     end
 
@@ -37,7 +37,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def reset_incoming_email_token
-    Users::UpdateService.new(@user).execute!(skip_authorization: true) do |user|
+    Users::UpdateService.new(@user).execute! do |user|
       user.reset_incoming_email_token!
     end
 
@@ -47,7 +47,7 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def reset_rss_token
-    Users::UpdateService.new(@user).execute!(skip_authorization: true) do |user|
+    Users::UpdateService.new(@user).execute! do |user|
       user.reset_rss_token!
     end
 
