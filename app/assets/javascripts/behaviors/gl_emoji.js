@@ -1,8 +1,5 @@
 import installCustomElements from 'document-register-element';
-import emojiMap from 'emojis/digests.json';
-import emojiAliases from 'emojis/aliases.json';
-import { getUnicodeSupportMap } from './gl_emoji/unicode_support_map';
-import { isEmojiUnicodeSupported } from './gl_emoji/is_emoji_unicode_supported';
+import { emojiMap, emojiAliases, isEmojiUnicodeSupported, getUnicodeSupportMap } from '../emoji';
 
 installCustomElements(window);
 

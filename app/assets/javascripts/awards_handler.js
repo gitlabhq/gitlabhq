@@ -2,11 +2,8 @@
 /* global Flash */
 
 import Cookies from 'js-cookie';
-
-import emojiMap from 'emojis/digests.json';
-import emojiAliases from 'emojis/aliases.json';
 import { glEmojiTag } from './behaviors/gl_emoji';
-import isEmojiNameValid from './behaviors/gl_emoji/is_emoji_name_valid';
+import { emojiMap, emojiAliases, isEmojiNameValid } from './emoji';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';

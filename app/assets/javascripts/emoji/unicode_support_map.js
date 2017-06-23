@@ -1,4 +1,4 @@
-import AccessorUtilities from '../../lib/utils/accessor';
+import AccessorUtilities from '../lib/utils/accessor';
 
 const unicodeSupportTestMap = {
   // man, student (emojione does not have any of these yet), http://emojipedia.org/emoji-zwj-sequences/
@@ -140,7 +140,7 @@ function generateUnicodeSupportMap(testMap) {
   return resultMap;
 }
 
-function getUnicodeSupportMap() {
+export default function getUnicodeSupportMap() {
   let unicodeSupportMap;
   let userAgentFromCache;
 
@@ -165,8 +165,3 @@ function getUnicodeSupportMap() {
 
   return unicodeSupportMap;
 }
-
-export {
-  getUnicodeSupportMap,
-  generateUnicodeSupportMap,
-};

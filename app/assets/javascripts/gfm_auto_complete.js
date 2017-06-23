@@ -1,8 +1,7 @@
-import emojiMap from 'emojis/digests.json';
-import emojiAliases from 'emojis/aliases.json';
-import { glEmojiTag } from '~/behaviors/gl_emoji';
-import glRegexp from '~/lib/utils/regexp';
-import AjaxCache from '~/lib/utils/ajax_cache';
+import { glEmojiTag } from './behaviors/gl_emoji';
+import { emojiMap, emojiAliases } from './emoji';
+import glRegexp from './lib/utils/regexp';
+import AjaxCache from './lib/utils/ajax_cache';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
