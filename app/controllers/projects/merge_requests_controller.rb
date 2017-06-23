@@ -13,7 +13,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues, :commit_change_content
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
-  before_action :define_show_vars, only: [:diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
+  before_action :define_show_vars, only: [:commits, :conflicts, :conflict_for_path, :builds, :pipelines]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :conflict_for_path, :pipelines]
   before_action :close_merge_request_without_source_project, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :check_if_can_be_merged, only: :show
@@ -102,8 +102,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html { define_discussion_vars }
+      format.html do
+        define_show_vars
+        define_discussion_vars
+      end
       format.json do
+        define_show_vars(define_pipelines: false)
         define_diff_vars
         define_diff_comment_vars
 
@@ -470,7 +474,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-  def define_show_vars
+  def define_show_vars(define_pipelines: true)
     @noteable = @merge_request
     @commits_count = @merge_request.commits_count
 
@@ -480,7 +484,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     labels
-    define_pipelines_vars
+    define_pipelines_vars if define_pipelines
   end
 
   # Discussion tab data is rendered on html responses of actions

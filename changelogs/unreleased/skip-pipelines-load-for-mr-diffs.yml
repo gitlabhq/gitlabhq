@@ -1,0 +1,4 @@
+---
+title: Skip loading pipelines when loading async merge request diffs
+merge_request:
+author:
