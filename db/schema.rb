@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170606202615) do
+ActiveRecord::Schema.define(version: 20170621102400) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
@@ -123,6 +124,8 @@ ActiveRecord::Schema.define(version: 20170606202615) do
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
     t.boolean "prometheus_metrics_enabled", default: false, null: false
+    t.boolean "help_page_hide_commercial_content", default: false
+    t.string "help_page_support_url"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -544,7 +547,6 @@ ActiveRecord::Schema.define(version: 20170606202615) do
     t.integer "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer "position", default: 0
     t.string "branch_name"
     t.text "description"
     t.integer "milestone_id"
@@ -690,6 +692,22 @@ ActiveRecord::Schema.define(version: 20170606202615) do
   add_index "members", ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
 
+  create_table "merge_request_diff_files", id: false, force: :cascade do |t|
+    t.integer "merge_request_diff_id", null: false
+    t.integer "relative_order", null: false
+    t.boolean "new_file", null: false
+    t.boolean "renamed_file", null: false
+    t.boolean "deleted_file", null: false
+    t.boolean "too_large", null: false
+    t.string "a_mode", null: false
+    t.string "b_mode", null: false
+    t.text "new_path", null: false
+    t.text "old_path", null: false
+    t.text "diff", null: false
+  end
+
+  add_index "merge_request_diff_files", ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_files_on_mr_diff_id_and_order", unique: true, using: :btree
+
   create_table "merge_request_diffs", force: :cascade do |t|
     t.string "state"
     t.text "st_commits"
@@ -735,7 +753,6 @@ ActiveRecord::Schema.define(version: 20170606202615) do
     t.integer "target_project_id", null: false
     t.integer "iid"
     t.text "description"
-    t.integer "position", default: 0
     t.datetime "locked_at"
     t.integer "updated_by_id"
     t.text "merge_error"
@@ -760,6 +777,7 @@ ActiveRecord::Schema.define(version: 20170606202615) do
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
   add_index "merge_requests", ["deleted_at"], name: "index_merge_requests_on_deleted_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "merge_requests", ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id", using: :btree
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
   add_index "merge_requests", ["source_project_id"], name: "index_merge_requests_on_source_project_id", using: :btree
@@ -875,6 +893,18 @@ ActiveRecord::Schema.define(version: 20170606202615) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "events"
+    t.boolean "new_note"
+    t.boolean "new_issue"
+    t.boolean "reopen_issue"
+    t.boolean "close_issue"
+    t.boolean "reassign_issue"
+    t.boolean "new_merge_request"
+    t.boolean "reopen_merge_request"
+    t.boolean "close_merge_request"
+    t.boolean "reassign_merge_request"
+    t.boolean "merge_merge_request"
+    t.boolean "failed_pipeline"
+    t.boolean "success_pipeline"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
@@ -1517,6 +1547,7 @@ ActiveRecord::Schema.define(version: 20170606202615) do
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
+  add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade

@@ -43,9 +43,12 @@ module API
       expose :external
     end
 
-    class UserWithPrivateDetails < UserPublic
-      expose :private_token
+    class UserWithAdmin < UserPublic
       expose :admin?, as: :is_admin
+    end
+
+    class UserWithPrivateDetails < UserWithAdmin
+      expose :private_token
     end
 
     class Email < Grape::Entity
@@ -115,6 +118,7 @@ module API
       expose :only_allow_merge_if_pipeline_succeeds
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
+      expose :printing_merge_request_link_enabled
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end
@@ -480,9 +484,9 @@ module API
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
-        field_names = service.fields.
-          select { |field| options[:include_passwords] || field[:type] != 'password' }.
-          map { |field| field[:name] }
+        field_names = service.fields
+          .select { |field| options[:include_passwords] || field[:type] != 'password' }
+          .map { |field| field[:name] }
         service.properties.slice(*field_names)
       end
     end
@@ -603,6 +607,9 @@ module API
       expose :plantuml_url
       expose :terminal_max_session_time
       expose :polling_interval_multiplier
+      expose :help_page_hide_commercial_content
+      expose :help_page_text
+      expose :help_page_support_url
     end
 
     class Release < Grape::Entity
@@ -804,7 +811,11 @@ module API
       end
 
       class Image < Grape::Entity
-        expose :name
+        expose :name, :entrypoint
+      end
+
+      class Service < Image
+        expose :alias, :command
       end
 
       class Artifacts < Grape::Entity
@@ -848,7 +859,7 @@ module API
         expose :variables
         expose :steps, using: Step
         expose :image, using: Image
-        expose :services, using: Image
+        expose :services, using: Service
         expose :artifacts, using: Artifacts
         expose :cache, using: Cache
         expose :credentials, using: Credentials

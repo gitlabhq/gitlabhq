@@ -9,11 +9,15 @@ describe API::Commits do
   let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
   let!(:another_note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'another comment on a commit') }
 
-  before { project.team << [user, :reporter] }
+  before do
+    project.team << [user, :reporter]
+  end
 
   describe "List repository commits" do
     context "authorized user" do
-      before { project.team << [user2, :reporter] }
+      before do
+        project.team << [user2, :reporter]
+      end
 
       it "returns project commits" do
         commit = project.repository.commit
@@ -514,7 +518,9 @@ describe API::Commits do
 
   describe "Get the diff of a commit" do
     context "authorized user" do
-      before { project.team << [user2, :reporter] }
+      before do
+        project.team << [user2, :reporter]
+      end
 
       it "returns the diff of the selected commit" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff", user)

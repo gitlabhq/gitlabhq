@@ -51,7 +51,6 @@ describe('Issuable output', () => {
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, issueShowInterceptor);
   });
 
   it('should render a title/description/edited and update title/description/edited on update', (done) => {
@@ -126,7 +125,7 @@ describe('Issuable output', () => {
 
   describe('updateIssuable', () => {
     it('fetches new data after update', (done) => {
-      spyOn(vm.service, 'getData');
+      spyOn(vm.service, 'getData').and.callThrough();
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {

@@ -29,7 +29,9 @@ describe ProjectsController do
 
   describe "GET show" do
     context "user not project member" do
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       context "user does not have access to project" do
         let(:private_project) { create(:empty_project, :private) }
@@ -108,7 +110,9 @@ describe ProjectsController do
     context "project with empty repo" do
       let(:empty_project) { create(:project_empty_repo, :public) }
 
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
@@ -128,7 +132,9 @@ describe ProjectsController do
     context "project with broken repo" do
       let(:empty_project) { create(:project_broken_repo, :public) }
 
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do

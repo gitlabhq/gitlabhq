@@ -32,7 +32,7 @@ const normalizeNewlines = function(str) {
 (function() {
   this.Notes = (function() {
     const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
-    const REGEX_SLASH_COMMANDS = /^\/\w+.*$/gm;
+    const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
     Notes.interval = null;
 
@@ -56,6 +56,7 @@ const normalizeNewlines = function(str) {
       this.toggleCommitList = this.toggleCommitList.bind(this);
       this.postComment = this.postComment.bind(this);
       this.clearFlashWrapper = this.clearFlash.bind(this);
+      this.onHashChange = this.onHashChange.bind(this);
 
       this.notes_url = notes_url;
       this.note_ids = note_ids;
@@ -127,7 +128,9 @@ const normalizeNewlines = function(str) {
       $(document).on('ajax:success', '.js-main-target-form', this.resetMainTargetForm);
       $(document).on('ajax:complete', '.js-main-target-form', this.reenableTargetFormSubmitButton);
       // when a key is clicked on the notes
-      return $(document).on('keydown', '.js-note-text', this.keydownNoteText);
+      $(document).on('keydown', '.js-note-text', this.keydownNoteText);
+      // When the URL fragment/hash has changed, `#note_xxx`
+      return $(window).on('hashchange', this.onHashChange);
     };
 
     Notes.prototype.cleanBinding = function() {
@@ -148,6 +151,7 @@ const normalizeNewlines = function(str) {
       $(document).off('ajax:success', '.js-main-target-form');
       $(document).off('ajax:success', '.js-discussion-note-form');
       $(document).off('ajax:complete', '.js-main-target-form');
+      $(window).off('hashchange', this.onHashChange);
     };
 
     Notes.initCommentTypeToggle = function (form) {
@@ -183,7 +187,7 @@ const normalizeNewlines = function(str) {
           if ($textarea.val() !== '') {
             return;
           }
-          myLastNote = $(`li.note[data-author-id='${gon.current_user_id}'][data-editable]:last`, $textarea.closest('.note, #notes'));
+          myLastNote = $(`li.note[data-author-id='${gon.current_user_id}'][data-editable]:last`, $textarea.closest('.note, .notes_holder, #notes'));
           if (myLastNote.length) {
             myLastNoteEditBtn = myLastNote.find('.js-note-edit');
             return myLastNoteEditBtn.trigger('click', [true, myLastNote]);
@@ -280,7 +284,7 @@ const normalizeNewlines = function(str) {
       return this.initRefresh();
     };
 
-    Notes.prototype.handleSlashCommands = function(noteEntity) {
+    Notes.prototype.handleQuickActions = function(noteEntity) {
       var votesBlock;
       if (noteEntity.commands_changes) {
         if ('merge' in noteEntity.commands_changes) {
@@ -298,8 +302,29 @@ const normalizeNewlines = function(str) {
     Notes.prototype.setupNewNote = function($note) {
       // Update datetime format on the recent note
       gl.utils.localTimeAgo($note.find('.js-timeago'), false);
+
       this.collapseLongCommitList();
       this.taskList.init();
+
+      // This stops the note highlight, #note_xxx`, from being removed after real time update
+      // The `:target` selector does not re-evaluate after we replace element in the DOM
+      Notes.updateNoteTargetSelector($note);
+      this.$noteToCleanHighlight = $note;
+    };
+
+    Notes.prototype.onHashChange = function() {
+      if (this.$noteToCleanHighlight) {
+        Notes.updateNoteTargetSelector(this.$noteToCleanHighlight);
+      }
+
+      this.$noteToCleanHighlight = null;
+    };
+
+    Notes.updateNoteTargetSelector = function($note) {
+      const hash = gl.utils.getLocationHash();
+      // Needs to be an explicit true/false for the jQuery `toggleClass(force)`
+      const addTargetClass = Boolean(hash && $note.filter(`#${hash}`).length > 0);
+      $note.toggleClass('target', addTargetClass);
     };
 
     /*
@@ -597,13 +622,12 @@ const normalizeNewlines = function(str) {
       $noteEntityEl = $(noteEntity.html);
       $noteEntityEl.addClass('fade-in-full');
       this.revertNoteEditForm($targetNote);
-      gl.utils.localTimeAgo($('.js-timeago', $noteEntityEl));
       $noteEntityEl.renderGFM();
-      $noteEntityEl.find('.js-task-list-container').taskList('enable');
       // Find the note's `li` element by ID and replace it with the updated HTML
       $note_li = $('.note-row-' + noteEntity.id);
 
       $note_li.replaceWith($noteEntityEl);
+      this.setupNewNote($noteEntityEl);
 
       if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         gl.diffNotesCompileComponents();
@@ -1060,7 +1084,7 @@ const normalizeNewlines = function(str) {
       var targetId = $originalContentEl.data('target-id');
       var targetType = $originalContentEl.data('target-type');
 
-      new gl.GLForm($editForm.find('form'));
+      new gl.GLForm($editForm.find('form'), this.enableGFM);
 
       $editForm.find('form')
         .attr('action', postUrl)
@@ -1198,27 +1222,27 @@ const normalizeNewlines = function(str) {
     };
 
     /**
-     * Identify if comment has any slash commands
+     * Identify if comment has any quick actions
      */
-    Notes.prototype.hasSlashCommands = function(formContent) {
-      return REGEX_SLASH_COMMANDS.test(formContent);
+    Notes.prototype.hasQuickActions = function(formContent) {
+      return REGEX_QUICK_ACTIONS.test(formContent);
     };
 
     /**
-     * Remove slash commands and leave comment with pure message
+     * Remove quick actions and leave comment with pure message
      */
-    Notes.prototype.stripSlashCommands = function(formContent) {
-      return formContent.replace(REGEX_SLASH_COMMANDS, '').trim();
+    Notes.prototype.stripQuickActions = function(formContent) {
+      return formContent.replace(REGEX_QUICK_ACTIONS, '').trim();
     };
 
     /**
-     * Gets appropriate description from slash commands found in provided `formContent`
+     * Gets appropriate description from quick actions found in provided `formContent`
      */
-    Notes.prototype.getSlashCommandDescription = function (formContent, availableSlashCommands = []) {
+    Notes.prototype.getQuickActionDescription = function (formContent, availableQuickActions = []) {
       let tempFormContent;
 
-      // Identify executed slash commands from `formContent`
-      const executedCommands = availableSlashCommands.filter((command, index) => {
+      // Identify executed quick actions from `formContent`
+      const executedCommands = availableQuickActions.filter((command, index) => {
         const commandRegex = new RegExp(`/${command.name}`);
         return commandRegex.test(formContent);
       });
@@ -1276,7 +1300,7 @@ const normalizeNewlines = function(str) {
     };
 
     /**
-     * Create Placeholder System Note DOM element populated with slash command description
+     * Create Placeholder System Note DOM element populated with quick action description
      */
     Notes.prototype.createPlaceholderSystemNote = function ({ formContent, uniqueId }) {
       const $tempNote = $(
@@ -1325,7 +1349,7 @@ const normalizeNewlines = function(str) {
       const { formData, formContent, formAction } = this.getFormData($form);
       let noteUniqueId;
       let systemNoteUniqueId;
-      let hasSlashCommands = false;
+      let hasQuickActions = false;
       let $notesContainer;
       let tempFormContent;
 
@@ -1344,9 +1368,9 @@ const normalizeNewlines = function(str) {
       }
 
       tempFormContent = formContent;
-      if (this.hasSlashCommands(formContent)) {
-        tempFormContent = this.stripSlashCommands(formContent);
-        hasSlashCommands = true;
+      if (this.hasQuickActions(formContent)) {
+        tempFormContent = this.stripQuickActions(formContent);
+        hasQuickActions = true;
       }
 
       // Show placeholder note
@@ -1363,10 +1387,10 @@ const normalizeNewlines = function(str) {
       }
 
       // Show placeholder system note
-      if (hasSlashCommands) {
+      if (hasQuickActions) {
         systemNoteUniqueId = _.uniqueId('tempSystemNote_');
         $notesContainer.append(this.createPlaceholderSystemNote({
-          formContent: this.getSlashCommandDescription(formContent, AjaxCache.get(gl.GfmAutoComplete.dataSources.commands)),
+          formContent: this.getQuickActionDescription(formContent, AjaxCache.get(gl.GfmAutoComplete.dataSources.commands)),
           uniqueId: systemNoteUniqueId,
         }));
       }
@@ -1388,7 +1412,7 @@ const normalizeNewlines = function(str) {
           $notesContainer.find(`#${noteUniqueId}`).remove();
 
           // Reset cached commands list when command is applied
-          if (hasSlashCommands) {
+          if (hasQuickActions) {
             $form.find('textarea.js-note-text').trigger('clear-commands-cache.atwho');
           }
 
@@ -1422,7 +1446,7 @@ const normalizeNewlines = function(str) {
           }
 
           if (note.commands_changes) {
-            this.handleSlashCommands(note);
+            this.handleQuickActions(note);
           }
 
           $form.trigger('ajax:success', [note]);
@@ -1430,7 +1454,7 @@ const normalizeNewlines = function(str) {
           // Submission failed, remove placeholder note and show Flash error message
           $notesContainer.find(`#${noteUniqueId}`).remove();
 
-          if (hasSlashCommands) {
+          if (hasQuickActions) {
             $notesContainer.find(`#${systemNoteUniqueId}`).remove();
           }
 

@@ -203,7 +203,7 @@ class ProjectPolicy < BasePolicy
 
     unless project.feature_available?(:builds, user) && repository_enabled
       cannot!(*named_abilities(:build))
-      cannot!(*named_abilities(:pipeline))
+      cannot!(*named_abilities(:pipeline) - [:read_pipeline])
       cannot!(*named_abilities(:pipeline_schedule))
       cannot!(*named_abilities(:environment))
       cannot!(*named_abilities(:deployment))

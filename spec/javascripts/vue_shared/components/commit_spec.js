@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import commitComp from '~/vue_shared/components/commit';
+import commitComp from '~/vue_shared/components/commit.vue';
 
 describe('Commit component', () => {
   let props;

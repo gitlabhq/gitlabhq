@@ -4,7 +4,7 @@ describe 'GFM autocomplete loading', feature: true, js: true do
   let(:project)   { create(:project) }
 
   before do
-    login_as :admin
+    gitlab_sign_in :admin
 
     visit namespace_project_path(project.namespace, project)
   end

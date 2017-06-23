@@ -40,7 +40,9 @@ describe Gitlab::Auth::UniqueIpsLimiter, :redis, lib: true do
     end
 
     context 'allow 2 unique ips' do
-      before { current_application_settings.update!(unique_ips_limit_per_user: 2) }
+      before do
+        current_application_settings.update!(unique_ips_limit_per_user: 2)
+      end
 
       it 'blocks user trying to login from third ip' do
         change_ip('ip1')

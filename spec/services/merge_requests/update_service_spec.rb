@@ -78,8 +78,8 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       it 'executes hooks with update action' do
-        expect(service).to have_received(:execute_hooks).
-                               with(@merge_request, 'update')
+        expect(service).to have_received(:execute_hooks)
+                               .with(@merge_request, 'update')
       end
 
       it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
@@ -195,8 +195,8 @@ describe MergeRequests::UpdateService, services: true do
             head_pipeline_of: merge_request
           )
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user).
-            and_return(service_mock)
+          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user)
+            .and_return(service_mock)
           expect(service_mock).to receive(:execute).with(merge_request)
         end
 
@@ -356,7 +356,9 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       context 'when issue has the `label` label' do
-        before { merge_request.labels << label }
+        before do
+          merge_request.labels << label
+        end
 
         it 'does not send notifications for existing labels' do
           opts = { label_ids: [label.id, label2.id] }
@@ -388,12 +390,16 @@ describe MergeRequests::UpdateService, services: true do
     end
 
     context 'when MergeRequest has tasks' do
-      before { update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
+      before do
+        update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" })
+      end
 
       it { expect(@merge_request.tasks?).to eq(true) }
 
       context 'when tasks are marked as completed' do
-        before { update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" }) }
+        before do
+          update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" })
+        end
 
         it 'creates system note about task status change' do
           note1 = find_note('marked the task **Task 1** as completed')

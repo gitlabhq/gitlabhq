@@ -1,9 +1,9 @@
 <script>
 /* eslint-disable no-new, no-alert */
-/* global Flash */
-import '~/flash';
+
 import eventHub from '../event_hub';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import tooltipMixin from '../../vue_shared/mixins/tooltip';
 
 export default {
   props: {
@@ -11,53 +11,42 @@ export default {
       type: String,
       required: true,
     },
-
-    service: {
-      type: Object,
-      required: true,
-    },
-
     title: {
       type: String,
       required: true,
     },
-
     icon: {
       type: String,
       required: true,
     },
-
     cssClass: {
       type: String,
       required: true,
     },
-
     confirmActionMessage: {
       type: String,
       required: false,
     },
   },
-
   components: {
     loadingIcon,
   },
-
+  mixins: [
+    tooltipMixin,
+  ],
   data() {
     return {
       isLoading: false,
     };
   },
-
   computed: {
     iconClass() {
       return `fa fa-${this.icon}`;
     },
-
     buttonClass() {
-      return `btn has-tooltip ${this.cssClass}`;
+      return `btn ${this.cssClass}`;
     },
   },
-
   methods: {
     onClick() {
       if (this.confirmActionMessage && confirm(this.confirmActionMessage)) {
@@ -66,21 +55,11 @@ export default {
         this.makeRequest();
       }
     },
-
     makeRequest() {
       this.isLoading = true;
 
-      $(this.$el).tooltip('destroy');
-
-      this.service.postAction(this.endpoint)
-        .then(() => {
-          this.isLoading = false;
-          eventHub.$emit('refreshPipelines');
-        })
-        .catch(() => {
-          this.isLoading = false;
-          new Flash('An error occured while making the request.');
-        });
+      $(this.$refs.tooltip).tooltip('destroy');
+      eventHub.$emit('postAction', this.endpoint);
     },
   },
 };
@@ -95,10 +74,12 @@ export default {
     :aria-label="title"
     data-container="body"
     data-placement="top"
+    ref="tooltip"
     :disabled="isLoading">
     <i
       :class="iconClass"
-      aria-hidden="true" />
+      aria-hidden="true">
+    </i>
     <loading-icon v-if="isLoading" />
   </button>
 </template>

@@ -7,7 +7,7 @@ describe 'Merge request', :feature, :js do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'new merge request' do
@@ -209,8 +209,8 @@ describe 'Merge request', :feature, :js do
 
     before do
       project.team << [user2, :master]
-      logout
-      login_as user2
+      gitlab_sign_out
+      gitlab_sign_in user2
       merge_request.update(target_project: fork_project)
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end

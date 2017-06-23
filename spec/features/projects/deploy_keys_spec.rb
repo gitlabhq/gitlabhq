@@ -6,7 +6,7 @@ describe 'Project deploy keys', :js, :feature do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe 'removing key' do

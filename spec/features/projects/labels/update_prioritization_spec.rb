@@ -14,7 +14,7 @@ feature 'Prioritize labels', feature: true do
     before do
       project.team << [user, :developer]
 
-      login_as user
+      gitlab_sign_in user
     end
 
     scenario 'user can prioritize a group label', js: true do
@@ -120,7 +120,7 @@ feature 'Prioritize labels', feature: true do
     it 'does not prioritize labels' do
       guest = create(:user)
 
-      login_as guest
+      gitlab_sign_in guest
 
       visit namespace_project_labels_path(project.namespace, project)
 

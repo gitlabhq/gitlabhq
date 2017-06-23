@@ -158,5 +158,4 @@ export default class EnvironmentsStore {
 
     return environments.filter(env => env.isFolder && env.isOpen);
   }
-
 }

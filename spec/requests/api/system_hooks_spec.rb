@@ -5,7 +5,9 @@ describe API::SystemHooks do
   let(:admin) { create(:admin) }
   let!(:hook) { create(:system_hook, url: "http://example.com") }
 
-  before { stub_request(:post, hook.url) }
+  before do
+    stub_request(:post, hook.url)
+  end
 
   describe "GET /hooks" do
     context "when no user" do

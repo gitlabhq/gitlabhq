@@ -30,7 +30,7 @@ describe 'Dropdown milestone', :feature, :js do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
     create(:issue, project: project)
 
     visit namespace_project_issues_path(project.namespace, project)

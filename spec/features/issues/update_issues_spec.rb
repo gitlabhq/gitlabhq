@@ -7,7 +7,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'status', js: true do

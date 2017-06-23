@@ -41,7 +41,9 @@ describe API::DeployKeys do
   end
 
   describe 'GET /projects/:id/deploy_keys' do
-    before { deploy_key }
+    before do
+      deploy_key
+    end
 
     it 'returns array of ssh keys' do
       get api("/projects/#{project.id}/deploy_keys", admin)
@@ -158,10 +160,22 @@ describe API::DeployKeys do
       expect(json_response['title']).to eq('new title')
       expect(json_response['can_push']).to eq(true)
     end
+
+    it 'updates a private ssh key from projects user has access with correct attributes' do
+      create(:deploy_keys_project, project: project2, deploy_key: private_deploy_key)
+
+      put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), { title: 'new title', can_push: true }
+
+      expect(json_response['id']).to eq(private_deploy_key.id)
+      expect(json_response['title']).to eq('new title')
+      expect(json_response['can_push']).to eq(true)
+    end
   end
 
   describe 'DELETE /projects/:id/deploy_keys/:key_id' do
-    before { deploy_key }
+    before do
+      deploy_key
+    end
 
     it 'deletes existing key' do
       expect do

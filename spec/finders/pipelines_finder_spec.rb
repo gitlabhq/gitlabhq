@@ -170,7 +170,7 @@ describe PipelinesFinder do
     context 'when order_by and sort are specified' do
       context 'when order_by user_id' do
         let(:params) { { order_by: 'user_id', sort: 'asc' } }
-        let!(:pipelines) { create_list(:ci_pipeline, 2, project: project, user: create(:user)) }
+        let!(:pipelines) { Array.new(2) { create(:ci_pipeline, project: project, user: create(:user)) } }
 
         it 'sorts as user_id: :asc' do
           is_expected.to match_array(pipelines)

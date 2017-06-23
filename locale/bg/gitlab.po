@@ -250,6 +250,9 @@ msgstr "Искате ли да видите данните? Помолете а�
 msgid "We don't have enough data to show this stage."
 msgstr "Няма достатъчно данни за този етап."
 
+msgid "You have reached your project limit"
+msgstr ""
+
 msgid "You need permission."
 msgstr "Нуждаете се от разрешение."
 

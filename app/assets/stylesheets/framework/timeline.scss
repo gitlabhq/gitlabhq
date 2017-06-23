@@ -44,6 +44,10 @@
   &:target,
   &.target {
     background: $line-target-blue;
+
+    &.system-note .note-body .note-text.system-note-commit-list::after {
+      background: linear-gradient(rgba($line-target-blue, 0.1) -100px, $line-target-blue 100%);
+    }
   }
 
   .avatar {

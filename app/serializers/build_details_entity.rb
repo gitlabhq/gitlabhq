@@ -1,4 +1,4 @@
-class BuildDetailsEntity < BuildEntity
+class BuildDetailsEntity < JobEntity
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
   expose :user, using: UserEntity
@@ -25,7 +25,7 @@ class BuildDetailsEntity < BuildEntity
   end
 
   expose :raw_path do |build|
-    raw_namespace_project_build_path(project.namespace, project, build)
+    raw_namespace_project_job_path(project.namespace, project, build)
   end
 
   private

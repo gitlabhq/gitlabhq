@@ -152,7 +152,7 @@
   }
 
   .value-container {
-    background-color: $filter-value-selected-color;
+    box-shadow: inset 0 0 0 100px $filtered-search-term-shadow-color;
   }
 }
 
@@ -236,9 +236,6 @@
     width: 35px;
     background-color: $white-light;
     border: none;
-    position: static;
-    right: 0;
-    height: 100%;
     outline: none;
     z-index: 1;
 

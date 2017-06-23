@@ -35,8 +35,8 @@ module ReactiveCachingHelpers
   end
 
   def expect_reactive_cache_update_queued(subject)
-    expect(ReactiveCachingWorker).
-      to receive(:perform_in).
-      with(subject.class.reactive_cache_refresh_interval, subject.class, subject.id)
+    expect(ReactiveCachingWorker)
+      .to receive(:perform_in)
+      .with(subject.class.reactive_cache_refresh_interval, subject.class, subject.id)
   end
 end

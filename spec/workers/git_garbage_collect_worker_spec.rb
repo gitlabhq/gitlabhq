@@ -11,8 +11,8 @@ describe GitGarbageCollectWorker do
   describe "#perform" do
     it "flushes ref caches when the task is 'gc'" do
       expect(subject).to receive(:command).with(:gc).and_return([:the, :command])
-      expect(Gitlab::Popen).to receive(:popen).
-        with([:the, :command], project.repository.path_to_repo).and_return(["", 0])
+      expect(Gitlab::Popen).to receive(:popen)
+        .with([:the, :command], project.repository.path_to_repo).and_return(["", 0])
 
       expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
       expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
@@ -23,7 +23,9 @@ describe GitGarbageCollectWorker do
     end
 
     shared_examples 'gc tasks' do
-      before { allow(subject).to receive(:bitmaps_enabled?).and_return(bitmaps_enabled) }
+      before do
+        allow(subject).to receive(:bitmaps_enabled?).and_return(bitmaps_enabled)
+      end
 
       it 'incremental repack adds a new packfile' do
         create_objects(project)

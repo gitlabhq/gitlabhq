@@ -17,6 +17,7 @@ feature 'File blob', :js, feature: true do
     it 'displays the blob' do
       aggregate_failures do
         # shows highlighted Ruby code
+        expect(page).to have_css(".js-syntax-highlight")
         expect(page).to have_content("require 'fileutils'")
 
         # does not show a viewer switcher
@@ -71,6 +72,7 @@ feature 'File blob', :js, feature: true do
             expect(page).to have_selector('.blob-viewer[data-type="rich"]', visible: false)
 
             # shows highlighted Markdown code
+            expect(page).to have_css(".js-syntax-highlight")
             expect(page).to have_content("[PEP-8](http://www.python.org/dev/peps/pep-0008/)")
 
             # shows an enabled copy button
@@ -114,6 +116,7 @@ feature 'File blob', :js, feature: true do
           expect(page).to have_selector('#LC1.hll')
 
           # shows highlighted Markdown code
+          expect(page).to have_css(".js-syntax-highlight")
           expect(page).to have_content("[PEP-8](http://www.python.org/dev/peps/pep-0008/)")
 
           # shows an enabled copy button

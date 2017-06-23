@@ -3,7 +3,8 @@
 - return unless issuable.is_a?(MergeRequest)
 - return if issuable.closed_without_fork?
 
--# This check is duplicated below, to avoid conflicts with EE.
+-# This check is duplicated below to avoid CE -> EE merge conflicts.
+-# This comment and the following line should only exist in CE.
 - return unless issuable.can_remove_source_branch?(current_user)
 
 .form-group

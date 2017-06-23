@@ -8,11 +8,13 @@ describe 'Dashboard Merge Requests' do
   before do
     [project, project_with_merge_requests_disabled].each { |project| project.team << [current_user, :master] }
 
-    login_as(current_user)
+    gitlab_sign_in(current_user)
   end
 
   describe 'new merge request dropdown' do
-    before { visit merge_requests_dashboard_path }
+    before do
+      visit merge_requests_dashboard_path
+    end
 
     it 'shows projects only with merge requests feature enabled', js: true do
       find('.new-project-item-select-button').trigger('click')

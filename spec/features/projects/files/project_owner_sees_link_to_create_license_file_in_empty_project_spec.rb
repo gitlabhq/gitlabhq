@@ -5,7 +5,7 @@ feature 'project owner sees a link to create a license file in empty project', f
   let(:project) { create(:empty_project) }
   background do
     project.team << [project_master, :master]
-    login_as(project_master)
+    gitlab_sign_in(project_master)
   end
 
   scenario 'project master creates a license file from a template' do

@@ -4,6 +4,9 @@ class MergeRequest < ActiveRecord::Base
   include Noteable
   include Referable
   include Sortable
+  include IgnorableColumn
+
+  ignore_column :position
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -574,8 +577,8 @@ class MergeRequest < ActiveRecord::Base
       messages = [title, description]
       messages.concat(commits.map(&:safe_message)) if merge_request_diff
 
-      Gitlab::ClosingIssueExtractor.new(project, current_user).
-        closed_by_message(messages.join("\n"))
+      Gitlab::ClosingIssueExtractor.new(project, current_user)
+        .closed_by_message(messages.join("\n"))
     else
       []
     end
@@ -889,7 +892,7 @@ class MergeRequest < ActiveRecord::Base
     !has_commits?
   end
 
-  def mergeable_with_slash_command?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
+  def mergeable_with_quick_action?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
     return false unless can_be_merged_by?(current_user)
 
     return true if autocomplete_precheck

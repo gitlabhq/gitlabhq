@@ -1539,8 +1539,7 @@ describe NotificationService, services: true do
   # When resource is nil it means global notification
   def update_custom_notification(event, user, resource: nil, value: true)
     setting = user.notification_settings_for(resource)
-    setting.events[event] = value
-    setting.save
+    setting.update!(event => value)
   end
 
   def add_users_with_subscription(project, issuable)

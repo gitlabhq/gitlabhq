@@ -26,7 +26,10 @@ module Gitlab
         }
 
         if Gitlab.config.gitaly.enabled
-          address = Gitlab::GitalyClient.address(project.repository_storage)
+          server = {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          }
           params[:Repository] = repository.gitaly_repository.to_h
 
           feature_enabled = case action.to_s
@@ -39,8 +42,10 @@ module Gitlab
                             else
                               raise "Unsupported action: #{action}"
                             end
-
-          params[:GitalyAddress] = address if feature_enabled
+          if feature_enabled
+            params[:GitalyAddress] = server[:address] # This field will be deprecated
+            params[:GitalyServer] = server
+          end
         end
 
         params

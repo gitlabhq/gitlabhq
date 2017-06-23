@@ -7,7 +7,7 @@ feature 'Projects > Members > Group member cannot leave group project', feature:
 
   background do
     group.add_developer(user)
-    login_as(user)
+    gitlab_sign_in(user)
     visit namespace_project_path(project.namespace, project)
   end
 

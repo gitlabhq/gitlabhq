@@ -13,7 +13,7 @@ describe 'Merge requests > User posts notes', :js do
   end
 
   before do
-    login_as :admin
+    gitlab_sign_in :admin
     visit namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
@@ -22,8 +22,8 @@ describe 'Merge requests > User posts notes', :js do
   describe 'the note form' do
     it 'is valid' do
       is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
-      expect(find('.js-main-target-form .js-comment-button').value).
-        to eq('Comment')
+      expect(find('.js-main-target-form .js-comment-button').value)
+        .to eq('Comment')
       page.within('.js-main-target-form') do
         expect(page).not_to have_link('Cancel')
       end
@@ -123,8 +123,8 @@ describe 'Merge requests > User posts notes', :js do
 
         page.within("#note_#{note.id}") do
           is_expected.to have_css('.note_edited_ago')
-          expect(find('.note_edited_ago').text).
-            to match(/less than a minute ago/)
+          expect(find('.note_edited_ago').text)
+            .to match(/less than a minute ago/)
         end
       end
     end

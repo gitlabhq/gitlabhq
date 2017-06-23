@@ -441,20 +441,40 @@ gitlab:assets:compile:
     - webpack-report/
 
 karma:
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-chrome-59.0-node-7.1-postgresql-9.6"
   stage: test
   <<: *use-pg
   <<: *dedicated-runner
   <<: *except-docs
   variables:
     BABEL_ENV: "coverage"
+    CHROME_LOG_FILE: "chrome_debug.log"
   script:
     - bundle exec rake karma
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
     name: coverage-javascript
     expire_in: 31d
+    when: always
     paths:
+    - chrome_debug.log
     - coverage-javascript/
+
+codeclimate:
+  <<: *except-docs
+  before_script: []
+  image: docker:latest
+  stage: test
+  variables:
+    SETUP_DB: "false"
+    DOCKER_DRIVER: overlay
+  services:
+    - docker:dind
+  script:
+    - docker pull codeclimate/codeclimate
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate analyze -f json > codeclimate.json
+  artifacts:
+    paths: [codeclimate.json]
 
 coverage:
   stage: post-test

@@ -143,14 +143,20 @@ describe Group, models: true do
 
   describe '#add_user' do
     let(:user) { create(:user) }
-    before { group.add_user(user, GroupMember::MASTER) }
+
+    before do
+      group.add_user(user, GroupMember::MASTER)
+    end
 
     it { expect(group.group_members.masters.map(&:user)).to include(user) }
   end
 
   describe '#add_users' do
     let(:user) { create(:user) }
-    before { group.add_users([user.id], GroupMember::GUEST) }
+
+    before do
+      group.add_users([user.id], GroupMember::GUEST)
+    end
 
     it "updates the group permission" do
       expect(group.group_members.guests.map(&:user)).to include(user)
@@ -162,7 +168,10 @@ describe Group, models: true do
 
   describe '#avatar_type' do
     let(:user) { create(:user) }
-    before { group.add_user(user, GroupMember::MASTER) }
+
+    before do
+      group.add_user(user, GroupMember::MASTER)
+    end
 
     it "is true if avatar is image" do
       group.update_attribute(:avatar, 'uploads/avatar.png')
@@ -182,7 +191,9 @@ describe Group, models: true do
     let(:avatar_path) { "/uploads/system/group/avatar/#{group.id}/dk.png" }
 
     context 'when avatar file is uploaded' do
-      before { group.add_master(user) }
+      before do
+        group.add_master(user)
+      end
 
       it 'shows correct avatar url' do
         expect(group.avatar_url).to eq(avatar_path)
@@ -222,7 +233,9 @@ describe Group, models: true do
   end
 
   describe '#has_owner?' do
-    before { @members = setup_group_members(group) }
+    before do
+      @members = setup_group_members(group)
+    end
 
     it { expect(group.has_owner?(@members[:owner])).to be_truthy }
     it { expect(group.has_owner?(@members[:master])).to be_falsey }
@@ -233,7 +246,9 @@ describe Group, models: true do
   end
 
   describe '#has_master?' do
-    before { @members = setup_group_members(group) }
+    before do
+      @members = setup_group_members(group)
+    end
 
     it { expect(group.has_master?(@members[:owner])).to be_falsey }
     it { expect(group.has_master?(@members[:master])).to be_truthy }
@@ -359,8 +374,8 @@ describe Group, models: true do
       group.add_user(master, GroupMember::MASTER)
       group.add_user(developer, GroupMember::DEVELOPER)
 
-      expect(group.user_ids_for_project_authorizations).
-        to include(master.id, developer.id)
+      expect(group.user_ids_for_project_authorizations)
+        .to include(master.id, developer.id)
     end
   end
 

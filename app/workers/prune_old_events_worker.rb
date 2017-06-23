@@ -10,9 +10,9 @@ class PruneOldEventsWorker
       '(id IN (SELECT id FROM (?) ids_to_remove))',
       Event.unscoped.where(
         'created_at < ?',
-        (12.months + 1.day).ago).
-      select(:id).
-      limit(10_000)).
-    delete_all
+        (12.months + 1.day).ago)
+      .select(:id)
+      .limit(10_000))
+    .delete_all
   end
 end

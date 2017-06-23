@@ -8,11 +8,11 @@
       = title
     - if show_counter
       .counter
-        = number_with_delimiter(issuables.size)
+        = number_with_delimiter(issuables.length)
 
   - class_prefix = dom_class(issuables).pluralize
-  %ul{ class: "well-list #{class_prefix}-sortable-list", id: "#{class_prefix}-list-#{id}", "data-state" => id }
+  %ul{ class: "well-list milestone-#{class_prefix}-list", id: "#{class_prefix}-list-#{id}" }
     = render partial: 'shared/milestones/issuable',
-             collection: issuables.order_position_asc,
+             collection: issuables,
              as: :issuable,
              locals: { show_project_name: show_project_name, show_full_project_name: show_full_project_name }

@@ -4,7 +4,9 @@ feature 'Protected Branches', feature: true, js: true do
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 
-  before { login_as(user) }
+  before do
+    gitlab_sign_in(user)
+  end
 
   def set_protected_branch_name(branch_name)
     find(".js-protected-branch-select").trigger('click')
