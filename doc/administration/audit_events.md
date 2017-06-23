@@ -1,5 +1,20 @@
 # Audit Events
 
+## Overview
+
+**Audit Events** is a tool for GitLab Enterprise Edition administrators to be able to track
+important events such as user access level, target user, and user addition or
+removal.
+
+## Use-cases
+
+- You can use it to check who was the person who changed the permission level of
+a particular user for a project in your GitLab EE instance.
+- You can use it to track which users have access to certain group of projects
+in your GitLab instance, and who gave them that permission level.
+
+## Description
+
 GitLab Enterprise Edition offers a way to view the changes made within the GitLab server as a help to system administrators.
 
 GitLab system administrators can also take advantage of the logs located on the filesystem, see [the logs system documentation](logs.md) for more details.
