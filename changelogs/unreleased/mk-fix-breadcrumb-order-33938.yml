@@ -1,0 +1,4 @@
+---
+title: Fix reversed breadcrumb order for nested groups
+merge_request: 12322
+author:
