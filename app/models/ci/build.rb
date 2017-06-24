@@ -189,9 +189,10 @@ module Ci
     #   * Maximum length is 63 bytes
     #   * First/Last Character is not a hyphen
     def ref_slug
-      slugified = ref.to_s.downcase
-      slugified.gsub!(/[^a-z0-9]/, '-')
-      slugified[0..62].gsub(/(\A-+|-+\z)/, '')
+      ref.to_s
+          .downcase
+          .gsub(/[^a-z0-9]/, '-')[0..62]
+          .gsub(/(\A-+|-+\z)/, '')
     end
 
     # Variables whose value does not depend on other variables
