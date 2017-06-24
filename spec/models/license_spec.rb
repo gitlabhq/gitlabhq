@@ -428,10 +428,10 @@ describe License do
 
       context 'with an expired trial license' do
         it 'returns an empty Hash' do
-          License.destroy_all
+          described_class.destroy_all
           create(:license, trial: true, expired: true)
 
-          expect(License.current.add_ons).to be_empty
+          expect(described_class.current.add_ons).to be_empty
         end
       end
     end
