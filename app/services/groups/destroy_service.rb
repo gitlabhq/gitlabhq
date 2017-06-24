@@ -1,8 +1,8 @@
 module Groups
   class DestroyService < Groups::BaseService
     def async_execute
-      # Don't call `group.destroy` since this will purge all the projects, which may be too slow
-      group.deleted_at = Time.now
+      # Soft delete via paranoia gem
+      group.destroy
       job_id = GroupDestroyWorker.perform_async(group.id, current_user.id)
       Rails.logger.info("User #{current_user.id} scheduled a deletion of group ID #{group.id} with job ID #{job_id}")
     end
