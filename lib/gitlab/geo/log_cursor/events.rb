@@ -15,7 +15,7 @@ module Gitlab
               yield batch
 
               save_processed(batch.last.id)
-              renew_lease!
+              break unless renew_lease!
             end
           end
         end
