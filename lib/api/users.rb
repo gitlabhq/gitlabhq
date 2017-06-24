@@ -242,7 +242,7 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        email = Emails::CreateService.new(user,declared_params(include_missing: false)).execute
+        email = Emails::CreateService.new(user, declared_params(include_missing: false)).execute
 
         if email.errors.blank?
           NotificationService.new.new_email(email)
