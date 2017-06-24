@@ -19,37 +19,10 @@ module LicenseHelper
     @license_message =
       if License.current
         yes_license_message(signed_in, is_admin)
-      else
-        no_license_message(is_admin, in_html: in_html)
       end
   end
 
   private
-
-  def no_license_message(is_admin, in_html: true)
-    upload_a_license =
-      if in_html
-        link_to('Upload a license', new_admin_license_path)
-      else
-        'Upload a license'
-      end
-
-    message = []
-    message << 'No GitLab Enterprise Edition license has been provided yet.'
-    message << 'Pushing code and creation of issues and merge requests has been disabled.'
-    message <<
-      if is_admin
-        "#{upload_a_license} in the admin area to activate this functionality."
-      else
-        'Ask an admin to upload a license to activate this functionality.'
-      end
-
-    if in_html
-      content_tag(:p, message.join(' ').html_safe)
-    else
-      message.join(' ')
-    end
-  end
 
   def yes_license_message(signed_in, is_admin)
     license = License.current

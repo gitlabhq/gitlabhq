@@ -781,18 +781,13 @@ describe 'Git HTTP requests', lib: true do
           let(:env) { { user: user.username, password: user.password } }
 
           before do
+            allow(License).to receive(:current).and_return(nil)
+
             project.team << [user, :master]
           end
 
-          it 'responds with status 403 Forbidden' do
-            msg = 'No GitLab Enterprise Edition license has been provided yet. Pushing code and creation of issues and merge requests has been disabled. Ask an admin to upload a license to activate this functionality.'
-            allow(License).to receive(:current).and_return(nil)
-
-            upload(path, env) do |response|
-              expect(response).to have_http_status(:forbidden)
-              expect(response.body).to eq(msg)
-            end
-          end
+          it_behaves_like 'pushes are allowed'
+          it_behaves_like 'pushes are allowed'
         end
       end
 
