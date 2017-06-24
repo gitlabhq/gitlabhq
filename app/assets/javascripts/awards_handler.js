@@ -3,7 +3,7 @@
 
 import Cookies from 'js-cookie';
 import { glEmojiTag } from './behaviors/gl_emoji';
-import { emojiMap, emojiAliases, isEmojiNameValid } from './emoji';
+import { emojiMap, emojiAliases, isEmojiNameValid, normalizeEmojiName } from './emoji';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -65,7 +65,6 @@ function renderCategory(name, emojiList, opts = {}) {
 export default class AwardsHandler {
   constructor() {
     this.eventListeners = [];
-    this.aliases = emojiAliases;
     // If the user shows intent let's pre-build the menu
     this.registerEventListener('one', $(document), 'mouseenter focus', '.js-add-award', 'mouseenter focus', () => {
       const $menu = $('.emoji-menu');
@@ -260,7 +259,7 @@ export default class AwardsHandler {
     checkMutuality,
     callback,
   ) {
-    const normalizedEmoji = this.normalizeEmojiName(emoji);
+    const normalizedEmoji = normalizeEmojiName(emoji);
     const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
     this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
       this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
@@ -279,7 +278,7 @@ export default class AwardsHandler {
       this.checkMutuality(votesBlock, emoji);
     }
     this.addEmojiToFrequentlyUsedList(emoji);
-    const normalizedEmoji = this.normalizeEmojiName(emoji);
+    const normalizedEmoji = normalizeEmojiName(emoji);
     const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
     if ($emojiButton.length > 0) {
       if (this.isActive($emojiButton)) {
@@ -467,10 +466,6 @@ export default class AwardsHandler {
       scrollTop: $('.awards').offset().top - 110,
     };
     return $('body, html').animate(options, 200);
-  }
-
-  normalizeEmojiName(emoji) {
-    return Object.prototype.hasOwnProperty.call(this.aliases, emoji) ? this.aliases[emoji] : emoji;
   }
 
   addEmojiToFrequentlyUsedList(emoji) {
