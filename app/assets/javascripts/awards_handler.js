@@ -252,13 +252,7 @@ export default class AwardsHandler {
     return $menu.css(css);
   }
 
-  addAward(
-    votesBlock,
-    awardUrl,
-    emoji,
-    checkMutuality,
-    callback,
-  ) {
+  addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
     const normalizedEmoji = normalizeEmojiName(emoji);
     const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
     this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
@@ -269,11 +263,7 @@ export default class AwardsHandler {
     $('.js-add-award.is-active').removeClass('is-active');
   }
 
-  addAwardToEmojiBar(
-    votesBlock,
-    emoji,
-    checkForMutuality,
-  ) {
+  addAwardToEmojiBar(votesBlock, emoji, checkForMutuality) {
     if (checkForMutuality || checkForMutuality === null) {
       this.checkMutuality(votesBlock, emoji);
     }
