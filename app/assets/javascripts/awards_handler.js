@@ -3,7 +3,7 @@
 
 import Cookies from 'js-cookie';
 import { glEmojiTag } from './behaviors/gl_emoji';
-import { emojiMap, emojiAliases, isEmojiNameValid, normalizeEmojiName } from './emoji';
+import { emojiMap, filterEmojiNamesByAlias, isEmojiNameValid, normalizeEmojiName } from './emoji';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -511,21 +511,11 @@ export default class AwardsHandler {
     }
   }
 
-  findMatchingEmojiElements(term) {
-    const safeTerm = term.toLowerCase();
-
-    const namesMatchingAlias = [];
-    Object.keys(emojiAliases).forEach((alias) => {
-      if (alias.indexOf(safeTerm) >= 0) {
-        namesMatchingAlias.push(emojiAliases[alias]);
-      }
-    });
-    const $matchingElements = namesMatchingAlias.concat(safeTerm)
-      .reduce(
-        ($result, searchTerm) =>
-          $result.add($(`.emoji-menu-list:not(.frequent-emojis) [data-name*="${searchTerm}"]`)),
-        $([]),
-      );
+  findMatchingEmojiElements(query) {
+    const emojiMatches = filterEmojiNamesByAlias(query);
+    const $emojiElements = $('.emoji-menu-list:not(.frequent-emojis) [data-name]');
+    const $matchingElements = $emojiElements
+      .filter((i, elm) => emojiMatches.indexOf(elm.dataset.name) >= 0);
     return $matchingElements.closest('li').clone();
   }
 

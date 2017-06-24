@@ -13,10 +13,21 @@ function isEmojiNameValid(name) {
   return validEmojiNames.indexOf(name) >= 0;
 }
 
+function filterEmojiNames(filter) {
+  const match = filter.toLowerCase();
+  return validEmojiNames.filter(name => name.indexOf(match) >= 0);
+}
+
+function filterEmojiNamesByAlias(filter) {
+  return _.uniq(filterEmojiNames(filter).map(name => normalizeEmojiName(name)));
+}
+
 export {
   emojiMap,
   emojiAliases,
   normalizeEmojiName,
+  filterEmojiNames,
+  filterEmojiNamesByAlias,
   getUnicodeSupportMap,
   isEmojiNameValid,
   isEmojiUnicodeSupported,
