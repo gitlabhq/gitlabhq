@@ -314,6 +314,11 @@
   }
 }
 
+.gpg-badge-popover-user-link {
+  text-decoration: none;
+  color: $gl-text-color;
+}
+
 .gpg-badge-popover-avatar {
   float: left;
   margin-bottom: $gl-padding;

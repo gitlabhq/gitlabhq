@@ -228,23 +228,25 @@ module CommitsHelper
     end
 
     content = capture do
-      concat(
-        content_tag(:div, class: 'gpg-badge-popover-avatar') do
-          user_avatar(user: signature.gpg_key.user, size: 32)
-        end
-      )
+      link_to user_path(signature.gpg_key.user), class: 'gpg-badge-popover-user-link' do
+        concat(
+          content_tag(:div, class: 'gpg-badge-popover-avatar') do
+            user_avatar_without_link(user: signature.gpg_key.user, size: 32)
+          end
+        )
 
-      concat(
-        content_tag(:div, class: 'gpg-badge-popover-username') do
-          signature.gpg_key.user.username
-        end
-      )
+        concat(
+          content_tag(:div, class: 'gpg-badge-popover-username') do
+            signature.gpg_key.user.username
+          end
+        )
 
-      concat(
-        content_tag(:div) do
-          signature.gpg_key.user.name
-        end
-      )
+        concat(
+          content_tag(:div) do
+            signature.gpg_key.user.name
+          end
+        )
+      end
     end
 
     commit_gpg_signature_badge_with(signature, label: 'Verified', title: title, content: content, css_classes: ['valid'])
