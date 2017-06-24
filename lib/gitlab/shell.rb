@@ -415,6 +415,8 @@ module Gitlab
     end
 
     def authorized_keys_enabled?
+      return true if current_application_settings.authorized_keys_enabled.nil?
+
       current_application_settings.authorized_keys_enabled
     end
   end
