@@ -22,12 +22,36 @@ function filterEmojiNamesByAlias(filter) {
   return _.uniq(filterEmojiNames(filter).map(name => normalizeEmojiName(name)));
 }
 
+let emojiByCategory;
+function getEmojiByCategory(category = null) {
+  if (!emojiByCategory) {
+    emojiByCategory = {
+      activity: [],
+      people: [],
+      nature: [],
+      food: [],
+      travel: [],
+      objects: [],
+      symbols: [],
+      flags: [],
+    };
+    Object.keys(emojiMap).forEach((name) => {
+      const emoji = emojiMap[name];
+      if (emojiByCategory[emoji.category]) {
+        emojiByCategory[emoji.category].push(name);
+      }
+    });
+  }
+  return category ? emojiByCategory[category] : emojiByCategory;
+}
+
 export {
   emojiMap,
   emojiAliases,
   normalizeEmojiName,
   filterEmojiNames,
   filterEmojiNamesByAlias,
+  getEmojiByCategory,
   getUnicodeSupportMap,
   isEmojiNameValid,
   isEmojiUnicodeSupported,

@@ -3,14 +3,17 @@
 
 import Cookies from 'js-cookie';
 import { glEmojiTag } from './behaviors/gl_emoji';
-import { emojiMap, filterEmojiNamesByAlias, isEmojiNameValid, normalizeEmojiName } from './emoji';
+import {
+  filterEmojiNamesByAlias,
+  getEmojiByCategory,
+  isEmojiNameValid,
+  normalizeEmojiName,
+} from './emoji';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
 
 const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; // For separating lists produced by ruby's Array#toSentence
-
-let categoryMap = null;
 
 const categoryLabelMap = {
   activity: 'Activity',
@@ -22,26 +25,6 @@ const categoryLabelMap = {
   symbols: 'Symbols',
   flags: 'Flags',
 };
-
-function buildCategoryMap() {
-  return Object.keys(emojiMap).reduce((currentCategoryMap, emojiNameKey) => {
-    const emojiInfo = emojiMap[emojiNameKey];
-    if (currentCategoryMap[emojiInfo.category]) {
-      currentCategoryMap[emojiInfo.category].push(emojiNameKey);
-    }
-
-    return currentCategoryMap;
-  }, {
-    activity: [],
-    people: [],
-    nature: [],
-    food: [],
-    travel: [],
-    objects: [],
-    symbols: [],
-    flags: [],
-  });
-}
 
 function renderCategory(name, emojiList, opts = {}) {
   return `
@@ -71,8 +54,6 @@ export default class AwardsHandler {
       if ($menu.length === 0) {
         setTimeout(() => this.createEmojiMenu());
       }
-      // Prebuild the categoryMap
-      categoryMap = categoryMap || buildCategoryMap();
     });
     this.registerEventListener('on', $(document), 'click', '.js-add-award', (e) => {
       e.stopPropagation();
@@ -158,7 +139,7 @@ export default class AwardsHandler {
     this.isCreatingEmojiMenu = true;
 
     // Render the first category
-    categoryMap = categoryMap || buildCategoryMap();
+    const categoryMap = getEmojiByCategory();
     const categoryNameKey = Object.keys(categoryMap)[0];
     const emojisInCategory = categoryMap[categoryNameKey];
     const firstCategory = renderCategory(categoryLabelMap[categoryNameKey], emojisInCategory);
@@ -198,7 +179,7 @@ export default class AwardsHandler {
     }
     this.isAddingRemainingEmojiMenuCategories = true;
 
-    categoryMap = categoryMap || buildCategoryMap();
+    const categoryMap = getEmojiByCategory();
 
     // Avoid the jank and render the remaining categories separately
     // This will take more time, but makes UI more responsive
