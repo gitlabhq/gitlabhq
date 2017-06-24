@@ -48,7 +48,7 @@
         = f.text_field :id, readonly: true, label: 'User ID', wrapper: { class: 'col-md-3' }
 
       - if @user.external_email?
-        = f.text_field :email, required: true, readonly: true, help: 'Your email address was automatically set based on your #{email_provider_label} account.'
+        = f.text_field :email, required: true, readonly: true, help: "Your email address was automatically set based on your #{email_provider_label} account."
       - else
         = f.text_field :email, required: true, value: (@user.email unless @user.temp_oauth_email?),
           help: user_email_help_text(@user)
