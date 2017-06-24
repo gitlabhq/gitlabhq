@@ -58,7 +58,7 @@ module Gitlab
       end
 
       def request
-        @request ||= Rack::Request.new(@env)
+        @env['rack.request'] ||= Rack::Request.new(@env)
       end
 
       def last_visited_url
@@ -78,11 +78,11 @@ module Gitlab
       end
 
       def sidekiq_route
-        @request.path.start_with?('/admin/sidekiq')
+        request.path.start_with?('/admin/sidekiq')
       end
 
       def grack_route
-        @request.path.end_with?('.git/git-upload-pack')
+        request.path.end_with?('.git/git-upload-pack')
       end
     end
   end

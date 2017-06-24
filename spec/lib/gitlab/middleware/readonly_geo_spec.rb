@@ -35,7 +35,7 @@ describe Gitlab::Middleware::ReadonlyGeo, lib: true do
   end
 
   subject { described_class.new(fake_app) }
-  let(:request) { @request ||= Rack::MockRequest.new(rack_stack) }
+  let(:request) { Rack::MockRequest.new(rack_stack) }
 
   context 'normal requests to a secondary Gitlab Geo' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
@@ -63,6 +63,16 @@ describe Gitlab::Middleware::ReadonlyGeo, lib: true do
 
       expect(response).to be_a_redirect
       expect(subject).to disallow_request
+    end
+
+    it 'expects a POST Geo request to be allowed after a disallowed request' do
+      response = request.post('/test_request')
+
+      expect(response).to be_a_redirect
+
+      response = request.post("/api/#{API::API.version}/geo/refresh_wikis")
+
+      expect(response).not_to be_a_redirect
     end
 
     it 'expects DELETE requests to be disallowed' do
