@@ -53,7 +53,7 @@ body {
   }
 
   &.limit-container-width-sm {
-    max-width: 790px;
+    max-width: $limited-layout-width-sm;
   }
 }
 
