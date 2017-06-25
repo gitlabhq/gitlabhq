@@ -5,7 +5,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   end
 
   def create
-    @email = Emails::CreateService.new(current_user, current_user, email_params).execute
+    @email = Emails::CreateService.new(current_user, email_params).execute
 
     if @email.errors.blank?
       NotificationService.new.new_email(@email)
@@ -19,7 +19,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   def destroy
     @email = current_user.emails.find(params[:id])
 
-    Emails::DestroyService.new(current_user, current_user, email: @email.email).execute
+    Emails::DestroyService.new(current_user, email: @email.email).execute
 
     respond_to do |format|
       format.html { redirect_to profile_emails_url, status: 302 }

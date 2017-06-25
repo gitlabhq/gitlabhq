@@ -494,8 +494,8 @@ class User < ActiveRecord::Base
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
-      Emails::DestroyService.new(self, self, email: email).execute
-      Emails::CreateService.new(self, self, email: email_was).execute
+      Emails::DestroyService.new(self, email: email).execute
+      Emails::CreateService.new(self, email: email_was).execute
     end
   end
 
