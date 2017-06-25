@@ -9,7 +9,6 @@ module HasVariable
                 message: "can contain only letters, digits and '_'." }
 
     scope :order_key_asc, -> { reorder(key: :asc) }
-    scope :unprotected, -> { where(protected: false) }
 
     attr_encrypted :value,
        mode: :per_attribute_iv_and_salt,
