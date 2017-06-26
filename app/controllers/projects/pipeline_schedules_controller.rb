@@ -1,6 +1,7 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :authorize_read_pipeline_schedule!
-  before_action :authorize_create_pipeline_schedule!, only: [:new, :create, :edit, :take_ownership, :update]
+  before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
+  before_action :authorize_update_pipeline_schedule!, only: [:edit, :take_ownership, :update]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
 
   before_action :schedule, only: [:edit, :update, :destroy, :take_ownership]
@@ -32,6 +33,8 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def update
+    return access_denied! unless can?(current_user, :update_pipeline_schedule, schedule)
+
     if Ci::CreatePipelineScheduleService
         .new(@project, current_user, schedule_params).update(schedule)
       redirect_to namespace_project_pipeline_schedules_path(@project.namespace.becomes(Namespace), @project)
