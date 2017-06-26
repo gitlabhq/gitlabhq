@@ -60,7 +60,7 @@ class PrometheusService < MonitoringService
 
   def deployment_metrics(deployment)
     metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &method(:rename_data_to_metrics))
-    metrics&.merge(deployment_time: created_at.to_i) || {}
+    metrics&.merge(deployment_time: deployment.created_at.to_i) || {}
   end
 
   def additional_environment_metrics(environment)
