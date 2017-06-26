@@ -3,6 +3,11 @@ import $ from 'jquery';
 import _ from 'underscore';
 import 'jasmine-jquery';
 import '~/commons';
+import Vue from 'vue';
+
+const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
+Vue.config.devtools = !isHeadlessChrome;
+Vue.config.productionTip = false;
 
 import Vue from 'vue';
 import VueResource from 'vue-resource';
