@@ -12,7 +12,7 @@ feature 'user browses project', feature: true, js: true do
 
   scenario "can see blame of '.gitignore'" do
     click_link ".gitignore"
-    click_link 'Annotate'
+    click_link 'Blame'
 
     expect(page).to have_content "*.rb"
     expect(page).to have_content "Dmitriy Zaporozhets"
