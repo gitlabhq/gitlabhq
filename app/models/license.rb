@@ -11,6 +11,7 @@ class License < ActiveRecord::Base
   RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
   EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
+  MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
 
   FEATURE_CODES = {
     geo: GEO_FEATURE,
@@ -23,7 +24,8 @@ class License < ActiveRecord::Base
     deploy_board: DEPLOY_BOARD_FEATURE,
     file_lock: FILE_LOCK_FEATURE,
     export_issues: EXPORT_ISSUES_FEATURE,
-    merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE
+    merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
+    merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE
   }.freeze
 
   STARTER_PLAN = 'starter'.freeze
@@ -35,7 +37,8 @@ class License < ActiveRecord::Base
     { ELASTIC_SEARCH_FEATURE => 1 },
     { RELATED_ISSUES_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
-    { MERGE_REQUEST_REBASE_FEATURE => 1 }
+    { MERGE_REQUEST_REBASE_FEATURE => 1 },
+    { MERGE_REQUEST_SQUASH_FEATURE => 1 }
   ].freeze
 
   EEP_FEATURES = [
@@ -69,7 +72,8 @@ class License < ActiveRecord::Base
     { SERVICE_DESK_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
-    { MERGE_REQUEST_REBASE_FEATURE => 1 }
+    { MERGE_REQUEST_REBASE_FEATURE => 1 },
+    { MERGE_REQUEST_SQUASH_FEATURE => 1 }
   ].freeze
 
   FEATURES_BY_PLAN = {

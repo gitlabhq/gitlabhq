@@ -69,7 +69,10 @@ module EE
       end
 
       def merge_params_attributes
-        super + [:squash]
+        attrs = super
+        attrs << :squash if project.feature_available?(:merge_request_squash)
+
+        attrs
       end
 
       def merge_request_params
@@ -77,12 +80,14 @@ module EE
       end
 
       def merge_request_params_attributes
-        super + %i[
-          approvals_before_merge
-          approver_group_ids
-          approver_ids
-          squash
-        ]
+        attrs = super.push(
+          :approvals_before_merge,
+          :approver_group_ids,
+          :approver_ids
+        )
+        attrs << :squash if project.feature_available?(:merge_request_squash)
+
+        attrs
       end
 
       # If the number of approvals is not greater than the project default, set to

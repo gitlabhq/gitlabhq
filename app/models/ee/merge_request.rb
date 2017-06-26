@@ -45,5 +45,10 @@ module EE
         true
       end
     end
+
+    def squash
+      super && project.feature_available?(:merge_request_squash)
+    end
+    alias_method :squash?, :squash
   end
 end

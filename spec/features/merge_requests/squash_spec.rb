@@ -121,4 +121,24 @@ feature 'Squashing merge requests', js: true, feature: true do
       include_examples 'no squash'
     end
   end
+
+  context 'squash is unlicensed' do
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, source_branch: source_branch, target_branch: 'master', squash: true) }
+
+    before do
+      stub_licensed_features(merge_request_squash: false)
+    end
+
+    it 'does not show squash option when creating MR' do
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: source_branch })
+
+      expect(page).to have_no_field('merge_request[squash]')
+    end
+
+    it 'does not show squash option when viewing MR' do
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+      expect(page).to have_no_field('squash')
+    end
+  end
 end
