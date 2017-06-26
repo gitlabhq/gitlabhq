@@ -13,9 +13,40 @@ describe API::Users do
 
   describe 'GET /users' do
     context "when unauthenticated" do
-      it "returns authentication error" do
+      it "returns authorization error when the `username` parameter is not passed" do
         get api("/users")
-        expect(response).to have_http_status(401)
+
+        expect(response).to have_http_status(403)
+      end
+
+      it "returns the user when a valid `username` parameter is passed" do
+        user = create(:user)
+
+        get api("/users"), username: user.username
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['id']).to eq(user.id)
+        expect(json_response[0]['username']).to eq(user.username)
+      end
+
+      it "returns authorization error when the `username` parameter refers to an inaccessible user" do
+        user = create(:user)
+
+        expect(Ability).to receive(:allowed?).with(nil, :read_user, user).and_return(false)
+
+        get api("/users"), username: user.username
+
+        expect(response).to have_http_status(403)
+      end
+
+      it "returns an empty response when an invalid `username` parameter is passed" do
+        get api("/users"), username: 'invalid'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(0)
       end
     end
 

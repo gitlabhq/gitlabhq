@@ -27,8 +27,11 @@ class UsersFinder
     users = by_search(users)
     users = by_blocked(users)
     users = by_active(users)
-    users = by_external_identity(users)
-    users = by_external(users)
+
+    if current_user
+      users = by_external_identity(users)
+      users = by_external(users)
+    end
 
     users
   end

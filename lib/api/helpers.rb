@@ -407,5 +407,11 @@ module API
 
       exception.status == 500
     end
+
+    # Does the current route match the route identified by
+    # `description`?
+    def route_matches_description?(description)
+      options.dig(:route_options, :description) == description
+    end
   end
 end
