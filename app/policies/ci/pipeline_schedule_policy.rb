@@ -2,24 +2,14 @@ module Ci
   class PipelineSchedulePolicy < PipelinePolicy
     alias_method :pipeline_schedule, :subject
 
-    condition(:protected_action) do
-      owned_by_developer? && owned_by_another?
-    end
+    def rules
+      super
 
-    rule { protected_action }.prevent :update_pipeline_schedule
+      access = pipeline_schedule.project.team.max_member_access(user.id)
 
-    private
-
-    def owned_by_developer?
-      return false unless @user
-
-      pipeline_schedule.project.team.developer?(@user)
-    end
-
-    def owned_by_another?
-      return false unless @user
-
-      !pipeline_schedule.owned_by?(@user)
+      if access == Gitlab::Access::DEVELOPER && pipeline_schedule.owner != user
+        cannot! :update_pipeline_schedule
+      end
     end
   end
 end

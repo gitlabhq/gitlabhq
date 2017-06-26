@@ -33,6 +33,8 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def update
+    return access_denied! unless can?(current_user, :update_pipeline_schedule, schedule)
+
     if Ci::CreatePipelineScheduleService
         .new(@project, current_user, schedule_params).update(schedule)
       redirect_to namespace_project_pipeline_schedules_path(@project.namespace.becomes(Namespace), @project)
