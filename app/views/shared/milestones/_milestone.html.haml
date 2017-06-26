@@ -1,5 +1,5 @@
 - dashboard = local_assigns[:dashboard]
-- custom_dom_id = dom_id(milestone)
+- custom_dom_id = "milestone_#{milestone.title}"
 
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
