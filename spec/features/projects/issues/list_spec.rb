@@ -18,7 +18,7 @@ feature 'Issues List' do
     expect(page).not_to have_selector('.js-new-board-list')
   end
 
-  scenario 'user seems an empty state' do
+  scenario 'user sees an empty state', :js do
     visit namespace_project_issues_path(project.namespace, project)
 
     expect(page).to have_selector('.empty-state')
