@@ -22,7 +22,7 @@ module LicenseHelper
 
       message =
         if current_user.admin?
-          buy_now_link = link_to('Buy now!', '#')
+          buy_now_link = link_to('Buy now!', 'https://customers.gitlab.com/plans', target: '_blank')
 
           if status == :active
             remaining_days = (current_license.expires_at - Date.today).to_i
