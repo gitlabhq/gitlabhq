@@ -50,7 +50,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   def create
     @milestone = Milestones::CreateService.new(project, current_user, milestone_params).execute
 
-    if @milestone.save
+    if @milestone.valid?
       redirect_to namespace_project_milestone_path(@project.namespace,
                                                    @project, @milestone)
     else

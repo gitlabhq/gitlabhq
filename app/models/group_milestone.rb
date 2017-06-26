@@ -3,6 +3,8 @@ class GroupMilestone < ActiveRecord::Base
   include Milestoneish
   include CacheMarkdownField
 
+  belongs_to :group
+
   class << self
     # Build legacy group milestone which consists on all project milestones
     # with the same title.

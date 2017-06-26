@@ -25,10 +25,10 @@ class Groups::MilestonesController < Groups::ApplicationController
     title = milestone_params[:title]
     @milestone = Milestones::CreateService.new(group, current_user, milestone_params).execute
 
-    if @milestone.save
+    if @milestone.persisted?
       redirect_to milestone_path(title)
     else
-      render_new_with_error
+      render "new"
     end
   end
 
@@ -44,12 +44,6 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   private
-
-  def render_new_with_error(empty_project_ids)
-    @milestone = Milestone.new(milestone_params)
-    @milestone.errors.add(:base, "Please select at least one project.") if empty_project_ids
-    render :new
-  end
 
   def authorize_admin_milestones!
     return render_404 unless can?(current_user, :admin_milestones, group)
@@ -72,8 +66,7 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   def milestone
     @milestone =
-      @group.milestones.find_by_title(params[:title]) ||
-      GroupMilestone.build(@group, @projects, params[:title])
+      @group.milestones.find_by_title(params[:title]) || GroupMilestone.build(@group, @projects, params[:title])
 
     render_404 unless @milestone
   end
