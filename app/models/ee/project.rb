@@ -274,7 +274,7 @@ module EE
     end
 
     def remove_mirror_repository_reference
-      repository.remove_remote(Repository::MIRROR_REMOTE)
+      repository.remove_remote(::Repository::MIRROR_REMOTE)
     end
 
     def import_url_availability
