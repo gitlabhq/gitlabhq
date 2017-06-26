@@ -33,10 +33,10 @@ class AccessTokenValidationService
       true
     else
       # Remove any scopes whose `if` condition does not return `true`
-      scopes = scopes.reject { |scope| scope[:if].presence && !scope[:if].call(request) }
+      scopes = scopes.select { |scope| scope.if.nil? || scope.if.call(request) }
 
       # Check whether the token is allowed access to any of the required scopes.
-      passed_scope_names = scopes.map { |scope| scope[:name].to_sym }
+      passed_scope_names = scopes.map { |scope| scope.name.to_sym }
       token_scope_names = token.scopes.map(&:to_sym)
       Set.new(passed_scope_names).intersection(Set.new(token_scope_names)).present?
     end
