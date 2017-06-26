@@ -175,8 +175,8 @@ module Gitlab
       # Shows the diff between the commit's parent and the commit.
       #
       # Cuts out the header and stats from #to_patch and returns only the diff.
-      def to_diff(options = {})
-        diff_from_parent(options).patch
+      def to_diff
+        diff_from_parent.patch
       end
 
       # Returns a diff object for the changes from this commit's first parent.
