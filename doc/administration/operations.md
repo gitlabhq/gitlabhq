@@ -6,4 +6,3 @@
 - [Cleaning up Redis sessions](operations/cleaning_up_redis_sessions.md)
 - [Understanding Unicorn and unicorn-worker-killer](operations/unicorn.md)
 - [Moving repositories to a new location](operations/moving_repositories.md)
-- [Speed up SSH operations](operations/speed_up_ssh.md)

@@ -180,8 +180,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :check_namespace_plan,
       :mirror_max_delay,
       :mirror_max_capacity,
-      :mirror_capacity_threshold,
-      :authorized_keys_enabled
+      :mirror_capacity_threshold
     ]
   end
 end
