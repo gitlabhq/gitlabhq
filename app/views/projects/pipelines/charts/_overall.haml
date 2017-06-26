@@ -2,13 +2,13 @@
 %ul
   %li
     Total:
-    %strong= pluralize @counts[:total], 'job'
+    %strong= pluralize @counts[:total], 'pipeline'
   %li
     Successful:
-    %strong= pluralize @counts[:success], 'job'
+    %strong= pluralize @counts[:success], 'pipeline'
   %li
     Failed:
-    %strong= pluralize @counts[:failed], 'job'
+    %strong= pluralize @counts[:failed], 'pipeline'
   %li
     Success ratio:
     %strong
