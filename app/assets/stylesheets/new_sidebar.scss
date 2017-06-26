@@ -20,4 +20,97 @@ $new-sidebar-width: 220px;
   bottom: 0;
   left: 0;
   background-color: $gray-light;
+  border-right: 1px solid $border-color;
+
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    a {
+      display: block;
+      padding: 12px 14px;
+    }
+  }
+
+  a {
+    color: $gl-text-color;
+    text-decoration: none;
+  }
+}
+
+.sidebar-sub-level-items {
+  display: none;
+
+  > li {
+    a {
+      padding: 12px 24px;
+      color: $gl-text-color-light;
+
+      &:hover {
+        color: $gl-text-color;
+        font-weight: 500;
+      }
+    }
+
+    &.active {
+      > a {
+        color: $purple-650;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.sidebar-top-level-items {
+  > li {
+    .badge {
+      float: right;
+      background-color: $border-color;
+      color: $gl-text-color;
+    }
+
+    &.active {
+      > a {
+        background-color: $purple-600;
+        color: $white-light;
+        font-weight: 500;
+      }
+
+      .badge {
+        background-color: $purple-700;
+        color: $white-light;
+      }
+
+      .sidebar-sub-level-items {
+        background-color: $gray-normal;
+        border-left: 6px solid $purple-600;
+        display: block;
+      }
+    }
+
+    &:not(.active) > a:hover {
+      background-color: $white-normal;
+
+      .badge {
+        transition: background-color 100ms linear;
+        background-color: darken($border-color, 3%);
+      }
+    }
+  }
+}
+
+
+// Make issue boards full-height now that sub-nav is gone
+
+.boards-list {
+  height: calc(100vh - 50px);
+
+  @media (min-width: $screen-sm-min) {
+    height: 475px; // Needed for PhantomJS
+    // scss-lint:disable DuplicateProperty
+    height: calc(100vh - 120px);
+    // scss-lint:enable DuplicateProperty
+  }
 }

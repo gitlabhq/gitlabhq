@@ -1,63 +1,63 @@
 .nav-sidebar
   - can_edit = can?(current_user, :admin_project, @project)
-  %ul.panel-group#side-navigation
-    = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home panel' }) do
-      %a{ 'data-toggle' => 'collapse', 'data-parent' => "#side-navigation", :href => '#project-sub-nav'}
-        Project
+  %ul.sidebar-top-level-items
+    = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
+      = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
+        %span
+          Project
 
-      #project-sub-nav.collapse
-        %ul
-          = nav_link(path: 'projects#show') do
-            = link_to project_path(@project), title: _('Project home'), class: 'shortcuts-project' do
-              %span= _('Home')
+      %ul.sidebar-sub-level-items
+        = nav_link(path: 'projects#show') do
+          = link_to project_path(@project), title: _('Project home'), class: 'shortcuts-project' do
+            %span= _('Home')
 
-          = nav_link(path: 'projects#activity') do
-            = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
-              %span= _('Activity')
+        = nav_link(path: 'projects#activity') do
+          = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
+            %span= _('Activity')
 
-          - if can?(current_user, :read_cycle_analytics, @project)
-            = nav_link(path: 'cycle_analytics#show') do
-              = link_to project_cycle_analytics_path(@project), title: _('Cycle Analytics'), class: 'shortcuts-project-cycle-analytics' do
-                %span= _('Cycle Analytics')
+        - if can?(current_user, :read_cycle_analytics, @project)
+          = nav_link(path: 'cycle_analytics#show') do
+            = link_to project_cycle_analytics_path(@project), title: _('Cycle Analytics'), class: 'shortcuts-project-cycle-analytics' do
+              %span= _('Cycle Analytics')
 
     - if project_nav_tab? :files
-      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network), html_options: { class: 'panel' }) do
-        %a{ 'data-toggle' => 'collapse', 'data-parent' => "#side-navigation", :href => '#repository-sub-nav'}
-          Repository
+      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network)) do
+        = link_to project_files_path(@project), title: 'Repository',  class: 'shortcuts-tree' do
+          %span
+            Repository
 
-        #repository-sub-nav.collapse
-          %ul
-            = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
-              = link_to project_files_path(@project) do
-                #{ _('Files') }
+        %ul.sidebar-sub-level-items
+          = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
+            = link_to project_files_path(@project) do
+              #{ _('Files') }
 
-            = nav_link(controller: [:commit, :commits]) do
-              = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
-                #{ _('Commits') }
+          = nav_link(controller: [:commit, :commits]) do
+            = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
+              #{ _('Commits') }
 
-            = nav_link(html_options: {class: branches_tab_class}) do
-              = link_to namespace_project_branches_path(@project.namespace, @project) do
-                #{ _('Branches') }
+          = nav_link(html_options: {class: branches_tab_class}) do
+            = link_to namespace_project_branches_path(@project.namespace, @project) do
+              #{ _('Branches') }
 
-            = nav_link(controller: [:tags, :releases]) do
-              = link_to namespace_project_tags_path(@project.namespace, @project) do
-                #{ _('Tags') }
+          = nav_link(controller: [:tags, :releases]) do
+            = link_to namespace_project_tags_path(@project.namespace, @project) do
+              #{ _('Tags') }
 
-            = nav_link(path: 'graphs#show') do
-              = link_to namespace_project_graph_path(@project.namespace, @project, current_ref) do
-                #{ _('Contributors') }
+          = nav_link(path: 'graphs#show') do
+            = link_to namespace_project_graph_path(@project.namespace, @project, current_ref) do
+              #{ _('Contributors') }
 
-            = nav_link(controller: %w(network)) do
-              = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do
-                #{ s_('ProjectNetworkGraph|Graph') }
+          = nav_link(controller: %w(network)) do
+            = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do
+              #{ s_('ProjectNetworkGraph|Graph') }
 
-            = nav_link(controller: :compare) do
-              = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: current_ref) do
-                #{ _('Compare') }
+          = nav_link(controller: :compare) do
+            = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: current_ref) do
+              #{ _('Compare') }
 
-            = nav_link(path: 'graphs#charts') do
-              = link_to charts_namespace_project_graph_path(@project.namespace, @project, current_ref) do
-                #{ _('Charts') }
+          = nav_link(path: 'graphs#charts') do
+            = link_to charts_namespace_project_graph_path(@project.namespace, @project, current_ref) do
+              #{ _('Charts') }
 
     - if project_nav_tab? :container_registry
       = nav_link(controller: %w[projects/registry/repositories]) do
@@ -73,7 +73,7 @@
             - if @project.default_issues_tracker?
               %span.badge.count.issue_counter= number_with_delimiter(IssuesFinder.new(current_user, project_id: @project.id).execute.opened.count)
 
-        %ul
+        %ul.sidebar-sub-level-items
           - if project_nav_tab?(:issues) && !current_controller?(:merge_requests)
             = nav_link(controller: :issues) do
               = link_to namespace_project_issues_path(@project.namespace, @project), title: 'Issues' do
@@ -116,7 +116,7 @@
           %span
             Pipelines
 
-        %ul
+        %ul.sidebar-sub-level-items
           - if project_nav_tab? :pipelines
             = nav_link(path: ['pipelines#index', 'pipelines#show']) do
               = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
@@ -165,7 +165,7 @@
           %span
             Settings
 
-        %ul
+        %ul.sidebar-sub-level-items
           - can_edit = can?(current_user, :admin_project, @project)
           - if can_edit
             = nav_link(controller: :projects) do
