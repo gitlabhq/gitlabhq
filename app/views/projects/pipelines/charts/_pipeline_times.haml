@@ -6,7 +6,7 @@
 
 :javascript
   var data = {
-    labels : #{@charts[:build_times].labels.to_json},
+    labels : #{@charts[:pipeline_times].labels.to_json},
     datasets : [
       {
         fillColor : "rgba(220,220,220,0.5)",
@@ -14,7 +14,7 @@
         barStrokeWidth: 1,
         barValueSpacing: 1,
         barDatasetSpacing: 1,
-        data : #{@charts[:build_times].build_times.to_json}
+        data : #{@charts[:pipeline_times].pipeline_times.to_json}
       }
     ]
   }

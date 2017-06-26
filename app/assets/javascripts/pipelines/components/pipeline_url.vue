@@ -1,6 +1,6 @@
 <script>
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import tooltipMixin from '../../vue_shared/mixins/tooltip';
+import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   props: {
@@ -12,9 +12,9 @@ export default {
   components: {
     userAvatarLink,
   },
-  mixins: [
-    tooltipMixin,
-  ],
+  directives: {
+    tooltip,
+  },
   computed: {
     user() {
       return this.pipeline.user;
@@ -45,16 +45,16 @@ export default {
     <div class="label-container">
       <span
         v-if="pipeline.flags.latest"
+        v-tooltip
         class="js-pipeline-url-latest label label-success"
-        title="Latest pipeline for this branch"
-        ref="tooltip">
+        title="Latest pipeline for this branch">
         latest
       </span>
       <span
         v-if="pipeline.flags.yaml_errors"
+        v-tooltip
         class="js-pipeline-url-yaml label label-danger"
-        :title="pipeline.yaml_errors"
-        ref="tooltip">
+        :title="pipeline.yaml_errors">
         yaml invalid
       </span>
       <span

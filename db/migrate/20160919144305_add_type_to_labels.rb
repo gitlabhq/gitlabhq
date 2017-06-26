@@ -5,6 +5,8 @@ class AddTypeToLabels < ActiveRecord::Migration
   DOWNTIME = true
   DOWNTIME_REASON = 'Labels will not work as expected until this migration is complete.'
 
+  disable_ddl_transaction!
+
   def change
     add_column :labels, :type, :string
 

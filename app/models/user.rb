@@ -984,6 +984,12 @@ class User < ActiveRecord::Base
     self.admin = (new_level == 'admin')
   end
 
+  # Does the user have access to all private groups & projects?
+  # Overridden in EE to also check auditor?
+  def full_private_access?
+    admin?
+  end
+
   def update_two_factor_requirement
     periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
 
