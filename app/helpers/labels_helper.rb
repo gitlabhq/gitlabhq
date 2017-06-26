@@ -134,7 +134,7 @@ module LabelsHelper
   end
 
   def can_subscribe_to_label_in_different_levels?(label)
-    defined?(@project) || label.is_a?(GroupLabel)
+    defined?(@project) && label.is_a?(GroupLabel)
   end
 
   def label_subscription_status(label, project)
