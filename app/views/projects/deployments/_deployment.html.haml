@@ -11,11 +11,14 @@
     .table-mobile-header{ role: 'rowheader' } Job
     - if deployment.deployable
       .table-mobile-content
-        = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link' do
-          #{deployment.deployable.name} (##{deployment.deployable.id})
+        .flex-truncate-parent
+          .flex-truncate-child
+            = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link' do
+              #{deployment.deployable.name} (##{deployment.deployable.id})
         - if deployment.user
-          by
-          = user_avatar(user: deployment.user, size: 20)
+          %div
+            by
+            = user_avatar(user: deployment.user, size: 20)
 
   .table-section.section-15{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' } Created
