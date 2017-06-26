@@ -1,5 +1,6 @@
 <script>
 import eventHub from '../event_hub';
+import tooltip from '../../../vue_shared/directives/tooltip';
 
 export default {
   name: 'IssueToken',
@@ -40,6 +41,10 @@ export default {
     },
   },
 
+  directives: {
+    tooltip,
+  },
+
   computed: {
     removeButtonLabel() {
       return `Remove related issue ${this.displayReference}`;
@@ -74,30 +79,18 @@ export default {
       eventHub.$emit(`${namespacePrefix}removeRequest`, this.idKey);
     },
   },
-  updated() {
-    const link = this.$refs.link;
-    const removeButton = this.$refs.removeButton;
-
-    if (link) {
-      $(link).tooltip('fixTitle');
-    }
-
-    if (removeButton) {
-      $(removeButton).tooltip('fixTitle');
-    }
-  },
 };
 </script>
 
 <template>
   <div class="issue-token">
     <component
+      v-tooltip
       :is="this.computedLinkElementType"
       ref="link"
       class="issue-token-link"
       :href="computedPath"
       :title="title"
-      data-toggle="tooltip"
       data-placement="top">
       <span
         ref="reference"
@@ -125,12 +118,12 @@ export default {
       </span>
     </component>
     <button
-      ref="removeButton"
       v-if="canRemove"
+      v-tooltip
+      ref="removeButton"
       type="button"
       class="js-issue-token-remove-button issue-token-remove-button"
       :title="removeButtonLabel"
-      data-toggle="tooltip"
       @click="onRemoveRequest">
       <i
         class="fa fa-times"

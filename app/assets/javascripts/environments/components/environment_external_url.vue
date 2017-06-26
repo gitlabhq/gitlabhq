@@ -1,4 +1,6 @@
 <script>
+import tooltip from '../../vue_shared/directives/tooltip';
+
 /**
  * Renders the external url link in environments table.
  */
@@ -10,6 +12,10 @@ export default {
     },
   },
 
+  directives: {
+    tooltip,
+  },
+
   computed: {
     title() {
       return 'Open';
@@ -19,7 +25,8 @@ export default {
 </script>
 <template>
   <a
-    class="btn external-url has-tooltip"
+    v-tooltip
+    class="btn external-url"
     data-container="body"
     target="_blank"
     rel="noopener noreferrer nofollow"
