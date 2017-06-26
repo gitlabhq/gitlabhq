@@ -18,7 +18,7 @@ feature 'Groups > Members > Leave group', feature: true do
 
     expect(current_path).to eq(dashboard_groups_path)
     expect(page).to have_content left_group_message(group)
-    expect(group.members).not_to include(user)
+    expect(group.users).not_to include(user)
   end
 
   scenario 'guest leaves the group as last member' do
@@ -29,7 +29,7 @@ feature 'Groups > Members > Leave group', feature: true do
 
     expect(current_path).to eq(dashboard_groups_path)
     expect(page).to have_content left_group_message(group)
-    expect(group.members).not_to include(user)
+    expect(group.users).not_to include(user)
   end
 
   scenario 'owner leaves the group if they is not the last owner' do
@@ -41,7 +41,7 @@ feature 'Groups > Members > Leave group', feature: true do
 
     expect(current_path).to eq(dashboard_groups_path)
     expect(page).to have_content left_group_message(group)
-    expect(group.members).not_to include(user)
+    expect(group.users).not_to include(user)
   end
 
   scenario 'owner can not leave the group if they is a last owner' do
