@@ -1,7 +1,7 @@
 <script>
   import jobNameComponent from './job_name_component.vue';
   import jobComponent from './job_component.vue';
-  import tooltipMixin from '../../../vue_shared/mixins/tooltip';
+  import tooltip from '../../../vue_shared/directives/tooltip';
 
   /**
    * Renders the dropdown for the pipeline graph.
@@ -34,9 +34,9 @@
       },
     },
 
-    mixins: [
-      tooltipMixin,
-    ],
+    directives: {
+      tooltip,
+    },
 
     components: {
       jobComponent,
@@ -53,12 +53,12 @@
 <template>
   <div>
     <button
+      v-tooltip
       type="button"
       data-toggle="dropdown"
       data-container="body"
       class="dropdown-menu-toggle build-content"
-      :title="tooltipText"
-      ref="tooltip">
+      :title="tooltipText">
 
       <job-name-component
         :name="job.name"

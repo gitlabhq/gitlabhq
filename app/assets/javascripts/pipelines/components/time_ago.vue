@@ -1,7 +1,7 @@
 <script>
   import iconTimerSvg from 'icons/_icon_timer.svg';
   import '../../lib/utils/datetime_utility';
-  import tooltipMixin from '../../vue_shared/mixins/tooltip';
+  import tooltip from '../../vue_shared/directives/tooltip';
   import timeagoMixin from '../../vue_shared/mixins/timeago';
 
   export default {
@@ -16,9 +16,11 @@
       },
     },
     mixins: [
-      tooltipMixin,
       timeagoMixin,
     ],
+    directives: {
+      tooltip,
+    },
     data() {
       return {
         iconTimerSvg,
@@ -81,7 +83,7 @@
         </i>
 
         <time
-          ref="tooltip"
+          v-tooltip
           data-placement="top"
           data-container="body"
           :title="tooltipTitle(finishedTime)">

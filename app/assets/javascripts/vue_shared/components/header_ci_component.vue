@@ -2,7 +2,7 @@
 import ciIconBadge from './ci_badge_link.vue';
 import loadingIcon from './loading_icon.vue';
 import timeagoTooltip from './time_ago_tooltip.vue';
-import tooltipMixin from '../mixins/tooltip';
+import tooltip from '../directives/tooltip';
 import userAvatarImage from './user_avatar/user_avatar_image.vue';
 
 /**
@@ -47,9 +47,9 @@ export default {
     },
   },
 
-  mixins: [
-    tooltipMixin,
-  ],
+  directives: {
+    tooltip,
+  },
 
   components: {
     ciIconBadge,
@@ -90,10 +90,10 @@ export default {
 
       <template v-if="user">
         <a
+          v-tooltip
           :href="user.path"
           :title="user.email"
-          class="js-user-link commit-committer-link"
-          ref="tooltip">
+          class="js-user-link commit-committer-link">
 
           <user-avatar-image
             :img-src="user.avatar_url"
