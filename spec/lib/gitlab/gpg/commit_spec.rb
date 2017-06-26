@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Gitlab::Gpg::Commit do
   describe '#signature' do
     let!(:project) { create :project, :repository, path: 'sample-project' }
+    let!(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33'  }
 
     context 'unisgned commit' do
       it 'returns nil' do
@@ -19,7 +20,7 @@ RSpec.describe Gitlab::Gpg::Commit do
         raw_commit = double(:raw_commit, signature: [
           GpgHelpers::User1.signed_commit_signature,
           GpgHelpers::User1.signed_commit_base_data
-        ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
+        ], sha: commit_sha)
         allow(raw_commit).to receive :save!
 
         create :commit, git_commit: raw_commit, project: project
@@ -27,7 +28,7 @@ RSpec.describe Gitlab::Gpg::Commit do
 
       it 'returns a valid signature' do
         expect(described_class.new(commit).signature).to have_attributes(
-          commit_sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33',
+          commit_sha: commit_sha,
           project: project,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
@@ -54,7 +55,7 @@ RSpec.describe Gitlab::Gpg::Commit do
         raw_commit = double(:raw_commit, signature: [
           GpgHelpers::User1.signed_commit_signature,
           GpgHelpers::User1.signed_commit_base_data
-        ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
+        ], sha: commit_sha)
         allow(raw_commit).to receive :save!
 
         create :commit, git_commit: raw_commit, project: project
@@ -62,7 +63,7 @@ RSpec.describe Gitlab::Gpg::Commit do
 
       it 'returns an invalid signature' do
         expect(described_class.new(commit).signature).to have_attributes(
-          commit_sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33',
+          commit_sha: commit_sha,
           project: project,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
@@ -87,7 +88,7 @@ RSpec.describe Gitlab::Gpg::Commit do
         raw_commit = double(:raw_commit, signature: [
           GpgHelpers::User1.signed_commit_signature,
           GpgHelpers::User1.signed_commit_base_data
-        ], sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33')
+        ], sha: commit_sha)
         allow(raw_commit).to receive :save!
 
         create :commit,
@@ -97,7 +98,7 @@ RSpec.describe Gitlab::Gpg::Commit do
 
       it 'returns an invalid signature' do
         expect(described_class.new(commit).signature).to have_attributes(
-          commit_sha: '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33',
+          commit_sha: commit_sha,
           project: project,
           gpg_key: nil,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
