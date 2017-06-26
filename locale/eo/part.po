@@ -1,4 +1,4 @@
-# 
+# Lyubomir Vasilev <lyubomirv@abv.bg>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
@@ -7,8 +7,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2017-06-23 04:07-0400\n"
+"Last-Translator: Lyubomir Vasilev <lyubomirv@abv.bg>\n"
 "Language-Team: Esperanto\n"
 "Language: eo\n"
 "X-Generator: Zanata 3.9.6\n"
@@ -17,38 +17,38 @@ msgstr ""
 msgid "%d additional commit have been omitted to prevent performance issues."
 msgid_plural ""
 "%d additional commits have been omitted to prevent performance issues."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d enmetado estis transsaltita, por ne troŝarĝi la sistemon."
+msgstr[1] "%d enmetadoj estis transsaltitaj, por ne troŝarĝi la sistemon."
 
 msgid "%d commit"
 msgid_plural "%d commits"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d enmetado"
+msgstr[1] "%d enmetadoj"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
-msgstr ""
+msgstr "Serĉu branĉon"
 
 msgid "BranchSwitcherTitle|Switch branch"
-msgstr ""
+msgstr "Iri al branĉo"
 
 msgid "Browse Directory"
-msgstr ""
+msgstr "Foliumi dosierujon"
 
 msgid "Browse File"
-msgstr ""
+msgstr "Foliumi dosieron"
 
 msgid "Browse Files"
-msgstr ""
+msgstr "Foliumi dosierojn"
 
 msgid "Commits feed"
-msgstr ""
+msgstr "Fluo de enmetadoj"
 
 msgid "Filter by commit message"
-msgstr ""
+msgstr "Filtri per mesaĝo"
 
 msgid "UploadLink|click to upload"
-msgstr ""
+msgstr "alklaku por alŝuti"
 
 msgid "View open merge request"
-msgstr ""
+msgstr "Vidi la malfermitan peton pri kunfando"
 
