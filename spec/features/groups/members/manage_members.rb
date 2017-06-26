@@ -77,6 +77,23 @@ feature 'Groups > Members > Manage members', feature: true do
     end
   end
 
+  scenario 'guest can not manage other users' do
+    group.add_guest(user1)
+    group.add_developer(user2)
+
+    visit group_group_members_path(group)
+
+    expect(page).not_to have_button 'Add to group'
+
+    page.within(second_row) do
+      # Can not modify user2 role
+      expect(page).not_to have_button 'Developer'
+
+      # Can not remove user2
+      expect(page).not_to have_css('a.btn-remove')
+    end
+  end
+
   def first_row
     page.all('ul.content-list > li')[0]
   end
