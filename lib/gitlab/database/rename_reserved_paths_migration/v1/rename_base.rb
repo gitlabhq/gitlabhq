@@ -8,6 +8,7 @@ module Gitlab
           delegate :update_column_in_batches,
                    :execute,
                    :replace_sql,
+                   :quote_string,
                    :say,
                    to: :migration
 
@@ -44,10 +45,18 @@ module Gitlab
 
           def rename_routes(old_full_path, new_full_path)
             routes = Route.arel_table
-            main_route_ids = routes.project(routes[:id]).where(routes[:path].matches(old_full_path))
-            child_route_ids = routes.project(routes[:id]).where(routes[:path].matches("#{old_full_path}/%"))
-            matching_ids = main_route_ids.union(child_route_ids)
-            ids = execute(matching_ids.to_sql).map { |entry| entry['id'] }
+
+            quoted_old_full_path = quote_string(old_full_path)
+            quoted_old_wildcard_path = quote_string("#{old_full_path}/%")
+
+            filter = if Database.mysql?
+                       "lower(routes.path) = lower('#{quoted_old_full_path}') "\
+                       "OR routes.path LIKE '#{quoted_old_wildcard_path}'"
+                     else
+                       "routes.id IN "\
+                       "( SELECT routes.id FROM routes WHERE lower(routes.path) = lower('#{quoted_old_full_path}') "\
+                       "UNION SELECT routes.id FROM routes WHERE routes.path ILIKE '#{quoted_old_wildcard_path}' )"
+                     end
 
             replace_statement = replace_sql(Route.arel_table[:path],
                                             old_full_path,
@@ -56,7 +65,8 @@ module Gitlab
             update = Arel::UpdateManager.new(ActiveRecord::Base)
                        .table(routes)
                        .set([[routes[:path], replace_statement]])
-                       .where(routes[:id].in(ids))
+                       .where(Arel::Nodes::SqlLiteral.new(filter))
+
             execute(update.to_sql)
           end
 
