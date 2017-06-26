@@ -3,6 +3,7 @@
   color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+  margin-bottom: $gl-padding;
 
   .well-segment {
     padding: $gl-padding;
@@ -20,6 +21,11 @@
       .ref-name {
         font-size: 12px;
       }
+    }
+
+    &.admin-well h4 {
+      border-bottom: 1px solid $border-color;
+      padding-bottom: 8px;
     }
   }
 
@@ -51,6 +57,14 @@
 .light-well {
   background-color: $gray-light;
   padding: 15px;
+}
+
+.dark-well {
+  background-color: $gray-normal;
+
+  .btn {
+    width: 100%;
+  }
 }
 
 .well-centered {
