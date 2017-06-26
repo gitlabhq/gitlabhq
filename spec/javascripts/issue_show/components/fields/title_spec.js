@@ -1,6 +1,8 @@
 import Vue from 'vue';
+import eventHub from '~/issue_show/event_hub';
 import Store from '~/issue_show/stores';
 import titleField from '~/issue_show/components/fields/title.vue';
+import { keyboardDownEvent } from '../../helpers';
 
 describe('Title field component', () => {
   let vm;
@@ -15,6 +17,8 @@ describe('Title field component', () => {
     });
     store.formState.title = 'test';
 
+    spyOn(eventHub, '$emit');
+
     vm = new Component({
       propsData: {
         formState: store.formState,
@@ -26,5 +30,21 @@ describe('Title field component', () => {
     expect(
       vm.$el.querySelector('.form-control').value,
     ).toBe('test');
+  });
+
+  it('triggers update with meta+enter', () => {
+    vm.$el.querySelector('.form-control').dispatchEvent(keyboardDownEvent(13, true));
+
+    expect(
+      eventHub.$emit,
+    ).toHaveBeenCalled();
+  });
+
+  it('triggers update with ctrl+enter', () => {
+    vm.$el.querySelector('.form-control').dispatchEvent(keyboardDownEvent(13, false, true));
+
+    expect(
+      eventHub.$emit,
+    ).toHaveBeenCalled();
   });
 });
