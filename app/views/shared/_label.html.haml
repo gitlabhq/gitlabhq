@@ -1,7 +1,7 @@
 - label_css_id = dom_id(label)
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
-- toggle_subscription_path = toggle_subscription_label_path(label, @project)
+- toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
 
 %li{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
@@ -56,9 +56,9 @@
               = icon('chevron-down')
             %ul.dropdown-menu
               %li
-                %a.js-subscribe-button{ data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+                %a.js-subscribe-button{ class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
                   Project level
-                %a.js-subscribe-button{ data: { url: toggle_subscription_group_label_path(label.group, label) } }
+                %a.js-subscribe-button{ class: ('hidden' unless status.unsubscribed?), data: { url: toggle_subscription_group_label_path(label.group, label) } }
                   Group level
         - else
           %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', data: { status: status, url: toggle_subscription_path } }
