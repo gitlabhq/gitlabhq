@@ -7,9 +7,13 @@ class AddAuthorizedKeysEnabledToApplicationSettings < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
-  def change
-    # allow_null: true because we want to set the default based on if the
-    # instance is configured to use AuthorizedKeysCommand
-    add_column :application_settings, :authorized_keys_enabled, :boolean, allow_null: true
+  disable_ddl_transaction!
+
+  def up
+    add_column_with_default :application_settings, :authorized_keys_enabled, :boolean, default: true, allow_null: false
+  end
+
+  def down
+    remove_column :application_settings, :authorized_keys_enabled
   end
 end
