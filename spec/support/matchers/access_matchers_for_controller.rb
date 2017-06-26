@@ -41,7 +41,7 @@ module AccessMatchersForController
 
   def description_for(role, type, expected, result)
     "be #{type} for #{role}." \
-    " Expected: #{expected.join(',')} Result: #{result}"
+    " Expected: #{expected.join(',')} Got: #{result}"
   end
 
   matcher :be_allowed_for do |role|
