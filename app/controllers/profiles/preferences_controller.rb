@@ -6,7 +6,9 @@ class Profiles::PreferencesController < Profiles::ApplicationController
 
   def update
     begin
-      if @user.update_attributes(preferences_params)
+      result = Users::UpdateService.new(user, preferences_params).execute
+
+      if result[:status] == :success
         flash[:notice] = 'Preferences saved.'
       else
         flash[:alert] = 'Failed to save preferences.'
