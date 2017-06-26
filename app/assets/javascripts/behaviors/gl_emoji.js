@@ -1,5 +1,5 @@
 import installCustomElements from 'document-register-element';
-import { emojiMap, emojiAliases, isEmojiUnicodeSupported, getUnicodeSupportMap } from '../emoji';
+import { emojiMap, normalizeEmojiName, isEmojiUnicodeSupported, getUnicodeSupportMap } from '../emoji';
 
 installCustomElements(window);
 
@@ -10,8 +10,7 @@ function emojiImageTag(name, src) {
 }
 
 function assembleFallbackImageSrc(inputName) {
-  let name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
-    emojiAliases[inputName] : inputName;
+  let name = normalizeEmojiName(inputName);
   let emojiInfo = emojiMap[name];
   // Fallback to question mark for unknown emojis
   if (!emojiInfo) {
@@ -25,8 +24,7 @@ function assembleFallbackImageSrc(inputName) {
 
 function glEmojiTag(inputName, options) {
   const opts = { sprite: false, forceFallback: false, ...options };
-  let name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
-    emojiAliases[inputName] : inputName;
+  let name = normalizeEmojiName(inputName);
   let emojiInfo = emojiMap[name];
   // Fallback to question mark for unknown emojis
   if (!emojiInfo) {
