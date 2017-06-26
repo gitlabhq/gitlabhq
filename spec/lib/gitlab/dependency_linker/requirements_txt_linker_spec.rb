@@ -54,6 +54,8 @@ describe Gitlab::DependencyLinker::RequirementsTxtLinker, lib: true do
         Sphinx>=1.3
         docutils>=0.7
         markupsafe
+        pytest~=3.0
+        foop!=3.0
       CONTENT
     end
 
@@ -78,6 +80,8 @@ describe Gitlab::DependencyLinker::RequirementsTxtLinker, lib: true do
       expect(subject).to include(link('Sphinx', 'https://pypi.python.org/pypi/Sphinx'))
       expect(subject).to include(link('docutils', 'https://pypi.python.org/pypi/docutils'))
       expect(subject).to include(link('markupsafe', 'https://pypi.python.org/pypi/markupsafe'))
+      expect(subject).to include(link('pytest', 'https://pypi.python.org/pypi/pytest'))
+      expect(subject).to include(link('foop', 'https://pypi.python.org/pypi/foop'))
     end
 
     it 'links URLs' do

@@ -155,7 +155,10 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
     scrollToElement(container) {
       if (location.hash) {
-        const offset = -$('.js-tabs-affix').outerHeight();
+        const offset = 0 - (
+          $('.navbar-gitlab').outerHeight() +
+          $('.js-tabs-affix').outerHeight()
+        );
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {
           $.scrollTo($el[0], { offset });
@@ -284,7 +287,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
           // Scroll any linked note into view
           // Similar to `toggler_behavior` in the discussion tab
           const hash = window.gl.utils.getLocationHash();
-          const anchor = hash && $container.find(`[id="${hash}"]`);
+          const anchor = hash && $container.find(`.note[id="${hash}"]`);
           if (anchor && anchor.length > 0) {
             const notesContent = anchor.closest('.notes_content');
             const lineType = notesContent.hasClass('new') ? 'new' : 'old';
@@ -294,6 +297,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
               forceShow: true,
             });
             anchor[0].scrollIntoView();
+            window.gl.utils.handleLocationHash();
             // We have multiple elements on the page with `#note_xxx`
             // (discussion and diff tabs) and `:target` only applies to the first
             anchor.addClass('target');

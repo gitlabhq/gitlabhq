@@ -10,8 +10,6 @@ import Cookies from 'js-cookie';
 
       this.$sidebarInner = this.sidebar.find('.issuable-sidebar');
       this.$navGitlab = $('.navbar-gitlab');
-      this.$layoutNav = $('.layout-nav');
-      this.$subScroll = $('.sub-nav-scroll');
       this.$rightSidebar = $('.js-right-sidebar');
 
       this.removeListeners();
@@ -215,7 +213,7 @@ import Cookies from 'js-cookie';
     };
 
     Sidebar.prototype.setSidebarHeight = function() {
-      const $navHeight = this.$navGitlab.outerHeight() + this.$layoutNav.outerHeight() + (this.$subScroll ? this.$subScroll.outerHeight() : 0);
+      const $navHeight = this.$navGitlab.outerHeight();
       const diff = $navHeight - $(window).scrollTop();
       if (diff > 0) {
         this.$rightSidebar.outerHeight($(window).height() - diff);
