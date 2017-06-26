@@ -4,6 +4,7 @@
  * Used in environments table.
  */
 import terminalIconSvg from 'icons/_icon_terminal.svg';
+import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   props: {
@@ -12,6 +13,10 @@ export default {
       required: false,
       default: '',
     },
+  },
+
+  directives: {
+    tooltip,
   },
 
   data() {
@@ -29,7 +34,8 @@ export default {
 </script>
 <template>
   <a
-    class="btn terminal-button has-tooltip hidden-xs hidden-sm"
+    v-tooltip
+    class="btn terminal-button hidden-xs hidden-sm"
     data-container="body"
     :title="title"
     :aria-label="title"

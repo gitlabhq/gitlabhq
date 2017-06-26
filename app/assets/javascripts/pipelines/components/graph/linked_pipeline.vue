@@ -1,6 +1,6 @@
 <script>
 import ciStatus from '../../../vue_shared/components/ci_icon.vue';
-import tooltipMixin from '../../../vue_shared/mixins/tooltip';
+import tooltip from '../../../vue_shared/directives/tooltip';
 
 export default {
   props: {
@@ -21,9 +21,9 @@ export default {
       required: true,
     },
   },
-  mixins: [
-    tooltipMixin,
-  ],
+  directives: {
+    tooltip,
+  },
   components: {
     ciStatus,
   },
@@ -40,11 +40,10 @@ export default {
     <div class="curve"></div>
     <div>
       <a
+        v-tooltip
         class="linked-pipeline-content"
         :href="pipelinePath"
         :title="tooltipText"
-        ref="tooltip"
-        data-toggle="tooltip"
         data-container="body">
         <span class="linked-pipeline-status ci-status-text">
           <ci-status :status="pipelineStatus"/>

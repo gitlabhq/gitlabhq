@@ -1,6 +1,7 @@
 <script>
 import eventHub from '../event_hub';
 import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
+import tooltip from '../../../vue_shared/directives/tooltip';
 import issueToken from './issue_token.vue';
 import addIssuableForm from './add_issuable_form.vue';
 
@@ -55,6 +56,10 @@ export default {
     },
   },
 
+  directives: {
+    tooltip,
+  },
+
   components: {
     loadingIcon,
     addIssuableForm,
@@ -77,13 +82,6 @@ export default {
     toggleAddRelatedIssuesForm() {
       eventHub.$emit('toggleAddRelatedIssuesForm');
     },
-  },
-
-  updated() {
-    const addIssueButton = this.$refs.issueCountBadgeAddButton;
-    if (addIssueButton) {
-      $(addIssueButton).tooltip('fixTitle');
-    }
   },
 };
 </script>
@@ -113,13 +111,13 @@ export default {
                 {{ relatedIssueCount }}
               </span>
               <button
-                ref="issueCountBadgeAddButton"
                 v-if="canAddRelatedIssues"
+                v-tooltip
+                ref="issueCountBadgeAddButton"
                 type="button"
                 class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-small btn-default"
                 title="Add an issue"
                 aria-label="Add an issue"
-                data-toggle="tooltip"
                 data-placement="top"
                 @click="toggleAddRelatedIssuesForm">
                 <i

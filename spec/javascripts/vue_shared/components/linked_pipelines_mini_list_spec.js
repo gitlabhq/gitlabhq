@@ -89,7 +89,7 @@ describe('Linked pipeline mini list', () => {
 
     it('should have prepped tooltips', () => {
       const itemElement = this.component.$el.querySelectorAll('.linked-pipeline-mini-item')[2];
-      expect(itemElement.getAttribute('title')).toBe('GitLabCE - running');
+      expect(itemElement.getAttribute('data-original-title')).toBe('GitLabCE - running');
     });
 
     it('should correctly set is-downstream', () => {
