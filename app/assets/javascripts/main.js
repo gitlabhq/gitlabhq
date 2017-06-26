@@ -251,7 +251,8 @@ $(function () {
   });
   // Initialize popovers
   $body.popover({
-    selector: '[data-toggle="popover"]'
+    selector: '[data-toggle="popover"]',
+    trigger: 'focus'
   });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();

@@ -283,7 +283,6 @@ module CommitsHelper
       toggle: 'popover',
       html: 'true',
       placement: 'auto bottom',
-      trigger: 'focus',
       title: title,
       content: content
     }
