@@ -2,18 +2,14 @@
 %ul
   %li
     Total:
-    %strong= pluralize @project.builds.count(:all), 'job'
+    %strong= pluralize @counts[:total], 'pipeline'
   %li
     Successful:
-    %strong= pluralize @project.builds.success.count(:all), 'job'
+    %strong= pluralize @counts[:success], 'pipeline'
   %li
     Failed:
-    %strong= pluralize @project.builds.failed.count(:all), 'job'
+    %strong= pluralize @counts[:failed], 'pipeline'
   %li
     Success ratio:
     %strong
-      #{success_ratio(@project.builds.success, @project.builds.failed)}%
-  %li
-    Commits covered:
-    %strong
-      = @project.pipelines.count(:all)
+      #{success_ratio(@counts)}%
