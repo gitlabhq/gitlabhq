@@ -123,6 +123,45 @@ module EE
 end
 ```
 
+#### Use self-descriptive wrapper methods
+
+When it's not possible/logical to modify the implementation of a
+method. Wrap it in a self-descriptive method and use that method.
+
+For example, in CE only an `admin` is allowed to access all private
+projects/groups, but in EE also an `auditor` has full private
+access. It would be incorrect to override the implementation of
+`User#admin?`, so instead add a method `full_private_access?` to
+`app/models/users.rb`. The implementation in CE will be:
+
+```ruby
+def full_private_access?
+  admin?
+end
+```
+
+In EE, the implementation `app/models/ee/users.rb` would be:
+
+```ruby
+def full_private_access?
+  super || auditor?
+end
+```
+
+In `lib/gitlab/visibility_level.rb` this method is used to return the
+allowed visibilty levels:
+
+```ruby
+def levels_for_user(user = nil)
+  if user.full_private_access?
+    [PRIVATE, INTERNAL, PUBLIC]
+  elsif # ...
+end
+```
+
+See [CE MR](ce-mr-full-private) and [EE MR](ee-mr-full-private) for
+full implementation details.
+
 ### Code in `app/controllers/`
 
 In controllers, the most common type of conflict is with `before_action` that
@@ -203,3 +242,5 @@ RSpec/FilePath` to disable the cop for that line.
 
 [ee-as-ce]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2500
 [ee-features-list]: https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml
+[ce-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12373
+[ee-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2199
