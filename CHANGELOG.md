@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.1 (2017-06-26)
+
+- Fix reversed breadcrumb order for nested groups. !12322
+- Fix 500 when failing to create private group. !12394
+- Fix linking to line number on side-by-side diff creating empty discussion box.
+- Don't match tilde and exclamation mark as part of requirements.txt package name.
+- Perform project housekeeping after importing projects.
+- Fixed ctrl+enter not submit issue edit form.
+
 ## 9.3.0 (2017-06-22)
 
 - Refactored gitlab:app:check into SystemCheck liberary and improve some checks. !9173
