@@ -32,7 +32,7 @@ module Gitlab
 
         block_after_save = needs_blocking?
 
-        gl_user.save!
+        Users::UpdateService.new(gl_user).execute!
 
         gl_user.block if block_after_save
 
