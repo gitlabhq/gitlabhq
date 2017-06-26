@@ -145,10 +145,12 @@ module LabelsHelper
   end
 
   def toggle_subscription_label_path(label, project)
-    if label.is_a?(GroupLabel)
-      toggle_subscription_group_label_path(label.group, label)
-    else
-      toggle_subscription_namespace_project_label_path(project.namespace, project, label)
+    return toggle_subscription_group_label_path(label.group, label) unless project
+
+    case label_subscription_status(label, project)
+    when 'group-level' then toggle_subscription_group_label_path(label.group, label)
+    when 'project-level' then toggle_subscription_namespace_project_label_path(project.namespace, project, label)
+    when 'unsubscribed' then toggle_subscription_namespace_project_label_path(project.namespace, project, label)
     end
   end
 
