@@ -17,7 +17,7 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels', featu
     # We need to actually activate the LDAP config otherwise `Group#ldap_synced?` will always be false!
     allow(Gitlab.config.ldap).to receive_messages(enabled: true)
 
-    gitlab_sign_in(owner)
+    sign_in(owner)
   end
 
   scenario 'override not available on project members page', js: true do

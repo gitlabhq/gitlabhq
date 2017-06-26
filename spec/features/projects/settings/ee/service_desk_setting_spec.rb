@@ -6,7 +6,7 @@ describe 'Service Desk Setting', js: true, feature: true do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
     allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
     allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }

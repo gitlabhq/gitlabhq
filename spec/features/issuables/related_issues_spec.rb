@@ -14,7 +14,7 @@ describe 'Related issues', feature: true, js: true do
 
   context 'when user has no permission to update related issues' do
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'with related_issues enabled' do
@@ -59,7 +59,7 @@ describe 'Related issues', feature: true, js: true do
     before do
       project.add_master(user)
       project_b.add_master(user)
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'with related_issues disabled' do

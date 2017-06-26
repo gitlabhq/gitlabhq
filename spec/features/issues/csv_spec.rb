@@ -9,7 +9,7 @@ describe 'Issues csv', feature: true do
   let!(:issue)  { create(:issue, project: project, author: user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   def request_csv(params = {})

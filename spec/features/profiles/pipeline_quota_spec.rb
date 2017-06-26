@@ -16,7 +16,7 @@ feature 'Profile > Pipeline Quota', feature: true do
       expect(page).to have_selector(:link_or_button, 'Pipeline quota')
     end
   end
-  
+
   context 'with no quota' do
     let(:namespace) { create(:namespace, :with_build_minutes, owner: user) }
 

@@ -10,7 +10,7 @@ describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
   let(:non_member) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, :master]
     group.add_developer(user)
     group.add_developer(group_member)

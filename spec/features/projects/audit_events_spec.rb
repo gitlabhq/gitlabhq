@@ -7,7 +7,7 @@ feature 'Projects > Audit Events', js: true, feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'adding an SSH key' do
