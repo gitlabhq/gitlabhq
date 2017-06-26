@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Dashboard > User sorts todos", feature: true do
+feature 'Dashboard > User sorts todos' do
   let(:user)    { create(:user) }
   let(:project) { create(:empty_project) }
 
@@ -18,7 +18,7 @@ describe "Dashboard > User sorts todos", feature: true do
     let(:issue_3) { create(:issue, title: 'issue_3', project: project) }
     let(:issue_4) { create(:issue, title: 'issue_4', project: project) }
 
-    let!(:merge_request_1) { create(:merge_request, source_project: project, title: "merge_request_1") }
+    let!(:merge_request_1) { create(:merge_request, source_project: project, title: 'merge_request_1') }
 
     before do
       create(:todo, user: user, project: project, target: issue_4, created_at: 5.hours.ago)
@@ -32,41 +32,41 @@ describe "Dashboard > User sorts todos", feature: true do
       issue_2.labels         << label_3
       issue_1.labels         << label_2
 
-      gitlab_sign_in(user)
+      sign_in(user)
       visit dashboard_todos_path
     end
 
-    it "sorts with oldest created todos first" do
-      click_link "Last created"
+    it 'sorts with oldest created todos first' do
+      click_link 'Last created'
 
       results_list = page.find('.todos-list')
-      expect(results_list.all('p')[0]).to have_content("merge_request_1")
-      expect(results_list.all('p')[1]).to have_content("issue_1")
-      expect(results_list.all('p')[2]).to have_content("issue_3")
-      expect(results_list.all('p')[3]).to have_content("issue_2")
-      expect(results_list.all('p')[4]).to have_content("issue_4")
+      expect(results_list.all('p')[0]).to have_content('merge_request_1')
+      expect(results_list.all('p')[1]).to have_content('issue_1')
+      expect(results_list.all('p')[2]).to have_content('issue_3')
+      expect(results_list.all('p')[3]).to have_content('issue_2')
+      expect(results_list.all('p')[4]).to have_content('issue_4')
     end
 
-    it "sorts with newest created todos first" do
-      click_link "Oldest created"
+    it 'sorts with newest created todos first' do
+      click_link 'Oldest created'
 
       results_list = page.find('.todos-list')
-      expect(results_list.all('p')[0]).to have_content("issue_4")
-      expect(results_list.all('p')[1]).to have_content("issue_2")
-      expect(results_list.all('p')[2]).to have_content("issue_3")
-      expect(results_list.all('p')[3]).to have_content("issue_1")
-      expect(results_list.all('p')[4]).to have_content("merge_request_1")
+      expect(results_list.all('p')[0]).to have_content('issue_4')
+      expect(results_list.all('p')[1]).to have_content('issue_2')
+      expect(results_list.all('p')[2]).to have_content('issue_3')
+      expect(results_list.all('p')[3]).to have_content('issue_1')
+      expect(results_list.all('p')[4]).to have_content('merge_request_1')
     end
 
-    it "sorts by label priority" do
-      click_link "Label priority"
+    it 'sorts by label priority' do
+      click_link 'Label priority'
 
       results_list = page.find('.todos-list')
-      expect(results_list.all('p')[0]).to have_content("issue_3")
-      expect(results_list.all('p')[1]).to have_content("merge_request_1")
-      expect(results_list.all('p')[2]).to have_content("issue_1")
-      expect(results_list.all('p')[3]).to have_content("issue_2")
-      expect(results_list.all('p')[4]).to have_content("issue_4")
+      expect(results_list.all('p')[0]).to have_content('issue_3')
+      expect(results_list.all('p')[1]).to have_content('merge_request_1')
+      expect(results_list.all('p')[2]).to have_content('issue_1')
+      expect(results_list.all('p')[3]).to have_content('issue_2')
+      expect(results_list.all('p')[4]).to have_content('issue_4')
     end
   end
 
@@ -88,12 +88,12 @@ describe "Dashboard > User sorts todos", feature: true do
     end
 
     it "doesn't mix issues and merge requests label priorities" do
-      click_link "Label priority"
+      click_link 'Label priority'
 
       results_list = page.find('.todos-list')
-      expect(results_list.all('p')[0]).to have_content("issue_1")
-      expect(results_list.all('p')[1]).to have_content("issue_2")
-      expect(results_list.all('p')[2]).to have_content("merge_request_1")
+      expect(results_list.all('p')[0]).to have_content('issue_1')
+      expect(results_list.all('p')[1]).to have_content('issue_2')
+      expect(results_list.all('p')[2]).to have_content('merge_request_1')
     end
   end
 end
