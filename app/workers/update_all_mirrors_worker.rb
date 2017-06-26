@@ -6,10 +6,6 @@ class UpdateAllMirrorsWorker
   LEASE_KEY = 'update_all_mirrors'.freeze
 
   def perform
-    # This worker requires updating the database state, which we can't
-    # do on a Geo secondary
-    return if Gitlab::Geo.secondary?
-
     lease_uuid = try_obtain_lease
     return unless lease_uuid
 
