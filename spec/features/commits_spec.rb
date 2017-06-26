@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'fileutils'
 
 describe 'Commits' do
   include CiStatusHelper
@@ -206,19 +205,6 @@ describe 'Commits' do
   end
 
   describe 'GPG signed commits' do
-    before do
-      # FIXME: add this to the test repository directly
-      remote_path = project.repository.path_to_repo
-      Dir.mktmpdir do |dir|
-        FileUtils.cd dir do
-          `git clone --quiet #{remote_path} .`
-          `git commit --quiet -S#{GpgHelpers::User1.primary_keyid} --allow-empty -m "signed commit by nannie bernhard"`
-          `git commit --quiet -S#{GpgHelpers::User2.primary_keyid} --allow-empty -m "signed commit by bette cartwright"`
-          `git push --quiet`
-        end
-      end
-    end
-
     it 'changes from unverified to verified when the user changes his email to match the gpg key' do
       user = create :user, email: 'unrelated.user@example.org'
       project.team << [user, :master]
@@ -229,7 +215,7 @@ describe 'Commits' do
 
       login_with(user)
 
-      visit namespace_project_commits_path(project.namespace, project, :master)
+      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
 
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
@@ -242,7 +228,7 @@ describe 'Commits' do
         user.update_attributes!(email: GpgHelpers::User1.emails.first)
       end
 
-      visit namespace_project_commits_path(project.namespace, project, :master)
+      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
 
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
@@ -256,7 +242,7 @@ describe 'Commits' do
 
       login_with(user)
 
-      visit namespace_project_commits_path(project.namespace, project, :master)
+      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
 
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
@@ -268,7 +254,7 @@ describe 'Commits' do
         create :gpg_key, key: GpgHelpers::User1.public_key, user: user
       end
 
-      visit namespace_project_commits_path(project.namespace, project, :master)
+      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
 
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
@@ -284,7 +270,7 @@ describe 'Commits' do
       end
 
       login_with(user)
-      visit namespace_project_commits_path(project.namespace, project, :master)
+      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
 
       click_on 'Verified'
       within '.popover' do
