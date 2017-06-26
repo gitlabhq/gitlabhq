@@ -30,6 +30,18 @@
 .detail-page-description.milestone-detail
   %h2.title
     = markdown_field(milestone, :title)
+  %div
+  - if @milestone.description.present?
+    .description
+      .wiki
+        = markdown_field(@milestone, :description)
+
+%br
+View
+= link_to 'Issues', @issues_path
+or
+= link_to 'Merge Requests', @merge_requests_path
+in this milestone
 
 - if milestone.complete?(current_user) && milestone.active?
   .alert.alert-success.prepend-top-default
