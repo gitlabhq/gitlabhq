@@ -9,8 +9,7 @@ module SharedMilestoneProperties
     has_many :merge_requests
     has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
 
-    # Use a uniqueness scope here to check name with project milestones
-    validates :title, presence: true#, uniqueness: { scope: :project_id }
+    validate :uniqueness_of_title, if: :title_changed?
 
     scope :active, -> { with_state(:active) }
     scope :closed, -> { with_state(:closed) }
@@ -57,5 +56,17 @@ module SharedMilestoneProperties
 
   def safe_title
     title.to_slug.normalize.to_s
+  end
+
+  # Milestone title must be unique across project milestones and group milestones
+  def uniqueness_of_title
+    title_exists = group.milestones.find_by_title(title).present? if is_group_milestone?
+
+    if is_project_milestone?
+      title_exists = project.milestones.find_by_title(title)
+      title_exists ||= project.group.milestones.find_by_title(title)
+    end
+
+    errors.add(:title, "Must be unique across project milestones and group milestones.") if title_exists
   end
 end
