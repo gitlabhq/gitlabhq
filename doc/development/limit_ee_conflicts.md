@@ -2,6 +2,10 @@
 
 This guide contains best-practices for avoiding conflicts between CE and EE.
 
+## Implementing EE feature
+
+Follow the [guidelines](ee_features) on how to implement a EE feature.
+
 ## Daily CE Upstream merge
 
 GitLab Community Edition is merged daily into the Enterprise Edition (look for

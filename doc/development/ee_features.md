@@ -7,15 +7,27 @@
 - **Submit a MR to the `www-gitlab-com` project.**: Add the new feature to the
   [EE features list][ee-features-list].
 
+## Act as CE when unlicensed
+
+Since the implementation of [GitLab CE features to work with unlicensed EE instance](ee-as-ce)
+GitLab Enterprise Edition should work like GitLab Community Edition
+when no license is active. This means the code should work like it
+does in CE when `License.feature_available?(:some_feature)` returns
+false.
+
+This means, if possible, CE specs should remain untouched and extra
+specs should be added for EE, stubbing the licensed feature using the
+spec helper `stub_licensed_features` in `EE::LicenseHelpers`.
+
 ## Separation of EE code
 
 Merging changes from GitLab CE to EE can result in numerous conflicts.
 To reduce conflicts, EE code should be separated in to the `EE` module
 as much as possible.
 
-### Code in `app/`
+### Adding EE-only files
 
-Place EE-specific controllers, finders, helpers, mailers, models, policies,
+Place EE-only controllers, finders, helpers, mailers, models, policies,
 serializers/entities, services, validators and workers in the top-level
 `EE` module namespace, and in the `ee/` specific sub-directory:
 
@@ -31,8 +43,42 @@ serializers/entities, services, validators and workers in the top-level
 - `ee/app/validators/ee/foo_attr_validator.rb`
 - `ee/app/workers/ee/foo_worker.rb`
 
-If you modify an existing part of a CE controller, model, service, worker etc.
-one simple solution is to use the `prepend` strategy ([presented below](#overriding-ce-methods)).
+### Classes vs. Module Mixins
+
+If the feature being developed is not present in any form in CE, separation is
+easier - build the class entirely in the `EE` namespace. For features that build
+on existing CE features, write a module in the `EE` namespace and include it
+in the CE class. This makes conflicts less likely during CE to EE merges
+because only one line is added to the CE class - the `include` statement.
+
+#### Overriding CE methods
+
+There are two ways for overriding a method that's defined in CE:
+
+- changing the method's body in place
+- override the method's body by using `prepend` which lets you override a
+  method in a class with a method from a module, and still access the class's
+  implementation with `super`.
+
+The `prepend` method should always be preferred but there are a few gotchas with it:
+
+- you should always add a `raise NotImplementedError unless defined?(super)`
+  guard clause in the "overrider" method to ensure that if the method gets
+  renamed in CE, the EE override won't be silently forgotten.
+- when the "overrider" would add a line in the middle of the CE implementation,
+  it usually means that you'd better refactor the method to split it in
+  smaller methods that can be more easily and automatically overriden.
+- when the original implementation contains a guard clause (e.g.
+  `return unless condition`), it doesn't return from the overriden method (it's
+  actually the same behavior as with method overridding via inheritance). In
+  this case, it's usually better to create a "hook" method that is empty in CE,
+  and with the EE-specific implementation in EE
+- sometimes for one-liner methods that don't change often it can be more
+  pragmatic to just change the method in place since conflicts resolution
+  should be trivial in this case. Use your best judgement!
+
+When prepending, place them in a `/ee/` sub-folder, and wrap class or
+module in `module EE` to avoid naming conflicts.
 
 For example to override the CE implementation of
 `ApplicationController#after_sign_out_path_for`:
@@ -43,7 +89,8 @@ def after_sign_out_path_for(resource)
 end
 ```
 
-Instead of modifying the method in place, you should do the following:
+Instead of modifying the method in place, you should add `prepend` to
+the existing file:
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -56,7 +103,11 @@ class ApplicationController < ActionController::Base
 
   [...]
 end
+```
 
+And create a new file in the `/ee/` sub-folder with the altered implementation:
+
+```ruby
 module EE
   class ApplicationController
     def after_sign_out_path_for(resource)
@@ -72,7 +123,7 @@ module EE
 end
 ```
 
-#### Code in `app/controllers/`
+### Code in `app/controllers/`
 
 In controllers, the most common type of conflict is with `before_action` that
 has a list of actions in CE but EE adds some actions to that list.
@@ -112,14 +163,14 @@ def project_params_ee
 end
 ```
 
-#### Code in `app/models/`
+### Code in `app/models/`
 
 EE-specific models should `extend EE::Model`.
 
 For example, if EE has a specific `Tanuki` model, you would
 place it in `ee/app/models/ee/tanuki.rb`.
 
-#### Code in `app/views/`
+### Code in `app/views/`
 
 It's a very frequent problem that EE is adding some specific view code in a CE
 view. For instance the approval code in the project's settings page.
@@ -138,38 +189,17 @@ class beneath the `EE` module just as you would normally.
 For example, if CE has LDAP classes in `lib/gitlab/ldap/` then you would place
 EE-specific LDAP classes in `ee/lib/ee/gitlab/ldap`.
 
-### Classes vs. Module Mixins
+### Code in `spec/`
 
-If the feature being developed is not present in any form in CE, separation is
-easier - build the class entirely in the `EE` namespace. For features that build
-on existing CE features, write a module in the `EE` namespace and include it
-in the CE class. This makes conflicts less likely during CE to EE merges
-because only one line is added to the CE class - the `include` statement.
+When you're testing EE-only features, avoid adding examples to the
+existing CE specs. Also do no change existing CE examples, since they
+should remain working as-is when EE is running without a license.
 
-#### Overriding CE methods
+Instead add a file in a `/ee/` sub-folder.
 
-There are two ways for overriding a method that's defined in CE:
+When doing this, rubocop might complain about the path not
+matching. So on the top-level `describe` append `# rubocop:disable
+RSpec/FilePath` to disable the cop for that line.
 
-- changing the method's body in place
-- override the method's body by using `prepend` which lets you override a
-  method in a class with a method from a module, and still access the class's
-  implementation with `super`.
-
-The `prepend` method should always be preferred but there are a few gotchas with it:
-
-- you should always add a `raise NotImplementedError unless defined?(super)`
-  guard clause in the "overrider" method to ensure that if the method gets
-  renamed in CE, the EE override won't be silently forgotten.
-- when the "overrider" would add a line in the middle of the CE implementation,
-  it usually means that you'd better refactor the method to split it in
-  smaller methods that can be more easily and automatically overriden.
-- when the original implementation contains a guard clause (e.g.
-  `return unless condition`), it doesn't return from the overriden method (it's
-  actually the same behavior as with method overridding via inheritance). In
-  this case, it's usually better to create a "hook" method that is empty in CE,
-  and with the EE-specific implementation in EE
-- sometimes for one-liner methods that don't change often it can be more
-  pragmatic to just change the method in place since conflicts resolution
-  should be trivial in this case. Use your best judgement!
-
+[ee-as-ce]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2500
 [ee-features-list]: https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml
