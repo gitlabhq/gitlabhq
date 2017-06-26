@@ -1,4 +1,4 @@
-# 
+# Lyubomir Vasilev <lyubomirv@abv.bg>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
@@ -7,8 +7,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2017-06-23 04:07-0400\n"
+"Last-Translator: Lyubomir Vasilev <lyubomirv@abv.bg>\n"
 "Language-Team: Bulgarian\n"
 "Language: bg\n"
 "X-Generator: Zanata 3.9.6\n"
@@ -17,38 +17,38 @@ msgstr ""
 msgid "%d additional commit have been omitted to prevent performance issues."
 msgid_plural ""
 "%d additional commits have been omitted to prevent performance issues."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d подаване беше пропуснато, за да не се натоварва системата."
+msgstr[1] "%d подавания бяха пропуснати, за да не се натоварва системата."
 
 msgid "%d commit"
 msgid_plural "%d commits"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d подаване"
+msgstr[1] "%d подавания"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
-msgstr ""
+msgstr "Търсете в клоновете"
 
 msgid "BranchSwitcherTitle|Switch branch"
-msgstr ""
+msgstr "Превключване на клона"
 
 msgid "Browse Directory"
-msgstr ""
+msgstr "Преглед на папката"
 
 msgid "Browse File"
-msgstr ""
+msgstr "Преглед на файла"
 
 msgid "Browse Files"
-msgstr ""
+msgstr "Преглед на файловете"
 
 msgid "Commits feed"
-msgstr ""
+msgstr "Поток от подавания"
 
 msgid "Filter by commit message"
-msgstr ""
+msgstr "Филтриране по съобщение"
 
 msgid "UploadLink|click to upload"
-msgstr ""
+msgstr "щракнете за качване"
 
 msgid "View open merge request"
-msgstr ""
+msgstr "Преглед на отворената заявка за сливане"
 
