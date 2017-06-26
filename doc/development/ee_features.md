@@ -9,7 +9,7 @@
 
 ## Act as CE when unlicensed
 
-Since the implementation of [GitLab CE features to work with unlicensed EE instance](ee-as-ce)
+Since the implementation of [GitLab CE features to work with unlicensed EE instance][ee-as-ce]
 GitLab Enterprise Edition should work like GitLab Community Edition
 when no license is active. This means the code should work like it
 does in CE when `License.feature_available?(:some_feature)` returns
@@ -18,6 +18,9 @@ false.
 This means, if possible, CE specs should remain untouched and extra
 specs should be added for EE, stubbing the licensed feature using the
 spec helper `stub_licensed_features` in `EE::LicenseHelpers`.
+
+[ee-as-ce]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2500
+
 
 ## Separation of EE code
 
@@ -159,8 +162,11 @@ def levels_for_user(user = nil)
 end
 ```
 
-See [CE MR](ce-mr-full-private) and [EE MR](ee-mr-full-private) for
+See [CE MR][ce-mr-full-private] and [EE MR][ee-mr-full-private] for
 full implementation details.
+
+[ce-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12373
+[ee-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2199
 
 ### Code in `app/controllers/`
 
@@ -239,8 +245,3 @@ Instead add a file in a `/ee/` sub-folder.
 When doing this, rubocop might complain about the path not
 matching. So on the top-level `describe` append `# rubocop:disable
 RSpec/FilePath` to disable the cop for that line.
-
-[ee-as-ce]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2500
-[ee-features-list]: https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml
-[ce-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12373
-[ee-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2199
