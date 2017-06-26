@@ -176,6 +176,10 @@ describe Gitlab::Database, lib: true do
 
       described_class.bulk_insert('test', rows)
     end
+
+    it 'handles non-UTF-8 data' do
+      expect { described_class.bulk_insert('test', [{ a: "\255" }]) }.not_to raise_error
+    end
   end
 
   describe '.create_connection_pool' do
