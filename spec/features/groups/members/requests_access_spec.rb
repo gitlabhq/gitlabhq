@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Members > User requests access', feature: true do
+feature 'Groups > Members > Requests access', feature: true do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:group) { create(:group, :public, :access_requestable) }
@@ -67,5 +67,12 @@ feature 'Groups > Members > User requests access', feature: true do
 
     expect(group.requesters.exists?(user_id: user)).to be_falsey
     expect(page).to have_content 'Your access request to the group has been withdrawn.'
+  end
+
+  scenario 'member does not see the request access button' do
+    group.add_owner(user)
+    visit group_path(group)
+
+    expect(page).not_to have_content 'Request Access'
   end
 end
