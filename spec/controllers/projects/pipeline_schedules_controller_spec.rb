@@ -127,7 +127,8 @@ describe Projects::PipelineSchedulesController do
     describe 'PUT update' do
       let(:action) do
         proc do |user|
-          put :update, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+          put :update, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id,
+          schedule: { description: 'a' }
         end
       end
 
