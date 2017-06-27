@@ -24,6 +24,10 @@ module Issues
     def filter_assignee(issuable)
       return if params[:assignee_ids].blank?
 
+      unless issuable.allows_multiple_assignees?
+        params[:assignee_ids] = params[:assignee_ids].take(1)
+      end
+
       assignee_ids = params[:assignee_ids].select { |assignee_id| assignee_can_read?(issuable, assignee_id) }
 
       if params[:assignee_ids].map(&:to_s) == [IssuableFinder::NONE]
