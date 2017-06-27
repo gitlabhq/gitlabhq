@@ -195,11 +195,8 @@ module Ci
       variables += yaml_variables
       variables += user_variables
       variables += project.secret_variables_for(ref).map(&:to_runner_variable)
-      if trigger_request
-        variables += trigger_request.user_variables
-      elsif pipeline.pipeline_schedule
-        variables += pipeline.pipeline_schedule.variables.map(&:to_runner_variable)
-      end
+      variables += trigger_request&.user_variables || []
+      variables += pipeline.pipeline_schedule&.variables&.map(&:to_runner_variable) || []
       variables
     end
 
