@@ -17,8 +17,10 @@ class NoteEntity < API::Entities::Note
   expose :last_edited_at, if: -> (note, _) { note.is_edited? }
   expose :last_edited_by, using: UserEntity, if: -> (note, _) { note.is_edited? }
 
-  expose :can_edit do |note|
-    Ability.can_edit_note?(request.current_user, note)
+  expose :current_user do
+    expose :can_edit do |note|
+      Ability.can_edit_note?(request.current_user, note)
+    end
   end
 
   expose :system_note_icon_name, if: -> (note, _) { note.system? } do |note|
