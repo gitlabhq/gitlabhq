@@ -513,6 +513,11 @@ module API
       expose :id, :name, :path, :kind, :full_path
 
       # EE-only
+      expose :parent_id
+      expose :members_count do |namespace, _|
+        namespace.users_with_descendants.count if namespace.kind == 'group'
+      end
+
       expose :shared_runners_minutes_limit, if: lambda { |_, options| options[:current_user]&.admin? }
       expose :plan, if: lambda { |_, options| options[:current_user]&.admin? }
     end

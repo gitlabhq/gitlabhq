@@ -15,6 +15,14 @@ describe API::Namespaces do
     end
 
     context "when authenticated as admin" do
+      it "returns correct attributes" do
+        get api("/namespaces", admin)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response.first).to include('id', 'name', 'path', 'full_path', 'parent_id', 'members_count')
+      end
+
       it "admin: returns an array of all namespaces" do
         get api("/namespaces", admin)
 
@@ -37,6 +45,14 @@ describe API::Namespaces do
     end
 
     context "when authenticated as a regular user" do
+      it "returns correct attributes" do
+        get api("/namespaces", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response.first).to include('id', 'name', 'path', 'full_path', 'parent_id', 'members_count')
+      end
+
       it "user: returns an array of namespaces" do
         get api("/namespaces", user)
 
