@@ -59,5 +59,9 @@ module Ci
       Gitlab::Ci::CronParser.new(worker_cron, worker_time_zone)
                             .next_time_from(next_run_at)
     end
+
+    def job_variables
+      variables&.map(&:to_runner_variable) || []
+    end
   end
 end
