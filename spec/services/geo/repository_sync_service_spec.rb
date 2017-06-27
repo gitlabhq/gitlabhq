@@ -103,14 +103,12 @@ describe Geo::RepositorySyncService, services: true do
       let(:last_wiki_synced_at) { 4.days.ago }
 
       let!(:registry) do
-        Geo::ProjectRegistry.create(
+        create(:geo_project_registry, :synced,
           project: project,
           last_repository_synced_at: last_repository_synced_at,
           last_repository_successful_sync_at: last_repository_synced_at,
           last_wiki_synced_at: last_wiki_synced_at,
-          last_wiki_successful_sync_at: last_wiki_synced_at,
-          resync_repository: false,
-          resync_wiki: false
+          last_wiki_successful_sync_at: last_wiki_synced_at
         )
       end
 
@@ -147,18 +145,7 @@ describe Geo::RepositorySyncService, services: true do
 
     context 'when last attempt to sync project repositories failed' do
       let(:project) { create(:project) }
-
-      let!(:registry) do
-        Geo::ProjectRegistry.create(
-          project: project,
-          last_repository_synced_at: DateTime.now,
-          last_repository_successful_sync_at: nil,
-          last_wiki_synced_at: DateTime.now,
-          last_wiki_successful_sync_at: nil,
-          resync_repository: false,
-          resync_wiki: false
-        )
-      end
+      let!(:registry) { create(:geo_project_registry, :sync_failed, project: project) }
 
       it 'fetches project repositories' do
         fetch_count = 0
@@ -193,18 +180,13 @@ describe Geo::RepositorySyncService, services: true do
 
     context 'when project repository is dirty' do
       let(:project) { create(:project) }
-      let(:last_repository_synced_at) { 5.days.ago }
       let(:last_wiki_synced_at) { 4.days.ago }
 
       let!(:registry) do
-        Geo::ProjectRegistry.create(
+        create(:geo_project_registry, :synced, :repository_dirty,
           project: project,
-          last_repository_synced_at: last_repository_synced_at,
-          last_repository_successful_sync_at: last_repository_synced_at,
           last_wiki_synced_at: last_wiki_synced_at,
-          last_wiki_successful_sync_at: last_wiki_synced_at,
-          resync_repository: true,
-          resync_wiki: false
+          last_wiki_successful_sync_at: last_wiki_synced_at
         )
       end
 
@@ -236,8 +218,8 @@ describe Geo::RepositorySyncService, services: true do
 
           registry.reload
 
-          expect(registry.last_repository_synced_at).to be_within(1.minute).of(Time.now)
-          expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(Time.now)
+          expect(registry.last_repository_synced_at).to be_within(1.minute).of(DateTime.now)
+          expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(DateTime.now)
         end
 
         it 'does not update last_wiki_successful_sync_at' do
@@ -262,17 +244,12 @@ describe Geo::RepositorySyncService, services: true do
     context 'when project wiki is dirty' do
       let(:project) { create(:project) }
       let(:last_repository_synced_at) { 5.days.ago }
-      let(:last_wiki_synced_at) { 4.days.ago }
 
       let!(:registry) do
-        Geo::ProjectRegistry.create(
+        create(:geo_project_registry, :synced, :wiki_dirty,
           project: project,
           last_repository_synced_at: last_repository_synced_at,
-          last_repository_successful_sync_at: last_repository_synced_at,
-          last_wiki_synced_at: last_wiki_synced_at,
-          last_wiki_successful_sync_at: last_wiki_synced_at,
-          resync_repository: false,
-          resync_wiki: true
+          last_repository_successful_sync_at: last_repository_synced_at
         )
       end
 
@@ -302,8 +279,8 @@ describe Geo::RepositorySyncService, services: true do
 
           registry.reload
 
-          expect(registry.last_wiki_synced_at).to be_within(1.minute).of(Time.now)
-          expect(registry.last_wiki_successful_sync_at).to be_within(1.minute).of(Time.now)
+          expect(registry.last_wiki_synced_at).to be_within(1.minute).of(DateTime.now)
+          expect(registry.last_wiki_successful_sync_at).to be_within(1.minute).of(DateTime.now)
         end
 
         it 'does not update last_repository_successful_sync_at' do
