@@ -32,8 +32,11 @@ class DropdownUser extends gl.FilteredSearchDropdown {
   }
 
   hideCurrentUser() {
-    const currenUserItem = this.dropdown.querySelector('.js-current-user');
-    currenUserItem.classList.add('hidden');
+    const currentUserItem = this.dropdown.querySelector('.js-current-user');
+
+    if (currentUserItem) {
+      currentUserItem.classList.add('hidden');
+    }
   }
 
   itemClicked(e) {
