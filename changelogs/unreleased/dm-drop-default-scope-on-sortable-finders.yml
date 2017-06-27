@@ -1,0 +1,4 @@
+---
+title: Drop default ORDER scope when calling a find method on a Sortable model
+merge_request:
+author:
