@@ -266,4 +266,38 @@ describe Project, models: true do
       expect(project.service_desk_address).to eq("test+#{project.full_path}@mail.com")
     end
   end
+
+  describe '#merge_method' do
+    [
+      { ff: true,  rebase: true,  ff_licensed: true,  rebase_licensed: true,  method: :ff },
+      { ff: true,  rebase: true,  ff_licensed: true,  rebase_licensed: false, method: :ff },
+      { ff: true,  rebase: true,  ff_licensed: false, rebase_licensed: true,  method: :rebase_merge },
+      { ff: true,  rebase: true,  ff_licensed: false, rebase_licensed: false, method: :merge },
+      { ff: true,  rebase: false, ff_licensed: true,  rebase_licensed: true,  method: :ff },
+      { ff: true,  rebase: false, ff_licensed: true,  rebase_licensed: false, method: :ff },
+      { ff: true,  rebase: false, ff_licensed: false, rebase_licensed: true,  method: :merge },
+      { ff: true,  rebase: false, ff_licensed: false, rebase_licensed: false, method: :merge },
+      { ff: false, rebase: true,  ff_licensed: true,  rebase_licensed: true,  method: :rebase_merge },
+      { ff: false, rebase: true,  ff_licensed: true,  rebase_licensed: false, method: :merge },
+      { ff: false, rebase: true,  ff_licensed: false, rebase_licensed: true,  method: :rebase_merge },
+      { ff: false, rebase: true,  ff_licensed: false, rebase_licensed: false, method: :merge },
+      { ff: false, rebase: false, ff_licensed: true,  rebase_licensed: true,  method: :merge },
+      { ff: false, rebase: false, ff_licensed: true,  rebase_licensed: false, method: :merge },
+      { ff: false, rebase: false, ff_licensed: false, rebase_licensed: true,  method: :merge },
+      { ff: false, rebase: false, ff_licensed: false, rebase_licensed: false, method: :merge }
+    ].each do |spec|
+      context spec.inspect do
+        let(:project) { build(:empty_project, merge_requests_rebase_enabled: spec[:rebase], merge_requests_ff_only_enabled: spec[:ff]) }
+        let(:spec) { spec }
+
+        subject { project.merge_method }
+
+        before do
+          stub_licensed_features(merge_request_rebase: spec[:rebase_licensed], fast_forward_merge: spec[:ff_licensed])
+        end
+
+        it { is_expected.to eq(spec[:method]) }
+      end
+    end
+  end
 end

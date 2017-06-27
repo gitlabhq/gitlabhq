@@ -12,6 +12,7 @@ class License < ActiveRecord::Base
   EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
   MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
+  FAST_FORWARD_MERGE_FEATURE = 'GitLab_FastForwardMerge'.freeze
 
   FEATURE_CODES = {
     geo: GEO_FEATURE,
@@ -21,6 +22,7 @@ class License < ActiveRecord::Base
     elastic_search: ELASTIC_SEARCH_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
     # Features that make sense to Namespace:
+    fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
     deploy_board: DEPLOY_BOARD_FEATURE,
     file_lock: FILE_LOCK_FEATURE,
     export_issues: EXPORT_ISSUES_FEATURE,
@@ -36,6 +38,7 @@ class License < ActiveRecord::Base
   EES_FEATURES = [
     { ELASTIC_SEARCH_FEATURE => 1 },
     { RELATED_ISSUES_FEATURE => 1 },
+    { FAST_FORWARD_MERGE_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 }
@@ -71,6 +74,7 @@ class License < ActiveRecord::Base
     { AUDITOR_USER_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
+    { FAST_FORWARD_MERGE_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 }

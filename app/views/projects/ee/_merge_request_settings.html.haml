@@ -1,41 +1,43 @@
 - form = local_assigns.fetch(:form)
 - project = local_assigns.fetch(:project)
 
-.form-group
-  = label_tag :merge_method_merge, class: 'label-light' do
-    Merge method
-  .radio
-    = label_tag :project_merge_method_merge do
-      = form.radio_button :merge_method, :merge, class: "js-merge-method-radio"
-      %strong Merge commit
-      %br
-      %span.descr
-        A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
-
-  .radio
-    = label_tag :project_merge_method_rebase_merge do
-      = form.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio"
-      %strong Merge commit with semi-linear history
-      %br
-      %span.descr
-        A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
-        This way you could make sure that if this merge request would build, after merging to target branch it would also build.
-      - if project.feature_available?(:merge_request_rebase)
+- if project.feature_available?(:merge_request_rebase) || project.feature_available?(:fast_forward_merge)
+  .form-group
+    = label_tag :merge_method_merge, class: 'label-light' do
+      Merge method
+    .radio
+      = label_tag :project_merge_method_merge do
+        = form.radio_button :merge_method, :merge, class: "js-merge-method-radio"
+        %strong Merge commit
         %br
         %span.descr
-          When fast-forward merge is not possible, the user is given the option to rebase.
+          A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
 
-  .radio
-    = label_tag :project_merge_method_ff do
-      = form.radio_button :merge_method, :ff, class: "js-merge-method-radio"
-      %strong Fast-forward merge
-      %br
-      %span.descr
-        No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
-      - if project.feature_available?(:merge_request_rebase)
-        %br
-        %span.descr
-          When fast-forward merge is not possible, the user is given the option to rebase.
+    - if project.feature_available?(:merge_request_rebase)
+      .radio
+        = label_tag :project_merge_method_rebase_merge do
+          = form.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio"
+          %strong Merge commit with semi-linear history
+          %br
+          %span.descr
+            A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
+            This way you could make sure that if this merge request would build, after merging to target branch it would also build.
+          %br
+          %span.descr
+            When fast-forward merge is not possible, the user is given the option to rebase.
+
+    - if project.feature_available?(:fast_forward_merge)
+      .radio
+        = label_tag :project_merge_method_ff do
+          = form.radio_button :merge_method, :ff, class: "js-merge-method-radio"
+          %strong Fast-forward merge
+          %br
+          %span.descr
+            No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
+          - if project.feature_available?(:merge_request_rebase)
+            %br
+            %span.descr
+              When fast-forward merge is not possible, the user is given the option to rebase.
 
 .form-group
   = form.label :merge_requests_template, class: 'label-light' do

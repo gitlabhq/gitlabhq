@@ -16,13 +16,13 @@ describe MergeRequest, models: true do
       let(:project) { create(:project, merge_requests_rebase_enabled: true) }
 
       it 'returns false when the project feature is unavailable' do
-        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).and_return(false)
+        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).at_least(:once).and_return(false)
 
         is_expected.to be_falsy
       end
 
       it 'returns true when the project feature is available' do
-        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).and_return(true)
+        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).at_least(:once).and_return(true)
 
         is_expected.to be_truthy
       end
