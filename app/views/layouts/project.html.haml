@@ -2,9 +2,10 @@
 - page_description @project.description    unless page_description
 - header_title     project_title(@project) unless header_title
 - if show_new_nav?
-  - nav         "new_project_sidebar"
+  - nav            "new_project_sidebar"
+  - @new_sidebar    = true
 - else
-  - nav          "project"
+  - nav            "project"
 
 - content_for :project_javascripts do
   - project = @target_project || @project

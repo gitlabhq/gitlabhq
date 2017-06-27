@@ -1,4 +1,4 @@
-%div{ class: "#{('page-with-sidebar' if show_new_nav?)} #{page_gutter_class}" }
+%div{ class: "#{('page-with-sidebar' if defined?(@new_sidebar) && @new_sidebar)} #{page_gutter_class}" }
   - if show_new_nav?
     - if defined?(nav) && nav
       = render "layouts/nav/#{nav}"
@@ -9,7 +9,7 @@
           = render "layouts/nav/#{nav}"
     - if content_for?(:sub_nav)
       = yield :sub_nav
-  .content-wrapper{ class: "#{(layout_nav_class unless show_new_nav?) }" }
+  .content-wrapper{ class: "#{(layout_nav_class unless show_new_nav?)}" }
     .alert-wrapper
       = render "layouts/broadcast"
       = render "layouts/flash"
