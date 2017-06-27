@@ -14,43 +14,19 @@ describe Geo::ProjectRegistry, models: true do
     let(:synced_at) { Time.now }
 
     it 'does not return dirty projects' do
-      Geo::ProjectRegistry.create(
-        project: project,
-        last_repository_synced_at: synced_at,
-        last_repository_successful_sync_at: synced_at,
-        last_wiki_synced_at: synced_at,
-        last_wiki_successful_sync_at: synced_at,
-        resync_repository: true,
-        resync_wiki: true
-      )
+      create(:geo_project_registry, :synced, :dirty, project: project)
 
       expect(described_class.synced).to be_empty
     end
 
     it 'does not return projects where last attempt to sync failed' do
-      Geo::ProjectRegistry.create(
-        project: project,
-        last_repository_synced_at: synced_at,
-        last_repository_successful_sync_at: nil,
-        last_wiki_synced_at: synced_at,
-        last_wiki_successful_sync_at: nil,
-        resync_repository: true,
-        resync_wiki: true
-      )
+      create(:geo_project_registry, :sync_failed, project: project)
 
       expect(described_class.synced).to be_empty
     end
 
     it 'returns synced projects' do
-      registry = Geo::ProjectRegistry.create(
-        project: project,
-        last_repository_synced_at: synced_at,
-        last_repository_successful_sync_at: synced_at,
-        last_wiki_synced_at: synced_at,
-        last_wiki_successful_sync_at: synced_at,
-        resync_repository: false,
-        resync_wiki: false
-      )
+      registry = create(:geo_project_registry, :synced, project: project)
 
       expect(described_class.synced).to match_array([registry])
     end
