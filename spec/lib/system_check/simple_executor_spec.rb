@@ -75,6 +75,15 @@ describe SystemCheck::SimpleExecutor, lib: true do
     end
   end
 
+  class BugousCheck < SystemCheck::BaseCheck
+    CustomError = Class.new(StandardError)
+    set_name 'my bugous check'
+
+    def check?
+      raise CustomError, 'omg'
+    end
+  end
+
   describe '#component' do
     it 'returns stored component name' do
       expect(subject.component).to eq('Test')
@@ -138,14 +147,14 @@ describe SystemCheck::SimpleExecutor, lib: true do
     context 'when check pass' do
       it 'prints yes' do
         expect_any_instance_of(SimpleCheck).to receive(:check?).and_call_original
-        expect { subject.run_check(SimpleCheck) }.to output(/ \.\.\. yes/).to_stdout
+        expect { subject.run_check(SimpleCheck) }.to output(/ \.\.\. \e\[32myes/).to_stdout
       end
     end
 
     context 'when check fails' do
       it 'prints no' do
         expect_any_instance_of(OtherCheck).to receive(:check?).and_call_original
-        expect { subject.run_check(OtherCheck) }.to output(/ \.\.\. no/).to_stdout
+        expect { subject.run_check(OtherCheck) }.to output(/ \.\.\. \e\[31mno/).to_stdout
       end
 
       it 'displays error message from #show_error' do
@@ -217,6 +226,12 @@ describe SystemCheck::SimpleExecutor, lib: true do
 
           subject.run_check(SkipMultiCheck)
         end
+      end
+    end
+
+    context 'when there is an exception' do
+      it 'rescues the exception' do
+        expect{ subject.run_check(BugousCheck) }.not_to raise_exception
       end
     end
   end
