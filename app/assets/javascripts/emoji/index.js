@@ -20,10 +20,10 @@ export function filterEmojiNamesByAlias(filter) {
   return _.uniq(filterEmojiNames(filter).map(name => normalizeEmojiName(name)));
 }
 
-let emojiByCategory;
-export function getEmojiByCategory(category = null) {
-  if (!emojiByCategory) {
-    emojiByCategory = {
+let emojiCategoryMap;
+export function getEmojiCategoryMap() {
+  if (!emojiCategoryMap) {
+    emojiCategoryMap = {
       activity: [],
       people: [],
       nature: [],
@@ -35,12 +35,12 @@ export function getEmojiByCategory(category = null) {
     };
     Object.keys(emojiMap).forEach((name) => {
       const emoji = emojiMap[name];
-      if (emojiByCategory[emoji.category]) {
-        emojiByCategory[emoji.category].push(name);
+      if (emojiCategoryMap[emoji.category]) {
+        emojiCategoryMap[emoji.category].push(name);
       }
     });
   }
-  return category ? emojiByCategory[category] : emojiByCategory;
+  return emojiCategoryMap;
 }
 
 export function getEmojiInfo(query) {

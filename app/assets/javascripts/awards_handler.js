@@ -133,7 +133,7 @@ export default class AwardsHandler {
     this.isCreatingEmojiMenu = true;
 
     // Render the first category
-    const categoryMap = Emoji.getEmojiByCategory();
+    const categoryMap = Emoji.getEmojiCategoryMap();
     const categoryNameKey = Object.keys(categoryMap)[0];
     const emojisInCategory = categoryMap[categoryNameKey];
     const firstCategory = renderCategory(categoryLabelMap[categoryNameKey], emojisInCategory);
@@ -173,7 +173,7 @@ export default class AwardsHandler {
     }
     this.isAddingRemainingEmojiMenuCategories = true;
 
-    const categoryMap = Emoji.getEmojiByCategory();
+    const categoryMap = Emoji.getEmojiCategoryMap();
 
     // Avoid the jank and render the remaining categories separately
     // This will take more time, but makes UI more responsive
