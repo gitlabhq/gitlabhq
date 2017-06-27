@@ -221,7 +221,7 @@ module EE
     def execute_hooks(data, hooks_scope = :push_hooks)
       super
 
-      if group
+      if group && feature_available?(:group_webhooks)
         group.hooks.send(hooks_scope).each do |hook|
           hook.async_execute(data, hooks_scope.to_s)
         end

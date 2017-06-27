@@ -2,6 +2,7 @@ class Groups::HooksController < Groups::ApplicationController
   # Authorize
   before_action :group
   before_action :authorize_admin_group!
+  before_action :ensure_feature_available!
 
   respond_to :html
 
@@ -67,5 +68,11 @@ class Groups::HooksController < Groups::ApplicationController
       :url,
       :wiki_page_events
     )
+  end
+
+  def ensure_feature_available!
+    unless @group.feature_available?(:group_webhooks)
+      render_404
+    end
   end
 end

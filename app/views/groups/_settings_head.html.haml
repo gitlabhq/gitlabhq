@@ -19,10 +19,11 @@
               %span
                 LDAP Group
 
-        = nav_link(path: 'hooks#index') do
-          = link_to group_hooks_path(@group), title: 'Webhooks' do
-            %span
-              Webhooks
+        - if @group.feature_available?(:group_webhooks)
+          = nav_link(path: 'hooks#index') do
+            = link_to group_hooks_path(@group), title: 'Webhooks' do
+              %span
+                Webhooks
 
         = nav_link(path: 'audit_events#index') do
           = link_to group_audit_events_path(@group), title: 'Audit Events' do

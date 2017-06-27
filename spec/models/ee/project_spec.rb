@@ -27,6 +27,34 @@ describe Project, models: true do
     end
   end
 
+  describe "#execute_hooks" do
+    context "group hooks" do
+      let(:group) { create(:group) }
+      let(:project) { create(:empty_project, namespace: group) }
+      let(:group_hook) { create(:group_hook, group: group, push_events: true) }
+
+      it 'executes the hook when the feature is enabled' do
+        stub_licensed_features(group_webhooks: true)
+
+        fake_service = double
+        expect(WebHookService).to receive(:new)
+                                    .with(group_hook, { some: 'info' }, 'push_hooks') { fake_service }
+        expect(fake_service).to receive(:async_execute)
+
+        project.execute_hooks(some: 'info')
+      end
+
+      it 'does not execute the hook when the feature is disabled' do
+        stub_licensed_features(group_webhooks: false)
+
+        expect(WebHookService).not_to receive(:new)
+                                        .with(group_hook, { some: 'info' }, 'push_hooks')
+
+        project.execute_hooks(some: 'info')
+      end
+    end
+  end
+
   describe '#feature_available?' do
     let(:namespace) { build_stubbed(:namespace) }
     let(:project) { build_stubbed(:project, namespace: namespace) }
