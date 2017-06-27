@@ -132,6 +132,10 @@ class Milestone < ActiveRecord::Base
 
   private
 
+  def uniqueness_of_title
+    super(project.group, project)
+  end
+
   def milestone_format_reference(format = :iid)
     raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)
 

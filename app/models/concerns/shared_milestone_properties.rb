@@ -58,13 +58,15 @@ module SharedMilestoneProperties
     title.to_slug.normalize.to_s
   end
 
-  # Milestone title must be unique across project milestones and group milestones
-  def uniqueness_of_title
-    title_exists = group.milestones.find_by_title(title).present? if is_group_milestone?
+  private
 
-    if is_project_milestone?
-      title_exists = project.milestones.find_by_title(title)
-      title_exists ||= project.group.milestones.find_by_title(title)
+  # Milestone titles must be unique across project milestones and group milestones
+  def uniqueness_of_title(group, project = nil)
+    if group
+      title_exists = group.milestones.find_by_title(title).present?
+      title_exists ||= Milestone.where(project: group.projects).find_by_title(title).present?
+    elsif project
+      title_exists = project.milestones.find_by_title(title).present?
     end
 
     errors.add(:title, "Must be unique across project milestones and group milestones.") if title_exists

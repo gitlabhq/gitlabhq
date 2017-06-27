@@ -25,6 +25,10 @@ class GroupMilestone < ActiveRecord::Base
 
   private
 
+  def uniqueness_of_title
+    super(group)
+  end
+
   def issues_finder_conditions
     { group_milestone_id: milestoneish_ids }
   end
