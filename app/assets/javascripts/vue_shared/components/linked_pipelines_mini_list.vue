@@ -2,7 +2,7 @@
   import arrowSvg from 'icons/_arrow_mini_pipeline_graph.svg';
   import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
   import ciStatus from './ci_icon.vue';
-  import tooltipMixin from '../mixins/tooltip';
+  import tooltip from '../directives/tooltip';
 
   export default {
     props: {
@@ -28,9 +28,9 @@
         maxRenderedPipelines: 3,
       };
     },
-    mixins: [
-      tooltipMixin,
-    ],
+    directives: {
+      tooltip,
+    },
     components: {
       ciStatus,
     },
@@ -94,28 +94,26 @@
     </span>
 
     <a
-      class="linked-pipeline-mini-item"
       v-for="(pipeline, index) in linkedPipelinesTrimmed"
+      v-tooltip
+      class="linked-pipeline-mini-item"
       :key="pipeline.id"
       :href="pipeline.path"
       :title="pipelineTooltipText(pipeline)"
-      data-toggle="tooltip"
       data-placement="top"
       data-container="body"
-      ref="tooltip"
       :class="triggerButtonClass(pipeline.details.status.group)"
       v-html="getStatusIcon(pipeline.details.status.icon)">
     </a>
 
     <a
       v-if="shouldRenderCounter"
+      v-tooltip
       class="linked-pipelines-counter linked-pipeline-mini-item"
       :title="counterTooltipText"
       :href="pipelinePath"
-      data-toggle="tooltip"
       data-placement="top"
-      data-container="body"
-      ref="tooltip">
+      data-container="body">
       {{ counterLabel }}
     </a>
 

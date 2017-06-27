@@ -8,7 +8,9 @@ describe 'Issues csv', feature: true do
   let(:feature_label) { create(:label, project: project, title: 'Feature') }
   let!(:issue)  { create(:issue, project: project, author: user) }
 
-  before { login_as(user) }
+  before do
+    gitlab_sign_in(user)
+  end
 
   def request_csv(params = {})
     visit namespace_project_issues_path(project.namespace, project, params)

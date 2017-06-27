@@ -20,7 +20,9 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       ).exec
     end
 
-    before { project.add_developer(user) }
+    before do
+      project.add_developer(user)
+    end
 
     context 'without failed checks' do
       it "doesn't raise an error" do
@@ -50,7 +52,9 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         let!(:protected_tag) { create(:protected_tag, project: project, name: 'v*') }
 
         context 'as master' do
-          before { project.add_master(user) }
+          before do
+            project.add_master(user)
+          end
 
           context 'deletion' do
             let(:oldrev) { 'be93687618e4b132087f430a4d8fc3a609c9b77c' }
@@ -175,7 +179,9 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         let(:newrev) { '0000000000000000000000000000000000000000' }
         let(:ref) { 'refs/tags/v1.0.0' }
 
-        before { project.add_master(user) }
+        before do
+          project.add_master(user)
+        end
 
         it 'returns an error if the rule denies tag deletion' do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You cannot delete a tag')
@@ -295,7 +301,9 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       context 'max file size rules' do
         let(:push_rule) { create(:push_rule, max_file_size: 1) }
 
-        before { allow_any_instance_of(Blob).to receive(:size).and_return(2.megabytes) }
+        before do
+          allow_any_instance_of(Blob).to receive(:size).and_return(2.megabytes)
+        end
 
         it 'returns an error if file exceeds the maximum file size' do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File \"README\" is larger than the allowed size of 1 MB")

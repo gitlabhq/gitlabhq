@@ -13,7 +13,7 @@ describe ProjectPolicy, models: true do
   let(:guest_permissions) do
     %i[
       read_project read_board read_list read_wiki read_issue read_label
-      read_milestone read_project_snippet read_project_member
+      read_issue_link read_milestone read_project_snippet read_project_member
       read_note create_project create_issue create_note
       upload_file
     ]
@@ -22,7 +22,7 @@ describe ProjectPolicy, models: true do
   let(:reporter_permissions) do
     %i[
       download_code fork_project create_project_snippet update_issue
-      admin_issue admin_label admin_list read_commit_status read_build
+      admin_issue admin_label admin_issue_link admin_list read_commit_status read_build
       read_container_image read_pipeline read_environment read_deployment
       read_merge_request download_wiki_code
     ]
@@ -71,7 +71,7 @@ describe ProjectPolicy, models: true do
   let(:auditor_permissions) do
     %i[
       download_code download_wiki_code read_project read_board read_list
-      read_wiki read_issue read_label read_milestone read_project_snippet
+      read_wiki read_issue read_label read_issue_link read_milestone read_project_snippet
       read_project_member read_note read_cycle_analytics read_pipeline
       read_build read_commit_status read_container_image read_environment
       read_deployment read_merge_request read_pages
@@ -92,8 +92,8 @@ describe ProjectPolicy, models: true do
 
     expect(project.team.member?(issue.author)).to eq(false)
 
-    expect(BasePolicy.class_for(project).abilities(user, project).can_set).
-      not_to include(:read_issue)
+    expect(BasePolicy.class_for(project).abilities(user, project).can_set)
+      .not_to include(:read_issue)
 
     expect(Ability.allowed?(user, :read_issue, project)).to be_falsy
   end
@@ -149,6 +149,18 @@ describe ProjectPolicy, models: true do
         it do
           is_expected.to include(*guest_permissions)
           is_expected.not_to include(:read_build, :read_pipeline)
+        end
+      end
+
+      context 'when builds are disabled' do
+        before do
+          project.project_feature.update(
+            builds_access_level: ProjectFeature::DISABLED)
+        end
+
+        it do
+          is_expected.not_to include(:read_build)
+          is_expected.to include(:read_pipeline)
         end
       end
     end

@@ -100,8 +100,8 @@ describe ProjectTeam, models: true do
           group_access: Gitlab::Access::GUEST
         )
 
-        expect(project.team.members).
-          to contain_exactly(group_member.user, project.owner)
+        expect(project.team.members)
+          .to contain_exactly(group_member.user, project.owner)
       end
 
       it 'returns invited members of a group of a specified level' do
@@ -240,7 +240,9 @@ describe ProjectTeam, models: true do
         it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
 
         context 'but share_with_group_lock is true' do
-          before { project.namespace.update(share_with_group_lock: true) }
+          before do
+            project.namespace.update(share_with_group_lock: true)
+          end
 
           it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::NO_ACCESS) }
           it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::NO_ACCESS) }

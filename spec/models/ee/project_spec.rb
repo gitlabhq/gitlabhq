@@ -22,73 +22,77 @@ describe Project, models: true do
       before do
         stub_application_setting('check_namespace_plan?' => check_namespace_plan)
         allow(Gitlab).to receive(:com?) { true }
-        expect_any_instance_of(License).to receive(:feature_available?).with(feature) { allowed_on_global_license }
+        expect(License).to receive(:feature_available?).with(feature) { allowed_on_global_license }
         allow(namespace).to receive(:plan) { plan_license }
       end
 
       License::FEATURE_CODES.each do |feature_sym, feature_code|
-        let(:feature) { feature_sym }
-        let(:feature_code) { feature_code }
+        context feature_sym.to_s do
+          let(:feature) { feature_sym }
+          let(:feature_code) { feature_code }
 
-        context "checking #{feature} availabily both on Global and Namespace license" do
-          let(:check_namespace_plan) { true }
+          context "checking #{feature_sym} availability both on Global and Namespace license" do
+            let(:check_namespace_plan) { true }
 
-          context 'allowed by Plan License AND Global License' do
-            let(:allowed_on_global_license) { true }
-            let(:plan_license) { Namespace::GOLD_PLAN }
+            context 'allowed by Plan License AND Global License' do
+              let(:allowed_on_global_license) { true }
+              let(:plan_license) { Namespace::GOLD_PLAN }
 
-            it 'returns true' do
-              is_expected.to eq(true)
+              it 'returns true' do
+                is_expected.to eq(true)
+              end
+            end
+
+            context 'not allowed by Plan License but project and namespace are public' do
+              let(:allowed_on_global_license) { true }
+              let(:plan_license) { Namespace::BRONZE_PLAN }
+
+              it 'returns true' do
+                allow(namespace).to receive(:public?) { true }
+                allow(project).to receive(:public?) { true }
+
+                is_expected.to eq(true)
+              end
+            end
+
+            unless License.plan_includes_feature?(License::STARTER_PLAN, feature_sym)
+              context 'not allowed by Plan License' do
+                let(:allowed_on_global_license) { true }
+                let(:plan_license) { Namespace::BRONZE_PLAN }
+
+                it 'returns false' do
+                  is_expected.to eq(false)
+                end
+              end
+            end
+
+            context 'not allowed by Global License' do
+              let(:allowed_on_global_license) { false }
+              let(:plan_license) { Namespace::GOLD_PLAN }
+
+              it 'returns false' do
+                is_expected.to eq(false)
+              end
             end
           end
 
-          context 'not allowed by Plan License but project and namespace are public' do
-            let(:allowed_on_global_license) { true }
-            let(:plan_license) { Namespace::BRONZE_PLAN }
+          context "when checking #{feature_code} only for Global license" do
+            let(:check_namespace_plan) { false }
 
-            it 'returns true' do
-              allow(namespace).to receive(:public?) { true }
-              allow(project).to receive(:public?) { true }
+            context 'allowed by Global License' do
+              let(:allowed_on_global_license) { true }
 
-              is_expected.to eq(true)
+              it 'returns true' do
+                is_expected.to eq(true)
+              end
             end
-          end
 
-          context 'not allowed by Plan License' do
-            let(:allowed_on_global_license) { true }
-            let(:plan_license) { Namespace::BRONZE_PLAN }
+            context 'not allowed by Global License' do
+              let(:allowed_on_global_license) { false }
 
-            it 'returns false' do
-              is_expected.to eq(false)
-            end
-          end
-
-          context 'not allowed by Global License' do
-            let(:allowed_on_global_license) { false }
-            let(:plan_license) { Namespace::GOLD_PLAN }
-
-            it 'returns false' do
-              is_expected.to eq(false)
-            end
-          end
-        end
-
-        context "when checking #{feature_code} only for Global license" do
-          let(:check_namespace_plan) { false }
-
-          context 'allowed by Global License' do
-            let(:allowed_on_global_license) { true }
-
-            it 'returns true' do
-              is_expected.to eq(true)
-            end
-          end
-
-          context 'not allowed by Global License' do
-            let(:allowed_on_global_license) { false }
-
-            it 'returns false' do
-              is_expected.to eq(false)
+              it 'returns false' do
+                is_expected.to eq(false)
+              end
             end
           end
         end
@@ -211,12 +215,49 @@ describe Project, models: true do
     end
   end
 
+  describe '#service_desk_enabled?' do
+    let!(:license) { create(:license, data: build(:gitlab_license, restrictions: { plan: License::PREMIUM_PLAN }).export) }
+    let(:namespace) { create(:namespace) }
+
+    subject(:project) { build(:empty_project, :private, namespace: namespace, service_desk_enabled: true) }
+
+    before do
+      allow(::Gitlab).to receive(:com?).and_return(true)
+      allow(::Gitlab::IncomingEmail).to receive(:enabled?).and_return(true)
+      allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+    end
+
+    it 'is enabled' do
+      expect(project.service_desk_enabled?).to be_truthy
+      expect(project.service_desk_enabled).to be_truthy
+    end
+
+    context 'namespace plans active' do
+      before do
+        stub_application_setting(check_namespace_plan: true)
+      end
+
+      it 'is disabled' do
+        expect(project.service_desk_enabled?).to be_falsy
+        expect(project.service_desk_enabled).to be_falsy
+      end
+
+      context 'Service Desk available in namespace plan' do
+        let(:namespace) { create(:namespace, plan: Namespace::SILVER_PLAN) }
+
+        it 'is enabled' do
+          expect(project.service_desk_enabled?).to be_truthy
+          expect(project.service_desk_enabled).to be_truthy
+        end
+      end
+    end
+  end
+
   describe '#service_desk_address' do
     let(:project) { create(:empty_project, service_desk_enabled: true) }
 
     before do
-      allow_any_instance_of(License).to receive(:feature_available?).and_call_original
-      allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
+      allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(true)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
       allow(Gitlab.config.incoming_email).to receive(:address).and_return("test+%{key}@mail.com")
     end

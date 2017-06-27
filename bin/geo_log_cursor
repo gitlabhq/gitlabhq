@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+# vim: ft=ruby
+require 'rubygems'
+require 'bundler/setup'
+
+# loads rails environment / initializers
+require "#{File.dirname(__FILE__)}/../config/environment"
+
+require 'optparse'
+
+class GeoLogCursorOptionParser
+  def self.parse(argv)
+    options = { full_scan: false }
+    version = Gitlab::Geo::LogCursor::Daemon::VERSION
+
+    op = OptionParser.new
+    op.banner = 'GitLab Geo: Log Cursor'
+    op.separator ''
+    op.separator 'Usage: ./geo_log_cursor [options]'
+    op.separator ''
+    op.on('-f', '--full-scan', 'Performs full-scan to lookup for un-replicated data') { options[:full_scan] = true }
+
+    op.separator 'Common options:'
+    op.on('-h', '--help') do
+      puts op.to_s
+      exit
+    end
+    op.on('-v', '--version') do
+      puts version
+      exit
+    end
+    op.separator ''
+
+    op.parse!(argv)
+
+    options
+  end
+end
+
+if $0 == __FILE__
+  options = GeoLogCursorOptionParser.parse(ARGV)
+
+  Gitlab::Geo::LogCursor::Daemon.new(options).run!
+end

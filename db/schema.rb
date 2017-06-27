@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170606202615) do
+ActiveRecord::Schema.define(version: 20170621102400) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
@@ -141,6 +142,8 @@ ActiveRecord::Schema.define(version: 20170606202615) do
     t.integer "mirror_max_capacity", default: 100, null: false
     t.integer "mirror_capacity_threshold", default: 50, null: false
     t.boolean "authorized_keys_enabled"
+    t.boolean "help_page_hide_commercial_content", default: false
+    t.string "help_page_support_url"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -579,6 +582,7 @@ ActiveRecord::Schema.define(version: 20170606202615) do
   create_table "geo_event_log", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "repository_updated_event_id", limit: 8
+    t.integer "repository_deleted_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
@@ -602,6 +606,19 @@ ActiveRecord::Schema.define(version: 20170606202615) do
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
+
+  create_table "geo_repository_deleted_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
+    t.text "deleted_path", null: false
+    t.text "deleted_wiki_path"
+    t.text "deleted_project_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "geo_repository_deleted_events", ["project_id"], name: "index_geo_repository_deleted_events_on_project_id", using: :btree
 
   create_table "geo_repository_updated_events", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -654,6 +671,17 @@ ActiveRecord::Schema.define(version: 20170606202615) do
   add_index "issue_assignees", ["issue_id", "user_id"], name: "index_issue_assignees_on_issue_id_and_user_id", unique: true, using: :btree
   add_index "issue_assignees", ["user_id"], name: "index_issue_assignees_on_user_id", using: :btree
 
+  create_table "issue_links", force: :cascade do |t|
+    t.integer "source_id", null: false
+    t.integer "target_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "issue_links", ["source_id", "target_id"], name: "index_issue_links_on_source_id_and_target_id", unique: true, using: :btree
+  add_index "issue_links", ["source_id"], name: "index_issue_links_on_source_id", using: :btree
+  add_index "issue_links", ["target_id"], name: "index_issue_links_on_target_id", using: :btree
+
   create_table "issue_metrics", force: :cascade do |t|
     t.integer "issue_id", null: false
     t.datetime "first_mentioned_in_commit_at"
@@ -672,7 +700,6 @@ ActiveRecord::Schema.define(version: 20170606202615) do
     t.integer "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer "position", default: 0
     t.string "branch_name"
     t.text "description"
     t.integer "milestone_id"
@@ -837,6 +864,22 @@ ActiveRecord::Schema.define(version: 20170606202615) do
   add_index "members", ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
 
+  create_table "merge_request_diff_files", id: false, force: :cascade do |t|
+    t.integer "merge_request_diff_id", null: false
+    t.integer "relative_order", null: false
+    t.boolean "new_file", null: false
+    t.boolean "renamed_file", null: false
+    t.boolean "deleted_file", null: false
+    t.boolean "too_large", null: false
+    t.string "a_mode", null: false
+    t.string "b_mode", null: false
+    t.text "new_path", null: false
+    t.text "old_path", null: false
+    t.text "diff", null: false
+  end
+
+  add_index "merge_request_diff_files", ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_files_on_mr_diff_id_and_order", unique: true, using: :btree
+
   create_table "merge_request_diffs", force: :cascade do |t|
     t.string "state"
     t.text "st_commits"
@@ -882,7 +925,6 @@ ActiveRecord::Schema.define(version: 20170606202615) do
     t.integer "target_project_id", null: false
     t.integer "iid"
     t.text "description"
-    t.integer "position", default: 0
     t.datetime "locked_at"
     t.integer "updated_by_id"
     t.text "merge_error"
@@ -910,6 +952,7 @@ ActiveRecord::Schema.define(version: 20170606202615) do
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
   add_index "merge_requests", ["deleted_at"], name: "index_merge_requests_on_deleted_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "merge_requests", ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id", using: :btree
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
   add_index "merge_requests", ["source_project_id"], name: "index_merge_requests_on_source_project_id", using: :btree
@@ -1044,6 +1087,18 @@ ActiveRecord::Schema.define(version: 20170606202615) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "events"
+    t.boolean "new_note"
+    t.boolean "new_issue"
+    t.boolean "reopen_issue"
+    t.boolean "close_issue"
+    t.boolean "reassign_issue"
+    t.boolean "new_merge_request"
+    t.boolean "reopen_merge_request"
+    t.boolean "close_merge_request"
+    t.boolean "reassign_merge_request"
+    t.boolean "merge_merge_request"
+    t.boolean "failed_pipeline"
+    t.boolean "success_pipeline"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
@@ -1776,16 +1831,20 @@ ActiveRecord::Schema.define(version: 20170606202615) do
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
+  add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
+  add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
+  add_foreign_key "issue_links", "issues", column: "target_id", name: "fk_e71bb44f1f", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
+  add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade

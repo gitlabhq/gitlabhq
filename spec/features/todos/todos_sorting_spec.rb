@@ -8,7 +8,9 @@ describe "Dashboard > User sorts todos", feature: true do
   let(:label_2) { create(:label, title: 'label_2', project: project, priority: 2) }
   let(:label_3) { create(:label, title: 'label_3', project: project, priority: 3) }
 
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   context 'sort options' do
     let(:issue_1) { create(:issue, title: 'issue_1', project: project) }
@@ -30,7 +32,7 @@ describe "Dashboard > User sorts todos", feature: true do
       issue_2.labels         << label_3
       issue_1.labels         << label_2
 
-      login_as(user)
+      gitlab_sign_in(user)
       visit dashboard_todos_path
     end
 
@@ -81,7 +83,7 @@ describe "Dashboard > User sorts todos", feature: true do
       create(:todo, user: user, project: project, target: issue_2)
       create(:todo, user: user, project: project, target: merge_request_1)
 
-      login_as(user)
+      gitlab_sign_in(user)
       visit dashboard_todos_path
     end
 

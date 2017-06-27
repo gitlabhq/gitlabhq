@@ -64,6 +64,7 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2012-05-23T08:00:58Z",
+    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -96,6 +97,7 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
     "web_url": "http://localhost:3000/jack_smith",
     "created_at": "2012-05-23T08:01:01Z",
+    "is_admin": false,
     "bio": null,
     "location": null,
     "skype": "",
@@ -199,6 +201,7 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
+  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -255,6 +258,7 @@ Parameters:
 - `confirm` (optional)          - Require confirmation - true (default) or false
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
+- `avatar` (optional)           - Image file for user's avatar
 
 ## User modification
 
@@ -284,6 +288,7 @@ Parameters:
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
+- `avatar` (optional)           - Image file for user's avatar
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
@@ -809,7 +814,7 @@ Example response:
 
 It creates a new impersonation token. Note that only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform
-both API calls and Git reads and writes. The user will not see these tokens in his profile
+both API calls and Git reads and writes. The user will not see these tokens in their profile
 settings page.
 
 ```

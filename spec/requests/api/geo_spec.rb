@@ -6,12 +6,13 @@ describe API::Geo, api: true do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let!(:primary_node) { create(:geo_node, :primary) }
+  let!(:secondary_node) { create(:geo_node) }
   let(:geo_token_header) do
-    { 'X-Gitlab-Token' => primary_node.system_hook.token }
+    { 'X-Gitlab-Token' => secondary_node.system_hook.token }
   end
 
   before(:each) do
-    allow(Gitlab::Geo).to receive(:current_node) { primary_node }
+    allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
   end
 
   describe 'POST /geo/receive_events authentication' do
@@ -30,7 +31,7 @@ describe API::Geo, api: true do
 
   describe 'POST /geo/refresh_wikis disabled node' do
     it 'responds with forbidden' do
-      primary_node.enabled = false
+      secondary_node.enabled = false
 
       post api('/geo/refresh_wikis', admin), nil
 
@@ -40,7 +41,7 @@ describe API::Geo, api: true do
 
   describe 'POST /geo/receive_events disabled node' do
     it 'responds with forbidden' do
-      primary_node.enabled = false
+      secondary_node.enabled = false
 
       post api('/geo/receive_events'), nil, geo_token_header
 
@@ -49,7 +50,9 @@ describe API::Geo, api: true do
   end
 
   describe 'POST /geo/receive_events key events' do
-    before(:each) { allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute) }
+    before do
+      allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute)
+    end
 
     let(:key_create_payload) do
       {
@@ -87,8 +90,10 @@ describe API::Geo, api: true do
   end
 
   describe 'POST /geo/receive_events push events' do
-    before(:each) { allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute) }
-    before(:each) { allow_any_instance_of(::Geo::ScheduleRepoFetchService).to receive(:execute) }
+    before do
+      allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute)
+      allow_any_instance_of(::Geo::ScheduleRepoFetchService).to receive(:execute)
+    end
 
     let(:push_payload) do
       {
@@ -108,7 +113,9 @@ describe API::Geo, api: true do
   end
 
   describe 'POST /geo/receive_events push_tag events' do
-    before(:each) { allow_any_instance_of(::Geo::ScheduleWikiRepoUpdateService).to receive(:execute) }
+    before do
+      allow_any_instance_of(::Geo::ScheduleWikiRepoUpdateService).to receive(:execute)
+    end
 
     let(:tag_push_payload) do
       {

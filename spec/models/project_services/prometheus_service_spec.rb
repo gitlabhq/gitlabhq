@@ -14,13 +14,17 @@ describe PrometheusService, models: true, caching: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:api_url) }
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:api_url) }
     end
@@ -61,7 +65,7 @@ describe PrometheusService, models: true, caching: true do
       end
 
       it 'returns reactive data' do
-        is_expected.to eq(prometheus_data)
+        is_expected.to eq(prometheus_metrics_data)
       end
     end
   end
@@ -82,7 +86,7 @@ describe PrometheusService, models: true, caching: true do
       end
 
       it 'returns reactive data' do
-        is_expected.to eq(prometheus_data.merge(deployment_time: deployment.created_at.to_i))
+        is_expected.to eq(prometheus_metrics_data.merge(deployment_time: deployment.created_at.to_i))
       end
     end
   end
@@ -111,6 +115,7 @@ describe PrometheusService, models: true, caching: true do
         stub_all_prometheus_requests(environment.slug)
       end
 
+      it { expect(subject.to_json).to eq(prometheus_data.to_json) }
       it { expect(subject.to_json).to eq(prometheus_data.to_json) }
     end
 

@@ -2,7 +2,10 @@ require 'spec_helper'
 
 describe Admin::LicensesController do
   let(:admin) { create(:admin) }
-  before { sign_in(admin) }
+
+  before do
+    sign_in(admin)
+  end
 
   describe 'Upload license' do
     it 'redirects back when no license is entered/uploaded' do

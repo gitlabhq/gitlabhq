@@ -114,7 +114,10 @@ describe Gitlab::Geo::OauthSession do
 
   describe '#authenticate_with_gitlab' do
     let(:response) { double }
-    before(:each) { allow_any_instance_of(OAuth2::AccessToken).to receive(:get) { response } }
+
+    before do
+      allow_any_instance_of(OAuth2::AccessToken).to receive(:get) { response }
+    end
 
     context 'on success' do
       it 'returns hashed user data' do

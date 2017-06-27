@@ -8,11 +8,24 @@ describe RepositoryImportWorker do
   describe '#perform' do
     context 'when the import was successful' do
       it 'imports a project' do
-        expect_any_instance_of(Projects::ImportService).to receive(:execute).
-          and_return({ status: :ok })
+        expect_any_instance_of(Projects::ImportService).to receive(:execute)
+          .and_return({ status: :ok })
 
         expect_any_instance_of(Repository).to receive(:expire_emptiness_caches)
         expect_any_instance_of(Project).to receive(:import_finish)
+
+        subject.perform(project.id)
+      end
+    end
+
+    context 'when project is a mirror' do
+      let(:project) { create(:empty_project, :mirror, :import_scheduled) }
+
+      it 'adds mirror in front of the mirror scheduler queue' do
+        expect_any_instance_of(Projects::ImportService).to receive(:execute)
+          .and_return({ status: :ok })
+
+        expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
         subject.perform(project.id)
       end

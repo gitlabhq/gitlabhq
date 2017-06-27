@@ -2,7 +2,7 @@
 import ciIconBadge from './ci_badge_link.vue';
 import loadingIcon from './loading_icon.vue';
 import timeagoTooltip from './time_ago_tooltip.vue';
-import tooltipMixin from '../mixins/tooltip';
+import tooltip from '../directives/tooltip';
 import userAvatarImage from './user_avatar/user_avatar_image.vue';
 
 /**
@@ -40,11 +40,16 @@ export default {
       required: false,
       default: () => [],
     },
+    hasSidebarButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
-  mixins: [
-    tooltipMixin,
-  ],
+  directives: {
+    tooltip,
+  },
 
   components: {
     ciIconBadge,
@@ -66,8 +71,9 @@ export default {
   },
 };
 </script>
+
 <template>
-  <header class="page-content-header">
+  <header class="page-content-header ci-header-container">
     <section class="header-main-content">
 
       <ci-icon-badge :status="status" />
@@ -84,10 +90,10 @@ export default {
 
       <template v-if="user">
         <a
+          v-tooltip
           :href="user.path"
           :title="user.email"
-          class="js-user-link commit-committer-link"
-          ref="tooltip">
+          class="js-user-link commit-committer-link">
 
           <user-avatar-image
             :img-src="user.avatar_url"
@@ -102,13 +108,22 @@ export default {
     </section>
 
     <section
-      class="header-action-button nav-controls"
+      class="header-action-buttons"
       v-if="actions.length">
       <template
         v-for="action in actions">
         <a
           v-if="action.type === 'link'"
           :href="action.path"
+          :class="action.cssClass">
+          {{action.label}}
+        </a>
+
+        <a
+          v-if="action.type === 'ujs-link'"
+          :href="action.path"
+          data-method="post"
+          rel="nofollow"
           :class="action.cssClass">
           {{action.label}}
         </a>
@@ -120,7 +135,6 @@ export default {
           :class="action.cssClass"
           type="button">
           {{action.label}}
-
           <i
             v-show="action.isLoading"
             class="fa fa-spin fa-spinner"
@@ -128,6 +142,18 @@ export default {
           </i>
         </button>
       </template>
+      <button
+        v-if="hasSidebarButton"
+        type="button"
+        class="btn btn-default visible-xs-block visible-sm-block sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
+        aria-label="Toggle Sidebar"
+        id="toggleSidebar">
+        <i
+          class="fa fa-angle-double-left"
+          aria-hidden="true"
+          aria-labelledby="toggleSidebar">
+        </i>
+      </button>
     </section>
   </header>
 </template>

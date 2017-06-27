@@ -5,7 +5,7 @@ describe "Admin Runners" do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    login_as :admin
+    gitlab_sign_in :admin
   end
 
   describe "Runners page" do
@@ -134,7 +134,10 @@ describe "Admin Runners" do
 
   describe 'runners registration token' do
     let!(:token) { current_application_settings.runners_registration_token }
-    before { visit admin_runners_path }
+
+    before do
+      visit admin_runners_path
+    end
 
     it 'has a registration token' do
       expect(page).to have_content("Registration token is #{token}")

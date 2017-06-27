@@ -15,8 +15,9 @@ class UpdateAllMirrorsWorker
 
     fail_stuck_mirrors!
 
-    return if Gitlab::Mirror.max_mirror_capacity_reached?
-    Project.mirrors_to_sync.find_each(batch_size: 200, &:import_schedule)
+    unless Gitlab::Mirror.max_mirror_capacity_reached?
+      Project.mirrors_to_sync.find_each(batch_size: 200, &:import_schedule)
+    end
 
     cancel_lease(lease_uuid)
   end

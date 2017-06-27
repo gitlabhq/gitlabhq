@@ -33,8 +33,8 @@ class ProjectCacheWorker
   private
 
   def try_obtain_lease_for(project_id, section)
-    Gitlab::ExclusiveLease.
-      new("project_cache_worker:#{project_id}:#{section}", timeout: LEASE_TIMEOUT).
-      try_obtain
+    Gitlab::ExclusiveLease
+      .new("project_cache_worker:#{project_id}:#{section}", timeout: LEASE_TIMEOUT)
+      .try_obtain
   end
 end

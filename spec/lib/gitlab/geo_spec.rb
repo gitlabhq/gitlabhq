@@ -5,7 +5,9 @@ describe Gitlab::Geo, lib: true do
   let(:secondary_node) { FactoryGirl.create(:geo_node) }
 
   describe 'current_node' do
-    before(:each) { primary_node }
+    before do
+      primary_node
+    end
 
     it 'returns a GeoNode instance' do
       expect(described_class.current_node).to eq(primary_node)
@@ -25,7 +27,9 @@ describe Gitlab::Geo, lib: true do
 
   describe 'enabled?' do
     context 'when any GeoNode exists' do
-      before(:each) { secondary_node }
+      before do
+        secondary_node
+      end
 
       it 'returns true' do
         expect(described_class.enabled?).to be_truthy
@@ -58,7 +62,9 @@ describe Gitlab::Geo, lib: true do
 
   describe 'readonly?' do
     context 'when current node is secondary' do
-      before(:each) { secondary_node }
+      before do
+        secondary_node
+      end
 
       it 'returns true' do
         allow(described_class).to receive(:current_node) { secondary_node }
@@ -67,7 +73,9 @@ describe Gitlab::Geo, lib: true do
     end
 
     context 'current node is primary' do
-      before(:each) { primary_node }
+      before do
+        primary_node
+      end
 
       it 'returns false when ' do
         allow(described_class).to receive(:current_node) { primary_node }
@@ -88,12 +96,12 @@ describe Gitlab::Geo, lib: true do
 
   describe 'license_allows?' do
     it 'returns true if license has Geo addon' do
-      allow_any_instance_of(License).to receive(:feature_available?).with(:geo) { true }
+      stub_licensed_features(geo: true)
       expect(described_class.license_allows?).to be_truthy
     end
 
     it 'returns false if license doesnt have Geo addon' do
-      allow_any_instance_of(License).to receive(:feature_available?).with(:geo) { false }
+      stub_licensed_features(geo: false)
       expect(described_class.license_allows?).to be_falsey
     end
 

@@ -6,7 +6,7 @@ feature 'Admin Groups', feature: true do
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
   let(:user) { create :user }
   let!(:group) { create :group }
-  let!(:current_user) { login_as :admin }
+  let!(:current_user) { gitlab_sign_in :admin }
 
   before do
     stub_application_setting(default_group_visibility: internal)
@@ -24,8 +24,9 @@ feature 'Admin Groups', feature: true do
     it 'creates new group' do
       visit admin_groups_path
 
-      click_link "New group"
-
+      page.within '#content-body' do
+        click_link "New group"
+      end
       path_component = 'gitlab'
       group_name = 'GitLab group name'
       group_description = 'Description of group for GitLab'

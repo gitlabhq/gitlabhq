@@ -22,6 +22,7 @@ export default class IssuableBulkUpdateSidebar {
   initDomElements() {
     this.$page = $('.page-with-sidebar');
     this.$sidebar = $('.right-sidebar');
+    this.$sidebarInnerContainer = this.$sidebar.find('.issuable-sidebar');
     this.$bulkEditCancelBtn = $('.js-bulk-update-menu-hide');
     this.$bulkEditSubmitBtn = $('.update-selected-issues');
     this.$bulkUpdateEnableBtn = $('.js-bulk-update-toggle');
@@ -113,6 +114,7 @@ export default class IssuableBulkUpdateSidebar {
   toggleSidebarDisplay(show) {
     this.$page.toggleClass(SIDEBAR_EXPANDED_CLASS, show);
     this.$page.toggleClass(SIDEBAR_COLLAPSED_CLASS, !show);
+    this.$sidebarInnerContainer.toggleClass(HIDDEN_CLASS, !show);
     this.$sidebar.toggleClass(SIDEBAR_EXPANDED_CLASS, show);
     this.$sidebar.toggleClass(SIDEBAR_COLLAPSED_CLASS, !show);
   }

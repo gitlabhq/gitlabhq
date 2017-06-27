@@ -9,8 +9,8 @@ describe Gitlab::Database::LoadBalancing::ModelProxy do
 
       proxy = double(:proxy)
 
-      expect(Gitlab::Database::LoadBalancing).to receive(:proxy).
-        and_return(proxy)
+      expect(Gitlab::Database::LoadBalancing).to receive(:proxy)
+        .and_return(proxy)
 
       expect(dummy.new.connection).to eq(proxy)
     end

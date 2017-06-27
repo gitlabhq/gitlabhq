@@ -6,7 +6,7 @@ feature 'Work In Progress help message', feature: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'with WIP commits' do

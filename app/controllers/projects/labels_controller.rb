@@ -1,14 +1,14 @@
 class Projects::LabelsController < Projects::ApplicationController
   include ToggleSubscriptionAction
 
-  before_action :module_enabled
+  before_action :check_issuables_available!
   before_action :label, only: [:edit, :update, :destroy, :promote]
   before_action :find_labels, only: [:index, :set_priorities, :remove_priority, :toggle_subscription]
   before_action :authorize_read_label!
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update,
                                                  :generate, :destroy, :remove_priority,
                                                  :set_priorities]
-  before_action :authorize_admin_group!, only: [:promote]
+  before_action :authorize_admin_group_labels!, only: [:promote]
 
   respond_to :js, :html
 
@@ -135,12 +135,6 @@ class Projects::LabelsController < Projects::ApplicationController
 
   protected
 
-  def module_enabled
-    unless @project.feature_available?(:issues, current_user) || @project.feature_available?(:merge_requests, current_user)
-      return render_404
-    end
-  end
-
   def label_params
     params.require(:label).permit(:title, :description, :color)
   end
@@ -161,7 +155,7 @@ class Projects::LabelsController < Projects::ApplicationController
     return render_404 unless can?(current_user, :admin_label, @project)
   end
 
-  def authorize_admin_group!
-    return render_404 unless can?(current_user, :admin_group, @project.group)
+  def authorize_admin_group_labels!
+    return render_404 unless can?(current_user, :admin_label, @project.group)
   end
 end

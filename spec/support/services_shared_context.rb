@@ -6,9 +6,9 @@ Service.available_services_names.each do |service|
     let(:service_fields) { service_klass.new.fields }
     let(:service_attrs_list) { service_fields.inject([]) {|arr, hash| arr << hash[:name].to_sym } }
     let(:service_attrs_list_without_passwords) do
-      service_fields.
-        select { |field| field[:type] != 'password' }.
-        map { |field| field[:name].to_sym}
+      service_fields
+        .select { |field| field[:type] != 'password' }
+        .map { |field| field[:name].to_sym}
     end
     let(:service_attrs) do
       service_attrs_list.inject({}) do |hash, k|

@@ -4,8 +4,9 @@ class RepositoryUpdateRemoteMirrorWorker
 
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
+  include DedicatedSidekiqQueue
 
-  sidekiq_options queue: :project_mirror, retry: 3, dead: false
+  sidekiq_options retry: 3, dead: false
 
   sidekiq_retry_in { |count| 30 * count }
 
@@ -41,7 +42,8 @@ class RepositoryUpdateRemoteMirrorWorker
   private
 
   def fail_remote_mirror(remote_mirror, message)
-    Rails.logger.error(message)
     remote_mirror.mark_as_failed(message)
+
+    Rails.logger.error(message)
   end
 end

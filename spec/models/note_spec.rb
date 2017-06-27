@@ -26,14 +26,18 @@ describe Note, models: true do
     it { is_expected.to validate_presence_of(:project) }
 
     context 'when note is on commit' do
-      before { allow(subject).to receive(:for_commit?).and_return(true) }
+      before do
+        allow(subject).to receive(:for_commit?).and_return(true)
+      end
 
       it { is_expected.to validate_presence_of(:commit_id) }
       it { is_expected.not_to validate_presence_of(:noteable_id) }
     end
 
     context 'when note is not on commit' do
-      before { allow(subject).to receive(:for_commit?).and_return(false) }
+      before do
+        allow(subject).to receive(:for_commit?).and_return(false)
+      end
 
       it { is_expected.not_to validate_presence_of(:commit_id) }
       it { is_expected.to validate_presence_of(:noteable_id) }
@@ -148,8 +152,8 @@ describe Note, models: true do
     let!(:note2) { create(:note_on_issue) }
 
     it "reads the rendered note body from the cache" do
-      expect(Banzai::Renderer).to receive(:cache_collection_render).
-        with([{
+      expect(Banzai::Renderer).to receive(:cache_collection_render)
+        .with([{
           text: note1.note,
           context: {
             skip_project_check: false,
@@ -160,8 +164,8 @@ describe Note, models: true do
           }
         }]).and_call_original
 
-      expect(Banzai::Renderer).to receive(:cache_collection_render).
-        with([{
+      expect(Banzai::Renderer).to receive(:cache_collection_render)
+        .with([{
           text: note2.note,
           context: {
             skip_project_check: false,
@@ -402,8 +406,8 @@ describe Note, models: true do
       let(:note) { build(:note_on_project_snippet) }
 
       before do
-        expect(Banzai::Renderer).to receive(:cacheless_render_field).
-          with(note, :note, { skip_project_check: false }).and_return(html)
+        expect(Banzai::Renderer).to receive(:cacheless_render_field)
+          .with(note, :note, { skip_project_check: false }).and_return(html)
 
         note.save
       end
@@ -417,8 +421,8 @@ describe Note, models: true do
       let(:note) { build(:note_on_personal_snippet) }
 
       before do
-        expect(Banzai::Renderer).to receive(:cacheless_render_field).
-          with(note, :note, { skip_project_check: true }).and_return(html)
+        expect(Banzai::Renderer).to receive(:cacheless_render_field)
+          .with(note, :note, { skip_project_check: true }).and_return(html)
 
         note.save
       end

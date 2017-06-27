@@ -50,27 +50,40 @@ export default {
 
     codeText() {
       const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
-      let newIssuesText = '';
-      let resolvedIssuesText = '';
-      let text = '';
+      let newIssuesText;
+      let resolvedIssuesText;
+      let text = [];
 
       if (this.hasNoneIssues) {
-        text = 'No changes to code quality so far.';
+        text.push('No changes to code quality so far.');
       } else if (this.hasIssues) {
         if (newIssues.length) {
-          newIssuesText = `degraded on ${newIssues.length} ${this.pointsText(newIssues)}`;
+          newIssuesText = ` degraded on ${newIssues.length} ${this.pointsText(newIssues)}`;
         }
 
         if (resolvedIssues.length) {
-          resolvedIssuesText = `improved on ${resolvedIssues.length} ${this.pointsText(resolvedIssues)}`;
+          resolvedIssuesText = ` improved on ${resolvedIssues.length} ${this.pointsText(resolvedIssues)}`;
         }
 
-        const connector = this.hasIssues ? 'and' : '';
+        const connector = (newIssues.length > 0 && resolvedIssues.length > 0) ? ' and' : null;
 
-        text = `Code quality ${resolvedIssuesText} ${connector} ${newIssuesText}.`;
+        text = ['Code quality'];
+        if (resolvedIssuesText) {
+          text.push(resolvedIssuesText);
+        }
+
+        if (connector) {
+          text.push(connector);
+        }
+
+        if (newIssuesText) {
+          text.push(newIssuesText);
+        }
+
+        text.push('.');
       }
 
-      return text;
+      return text.join('');
     },
   },
 

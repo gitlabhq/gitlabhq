@@ -28,7 +28,7 @@ Shortcuts to GitLab's most visited docs:
 - [GitLab Workflow](workflow/README.md): Enhance your workflow with the best of GitLab Workflow.
   - See also [GitLab Workflow - an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 - [GitLab Markdown](user/markdown.md): GitLab's advanced formatting system (GitLab Flavored Markdown).
-- [GitLab Slash Commands](user/project/slash_commands.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
+- [GitLab Quick Actions](user/project/quick_actions.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
 
 ### User account
 
@@ -66,6 +66,7 @@ Manage files and branches from the UI (user interface):
 - Branches
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
   - [Protected branches](user/project/protected_branches.md#protected-branches)
+  - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
 - **(EES/EEP)** [Repository Mirroring](workflow/repository_mirroring.md)
 - **(EES/EEP)** [Push rules](push_rules/push_rules.md): Additional control over pushes to your project.
 - **(EEP)** [File Locking](user/project/file_lock.md): Lock a file to avoid merge conflicts.
@@ -85,6 +86,7 @@ Manage files and branches from the UI (user interface):
   - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 - [Milestones](user/project/milestones/index.md): Organize issues and merge requests into a cohesive group, optionally setting a due date.
   - **(EES/EEP)** [Burndown Charts](user/project/milestones/index.md#burndown-charts): Watch your project's progress throughout a specific milestone.
+- [Related issues](user/project/issues/related_issues.md)
 - [Todos](workflow/todos.md): A chronological list of to-dos that are waiting for your input, all in a simple dashboard.
 
 ### Git and GitLab

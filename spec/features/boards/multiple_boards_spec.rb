@@ -11,7 +11,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
     before do
       project.team << [user, :master]
 
-      login_as(user)
+      gitlab_sign_in(user)
 
       visit namespace_project_boards_path(project.namespace, project)
       wait_for_requests
@@ -128,7 +128,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       wait_for_requests
 
-      expect(page).to have_selector('.board', count: 2)
+      expect(page).to have_selector('.board', count: 3)
 
       click_button board2.name
 
@@ -138,7 +138,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       wait_for_requests
 
-      expect(page).to have_selector('.board', count: 1)
+      expect(page).to have_selector('.board', count: 2)
     end
   end
 

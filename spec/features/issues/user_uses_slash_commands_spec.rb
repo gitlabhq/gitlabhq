@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'Issues > User uses slash commands', feature: true, js: true do
-  include SlashCommandsHelpers
+feature 'Issues > User uses quick actions', feature: true, js: true do
+  include QuickActionsHelpers
 
-  it_behaves_like 'issuable record that supports slash commands in its description and notes', :issue do
+  it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
     let(:issuable) { create(:issue, project: project) }
   end
 
@@ -13,7 +13,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
 
     before do
       project.team << [user, :master]
-      login_with(user)
+      gitlab_sign_in(user)
       visit namespace_project_issue_path(project.namespace, project, issue)
     end
 
@@ -41,8 +41,8 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit namespace_project_issue_path(project.namespace, project, issue)
         end
 
@@ -81,8 +81,8 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit namespace_project_issue_path(project.namespace, project, issue)
         end
 
@@ -181,8 +181,8 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit namespace_project_issue_path(project.namespace, project, issue)
         end
 
@@ -219,8 +219,8 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit namespace_project_issue_path(project.namespace, project, issue)
         end
 

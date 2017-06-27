@@ -2,10 +2,10 @@
 
 ### Project visibility level
 
-Project in GitLab has be either private, internal or public.
-You can determine it by `visibility` field in project.
+Project in GitLab can be either private, internal or public.
+This is determined by the `visibility` field in the project.
 
-Constants for project visibility levels are next:
+Values for the project visibility level are:
 
 * `private`:
   Project access must be granted explicitly for each user.
@@ -18,7 +18,7 @@ Constants for project visibility levels are next:
 
 ## List projects
 
-Get a list of visible projects for authenticated user. When being accessed without authentication, all public projects are returned.
+Get a list of visible projects for authenticated user. When accessed without authentication, only public projects are returned.
 
 ```
 GET /projects
@@ -264,6 +264,7 @@ Parameters:
   "repository_storage": "default",
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
+  "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
   "approvals_before_merge": 0,
   "statistics": {
@@ -348,6 +349,8 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
+| `avatar`    | mixed   | no      | Image file for avatar of the project                |
+| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
@@ -383,6 +386,8 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
+| `avatar`    | mixed   | no      | Image file for avatar of the project                |
+| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
@@ -418,12 +423,15 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
+| `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Fork project
 
 Forks a project into the user namespace of the authenticated user or the one provided.
+
+The forking operation for a project is asynchronous and is completed in a background job. The request will return immediately. To determine whether the fork of the project has completed, query the `import_status` for the new project.
 
 ```
 POST /projects/:id/fork

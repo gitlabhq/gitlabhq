@@ -5,7 +5,7 @@ feature 'Admin updates settings', feature: true do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    login_as :admin
+    gitlab_sign_in :admin
     visit admin_application_settings_path
   end
 
@@ -20,10 +20,15 @@ feature 'Admin updates settings', feature: true do
     uncheck 'Gravatar enabled'
     fill_in 'Home page URL', with: 'https://about.gitlab.com/'
     fill_in 'Help page text', with: 'Example text'
+    check 'Hide marketing-related entries from help'
+    fill_in 'Support page URL', with: 'http://example.com/help'
     click_button 'Save'
 
     expect(current_application_settings.gravatar_enabled).to be_falsey
     expect(current_application_settings.home_page_url).to eq "https://about.gitlab.com/"
+    expect(current_application_settings.help_page_text).to eq "Example text"
+    expect(current_application_settings.help_page_hide_commercial_content).to be_truthy
+    expect(current_application_settings.help_page_support_url).to eq "http://example.com/help"
     expect(page).to have_content "Application settings saved successfully"
   end
 

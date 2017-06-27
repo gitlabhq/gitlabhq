@@ -31,9 +31,11 @@ module Gitlab
           def project
             return @project if instance_variable_defined?(:@project)
 
-            @project =
+            found_project =
               Project.where(service_desk_enabled: true)
                 .find_by_full_path(service_desk_key)
+
+            @project = found_project&.service_desk_enabled? ? found_project : nil
           end
 
           def create_issue!

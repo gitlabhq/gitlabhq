@@ -10,7 +10,7 @@ describe 'Board with milestone', :feature, :js do
   before do
     project.team << [user, :master]
 
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'new board' do
@@ -26,7 +26,7 @@ describe 'Board with milestone', :feature, :js do
 
       find('.card', match: :first)
 
-      expect(all('.board')[1]).to have_selector('.card', count: 1)
+      expect(all('.board').last).to have_selector('.card', count: 1)
     end
   end
 
@@ -51,7 +51,7 @@ describe 'Board with milestone', :feature, :js do
 
       find('.card', match: :first)
 
-      expect(all('.board')[1]).to have_selector('.card', count: 1)
+      expect(all('.board').last).to have_selector('.card', count: 1)
     end
 
     it 'sets board to any milestone' do
@@ -62,8 +62,8 @@ describe 'Board with milestone', :feature, :js do
 
       find('.card', match: :first)
 
-      expect(page).to have_selector('.board', count: 2)
-      expect(all('.board')[1]).to have_selector('.card', count: 2)
+      expect(page).to have_selector('.board', count: 3)
+      expect(all('.board').last).to have_selector('.card', count: 2)
     end
 
     it 'sets board to upcoming milestone' do
@@ -109,14 +109,9 @@ describe 'Board with milestone', :feature, :js do
       first('.card .card-number').click
 
       click_button('Remove from board')
+      wait_for_requests
 
-      visit namespace_project_issue_path(project.namespace, project, issue)
-
-      expect(page).to have_content('removed milestone')
-
-      page.within('.milestone.block') do
-        expect(page).to have_content('None')
-      end
+      expect(issue.reload.milestone).to be_nil
     end
   end
 

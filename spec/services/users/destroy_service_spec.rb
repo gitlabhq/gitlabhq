@@ -18,7 +18,7 @@ describe Users::DestroyService, services: true do
       end
 
       it 'will delete the project' do
-        expect_any_instance_of(Projects::DestroyService).to receive(:execute).once
+        expect_any_instance_of(EE::Projects::DestroyService).to receive(:execute).once
 
         service.execute(user)
       end
@@ -31,7 +31,7 @@ describe Users::DestroyService, services: true do
       end
 
       it 'destroys a project in pending_delete' do
-        expect_any_instance_of(Projects::DestroyService).to receive(:execute).once
+        expect_any_instance_of(EE::Projects::DestroyService).to receive(:execute).once
 
         service.execute(user)
 

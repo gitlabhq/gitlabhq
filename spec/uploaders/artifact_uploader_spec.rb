@@ -46,8 +46,31 @@ describe ArtifactUploader do
 
   describe '#cache_dir' do
     subject { uploader.cache_dir }
-    
+
     it { is_expected.to start_with(local_path) }
-    it { is_expected.to end_with('tmp/cache') }
+    it { is_expected.to end_with('/tmp/cache') }
+  end
+
+  describe '#work_dir' do
+    subject { uploader.work_dir }
+
+    it { is_expected.to start_with(local_path) }
+    it { is_expected.to end_with('/tmp/work') }
+  end
+
+  describe '#filename' do
+    # we need to use uploader, as this makes to use mounter
+    # which initialises uploader.file object
+    let(:uploader) { job.artifacts_file }
+
+    subject { uploader.filename }
+
+    it { is_expected.to be_nil }
+
+    context 'with artifacts' do
+      let(:job) { create(:ci_build, :artifacts) }
+
+      it { is_expected.not_to be_nil }
+    end
   end
 end

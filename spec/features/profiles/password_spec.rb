@@ -4,7 +4,7 @@ describe 'Profile > Password', feature: true do
   let(:user) { create(:user, password_automatically_set: true) }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
     visit edit_profile_password_path
   end
 
@@ -25,7 +25,7 @@ describe 'Profile > Password', feature: true do
         end
       end
 
-      it 'does not contains the current password field after an error' do
+      it 'does not contain the current password field after an error' do
         fill_passwords('mypassword', 'mypassword2')
 
         expect(page).to have_no_field('user[current_password]')

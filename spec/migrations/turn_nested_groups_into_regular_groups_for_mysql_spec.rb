@@ -31,8 +31,8 @@ describe TurnNestedGroupsIntoRegularGroupsForMysql do
     end
 
     it 'adds members of parent groups as members to the migrated group' do
-      is_member = child_group.members.
-        where(user_id: member, access_level: Gitlab::Access::DEVELOPER).any?
+      is_member = child_group.members
+        .where(user_id: member, access_level: Gitlab::Access::DEVELOPER).any?
 
       expect(is_member).to eq(true)
     end
@@ -44,21 +44,21 @@ describe TurnNestedGroupsIntoRegularGroupsForMysql do
     end
 
     it 'renames projects of the nested group' do
-      expect(updated_project.path_with_namespace).
-        to eq("#{parent_group.name}-#{child_group.name}/#{updated_project.path}")
+      expect(updated_project.path_with_namespace)
+        .to eq("#{parent_group.name}-#{child_group.name}/#{updated_project.path}")
     end
 
     it 'renames the repository of any projects' do
-      expect(updated_project.repository.path).
-        to end_with("#{parent_group.name}-#{child_group.name}/#{updated_project.path}.git")
+      expect(updated_project.repository.path)
+        .to end_with("#{parent_group.name}-#{child_group.name}/#{updated_project.path}.git")
 
       expect(File.directory?(updated_project.repository.path)).to eq(true)
     end
 
     it 'creates a redirect route for renamed projects' do
-      exists = RedirectRoute.
-        where(source_type: 'Project', source_id: project.id).
-        any?
+      exists = RedirectRoute
+        .where(source_type: 'Project', source_id: project.id)
+        .any?
 
       expect(exists).to eq(true)
     end

@@ -2,7 +2,6 @@
 /* global UsernameValidator */
 /* global ActiveTabMemoizer */
 /* global ShortcutsNavigation */
-/* global Build */
 /* global IssuableIndex */
 /* global ShortcutsIssuable */
 /* global ZenMode */
@@ -87,7 +86,18 @@ import AuditLogs from './audit_logs';
       path = page.split(':');
       shortcut_handler = null;
 
-      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
+      $('.js-gfm-input').each((i, el) => {
+        const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+        const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+        gfm.setup($(el), {
+          emojis: true,
+          members: enableGFM,
+          issues: enableGFM,
+          milestones: enableGFM,
+          mergeRequests: enableGFM,
+          labels: enableGFM,
+        });
+      });
 
       function initBlob() {
         new LineHighlighter();
@@ -125,9 +135,6 @@ import AuditLogs from './audit_logs';
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
-          break;
-        case 'projects:jobs:show':
-          new Build();
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
@@ -167,9 +174,6 @@ import AuditLogs from './audit_logs';
         case 'admin:projects:index':
           new ProjectsList();
           break;
-        case 'dashboard:groups:index':
-          new GroupsList();
-          break;
         case 'explore:groups:index':
           new GroupsList();
 
@@ -190,7 +194,7 @@ import AuditLogs from './audit_logs';
         case 'groups:milestones:update':
           new ZenMode();
           new gl.DueDateSelectors();
-          new gl.GLForm($('.milestone-form'));
+          new gl.GLForm($('.milestone-form'), true);
           break;
         case 'projects:compare:show':
           new gl.Diff();
@@ -202,7 +206,7 @@ import AuditLogs from './audit_logs';
         case 'projects:issues:new':
         case 'projects:issues:edit':
           shortcut_handler = new ShortcutsNavigation();
-          new gl.GLForm($('.issue-form'));
+          new gl.GLForm($('.issue-form'), true);
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -214,7 +218,7 @@ import AuditLogs from './audit_logs';
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
-          new gl.GLForm($('.merge-request-form'));
+          new gl.GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -223,22 +227,24 @@ import AuditLogs from './audit_logs';
           break;
         case 'projects:tags:new':
           new ZenMode();
-          new gl.GLForm($('.tag-form'));
+          new gl.GLForm($('.tag-form'), true);
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
         case 'projects:snippets:update':
+          new gl.GLForm($('.snippet-form'), true);
+          break;
         case 'snippets:new':
         case 'snippets:edit':
         case 'snippets:create':
         case 'snippets:update':
-          new gl.GLForm($('.snippet-form'));
+          new gl.GLForm($('.snippet-form'), false);
           break;
         case 'projects:releases:edit':
           new ZenMode();
-          new gl.GLForm($('.release-form'));
+          new gl.GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
           new gl.Diff();
@@ -343,24 +349,13 @@ import AuditLogs from './audit_logs';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
           break;
-        case 'projects:blob:new':
-          gl.TargetBranchDropDown.bootstrap();
-          break;
-        case 'projects:blob:create':
-          gl.TargetBranchDropDown.bootstrap();
-          break;
         case 'projects:blob:show':
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
           initBlob();
-          break;
-        case 'projects:blob:edit':
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blame:show':
           initBlob();
@@ -385,9 +380,11 @@ import AuditLogs from './audit_logs';
           new ProjectFork();
           break;
         case 'projects:artifacts:browse':
+          new ShortcutsNavigation();
           new BuildArtifacts();
           break;
         case 'projects:artifacts:file':
+          new ShortcutsNavigation();
           new BlobViewer();
           break;
         case 'help:index':
@@ -513,7 +510,7 @@ import AuditLogs from './audit_logs';
               new gl.Wikis();
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
-              new gl.GLForm($('.wiki-form'));
+              new gl.GLForm($('.wiki-form'), true);
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();

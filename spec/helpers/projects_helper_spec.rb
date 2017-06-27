@@ -259,7 +259,9 @@ describe ProjectsHelper do
     end
 
     context "when project is private" do
-      before { project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      before do
+        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
 
       it "shows only allowed options" do
         helper.instance_variable_set(:@project, project)
@@ -307,6 +309,39 @@ describe ProjectsHelper do
 
     it "includes the Private level" do
       expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Private')
+    end
+  end
+
+  describe '#get_project_nav_tabs' do
+    let(:project) { create(:empty_project) }
+    let(:user)    { create(:user) }
+
+    before do
+      allow(helper).to receive(:can?) { true }
+    end
+
+    subject do
+      helper.send(:get_project_nav_tabs, project, user)
+    end
+
+    context 'when builds feature is enabled' do
+      before do
+        allow(project).to receive(:builds_enabled?).and_return(true)
+      end
+
+      it "does include pipelines tab" do
+        is_expected.to include(:pipelines)
+      end
+    end
+
+    context 'when builds feature is disabled' do
+      before do
+        allow(project).to receive(:builds_enabled?).and_return(false)
+      end
+
+      it "do not include pipelines tab" do
+        is_expected.not_to include(:pipelines)
+      end
     end
   end
 end

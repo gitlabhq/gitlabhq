@@ -17,8 +17,15 @@ describe('Stop Component', () => {
     }).$mount();
   });
 
+  describe('computed', () => {
+    it('title', () => {
+      expect(component.title).toEqual('Stop');
+    });
+  });
+
   it('should render a button to stop the environment', () => {
     expect(component.$el.tagName).toEqual('BUTTON');
-    expect(component.$el.getAttribute('title')).toEqual('Stop');
+    expect(component.$el.getAttribute('data-original-title')).toEqual('Stop');
+    expect(component.$el.getAttribute('aria-label')).toEqual('Stop');
   });
 });

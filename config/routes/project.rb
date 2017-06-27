@@ -73,7 +73,11 @@ constraints(ProjectUrlConstrainer.new) do
 
       resource :mattermost, only: [:new, :create]
 
-      resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
+      namespace :prometheus do
+        get :active_metrics
+      end
+
+      resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
         member do
           put :enable
           put :disable
@@ -187,6 +191,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :stop
           get :terminal
           get :metrics
+          get :additional_metrics
           get :status, constraints: { format: :json }
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
@@ -198,6 +203,7 @@ constraints(ProjectUrlConstrainer.new) do
         resources :deployments, only: [:index] do
           member do
             get :metrics
+            get :additional_metrics
           end
         end
       end
@@ -311,6 +317,8 @@ constraints(ProjectUrlConstrainer.new) do
           post :bulk_update
           post :export_csv
         end
+
+        resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
       end
 
       resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do

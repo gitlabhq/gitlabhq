@@ -170,7 +170,7 @@ describe Environment, models: true do
     context 'when matching action is defined' do
       let(:build) { create(:ci_build) }
       let!(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
-      let!(:close_action) { create(:ci_build, pipeline: build.pipeline, name: 'close_app', when: :manual) }
+      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
       context 'when environment is available' do
         before do
@@ -377,19 +377,24 @@ describe Environment, models: true do
     subject { environment.rollout_status }
 
     context 'when the environment has rollout status' do
-      before { allow(environment).to receive(:deployment_service_ready?).and_return(true) }
+      before do
+        allow(environment).to receive(:deployment_service_ready?).and_return(true)
+      end
 
       it 'returns the rollout status from the deployment service' do
-        expect(project.deployment_service).
-          to receive(:rollout_status).with(environment).
-          and_return(:fake_rollout_status)
+        expect(project.deployment_service)
+          .to receive(:rollout_status).with(environment)
+          .and_return(:fake_rollout_status)
 
         is_expected.to eq(:fake_rollout_status)
       end
     end
 
     context 'when the environment does not have rollout status' do
-      before { allow(environment).to receive(:deployment_service_ready?).and_return(false) }
+      before do
+        allow(environment).to receive(:deployment_service_ready?).and_return(false)
+      end
+
       it { is_expected.to eq(nil) }
     end
   end
@@ -511,6 +516,99 @@ describe Environment, models: true do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_metrics?' do
+    subject { environment.has_metrics? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:prometheus_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:prometheus_project) }
+
+      before do
+        environment.stop
+      end
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#additional_metrics' do
+    let(:project) { create(:prometheus_project) }
+    subject { environment.additional_metrics }
+
+    context 'when the environment has additional metrics' do
+      before do
+        allow(environment).to receive(:has_additional_metrics?).and_return(true)
+      end
+
+      it 'returns the additional metrics from the deployment service' do
+        expect(project.prometheus_service).to receive(:additional_environment_metrics)
+                                                .with(environment)
+                                                .and_return(:fake_metrics)
+
+        is_expected.to eq(:fake_metrics)
+      end
+    end
+
+    context 'when the environment does not have metrics' do
+      before do
+        allow(environment).to receive(:has_additional_metrics?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_additional_metrics??' do
+    subject { environment.has_additional_metrics? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:prometheus_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:prometheus_project) }
+
+      before do
+        environment.stop
+      end
+
+      it { is_expected.to be_falsy }
     end
   end
 

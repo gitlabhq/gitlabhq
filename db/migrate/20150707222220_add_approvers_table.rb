@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Timestamps
 class AddApproversTable < ActiveRecord::Migration
   DOWNTIME = false
 

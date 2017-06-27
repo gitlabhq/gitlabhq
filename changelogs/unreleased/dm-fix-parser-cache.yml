@@ -1,0 +1,4 @@
+---
+title: Don't return nil for missing objects from parser cache
+merge_request:
+author:

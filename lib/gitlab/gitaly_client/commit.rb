@@ -11,31 +11,49 @@ module Gitlab
       end
 
       def is_ancestor(ancestor_id, child_id)
-        stub = GitalyClient.stub(:commit, @repository.storage)
         request = Gitaly::CommitIsAncestorRequest.new(
           repository: @gitaly_repo,
           ancestor_id: ancestor_id,
           child_id: child_id
         )
 
-        stub.commit_is_ancestor(request).value
+        GitalyClient.call(@repository.storage, :commit, :commit_is_ancestor, request).value
       end
 
       def diff_from_parent(commit, options = {})
         request_params = commit_diff_request_params(commit, options)
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
-
-        response = diff_service_stub.commit_diff(Gitaly::CommitDiffRequest.new(request_params))
+        request = Gitaly::CommitDiffRequest.new(request_params)
+        response = GitalyClient.call(@repository.storage, :diff, :commit_diff, request)
         Gitlab::Git::DiffCollection.new(GitalyClient::DiffStitcher.new(response), options)
       end
 
       def commit_deltas(commit)
-        request_params = commit_diff_request_params(commit)
-
-        response = diff_service_stub.commit_delta(Gitaly::CommitDeltaRequest.new(request_params))
+        request = Gitaly::CommitDeltaRequest.new(commit_diff_request_params(commit))
+        response = GitalyClient.call(@repository.storage, :diff, :commit_delta, request)
         response.flat_map do |msg|
           msg.deltas.map { |d| Gitlab::Git::Diff.new(d) }
         end
+      end
+
+      def tree_entry(ref, path, limit = nil)
+        request = Gitaly::TreeEntryRequest.new(
+          repository: @gitaly_repo,
+          revision: ref,
+          path: path.dup.force_encoding(Encoding::ASCII_8BIT),
+          limit: limit.to_i
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit, :tree_entry, request)
+        entry = response.first
+        return unless entry.oid.present?
+
+        if entry.type == :BLOB
+          rest_of_data = response.reduce("") { |memo, msg| memo << msg.data }
+          entry.data += rest_of_data
+        end
+
+        entry
       end
 
       private
@@ -49,10 +67,6 @@ module Gitlab
           right_commit_id: commit.id,
           paths: options.fetch(:paths, [])
         }
-      end
-
-      def diff_service_stub
-        GitalyClient.stub(:diff, @repository.storage)
       end
     end
   end

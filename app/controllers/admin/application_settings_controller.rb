@@ -101,6 +101,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :enabled_git_access_protocol,
       :gravatar_enabled,
       :help_page_text,
+      :help_page_hide_commercial_content,
+      :help_page_support_url,
       :home_page_url,
       :housekeeping_bitmaps_enabled,
       :housekeeping_enabled,
@@ -178,8 +180,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :check_namespace_plan,
       :mirror_max_delay,
       :mirror_max_capacity,
-      :mirror_capacity_threshold,
-      :authorized_keys_enabled
+      :mirror_capacity_threshold
     ]
   end
 end

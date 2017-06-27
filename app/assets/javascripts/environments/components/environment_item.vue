@@ -9,7 +9,7 @@ import StopComponent from './environment_stop.vue';
 import RollbackComponent from './environment_rollback.vue';
 import TerminalButtonComponent from './environment_terminal_button.vue';
 import MonitoringButtonComponent from './environment_monitoring.vue';
-import CommitComponent from '../../vue_shared/components/commit';
+import CommitComponent from '../../vue_shared/components/commit.vue';
 import eventHub from '../event_hub';
 
 const timeagoInstance = new Timeago();
@@ -404,6 +404,14 @@ export default {
       return '';
     },
 
+    displayEnvironmentActions() {
+      return this.hasManualActions ||
+             this.externalURL ||
+             this.monitoringUrl ||
+             this.hasStopAction ||
+             this.canRetry;
+    },
+
     /**
      * Constructs folder URL based on the current location and the folder id.
      *
@@ -423,11 +431,13 @@ export default {
 </script>
 <template>
   <div
-    :class="{ 'js-child-row environment-child-row': model.isChildren, 'folder-row': model.isFolder, 'gl-responsive-table-row': !model.isFolder }">
+    :class="{ 'js-child-row environment-child-row': model.isChildren, 'folder-row': model.isFolder, 'gl-responsive-table-row': !model.isFolder }"
+    role="row">
     <div class="table-section section-10" role="gridcell">
       <div
         v-if="!model.isFolder"
-        class="table-mobile-header">
+        class="table-mobile-header"
+        role="rowheader">
         Environment
       </div>
       <span
@@ -513,6 +523,7 @@ export default {
     <div class="table-section section-25" role="gridcell">
       <div
         v-if="!model.isFolder"
+        role="rowheader"
         class="table-mobile-header">
         Commit
       </div>
@@ -529,7 +540,7 @@ export default {
       </div>
       <div
         v-if="!model.isFolder && !hasLastDeploymentKey"
-        class="commit-title">
+        class="commit-title table-mobile-content">
         No deployments yet
       </div>
     </div>
@@ -537,6 +548,7 @@ export default {
     <div class="table-section section-10" role="gridcell">
       <div
         v-if="!model.isFolder"
+        role="rowheader"
         class="table-mobile-header">
         Updated
       </div>
@@ -547,10 +559,13 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-30 environments-actions table-button-footer" role="gridcell">
+    <div
+      v-if="!model.isFolder && displayEnvironmentActions"
+      class="table-section section-30 table-button-footer"
+      role="gridcell">
+
       <div
-        v-if="!model.isFolder"
-        class="btn-group environment-action-buttons"
+        class="btn-group table-action-buttons"
         role="group">
 
         <actions-component

@@ -9,7 +9,7 @@ describe 'Dashboard Todos', feature: true do
   describe 'GET /dashboard/todos' do
     context 'User does not have todos' do
       before do
-        login_as(user)
+        gitlab_sign_in(user)
         visit dashboard_todos_path
       end
       it 'shows "All done" message' do
@@ -20,7 +20,7 @@ describe 'Dashboard Todos', feature: true do
     context 'User has a todo', js: true do
       before do
         create(:todo, :mentioned, user: user, project: project, target: issue, author: author)
-        login_as(user)
+        gitlab_sign_in(user)
         visit dashboard_todos_path
       end
 
@@ -101,7 +101,7 @@ describe 'Dashboard Todos', feature: true do
 
     context 'User created todos for themself' do
       before do
-        login_as(user)
+        gitlab_sign_in(user)
       end
 
       context 'issue assigned todo' do
@@ -179,7 +179,7 @@ describe 'Dashboard Todos', feature: true do
     context 'User has done todos', js: true do
       before do
         create(:todo, :mentioned, :done, user: user, project: project, target: issue, author: author)
-        login_as(user)
+        gitlab_sign_in(user)
         visit dashboard_todos_path(state: :done)
       end
 
@@ -217,7 +217,7 @@ describe 'Dashboard Todos', feature: true do
         note2 = create(:note_on_issue, note: "Test #{label2.to_reference(format: :name)}", noteable_id: issue2.id, noteable_type: 'Issue', project: project2)
         create(:todo, :mentioned, project: project2, target: issue2, user: user, note_id: note2.id)
 
-        login_as(user)
+        gitlab_sign_in(user)
         visit dashboard_todos_path
       end
 
@@ -233,7 +233,7 @@ describe 'Dashboard Todos', feature: true do
         # Create just enough records to cause us to paginate
         create_list(:todo, 2, :mentioned, user: user, project: project, target: issue, author: author)
 
-        login_as(user)
+        gitlab_sign_in(user)
       end
 
       it 'is paginated' do
@@ -321,7 +321,7 @@ describe 'Dashboard Todos', feature: true do
         deleted_project = create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC, pending_delete: true)
         create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author)
         create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author, state: :done)
-        login_as(user)
+        gitlab_sign_in(user)
         visit dashboard_todos_path
       end
 
@@ -333,34 +333,11 @@ describe 'Dashboard Todos', feature: true do
       end
     end
 
-    context 'User have large number of todos' do
-      before do
-        create_list(:todo, 101, :mentioned, user: user, project: project, target: issue, author: author)
-
-        login_as(user)
-        visit dashboard_todos_path
-      end
-
-      it 'shows 99+ for count >= 100 in notification' do
-        expect(page).to have_selector('.todos-count', text: '99+')
-      end
-
-      it 'shows exact number in To do tab' do
-        expect(page).to have_selector('.todos-pending .badge', text: '101')
-      end
-
-      it 'shows exact number for count < 100' do
-        3.times { first('.js-done-todo').click }
-
-        expect(page).to have_selector('.todos-count', text: '98')
-      end
-    end
-
     context 'User has a Build Failed todo' do
       let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: author) }
 
       before do
-        login_as user
+        gitlab_sign_in user
         visit dashboard_todos_path
       end
 

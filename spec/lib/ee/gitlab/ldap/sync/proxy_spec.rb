@@ -172,7 +172,9 @@ describe EE::Gitlab::LDAP::Sync::Proxy, lib: true do
         )
       end
 
-      after { sync_proxy.dn_for_uid(user.username) }
+      after do
+        sync_proxy.dn_for_uid(user.username)
+      end
 
       it 'does not query LDAP' do
         expect(::Gitlab::LDAP::Person).not_to receive(:find_by_uid)

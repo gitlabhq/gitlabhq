@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Timestamps
 class CreateGitHooks < ActiveRecord::Migration
   DOWNTIME = false
 

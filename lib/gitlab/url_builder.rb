@@ -61,7 +61,12 @@ module Gitlab
 
       elsif object.for_snippet?
         snippet = Snippet.find(object.noteable_id)
-        project_snippet_url(snippet, anchor: dom_id(object))
+
+        if snippet.is_a?(PersonalSnippet)
+          snippet_url(snippet, anchor: dom_id(object))
+        else
+          project_snippet_url(snippet, anchor: dom_id(object))
+        end
       end
     end
 

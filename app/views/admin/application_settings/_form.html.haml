@@ -200,6 +200,9 @@
       .col-sm-10
         = f.text_area :sign_in_text, class: 'form-control', rows: 4
         .help-block Markdown enabled
+
+  %fieldset
+    %legend Help Page
     .form-group
       = f.label :help_text, class: 'control-label'
       .col-sm-10
@@ -210,6 +213,17 @@
       .col-sm-10
         = f.text_area :help_page_text, class: 'form-control', rows: 4
         .help-block Markdown enabled
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :help_page_hide_commercial_content do
+            = f.check_box :help_page_hide_commercial_content
+            Hide marketing-related entries from help
+    .form-group
+      = f.label :help_page_support_url, 'Support page URL', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :help_page_support_url, class: 'form-control', placeholder: 'http://company.example.com/getting-help', :'aria-describedby' => 'support_help_block'
+        %span.help-block#support_help_block Alternate support URL for help page
 
   %fieldset
     %legend Pages
@@ -327,8 +341,9 @@
   %fieldset
     %legend Metrics - Prometheus
     %p
-      Setup Prometheus to measure a variety of statistics that partially overlap and complement Influx based metrics.
-      This setting requires a
+      Enable a Prometheus metrics endpoint at `#{metrics_path}` to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available
+      = link_to 'here', admin_health_check_path
+      \. This setting requires a
       = link_to 'restart', help_page_path('administration/restart_gitlab')
       to take effect.
       = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/introduction')
@@ -338,6 +353,10 @@
           = f.label :prometheus_metrics_enabled do
             = f.check_box :prometheus_metrics_enabled
             Enable Prometheus Metrics
+            - unless Gitlab::Metrics.metrics_folder_present?
+              .help-block
+                %strong.cred WARNING:
+                Environment variable `prometheus_multiproc_dir` does not exist or is not pointing to a valid directory.
 
   %fieldset
     %legend Background Jobs
@@ -651,22 +670,6 @@
           The default value (1) is a reasonable choice for the majority of GitLab
           installations. Set to 0 to completely disable polling.
           = link_to icon('question-circle'), help_page_path('administration/polling')
-
-  %fieldset
-    %legend Performance optimization
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :authorized_keys_enabled do
-            = f.check_box :authorized_keys_enabled
-            Write to "authorized_keys" file
-          .help-block
-            By default, we write to the "authorized_keys" file to support Git
-            over SSH without additional configuration. GitLab can be optimized
-            to authenticate SSH keys via the database file. Only uncheck this
-            if you have configured your OpenSSH server to use the
-            AuthorizedKeysCommand. Click on the help icon for more details.
-            = link_to icon('question-circle'), help_page_path('administration/operations/speed_up_ssh', anchor: 'the-solution')
 
   - if Gitlab::Geo.license_allows?
     %fieldset

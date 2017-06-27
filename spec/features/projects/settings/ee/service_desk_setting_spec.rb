@@ -6,9 +6,9 @@ describe 'Service Desk Setting', js: true, feature: true do
 
   before do
     project.add_master(user)
-    login_as(user)
-    allow_any_instance_of(License).to receive(:feature_available?).and_call_original
-    allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
+    gitlab_sign_in(user)
+
+    allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
     allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
 

@@ -11,7 +11,7 @@ var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeMod
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
-var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
+var IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
 var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
@@ -41,10 +41,13 @@ var config = {
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     graphs:               './graphs/graphs_bundle.js',
     group:                './group.js',
+    groups:               './groups/index.js',
     groups_list:          './groups_list.js',
+    issuable:             './issuable/issuable_bundle.js',
     issues:               './issues/issues_bundle.js',
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
+    job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -52,9 +55,10 @@ var config = {
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-    pipelines:            './pipelines/index.js',
+    pipelines:            './pipelines/pipelines_bundle.js',
     pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
+    prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
@@ -159,7 +163,10 @@ var config = {
         'environments',
         'environments_folder',
         'filtered_search',
+        'groups',
+        'issuable',
         'issue_show',
+        'job_details',
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
@@ -225,12 +232,12 @@ if (IS_PRODUCTION) {
 
   // zopfli requires a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
-    config.plugins.push(
-      new CompressionPlugin({
-        asset: '[path].gz[query]',
-        algorithm: 'zopfli',
-      })
-    );
+    // gracefully fall back to gzip if `node-zopfli` is unavailable (e.g. in CentOS 6)
+    try {
+      config.plugins.push(new CompressionPlugin({ algorithm: 'zopfli' }));
+    } catch(err) {
+      config.plugins.push(new CompressionPlugin({ algorithm: 'gzip' }));
+    }
   }
 }
 
@@ -241,6 +248,7 @@ if (IS_DEV_SERVER) {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
+    hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD
   };
   config.output.publicPath = '//' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT + config.output.publicPath;
@@ -248,6 +256,9 @@ if (IS_DEV_SERVER) {
     // watch node_modules for changes if we encounter a missing module compile error
     new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
   );
+  if (DEV_SERVER_LIVERELOAD) {
+    config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  }
 }
 
 if (WEBPACK_REPORT) {

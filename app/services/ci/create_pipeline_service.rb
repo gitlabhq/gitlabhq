@@ -51,12 +51,12 @@ module Ci
         return error('No stages / jobs for this pipeline.')
       end
 
-      _create_pipeline(&block)
+      _create_pipeline(source, &block)
     end
 
     private
 
-    def _create_pipeline
+    def _create_pipeline(source)
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
 
@@ -69,14 +69,16 @@ module Ci
 
       cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
 
+      pipeline_created_counter.increment(source: source)
+
       pipeline.tap(&:process!)
     end
 
     def update_merge_requests_head_pipeline
       return unless pipeline.latest?
 
-      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref).
-        update_all(head_pipeline_id: @pipeline.id)
+      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref)
+        .update_all(head_pipeline_id: @pipeline.id)
     end
 
     def skip_ci?
@@ -140,6 +142,10 @@ module Ci
       pipeline.errors.add(:base, message)
       pipeline.drop if save
       pipeline
+    end
+
+    def pipeline_created_counter
+      @pipeline_created_counter ||= Gitlab::Metrics.counter(:pipelines_created_count, "Pipelines created count")
     end
   end
 end

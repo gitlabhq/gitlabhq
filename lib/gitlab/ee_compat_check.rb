@@ -76,13 +76,9 @@ module Gitlab
 
       step(
         "Generating the patch against origin/master in #{patch_path}",
-        %w[git format-patch origin/master --stdout]
+        %W[git diff --binary origin/master > #{patch_path}]
       ) do |output, status|
-        throw(:halt_check, :ko) unless status.zero?
-
-        File.write(patch_path, output)
-
-        throw(:halt_check, :ko) unless File.exist?(patch_path)
+        throw(:halt_check, :ko) unless status.zero? && File.exist?(patch_path)
       end
     end
 
@@ -296,7 +292,7 @@ module Gitlab
 
           # In the CE repo
           $ git fetch origin master
-          $ git format-patch origin/master --stdout > #{ce_branch}.patch
+          $ git diff --binary origin/master > #{ce_branch}.patch
 
           # In the EE repo
           $ git fetch origin master

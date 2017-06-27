@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature "License Admin", feature: true do
   before do
-    login_as :admin
+    gitlab_sign_in :admin
   end
 
   describe '#show' do
@@ -16,9 +16,9 @@ feature "License Admin", feature: true do
     end
 
     describe 'limited users' do
+      let!(:license) { create(:license, data: build(:gitlab_license, restrictions: { active_user_count: 2000 }).export) }
+
       it 'shows panel counts' do
-        restrictions = { active_user_count: 2000 }
-        allow_any_instance_of(Gitlab::License).to receive(:restrictions).and_return(restrictions)
         visit admin_license_path
 
         page.within '.license-panel' do

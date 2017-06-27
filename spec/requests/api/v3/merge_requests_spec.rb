@@ -495,8 +495,8 @@ describe API::MergeRequests do
     end
 
     it "returns 406 if branch can't be merged" do
-      allow_any_instance_of(MergeRequest).
-        to receive(:can_be_merged?).and_return(false)
+      allow_any_instance_of(MergeRequest)
+        .to receive(:can_be_merged?).and_return(false)
 
       put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
 

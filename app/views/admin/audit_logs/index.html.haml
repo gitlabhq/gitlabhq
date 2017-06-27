@@ -28,7 +28,7 @@
               placeholder: admin_namespace_dropdown_label('Search groups'), idAttribute: 'id', data: { order_by: 'last_activity_at', idattribute: 'id', all_available: true} })
 
   - if @events.present?
-    %table.table
+    %table#events-table.table
       %thead
         %tr
           %th Author

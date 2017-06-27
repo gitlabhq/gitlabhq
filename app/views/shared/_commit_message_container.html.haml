@@ -2,7 +2,7 @@
   - nonce = SecureRandom.hex
   - descriptions = local_assigns.slice(:message_with_description, :message_without_description)
   = label_tag "commit_message-#{nonce}", class: 'control-label' do
-    Commit message
+    #{ _('Commit message') }
   .col-sm-10
     .commit-message-container
       .max-width-marker

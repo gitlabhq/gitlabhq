@@ -65,7 +65,9 @@ describe Projects::UpdateRepositoryStorageService, services: true do
     context 'with wiki' do
       let(:project) { create(:project, repository_storage: 'a', repository_read_only: true, wiki_enabled: true) }
 
-      before { project.create_wiki }
+      before do
+        project.create_wiki
+      end
 
       context 'when the move succeeds' do
         it 'moves the repository and its wiki to the new storage and unmarks the repository as read only' do

@@ -5,16 +5,12 @@
 - else
   - if can?(current_user, :push_code, @project)
     .form-group.branch
-      = label_tag 'branch_name', 'Target branch', class: 'control-label'
+      = label_tag 'branch_name', _('Target Branch'), class: 'control-label'
       .col-sm-10
-        = render 'shared/branch_switcher'
+        = text_field_tag 'branch_name', @branch_name || tree_edit_branch, required: true, class: "form-control js-branch-name ref-name"
 
         .js-create-merge-request-container
-          .checkbox
-            - nonce = SecureRandom.hex
-            = label_tag "create_merge_request-#{nonce}" do
-              = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: "create_merge_request-#{nonce}"
-              Start a <strong>new merge request</strong> with these changes
+          = render 'shared/new_merge_request_checkbox'
   - else
     = hidden_field_tag 'branch_name', @branch_name || tree_edit_branch
     = hidden_field_tag 'create_merge_request', 1

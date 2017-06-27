@@ -58,11 +58,11 @@ describe Ci::Build, models: true do
     it 'sticks the build if the status changed' do
       build = create(:ci_build, :pending)
 
-      allow(Gitlab::Database::LoadBalancing).to receive(:enable?).
-        and_return(true)
+      allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
+        .and_return(true)
 
-      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick).
-        with(:build, build.id)
+      expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
+        .with(:build, build.id)
 
       build.update(status: :running)
     end

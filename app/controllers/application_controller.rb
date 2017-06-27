@@ -40,6 +40,10 @@ class ApplicationController < ActionController::Base
     render_404
   end
 
+  rescue_from(ActionController::UnknownFormat) do
+    render_404
+  end
+
   rescue_from Gitlab::Access::AccessDeniedError do |exception|
     render_403
   end

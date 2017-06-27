@@ -93,16 +93,16 @@ describe MergeRequest, models: true do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignee).and_return(nil)
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => nil })
     end
 
     it 'includes the assignee name' do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignee).and_return(double(name: 'Douwe'))
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 
@@ -362,8 +362,8 @@ describe MergeRequest, models: true do
     end
 
     it 'accesses the set of issues that will be closed on acceptance' do
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       closed = subject.closes_issues
 
@@ -389,8 +389,8 @@ describe MergeRequest, models: true do
       subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
 
       allow(subject).to receive(:commits).and_return([commit])
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
@@ -536,10 +536,16 @@ describe MergeRequest, models: true do
 
     it "includes project members with developer access and up" do
       expect do
+        developer = create(:user)
+
         project.add_guest(create(:user))
         project.add_reporter(create(:user))
-        project.add_developer(create(:user))
+        project.add_developer(developer)
         project.add_master(create(:user))
+
+        # Add this user as both someone with access, and an explicit approver,
+        # to ensure they aren't double-counted.
+        create(:approver, user: developer, target: merge_request)
       end.to change { merge_request.reload.number_of_potential_approvers }.by(2)
     end
 
@@ -569,7 +575,10 @@ describe MergeRequest, models: true do
 
     context "when the project is part of a group" do
       let(:group) { create(:group) }
-      before { project.update_attributes(group: group) }
+
+      before do
+        project.update_attributes(group: group)
+      end
 
       it "includes group members with developer access and up" do
         expect do
@@ -653,10 +662,15 @@ describe MergeRequest, models: true do
 
   describe "#approvals_required" do
     let(:merge_request) { build(:merge_request) }
-    before { merge_request.target_project.update_attributes(approvals_before_merge: 3) }
+
+    before do
+      merge_request.target_project.update_attributes(approvals_before_merge: 3)
+    end
 
     context "when the MR has approvals_before_merge set" do
-      before { merge_request.update_attributes(approvals_before_merge: 1) }
+      before do
+        merge_request.update_attributes(approvals_before_merge: 1)
+      end
 
       it "uses the approvals_before_merge from the MR" do
         expect(merge_request.approvals_required).to eq(1)
@@ -732,8 +746,8 @@ describe MergeRequest, models: true do
       subject.project.team << [subject.author, :developer]
       subject.description = "This issue Closes #{issue.to_reference}"
 
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       expect(subject.merge_commit_message)
         .to match("Closes #{issue.to_reference}")
@@ -858,18 +872,18 @@ describe MergeRequest, models: true do
       end
 
       it 'caches the output' do
-        expect(subject).to receive(:compute_diverged_commits_count).
-          once.
-          and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count)
+          .once
+          .and_return(2)
 
         subject.diverged_commits_count
         subject.diverged_commits_count
       end
 
       it 'invalidates the cache when the source sha changes' do
-        expect(subject).to receive(:compute_diverged_commits_count).
-          twice.
-          and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count)
+          .twice
+          .and_return(2)
 
         subject.diverged_commits_count
         allow(subject).to receive(:source_branch_sha).and_return('123abc')
@@ -877,9 +891,9 @@ describe MergeRequest, models: true do
       end
 
       it 'invalidates the cache when the target sha changes' do
-        expect(subject).to receive(:compute_diverged_commits_count).
-          twice.
-          and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count)
+          .twice
+          .and_return(2)
 
         subject.diverged_commits_count
         allow(subject).to receive(:target_branch_sha).and_return('123abc')
@@ -899,72 +913,10 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
-  describe '#rebase_in_progress?' do
-    it 'returns true when there is a current rebase directory' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(subject.rebase_in_progress?).to be_truthy
-    end
-
-    it 'returns false when there is no rebase directory' do
-      allow(File).to receive(:exist?).with(subject.rebase_dir_path).and_return(false)
-
-      expect(subject.rebase_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the rebase directory has expired' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(20.minutes.ago)
-
-      expect(subject.rebase_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the source project has been removed' do
-      allow(subject).to receive(:source_project).and_return(nil)
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(File).not_to have_received(:exist?)
-      expect(subject.rebase_in_progress?).to be_falsey
-    end
-  end
-
-  describe '#squash_in_progress?' do
-    it 'returns true when there is a current squash directory' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(subject.squash_in_progress?).to be_truthy
-    end
-
-    it 'returns false when there is no squash directory' do
-      allow(File).to receive(:exist?).with(subject.squash_dir_path).and_return(false)
-
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the squash directory has expired' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(20.minutes.ago)
-
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the source project has been removed' do
-      allow(subject).to receive(:source_project).and_return(nil)
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(File).not_to have_received(:exist?)
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-  end
-
   describe '#commits_sha' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_sha).
-        and_return(['sha1'])
+      allow(subject.merge_request_diff).to receive(:commits_sha)
+        .and_return(['sha1'])
     end
 
     it 'delegates to merge request diff' do
@@ -1149,7 +1101,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
@@ -1221,7 +1175,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when not open' do
-      before { subject.close }
+      before do
+        subject.close
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -1229,7 +1185,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when working in progress' do
-      before { subject.title = 'WIP MR' }
+      before do
+        subject.title = 'WIP MR'
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -1237,7 +1195,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -1510,40 +1470,24 @@ describe MergeRequest, models: true do
     let(:approver) { create(:user) }
 
     context 'on a project with only one member' do
+      let(:author) { project.owner }
+
       context 'when there is one approver' do
-        before { project.update_attributes(approvals_before_merge: 1) }
+        before do
+          project.update_attributes(approvals_before_merge: 1)
+        end
 
         context 'when that approver is the MR author' do
           before do
-            project.team << [author, :developer]
             create(:approver, user: author, target: merge_request)
           end
 
           it 'does not require approval for the merge request' do
-            expect(merge_request.approvals_left).to eq(1)
+            expect(merge_request.approvals_left).to eq(0)
           end
 
           it 'does not allow the approver to approve the MR' do
             expect(merge_request.can_approve?(author)).to be_falsey
-          end
-
-          it 'does not allow a logged-out user to approve the MR' do
-            expect(merge_request.can_approve?(nil)).to be_falsey
-          end
-        end
-
-        context 'when that approver is not the MR author' do
-          before do
-            project.team << [approver, :developer]
-            create(:approver, user: approver, target: merge_request)
-          end
-
-          it 'requires one approval' do
-            expect(merge_request.approvals_left).to eq(1)
-          end
-
-          it 'allows the approver to approve the MR' do
-            expect(merge_request.can_approve?(approver)).to be_truthy
           end
 
           it 'does not allow a logged-out user to approve the MR' do
@@ -1568,10 +1512,14 @@ describe MergeRequest, models: true do
       end
 
       context 'when there is one approver required' do
-        before { project.update_attributes(approvals_before_merge: 1) }
+        before do
+          project.update_attributes(approvals_before_merge: 1)
+        end
 
         context 'when that approver is the MR author' do
-          before { create(:approver, user: author, target: merge_request) }
+          before do
+            create(:approver, user: author, target: merge_request)
+          end
 
           it 'requires one approval' do
             expect(merge_request.approvals_left).to eq(1)
@@ -1594,7 +1542,9 @@ describe MergeRequest, models: true do
         end
 
         context 'when that approver is not the MR author' do
-          before { create(:approver, user: approver, target: merge_request) }
+          before do
+            create(:approver, user: approver, target: merge_request)
+          end
 
           it 'requires one approval' do
             expect(merge_request.approvals_left).to eq(1)
@@ -1613,7 +1563,9 @@ describe MergeRequest, models: true do
       end
 
       context 'when there are multiple approvers required' do
-        before { project.update_attributes(approvals_before_merge: 3) }
+        before do
+          project.update_attributes(approvals_before_merge: 3)
+        end
 
         context 'when one of those approvers is the MR author' do
           before do
@@ -1872,7 +1824,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#mergeable_with_slash_command?' do
+  describe '#mergeable_with_quick_action?' do
     def create_pipeline(status)
       pipeline = create(:ci_pipeline_with_one_job,
         project: project,
@@ -1896,21 +1848,21 @@ describe MergeRequest, models: true do
 
     context 'when autocomplete_precheck is set to true' do
       it 'is mergeable by developer' do
-        expect(merge_request.mergeable_with_slash_command?(developer, autocomplete_precheck: true)).to be_truthy
+        expect(merge_request.mergeable_with_quick_action?(developer, autocomplete_precheck: true)).to be_truthy
       end
 
       it 'is not mergeable by normal user' do
-        expect(merge_request.mergeable_with_slash_command?(user, autocomplete_precheck: true)).to be_falsey
+        expect(merge_request.mergeable_with_quick_action?(user, autocomplete_precheck: true)).to be_falsey
       end
     end
 
     context 'when autocomplete_precheck is set to false' do
       it 'is mergeable by developer' do
-        expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+        expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
       end
 
       it 'is not mergeable by normal user' do
-        expect(merge_request.mergeable_with_slash_command?(user, last_diff_sha: mr_sha)).to be_falsey
+        expect(merge_request.mergeable_with_quick_action?(user, last_diff_sha: mr_sha)).to be_falsey
       end
 
       context 'closed MR'  do
@@ -1919,7 +1871,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
       end
 
@@ -1929,19 +1881,19 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
       end
 
       context 'sha differs from the MR diff_head_sha'  do
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: 'some other sha')).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: 'some other sha')).to be_falsey
         end
       end
 
       context 'sha is not provided'  do
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer)).to be_falsey
         end
       end
 
@@ -1951,7 +1903,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
         end
       end
 
@@ -1961,7 +1913,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
       end
 
@@ -1971,7 +1923,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
         end
       end
 
@@ -1981,13 +1933,13 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable when not approved' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
 
         it 'is mergeable when approved' do
           merge_request.approvals.create(user: user)
 
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
         end
       end
     end
@@ -1995,8 +1947,8 @@ describe MergeRequest, models: true do
 
   describe '#has_commits?' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_count).
-        and_return(2)
+      allow(subject.merge_request_diff).to receive(:commits_count)
+        .and_return(2)
     end
 
     it 'returns true when merge request diff has commits' do
@@ -2006,8 +1958,8 @@ describe MergeRequest, models: true do
 
   describe '#has_no_commits?' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_count).
-        and_return(0)
+      allow(subject.merge_request_diff).to receive(:commits_count)
+        .and_return(0)
     end
 
     it 'returns true when merge request diff has 0 commits' do
@@ -2074,8 +2026,8 @@ describe MergeRequest, models: true do
 
   describe '#base_codeclimate_artifact' do
     before do
-      allow(subject.base_pipeline).to receive(:codeclimate_artifact).
-        and_return(1)
+      allow(subject.base_pipeline).to receive(:codeclimate_artifact)
+        .and_return(1)
     end
 
     it 'delegates to merge request diff' do
@@ -2085,8 +2037,8 @@ describe MergeRequest, models: true do
 
   describe '#head_codeclimate_artifact' do
     before do
-      allow(subject.head_pipeline).to receive(:codeclimate_artifact).
-        and_return(1)
+      allow(subject.head_pipeline).to receive(:codeclimate_artifact)
+        .and_return(1)
     end
 
     it 'delegates to merge request diff' do

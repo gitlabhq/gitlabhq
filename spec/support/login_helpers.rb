@@ -6,15 +6,15 @@ module LoginHelpers
   # Examples:
   #
   #   # Create a user automatically
-  #   login_as(:user)
+  #   gitlab_sign_in(:user)
   #
   #   # Create an admin automatically
-  #   login_as(:admin)
+  #   gitlab_sign_in(:admin)
   #
   #   # Provide an existing User record
   #   user = create(:user)
-  #   login_as(user)
-  def login_as(user_or_role)
+  #   gitlab_sign_in(user)
+  def gitlab_sign_in(user_or_role, **kwargs)
     @user =
       if user_or_role.is_a?(User)
         user_or_role
@@ -22,26 +22,44 @@ module LoginHelpers
         create(user_or_role)
       end
 
-    login_with(@user)
+    gitlab_sign_in_with(@user, **kwargs)
   end
 
-  # Internal: Login as the specified user
-  #
-  # user     - User instance to login with
-  # remember - Whether or not to check "Remember me" (default: false)
-  def login_with(user, remember: false)
-    visit new_user_session_path
-    fill_in "user_login", with: user.email
-    fill_in "user_password", with: "12345678"
-    check 'user_remember_me' if remember
-    click_button "Sign in"
-    Thread.current[:current_user] = user
-  end
-
-  def login_via(provider, user, uid)
+  def gitlab_sign_in_via(provider, user, uid)
     mock_auth_hash(provider, uid, user.email)
     visit new_user_session_path
     click_link provider
+  end
+
+  # Requires Javascript driver.
+  def gitlab_sign_out
+    find(".header-user-dropdown-toggle").click
+    click_link "Sign out"
+    # check the sign_in button
+    expect(page).to have_button('Sign in')
+  end
+
+  # Logout without JavaScript driver
+  def gitlab_sign_out_direct
+    page.driver.submit :delete, '/users/sign_out', {}
+  end
+
+  private
+
+  # Private: Login as the specified user
+  #
+  # user     - User instance to login with
+  # remember - Whether or not to check "Remember me" (default: false)
+  def gitlab_sign_in_with(user, remember: false)
+    visit new_user_session_path
+
+    fill_in "user_login", with: user.email
+    fill_in "user_password", with: "12345678"
+    check 'user_remember_me' if remember
+
+    click_button "Sign in"
+
+    Thread.current[:current_user] = user
   end
 
   def mock_auth_hash(provider, uid, email)
@@ -70,18 +88,5 @@ module LoginHelpers
       }
     })
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:saml]
-  end
-
-  # Requires Javascript driver.
-  def logout
-    find(".header-user-dropdown-toggle").click
-    click_link "Sign out"
-    # check the sign_in button
-    expect(page).to have_button('Sign in')
-  end
-
-  # Logout without JavaScript driver
-  def logout_direct
-    page.driver.submit :delete, '/users/sign_out', {}
   end
 end

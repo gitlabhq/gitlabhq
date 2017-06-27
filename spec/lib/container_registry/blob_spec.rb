@@ -72,8 +72,8 @@ describe ContainerRegistry::Blob do
   describe '#data' do
     context 'when locally stored' do
       before do
-        stub_request(:get, 'http://registry.gitlab/v2/group/test/image/blobs/sha256:0123456789012345').
-          to_return(
+        stub_request(:get, 'http://registry.gitlab/v2/group/test/image/blobs/sha256:0123456789012345')
+          .to_return(
             status: 200,
             headers: { 'Content-Type' => 'application/json' },
             body: '{"key":"value"}')
@@ -97,9 +97,9 @@ describe ContainerRegistry::Blob do
 
       context 'for a valid address' do
         before do
-          stub_request(:get, location).
-            with { |request| !request.headers.include?('Authorization') }.
-            to_return(
+          stub_request(:get, location)
+            .with { |request| !request.headers.include?('Authorization') }
+            .to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
               body: '{"key":"value"}')

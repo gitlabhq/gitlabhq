@@ -79,7 +79,7 @@
                                   %span{ style: "font-weight: bold;color:#333333;" } Merge request
                                   %a{ href: merge_request_url(@merge_request), style: "font-weight: bold;color:#3777b0;text-decoration:none" }= @merge_request.to_reference
                                   %span was approved by
-                                  %img.avatar{ height: "24", src: avatar_icon(@approved_by, 24), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }/
+                                  %img.avatar{ height: "24", src: avatar_icon(@approved_by, 24, only_path: false), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }/
                                   %a.muted{ href: user_url(@approved_by), style: "color:#333333;text-decoration:none;" }
                                     = @approved_by.name
                         %tr.spacer
@@ -117,7 +117,7 @@
                                       %tbody
                                         %tr
                                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
-                                            %img.avatar{ height: "24", src: avatar_icon(@merge_request.author, 24), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
+                                            %img.avatar{ height: "24", src: avatar_icon(@merge_request.author, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
                                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
                                             %a.muted{ href: user_url(@merge_request.author), style: "color:#333333;text-decoration:none;" }
                                               = @merge_request.author.name
@@ -130,7 +130,7 @@
                                         %tbody
                                           %tr
                                             %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
-                                              %img.avatar{ height: "24", src: avatar_icon(@merge_request.assignee, 24), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
+                                              %img.avatar{ height: "24", src: avatar_icon(@merge_request.assignee, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }/
                                             %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
                                               %a.muted{ href: user_url(@merge_request.assignee), style: "color:#333333;text-decoration:none;" }
                                                 = @merge_request.assignee.name

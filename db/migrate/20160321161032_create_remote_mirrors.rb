@@ -1,3 +1,5 @@
+# rubocop:disable Migration/Datetime
+# rubocop:disable Migration/Timestamps
 class CreateRemoteMirrors < ActiveRecord::Migration
   def change
     create_table :remote_mirrors do |t|

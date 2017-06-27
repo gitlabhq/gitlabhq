@@ -12,6 +12,9 @@ class Issue < ActiveRecord::Base
   include Elastic::IssuesSearch
   include FasterCacheKeys
   include RelativePositioning
+  include IgnorableColumn
+
+  ignore_column :position
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze
@@ -54,7 +57,7 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
-  scope :include_associations, -> { includes(:labels, project: :namespace) }
+  scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   after_save :expire_etag_cache
 
@@ -133,8 +136,8 @@ class Issue < ActiveRecord::Base
   end
 
   def self.order_by_position_and_priority
-    order_labels_priority.
-      reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
+    order_labels_priority
+      .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
   end
@@ -182,6 +185,19 @@ class Issue < ActiveRecord::Base
     branches_with_merge_request = self.referenced_merge_requests(current_user).map(&:source_branch)
 
     branches_with_iid - branches_with_merge_request
+  end
+
+  def related_issues(current_user, preload: nil)
+    related_issues = Issue
+                       .select(['issues.*', 'issue_links.id AS issue_link_id'])
+                       .joins("INNER JOIN issue_links ON
+                                 (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
+                                 OR
+                                 (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
+                       .preload(preload)
+                       .reorder('issue_link_id')
+
+    Ability.issues_readable_by_user(related_issues, current_user)
   end
 
   # Returns boolean if a related branch exists for the current issue

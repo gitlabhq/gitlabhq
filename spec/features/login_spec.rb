@@ -36,7 +36,7 @@ feature 'Login', feature: true do
     it 'prevents the user from logging in' do
       user = create(:user, :blocked)
 
-      login_with(user)
+      gitlab_sign_in(user)
 
       expect(page).to have_content('Your account has been blocked.')
     end
@@ -44,19 +44,19 @@ feature 'Login', feature: true do
     it 'does not update Devise trackable attributes', :redis do
       user = create(:user, :blocked)
 
-      expect { login_with(user) }.not_to change { user.reload.sign_in_count }
+      expect { gitlab_sign_in(user) }.not_to change { user.reload.sign_in_count }
     end
   end
 
   describe 'with the ghost user' do
     it 'disallows login' do
-      login_with(User.ghost)
+      gitlab_sign_in(User.ghost)
 
       expect(page).to have_content('Invalid Login or password.')
     end
 
     it 'does not update Devise trackable attributes', :redis do
-      expect { login_with(User.ghost) }.not_to change { User.ghost.reload.sign_in_count }
+      expect { gitlab_sign_in(User.ghost) }.not_to change { User.ghost.reload.sign_in_count }
     end
   end
 
@@ -70,7 +70,7 @@ feature 'Login', feature: true do
       let(:user) { create(:user, :two_factor) }
 
       before do
-        login_with(user, remember: true)
+        gitlab_sign_in(user, remember: true)
         expect(page).to have_content('Two-Factor Authentication')
       end
 
@@ -122,8 +122,8 @@ feature 'Login', feature: true do
           end
 
           it 'invalidates the used code' do
-            expect { enter_code(codes.sample) }.
-              to change { user.reload.otp_backup_codes.size }.by(-1)
+            expect { enter_code(codes.sample) }
+              .to change { user.reload.otp_backup_codes.size }.by(-1)
           end
         end
 
@@ -167,7 +167,7 @@ feature 'Login', feature: true do
       it 'shows 2FA prompt after OAuth login' do
         stub_omniauth_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [saml_config])
         user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
-        login_via('saml', user, 'my-uid')
+        gitlab_sign_in_via('saml', user, 'my-uid')
 
         expect(page).to have_content('Two-Factor Authentication')
         enter_code(user.current_otp)
@@ -180,19 +180,19 @@ feature 'Login', feature: true do
     let(:user) { create(:user) }
 
     it 'allows basic login' do
-      login_with(user)
+      gitlab_sign_in(user)
       expect(current_path).to eq root_path
     end
 
     it 'does not show a "You are already signed in." error message' do
-      login_with(user)
+      gitlab_sign_in(user)
       expect(page).not_to have_content('You are already signed in.')
     end
 
     it 'blocks invalid login' do
       user = create(:user, password: 'not-the-default')
 
-      login_with(user)
+      gitlab_sign_in(user)
       expect(page).to have_content('Invalid Login or password.')
     end
   end
@@ -202,12 +202,14 @@ feature 'Login', feature: true do
     #  TODO: otp_grace_period_started_at
 
     context 'global setting' do
-      before(:each) { stub_application_setting(require_two_factor_authentication: true) }
+      before do
+        stub_application_setting(require_two_factor_authentication: true)
+      end
 
       context 'with grace period defined' do
-        before(:each) do
+        before do
           stub_application_setting(two_factor_grace_period: 48)
-          login_with(user)
+          gitlab_sign_in(user)
         end
 
         context 'within the grace period' do
@@ -242,9 +244,9 @@ feature 'Login', feature: true do
       end
 
       context 'without grace period defined' do
-        before(:each) do
+        before do
           stub_application_setting(two_factor_grace_period: 0)
-          login_with(user)
+          gitlab_sign_in(user)
         end
 
         it 'redirects to two-factor configuration page' do
@@ -265,9 +267,9 @@ feature 'Login', feature: true do
       end
 
       context 'with grace period defined' do
-        before(:each) do
+        before do
           stub_application_setting(two_factor_grace_period: 48)
-          login_with(user)
+          gitlab_sign_in(user)
         end
 
         context 'within the grace period' do
@@ -306,9 +308,9 @@ feature 'Login', feature: true do
       end
 
       context 'without grace period defined' do
-        before(:each) do
+        before do
           stub_application_setting(two_factor_grace_period: 0)
-          login_with(user)
+          gitlab_sign_in(user)
         end
 
         it 'redirects to two-factor configuration page' do

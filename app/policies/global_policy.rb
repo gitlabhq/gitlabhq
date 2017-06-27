@@ -10,7 +10,7 @@ class GlobalPolicy < BasePolicy
       can! :access_api
       can! :access_git
       can! :receive_notifications
-      can! :use_slash_commands
+      can! :use_quick_actions
     end
   end
 end

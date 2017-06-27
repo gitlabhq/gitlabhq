@@ -13,6 +13,7 @@ Feature: Groups Management
     Then I cannot control user membership from project page
     And I logout
 
+  @javascript
   Scenario: Group owner lock membership controls
     Given I sign in as "Pete Peters"
     And I go to group settings page

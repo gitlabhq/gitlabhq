@@ -4,8 +4,8 @@ describe Gitlab::Database::LoadBalancing::Host do
   let(:host) { described_class.new('localhost') }
 
   before do
-    allow(Gitlab::Database).to receive(:create_connection_pool).
-      and_return(ActiveRecord::Base.connection_pool)
+    allow(Gitlab::Database).to receive(:create_connection_pool)
+      .and_return(ActiveRecord::Base.connection_pool)
   end
 
   describe '#connection' do

@@ -11,7 +11,9 @@
   .commit-box,
   .info-well,
   .commit-ci-menu,
-  .files-changed {
+  .files-changed,
+  .limited-header-width,
+  .limited-width-notes {
     @extend .fixed-width-container;
   }
 
@@ -58,7 +60,7 @@
   }
 
   .emoji-block {
-    padding: 10px 0 4px;
+    padding: 10px 0;
   }
 }
 
@@ -200,10 +202,11 @@
   background: $gray-light;
   padding: 0 20px;
   z-index: 200;
+  overflow: hidden;
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: 100%;
+    height: calc(100% - #{$header-height});
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
@@ -726,4 +729,49 @@
       }
     }
   }
+}
+
+.add-issuable-form-input-wrapper {
+  height: auto;
+  padding: $gl-vert-padding $gl-vert-padding 0 $gl-input-padding;
+
+  &.focus,
+  &.focus:hover {
+    border-color: $dropdown-input-focus-border;
+    box-shadow: 0 0 4px $search-input-focus-shadow-color;
+  }
+}
+
+.add-issuable-form-input-token-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  list-style: none;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+.add-issuable-form-token-list-item {
+  max-width: 100%;
+  margin-bottom: $gl-vert-padding;
+  margin-right: 5px;
+}
+
+.add-issuable-form-input-list-item {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: $gl-vert-padding;
+}
+
+.add-issuable-form-input {
+  width: 100%;
+  border: 0;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.add-issuable-form-actions {
+  margin-top: $gl-padding;
 }

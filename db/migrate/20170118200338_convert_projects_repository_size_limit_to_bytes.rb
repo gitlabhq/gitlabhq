@@ -19,13 +19,11 @@ class ConvertProjectsRepositorySizeLimitToBytes < ActiveRecord::Migration
 
     sql_expression = Arel::Nodes::SqlLiteral.new(bigint_string)
 
-    connection.transaction do
-      update_column_in_batches(:projects, :repository_size_limit, sql_expression) do |t, query|
-        query.where(t[:repository_size_limit_mb].not_eq(nil))
-      end
-
-      remove_column :projects, :repository_size_limit_mb
+    update_column_in_batches(:projects, :repository_size_limit, sql_expression) do |t, query|
+      query.where(t[:repository_size_limit_mb].not_eq(nil))
     end
+
+    remove_column :projects, :repository_size_limit_mb
   end
 
   def down
@@ -36,12 +34,10 @@ class ConvertProjectsRepositorySizeLimitToBytes < ActiveRecord::Migration
 
     sql_expression = Arel::Nodes::SqlLiteral.new('repository_size_limit_bytes / 1024 / 1024')
 
-    connection.transaction do
-      update_column_in_batches(:projects, :repository_size_limit, sql_expression) do |t, query|
-        query.where(t[:repository_size_limit_bytes].not_eq(nil))
-      end
-
-      remove_column :projects, :repository_size_limit_bytes
+    update_column_in_batches(:projects, :repository_size_limit, sql_expression) do |t, query|
+      query.where(t[:repository_size_limit_bytes].not_eq(nil))
     end
+
+    remove_column :projects, :repository_size_limit_bytes
   end
 end

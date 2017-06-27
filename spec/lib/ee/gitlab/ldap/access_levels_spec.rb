@@ -12,7 +12,9 @@ describe EE::Gitlab::LDAP::AccessLevels, lib: true do
     subject { access_levels }
 
     context 'when access_levels is empty' do
-      before { access_levels.set(dns, to: Gitlab::Access::DEVELOPER) }
+      before do
+        access_levels.set(dns, to: Gitlab::Access::DEVELOPER)
+      end
 
       it do
         is_expected

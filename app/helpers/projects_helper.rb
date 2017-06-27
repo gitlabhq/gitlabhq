@@ -80,7 +80,7 @@ module ProjectsHelper
   end
 
   def remove_fork_project_message(project)
-    _("You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?") %
+    _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
       { forked_from_project: @project.forked_from_project.name_with_namespace }
   end
 
@@ -146,19 +146,26 @@ module ProjectsHelper
     end
 
     options = options_for_select(
-      options,
+      options.invert,
       selected: highest_available_option || @project.project_feature.public_send(field),
       disabled: disabled_option
     )
 
-    content_tag(
-      :select,
-      options,
-      name: "project[project_feature_attributes][#{field}]",
-      id: "project_project_feature_attributes_#{field}",
-      class: "pull-right form-control #{repo_children_classes(field)}",
-      data: { field: field }
-    ).html_safe
+    content_tag :div, class: "select-wrapper" do
+      concat(
+        content_tag(
+          :select,
+          options,
+          name: "project[project_feature_attributes][#{field}]",
+          id: "project_project_feature_attributes_#{field}",
+          class: "pull-right form-control select-control #{repo_children_classes(field)} ",
+          data: { field: field }
+        )
+      )
+      concat(
+        icon('chevron-down')
+      )
+    end.html_safe
   end
 
   def link_to_autodeploy_doc
@@ -187,8 +194,8 @@ module ProjectsHelper
   end
 
   def load_pipeline_status(projects)
-    Gitlab::Cache::Ci::ProjectPipelineStatus.
-      load_in_batch_for_projects(projects)
+    Gitlab::Cache::Ci::ProjectPipelineStatus
+      .load_in_batch_for_projects(projects)
   end
 
   private
@@ -218,6 +225,10 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
+    if project.builds_enabled? && can?(current_user, :read_pipeline, project)
+      nav_tabs << :pipelines
+    end
+
     tab_ability_map.each do |tab, ability|
       if can?(current_user, ability, project)
         nav_tabs << tab
@@ -231,7 +242,6 @@ module ProjectsHelper
     {
       environments: :read_environment,
       milestones:   :read_milestone,
-      pipelines:    :read_pipeline,
       snippets:     :read_project_snippet,
       settings:     :admin_project,
       builds:       :read_build,
@@ -485,9 +495,9 @@ module ProjectsHelper
 
   def project_feature_options
     {
-      s_('ProjectFeature|Disabled') => ProjectFeature::DISABLED,
-      s_('ProjectFeature|Only team members') => ProjectFeature::PRIVATE,
-      s_('ProjectFeature|Everyone with access') => ProjectFeature::ENABLED
+      ProjectFeature::DISABLED => s_('ProjectFeature|Disabled'),
+      ProjectFeature::PRIVATE => s_('ProjectFeature|Only team members'),
+      ProjectFeature::ENABLED => s_('ProjectFeature|Everyone with access')
     }
   end
 

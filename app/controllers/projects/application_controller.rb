@@ -53,9 +53,21 @@ class Projects::ApplicationController < ApplicationController
     end
   end
 
+  def check_project_feature_available!(feature)
+    render_404 unless project.feature_available?(feature, current_user)
+  end
+
+  def check_issuables_available!
+    render_404 unless project.feature_available?(:issues, current_user) ||
+        project.feature_available?(:merge_requests, current_user)
+  end
+
   def method_missing(method_sym, *arguments, &block)
-    if method_sym.to_s =~ /\Aauthorize_(.*)!\z/
+    case method_sym.to_s
+    when /\Aauthorize_(.*)!\z/
       authorize_action!($1.to_sym)
+    when /\Acheck_(.*)_available!\z/
+      check_project_feature_available!($1.to_sym)
     else
       super
     end
@@ -78,10 +90,6 @@ class Projects::ApplicationController < ApplicationController
 
   def apply_diff_view_cookie!
     cookies.permanent[:diff_view] = params.delete(:view) if params[:view].present?
-  end
-
-  def builds_enabled
-    return render_404 unless @project.feature_available?(:builds, current_user)
   end
 
   def require_pages_enabled!

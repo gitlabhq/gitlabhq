@@ -8,6 +8,9 @@ class License < ActiveRecord::Base
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
+  RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
+  EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
+  MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
 
   FEATURE_CODES = {
     geo: GEO_FEATURE,
@@ -15,9 +18,12 @@ class License < ActiveRecord::Base
     service_desk: SERVICE_DESK_FEATURE,
     object_storage: OBJECT_STORAGE_FEATURE,
     elastic_search: ELASTIC_SEARCH_FEATURE,
+    related_issues: RELATED_ISSUES_FEATURE,
     # Features that make sense to Namespace:
     deploy_board: DEPLOY_BOARD_FEATURE,
-    file_lock: FILE_LOCK_FEATURE
+    file_lock: FILE_LOCK_FEATURE,
+    export_issues: EXPORT_ISSUES_FEATURE,
+    merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE
   }.freeze
 
   STARTER_PLAN = 'starter'.freeze
@@ -26,7 +32,10 @@ class License < ActiveRecord::Base
   EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
   EES_FEATURES = [
-    { ELASTIC_SEARCH_FEATURE => 1 }
+    { ELASTIC_SEARCH_FEATURE => 1 },
+    { RELATED_ISSUES_FEATURE => 1 },
+    { EXPORT_ISSUES_FEATURE => 1 },
+    { MERGE_REQUEST_REBASE_FEATURE => 1 }
   ].freeze
 
   EEP_FEATURES = [
@@ -58,7 +67,9 @@ class License < ActiveRecord::Base
     { GEO_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 },
-    { OBJECT_STORAGE_FEATURE => 1 }
+    { OBJECT_STORAGE_FEATURE => 1 },
+    { EXPORT_ISSUES_FEATURE => 1 },
+    { MERGE_REQUEST_REBASE_FEATURE => 1 }
   ].freeze
 
   FEATURES_BY_PLAN = {
@@ -126,6 +137,12 @@ class License < ActiveRecord::Base
 
   def data_file=(file)
     self.data = file.read
+  end
+
+  def md5
+    normalized_data = self.data.gsub("\r\n", "\n").gsub(/\n+$/, '') + "\n"
+
+    Digest::MD5.hexdigest(normalized_data)
   end
 
   def license
@@ -198,6 +215,10 @@ class License < ActiveRecord::Base
     [restricted_attr(:trueup_quantity),
      restricted_attr(:trueup_from),
      restricted_attr(:trueup_to)].all?(&:present?)
+  end
+
+  def trial?
+    restricted_attr(:trial)
   end
 
   private

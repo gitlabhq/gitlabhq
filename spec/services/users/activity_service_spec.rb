@@ -40,7 +40,9 @@ describe Users::ActivityService, services: true do
     end
 
     context 'when in Geo secondary node' do
-      before { allow(Gitlab::Geo).to receive(:secondary?).and_return(true) }
+      before do
+        allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+      end
 
       it 'does not update last_activity_at' do
         service.execute
@@ -51,8 +53,8 @@ describe Users::ActivityService, services: true do
   end
 
   def last_hour_user_ids
-    Gitlab::UserActivities.new.
-      select { |k, v| v >= 1.hour.ago.to_i.to_s }.
-      map { |k, _| k.to_i }
+    Gitlab::UserActivities.new
+      .select { |k, v| v >= 1.hour.ago.to_i.to_s }
+      .map { |k, _| k.to_i }
   end
 end

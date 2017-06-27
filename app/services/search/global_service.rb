@@ -22,7 +22,7 @@ module Search
 
     def elastic_projects
       @elastic_projects ||=
-        if current_user.try(:admin_or_auditor?)
+        if current_user&.full_private_access?
           :any
         elsif current_user
           current_user.authorized_projects.pluck(:id)

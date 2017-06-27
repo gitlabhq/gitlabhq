@@ -617,9 +617,9 @@ module Gitlab
       #
       # Ex.
       #   {
-      #     "rack"  => {
+      #     "current_path/rack"  => {
+      #       "name" => "original_path/rack",
       #       "id" => "c67be4624545b4263184c4a0e8f887efd0a66320",
-      #       "path" => "rack",
       #       "url" => "git://github.com/chneukirchen/rack.git"
       #     },
       #     "encoding" => {
@@ -637,7 +637,8 @@ module Gitlab
           return {}
         end
 
-        parse_gitmodules(commit, content)
+        parser = GitmodulesParser.new(content)
+        fill_submodule_ids(commit, parser.parse)
       end
 
       # Return total commits count accessible from passed ref
@@ -962,11 +963,6 @@ module Gitlab
         end
       end
 
-      # Checks if the blob should be diffable according to its attributes
-      def diffable?(blob)
-        attributes(blob.path).fetch('diff') { blob.text? }
-      end
-
       # Returns the Git attributes for the given file path.
       #
       # See `Gitlab::Git::Attributes` for more information.
@@ -1003,42 +999,19 @@ module Gitlab
         end
       end
 
-      # Parses the contents of a .gitmodules file and returns a hash of
-      # submodule information.
-      def parse_gitmodules(commit, content)
-        modules = {}
-
-        name = nil
-        content.each_line do |line|
-          case line.strip
-          when /\A\[submodule "(?<name>[^"]+)"\]\z/ # Submodule header
-            name = $~[:name]
-            modules[name] = {}
-          when /\A(?<key>\w+)\s*=\s*(?<value>.*)\z/ # Key/value pair
-            key = $~[:key]
-            value = $~[:value].chomp
-
-            next unless name && modules[name]
-
-            modules[name][key] = value
-
-            if key == 'path'
-              begin
-                modules[name]['id'] = blob_content(commit, value)
-              rescue InvalidBlobName
-                # The current entry is invalid
-                modules.delete(name)
-                name = nil
-              end
-            end
-          when /\A#/ # Comment
-            next
-          else # Invalid line
-            name = nil
+      # Fill in the 'id' field of a submodule hash from its values
+      # as-of +commit+. Return a Hash consisting only of entries
+      # from the submodule hash for which the 'id' field is filled.
+      def fill_submodule_ids(commit, submodule_data)
+        submodule_data.each do |path, data|
+          id = begin
+            blob_content(commit, path)
+          rescue InvalidBlobName
+            nil
           end
+          data['id'] = id
         end
-
-        modules
+        submodule_data.select { |path, data| data['id'] }
       end
 
       # Returns true if +commit+ introduced changes to +path+, using commit

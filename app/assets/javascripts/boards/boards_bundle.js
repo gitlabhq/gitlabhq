@@ -105,6 +105,8 @@ $(() => {
             if (list.type === 'closed') {
               list.position = Infinity;
               list.label = { description: 'Shows all closed issues. Moving an issue to this list closes it' };
+            } else if (list.type === 'backlog') {
+              list.position = -1;
             }
           });
 
@@ -147,7 +149,7 @@ $(() => {
     },
     computed: {
       disabled() {
-        return !this.store.lists.filter(list => list.type !== 'blank' && list.type !== 'done').length;
+        return !this.store.lists.filter(list => !list.preset).length;
       },
       tooltipTitle() {
         if (this.disabled) {

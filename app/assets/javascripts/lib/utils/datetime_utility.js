@@ -34,7 +34,7 @@ window.dateFormat = dateFormat;
 
     w.gl.utils.localTimeAgo = function($timeagoEls, setTimeago = true) {
       $timeagoEls.each((i, el) => {
-        el.setAttribute('title', gl.utils.formatDate(el.getAttribute('datetime')));
+        el.setAttribute('title', el.getAttribute('title'));
 
         if (setTimeago) {
           // Recreate with custom template
@@ -146,3 +146,24 @@ window.dateFormat = dateFormat;
     };
   })(window);
 }).call(window);
+
+/**
+ * Port of ruby helper time_interval_in_words.
+ *
+ * @param  {Number} seconds
+ * @return {String}
+ */
+// eslint-disable-next-line import/prefer-default-export
+export function timeIntervalInWords(intervalInSeconds) {
+  const secondsInteger = parseInt(intervalInSeconds, 10);
+  const minutes = Math.floor(secondsInteger / 60);
+  const seconds = secondsInteger - (minutes * 60);
+  let text = '';
+
+  if (minutes >= 1) {
+    text = `${minutes} ${gl.text.pluralize('minute', minutes)} ${seconds} ${gl.text.pluralize('second', seconds)}`;
+  } else {
+    text = `${seconds} ${gl.text.pluralize('second', seconds)}`;
+  }
+  return text;
+}

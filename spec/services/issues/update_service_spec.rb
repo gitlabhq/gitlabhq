@@ -31,6 +31,13 @@ describe Issues::UpdateService, services: true do
       end
     end
 
+    def find_notes(action)
+      issue
+        .notes
+        .joins(:system_note_metadata)
+        .where(system_note_metadata: { action: action })
+    end
+
     def update_issue(opts)
       described_class.new(project, user, opts).execute(issue)
     end
@@ -288,7 +295,9 @@ describe Issues::UpdateService, services: true do
       end
 
       context 'when issue has the `label` label' do
-        before { issue.labels << label }
+        before do
+          issue.labels << label
+        end
 
         it 'does not send notifications for existing labels' do
           opts = { label_ids: [label.id, label2.id] }
@@ -322,7 +331,9 @@ describe Issues::UpdateService, services: true do
       it { expect(issue.tasks?).to eq(true) }
 
       context 'when tasks are marked as completed' do
-        before { update_issue(description: "- [x] Task 1\n- [X] Task 2") }
+        before do
+          update_issue(description: "- [x] Task 1\n- [X] Task 2")
+        end
 
         it 'creates system note about task status change' do
           note1 = find_note('marked the task **Task 1** as completed')
@@ -330,6 +341,9 @@ describe Issues::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -345,6 +359,9 @@ describe Issues::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -354,10 +371,12 @@ describe Issues::UpdateService, services: true do
           update_issue(description: "- [x] Task 1\n- [ ] Task 3\n- [ ] Task 2")
         end
 
-        it 'does not create a system note' do
-          note = find_note('marked the task **Task 2** as incomplete')
+        it 'does not create a system note for the task' do
+          task_note = find_note('marked the task **Task 2** as incomplete')
+          description_notes = find_notes('description')
 
-          expect(note).to be_nil
+          expect(task_note).to be_nil
+          expect(description_notes.length).to eq(2)
         end
       end
 
@@ -368,9 +387,11 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'does not create a system note referencing the position the old item' do
-          note = find_note('marked the task **Two** as incomplete')
+          task_note = find_note('marked the task **Two** as incomplete')
+          description_notes = find_notes('description')
 
-          expect(note).to be_nil
+          expect(task_note).to be_nil
+          expect(description_notes.length).to eq(2)
         end
 
         it 'does not generate a new note at all' do
@@ -400,7 +421,9 @@ describe Issues::UpdateService, services: true do
       context 'when remove_label_ids and label_ids are passed' do
         let(:params) { { label_ids: [], remove_label_ids: [label.id] } }
 
-        before { issue.update_attributes(labels: [label, label3]) }
+        before do
+          issue.update_attributes(labels: [label, label3])
+        end
 
         it 'ignores the label_ids parameter' do
           expect(result.label_ids).not_to be_empty
@@ -414,7 +437,9 @@ describe Issues::UpdateService, services: true do
       context 'when add_label_ids and remove_label_ids are passed' do
         let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
 
-        before { issue.update_attributes(labels: [label]) }
+        before do
+          issue.update_attributes(labels: [label])
+        end
 
         it 'adds the passed labels' do
           expect(result.label_ids).to include(label3.id)

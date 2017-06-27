@@ -479,6 +479,40 @@ describe User, models: true do
     end
   end
 
+  describe '#ensure_user_rights_and_limits' do
+    describe 'with external user' do
+      let(:user) { create(:user, external: true) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: false)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        stub_config_setting(default_can_create_group: true)
+
+        expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
+          .and change { user.projects_limit }.to(current_application_settings.default_projects_limit)
+      end
+    end
+
+    describe 'without external user' do
+      let(:user) { create(:user, external: false) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: true)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        expect { user.update_attributes(external: true) }.to change { user.can_create_group }.to(false)
+          .and change { user.projects_limit }.to(0)
+      end
+    end
+  end
+
   describe 'rss token' do
     it 'ensures an rss token on read' do
       user = create(:user, rss_token: nil)
@@ -906,8 +940,8 @@ describe User, models: true do
 
   describe '.find_by_username!' do
     it 'raises RecordNotFound' do
-      expect { described_class.find_by_username!('JohnDoe') }.
-        to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.find_by_username!('JohnDoe') }
+        .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'is case-insensitive' do
@@ -1591,8 +1625,8 @@ describe User, models: true do
     end
 
     it 'returns the projects when using an ActiveRecord relation' do
-      projects = user.
-        projects_with_reporter_access_limited_to(Project.select(:id))
+      projects = user
+        .projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end
@@ -1652,7 +1686,9 @@ describe User, models: true do
     end
 
     context 'user is member of the top group' do
-      before { group.add_owner(user) }
+      before do
+        group.add_owner(user)
+      end
 
       if Group.supports_nested_groups?
         it 'returns all groups' do
@@ -1670,7 +1706,9 @@ describe User, models: true do
     end
 
     context 'user is member of the first child (internal node), branch 1', :nested_groups do
-      before { nested_group_1.add_owner(user) }
+      before do
+        nested_group_1.add_owner(user)
+      end
 
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [
@@ -1681,7 +1719,9 @@ describe User, models: true do
     end
 
     context 'user is member of the first child (internal node), branch 2', :nested_groups do
-      before { nested_group_2.add_owner(user) }
+      before do
+        nested_group_2.add_owner(user)
+      end
 
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [
@@ -1692,7 +1732,9 @@ describe User, models: true do
     end
 
     context 'user is member of the last child (leaf node)', :nested_groups do
-      before { nested_group_1_1.add_owner(user) }
+      before do
+        nested_group_1_1.add_owner(user)
+      end
 
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [
@@ -1729,18 +1771,11 @@ describe User, models: true do
   describe '#access_level=' do
     let(:user) { build(:user) }
 
-    before do
-      # `auditor?` returns true only when the user is an auditor _and_ the auditor license
-      # add-on is present. We aren't testing this here, so we can assume that the add-on exists.
-      allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
-    end
-
     it 'does nothing for an invalid access level' do
       user.access_level = :invalid_access_level
 
       expect(user.access_level).to eq(:regular)
       expect(user.admin).to be false
-      expect(user.auditor).to be false
     end
 
     it "assigns the 'admin' access level" do
@@ -1748,41 +1783,6 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
-      expect(user.auditor).to be false
-    end
-
-    it "assigns the 'auditor' access level" do
-      user.access_level = :auditor
-
-      expect(user.access_level).to eq(:auditor)
-      expect(user.admin).to be false
-      expect(user.auditor).to be true
-    end
-
-    it "assigns the 'auditor' access level" do
-      user.access_level = :regular
-
-      expect(user.access_level).to eq(:regular)
-      expect(user.admin).to be false
-      expect(user.auditor).to be false
-    end
-
-    it "clears the 'admin' access level when a user is made an auditor" do
-      user.access_level = :admin
-      user.access_level = :auditor
-
-      expect(user.access_level).to eq(:auditor)
-      expect(user.admin).to be false
-      expect(user.auditor).to be true
-    end
-
-    it "clears the 'auditor' access level when a user is made an admin" do
-      user.access_level = :auditor
-      user.access_level = :admin
-
-      expect(user.access_level).to eq(:admin)
-      expect(user.admin).to be true
-      expect(user.auditor).to be false
     end
 
     it "doesn't clear existing access levels when an invalid access level is passed in" do
@@ -1791,7 +1791,6 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
-      expect(user.auditor).to be false
     end
 
     it "accepts string values in addition to symbols" do
@@ -1799,20 +1798,27 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
-      expect(user.auditor).to be false
+    end
+  end
+
+  describe '#full_private_access?' do
+    it 'returns false for regular user' do
+      user = build(:user)
+
+      expect(user.full_private_access?).to be_falsy
+    end
+
+    it 'returns true for admin user' do
+      user = build(:user, :admin)
+
+      expect(user.full_private_access?).to be_truthy
     end
   end
 
   describe 'the GitLab_Auditor_User add-on' do
-    let(:license) { build(:license) }
-
-    before do
-      allow(::License).to receive(:current).and_return(license)
-    end
-
     context 'creating an auditor user' do
       it "does not allow creating an auditor user if the addon isn't enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user, :auditor)).to be_invalid
       end
@@ -1824,13 +1830,13 @@ describe User, models: true do
       end
 
       it "allows creating an auditor user if the addon is enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+        stub_licensed_features(auditor_user: true)
 
         expect(build(:user, :auditor)).to be_valid
       end
 
       it "allows creating a regular user if the addon isn't enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user)).to be_valid
       end
@@ -1838,64 +1844,27 @@ describe User, models: true do
 
     context '#auditor?' do
       it "returns true for an auditor user if the addon is enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+        stub_licensed_features(auditor_user: true)
 
         expect(build(:user, :auditor)).to be_auditor
       end
 
       it "returns false for an auditor user if the addon is not enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user, :auditor)).not_to be_auditor
       end
 
       it "returns false for an auditor user if a license is not present" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user, :auditor)).not_to be_auditor
       end
 
       it "returns false for a non-auditor user even if the addon is present" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+        stub_licensed_features(auditor_user: true)
 
         expect(build(:user)).not_to be_auditor
-      end
-    end
-  end
-
-  describe '.ghost' do
-    it "creates a ghost user if one isn't already present" do
-      ghost = User.ghost
-
-      expect(ghost).to be_ghost
-      expect(ghost).to be_persisted
-    end
-
-    it "does not create a second ghost user if one is already present" do
-      expect do
-        User.ghost
-        User.ghost
-      end.to change { User.count }.by(1)
-      expect(User.ghost).to eq(User.ghost)
-    end
-
-    context "when a regular user exists with the username 'ghost'" do
-      it "creates a ghost user with a non-conflicting username" do
-        create(:user, username: 'ghost')
-        ghost = User.ghost
-
-        expect(ghost).to be_persisted
-        expect(ghost.username).to eq('ghost1')
-      end
-    end
-
-    context "when a regular user exists with the email 'ghost@example.com'" do
-      it "creates a ghost user with a non-conflicting email" do
-        create(:user, email: 'ghost@example.com')
-        ghost = User.ghost
-
-        expect(ghost).to be_persisted
-        expect(ghost.email).to eq('ghost1@example.com')
       end
     end
   end

@@ -1,5 +1,54 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.0 (2017-06-22)
+
+- Per user/group access levels for Protected Tags. !1629
+- Add a user's memberships when logging in through LDAP. !1819
+- Add server-wide Audit Log admin screen. !1852
+- Move pull mirroring to adaptive scheduling. !1853
+- Create a push rule to check the branch name. !1896 (Riccardo Padovani)
+- Add shared_runners_minutes_limit to groups and users API. !1942
+- Compare codeclimate artifacts on the merge request page. !1984
+- Lookup users by email in LDAP if lookup by DN fails during sync. !2003
+- Update mirror_user for project when mirror_user is deleted. !2013 (Athar Hameed)
+- Geo: persist clone url prefix in the database. !2015
+- Geo: prevent Gitlab::Git::Repository::NoRepository from stucking replication. !2115
+- Geo: fixed Dynamic Backoff strategy that was not being used by workers. !2128
+- [Elasticsearch] Improve code search for camel case.
+- Fixed header being over issue boards when in focus mode.
+- Fix: Approvals not reset if changing target branch.
+- Fix bug where files over 2 GB would not be saved in Geo tracking DB.
+- Add primary node clone URL to Geo secondary 'How to work faster with Geo' popover.
+- Fix broken time sync leeway with Geo.
+- Gracefully handle case when Geo secondary does not have the right db_key_base.
+- Use the current node configuration to populate suggested new URL for Geo node.
+- Check if a merge request is approved when merging from API or slash command.
+- Add closed_at field to issue CSV export.
+- Geo - Properly set tracking database connection and cron jobs on secondary nodes.
+- Add push events to Geo event log.
+- fix Rebase being disabled for unapproved MRs.
+- Fix approvers dropdown when creating a merge request from a fork.
+- Add relation between Pipelines.
+- Allow to Trigger Pipeline using CI Job Token.
+- Allow to view Personal pipelines quota.
+- Geo - Use GeoNode#clone_url_prefix for the Geo::RepositorySyncService.
+- Elasticsearch searches through the project description.
+- Fix: /unassign by default unassigns everyone. Implement /reassign command.
+- Speed up checking for approvers remaining.
+
+## 9.2.7 (2017-06-21)
+
+- Geo: fixed Dynamic Backoff strategy that was not being used by workers. !2128
+- fix Rebase being disabled for unapproved MRs.
+
+## 9.2.6 (2017-06-16)
+
+- Geo: backported fix from 9.3 for big repository sync issues. !2000
+- Geo - Properly set tracking database connection and cron jobs on secondary nodes.
+- Fix approvers dropdown when creating a merge request from a fork.
+- Fixed header being over issue boards when in focus mode.
+- Fix bug where files over 2 GB would not be saved in Geo tracking DB.
+
 ## 9.2.5 (2017-06-07)
 
 - No changes.

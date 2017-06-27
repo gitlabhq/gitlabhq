@@ -17,7 +17,7 @@ gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.25.1.1'
 
-gem 'faraday', '~> 0.11.0'
+gem 'faraday', '~> 0.12'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
@@ -87,7 +87,7 @@ gem 'kaminari', '~> 0.17.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 1.0'
+gem 'carrierwave', '~> 1.1'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -131,6 +131,7 @@ gem 'asciidoctor', '~> 1.5.2'
 gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.8'
+gem 'bootstrap_form', '~> 2.7.0'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -166,7 +167,7 @@ gem 'rufus-scheduler', '~> 3.4'
 gem 'httparty', '~> 0.13.3'
 
 # Colored output to console
-gem 'rainbow', '~> 2.1.0'
+gem 'rainbow', '~> 2.2'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -268,7 +269,8 @@ gem 'sentry-raven', '~> 2.4.0'
 gem 'premailer-rails', '~> 1.9.0'
 
 # I18n
-gem 'ruby_parser', '~> 3.8.4', require: false
+gem 'ruby_parser', '~> 3.8', require: false
+gem 'rails-i18n', '~> 4.0.9'
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
@@ -379,10 +381,10 @@ gem 'html2text'
 gem 'ruby-prof', '~> 0.16.2'
 
 # OAuth
-gem 'oauth2', '~> 1.3.0'
+gem 'oauth2', '~> 1.4'
 
 # Soft deletion
-gem 'paranoia', '~> 2.2'
+gem 'paranoia', '~> 2.3.1'
 
 # Health check
 gem 'health_check', '~> 2.6.0'
@@ -392,7 +394,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.8.0'
+gem 'gitaly', '~> 0.9.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

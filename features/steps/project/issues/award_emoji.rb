@@ -34,8 +34,8 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     page.within '.awards' do
       expect do
         page.find('.js-emoji-btn.active').click
-        sleep 0.3
-      end.to change{ page.all(".award-control.js-emoji-btn").size }.from(3).to(2)
+        wait_for_requests
+      end.to change { page.all(".award-control.js-emoji-btn").size }.from(3).to(2)
     end
   end
 

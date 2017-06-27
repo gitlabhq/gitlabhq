@@ -43,7 +43,9 @@ describe UsersController do
       end
 
       context 'when logged in' do
-        before { sign_in(user) }
+        before do
+          sign_in(user)
+        end
 
         it 'renders show' do
           get :show, username: user.username
@@ -62,7 +64,9 @@ describe UsersController do
       end
 
       context 'when logged in' do
-        before { sign_in(user) }
+        before do
+          sign_in(user)
+        end
 
         it 'renders 404' do
           get :show, username: 'nonexistent'

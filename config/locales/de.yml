@@ -62,6 +62,43 @@ de:
     - :month
     - :year
   datetime:
+    # used in a custom scope that has been created to fix https://gitlab.com/gitlab-org/gitlab-ce/issues/32747
+    time_ago_in_words:
+      half_a_minute: vor einer halben Minute
+      less_than_x_seconds:
+        one: vor weniger als einer Sekunde
+        other: "vor weniger als %{count} Sekunden"
+      x_seconds:
+        one: vor einer Sekunde
+        other: "vor %{count} Sekunden"
+      less_than_x_minutes:
+        one: vor weniger als einer Minute
+        other: vor weniger als %{count} Minuten
+      x_minutes:
+        one: vor einer Minute
+        other: "vor %{count} Minuten"
+      about_x_hours:
+        one: vor etwa einer Stunde
+        other: "vor etwa %{count} Stunden"
+      x_days:
+        one: vor einem Tag
+        other: "vor %{count} Tagen"
+      about_x_months:
+        one: vor etwa einem Monat
+        other: "vor etwa %{count} Monaten"
+      x_months:
+        one: vor einem Monat
+        other: "vor %{count} Monaten"
+      about_x_years:
+        one: vor etwa einem Jahr
+        other: "vor etwa %{count} Jahren"
+      over_x_years:
+        one: vor mehr als einem Jahr
+        other: "vor mehr als %{count} Jahren"
+      almost_x_years:
+        one: vor fast einem Jahr
+        other: "vor fast %{count} Jahren"
+    # Used in distance_of_time_in_words(), distance_of_time_in_words_to_now(), time_ago_in_words()
     distance_in_words:
       about_x_hours:
         one: etwa eine Stunde

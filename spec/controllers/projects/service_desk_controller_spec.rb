@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Projects::ServiceDeskController do
-  let(:project) { create(:project_empty_repo, :private) }
+  let(:project) { create(:project_empty_repo, :private, service_desk_enabled: true) }
   let(:user)    { create(:user) }
 
   before do
-    allow_any_instance_of(License).to receive(:feature_available?).and_call_original
-    allow_any_instance_of(License).to receive(:feature_available?).with(:service_desk) { true }
+    allow(License).to receive(:feature_available?).and_call_original
+    allow(License).to receive(:feature_available?).with(:service_desk) { true }
     allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
-    project.update(service_desk_enabled: true)
+
     project.add_master(user)
     sign_in(user)
   end
@@ -41,7 +41,7 @@ describe Projects::ServiceDeskController do
 
   describe 'PUT service desk properties' do
     it 'toggles services desk incoming email' do
-      project.update(service_desk_enabled: false)
+      project.update!(service_desk_enabled: false)
 
       put :update, namespace_id: project.namespace.to_param, project_id: project, service_desk_enabled: true, format: :json
 

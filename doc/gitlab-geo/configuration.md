@@ -129,7 +129,23 @@ sensitive data in the database. Any secondary node must have the
 
 1. Save and close the file.
 
-### Step 4. Enabling the secondary GitLab node
+### Step 4. Regenerating the authorized keys in the secondary node
+
+Regenerate the keys for `~/.ssh/authorized_keys`
+(HTTPS clone will still work without this extra step).
+
+On the **secondary** node where the database is [already replicated](./database.md),
+run:
+
+```
+# For Omnibus installations
+gitlab-rake gitlab:shell:setup
+```
+
+This will enable `git` operations to authorize against your existing users.
+New users and SSH keys updated after this step, will be replicated automatically.
+
+### Step 5. Enabling the secondary GitLab node
 
 1. SSH into the **secondary** node and login as root:
 
@@ -165,9 +181,9 @@ The two most obvious issues that replication can have here are:
        [Troubleshooting](#troubleshooting) section)
      - Instance is firewalled (check your firewall rules)
 
-### Step 5. Replicating the repositories data
+### Step 6. Replicating the repositories data
 
-Getting a new secondary Geo node up and running, will also require the
+Lastly, getting a new secondary Geo node up and running, will also require the
 repositories data to be synced.
 
 With GitLab **9.0** the syncing process starts automatically from the
@@ -221,22 +237,6 @@ primary node, so syncing the repositories beforehand will buy you some time.
 While active repositories will be eventually replicated, if you don't rsync,
 the files, any archived/inactive repositories will not get in the secondary node
 as Geo doesn't run any routine task to look for missing repositories.
-
-### Step 6. Regenerating the authorized keys in the secondary node
-
-The final step is to regenerate the keys for `~/.ssh/authorized_keys`
-(HTTPS clone will still work without this extra step).
-
-On the **secondary** node where the database is [already replicated](./database.md),
-run:
-
-```
-# For Omnibus installations
-gitlab-rake gitlab:shell:setup
-```
-
-This will enable `git` operations to authorize against your existing users.
-New users and SSH keys updated after this step, will be replicated automatically.
 
 ## Next steps
 

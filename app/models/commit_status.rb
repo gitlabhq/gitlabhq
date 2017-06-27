@@ -15,7 +15,7 @@ class CommitStatus < ActiveRecord::Base
 
   validates :pipeline, presence: true, unless: :importing?
 
-  validates :name, presence: true
+  validates :name, presence: true, unless: :importing?
 
   alias_attribute :author, :user
 
@@ -112,7 +112,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def group_name
-    name.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
+    name.to_s.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
   end
 
   def failed_but_allowed?
@@ -129,6 +129,11 @@ class CommitStatus < ActiveRecord::Base
 
   # To be overriden when inherrited from
   def retryable?
+    false
+  end
+
+  # To be overriden when inherrited from
+  def cancelable?
     false
   end
 
@@ -151,7 +156,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def sortable_name
-    name.split(/(\d+)/).map do |v|
+    name.to_s.split(/(\d+)/).map do |v|
       v =~ /\d+/ ? v.to_i : v
     end
   end

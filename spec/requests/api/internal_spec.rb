@@ -15,21 +15,43 @@ describe API::Internal do
     end
   end
 
-  describe "GET /internal/broadcast_message" do
-    context "broadcast message exists" do
-      let!(:broadcast_message) { create(:broadcast_message, starts_at: Time.now.yesterday, ends_at: Time.now.tomorrow ) }
+  describe 'GET /internal/broadcast_message' do
+    context 'broadcast message exists' do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
-      it do
-        get api("/internal/broadcast_message"), secret_token: secret_token
+      it 'returns one broadcast message'  do
+        get api('/internal/broadcast_message'), secret_token: secret_token
 
         expect(response).to have_http_status(200)
-        expect(json_response["message"]).to eq(broadcast_message.message)
+        expect(json_response['message']).to eq(broadcast_message.message)
       end
     end
 
-    context "broadcast message doesn't exist" do
-      it do
-        get api("/internal/broadcast_message"), secret_token: secret_token
+    context 'broadcast message does not exist' do
+      it 'returns nothing'  do
+        get api('/internal/broadcast_message'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+  end
+
+  describe 'GET /internal/broadcast_messages' do
+    context 'broadcast message(s) exist' do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
+
+      it 'returns active broadcast message(s)' do
+        get api('/internal/broadcast_messages'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response[0]['message']).to eq(broadcast_message.message)
+      end
+    end
+
+    context 'broadcast message does not exist' do
+      it 'returns nothing' do
+        get api('/internal/broadcast_messages'), secret_token: secret_token
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_empty
@@ -347,8 +369,6 @@ describe API::Internal do
     end
 
     context "archived project" do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
-
       before do
         project.team << [user, :developer]
         project.archive!
@@ -469,6 +489,42 @@ describe API::Internal do
 
         expect(response.status).to eq(200)
         expect(json_response['status']).to be_truthy
+      end
+    end
+
+    context 'the project path was changed' do
+      let!(:old_path_to_repo) { project.repository.path_to_repo }
+      let!(:old_full_path) { project.full_path }
+      let(:project_moved_message) do
+        <<-MSG.strip_heredoc
+          Project '#{old_full_path}' was moved to '#{project.full_path}'.
+
+          Please update your Git remote and try again:
+
+            git remote set-url origin #{project.ssh_url_to_repo}
+        MSG
+      end
+
+      before do
+        project.team << [user, :developer]
+        project.path = 'new_path'
+        project.save!
+      end
+
+      it 'rejects the push' do
+        push_with_path(key, old_path_to_repo)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq(project_moved_message)
+      end
+
+      it 'rejects the SSH pull' do
+        pull_with_path(key, old_path_to_repo)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq(project_moved_message)
       end
     end
   end
@@ -613,12 +669,36 @@ describe API::Internal do
     )
   end
 
+  def pull_with_path(key, path_to_repo, protocol = 'ssh')
+    post(
+      api("/internal/allowed"),
+      key_id: key.id,
+      project: path_to_repo,
+      action: 'git-upload-pack',
+      secret_token: secret_token,
+      protocol: protocol
+    )
+  end
+
   def push(key, project, protocol = 'ssh', env: nil)
     post(
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
       project: project.repository.path_to_repo,
+      action: 'git-receive-pack',
+      secret_token: secret_token,
+      protocol: protocol,
+      env: env
+    )
+  end
+
+  def push_with_path(key, path_to_repo, protocol = 'ssh', env: nil)
+    post(
+      api("/internal/allowed"),
+      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
+      key_id: key.id,
+      project: path_to_repo,
       action: 'git-receive-pack',
       secret_token: secret_token,
       protocol: protocol,

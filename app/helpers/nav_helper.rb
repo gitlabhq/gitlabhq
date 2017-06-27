@@ -13,7 +13,7 @@ module NavHelper
       else
         "page-gutter right-sidebar-expanded"
       end
-    elsif current_path?('builds#show')
+    elsif current_path?('jobs#show')
       "page-gutter build-sidebar right-sidebar-expanded"
     elsif current_path?('wikis#show') ||
         current_path?('wikis#edit') ||

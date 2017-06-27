@@ -16,7 +16,7 @@ describe 'New/edit issue', :feature, :js do
   before do
     project.team << [user, :master]
     project.team << [user2, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'new issue' do
@@ -228,6 +228,13 @@ describe 'New/edit issue', :feature, :js do
       expect(page.all('.dropdown-menu-user a.is-active')[0].first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
       expect(page.all('.dropdown-menu-user a.is-active')[1].first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
     end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
+    end
   end
 
   context 'edit issue' do
@@ -275,6 +282,13 @@ describe 'New/edit issue', :feature, :js do
           expect(page).to have_content label2.title
         end
       end
+    end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
     end
   end
 

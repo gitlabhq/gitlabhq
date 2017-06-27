@@ -16,7 +16,9 @@ describe LdapGroupResetService, services: true do
 
   describe '#execute' do
     context 'initiated by ldap user' do
-      before { LdapGroupResetService.new.execute(group, ldap_user) }
+      before do
+        LdapGroupResetService.new.execute(group, ldap_user)
+      end
 
       it { expect(member_access(ldap_user)).to eq Gitlab::Access::OWNER }
       it { expect(member_access(ldap_user_2)).to eq Gitlab::Access::GUEST }
@@ -26,7 +28,9 @@ describe LdapGroupResetService, services: true do
     end
 
     context 'initiated by regular user' do
-      before { LdapGroupResetService.new.execute(group, user) }
+      before do
+        LdapGroupResetService.new.execute(group, user)
+      end
 
       it { expect(member_access(ldap_user)).to eq Gitlab::Access::GUEST }
       it { expect(member_access(ldap_user_2)).to eq Gitlab::Access::GUEST }
