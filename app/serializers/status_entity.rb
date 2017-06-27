@@ -8,7 +8,12 @@ class StatusEntity < Grape::Entity
 
   expose :favicon do |status|
     dir = 'ci_favicons'
-    dir = File.join(dir, 'dev') if Rails.env.development?
+
+    if ENV['CANARY']
+      dir = File.join(dir, 'canary')
+    elsif Rails.env.development?
+      dir = File.join(dir, 'dev')
+    end
 
     ActionController::Base.helpers.image_path(File.join(dir, "#{status.favicon}.ico"))
   end
