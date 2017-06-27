@@ -23,6 +23,7 @@
       // Object.assign would be useful here, but it blows up Phantom.js in tests
       window.gl.mrWidgetData.is_geo_secondary_node = '#{Gitlab::Geo.secondary?}' === 'true';
       window.gl.mrWidgetData.geo_secondary_help_path = '#{help_page_path("/gitlab-geo/configuration.md")}';
+      window.gl.mrWidgetData.enable_squash_before_merge = '#{@merge_request.project.feature_available?(:merge_request_squash)}' === 'true';
       window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
 
     #js-vue-mr-widget.mr-widget

@@ -90,4 +90,41 @@ describe MergeRequest, models: true do
       expect(subject.squash_in_progress?).to be_falsey
     end
   end
+
+  describe '#squash?' do
+    let(:merge_request) { build(:merge_request, squash: squash) }
+    subject { merge_request.squash? }
+
+    context 'unlicensed' do
+      before do
+        stub_licensed_features(merge_request_squash: false)
+      end
+
+      context 'disabled in database' do
+        let(:squash) { false }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'enabled in database' do
+        let(:squash) { true }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'licensed' do
+      context 'disabled in database' do
+        let(:squash) { false }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'licensed' do
+        let(:squash) { true }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
 end
