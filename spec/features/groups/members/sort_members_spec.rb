@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Members > Sorting', feature: true do
+feature 'Groups > Members > Sort members', feature: true do
   let(:owner)     { create(:user, name: 'John Doe') }
   let(:developer) { create(:user, name: 'Mary Jane', last_sign_in_at: 5.days.ago) }
   let(:group)     { create(:group) }
