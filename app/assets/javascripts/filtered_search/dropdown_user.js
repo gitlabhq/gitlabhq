@@ -2,6 +2,7 @@
 
 import AjaxFilter from '~/droplab/plugins/ajax_filter';
 import './filtered_search_dropdown';
+import { addClassIfElementExists } from '../lib/utils/dom_utils';
 
 class DropdownUser extends gl.FilteredSearchDropdown {
   constructor(droplab, dropdown, input, tokenKeys, filter) {
@@ -32,11 +33,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
   }
 
   hideCurrentUser() {
-    const currentUserItem = this.dropdown.querySelector('.js-current-user');
-
-    if (currentUserItem) {
-      currentUserItem.classList.add('hidden');
-    }
+    addClassIfElementExists(this.dropdown.querySelector('.js-current-user'), 'hidden');
   }
 
   itemClicked(e) {
