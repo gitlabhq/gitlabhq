@@ -45,7 +45,7 @@ module API
         optional :protected, type: String, desc: 'Whether the variable is protected'
       end
       post ':id/variables' do
-        variable = user_project.variables.create(declared(params, include_parent_namespaces: false).to_h)
+        variable = user_project.variables.create(declared_params(include_missing: false))
 
         if variable.valid?
           present variable, with: Entities::Variable
