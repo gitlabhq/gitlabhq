@@ -371,12 +371,12 @@ describe Projects::MergeRequestsController do
     context 'approvals pending' do
       let(:project) { create(:project, approvals_before_merge: 1) }
 
-      it 'returns 404' do
-        expect_rebase_worker.never
+      it 'returns 200' do
+        expect_rebase_worker
 
         post_rebase
 
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(200)
       end
     end
 
