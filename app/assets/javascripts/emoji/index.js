@@ -55,4 +55,5 @@ export {
   getUnicodeSupportMap,
   isEmojiNameValid,
   isEmojiUnicodeSupported,
+  validEmojiNames,
 };
