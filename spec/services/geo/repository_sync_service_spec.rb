@@ -16,7 +16,7 @@ describe Geo::RepositorySyncService, services: true do
   end
 
   describe '#execute' do
-    context 'when project have never been synced' do
+    context 'when project has never been synced' do
       let(:project) { create(:project_empty_repo) }
 
       it 'fetches project repositories' do
@@ -55,7 +55,7 @@ describe Geo::RepositorySyncService, services: true do
       end
 
       context 'tracking database' do
-        it 'create a new registry' do
+        it 'creates a new registry' do
           expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
         end
 
@@ -97,7 +97,7 @@ describe Geo::RepositorySyncService, services: true do
       end
     end
 
-    context 'when project have been synced' do
+    context 'when project has been synced' do
       let(:project) { create(:project) }
       let(:last_repository_synced_at) { 5.days.ago }
       let(:last_wiki_synced_at) { 4.days.ago }
