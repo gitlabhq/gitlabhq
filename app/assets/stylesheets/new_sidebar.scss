@@ -55,14 +55,14 @@ $new-sidebar-width: 220px;
 
       &:hover {
         color: $gl-text-color;
-        font-weight: 500;
+        background-color: $border-color;
       }
     }
 
     &.active {
       > a {
         color: $purple-650;
-        font-weight: 500;
+        font-weight: 600;
       }
     }
   }
@@ -80,7 +80,7 @@ $new-sidebar-width: 220px;
       > a {
         background-color: $purple-600;
         color: $white-light;
-        font-weight: 500;
+        font-weight: 600;
       }
 
       .badge {
@@ -96,11 +96,11 @@ $new-sidebar-width: 220px;
     }
 
     &:not(.active) > a:hover {
-      background-color: $white-normal;
+      background-color: $border-color;
 
       .badge {
         transition: background-color 100ms linear;
-        background-color: darken($border-color, 3%);
+        background-color: $gray-normal;
       }
     }
   }
