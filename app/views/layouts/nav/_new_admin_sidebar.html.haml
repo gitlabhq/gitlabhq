@@ -1,5 +1,4 @@
 .nav-sidebar
-  -# = render 'layouts/nav/admin_settings'
   %ul.sidebar-top-level-items
     = nav_link(controller: %w(dashboard admin projects users groups builds runners cohorts), html_options: {class: 'home'}) do
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
