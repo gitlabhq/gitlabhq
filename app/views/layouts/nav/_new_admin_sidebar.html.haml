@@ -1,5 +1,9 @@
 .nav-sidebar
   -# = render 'layouts/nav/admin_settings'
+  .context-header
+    .avatar-container.s40.settings-avatar
+      = icon('wrench')
+    .project-title Admin Area
   %ul.sidebar-top-level-items
     = nav_link(controller: %w(dashboard admin projects users groups builds runners cohorts), html_options: {class: 'home'}) do
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do

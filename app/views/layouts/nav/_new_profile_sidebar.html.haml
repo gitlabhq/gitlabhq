@@ -1,4 +1,8 @@
 .nav-sidebar
+  .context-header
+    .avatar-container.s40.settings-avatar
+      = icon('wrench')
+    .project-title Settings
   %ul.sidebar-top-level-items
     = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
       = link_to profile_path, title: 'Profile Settings' do
