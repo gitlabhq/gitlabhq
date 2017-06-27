@@ -47,7 +47,8 @@ export default {
 
   computed: {
     isSubmitButtonDisabled() {
-      return this.pendingReferences.length === 0 || this.isSubmitting;
+      return (this.inputValue.length === 0 && this.pendingReferences.length === 0)
+        || this.isSubmitting;
     },
   },
 
