@@ -1,6 +1,7 @@
-%div{ class: "#{('page-with-sidebar' if show_new_nav? && defined?(@project))} #{page_gutter_class}" }
-  - if show_new_nav? && defined?(@project)
-    = render "layouts/nav/new_sidebar"
+%div{ class: "#{('page-with-sidebar' if show_new_nav?)} #{page_gutter_class}" }
+  - if show_new_nav?
+    - if defined?(nav) && nav
+      = render "layouts/nav/#{nav}"
   - else
     - if defined?(nav) && nav
       .layout-nav
