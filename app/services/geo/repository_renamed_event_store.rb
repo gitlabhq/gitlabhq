@@ -24,7 +24,7 @@ module Geo
     private
 
     def build_event
-      Geo::RepositoryDeletedEvent.new(
+      Geo::RepositoryRenamedEvent.new(
         project: project,
         repository_storage_name: project.repository.storage,
         repository_storage_path: project.repository_storage_path,
