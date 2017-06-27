@@ -214,6 +214,22 @@ describe Geo::RepositorySyncService, services: true do
         subject.execute
       end
 
+      context 'exceptions' do
+        it 'rescues when Gitlab::Shell::Error is raised' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.git/) { raise Gitlab::Shell::Error }
+
+          expect { subject.execute }.not_to raise_error
+        end
+
+        it 'rescues exception and fires after_create hook when Gitlab::Git::Repository::NoRepository is raised' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.git/) { raise Gitlab::Git::Repository::NoRepository }
+
+          expect_any_instance_of(Repository).to receive(:after_create)
+
+          expect { subject.execute }.not_to raise_error
+        end
+      end
+
       context 'tracking database' do
         it 'updates last_repository_successful_sync_at' do
           subject.execute
@@ -266,6 +282,20 @@ describe Geo::RepositorySyncService, services: true do
         subject.execute
       end
 
+      context 'exceptions' do
+        it 'rescues exception when Gitlab::Shell::Error is raised' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.wiki\.git/) { raise Gitlab::Shell::Error }
+
+          expect { subject.execute }.not_to raise_error
+        end
+
+        it 'rescues exception when Gitlab::Git::Repository::NoRepository is raised' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.wiki\.git/) { raise Gitlab::Git::Repository::NoRepository }
+
+          expect { subject.execute }.not_to raise_error
+        end
+      end
+
       context 'tracking database' do
         it 'updates last_wiki_successful_sync_at' do
           subject.execute
@@ -292,27 +322,6 @@ describe Geo::RepositorySyncService, services: true do
 
           expect(registry.resync_wiki).to be false
         end
-      end
-    end
-
-    context 'when Gitlab::Shell::Error is raised' do
-      let(:project) { create(:empty_project) }
-
-      it 'rescues exception' do
-        expect(subject).to receive(:fetch_project_repository).and_raise(Gitlab::Shell::Error)
-
-        expect { subject.execute }.not_to raise_error
-      end
-    end
-
-    context 'when Gitlab::Git::Repository::NoRepository is raised' do
-      let(:project) { create(:empty_project) }
-
-      it 'rescues exception and fires after_create hook' do
-        expect(subject).to receive(:fetch_project_repository).and_raise(Gitlab::Git::Repository::NoRepository)
-        expect_any_instance_of(Repository).to receive(:after_create)
-
-        expect { subject.execute }.not_to raise_error
       end
     end
   end
