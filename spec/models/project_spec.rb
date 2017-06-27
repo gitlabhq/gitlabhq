@@ -1569,6 +1569,37 @@ describe Project, models: true do
     end
   end
 
+  describe '#ensure_repository' do
+    let(:project) { create(:project, :repository) }
+    let(:shell) { Gitlab::Shell.new }
+
+    before do
+      allow(project).to receive(:gitlab_shell).and_return(shell)
+    end
+
+    it 'creates the repository if it not exist' do
+      allow(project).to receive(:repository_exists?)
+        .and_return(false)
+
+      allow(shell).to receive(:add_repository)
+        .with(project.repository_storage_path, project.path_with_namespace)
+        .and_return(true)
+
+      expect(project).to receive(:create_repository)
+
+      project.ensure_repository
+    end
+
+    it 'does not create the repository if it exists' do
+      allow(project).to receive(:repository_exists?)
+        .and_return(true)
+
+      expect(project).not_to receive(:create_repository)
+
+      project.ensure_repository
+    end
+  end
+
   describe 'handling import URL' do
     context 'when project is a mirror' do
       it 'returns the full URL' do

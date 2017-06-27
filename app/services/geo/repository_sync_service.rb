@@ -65,7 +65,7 @@ module Geo
       finished_at = nil
 
       begin
-        project.create_repository unless project.repository_exists?
+        project.ensure_repository
         project.repository.fetch_geo_mirror(ssh_url_to_repo)
 
         finished_at = DateTime.now
