@@ -1,4 +1,4 @@
 ---
 title: Fix head pipeline stored in merge request for external pipelines
-merge_request:
+merge_request: 12478
 author:
