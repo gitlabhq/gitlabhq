@@ -5,7 +5,10 @@
 $new-sidebar-width: 220px;
 
 .page-with-sidebar {
-  padding-left: $new-sidebar-width;
+
+  @media (min-width: $screen-sm-min) {
+    padding-left: $new-sidebar-width;
+  }
 
   .right-sidebar {
     position: fixed;
@@ -15,6 +18,7 @@ $new-sidebar-width: 220px;
 
 .nav-sidebar {
   position: fixed;
+  z-index: 400;
   width: $new-sidebar-width;
   top: 50px;
   bottom: 0;
