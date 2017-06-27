@@ -39,11 +39,9 @@ module Geo
     end
 
     def sync_repository?
-      return true if registry.resync_repository?
-      return true if registry.last_repository_successful_sync_at.nil?
-      return true if registry.last_repository_synced_at.nil?
-
-      false
+      registry.resync_repository? ||
+        registry.last_repository_successful_sync_at.nil? ||
+        registry.last_repository_synced_at.nil?
     end
 
     def sync_wiki_repository
@@ -54,11 +52,9 @@ module Geo
     end
 
     def sync_wiki?
-      return true if registry.resync_wiki?
-      return true if registry.last_wiki_successful_sync_at.nil?
-      return true if registry.last_wiki_synced_at.nil?
-
-      false
+      registry.resync_wiki? ||
+        registry.last_wiki_successful_sync_at.nil? ||
+        registry.last_wiki_synced_at.nil?
     end
 
     def fetch_project_repository
