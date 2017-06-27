@@ -5,14 +5,38 @@
 $new-sidebar-width: 220px;
 
 .page-with-new-sidebar {
-
   @media (min-width: $screen-sm-min) {
     padding-left: $new-sidebar-width;
   }
 
+  // Override position: absolute
   .right-sidebar {
     position: fixed;
     height: 100%;
+  }
+}
+
+.context-header {
+  background-color: $gray-normal;
+  border-bottom: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+
+  .avatar-container {
+    flex: 0 0 40px;
+  }
+}
+
+.settings-avatar {
+  background-color: $white-light;
+
+  .fa-wrench {
+    font-size: 20px;
+    width: 100%;
+    color: $gl-text-color-light;
+    text-align: center;
+    align-self: center;
   }
 }
 
