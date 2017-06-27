@@ -1,7 +1,5 @@
 import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
-import getUnicodeSupportMap from './unicode_support_map';
-import isEmojiUnicodeSupported from './is_emoji_unicode_supported';
 
 const validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
 
@@ -52,8 +50,6 @@ export {
   filterEmojiNames,
   filterEmojiNamesByAlias,
   getEmojiByCategory,
-  getUnicodeSupportMap,
   isEmojiNameValid,
-  isEmojiUnicodeSupported,
   validEmojiNames,
 };

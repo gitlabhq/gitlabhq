@@ -5,7 +5,7 @@ import isEmojiUnicodeSupported, {
   isSkinToneComboEmoji,
   isHorceRacingSkinToneComboEmoji,
   isPersonZwjEmoji,
-} from '~/emoji/is_emoji_unicode_supported';
+} from '~/emoji/support/is_emoji_unicode_supported';
 
 const emptySupportMap = {
   personZwj: false,

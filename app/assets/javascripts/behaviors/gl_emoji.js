@@ -1,9 +1,8 @@
 import installCustomElements from 'document-register-element';
-import { emojiMap, normalizeEmojiName, isEmojiUnicodeSupported, getUnicodeSupportMap } from '../emoji';
+import { emojiMap, normalizeEmojiName } from '../emoji';
+import isEmojiUnicodeSupported from '../emoji/support';
 
 installCustomElements(window);
-
-const generatedUnicodeSupportMap = getUnicodeSupportMap();
 
 function emojiImageTag(name, src) {
   return `<img class="emoji" title=":${name}:" alt=":${name}:" src="${src}" width="20" height="20" align="absmiddle" />`;
@@ -82,7 +81,7 @@ function installGlEmojiElement() {
     if (
       emojiUnicode &&
       isEmojiUnicode &&
-      !isEmojiUnicodeSupported(generatedUnicodeSupportMap, emojiUnicode, unicodeVersion)
+      !isEmojiUnicodeSupported(emojiUnicode, unicodeVersion)
     ) {
       // CSS sprite fallback takes precedence over image fallback
       if (hasCssSpriteFalback) {
@@ -106,5 +105,4 @@ function installGlEmojiElement() {
 export {
   installGlEmojiElement,
   glEmojiTag,
-  emojiImageTag,
 };

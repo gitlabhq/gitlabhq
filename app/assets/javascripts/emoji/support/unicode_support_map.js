@@ -1,4 +1,4 @@
-import AccessorUtilities from '../lib/utils/accessor';
+import AccessorUtilities from '../../lib/utils/accessor';
 
 const unicodeSupportTestMap = {
   // man, student (emojione does not have any of these yet), http://emojipedia.org/emoji-zwj-sequences/
