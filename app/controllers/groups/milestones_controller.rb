@@ -15,7 +15,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def new
-    @milestone = GroupMilestone.new
+    @milestone = Milestone.new
   end
 
   def create
@@ -47,7 +47,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestone_params
-    params.require(:group_milestone).permit(:title, :description, :start_date, :due_date, :state_event)
+    params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
   end
 
   def milestone_path(title)
@@ -55,10 +55,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestones
-    @group_milestones = GroupMilestonesFinder.new(group, params).execute
-    @project_milestones = ProjectMilestonesFinder.new(@projects, params).execute
-
-    @group_milestones + @project_milestones
+    @milestones = MilestonesFinder.new(@projects, group, params).execute
   end
 
   def milestone
