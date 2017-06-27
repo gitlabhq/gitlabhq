@@ -108,8 +108,7 @@ describe Geo::RepositorySyncService, services: true do
           last_repository_synced_at: last_repository_synced_at,
           last_repository_successful_sync_at: last_repository_synced_at,
           last_wiki_synced_at: last_wiki_synced_at,
-          last_wiki_successful_sync_at: last_wiki_synced_at
-        )
+          last_wiki_successful_sync_at: last_wiki_synced_at)
       end
 
       it 'does not fetch project repositories' do
@@ -186,8 +185,7 @@ describe Geo::RepositorySyncService, services: true do
         create(:geo_project_registry, :synced, :repository_dirty,
           project: project,
           last_wiki_synced_at: last_wiki_synced_at,
-          last_wiki_successful_sync_at: last_wiki_synced_at
-        )
+          last_wiki_successful_sync_at: last_wiki_synced_at)
       end
 
       it 'fetches project repository' do
@@ -249,8 +247,7 @@ describe Geo::RepositorySyncService, services: true do
         create(:geo_project_registry, :synced, :wiki_dirty,
           project: project,
           last_repository_synced_at: last_repository_synced_at,
-          last_repository_successful_sync_at: last_repository_synced_at
-        )
+          last_repository_successful_sync_at: last_repository_synced_at)
       end
 
       it 'fetches wiki repository' do
