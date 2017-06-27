@@ -42,6 +42,9 @@ export default {
   },
 
   computed: {
+    inputPlaceholder() {
+      return 'Paste issue link or <#issue id>';
+    },
     isSubmitButtonDisabled() {
       return (this.inputValue.length === 0 && this.pendingReferences.length === 0)
         || this.isSubmitting;
@@ -126,7 +129,7 @@ export default {
             type="text"
             class="js-add-issuable-form-input add-issuable-form-input"
             :value="inputValue"
-            placeholder="Search issues..."
+            :placeholder="inputPlaceholder"
             @input="onInput"
             @focus="onFocus"
             @blur="onBlur" />
