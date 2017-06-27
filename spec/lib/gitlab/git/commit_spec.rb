@@ -308,26 +308,6 @@ describe Gitlab::Git::Commit, seed_helper: true do
         it { is_expected.to include(SeedRepo::FirstCommit::ID) }
         it { is_expected.not_to include(SeedRepo::LastCommit::ID) }
       end
-
-      context 'contains feature + max_count' do
-        subject do
-          commits = Gitlab::Git::Commit.find_all(
-            repository,
-            contains: 'feature',
-            max_count: 7
-          )
-
-          commits.map { |c| c.id }
-        end
-
-        it 'has 7 elements' do
-          expect(subject.size).to eq(7)
-        end
-
-        it { is_expected.not_to include(SeedRepo::Commit::PARENT_ID) }
-        it { is_expected.not_to include(SeedRepo::Commit::ID) }
-        it { is_expected.to include(SeedRepo::BigCommit::ID) }
-      end
     end
   end
 
