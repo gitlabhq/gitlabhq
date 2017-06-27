@@ -7,15 +7,18 @@ class RenameDuplicatedVariableKey < ActiveRecord::Migration
 
   def up
     execute(<<~SQL)
-      UPDATE ci_variables SET #{key} = CONCAT(#{key}, #{underscore}, id)
+      UPDATE ci_variables
+        SET #{key} = CONCAT(#{key}, #{underscore}, id)
         WHERE id IN (
-          SELECT * FROM ( -- MySQL requires an extra layer
-            SELECT dup.id FROM ci_variables dup
-              INNER JOIN (SELECT max(id) AS id, #{key}, project_id
-                            FROM ci_variables tmp
-                            GROUP BY #{key}, project_id) var
+          SELECT *
+            FROM ( -- MySQL requires an extra layer
+              SELECT dup.id
+                FROM ci_variables dup
+                INNER JOIN (SELECT max(id) AS id, #{key}, project_id
+                              FROM ci_variables tmp
+                              GROUP BY #{key}, project_id) var
                 USING (#{key}, project_id) where dup.id <> var.id
-          ) dummy
+            ) dummy
         )
     SQL
   end
