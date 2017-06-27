@@ -244,4 +244,12 @@
       line-height: 36px;
     }
   }
+
+  .languages-chart-container {
+    height: 400px;
+
+    @media (max-width: $screen-xs-max){
+      height: 300px;
+    }
+  }
 }
