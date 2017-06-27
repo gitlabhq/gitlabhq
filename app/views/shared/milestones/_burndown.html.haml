@@ -1,7 +1,6 @@
 - milestone = local_assigns[:milestone]
 - project = local_assigns[:project]
 - burndown = local_assigns[:burndown]
-- can_generate_chart = burndown&.valid? && !burndown&.empty?
 - warning = data_warning_for(burndown)
 
 - content_for :page_specific_javascripts do
@@ -10,7 +9,7 @@
 
 = warning
 
-- if can_generate_chart
+- if can_generate_chart?(burndown)
   .burndown-header
     %h3
       Burndown chart
@@ -21,7 +20,7 @@
           Issue weight
   .burndown-chart{ data: { start_date: burndown.start_date.strftime("%Y-%m-%d"), due_date: burndown.due_date.strftime("%Y-%m-%d"), chart_data: burndown.to_json } }
 
-- elsif can?(current_user, :admin_milestone, @project) && cookies['hide_burndown_message'].nil? && warning.nil?
+- elsif show_burndown_placeholder?(warning)
   .burndown-hint.content-block.container-fluid
     = icon("times", class: "dismiss-icon")
     .row

@@ -45,7 +45,9 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def show
-    @burndown = Burndown.new(@milestone)
+    if @project.feature_available?(:burndown_charts, current_user)
+      @burndown = Burndown.new(@milestone)
+    end
   end
 
   def create
