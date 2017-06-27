@@ -31,7 +31,9 @@ feature 'Setup Jira service', :feature, :js do
 
   describe 'user sets and activates Jira Service' do
     context 'when Jira connection test succeeds' do
-      before { stub_project_url }
+      before do
+        stub_project_url
+      end
 
       it 'activates the JIRA service' do
         click_link('JIRA')
@@ -45,7 +47,9 @@ feature 'Setup Jira service', :feature, :js do
     end
 
     context 'when Jira connection test fails' do
-      before { stub_project_url.to_return(status: 401) }
+      before do
+        stub_project_url.to_return(status: 401)
+      end
 
       it 'shows errors when some required fields are not filled in' do
         click_link('JIRA')
