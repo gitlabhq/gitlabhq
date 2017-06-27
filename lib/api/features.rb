@@ -42,6 +42,7 @@ module API
         requires :value, type: String, desc: '`true` or `false` to enable/disable, an integer for percentage of time'
         optional :flipper_group, type: String, desc: 'A Flipper group name'
         optional :user, type: String, desc: 'A GitLab username'
+        mutually_exclusive :flipper_group, :user
       end
       post ':name' do
         feature = Feature.get(params[:name])
