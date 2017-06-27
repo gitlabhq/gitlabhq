@@ -31,6 +31,15 @@ Keep in mind that:
   clone/pull from repositories (HTTP(S)/SSH).
 - Primary talks to secondaries to notify for changes (API).
 
+## Use-cases
+
+- Can be used for cloning and fetching projects, in addition
+to reading any data
+- Overcomes slow connection between distant offices, saving time by
+improving speed for distributed teams
+- Helps reducing the loading time for automated tasks,
+custom integrations and internal workflows
+
 ## Architecture
 
 The following diagram illustrates the underlying architecture of GitLab Geo:
