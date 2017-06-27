@@ -52,8 +52,8 @@ module AccessMatchersForController
 
   matcher :be_allowed_for do |role|
     match do |action|
-      user = emulate_user(role, @membership)
-      action.call(user)
+      emulate_user(role, @membership)
+      action.call
 
       EXPECTED_STATUS_CODE_ALLOWED.include?(response.status)
     end
@@ -68,8 +68,8 @@ module AccessMatchersForController
 
   matcher :be_denied_for do |role|
     match do |action|
-      user = emulate_user(role, @membership)
-      action.call(user)
+      emulate_user(role, @membership)
+      action.call
 
       EXPECTED_STATUS_CODE_DENIED.include?(response.status)
     end
