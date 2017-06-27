@@ -89,8 +89,10 @@ class IssuableBaseService < BaseService
     milestone_id = params[:milestone_id]
     return unless milestone_id
 
-    if milestone_id == IssuableFinder::NONE ||
-        project.milestones.find_by(id: milestone_id).nil?
+    params[:milestone_id] = '' if milestone_id == IssuableFinder::NONE
+
+    if project.milestones.find_by(id: milestone_id).nil? &&
+        project.group&.milestones&.find(milestone_id).nil?
       params[:milestone_id] = ''
     end
   end

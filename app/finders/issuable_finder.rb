@@ -330,12 +330,7 @@ class IssuableFinder
       elsif filter_by_started_milestone?
         items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
       else
-        items = items.with_milestone(params[:milestone_title])
-        items_projects = projects(items)
-
-        if items_projects
-          items = items.where(milestones: { project_id: items_projects })
-        end
+        items = filter_by_project_and_group_milestones(items)
       end
     end
 
@@ -431,5 +426,18 @@ class IssuableFinder
     opts.delete_if { |_, value| value.blank? }
 
     ['issuables_count', klass.to_ability_name, opts.sort]
+  end
+
+  def filter_by_project_and_group_milestones(items)
+    items = items.with_milestone(params[:milestone_title])
+
+    items_projects = projects(items)
+
+    if items_projects
+      items_group = project? ? project.group : Group.find_by_id(items_projects.group_ids)
+
+      milestones = MilestonesFinder.new(projects: items_projects, groups: items_group, params: { state: 'all' }).execute
+      items.where(milestone: milestones)
+    end
   end
 end

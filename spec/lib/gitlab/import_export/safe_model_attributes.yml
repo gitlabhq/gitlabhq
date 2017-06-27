@@ -82,6 +82,7 @@ Milestone:
 - id
 - title
 - project_id
+- group_id
 - description
 - due_date
 - start_date

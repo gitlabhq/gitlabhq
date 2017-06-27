@@ -30,7 +30,6 @@ module Issuable
     belongs_to :updated_by, class_name: "User"
     belongs_to :last_edited_by, class_name: 'User'
     belongs_to :milestone
-    belongs_to :group_milestone
 
     has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do
       def authors_loaded?

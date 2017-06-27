@@ -17,6 +17,14 @@ describe Groups::MilestonesController do
   end
   let(:milestone_path) { group_milestone_path(group, milestone.safe_title, title: milestone.title) }
 
+  let(:milestone_params) do
+    {
+      title: title,
+      start_date: Date.today,
+      due_date: 1.month.from_now.to_date
+    }
+  end
+
   before do
     sign_in(user)
     group.add_owner(user)
@@ -44,16 +52,31 @@ describe Groups::MilestonesController do
     it "creates group milestone with Chinese title" do
       post :create,
            group_id: group.to_param,
-           milestone: { project_ids: [project.id, project2.id], title: title }
+           milestone: milestone_params
 
+      milestone = Milestone.find_by_title(title)
       expect(response).to redirect_to(group_milestone_path(group, title.to_slug.to_s, title: title))
-      expect(Milestone.where(title: title).count).to eq(2)
+      expect(milestone.group_id).to eq(group.id)
+      expect(milestone.due_date).to eq(milestone_params[:due_date])
+      expect(milestone.start_date).to eq(milestone_params[:start_date])
     end
+  end
 
-    it "redirects to new when there are no project ids" do
-      post :create, group_id: group.to_param, milestone: { title: title, project_ids: [""] }
-      expect(response).to render_template :new
-      expect(assigns(:milestone).errors).not_to be_nil
+  describe "#update" do
+    let(:milestone) { create(:milestone, group: group) }
+
+    it "updates group milestone" do
+      milestone_params[:title] = "title changed"
+
+      put :update,
+           id: milestone.title.to_slug.to_s,
+           group_id: group.to_param,
+           milestone: milestone_params,
+           title: milestone.title
+
+      milestone.reload
+      expect(response).to redirect_to(group_milestone_path(group, milestone.title.to_slug.to_s, title: milestone.title))
+      expect(milestone.title).to eq("title changed")
     end
   end
 
@@ -156,7 +179,7 @@ describe Groups::MilestonesController do
       it 'does not 404' do
         post :create,
              group_id: group.to_param,
-             milestone: { project_ids: [project.id, project2.id], title: title }
+             milestone: { title: title }
 
         expect(response).not_to have_http_status(404)
       end
@@ -164,7 +187,7 @@ describe Groups::MilestonesController do
       it 'does not redirect to the correct casing' do
         post :create,
              group_id: group.to_param,
-             milestone: { project_ids: [project.id, project2.id], title: title }
+             milestone: { title: title }
 
         expect(response).not_to have_http_status(301)
       end
@@ -176,7 +199,7 @@ describe Groups::MilestonesController do
       it 'returns not found' do
         post :create,
              group_id: redirect_route.path,
-             milestone: { project_ids: [project.id, project2.id], title: title }
+             milestone: { title: title }
 
         expect(response).to have_http_status(404)
       end

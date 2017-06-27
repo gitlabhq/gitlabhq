@@ -61,8 +61,16 @@ module Issues
     end
 
     def cloneable_milestone_id
-      @new_project.milestones
-        .find_by(title: @old_issue.milestone.try(:title)).try(:id)
+      title = @old_issue.milestone&.title
+      return unless title
+
+      milestone_id = @new_project.milestones.find_by(title: title).try(:id)
+
+      if milestone_id.nil? && @new_project.group && can?(current_user, :read_group, @new_project.group)
+        milestone_id = @new_project.group.milestones.find_by(title: title).try(:id)
+      end
+
+      milestone_id
     end
 
     def rewrite_notes

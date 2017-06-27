@@ -771,14 +771,7 @@ ActiveRecord::Schema.define(version: 20170624184243) do
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.integer "head_pipeline_id"
-<<<<<<< bce6d12bb9365ec2e8ffd5f40f0d1f03f88b315a
-<<<<<<< 5af1fcd6f329858d757bab0d67cb50af6c820160
     t.boolean "ref_fetched"
-=======
-    t.integer "group_milestone_id"
->>>>>>> Add group milestones table
-=======
->>>>>>> Native group milestones
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -786,14 +779,7 @@ ActiveRecord::Schema.define(version: 20170624184243) do
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
   add_index "merge_requests", ["deleted_at"], name: "index_merge_requests_on_deleted_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
-<<<<<<< bce6d12bb9365ec2e8ffd5f40f0d1f03f88b315a
-<<<<<<< 5af1fcd6f329858d757bab0d67cb50af6c820160
   add_index "merge_requests", ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id", using: :btree
-=======
-  add_index "merge_requests", ["group_milestone_id"], name: "index_merge_requests_on_group_milestone_id", using: :btree
->>>>>>> Add group milestones table
-=======
->>>>>>> Native group milestones
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
   add_index "merge_requests", ["source_project_id"], name: "index_merge_requests_on_source_project_id", using: :btree

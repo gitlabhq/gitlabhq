@@ -2,7 +2,7 @@ class GlobalMilestone
   include Milestoneish
 
   EPOCH = DateTime.parse('1970-01-01')
-  STATE_COUNT_HASH = { opened: 0, closed: 0, all: 0 }
+  STATE_COUNT_HASH = { opened: 0, closed: 0, all: 0 }.freeze
 
   attr_accessor :title, :milestones
   alias_attribute :name, :title
@@ -12,7 +12,7 @@ class GlobalMilestone
   end
 
   def self.build_collection(projects, params)
-    child_milestones = ProjectMilestonesFinder.new(projects, params).execute
+    child_milestones = MilestonesFinder.new(projects: projects, params: params).execute
 
     milestones = child_milestones.select(:id, :title).group_by(&:title).map do |title, grouped|
       milestones_relation = Milestone.where(id: grouped.map(&:id))
@@ -30,18 +30,18 @@ class GlobalMilestone
   end
 
   def self.states_count(projects, group = nil)
-    projects_milestones_count = legacy_group_milestone_states_count(projects)
+    legacy_group_milestones_count = legacy_group_milestone_states_count(projects)
     group_milestones_count = group_milestones_states_count(group)
 
-    projects_milestones_count.merge(group_milestones_count) do |k, project_milestones_count, group_milestones_count|
-      project_milestones_count + group_milestones_count
+    legacy_group_milestones_count.merge(group_milestones_count) do |k, legacy_group_milestones_count, group_milestones_count|
+      legacy_group_milestones_count + group_milestones_count
     end
   end
 
   def self.group_milestones_states_count(group)
     return STATE_COUNT_HASH unless group
 
-    relation = GroupMilestonesFinder.new(group, state: 'all').execute
+    relation = MilestonesFinder.new(groups: group, params: { state: 'all' }).execute
     grouped_by_state = relation.reorder(nil).group(:state).count
 
     {
@@ -51,10 +51,11 @@ class GlobalMilestone
     }
   end
 
+  # Counts the legacy group milestones which must be grouped by title
   def self.legacy_group_milestone_states_count(projects)
     return STATE_COUNT_HASH unless projects
 
-    relation = ProjectMilestonesFinder.new(projects, state: 'all').execute
+    relation = MilestonesFinder.new(projects: projects, params: { state: 'all' }).execute
     project_milestones_by_state_and_title = relation.reorder(nil).group(:state, :title).count
 
     opened = count_by_state(project_milestones_by_state_and_title, 'active')

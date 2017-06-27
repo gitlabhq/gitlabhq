@@ -9,11 +9,6 @@
       = link_to new_group_milestone_path(@group), class: "btn btn-new" do
         New milestone
 
-.row-content-block
-  Only milestones from
-  %strong= @group.name
-  group are listed here.
-
 .milestones
   %ul.content-list
     - if @milestones.blank?

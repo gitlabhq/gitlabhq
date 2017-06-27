@@ -1,35 +1,23 @@
-class GroupMilestone < ActiveRecord::Base
-  include SharedMilestoneProperties
-  include Milestoneish
-  include CacheMarkdownField
+class GroupMilestone < GlobalMilestone
+  attr_accessor :group
 
-  belongs_to :group
-
-  class << self
-    # Build legacy group milestone which consists on all project milestones
-    # with the same title.
-    def build(group, projects, title)
-      GlobalMilestone.build(projects, title).tap do |milestone|
-        milestone&.group = group
-      end
+  def self.build_collection(group, projects, params)
+    super(projects, params).each do |milestone|
+      milestone.group = group
     end
   end
 
-  def milestoneish_ids
-    id
+  def self.build(group, projects, title)
+    super(projects, title).tap do |milestone|
+      milestone&.group = group
+    end
   end
 
-  def participants
-    User.joins(assigned_issues: :group_milestone).where("group_milestones.id = ?", id).uniq
+  def issues_finder_params
+    { group_id: group.id }
   end
 
-  private
-
-  def uniqueness_of_title
-    super(group)
-  end
-
-  def issues_finder_conditions
-    { group_milestone_id: milestoneish_ids }
+  def is_legacy_group_milestone?
+    true
   end
 end

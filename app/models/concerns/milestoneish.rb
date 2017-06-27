@@ -40,7 +40,7 @@ module Milestoneish
   def issues_visible_to_user(user)
     memoize_per_user(user, :issues_visible_to_user) do
       IssuesFinder.new(user, issues_finder_params)
-        .execute.preload(:assignees).where(issues_finder_conditions)
+        .execute.preload(:assignees).where(milestone_id: milestoneish_ids)
     end
   end
 
@@ -71,22 +71,18 @@ module Milestoneish
   end
 
   def is_group_milestone?
-    respond_to?(:group_id)
+    false
   end
 
   def is_project_milestone?
-    respond_to?(:project_id)
+    false
   end
 
-  def title=(value)
-    write_attribute(:title, sanitize_title(value)) if value.present?
+  def is_legacy_group_milestone?
+    false
   end
 
   private
-
-  def sanitize_title(value)
-    CGI.unescape_html(Sanitize.clean(value.to_s))
-  end
 
   def count_issues_by_state(user)
     memoize_per_user(user, :count_issues_by_state) do
@@ -104,9 +100,5 @@ module Milestoneish
   # from IssuesFinder
   def issues_finder_params
     {}
-  end
-
-  def issues_finder_conditions
-    { milestone_id: milestoneish_ids }
   end
 end

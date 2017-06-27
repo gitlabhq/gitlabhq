@@ -2,13 +2,13 @@ class Groups::MilestonesController < Groups::ApplicationController
   include MilestoneActions
 
   before_action :group_projects
-  before_action :milestone, only: [:show, :update, :merge_requests, :participants, :labels]
-  before_action :authorize_admin_milestones!, only: [:new, :create, :update]
+  before_action :milestone, only: [:edit, :show, :update, :merge_requests, :participants, :labels]
+  before_action :authorize_admin_milestones!, only: [:edit, :new, :create, :update]
 
   def index
     respond_to do |format|
       format.html do
-        @milestone_states = GlobalMilestone.states_count(@projects, group)
+        @milestone_states = GlobalMilestone.states_count(group_projects, group)
         @milestones = Kaminari.paginate_array(milestones).page(params[:page])
       end
       format.json do
@@ -18,7 +18,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def new
-    @milestone = GroupMilestone.new
+    @milestone = Milestone.new
   end
 
   def create
@@ -35,12 +35,21 @@ class Groups::MilestonesController < Groups::ApplicationController
   def show
   end
 
+  def edit
+    render_404 if @milestone.is_legacy_group_milestone?
+  end
+
   def update
-    @milestone.milestones.each do |milestone|
-      Milestones::UpdateService.new(milestone.project, current_user, milestone_params).execute(milestone)
+    milestones = @milestone.milestones if @milestone.is_legacy_group_milestone?
+    # Keep this compatible with legacy group milestones where we have to update
+    # all projects milestones at once.
+    milestones ||= Array(@milestone)
+
+    milestones.each do |milestone|
+      Milestones::UpdateService.new(milestone.parent, current_user, milestone_params).execute(milestone)
     end
 
-    redirect_back_or_default(default: milestone_path(@milestone.title))
+    redirect_to milestone_path(@milestone.title)
   end
 
   private
@@ -50,23 +59,23 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestone_params
-    params.require(:group_milestone).permit(:title, :description, :start_date, :due_date, :state_event)
+    params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
   end
 
   def milestone_path(title)
-    group_milestone_path(@group, title.to_slug.to_s, title: title)
+    group_milestone_path(group, title.to_slug.to_s, title: title)
   end
 
   def milestones
-    @group_milestones = GroupMilestonesFinder.new(group, params).execute
-    @project_milestones = ProjectMilestonesFinder.new(@projects, params).execute
+    milestones = MilestonesFinder.new(groups: group, params: params).execute
+    legacy_milestones = GroupMilestone.build_collection(group, group_projects, params) || []
 
-    @group_milestones + @project_milestones
+    milestones + legacy_milestones
   end
 
   def milestone
     @milestone =
-      @group.milestones.find_by_title(params[:title]) || GroupMilestone.build(@group, @projects, params[:title])
+      group.milestones.find_by_title(params[:title]) || GroupMilestone.build(group, group_projects, params[:title])
 
     render_404 unless @milestone
   end

@@ -54,14 +54,9 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     click_button "Create milestone"
   end
 
-  step 'milestone in each project should be created' do
+  step 'group milestone should be created' do
     group = Group.find_by(name: 'Owned')
-    expect(page).to have_content "Milestone v2.9.0"
-    expect(group.projects).to be_present
-
-    group.projects.each do |project|
-      expect(page).to have_content project.name
-    end
+    expect(page).to have_content group.milestones.find_by_title('v2.9.0').title
   end
 
   step 'I should see the "bug" label' do

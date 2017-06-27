@@ -13,20 +13,15 @@ class Projects::MilestonesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @milestones =
-      case params[:state]
-      when 'all' then @project.milestones
-      when 'closed' then @project.milestones.closed
-      else @project.milestones.active
-      end
-
     @sort = params[:sort] || 'due_date_asc'
-    @milestones = @milestones.sort(@sort)
+    @milestones = milestones.sort(@sort)
 
     respond_to do |format|
       format.html do
         @project_namespace = @project.namespace.becomes(Namespace)
-        @milestones = @milestones.includes(:project)
+        # Shows only projects milestones on list
+        # although  we need to show them in the dropdown.
+        @milestones = @milestones.where(group: nil).includes(:project)
         @milestones = @milestones.page(params[:page])
       end
       format.json do
@@ -86,6 +81,16 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   protected
+
+  def milestones
+    @milestones ||= begin
+      if @project.group && can?(current_user, :read_group, @project.group)
+        group = @project.group
+      end
+
+      MilestonesFinder.new(projects: @project, groups: group, params: params).execute
+    end
+  end
 
   def milestone
     @milestone ||= @project.milestones.find_by!(iid: params[:id])

@@ -54,8 +54,10 @@ module MilestonesHelper
   def milestone_class_for_state(param, check, match_blank_param = false)
     if match_blank_param
       'active' if param.blank? || param == check
+    elsif param == check
+      'active'
     else
-      'active' if param == check
+      check
     end
   end
 

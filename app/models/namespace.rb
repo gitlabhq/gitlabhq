@@ -16,7 +16,6 @@ class Namespace < ActiveRecord::Base
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
-  has_many :groups, dependent: :destroy
   has_many :project_statistics
   belongs_to :owner, class_name: "User"
 

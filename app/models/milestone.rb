@@ -7,17 +7,53 @@ class Milestone < ActiveRecord::Base
   Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
   Started = MilestoneStruct.new('Started', '#started', -3)
 
-  include SharedMilestoneProperties
   include InternalId
   include Sortable
   include Referable
   include Milestoneish
+  include StripAttribute
+  include CacheMarkdownField
+
+  cache_markdown_field :title, pipeline: :single_line
+  cache_markdown_field :description
 
   belongs_to :project
+  belongs_to :group
 
+  has_many :issues
+  has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
+  has_many :merge_requests
   has_many :events, as: :target, dependent: :destroy
 
   scope :of_projects, ->(ids) { where(project_id: ids) }
+  scope :of_groups, ->(ids) { where(group_id: ids) }
+  scope :active, -> { with_state(:active) }
+  scope :closed, -> { with_state(:closed) }
+
+  validates :group, presence: true, unless: :project
+  validates :project, presence: true, unless: :group
+
+  validate :uniqueness_of_title, if: :title_changed?
+  validate :milestone_type_check
+  validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
+
+  strip_attributes :title
+
+  state_machine :state, initial: :active do
+    event :close do
+      transition active: :closed
+    end
+
+    event :activate do
+      transition closed: :active
+    end
+
+    state :closed
+
+    state :active
+  end
+
+  alias_attribute :name, :title
 
   class << self
     # Searches for milestones matching the given query.
@@ -32,6 +68,14 @@ class Milestone < ActiveRecord::Base
       pattern = "%#{query}%"
 
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+    end
+
+    def filter_by_state(milestones, state)
+      case state
+      when 'closed' then milestones.closed
+      when 'all' then milestones
+      else milestones.active
+      end
     end
   end
 
@@ -111,11 +155,19 @@ class Milestone < ActiveRecord::Base
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    "#{project.to_reference(from_project, full: full)}#{reference}"
+    if project
+      "#{project.to_reference(from_project, full: full)}#{reference}"
+    elsif group
+      "#{group.to_reference}#{reference}"
+    end
   end
 
   def reference_link_text(from_project = nil)
     self.title
+  end
+
+  def title=(value)
+    write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
   def milestoneish_ids
@@ -130,10 +182,43 @@ class Milestone < ActiveRecord::Base
     nil
   end
 
+  def safe_title
+    title.to_slug.normalize.to_s
+  end
+
+  def parent
+    group || project
+  end
+
+  def is_group_milestone?
+    group_id.present?
+  end
+
+  def is_project_milestone?
+    project_id.present?
+  end
+
   private
 
+  # Milestone titles must be unique across project milestones and group milestones
   def uniqueness_of_title
-    super(project.group, project)
+    if project
+      title_exists = project.milestones.find_by_title(title)
+      title_exists ||= project.group.milestones.find_by_title(title) if project.group
+    elsif group
+      title_exists = group.milestones.find_by_title(title)
+      title_exists ||= Milestone.where(project: group.projects).find_by_title(title)
+    end
+
+    errors.add(:title, "already being used for another group or project milestone.") if title_exists
+  end
+
+  # Milestone should be either a project milestone or a group milestone
+  def milestone_type_check
+    if group_id && project_id
+      field = project_id_changed? ? :project_id : :group_id
+      errors.add(field, "milestone should belong either to a project or a group.")
+    end
   end
 
   def milestone_format_reference(format = :iid)
@@ -143,6 +228,16 @@ class Milestone < ActiveRecord::Base
       %("#{name}")
     else
       iid
+    end
+  end
+
+  def sanitize_title(value)
+    CGI.unescape_html(Sanitize.clean(value.to_s))
+  end
+
+  def start_date_should_be_less_than_due_date
+    if due_date <= start_date
+      errors.add(:start_date, "Can't be greater than due date")
     end
   end
 
