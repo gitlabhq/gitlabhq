@@ -29,18 +29,27 @@ Example response:
   {
     "id": 1,
     "path": "user1",
-    "kind": "user"
+    "kind": "user",
+    "full_path": "user1",
+    "parent_id": "null",
+    "members_count": "null"
   },
   {
     "id": 2,
     "path": "group1",
-    "kind": "group"
+    "kind": "group",
+    "full_path": "group1",
+    "parent_id": "null",
+    "members_count": 2
+
   },
   {
     "id": 3,
     "path": "bar",
     "kind": "group",
     "full_path": "foo/bar",
+    "parent_id": "9",
+    "members_count": 5
   }
 ]
 ```
@@ -72,6 +81,8 @@ Example response:
     "path": "twitter",
     "kind": "group",
     "full_path": "twitter",
+    "parent_id": "null",
+    "members_count": 2
   }
 ]
 ```

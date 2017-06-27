@@ -444,7 +444,11 @@ module API
     end
 
     class Namespace < Grape::Entity
-      expose :id, :name, :path, :kind, :full_path
+      expose :id, :name, :path, :kind, :full_path, :parent_id
+
+      expose :members_count do |namespace, _|
+        namespace.users_with_descendants.count if namespace.kind == 'group'
+      end
     end
 
     class MemberAccess < Grape::Entity
