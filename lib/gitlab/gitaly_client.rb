@@ -57,7 +57,7 @@ module Gitlab
       metadata = yield(metadata) if block_given?
       stub(service, storage).send(rpc, request, metadata)
     end
-  
+
     def self.request_metadata(storage)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
       { metadata: { 'authorization' => "Bearer #{encoded_token}" } }
@@ -75,18 +75,24 @@ module Gitlab
     end
 
     def self.feature_enabled?(feature, status: MigrationStatus::OPT_IN)
+      puts
+      puts "feature_enabled?(#{feature},#{status})"
+      puts "enabled? = '#{enabled?}'"
       return false if !enabled? || status == MigrationStatus::DISABLED
 
       feature = Feature.get("gitaly_#{feature}")
 
       # If the feature hasn't been set, turn it on if it's opt-out
+      puts "Feature.persisted?(#{feature}) = '#{Feature.persisted?(feature)}'"
       return status == MigrationStatus::OPT_OUT unless Feature.persisted?(feature)
 
       if feature.percentage_of_time_value > 0
         # Probabilistically enable this feature
+        puts "Returning random based on '#{feature.percentage_of_time_value}'"
         return Random.rand() * 100 < feature.percentage_of_time_value
       end
 
+      puts "feature.enabled? = '#{feature.enabled?}'"
       feature.enabled?
     end
 
