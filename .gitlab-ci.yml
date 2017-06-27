@@ -344,7 +344,7 @@ db:migrate:reset-mysql:
     SETUP_DB: "false"
   <<: *only-canonical-masters
   script:
-    - git fetch origin v8.14.10
+    - git fetch origin v8.14.10-ee
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
