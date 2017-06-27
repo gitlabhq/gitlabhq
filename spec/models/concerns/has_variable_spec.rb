@@ -3,8 +3,6 @@ require 'spec_helper'
 describe HasVariable do
   subject { build(:ci_variable) }
 
-  let(:secret_value) { 'secret' }
-
   it { is_expected.to validate_presence_of(:key) }
   it { is_expected.to validate_length_of(:key).is_at_most(255) }
   it { is_expected.to allow_value('foo').for(:key) }
@@ -13,7 +11,7 @@ describe HasVariable do
 
   describe '#value' do
     before do
-      subject.value = secret_value
+      subject.value = 'secret'
     end
 
     it 'stores the encrypted value' do
