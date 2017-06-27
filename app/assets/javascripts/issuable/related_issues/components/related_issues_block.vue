@@ -76,8 +76,8 @@ export default {
     hasBody() {
       return this.isFormVisible || this.shouldShowTokenBody;
     },
-    relatedIssueCount() {
-      return this.relatedIssues.length;
+    badgeLabel() {
+      return this.isFetching && this.relatedIssues.length === 0 ? '...' : this.relatedIssues.length;
     },
     hasHelpPath() {
       return this.helpPath.length > 0;
@@ -113,7 +113,7 @@ export default {
             <span
               class="issue-count-badge-count"
               :class="{ 'has-btn': this.canAddRelatedIssues }">
-              {{ relatedIssueCount }}
+              {{ badgeLabel }}
             </span>
             <button
               v-if="canAddRelatedIssues"
