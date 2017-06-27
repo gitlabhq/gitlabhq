@@ -18,7 +18,13 @@ module SystemCheck
       end
 
       def check?
-        current_version.major == 5 && (1..3).cover?(version.minor)
+        self.class.current_version.major == 5 && (1..3).cover?(self.class.current_version.minor)
+      end
+
+      def show_error
+        for_more_information(
+          'doc/integration/elasticsearch.md'
+        )
       end
     end
   end
