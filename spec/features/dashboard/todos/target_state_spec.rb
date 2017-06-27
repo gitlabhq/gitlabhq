@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-feature 'Todo target states', feature: true do
+feature 'Dashboard > Todo target states' do
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
-  let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+  let(:project) { create(:project, :public) }
 
   before do
-    gitlab_sign_in user
+    sign_in(user)
   end
 
   scenario 'on a closed issue todo has closed label' do
@@ -30,7 +30,7 @@ feature 'Todo target states', feature: true do
   end
 
   scenario 'on a merged merge request todo has merged label' do
-    mr_merged = create(:merge_request, :simple, author: user, state: 'merged')
+    mr_merged = create(:merge_request, :simple, :merged, author: user)
     create_todo mr_merged
     visit dashboard_todos_path
 
@@ -40,7 +40,7 @@ feature 'Todo target states', feature: true do
   end
 
   scenario 'on a closed merge request todo has closed label' do
-    mr_closed = create(:merge_request, :simple, author: user, state: 'closed')
+    mr_closed = create(:merge_request, :simple, :closed, author: user)
     create_todo mr_closed
     visit dashboard_todos_path
 

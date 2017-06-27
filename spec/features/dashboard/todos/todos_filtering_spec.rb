@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Dashboard > User filters todos', feature: true, js: true do
+feature 'Dashboard > User filters todos', js: true do
   let(:user_1)    { create(:user, username: 'user_1', name: 'user_1') }
   let(:user_2)    { create(:user, username: 'user_2', name: 'user_2') }
 
@@ -17,7 +17,7 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
 
     project_1.team << [user_1, :developer]
     project_2.team << [user_1, :developer]
-    gitlab_sign_in(user_1)
+    sign_in(user_1)
     visit dashboard_todos_path
   end
 
@@ -34,7 +34,7 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
     expect(page).not_to have_content project_2.name_with_namespace
   end
 
-  context "Author filter" do
+  context 'Author filter' do
     it 'filters by author' do
       click_button 'Author'
 
@@ -49,18 +49,18 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
       expect(find('.todos-list')).not_to have_content 'issue'
     end
 
-    it "shows only authors of existing todos" do
+    it 'shows only authors of existing todos' do
       click_button 'Author'
 
       within '.dropdown-menu-author' do
-        # It should contain two users + "Any Author"
+        # It should contain two users + 'Any Author'
         expect(page).to have_selector('.dropdown-menu-user-link', count: 3)
         expect(page).to have_content(user_1.name)
         expect(page).to have_content(user_2.name)
       end
     end
 
-    it "shows only authors of existing done todos" do
+    it 'shows only authors of existing done todos' do
       user_3 = create :user
       user_4 = create :user
       create(:todo, user: user_1, author: user_3, project: project_1, target: issue, action: 1, state: :done)
@@ -74,7 +74,7 @@ describe 'Dashboard > User filters todos', feature: true, js: true do
       click_button 'Author'
 
       within '.dropdown-menu-author' do
-        # It should contain two users + "Any Author"
+        # It should contain two users + 'Any Author'
         expect(page).to have_selector('.dropdown-menu-user-link', count: 3)
         expect(page).to have_content(user_3.name)
         expect(page).to have_content(user_4.name)
