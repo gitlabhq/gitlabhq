@@ -220,11 +220,12 @@ module Gitlab
     # Ex.
     #   remove_key("key-342", "sha-rsa ...")
     #
-    def remove_key(key_id, key_content)
+    def remove_key(key_id, key_content = nil)
       return unless self.authorized_keys_enabled?
 
-      Gitlab::Utils.system_silent([gitlab_shell_keys_path,
-                                   'rm-key', key_id, key_content])
+      args = [gitlab_shell_keys_path, 'rm-key', key_id]
+      args << key_content if key_content
+      Gitlab::Utils.system_silent(args)
     end
 
     # Remove all ssh keys from gitlab shell
@@ -236,6 +237,54 @@ module Gitlab
       return unless self.authorized_keys_enabled?
 
       Gitlab::Utils.system_silent([gitlab_shell_keys_path, 'clear'])
+    end
+
+    # Remove ssh keys from gitlab shell that are not in the DB
+    #
+    # Ex.
+    #   remove_keys_not_found_in_db
+    #
+    def remove_keys_not_found_in_db
+      return unless self.authorized_keys_enabled?
+
+      batch_read_key_ids do |ids_in_file|
+        keys_in_db = Key.where(id: ids_in_file)
+        if ids_in_file.size > keys_in_db.count
+          ids_to_remove = ids_in_file - keys_in_db.pluck(:id)
+          ids_to_remove.each do |id|
+            remove_key("key-#{id}")
+          end
+        end
+      end
+    end
+
+    # Iterate over all ssh key IDs from gitlab shell, in batches
+    #
+    # Ex.
+    #   batch_read_key_ids { |batch| keys = Key.where(id: batch) }
+    #
+    def batch_read_key_ids(batch_size: 100, &block)
+      return unless self.authorized_keys_enabled?
+
+      list_key_ids do |key_id_stream|
+        key_id_stream.lazy.each_slice(batch_size) do |lines|
+          key_ids = lines.map { |l| l.chomp.to_i }
+          yield(key_ids)
+        end
+      end
+    end
+
+    # Stream all ssh key IDs from gitlab shell, separated by newlines
+    #
+    # Ex.
+    #   list_key_ids
+    #
+    def list_key_ids(&block)
+      return unless self.authorized_keys_enabled?
+
+      IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys list-key-ids)) do |key_id_stream|
+        yield(key_id_stream)
+      end
     end
 
     # Add empty directory for storing repositories

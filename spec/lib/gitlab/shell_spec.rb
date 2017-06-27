@@ -177,6 +177,17 @@ describe Gitlab::Shell, lib: true do
         gitlab_shell.remove_key('key-123', 'ssh-rsa foobar')
       end
     end
+
+    context 'when key content is not given' do
+      it 'calls rm-key with only one argument' do
+        allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
+        expect(Gitlab::Utils).to receive(:system_silent).with(
+          [:gitlab_shell_keys_path, 'rm-key', 'key-123']
+        )
+
+        gitlab_shell.remove_key('key-123')
+      end
+    end
   end
 
   describe '#remove_all_keys' do
@@ -198,6 +209,89 @@ describe Gitlab::Shell, lib: true do
         expect(Gitlab::Utils).not_to receive(:system_silent)
 
         gitlab_shell.remove_all_keys
+      end
+    end
+  end
+
+  describe '#remove_keys_not_found_in_db' do
+    context 'when keys are in the file that are not in the DB' do
+      before do
+        gitlab_shell.remove_all_keys
+        gitlab_shell.add_key('key-1234', 'ssh-rsa ASDFASDF')
+        gitlab_shell.add_key('key-9876', 'ssh-rsa ASDFASDF')
+        @another_key = create(:key) # this one IS in the DB
+      end
+
+      it 'removes the keys' do
+        expect(find_in_authorized_keys_file(1234)).to be_truthy
+        expect(find_in_authorized_keys_file(9876)).to be_truthy
+        expect(find_in_authorized_keys_file(@another_key.id)).to be_truthy
+        gitlab_shell.remove_keys_not_found_in_db
+        expect(find_in_authorized_keys_file(1234)).to be_falsey
+        expect(find_in_authorized_keys_file(9876)).to be_falsey
+        expect(find_in_authorized_keys_file(@another_key.id)).to be_truthy
+      end
+    end
+  end
+
+  describe '#batch_read_key_ids' do
+    context 'when there are keys in the authorized_keys file' do
+      before do
+        gitlab_shell.remove_all_keys
+        (1..4).each do |i|
+          gitlab_shell.add_key("key-#{i}", "ssh-rsa ASDFASDF#{i}")
+        end
+      end
+
+      it 'iterates over the key IDs in the file, in batches' do
+        loop_count = 0
+        first_batch = [1, 2]
+        second_batch = [3, 4]
+
+        gitlab_shell.batch_read_key_ids(batch_size: 2) do |batch|
+          expected = (loop_count == 0 ? first_batch : second_batch)
+          expect(batch).to eq(expected)
+          loop_count += 1
+        end
+      end
+    end
+  end
+
+  describe '#list_key_ids' do
+    context 'when there are keys in the authorized_keys file' do
+      before do
+        gitlab_shell.remove_all_keys
+        (1..4).each do |i|
+          gitlab_shell.add_key("key-#{i}", "ssh-rsa ASDFASDF#{i}")
+        end
+      end
+
+      it 'outputs the key IDs in the file, separated by newlines' do
+        ids = []
+        gitlab_shell.list_key_ids do |io|
+          io.each do |line|
+            ids << line
+          end
+        end
+
+        expect(ids).to eq(["1\n", "2\n", "3\n", "4\n"])
+      end
+    end
+
+    context 'when there are no keys in the authorized_keys file' do
+      before do
+        gitlab_shell.remove_all_keys
+      end
+
+      it 'outputs nothing, not even an empty string' do
+        ids = []
+        gitlab_shell.list_key_ids do |io|
+          io.each do |line|
+            ids << line
+          end
+        end
+
+        expect(ids).to eq([])
       end
     end
   end
@@ -275,5 +369,13 @@ describe Gitlab::Shell, lib: true do
         expect { gitlab_shell.import_repository('current/storage', 'project/path', 'https://gitlab.com/gitlab-org/gitlab-ce.git') }.to raise_error(Gitlab::Shell::Error, "error")
       end
     end
+  end
+
+  def find_in_authorized_keys_file(key_id)
+    gitlab_shell.batch_read_key_ids do |ids|
+      return true if ids.include?(key_id)
+    end
+
+    false
   end
 end
