@@ -55,9 +55,9 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1, :truncate do
   describe '#revert_renames' do
     it 'renames namespaces' do
       rename_namespaces = double
-      expect(described_class::RenameNamespaces).
-        to receive(:new).with([], subject).
-             and_return(rename_namespaces)
+      expect(described_class::RenameNamespaces)
+        .to receive(:new).with([], subject)
+              .and_return(rename_namespaces)
       expect(rename_namespaces).to receive(:revert_renames)
 
       subject.revert_renames
@@ -65,9 +65,9 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1, :truncate do
 
     it 'renames projects' do
       rename_projects = double
-      expect(described_class::RenameProjects).
-        to receive(:new).with([], subject).
-             and_return(rename_projects)
+      expect(described_class::RenameProjects)
+        .to receive(:new).with([], subject)
+              .and_return(rename_projects)
       expect(rename_projects).to receive(:revert_renames)
 
       subject.revert_renames

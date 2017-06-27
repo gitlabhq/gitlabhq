@@ -37,8 +37,8 @@ module Gitlab
           def perform_rename(routable, old_full_path, new_full_path)
             # skips callbacks & validations
             new_path = new_full_path.split('/').last
-            routable.class.where(id: routable).
-              update_all(path: new_path)
+            routable.class.where(id: routable)
+              .update_all(path: new_path)
 
             rename_routes(old_full_path, new_full_path)
           end
