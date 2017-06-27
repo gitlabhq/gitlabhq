@@ -1,4 +1,6 @@
 class ProjectPolicy < BasePolicy
+  prepend EE::ProjectPolicy
+
   def self.create_read_update_admin(name)
     [
       :"create_#{name}",

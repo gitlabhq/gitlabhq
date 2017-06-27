@@ -1,4 +1,6 @@
 class GroupPolicy < BasePolicy
+  prepend EE::GroupPolicy
+
   desc "Group is public"
   with_options scope: :subject, score: 0
   condition(:public_group) { @subject.public? }

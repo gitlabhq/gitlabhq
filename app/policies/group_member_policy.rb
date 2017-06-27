@@ -19,4 +19,12 @@ class GroupMemberPolicy < BasePolicy
   rule { is_target_user }.policy do
     enable :destroy_group_member
   end
+
+  ## EE extensions
+
+  condition(:ldap, score: 0) { @subject.ldap? }
+  condition(:override, score: 0) { @subject.override? }
+
+  rule { ~ldap }.prevent :override_group_member
+  rule { ldap & ~override }.prevent :update_group_member
 end

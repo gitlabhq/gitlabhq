@@ -27,6 +27,7 @@ class ProjectSnippetPolicy < BasePolicy
     all?(private_snippet | (internal & external_user),
          ~project.guest,
          ~admin,
+         ~auditor,
          ~is_author)
   end.prevent :read_project_snippet
 
@@ -42,4 +43,8 @@ class ProjectSnippetPolicy < BasePolicy
     enable :update_project_snippet
     enable :admin_project_snippet
   end
+
+  # EE Extensions
+
+  rule { auditor }.enable :read_project_snippet
 end

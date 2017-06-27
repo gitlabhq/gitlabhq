@@ -10,4 +10,14 @@ class BasePolicy < DeclarativePolicy::Base
 
   with_options scope: :user, score: 0
   condition(:can_create_group) { @user&.can_create_group }
+
+  # EE Extensions
+  with_scope :user
+  condition(:auditor, score: 0) { @user&.auditor? }
+
+  with_scope :user
+  condition(:support_bot, score: 0) { @user&.support_bot? }
+
+  with_scope :global
+  condition(:license_block) { License.block_changes? }
 end
