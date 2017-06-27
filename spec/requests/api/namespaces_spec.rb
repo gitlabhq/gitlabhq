@@ -20,7 +20,8 @@ describe API::Namespaces do
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
-        expect(json_response.first).to include('id', 'name', 'path', 'full_path', 'parent_id', 'members_count')
+        expect(json_response.first).to include('id', 'name', 'path', 'full_path', 'parent_id',
+                                               'members_count', 'shared_runners_minutes_limit', 'plan')
       end
 
       it "admin: returns an array of all namespaces" do
