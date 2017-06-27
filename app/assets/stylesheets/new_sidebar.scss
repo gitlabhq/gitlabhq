@@ -23,6 +23,7 @@ $new-sidebar-width: 220px;
   top: 50px;
   bottom: 0;
   left: 0;
+  overflow: auto;
   background-color: $gray-light;
   border-right: 1px solid $border-color;
 
