@@ -12,6 +12,16 @@ describe Group, 'Routable' do
     it { is_expected.to have_many(:redirect_routes).dependent(:destroy) }
   end
 
+  describe 'Geo secondary' do
+    it 'does not save route if route is not present' do
+      group.route.path = ''
+      allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+      expect(group).to receive(:update_route).and_call_original
+
+      expect { group.full_path }.to change { Route.count }.by(0)
+    end
+  end
+
   describe 'Callbacks' do
     it 'creates route record on create' do
       expect(group.route.path).to eq(group.path)

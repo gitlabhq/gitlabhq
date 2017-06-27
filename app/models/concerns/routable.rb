@@ -144,6 +144,8 @@ module Routable
   end
 
   def update_route
+    return if Gitlab::Geo.secondary?
+
     prepare_route
     route.save
   end
