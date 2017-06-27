@@ -103,12 +103,6 @@ module Projects
       end
     end
 
-    def remove_tracking_entries!
-      return unless Gitlab::Geo.secondary?
-
-      Geo::ProjectRegistry.where(project_id: project.id).delete_all
-    end
-
     def raise_error(message)
       raise DestroyError.new(message)
     end
