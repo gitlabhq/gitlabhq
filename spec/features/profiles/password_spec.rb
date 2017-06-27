@@ -25,7 +25,7 @@ describe 'Profile > Password', feature: true do
         end
       end
 
-      it 'does not contains the current password field after an error' do
+      it 'does not contain the current password field after an error' do
         fill_passwords('mypassword', 'mypassword2')
 
         expect(page).to have_no_field('user[current_password]')

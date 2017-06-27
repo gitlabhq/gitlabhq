@@ -40,6 +40,10 @@ class FilteredSearchManager {
         return [];
       })
       .then((searches) => {
+        if (!searches) {
+          return;
+        }
+
         // Put any searches that may have come in before
         // we fetched the saved searches ahead of the already saved ones
         const resultantSearches = this.recentSearchesStore.setRecentSearches(
@@ -487,6 +491,7 @@ class FilteredSearchManager {
   }
 
   searchState(e) {
+    e.preventDefault();
     const target = e.currentTarget;
     // remove focus outline after click
     target.blur();

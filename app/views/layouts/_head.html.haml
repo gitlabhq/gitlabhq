@@ -30,6 +30,9 @@
   = stylesheet_link_tag "test",        media: "all" if Rails.env.test?
   = stylesheet_link_tag 'peek' if peek_enabled?
 
+  - if show_new_nav?
+    = stylesheet_link_tag "new_nav", media: "all"
+
   = Gon::Base.render_data
 
   = webpack_bundle_tag "runtime"

@@ -124,6 +124,36 @@ describe API::V3::Projects do
         end
       end
 
+      context 'and using archived' do
+        let!(:archived_project) { create(:empty_project, creator_id: user.id, namespace: user.namespace, archived: true) }
+
+        it 'returns archived project' do
+          get v3_api('/projects?archived=true', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(archived_project.id)
+        end
+
+        it 'returns non-archived project' do
+          get v3_api('/projects?archived=false', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(project.id)
+        end
+
+        it 'returns all project' do
+          get v3_api('/projects', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(2)
+        end
+      end
+
       context 'and using sorting' do
         before do
           project2

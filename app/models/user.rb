@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
     lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
     return unless lease.try_obtain
 
-    save(validate: false)
+    Users::UpdateService.new(self).execute(validate: false)
   end
 
   attr_accessor :force_random_password
@@ -494,10 +494,8 @@ class User < ActiveRecord::Base
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
-      primary_email_record.destroy
-      emails.create(email: email_was)
-
-      update_secondary_emails!
+      Emails::DestroyService.new(self, email: email).execute
+      Emails::CreateService.new(self, email: email_was).execute
     end
   end
 
@@ -965,7 +963,7 @@ class User < ActiveRecord::Base
     if attempts_exceeded?
       lock_access! unless access_locked?
     else
-      save(validate: false)
+      Users::UpdateService.new(self).execute(validate: false)
     end
   end
 
@@ -982,6 +980,12 @@ class User < ActiveRecord::Base
     return unless %w(admin regular).include?(new_level)
 
     self.admin = (new_level == 'admin')
+  end
+
+  # Does the user have access to all private groups & projects?
+  # Overridden in EE to also check auditor?
+  def full_private_access?
+    admin?
   end
 
   def update_two_factor_requirement
@@ -1123,7 +1127,8 @@ class User < ActiveRecord::Base
       email: email,
       &creation_block
     )
-    user.save(validate: false)
+
+    Users::UpdateService.new(user).execute(validate: false)
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)

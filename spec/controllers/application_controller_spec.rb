@@ -99,6 +99,36 @@ describe ApplicationController do
     end
   end
 
+  describe 'response format' do
+    controller(described_class) do
+      def index
+        respond_to do |format|
+          format.json do
+            head :ok
+          end
+        end
+      end
+    end
+
+    context 'when format is handled' do
+      let(:requested_format) { :json }
+
+      it 'returns 200 response' do
+        get :index, private_token: user.private_token, format: requested_format
+
+        expect(response).to have_http_status 200
+      end
+    end
+
+    context 'when format is not handled' do
+      it 'returns 404 response' do
+        get :index, private_token: user.private_token
+
+        expect(response).to have_http_status 404
+      end
+    end
+  end
+
   describe '#authenticate_user_from_rss_token' do
     describe "authenticating a user from an RSS token" do
       controller(described_class) do

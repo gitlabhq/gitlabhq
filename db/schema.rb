@@ -771,6 +771,7 @@ ActiveRecord::Schema.define(version: 20170623080805) do
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.integer "head_pipeline_id"
+    t.boolean "ref_fetched"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree

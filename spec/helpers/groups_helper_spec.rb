@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe GroupsHelper do
+  include ApplicationHelper
+
   describe 'group_icon' do
     avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
 
@@ -79,6 +81,17 @@ describe GroupsHelper do
           expect(group_lfs_status(group)).to include('Disabled for 1 out of 2 projects')
         end
       end
+    end
+  end
+
+  describe 'group_title', :nested_groups do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+    let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+
+    it 'outputs the groups in the correct order' do
+      expect(group_title(very_deep_nested_group)).to match(/>#{group.name}<\/a>.*>#{nested_group.name}<\/a>.*>#{deep_nested_group.name}<\/a>/)
     end
   end
 end

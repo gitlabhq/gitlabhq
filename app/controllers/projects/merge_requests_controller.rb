@@ -575,10 +575,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge_request_params
     params.require(:merge_request)
-      .permit(merge_request_params_ce)
+      .permit(merge_request_params_attributes)
   end
 
-  def merge_request_params_ce
+  def merge_request_params_attributes
     [
       :assignee_id,
       :description,
@@ -598,7 +598,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_params
-    params.permit(:should_remove_source_branch, :commit_message)
+    params.permit(merge_params_attributes)
+  end
+
+  def merge_params_attributes
+    [:should_remove_source_branch, :commit_message]
   end
 
   # Make sure merge requests created before 8.0
