@@ -103,6 +103,7 @@ excluded_attributes:
     - :milestone_id
   merge_requests:
     - :milestone_id
+    - :ref_fetched
   award_emoji:
     - :awardable_id
   statuses:

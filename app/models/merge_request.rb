@@ -799,6 +799,7 @@ class MergeRequest < ActiveRecord::Base
       "refs/heads/#{source_branch}",
       ref_path
     )
+    update_column(:ref_fetched, true)
   end
 
   def ref_path
@@ -806,7 +807,13 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_fetched?
-    project.repository.ref_exists?(ref_path)
+    super ||
+      begin
+        computed_value = project.repository.ref_exists?(ref_path)
+        update_column(:ref_fetched, true) if computed_value
+
+        computed_value
+      end
   end
 
   def ensure_ref_fetched

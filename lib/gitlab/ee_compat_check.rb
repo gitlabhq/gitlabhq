@@ -76,9 +76,13 @@ module Gitlab
 
       step(
         "Generating the patch against origin/master in #{patch_path}",
-        %W[git diff --binary origin/master > #{patch_path}]
+        %w[git diff --binary origin/master...HEAD]
       ) do |output, status|
-        throw(:halt_check, :ko) unless status.zero? && File.exist?(patch_path)
+        throw(:halt_check, :ko) unless status.zero?
+
+        File.write(patch_path, output)
+
+        throw(:halt_check, :ko) unless File.exist?(patch_path)
       end
     end
 
@@ -130,7 +134,15 @@ module Gitlab
       step("Fetching CE/#{ce_branch}", %W[git fetch #{CE_REPO} #{ce_branch}])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
-        %W[git apply --check --3way #{patch_path}]
+        # Don't use --check here because it can result in a 0-exit status even
+        # though the patch doesn't apply cleanly, e.g.:
+        #   > git apply --check --3way foo.patch
+        #   error: patch failed: lib/gitlab/ee_compat_check.rb:74
+        #   Falling back to three-way merge...
+        #   Applied patch to 'lib/gitlab/ee_compat_check.rb' with conflicts.
+        #   > echo $?
+        #   0
+        %W[git apply --3way #{patch_path}]
       ) do |output, status|
         puts output
         unless status.zero?
@@ -145,6 +157,7 @@ module Gitlab
           status = 0 if failed_files.empty?
         end
 
+        command(%w[git reset --hard])
         status
       end
     end
@@ -292,7 +305,7 @@ module Gitlab
 
           # In the CE repo
           $ git fetch origin master
-          $ git diff --binary origin/master > #{ce_branch}.patch
+          $ git diff --binary origin/master...HEAD -- > #{ce_branch}.patch
 
           # In the EE repo
           $ git fetch origin master

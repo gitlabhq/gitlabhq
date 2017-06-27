@@ -27,7 +27,11 @@ module Gitlab
             deploy_keys: DeployKey.count,
             deployments: Deployment.count,
             environments: Environment.count,
+<<<<<<< HEAD
             geo_nodes: GeoNode.count,
+=======
+            in_review_folder: Environment.in_review_folder.count,
+>>>>>>> c00e5bfa065128c5212a991a5cfcb6f152981d51
             groups: Group.count,
             issues: Issue.count,
             keys: Key.count,

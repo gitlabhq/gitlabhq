@@ -26,6 +26,7 @@
       placeholder="Issue title"
       aria-label="Issue title"
       v-model="formState.title"
-      @keydown.meta.enter="updateIssuable" />
+      @keydown.meta.enter="updateIssuable"
+      @keydown.ctrl.enter="updateIssuable" />
   </fieldset>
 </template>
