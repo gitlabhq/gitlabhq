@@ -510,14 +510,13 @@ module API
     end
 
     class Namespace < Grape::Entity
-      expose :id, :name, :path, :kind, :full_path
+      expose :id, :name, :path, :kind, :full_path, :parent_id
 
-      # EE-only
-      expose :parent_id
       expose :members_count do |namespace, _|
         namespace.users_with_descendants.count if namespace.kind == 'group'
       end
 
+      # EE-only
       expose :shared_runners_minutes_limit, if: lambda { |_, options| options[:current_user]&.admin? }
       expose :plan, if: lambda { |_, options| options[:current_user]&.admin? }
     end
