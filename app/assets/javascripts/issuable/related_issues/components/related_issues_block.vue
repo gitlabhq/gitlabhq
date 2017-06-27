@@ -117,11 +117,9 @@ export default {
             </span>
             <button
               v-if="canAddRelatedIssues"
-              v-tooltip
               ref="issueCountBadgeAddButton"
               type="button"
               class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-small btn-default"
-              title="Add an issue"
               aria-label="Add an issue"
               data-placement="top"
               @click="toggleAddRelatedIssuesForm">
