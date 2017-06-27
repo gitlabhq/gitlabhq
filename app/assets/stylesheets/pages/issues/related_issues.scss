@@ -4,11 +4,6 @@ $token_spacing_bottom: 0.5em;
   margin-top: 3 * $gl-vert-padding;
 }
 
-.related-issues-panel-title {
-  display: flex;
-  justify-content: space-between;
-}
-
 .related-issues-header-help-icon {
   margin-left: 0.25em;
   color: $gl-text-color-secondary;
@@ -24,6 +19,22 @@ $token_spacing_bottom: 0.5em;
 
 .related-issues-token-body {
   padding-bottom: calc(#{$gl-padding} - #{$token_spacing_bottom});
+  transition-property: max-height, padding, opacity;
+  transition-duration: $general-hover-transition-duration;
+  transition-timing-function: $general-hover-transition-curve;
+
+  &.collapsed {
+    overflow: hidden;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+  }
+}
+
+.related-issues-loading-icon {
+  margin-bottom: $token_spacing_bottom;
+  line-height: 1.75;
 }
 
 .related-issues-token-list {

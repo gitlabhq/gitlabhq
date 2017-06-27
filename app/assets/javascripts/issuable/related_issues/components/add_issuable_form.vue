@@ -1,7 +1,8 @@
 <script>
 import GfmAutoComplete from '~/gfm_auto_complete';
 import eventHub from '../event_hub';
-import IssueToken from './issue_token.vue';
+import issueToken from './issue_token.vue';
+import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 
 export default {
   name: 'AddIssuableForm',
@@ -40,7 +41,8 @@ export default {
   },
 
   components: {
-    issueToken: IssueToken,
+    issueToken,
+    loadingIcon,
   },
 
   computed: {
@@ -139,6 +141,11 @@ export default {
         @click="onFormSubmit"
         :disabled="isSubmitButtonDisabled">
         {{ addButtonLabel }}
+        <loadingIcon
+          ref="loadingIcon"
+          v-if="isSubmitting"
+          :inline="true"
+          label="Submitting related issues" />
       </button>
       <button
         type="button"
