@@ -6,6 +6,7 @@ feature 'Issue Sidebar', feature: true do
   let(:group) { create(:group, :nested) }
   let(:project) { create(:project, :public, namespace: group) }
   let(:issue) { create(:issue, project: project) }
+  let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
 
@@ -158,11 +159,13 @@ feature 'Issue Sidebar', feature: true do
     before do
       project.team << [user, :developer]
       resize_screen_xs
-      visit_issue(project, issue)
     end
 
     context 'mobile sidebar' do
-      it 'collapses the sidebar for small screens' do
+      it 'collapses the sidebar for small screens on an issue/merge_request' do
+        visit_issue(project, issue)
+        expect(page).not_to have_css('aside.right-sidebar.right-sidebar-collapsed')
+        visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
         expect(page).not_to have_css('aside.right-sidebar.right-sidebar-collapsed')
       end
     end

@@ -144,7 +144,6 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
         this.resetViewContainer();
         this.mountPipelinesView();
       } else {
-        this.expandView();
         this.resetViewContainer();
         this.destroyPipelinesView();
       }
