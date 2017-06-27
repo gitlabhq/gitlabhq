@@ -1,4 +1,0 @@
----
-title: 'Introduce optimistic locking support via optional parameter last_commit_sha on File Update API'
-merge_request: 11694
-author: electroma

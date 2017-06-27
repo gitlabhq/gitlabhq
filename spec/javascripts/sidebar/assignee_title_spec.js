@@ -33,6 +33,31 @@ describe('AssigneeTitle component', () => {
     });
   });
 
+  describe('gutter toggle', () => {
+    it('does not show toggle by default', () => {
+      component = new AssigneeTitleComponent({
+        propsData: {
+          numberOfAssignees: 2,
+          editable: false,
+        },
+      }).$mount();
+
+      expect(component.$el.querySelector('.gutter-toggle')).toBeNull();
+    });
+
+    it('shows toggle when showToggle is true', () => {
+      component = new AssigneeTitleComponent({
+        propsData: {
+          numberOfAssignees: 2,
+          editable: false,
+          showToggle: true,
+        },
+      }).$mount();
+
+      expect(component.$el.querySelector('.gutter-toggle')).toEqual(jasmine.any(Object));
+    });
+  });
+
   it('does not render spinner by default', () => {
     component = new AssigneeTitleComponent({
       propsData: {

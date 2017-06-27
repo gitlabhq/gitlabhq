@@ -597,7 +597,13 @@ class User < ActiveRecord::Base
   end
 
   def require_password?
-    password_automatically_set? && !ldap_user?
+    password_automatically_set? && !ldap_user? && current_application_settings.signin_enabled?
+  end
+
+  def require_personal_access_token?
+    return false if current_application_settings.signin_enabled? || ldap_user?
+
+    PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
   end
 
   def can_change_username?

@@ -77,7 +77,6 @@ export default {
     :aria-label="title"
     data-container="body"
     data-placement="top"
-    ref="tooltip"
     :disabled="isLoading">
     <i
       :class="iconClass"

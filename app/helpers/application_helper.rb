@@ -304,4 +304,12 @@ module ApplicationHelper
       "https://www.twitter.com/#{name}"
     end
   end
+
+  def can_toggle_new_nav?
+    Rails.env.development?
+  end
+
+  def show_new_nav?
+    cookies["new_nav"] == "true"
+  end
 end

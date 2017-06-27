@@ -103,7 +103,7 @@ describe GroupsHelper do
     end
   end
 
-  describe 'group_title' do
+  describe 'group_title', :nested_groups do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
     let(:deep_nested_group) { create(:group, parent: nested_group) }

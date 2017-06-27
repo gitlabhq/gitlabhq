@@ -351,7 +351,10 @@ class Project < ActiveRecord::Base
       project.run_after_commit { add_import_job }
     end
 
-    after_transition started: :finished, do: :reset_cache_and_import_attrs
+    after_transition started: :finished do |project, _|
+      project.reset_cache_and_import_attrs
+      project.perform_housekeeping
+    end
   end
 
   class << self
@@ -509,6 +512,18 @@ class Project < ActiveRecord::Base
     end
 
     remove_import_data
+  end
+
+  def perform_housekeeping
+    return unless repo_exists?
+
+    run_after_commit do
+      begin
+        Projects::HousekeepingService.new(self).execute
+      rescue Projects::HousekeepingService::LeaseTaken => e
+        Rails.logger.info("Could not perform housekeeping for project #{self.path_with_namespace} (#{self.id}): #{e}")
+      end
+    end
   end
 
   def remove_import_data

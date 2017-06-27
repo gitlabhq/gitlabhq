@@ -307,9 +307,10 @@ $(function () {
   // Commit show suppressed diff
   });
   $('.navbar-toggle').on('click', function () {
-    $('.header-content .title').toggle();
+    $('.header-content .title, .header-content .navbar-sub-nav').toggle();
     $('.header-content .header-logo').toggle();
     $('.header-content .navbar-collapse').toggle();
+    $('.js-navbar-toggle-left, .js-navbar-toggle-right, .title-container').toggle();
     return $('.navbar-toggle').toggleClass('active');
   });
   // Show/hide comments on diff

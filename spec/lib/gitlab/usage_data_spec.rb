@@ -45,6 +45,7 @@ describe Gitlab::UsageData do
         deployments
         environments
         geo_nodes
+        in_review_folder
         groups
         issues
         keys
