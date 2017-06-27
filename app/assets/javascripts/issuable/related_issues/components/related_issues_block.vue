@@ -141,7 +141,6 @@ export default {
           :is-submitting="isSubmitting"
           :input-value="inputValue"
           :pending-references="pendingReferences"
-          add-button-label="Add related issues"
           :auto-complete-sources="autoCompleteSources" />
       </div>
       <div

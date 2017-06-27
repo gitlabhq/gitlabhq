@@ -45,7 +45,6 @@ describe('AddIssuableForm', () => {
           vm = new AddIssuableForm({
             propsData: {
               inputValue: '',
-              addButtonLabel: 'Submit',
               pendingReferences: [],
             },
           }).$mount();
@@ -62,7 +61,6 @@ describe('AddIssuableForm', () => {
           vm = new AddIssuableForm({
             propsData: {
               inputValue: 'foo',
-              addButtonLabel: 'Submit',
               pendingReferences: [],
             },
           }).$mount();
@@ -76,23 +74,17 @@ describe('AddIssuableForm', () => {
 
     describe('with references', () => {
       const inputValue = 'foo #123';
-      const addButtonLabel = 'Add issuable';
 
       beforeEach(() => {
         vm = new AddIssuableForm({
           propsData: {
             inputValue,
-            addButtonLabel,
             pendingReferences: [
               issuable1.reference,
               issuable2.reference,
             ],
           },
         }).$mount();
-      });
-
-      it('should put button label in place', () => {
-        expect(vm.$refs.addButton.textContent.trim()).toEqual(addButtonLabel);
       });
 
       it('should put input value in place', () => {
@@ -113,7 +105,6 @@ describe('AddIssuableForm', () => {
         vm = new AddIssuableForm({
           propsData: {
             inputValue: '',
-            addButtonLabel: 'Submit',
             pendingReferences: [
               issuable1.reference,
               issuable2.reference,
@@ -153,7 +144,6 @@ describe('AddIssuableForm', () => {
       vm = new AddIssuableForm({
         propsData: {
           inputValue: '',
-          addButtonLabel: 'Add issuable',
           pendingIssuables: [
             issuable1,
           ],

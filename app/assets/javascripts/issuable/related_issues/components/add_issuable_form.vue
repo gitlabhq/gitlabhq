@@ -12,10 +12,6 @@ export default {
       type: String,
       required: true,
     },
-    addButtonLabel: {
-      type: String,
-      required: true,
-    },
     pendingReferences: {
       type: Array,
       required: false,
@@ -144,7 +140,7 @@ export default {
         class="js-add-issuable-form-add-button btn btn-new pull-left"
         @click="onFormSubmit"
         :disabled="isSubmitButtonDisabled">
-        {{ addButtonLabel }}
+        Add
         <loadingIcon
           ref="loadingIcon"
           v-if="isSubmitting"
