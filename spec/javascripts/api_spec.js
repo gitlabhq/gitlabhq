@@ -278,4 +278,21 @@ describe('Api', () => {
         .catch(done.fail);
     });
   });
+
+  describe('ldap_groups', () => {
+    it('calls callback on completion', (done) => {
+      const query = 'query';
+      const provider = 'provider';
+      const callback = jasmine.createSpy();
+
+      spyOn(jQuery, 'ajax').and.callFake(() => $.Deferred().resolve());
+
+      Api.ldap_groups(query, provider, callback)
+        .then((response) => {
+          expect(callback).toHaveBeenCalledWith(response);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });
