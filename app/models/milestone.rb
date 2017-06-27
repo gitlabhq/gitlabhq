@@ -7,17 +7,49 @@ class Milestone < ActiveRecord::Base
   Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
   Started = MilestoneStruct.new('Started', '#started', -3)
 
-  include SharedMilestoneProperties
   include InternalId
   include Sortable
   include Referable
   include Milestoneish
+  include StripAttribute
+  include CacheMarkdownField
 
   belongs_to :project
+  belongs_to :group
 
   has_many :events, as: :target, dependent: :destroy
 
+  has_many :issues
+  has_many :merge_requests
+  has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
+
+  validate :uniqueness_of_title, if: :title_changed?
+  validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
+
+  strip_attributes :title
+  alias_attribute :name, :title
+
+  cache_markdown_field :title, pipeline: :single_line
+  cache_markdown_field :description
+
   scope :of_projects, ->(ids) { where(project_id: ids) }
+  scope :of_groups, ->(ids) { where(group_id: ids) }
+  scope :active, -> { with_state(:active) }
+  scope :closed, -> { with_state(:closed) }
+
+  state_machine :state, initial: :active do
+    event :close do
+      transition active: :closed
+    end
+
+    event :activate do
+      transition closed: :active
+    end
+
+    state :closed
+
+    state :active
+  end
 
   class << self
     # Searches for milestones matching the given query.
@@ -32,6 +64,14 @@ class Milestone < ActiveRecord::Base
       pattern = "%#{query}%"
 
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+    end
+
+    def filter_by_state(milestones, state)
+      case state
+      when 'closed' then milestones.closed
+      when 'all' then milestones
+      else milestones.active
+      end
     end
   end
 
@@ -111,7 +151,11 @@ class Milestone < ActiveRecord::Base
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    "#{project.to_reference(from_project, full: full)}#{reference}"
+    if project
+      "#{project.to_reference(from_project, full: full)}#{reference}"
+    elsif group
+      "#{group.to_reference}#{reference}"
+    end
   end
 
   def reference_link_text(from_project = nil)
@@ -130,10 +174,28 @@ class Milestone < ActiveRecord::Base
     nil
   end
 
+  def safe_title
+    title.to_slug.normalize.to_s
+  end
+
   private
 
+  def start_date_should_be_less_than_due_date
+    if due_date <= start_date
+      errors.add(:start_date, "Can't be greater than due date")
+    end
+  end
+
+  # Milestone titles must be unique across project milestones and group milestones
   def uniqueness_of_title
-    super(project.group, project)
+    if group
+      title_exists = group.milestones.find_by_title(title).present?
+      title_exists ||= Milestone.where(project: group.projects).find_by_title(title).present?
+    elsif project
+      title_exists = project.milestones.find_by_title(title).present?
+    end
+
+    errors.add(:title, "Must be unique across project milestones and group milestones.") if title_exists
   end
 
   def milestone_format_reference(format = :iid)
