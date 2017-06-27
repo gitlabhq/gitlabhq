@@ -28,7 +28,6 @@ export default {
       required: false,
     },
   },
-<<<<<<< HEAD
 
   directives: {
     tooltip,
@@ -38,14 +37,6 @@ export default {
     loadingIcon,
   },
 
-=======
-  directives: {
-    tooltip,
-  },
-  components: {
-    loadingIcon,
-  },
->>>>>>> c00e5bfa065128c5212a991a5cfcb6f152981d51
   data() {
     return {
       isLoading: false,

@@ -210,7 +210,6 @@ class Admin::UsersController < Admin::ApplicationController
     ]
   end
 
-<<<<<<< HEAD
   def user_params_ee
     [
       :note,
@@ -218,8 +217,6 @@ class Admin::UsersController < Admin::ApplicationController
     ]
   end
 
-=======
->>>>>>> c00e5bfa065128c5212a991a5cfcb6f152981d51
   def update_user(&block)
     result = Users::UpdateService.new(user).execute(&block)
 
