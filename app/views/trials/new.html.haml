@@ -1,0 +1,31 @@
+- page_title 'Trial license'
+%h3.page-title Trial License
+%main{ :role => "main" }
+  .actions
+    = form_tag oauth_authorization_path, method: :post do
+      .form-group
+        = label_tag :first_name
+        = text_field_tag :first_name, nil, class: "form-control", required: true
+      .form-group
+        = label_tag :last_name
+        = text_field_tag :last_name, nil, class: "form-control", required: true
+      .form-group
+        = label_tag :work_email
+        = text_field_tag :work_email, nil, class: "form-control", required: true
+      .form-group
+        = label_tag :company_name
+        = text_field_tag :company_name, nil, class: "form-control", required: true
+      .form-group
+        = label_tag :phone_number
+        = text_field_tag :phone_number, nil, class: "form-control", required: true
+      .form-group
+        = label_tag :number_of_developers
+        = text_field_tag :number_of_developers, nil, class: "form-control", required: true
+      .form-group
+        = label_tag :number_of_users
+        = text_field_tag :number_of_users, nil, class: "form-control", required: true
+      .form-group
+        = label_tag :country
+        = text_field_tag :country, nil, class: "form-control", required: true
+      .form-group
+        = submit_tag 'Start your free trial', class: "btn btn-default"
