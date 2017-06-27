@@ -35,7 +35,9 @@ module PageLayoutHelper
   end
 
   def favicon
-    Rails.env.development? ? 'favicon-blue.ico' : 'favicon.ico'
+    return 'favicon-yellow.ico' if ENV['CANARY'] == 'true'
+    return 'favicon-blue.ico' if Rails.env.development?
+    'favicon.ico'
   end
 
   def page_image
