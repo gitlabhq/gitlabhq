@@ -5,11 +5,15 @@ module Ci
     def rules
       super
 
-      access = pipeline_schedule.project.team.max_member_access(user.id)
-
-      if access == Gitlab::Access::DEVELOPER && pipeline_schedule.owner != user
+      if owned_by_developer? && pipeline_schedule.owner != user
         cannot! :update_pipeline_schedule
       end
+    end
+
+    private
+
+    def owned_by_developer?
+      pipeline_schedule.project.team.developer?(user)
     end
   end
 end
