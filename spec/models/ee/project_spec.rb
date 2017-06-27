@@ -22,7 +22,7 @@ describe Project, models: true do
       before do
         stub_application_setting('check_namespace_plan?' => check_namespace_plan)
         allow(Gitlab).to receive(:com?) { true }
-        expect(License).to receive(:feature_available?).with(feature) { allowed_on_global_license }
+        stub_licensed_features(feature => allowed_on_global_license)
         allow(namespace).to receive(:plan) { plan_license }
       end
 

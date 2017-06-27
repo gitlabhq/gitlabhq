@@ -33,11 +33,13 @@ module EE
     # for a given Namespace plan. This method should consider ancestor groups
     # being licensed.
     def feature_available?(feature)
-      @features_available ||= Hash.new do |h, feature|
-        h[feature] = plans.any? { |plan| License.plan_includes_feature?(EE_PLANS[plan], feature) }
-      end
+      globally_available = License.feature_available?(feature)
 
-      @features_available[feature]
+      if current_application_settings.should_check_namespace_plan?
+        globally_available && feature_available_in_plan?(feature)
+      else
+        globally_available
+      end
     end
 
     def actual_shared_runners_minutes_limit
@@ -64,6 +66,14 @@ module EE
         else
           [plan]
         end
+    end
+
+    def feature_available_in_plan?(feature)
+      @features_available_in_plan ||= Hash.new do |h, feature|
+        h[feature] = plans.any? { |plan| License.plan_includes_feature?(EE_PLANS[plan], feature) }
+      end
+
+      @features_available_in_plan[feature]
     end
   end
 end
