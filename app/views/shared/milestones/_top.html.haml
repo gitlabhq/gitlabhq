@@ -31,17 +31,19 @@
   %h2.title
     = markdown_field(milestone, :title)
   %div
-  - if @milestone.description.present?
+  - if @milestone.is_a?(Milestone) && @milestone.try(:description)
     .description
       .wiki
         = markdown_field(@milestone, :description)
 
-%br
-View
-= link_to 'Issues', issues_group_path(@group, milestone_title: milestone.title)
-or
-= link_to 'Merge Requests', merge_requests_group_path(@group, milestone_title: milestone.title)
-in this milestone
+- if @milestone.is_a?(Milestone)
+  %br
+  View
+  = link_to 'Issues', issues_group_path(@group, milestone_title: milestone.title)
+  or
+  = link_to 'Merge Requests', merge_requests_group_path(@group, milestone_title: milestone.title)
+  in this milestone
+- else
 
 - if milestone.complete?(current_user) && milestone.active?
   .alert.alert-success.prepend-top-default
