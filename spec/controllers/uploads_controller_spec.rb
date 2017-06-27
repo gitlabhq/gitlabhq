@@ -102,7 +102,7 @@ describe UploadsController do
           subject
 
           expect(response.body).to match '\"alt\":\"rails_sample\"'
-          expect(response.body).to match "\"url\":\"/uploads/temp"
+          expect(response.body).to match "\"url\":\"/uploads/system/temp"
         end
 
         it 'does not create an Upload record' do
@@ -119,7 +119,7 @@ describe UploadsController do
           subject
 
           expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
-          expect(response.body).to match "\"url\":\"/uploads/temp"
+          expect(response.body).to match "\"url\":\"/uploads/system/temp"
         end
 
         it 'does not create an Upload record' do
