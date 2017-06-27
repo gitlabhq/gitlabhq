@@ -331,6 +331,16 @@ module EE
       super unless mirror?
     end
 
+    def merge_requests_rebase_enabled
+      super && feature_available?(:merge_request_rebase)
+    end
+    alias_method :merge_requests_rebase_enabled?, :merge_requests_rebase_enabled
+
+    def merge_requests_ff_only_enabled
+      super && feature_available?(:fast_forward_merge)
+    end
+    alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
+
     private
 
     def licensed_feature_available?(feature)
