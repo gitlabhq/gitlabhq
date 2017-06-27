@@ -84,12 +84,15 @@ export default {
 
   mounted() {
     const $input = $(this.$refs.input);
+
     new GfmAutoComplete(this.autoCompleteSources).setup($input, {
       issues: true,
     });
     $input.on('shown-issues.atwho', this.onAutoCompleteToggled.bind(this, true));
     $input.on('hidden-issues.atwho', this.onAutoCompleteToggled.bind(this, false));
     $input.on('inserted-issues.atwho', this.onInput);
+
+    this.$refs.input.focus();
   },
 
   beforeDestroy() {
