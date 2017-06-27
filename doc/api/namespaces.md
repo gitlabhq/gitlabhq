@@ -49,7 +49,6 @@ Example response:
     "full_path": "foo/bar",
     "parent_id": "9",
     "members_count": 5
-  },
   }
 ]
 ```
