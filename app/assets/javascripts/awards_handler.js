@@ -2,7 +2,6 @@
 /* global Flash */
 
 import Cookies from 'js-cookie';
-import { glEmojiTag } from './behaviors/gl_emoji';
 import * as Emoji from './emoji';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
@@ -30,7 +29,7 @@ function renderCategory(name, emojiList, opts = {}) {
       ${emojiList.map(emojiName => `
         <li class="emoji-menu-list-item">
           <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
-            ${glEmojiTag(emojiName, {
+            ${Emoji.glEmojiTag(emojiName, {
               sprite: true,
             })}
           </button>
@@ -369,7 +368,7 @@ export default class AwardsHandler {
   createAwardButtonForVotesBlock(votesBlock, emojiName) {
     const buttonHtml = `
       <button class="btn award-control js-emoji-btn has-tooltip active" title="You" data-placement="bottom">
-        ${glEmojiTag(emojiName)}
+        ${Emoji.glEmojiTag(emojiName)}
         <span class="award-control-text js-counter">1</span>
       </button>
     `;

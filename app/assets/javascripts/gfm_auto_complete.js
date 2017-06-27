@@ -1,5 +1,4 @@
-import { glEmojiTag } from './behaviors/gl_emoji';
-import { validEmojiNames } from './emoji';
+import { validEmojiNames, glEmojiTag } from './emoji';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
 

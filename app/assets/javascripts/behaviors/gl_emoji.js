@@ -1,66 +1,10 @@
 import installCustomElements from 'document-register-element';
-import { emojiMap, normalizeEmojiName } from '../emoji';
+import { emojiImageTag, emojiFallbackImageSrc } from '../emoji';
 import isEmojiUnicodeSupported from '../emoji/support';
 
 installCustomElements(window);
 
-function emojiImageTag(name, src) {
-  return `<img class="emoji" title=":${name}:" alt=":${name}:" src="${src}" width="20" height="20" align="absmiddle" />`;
-}
-
-function assembleFallbackImageSrc(inputName) {
-  let name = normalizeEmojiName(inputName);
-  let emojiInfo = emojiMap[name];
-  // Fallback to question mark for unknown emojis
-  if (!emojiInfo) {
-    name = 'grey_question';
-    emojiInfo = emojiMap[name];
-  }
-  const fallbackImageSrc = `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/emoji/${name}-${emojiInfo.digest}.png`;
-
-  return fallbackImageSrc;
-}
-
-function glEmojiTag(inputName, options) {
-  const opts = { sprite: false, forceFallback: false, ...options };
-  let name = normalizeEmojiName(inputName);
-  let emojiInfo = emojiMap[name];
-  // Fallback to question mark for unknown emojis
-  if (!emojiInfo) {
-    name = 'grey_question';
-    emojiInfo = emojiMap[name];
-  }
-
-  const fallbackImageSrc = assembleFallbackImageSrc(name);
-  const fallbackSpriteClass = `emoji-${name}`;
-
-  const classList = [];
-  if (opts.forceFallback && opts.sprite) {
-    classList.push('emoji-icon');
-    classList.push(fallbackSpriteClass);
-  }
-  const classAttribute = classList.length > 0 ? `class="${classList.join(' ')}"` : '';
-  const fallbackSpriteAttribute = opts.sprite ? `data-fallback-sprite-class="${fallbackSpriteClass}"` : '';
-  let contents = emojiInfo.moji;
-  if (opts.forceFallback && !opts.sprite) {
-    contents = emojiImageTag(name, fallbackImageSrc);
-  }
-
-  return `
-  <gl-emoji
-    ${classAttribute}
-    data-name="${name}"
-    data-fallback-src="${fallbackImageSrc}"
-    ${fallbackSpriteAttribute}
-    data-unicode-version="${emojiInfo.unicodeVersion}"
-    title="${emojiInfo.description}"
-  >
-    ${contents}
-  </gl-emoji>
-  `;
-}
-
-function installGlEmojiElement() {
+export default function installGlEmojiElement() {
   const GlEmojiElementProto = Object.create(HTMLElement.prototype);
   GlEmojiElementProto.createdCallback = function createdCallback() {
     const emojiUnicode = this.textContent.trim();
@@ -91,7 +35,7 @@ function installGlEmojiElement() {
       } else if (hasImageFallback) {
         this.innerHTML = emojiImageTag(name, fallbackSrc);
       } else {
-        const src = assembleFallbackImageSrc(name);
+        const src = emojiFallbackImageSrc(name);
         this.innerHTML = emojiImageTag(name, src);
       }
     }
@@ -101,8 +45,3 @@ function installGlEmojiElement() {
     prototype: GlEmojiElementProto,
   });
 }
-
-export {
-  installGlEmojiElement,
-  glEmojiTag,
-};

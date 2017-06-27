@@ -1,4 +1,4 @@
-import { glEmojiTag } from '~/behaviors/gl_emoji';
+import { glEmojiTag } from '~/emoji';
 import isEmojiUnicodeSupported, {
   isFlagEmoji,
   isKeycapEmoji,
