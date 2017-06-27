@@ -244,6 +244,33 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
 
     describe '.find_all' do
+      it 'should return a return a collection of commits' do
+        commits = described_class.find_all(repository)
+
+        expect(commits).not_to be_empty
+        expect(commits).to all( be_a_kind_of(Gitlab::Git::Commit) )
+      end
+
+      context 'while applying a sort order based on the `order` option' do
+        it "allows ordering topologically (no parents shown before their children)" do
+          expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_TOPO)
+
+          described_class.find_all(repository, order: :topo)
+        end
+
+        it "allows ordering by date" do
+          expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE | Rugged::SORT_TOPO)
+
+          described_class.find_all(repository, order: :date)
+        end
+
+        it "applies no sorting by default" do
+          expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_NONE)
+
+          described_class.find_all(repository)
+        end
+      end
+
       context 'max_count' do
         subject do
           commits = Gitlab::Git::Commit.find_all(
