@@ -1,7 +1,7 @@
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20170622135451_remove_duplicated_variable.rb')
+require Rails.root.join('db', 'migrate', '20170622135451_rename_duplicated_variable_key.rb')
 
-describe RemoveDuplicatedVariable, :migration do
+describe RenameDuplicatedVariableKey, :migration do
   let(:variables) { table(:ci_variables) }
   let(:projects) { table(:projects) }
 
@@ -20,6 +20,15 @@ describe RemoveDuplicatedVariable, :migration do
   it 'correctly remove duplicated records with smaller id' do
     migrate!
 
-    expect(variables.pluck(:id)).to contain_exactly(1, 2, 6, 7, 8)
+    expect(variables.pluck(:id, :key)).to contain_exactly(
+      [1, 'key1'],
+      [2, 'key2'],
+      [3, 'keyX_3'],
+      [4, 'keyX_4'],
+      [5, 'keyY_5'],
+      [6, 'keyX'],
+      [7, 'key7'],
+      [8, 'keyY']
+    )
   end
 end
