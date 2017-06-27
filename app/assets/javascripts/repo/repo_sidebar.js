@@ -18,9 +18,21 @@ export default class RepoSidebar {
         'repo-file':RepoFile,
       },
 
+      created() {
+        this.addPopEventListener();
+      },
+
       data: () => Store,
 
       methods: {
+        addPopEventListener() {
+          window.addEventListener('popstate', () => {
+            this.linkClicked({
+              url: location.href
+            });
+          });
+        },
+
         linkClicked(file) {
           Service.url = file.url;
           Helper.getContent();

@@ -2,6 +2,25 @@
   display: none;
 }
 
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
+}
+
+.tree-content-holder {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+  color: $almost-black;
+
+header {
+  background: $gray-light;
+  padding: 10px 25px;
+  border-bottom: 1px solid $border-color;
+  font-size: $code_font_size;
+}
+
 #sidebar {
   ul {
     list-style-type: none;
@@ -9,6 +28,16 @@
     li {
       border-bottom: 1px solid $border-gray-normal;
       padding: 10px 20px;
+
+      a {
+        color: $almost-black;
+      }
+      .fa {
+        font-size: $code_font_size;
+        margin-right: 5px;
+      }
     }
   }
+}
+  
 }

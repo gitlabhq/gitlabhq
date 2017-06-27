@@ -1,7 +1,9 @@
 .tree-content-holder
+  %header
+    Project
   #sidebar
     %ul
-      %repo-file{ "v-for"=> "file in files", ":file" => "file","@linkclicked" => "linkClicked(file)" }
+      %repo-file{ "v-for" => "file in files", ":key" => "file.id", ":file" => "file","@linkclicked" => "linkClicked(file)" }
   #ide{ data: { url: repo_url }, style: "height:400px;" }
 
   - if tree.readme
