@@ -133,6 +133,19 @@ module MilestonesHelper
     end
   end
 
+  def can_generate_chart?(burndown)
+    return unless @project.feature_available?(:burndown_charts, current_user)
+
+    burndown&.valid? && !burndown&.empty?
+  end
+
+  def show_burndown_placeholder?(warning)
+    return false if cookies['hide_burndown_message'].present?
+    return false unless @project.feature_available?(:burndown_charts, current_user)
+
+    warning.nil? && can?(current_user, :admin_milestone, @project)
+  end
+
   def milestone_merge_request_tab_path(milestone)
     if @project
       merge_requests_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)

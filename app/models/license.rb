@@ -1,18 +1,19 @@
 class License < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
+  AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
+  BURNDOWN_CHARTS_FEATURE = 'BurndownCharts'.freeze
   DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
+  ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
+  EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
   FILE_LOCK_FEATURE = 'GitLab_FileLocks'.freeze
   GEO_FEATURE = 'GitLab_Geo'.freeze
-  AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
-  SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
-  OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
-  ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
-  RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
-  EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
   MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
   FAST_FORWARD_MERGE_FEATURE = 'GitLab_FastForwardMerge'.freeze
+  OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
+  RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
+  SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
 
   FEATURE_CODES = {
     geo: GEO_FEATURE,
@@ -22,10 +23,11 @@ class License < ActiveRecord::Base
     elastic_search: ELASTIC_SEARCH_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
     # Features that make sense to Namespace:
-    fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
+    burndown_charts: BURNDOWN_CHARTS_FEATURE,
     deploy_board: DEPLOY_BOARD_FEATURE,
-    file_lock: FILE_LOCK_FEATURE,
     export_issues: EXPORT_ISSUES_FEATURE,
+    fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
+    file_lock: FILE_LOCK_FEATURE,
     merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
     merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE
   }.freeze
@@ -36,12 +38,13 @@ class License < ActiveRecord::Base
   EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
   EES_FEATURES = [
+    { BURNDOWN_CHARTS_FEATURE => 1 },
     { ELASTIC_SEARCH_FEATURE => 1 },
-    { RELATED_ISSUES_FEATURE => 1 },
-    { FAST_FORWARD_MERGE_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
+    { FAST_FORWARD_MERGE_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
-    { MERGE_REQUEST_SQUASH_FEATURE => 1 }
+    { MERGE_REQUEST_SQUASH_FEATURE => 1 },
+    { RELATED_ISSUES_FEATURE => 1 }
   ].freeze
 
   EEP_FEATURES = [
@@ -68,16 +71,17 @@ class License < ActiveRecord::Base
   EARLY_ADOPTER_FEATURES = [
     # TODO: Add EES features
     # https://gitlab.com/gitlab-org/gitlab-ee/issues/2335)
+    { AUDITOR_USER_FEATURE => 1 },
+    { BURNDOWN_CHARTS_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
+    { EXPORT_ISSUES_FEATURE => 1 },
+    { FAST_FORWARD_MERGE_FEATURE => 1 },
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
-    { AUDITOR_USER_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 },
-    { OBJECT_STORAGE_FEATURE => 1 },
-    { FAST_FORWARD_MERGE_FEATURE => 1 },
-    { EXPORT_ISSUES_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
-    { MERGE_REQUEST_SQUASH_FEATURE => 1 }
+    { MERGE_REQUEST_SQUASH_FEATURE => 1 },
+    { OBJECT_STORAGE_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 }
   ].freeze
 
   FEATURES_BY_PLAN = {
