@@ -613,32 +613,20 @@ module Gitlab
         rugged.rev_parse(oid_or_ref_name)
       end
 
-      # Return hash with submodules info for this repository
+      # Returns url for submodule
       #
       # Ex.
-      #   {
-      #     "current_path/rack"  => {
-      #       "name" => "original_path/rack",
-      #       "id" => "c67be4624545b4263184c4a0e8f887efd0a66320",
-      #       "url" => "git://github.com/chneukirchen/rack.git"
-      #     },
-      #     "encoding" => {
-      #       "id" => ....
-      #     }
-      #   }
+      #   @repository.submodule_url_for('master', 'rack')
+      #   # => git@localhost:rack.git
       #
-      def submodules(ref)
-        commit = rev_parse_target(ref)
-        return {} unless commit
+      def submodule_url_for(ref, path)
+        if submodules(ref).any?
+          submodule = submodules(ref)[path]
 
-        begin
-          content = blob_content(commit, ".gitmodules")
-        rescue InvalidBlobName
-          return {}
+          if submodule
+            submodule['url']
+          end
         end
-
-        parser = GitmodulesParser.new(content)
-        fill_submodule_ids(commit, parser.parse)
       end
 
       # Return total commits count accessible from passed ref
@@ -975,6 +963,23 @@ module Gitlab
       end
 
       private
+
+      # We are trying to deprecate this method because it does a lot of work
+      # but it seems to be used only to look up submodule URL's.
+      # https://gitlab.com/gitlab-org/gitaly/issues/329
+      def submodules(ref)
+        commit = rev_parse_target(ref)
+        return {} unless commit
+
+        begin
+          content = blob_content(commit, ".gitmodules")
+        rescue InvalidBlobName
+          return {}
+        end
+
+        parser = GitmodulesParser.new(content)
+        fill_submodule_ids(commit, parser.parse)
+      end
 
       def alternate_object_directories
         Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).compact
