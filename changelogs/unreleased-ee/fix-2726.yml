@@ -1,0 +1,4 @@
+---
+title: Geo - Fix path_with_namespace for instances of Geo::DeletedProject
+merge_request:
+author:
