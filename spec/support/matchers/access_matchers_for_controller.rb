@@ -25,7 +25,7 @@ module AccessMatchersForController
       user = role
       sign_in(user)
     when *Gitlab::Access.sym_options_with_owner.keys # owner, master, developer, reporter, guest
-      user = cerate_user_by_membership(role, membership)
+      user = create_user_by_membership(role, membership)
       sign_in(user)
     else
       raise ArgumentError, "cannot emulate user #{role}"
@@ -34,7 +34,7 @@ module AccessMatchersForController
     user
   end
 
-  def cerate_user_by_membership(role, membership = nil)
+  def create_user_by_membership(role, membership = nil)
     raise ArgumentError, "cannot emulate #{role} without membership parent" unless membership
 
     if role == :owner && membership.owner
