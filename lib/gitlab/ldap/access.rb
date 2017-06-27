@@ -19,10 +19,7 @@ module Gitlab
           # Whether user is allowed, or not, we should update
           # permissions to keep things clean
           if access.allowed?
-<<<<<<< HEAD
             access.update_user
-=======
->>>>>>> c00e5bfa065128c5212a991a5cfcb6f152981d51
             Users::UpdateService.new(user, last_credential_check_a: Time.now).execute
 
             true
