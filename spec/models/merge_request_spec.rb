@@ -2018,7 +2018,6 @@ describe MergeRequest, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe '#base_pipeline' do
     let!(:pipeline) { create(:ci_empty_pipeline, project: subject.project, sha: subject.diff_base_sha) }
 
@@ -2060,7 +2059,9 @@ describe MergeRequest, models: true do
 
     context 'without codeclimate artifact' do
       it { expect(subject.has_codeclimate_data?).to be_falsey }
-=======
+    end
+  end
+
   describe '#fetch_ref' do
     it 'sets "ref_fetched" flag to true' do
       subject.update!(ref_fetched: nil)
@@ -2094,7 +2095,6 @@ describe MergeRequest, models: true do
         .and_return(false)
 
       expect(subject.ref_fetched?).to be_falsey
->>>>>>> c00e5bfa065128c5212a991a5cfcb6f152981d51
     end
   end
 end

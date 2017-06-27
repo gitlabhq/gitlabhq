@@ -44,11 +44,8 @@ describe Gitlab::UsageData do
         deploy_keys
         deployments
         environments
-<<<<<<< HEAD
         geo_nodes
-=======
         in_review_folder
->>>>>>> c00e5bfa065128c5212a991a5cfcb6f152981d51
         groups
         issues
         keys
