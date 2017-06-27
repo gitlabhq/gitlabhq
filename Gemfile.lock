@@ -461,7 +461,7 @@ GEM
     mimemagic (0.3.0)
     mini_portile2 (2.1.0)
     minitest (5.7.0)
-    mmap2 (2.2.6)
+    mmap2 (2.2.7)
     mousetrap-rails (1.4.6)
     multi_json (1.12.1)
     multi_xml (0.6.0)
