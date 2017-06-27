@@ -68,7 +68,7 @@ module ButtonHelper
         html: true,
         placement: placement,
         container: 'body',
-        title: tooltip_title
+        title: tooltip_title,
         primary_url: (geo_primary_http_url_to_repo(project) if Gitlab::Geo.secondary?)
       }
   end
