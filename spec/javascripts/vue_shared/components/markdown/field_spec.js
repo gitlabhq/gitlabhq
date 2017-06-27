@@ -4,33 +4,47 @@ import fieldComponent from '~/vue_shared/components/markdown/field.vue';
 describe('Markdown field component', () => {
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(() => {
     vm = new Vue({
-      data() {
-        return {
-          text: 'testing\n123',
-        };
+      render(createElement) {
+        return createElement(
+          fieldComponent,
+          {
+            props: {
+              markdownPreviewUrl: '/preview',
+              markdownDocs: '/docs',
+            },
+          },
+          [
+            createElement('textarea', {
+              slot: 'textarea',
+            }),
+          ],
+        );
       },
-      components: {
-        fieldComponent,
-      },
-      template: `
-        <field-component
-          marodown-preview-url="/preview"
-          markdown-docs="/docs"
-        >
-          <textarea
-            slot="textarea"
-            v-model="text">
-          </textarea>
-        </field-component>
-      `,
-    }).$mount();
+    });
+  });
 
-    Vue.nextTick(done);
+  it('creates a new instance of GL form', (done) => {
+    spyOn(gl, 'GLForm');
+    vm.$mount();
+
+    Vue.nextTick(() => {
+      expect(
+        gl.GLForm,
+      ).toHaveBeenCalled();
+
+      done();
+    });
   });
 
   describe('mounted', () => {
+    beforeEach((done) => {
+      vm.$mount();
+
+      Vue.nextTick(done);
+    });
+
     it('renders textarea inside backdrop', () => {
       expect(
         vm.$el.querySelector('.zen-backdrop textarea'),
@@ -98,53 +112,6 @@ describe('Markdown field component', () => {
           expect(
             $.fn.renderGFM,
           ).toHaveBeenCalled();
-
-          done();
-        });
-      });
-    });
-
-    describe('markdown buttons', () => {
-      it('converts single words', (done) => {
-        const textarea = vm.$el.querySelector('textarea');
-
-        textarea.setSelectionRange(0, 7);
-        vm.$el.querySelector('.js-md').click();
-
-        Vue.nextTick(() => {
-          expect(
-            textarea.value,
-          ).toContain('**testing**');
-
-          done();
-        });
-      });
-
-      it('converts a line', (done) => {
-        const textarea = vm.$el.querySelector('textarea');
-
-        textarea.setSelectionRange(0, 0);
-        vm.$el.querySelectorAll('.js-md')[4].click();
-
-        Vue.nextTick(() => {
-          expect(
-            textarea.value,
-          ).toContain('*  testing');
-
-          done();
-        });
-      });
-
-      it('converts multiple lines', (done) => {
-        const textarea = vm.$el.querySelector('textarea');
-
-        textarea.setSelectionRange(0, 50);
-        vm.$el.querySelectorAll('.js-md')[4].click();
-
-        Vue.nextTick(() => {
-          expect(
-            textarea.value,
-          ).toContain('* testing\n* 123');
 
           done();
         });
