@@ -133,9 +133,7 @@ describe Projects::PipelineSchedulesController do
 
       def go
         put :update, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id,
-          schedule: {
-            description: 'a'
-          }
+                     schedule: { description: 'a' }
       end
     end
   end
