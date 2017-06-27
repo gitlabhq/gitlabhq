@@ -130,8 +130,8 @@ describe Geo::RepositorySyncService, services: true do
 
           registry.reload
 
-          expect(registry.last_repository_synced_at).to eq last_repository_synced_at
-          expect(registry.last_repository_successful_sync_at).to eq last_repository_synced_at
+          expect(registry.last_repository_synced_at).to be_within(1.minute).of(last_repository_synced_at)
+          expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(last_repository_synced_at)
         end
 
         it 'does not update last_wiki_successful_sync_at' do
@@ -139,8 +139,8 @@ describe Geo::RepositorySyncService, services: true do
 
           registry.reload
 
-          expect(registry.last_wiki_synced_at).to eq last_wiki_synced_at
-          expect(registry.last_wiki_successful_sync_at).to eq last_wiki_synced_at
+          expect(registry.last_wiki_synced_at).to be_within(1.minute).of(last_wiki_synced_at)
+          expect(registry.last_wiki_successful_sync_at).to be_within(1.minute).of(last_wiki_synced_at)
         end
       end
     end
@@ -245,8 +245,8 @@ describe Geo::RepositorySyncService, services: true do
 
           registry.reload
 
-          expect(registry.last_wiki_synced_at).to eq last_wiki_synced_at
-          expect(registry.last_wiki_successful_sync_at).to eq last_wiki_synced_at
+          expect(registry.last_wiki_synced_at).to be_within(1.minute).of(last_wiki_synced_at)
+          expect(registry.last_wiki_successful_sync_at).to be_within(1.minute).of(last_wiki_synced_at)
         end
 
         it 'resets resync_repository' do
@@ -311,8 +311,8 @@ describe Geo::RepositorySyncService, services: true do
 
           registry.reload
 
-          expect(registry.last_repository_synced_at).to eq last_repository_synced_at
-          expect(registry.last_repository_successful_sync_at).to eq last_repository_synced_at
+          expect(registry.last_repository_synced_at).to be_within(1.minute).of(last_repository_synced_at)
+          expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(last_repository_synced_at)
         end
 
         it 'resets resync_wiki' do
