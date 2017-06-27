@@ -127,7 +127,7 @@ module Geo
       registry.public_send("last_#{type}_synced_at=", started_at)
 
       if finished_at
-        registry.public_send("last_#{type}_successful_sync_at=", started_at)
+        registry.public_send("last_#{type}_successful_sync_at=", finished_at)
         registry.public_send("resync_#{type}=", false)
       end
 
