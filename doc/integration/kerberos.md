@@ -1,5 +1,10 @@
 # Kerberos integration
 
+>**Note:**
+Available in [GitLab Enterprise Edition Starter][ee].
+
+GitLab can integrate with [Kerberos][kerb] as an authentication mechanism.
+
 ## Overview
 
 [Kerberos][kerb] is a secure method for authenticating a request for a service in a
@@ -240,3 +245,4 @@ to a larger value in [the NGINX configuration][nginx].
 [kerb]: https://web.mit.edu/kerberos/
 [mit]: http://web.mit.edu/
 [why-kerb]: http://web.mit.edu/sipb/doc/working/guide/guide/node20.html
+[ee]: https://about.gitlab.com/gitlab-ee/
