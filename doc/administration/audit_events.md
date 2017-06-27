@@ -1,10 +1,16 @@
 # Audit Events
 
+GitLab Enterprise Edition offers a way to view the changes made within the
+GitLab server as a help to system administrators.
+
+GitLab system administrators can also take advantage of the logs located on the
+filesystem, see [the logs system documentation](logs.md) for more details.
+
 ## Overview
 
-**Audit Events** is a tool for GitLab Enterprise Edition administrators to be able to track
-important events such as user access level, target user, and user addition or
-removal.
+**Audit Events** is a tool for GitLab Enterprise Edition administrators to be
+able to track important events such as user access level, target user, and user
+addition or removal.
 
 ## Use-cases
 
@@ -13,38 +19,30 @@ a particular user for a project in your GitLab EE instance.
 - You can use it to track which users have access to certain group of projects
 in your GitLab instance, and who gave them that permission level.
 
-## Description
-
-GitLab Enterprise Edition offers a way to view the changes made within the GitLab server as a help to system administrators.
-
-GitLab system administrators can also take advantage of the logs located on the filesystem, see [the logs system documentation](logs.md) for more details.
-
-
-# Security Events
+## Security events
 
 | Security Event                 | Description                                                                                      |
 |--------------------------------|--------------------------------------------------------------------------------------------------|
 | User added to group or project | Notes the author of the change, target user                                                      |
 | User permission changed        | Notes the author of the change, original permission and new permission, target user              |
 
-
-# Audit Events in Project
+## Audit events in project
 
 To view the Audit Events user needs to have enough permissions to view the project Settings page.
 
-Navigate to Project->Settings->Audit Events to view the Audit Events:
+Navigate to **Project->Settings->Audit Events** to view the Audit Events:
 
 ![audit events project](audit_events_project.png)
 
-# Audit Events in Group
+## Audit events in group
 
 To view the Audit Events user needs to have enough permissions to view the group Settings page.
 
-Navigate to Group->Settings->Audit Events to view the Audit Events:
+Navigate to **Group->Settings->Audit Events** to view the Audit Events:
 
 ![audit events group](audit_events_group.png)
 
-# Audit Log (Admin only)
+## Audit Log (Admin only)
 
 > **Notes:**
 > [Introduced][ee-2336] in GitLab 9.3.
