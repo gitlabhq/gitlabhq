@@ -289,6 +289,43 @@ describe Gitlab::Shell, lib: true do
         expect(find_in_authorized_keys_file(@another_key.id)).to be_truthy
       end
     end
+
+    context 'when keys there are duplicate keys in the file that are not in the DB' do
+      before do
+        gitlab_shell.remove_all_keys
+        gitlab_shell.add_key('key-1234', 'ssh-rsa ASDFASDF')
+        gitlab_shell.add_key('key-1234', 'ssh-rsa ASDFASDF')
+      end
+
+      it 'removes the keys' do
+        expect(find_in_authorized_keys_file(1234)).to be_truthy
+        gitlab_shell.remove_keys_not_found_in_db
+        expect(find_in_authorized_keys_file(1234)).to be_falsey
+      end
+
+      it 'does not run remove more than once per key (in a batch)' do
+        expect(gitlab_shell).to receive(:remove_key).with('key-1234').once
+        gitlab_shell.remove_keys_not_found_in_db
+      end
+    end
+
+    context 'when keys there are duplicate keys in the file that ARE in the DB' do
+      before do
+        gitlab_shell.remove_all_keys
+        @key = create(:key)
+        gitlab_shell.add_key(@key.shell_id, @key.key)
+      end
+
+      it 'does not remove the key' do
+        gitlab_shell.remove_keys_not_found_in_db
+        expect(find_in_authorized_keys_file(@key.id)).to be_truthy
+      end
+
+      it 'does not need to run a SELECT query for that batch, on account of that key' do
+        expect_any_instance_of(ActiveRecord::Relation).not_to receive(:pluck)
+        gitlab_shell.remove_keys_not_found_in_db
+      end
+    end
   end
 
   describe '#batch_read_key_ids' do

@@ -248,12 +248,14 @@ module Gitlab
       return unless self.authorized_keys_enabled?
 
       batch_read_key_ids do |ids_in_file|
+        ids_in_file.uniq!
         keys_in_db = Key.where(id: ids_in_file)
-        if ids_in_file.size > keys_in_db.count
-          ids_to_remove = ids_in_file - keys_in_db.pluck(:id)
-          ids_to_remove.each do |id|
-            remove_key("key-#{id}")
-          end
+
+        return unless ids_in_file.size > keys_in_db.count # optimization
+
+        ids_to_remove = ids_in_file - keys_in_db.pluck(:id)
+        ids_to_remove.each do |id|
+          remove_key("key-#{id}")
         end
       end
     end
