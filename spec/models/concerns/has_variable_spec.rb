@@ -1,10 +1,7 @@
 require 'spec_helper'
 
-describe Ci::Variable, models: true do
-  set(:project) { create(:empty_project) }
-  let(:secret_value) { 'secret' }
-
-  subject { build(:ci_variable, project_id: project.id) }
+describe HasVariable do
+  subject { build(:ci_variable) }
 
   it { is_expected.to validate_presence_of(:key) }
   it { is_expected.to validate_length_of(:key).is_at_most(255) }
@@ -12,31 +9,9 @@ describe Ci::Variable, models: true do
   it { is_expected.not_to allow_value('foo bar').for(:key) }
   it { is_expected.not_to allow_value('foo/bar').for(:key) }
 
-  describe '.unprotected' do
-    subject { described_class.unprotected }
-
-    context 'when variable is protected' do
-      before do
-        create(:ci_variable, :protected)
-      end
-
-      it 'returns nothing' do
-        is_expected.to be_empty
-      end
-    end
-
-    context 'when variable is not protected' do
-      let(:variable) { create(:ci_variable, protected: false) }
-
-      it 'returns the variable' do
-        is_expected.to contain_exactly(variable)
-      end
-    end
-  end
-
   describe '#value' do
     before do
-      subject.value = secret_value
+      subject.value = 'secret'
     end
 
     it 'stores the encrypted value' do
