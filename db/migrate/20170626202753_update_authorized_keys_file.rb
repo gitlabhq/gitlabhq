@@ -17,6 +17,8 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
 
   def up
     if authorized_keys_file_in_use_and_stale?
+      say 'The authorized_keys file is in use, and may be stale. Now bringing it up-to-date in the background...'
+
       # Update nil authorized_keys_enabled to true to ensure that Gitlab::Shell
       # key methods work properly for workers running 9.3.0 during the
       # migration. If the setting remained nil, the workers would not edit the
@@ -24,6 +26,8 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
       update_nil_setting_to_true
 
       update_authorized_keys_file_since(DATETIME_9_3_0_RELEASED)
+    else
+      say 'The authorized_keys file does not need to be updated. Skipping...'
     end
   end
 
@@ -62,7 +66,10 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
     # If the column is already fixed, then the migration wasn't run before now.
     default_value = Gitlab::Database.postgresql? ? 'true' : '1'
 
-    !column_exists?(:application_settings, :authorized_keys_enabled, :boolean, default: default_value, null: false)
+    column_has_no_default = !column_exists?(:application_settings, :authorized_keys_enabled, :boolean, default: default_value, null: false)
+    say "This GitLab installation was #{'never ' unless column_has_no_default}upgraded to exactly version 9.3.0."
+
+    column_has_no_default
   end
 
   def false_negative_warning
