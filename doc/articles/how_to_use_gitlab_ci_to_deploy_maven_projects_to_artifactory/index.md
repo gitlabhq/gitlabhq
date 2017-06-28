@@ -5,6 +5,18 @@
 
 ## Index
 
+- [Introduction](#introduction)
+
+- [Create the simple Maven dependency](#create-the-simple-maven-dependency)
+  - [Get the sources](#get-the-sources)
+  - [Configure Artifactory deployment](#configure-artifactory-deployment)
+  - [Configure GitLab Continuous Integration for `simple-maven-dep`](#configure-gitlab-continuous-integration-for-simple-maven-dep)
+
+- [Create the main Maven application](#create-the-main-maven-application)
+  - [Prepare the application](#prepare-the-application)
+  - [Configure the Artifactory repository location](#configure-the-artifactory-repository-location)
+  - [Configure GitLab Continuous Integration for `simple-maven-app`](#configure-gitlab-continuous-integration-for-simple-maven-app)
+
 ## Introduction
 
 In this article, we're going to see how we can leverage the power of [GitLab Continuous Integration](https://about.gitlab.com/features/gitlab-ci-cd/) to build a [Maven](https://maven.apache.org/) project, deploy it to [Artifactory](https://www.jfrog.com/artifactory/) and then use it from another Maven application as a dependency.
@@ -23,7 +35,7 @@ We also assume that an Artifactory instance is available and reachable from the 
 First of all, we need an application to work with: in this specific case we're going to make it simple, but it could be any Maven application. This will be our dependency we want to package and deploy to Artifactory, in order to be available to other projects.
 
 For this article we'll use a Maven app that can be cloned at `https://gitlab.com/gitlab-examples/maven/simple-maven-dep.git`, so let's login into our GitLab account and create a new project 
-with **Import project from ➔ Repo by URL**.
+with **Import project from ➔ Repo by URL**. Let's make it `public` so anyone can contribute!
 
 This application is nothing more than a basic class with a stub for a JUnit based test suite.
 It exposes a method called `hello` that accepts a string as input, and prints an hello message on the screen.
@@ -38,6 +50,7 @@ The application is ready to use, but we need some additional steps for deploying
 1. login to Artifactory with your user's credentials
 2. from the main screen, click on the `libs-release-local` item in the **Set Me Up** panel
 3. copy to clipboard the configuration snippet under the **Deploy** paragraph
+4. change the `url` value in order to have it configurable via secret variables
 
 The snippet should look like this:
 
@@ -46,11 +59,10 @@ The snippet should look like this:
     <repository>
         <id>central</id>
         <name>83d43b5afeb5-releases</name>
-        <url>${repoURL}/libs-release-local</url>
+        <url>${repoUrl}/libs-release-local</url>
     </repository>
 </distributionManagement>
 ```
-**Note**: `url` has been added in order to make it configurable but could be kept static, we'll see later how to use secret variables for this.
 
 Now let's copy the snippet in the `pom.xml` file for our project, just after the `dependencies` section. Easy!
 
@@ -73,7 +85,7 @@ For this scope, let's create a file `.maven-settings.xml` and copy the following
 
 **Note**: `username` and `password` will be replaced by the correct values using secret variables.
 
-We should remember to commit this file to our repo!
+We should remember to commit all the changes to our repo!
 
 #### Configure GitLab Continuous Integration for `simple-maven-dep`
 
@@ -109,7 +121,7 @@ deploy:
   stage: deploy
   script:
     - cp .maven-settings.xml ~/.m2/settings.xml
-    - mvn deploy -DrepoUrl=$ARTIFACTORY_REPO_URL -DrepoUsername=$ARTIFACTORY_REPO_USER -DrepoPassword=$ARTIFACTORY_REPO_KEY
+    - mvn deploy -DrepoUrl=$ARTIFACTORY_REPO_URL -DrepoUser=$ARTIFACTORY_REPO_USER -DrepoKey=$ARTIFACTORY_REPO_KEY
   only:
     - master
 ```
@@ -139,7 +151,7 @@ Wow! We did it! Checking in Artifactory will confirm that we've a new artifact a
 
 Now that we've our dependency available on Artifactory, we want to use it!
 
-Let's create another application by cloning the one we can find at `https://gitlab.com/gitlab-examples/maven/simple-maven-app.git`.
+Let's create another application by cloning the one we can find at `https://gitlab.com/gitlab-examples/maven/simple-maven-app.git`, and make it `public` too!  
 If you look at the `src/main/java/com/example/app/App.java` file you can see that it imports the `com.example.dep.Dep` class and calls the `hello` method passing `GitLab` as a parameter.
 
 Since Maven doesn't know how to resolve the dependency, we need to modify the configuration.  
@@ -189,6 +201,9 @@ cache:
   paths:
     - target/
 
+before_script:
+  - cp .maven-settings.xml ~/.m2/settings.xml
+
 build:
   stage: build
   script:
@@ -202,7 +217,6 @@ test:
 run:
   stage: run
   script:
-    - cp .maven-settings.xml ~/.m2/settings.xml
     - mvn package
     - mvn exec:java -Dexec.mainClass="com.example.app.App"
 ```
