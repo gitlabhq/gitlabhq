@@ -66,9 +66,9 @@ The snippet should look like this:
 
 Now let's copy the snippet in the `pom.xml` file for our project, just after the `dependencies` section. Easy!
 
-Another step we need to do before we can deploy our dependency to Artifactory is to configure authentication data. It is a simple task, but Maven requires it to stay in a file called `settings.xml` that has to be in the `.m2` subfolder in the user's homedir. Since we want to use GitLab Runner to automatically deploy the application, we should create the file in our project home and then move it to the proper location with a specific command in the `.gitlab-ci.yml`.
+Another step we need to do before we can deploy our dependency to Artifactory is to configure authentication data. It is a simple task, but Maven requires it to stay in a file called `settings.xml` that has to be in the `.m2` subfolder in the user's homedir. Since we want to use GitLab Runner to automatically deploy the application, we should create the file in our project home and set a command line parameter in `.gitlab-ci.yml` to use our location instead of the default one.
 
-For this scope, let's create a file `.maven-settings.xml` and copy the following text in it.
+For this scope, let's create a folder called `.m2` in the root of our repo. Inside we must create a file named `settings.xml` and copy the following text in it.
 
 ```xml
 <settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"
@@ -103,30 +103,34 @@ Let's see the content of the file:
 ```yaml
 image: maven:latest
 
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
 cache:
   paths:
+    - .m2/
     - target/
 
 build:
   stage: build
   script:
-    - mvn compile
+    - mvn $MAVEN_CLI_OPTS compile
 
 test:
   stage: test
   script:
-    - mvn test
+    - mvn $MAVEN_CLI_OPTS test
 
 deploy:
   stage: deploy
   script:
-    - cp .maven-settings.xml ~/.m2/settings.xml
-    - mvn deploy -DrepoUrl=$ARTIFACTORY_REPO_URL -DrepoUser=$ARTIFACTORY_REPO_USER -DrepoKey=$ARTIFACTORY_REPO_KEY
+    - mvn deploy $fMAVEN_CLI_OPTS -DrepoUrl=$ARTIFACTORY_REPO_URL -DrepoUser=$ARTIFACTORY_REPO_USER -DrepoKey=$ARTIFACTORY_REPO_KEY
   only:
     - master
 ```
 
-We're going to use the latest Docker image publicly available for Maven, which already contains everything we need to perform our tasks. Caching the `target` folder, that is the location where our application will be created, is useful in order to speed up the process: Maven runs all its phases in a sequential order, so executing `mvn test` will automatically run `mvn compile` if needed, but we want to improve performances by caching everything that has been already created in a previous stage. Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the repository.
+We're going to use the latest Docker image publicly available for Maven, which already contains everything we need to perform our tasks. Environment variables are set to instruct Maven to use the homedir of our repo instead of the user's home. Caching the `.m2` folder, where all the Maven files are stored, and the `target` folder, that is the location where our application will be created, is useful in order to speed up the process: Maven runs all its phases in a sequential order, so executing `mvn test` will automatically run `mvn compile` if needed, but we want to improve performances by caching everything that has been already created in a previous stage. Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the repository.
 
 Deployment copies the configuration file in the proper location, and then deploys to Artifactory as defined by the secret variables we set up earlier. The deployment occurs only if we're pushing or merging to `master` branch, so development versions are tested but not published.
 
@@ -170,14 +174,14 @@ Let's just copy this in the `dependencies` section of our `pom.xml` file.
 #### Configure the Artifactory repository location
 
 At this point we defined our dependency for the application, but we still miss where we can find the required files.  
-We need to create a `.maven-settings.xml` file as we did for our dependency project, and move it to the proper location for each job.
+We need to create a `.m2/settings.xml` file as we did for our dependency project, and let Maven know the location using environment variables.
 
 Here is how we can get the content of the file directly from Artifactory:
 1. from the main screen, click on the `libs-release-local` item in the **Set Me Up** panel
 2. click on **Generate Maven Settings**
 3. click on **Generate Settings**
 3. copy to clipboard the configuration file
-4. save the file as `.maven-settings.xml` in your repo, removing the `servers` section entirely
+4. save the file as `.m2/settings.xml` in your repo, removing the `servers` section entirely
 
 Now we're ready to use our Artifactory repository to resolve dependencies and use `simple-maven-dep` in our application!
 
@@ -197,28 +201,30 @@ stages:
   - test
   - run
 
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
 cache:
   paths:
+    - .m2/
     - target/
-
-before_script:
-  - cp .maven-settings.xml ~/.m2/settings.xml
 
 build:
   stage: build
   script:
-    - mvn compile
+    - mvn $MAVEN_CLI_OPTS compile
 
 test:
   stage: test
   script:
-    - mvn test
+    - mvn $MAVEN_CLI_OPTS test
 
 run:
   stage: run
   script:
-    - mvn package
-    - mvn exec:java -Dexec.mainClass="com.example.app.App"
+    - mvn $MAVEN_CLI_OPTS package
+    - mvn $MAVEN_CLI_OPTS exec:java -Dexec.mainClass="com.example.app.App"
 ```
 
 And that's it! In the `run` job output log we will find a friendly hello to GitLab!
