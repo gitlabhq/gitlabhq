@@ -1600,6 +1600,7 @@ describe Project, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe 'handling import URL' do
     context 'when project is a mirror' do
       it 'returns the full URL' do
@@ -1622,6 +1623,8 @@ describe Project, models: true do
     end
   end
 
+=======
+>>>>>>> upstream/master
   describe '#user_can_push_to_empty_repo?' do
     let(:project) { create(:empty_project) }
     let(:user)    { create(:user) }

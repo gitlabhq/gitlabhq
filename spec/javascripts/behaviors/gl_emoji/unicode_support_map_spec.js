@@ -1,4 +1,4 @@
-import { getUnicodeSupportMap } from '~/behaviors/gl_emoji/unicode_support_map';
+import getUnicodeSupportMap from '~/emoji/support/unicode_support_map';
 import AccessorUtilities from '~/lib/utils/accessor';
 
 describe('Unicode Support Map', () => {

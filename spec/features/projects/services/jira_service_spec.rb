@@ -6,7 +6,11 @@ feature 'Setup Jira service', :feature, :js do
   let(:service) { project.create_jira_service }
 
   let(:url) { 'http://jira.example.com' }
-  let(:project_url) { 'http://username:password@jira.example.com/rest/api/2/project/GitLabProject' }
+
+  def stub_project_url
+    WebMock.stub_request(:get, 'http://jira.example.com/rest/api/2/project/GitLabProject')
+      .with(basic_auth: %w(username password))
+  end
 
   def fill_form(active = true)
     check 'Active' if active
@@ -28,7 +32,7 @@ feature 'Setup Jira service', :feature, :js do
   describe 'user sets and activates Jira Service' do
     context 'when Jira connection test succeeds' do
       before do
-        WebMock.stub_request(:get, project_url)
+        stub_project_url
       end
 
       it 'activates the JIRA service' do
@@ -44,7 +48,7 @@ feature 'Setup Jira service', :feature, :js do
 
     context 'when Jira connection test fails' do
       before do
-        WebMock.stub_request(:get, project_url).to_return(status: 401)
+        stub_project_url.to_return(status: 401)
       end
 
       it 'shows errors when some required fields are not filled in' do

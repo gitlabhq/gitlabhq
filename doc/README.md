@@ -3,7 +3,11 @@
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
 
+<<<<<<< HEAD
 We offer four different products for you and your organization:
+=======
+We offer four different products for you and your company:
+>>>>>>> upstream/master
 
 - **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
 self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
@@ -15,6 +19,13 @@ self-hosted, fully featured solution of GitLab, available under distinct [subscr
 plus premium features available in each version: **Enterprise Edition Starter**
 (**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
 **EES** is also available in **EEP**.
+<<<<<<< HEAD
+=======
+
+**Note:** _We are unifying the documentation for CE and EE. To check if certain feature is
+available in CE or EE, look for a note right below the page title containing the GitLab
+version which introduced that feature._
+>>>>>>> upstream/master
 
 ----
 

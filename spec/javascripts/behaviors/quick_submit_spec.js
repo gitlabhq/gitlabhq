@@ -40,15 +40,28 @@ import '~/behaviors/quick_submit';
     it('disables input of type submit', function() {
       const submitButton = $('.js-quick-submit input[type=submit]');
       this.textarea.trigger(keydownEvent());
+
       expect(submitButton).toBeDisabled();
     });
     it('disables button of type submit', function() {
-      // button doesn't exist in fixture, add it manually
-      const submitButton = $('<button type="submit">Submit it</button>');
-      submitButton.insertAfter(this.textarea);
+      const submitButton = $('.js-quick-submit input[type=submit]');
+      this.textarea.trigger(keydownEvent());
+
+      expect(submitButton).toBeDisabled();
+    });
+    it('only clicks one submit', function() {
+      const existingSubmit = $('.js-quick-submit input[type=submit]');
+      // Add an extra submit button
+      const newSubmit = $('<button type="submit">Submit it</button>');
+      newSubmit.insertAfter(this.textarea);
+
+      const oldClick = spyOnEvent(existingSubmit, 'click');
+      const newClick = spyOnEvent(newSubmit, 'click');
 
       this.textarea.trigger(keydownEvent());
-      expect(submitButton).toBeDisabled();
+
+      expect(oldClick).not.toHaveBeenTriggered();
+      expect(newClick).toHaveBeenTriggered();
     });
     // We cannot stub `navigator.userAgent` for CI's `rake karma` task, so we'll
     // only run the tests that apply to the current platform
