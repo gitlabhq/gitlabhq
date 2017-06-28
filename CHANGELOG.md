@@ -2,6 +2,11 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.2 (2017-06-27)
+
+- API: Fix optional arugments for POST :id/variables. !12474
+- Bump premailer-rails gem to 1.9.7 and its dependencies to prevent network retrieval of assets.
+
 ## 9.3.1 (2017-06-26)
 
 - Fix reversed breadcrumb order for nested groups. !12322
