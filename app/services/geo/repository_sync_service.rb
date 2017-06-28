@@ -17,7 +17,7 @@ module Geo
         log('Finished repository sync')
       end
     rescue ActiveRecord::RecordNotFound
-      logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
+      Rails.logger.error("#{self.class.name}: Couldn't find project with ID=#{project_id}, skipping syncing")
     end
 
     private
