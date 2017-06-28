@@ -30,12 +30,12 @@ feature 'Download buttons in files tree', feature: true do
     context 'with artifacts' do
       before do
         visit namespace_project_tree_path(
-          project.namespace, project, project.default_branch)
+          *project, project.default_branch)
       end
 
       scenario 'shows download artifacts button' do
         href = latest_succeeded_namespace_project_artifacts_path(
-          project.namespace, project, "#{project.default_branch}/download",
+          *project, "#{project.default_branch}/download",
           job: 'build')
 
         expect(page).to have_link "Download '#{build.name}'", href: href

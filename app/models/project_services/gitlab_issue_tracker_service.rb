@@ -12,7 +12,7 @@ class GitlabIssueTrackerService < IssueTrackerService
   end
 
   def project_url
-    namespace_project_issues_url(project.namespace, project)
+    namespace_project_issues_url(*project)
   end
 
   def new_issue_url
@@ -24,7 +24,7 @@ class GitlabIssueTrackerService < IssueTrackerService
   end
 
   def project_path
-    namespace_project_issues_path(project.namespace, project)
+    namespace_project_issues_path(*project)
   end
 
   def new_issue_path

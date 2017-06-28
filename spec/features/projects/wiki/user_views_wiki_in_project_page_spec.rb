@@ -27,7 +27,7 @@ describe 'Projects > Wiki > User views wiki in project page', feature: true do
       end
 
       it 'displays the correct URL for the link' do
-        visit namespace_project_path(project.namespace, project)
+        visit namespace_project_path(*project)
         expect(page).to have_link(
           'some link',
           href: namespace_project_wiki_path(

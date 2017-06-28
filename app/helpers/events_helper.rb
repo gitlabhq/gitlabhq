@@ -99,13 +99,13 @@ module EventsHelper
 
   def event_feed_url(event)
     if event.issue?
-      namespace_project_issue_url(event.project.namespace, event.project,
+      namespace_project_issue_url(*event.project,
                                   event.issue)
     elsif event.merge_request?
       namespace_project_merge_request_url(event.project.namespace,
                                           event.project, event.merge_request)
     elsif event.commit_note?
-      namespace_project_commit_url(event.project.namespace, event.project,
+      namespace_project_commit_url(*event.project,
                                    event.note_target)
     elsif event.note?
       if event.note_target
@@ -119,15 +119,15 @@ module EventsHelper
   def push_event_feed_url(event)
     if event.push_with_commits? && event.md_ref?
       if event.commits_count > 1
-        namespace_project_compare_url(event.project.namespace, event.project,
+        namespace_project_compare_url(*event.project,
                                       from: event.commit_from, to:
                                       event.commit_to)
       else
-        namespace_project_commit_url(event.project.namespace, event.project,
+        namespace_project_commit_url(*event.project,
                                      id: event.commit_to)
       end
     else
-      namespace_project_commits_url(event.project.namespace, event.project,
+      namespace_project_commits_url(*event.project,
                                     event.ref_name)
     end
   end

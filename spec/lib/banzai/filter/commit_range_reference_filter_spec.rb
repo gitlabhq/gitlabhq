@@ -29,14 +29,14 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
       doc = reference_filter("See #{reference2}")
 
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_compare_url(project.namespace, project, range2.to_param)
+        .to eq urls.namespace_project_compare_url(*project, range2.to_param)
     end
 
     it 'links to a valid three-dot reference' do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_compare_url(project.namespace, project, range.to_param)
+        .to eq urls.namespace_project_compare_url(*project, range.to_param)
     end
 
     it 'links to a valid short ID' do
@@ -94,7 +94,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
-      expect(link).to eq urls.namespace_project_compare_url(project.namespace, project, from: commit1.id, to: commit2.id, only_path: true)
+      expect(link).to eq urls.namespace_project_compare_url(*project, from: commit1.id, to: commit2.id, only_path: true)
     end
   end
 

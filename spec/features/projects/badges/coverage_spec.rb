@@ -71,7 +71,7 @@ feature 'test coverage badge' do
 
   def show_test_coverage_badge(job: nil)
     visit coverage_namespace_project_badges_path(
-      project.namespace, project, ref: :master, job: job, format: :svg)
+      *project, ref: :master, job: job, format: :svg)
   end
 
   def expect_coverage_badge(coverage)

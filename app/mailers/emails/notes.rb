@@ -43,7 +43,7 @@ module Emails
     private
 
     def note_target_url_options
-      [@project.namespace, @project, @note.noteable, anchor: "note_#{@note.id}"]
+      [*@project, @note.noteable, anchor: "note_#{@note.id}"]
     end
 
     def note_thread_options(recipient_id)

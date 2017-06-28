@@ -53,7 +53,7 @@ describe NotesHelper do
           let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
           it 'returns the diff path with the line code' do
-            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: discussion.line_code))
+            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(*project, merge_request, anchor: discussion.line_code))
           end
         end
 
@@ -77,7 +77,7 @@ describe NotesHelper do
           end
 
           it 'returns the diff version path with the line code' do
-            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: merge_request_diff1, anchor: discussion.line_code))
+            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(*project, merge_request, diff_id: merge_request_diff1, anchor: discussion.line_code))
           end
         end
 
@@ -101,7 +101,7 @@ describe NotesHelper do
           end
 
           it 'returns the diff version comparison path with the line code' do
-            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: merge_request_diff3, start_sha: merge_request_diff1.head_commit_sha, anchor: discussion.line_code))
+            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(*project, merge_request, diff_id: merge_request_diff3, start_sha: merge_request_diff1.head_commit_sha, anchor: discussion.line_code))
           end
         end
 
@@ -129,7 +129,7 @@ describe NotesHelper do
           end
 
           it 'returns the diff path with the line code' do
-            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: discussion.line_code))
+            expect(helper.discussion_path(discussion)).to eq(diffs_namespace_project_merge_request_path(*project, merge_request, anchor: discussion.line_code))
           end
         end
 
@@ -160,7 +160,7 @@ describe NotesHelper do
         let(:discussion) { create(:diff_note_on_commit, project: project).to_discussion }
 
         it 'returns the commit path with the line code' do
-          expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(project.namespace, project, commit, anchor: discussion.line_code))
+          expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(*project, commit, anchor: discussion.line_code))
         end
       end
 
@@ -168,7 +168,7 @@ describe NotesHelper do
         let(:discussion) { create(:legacy_diff_note_on_commit, project: project).to_discussion }
 
         it 'returns the commit path with the line code' do
-          expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(project.namespace, project, commit, anchor: discussion.line_code))
+          expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(*project, commit, anchor: discussion.line_code))
         end
       end
 
@@ -176,7 +176,7 @@ describe NotesHelper do
         let(:discussion) { create(:discussion_note_on_commit, project: project).to_discussion }
 
         it 'returns the commit path' do
-          expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(project.namespace, project, commit))
+          expect(helper.discussion_path(discussion)).to eq(namespace_project_commit_path(*project, commit))
         end
       end
     end
@@ -245,7 +245,7 @@ describe NotesHelper do
       @snippet = create(:project_snippet, project: @project)
       @note = create(:note_on_personal_snippet)
 
-      expect(helper.form_resources).to eq([@project.namespace, @project, @note])
+      expect(helper.form_resources).to eq([*@project, @note])
     end
 
     it 'returns namespace, project and note path for other noteables' do
@@ -253,7 +253,7 @@ describe NotesHelper do
       @project = create(:empty_project, path: 'test', namespace: namespace)
       @note = create(:note_on_issue, project: @project)
 
-      expect(helper.form_resources).to eq([@project.namespace, @project, @note])
+      expect(helper.form_resources).to eq([*@project, @note])
     end
   end
 

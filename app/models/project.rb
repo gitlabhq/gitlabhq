@@ -665,6 +665,12 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # This enables us to write `namespace_project_path(*project)` instead of
+  # `namespace_project_path(*project)` in views.
+  def to_a
+    [namespace, self]
+  end
+
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     if full || cross_namespace_reference?(from)
@@ -683,7 +689,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    Gitlab::Routing.url_helpers.namespace_project_url(self.namespace, self)
+    Gitlab::Routing.url_helpers.namespace_project_url(*self)
   end
 
   def new_issue_address(author)

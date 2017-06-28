@@ -20,7 +20,7 @@ module Gitlab
         end
 
         def link_url
-          namespace_project_commits_url(@project.namespace, @project, id: @ref)
+          namespace_project_commits_url(*@project, id: @ref)
         end
       end
     end

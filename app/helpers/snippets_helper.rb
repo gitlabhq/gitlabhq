@@ -10,7 +10,7 @@ module SnippetsHelper
 
   def download_snippet_path(snippet)
     if snippet.project_id
-      raw_namespace_project_snippet_path(@project.namespace, @project, snippet, inline: false)
+      raw_namespace_project_snippet_path(*@project, snippet, inline: false)
     else
       raw_snippet_path(snippet, inline: false)
     end
@@ -21,7 +21,7 @@ module SnippetsHelper
   # @returns String, path to snippet index
   def subject_snippets_path(subject = nil, opts = nil)
     if subject.is_a?(Project)
-      namespace_project_snippets_path(subject.namespace, subject, opts)
+      namespace_project_snippets_path(*subject, opts)
     else # assume subject === User
       dashboard_snippets_path(opts)
     end

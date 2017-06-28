@@ -24,6 +24,6 @@ class AnalyticsIssueEntity < Grape::Entity
   private
 
   def url_to(route, id)
-    public_send("#{route}_url", request.project.namespace, request.project, id)
+    public_send("#{route}_url", *request.project, id)
   end
 end

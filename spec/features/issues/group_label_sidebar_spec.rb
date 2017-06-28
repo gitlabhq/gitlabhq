@@ -12,7 +12,7 @@ describe 'Group label on issue', :feature do
       label_name: [feature.name]
     )
 
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit namespace_project_issue_path(*project, issue)
 
     link = find('.issuable-show-labels a')
 

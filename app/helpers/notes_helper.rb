@@ -69,11 +69,11 @@ module NotesHelper
 
       path_params = version_params.merge(anchor: discussion.line_code)
 
-      diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, path_params)
+      diffs_namespace_project_merge_request_path(*discussion.project, discussion.noteable, path_params)
     elsif discussion.for_commit?
       anchor = discussion.line_code if discussion.diff_discussion?
 
-      namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor)
+      namespace_project_commit_path(*discussion.project, discussion.noteable, anchor: anchor)
     end
   end
 
@@ -94,7 +94,7 @@ module NotesHelper
     if note.noteable.is_a?(PersonalSnippet)
       snippet_note_path(note.noteable, note)
     else
-      namespace_project_note_path(project.namespace, project, note)
+      namespace_project_note_path(*project, note)
     end
   end
 

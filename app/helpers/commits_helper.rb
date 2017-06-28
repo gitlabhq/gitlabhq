@@ -30,7 +30,7 @@ module CommitsHelper
     crumbs = content_tag(:li) do
       link_to(
         @project.path,
-        namespace_project_commits_path(@project.namespace, @project, @ref)
+        namespace_project_commits_path(*@project, @ref)
       )
     end
 
@@ -86,20 +86,20 @@ module CommitsHelper
     if @path.blank?
       return link_to(
         _("Browse Files"),
-        namespace_project_tree_path(project.namespace, project, commit),
+        namespace_project_tree_path(*project, commit),
         class: "btn btn-default"
       )
     elsif @repo.blob_at(commit.id, @path)
       return link_to(
         _("Browse File"),
-        namespace_project_blob_path(project.namespace, project,
+        namespace_project_blob_path(*project,
                                     tree_join(commit.id, @path)),
         class: "btn btn-default"
       )
     elsif @path.present?
       return link_to(
         _("Browse Directory"),
-        namespace_project_tree_path(project.namespace, project,
+        namespace_project_tree_path(*project,
                                     tree_join(commit.id, @path)),
         class: "btn btn-default"
       )
@@ -165,7 +165,7 @@ module CommitsHelper
         notice: "#{edit_in_new_fork_notice} Try to #{action} this commit again.",
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_forks_path(@project.namespace, @project,
+      fork_path = namespace_project_forks_path(*@project,
         namespace_key: current_user.namespace.id,
         continue: continue_params)
 
@@ -175,7 +175,7 @@ module CommitsHelper
 
   def view_file_button(commit_sha, diff_new_path, project)
     link_to(
-      namespace_project_blob_path(project.namespace, project,
+      namespace_project_blob_path(*project,
                                   tree_join(commit_sha, diff_new_path)),
       class: 'btn view-file js-view-file'
     ) do

@@ -79,7 +79,7 @@ describe Import::GitlabController do
       context "when the GitLab.com user and GitLab server user's usernames match" do
         it "takes the current user's namespace" do
           expect(Gitlab::GitlabImport::ProjectCreator)
-            .to receive(:new).with(gitlab_repo, user.namespace, user, access_params)
+            .to receive(:new).with(gitlab_repo, *user, access_params)
             .and_return(double(execute: true))
 
           post :create, format: :js
@@ -91,7 +91,7 @@ describe Import::GitlabController do
 
         it "takes the current user's namespace" do
           expect(Gitlab::GitlabImport::ProjectCreator)
-            .to receive(:new).with(gitlab_repo, user.namespace, user, access_params)
+            .to receive(:new).with(gitlab_repo, *user, access_params)
             .and_return(double(execute: true))
 
           post :create, format: :js
@@ -166,7 +166,7 @@ describe Import::GitlabController do
 
           it "takes the current user's namespace" do
             expect(Gitlab::GitlabImport::ProjectCreator)
-              .to receive(:new).with(gitlab_repo, user.namespace, user, access_params)
+              .to receive(:new).with(gitlab_repo, *user, access_params)
               .and_return(double(execute: true))
 
             post :create, format: :js

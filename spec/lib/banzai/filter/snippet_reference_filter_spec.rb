@@ -23,7 +23,7 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).to eq urls
-        .namespace_project_snippet_url(project.namespace, project, snippet)
+        .namespace_project_snippet_url(*project, snippet)
     end
 
     it 'links with adjacent text' do
@@ -75,7 +75,7 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
-      expect(link).to eq urls.namespace_project_snippet_url(project.namespace, project, snippet, only_path: true)
+      expect(link).to eq urls.namespace_project_snippet_url(*project, snippet, only_path: true)
     end
   end
 

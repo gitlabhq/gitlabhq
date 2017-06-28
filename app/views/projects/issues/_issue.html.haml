@@ -25,7 +25,7 @@
         by #{link_to_member(@project, issue.author, avatar: false)}
         - if issue.milestone
           &nbsp;
-          = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
+          = link_to namespace_project_issues_path(*issue.project, milestone_title: issue.milestone.title) do
             = icon('clock-o')
             = issue.milestone.title
         - if issue.due_date

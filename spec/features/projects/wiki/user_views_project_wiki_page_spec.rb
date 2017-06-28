@@ -26,7 +26,7 @@ feature 'Projects > Wiki > User views the wiki page', feature: true do
   end
 
   scenario 'Visit Wiki Page Current Commit' do
-    visit namespace_project_wiki_path(project.namespace, project, wiki_page)
+    visit namespace_project_wiki_path(*project, wiki_page)
 
     expect(page).to have_selector('a.btn', text: 'Edit')
   end

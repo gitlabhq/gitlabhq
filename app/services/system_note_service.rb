@@ -282,7 +282,7 @@ module SystemNoteService
     body = "changed this line in"
     if version_params = merge_request.version_params_for(diff_refs)
       line_code = change_position.line_code(project.repository)
-      url = url_helpers.diffs_namespace_project_merge_request_url(project.namespace, project, merge_request, version_params.merge(anchor: line_code))
+      url = url_helpers.diffs_namespace_project_merge_request_url(*project, merge_request, version_params.merge(anchor: line_code))
 
       body << " [version #{version_index} of the diff](#{url})"
     else
@@ -413,7 +413,7 @@ module SystemNoteService
   #
   #   "created branch `201-issue-branch-button`"
   def new_issue_branch(issue, project, author, branch)
-    link = url_helpers.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
+    link = url_helpers.namespace_project_compare_url(*project, from: project.default_branch, to: branch)
 
     body = "created branch [`#{branch}`](#{link})"
 

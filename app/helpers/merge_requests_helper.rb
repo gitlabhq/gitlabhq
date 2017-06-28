@@ -49,7 +49,7 @@ module MergeRequestsHelper
 
   def mr_change_branches_path(merge_request)
     new_namespace_project_merge_request_path(
-      @project.namespace, @project,
+      *@project,
       merge_request: {
         source_project_id: merge_request.source_project_id,
         target_project_id: merge_request.target_project_id,
@@ -83,7 +83,7 @@ module MergeRequestsHelper
 
   def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)
     diffs_namespace_project_merge_request_path(
-      project.namespace, project, merge_request,
+      *project, merge_request,
       diff_id: merge_request_diff.id, start_sha: start_sha)
   end
 

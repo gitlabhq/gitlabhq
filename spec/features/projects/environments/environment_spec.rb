@@ -114,7 +114,7 @@ feature 'Environment', :feature do
                 before do
                   # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
                   allow_any_instance_of(Environment).to receive(:terminals) { nil }
-                  visit terminal_namespace_project_environment_path(project.namespace, project, environment)
+                  visit terminal_namespace_project_environment_path(*project, environment)
                 end
 
                 it 'displays a web terminal' do
@@ -221,7 +221,7 @@ feature 'Environment', :feature do
     end
 
     scenario 'user deletes the branch with running environment' do
-      visit namespace_project_branches_path(project.namespace, project, search: 'feature')
+      visit namespace_project_branches_path(*project, search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
         page.within('.js-branch-feature') { find('a.btn-remove').click }
@@ -255,6 +255,6 @@ feature 'Environment', :feature do
   end
 
   def have_terminal_button
-    have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
+    have_link(nil, href: terminal_namespace_project_environment_path(*project, environment))
   end
 end

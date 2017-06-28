@@ -71,7 +71,7 @@ module Gitlab
     end
 
     def wiki_page_url
-      namespace_project_wiki_url(object.wiki.project.namespace, object.wiki.project, object.slug)
+      namespace_project_wiki_url(*object.wiki.project, object.slug)
     end
   end
 end

@@ -91,7 +91,7 @@ module CreatesCommit
   end
 
   def existing_merge_request_path
-    namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    namespace_project_merge_request_path(*@project, @merge_request)
   end
 
   def merge_request_exists?

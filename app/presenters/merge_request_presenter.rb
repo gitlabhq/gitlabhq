@@ -37,13 +37,13 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def remove_wip_path
     if can?(current_user, :update_merge_request, merge_request.project)
-      remove_wip_namespace_project_merge_request_path(project.namespace, project, merge_request)
+      remove_wip_namespace_project_merge_request_path(*project, merge_request)
     end
   end
 
   def merge_path
     if can_be_merged_by?(current_user)
-      merge_namespace_project_merge_request_path(project.namespace, project, merge_request)
+      merge_namespace_project_merge_request_path(*project, merge_request)
     end
   end
 
@@ -55,7 +55,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
         notice_now: edit_in_new_fork_notice_now
       }
 
-      namespace_project_forks_path(merge_request.project.namespace, merge_request.project,
+      namespace_project_forks_path(*merge_request.project,
                                    namespace_key: current_user.namespace.id,
                                    continue: continue_params)
     end
@@ -69,7 +69,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
         notice_now: edit_in_new_fork_notice_now
       }
 
-      namespace_project_forks_path(project.namespace, project,
+      namespace_project_forks_path(*project,
                                    namespace_key: current_user.namespace.id,
                                    continue: continue_params)
     end
@@ -77,19 +77,19 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def conflict_resolution_path
     if conflicts.can_be_resolved_in_ui? && conflicts.can_be_resolved_by?(current_user)
-      conflicts_namespace_project_merge_request_path(project.namespace, project, merge_request)
+      conflicts_namespace_project_merge_request_path(*project, merge_request)
     end
   end
 
   def target_branch_commits_path
     if target_branch_exists?
-      namespace_project_commits_path(project.namespace, project, target_branch)
+      namespace_project_commits_path(*project, target_branch)
     end
   end
 
   def source_branch_path
     if source_branch_exists?
-      namespace_project_branch_path(source_project.namespace, source_project, source_branch)
+      namespace_project_branch_path(*source_project, source_branch)
     end
   end
 
@@ -99,7 +99,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
     if source_branch_exists?
       namespace = link_to(namespace, project_path(source_project))
-      branch = link_to(branch, namespace_project_commits_path(source_project.namespace, source_project, source_branch))
+      branch = link_to(branch, namespace_project_commits_path(*source_project, source_branch))
     end
 
     if for_fork?
@@ -136,7 +136,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
                                                     merge_request: merge_request,
                                                     closes_issues: closing_issues
                                                    ).assignable_issues
-    path = assign_related_issues_namespace_project_merge_request_path(project.namespace, project, merge_request)
+    path = assign_related_issues_namespace_project_merge_request_path(*project, merge_request)
     if issues.present?
       pluralize_this_issue = issues.count > 1 ? "these issues" : "this issue"
       link_to "Assign yourself to #{pluralize_this_issue}", path, method: :post

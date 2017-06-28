@@ -56,6 +56,6 @@ describe "Container Registry" do
 
   def visit_container_registry
     visit namespace_project_container_registry_index_path(
-      project.namespace, project)
+      *project)
   end
 end

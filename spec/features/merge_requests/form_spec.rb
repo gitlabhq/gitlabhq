@@ -114,7 +114,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                  target_branch: 'master'
                               )
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_namespace_project_merge_request_path(*project, merge_request)
       end
 
       it 'updates merge request' do
@@ -251,7 +251,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                  target_branch: 'master'
                               )
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_namespace_project_merge_request_path(*project, merge_request)
       end
 
       it 'should update merge request' do

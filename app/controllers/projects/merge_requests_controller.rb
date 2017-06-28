@@ -198,7 +198,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
       flash[:notice] = 'All merge conflicts were resolved. The merge request can now be merged.'
 
-      render json: { redirect_to: namespace_project_merge_request_url(@project.namespace, @project, @merge_request, resolved_conflicts: true) }
+      render json: { redirect_to: namespace_project_merge_request_url(*@project, @merge_request, resolved_conflicts: true) }
     rescue Gitlab::Conflict::ResolutionError => e
       render status: :bad_request, json: { message: e.message }
     end
@@ -402,7 +402,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
           stop_url =
             if environment.stop_action? && can?(current_user, :create_deployment, environment)
-              stop_namespace_project_environment_path(project.namespace, project, environment)
+              stop_namespace_project_environment_path(*project, environment)
             end
 
           metrics_url =
@@ -416,7 +416,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           {
             id: environment.id,
             name: environment.name,
-            url: namespace_project_environment_path(project.namespace, project, environment),
+            url: namespace_project_environment_path(*project, environment),
             metrics_url: metrics_url,
             stop_url: stop_url,
             external_url: environment.external_url,

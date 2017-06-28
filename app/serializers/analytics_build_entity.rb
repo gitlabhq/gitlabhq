@@ -35,6 +35,6 @@ class AnalyticsBuildEntity < Grape::Entity
   private
 
   def url_to(route, build, id = nil)
-    public_send("#{route}_url", build.project.namespace, build.project, id || build)
+    public_send("#{route}_url", *build.project, id || build)
   end
 end
