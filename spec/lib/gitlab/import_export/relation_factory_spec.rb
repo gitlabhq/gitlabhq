@@ -182,7 +182,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
   context 'encrypted attributes' do
     let(:relation_sym) { 'Ci::Variable' }
     let(:relation_hash) do
-      create(:ci_variable).as_json
+      create(:ci_variable, project_id: project.id).as_json
     end
 
     it 'has no value for the encrypted attribute' do

@@ -22,7 +22,7 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def create
-    @variable = Ci::Variable.new(project_params)
+    @variable = Ci::ProjectVariable.new(project_params)
 
     if @variable.valid? && @project.variables << @variable
       flash[:notice] = 'Variables were successfully updated.'

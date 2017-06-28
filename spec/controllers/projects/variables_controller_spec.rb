@@ -31,7 +31,7 @@ describe Projects::VariablesController do
   end
 
   describe 'POST #update' do
-    let(:variable) { create(:ci_variable) }
+    let(:variable) { create(:ci_project_variable) }
 
     context 'updating a variable with valid characters' do
       before do

@@ -6,7 +6,7 @@ describe API::Variables do
   let!(:project) { create(:empty_project, creator_id: user.id) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
-  let!(:variable) { create(:ci_variable, project: project) }
+  let!(:variable) { create(:ci_project_variable, project: project) }
 
   describe 'GET /projects/:id/variables' do
     context 'authorized user with proper permissions' do

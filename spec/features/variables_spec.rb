@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Project variables', js: true do
   let(:user)     { create(:user) }
   let(:project)  { create(:empty_project) }
-  let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
+  let(:variable) { create(:ci_project_variable, key: 'test_key', value: 'test value') }
 
   before do
     gitlab_sign_in(user)

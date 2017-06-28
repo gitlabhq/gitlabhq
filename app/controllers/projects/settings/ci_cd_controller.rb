@@ -21,7 +21,7 @@ module Projects
       end
 
       def define_secret_variables
-        @variable = Ci::Variable.new
+        @variable = Ci::ProjectVariable.new
       end
 
       def define_triggers_variables

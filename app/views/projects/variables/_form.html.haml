@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @variable] do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @variable.becomes(Ci::Variable)] do |f|
   = form_errors(@variable)
 
   .form-group

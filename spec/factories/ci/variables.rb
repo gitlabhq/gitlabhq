@@ -7,6 +7,12 @@ FactoryGirl.define do
       protected true
     end
 
-    project factory: :empty_project
+    factory :ci_project_variable, class: Ci::ProjectVariable do
+      project factory: :empty_project
+    end
+
+    factory :ci_group_variable, class: Ci::GroupVariable do
+      group factory: :group
+    end
   end
 end

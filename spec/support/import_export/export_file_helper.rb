@@ -37,7 +37,7 @@ module ExportFileHelper
 
     create(:event, :created, target: milestone, project: project, author: user)
     create(:project_member, :master, user: user, project: project)
-    create(:ci_variable, project: project)
+    create(:ci_project_variable, project: project)
     create(:ci_trigger, project: project)
     key = create(:deploy_key)
     key.projects << project

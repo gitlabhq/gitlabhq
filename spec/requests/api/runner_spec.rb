@@ -554,7 +554,7 @@ describe API::Runner do
             before do
               trigger = create(:ci_trigger, project: project)
               create(:ci_trigger_request_with_variables, pipeline: pipeline, builds: [job], trigger: trigger)
-              project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+              project.variables << Ci::ProjectVariable.new(key: 'SECRET_KEY', value: 'secret_value')
             end
 
             it 'returns variables for triggers' do

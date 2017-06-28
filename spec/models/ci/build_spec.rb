@@ -1306,14 +1306,29 @@ describe Ci::Build, :models do
       it { is_expected.to include(tag_variable) }
     end
 
-    context 'when secret variable is defined' do
-      let(:secret_variable) do
+    context 'when project secure variable is defined' do
+      let(:secure_variable) do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
       before do
-        create(:ci_variable,
+        create(:ci_project_variable,
                secret_variable.slice(:key, :value).merge(project: project))
+      end
+
+      it { is_expected.to include(secure_variable) }
+    end
+
+    context 'when group secure variable is defined' do
+      let(:secure_variable) do
+        { key: 'SECRET_KEY', value: 'secret_value', public: false }
+      end
+
+      let(:group) { create(:group, :access_requestable) }
+
+      before do
+        allow(build.project).to receive(:group).and_return(group)
+        build.project.group.variables << Ci::GroupVariable.new(key: 'SECRET_KEY', value: 'secret_value')
       end
 
       it { is_expected.to include(secret_variable) }

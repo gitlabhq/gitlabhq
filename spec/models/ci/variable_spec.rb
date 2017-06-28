@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe Ci::Variable, models: true do
-  subject { build(:ci_variable) }
-
+  set(:project) { create(:empty_project) }
   let(:secret_value) { 'secret' }
 
+  subject { build(:ci_variable, project_id: project.id) }
+
   it { is_expected.to validate_presence_of(:key) }
-  it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id) }
   it { is_expected.to validate_length_of(:key).is_at_most(255) }
   it { is_expected.to allow_value('foo').for(:key) }
   it { is_expected.not_to allow_value('foo bar').for(:key) }
