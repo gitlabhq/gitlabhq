@@ -28,10 +28,18 @@ FactoryGirl.define do
 
     trait :import_scheduled do
       import_status :scheduled
+
+      after(:create) do |project, _|
+        project.mirror_data&.update_attributes(last_update_scheduled_at: Time.now)
+      end
     end
 
     trait :import_started do
       import_status :started
+
+      after(:create) do |project, _|
+        project.mirror_data&.update_attributes(last_update_started_at: Time.now)
+      end
     end
 
     trait :import_finished do

@@ -117,6 +117,27 @@ describe Project, models: true do
     end
   end
 
+  describe '#mirror_waiting_duration' do
+    it 'returns in seconds the time spent in the queue' do
+      project = create(:empty_project, :mirror, :import_scheduled)
+      mirror_data = project.mirror_data
+
+      mirror_data.update_attributes(last_update_started_at: mirror_data.last_update_scheduled_at + 5.minutes)
+
+      expect(project.mirror_waiting_duration).to eq(300)
+    end
+  end
+
+  describe '#mirror_update_duration' do
+    it 'returns in seconds the time spent updating' do
+      project = create(:empty_project, :mirror, :import_started)
+
+      project.update_attributes(mirror_last_update_at: project.mirror_data.last_update_started_at + 5.minutes)
+
+      expect(project.mirror_update_duration).to eq(300)
+    end
+  end
+
   describe '#any_runners_limit' do
     let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
     let(:specific_runner) { create(:ci_runner) }
