@@ -10,7 +10,7 @@ class CreateCiPipelineScheduleVariables < ActiveRecord::Migration
       t.string :encrypted_value_iv
       t.integer :pipeline_schedule_id, null: false
 
-      t.timestamps null: false
+      t.timestamps_with_timezone null: true
     end
 
     add_index :ci_pipeline_schedule_variables,

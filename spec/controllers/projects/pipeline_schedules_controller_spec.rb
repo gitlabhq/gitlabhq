@@ -71,7 +71,7 @@ describe Projects::PipelineSchedulesController do
         let(:schedule) { basic_param }
 
         it 'creates a new schedule' do
-          expect { post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule }
+          expect { go }
             .to change { Ci::PipelineSchedule.count }.by(1)
             .and change { Ci::PipelineScheduleVariable.count }.by(0)
 
@@ -82,12 +82,12 @@ describe Projects::PipelineSchedulesController do
       context 'when variables_attributes has one variable' do
         let(:schedule) do
           basic_param.merge({
-            variables_attributes: [ { key: 'AAA', value: 'AAA123' } ]
+            variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
           })
         end
 
         it 'creates a new schedule' do
-          expect { post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule }
+          expect { go }
             .to change { Ci::PipelineSchedule.count }.by(1)
             .and change { Ci::PipelineScheduleVariable.count }.by(1)
 
@@ -98,7 +98,7 @@ describe Projects::PipelineSchedulesController do
 
         context 'when the same key has already been persisted' do
           it 'returns an error that the key of variable is invaild' do
-            post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule
+            go
 
             pipeline_schedule_variable = build(:ci_pipeline_schedule_variable, key: 'AAA', pipeline_schedule: assigns(:schedule))
             expect(pipeline_schedule_variable).to be_invalid
@@ -109,12 +109,12 @@ describe Projects::PipelineSchedulesController do
       context 'when variables_attributes has one variable and key is empty' do
         let(:schedule) do
           basic_param.merge({
-            variables_attributes: [ { key: '', value: 'AAA123' } ]
+            variables_attributes: [{ key: '', value: 'AAA123' }]
           })
         end
 
         it 'returns an error that the key of variable is invaild' do
-          expect { post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule }
+          expect { go }
             .to change { Ci::PipelineSchedule.count }.by(0)
             .and change { Ci::PipelineScheduleVariable.count }.by(0)
 
@@ -125,12 +125,12 @@ describe Projects::PipelineSchedulesController do
       context 'when variables_attributes has two variables and unique' do
         let(:schedule) do
           basic_param.merge({
-            variables_attributes: [ { key: 'AAA', value: 'AAA123' }, { key: 'BBB', value: 'BBB123' } ]
+            variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'BBB', value: 'BBB123' }]
           })
         end
 
         it 'creates a new schedule' do
-          expect { post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule }
+          expect { go }
             .to change { Ci::PipelineSchedule.count }.by(1)
             .and change { Ci::PipelineScheduleVariable.count }.by(2)
 
@@ -146,39 +146,42 @@ describe Projects::PipelineSchedulesController do
       # context 'when variables_attributes has two variables and duplicted' do
       #   let(:schedule) do
       #     basic_param.merge({
-      #       variables_attributes: [ { key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' } ]
+      #       variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
       #     })
       #   end
 
       #   it 'returns an error that the keys of variable are duplicated' do
-      #     expect { post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule }
+      #     expect { go }
       #       .to change { Ci::PipelineSchedule.count }.by(0)
       #       .and change { Ci::PipelineScheduleVariable.count }.by(0)
 
       #     expect(assigns(:schedule).errors['variables.key']).not_to be_empty
       #   end
       # end
+
+      def go
+        post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule
+      end
     end
 
     describe 'security' do
-      let(:action) do
-        proc do |user|
-          post :create, namespace_id: project.namespace.to_param, 
-            project_id: project,
-            schedule: { description: 'aaaaaaaa', cron: '0 4 * * *',
-              cron_timezone: 'UTC', ref: 'master', active: '1' }
-        end
-      end
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:visitor) }
 
-      specify { expect(action).to be_allowed_for(:admin) }
-      specify { expect(action).to be_allowed_for(:owner).of(project) }
-      specify { expect(action).to be_allowed_for(:master).of(project) }
-      specify { expect(action).to be_allowed_for(:developer).of(project) }
-      specify { expect(action).to be_denied_for(:reporter).of(project) }
-      specify { expect(action).to be_denied_for(:guest).of(project) }
-      specify { expect(action).to be_denied_for(:user) }
-      specify { expect(action).to be_denied_for(:external) }
-      specify { expect(action).to be_denied_for(:visitor) }
+      def go
+        post :create, namespace_id: project.namespace.to_param,
+                      project_id: project,
+                      schedule: { description: 'aaaaaaaa', cron: '0 4 * * *',
+                                  cron_timezone: 'UTC', ref: 'master',
+                                  active: '1' }
+      end
     end
   end
 
@@ -202,8 +205,7 @@ describe Projects::PipelineSchedulesController do
           let(:schedule) { basic_param }
 
           it 'updates only scheduled pipeline attributes' do
-            put :update, namespace_id: project.namespace.to_param,
-              project_id: project, id: pipeline_schedule, schedule: schedule
+            go
 
             pipeline_schedule.reload
 
@@ -220,15 +222,12 @@ describe Projects::PipelineSchedulesController do
         context 'when params include one variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [ { key: 'AAA', value: 'AAA123' } ]
+              variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
             })
           end
 
           it 'inserts new variable to the pipeline schedule' do
-            expect do
-              put :update, namespace_id: project.namespace.to_param,
-                project_id: project, id: pipeline_schedule, schedule: schedule
-            end.to change { Ci::PipelineScheduleVariable.count }.by(1)
+            expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(1)
 
             pipeline_schedule.reload
 
@@ -241,15 +240,12 @@ describe Projects::PipelineSchedulesController do
         context 'when params include two unique variables' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [ { key: 'AAA', value: 'AAA123' }, { key: 'BBB', value: 'BBB123' } ]
+              variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'BBB', value: 'BBB123' }]
             })
           end
 
           it 'inserts two new variables to the pipeline schedule' do
-            expect do
-              put :update, namespace_id: project.namespace.to_param,
-                project_id: project, id: pipeline_schedule, schedule: schedule
-            end.to change { Ci::PipelineScheduleVariable.count }.by(2)
+            expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(2)
 
             pipeline_schedule.reload
 
@@ -265,7 +261,7 @@ describe Projects::PipelineSchedulesController do
         # context 'when params include two duplicated variables' do
         #   let(:schedule) do
         #     basic_param.merge({
-        #       variables_attributes: [ { key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' } ]
+        #       variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
         #     })
         #   end
 
@@ -292,8 +288,7 @@ describe Projects::PipelineSchedulesController do
           let(:schedule) { basic_param }
 
           it 'updates only scheduled pipeline attributes' do
-            put :update, namespace_id: project.namespace.to_param,
-              project_id: project, id: pipeline_schedule, schedule: schedule
+            go
 
             pipeline_schedule.reload
 
@@ -317,10 +312,7 @@ describe Projects::PipelineSchedulesController do
             end
 
             it 'adds the new variable' do
-              expect do
-                put :update, namespace_id: project.namespace.to_param,
-                  project_id: project, id: pipeline_schedule, schedule: schedule
-              end.to change { Ci::PipelineScheduleVariable.count }.by(1)
+              expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(1)
 
               expect(pipeline_schedule.variables.last.key).to eq('AAA')
             end
@@ -334,10 +326,7 @@ describe Projects::PipelineSchedulesController do
             end
 
             it 'updates the variable' do
-              expect do
-                put :update, namespace_id: project.namespace.to_param,
-                  project_id: project, id: pipeline_schedule, schedule: schedule
-              end.not_to change { Ci::PipelineScheduleVariable.count }
+              expect { go }.not_to change { Ci::PipelineScheduleVariable.count }
 
               pipeline_schedule_variable.reload
 
@@ -353,13 +342,16 @@ describe Projects::PipelineSchedulesController do
             end
 
             it 'delete the existsed variable' do
-              expect do
-                put :update, namespace_id: project.namespace.to_param,
-                  project_id: project, id: pipeline_schedule, schedule: schedule
-              end.to change { Ci::PipelineScheduleVariable.count }.by(-1)
+              expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(-1)
             end
           end
         end
+      end
+
+      def go
+        put :update, namespace_id: project.namespace.to_param,
+                     project_id: project, id: pipeline_schedule,
+                     schedule: schedule
       end
     end
 
@@ -373,39 +365,15 @@ describe Projects::PipelineSchedulesController do
         end
 
         context 'when the developer updates' do
-          let(:action) do
-            proc do |user|
-              put :update, namespace_id: project.namespace.to_param,
-                project_id: project, id: pipeline_schedule,
-                schedule: { description: 'updated_desc' }
-            end
-          end
-
-          specify { expect(action).to be_allowed_for(developer_1) }
+          it { expect { go }.to be_allowed_for(developer_1) }
         end
 
         context 'when another developer updates' do
-          let(:action) do
-            proc do |user|
-              put :update, namespace_id: project.namespace.to_param,
-                project_id: project, id: pipeline_schedule,
-                schedule: { description: 'updated_desc' }
-            end
-          end
-
-          specify { expect(action).to be_denied_for(:developer).of(project) }
+          it { expect { go }.to be_denied_for(:developer).of(project) }
         end
 
         context 'when a master updates' do
-          let(:action) do
-            proc do |user|
-              put :update, namespace_id: project.namespace.to_param,
-                project_id: project, id: pipeline_schedule,
-                schedule: { description: 'updated_desc' }
-            end
-          end
-
-          specify { expect(action).to be_allowed_for(:master).of(project) }
+          it { expect { go }.to be_allowed_for(:master).of(project) }
         end
       end
 
@@ -418,41 +386,23 @@ describe Projects::PipelineSchedulesController do
         end
 
         context 'when the master updates' do
-          let(:action) do
-            proc do |user|
-              put :update, namespace_id: project.namespace.to_param,
-                project_id: project, id: pipeline_schedule,
-                schedule: { description: 'updated_desc' }
-            end
-          end
-
-          specify { expect(action).to be_allowed_for(master_1) }
+          it { expect { go }.to be_allowed_for(master_1) }
         end
 
         context 'when other masters updates' do
-          let(:action) do
-            proc do |user|
-              put :update, namespace_id: project.namespace.to_param,
-                project_id: project, id: pipeline_schedule,
-                schedule: { description: 'updated_desc' }
-            end
-          end
-
-          specify { expect(action).to be_allowed_for(:master).of(project) }
+          it { expect { go }.to be_allowed_for(:master).of(project) }
         end
 
         context 'when a developer updates' do
-          let(:action) do
-            proc do |user|
-              put :update, namespace_id: project.namespace.to_param,
-                project_id: project, id: pipeline_schedule,
-                schedule: { description: 'updated_desc' }
-            end
-          end
-
-          specify { expect(action).to be_denied_for(:developer).of(project) }
+          it { expect { go }.to be_denied_for(:developer).of(project) }
         end
       end
+    end
+
+    def go
+      put :update, namespace_id: project.namespace.to_param,
+                   project_id: project, id: pipeline_schedule,
+                   schedule: { description: 'updated_desc' }
     end
   end
 
