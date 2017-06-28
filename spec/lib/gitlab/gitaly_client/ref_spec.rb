@@ -6,10 +6,6 @@ describe Gitlab::GitalyClient::Ref do
   let(:relative_path) { project.path_with_namespace + '.git' }
   let(:client) { described_class.new(project.repository) }
 
-  before do
-    allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
-  end
-
   after do
     # When we say `expect_any_instance_of(Gitaly::Ref::Stub)` a double is created,
     # and because GitalyClient shares stubs these will get passed from example to
