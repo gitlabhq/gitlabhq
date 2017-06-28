@@ -26,6 +26,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
+    it 'returns UTF-8' do
+      expect(repository.root_ref.encoding).to eq(Encoding.find('UTF-8'))
+    end
+
     context 'with gitaly enabled' do
       before do
         stub_gitaly
@@ -123,6 +127,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it 'has SeedRepo::Repo::BRANCHES.size elements' do
       expect(subject.size).to eq(SeedRepo::Repo::BRANCHES.size)
     end
+
+    it 'returns UTF-8' do
+      expect(subject.first.encoding).to eq(Encoding.find('UTF-8'))
+    end
+
     it { is_expected.to include("master") }
     it { is_expected.not_to include("branch-from-space") }
 
@@ -158,8 +167,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.tag_names }
 
     it { is_expected.to be_kind_of Array }
+
     it 'has SeedRepo::Repo::TAGS.size elements' do
       expect(subject.size).to eq(SeedRepo::Repo::TAGS.size)
+    end
+
+    it 'returns UTF-8' do
+      expect(subject.first.encoding).to eq(Encoding.find('UTF-8'))
     end
 
     describe '#last' do
@@ -1274,6 +1288,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       after do
         Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'returns a Branch with UTF-8 fields' do
+        branches = @repo.local_branches.to_a
+        expect(branches.size).to be > 0
+        utf_8 = Encoding.find('utf-8')
+        branches.each do |branch|
+          expect(branch.name.encoding).to eq(utf_8)
+          expect(branch.target.encoding).to eq(utf_8) unless branch.target.nil?
+        end
       end
 
       it 'gets the branches from GitalyClient' do
