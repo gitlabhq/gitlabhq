@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.2 (2017-06-27)
+
+- Fix GitLab check: Problem with Elastic Search. !2278
+
 ## 9.3.1 (2017-06-26)
 
 - Geo: fix removal of repositories from disk on secondary nodes. !2210
