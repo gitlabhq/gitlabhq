@@ -1,5 +1,9 @@
 # GitLab Geo
 
+NOTE: GitLab Geo is in ALPHA development. It is considered experimental and
+not production-ready. It will undergo significant changes over the next year,
+and there is significant chance of data loss.
+
 > **Notes:**
 - GitLab Geo is part of [GitLab Enterprise Edition Premium][ee].
 - Introduced in GitLab Enterprise Edition 8.9.
