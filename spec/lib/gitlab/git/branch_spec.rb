@@ -48,7 +48,7 @@ describe Gitlab::Git::Branch, seed_helper: true do
       expect(Gitlab::Git::Commit).to receive(:decorate)
         .with(hash_including(attributes)).and_call_original
 
-      expect(branch.dereferenced_target.message.encoding).to be(Encoding::UTF_8)
+      expect(branch.dereferenced_target.message).to be_utf8
     end
   end
 

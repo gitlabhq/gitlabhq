@@ -32,7 +32,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns UTF-8' do
-      expect(repository.root_ref.encoding).to eq(Encoding.find('UTF-8'))
+      expect(repository.root_ref).to be_utf8
     end
 
     it 'gets the branch name from GitalyClient' do
@@ -124,7 +124,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns UTF-8' do
-      expect(subject.first.encoding).to eq(Encoding.find('UTF-8'))
+      expect(subject.first).to be_utf8
     end
 
     it { is_expected.to include("master") }
@@ -158,7 +158,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns UTF-8' do
-      expect(subject.first.encoding).to eq(Encoding.find('UTF-8'))
+      expect(subject.first).to be_utf8
     end
 
     describe '#last' do
@@ -1259,10 +1259,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it 'returns a Branch with UTF-8 fields' do
       branches = @repo.local_branches.to_a
       expect(branches.size).to be > 0
-      utf_8 = Encoding.find('utf-8')
       branches.each do |branch|
-        expect(branch.name.encoding).to eq(utf_8)
-        expect(branch.target.encoding).to eq(utf_8) unless branch.target.nil?
+        expect(branch.name).to be_utf8
+        expect(branch.target).to be_utf8 unless branch.target.nil?
       end
     end
 
