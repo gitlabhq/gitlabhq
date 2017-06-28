@@ -70,7 +70,8 @@
   }
 
   .file-finder {
-    width: 50%;
+    max-width: 500px;
+    width: 100%;
 
     .file-finder-input {
       width: 95%;
