@@ -5,19 +5,34 @@ module Gitlab
     end
 
     def self.allowed_actor?(actor)
-      group = allowed_group
-      return false unless actor&.is_a?(User) && group
+      return false unless actor.thing&.is_a?(User) && allowed_group
 
-      GroupMembersFinder.new(group)
-        .execute
-        .where(user_id: actor.id)
-        .any?
+      if RequestStore.active?
+        RequestStore.fetch('performance_bar:user_member_of_allowed_group') do
+          user_member_of_allowed_group?(actor.thing)
+        end
+      else
+        user_member_of_allowed_group?(actor.thing)
+      end
     end
 
     def self.allowed_group
       return nil unless Gitlab.config.performance_bar.allowed_group
 
-      Group.by_path(Gitlab.config.performance_bar.allowed_group)
+      if RequestStore.active?
+        RequestStore.fetch('performance_bar:allowed_group') do
+          Group.by_path(Gitlab.config.performance_bar.allowed_group)
+        end
+      else
+        Group.by_path(Gitlab.config.performance_bar.allowed_group)
+      end
+    end
+
+    def self.user_member_of_allowed_group?(user)
+      GroupMembersFinder.new(allowed_group)
+        .execute
+        .where(user_id: user.id)
+        .any?
     end
   end
 end

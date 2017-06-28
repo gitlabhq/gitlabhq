@@ -2,38 +2,38 @@ require 'spec_helper'
 
 describe Gitlab::PerformanceBar do
   describe '.enabled?' do
-    it 'returns false when given user is nil' do
+    it 'returns false when given actor is nil' do
       expect(described_class.enabled?(nil)).to be_falsy
     end
 
     it 'returns false when feature is disabled' do
-      user = double('user')
+      actor = double('actor')
 
       expect(Feature).to receive(:enabled?)
-        .with(:gitlab_performance_bar, user).and_return(false)
+        .with(:gitlab_performance_bar, actor).and_return(false)
 
-      expect(described_class.enabled?(user)).to be_falsy
+      expect(described_class.enabled?(actor)).to be_falsy
     end
 
     it 'returns true when feature is enabled' do
-      user = double('user')
+      actor = double('actor')
 
       expect(Feature).to receive(:enabled?)
-        .with(:gitlab_performance_bar, user).and_return(true)
+        .with(:gitlab_performance_bar, actor).and_return(true)
 
-      expect(described_class.enabled?(user)).to be_truthy
+      expect(described_class.enabled?(actor)).to be_truthy
     end
   end
 
   describe '.allowed_actor?' do
     it 'returns false when given actor is not a User' do
-      actor = double
+      actor = double('actor', thing: double)
 
       expect(described_class.allowed_actor?(actor)).to be_falsy
     end
 
     context 'when given actor is a User' do
-      let(:actor) { create(:user) }
+      let(:actor) { double('actor', thing: create(:user)) }
 
       before do
         stub_performance_bar_setting(allowed_group: 'my-group')
@@ -56,7 +56,7 @@ describe Gitlab::PerformanceBar do
 
         context 'when user is a member of the allowed group' do
           before do
-            my_group.add_developer(actor)
+            my_group.add_developer(actor.thing)
           end
 
           it 'returns true' do
