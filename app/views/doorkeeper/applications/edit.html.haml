@@ -1,3 +1,4 @@
 - page_title "Edit", @application.name, "Applications"
+- @content_class = "limit-container-width" unless fluid_layout
 %h3.page-title Edit application
 = render 'form', application: @application

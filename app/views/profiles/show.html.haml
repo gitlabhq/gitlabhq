@@ -1,10 +1,11 @@
+- @content_class = "limit-container-width" unless fluid_layout
 = render 'profiles/head'
 
 = bootstrap_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user prepend-top-default' }, authenticity_token: true do |f|
   = form_errors(@user)
 
   .row
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
         Public Avatar
       %p
@@ -16,7 +17,7 @@
           You can upload an avatar here
           - if gravatar_enabled?
             or change it at #{link_to Gitlab.config.gravatar.host, 'http://' + Gitlab.config.gravatar.host}
-    .col-lg-9
+    .col-lg-8
       .clearfix.avatar-image.append-bottom-default
         = link_to avatar_icon(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
@@ -34,14 +35,14 @@
         = link_to 'Remove avatar', profile_avatar_path, data: { confirm: 'Avatar will be removed. Are you sure?' }, method: :delete, class: 'btn btn-gray'
   %hr
   .row
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
         Main settings
       %p
         This information will appear on your profile.
         - if current_user.ldap_user?
           Some options are unavailable for LDAP accounts
-    .col-lg-9
+    .col-lg-8
       .row
         = f.text_field :name,  required: true, wrapper: { class: 'col-md-9' },
           help: 'Enter your name, so people you know can recognize you.'
