@@ -698,9 +698,7 @@ describe API::Projects do
           'name' => user.namespace.name,
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
-          'full_path' => user.namespace.full_path,
-          'parent_id' => nil,
-          'members_count' => nil
+          'full_path' => user.namespace.full_path
         })
       end
 
