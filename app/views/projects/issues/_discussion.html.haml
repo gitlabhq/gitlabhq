@@ -3,7 +3,7 @@
     = link_to 'Reopen issue', issue_path(@issue, issue: {state_event: :reopen}, format: 'json'), data: {original_text: "Reopen issue", alternative_text: "Comment & reopen issue"}, class: "btn btn-nr btn-reopen btn-comment js-note-target-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
     = link_to 'Close issue', issue_path(@issue, issue: {state_event: :close}, format: 'json'), data: {original_text: "Close issue", alternative_text: "Comment & close issue"}, class: "btn btn-nr btn-close btn-comment js-note-target-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
 
-%section{ data: { discussions_path: discussions_namespace_project_issue_path(@project.namespace, @project, @issue, format: :json) } }
+%section{ data: { discussions_path: discussions_namespace_project_issue_path(@project.namespace, @project, @issue, format: :json), new_session_path: new_session_path(:user, redirect_to_referer: 'yes') } }
   #js-notes
   - content_for :page_specific_javascripts do
     = webpack_bundle_tag 'common_vue'
@@ -16,5 +16,3 @@
 :javascript
   window.gl.issueData = #{serialize_issuable(@issue)};
   window.gl.currentUserData = #{UserSerializer.new.represent(current_user).to_json};
-
-%section#note-form{ data: { new_session_path: new_session_path(:user, redirect_to_referer: 'yes') } }
