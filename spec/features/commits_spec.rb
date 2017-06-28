@@ -213,7 +213,7 @@ describe 'Commits' do
         create :gpg_key, key: GpgHelpers::User1.public_key, user: user
       end
 
-      login_with(user)
+      sign_in(user)
 
       visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
 
@@ -240,7 +240,7 @@ describe 'Commits' do
       user = create :user, email: GpgHelpers::User1.emails.first
       project.team << [user, :master]
 
-      login_with(user)
+      sign_in(user)
 
       visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
 
@@ -269,7 +269,7 @@ describe 'Commits' do
         create :gpg_key, key: GpgHelpers::User1.public_key, user: user
       end
 
-      login_with(user)
+      sign_in(user)
       visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
 
       click_on 'Verified'
