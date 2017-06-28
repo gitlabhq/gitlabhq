@@ -142,21 +142,22 @@ describe Projects::PipelineSchedulesController do
         end
       end
 
-      context 'when variables_attributes has two variables and duplicted' do
-        let(:schedule) do
-          basic_param.merge({
-            variables_attributes: [ { key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' } ]
-          })
-        end
+      # This test no longer passes, since we removed a custom validation
+      # context 'when variables_attributes has two variables and duplicted' do
+      #   let(:schedule) do
+      #     basic_param.merge({
+      #       variables_attributes: [ { key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' } ]
+      #     })
+      #   end
 
-        it 'returns an error that the keys of variable are duplicated' do
-          expect { post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule }
-            .to change { Ci::PipelineSchedule.count }.by(0)
-            .and change { Ci::PipelineScheduleVariable.count }.by(0)
+      #   it 'returns an error that the keys of variable are duplicated' do
+      #     expect { post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule }
+      #       .to change { Ci::PipelineSchedule.count }.by(0)
+      #       .and change { Ci::PipelineScheduleVariable.count }.by(0)
 
-          expect(assigns(:schedule).errors['variables.key']).not_to be_empty
-        end
-      end
+      #     expect(assigns(:schedule).errors['variables.key']).not_to be_empty
+      #   end
+      # end
     end
 
     describe 'security' do
@@ -260,20 +261,21 @@ describe Projects::PipelineSchedulesController do
           end
         end
 
-        context 'when params include two duplicated variables' do
-          let(:schedule) do
-            basic_param.merge({
-              variables_attributes: [ { key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' } ]
-            })
-          end
+        # This test no longer passes, since we removed a custom validation
+        # context 'when params include two duplicated variables' do
+        #   let(:schedule) do
+        #     basic_param.merge({
+        #       variables_attributes: [ { key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' } ]
+        #     })
+        #   end
 
-          it 'returns an error that variables are duplciated' do
-            put :update, namespace_id: project.namespace.to_param,
-              project_id: project, id: pipeline_schedule, schedule: schedule
+        #   it 'returns an error that variables are duplciated' do
+        #     put :update, namespace_id: project.namespace.to_param,
+        #       project_id: project, id: pipeline_schedule, schedule: schedule
 
-            expect(assigns(:schedule).errors['variables.key']).not_to be_empty
-          end
-        end
+        #     expect(assigns(:schedule).errors['variables.key']).not_to be_empty
+        #   end
+        # end
       end
 
       context 'when a pipeline schedule has one variable' do
