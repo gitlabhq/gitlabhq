@@ -5,32 +5,86 @@
 
 ## Index
 
-1. [Get a simple Maven application](#get-a-simple-maven-application)
-1. [Configure Continuous Integration with `.gitlab-ci.yml`](#configure-continuous-integration-with-gitlab-ciyml)
-1. [Set up Artifactory as the deployment repo](#set-up-artifactory-as-the-deployment-repo)
-1. [Configure automatic deployment](#configure-automatic-deployment)
+## Introduction
 
-In this article, we're going to see how we can leverage the power of GitLab Continuous Integration features to compile and test a Maven application,
-and finally deploy it to an Artifactory repository with just a very few lines of configuration.
+In this article, we're going to see how we can leverage the power of [GitLab Continuous Integration](https://about.gitlab.com/features/gitlab-ci-cd/) to build a [Maven](https://maven.apache.org/) project, deploy it to [Artifactory](https://www.jfrog.com/artifactory/) and then use it from another Maven application as a dependency.
 
-Every time we change our sample application, GitLab checks that the new version is still bug free, and after merging to `master` branch it will automatically push the new package
-to the remote Artifactory repository, making it ready to use.
+We're going to create two different projects:
+- `simple-maven-dep`: the app built and deployed to Artifactory (available at https://gitlab.com/gitlab-examples/maven/simple-maven-dep)
+- `simple-maven-app`: the app using the previous one as a dependency (available at https://gitlab.com/gitlab-examples/maven/simple-maven-app)
 
-## Get a simple Maven application
+We assume that we already have a GitLab account on [GitLab.com](https://gitlab.com/), and that we know the basic usage of CI.
+We also assume that an Artifactory instance is available and reachable from the Internet, and that we've valid credentials to deploy on it.
 
-First of all, we need an application to work with: in this specific case we're going to make it simple, but it could be any Maven application.
+## Create the simple Maven dependency
 
-For this article we'll use a Maven app that can be cloned at `https://gitlab.com/gitlab-examples/maven/simple-maven-app.git`, so let's login into our GitLab account and create a new project 
-with `Import project from` -> `Repo by URL`.
+#### Get the sources
 
-This application is nothing more than a basic Hello World with a stub for a JUnit based test suite. It was created with the `maven-archetype-quickstart` Maven template.
+First of all, we need an application to work with: in this specific case we're going to make it simple, but it could be any Maven application. This will be our dependency we want to package and deploy to Artifactory, in order to be available to other projects.
+
+For this article we'll use a Maven app that can be cloned at `https://gitlab.com/gitlab-examples/maven/simple-maven-dep.git`, so let's login into our GitLab account and create a new project 
+with **Import project from ➔ Repo by URL**.
+
+This application is nothing more than a basic class with a stub for a JUnit based test suite.
+It exposes a method called `hello` that accepts a string as input, and prints an hello message on the screen.
+
 The project structure is really simple, and we're mainly interested in these two resources:
-- `pom.xml`: project object model (POM) file - here we've the configuration for our project
-- `src/main/java/com/example/app/App.java`: source of our application - it prints "Hello World!" to stdout
+- `pom.xml`: project object model (POM) configuration file
+- `src/main/java/com/example/dep/Dep.java`: source of our application
 
-## Configure Continuous Integration with `.gitlab-ci.yml`
+#### Configure Artifactory deployment
 
-Now that we've our application, we need to define stages that will build and test it automatically. In order to achieve this result, we create a file named `.gitlab-ci.yml` in the root of our git repository, once pushed this file will instruct the runner with all the commands needed.
+The application is ready to use, but we need some additional steps for deploying it to Artifactory:
+1. login to Artifactory with your user's credentials
+2. from the main screen, click on the `libs-release-local` item in the **Set Me Up** panel
+3. copy to clipboard the configuration snippet under the **Deploy** paragraph
+
+The snippet should look like this:
+
+```xml
+<distributionManagement>
+    <repository>
+        <id>central</id>
+        <name>83d43b5afeb5-releases</name>
+        <url>${repoURL}/libs-release-local</url>
+    </repository>
+</distributionManagement>
+```
+**Note**: `url` has been added in order to make it configurable but could be kept static, we'll see later how to use secret variables for this.
+
+Now let's copy the snippet in the `pom.xml` file for our project, just after the `dependencies` section. Easy!
+
+Another step we need to do before we can deploy our dependency to Artifactory is to configure authentication data. It is a simple task, but Maven requires it to stay in a file called `settings.xml` that has to be in the `.m2` subfolder in the user's homedir. Since we want to use GitLab Runner to automatically deploy the application, we should create the file in our project home and then move it to the proper location with a specific command in the `.gitlab-ci.yml`.
+
+For this scope, let's create a file `.maven-settings.xml` and copy the following text in it.
+
+```xml
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"
+    xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <servers>
+    <server>
+      <id>central</id>
+      <username>${repoUser}</username>
+      <password>${repoKey}</password>
+    </server>
+  </servers>
+</settings>
+```
+
+**Note**: `username` and `password` will be replaced by the correct values using secret variables.
+
+We should remember to commit this file to our repo!
+
+#### Configure GitLab Continuous Integration for `simple-maven-dep`
+
+Now it's time we set up GitLab CI to automatically build, test and deploy our dependency!  
+
+First of all, we should remember that we need to setup some secret variable for making the deploy happen, so let's go in the **Settings ➔ Pipelines** and add the following secret variables (replace them with your current values, of course):
+- **ARTIFACTORY_REPO_URL**: `http://artifactory.example.com:8081/artifactory` (your Artifactory URL)
+- **ARTIFACTORY_REPO_USER**: `gitlab` (your Artifactory username)
+- **ARTIFACTORY_REPO_KEY**: `AKCp2WXr3G61Xjz1PLmYa3arm3yfBozPxSta4taP3SeNu2HPXYa7FhNYosnndFNNgoEds8BCS` (your Artifactory API Key)
+
+Now it's time to define stages in our `.gitlab-ci.yml` file: once pushed to our repo it will instruct the GitLab Runner with all the needed commands.
 
 Let's see the content of the file:
 
@@ -50,125 +104,107 @@ test:
   stage: test
   script:
     - mvn test
-```
-We want to use the latest Docker image publicly available for Maven, which already contains everything we need to perform our tasks. Caching the `target` folder, that is the location where our application will be created, is useful in order to speed up the process: Maven runs all its phases in a specific order, so executing `mvn test` will automatically run `mvn compile` if needed, but we want to improve performances caching everything that is already created in a previous step. Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the repository.
 
-If you're creating the file using the GitLab UI, you just have to commit directly into `master`. Otherwise, if you cloned locally your brand new project, commit and push to remote.
-
-Done! We've now our changes in the GitLab repo, and a pipeline has already been started for this commit. Let's wait until the pipeline ends, and we should see something like the following text in the job output log.
-
-```
-Running com.example.app.AppTest
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.049 sec
-
-Results :
-
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
-
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 13.165 s
-[INFO] Finished at: 2017-06-26T14:26:43Z
-[INFO] Final Memory: 17M/147M
-[INFO] ------------------------------------------------------------------------
-Creating cache default...
-Created cache
-Job succeeded
-```
-
-**Note**: the `mvn` command downloads a lot of files from the internet, so you'll see a lot of extra activity in the log.
-
-## Set up Artifactory as the deployment repo
- 
-### Configure POM file
-
-Next step is to setup our project to use Artifactory as its repository for artifacts deployment: in order to complete this, we need access to the Artifactory instance.
-So, first of all let's select the `libs-release-local` repository in the `Set Me Up` section, and copy to clipboard the configuration snipped marked as `Deploy`. This is the "address" of our repo, and it is needed by Maven to push artifacts during the `deploy` stage.
-Now let's go back to our project and edit the pom.xml file: we have to add the snipped we just copied from Artifactory into the project section, so we can paste it after the dependencies.
-The final POM will look like this:
- 
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.app</groupId>
-  <artifactId>maven-example-app</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0</version>
-  <name>maven-example-app</name>
-  <url>http://maven.apache.org</url>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <distributionManagement>
-    <repository>
-      <id>central</id>
-      <name>0072a36394cd-releases</name>
-      <url>http://localhost:8081/artifactory/libs-release-local</url>
-    </repository>
-  </distributionManagement>
-</project>
-```
-
-### Configure credentials for the repo
- 
-One last step is required to actully deploy artifacts to Artifactory: we need to configure credentials for our repo, and best practices want us to create an API key for this task, so we don't have to expose our account password.
-Let's go back to Artifactory, edit the account settings and generate a new API key. For security reasons, we don't want to expose directly this key into the `.gitlab-ci.yml, so we're going to create secret variables REPO_USERNAME and REPO_PASSWORD containing the username and the key in our GitLab project settings.
- 
-[screenshot of secret variables window]
- 
-We must now include these credentials in the `~/.m2/settings.xml` file, so let's create a file named `.maven-settings.xml` in our project folder with the following content:
- 
-```xml
-<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
-  <servers>
-    <server>
-      <username>${REPO_USERNAME}</username>
-      <password>${REPO_PASSWORD}</password>
-      <id>central</id>
-    </server>
-  </servers>
-</settings>
-```
-
-Note that `id` must have the same value as the related `id` field of the `repository` section in `pom.xml`.
- 
-## Configure automatic deployment
- 
-Time to change `.gitlab-ci.yml` and add the deploy stage! Maven has the perfect command for that, but it requires `settings.xml` to be in the correct folder, so we need to move it before executing `mvn deploy` command.
- 
-The complete file is now this:
- 
-```yaml
-image: maven:latest
- 
-cache:
-  paths:
-    - target/
- 
-build:
-  stage: build
-  script:
-    - mvn compile
- 
-test:
-  stage: test
-  script:
-    - mvn test
- 
 deploy:
   stage: deploy
   script:
     - cp .maven-settings.xml ~/.m2/settings.xml
-    - mvn deploy
+    - mvn deploy -DrepoUrl=$ARTIFACTORY_REPO_URL -DrepoUsername=$ARTIFACTORY_REPO_USER -DrepoPassword=$ARTIFACTORY_REPO_KEY
   only:
     - master
 ```
-We're ready to go! Every merge (or push) to master will now trigger the deployment to our Artifactory repository!
+
+We're going to use the latest Docker image publicly available for Maven, which already contains everything we need to perform our tasks. Caching the `target` folder, that is the location where our application will be created, is useful in order to speed up the process: Maven runs all its phases in a sequential order, so executing `mvn test` will automatically run `mvn compile` if needed, but we want to improve performances by caching everything that has been already created in a previous stage. Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the repository.
+
+Deployment copies the configuration file in the proper location, and then deploys to Artifactory as defined by the secret variables we set up earlier. The deployment occurs only if we're pushing or merging to `master` branch, so development versions are tested but not published.
+
+Done! We've now our changes in the GitLab repo, and a pipeline has already been started for this commit. Let's go to the **Pipelines** tab and see what happens.
+If we've no errors, we can see some text like this at the end of the `deploy` job output log:
+
+```
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.983 s
+
+```
+
+**Note**: the `mvn` command downloads a lot of files from the Internet, so you'll see a lot of extra activity in the log.
+
+Wow! We did it! Checking in Artifactory will confirm that we've a new artifact available in the `libs-release-local` repo.
+
+## Create the main Maven application
+
+#### Prepare the application
+
+Now that we've our dependency available on Artifactory, we want to use it!
+
+Let's create another application by cloning the one we can find at `https://gitlab.com/gitlab-examples/maven/simple-maven-app.git`.
+If you look at the `src/main/java/com/example/app/App.java` file you can see that it imports the `com.example.dep.Dep` class and calls the `hello` method passing `GitLab` as a parameter.
+
+Since Maven doesn't know how to resolve the dependency, we need to modify the configuration.  
+Let's go back to Artifactory, and browse the `libs-release-local` repository selecting the `simple-maven-dep-1.0.jar` file. In the **Dependency Declaration** section of the main panel we can copy the configuration snippet:
+
+```xml
+<dependency>
+    <groupId>com.example.dep</groupId>
+    <artifactId>simple-maven-dep</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+Let's just copy this in the `dependencies` section of our `pom.xml` file.
+
+#### Configure the Artifactory repository location
+
+At this point we defined our dependency for the application, but we still miss where we can find the required files.  
+We need to create a `.maven-settings.xml` file as we did for our dependency project, and move it to the proper location for each job.
+
+Here is how we can get the content of the file directly from Artifactory:
+1. from the main screen, click on the `libs-release-local` item in the **Set Me Up** panel
+2. click on **Generate Maven Settings**
+3. click on **Generate Settings**
+3. copy to clipboard the configuration file
+4. save the file as `.maven-settings.xml` in your repo, removing the `servers` section entirely
+
+Now we're ready to use our Artifactory repository to resolve dependencies and use `simple-maven-dep` in our application!
+
+#### Configure GitLab Continuous Integration for `simple-maven-app`
+
+We need a last step to have everything in place: configure `.gitlab-ci.yml`.
+
+We want to build, test and run our awesome application, and see if we can get the greeting we expect!
+
+So let's add the `.gitlab-ci.yml` to our repo:
+
+```yaml
+image: maven:latest
+
+stages:
+  - build
+  - test
+  - run
+
+cache:
+  paths:
+    - target/
+
+build:
+  stage: build
+  script:
+    - mvn compile
+
+test:
+  stage: test
+  script:
+    - mvn test
+
+run:
+  stage: run
+  script:
+    - cp .maven-settings.xml ~/.m2/settings.xml
+    - mvn package
+    - mvn exec:java -Dexec.mainClass="com.example.app.App"
+```
+
+And that's it! In the `run` job output log we will find a friendly hello to GitLab!
