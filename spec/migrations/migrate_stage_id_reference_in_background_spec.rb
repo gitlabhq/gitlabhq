@@ -22,5 +22,10 @@ describe MigrateStageIdReferenceInBackground, :migration, :redis do
   end
 
   it 'schedules background migrations' do
+    expect(jobs.where(stage_id: nil)).to be_present
+
+    migrate!
+
+    expect(jobs.where(stage_id: nil)).to be_empty
   end
 end
