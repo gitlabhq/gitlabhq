@@ -1,15 +1,15 @@
-%h4 Overall stats
+%h4= s_("PipelineCharts|Overall statistics")
 %ul
   %li
-    Total:
-    %strong= pluralize @counts[:total], 'pipeline'
+    = s_("PipelineCharts|Total:")
+    %strong= n_("1 pipeline", "%d pipelines", @counts[:total]) % @counts[:total]
   %li
-    Successful:
-    %strong= pluralize @counts[:success], 'pipeline'
+    = s_("PipelineCharts|Successful:")
+    %strong= n_("1 pipeline", "%d pipelines", @counts[:success]) % @counts[:success]
   %li
-    Failed:
-    %strong= pluralize @counts[:failed], 'pipeline'
+    = s_("PipelineCharts|Failed:")
+    %strong= n_("1 pipeline", "%d pipelines", @counts[:failed]) % @counts[:failed]
   %li
-    Success ratio:
+    = s_("PipelineCharts|Success ratio:")
     %strong
       #{success_ratio(@counts)}%
