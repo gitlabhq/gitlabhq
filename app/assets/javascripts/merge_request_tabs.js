@@ -144,6 +144,9 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
         this.resetViewContainer();
         this.mountPipelinesView();
       } else {
+        if (Breakpoints.get().getBreakpointSize() !== 'xs') {
+          this.expandView();
+        }
         this.resetViewContainer();
         this.destroyPipelinesView();
       }
