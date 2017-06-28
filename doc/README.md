@@ -16,10 +16,6 @@ plus premium features available in each version: **Enterprise Edition Starter**
 (**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
 **EES** is also available in **EEP**.
 
-**Note:** _We are unifying the documentation for CE and EE. To check if certain feature is
-available in CE or EE, look for a note right below the page title containing the GitLab
-version which introduced that feature._
-
 ----
 
 Shortcuts to GitLab's most visited docs:
