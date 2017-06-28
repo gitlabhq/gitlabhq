@@ -1,4 +1,3 @@
-
 # AccessMatchersForController
 #
 # For testing authorize_xxx in controller. 
@@ -6,8 +5,8 @@ module AccessMatchersForController
   extend RSpec::Matchers::DSL
   include Warden::Test::Helpers
 
-  EXPECTED_STATUS_CODE_ALLOWED = [200, 302].freeze
-  EXPECTED_STATUS_CODE_DENIED = [404].freeze
+  EXPECTED_STATUS_CODE_ALLOWED = [200, 201, 302].freeze
+  EXPECTED_STATUS_CODE_DENIED = [401, 404].freeze
 
   def emulate_user(role, membership = nil)
     case role
@@ -20,21 +19,15 @@ module AccessMatchersForController
     when :external
       user = create(:user, external: true)
       sign_in(user)
-    when :visitor # rubocop:disable Lint/EmptyWhen
-      # no-op
+    when :visitor
+      user = nil
     when User
       user = role
       sign_in(user)
     when *Gitlab::Access.sym_options_with_owner.keys # owner, master, developer, reporter, guest
       raise ArgumentError, "cannot emulate #{role} without membership parent" unless membership
 
-      if role == :owner && membership.owner
-        user = membership.owner
-      else
-        user = create(:user)
-        membership.public_send(:"add_#{role}", user)
-      end
-
+      user = create_user_by_membership(role, membership)
       sign_in(user)
     else
       raise ArgumentError, "cannot emulate user #{role}"
@@ -43,20 +36,24 @@ module AccessMatchersForController
     user
   end
 
+  def create_user_by_membership(role, membership)
+    if role == :owner && membership.owner
+      user = membership.owner
+    else
+      user = create(:user)
+      membership.public_send(:"add_#{role}", user)
+    end
+    user
+  end
+
   def description_for(role, type, expected, result)
-    "be #{type} for #{role}." \
-    " Expected: #{expected.join(',')} Got: #{result}"
+    "be #{type} for #{role}. Expected: #{expected.join(',')} Got: #{result}"
   end
 
   matcher :be_allowed_for do |role|
     match do |action|
-      user = emulate_user(role, @membership)
-      # begin
-        action.call(user)
-      # rescue
-      #   # Ignore internal exceptions which will be caused in the controller
-      #   # In such cases, response.status will be 200.
-      # end
+      emulate_user(role, @membership)
+      action.call
 
       EXPECTED_STATUS_CODE_ALLOWED.include?(response.status)
     end
@@ -71,13 +68,8 @@ module AccessMatchersForController
 
   matcher :be_denied_for do |role|
     match do |action|
-      user = emulate_user(role, @membership)
-      # begin
-        action.call(user)
-      # rescue
-      #   # Ignore internal exceptions which will be caused in the controller
-      #   # In such cases, response.status will be 200.
-      # end
+      emulate_user(role, @membership)
+      action.call
 
       EXPECTED_STATUS_CODE_DENIED.include?(response.status)
     end
