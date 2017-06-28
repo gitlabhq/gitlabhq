@@ -8,6 +8,8 @@ describe MigrateStageIdReferenceInBackground, :migration, :redis do
   let(:projects) { table(:projects) }
 
   before do
+    stub_const('MigrateStageIdReferenceInBackground::BATCH_SIZE', 1)
+
     projects.create!(id: 123, name: 'gitlab1', path: 'gitlab1')
     pipelines.create!(id: 1, project_id: 123, ref: 'master', sha: 'adf43c3a')
 
