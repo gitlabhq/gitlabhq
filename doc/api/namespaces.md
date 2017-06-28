@@ -39,7 +39,6 @@ Example response:
     "full_path": "group1",
     "parent_id": "null",
     "members_count_with_descendants": 2
-
   },
   {
     "id": 3,
