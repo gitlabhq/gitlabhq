@@ -58,6 +58,8 @@
 :javascript
   $(function () {
     window.mergeRequest = new MergeRequest({
-      action: "#{controller.action_name}"
+      action: "#{controller.action_name}",
+      unstickyTabs: document.querySelector('.js-sticky-tabs:not(.sticky)'),
+      stickyTabs: document.querySelector('.js-sticky-tabs.sticky')
     });
   });

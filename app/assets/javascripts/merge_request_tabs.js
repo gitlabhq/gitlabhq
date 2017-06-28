@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import './breakpoints';
 import './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
+import StickyTabs from './sticky_tabs';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -60,7 +61,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
   class MergeRequestTabs {
 
-    constructor({ action, setUrl, stubLocation } = {}) {
+    constructor({ action, setUrl, stubLocation, stickyTabs, unstickyTabs } = {}) {
       this.diffsLoaded = false;
       this.pipelinesLoaded = false;
       this.commitsLoaded = false;
@@ -70,6 +71,8 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
       this.setCurrentAction = this.setCurrentAction.bind(this);
       this.tabShown = this.tabShown.bind(this);
       this.showTab = this.showTab.bind(this);
+
+      if (stickyTabs && unstickyTabs) this.stickyTabs = new StickyTabs(stickyTabs, unstickyTabs);
 
       if (stubLocation) {
         location = stubLocation;
@@ -86,6 +89,8 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
       $('.merge-request-tabs a[data-toggle="tab"]')
         .on('click', this.clickTab);
+
+      if (this.stickyTabs) this.stickyTabs.bindEvents();
     }
 
     // Used in tests
@@ -96,6 +101,8 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
       $('.merge-request-tabs a[data-toggle="tab"]')
         .off('click', this.clickTab);
+
+      if (this.stickyTabs) this.stickyTabs.unbindEvents();
     }
 
     destroyPipelinesView() {
@@ -156,7 +163,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
       if (location.hash) {
         const offset = 0 - (
           $('.navbar-gitlab').outerHeight() +
-          $('.js-sticky-tabs').outerHeight()
+          (this.stickyTabs ? this.stickyTabs.unstickyTabsHeight : $('.js-tabs-affix').outerHeight())
         );
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {

@@ -1,6 +1,6 @@
 - is_sticky = local_assigns.fetch(:is_sticky, false)
 
-.merge-request-tabs-holder.js-sticky-tabs{ class: content_class_ref }
+.merge-request-tabs-holder.js-sticky-tabs{ class: "#{content_class_ref} #{'sticky hide' if is_sticky}" }
   .merge-request-tabs-container
     .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
       .fade-left= icon('angle-left')
