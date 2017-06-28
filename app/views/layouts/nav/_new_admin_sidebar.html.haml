@@ -1,6 +1,5 @@
 .nav-sidebar
-  -# = render 'layouts/nav/admin_settings'
-  .context-header
+  = link_to admin_root_path, title: 'Overview', class: 'context-header' do
     .avatar-container.s40.settings-avatar
       = icon('wrench')
     .project-title Admin Area

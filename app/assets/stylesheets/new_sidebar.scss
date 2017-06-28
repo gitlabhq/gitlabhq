@@ -19,6 +19,7 @@ $new-sidebar-width: 220px;
 .context-header {
   background-color: $gray-normal;
   border-bottom: 1px solid $border-color;
+  font-weight: 600;
   display: flex;
   align-items: center;
   padding: 10px 14px;
@@ -26,15 +27,20 @@ $new-sidebar-width: 220px;
   .avatar-container {
     flex: 0 0 40px;
   }
+
+  &:hover {
+    background-color: $border-color;
+  }
 }
 
 .settings-avatar {
   background-color: $white-light;
 
-  .fa-wrench {
+  .fa-wrench,
+  .fa-user {
     font-size: 20px;
     width: 100%;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
     text-align: center;
     align-self: center;
   }

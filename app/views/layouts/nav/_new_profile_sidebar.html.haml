@@ -1,8 +1,8 @@
 .nav-sidebar
-  .context-header
+  = link_to profile_path, title: 'Profile Settings', class: 'context-header' do
     .avatar-container.s40.settings-avatar
-      = icon('wrench')
-    .project-title Settings
+      = icon('user')
+    .project-title User Settings
   %ul.sidebar-top-level-items
     = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
       = link_to profile_path, title: 'Profile Settings' do
