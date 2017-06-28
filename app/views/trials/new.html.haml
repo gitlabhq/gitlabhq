@@ -1,31 +1,32 @@
 - page_title 'Trial license'
 %h3.page-title Trial License
+
 %main{ :role => "main" }
   .actions
-    = form_tag oauth_authorization_path, method: :post do
+    = form_tag trials_path, method: :post do
       .form-group
         = label_tag :first_name
-        = text_field_tag :first_name, nil, class: "form-control", required: true
+        = text_field_tag :first_name, params[:first_name], class: "form-control", required: true
       .form-group
         = label_tag :last_name
-        = text_field_tag :last_name, nil, class: "form-control", required: true
+        = text_field_tag :last_name, params[:last_name], class: "form-control", required: true
       .form-group
         = label_tag :work_email
-        = text_field_tag :work_email, nil, class: "form-control", required: true
+        = text_field_tag :work_email, params[:work_email], class: "form-control", required: true
       .form-group
         = label_tag :company_name
-        = text_field_tag :company_name, nil, class: "form-control", required: true
+        = text_field_tag :company_name, params[:company_name], class: "form-control", required: true
       .form-group
         = label_tag :phone_number
-        = text_field_tag :phone_number, nil, class: "form-control", required: true
+        = text_field_tag :phone_number, params[:phone_number], class: "form-control", required: true
       .form-group
         = label_tag :number_of_developers
-        = text_field_tag :number_of_developers, nil, class: "form-control", required: true
+        = text_field_tag :number_of_developers, params[:number_of_developers], class: "form-control", required: true
       .form-group
         = label_tag :number_of_users
-        = text_field_tag :number_of_users, nil, class: "form-control", required: true
+        = text_field_tag :number_of_users, params[:number_of_users], class: "form-control", required: true
       .form-group
         = label_tag :country
-        = text_field_tag :country, nil, class: "form-control", required: true
+        = text_field_tag :country, params[:country], class: "form-control", required: true
       .form-group
         = submit_tag 'Start your free trial', class: "btn btn-default"
