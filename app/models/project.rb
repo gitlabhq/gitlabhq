@@ -187,8 +187,8 @@ class Project < ActiveRecord::Base
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_file,
-    format: { without: Gitlab::Regex.directory_traversal_regex,
-              message: Gitlab::Regex.directory_traversal_regex_message },
+    format: { without: /\.{2}/.freeze,
+              message: 'cannot include directory traversal.' },
     length: { maximum: 255 },
     allow_blank: true
   validates :name,
