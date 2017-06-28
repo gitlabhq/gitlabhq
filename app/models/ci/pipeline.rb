@@ -327,6 +327,8 @@ module Ci
       @ci_yaml_file = begin
         project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
       rescue
+        self.yaml_errors =
+          "Failed to load CI/CD config file at #{ci_yaml_file_path}"
         nil
       end
     end
