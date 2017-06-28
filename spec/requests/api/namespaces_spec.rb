@@ -24,9 +24,11 @@ describe API::Namespaces do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(group_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
-                                                                 'parent_id', 'members_count_with_descendants')
+                                                                 'parent_id', 'members_count_with_descendants',
+                                                                 'plan', 'shared_runners_minutes_limit')
 
-        expect(user_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path', 'parent_id')
+        expect(user_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
+                                                                'parent_id', 'plan', 'shared_runners_minutes_limit')
       end
 
       it "admin: returns an array of all namespaces" do

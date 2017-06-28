@@ -39,8 +39,6 @@ module API
         else
           render_validation_error!(namespace)
         end
-
-        present paginate(namespaces), with: Entities::Namespace, current_user: current_user
       end
     end
   end
