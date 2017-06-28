@@ -28,7 +28,7 @@ module Geo
         project: project,
         repository_storage_name: project.repository.storage,
         repository_storage_path: project.repository_storage_path,
-        new_path_with_namespace: project.full_path
+        new_path_with_namespace: project.full_path,
         old_path_with_namespace: old_repo_path,
         old_wiki_path_with_namespace: old_wiki_path,
         new_wiki_path_with_namespace: project.wiki.path_with_namespace,
