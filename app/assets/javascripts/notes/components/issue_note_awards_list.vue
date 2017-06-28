@@ -1,5 +1,5 @@
 <script>
-import { glEmojiTag } from '~/behaviors/gl_emoji';
+import * as Emoji from '../../emoji';
 import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
 import emojiSmile from 'icons/_emoji_smile.svg';
 import emojiSmiley from 'icons/_emoji_smiley.svg';
@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     getAwardHTML(name) {
-      return glEmojiTag(name);
+      return Emoji.glEmojiTag(name);
     },
     getAwardClassBindings(awardList, awardName) {
       return {

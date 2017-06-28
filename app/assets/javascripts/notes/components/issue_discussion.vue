@@ -19,7 +19,7 @@ export default {
     return {
       registerLink: '#',
       signInLink: '#',
-      newNotePath: '',
+      newNotePath: window.gl.issueData.create_note_path,
       isReplying: false,
     };
   },
@@ -29,6 +29,9 @@ export default {
     },
     author() {
       return this.discussion.author;
+    },
+    canReply() {
+      return window.gl.issueData.current_user.can_create_note;
     },
   },
   components: {
@@ -48,10 +51,6 @@ export default {
       this.registerLink = registerLink.getAttribute('href');
       this.signInLink = signInLink.getAttribute('href');
     }
-
-    // TODO: @fatihacet - Reimplement this when we have data for it.
-    // const newNotePath = document.querySelector('.js-main-target-form').getAttribute('action');
-    // this.newNotePath = `${newNotePath}?full_data=1`;
   },
   methods: {
     toggleDiscussion() {
@@ -73,6 +72,7 @@ export default {
           target_type: 'issue',
           target_id: this.discussion.noteable_id,
           note: { note },
+          full_data: true,
         },
       };
 
@@ -130,7 +130,7 @@ export default {
                 <div class="flash-container"></div>
                 <div class="discussion-reply-holder">
                   <button
-                    v-if="note.can_reply && !isReplying"
+                    v-if="canReply && !isReplying"
                     @click="showReplyForm"
                     type="button"
                     class="btn btn-text-field"
@@ -141,7 +141,7 @@ export default {
                       :updateHandler="saveReply"
                       :cancelHandler="cancelReplyForm" />
                   <div
-                    v-if="!note.can_reply"
+                    v-if="!canReply"
                     class="disabled-comment text-center">
                     Please
                     <a :href="registerLink">register</a>

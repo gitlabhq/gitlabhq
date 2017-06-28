@@ -7,23 +7,17 @@ import MarkdownField from '../../vue_shared/components/markdown/field.vue';
 export default {
   props: {},
   data() {
+    const { create_note_path, state } = window.gl.issueData;
+    const { currentUserData } = window.gl;
+
     return {
       note: '',
       markdownPreviewUrl: '',
       markdownDocsUrl: '',
-
-      // FIXME: @fatihacet - Fix the mock data below.
       noteType: 'comment',
-      issueState: 'open',
-      endpoint: '/gitlab-org/gitlab-ce/notes',
-      author: {
-        avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-        id: 1,
-        name: 'Administrator',
-        path: '/root',
-        state: 'active',
-        username: 'root',
-      },
+      issueState: state,
+      endpoint: create_note_path,
+      author: currentUserData,
     };
   },
   components: {
@@ -47,13 +41,12 @@ export default {
   methods: {
     handleSave() {
       const data = {
-        endpoint: `${this.endpoint}?full_data=1`,
+        endpoint: this.endpoint,
         noteData: {
-          target_type: 'issue',
-          target_id: '89',
+          full_data: true,
           note: {
             noteable_type: 'Issue',
-            noteable_id: 89,
+            noteable_id: window.gl.issueData.id,
             note: this.note,
           }
         },
@@ -64,12 +57,14 @@ export default {
       }
 
       this.$store.dispatch('createNewNote', data)
-        .then(() => {
+        .then((res) => {
+          if (res.errors) {
+            return this.handleError();
+          }
+
           this.discard();
         })
-        .catch(() => {
-          new Flash('Something went wrong while adding your comment. Please try again.'); // eslint-disable-line
-        });
+        .catch(this.handleError);
     },
     discard() {
       this.note = '';
@@ -77,6 +72,9 @@ export default {
     },
     setNoteType(type) {
       this.noteType = type;
+    },
+    handleError() {
+      new Flash('Something went wrong while adding your comment. Please try again.'); // eslint-disable-line
     },
   },
   mounted() {

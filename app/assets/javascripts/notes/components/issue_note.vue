@@ -104,8 +104,8 @@ export default {
           <issue-note-actions
             :accessLevel="note.human_access"
             :canAward="note.emoji_awardable"
-            :canEdit="note.can_edit"
-            :canDelete="note.can_edit"
+            :canEdit="note.current_user.can_edit"
+            :canDelete="note.current_user.can_edit"
             :reportAbusePath="note.report_abuse_path"
             :editHandler="editHandler"
             :deleteHandler="deleteHandler" />

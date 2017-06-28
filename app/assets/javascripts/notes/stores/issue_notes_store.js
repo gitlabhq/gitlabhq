@@ -53,8 +53,16 @@ const mutations = {
     }
   },
   addNewNote(storeState, note) {
-    // TODO: @fatihacet - When we get the correct data from server update the store
-    // storeState.notes.push(note);
+    const { discussion_id, type } = note;
+    const noteData = {
+      expanded: true,
+      id: discussion_id,
+      individual_note: !(type === 'DiscussionNote'),
+      notes: [ note ],
+      reply_id: discussion_id,
+    };
+
+    storeState.notes.push(noteData);
   },
 };
 
@@ -100,7 +108,10 @@ const actions = {
       .createNewNote(endpoint, noteData)
       .then(res => res.json())
       .then((res) => {
-        context.commit('addNewNote', res);
+        if (!res.errors) {
+          context.commit('addNewNote', res);
+        }
+        return res;
       });
   },
 };
