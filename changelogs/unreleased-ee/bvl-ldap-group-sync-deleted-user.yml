@@ -1,0 +1,4 @@
+---
+title: Fix crash in LDAP sync when user was removed.
+merge_request: 2289
+author:
