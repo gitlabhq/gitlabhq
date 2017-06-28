@@ -211,10 +211,9 @@ describe GroupPolicy, models: true do
       let(:current_user) { auditor }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.to all(start_with("read"))
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        is_expected.to be_allowed(:read_group)
+        is_expected.to be_disallowed(*master_permissions)
+        is_expected.to be_disallowed(*owner_permissions)
       end
     end
   end

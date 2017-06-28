@@ -18,19 +18,19 @@ describe GroupPolicy, models: true do
     group.add_owner(owner)
   end
 
-  subject { described_class.abilities(current_user, group).to_set }
+  subject { described_class.new(current_user, group) }
 
   context 'when LDAP sync is not enabled' do
     context 'owner' do
       let(:current_user) { owner }
 
-      it { is_expected.not_to include(:override_group_member) }
+      it { is_expected.to be_disallowed(:override_group_member) }
     end
 
     context 'admin' do
       let(:current_user) { admin }
 
-      it { is_expected.not_to include(:override_group_member) }
+      it { is_expected.to be_disallowed(:override_group_member) }
     end
   end
 
@@ -42,43 +42,43 @@ describe GroupPolicy, models: true do
     context 'with no user' do
       let(:current_user) { nil }
 
-      it { is_expected.not_to include(:override_group_member) }
+      it { is_expected.to be_disallowed(:override_group_member) }
     end
 
     context 'guests' do
       let(:current_user) { guest }
 
-      it { is_expected.not_to include(:override_group_member) }
+      it { is_expected.to be_disallowed(:override_group_member) }
     end
 
     context 'reporter' do
       let(:current_user) { reporter }
 
-      it { is_expected.not_to include(:override_group_member) }
+      it { is_expected.to be_disallowed(:override_group_member) }
     end
 
     context 'developer' do
       let(:current_user) { developer }
 
-      it { is_expected.not_to include(:override_group_member) }
+      it { is_expected.to be_disallowed(:override_group_member) }
     end
 
     context 'master' do
       let(:current_user) { master }
 
-      it { is_expected.not_to include(:override_group_member) }
+      it { is_expected.to be_disallowed(:override_group_member) }
     end
 
     context 'owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to include(:override_group_member) }
+      it { is_expected.to be_allowed(:override_group_member) }
     end
 
     context 'admin' do
       let(:current_user) { admin }
 
-      it { is_expected.to include(:override_group_member) }
+      it { is_expected.to be_allowed(:override_group_member) }
     end
   end
 end

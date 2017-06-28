@@ -101,8 +101,8 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(current_user, :private) }
 
       it do
-        is_expected.not_to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_disallowed(:read_project_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
   end
@@ -168,8 +168,8 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(current_user, :private) }
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_allowed(:read_project_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
 

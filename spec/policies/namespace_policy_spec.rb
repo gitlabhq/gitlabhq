@@ -11,24 +11,24 @@ describe NamespacePolicy, models: true do
 
   let(:admin_permissions) { owner_permissions }
 
-  subject { described_class.abilities(current_user, namespace).to_set }
+  subject { described_class.new(current_user, namespace) }
 
   context 'with no user' do
     let(:current_user) { nil }
 
-    it { is_expected.to be_empty }
+    it { is_expected.to be_banned }
   end
 
   context 'regular user' do
     let(:current_user) { user }
 
-    it { is_expected.to be_empty }
+    it { is_expected.to be_disallowed(*owner_permissions) }
   end
 
   context 'owner' do
     let(:current_user) { owner }
 
-    it { is_expected.to include(*owner_permissions) }
+    it { is_expected.to be_allowed(*owner_permissions) }
   end
 
   context 'auditor' do
@@ -37,17 +37,17 @@ describe NamespacePolicy, models: true do
     context 'owner' do
       let(:namespace) { create(:namespace, owner: auditor) }
 
-      it { is_expected.to include(*owner_permissions) }
+      it { is_expected.to be_allowed(*owner_permissions) }
     end
 
     context 'non-owner' do
-      it { is_expected.to be_empty }
+      it { is_expected.to be_disallowed(*owner_permissions) }
     end
   end
 
   context 'admin' do
     let(:current_user) { admin }
 
-    it { is_expected.to include(*owner_permissions) }
+    it { is_expected.to be_allowed(*owner_permissions) }
   end
 end
