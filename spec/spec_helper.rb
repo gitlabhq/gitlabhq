@@ -141,12 +141,6 @@ RSpec.configure do |config|
   config.around(:each, :postgresql) do |example|
     example.run if Gitlab::Database.postgresql?
   end
-
-  config.around(:each, :gpg) do |example|
-    Gitlab::Gpg.using_tmp_keychain do
-      example.run
-    end
-  end
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

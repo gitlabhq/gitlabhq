@@ -13,7 +13,7 @@ describe GpgKey do
     it { is_expected.not_to allow_value('BEGIN PGP').for(:key) }
   end
 
-  context 'callbacks', :gpg do
+  context 'callbacks' do
     describe 'extract_fingerprint' do
       it 'extracts the fingerprint from the gpg key' do
         gpg_key = described_class.new(key: GpgHelpers::User1.public_key)
@@ -45,7 +45,7 @@ describe GpgKey do
     end
   end
 
-  describe '#emails', :gpg do
+  describe '#emails' do
     it 'returns the emails from the gpg key' do
       gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key
 
@@ -53,7 +53,7 @@ describe GpgKey do
     end
   end
 
-  describe '#emails_with_verified_status', :gpg do
+  describe '#emails_with_verified_status' do
     it 'email is verified if the user has the matching email' do
       user = create :user, email: 'bette.cartwright@example.com'
       gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user

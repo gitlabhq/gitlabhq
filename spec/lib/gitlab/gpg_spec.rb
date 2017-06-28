@@ -44,8 +44,14 @@ describe Gitlab::Gpg do
   end
 end
 
-describe Gitlab::Gpg::CurrentKeyChain, :gpg do
-  describe '.add', :gpg do
+describe Gitlab::Gpg::CurrentKeyChain do
+  around do |example|
+    Gitlab::Gpg.using_tmp_keychain do
+      example.run
+    end
+  end
+
+  describe '.add' do
     it 'stores the key in the keychain' do
       expect(GPGME::Key.find(:public, GpgHelpers::User1.fingerprint)).to eq []
 

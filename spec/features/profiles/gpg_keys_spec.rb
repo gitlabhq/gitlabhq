@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Profile > GPG Keys', :gpg do
+feature 'Profile > GPG Keys' do
   let(:user) { create(:user, email: GpgHelpers::User2.emails.first) }
 
   before do
