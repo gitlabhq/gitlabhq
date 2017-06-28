@@ -140,7 +140,7 @@ function generateUnicodeSupportMap(testMap) {
   return resultMap;
 }
 
-function getUnicodeSupportMap() {
+export default function getUnicodeSupportMap() {
   let unicodeSupportMap;
   let userAgentFromCache;
 
@@ -165,8 +165,3 @@ function getUnicodeSupportMap() {
 
   return unicodeSupportMap;
 }
-
-export {
-  getUnicodeSupportMap,
-  generateUnicodeSupportMap,
-};

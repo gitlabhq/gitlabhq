@@ -1,12 +1,11 @@
-import { glEmojiTag } from '~/behaviors/gl_emoji';
-import {
-  isEmojiUnicodeSupported,
+import { glEmojiTag } from '~/emoji';
+import isEmojiUnicodeSupported, {
   isFlagEmoji,
   isKeycapEmoji,
   isSkinToneComboEmoji,
   isHorceRacingSkinToneComboEmoji,
   isPersonZwjEmoji,
-} from '~/behaviors/gl_emoji/is_emoji_unicode_supported';
+} from '~/emoji/support/is_emoji_unicode_supported';
 
 const emptySupportMap = {
   personZwj: false,

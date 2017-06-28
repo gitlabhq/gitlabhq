@@ -111,7 +111,7 @@ function isEmojiUnicodeSupported(unicodeSupportMap = {}, emojiUnicode, unicodeVe
 }
 
 export {
-  isEmojiUnicodeSupported,
+  isEmojiUnicodeSupported as default,
   isFlagEmoji,
   isKeycapEmoji,
   isSkinToneComboEmoji,
