@@ -1,10 +1,12 @@
 require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
+  let(:background_migration) { described_class.new }
+
   describe '#perform' do
     let!(:cutoff_datetime) { DateTime.now }
 
-    subject { described_class.new.perform(cutoff_datetime) }
+    subject { background_migration.perform(cutoff_datetime) }
 
     context 'when an SSH key was created after the cutoff datetime' do
       before do
@@ -19,9 +21,8 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
         @key = create(:key)
       end
 
-      it 'queues a batch_add_keys_from call to GitlabShellWorker, including the start key ID' do
-        expect(GitlabShellWorker).to receive(:perform_async).with(:batch_add_keys_in_db_starting_from, @key.id)
-        allow(GitlabShellWorker).to receive(:perform_async).with(:remove_keys_not_found_in_db)
+      it 'calls batch_add_keys_in_db_starting_from with the start key ID' do
+        expect(background_migration).to receive(:batch_add_keys_in_db_starting_from).with(@key.id)
         subject
       end
     end
@@ -35,7 +36,7 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
   describe '#add_keys_since' do
     let!(:cutoff_datetime) { DateTime.now }
 
-    subject { described_class.new.add_keys_since(cutoff_datetime) }
+    subject { background_migration.add_keys_since(cutoff_datetime) }
 
     before do
       Timecop.freeze
@@ -50,15 +51,15 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
         @key = create(:key)
       end
 
-      it 'queues a batch_add_keys_from call to GitlabShellWorker, including the start key ID' do
-        expect(GitlabShellWorker).to receive(:perform_async).with(:batch_add_keys_in_db_starting_from, @key.id)
+      it 'calls batch_add_keys_in_db_starting_from with the start key ID' do
+        expect(background_migration).to receive(:batch_add_keys_in_db_starting_from).with(@key.id)
         subject
       end
     end
 
     context 'when an SSH key was not created after the cutoff datetime' do
-      it 'does not use GitlabShellWorker' do
-        expect(GitlabShellWorker).not_to receive(:perform_async)
+      it 'does not call batch_add_keys_in_db_starting_from' do
+        expect(background_migration).not_to receive(:batch_add_keys_in_db_starting_from)
         subject
       end
     end
@@ -67,7 +68,32 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
   describe '#remove_keys_not_found_in_db' do
     it 'queues a rm_keys_not_in_db call to GitlabShellWorker' do
       expect(GitlabShellWorker).to receive(:perform_async).with(:remove_keys_not_found_in_db)
-      described_class.new.remove_keys_not_found_in_db
+      background_migration.remove_keys_not_found_in_db
+    end
+  end
+
+  describe '#batch_add_keys_in_db_starting_from' do
+    context 'when there are many keys in the DB' do
+      before do
+        @keys = []
+        10.times do
+          @keys << create(:key)
+        end
+      end
+
+      it 'adds all the keys in the DB, starting from the given ID, to the authorized_keys file' do
+        Gitlab::Shell.new.remove_all_keys
+
+        background_migration.batch_add_keys_in_db_starting_from(@keys[3].id)
+
+        file = File.read(Rails.root.join('tmp/tests/.ssh/authorized_keys'))
+        expect(file.scan(/ssh-rsa/).count).to eq(7)
+
+        expect(file).to_not include(Gitlab::Shell.strip_key(@keys[0].key))
+        expect(file).to_not include(Gitlab::Shell.strip_key(@keys[2].key))
+        expect(file).to include(Gitlab::Shell.strip_key(@keys[3].key))
+        expect(file).to include(Gitlab::Shell.strip_key(@keys[9].key))
+      end
     end
   end
 end
