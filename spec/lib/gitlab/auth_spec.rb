@@ -172,6 +172,11 @@ describe Gitlab::Auth, lib: true do
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
         expect(gl_auth.find_for_git_client('', nil, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, nil))
       end
+
+      it 'does not try password auth before personal access tokens' do
+        expect(gl_auth).not_to receive(:find_with_user_password)
+        gl_auth.find_for_git_client(user.email, token_w_api_scope.token, project: nil, ip: 'ip')
+      end
     end
 
     context 'while using regular user and password' do
