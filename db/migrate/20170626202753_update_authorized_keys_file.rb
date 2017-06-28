@@ -4,15 +4,19 @@
 class UpdateAuthorizedKeysFile < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  class ApplicationSetting < ActiveRecord::Base; end
-  class Key < ActiveRecord::Base; end
+  class ApplicationSetting < ActiveRecord::Base
+    self.table_name = 'application_settings'
+  end
+  class Key < ActiveRecord::Base
+    self.table_name = 'keys'
+  end
 
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
-  # We started deploying 9.3.0 to GitLab.com at 2017-06-22T17:24:00+00:00.
-  # TODO look at the time we pushed to the package server
-  DATETIME_9_3_0_RELEASED = DateTime.parse('2017-06-22T17:24:00+00:00')
+  # We started deploying 9.3.0 to GitLab.com at 2017-06-22 17:24 UTC, and the
+  # package was pushed some time before that. Some buffer room is included here.
+  DATETIME_9_3_0_RELEASED = DateTime.parse('2017-06-22T00:00:00+00:00')
 
   def up
     if authorized_keys_file_in_use_and_stale?
@@ -33,14 +37,14 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
   def authorized_keys_file_in_use_and_stale?
     return false unless ran_broken_migration?
 
-    uncached_setting = ApplicationSetting.last
+    @uncached_application_setting = ApplicationSetting.last
 
     # If there is no ApplicationSetting record in the DB, then the instance was
     # never in a state where `authorized_keys_enabled` field was `nil`. So the
     # file is not stale.
-    return false unless uncached_setting
+    return false unless @uncached_application_setting
 
-    if uncached_setting.authorized_keys_enabled == false # not falsey!
+    if @uncached_application_setting.authorized_keys_enabled == false # not falsey!
       # If authorized_keys_enabled is explicitly false, then the file is not in
       # use, so it doesn't need to be fixed. I.e. GitLab.com.
       #
@@ -59,11 +63,9 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
 
   def ran_broken_migration?
     # If the column is already fixed, then the migration wasn't run before now.
-    if Gitlab::Database.postgresql?
-      !column_exists?(:application_settings, :authorized_keys_enabled, :boolean, default: 'true', null: false)
-    else
-      !column_exists?(:application_settings, :authorized_keys_enabled, :boolean, default: '1', null: false)
-    end
+    default_value = Gitlab::Database.postgresql? ? 'true' : '1'
+
+    !column_exists?(:application_settings, :authorized_keys_enabled, :boolean, default: default_value, null: false)
   end
 
   def false_negative_warning
@@ -91,8 +93,7 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
   end
 
   def update_nil_setting_to_true
-    setting = ApplicationSetting.last # guaranteed to be found since authorized_keys_file_in_use_and_stale? is true
-    setting.update!(authorized_keys_enabled: true) if setting.authorized_keys_enabled.nil?
+    @uncached_application_setting.update_attribute(:authorized_keys_enabled, true)
   end
 
   def update_authorized_keys_file_since(cutoff_datetime)
@@ -102,7 +103,7 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
   end
 
   def add_keys_since(cutoff_datetime)
-    start_key = Key.where("created_at >= ?", cutoff_datetime).first
+    start_key = Key.select(:id).where("created_at >= ?", cutoff_datetime).take
     if start_key
       GitlabShellWorker.perform_async(:batch_add_keys_in_db_starting_from, start_key.id)
     end

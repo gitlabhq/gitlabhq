@@ -282,9 +282,7 @@ module Gitlab
     def list_key_ids(&block)
       return unless self.authorized_keys_enabled?
 
-      IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys list-key-ids)) do |key_id_stream|
-        yield(key_id_stream)
-      end
+      IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys list-key-ids), &block)
     end
 
     # Add empty directory for storing repositories
@@ -415,6 +413,8 @@ module Gitlab
     end
 
     def authorized_keys_enabled?
+      # Return true if nil to ensure the authorized_keys methods work while
+      # fixing the authorized_keys file during migration.
       return true if current_application_settings.authorized_keys_enabled.nil?
 
       current_application_settings.authorized_keys_enabled
