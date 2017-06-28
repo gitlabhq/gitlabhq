@@ -23,7 +23,7 @@ class IssueEntity < IssuableEntity
   end
 
   expose :create_note_path do |issue|
-    namespace_project_notes_path(issue.project.namespace, issue.project, target_type: 'issue', target_id: issue.id, note: { noteable_type: 'Issue', noteable_id: issue.id })
+    namespace_project_notes_path(issue.project.namespace, issue.project, target_type: 'issue', target_id: issue.id)
   end
 
   expose :preview_note_path do |issue|
