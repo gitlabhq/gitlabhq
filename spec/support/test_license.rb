@@ -4,4 +4,8 @@ class TestLicense
 
     FactoryGirl.create(:license)
   end
+
+  def self.destroy!
+    License.destroy_all
+  end
 end
