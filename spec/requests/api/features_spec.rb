@@ -88,8 +88,8 @@ describe API::Features do
             'gates' => [{ 'key' => 'boolean', 'value' => true }])
         end
 
-        it 'creates an enabled feature for the given Flipper group when passed flipper_group=perf_team' do
-          post api("/features/#{feature_name}", admin), value: 'true', flipper_group: 'perf_team'
+        it 'creates an enabled feature for the given Flipper group when passed feature_group=perf_team' do
+          post api("/features/#{feature_name}", admin), value: 'true', feature_group: 'perf_team'
 
           expect(response).to have_http_status(201)
           expect(json_response).to eq(
@@ -147,8 +147,8 @@ describe API::Features do
             'gates' => [{ 'key' => 'boolean', 'value' => true }])
         end
 
-        it 'enables the feature for the given Flipper group when passed flipper_group=perf_team' do
-          post api("/features/#{feature_name}", admin), value: 'true', flipper_group: 'perf_team'
+        it 'enables the feature for the given Flipper group when passed feature_group=perf_team' do
+          post api("/features/#{feature_name}", admin), value: 'true', feature_group: 'perf_team'
 
           expect(response).to have_http_status(201)
           expect(json_response).to eq(
@@ -188,11 +188,11 @@ describe API::Features do
             'gates' => [{ 'key' => 'boolean', 'value' => false }])
         end
 
-        it 'disables the feature for the given Flipper group when passed flipper_group=perf_team' do
+        it 'disables the feature for the given Flipper group when passed feature_group=perf_team' do
           feature.enable(Feature.group(:perf_team))
           expect(Feature.get(feature_name).enabled?(admin)).to be_truthy
 
-          post api("/features/#{feature_name}", admin), value: 'false', flipper_group: 'perf_team'
+          post api("/features/#{feature_name}", admin), value: 'false', feature_group: 'perf_team'
 
           expect(response).to have_http_status(201)
           expect(json_response).to eq(
