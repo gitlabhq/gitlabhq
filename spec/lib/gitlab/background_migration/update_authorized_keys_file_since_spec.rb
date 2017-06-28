@@ -27,8 +27,8 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
       end
     end
 
-    it 'queues a remove_keys_not_found_in_db call to GitlabShellWorker' do
-      expect(GitlabShellWorker).to receive(:perform_async).with(:remove_keys_not_found_in_db)
+    it 'calls remove_keys_not_found_in_db on Gitlab::Shell' do
+      expect(background_migration.gitlab_shell).to receive(:remove_keys_not_found_in_db)
       subject
     end
   end
@@ -66,8 +66,8 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
   end
 
   describe '#remove_keys_not_found_in_db' do
-    it 'queues a rm_keys_not_in_db call to GitlabShellWorker' do
-      expect(GitlabShellWorker).to receive(:perform_async).with(:remove_keys_not_found_in_db)
+    it 'calls remove_keys_not_found_in_db on Gitlab::Shell' do
+      expect(background_migration.gitlab_shell).to receive(:remove_keys_not_found_in_db)
       background_migration.remove_keys_not_found_in_db
     end
   end

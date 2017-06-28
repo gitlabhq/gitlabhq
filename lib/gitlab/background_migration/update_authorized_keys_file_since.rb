@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def remove_keys_not_found_in_db
-        GitlabShellWorker.perform_async(:remove_keys_not_found_in_db)
+        gitlab_shell.remove_keys_not_found_in_db
       end
 
       # Not added to Gitlab::Shell because I don't expect this to be used again
