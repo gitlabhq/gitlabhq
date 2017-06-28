@@ -1,16 +1,24 @@
-# GitLab Enterprise Edition
+# GitLab Documentation
 
-[GitLab](https://about.gitlab.com/) is a Git-based fully featured platform
-for software development.
+Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
+platform for software development!
 
-**GitLab Enterprise Edition (EE)** is an opencore product, self-hosted,
-available under distinct [subscriptions](https://about.gitlab.com/products/).
+We offer four different products for you and your company:
 
-GitLab EE contains all the features available in
-[GitLab Community Edition (CE)](https://docs.gitlab.com/ce/),
+- **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
+self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
+- **GitLab Enterprise Edition (EE)** is an [opencore product](https://gitlab.com/gitlab-org/gitlab-ee/),
+self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)** and **GitLab Enterprise Edition Premium (EEP)**.
+- **GitLab.com**: SaaS GitLab solution, with [free and paid subscriptions](https://about.gitlab.com/gitlab-com/). GitLab.com is hosted by GitLab, Inc., and administrated by GitLab (users don't have access to admin settings).
+
+**GitLab EE** contains all features available in **GitLab CE**,
 plus premium features available in each version: **Enterprise Edition Starter**
 (**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
 **EES** is also available in **EEP**.
+
+**Note:** _We are unifying the documentation for CE and EE. To check if certain feature is
+available in CE or EE, look for a note right below the page title containing the GitLab
+version which introduced that feature._
 
 ----
 
@@ -143,7 +151,7 @@ have access to GitLab administration tools and settings.
   - **(EES/EEP)** [Sync LDAP](administration/auth/ldap-ee.md)
   - **(EES/EEP)** [Kerberos authentication](integration/kerberos.md)
 
-### GitLab admins' superpowers
+### Features
 
 - [Container Registry](administration/container_registry.md): Configure Docker Registry with GitLab.
 - [Custom Git hooks](administration/custom_hooks.md): Custom Git hooks (on the filesystem) for when webhooks aren't enough.
