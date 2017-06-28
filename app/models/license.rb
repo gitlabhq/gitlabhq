@@ -6,22 +6,23 @@ class License < ActiveRecord::Base
   DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
   ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
   EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
+  FAST_FORWARD_MERGE_FEATURE = 'GitLab_FastForwardMerge'.freeze
   FILE_LOCK_FEATURE = 'GitLab_FileLocks'.freeze
   GEO_FEATURE = 'GitLab_Geo'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
   MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
-  FAST_FORWARD_MERGE_FEATURE = 'GitLab_FastForwardMerge'.freeze
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
 
   FEATURE_CODES = {
-    geo: GEO_FEATURE,
     auditor_user: AUDITOR_USER_FEATURE,
-    service_desk: SERVICE_DESK_FEATURE,
-    object_storage: OBJECT_STORAGE_FEATURE,
     elastic_search: ELASTIC_SEARCH_FEATURE,
+    geo: GEO_FEATURE,
+    object_storage: OBJECT_STORAGE_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
+    service_desk: SERVICE_DESK_FEATURE,
+
     # Features that make sense to Namespace:
     burndown_charts: BURNDOWN_CHARTS_FEATURE,
     deploy_board: DEPLOY_BOARD_FEATURE,
@@ -49,12 +50,12 @@ class License < ActiveRecord::Base
 
   EEP_FEATURES = [
     *EES_FEATURES,
+    { AUDITOR_USER_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
-    { AUDITOR_USER_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 },
-    { OBJECT_STORAGE_FEATURE => 1 }
+    { OBJECT_STORAGE_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 }
   ].freeze
 
   EEU_FEATURES = [
