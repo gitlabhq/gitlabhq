@@ -15,8 +15,8 @@ module API
       end
 
       def gate_target(params)
-        if params[:flipper_group]
-          Feature.group(params[:flipper_group])
+        if params[:feature_group]
+          Feature.group(params[:feature_group])
         elsif params[:user]
           User.find_by_username(params[:user])
         else
@@ -40,9 +40,9 @@ module API
       end
       params do
         requires :value, type: String, desc: '`true` or `false` to enable/disable, an integer for percentage of time'
-        optional :flipper_group, type: String, desc: 'A Flipper group name'
+        optional :feature_group, type: String, desc: 'A Feature group name'
         optional :user, type: String, desc: 'A GitLab username'
-        mutually_exclusive :flipper_group, :user
+        mutually_exclusive :feature_group, :user
       end
       post ':name' do
         feature = Feature.get(params[:name])
