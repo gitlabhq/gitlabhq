@@ -29,10 +29,10 @@ if the job surpasses the threshold, it is marked as failed.
 
 ## Custom CI Config File
 
->  - [Introduced][ce-15041] in GitLab 8.13.
+>  - [Introduced][ce-12509] in GitLab 9.4.
 
-By default we look for the `.gitlab-ci.yml` file in the projects root
-directory. If you require a different location **within** the repository
+By default we look for the `.gitlab-ci.yml` file in the project's root
+directory. If you require a different location **within** the repository,
 you can set a custom filepath that will be used to lookup the config file,
 this filepath should be **relative** to the root.
 
@@ -131,3 +131,4 @@ into your `README.md`:
 [var]: ../../../ci/yaml/README.md#git-strategy
 [coverage report]: #test-coverage-parsing
 [ce-9362]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9362
+[ce-12509]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12509

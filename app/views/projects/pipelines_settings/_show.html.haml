@@ -47,6 +47,14 @@
 
         %hr
         .form-group
+          = f.label :ci_config_file, 'Custom CI Config File', class: 'label-light'
+          = f.text_field :ci_config_file, class: 'form-control', placeholder: '.gitlab-ci.yml'
+          %p.help-block
+            Optionally specify the location of your CI config file, e.g. my/path or my/path/.my-config.yml.
+            Default is to use '.gitlab-ci.yml' in the repository root.
+
+        %hr
+        .form-group
           .checkbox
             = f.label :public_builds do
               = f.check_box :public_builds
