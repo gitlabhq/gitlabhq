@@ -747,20 +747,6 @@
     }
   }
 
-  &.affix {
-    left: 0;
-    transition: right .15s;
-
-    @media (max-width: $screen-xs-max) {
-      right: 0;
-    }
-
-    .merge-request-tabs-container {
-      padding-left: $gl-padding;
-      padding-right: $gl-padding;
-    }
-  }
-
   .nav-links {
     border: 0;
   }
@@ -796,10 +782,8 @@
 }
 
 .content-limit-container-width:not(.content-container-limited) {
-  .merge-request-tabs-holder:not(.affix) {
-    .merge-request-tabs-container {
-      max-width: $limited-layout-width - ($gl-padding * 2);
-    }
+  .merge-request-tabs-holder .merge-request-tabs-container {
+    max-width: $limited-layout-width - ($gl-padding * 2);
   }
 }
 

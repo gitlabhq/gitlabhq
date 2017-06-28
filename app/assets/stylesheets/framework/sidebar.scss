@@ -36,10 +36,6 @@
     &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
       padding-right: $gutter_collapsed_width;
     }
-
-    .merge-request-tabs-holder.affix {
-      right: $gutter_collapsed_width;
-    }
   }
 
   .sidebar-collapsed-icon {
@@ -64,14 +60,6 @@
   @media (min-width: $screen-md-min) {
     .content-wrapper {
       padding-right: $gutter_width;
-    }
-
-    &:not(.with-overlay) .merge-request-tabs-holder.affix {
-      right: $gutter_width;
-    }
-
-    &.with-overlay .merge-request-tabs-holder.affix {
-      right: $gutter_collapsed_width;
     }
   }
 }

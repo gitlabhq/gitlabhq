@@ -77,7 +77,6 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
       this.bindEvents();
       this.activateTab(action);
-      this.initAffix();
     }
 
     bindEvents() {
@@ -157,7 +156,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
       if (location.hash) {
         const offset = 0 - (
           $('.navbar-gitlab').outerHeight() +
-          $('.js-tabs-affix').outerHeight()
+          $('.js-sticky-tabs').outerHeight()
         );
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {
@@ -380,40 +379,6 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
           $gutterIcon.closest('a').trigger('click', [true]);
         }
       }, 0);
-    }
-
-    initAffix() {
-      const $tabs = $('.js-tabs-affix');
-      const $fixedNav = $('.navbar-gitlab');
-
-      // Screen space on small screens is usually very sparse
-      // So we dont affix the tabs on these
-      if (Breakpoints.get().getBreakpointSize() === 'xs' || !$tabs.length) return;
-
-      /**
-        If the browser does not support position sticky, it returns the position as static.
-        If the browser does support sticky, then we allow the browser to handle it, if not
-        then we default back to Bootstraps affix
-      **/
-      if ($tabs.css('position') !== 'static') return;
-
-      const $diffTabs = $('#diff-notes-app');
-
-      $tabs.off('affix.bs.affix affix-top.bs.affix')
-        .affix({
-          offset: {
-            top: () => (
-              $diffTabs.offset().top - $tabs.height() - $fixedNav.height()
-            ),
-          },
-        })
-        .on('affix.bs.affix', () => $diffTabs.css({ marginTop: $tabs.height() }))
-        .on('affix-top.bs.affix', () => $diffTabs.css({ marginTop: '' }));
-
-      // Fix bug when reloading the page already scrolling
-      if ($tabs.hasClass('affix')) {
-        $tabs.trigger('affix.bs.affix');
-      }
     }
   }
 

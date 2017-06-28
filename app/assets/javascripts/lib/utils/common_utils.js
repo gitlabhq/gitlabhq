@@ -86,7 +86,7 @@
       // This is required to handle non-unicode characters in hash
       hash = decodeURIComponent(hash);
 
-      var fixedTabs = document.querySelector('.js-tabs-affix');
+      var fixedTabs = document.querySelector('.js-sticky-tabs');
       var fixedNav = document.querySelector('.navbar-gitlab');
 
       var adjustment = 0;

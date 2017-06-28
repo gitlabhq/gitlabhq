@@ -58,12 +58,15 @@ $(() => {
 
   gl.diffNotesCompileComponents();
 
-  new Vue({
-    el: '#resolve-count-app',
-    components: {
-      'resolve-count': ResolveCount
-    }
-  });
+  [...document.querySelectorAll('#resolve-count-app, #resolve-count-app-sticky')]
+    .forEach((mountPoint) => {
+      new Vue({
+        el: `#${mountPoint.id}`,
+        components: {
+          'resolve-count': ResolveCount
+        }
+      });
+    });
 
   $(window).trigger('resize.nav');
 });
