@@ -1,9 +1,8 @@
 # Specifications for behavior common to all objects with executable attributes.
 # It takes a `issuable_type`, and expect an `issuable`.
 
-shared_examples 'issuable record that supports slash commands in its description and notes' do |issuable_type|
-  include SlashCommandsHelpers
-  include WaitForAjax
+shared_examples 'issuable record that supports quick actions in its description and notes' do |issuable_type|
+  include QuickActionsHelpers
 
   let(:master) { create(:user) }
   let(:assignee) { create(:user, username: 'bob') }
@@ -18,15 +17,15 @@ shared_examples 'issuable record that supports slash commands in its description
     project.team << [master, :master]
     project.team << [assignee, :developer]
     project.team << [guest, :guest]
-    login_with(master)
+    gitlab_sign_in(master)
   end
 
   after do
     # Ensure all outstanding Ajax requests are complete to avoid database deadlocks
-    wait_for_ajax
+    wait_for_requests
   end
 
-  describe "new #{issuable_type}" do
+  describe "new #{issuable_type}", js: true do
     context 'with commands in the description' do
       it "creates the #{issuable_type} and interpret commands accordingly" do
         visit public_send("new_namespace_project_#{issuable_type}_path", project.namespace, project, new_url_opts)
@@ -45,7 +44,7 @@ shared_examples 'issuable record that supports slash commands in its description
     end
   end
 
-  describe "note on #{issuable_type}" do
+  describe "note on #{issuable_type}", js: true do
     before do
       visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
     end
@@ -59,11 +58,12 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/label ~bug'
         expect(page).not_to have_content '/milestone %"ASAP"'
 
+        wait_for_requests
         issuable.reload
         note = issuable.notes.user.first
 
         expect(note.note).to eq "Awesome!"
-        expect(issuable.assignee).to eq assignee
+        expect(issuable.assignees).to eq [assignee]
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
       end
@@ -76,12 +76,12 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/assign @bob'
         expect(page).not_to have_content '/label ~bug'
         expect(page).not_to have_content '/milestone %"ASAP"'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
         issuable.reload
 
         expect(issuable.notes.user).to be_empty
-        expect(issuable.assignee).to eq assignee
+        expect(issuable.assignees).to eq [assignee]
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
       end
@@ -97,7 +97,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/close")
 
           expect(page).not_to have_content '/close'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           expect(issuable.reload).to be_closed
         end
@@ -105,8 +105,8 @@ shared_examples 'issuable record that supports slash commands in its description
 
       context "when current user cannot close #{issuable_type}" do
         before do
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -114,7 +114,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/close")
 
           expect(page).not_to have_content '/close'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_open
         end
@@ -132,7 +132,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/reopen")
 
           expect(page).not_to have_content '/reopen'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           expect(issuable.reload).to be_open
         end
@@ -140,8 +140,8 @@ shared_examples 'issuable record that supports slash commands in its description
 
       context "when current user cannot reopen #{issuable_type}" do
         before do
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -149,7 +149,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/reopen")
 
           expect(page).not_to have_content '/reopen'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_closed
         end
@@ -162,7 +162,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/title Awesome new title")
 
           expect(page).not_to have_content '/title'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           expect(issuable.reload.title).to eq 'Awesome new title'
         end
@@ -170,8 +170,8 @@ shared_examples 'issuable record that supports slash commands in its description
 
       context "when current user cannot change title of #{issuable_type}" do
         before do
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -179,7 +179,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/title Awesome new title")
 
           expect(page).not_to have_content '/title'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           expect(issuable.reload.title).not_to eq 'Awesome new title'
         end
@@ -191,7 +191,7 @@ shared_examples 'issuable record that supports slash commands in its description
         write_note("/todo")
 
         expect(page).not_to have_content '/todo'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
         todos = TodosFinder.new(master).execute
         todo = todos.first
@@ -222,7 +222,7 @@ shared_examples 'issuable record that supports slash commands in its description
         write_note("/done")
 
         expect(page).not_to have_content '/done'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
         expect(todo.reload).to be_done
       end
@@ -230,31 +230,46 @@ shared_examples 'issuable record that supports slash commands in its description
 
     context "with a note subscribing to the #{issuable_type}" do
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(master)).to be_falsy
+        expect(issuable.subscribed?(master, project)).to be_falsy
 
         write_note("/subscribe")
 
         expect(page).not_to have_content '/subscribe'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
-        expect(issuable.subscribed?(master)).to be_truthy
+        expect(issuable.subscribed?(master, project)).to be_truthy
       end
     end
 
     context "with a note unsubscribing to the #{issuable_type} as done" do
       before do
-        issuable.subscribe(master)
+        issuable.subscribe(master, project)
       end
 
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(master)).to be_truthy
+        expect(issuable.subscribed?(master, project)).to be_truthy
 
         write_note("/unsubscribe")
 
         expect(page).not_to have_content '/unsubscribe'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
-        expect(issuable.subscribed?(master)).to be_falsy
+        expect(issuable.subscribed?(master, project)).to be_falsy
+      end
+    end
+  end
+
+  describe "preview of note on #{issuable_type}" do
+    it 'removes quick actions from note and explains them' do
+      visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+
+      page.within('.js-main-target-form') do
+        fill_in 'note[note]', with: "Awesome!\n/assign @bob "
+        click_on 'Preview'
+
+        expect(page).to have_content 'Awesome!'
+        expect(page).not_to have_content '/assign @bob'
+        expect(page).to have_content 'Assigns @bob.'
       end
     end
   end

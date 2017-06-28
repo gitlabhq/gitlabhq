@@ -10,6 +10,7 @@ class Spinach::Features::RevertCommits < Spinach::FeatureSteps
   end
 
   step 'I click on the revert button' do
+    find(".header-action-buttons .dropdown").click
     find("a[href='#modal-revert-commit']").click
   end
 
@@ -36,5 +37,6 @@ class Spinach::Features::RevertCommits < Spinach::FeatureSteps
 
   step 'I should see the new merge request notice' do
     page.should have_content('The commit has been successfully reverted. You can now submit a merge request to get this change into the original branch.')
+    page.should have_content("From revert-#{Commit.truncate_sha(sample_commit.id)} into master")
   end
 end

@@ -1,0 +1,34 @@
+{
+  "env": {
+    "jquery": true,
+    "browser": true,
+    "es6": true
+  },
+  "extends": "airbnb-base",
+  "globals": {
+    "_": false,
+    "gl": false,
+    "gon": false,
+    "localStorage": false
+  },
+  "plugins": [
+    "filenames",
+    "import",
+    "html",
+    "promise"
+  ],
+  "settings": {
+    "html/html-extensions": [".html", ".html.raw", ".vue"],
+    "import/resolver": {
+      "webpack": {
+        "config": "./config/webpack.config.js"
+      }
+    }
+  },
+  "rules": {
+    "filenames/match-regex": [2, "^[a-z0-9_]+$"],
+    "import/no-commonjs": "error",
+    "no-multiple-empty-lines": ["error", { "max": 1 }],
+    "promise/catch-or-return": "error"
+  }
+}

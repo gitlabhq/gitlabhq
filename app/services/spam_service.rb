@@ -1,5 +1,6 @@
 class SpamService
   attr_accessor :spammable, :request, :options
+  attr_reader :spam_log
 
   def initialize(spammable, request = nil)
     @spammable = spammable
@@ -16,15 +17,6 @@ class SpamService
     end
   end
 
-  def check(api = false)
-    return false unless request && check_for_spam?
-
-    return false unless akismet.is_spam?
-
-    create_spam_log(api)
-    true
-  end
-
   def mark_as_spam!
     return false unless spammable.submittable_as_spam?
 
@@ -35,7 +27,29 @@ class SpamService
     end
   end
 
+  def when_recaptcha_verified(recaptcha_verified, api = false)
+    # In case it's a request which is already verified through recaptcha, yield
+    # block.
+    if recaptcha_verified
+      yield
+    else
+      # Otherwise, it goes to Akismet and check if it's a spam. If that's the
+      # case, it assigns spammable record as "spam" and create a SpamLog record.
+      spammable.spam = check(api)
+      spammable.spam_log = spam_log
+    end
+  end
+
   private
+
+  def check(api)
+    return false unless request && check_for_spam?
+
+    return false unless akismet.is_spam?
+
+    create_spam_log(api)
+    true
+  end
 
   def akismet
     @akismet ||= AkismetService.new(
@@ -63,7 +77,7 @@ class SpamService
   end
 
   def create_spam_log(api)
-    SpamLog.create(
+    @spam_log = SpamLog.create!(
       {
         user_id: spammable_owner_id,
         title: spammable.spam_title,

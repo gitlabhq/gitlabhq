@@ -1,37 +1,29 @@
 .detail-page-header {
   padding: $gl-padding-top 0;
   border-bottom: 1px solid $border-color;
-  color: #5c5d5e;
-  font-size: 16px;
+  color: $gl-text-color;
   line-height: 34px;
 
-  .author {
-    color: #5c5d5e;
+  a {
+    color: $gl-text-color;
   }
 
-  .identifier {
-    color: #5c5d5e;
-  }
-
-  .issue_created_ago, .author_link {
+  .issue_created_ago,
+  .author_link {
     white-space: nowrap;
   }
 }
 
 .detail-page-description {
   .title {
-    margin: 0;
-    font-size: 23px;
-    color: $gl-gray-dark;
+    margin: 0 0 16px;
+    font-size: 2em;
+    color: $gl-text-color;
+    padding: 0 0 0.3em;
+    border-bottom: 1px solid $white-dark;
   }
 
   .description {
     margin-top: 6px;
-
-    p {
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
   }
 }

@@ -1,9 +1,6 @@
-# If you change this file in a Merge Request, please also create
-# a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
-#
 :mailboxes:
   <%
-    require_relative "lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
+    require_relative "../lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
     config = Gitlab::MailRoom.config
 
     if Gitlab::MailRoom.enabled?
@@ -15,7 +12,7 @@
       :start_tls: <%= config[:start_tls].to_json %>
       :email: <%= config[:user].to_json %>
       :password: <%= config[:password].to_json %>
-      :idle_timeout: 60
+      :idle_timeout: <%= config[:idle_timeout].to_json %>
 
       :name: <%= config[:mailbox].to_json %>
 
@@ -25,12 +22,27 @@
       :delivery_options:
         :redis_url: <%= config[:redis_url].to_json %>
         :namespace: <%= Gitlab::Redis::SIDEKIQ_NAMESPACE %>
-        :queue: incoming_email
+        :queue: email_receiver
         :worker: EmailReceiverWorker
+        <% if config[:sentinels] %>
+        :sentinels:
+          <% config[:sentinels].each do |sentinel| %>
+          -
+            :host: <%= sentinel[:host] %>
+            :port: <%= sentinel[:port] %>
+          <% end %>
+        <% end %>
 
       :arbitration_method: redis
       :arbitration_options:
         :redis_url: <%= config[:redis_url].to_json %>
         :namespace: <%= Gitlab::Redis::MAILROOM_NAMESPACE %>
-
+        <% if config[:sentinels] %>
+        :sentinels:
+          <% config[:sentinels].each do |sentinel| %>
+          -
+            :host: <%= sentinel[:host] %>
+            :port: <%= sentinel[:port] %>
+          <% end %>
+        <% end %>
   <% end %>

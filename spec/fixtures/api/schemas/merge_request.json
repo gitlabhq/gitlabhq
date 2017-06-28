@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required" : [
+    "iid",
+    "url"
+  ],
+  "properties" : {
+    "iid": { "type": "integer" },
+    "url": { "type": "uri" }
+  },
+  "additionalProperties": false
+}

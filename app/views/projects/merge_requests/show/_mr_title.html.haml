@@ -13,14 +13,14 @@
       = icon('angle-double-left')
 
     .issuable-meta
-      = issuable_meta(@merge_request, @project, "Merge Request")
+      = issuable_meta(@merge_request, @project, "Merge request")
 
   - if can?(current_user, :update_merge_request, @merge_request)
     .issuable-actions
       .clearfix.issue-btn-group.dropdown
         %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
-          = icon('caret-down')
           Options
+          = icon('caret-down')
         .dropdown-menu.dropdown-menu-align-right.hidden-lg
           %ul
             %li{ class: merge_request_button_visibility(@merge_request, true) }

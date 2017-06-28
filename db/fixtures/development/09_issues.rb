@@ -1,3 +1,5 @@
+require './spec/support/sidekiq'
+
 Gitlab::Seeder.quiet do
   Project.all.each do |project|
     10.times do
@@ -6,7 +8,7 @@ Gitlab::Seeder.quiet do
         description: FFaker::Lorem.sentence,
         state: ['opened', 'closed'].sample,
         milestone: project.milestones.sample,
-        assignee: project.team.users.sample
+        assignees: [project.team.users.sample]
       }
 
       Issues::CreateService.new(project, project.team.users.sample, issue_params).execute

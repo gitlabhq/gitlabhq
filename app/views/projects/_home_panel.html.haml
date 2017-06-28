@@ -1,10 +1,11 @@
 - empty_repo = @project.empty_repo?
 .project-home-panel.text-center{ class: ("empty-project" if empty_repo) }
-  %div{ class: container_class }
-    = project_icon(@project, alt: @project.name, class: 'project-avatar avatar s70 avatar-tile')
+  .limit-container-width{ class: container_class }
+    .avatar-container.s70.project-avatar
+      = project_icon(@project, alt: @project.name, class: 'avatar s70 avatar-tile')
     %h1.project-title
       = @project.name
-      %span.visibility-icon.has-tooltip{data: { container: 'body' }, title: visibility_icon_description(@project)}
+      %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
         = visibility_level_icon(@project.visibility_level, fw: false)
 
     .project-home-desc
@@ -13,14 +14,25 @@
 
       - if forked_from_project = @project.forked_from_project
         %p
-          Forked from
+          #{ s_('ForkedFromProjectPath|Forked from') }
           = link_to project_path(forked_from_project) do
             = forked_from_project.namespace.try(:name)
 
-    .project-repo-buttons.project-action-buttons
+    .project-repo-buttons
       .count-buttons
         = render 'projects/buttons/star'
         = render 'projects/buttons/fork'
 
-      .project-clone-holder
-        = render "shared/clone_panel"
+      %span.hidden-xs
+        - if can?(current_user, :download_code, @project)
+          .project-clone-holder
+            = render "shared/clone_panel"
+
+        - if current_user
+          - if can?(current_user, :download_code, @project)
+            = render 'projects/buttons/download', project: @project, ref: @ref
+            = render 'projects/buttons/dropdown'
+            = render 'projects/buttons/koding'
+
+          = render 'shared/notifications/button', notification_setting: @notification_setting
+          = render 'shared/members/access_request_buttons', source: @project

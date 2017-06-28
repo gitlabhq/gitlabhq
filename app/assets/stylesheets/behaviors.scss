@@ -5,6 +5,7 @@
     display: none;
     &.hide { display: block; }
   }
+
   &.open .content {
     display: block;
     &.hide { display: none; }

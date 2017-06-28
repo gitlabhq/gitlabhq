@@ -1,7 +1,8 @@
 .suggest-colors {
   margin-top: 5px;
+
   a {
-    @include border-radius(4px);
+    border-radius: 4px;
     width: 30px;
     height: 30px;
     display: inline-block;
@@ -17,7 +18,7 @@
     overflow: hidden;
 
     a {
-      @include border-radius(0);
+      border-radius: 0;
       width: (100% / 7);
       margin-right: 0;
       margin-bottom: -5px;
@@ -65,7 +66,21 @@
       text-overflow: ellipsis;
       vertical-align: middle;
       max-width: 100%;
-    }    
+    }
+  }
+
+  .label-type {
+    display: block;
+    margin-bottom: 10px;
+    margin-left: 50px;
+
+    @media (min-width: $screen-sm-min) {
+      display: inline-block;
+      width: 100px;
+      margin-left: 10px;
+      margin-bottom: 0;
+      vertical-align: middle;
+    }
   }
 
   .label-description {
@@ -75,7 +90,7 @@
 
     @media (min-width: $screen-sm-min) {
       display: inline-block;
-      width: 40%;
+      width: 30%;
       margin-left: 10px;
       margin-bottom: 0;
       vertical-align: middle;
@@ -83,13 +98,14 @@
   }
 
   .label {
-    padding: 9px;
+    padding: 8px 9px 9px;
     font-size: 14px;
   }
 }
 
 .color-label {
-  padding: 3px 4px;
+  padding: 3px 7px;
+  border-radius: $label-border-radius;
 }
 
 .dropdown-labels-error {
@@ -100,12 +116,29 @@
 }
 
 .manage-labels-list {
+  > li:not(.empty-message):not(.is-not-draggable) {
+    background-color: $white-light;
+    cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+
+    &:active {
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+    }
+
+    &.sortable-ghost {
+      opacity: 0.3;
+    }
+  }
+
   .btn-action {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
 
     .fa {
       font-size: 18px;
       vertical-align: middle;
+      pointer-events: none;
     }
 
     &:hover {
@@ -183,8 +216,14 @@
   }
 
   .label-remove {
-    border-left: 1px solid rgba(0, 0, 0, .1);
+    border-left: 1px solid $label-remove-border;
     z-index: 3;
+    border-radius: $label-border-radius;
+    padding: 6px 10px 6px 9px;
+
+    &:hover {
+      box-shadow: inset 0 0 0 80px $label-remove-border;
+    }
   }
 
   .btn {
@@ -207,7 +246,22 @@
   width: 100%;
 }
 
+.label-subscription {
+  vertical-align: middle;
+
+  .dropdown-group-label a {
+    cursor: pointer;
+  }
+}
+
 .label-subscribe-button {
+  .label-subscribe-button-icon {
+    &[disabled] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+
   .label-subscribe-button-loading {
     display: none;
   }
@@ -221,4 +275,9 @@
       display: block;
     }
   }
+}
+
+.label-link {
+  display: inline-block;
+  vertical-align: text-top;
 }

@@ -14,30 +14,48 @@ table {
     .warning,
     .danger,
     .info {
-      color: #fff;
+      color: $white-light;
 
       a:not(.btn) {
         text-decoration: underline;
-        color: #fff;
+        color: $white-light;
       }
     }
 
     tr {
-      td, th {
+      td,
+      th {
         padding: 10px $gl-padding;
         line-height: 20px;
         vertical-align: middle;
       }
 
       th {
-        background-color: $background-color;
+        background-color: $gray-light;
         font-weight: normal;
         border-bottom: none;
+
+        &.wide {
+          width: 55%;
+        }
       }
 
       td {
-        border-color: $table-border-color;
+        border-color: $white-normal;
       }
+    }
+  }
+}
+
+.responsive-table {
+  @media (max-width: $screen-sm-max) {
+    th {
+      width: 100%;
+    }
+
+    td {
+      width: 100%;
+      float: left;
     }
   }
 }

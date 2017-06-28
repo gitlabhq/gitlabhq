@@ -1,11 +1,23 @@
 require 'spec_helper'
 
 describe ProjectFeature do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 
+  describe '.quoted_access_level_column' do
+    it 'returns the table name and quoted column name for a feature' do
+      expected = if Gitlab::Database.postgresql?
+                   '"project_features"."issues_access_level"'
+                 else
+                   '`project_features`.`issues_access_level`'
+                 end
+
+      expect(described_class.quoted_access_level_column(:issues)).to eq(expected)
+    end
+  end
+
   describe '#feature_available?' do
-    let(:features) { %w(issues wiki builds merge_requests snippets) }
+    let(:features) { %w(issues wiki builds merge_requests snippets repository) }
 
     context 'when features are disabled' do
       it "returns false" do
@@ -35,7 +47,7 @@ describe ProjectFeature do
 
       it "returns true when user is a member of project group" do
         group = create(:group)
-        project = create(:project, namespace: group)
+        project = create(:empty_project, namespace: group)
         group.add_developer(user)
 
         features.each do |feature|
@@ -57,9 +69,29 @@ describe ProjectFeature do
     context 'when feature is enabled for everyone' do
       it "returns true" do
         features.each do |feature|
-          project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::ENABLED)
           expect(project.feature_available?(:issues, user)).to eq(true)
         end
+      end
+    end
+  end
+
+  context 'repository related features' do
+    before do
+      project.project_feature.update_attributes(
+        merge_requests_access_level: ProjectFeature::DISABLED,
+        builds_access_level: ProjectFeature::DISABLED,
+        repository_access_level: ProjectFeature::PRIVATE
+      )
+    end
+
+    it "does not allow repository related features have higher level" do
+      features = %w(builds merge_requests)
+      project_feature = project.project_feature
+
+      features.each do |feature|
+        field = "#{feature}_access_level".to_sym
+        project_feature.update_attribute(field, ProjectFeature::ENABLED)
+        expect(project_feature.valid?).to be_falsy
       end
     end
   end
@@ -83,7 +115,6 @@ describe ProjectFeature do
 
     it "returns true when feature is enabled for everyone" do
       features.each do |feature|
-        project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::ENABLED)
         expect(project.public_send("#{feature}_enabled?")).to eq(true)
       end
     end

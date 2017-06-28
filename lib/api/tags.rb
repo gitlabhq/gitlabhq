@@ -1,28 +1,30 @@
 module API
-  # Git Tags API
   class Tags < Grape::API
-    before { authenticate! }
+    include PaginationParams
+
     before { authorize! :download_code, user_project }
 
-    resource :projects do
-      # Get a project repository tags
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/repository/tags
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
+      desc 'Get a project repository tags' do
+        success Entities::RepoTag
+      end
+      params do
+        use :pagination
+      end
       get ":id/repository/tags" do
-        present user_project.repository.tags.sort_by(&:name).reverse,
-                with: Entities::RepoTag, project: user_project
+        tags = ::Kaminari.paginate_array(user_project.repository.tags.sort_by(&:name).reverse)
+        present paginate(tags), with: Entities::RepoTag, project: user_project
       end
 
-      # Get a single repository tag
-      #
-      # Parameters:
-      #   id (required)       - The ID of a project
-      #   tag_name (required) - The name of the tag
-      # Example Request:
-      #   GET /projects/:id/repository/tags/:tag_name
+      desc 'Get a single repository tag' do
+        success Entities::RepoTag
+      end
+      params do
+        requires :tag_name, type: String, desc: 'The name of the tag'
+      end
       get ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
@@ -30,20 +32,20 @@ module API
         present tag, with: Entities::RepoTag, project: user_project
       end
 
-      # Create tag
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   tag_name (required) - The name of the tag
-      #   ref (required) - Create tag from commit sha or branch
-      #   message (optional) - Specifying a message creates an annotated tag.
-      # Example Request:
-      #   POST /projects/:id/repository/tags
+      desc 'Create a new repository tag' do
+        success Entities::RepoTag
+      end
+      params do
+        requires :tag_name,            type: String, desc: 'The name of the tag'
+        requires :ref,                 type: String, desc: 'The commit sha or branch name'
+        optional :message,             type: String, desc: 'Specifying a message creates an annotated tag'
+        optional :release_description, type: String, desc: 'Specifying release notes stored in the GitLab database'
+      end
       post ':id/repository/tags' do
         authorize_push_project
-        message = params[:message] || nil
-        result = CreateTagService.new(user_project, current_user).
-          execute(params[:tag_name], params[:ref], message, params[:release_description])
+
+        result = ::Tags::CreateService.new(user_project, current_user)
+          .execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
         if result[:status] == :success
           present result[:tag],
@@ -54,40 +56,33 @@ module API
         end
       end
 
-      # Delete tag
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   tag_name (required) - The name of the tag
-      # Example Request:
-      #   DELETE /projects/:id/repository/tags/:tag
+      desc 'Delete a repository tag'
+      params do
+        requires :tag_name, type: String, desc: 'The name of the tag'
+      end
       delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
         authorize_push_project
-        result = DeleteTagService.new(user_project, current_user).
-          execute(params[:tag_name])
 
-        if result[:status] == :success
-          {
-            tag_name: params[:tag_name]
-          }
-        else
+        result = ::Tags::DestroyService.new(user_project, current_user)
+          .execute(params[:tag_name])
+
+        if result[:status] != :success
           render_api_error!(result[:message], result[:return_code])
         end
       end
 
-      # Add release notes to tag
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   tag_name (required) - The name of the tag
-      #   description (required) - Release notes with markdown support
-      # Example Request:
-      #   POST /projects/:id/repository/tags/:tag_name/release
+      desc 'Add a release note to a tag' do
+        success Entities::Release
+      end
+      params do
+        requires :tag_name,    type: String, desc: 'The name of the tag'
+        requires :description, type: String, desc: 'Release notes with markdown support'
+      end
       post ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.+/ } do
         authorize_push_project
-        required_attributes! [:description]
-        result = CreateReleaseService.new(user_project, current_user).
-          execute(params[:tag_name], params[:description])
+
+        result = CreateReleaseService.new(user_project, current_user)
+          .execute(params[:tag_name], params[:description])
 
         if result[:status] == :success
           present result[:release], with: Entities::Release
@@ -96,19 +91,18 @@ module API
         end
       end
 
-      # Updates a release notes of a tag
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   tag_name (required) - The name of the tag
-      #   description (required) - Release notes with markdown support
-      # Example Request:
-      #   PUT /projects/:id/repository/tags/:tag_name/release
+      desc "Update a tag's release note" do
+        success Entities::Release
+      end
+      params do
+        requires :tag_name,    type: String, desc: 'The name of the tag'
+        requires :description, type: String, desc: 'Release notes with markdown support'
+      end
       put ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.+/ } do
         authorize_push_project
-        required_attributes! [:description]
-        result = UpdateReleaseService.new(user_project, current_user).
-          execute(params[:tag_name], params[:description])
+
+        result = UpdateReleaseService.new(user_project, current_user)
+          .execute(params[:tag_name], params[:description])
 
         if result[:status] == :success
           present result[:release], with: Entities::Release

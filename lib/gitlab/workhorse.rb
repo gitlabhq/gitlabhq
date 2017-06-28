@@ -1,31 +1,61 @@
 require 'base64'
 require 'json'
 require 'securerandom'
+require 'uri'
 
 module Gitlab
   class Workhorse
-    SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
-    VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'
-    INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'
-    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'
+    SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'.freeze
+    VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'.freeze
+    INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'.freeze
+    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'.freeze
+    NOTIFICATION_CHANNEL = 'workhorse:notifications'.freeze
 
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
     # bytes https://tools.ietf.org/html/rfc4868#section-2.6
     SECRET_LENGTH = 32
 
     class << self
-      def git_http_ok(repository, user)
-        {
+      def git_http_ok(repository, is_wiki, user, action)
+        project = repository.project
+        repo_path = repository.path_to_repo
+        params = {
           GL_ID: Gitlab::GlId.gl_id(user),
-          RepoPath: repository.path_to_repo,
+          GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
+          RepoPath: repo_path
         }
+
+        if Gitlab.config.gitaly.enabled
+          server = {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          }
+          params[:Repository] = repository.gitaly_repository.to_h
+
+          feature_enabled = case action.to_s
+                            when 'git_receive_pack'
+                              Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
+                            when 'git_upload_pack'
+                              Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
+                            when 'info_refs'
+                              true
+                            else
+                              raise "Unsupported action: #{action}"
+                            end
+          if feature_enabled
+            params[:GitalyAddress] = server[:address] # This field will be deprecated
+            params[:GitalyServer] = server
+          end
+        end
+
+        params
       end
 
       def lfs_upload_ok(oid, size)
         {
           StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
           LfsOid: oid,
-          LfsSize: size,
+          LfsSize: size
         }
       end
 
@@ -36,7 +66,7 @@ module Gitlab
       def send_git_blob(repository, blob)
         params = {
           'RepoPath' => repository.path_to_repo,
-          'BlobId' => blob.id,
+          'BlobId' => blob.id
         }
 
         [
@@ -95,6 +125,20 @@ module Gitlab
         ]
       end
 
+      def terminal_websocket(terminal)
+        details = {
+          'Terminal' => {
+            'Subprotocols' => terminal[:subprotocols],
+            'Url' => terminal[:url],
+            'Header' => terminal[:headers],
+            'MaxSessionTime' => terminal[:max_session_time]
+          }
+        }
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.key?(:ca_pem)
+
+        details
+      end
+
       def version
         path = Rails.root.join(VERSION_FILE)
         path.readable? ? path.read.chomp : 'unknown'
@@ -111,22 +155,38 @@ module Gitlab
       def write_secret
         bytes = SecureRandom.random_bytes(SECRET_LENGTH)
         File.open(secret_path, 'w:BINARY', 0600) do |f|
-          f.chmod(0600)
+          f.chmod(0600) # If the file already existed, the '0600' passed to 'open' above was a no-op.
           f.write(Base64.strict_encode64(bytes))
         end
       end
 
       def verify_api_request!(request_headers)
+        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER])
+      end
+
+      def decode_jwt(encoded_message)
         JWT.decode(
-          request_headers[INTERNAL_API_REQUEST_HEADER],
+          encoded_message,
           secret,
           true,
-          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' },
+          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' }
         )
       end
 
       def secret_path
-        Rails.root.join('.gitlab_workhorse_secret')
+        Gitlab.config.workhorse.secret_file
+      end
+
+      def set_key_and_notify(key, value, expire: nil, overwrite: true)
+        Gitlab::Redis.with do |redis|
+          result = redis.set(key, value, ex: expire, nx: !overwrite)
+          if result
+            redis.publish(NOTIFICATION_CHANNEL, "#{key}=#{value}")
+            value
+          else
+            redis.get(key)
+          end
+        end
       end
 
       protected

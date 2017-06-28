@@ -5,6 +5,9 @@ GitLab support is enabled on your GitLab instance.
 You can read more about GitLab support [here](http://docs.gitlab.com/ce/integration/gitlab.html)
 To get to the importer page you need to go to "New project" page.
 
+>**Note:**
+If you are interested in importing Wiki and Merge Request data to your new instance, you'll need to follow the instructions for [project export](../../user/project/settings/import_export.md)
+
 ![New project page](gitlab_importer/new_project_page.png)
 
 Click on the "Import projects from GitLab.com" link and you will be redirected to GitLab.com

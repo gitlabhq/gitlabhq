@@ -1,7 +1,6 @@
 class RequestsProfilesWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :default
+  include CronjobQueue
 
   def perform
     Gitlab::RequestProfiler.remove_all_profiles

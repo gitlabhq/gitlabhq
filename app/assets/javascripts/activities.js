@@ -1,38 +1,38 @@
-(function() {
-  this.Activities = (function() {
-    function Activities() {
-      Pager.init(20, true, false, this.updateTooltips);
-      $(".event-filter-link").on("click", (function(_this) {
-        return function(event) {
-          event.preventDefault();
-          _this.toggleFilter($(event.currentTarget));
-          return _this.reloadActivities();
-        };
-      })(this));
-    }
+/* eslint-disable no-param-reassign, class-methods-use-this */
+/* global Pager */
 
-    Activities.prototype.updateTooltips = function() {
-      return gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
-    };
+import Cookies from 'js-cookie';
 
-    Activities.prototype.reloadActivities = function() {
-      $(".content_list").html('');
-      return Pager.init(20, true);
-    };
+class Activities {
+  constructor() {
+    Pager.init(20, true, false, data => data, this.updateTooltips);
 
-    Activities.prototype.toggleFilter = function(sender) {
-      var filter = sender.attr("id").split("_")[0];
+    $('.event-filter-link').on('click', (e) => {
+      e.preventDefault();
+      this.toggleFilter(e.currentTarget);
+      this.reloadActivities();
+    });
+  }
 
-      $('.event-filter .active').removeClass("active");
-      $.cookie("event_filter", filter, {
-        path: gon.relative_url_root || '/'
-      });
+  updateTooltips() {
+    gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
+  }
 
-      sender.closest('li').toggleClass("active");
-    };
+  reloadActivities() {
+    $('.content_list').html('');
+    Pager.init(20, true, false, data => data, this.updateTooltips);
+  }
 
-    return Activities;
+  toggleFilter(sender) {
+    const $sender = $(sender);
+    const filter = $sender.attr('id').split('_')[0];
 
-  })();
+    $('.event-filter .active').removeClass('active');
+    Cookies.set('event_filter', filter);
 
-}).call(this);
+    $sender.closest('li').toggleClass('active');
+  }
+}
+
+window.gl = window.gl || {};
+window.gl.Activities = Activities;

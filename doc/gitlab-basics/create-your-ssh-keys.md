@@ -1,33 +1,37 @@
 # How to create your SSH Keys
 
-You need to connect your computer to your GitLab account through SSH Keys. They are unique for every computer that you link your GitLab account with.
+1. The first thing you need to do is go to your [command line](start-using-git.md)
+   and follow the [instructions](../ssh/README.md) to generate your SSH key pair.
 
-## Generate your SSH Key
+1. Once you do that, login to GitLab with your credentials.
+1. On the upper right corner, click on your avatar and go to your **Profile settings**.
 
-Create an account on GitLab. Sign up and check your email for your confirmation link.
+    ![Profile settings dropdown](img/profile_settings.png)
 
-After you confirm, go to GitLab and sign in to your account.
+1. Navigate to the **SSH keys** tab.
 
-## Add your SSH Key
+    ![SSH Keys](img/profile_settings_ssh_keys.png)
 
-On the left side menu, click on "profile settings" and then click on "SSH Keys":
+3. Paste your **public** key that you generated in the first step in the 'Key'
+   box.
 
-![SSH Keys](basicsimages/shh_keys.png)
+    ![Paste SSH public key](img/profile_settings_ssh_keys_paste_pub.png)
 
-Then click on the green button "Add SSH Key":
+1. Optionally, give it a descriptive title so that you can recognize it in the
+   event you add multiple keys.
 
-![Add SSH Key](basicsimages/add_sshkey.png)
+    ![SSH key title](img/profile_settings_ssh_keys_title.png)
 
-There, you should paste the SSH Key that your command line will generate for you. Below you'll find the steps to generate it:
+1. Finally, click on **Add key** to add it to GitLab. You will be able to see
+   its fingerprint, its title and creation date.
 
-![Paste SSH Key](basicsimages/paste_sshkey.png)
+    ![SSH key single page](img/profile_settings_ssh_keys_single_key.png)
 
-## To generate an SSH Key on your command line
 
-Go to your [command line](start-using-git.md) and follow the [instructions](../ssh/README.md) to generate it.
+>**Note:**
+Once you add a key, you cannot edit it, only remove it. In case the paste
+didn't work, you will have to remove the offending key and re-add it.
 
-Copy the SSH Key that your command line created and paste it on the "Key" box on the GitLab page. The title will be added automatically.
+---
 
-![Paste SSH Key](basicsimages/key.png)
-
-Now, you'll be able to use Git over SSH, instead of Git over HTTP.
+Congratulations! You are now ready to use Git over SSH, instead of Git over HTTP!

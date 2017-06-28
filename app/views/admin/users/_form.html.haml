@@ -40,28 +40,7 @@
           = f.label :password_confirmation, class: 'control-label'
           .col-sm-10= f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control'
 
-    %fieldset
-      %legend Access
-      .form-group
-        = f.label :projects_limit, class: 'control-label'
-        .col-sm-10= f.number_field :projects_limit, min: 0, class: 'form-control'
-
-      .form-group
-        = f.label :can_create_group, class: 'control-label'
-        .col-sm-10= f.check_box :can_create_group
-
-      .form-group
-        = f.label :admin, class: 'control-label'
-        - if current_user == @user
-          .col-sm-10= f.check_box :admin, disabled: true
-          .col-sm-10 You cannot remove your own admin rights.
-        - else
-          .col-sm-10= f.check_box :admin
-
-      .form-group
-        = f.label :external, class: 'control-label'
-        .col-sm-10= f.check_box :external
-        .col-sm-10 External users cannot see internal or private projects unless access is explicitly granted. Also, external users cannot create projects or groups.
+    = render partial: 'access_levels', locals: { f: f }
 
     %fieldset
       %legend Profile

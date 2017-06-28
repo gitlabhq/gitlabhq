@@ -1,15 +1,13 @@
 require 'spec_helper'
 
 feature 'Pipelines for Merge Requests', feature: true, js: true do
-  include WaitForAjax
-
   given(:user) { create(:user) }
   given(:merge_request) { create(:merge_request) }
   given(:project) { merge_request.target_project }
 
   before do
     project.team << [user, :master]
-    login_as user
+    gitlab_sign_in user
   end
 
   context 'with pipelines' do
@@ -28,9 +26,9 @@ feature 'Pipelines for Merge Requests', feature: true, js: true do
       page.within('.merge-request-tabs') do
         click_link('Pipelines')
       end
-      wait_for_ajax
+      wait_for_requests
 
-      expect(page).to have_selector('.pipeline-actions')
+      expect(page).to have_selector('.stage-cell')
     end
   end
 

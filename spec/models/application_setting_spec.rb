@@ -4,6 +4,7 @@ describe ApplicationSetting, models: true do
   let(:setting) { ApplicationSetting.create_from_defaults }
 
   it { expect(setting).to be_valid }
+  it { expect(setting.uuid).to be_present }
 
   describe 'validations' do
     let(:http)  { 'http://example.com' }
@@ -29,6 +30,40 @@ describe ApplicationSetting, models: true do
       it { is_expected.not_to allow_value(['test']).for(:disabled_oauth_sign_in_sources) }
     end
 
+    describe 'default_artifacts_expire_in' do
+      it 'sets an error if it cannot parse' do
+        setting.update(default_artifacts_expire_in: 'a')
+
+        expect_invalid
+      end
+
+      it 'sets an error if it is blank' do
+        setting.update(default_artifacts_expire_in: ' ')
+
+        expect_invalid
+      end
+
+      it 'sets the value if it is valid' do
+        setting.update(default_artifacts_expire_in: '30 days')
+
+        expect(setting).to be_valid
+        expect(setting.default_artifacts_expire_in).to eq('30 days')
+      end
+
+      it 'sets the value if it is 0' do
+        setting.update(default_artifacts_expire_in: '0')
+
+        expect(setting).to be_valid
+        expect(setting.default_artifacts_expire_in).to eq('0')
+      end
+
+      def expect_invalid
+        expect(setting).to be_invalid
+        expect(setting.errors.messages)
+          .to have_key(:default_artifacts_expire_in)
+      end
+    end
+
     it { is_expected.to validate_presence_of(:max_attachment_size) }
 
     it do
@@ -41,14 +76,82 @@ describe ApplicationSetting, models: true do
       subject { setting }
     end
 
-    context 'repository storages inclussion' do
+    # Upgraded databases will have this sort of content
+    context 'repository_storages is a String, not an Array' do
       before do
-        storages = { 'custom' => 'tmp/tests/custom_repositories' }
+        setting.__send__(:raw_write_attribute, :repository_storages, 'default')
+      end
+
+      it { expect(setting.repository_storages_before_type_cast).to eq('default') }
+      it { expect(setting.repository_storages).to eq(['default']) }
+    end
+
+    context 'repository storages' do
+      before do
+        storages = {
+          'custom1' => 'tmp/tests/custom_repositories_1',
+          'custom2' => 'tmp/tests/custom_repositories_2',
+          'custom3' => 'tmp/tests/custom_repositories_3'
+
+        }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       end
 
-      it { is_expected.to allow_value('custom').for(:repository_storage) }
-      it { is_expected.not_to allow_value('alternative').for(:repository_storage) }
+      describe 'inclusion' do
+        it { is_expected.to allow_value('custom1').for(:repository_storages) }
+        it { is_expected.to allow_value(%w(custom2 custom3)).for(:repository_storages) }
+        it { is_expected.not_to allow_value('alternative').for(:repository_storages) }
+        it { is_expected.not_to allow_value(%w(alternative custom1)).for(:repository_storages) }
+      end
+
+      describe 'presence' do
+        it { is_expected.not_to allow_value([]).for(:repository_storages) }
+        it { is_expected.not_to allow_value("").for(:repository_storages) }
+        it { is_expected.not_to allow_value(nil).for(:repository_storages) }
+      end
+
+      describe '.pick_repository_storage' do
+        it 'uses Array#sample to pick a random storage' do
+          array = double('array', sample: 'random')
+          expect(setting).to receive(:repository_storages).and_return(array)
+
+          expect(setting.pick_repository_storage).to eq('random')
+        end
+
+        describe '#repository_storage' do
+          it 'returns the first storage' do
+            setting.repository_storages = %w(good bad)
+
+            expect(setting.repository_storage).to eq('good')
+          end
+        end
+
+        describe '#repository_storage=' do
+          it 'overwrites repository_storages' do
+            setting.repository_storage = 'overwritten'
+
+            expect(setting.repository_storages).to eq(['overwritten'])
+          end
+        end
+      end
+    end
+
+    context 'housekeeping settings' do
+      it { is_expected.not_to allow_value(0).for(:housekeeping_incremental_repack_period) }
+
+      it 'wants the full repack period to be longer than the incremental repack period' do
+        subject.housekeeping_incremental_repack_period = 2
+        subject.housekeeping_full_repack_period = 1
+
+        expect(subject).not_to be_valid
+      end
+
+      it 'wants the gc period to be longer than the full repack period' do
+        subject.housekeeping_full_repack_period = 2
+        subject.housekeeping_gc_period = 1
+
+        expect(subject).not_to be_valid
+      end
     end
   end
 
@@ -108,6 +211,68 @@ describe ApplicationSetting, models: true do
     it 'sets multiple domain with file' do
       setting.domain_blacklist_file = File.open(Rails.root.join('spec/fixtures/', 'domain_blacklist.txt'))
       expect(setting.domain_blacklist).to contain_exactly('example.com', 'test.com', 'foo.bar')
+    end
+  end
+
+  describe 'usage ping settings' do
+    context 'when the usage ping is disabled in gitlab.yml' do
+      before do
+        allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(false)
+      end
+
+      it 'does not allow the usage ping to be configured' do
+        expect(setting.usage_ping_can_be_configured?).to be_falsey
+      end
+
+      context 'when the usage ping is disabled in the DB' do
+        before do
+          setting.usage_ping_enabled = false
+        end
+
+        it 'returns false for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_falsey
+        end
+      end
+
+      context 'when the usage ping is enabled in the DB' do
+        before do
+          setting.usage_ping_enabled = true
+        end
+
+        it 'returns false for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_falsey
+        end
+      end
+    end
+
+    context 'when the usage ping is enabled in gitlab.yml' do
+      before do
+        allow(Settings.gitlab).to receive(:usage_ping_enabled).and_return(true)
+      end
+
+      it 'allows the usage ping to be configured' do
+        expect(setting.usage_ping_can_be_configured?).to be_truthy
+      end
+
+      context 'when the usage ping is disabled in the DB' do
+        before do
+          setting.usage_ping_enabled = false
+        end
+
+        it 'returns false for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_falsey
+        end
+      end
+
+      context 'when the usage ping is enabled in the DB' do
+        before do
+          setting.usage_ping_enabled = true
+        end
+
+        it 'returns true for usage_ping_enabled' do
+          expect(setting.usage_ping_enabled).to be_truthy
+        end
+      end
     end
   end
 end

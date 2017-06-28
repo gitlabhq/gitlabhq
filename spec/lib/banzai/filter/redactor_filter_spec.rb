@@ -15,6 +15,16 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     link_to('text', '', class: 'gfm', data: data)
   end
 
+  it 'skips when the skip_redaction flag is set' do
+    user = create(:user)
+    project = create(:empty_project)
+
+    link = reference_link(project: project.id, reference_type: 'test')
+    doc = filter(link, current_user: user, skip_redaction: true)
+
+    expect(doc.css('a').length).to eq 1
+  end
+
   context 'with data-project' do
     let(:parser_class) do
       Class.new(Banzai::ReferenceParser::BaseParser) do
@@ -23,36 +33,48 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     end
 
     before do
-      allow(Banzai::ReferenceParser).to receive(:[]).
-        with('test').
-        and_return(parser_class)
+      allow(Banzai::ReferenceParser).to receive(:[])
+        .with('test')
+        .and_return(parser_class)
     end
 
-    it 'removes unpermitted Project references' do
-      user = create(:user)
-      project = create(:empty_project)
+    context 'valid projects' do
+      before do
+        allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(true)
+      end
 
-      link = reference_link(project: project.id, reference_type: 'test')
-      doc = filter(link, current_user: user)
+      it 'allows permitted Project references' do
+        user = create(:user)
+        project = create(:empty_project)
+        project.team << [user, :master]
 
-      expect(doc.css('a').length).to eq 0
+        link = reference_link(project: project.id, reference_type: 'test')
+        doc = filter(link, current_user: user)
+
+        expect(doc.css('a').length).to eq 1
+      end
     end
 
-    it 'allows permitted Project references' do
-      user = create(:user)
-      project = create(:empty_project)
-      project.team << [user, :master]
+    context 'invalid projects' do
+      before do
+        allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(false)
+      end
 
-      link = reference_link(project: project.id, reference_type: 'test')
-      doc = filter(link, current_user: user)
+      it 'removes unpermitted references' do
+        user = create(:user)
+        project = create(:empty_project)
 
-      expect(doc.css('a').length).to eq 1
-    end
+        link = reference_link(project: project.id, reference_type: 'test')
+        doc = filter(link, current_user: user)
 
-    it 'handles invalid Project references' do
-      link = reference_link(project: 12345, reference_type: 'test')
+        expect(doc.css('a').length).to eq 0
+      end
 
-      expect { filter(link) }.not_to raise_error
+      it 'handles invalid references' do
+        link = reference_link(project: 12345, reference_type: 'test')
+
+        expect { filter(link) }.not_to raise_error
+      end
     end
   end
 
@@ -95,7 +117,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
       it 'allows references for assignee' do
         assignee = create(:user)
         project = create(:empty_project, :public)
-        issue = create(:issue, :confidential, project: project, assignee: assignee)
+        issue = create(:issue, :confidential, project: project, assignees: [assignee])
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
         doc = filter(link, current_user: assignee)

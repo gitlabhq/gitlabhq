@@ -1,33 +1,44 @@
-(function(w) {
-  $(function() {
-    // Toggle button. Show/hide content inside parent container.
-    // Button does not change visibility. If button has icon - it changes chevron style.
-    //
-    // %div.js-toggle-container
-    //   %a.js-toggle-button
-    //   %div.js-toggle-content
-    //
-    $('body').on('click', '.js-toggle-button', function(e) {
+
+// Toggle button. Show/hide content inside parent container.
+// Button does not change visibility. If button has icon - it changes chevron style.
+//
+// %div.js-toggle-container
+//   %button.js-toggle-button
+//   %div.js-toggle-content
+//
+
+$(() => {
+  function toggleContainer(container, toggleState) {
+    const $container = $(container);
+
+    $container
+      .find('.js-toggle-button .fa')
+      .toggleClass('fa-chevron-up', toggleState)
+      .toggleClass('fa-chevron-down', toggleState !== undefined ? !toggleState : undefined);
+
+    $container
+      .find('.js-toggle-content')
+      .toggle(toggleState);
+  }
+
+  $('body').on('click', '.js-toggle-button', function toggleButton(e) {
+    e.target.classList.toggle('open');
+    toggleContainer($(this).closest('.js-toggle-container'));
+
+    const targetTag = e.currentTarget.tagName.toLowerCase();
+    if (targetTag === 'a' || targetTag === 'button') {
       e.preventDefault();
-      $(this)
-        .find('.fa')
-          .toggleClass('fa-chevron-down fa-chevron-up')
-        .end()
-        .closest('.js-toggle-container')
-          .find('.js-toggle-content')
-            .toggle()
-      ;
-    });
-
-    // If we're accessing a permalink, ensure it is not inside a
-    // closed js-toggle-container!
-    var hash = w.gl.utils.getLocationHash();
-    var anchor = hash && document.getElementById(hash);
-    var container = anchor && $(anchor).closest('.js-toggle-container');
-
-    if (container && container.find('.js-toggle-content').is(':hidden')) {
-      container.find('.js-toggle-button').trigger('click');
-      anchor.scrollIntoView();
     }
   });
-})(window);
+
+  // If we're accessing a permalink, ensure it is not inside a
+  // closed js-toggle-container!
+  const hash = window.gl.utils.getLocationHash();
+  const anchor = hash && document.getElementById(hash);
+  const container = anchor && $(anchor).closest('.js-toggle-container');
+
+  if (container) {
+    toggleContainer(container, true);
+    anchor.scrollIntoView();
+  }
+});

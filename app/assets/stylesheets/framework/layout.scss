@@ -6,7 +6,28 @@ html {
 
 body {
   &.navless {
-    background-color: white !important;
+    background-color: $white-light !important;
+  }
+
+  &.card-content {
+    background-color: $gray-darker;
+
+    .content-wrapper {
+      padding: 0;
+
+      .container-fluid,
+      .container-limited {
+        background-color: $gray-darker;
+      }
+    }
+  }
+}
+
+.content-wrapper {
+  padding-bottom: 100px;
+
+  &:not(.page-with-layout-nav) {
+    margin-top: $header-height;
   }
 }
 
@@ -26,4 +47,76 @@ body {
 
 .container-limited {
   max-width: $fixed-layout-width;
+
+  &.limit-container-width {
+    max-width: $limited-layout-width;
+  }
+
+  &.limit-container-width-sm {
+    max-width: $limited-layout-width-sm;
+  }
+}
+
+.alert-wrapper {
+  .alert {
+    margin-bottom: 0;
+
+    &:last-child {
+      margin-bottom: $gl-padding;
+    }
+  }
+
+  .alert-link-group {
+    float: right;
+  }
+
+  /* Center alert text and alert action links on smaller screens */
+  @media (max-width: $screen-sm-max) {
+    .alert {
+      text-align: center;
+    }
+
+    .alert-link-group {
+      float: none;
+    }
+  }
+
+  /* Stripe the background colors so that adjacent alert-warnings are distinct from one another */
+  .alert-warning {
+    transition: background-color 0.15s, border-color 0.15s;
+    background-color: $orange-500;
+    border-color: $orange-500;
+  }
+
+  .alert-warning + .alert-warning {
+    background-color: $orange-600;
+    border-color: $orange-600;
+  }
+
+  .alert-warning + .alert-warning + .alert-warning {
+    background-color: $orange-700;
+    border-color: $orange-700;
+  }
+
+  .alert-warning + .alert-warning + .alert-warning + .alert-warning {
+    background-color: $orange-800;
+    border-color: $orange-800;
+  }
+
+  .alert-warning:only-of-type {
+    background-color: $orange-500;
+    border-color: $orange-500;
+  }
+}
+
+
+/* The following prevents side effects related to iOS Safari's implementation of -webkit-overflow-scrolling: touch,
+which is applied to the body by jquery.nicescroling plugin to force hardware acceleration for momentum scrolling. Side
+effects are commonly related to inconsisent z-index behavior (e.g. tooltips). By applying the following to direct children
+of the body element here, we negate cascading side effects but allow momentum scrolling to be applied to the body  */
+
+.navbar,
+.page-gutter,
+.page-with-sidebar {
+  -webkit-overflow-scrolling: auto;
 }

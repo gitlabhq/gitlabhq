@@ -3,7 +3,9 @@ require 'spec_helper'
 describe MergeRequests::BuildService, services: true do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
+  let(:source_project) { nil }
+  let(:target_project) { nil }
   let(:user) { create(:user) }
   let(:issue_confidential) { false }
   let(:issue) { create(:issue, project: project, title: 'A bug', confidential: issue_confidential) }
@@ -20,11 +22,17 @@ describe MergeRequests::BuildService, services: true do
     MergeRequests::BuildService.new(project, user,
                                     description: description,
                                     source_branch: source_branch,
-                                    target_branch: target_branch)
+                                    target_branch: target_branch,
+                                    source_project: source_project,
+                                    target_project: target_project)
   end
 
   before do
+    project.team << [user, :guest]
+
     allow(CompareService).to receive_message_chain(:new, :execute).and_return(compare)
+    allow(project).to receive(:commit).and_return(commit_1)
+    allow(project).to receive(:commit).and_return(commit_2)
   end
 
   describe 'execute' do
@@ -40,23 +48,41 @@ describe MergeRequests::BuildService, services: true do
       end
     end
 
-    context 'missing target branch' do
-      let(:target_branch) { '' }
+    context 'when target branch is missing' do
+      let(:target_branch) { nil }
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'creates compare object with target branch as default branch' do
+        expect(merge_request.compare).to be_present
+        expect(merge_request.target_branch).to eq(project.default_branch)
+      end
+
+      it 'allows the merge request to be created' do
+        expect(merge_request.can_be_created).to eq(true)
+      end
+    end
+
+    context 'same source and target branch' do
+      let(:source_branch) { 'master' }
 
       it 'forbids the merge request from being created' do
         expect(merge_request.can_be_created).to eq(false)
       end
 
       it 'adds an error message to the merge request' do
-        expect(merge_request.errors).to contain_exactly('You must select source and target branch')
+        expect(merge_request.errors).to contain_exactly('You must select different branches')
       end
     end
 
     context 'no commits in the diff' do
       let(:commits) { [] }
 
-      it 'forbids the merge request from being created' do
-        expect(merge_request.can_be_created).to eq(false)
+      it 'allows the merge request to be created' do
+        expect(merge_request.can_be_created).to eq(true)
+      end
+
+      it 'adds a WIP prefix to the merge request title' do
+        expect(merge_request.title).to eq('WIP: Feature branch')
       end
     end
 
@@ -150,6 +176,16 @@ describe MergeRequests::BuildService, services: true do
           expect(merge_request.title).to eq("Resolve \"#{issue.title}\"")
         end
 
+        context 'when issue is not accessible to user' do
+          before do
+            project.team.truncate
+          end
+
+          it 'uses branch title as the merge request title' do
+            expect(merge_request.title).to eq("#{issue.iid} fix issue")
+          end
+        end
+
         context 'issue does not exist' do
           let(:source_branch) { "#{issue.iid.succ}-fix-issue" }
 
@@ -170,11 +206,106 @@ describe MergeRequests::BuildService, services: true do
       context 'branch starts with external issue IID followed by a hyphen' do
         let(:source_branch) { '12345-fix-issue' }
 
-        before { allow(project).to receive(:default_issues_tracker?).and_return(false) }
+        before do
+          allow(project).to receive(:default_issues_tracker?).and_return(false)
+        end
 
         it 'sets the title to: Resolves External Issue $issue-iid' do
           expect(merge_request.title).to eq('Resolve External Issue 12345')
         end
+      end
+    end
+
+    context 'source branch does not exist' do
+      before do
+        allow(project).to receive(:commit).with(source_branch).and_return(nil)
+        allow(project).to receive(:commit).with(target_branch).and_return(commit_1)
+      end
+
+      it 'forbids the merge request from being created' do
+        expect(merge_request.can_be_created).to eq(false)
+      end
+
+      it 'adds an error message to the merge request' do
+        expect(merge_request.errors).to contain_exactly('Source branch "feature-branch" does not exist')
+      end
+    end
+
+    context 'target branch does not exist' do
+      before do
+        allow(project).to receive(:commit).with(source_branch).and_return(commit_1)
+        allow(project).to receive(:commit).with(target_branch).and_return(nil)
+      end
+
+      it 'forbids the merge request from being created' do
+        expect(merge_request.can_be_created).to eq(false)
+      end
+
+      it 'adds an error message to the merge request' do
+        expect(merge_request.errors).to contain_exactly('Target branch "master" does not exist')
+      end
+    end
+
+    context 'both source and target branches do not exist' do
+      before do
+        allow(project).to receive(:commit).and_return(nil)
+      end
+
+      it 'forbids the merge request from being created' do
+        expect(merge_request.can_be_created).to eq(false)
+      end
+
+      it 'adds both error messages to the merge request' do
+        expect(merge_request.errors).to contain_exactly(
+          'Source branch "feature-branch" does not exist',
+          'Target branch "master" does not exist'
+        )
+      end
+    end
+
+    context 'upstream project has disabled merge requests' do
+      let(:upstream_project) { create(:empty_project, :merge_requests_disabled) }
+      let(:project) { create(:empty_project, forked_from_project: upstream_project) }
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'sets target project correctly' do
+        expect(merge_request.target_project).to eq(project)
+      end
+    end
+
+    context 'target_project is set and accessible by current_user' do
+      let(:target_project) { create(:project, :public, :repository)}
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'sets target project correctly' do
+        expect(merge_request.target_project).to eq(target_project)
+      end
+    end
+
+    context 'target_project is set but not accessible by current_user' do
+      let(:target_project) { create(:project, :private, :repository)}
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'sets target project correctly' do
+        expect(merge_request.target_project).to eq(project)
+      end
+    end
+
+    context 'source_project is set and accessible by current_user' do
+      let(:source_project) { create(:project, :public, :repository)}
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'sets target project correctly' do
+        expect(merge_request.source_project).to eq(source_project)
+      end
+    end
+
+    context 'source_project is set but not accessible by current_user' do
+      let(:source_project) { create(:project, :private, :repository)}
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'sets target project correctly' do
+        expect(merge_request.source_project).to eq(project)
       end
     end
   end

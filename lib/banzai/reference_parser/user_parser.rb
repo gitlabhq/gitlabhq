@@ -30,20 +30,34 @@ module Banzai
 
         nodes.each do |node|
           if node.has_attribute?(group_attr)
-            node_group = groups[node.attr(group_attr).to_i]
-
-            if node_group &&
-              can?(user, :read_group, node_group)
-              visible << node
-            end
-          # Remaining nodes will be processed by the parent class'
-          # implementation of this method.
+            next unless can_read_group_reference?(node, user, groups)
+            visible << node
+          elsif can_read_project_reference?(node)
+            visible << node
           else
             remaining << node
           end
         end
 
+        # If project does not belong to a group
+        # and does not have the same project id as the current project
+        # base class will check if user can read the project that contains
+        # the user reference.
         visible + super(current_user, remaining)
+      end
+
+      # Check if project belongs to a group which
+      # user can read.
+      def can_read_group_reference?(node, user, groups)
+        node_group = groups[node]
+
+        node_group && can?(user, :read_group, node_group)
+      end
+
+      def can_read_project_reference?(node)
+        node_id = node.attr('data-project').to_i
+
+        project && project.id == node_id
       end
 
       def nodes_user_can_reference(current_user, nodes)
@@ -60,8 +74,8 @@ module Banzai
           if project && project_id && project.id == project_id.to_i
             true
           elsif project_id && user_id
-            project = projects[project_id.to_i]
-            user = users[user_id.to_i]
+            project = projects[node]
+            user = users[node]
 
             project && user ? project.team.member?(user) : false
           else
@@ -85,8 +99,12 @@ module Banzai
       def find_users_for_projects(ids)
         return [] if ids.empty?
 
-        collection_objects_for_ids(Project, ids).
-          flat_map { |p| p.team.members.to_a }
+        collection_objects_for_ids(Project, ids)
+          .flat_map { |p| p.team.members.to_a }
+      end
+
+      def can_read_reference?(user, ref_project, node)
+        can?(user, :read_project, ref_project)
       end
     end
   end

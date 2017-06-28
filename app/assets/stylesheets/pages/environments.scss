@@ -1,67 +1,244 @@
-.environments-container,
-.deployments-container {
-  width: 100%;
-  overflow: auto;
+@media (max-width: $screen-md-max) {
+  .deployments-container {
+    width: 100%;
+    overflow: auto;
+  }
 }
 
-.environments {
-  .deployment-column {
-    .avatar {
-      float: none;
-    }
-  }
+.environments-folder-name {
+  font-weight: normal;
+  padding-top: 20px;
+}
 
-  .commit-title {
-    margin: 0;
-  }
-
-  .icon-play {
-    height: 13px;
-    width: 12px;
-  }
-
-  .external-url,
-  .dropdown-new {
-    color: $table-text-gray;
-  }
-
-  .dropdown-menu {
-
-    .fa {
-      margin-right: 6px;
-      color: $table-text-gray;
-    }
-  }
-
-  .build-link,
-  .branch-name {
-    color: $gl-dark-link-color;
-  }
-  
-  .deployment {
-    .build-column {
-    
-      .build-link {
-        color: $gl-dark-link-color;
+.environments-container {
+  .ci-table {
+    .deployment-column {
+      > span {
+        word-break: break-all;
       }
-      
+
       .avatar {
         float: none;
       }
     }
+
+    .btn-group {
+
+      > a {
+        color: $gl-text-color-secondary;
+      }
+
+      svg path {
+        fill: $gl-text-color-secondary;
+      }
+
+      .dropdown {
+        outline: none;
+      }
+    }
+
+    .btn .text-center {
+      display: inline;
+    }
+
+    .commit-title {
+      margin: 0;
+    }
+
+    .icon-play {
+      height: 13px;
+      width: 12px;
+    }
+
+    .external-url,
+    .dropdown-new {
+      color: $gl-text-color-secondary;
+    }
+
+    .dropdown-menu {
+      .fa {
+        margin-right: 6px;
+        color: $gl-text-color-secondary;
+      }
+    }
+
+    .build-link,
+    .ref-name {
+      color: $gl-text-color;
+    }
+
+    .stop-env-link,
+    .external-url {
+      color: $gl-text-color-secondary;
+
+      .stop-env-icon {
+        font-size: 14px;
+      }
+    }
+
+    .deployment .build-column {
+      .build-link {
+        color: $gl-text-color;
+      }
+
+      .avatar {
+        float: none;
+        margin-right: 0;
+      }
+    }
+
+    .folder-icon {
+      margin-right: 3px;
+      color: $gl-text-color-secondary;
+      display: inline-block;
+
+      .fa:nth-child(1) {
+        margin-right: 3px;
+      }
+    }
+
+    .folder-name {
+      cursor: pointer;
+      color: $gl-text-color-secondary;
+      display: inline-block;
+    }
+
+    .icon-container {
+      width: 20px;
+      text-align: center;
+    }
+
+    .branch-commit {
+      .commit-sha {
+        margin-right: 0;
+      }
+    }
+
+    .no-btn {
+      border: none;
+      background: none;
+      outline: none;
+      width: 100%;
+      text-align: left;
+    }
   }
 }
 
-.table.builds.environments {
-
-  .icon-container {
-    width: 20px;
-    text-align: center;
-  }
-  
+.gl-responsive-table-row {
   .branch-commit {
-    .commit-id {
-      margin-right: 0;
-    }
+    max-width: 100%;
+  }
+}
+
+.folder-row {
+  padding: 15px 0;
+  border-bottom: 1px solid $white-normal;
+
+  @media (max-width: $screen-sm-max) {
+    border-top: 1px solid $white-normal;
+    margin-top: 10px;
+  }
+}
+
+.prometheus-graph {
+  text {
+    fill: $gl-text-color;
+    stroke-width: 0;
+  }
+
+  .label-axis-text,
+  .text-metric-usage {
+    fill: $black;
+    font-weight: 500;
+  }
+
+  .legend-axis-text {
+    fill: $black;
+  }
+}
+
+.x-axis path,
+.y-axis path,
+.label-x-axis-line,
+.label-y-axis-line {
+  fill: none;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.x-axis path,
+.y-axis path {
+  stroke: $stat-graph-axis-fill;
+}
+
+.label-x-axis-line,
+.label-y-axis-line {
+  stroke: $border-color;
+}
+
+.y-axis {
+  line {
+    stroke: $stat-graph-axis-fill;
+    stroke-width: 1;
+  }
+}
+
+.metric-area {
+  opacity: 0.8;
+}
+
+.prometheus-graph-overlay {
+  fill: none;
+  opacity: 0.0;
+  pointer-events: all;
+}
+
+.rect-text-metric {
+  fill: $white-light;
+  stroke-width: 1;
+  stroke: $gray-darkest;
+}
+
+.rect-axis-text {
+  fill: $white-light;
+}
+
+.text-metric {
+  font-weight: 600;
+}
+
+.selected-metric-line {
+  stroke: $gl-gray-dark;
+  stroke-width: 1;
+}
+
+.deployment-line {
+  stroke: $black;
+  stroke-width: 2;
+}
+
+.deploy-info-text {
+  dominant-baseline: text-before-edge;
+}
+
+.text-metric-bold {
+  font-weight: 600;
+}
+
+.prometheus-state {
+  margin-top: 10px;
+  display: none;
+
+  .state-button-section {
+    margin-top: 10px;
+  }
+}
+
+.environments-actions {
+  .external-url,
+  .monitoring-url,
+  .terminal-button,
+  .stop-env-link {
+    width: 38px;
   }
 }

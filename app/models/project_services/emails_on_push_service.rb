@@ -1,6 +1,6 @@
 class EmailsOnPushService < Service
-  prop_accessor :send_from_committer_email
-  prop_accessor :disable_diffs
+  boolean_accessor :send_from_committer_email
+  boolean_accessor :disable_diffs
   prop_accessor :recipients
   validates :recipients, presence: true, if: :activated?
 
@@ -12,11 +12,11 @@ class EmailsOnPushService < Service
     'Email the commits and diff of each push to a list of recipients.'
   end
 
-  def to_param
+  def self.to_param
     'emails_on_push'
   end
 
-  def supported_events
+  def self.supported_events
     %w(push tag_push)
   end
 
@@ -24,20 +24,20 @@ class EmailsOnPushService < Service
     return unless supported_events.include?(push_data[:object_kind])
 
     EmailsOnPushWorker.perform_async(
-      project_id, 
-      recipients, 
-      push_data, 
-      send_from_committer_email:  send_from_committer_email?, 
-      disable_diffs:              disable_diffs?
+      project_id,
+      recipients,
+      push_data,
+      send_from_committer_email: send_from_committer_email?,
+      disable_diffs:             disable_diffs?
     )
   end
 
   def send_from_committer_email?
-    self.send_from_committer_email == "1"
+    Gitlab::Utils.to_boolean(self.send_from_committer_email)
   end
 
   def disable_diffs?
-    self.disable_diffs == "1"
+    Gitlab::Utils.to_boolean(self.disable_diffs)
   end
 
   def fields
@@ -47,7 +47,7 @@ class EmailsOnPushService < Service
         help: "Send notifications from the committer's email address if the domain is part of the domain GitLab is running on (e.g. #{domains})." },
       { type: 'checkbox', name: 'disable_diffs', title: "Disable code diffs",
         help: "Don't include possibly sensitive code diffs in notification body." },
-      { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by whitespace' },
+      { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by whitespace' }
     ]
   end
 end

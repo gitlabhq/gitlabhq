@@ -13,13 +13,13 @@ class ExternalWikiService < Service
     'Replaces the link to the internal wiki with a link to an external wiki.'
   end
 
-  def to_param
+  def self.to_param
     'external_wiki'
   end
 
   def fields
     [
-      { type: 'text', name: 'external_wiki_url', placeholder: 'The URL of the external Wiki' },
+      { type: 'text', name: 'external_wiki_url', placeholder: 'The URL of the external Wiki', required: true }
     ]
   end
 
@@ -28,5 +28,9 @@ class ExternalWikiService < Service
     if @response != 200
       nil
     end
+  end
+
+  def self.supported_events
+    %w()
   end
 end

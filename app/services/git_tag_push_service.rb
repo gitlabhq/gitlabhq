@@ -8,11 +8,13 @@ class GitTagPushService < BaseService
     @push_data = build_push_data
 
     EventCreateService.new.push(project, current_user, @push_data)
+    Ci::CreatePipelineService.new(project, current_user, @push_data).execute(:push)
+
     SystemHooksService.new.execute_hooks(build_system_push_data.dup, :tag_push_hooks)
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
     project.execute_services(@push_data.dup, :tag_push_hooks)
-    Ci::CreatePipelineService.new(project, current_user, @push_data).execute
-    ProjectCacheWorker.perform_async(project.id)
+
+    ProjectCacheWorker.perform_async(project.id, [], [:commit_count, :repository_size])
 
     true
   end
@@ -27,8 +29,8 @@ class GitTagPushService < BaseService
       tag_name = Gitlab::Git.ref_name(params[:ref])
       tag = project.repository.find_tag(tag_name)
 
-      if tag && tag.object_sha == params[:newrev]
-        commit = project.commit(tag.target)
+      if tag && tag.target == params[:newrev]
+        commit = project.commit(tag.dereferenced_target)
         commits = [commit].compact
         message = tag.message
       end

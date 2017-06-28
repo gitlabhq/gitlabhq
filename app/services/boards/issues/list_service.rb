@@ -1,22 +1,31 @@
 module Boards
   module Issues
-    class ListService < Boards::BaseService
+    class ListService < BaseService
       def execute
         issues = IssuesFinder.new(current_user, filter_params).execute
-        issues = without_board_labels(issues) unless list.movable?
-        issues = with_list_label(issues) if list.movable?
-        issues
+        issues = without_board_labels(issues) unless movable_list?
+        issues = with_list_label(issues) if movable_list?
+        issues.order_by_position_and_priority
       end
 
       private
 
+      def board
+        @board ||= project.boards.find(params[:board_id])
+      end
+
       def list
-        @list ||= board.lists.find(params[:id])
+        return @list if defined?(@list)
+
+        @list = board.lists.find(params[:id]) if params.key?(:id)
+      end
+
+      def movable_list?
+        @movable_list ||= list.present? && list.movable?
       end
 
       def filter_params
         set_default_scope
-        set_default_sort
         set_project
         set_state
 
@@ -27,16 +36,12 @@ module Boards
         params[:scope] = 'all'
       end
 
-      def set_default_sort
-        params[:sort] = 'priority'
-      end
-
       def set_project
         params[:project_id] = project.id
       end
 
       def set_state
-        params[:state] = list.done? ? 'closed' : 'opened'
+        params[:state] = list && list.closed? ? 'closed' : 'opened'
       end
 
       def board_label_ids

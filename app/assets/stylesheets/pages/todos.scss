@@ -3,23 +3,6 @@
  *
  */
 
-.navbar-nav {
-  li {
-    .badge.todos-pending-count {
-      margin-top: -5px;
-      font-weight: normal;
-      background: $todo-alert-blue;
-      margin-left: -17px;
-      font-size: 11px;
-      color: white;
-      padding: 3px;
-      padding-top: 1px;
-      padding-bottom: 1px;
-      border-radius: 3px;
-    }
-  }
-}
-
 .todos-list > .todo {
   // workaround because we cannot use border-colapse
   border-top: 1px solid transparent;
@@ -43,6 +26,13 @@
     }
   }
 
+  .todo-avatar,
+  .todo-actions {
+    @include transition(opacity);
+    -webkit-flex: 0 0 auto;
+    flex: 0 0 auto;
+  }
+
   .todo-actions {
     display: -webkit-flex;
     display: flex;
@@ -55,15 +45,63 @@
   }
 
   .todo-item {
-    -webkit-flex: auto;
-    flex: auto;
+    -webkit-flex: 0 1 100%;
+    flex: 0 1 100%;
+    min-width: 0;
+  }
+
+  &.todo-pending.done-reversible {
+    background-color: $white-light;
+
+    &:hover {
+      border-color: $white-normal;
+      background-color: $gray-light;
+      border-top: 1px solid transparent;
+
+      .todo-avatar,
+      .todo-item {
+        opacity: .6;
+      }
+    }
+
+    .todo-avatar,
+    .todo-item {
+      opacity: .2;
+    }
+
+    .btn {
+      background-color: $gray-light;
+    }
   }
 }
 
 .todo-item {
+  @include transition(opacity);
+
   .todo-title {
-    @include str-truncated(calc(100% - 174px));
-    overflow: visible;
+    display: flex;
+
+    & > .title-item {
+      -webkit-flex: 0 0 auto;
+      flex: 0 0 auto;
+      margin: 0 2px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .todo-label {
+      -webkit-flex: 0 1 auto;
+      flex: 0 1 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   .status-box {
@@ -76,12 +114,16 @@
     font-size: 14px;
   }
 
+  .action-name {
+    font-weight: normal;
+  }
+
   .todo-body {
     .todo-note {
       word-wrap: break-word;
 
       .md {
-        color: #7f8fa4;
+        color: $gl-grayish-blue;
         font-size: $gl-font-size;
 
         .label {
@@ -90,7 +132,7 @@
         }
 
         p {
-          color: #5c5d5e;
+          color: $gl-text-color;
         }
       }
 
@@ -102,7 +144,7 @@
         border: none;
         background: $gray-light;
         border-radius: 0;
-        color: #777;
+        color: $todo-body-pre-color;
         margin: 0 20px;
         overflow: hidden;
       }
@@ -124,7 +166,11 @@
 @media (max-width: $screen-sm-max) {
   .todos-filters {
     .dropdown-menu-toggle {
-      width: 135px;
+      width: 130px;
+    }
+
+    .dropdown-menu-toggle-sort {
+      width: auto;
     }
   }
 }
@@ -138,26 +184,84 @@
 
   .todo-item {
     .todo-title {
-      white-space: normal;
-      overflow: visible;
-      max-width: 100%;
+      flex-flow: row wrap;
       margin-bottom: 10px;
+
+      .todo-label {
+        white-space: normal;
+      }
     }
 
     .todo-body {
       margin: 0;
-      border-left: 2px solid #ddd;
+      border-left: 2px solid $todo-body-border;
       padding-left: 10px;
     }
   }
 
   .todos-filters {
-    .row-content-block {
-      padding-bottom: 50px;
-    }
-
     .dropdown-menu-toggle {
       width: 100%;
     }
+  }
+}
+
+.todos-empty {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (min-width: $screen-sm-min) {
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    padding-top: 80px;
+  }
+}
+
+.todos-empty-content {
+  -webkit-align-self: center;
+  align-self: center;
+  max-width: 480px;
+  margin-right: 20px;
+}
+
+.todos-empty-hero {
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (min-width: $screen-sm-min) {
+    width: 300px;
+    margin-right: 0;
+    -webkit-order: 2;
+    order: 2;
+  }
+}
+
+.todos-all-done {
+  padding-top: 20px;
+
+  @media (min-width: $screen-sm-min) {
+    padding-top: 50px;
+  }
+
+  > svg {
+    display: block;
+    max-width: 300px;
+    margin: 0 auto 20px;
+  }
+
+  p {
+    max-width: 470px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  a {
+    font-weight: 600;
   }
 }

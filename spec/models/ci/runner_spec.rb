@@ -91,8 +91,7 @@ describe Ci::Runner, models: true do
   end
 
   describe '#can_pick?' do
-    let(:project) { create(:project) }
-    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:pipeline) { create(:ci_pipeline) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner) { create(:ci_runner) }
 
@@ -114,7 +113,7 @@ describe Ci::Runner, models: true do
 
     context 'when runner has tags' do
       before do
-        runner.tag_list = ['bb', 'cc']
+        runner.tag_list = %w(bb cc)
       end
 
       shared_examples 'tagged build picker' do
@@ -170,7 +169,7 @@ describe Ci::Runner, models: true do
 
         context 'when having runner tags' do
           before do
-            runner.tag_list = ['bb', 'cc']
+            runner.tag_list = %w(bb cc)
           end
 
           it 'cannot handle it for builds without matching tags' do
@@ -190,7 +189,7 @@ describe Ci::Runner, models: true do
 
         context 'when having runner tags' do
           before do
-            runner.tag_list = ['bb', 'cc']
+            runner.tag_list = %w(bb cc)
             build.tag_list = ['bb']
           end
 
@@ -213,7 +212,7 @@ describe Ci::Runner, models: true do
 
         context 'when having runner tags' do
           before do
-            runner.tag_list = ['bb', 'cc']
+            runner.tag_list = %w(bb cc)
             build.tag_list = ['bb']
           end
 
@@ -263,10 +262,85 @@ describe Ci::Runner, models: true do
     end
   end
 
+  describe '#tick_runner_queue' do
+    let(:runner) { create(:ci_runner) }
+
+    it 'returns a new last_update value' do
+      expect(runner.tick_runner_queue).not_to be_empty
+    end
+  end
+
+  describe '#ensure_runner_queue_value' do
+    let(:runner) { create(:ci_runner) }
+
+    it 'sets a new last_update value when it is called the first time' do
+      last_update = runner.ensure_runner_queue_value
+
+      expect_value_in_redis.to eq(last_update)
+    end
+
+    it 'does not change if it is not expired and called again' do
+      last_update = runner.ensure_runner_queue_value
+
+      expect(runner.ensure_runner_queue_value).to eq(last_update)
+      expect_value_in_redis.to eq(last_update)
+    end
+
+    context 'updates runner queue after changing editable value' do
+      let!(:last_update) { runner.ensure_runner_queue_value }
+
+      before do
+        Ci::UpdateRunnerService.new(runner).update(description: 'new runner')
+      end
+
+      it 'sets a new last_update value' do
+        expect_value_in_redis.not_to eq(last_update)
+      end
+    end
+
+    context 'does not update runner value after save' do
+      let!(:last_update) { runner.ensure_runner_queue_value }
+
+      before do
+        runner.touch
+      end
+
+      it 'has an old last_update value' do
+        expect_value_in_redis.to eq(last_update)
+      end
+    end
+
+    def expect_value_in_redis
+      Gitlab::Redis.with do |redis|
+        runner_queue_key = runner.send(:runner_queue_key)
+        expect(redis.get(runner_queue_key))
+      end
+    end
+  end
+
+  describe '#destroy' do
+    let(:runner) { create(:ci_runner) }
+
+    context 'when there is a tick in the queue' do
+      let!(:queue_key) { runner.send(:runner_queue_key) }
+
+      before do
+        runner.tick_runner_queue
+        runner.destroy
+      end
+
+      it 'cleans up the queue' do
+        Gitlab::Redis.with do |redis|
+          expect(redis.get(queue_key)).to be_nil
+        end
+      end
+    end
+  end
+
   describe '.assignable_for' do
     let(:runner) { create(:ci_runner) }
-    let(:project) { create(:project) }
-    let(:another_project) { create(:project) }
+    let(:project) { create(:empty_project) }
+    let(:another_project) { create(:empty_project) }
 
     before do
       project.runners << runner

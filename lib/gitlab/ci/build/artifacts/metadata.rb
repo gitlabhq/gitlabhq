@@ -6,7 +6,7 @@ module Gitlab
     module Build
       module Artifacts
         class Metadata
-          class ParserError < StandardError; end
+          ParserError = Class.new(StandardError)
 
           VERSION_PATTERN = /^[\w\s]+(\d+\.\d+\.\d+)/
           INVALID_PATH_PATTERN = %r{(^\.?\.?/)|(/\.?\.?/)}

@@ -1,49 +1,13 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
   include MembershipActions
+  include SortingHelper
 
   # Authorize
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   def index
-    @project_members = @project.project_members
-    @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
-
-    if params[:search].present?
-      users = @project.users.search(params[:search]).to_a
-      @project_members = @project_members.where(user_id: users)
-    end
-
-    @project_members = @project_members.order('access_level DESC')
-
-    @group = @project.group
-
-    if @group
-      @group_members = @group.group_members
-      @group_members = @group_members.non_invite unless can?(current_user, :admin_group, @group)
-
-      if params[:search].present?
-        users = @group.users.search(params[:search]).to_a
-        @group_members = @group_members.where(user_id: users)
-      end
-
-      @group_members = @group_members.order('access_level DESC')
-    end
-
-    @requesters = AccessRequestsFinder.new(@project).execute(current_user)
-
-    @project_member = @project.project_members.new
-    @project_group_links = @project.project_group_links
-  end
-
-  def create
-    @project.team.add_users(
-      params[:user_ids].split(','),
-      params[:access_level],
-      expires_at: params[:expires_at],
-      current_user: current_user
-    )
-
-    redirect_to namespace_project_project_members_path(@project.namespace, @project)
+    sort = params[:sort].presence || sort_value_name
+    redirect_to namespace_project_settings_members_path(@project.namespace, @project, sort: sort)
   end
 
   def update
@@ -54,20 +18,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @project_member.update_attributes(member_params)
   end
 
-  def destroy
-    Members::DestroyService.new(@project, current_user, params).
-      execute(:all)
-
-    respond_to do |format|
-      format.html do
-        redirect_to namespace_project_project_members_path(@project.namespace, @project)
-      end
-      format.js { head :ok }
-    end
-  end
-
   def resend_invite
-    redirect_path = namespace_project_project_members_path(@project.namespace, @project)
+    redirect_path = namespace_project_settings_members_path(@project.namespace, @project)
 
     @project_member = @project.project_members.find(params[:id])
 
@@ -90,7 +42,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       return render_404
     end
 
-    redirect_to(namespace_project_project_members_path(project.namespace, project),
+    redirect_to(namespace_project_settings_members_path(project.namespace, project),
                 notice: notice)
   end
 

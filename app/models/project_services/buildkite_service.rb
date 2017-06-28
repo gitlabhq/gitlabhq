@@ -1,9 +1,12 @@
 require "addressable/uri"
 
 class BuildkiteService < CiService
-  ENDPOINT = "https://buildkite.com"
+  include ReactiveService
 
-  prop_accessor :project_url, :token, :enable_ssl_verification
+  ENDPOINT = "https://buildkite.com".freeze
+
+  prop_accessor :project_url, :token
+  boolean_accessor :enable_ssl_verification
 
   validates :project_url, presence: true, url: true, if: :activated?
   validates :token, presence: true, if: :activated?
@@ -21,10 +24,6 @@ class BuildkiteService < CiService
     hook.save
   end
 
-  def supported_events
-    %w(push)
-  end
-
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
@@ -32,13 +31,7 @@ class BuildkiteService < CiService
   end
 
   def commit_status(sha, ref)
-    response = HTTParty.get(commit_status_path(sha), verify: false)
-
-    if response.code == 200 && response['status']
-      response['status']
-    else
-      :error
-    end
+    with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
   end
 
   def commit_status_path(sha)
@@ -57,7 +50,7 @@ class BuildkiteService < CiService
     'Continuous integration and deployments'
   end
 
-  def to_param
+  def self.to_param
     'buildkite'
   end
 
@@ -65,16 +58,29 @@ class BuildkiteService < CiService
     [
       { type: 'text',
         name: 'token',
-        placeholder: 'Buildkite project GitLab token' },
+        placeholder: 'Buildkite project GitLab token', required: true },
 
       { type: 'text',
         name: 'project_url',
-        placeholder: "#{ENDPOINT}/example/project" },
+        placeholder: "#{ENDPOINT}/example/project", required: true },
 
       { type: 'checkbox',
         name: 'enable_ssl_verification',
         title: "Enable SSL verification" }
     ]
+  end
+
+  def calculate_reactive_cache(sha, ref)
+    response = HTTParty.get(commit_status_path(sha), verify: false)
+
+    status =
+      if response.code == 200 && response['status']
+        response['status']
+      else
+        :error
+      end
+
+    { commit_status: status }
   end
 
   private

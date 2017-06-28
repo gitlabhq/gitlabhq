@@ -1,14 +1,13 @@
-- page_title "Network", @ref
+- page_title "Graph", @ref
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/raphael.js')
-  = page_specific_javascript_tag('network/network_bundle.js')
+  = page_specific_javascript_bundle_tag('network')
 = render "projects/commits/head"
 = render "head"
 %div{ class: container_class }
   .project-network
     .controls
       = form_tag namespace_project_network_path(@project.namespace, @project, @id), method: :get, class: 'form-inline network-form' do |f|
-        = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: 'search-input form-control input-mx-250 search-sha'
+        = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Git revision", class: 'search-input form-control input-mx-250 search-sha'
         = button_tag class: 'btn btn-success' do
           = icon('search')
         .inline.prepend-left-20
@@ -17,5 +16,6 @@
               = check_box_tag :filter_ref, 1, @options[:filter_ref]
               %span Begin with the selected commit
 
-    .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
-      = spinner nil, true
+    - if @commit
+      .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
+        = spinner nil, true

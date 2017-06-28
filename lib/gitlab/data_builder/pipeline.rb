@@ -22,7 +22,7 @@ module Gitlab
           sha: pipeline.sha,
           before_sha: pipeline.before_sha,
           status: pipeline.status,
-          stages: pipeline.stages,
+          stages: pipeline.stages_names,
           created_at: pipeline.created_at,
           finished_at: pipeline.finished_at,
           duration: pipeline.duration
@@ -39,7 +39,7 @@ module Gitlab
           started_at: build.started_at,
           finished_at: build.finished_at,
           when: build.when,
-          manual: build.manual?,
+          manual: build.action?,
           user: build.user.try(:hook_attrs),
           runner: build.runner && runner_hook_attrs(build.runner),
           artifacts_file: {

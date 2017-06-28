@@ -11,7 +11,7 @@ class Admin::ImpersonationsController < Admin::ApplicationController
 
     session[:impersonator_id] = nil
 
-    redirect_to admin_user_path(original_user)
+    redirect_to admin_user_path(original_user), status: 302
   end
 
   private
@@ -21,6 +21,6 @@ class Admin::ImpersonationsController < Admin::ApplicationController
   end
 
   def authenticate_impersonator!
-    render_404 unless impersonator && impersonator.is_admin? && !impersonator.blocked?
+    render_404 unless impersonator && impersonator.admin? && !impersonator.blocked?
   end
 end

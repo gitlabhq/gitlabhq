@@ -4,7 +4,7 @@ require 'html/pipeline'
 describe Banzai::Filter::LabelReferenceFilter, lib: true do
   include FilterSpecHelper
 
-  let(:project)   { create(:empty_project, :public) }
+  let(:project)   { create(:empty_project, :public, name: 'sample-project') }
   let(:label)     { create(:label, project: project) }
   let(:reference) { label.to_reference }
 
@@ -48,6 +48,14 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     expect(link).to eq urls.namespace_project_issues_path(project.namespace, project, label_name: label.name)
   end
 
+  context 'project that does not exist referenced' do
+    let(:result) { reference_filter('aaa/bbb~ccc') }
+
+    it 'does not link reference' do
+      expect(result.to_html).to eq 'aaa/bbb~ccc'
+    end
+  end
+
   describe 'label span element' do
     it 'includes default classes' do
       doc = reference_filter("Label #{reference}")
@@ -64,8 +72,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_issues_url(project.namespace, project, label_name: label.name)
     end
 
     it 'links with adjacent text' do
@@ -87,8 +95,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_issues_url(project.namespace, project, label_name: label.name)
       expect(doc.text).to eq 'See gfm'
     end
 
@@ -111,8 +119,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_issues_url(project.namespace, project, label_name: label.name)
       expect(doc.text).to eq 'See 2fa'
     end
 
@@ -135,8 +143,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_issues_url(project.namespace, project, label_name: label.name)
       expect(doc.text).to eq 'See ?g.fm&'
     end
 
@@ -160,8 +168,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_issues_url(project.namespace, project, label_name: label.name)
       expect(doc.text).to eq 'See gfm references'
     end
 
@@ -184,8 +192,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_issues_url(project.namespace, project, label_name: label.name)
       expect(doc.text).to eq 'See 2 factor authentication'
     end
 
@@ -208,8 +216,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_issues_url(project.namespace, project, label_name: label.name)
       expect(doc.text).to eq 'See g.fm & references?'
     end
 
@@ -279,8 +287,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .namespace_project_issues_url(project.namespace, project, label_name: label.name)
     end
 
     it 'links with adjacent text' do
@@ -305,38 +313,299 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     end
   end
 
-  describe 'cross project label references' do
-    context 'valid project referenced' do
-      let(:another_project)  { create(:empty_project, :public) }
-      let(:project_name) { another_project.name_with_namespace }
-      let(:label) { create(:label, project: another_project, color: '#00ff00') }
-      let(:reference) { label.to_reference(project) }
+  describe 'group label references' do
+    let(:group)       { create(:group) }
+    let(:project)     { create(:empty_project, :public, namespace: group) }
+    let(:group_label) { create(:group_label, name: 'gfm references', group: group) }
 
-      let!(:result) { reference_filter("See #{reference}") }
+    context 'without project reference' do
+      let(:reference) { group_label.to_reference(format: :name) }
 
-      it 'points to referenced project issues page' do
-        expect(result.css('a').first.attr('href'))
-          .to eq urls.namespace_project_issues_url(another_project.namespace,
-                                                   another_project,
-                                                   label_name: label.name)
+      it 'links to a valid reference' do
+        doc = reference_filter("See #{reference}", project: project)
+
+        expect(doc.css('a').first.attr('href')).to eq urls
+          .namespace_project_issues_url(project.namespace, project, label_name: group_label.name)
+        expect(doc.text).to eq 'See gfm references'
       end
 
-      it 'has valid color' do
-        expect(result.css('a span').first.attr('style'))
-          .to match /background-color: #00ff00/
+      it 'links with adjacent text' do
+        doc = reference_filter("Label (#{reference}.)")
+        expect(doc.to_html).to match(%r(\(<a.+><span.+>#{group_label.name}</span></a>\.\)))
       end
 
-      it 'contains cross project content' do
-        expect(result.css('a').first.text).to eq "#{label.name} in #{project_name}"
+      it 'ignores invalid label names' do
+        exp = act = %(Label #{Label.reference_prefix}"#{group_label.name.reverse}")
+
+        expect(reference_filter(act).to_html).to eq exp
       end
     end
 
-    context 'project that does not exist referenced' do
-      let(:result) { reference_filter('aaa/bbb~ccc') }
+    context 'with project reference' do
+      let(:reference) { "#{project.to_reference}#{group_label.to_reference(format: :name)}" }
 
-      it 'does not link reference' do
-        expect(result.to_html).to eq 'aaa/bbb~ccc'
+      it 'links to a valid reference' do
+        doc = reference_filter("See #{reference}", project: project)
+
+        expect(doc.css('a').first.attr('href')).to eq urls
+          .namespace_project_issues_url(project.namespace, project, label_name: group_label.name)
+        expect(doc.text).to eq "See gfm references"
       end
+
+      it 'links with adjacent text' do
+        doc = reference_filter("Label (#{reference}.)")
+        expect(doc.to_html).to match(%r(\(<a.+><span.+>#{group_label.name}</span></a>\.\)))
+      end
+
+      it 'ignores invalid label names' do
+        exp = act = %(Label #{project.to_reference}#{Label.reference_prefix}"#{group_label.name.reverse}")
+
+        expect(reference_filter(act).to_html).to eq exp
+      end
+    end
+  end
+
+  describe 'cross-project / cross-namespace complete reference' do
+    let(:project2)  { create(:empty_project) }
+    let(:label)     { create(:label, project: project2, color: '#00ff00') }
+    let(:reference) { "#{project2.path_with_namespace}~#{label.name}" }
+    let!(:result)   { reference_filter("See #{reference}") }
+
+    it 'links to a valid reference' do
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project2.namespace,
+                                                 project2,
+                                                 label_name: label.name)
+    end
+
+    it 'has valid color' do
+      expect(result.css('a span').first.attr('style')).to match /background-color: #00ff00/
+    end
+
+    it 'has valid link text' do
+      expect(result.css('a').first.text).to eq "#{label.name} in #{project2.name_with_namespace}"
+    end
+
+    it 'has valid text' do
+      expect(result.text).to eq "See #{label.name} in #{project2.name_with_namespace}"
+    end
+
+    it 'ignores invalid IDs on the referenced label' do
+      exp = act = "See #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  describe 'cross-project / same-namespace complete reference' do
+    let(:namespace) { create(:namespace) }
+    let(:project)   { create(:empty_project, namespace: namespace) }
+    let(:project2)  { create(:empty_project, namespace: namespace) }
+    let(:label)     { create(:label, project: project2, color: '#00ff00') }
+    let(:reference) { "#{project2.path_with_namespace}~#{label.name}" }
+    let!(:result)   { reference_filter("See #{reference}") }
+
+    it 'links to a valid reference' do
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project2.namespace,
+                                                 project2,
+                                                 label_name: label.name)
+    end
+
+    it 'has valid color' do
+      expect(result.css('a span').first.attr('style')).to match /background-color: #00ff00/
+    end
+
+    it 'has valid link text' do
+      expect(result.css('a').first.text).to eq "#{label.name} in #{project2.name}"
+    end
+
+    it 'has valid text' do
+      expect(result.text).to eq "See #{label.name} in #{project2.name}"
+    end
+
+    it 'ignores invalid IDs on the referenced label' do
+      exp = act = "See #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  describe 'cross-project shorthand reference' do
+    let(:namespace) { create(:namespace) }
+    let(:project)   { create(:empty_project, namespace: namespace) }
+    let(:project2)  { create(:empty_project, namespace: namespace) }
+    let(:label)     { create(:label, project: project2, color: '#00ff00') }
+    let(:reference) { "#{project2.path}~#{label.name}" }
+    let!(:result)   { reference_filter("See #{reference}") }
+
+    it 'links to a valid reference' do
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project2.namespace,
+                                                 project2,
+                                                 label_name: label.name)
+    end
+
+    it 'has valid color' do
+      expect(result.css('a span').first.attr('style'))
+        .to match /background-color: #00ff00/
+    end
+
+    it 'has valid link text' do
+      expect(result.css('a').first.text).to eq "#{label.name} in #{project2.name}"
+    end
+
+    it 'has valid text' do
+      expect(result.text).to eq "See #{label.name} in #{project2.name}"
+    end
+
+    it 'ignores invalid IDs on the referenced label' do
+      exp = act = "See #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  describe 'cross group label references' do
+    let(:group)            { create(:group) }
+    let(:project)          { create(:empty_project, :public, namespace: group) }
+    let(:another_group)    { create(:group) }
+    let(:another_project)  { create(:empty_project, :public, namespace: another_group) }
+    let(:group_label)      { create(:group_label, group: another_group, color: '#00ff00') }
+    let(:reference)        { "#{another_project.path_with_namespace}~#{group_label.name}" }
+    let!(:result)          { reference_filter("See #{reference}", project: project) }
+
+    it 'points to referenced project issues page' do
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(another_project.namespace,
+                                                 another_project,
+                                                 label_name: group_label.name)
+    end
+
+    it 'has valid color' do
+      expect(result.css('a span').first.attr('style'))
+        .to match /background-color: #00ff00/
+    end
+
+    it 'has valid link text' do
+      expect(result.css('a').first.text)
+        .to eq "#{group_label.name} in #{another_project.name_with_namespace}"
+    end
+
+    it 'has valid text' do
+      expect(result.text)
+        .to eq "See #{group_label.name} in #{another_project.name_with_namespace}"
+    end
+
+    it 'ignores invalid IDs on the referenced label' do
+      exp = act = "See #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  describe 'cross-project / same-group_label complete reference' do
+    let(:group)            { create(:group) }
+    let(:project)          { create(:empty_project, :public, namespace: group) }
+    let(:another_project)  { create(:empty_project, :public, namespace: group) }
+    let(:group_label)      { create(:group_label, group: group, color: '#00ff00') }
+    let(:reference)        { "#{another_project.path_with_namespace}~#{group_label.name}" }
+    let!(:result)          { reference_filter("See #{reference}", project: project) }
+
+    it 'points to referenced project issues page' do
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(another_project.namespace,
+                                                 another_project,
+                                                 label_name: group_label.name)
+    end
+
+    it 'has valid color' do
+      expect(result.css('a span').first.attr('style'))
+        .to match /background-color: #00ff00/
+    end
+
+    it 'has valid link text' do
+      expect(result.css('a').first.text)
+        .to eq "#{group_label.name} in #{another_project.name}"
+    end
+
+    it 'has valid text' do
+      expect(result.text)
+        .to eq "See #{group_label.name} in #{another_project.name}"
+    end
+
+    it 'ignores invalid IDs on the referenced label' do
+      exp = act = "See #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  describe 'same project / same group_label complete reference' do
+    let(:group)       { create(:group) }
+    let(:project)     { create(:empty_project, :public, namespace: group) }
+    let(:group_label) { create(:group_label, group: group, color: '#00ff00') }
+    let(:reference)   { "#{project.path_with_namespace}~#{group_label.name}" }
+    let!(:result)     { reference_filter("See #{reference}", project: project) }
+
+    it 'points to referenced project issues page' do
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project.namespace,
+                                                 project,
+                                                 label_name: group_label.name)
+    end
+
+    it 'has valid color' do
+      expect(result.css('a span').first.attr('style'))
+        .to match /background-color: #00ff00/
+    end
+
+    it 'has valid link text' do
+      expect(result.css('a').first.text).to eq group_label.name
+    end
+
+    it 'has valid text' do
+      expect(result.text).to eq "See #{group_label.name}"
+    end
+
+    it 'ignores invalid IDs on the referenced label' do
+      exp = act = "See #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  describe 'same project / same group_label shorthand reference' do
+    let(:group)       { create(:group) }
+    let(:project)     { create(:empty_project, :public, namespace: group) }
+    let(:group_label) { create(:group_label, group: group, color: '#00ff00') }
+    let(:reference)   { "#{project.path}~#{group_label.name}" }
+    let!(:result)     { reference_filter("See #{reference}", project: project) }
+
+    it 'points to referenced project issues page' do
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(project.namespace,
+                                                 project,
+                                                 label_name: group_label.name)
+    end
+
+    it 'has valid color' do
+      expect(result.css('a span').first.attr('style'))
+        .to match /background-color: #00ff00/
+    end
+
+    it 'has valid link text' do
+      expect(result.css('a').first.text).to eq group_label.name
+    end
+
+    it 'has valid text' do
+      expect(result.text).to eq "See #{group_label.name}"
+    end
+
+    it 'ignores invalid IDs on the referenced label' do
+      exp = act = "See #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
     end
   end
 end

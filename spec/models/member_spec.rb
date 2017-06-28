@@ -57,7 +57,7 @@ describe Member, models: true do
 
   describe 'Scopes & finders' do
     before do
-      project = create(:empty_project, :public)
+      project = create(:empty_project, :public, :access_requestable)
       group = create(:group)
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
@@ -83,8 +83,8 @@ describe Member, models: true do
       @accepted_invite_member = create(:project_member, :developer,
                                       project: project,
                                       invite_token: '1234',
-                                      invite_email: 'toto2@example.com').
-                                      tap { |u| u.accept_invite!(accepted_invite_user) }
+                                      invite_email: 'toto2@example.com')
+                                      .tap { |u| u.accept_invite!(accepted_invite_user) }
 
       requested_user = create(:user).tap { |u| project.request_access(u) }
       @requested_member = project.requesters.find_by(user_id: requested_user.id)
@@ -127,6 +127,14 @@ describe Member, models: true do
       it { expect(described_class.request).not_to include @accepted_invite_member }
       it { expect(described_class.request).to include @requested_member }
       it { expect(described_class.request).not_to include @accepted_request_member }
+    end
+
+    describe '.non_request' do
+      it { expect(described_class.non_request).to include @master }
+      it { expect(described_class.non_request).to include @invited_member }
+      it { expect(described_class.non_request).to include @accepted_invite_member }
+      it { expect(described_class.non_request).not_to include @requested_member }
+      it { expect(described_class.non_request).to include @accepted_request_member }
     end
 
     describe '.developers' do
@@ -174,7 +182,7 @@ describe Member, models: true do
   describe '.add_user' do
     %w[project group].each do |source_type|
       context "when source is a #{source_type}" do
-        let!(:source) { create(source_type, :public) }
+        let!(:source) { create(source_type, :public, :access_requestable) }
         let!(:user) { create(:user) }
         let!(:admin) { create(:admin) }
 
@@ -257,8 +265,8 @@ describe Member, models: true do
               expect(source.users).not_to include(user)
               expect(source.requesters.exists?(user_id: user)).to be_truthy
 
-              expect { described_class.add_user(source, user, :master) }.
-                to raise_error(Gitlab::Access::AccessDeniedError)
+              expect { described_class.add_user(source, user, :master) }
+                .to raise_error(Gitlab::Access::AccessDeniedError)
 
               expect(source.users.reload).not_to include(user)
               expect(source.requesters.reload.exists?(user_id: user)).to be_truthy
@@ -378,6 +386,33 @@ describe Member, models: true do
     end
   end
 
+  describe '.add_users' do
+    %w[project group].each do |source_type|
+      context "when source is a #{source_type}" do
+        let!(:source) { create(source_type, :public, :access_requestable) }
+        let!(:admin) { create(:admin) }
+        let(:user1) { create(:user) }
+        let(:user2) { create(:user) }
+
+        it 'returns a <Source>Member objects' do
+          members = described_class.add_users(source, [user1, user2], :master)
+
+          expect(members).to be_a Array
+          expect(members.size).to eq(2)
+          expect(members.first).to be_a "#{source_type.classify}Member".constantize
+          expect(members.first).to be_persisted
+        end
+
+        it 'returns an empty array' do
+          members = described_class.add_users(source, [], :master)
+
+          expect(members).to be_a Array
+          expect(members).to be_empty
+        end
+      end
+    end
+  end
+
   describe '#accept_request' do
     let(:member) { create(:project_member, requested_at: Time.now.utc) }
 
@@ -443,6 +478,16 @@ describe Member, models: true do
 
       member.accept_invite!(user)
     end
+
+    it "refreshes user's authorized projects", truncate: true do
+      project = member.source
+
+      expect(user.authorized_projects).not_to include(project)
+
+      member.accept_invite!(user)
+
+      expect(user.authorized_projects.reload).to include(project)
+    end
   end
 
   describe "#decline_invite!" do
@@ -466,6 +511,18 @@ describe Member, models: true do
 
     it "sets the invite token" do
       expect { member.generate_invite_token }.to change { member.invite_token}
+    end
+  end
+
+  describe "destroying a record", truncate: true do
+    it "refreshes user's authorized projects" do
+      project = create(:empty_project, :private)
+      user    = create(:user)
+      member  = project.team << [user, :reporter]
+
+      member.destroy
+
+      expect(user.authorized_projects).not_to include(project)
     end
   end
 end

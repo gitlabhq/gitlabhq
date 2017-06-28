@@ -8,7 +8,7 @@ run applications in independent "containers" that are run within a single Linux
 instance. [Docker Hub][hub] has a rich database of pre-built images that can be
 used to test and build your applications.
 
-Docker, when used with GitLab CI, runs each build in a separate and isolated
+Docker, when used with GitLab CI, runs each job in a separate and isolated
 container using the predefined image that is set up in
 [`.gitlab-ci.yml`](../yaml/README.md).
 
@@ -37,20 +37,22 @@ The registered runner will use the `ruby:2.1` docker image and will run two
 services, `postgres:latest` and `mysql:latest`, both of which will be
 accessible during the build process.
 
-## What is image
+## What is an image
 
-The `image` keyword is the name of the docker image that is present in the
-local Docker Engine (list all images with `docker images`) or any image that
-can be found at [Docker Hub][hub]. For more information about images and Docker
-Hub please read the [Docker Fundamentals][] documentation.
+The `image` keyword is the name of the docker image the docker executor
+will run to perform the CI tasks.  
 
-In short, with `image` we refer to the docker image, which will be used to
-create a container on which your build will run.
+By default the executor will only pull images from [Docker Hub][hub],
+but this can be configured in the `gitlab-runner/config.toml` by setting
+the [docker pull policy][] to allow using local images.
 
-## What is service
+For more information about images and Docker Hub please read
+the [Docker Fundamentals][] documentation.
+
+## What is a service
 
 The `services` keyword defines just another docker image that is run during
-your build and is linked to the docker image that the `image` keyword defines.
+your job and is linked to the docker image that the `image` keyword defines.
 This allows you to access the service image during build time.
 
 The service image can run any application, but the most common use case is to
@@ -61,13 +63,13 @@ time the project is built.
 You can see some widely used services examples in the relevant documentation of
 [CI services examples](../services/README.md).
 
-### How is service linked to the build
+### How services are linked to the job
 
 To better understand how the container linking works, read
 [Linking containers together][linking-containers].
 
 To summarize, if you add `mysql` as service to your application, the image will
-then be used to create a container that is linked to the build container.
+then be used to create a container that is linked to the job container.
 
 The service container for MySQL will be accessible under the hostname `mysql`.
 So, in order to access your database service you have to connect to the host
@@ -133,26 +135,63 @@ Look for the `[runners.docker]` section:
   services = ["mysql:latest", "postgres:latest"]
 ```
 
-The image and services defined this way will be added to all builds run by
+The image and services defined this way will be added to all job run by
 that runner.
 
 ## Define an image from a private Docker registry
 
-Starting with GitLab Runner 0.6.0, you are able to define images located to
-private registries that could also require authentication.
+> **Notes:**
+- This feature requires GitLab Runner **1.8** or higher
+- For GitLab Runner versions **>= 0.6, <1.8** there was a partial
+  support for using private registries, which required manual configuration
+  of credentials on runner's host. We recommend to upgrade your Runner to
+  at least version **1.8** if you want to use private registries.
+- If the repository is private you need to authenticate your GitLab Runner in the
+  registry. Learn more about how [GitLab Runner works in this case][runner-priv-reg].
 
-All you have to do is be explicit on the image definition in `.gitlab-ci.yml`.
+As an example, let's assume that you want to use the `registry.example.com/private/image:latest`
+image which is private and requires you to login into a private container registry.
+To configure access for `registry.example.com`, follow these steps:
 
-```yaml
-image: my.registry.tld:5000/namepace/image:tag
-```
+1. Do a `docker login` on your computer:
 
-In the example above, GitLab Runner will look at `my.registry.tld:5000` for the
-image `namespace/image:tag`.
+     ```bash
+     docker login registry.example.com --username my_username --password my_password
+     ```
 
-If the repository is private you need to authenticate your GitLab Runner in the
-registry. Learn how to do that on
-[GitLab Runner's documentation][runner-priv-reg].
+1. Copy the content of `~/.docker/config.json`
+1. Create a [secret variable] `DOCKER_AUTH_CONFIG` with the content of the
+   Docker configuration file as the value:
+
+     ```json
+     {
+         "auths": {
+             "registry.example.com": {
+                 "auth": "bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ="
+             }
+         }
+     }
+     ```
+
+1. Do a `docker logout` on your computer if you don't need access to the
+   registry from it:
+
+     ```bash
+     docker logout registry.example.com
+     ```
+
+1. You can now use any private image from `registry.example.com` defined in
+   `image` and/or `services` in your [`.gitlab-ci.yml` file][yaml-priv-reg]:
+
+      ```yaml
+      image: my.registry.tld:5000/namespace/image:tag
+      ```
+
+      In the example above, GitLab Runner will look at `my.registry.tld:5000` for the
+      image `namespace/image:tag`.
+
+You can add configuration for as many registries as you want, adding more
+registries to the `"auths"` hash as described above.
 
 ## Accessing the services
 
@@ -167,14 +206,30 @@ services:
 - tutum/wordpress:latest
 ```
 
-When the build is run, `tutum/wordpress` will be started and you will have
-access to it from your build container under the hostname `tutum__wordpress`.
+When the job is run, `tutum/wordpress` will be started and you will have
+access to it from your build container under the hostnames `tutum-wordpress`
+(requires GitLab Runner v1.1.0 or newer) and `tutum__wordpress`.
 
-The alias hostname for the service is made from the image name following these
+When using a private registry, the image name also includes a hostname and port
+of the registry. 
+
+```yaml
+services:
+- docker.example.com:5000/wordpress:latest
+```
+
+The service hostname will also include the registry hostname. Service will be
+available under hostnames `docker.example.com-wordpress` (requires GitLab Runner v1.1.0 or newer)
+and `docker.example.com__wordpress`.
+
+*Note: hostname with underscores is not RFC valid and may cause problems in 3rd party applications.*
+
+The alias hostnames for the service are made from the image name following these
 rules:
 
 1. Everything after `:` is stripped
-2. Slash (`/`) is replaced with double underscores (`__`)
+2. Slash (`/`) is replaced with double underscores (`__`) - primary alias
+3. Slash (`/`) is replaced with dash (`-`) - secondary alias, requires GitLab Runner v1.1.0 or newer
 
 ## Configuring services
 
@@ -202,21 +257,21 @@ See the specific documentation for
 
 ## How Docker integration works
 
-Below is a high level overview of the steps performed by docker during build
+Below is a high level overview of the steps performed by docker during job
 time.
 
 1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
 1. Create cache container to store all volumes as defined in `config.toml` and
    `Dockerfile` of build image (`ruby:2.1` as in above example).
 1. Create build container and link any service container to build container.
-1. Start build container and send build script to the container.
-1. Run build script.
+1. Start build container and send job script to the container.
+1. Run job script.
 1. Checkout code in: `/builds/group-name/project-name/`.
 1. Run any step defined in `.gitlab-ci.yml`.
 1. Check exit status of build script.
 1. Remove build container and all created service containers.
 
-## How to debug a build locally
+## How to debug a job locally
 
 *Note: The following commands are run without root privileges. You should be
 able to run docker with your regular user account.*
@@ -271,9 +326,11 @@ containers as well as all volumes (`-v`) that were created with the container
 creation.
 
 [Docker Fundamentals]: https://docs.docker.com/engine/understanding-docker/
+[docker pull policy]: https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work
 [hub]: https://hub.docker.com/
 [linking-containers]: https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/
 [tutum/wordpress]: https://hub.docker.com/r/tutum/wordpress/
 [postgres-hub]: https://hub.docker.com/r/_/postgres/
 [mysql-hub]: https://hub.docker.com/r/_/mysql/
-[runner-priv-reg]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/configuration/advanced-configuration.md#using-a-private-docker-registry
+[runner-priv-reg]: http://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-container-registry
+[secret variable]: ../variables/README.md#secret-variables

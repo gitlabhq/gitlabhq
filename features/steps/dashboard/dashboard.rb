@@ -18,11 +18,11 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
 
   step 'I should see last push widget' do
     expect(page).to have_content "You pushed to fix"
-    expect(page).to have_link "Create Merge Request"
+    expect(page).to have_link "Create merge request"
   end
 
-  step 'I click "Create Merge Request" link' do
-    click_link "Create Merge Request"
+  step 'I click "Create merge request" link' do
+    find_link("Create merge request", visible: false).trigger('click')
   end
 
   step 'I see prefilled new Merge Request page' do
@@ -33,36 +33,9 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
     expect(find("input#merge_request_target_branch").value).to eq "master"
   end
 
-  step 'user with name "John Doe" joined project "Shop"' do
-    user = create(:user, { name: "John Doe" })
-    project.team << [user, :master]
-    Event.create(
-      project: project,
-      author_id: user.id,
-      action: Event::JOINED
-    )
-  end
-
-  step 'I should see "John Doe joined project Shop" event' do
-    expect(page).to have_content "John Doe joined project #{project.name_with_namespace}"
-  end
-
-  step 'user with name "John Doe" left project "Shop"' do
-    user = User.find_by(name: "John Doe")
-    Event.create(
-      project: project,
-      author_id: user.id,
-      action: Event::LEFT
-    )
-  end
-
-  step 'I should see "John Doe left project Shop" event' do
-    expect(page).to have_content "John Doe left project #{project.name_with_namespace}"
-  end
-
   step 'I have group with projects' do
     @group   = create(:group)
-    @project = create(:project, namespace: @group)
+    @project = create(:empty_project, namespace: @group)
     @event   = create(:closed_issue_event, project: @project)
 
     @project.team << [current_user, :master]
@@ -81,8 +54,8 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'group has a projects that does not belongs to me' do
-    @forbidden_project1 = create(:project, group: @group)
-    @forbidden_project2 = create(:project, group: @group)
+    @forbidden_project1 = create(:empty_project, group: @group)
+    @forbidden_project2 = create(:empty_project, group: @group)
   end
 
   step 'I should see 1 project at group list' do
@@ -104,7 +77,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
 
   step 'project "Shop" has issue "Bugfix1" with label "feature"' do
     project = Project.find_by(name: "Shop")
-    issue = create(:issue, title: "Bugfix1", project: project, assignee: current_user)
+    issue = create(:issue, title: "Bugfix1", project: project, assignees: [current_user])
     issue.labels << project.labels.find_by(title: 'feature')
   end
 end

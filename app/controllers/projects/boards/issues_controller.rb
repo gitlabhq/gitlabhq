@@ -7,7 +7,8 @@ module Projects
 
       def index
         issues = ::Boards::Issues::ListService.new(project, current_user, filter_params).execute
-        issues = issues.page(params[:page])
+        issues = issues.page(params[:page]).per(params[:per] || 20)
+        make_sure_position_is_set(issues)
 
         render json: {
           issues: serialize_as_json(issues),
@@ -16,9 +17,8 @@ module Projects
       end
 
       def create
-        list = project.board.lists.find(params[:list_id])
         service = ::Boards::Issues::CreateService.new(project, current_user, issue_params)
-        issue = service.execute(list)
+        issue = service.execute
 
         if issue.valid?
           render json: serialize_as_json(issue)
@@ -38,6 +38,12 @@ module Projects
       end
 
       private
+
+      def make_sure_position_is_set(issues)
+        issues.each do |issue|
+          issue.move_to_end && issue.save unless issue.relative_position
+        end
+      end
 
       def issue
         @issue ||=
@@ -60,24 +66,27 @@ module Projects
       end
 
       def filter_params
-        params.merge(id: params[:list_id])
+        params.merge(board_id: params[:board_id], id: params[:list_id]).compact
       end
 
       def move_params
-        params.permit(:id, :from_list_id, :to_list_id)
+        params.permit(:board_id, :id, :from_list_id, :to_list_id, :move_before_iid, :move_after_iid)
       end
 
       def issue_params
-        params.require(:issue).permit(:title).merge(request: request)
+        params.require(:issue).permit(:title).merge(board_id: params[:board_id], list_id: params[:list_id], request: request)
       end
 
       def serialize_as_json(resource)
         resource.as_json(
-          only: [:iid, :title, :confidential],
+          labels: true,
+          only: [:id, :iid, :title, :confidential, :due_date, :relative_position],
           include: {
-            assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
-            labels:   { only: [:id, :title, :description, :color, :priority], methods: [:text_color] }
-          })
+            assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
+            milestone: { only: [:id, :title] }
+          },
+          user: current_user
+        )
       end
     end
   end

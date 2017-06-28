@@ -1,7 +1,6 @@
 class ImportExportProjectCleanupWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :default
+  include CronjobQueue
 
   def perform
     ImportExportCleanUpService.new.execute

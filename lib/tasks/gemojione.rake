@@ -1,33 +1,37 @@
 namespace :gemojione do
   desc 'Generates Emoji SHA256 digests'
-  task digests: :environment do
+  task digests: ['yarn:check', 'environment'] do
     require 'digest/sha2'
     require 'json'
 
+    # We don't have `node_modules` available in built versions of GitLab
+    FileUtils.cp_r(Rails.root.join('node_modules', 'emoji-unicode-version', 'emoji-unicode-version-map.json'), File.join(Rails.root, 'fixtures', 'emojis'))
+
     dir = Gemojione.images_path
-    digests = []
-    aliases = Hash.new { |hash, key| hash[key] = [] }
-    aliases_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')
+    resultant_emoji_map = {}
 
-    JSON.parse(File.read(aliases_path)).each do |alias_name, real_name|
-      aliases[real_name] << alias_name
-    end
+    Gitlab::Emoji.emojis.each do |name, emoji_hash|
+      # Ignore aliases
+      unless Gitlab::Emoji.emojis_aliases.key?(name)
+        fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
+        hash_digest = Digest::SHA256.file(fpath).hexdigest
 
-    Gitlab::AwardEmoji.emojis.map do |name, emoji_hash|
-      fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
-      digest = Digest::SHA256.file(fpath).hexdigest
+        entry = {
+          category: emoji_hash['category'],
+          moji: emoji_hash['moji'],
+          description: emoji_hash['description'],
+          unicodeVersion: Gitlab::Emoji.emoji_unicode_version(name),
+          digest: hash_digest
+        }
 
-      digests << { name: name, unicode: emoji_hash['unicode'], digest: digest }
-
-      aliases[name].each do |alias_name|
-        digests << { name: alias_name, unicode: emoji_hash['unicode'], digest: digest }
+        resultant_emoji_map[name] = entry
       end
     end
 
     out = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')
 
     File.open(out, 'w') do |handle|
-      handle.write(JSON.pretty_generate(digests))
+      handle.write(JSON.pretty_generate(resultant_emoji_map))
     end
   end
 
@@ -55,21 +59,40 @@ namespace :gemojione do
     SPRITESHEET_WIDTH = 860
     SPRITESHEET_HEIGHT = 840
 
+    # Setup a map to rename image files
+    emoji_unicode_string_to_name_map = {}
+    Gitlab::Emoji.emojis.each do |name, emoji_hash|
+      # Ignore aliases
+      unless Gitlab::Emoji.emojis_aliases.key?(name)
+        emoji_unicode_string_to_name_map[emoji_hash['unicode']] = name
+      end
+    end
+
+    # Copy the Gemojione assets to the temporary folder for renaming
+    emoji_dir = "app/assets/images/emoji"
+    FileUtils.rm_rf(emoji_dir)
+    FileUtils.mkdir_p(emoji_dir, mode: 0700)
+    FileUtils.cp_r(File.join(Gemojione.images_path, '.'), emoji_dir)
+    Dir[File.join(emoji_dir, "**/*.png")].each do |png|
+      image_path = png
+      rename_to_named_emoji_image!(emoji_unicode_string_to_name_map, image_path)
+    end
+
     Dir.mktmpdir do |tmpdir|
-      # Copy the Gemojione assets to the temporary folder for resizing
-      FileUtils.cp_r(Gemojione.images_path, tmpdir)
+      FileUtils.cp_r(File.join(emoji_dir, '.'), tmpdir)
 
       Dir.chdir(tmpdir) do
         Dir["**/*.png"].each do |png|
-          resize!(File.join(tmpdir, png), SIZE)
+          tmp_image_path = File.join(tmpdir, png)
+          resize!(tmp_image_path, SIZE)
         end
       end
 
-      style_path = Rails.root.join(*%w(app assets stylesheets pages emojis.scss))
+      style_path = Rails.root.join(*%w(app assets stylesheets framework emoji-sprites.scss))
 
       # Combine the resized assets into a packed sprite and re-generate the SCSS
       SpriteFactory.cssurl = "image-url('$IMAGE')"
-      SpriteFactory.run!(File.join(tmpdir, 'png'), {
+      SpriteFactory.run!(tmpdir, {
         output_style: style_path,
         output_image: "app/assets/images/emoji.png",
         selector:     '.emoji-',
@@ -83,7 +106,7 @@ namespace :gemojione do
       # let's simplify it
       system(%Q(sed -i '' "s/width: #{SIZE}px; height: #{SIZE}px; background: image-url('emoji.png')/background-position:/" #{style_path}))
       system(%Q(sed -i '' "s/ no-repeat//" #{style_path}))
-      system(%Q(sed -i '' "s/ 0px/ 0/" #{style_path}))
+      system(%Q(sed -i '' "s/ 0px/ 0/g" #{style_path}))
 
       # Append a generic rule that applies to all Emojis
       File.open(style_path, 'a') do |f|
@@ -92,6 +115,8 @@ namespace :gemojione do
         .emoji-icon {
           background-image: image-url('emoji.png');
           background-repeat: no-repeat;
+          color: transparent;
+          text-indent: -99em;
           height: #{SIZE}px;
           width: #{SIZE}px;
 
@@ -112,16 +137,17 @@ namespace :gemojione do
     # Now do it again but for Retina
     Dir.mktmpdir do |tmpdir|
       # Copy the Gemojione assets to the temporary folder for resizing
-      FileUtils.cp_r(Gemojione.images_path, tmpdir)
+      FileUtils.cp_r(File.join(emoji_dir, '.'), tmpdir)
 
       Dir.chdir(tmpdir) do
         Dir["**/*.png"].each do |png|
-          resize!(File.join(tmpdir, png), RETINA)
+          tmp_image_path = File.join(tmpdir, png)
+          resize!(tmp_image_path, RETINA)
         end
       end
 
       # Combine the resized assets into a packed sprite and re-generate the SCSS
-      SpriteFactory.run!(File.join(tmpdir), {
+      SpriteFactory.run!(tmpdir, {
         output_image: "app/assets/images/emoji@2x.png",
         style:        false,
         nocomments:   true,
@@ -154,5 +180,21 @@ namespace :gemojione do
     image.resize!(size, size)
     image.write(image_path) { self.quality = 100 }
     image.destroy!
+  end
+
+  EMOJI_IMAGE_PATH_RE = /(.*?)(([0-9a-f]-?)+)\.png$/i
+  def rename_to_named_emoji_image!(emoji_unicode_string_to_name_map, image_path)
+    # Rename file from unicode to emoji name
+    matches = EMOJI_IMAGE_PATH_RE.match(image_path)
+    preceding_path = matches[1]
+    unicode_string = matches[2]
+    name = emoji_unicode_string_to_name_map[unicode_string]
+    if name
+      new_png_path = File.join(preceding_path, "#{name}.png")
+      FileUtils.mv(image_path, new_png_path)
+      new_png_path
+    else
+      puts "Warning: emoji_unicode_string_to_name_map missing entry for #{unicode_string}. Full path: #{image_path}"
+    end
   end
 end

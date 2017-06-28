@@ -1,4 +1,3 @@
-@import "framework/fonts";
 @import "framework/variables";
 @import "framework/mixins";
 @import 'framework/tw_bootstrap_variables';
@@ -7,8 +6,10 @@
 
 @import "framework/animations.scss";
 @import "framework/avatar.scss";
+@import "framework/asciidoctor.scss";
 @import "framework/blocks.scss";
 @import "framework/buttons.scss";
+@import "framework/badges.scss";
 @import "framework/calendar.scss";
 @import "framework/callout.scss";
 @import "framework/common.scss";
@@ -18,7 +19,6 @@
 @import "framework/flash.scss";
 @import "framework/forms.scss";
 @import "framework/gfm.scss";
-@import "framework/gitlab-theme.scss";
 @import "framework/header.scss";
 @import "framework/highlight.scss";
 @import "framework/issue_box.scss";
@@ -30,12 +30,23 @@
 @import "framework/modal.scss";
 @import "framework/nav.scss";
 @import "framework/pagination.scss";
-@import "framework/progress.scss";
 @import "framework/panels.scss";
 @import "framework/selects.scss";
 @import "framework/sidebar.scss";
 @import "framework/tables.scss";
+@import "framework/notes.scss";
 @import "framework/timeline.scss";
 @import "framework/typography.scss";
 @import "framework/zen.scss";
 @import "framework/blank";
+@import "framework/wells.scss";
+@import "framework/page-header.scss";
+@import "framework/awards.scss";
+@import "framework/images.scss";
+@import "framework/broadcast-messages";
+@import "framework/emojis.scss";
+@import "framework/emoji-sprites.scss";
+@import "framework/icons.scss";
+@import "framework/snippets.scss";
+@import "framework/memory_graph.scss";
+@import "framework/responsive-tables.scss";

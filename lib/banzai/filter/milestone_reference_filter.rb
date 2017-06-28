@@ -19,18 +19,20 @@ module Banzai
         return super(text, pattern) if pattern != Milestone.reference_pattern
 
         text.gsub(pattern) do |match|
-          milestone = find_milestone($~[:project], $~[:milestone_iid], $~[:milestone_name])
+          milestone = find_milestone($~[:project], $~[:namespace], $~[:milestone_iid], $~[:milestone_name])
 
           if milestone
-            yield match, milestone.iid, $~[:project], $~
+            yield match, milestone.iid, $~[:project], $~[:namespace], $~
           else
             match
           end
         end
       end
 
-      def find_milestone(project_ref, milestone_id, milestone_name)
-        project = project_from_ref(project_ref)
+      def find_milestone(project_ref, namespace_ref, milestone_id, milestone_name)
+        project_path = full_project_path(namespace_ref, project_ref)
+        project = project_from_ref(project_path)
+
         return unless project
 
         milestone_params = milestone_params(milestone_id, milestone_name)
@@ -52,11 +54,13 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        if context[:project] == object.project
-          super
+        milestone_link = escape_once(super)
+        reference = object.project.to_reference(project)
+
+        if reference.present?
+          "#{milestone_link} <i>in #{reference}</i>".html_safe
         else
-          "#{escape_once(super)} <i>in #{escape_once(object.project.path_with_namespace)}</i>".
-            html_safe
+          milestone_link
         end
       end
 

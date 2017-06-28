@@ -23,7 +23,7 @@
     margin-right: 0;
   }
 
-  .issues-details-filters,
+  .issues-details-filters:not(.filtered-search-block),
   .dash-projects-filters,
   .check-all-holder {
     display: none;
@@ -34,10 +34,6 @@
   }
 
   .project-home-links {
-    display: none;
-  }
-
-  .project-avatar {
     display: none;
   }
 
@@ -54,7 +50,7 @@
     }
 
     // Display Star and Fork buttons without counters on mobile.
-    .project-action-buttons {
+    .project-repo-buttons {
       display: block;
 
       .count-buttons .btn {
@@ -71,7 +67,7 @@
     display: none;
   }
 
-  .group-right-buttons {
+  .group-buttons {
     display: none;
   }
 
@@ -79,7 +75,8 @@
     padding-left: 15px !important;
   }
 
-  .nav-links, .nav-links {
+  .nav-links,
+  .nav-links {
     li a {
       font-size: 14px;
       padding: 19px 10px;
@@ -99,19 +96,16 @@
 
 @media (max-width: $screen-sm-max) {
   .issues-filters {
-    .milestone-filter, .labels-filter {
+    .milestone-filter {
       display: none;
     }
   }
 
   .page-title {
-    .note-created-ago, .new-issue-link {
+    .note-created-ago,
+    .new-issue-link {
       display: none;
     }
-  }
-
-  .issue_edited_ago, .note_edited_ago {
-    display: none;
   }
 
   aside:not(.right-sidebar) {
@@ -129,9 +123,9 @@
   right: 0;
   top: 30%;
   padding: 5px 15px;
-  background: #eee;
+  background: $show-aside-bg;
   font-size: 20px;
-  color: #777;
+  color: $show-aside-color;
   z-index: 100;
-  @include box-shadow(0 1px 2px #ddd);
+  box-shadow: 0 1px 2px $show-aside-shadow;
 }

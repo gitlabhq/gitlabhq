@@ -1,16 +1,15 @@
 require 'spec_helper'
-Dir["./spec/features/protected_branches/*.rb"].sort.each { |f| require f }
 
-feature 'Projected Branches', feature: true, js: true do
-  include WaitForAjax
-
+feature 'Protected Branches', feature: true, js: true do
   let(:user) { create(:user, :admin) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
-  before { login_as(user) }
+  before do
+    gitlab_sign_in(user)
+  end
 
   def set_protected_branch_name(branch_name)
-    find(".js-protected-branch-select").click
+    find(".js-protected-branch-select").trigger('click')
     find(".dropdown-input-field").set(branch_name)
     click_on("Create wildcard #{branch_name}")
   end

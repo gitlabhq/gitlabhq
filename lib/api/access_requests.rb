@@ -1,5 +1,7 @@
 module API
   class AccessRequests < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     helpers ::API::Helpers::MembersHelpers
@@ -8,10 +10,13 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize do
+      resource source_type.pluralize, requirements: { id: %r{[^/]+} } do
         desc "Gets a list of access requests for a #{source_type}." do
           detail 'This feature was introduced in GitLab 8.11.'
           success Entities::AccessRequester
+        end
+        params do
+          use :pagination
         end
         get ":id/access_requests" do
           source = find_source(source_type, params[:id])
@@ -48,7 +53,7 @@ module API
         put ':id/access_requests/:user_id/approve' do
           source = find_source(source_type, params[:id])
 
-          member = ::Members::ApproveAccessRequestService.new(source, current_user, declared(params)).execute
+          member = ::Members::ApproveAccessRequestService.new(source, current_user, declared_params).execute
 
           status :created
           present member.user, with: Entities::Member, member: member
@@ -63,8 +68,8 @@ module API
         delete ":id/access_requests/:user_id" do
           source = find_source(source_type, params[:id])
 
-          ::Members::DestroyService.new(source, current_user, params).
-            execute(:requesters)
+          ::Members::DestroyService.new(source, current_user, params)
+            .execute(:requesters)
         end
       end
     end

@@ -4,7 +4,7 @@ class IssuablePolicy < BasePolicy
   end
 
   def rules
-    if @user && (@subject.author == @user || @subject.assignee == @user)
+    if @user && @subject.assignee_or_author?(@user)
       can! :"read_#{action_name}"
       can! :"update_#{action_name}"
     end

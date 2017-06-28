@@ -65,9 +65,15 @@ module Gitlab
       # +value+ existing model to be included in the hash
       # +parsed_hash+ the original hash
       def parse_hash(value)
+        return nil if already_contains_methods?(value)
+
         @attributes_finder.parse(value) do |hash|
           { include: hash_or_merge(value, hash) }
         end
+      end
+
+      def already_contains_methods?(value)
+        value.is_a?(Hash) && value.values.detect { |val| val[:methods]}
       end
 
       # Adds new model configuration to an existing hash with key +current_key+
@@ -77,7 +83,9 @@ module Gitlab
       # +value+ existing model to be included in the hash
       # +json_config_hash+ the original hash containing the root model
       def add_model_value(current_key, value, json_config_hash)
-        @attributes_finder.parse(value) { |hash| value = { value => hash } }
+        @attributes_finder.parse(value) do |hash|
+          value = { value => hash } unless value.is_a?(Hash)
+        end
 
         add_to_array(current_key, json_config_hash, value)
       end

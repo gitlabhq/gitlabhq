@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Lint, api: true do
-  include ApiHelpers
-
+describe API::Lint do
   describe 'POST /ci/lint' do
     context 'with valid .gitlab-ci.yaml content' do
       let(:yaml_content) do

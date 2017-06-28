@@ -1,8 +1,8 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @key], url: namespace_project_deploy_keys_path, html: { class: "js-requires-input" } do |f|
-  = form_errors(@key)
+= form_for [@project.namespace.becomes(Namespace), @project, @deploy_keys.new_key], url: namespace_project_deploy_keys_path, html: { class: "js-requires-input" } do |f|
+  = form_errors(@deploy_keys.new_key)
   .form-group
     = f.label :title, class: "label-light"
-    = f.text_field :title, class: 'form-control', autofocus: true, required: true
+    = f.text_field :title, class: 'form-control', required: true
   .form-group
     = f.label :key, class: "label-light"
     = f.text_area :key, class: "form-control", rows: 5, required: true
@@ -10,4 +10,13 @@
     %p.light.append-bottom-0
       Paste a machine public key here. Read more about how to generate it
       = link_to "here", help_page_path("ssh/README")
+  .form-group
+    .checkbox
+      = f.label :can_push do
+        = f.check_box :can_push
+        %strong Write access allowed
+  .form-group
+    %p.light.append-bottom-0
+      Allow this key to push to repository as well? (Default only allows pull access.)
+
   = f.submit "Add key", class: "btn-create btn"

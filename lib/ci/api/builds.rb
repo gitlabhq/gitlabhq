@@ -16,17 +16,33 @@ module Ci
           not_found! unless current_runner.active?
           update_runner_info
 
-          build = Ci::RegisterBuildService.new.execute(current_runner)
+          if current_runner.is_runner_queue_value_latest?(params[:last_update])
+            header 'X-GitLab-Last-Update', params[:last_update]
+            Gitlab::Metrics.add_event(:build_not_found_cached)
+            return build_not_found!
+          end
 
-          if build
-            Gitlab::Metrics.add_event(:build_found,
-                                      project: build.project.path_with_namespace)
+          new_update = current_runner.ensure_runner_queue_value
 
-            present build, with: Entities::BuildDetails
+          result = Ci::RegisterJobService.new(current_runner).execute
+
+          if result.valid?
+            if result.build
+              Gitlab::Metrics.add_event(:build_found,
+                                        project: result.build.project.path_with_namespace)
+
+              present result.build, with: Entities::BuildDetails
+            else
+              Gitlab::Metrics.add_event(:build_not_found)
+
+              header 'X-GitLab-Last-Update', new_update
+
+              build_not_found!
+            end
           else
-            Gitlab::Metrics.add_event(:build_not_found)
-
-            build_not_found!
+            # We received build that is invalid due to concurrency conflict
+            Gitlab::Metrics.add_event(:build_invalid)
+            conflict!
           end
         end
 
@@ -41,11 +57,11 @@ module Ci
         put ":id" do
           authenticate_runner!
           build = Ci::Build.where(runner_id: current_runner.id).running.find(params[:id])
-          forbidden!('Build has been erased!') if build.erased?
+          validate_build!(build)
 
           update_runner_info
 
-          build.update_attributes(trace: params[:trace]) if params[:trace]
+          build.trace.set(params[:trace]) if params[:trace]
 
           Gitlab::Metrics.add_event(:update_build,
                                     project: build.project.path_with_namespace)
@@ -70,25 +86,20 @@ module Ci
         # Example Request:
         #   PATCH /builds/:id/trace.txt
         patch ":id/trace.txt" do
-          build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
-          forbidden!('Build has been erased!') if build.erased?
+          build = authenticate_build!
 
-          error!('400 Missing header Content-Range', 400) unless request.headers.has_key?('Content-Range')
+          error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
           content_range = request.headers['Content-Range']
           content_range = content_range.split('-')
 
-          current_length = build.trace_length
-          unless current_length == content_range[0].to_i
-            return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{current_length}" })
+          stream_size = build.trace.append(request.body.read, content_range[0].to_i)
+          if stream_size < 0
+            return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{-stream_size}" })
           end
-
-          build.append_trace(request.body.read, content_range[0].to_i)
 
           status 202
           header 'Build-Status', build.status
-          header 'Range', "0-#{build.trace_length}"
+          header 'Range', "0-#{stream_size}"
         end
 
         # Authorize artifacts uploading for build - Runners only
@@ -103,9 +114,7 @@ module Ci
           require_gitlab_workhorse!
           Gitlab::Workhorse.verify_api_request!(headers)
           not_allowed! unless Gitlab.config.artifacts.enabled
-          build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
+          build = authenticate_build!
           forbidden!('build is not running') unless build.running?
 
           if params[:filesize]
@@ -141,11 +150,8 @@ module Ci
         post ":id/artifacts" do
           require_gitlab_workhorse!
           not_allowed! unless Gitlab.config.artifacts.enabled
-          build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
+          build = authenticate_build!
           forbidden!('Build is not running!') unless build.running?
-          forbidden!('Build has been erased!') if build.erased?
 
           artifacts_upload_path = ArtifactUploader.artifacts_upload_path
           artifacts = uploaded_file(:file, artifacts_upload_path)
@@ -156,7 +162,10 @@ module Ci
 
           build.artifacts_file = artifacts
           build.artifacts_metadata = metadata
-          build.artifacts_expire_in = params['expire_in']
+          build.artifacts_expire_in =
+            params['expire_in'] ||
+            Gitlab::CurrentSettings.current_application_settings
+              .default_artifacts_expire_in
 
           if build.save
             present(build, with: Entities::BuildDetails)
@@ -175,17 +184,15 @@ module Ci
         # Example Request:
         #   GET /builds/:id/artifacts
         get ":id/artifacts" do
-          build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
+          build = authenticate_build!
           artifacts_file = build.artifacts_file
-
-          unless artifacts_file.file_storage?
-            return redirect_to build.artifacts_file.url
-          end
 
           unless artifacts_file.exists?
             not_found!
+          end
+
+          unless artifacts_file.file_storage?
+            return redirect_to build.artifacts_file.url
           end
 
           present_file!(artifacts_file.path, artifacts_file.filename)
@@ -201,10 +208,9 @@ module Ci
         # Example Request:
         #   DELETE /builds/:id/artifacts
         delete ":id/artifacts" do
-          build = Ci::Build.find_by_id(params[:id])
-          not_found! unless build
-          authenticate_build_token!(build)
+          build = authenticate_build!
 
+          status(200)
           build.erase_artifacts!
         end
       end

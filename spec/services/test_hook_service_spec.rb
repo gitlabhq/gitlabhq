@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe TestHookService, services: true do
-  let(:user)    { create :user }
-  let(:project) { create :project }
-  let(:hook)    { create :project_hook, project: project }
+  let(:user)    { create(:user) }
+  let(:project) { create(:project, :repository) }
+  let(:hook)    { create(:project_hook, project: project) }
 
   describe '#execute' do
     it "executes successfully" do

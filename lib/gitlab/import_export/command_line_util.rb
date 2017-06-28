@@ -15,14 +15,6 @@ module Gitlab
         execute(%W(#{git_bin_path} --git-dir=#{repo_path} bundle create #{bundle_path} --all))
       end
 
-      def git_unbundle(repo_path:, bundle_path:)
-        execute(%W(#{git_bin_path} clone --bare #{bundle_path} #{repo_path}))
-      end
-
-      def git_restore_hooks
-        execute(%W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args)
-      end
-
       def mkdir_p(path)
         FileUtils.mkdir_p(path, mode: DEFAULT_MODE)
         FileUtils.chmod(DEFAULT_MODE, path)
@@ -55,10 +47,6 @@ module Gitlab
         mkdir_p(destination_folder)
         FileUtils.copy_entry(source, destination)
         true
-      end
-
-      def repository_storage_paths_args
-        Gitlab.config.repositories.storages.values
       end
     end
   end

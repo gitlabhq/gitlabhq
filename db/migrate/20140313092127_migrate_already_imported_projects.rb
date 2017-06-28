@@ -1,6 +1,6 @@
 # rubocop:disable all
 class MigrateAlreadyImportedProjects < ActiveRecord::Migration
-  include Gitlab::Database
+  include Gitlab::Database::MigrationHelpers
 
   def up
     execute("UPDATE projects SET import_status = 'finished' WHERE imported = #{true_value}")

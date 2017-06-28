@@ -1,3 +1,5 @@
+require './spec/support/sidekiq'
+
 Gitlab::Seeder.quiet do
   # Limit the number of merge requests per project to avoid long seeds
   MAX_NUM_MERGE_REQUESTS = 10
@@ -24,7 +26,7 @@ Gitlab::Seeder.quiet do
     end
   end
 
-  project = Project.find_with_namespace('gitlab-org/gitlab-test')
+  project = Project.find_by_full_path('gitlab-org/gitlab-test')
 
   params = {
     source_branch: 'feature',

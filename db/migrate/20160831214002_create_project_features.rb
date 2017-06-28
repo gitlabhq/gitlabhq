@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Timestamps
 class CreateProjectFeatures < ActiveRecord::Migration
   DOWNTIME = false
 
@@ -10,7 +11,7 @@ class CreateProjectFeatures < ActiveRecord::Migration
       t.integer  :snippets_access_level
       t.integer  :builds_access_level
 
-      t.timestamps
+      t.timestamps null: true
     end
   end
 end

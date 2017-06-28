@@ -20,4 +20,18 @@ class DeployKey < Key
   def destroyed_when_orphaned?
     self.private?
   end
+
+  def has_access_to?(project)
+    projects.include?(project)
+  end
+
+  def can_push_to?(project)
+    can_push? && has_access_to?(project)
+  end
+
+  private
+
+  # we don't want to notify the user for deploy keys
+  def notify_user
+  end
 end

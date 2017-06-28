@@ -2,11 +2,11 @@ module Ci
   class TriggerRequest < ActiveRecord::Base
     extend Ci::Model
 
-    belongs_to :trigger, class_name: 'Ci::Trigger'
-    belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
-    has_many :builds, class_name: 'Ci::Build'
+    belongs_to :trigger
+    belongs_to :pipeline, foreign_key: :commit_id
+    has_many :builds
 
-    serialize :variables
+    serialize :variables # rubocop:disable Cop/ActiverecordSerialize
 
     def user_variables
       return [] unless variables

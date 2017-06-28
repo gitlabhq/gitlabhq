@@ -1,34 +1,63 @@
 require 'spec_helper'
 
 describe "Admin Runners" do
+  include StubENV
+
   before do
-    login_as :admin
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+    gitlab_sign_in :admin
   end
 
   describe "Runners page" do
-    before do
-      runner = FactoryGirl.create(:ci_runner)
-      pipeline = FactoryGirl.create(:ci_pipeline)
-      FactoryGirl.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
-      visit admin_runners_path
-    end
+    let(:pipeline) { create(:ci_pipeline) }
 
-    it { page.has_text? "Manage Runners" }
-    it { page.has_text? "To register a new runner" }
-    it { page.has_text? "Runners with last contact less than a minute ago: 1" }
-
-    describe 'search' do
+    context "when there are runners" do
       before do
-        FactoryGirl.create :ci_runner, description: 'runner-foo'
-        FactoryGirl.create :ci_runner, description: 'runner-bar'
-
-        search_form = find('#runners-search')
-        search_form.fill_in 'search', with: 'runner-foo'
-        search_form.click_button 'Search'
+        runner = FactoryGirl.create(:ci_runner, contacted_at: Time.now)
+        FactoryGirl.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
+        visit admin_runners_path
       end
 
-      it { expect(page).to have_content("runner-foo") }
-      it { expect(page).not_to have_content("runner-bar") }
+      it 'has all necessary texts' do
+        expect(page).to have_text "To register a new Runner"
+        expect(page).to have_text "Runners with last contact more than a minute ago: 1"
+      end
+
+      describe 'search' do
+        before do
+          FactoryGirl.create :ci_runner, description: 'runner-foo'
+          FactoryGirl.create :ci_runner, description: 'runner-bar'
+        end
+
+        it 'shows correct runner when description matches' do
+          search_form = find('#runners-search')
+          search_form.fill_in 'search', with: 'runner-foo'
+          search_form.click_button 'Search'
+
+          expect(page).to have_content("runner-foo")
+          expect(page).not_to have_content("runner-bar")
+        end
+
+        it 'shows no runner when description does not match' do
+          search_form = find('#runners-search')
+          search_form.fill_in 'search', with: 'runner-baz'
+          search_form.click_button 'Search'
+
+          expect(page).to have_text 'No runners found'
+        end
+      end
+    end
+
+    context "when there are no runners" do
+      before do
+        visit admin_runners_path
+      end
+
+      it 'has all necessary texts including no runner message' do
+        expect(page).to have_text "To register a new Runner"
+        expect(page).to have_text "Runners with last contact more than a minute ago: 0"
+        expect(page).to have_text 'No runners found'
+      end
     end
   end
 
@@ -46,8 +75,10 @@ describe "Admin Runners" do
     end
 
     describe 'projects' do
-      it { expect(page).to have_content(@project1.name_with_namespace) }
-      it { expect(page).to have_content(@project2.name_with_namespace) }
+      it 'contains project names' do
+        expect(page).to have_content(@project1.name_with_namespace)
+        expect(page).to have_content(@project2.name_with_namespace)
+      end
     end
 
     describe 'search' do
@@ -57,8 +88,10 @@ describe "Admin Runners" do
         search_form.click_button 'Search'
       end
 
-      it { expect(page).to have_content(@project1.name_with_namespace) }
-      it { expect(page).not_to have_content(@project2.name_with_namespace) }
+      it 'contains name of correct project' do
+        expect(page).to have_content(@project1.name_with_namespace)
+        expect(page).not_to have_content(@project2.name_with_namespace)
+      end
     end
 
     describe 'enable/create' do
@@ -124,7 +157,10 @@ describe "Admin Runners" do
 
   describe 'runners registration token' do
     let!(:token) { current_application_settings.runners_registration_token }
-    before { visit admin_runners_path }
+
+    before do
+      visit admin_runners_path
+    end
 
     it 'has a registration token' do
       expect(page).to have_content("Registration token is #{token}")

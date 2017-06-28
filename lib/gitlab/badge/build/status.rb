@@ -20,8 +20,8 @@ module Gitlab
 
         def status
           @project.pipelines
-            .where(sha: @sha, ref: @ref)
-            .status || 'unknown'
+            .where(sha: @sha)
+            .latest_status(@ref) || 'unknown'
         end
 
         def metadata

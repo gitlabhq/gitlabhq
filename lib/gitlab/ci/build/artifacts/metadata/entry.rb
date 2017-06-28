@@ -27,12 +27,20 @@ module Gitlab
           end
         end
 
+        delegate :empty?, to: :children
+
         def directory?
           blank_node? || @path.end_with?('/')
         end
 
         def file?
           !directory?
+        end
+
+        def blob
+          return unless file?
+
+          @blob ||= Blob.decorate(::Ci::ArtifactBlob.new(self), nil)
         end
 
         def has_parent?
@@ -89,10 +97,6 @@ module Gitlab
 
         def exists?
           blank_node? || @entries.include?(@path)
-        end
-
-        def empty?
-          children.empty?
         end
 
         def total_size

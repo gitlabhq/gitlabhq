@@ -5,9 +5,9 @@ class ProjectWiki
     'Markdown' => :markdown,
     'RDoc'     => :rdoc,
     'AsciiDoc' => :asciidoc
-  } unless defined?(MARKUPS)
+  }.freeze unless defined?(MARKUPS)
 
-  class CouldNotCreateWikiError < StandardError; end
+  CouldNotCreateWikiError = Class.new(StandardError)
 
   # Returns a string describing what went wrong after
   # an operation fails.
@@ -18,6 +18,9 @@ class ProjectWiki
     @project = project
     @user = user
   end
+
+  delegate :empty?, to: :pages
+  delegate :repository_storage_path, to: :project
 
   def path
     @project.path + '.wiki'
@@ -40,7 +43,7 @@ class ProjectWiki
   end
 
   def http_url_to_repo
-    [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+    "#{Gitlab.config.gitlab.url}/#{path_with_namespace}.git"
   end
 
   def wiki_base_path
@@ -58,10 +61,6 @@ class ProjectWiki
 
   def repository_exists?
     !!repository.exists?
-  end
-
-  def empty?
-    pages.empty?
   end
 
   # Returns an Array of Gitlab WikiPage instances or an
@@ -127,7 +126,7 @@ class ProjectWiki
   end
 
   def search_files(query)
-    repository.search_files(query, default_branch)
+    repository.search_files_by_content(query, default_branch)
   end
 
   def repository
@@ -181,6 +180,6 @@ class ProjectWiki
   end
 
   def update_project_activity
-    @project.touch(:last_activity_at)
+    @project.touch(:last_activity_at, :last_repository_updated_at)
   end
 end

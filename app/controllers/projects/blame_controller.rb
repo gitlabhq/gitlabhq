@@ -8,6 +8,12 @@ class Projects::BlameController < Projects::ApplicationController
 
   def show
     @blob = @repository.blob_at(@commit.id, @path)
+
+    return render_404 unless @blob
+
+    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
+    @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+
     @blame_groups = Gitlab::Blame.new(@blob, @commit).groups
   end
 end

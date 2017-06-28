@@ -5,18 +5,19 @@ class Spinach::Features::ProjectGroupLinks < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I should see project already shared with group "Ops"' do
-    page.within '.enabled-groups' do
+    page.within '.project-members-groups' do
       expect(page).to have_content "Ops"
     end
   end
 
   step 'I should see project is not shared with group "Market"' do
-    page.within '.enabled-groups' do
+    page.within '.project-members-groups' do
       expect(page).not_to have_content "Market"
     end
   end
 
   step 'I select group "Market" for share' do
+    click_link 'Share with group'
     group = Group.find_by(path: 'market')
     select2(group.id, from: "#link_group_id")
     select "Master", from: 'link_group_access'
@@ -24,7 +25,7 @@ class Spinach::Features::ProjectGroupLinks < Spinach::FeatureSteps
   end
 
   step 'I should see project is shared with group "Market"' do
-    page.within '.enabled-groups' do
+    page.within '.project-members-groups' do
       expect(page).to have_content "Market"
     end
   end

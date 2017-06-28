@@ -54,11 +54,9 @@ module Gitlab
 
         # Apply LDAP user filter if present
         if config.user_filter.present?
-          filter = Net::LDAP::Filter.join(
-            filter,
-            Net::LDAP::Filter.construct(config.user_filter)
-          )
+          filter = Net::LDAP::Filter.join(filter, config.constructed_user_filter)
         end
+
         filter
       end
 

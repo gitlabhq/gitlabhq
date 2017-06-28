@@ -1,28 +1,23 @@
+import autosize from 'vendor/autosize';
 
-/*= require jquery.ba-resize */
-/*= require autosize */
+$(() => {
+  const $fields = $('.js-autosize');
 
-(function() {
-  $(function() {
-    var $fields;
-    $fields = $('.js-autosize');
-    $fields.on('autosize:resized', function() {
-      var $field;
-      $field = $(this);
-      return $field.data('height', $field.outerHeight());
-    });
-    $fields.on('resize.autosize', function() {
-      var $field;
-      $field = $(this);
-      if ($field.data('height') !== $field.outerHeight()) {
-        $field.data('height', $field.outerHeight());
-        autosize.destroy($field);
-        return $field.css('max-height', window.outerHeight);
-      }
-    });
-    autosize($fields);
-    autosize.update($fields);
-    return $fields.css('resize', 'vertical');
+  $fields.on('autosize:resized', function resized() {
+    const $field = $(this);
+    $field.data('height', $field.outerHeight());
   });
 
-}).call(this);
+  $fields.on('resize.autosize', function resize() {
+    const $field = $(this);
+    if ($field.data('height') !== $field.outerHeight()) {
+      $field.data('height', $field.outerHeight());
+      autosize.destroy($field);
+      $field.css('max-height', window.outerHeight);
+    }
+  });
+
+  autosize($fields);
+  autosize.update($fields);
+  $fields.css('resize', 'vertical');
+});

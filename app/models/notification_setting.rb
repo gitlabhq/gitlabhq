@@ -4,7 +4,7 @@ class NotificationSetting < ActiveRecord::Base
   default_value_for :level, NotificationSetting.levels[:global]
 
   belongs_to :user
-  belongs_to :source, polymorphic: true
+  belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :project, foreign_key: 'source_id'
 
   validates :user, presence: true
@@ -32,13 +32,17 @@ class NotificationSetting < ActiveRecord::Base
     :reopen_merge_request,
     :close_merge_request,
     :reassign_merge_request,
-    :merge_merge_request
-  ]
+    :merge_merge_request,
+    :failed_pipeline,
+    :success_pipeline
+  ].freeze
 
-  store :events, accessors: EMAIL_EVENTS, coder: JSON
+  EXCLUDED_WATCHER_EVENTS = [
+    :success_pipeline
+  ].freeze
 
-  before_create :set_events
-  before_save :events_to_boolean
+  store :events, coder: JSON
+  before_save :convert_events
 
   def self.find_or_create_for(source)
     setting = find_or_initialize_by(source: source)
@@ -50,20 +54,42 @@ class NotificationSetting < ActiveRecord::Base
     setting
   end
 
-  # Set all event attributes to false when level is not custom or being initialized for UX reasons
-  def set_events
-    return if custom?
+  # 1. Check if this event has a value stored in its database column.
+  # 2. If it does, return that value.
+  # 3. If it doesn't (the value is nil), return the value from the serialized
+  #    JSON hash in `events`.
+  (EMAIL_EVENTS - [:failed_pipeline]).each do |event|
+    define_method(event) do
+      bool = super()
 
-    EMAIL_EVENTS.each do |event|
-      events[event] = false
+      bool.nil? ? !!events[event] : bool
     end
+
+    alias_method :"#{event}?", event
   end
 
-  # Validates store accessors values as boolean
-  # It is a text field so it does not cast correct boolean values in JSON
-  def events_to_boolean
+  # Allow people to receive failed pipeline notifications if they already have
+  # custom notifications enabled, as these are more like mentions than the other
+  # custom settings.
+  def failed_pipeline
+    bool = super
+    bool = events[:failed_pipeline] if bool.nil?
+
+    bool.nil? || bool
+  end
+  alias_method :failed_pipeline?, :failed_pipeline
+
+  def event_enabled?(event)
+    respond_to?(event) && public_send(event)
+  end
+
+  def convert_events
+    return if events_before_type_cast.nil?
+
     EMAIL_EVENTS.each do |event|
-      events[event] = ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(events[event])
+      write_attribute(event, public_send(event))
     end
+
+    write_attribute(:events, nil)
   end
 end

@@ -12,8 +12,8 @@ FactoryGirl.define do
     position nil
   end
 
-  factory :done_list, parent: :list do
-    list_type :done
+  factory :closed_list, parent: :list do
+    list_type :closed
     label nil
     position nil
   end

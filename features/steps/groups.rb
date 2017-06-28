@@ -5,7 +5,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include SharedUser
 
   step 'I should see group "Owned"' do
-    expect(page).to have_content '@owned'
+    expect(page).to have_content 'Owned'
   end
 
   step 'I am a signed out user' do
@@ -61,7 +61,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'project from group "Owned" has issues assigned to me' do
     create :issue,
       project: project,
-      assignee: current_user,
+      assignees: [current_user],
       author: current_user
   end
 
@@ -73,18 +73,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
       author: current_user
   end
 
-  step 'I change group "Owned" name to "new-name"' do
-    fill_in 'group_name', with: 'new-name'
-    fill_in 'group_path', with: 'new-name'
-    click_button "Save group"
-  end
-
-  step 'I should see new group "Owned" name' do
-    page.within ".navbar-gitlab" do
-      expect(page).to have_content "new-name"
-    end
-  end
-
   step 'I change group "Owned" avatar' do
     attach_file(:group_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save group"
@@ -93,7 +81,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see new group "Owned" avatar' do
     expect(owned_group.avatar).to be_instance_of AvatarUploader
-    expect(owned_group.avatar.url).to eq "/uploads/group/avatar/#{Group.find_by(name: "Owned").id}/banana_sample.gif"
+    expect(owned_group.avatar.url).to eq "/uploads/system/group/avatar/#{Group.find_by(name: "Owned").id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -121,7 +109,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'Group "Owned" has archived project' do
     group = Group.find_by(name: 'Owned')
-    @archived_project = create(:project, namespace: group, archived: true, path: "archived-project")
+    @archived_project = create(:empty_project, :archived, namespace: group, path: "archived-project")
   end
 
   step 'I should see "archived" label' do
@@ -129,13 +117,13 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I visit group "NonExistentGroup" page' do
-    visit group_path(-1)
+    visit group_path("NonExistentGroup")
   end
 
   step 'the archived project have some issues' do
     create :issue,
       project: @archived_project,
-      assignee: current_user,
+      assignees: [current_user],
       author: current_user
   end
 

@@ -17,38 +17,54 @@ Note: `db:setup` calls `db:seed` but this does nothing.
 In order to run the test you can use the following commands:
 - `rake spinach` to run the spinach suite
 - `rake spec` to run the rspec suite
-- `rake teaspoon` to run the teaspoon test suite
+- `rake karma` to run the karma test suite
 - `rake gitlab:test` to run all the tests
 
-Note: Both `rake spinach` and `rake spec` takes significant time to pass. 
+Note: Both `rake spinach` and `rake spec` takes significant time to pass.
 Instead of running full test suite locally you can save a lot of time by running
-a single test or directory related to your changes. After you submit merge request 
-CI will run full test suite for you. Green CI status in the merge request means 
-full test suite is passed.  
+a single test or directory related to your changes. After you submit merge request
+CI will run full test suite for you. Green CI status in the merge request means
+full test suite is passed.
 
 Note: You can't run `rspec .` since this will try to run all the `_spec.rb`
 files it can find, also the ones in `/tmp`
 
 To run a single test file you can use:
 
-- `bundle exec rspec spec/controllers/commit_controller_spec.rb` for a rspec test
-- `bundle exec spinach features/project/issues/milestones.feature` for a spinach test
+- `bin/rspec spec/controllers/commit_controller_spec.rb` for a rspec test
+- `bin/spinach features/project/issues/milestones.feature` for a spinach test
 
 To run several tests inside one directory:
 
-- `bundle exec rspec spec/requests/api/` for the rspec tests if you want to test API only
-- `bundle exec spinach features/profile/` for the spinach tests if you want to test only profile pages
+- `bin/rspec spec/requests/api/` for the rspec tests if you want to test API only
+- `bin/spinach features/profile/` for the spinach tests if you want to test only profile pages
 
-If you want to use [Spring](https://github.com/rails/spring) set
-`ENABLE_SPRING=1` in your environment.
+### Speed-up tests, rake tasks, and migrations
 
-## Generate searchable docs for source code
+[Spring](https://github.com/rails/spring) is a Rails application preloader. It
+speeds up development by keeping your application running in the background so
+you don't need to boot it every time you run a test, rake task or migration.
 
-You can find results under the `doc/code` directory.
+If you want to use it, you'll need to export the `ENABLE_SPRING` environment
+variable to `1`:
 
 ```
-bundle exec rake gitlab:generate_docs
+export ENABLE_SPRING=1
 ```
+
+## Compile Frontend Assets
+
+You shouldn't ever need to compile frontend assets manually in development, but
+if you ever need to test how the assets get compiled in a production
+environment you can do so with the following command:
+
+```
+RAILS_ENV=production NODE_ENV=production bundle exec rake gitlab:assets:compile
+```
+
+This will compile and minify all JavaScript and CSS assets and copy them along
+with all other frontend assets (images, fonts, etc) into `/public/assets` where
+they can be easily inspected.
 
 ## Generate API documentation for project services (e.g. Slack)
 

@@ -8,7 +8,9 @@ class Member < ActiveRecord::Base
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
-  belongs_to :source, polymorphic: true
+  belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+
+  delegate :name, :username, :email, to: :user, prefix: true
 
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true
@@ -47,6 +49,7 @@ class Member < ActiveRecord::Base
   scope :invite, -> { where.not(invite_token: nil) }
   scope :non_invite, -> { where(invite_token: nil) }
   scope :request, -> { where.not(requested_at: nil) }
+  scope :non_request, -> { where(requested_at: nil) }
 
   scope :has_access, -> { active.where('access_level > 0') }
 
@@ -57,6 +60,11 @@ class Member < ActiveRecord::Base
   scope :owners,  -> { active.where(access_level: OWNER) }
   scope :owners_and_masters,  -> { active.where(access_level: [OWNER, MASTER]) }
 
+  scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
+  scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
+  scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
+
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
   after_create :send_invite, if: :invite?, unless: :importing?
@@ -65,12 +73,39 @@ class Member < ActiveRecord::Base
   after_create :post_create_hook, unless: [:pending?, :importing?]
   after_update :post_update_hook, unless: [:pending?, :importing?]
   after_destroy :post_destroy_hook, unless: :pending?
-
-  delegate :name, :username, :email, to: :user, prefix: true
+  after_commit :refresh_member_authorized_projects
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
   class << self
+    def search(query)
+      joins(:user).merge(User.search(query))
+    end
+
+    def sort(method)
+      case method.to_s
+      when 'access_level_asc' then reorder(access_level: :asc)
+      when 'access_level_desc' then reorder(access_level: :desc)
+      when 'recent_sign_in' then order_recent_sign_in
+      when 'oldest_sign_in' then order_oldest_sign_in
+      when 'last_joined' then order_created_desc
+      when 'oldest_joined' then order_created_asc
+      else
+        order_by(method)
+      end
+    end
+
+    def left_join_users
+      users = User.arel_table
+      members = Member.arel_table
+
+      member_users = members.join(users, Arel::Nodes::OuterJoin)
+                             .on(members[:user_id].eq(users[:id]))
+                             .join_sources
+
+      joins(member_users)
+    end
+
     def access_for_user_ids(user_ids)
       where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
     end
@@ -88,8 +123,8 @@ class Member < ActiveRecord::Base
       member =
         if user.is_a?(User)
           source.members.find_by(user_id: user.id) ||
-          source.requesters.find_by(user_id: user.id) ||
-          source.members.build(user_id: user.id)
+            source.requesters.find_by(user_id: user.id) ||
+            source.members.build(user_id: user.id)
         else
           source.members.build(invite_email: user)
         end
@@ -116,6 +151,27 @@ class Member < ActiveRecord::Base
       member
     end
 
+    def add_users(source, users, access_level, current_user: nil, expires_at: nil)
+      return [] unless users.present?
+
+      # Collect all user ids into separate array
+      # so we can use single sql query to get user objects
+      user_ids = users.select { |user| user =~ /\A\d+\Z/ }
+      users = users - user_ids + User.where(id: user_ids)
+
+      self.transaction do
+        users.map do |user|
+          add_user(
+            source,
+            user,
+            access_level,
+            current_user: current_user,
+            expires_at: expires_at
+          )
+        end
+      end
+    end
+
     def access_levels
       Gitlab::Access.sym_options
     end
@@ -138,22 +194,14 @@ class Member < ActiveRecord::Base
       # There is no current user for bulk actions, in which case anything is allowed
       !current_user || current_user.can?(:"update_#{member.type.underscore}", member)
     end
-
-    def add_users_to_source(source, users, access_level, current_user: nil, expires_at: nil)
-      users.each do |user|
-        add_user(
-          source,
-          user,
-          access_level,
-          current_user: current_user,
-          expires_at: expires_at
-        )
-      end
-    end
   end
 
   def real_source_type
     source_type
+  end
+
+  def access_field
+    access_level
   end
 
   def invite?
@@ -243,11 +291,26 @@ class Member < ActiveRecord::Base
   end
 
   def post_update_hook
-    # override in subclass
+    # override in sub class
   end
 
   def post_destroy_hook
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  # Refreshes authorizations of the current member.
+  #
+  # This method schedules a job using Sidekiq and as such **must not** be called
+  # in a transaction. Doing so can lead to the job running before the
+  # transaction has been committed, resulting in the job either throwing an
+  # error or not doing any meaningful work.
+  def refresh_member_authorized_projects
+    # If user/source is being destroyed, project access are going to be
+    # destroyed eventually because of DB foreign keys, so we shouldn't bother
+    # with refreshing after each member is destroyed through association
+    return if destroyed_by_association.present?
+
+    UserProjectAccessChangedService.new(user_id).execute
   end
 
   def after_accept_invite

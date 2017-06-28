@@ -11,10 +11,10 @@ module Taskable
   INCOMPLETE   = 'incomplete'.freeze
   ITEM_PATTERN = /
     ^
-    (?:\s*[-+*]|(?:\d+\.))? # optional list prefix
-    \s*                     # optional whitespace prefix
-    (\[\s\]|\[[xX]\])       # checkbox
-    (\s.+)                  # followed by whitespace and some text.
+    \s*(?:[-+*]|(?:\d+\.)) # list prefix required - task item has to be always in a list
+    \s+                       # whitespace prefix has to be always presented for a list item
+    (\[\s\]|\[[xX]\])         # checkbox
+    (\s.+)                    # followed by whitespace and some text.
   /x
 
   def self.get_tasks(content)
@@ -53,10 +53,22 @@ module Taskable
 
   # Return a string that describes the current state of this Taskable's task
   # list items, e.g. "12 of 20 tasks completed"
-  def task_status
+  def task_status(short: false)
     return '' if description.blank?
 
+    prep, completed = if short
+                        ['/', '']
+                      else
+                        [' of ', ' completed']
+                      end
+
     sum = tasks.summary
-    "#{sum.complete_count} of #{sum.item_count} #{'task'.pluralize(sum.item_count)} completed"
+    "#{sum.complete_count}#{prep}#{sum.item_count} #{'task'.pluralize(sum.item_count)}#{completed}"
+  end
+
+  # Return a short string that describes the current state of this Taskable's
+  # task list items -- for small screens
+  def task_status_short
+    task_status(short: true)
   end
 end

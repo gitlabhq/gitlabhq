@@ -1,8 +1,20 @@
-# Groups
+# Groups API
 
 ## List groups
 
-Get a list of groups. (As user: my groups, as admin: all groups)
+Get a list of groups. (As user: my groups or all available, as admin: all groups).
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `skip_groups` | array of integers | no | Skip the group IDs passes |
+| `all_available` | boolean | no | Show all the groups you have access to |
+| `search` | string | no | Return list of authorized groups matching the search criteria |
+| `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
+| `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
+| `statistics` | boolean | no | Include group statistics (admins only) |
+| `owned` | boolean | no | Limit by groups owned by the current user |
 
 ```
 GET /groups
@@ -14,13 +26,20 @@ GET /groups
     "id": 1,
     "name": "Foobar Group",
     "path": "foo-bar",
-    "description": "An interesting group"
+    "description": "An interesting group",
+    "visibility": "public",
+    "lfs_enabled": true,
+    "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
+    "web_url": "http://localhost:3000/groups/foo-bar",
+    "request_access_enabled": false,
+    "full_name": "Foobar Group",
+    "full_path": "foo-bar",
+    "parent_id": null
   }
 ]
 ```
 
 You can search for groups by name or path, see below.
-
 
 ## List a group's projects
 
@@ -32,12 +51,19 @@ GET /groups/:id/projects
 
 Parameters:
 
-- `archived` (optional) - if passed, limit by archived status
-- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
-- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
-- `search` (optional) - Return list of authorized projects according to a search criteria
-- `ci_enabled_first` - Return projects ordered by ci_enabled flag. Projects with enabled GitLab CI go first
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `archived` | boolean | no | Limit by archived status |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of authorized projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+| `owned` | boolean | no | Limit by projects owned by the current user |
+| `starred` | boolean | no | Limit by projects starred by the current user |
+
+Example response:
 
 ```json
 [
@@ -46,9 +72,8 @@ Parameters:
     "description": "foo",
     "default_branch": "master",
     "tag_list": [],
-    "public": false,
     "archived": false,
-    "visibility_level": 10,
+    "visibility": "internal",
     "ssh_url_to_repo": "git@gitlab.example.com/html5-boilerplate.git",
     "http_url_to_repo": "http://gitlab.example.com/h5bp/html5-boilerplate.git",
     "web_url": "http://gitlab.example.com/h5bp/html5-boilerplate",
@@ -59,7 +84,7 @@ Parameters:
     "issues_enabled": true,
     "merge_requests_enabled": true,
     "wiki_enabled": true,
-    "builds_enabled": true,
+    "jobs_enabled": true,
     "snippets_enabled": true,
     "created_at": "2016-04-05T21:40:50.169Z",
     "last_activity_at": "2016-04-06T16:52:08.432Z",
@@ -69,21 +94,13 @@ Parameters:
       "id": 5,
       "name": "Experimental",
       "path": "h5bp",
-      "owner_id": null,
-      "created_at": "2016-04-05T21:40:49.152Z",
-      "updated_at": "2016-04-07T08:07:48.466Z",
-      "description": "foo",
-      "avatar": {
-        "url": null
-      },
-      "share_with_group_lock": false,
-      "visibility_level": 10
+      "kind": "group"
     },
     "avatar_url": null,
     "star_count": 1,
     "forks_count": 0,
     "open_issues_count": 3,
-    "public_builds": true,
+    "public_jobs": true,
     "shared_with_groups": [],
     "request_access_enabled": false
   }
@@ -102,10 +119,10 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or path of a group |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4
 ```
 
 Example response:
@@ -116,19 +133,21 @@ Example response:
   "name": "Twitter",
   "path": "twitter",
   "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
-  "visibility_level": 20,
+  "visibility": "public",
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
   "request_access_enabled": false,
+  "full_name": "Twitter",
+  "full_path": "twitter",
+  "parent_id": null,
   "projects": [
     {
       "id": 7,
       "description": "Voluptas veniam qui et beatae voluptas doloremque explicabo facilis.",
       "default_branch": "master",
       "tag_list": [],
-      "public": true,
       "archived": false,
-      "visibility_level": 20,
+      "visibility": "public",
       "ssh_url_to_repo": "git@gitlab.example.com:twitter/typeahead-js.git",
       "http_url_to_repo": "https://gitlab.example.com/twitter/typeahead-js.git",
       "web_url": "https://gitlab.example.com/twitter/typeahead-js",
@@ -139,7 +158,7 @@ Example response:
       "issues_enabled": true,
       "merge_requests_enabled": true,
       "wiki_enabled": true,
-      "builds_enabled": true,
+      "jobs_enabled": true,
       "snippets_enabled": false,
       "container_registry_enabled": true,
       "created_at": "2016-06-17T07:47:25.578Z",
@@ -150,21 +169,13 @@ Example response:
         "id": 4,
         "name": "Twitter",
         "path": "twitter",
-        "owner_id": null,
-        "created_at": "2016-06-17T07:47:24.216Z",
-        "updated_at": "2016-06-17T07:47:24.216Z",
-        "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
-        "avatar": {
-          "url": null
-        },
-        "share_with_group_lock": false,
-        "visibility_level": 20
+        "kind": "group"
       },
       "avatar_url": null,
       "star_count": 0,
       "forks_count": 0,
       "open_issues_count": 3,
-      "public_builds": true,
+      "public_jobs": true,
       "shared_with_groups": [],
       "request_access_enabled": false
     },
@@ -173,9 +184,8 @@ Example response:
       "description": "Aspernatur omnis repudiandae qui voluptatibus eaque.",
       "default_branch": "master",
       "tag_list": [],
-      "public": false,
       "archived": false,
-      "visibility_level": 10,
+      "visibility": "internal",
       "ssh_url_to_repo": "git@gitlab.example.com:twitter/flight.git",
       "http_url_to_repo": "https://gitlab.example.com/twitter/flight.git",
       "web_url": "https://gitlab.example.com/twitter/flight",
@@ -186,7 +196,7 @@ Example response:
       "issues_enabled": true,
       "merge_requests_enabled": true,
       "wiki_enabled": true,
-      "builds_enabled": true,
+      "jobs_enabled": true,
       "snippets_enabled": false,
       "container_registry_enabled": true,
       "created_at": "2016-06-17T07:47:24.661Z",
@@ -197,21 +207,13 @@ Example response:
         "id": 4,
         "name": "Twitter",
         "path": "twitter",
-        "owner_id": null,
-        "created_at": "2016-06-17T07:47:24.216Z",
-        "updated_at": "2016-06-17T07:47:24.216Z",
-        "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
-        "avatar": {
-          "url": null
-        },
-        "share_with_group_lock": false,
-        "visibility_level": 20
+        "kind": "group"
       },
       "avatar_url": null,
       "star_count": 0,
       "forks_count": 0,
       "open_issues_count": 8,
-      "public_builds": true,
+      "public_jobs": true,
       "shared_with_groups": [],
       "request_access_enabled": false
     }
@@ -222,9 +224,8 @@ Example response:
       "description": "Velit eveniet provident fugiat saepe eligendi autem.",
       "default_branch": "master",
       "tag_list": [],
-      "public": false,
       "archived": false,
-      "visibility_level": 0,
+      "visibility": "private",
       "ssh_url_to_repo": "git@gitlab.example.com:h5bp/html5-boilerplate.git",
       "http_url_to_repo": "https://gitlab.example.com/h5bp/html5-boilerplate.git",
       "web_url": "https://gitlab.example.com/h5bp/html5-boilerplate",
@@ -235,7 +236,7 @@ Example response:
       "issues_enabled": true,
       "merge_requests_enabled": true,
       "wiki_enabled": true,
-      "builds_enabled": true,
+      "jobs_enabled": true,
       "snippets_enabled": false,
       "container_registry_enabled": true,
       "created_at": "2016-06-17T07:47:27.089Z",
@@ -246,21 +247,13 @@ Example response:
         "id": 5,
         "name": "H5bp",
         "path": "h5bp",
-        "owner_id": null,
-        "created_at": "2016-06-17T07:47:26.621Z",
-        "updated_at": "2016-06-17T07:47:26.621Z",
-        "description": "Id consequatur rem vel qui doloremque saepe.",
-        "avatar": {
-          "url": null
-        },
-        "share_with_group_lock": false,
-        "visibility_level": 20
+        "kind": "group"
       },
       "avatar_url": null,
       "star_count": 0,
       "forks_count": 0,
       "open_issues_count": 4,
-      "public_builds": true,
+      "public_jobs": true,
       "shared_with_groups": [
         {
           "group_id": 4,
@@ -291,9 +284,10 @@ Parameters:
 - `name` (required) - The name of the group
 - `path` (required) - The path of the group
 - `description` (optional) - The group's description
-- `visibility_level` (optional) - The group's visibility. 0 for private, 10 for internal, 20 for public.
+- `visibility` (optional) - The group's visibility. Can be `private`, `internal`, or `public`.
 - `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
 - `request_access_enabled` (optional) - Allow users to request member access.
+- `parent_id` (optional) - The parent group id for creating nested group.
 
 ## Transfer project to group
 
@@ -305,8 +299,8 @@ POST  /groups/:id/projects/:project_id
 
 Parameters:
 
-- `id` (required) - The ID or path of a group
-- `project_id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user
+- `project_id` (required) - The ID or path of a project
 
 ## Update group
 
@@ -322,12 +316,12 @@ PUT /groups/:id
 | `name` | string | no | The name of the group |
 | `path` | string | no | The path of the group |
 | `description` | string | no | The description of the group |
-| `visibility_level` | integer | no | The visibility level of the group. 0 for private, 10 for internal, 20 for public. |
+| `visibility` | string | no | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `lfs_enabled` (optional) | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
 | `request_access_enabled` | boolean | no | Allow users to request member access. |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
 
 ```
 
@@ -339,10 +333,13 @@ Example response:
   "name": "Experimental",
   "path": "h5bp",
   "description": "foo",
-  "visibility_level": 10,
+  "visibility": "internal",
   "avatar_url": null,
   "web_url": "http://gitlab.example.com/groups/h5bp",
   "request_access_enabled": false,
+  "full_name": "Foobar Group",
+  "full_path": "foo-bar",
+  "parent_id": null,
   "projects": [
     {
       "id": 9,
@@ -351,7 +348,7 @@ Example response:
       "tag_list": [],
       "public": false,
       "archived": false,
-      "visibility_level": 10,
+      "visibility": "internal",
       "ssh_url_to_repo": "git@gitlab.example.com/html5-boilerplate.git",
       "http_url_to_repo": "http://gitlab.example.com/h5bp/html5-boilerplate.git",
       "web_url": "http://gitlab.example.com/h5bp/html5-boilerplate",
@@ -362,7 +359,7 @@ Example response:
       "issues_enabled": true,
       "merge_requests_enabled": true,
       "wiki_enabled": true,
-      "builds_enabled": true,
+      "jobs_enabled": true,
       "snippets_enabled": true,
       "created_at": "2016-04-05T21:40:50.169Z",
       "last_activity_at": "2016-04-06T16:52:08.432Z",
@@ -372,21 +369,13 @@ Example response:
         "id": 5,
         "name": "Experimental",
         "path": "h5bp",
-        "owner_id": null,
-        "created_at": "2016-04-05T21:40:49.152Z",
-        "updated_at": "2016-04-07T08:07:48.466Z",
-        "description": "foo",
-        "avatar": {
-          "url": null
-        },
-        "share_with_group_lock": false,
-        "visibility_level": 10
+        "kind": "group"
       },
       "avatar_url": null,
       "star_count": 1,
       "forks_count": 0,
       "open_issues_count": 3,
-      "public_builds": true,
+      "public_jobs": true,
       "shared_with_groups": [],
       "request_access_enabled": false
     }

@@ -1,62 +1,56 @@
 # How to add an image
 
-The following are the steps to add images to your repository in
-GitLab:
+Using your standard tool for copying files (e.g. Finder in Mac OS, or Explorer
+in Windows, or...), put the image file into the GitLab project. You can find the
+project as a regular folder in your files.
 
-Find the image that you’d like to add.
+Go to your [shell](command-line-commands.md), and move into the folder of your
+Gitlab project. This usually means running the following command until you get
+to the desired destination:
 
-In your computer files, find the GitLab project to which you'd like to add the image
-(you'll find it as a regular file). Click on every file until you find exactly where you'd
-like to add the image. There, paste the image.
-
-Go to your [shell](command-line-commands.md), and add the following commands:
-
-Add this command for every directory that you'd like to open:
 ```
-cd NAME-OF-FILE-YOU'D-LIKE-TO-OPEN
+cd NAME-OF-FOLDER-YOU'D-LIKE-TO-OPEN
 ```
 
-Create a new branch:
-```
-git checkout -b NAME-OF-BRANCH
-```
+Check if your image is actually present in the directory (if you are in Windows,
+use `dir` instead):
 
-Check if your image was correctly added to the directory:
 ```
 ls
 ```
 
 You should see the name of the image in the list shown.
 
-Move up the hierarchy through directories:
-```
-cd ../
-```
+Check the status:
 
-Check the status and you should see your image’s name in red:
 ```
 git status
 ```
 
-Add your changes:
+Your image's name should appear in red, so `git` took notice of it! Now add it
+to the repository:
+
 ```
 git add NAME-OF-YOUR-IMAGE
 ```
 
-Check the status and you should see your image’s name in green:
+Check the status again, your image's name should have turned green:
+
 ```
 git status
 ```
 
-Add the commit:
+Commit:
+
 ```
-git commit -m “DESCRIBE COMMIT IN A FEW WORDS”
+git commit -m "DESCRIBE COMMIT IN A FEW WORDS"
 ```
 
-Now you can push (send) your changes (in the branch NAME-OF-BRANCH) to GitLab (the git remote named 'origin'):
+Now you can push (send) your changes (in the branch NAME-OF-BRANCH) to GitLab
+(the git remote named 'origin'):
+
 ```
 git push origin NAME-OF-BRANCH
 ```
 
-Your image will be added to your branch in your repository in GitLab. Create a [Merge Request](add-merge-request.md)
-to integrate your changes to your project.
+Your image will be added to your branch in your repository in GitLab.

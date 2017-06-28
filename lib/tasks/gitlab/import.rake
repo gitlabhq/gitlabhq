@@ -11,7 +11,8 @@ namespace :gitlab do
     #
     desc "GitLab | Import bare repositories from repositories -> storages into GitLab project instance"
     task repos: :environment do
-      Gitlab.config.repositories.storages.each do |name, git_base_path|
+      Gitlab.config.repositories.storages.each_value do |repository_storage|
+        git_base_path = repository_storage['path']
         repos_to_import = Dir.glob(git_base_path + '/**/*.git')
 
         repos_to_import.each do |repo_path|
@@ -29,7 +30,7 @@ namespace :gitlab do
             next
           end
 
-          project = Project.find_with_namespace(path)
+          project = Project.find_by_full_path(path)
 
           if project
             puts " * #{project.name} (#{repo_path}) exists"
@@ -46,7 +47,7 @@ namespace :gitlab do
               group = Namespace.find_by(path: group_name)
               # create group namespace
               unless group
-                group = Group.new(:name => group_name)
+                group = Group.new(name: group_name)
                 group.path = group_name
                 group.owner = user
                 if group.save
@@ -63,8 +64,7 @@ namespace :gitlab do
 
             if project.persisted?
               puts " * Created #{project.name} (#{repo_path})".color(:green)
-              project.update_repository_size
-              project.update_commit_count
+              ProjectCacheWorker.perform_async(project.id)
             else
               puts " * Failed trying to create #{project.name} (#{repo_path})".color(:red)
               puts "   Errors: #{project.errors.messages}".color(:red)

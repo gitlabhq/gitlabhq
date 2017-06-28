@@ -1,8 +1,7 @@
 class Projects::LfsApiController < Projects::GitHttpClientController
-  include LfsHelper
+  include LfsRequest
 
-  before_action :require_lfs_enabled!
-  before_action :lfs_check_access!, except: [:deprecated]
+  skip_before_action :lfs_check_access!, only: [:deprecated]
 
   def batch
     unless objects.present?
@@ -23,7 +22,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     render(
       json: {
         message: 'Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.',
-        documentation_url: "#{Gitlab.config.gitlab.url}/help",
+        documentation_url: "#{Gitlab.config.gitlab.url}/help"
       },
       status: 501
     )
@@ -31,8 +30,12 @@ class Projects::LfsApiController < Projects::GitHttpClientController
 
   private
 
-  def objects
-    @objects ||= (params[:objects] || []).to_a
+  def download_request?
+    params[:operation] == 'download'
+  end
+
+  def upload_request?
+    params[:operation] == 'upload'
   end
 
   def existing_oids
@@ -45,10 +48,14 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     objects.each do |object|
       if existing_oids.include?(object[:oid])
         object[:actions] = download_actions(object)
+
+        if Guest.can?(:download_code, project)
+          object[:authenticated] = true
+        end
       else
         object[:error] = {
           code: 404,
-          message: "Object does not exist on the server or you don't have permissions to access it",
+          message: "Object does not exist on the server or you don't have permissions to access it"
         }
       end
     end
@@ -82,13 +89,5 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         }.compact
       }
     }
-  end
-
-  def download_request?
-    params[:operation] == 'download'
-  end
-
-  def upload_request?
-    params[:operation] == 'upload'
   end
 end

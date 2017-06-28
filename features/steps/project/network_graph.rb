@@ -66,7 +66,7 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   step 'page should have "v1.0.0" in title' do
-    expect(page).to have_css 'title', text: 'Network · v1.0.0', visible: false
+    expect(page).to have_css 'title', text: 'Graph · v1.0.0', visible: false
   end
 
   step 'page should only have content from "v1.0.0"' do
@@ -108,5 +108,9 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
       fill_in 'extended_sha1', with: ';'
       find('button').click
     end
+  end
+
+  step 'I should see non-existent git revision error message' do
+    expect(page).to have_selector '.flash-alert', text: "Git revision ';' does not exist."
   end
 end

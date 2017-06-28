@@ -1,8 +1,8 @@
 module Ci
   class GitlabCiYamlProcessor
-    class ValidationError < StandardError; end
+    ValidationError = Class.new(StandardError)
 
-    include Gitlab::Ci::Config::Node::LegacyValidationHelpers
+    include Gitlab::Ci::Config::Entry::LegacyValidationHelpers
 
     attr_reader :path, :cache, :stages, :jobs
 
@@ -20,26 +20,26 @@ module Ci
       raise ValidationError, e.message
     end
 
-    def jobs_for_ref(ref, tag = false, trigger_request = nil)
+    def jobs_for_ref(ref, tag = false, source = nil)
       @jobs.select do |_, job|
-        process?(job[:only], job[:except], ref, tag, trigger_request)
+        process?(job[:only], job[:except], ref, tag, source)
       end
     end
 
-    def jobs_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      jobs_for_ref(ref, tag, trigger_request).select do |_, job|
+    def jobs_for_stage_and_ref(stage, ref, tag = false, source = nil)
+      jobs_for_ref(ref, tag, source).select do |_, job|
         job[:stage] == stage
       end
     end
 
-    def builds_for_ref(ref, tag = false, trigger_request = nil)
-      jobs_for_ref(ref, tag, trigger_request).map do |name, _|
+    def builds_for_ref(ref, tag = false, source = nil)
+      jobs_for_ref(ref, tag, source).map do |name, _|
         build_attributes(name)
       end
     end
 
-    def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      jobs_for_stage_and_ref(stage, ref, tag, trigger_request).map do |name, _|
+    def builds_for_stage_and_ref(stage, ref, tag = false, source = nil)
+      jobs_for_stage_and_ref(stage, ref, tag, source).map do |name, _|
         build_attributes(name)
       end
     end
@@ -50,17 +50,29 @@ module Ci
       end
     end
 
+    def stage_seeds(pipeline)
+      seeds = @stages.uniq.map do |stage|
+        builds = builds_for_stage_and_ref(
+          stage, pipeline.ref, pipeline.tag?, pipeline.source)
+
+        Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
+      end
+
+      seeds.compact
+    end
+
     def build_attributes(name)
       job = @jobs[name.to_sym] || {}
-      {
-        stage_idx: @stages.index(job[:stage]),
+
+      { stage_idx: @stages.index(job[:stage]),
         stage: job[:stage],
         commands: job[:commands],
         tag_list: job[:tags] || [],
         name: job[:name].to_s,
-        allow_failure: job[:allow_failure] || false,
+        allow_failure: job[:ignore],
         when: job[:when] || 'on_success',
         environment: job[:environment_name],
+        coverage_regex: job[:coverage],
         yaml_variables: yaml_variables(name),
         options: {
           image: job[:image],
@@ -69,9 +81,8 @@ module Ci
           cache: job[:cache],
           dependencies: job[:dependencies],
           after_script: job[:after_script],
-          environment: job[:environment],
-        }.compact
-      }
+          environment: job[:environment]
+        }.compact }
     end
 
     def self.validation_message(content)
@@ -109,6 +120,7 @@ module Ci
 
         validate_job_stage!(name, job)
         validate_job_dependencies!(name, job)
+        validate_job_environment!(name, job)
       end
     end
 
@@ -117,7 +129,7 @@ module Ci
         .merge(job_variables(name))
 
       variables.map do |key, value|
-        { key: key, value: value, public: true }
+        { key: key.to_s, value: value, public: true }
       end
     end
 
@@ -150,35 +162,77 @@ module Ci
       end
     end
 
-    def process?(only_params, except_params, ref, tag, trigger_request)
+    def validate_job_environment!(name, job)
+      return unless job[:environment]
+      return unless job[:environment].is_a?(Hash)
+
+      environment = job[:environment]
+      validate_on_stop_job!(name, environment, environment[:on_stop])
+    end
+
+    def validate_on_stop_job!(name, environment, on_stop)
+      return unless on_stop
+
+      on_stop_job = @jobs[on_stop.to_sym]
+      unless on_stop_job
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} is not defined"
+      end
+
+      unless on_stop_job[:environment]
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} does not have environment defined"
+      end
+
+      unless on_stop_job[:environment][:name] == environment[:name]
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} have different environment name"
+      end
+
+      unless on_stop_job[:environment][:action] == 'stop'
+        raise ValidationError, "#{name} job: on_stop job #{on_stop} needs to have action stop defined"
+      end
+    end
+
+    def process?(only_params, except_params, ref, tag, source)
       if only_params.present?
-        return false unless matching?(only_params, ref, tag, trigger_request)
+        return false unless matching?(only_params, ref, tag, source)
       end
 
       if except_params.present?
-        return false if matching?(except_params, ref, tag, trigger_request)
+        return false if matching?(except_params, ref, tag, source)
       end
 
       true
     end
 
-    def matching?(patterns, ref, tag, trigger_request)
+    def matching?(patterns, ref, tag, source)
       patterns.any? do |pattern|
-        match_ref?(pattern, ref, tag, trigger_request)
+        pattern, path = pattern.split('@', 2)
+        matches_path?(path) && matches_pattern?(pattern, ref, tag, source)
       end
     end
 
-    def match_ref?(pattern, ref, tag, trigger_request)
-      pattern, path = pattern.split('@', 2)
-      return false if path && path != self.path
+    def matches_path?(path)
+      return true unless path
+
+      path == self.path
+    end
+
+    def matches_pattern?(pattern, ref, tag, source)
       return true if tag && pattern == 'tags'
       return true if !tag && pattern == 'branches'
-      return true if trigger_request.present? && pattern == 'triggers'
+      return true if source_to_pattern(source) == pattern
 
       if pattern.first == "/" && pattern.last == "/"
         Regexp.new(pattern[1...-1]) =~ ref
       else
         pattern == ref
+      end
+    end
+
+    def source_to_pattern(source)
+      if %w[api external web].include?(source)
+        source
+      else
+        source&.pluralize
       end
     end
   end

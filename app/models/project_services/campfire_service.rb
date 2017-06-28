@@ -12,19 +12,19 @@ class CampfireService < Service
     'Simple web-based real-time group chat'
   end
 
-  def to_param
+  def self.to_param
     'campfire'
   end
 
   def fields
     [
-      { type: 'text', name: 'token',     placeholder: '' },
+      { type: 'text', name: 'token',     placeholder: '', required: true },
       { type: 'text', name: 'subdomain', placeholder: '' },
       { type: 'text', name: 'room',      placeholder: '' }
     ]
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 
@@ -76,7 +76,7 @@ class CampfireService < Service
   # Returns a list of rooms, or [].
   # https://github.com/basecamp/campfire-api/blob/master/sections/rooms.md#get-rooms
   def rooms(auth)
-    res = self.class.get("/rooms.json", auth) 
+    res = self.class.get("/rooms.json", auth)
     res.code == 200 ? res["rooms"] : []
   end
 

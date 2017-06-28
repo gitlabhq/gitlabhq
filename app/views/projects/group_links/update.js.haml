@@ -1,0 +1,4 @@
+:plain
+  var $listItem = $('#{escape_javascript(render('shared/members/group', group_link: @group_link))}');
+  $("#group_member_#{@group_link.id} .list-item-name").replaceWith($listItem.find('.list-item-name'));
+  gl.utils.localTimeAgo($('.js-timeago'), $("#group_member_#{@group_link.id}"));

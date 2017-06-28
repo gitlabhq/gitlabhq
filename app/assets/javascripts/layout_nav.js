@@ -1,3 +1,6 @@
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, no-unused-vars, one-var, one-var-declaration-per-line, vars-on-top, max-len */
+import _ from 'underscore';
+
 (function() {
   var hideEndFade;
 
@@ -9,8 +12,9 @@
     });
   };
 
-  $(function() {
-    var $scrollingTabs = $('.scrolling-tabs');
+  $(document).on('init.scrolling-tabs', () => {
+    const $scrollingTabs = $('.scrolling-tabs').not('.is-initialized');
+    $scrollingTabs.addClass('is-initialized');
 
     hideEndFade($scrollingTabs);
     $(window).off('resize.nav').on('resize.nav', function() {
@@ -26,10 +30,10 @@
     });
 
     $scrollingTabs.each(function () {
-      var $this = $(this),
-          scrollingTabWidth = $this.width(),
-          $active = $this.find('.active'),
-          activeWidth = $active.width();
+      var $this = $(this);
+      var scrollingTabWidth = $this.width();
+      var $active = $this.find('.active');
+      var activeWidth = $active.width();
 
       if ($active.length) {
         var offset = $active.offset().left + activeWidth;
@@ -43,4 +47,12 @@
     });
   });
 
-}).call(this);
+  function applyScrollNavClass() {
+    const scrollOpacityHeight = 40;
+    $('.navbar-border').css('opacity', Math.min($(window).scrollTop() / scrollOpacityHeight, 1));
+  }
+
+  $(() => {
+    $(window).on('scroll', _.throttle(applyScrollNavClass, 100));
+  });
+}).call(window);

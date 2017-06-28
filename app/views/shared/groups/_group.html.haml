@@ -1,4 +1,6 @@
 - group_member = local_assigns[:group_member]
+- full_name = true unless local_assigns[:full_name] == false
+- group_name = full_name ? group.full_name : group.name
 - css_class = '' unless local_assigns[:css_class]
 - css_class += " no-description" if group.description.blank?
 
@@ -15,23 +17,24 @@
   .stats
     %span
       = icon('bookmark')
-      = number_with_delimiter(group.projects.count)
+      = number_with_delimiter(group.projects.non_archived.count)
 
     %span
       = icon('users')
       = number_with_delimiter(group.users.count)
 
-    %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group)}
+    %span.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
       = visibility_level_icon(group.visibility_level, fw: false)
 
-  = image_tag group_icon(group), class: "avatar s40 hidden-xs"
+  .avatar-container.s40
+    = link_to group do
+      = image_tag group_icon(group), class: "avatar s40 hidden-xs"
   .title
-    = link_to group, class: 'group-name' do
-      = group.name
+    = link_to group_name, group, class: 'group-name'
 
     - if group_member
       as
-      %span #{group_member.human_access}
+      %span= group_member.human_access
 
   - if group.description.present?
     .description

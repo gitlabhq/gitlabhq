@@ -1,30 +1,67 @@
 class JiraService < IssueTrackerService
-  include HTTParty
   include Gitlab::Routing.url_helpers
 
-  DEFAULT_API_VERSION = 2
+  validates :url, url: true, presence: true, if: :activated?
+  validates :api_url, url: true, allow_blank: true
+  validates :project_key, presence: true, if: :activated?
 
-  prop_accessor :username, :password, :api_url, :jira_issue_transition_id,
-                :title, :description, :project_url, :issues_url, :new_issue_url
-
-  validates :api_url, presence: true, url: true, if: :activated?
-
-  before_validation :set_api_url, :set_jira_issue_transition_id
+  prop_accessor :username, :password, :url, :api_url, :project_key,
+                :jira_issue_transition_id, :title, :description
 
   before_update :reset_password
 
-  def reset_password
-    # don't reset the password if a new one is provided
-    if api_url_changed? && !password_touched?
-      self.password = nil
+  # This is confusing, but JiraService does not really support these events.
+  # The values here are required to display correct options in the service
+  # configuration screen.
+  def self.supported_events
+    %w(commit merge_request)
+  end
+
+  # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
+  def reference_pattern
+    @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
+  end
+
+  def initialize_properties
+    super do
+      self.properties = {
+        title: issues_tracker['title'],
+        url: issues_tracker['url'],
+        api_url: issues_tracker['api_url']
+      }
     end
   end
 
+  def reset_password
+    self.password = nil if reset_password?
+  end
+
+  def options
+    url = URI.parse(client_url)
+
+    {
+      username: self.username,
+      password: self.password,
+      site: URI.join(url, '/').to_s,
+      context_path: url.path,
+      auth_type: :basic,
+      read_timeout: 120,
+      use_ssl: url.scheme == 'https'
+    }
+  end
+
+  def client
+    @client ||= JIRA::Client.new(options)
+  end
+
+  def jira_project
+    @jira_project ||= jira_request { client.Project.find(project_key) }
+  end
+
   def help
-    'Setting `project_url`, `issues_url` and `new_issue_url` will '\
-    'allow a user to easily navigate to the Jira issue tracker. See the '\
-    '[integration doc](http://doc.gitlab.com/ce/integration/external-issue-tracker.html) '\
-    'for details.'
+    "You need to configure JIRA before enabling this service. For more details
+    read the
+    [JIRA service documentation](#{help_page_url('user/project/integrations/jira')})."
   end
 
   def title
@@ -43,235 +80,240 @@ class JiraService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'jira'
   end
 
   def fields
-    super.push(
-      { type: 'text', name: 'api_url', placeholder: 'https://jira.example.com/rest/api/2' },
-      { type: 'text', name: 'username', placeholder: '' },
-      { type: 'password', name: 'password', placeholder: '' },
-      { type: 'text', name: 'jira_issue_transition_id', placeholder: '2' }
-    )
+    [
+      { type: 'text', name: 'url', title: 'Web URL', placeholder: 'https://jira.example.com', required: true },
+      { type: 'text', name: 'api_url', title: 'JIRA API URL', placeholder: 'If different from Web URL' },
+      { type: 'text', name: 'project_key', placeholder: 'Project Key', required: true },
+      { type: 'text', name: 'username', placeholder: '', required: true },
+      { type: 'password', name: 'password', placeholder: '', required: true },
+      { type: 'text', name: 'jira_issue_transition_id', placeholder: '' }
+    ]
   end
 
-  def execute(push, issue = nil)
-    if issue.nil?
-      # No specific issue, that means
-      # we just want to test settings
-      test_settings
-    else
-      close_issue(push, issue)
-    end
+  # URLs to redirect from Gitlab issues pages to jira issue tracker
+  def project_url
+    "#{url}/issues/?jql=project=#{project_key}"
   end
 
-  def create_cross_reference_note(mentioned, noteable, author)
-    issue_name = mentioned.id
-    project = self.project
-    noteable_name = noteable.class.name.underscore.downcase
-    noteable_id = if noteable.is_a?(Commit)
-                    noteable.id
-                  else
-                    noteable.iid
-                  end
-
-    entity_url = build_entity_url(noteable_name.to_sym, noteable_id)
-
-    data = {
-      user: {
-        name: author.name,
-        url: resource_url(user_path(author)),
-      },
-      project: {
-        name: project.path_with_namespace,
-        url: resource_url(namespace_project_path(project.namespace, project))
-      },
-      entity: {
-        name: noteable_name.humanize.downcase,
-        url: entity_url,
-        title: noteable.title
-      }
-    }
-
-    add_comment(data, issue_name)
+  def issues_url
+    "#{url}/browse/:id"
   end
 
-  def test_settings
-    return unless api_url.present?
-    result = JiraService.get(
-      jira_api_test_url,
-      headers: {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Basic #{auth}"
-      }
-    )
-
-    case result.code
-    when 201, 200
-      Rails.logger.info("#{self.class.name} SUCCESS #{result.code}: Successfully connected to #{api_url}.")
-      true
-    else
-      Rails.logger.info("#{self.class.name} ERROR #{result.code}: #{result.parsed_response}")
-      false
-    end
-  rescue Errno::ECONNREFUSED => e
-    Rails.logger.info "#{self.class.name} ERROR: #{e.message}. API URL: #{api_url}."
-    false
+  def new_issue_url
+    "#{url}/secure/CreateIssue.jspa"
   end
 
-  private
-
-  def build_api_url_from_project_url
-    server = URI(project_url)
-    default_ports = [["http", 80], ["https", 443]].include?([server.scheme, server.port])
-    server_url = "#{server.scheme}://#{server.host}"
-    server_url.concat(":#{server.port}") unless default_ports
-    "#{server_url}/rest/api/#{DEFAULT_API_VERSION}"
-  rescue
-    "" # looks like project URL was not valid
+  def execute(push)
+    # This method is a no-op, because currently JiraService does not
+    # support any events.
   end
 
-  def set_api_url
-    self.api_url = build_api_url_from_project_url if self.api_url.blank?
-  end
+  def close_issue(entity, external_issue)
+    issue = jira_request { client.Issue.find(external_issue.iid) }
 
-  def set_jira_issue_transition_id
-    self.jira_issue_transition_id ||= "2"
-  end
+    return if issue.nil? || issue.resolution.present? || !jira_issue_transition_id.present?
 
-  def close_issue(entity, issue)
     commit_id = if entity.is_a?(Commit)
                   entity.id
                 elsif entity.is_a?(MergeRequest)
                   entity.diff_head_sha
                 end
+
     commit_url = build_entity_url(:commit, commit_id)
 
     # Depending on the JIRA project's workflow, a comment during transition
-    # may or may not be allowed. Split the operation in to two calls so the
-    # comment always works.
-    transition_issue(issue)
-    add_issue_solved_comment(issue, commit_id, commit_url)
+    # may or may not be allowed. Refresh the issue after transition and check
+    # if it is closed, so we don't have one comment for every commit.
+    issue = jira_request { client.Issue.find(issue.key) } if transition_issue(issue)
+    add_issue_solved_comment(issue, commit_id, commit_url) if issue.resolution
+  end
+
+  def create_cross_reference_note(mentioned, noteable, author)
+    unless can_cross_reference?(noteable)
+      return "Events for #{noteable.model_name.plural.humanize(capitalize: false)} are disabled."
+    end
+
+    jira_issue = jira_request { client.Issue.find(mentioned.id) }
+
+    return unless jira_issue.present?
+
+    noteable_id   = noteable.respond_to?(:iid) ? noteable.iid : noteable.id
+    noteable_type = noteable_name(noteable)
+    entity_url    = build_entity_url(noteable_type, noteable_id)
+
+    data = {
+      user: {
+        name: author.name,
+        url: resource_url(user_path(author))
+      },
+      project: {
+        name: self.project.path_with_namespace,
+        url: resource_url(namespace_project_path(project.namespace, self.project))
+      },
+      entity: {
+        name: noteable_type.humanize.downcase,
+        url: entity_url,
+        title: noteable.title
+      }
+    }
+
+    add_comment(data, jira_issue)
+  end
+
+  # reason why service cannot be tested
+  def disabled_title
+    "Please fill in Password and Username."
+  end
+
+  def test(_)
+    result = test_settings
+    { success: result.present?, result: result }
+  end
+
+  # JIRA does not need test data.
+  # We are requesting the project that belongs to the project key.
+  def test_data(user = nil, project = nil)
+    nil
+  end
+
+  def test_settings
+    return unless client_url.present?
+    # Test settings by getting the project
+    jira_request { jira_project.present? }
+  end
+
+  private
+
+  def can_cross_reference?(noteable)
+    case noteable
+    when Commit then commit_events
+    when MergeRequest then merge_requests_events
+    else true
+    end
   end
 
   def transition_issue(issue)
-    message = {
-      transition: {
-        id: jira_issue_transition_id
-      }
-    }
-    send_message(close_issue_url(issue.iid), message.to_json)
+    issue.transitions.build.save(transition: { id: jira_issue_transition_id })
   end
 
   def add_issue_solved_comment(issue, commit_id, commit_url)
-    comment = {
-      body: "Issue solved with [#{commit_id}|#{commit_url}]."
-    }
-
-    send_message(comment_url(issue.iid), comment.to_json)
+    link_title   = "GitLab: Solved by commit #{commit_id}."
+    comment      = "Issue solved with [#{commit_id}|#{commit_url}]."
+    link_props   = build_remote_link_props(url: commit_url, title: link_title, resolved: true)
+    send_message(issue, comment, link_props)
   end
 
-  def add_comment(data, issue_name)
-    url = comment_url(issue_name)
-    user_name = data[:user][:name]
-    user_url = data[:user][:url]
-    entity_name = data[:entity][:name]
-    entity_url = data[:entity][:url]
+  def add_comment(data, issue)
+    user_name    = data[:user][:name]
+    user_url     = data[:user][:url]
+    entity_name  = data[:entity][:name]
+    entity_url   = data[:entity][:url]
     entity_title = data[:entity][:title]
     project_name = data[:project][:name]
 
-    message = {
-      body: %Q{[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title}'}
+    message      = "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title.chomp}'"
+    link_title   = "GitLab: Mentioned on #{entity_name} - #{entity_title}"
+    link_props   = build_remote_link_props(url: entity_url, title: link_title)
+
+    unless comment_exists?(issue, message)
+      send_message(issue, message, link_props)
+    end
+  end
+
+  def comment_exists?(issue, message)
+    comments = jira_request { issue.comments }
+
+    comments.present? && comments.any? { |comment| comment.body.include?(message) }
+  end
+
+  def send_message(issue, message, remote_link_props)
+    return unless client_url.present?
+
+    jira_request do
+      remote_link = find_remote_link(issue, remote_link_props[:object][:url])
+      if remote_link
+        remote_link.save!(remote_link_props)
+      elsif issue.comments.build.save!(body: message)
+        new_remote_link = issue.remotelink.build
+        new_remote_link.save!(remote_link_props)
+      end
+
+      result_message = "#{self.class.name} SUCCESS: Successfully posted to #{client_url}."
+      Rails.logger.info(result_message)
+      result_message
+    end
+  end
+
+  def find_remote_link(issue, url)
+    links = jira_request { issue.remotelink.all }
+
+    links.find { |link| link.object["url"] == url }
+  end
+
+  def build_remote_link_props(url:, title:, resolved: false)
+    status = {
+      resolved: resolved
     }
 
-    unless existing_comment?(issue_name, message[:body])
-      send_message(url, message.to_json)
-    end
-  end
-
-  def auth
-    require 'base64'
-    Base64.urlsafe_encode64("#{self.username}:#{self.password}")
-  end
-
-  def send_message(url, message)
-    return unless api_url.present?
-    result = JiraService.post(
-      url,
-      body: message,
-      headers: {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Basic #{auth}"
+    {
+      GlobalID: 'GitLab',
+      object: {
+        url: url,
+        title: title,
+        status: status,
+        icon: { title: 'GitLab', url16x16: 'https://gitlab.com/favicon.ico' }
       }
-    )
-
-    message = case result.code
-              when 201, 200, 204
-                "#{self.class.name} SUCCESS #{result.code}: Successfully posted to #{url}."
-              when 401
-                "#{self.class.name} ERROR 401: Unauthorized. Check the #{self.username} credentials and JIRA access permissions and try again."
-              else
-                "#{self.class.name} ERROR #{result.code}: #{result.parsed_response}"
-              end
-
-    Rails.logger.info(message)
-    message
-  rescue URI::InvalidURIError, Errno::ECONNREFUSED => e
-    Rails.logger.info "#{self.class.name} ERROR: #{e.message}. Hostname: #{url}."
-  end
-
-  def existing_comment?(issue_name, new_comment)
-    return unless api_url.present?
-    result = JiraService.get(
-      comment_url(issue_name),
-      headers: {
-        'Content-Type' => 'application/json',
-        'Authorization' => "Basic #{auth}"
-      }
-    )
-
-    case result.code
-    when 201, 200
-      existing_comments = JSON.parse(result.body)['comments']
-
-      if existing_comments.present?
-        return existing_comments.map { |comment| comment['body'].include?(new_comment) }.any?
-      end
-    end
-
-    false
-  rescue JSON::ParserError
-    false
+    }
   end
 
   def resource_url(resource)
-    "#{Settings.gitlab['url'].chomp("/")}#{resource}"
+    "#{Settings.gitlab.base_url.chomp("/")}#{resource}"
   end
 
-  def build_entity_url(entity_name, entity_id)
-    resource_url(
-      polymorphic_url(
-        [
-          self.project.namespace.becomes(Namespace),
-          self.project,
-          entity_name
-        ],
-        id: entity_id,
-        routing_type: :path
-      )
+  def build_entity_url(noteable_type, entity_id)
+    polymorphic_url(
+      [
+        self.project.namespace.becomes(Namespace),
+        self.project,
+        noteable_type.to_sym
+      ],
+      id:   entity_id,
+      host: Settings.gitlab.base_url
     )
   end
 
-  def close_issue_url(issue_name)
-    "#{self.api_url}/issue/#{issue_name}/transitions"
+  def noteable_name(noteable)
+    name = noteable.model_name.singular
+
+    # ProjectSnippet inherits from Snippet class so it causes
+    # routing error building the URL.
+    name == "project_snippet" ? "snippet" : name
   end
 
-  def comment_url(issue_name)
-    "#{self.api_url}/issue/#{issue_name}/comment"
+  # Handle errors when doing JIRA API calls
+  def jira_request
+    yield
+
+  rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
+    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{e.message}"
+    nil
   end
 
-  def jira_api_test_url
-    "#{self.api_url}/myself"
+  def client_url
+    api_url.present? ? api_url : url
+  end
+
+  def reset_password?
+    # don't reset the password if a new one is provided
+    return false if password_touched?
+    return true if api_url_changed?
+    return false if api_url.present?
+
+    url_changed?
   end
 end

@@ -4,9 +4,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
   include RepoHelpers
+  include WaitForRequests
 
   step "I don't have write access" do
-    @project = create(:project, name: "Other Project", path: "other-project")
+    @project = create(:project, :repository, name: "Other Project", path: "other-project")
     @project.team << [@user, :reporter]
     visit namespace_project_tree_path(@project.namespace, @project, root_ref)
   end
@@ -36,10 +37,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see its content' do
+    wait_for_requests
     expect(page).to have_content old_gitignore_content
   end
 
   step 'I should see its new content' do
+    wait_for_requests
     expect(page).to have_content new_gitignore_content
   end
 
@@ -48,7 +51,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Raw"' do
-    click_link 'Raw'
+    click_link 'Open raw'
   end
 
   step 'I should see raw file content' do
@@ -56,11 +59,15 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click button "Edit"' do
-    click_link 'Edit'
+    find('.js-edit-blob').click
   end
 
   step 'I cannot see the edit button' do
     expect(page).not_to have_link 'edit'
+  end
+
+  step 'I click button "Fork"' do
+    click_link 'Fork'
   end
 
   step 'I can edit code' do
@@ -82,7 +89,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the new branch name' do
-    fill_in :target_branch, with: 'new_branch_name', visible: true
+    fill_in :branch_name, with: 'new_branch_name', visible: true
   end
 
   step 'I fill the new file name with an illegal name' do
@@ -98,11 +105,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Diff"' do
-    click_link 'Preview Changes'
+    click_link 'Preview changes'
   end
 
-  step 'I click on "Commit Changes"' do
-    click_button 'Commit Changes'
+  step 'I click on "Commit changes"' do
+    click_button 'Commit changes'
   end
 
   step 'I click on "Changes" tab' do
@@ -277,7 +284,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see "Unable to create directory"' do
-    expect(page).to have_content('Directory already exists')
+    expect(page).to have_content('A directory with this name already exists')
+  end
+
+  step 'I see "Path can contain only..."' do
+    expect(page).to have_content('Path can contain only')
   end
 
   step 'I see a commit error message' do
@@ -334,6 +345,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "files/lfs/lfs_object.iso" file in repo' do
+    allow_any_instance_of(Project).to receive(:lfs_enabled?).and_return(true)
     visit namespace_project_tree_path(@project.namespace, @project, "lfs")
     click_link 'files'
     click_link "lfs"
@@ -352,7 +364,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I should see buttons for allowed commands' do
     page.within '.content' do
-      expect(page).to have_content 'Raw'
+      expect(page).to have_link 'Download'
       expect(page).to have_content 'History'
       expect(page).to have_content 'Permalink'
       expect(page).not_to have_content 'Edit'
@@ -360,6 +372,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       expect(page).to have_content 'Delete'
       expect(page).to have_content 'Replace'
     end
+  end
+
+  step 'I should see a Fork/Cancel combo' do
+    expect(page).to have_link 'Fork'
+    expect(page).to have_button 'Cancel'
   end
 
   step 'I should see a notice about a new fork having been created' do

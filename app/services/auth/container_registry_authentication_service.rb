@@ -2,21 +2,22 @@ module Auth
   class ContainerRegistryAuthenticationService < BaseService
     include Gitlab::CurrentSettings
 
-    AUDIENCE = 'container_registry'
+    AUDIENCE = 'container_registry'.freeze
 
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities
 
       return error('UNAVAILABLE', status: 404, message: 'registry not enabled') unless registry.enabled
 
-      unless current_user || project
-        return error('DENIED', status: 403, message: 'access forbidden') unless scope
+      unless scope || current_user || project
+        return error('DENIED', status: 403, message: 'access forbidden')
       end
 
       { token: authorized_token(scope).encoded }
     end
 
     def self.full_access_token(*names)
+      names = names.flatten
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
@@ -37,13 +38,13 @@ module Auth
     private
 
     def authorized_token(*accesses)
-      token = JSONWebToken::RSAToken.new(registry.key)
-      token.issuer = registry.issuer
-      token.audience = params[:service]
-      token.subject = current_user.try(:username)
-      token.expire_time = self.class.token_expire_at
-      token[:access] = accesses.compact
-      token
+      JSONWebToken::RSAToken.new(registry.key).tap do |token|
+        token.issuer = registry.issuer
+        token.audience = params[:service]
+        token.subject = current_user.try(:username)
+        token.expire_time = self.class.token_expire_at
+        token[:access] = accesses.compact
+      end
     end
 
     def scope
@@ -55,20 +56,43 @@ module Auth
     def process_scope(scope)
       type, name, actions = scope.split(':', 3)
       actions = actions.split(',')
+      path = ContainerRegistry::Path.new(name)
+
       return unless type == 'repository'
 
-      process_repository_access(type, name, actions)
+      process_repository_access(type, path, actions)
     end
 
-    def process_repository_access(type, name, actions)
-      requested_project = Project.find_with_namespace(name)
+    def process_repository_access(type, path, actions)
+      return unless path.valid?
+
+      requested_project = path.repository_project
+
       return unless requested_project
 
       actions = actions.select do |action|
         can_access?(requested_project, action)
       end
 
-      { type: type, name: name, actions: actions } if actions.present?
+      return unless actions.present?
+
+      # At this point user/build is already authenticated.
+      #
+      ensure_container_repository!(path, actions)
+
+      { type: type, name: path.to_s, actions: actions }
+    end
+
+    ##
+    # Because we do not have two way communication with registry yet,
+    # we create a container repository image resource when push to the
+    # registry is successfuly authorized.
+    #
+    def ensure_container_repository!(path, actions)
+      return if path.has_repository?
+      return unless actions.include?('push')
+
+      ContainerRepository.create_from_path!(path)
     end
 
     def can_access?(requested_project, requested_action)
@@ -76,7 +100,7 @@ module Auth
 
       case requested_action
       when 'pull'
-        requested_project.public? || build_can_pull?(requested_project) || user_can_pull?(requested_project)
+        build_can_pull?(requested_project) || user_can_pull?(requested_project)
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project)
       else
@@ -92,31 +116,37 @@ module Auth
       # Build can:
       # 1. pull from its own project (for ex. a build)
       # 2. read images from dependent projects if creator of build is a team member
-      @authentication_abilities.include?(:build_read_container_image) &&
+      has_authentication_ability?(:build_read_container_image) &&
         (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
     end
 
     def user_can_pull?(requested_project)
-      @authentication_abilities.include?(:read_container_image) &&
+      has_authentication_ability?(:read_container_image) &&
         can?(current_user, :read_container_image, requested_project)
     end
 
+    ##
+    # We still support legacy pipeline triggers which do not have associated
+    # actor. New permissions model and new triggers are always associated with
+    # an actor, so this should be improved in 10.0 version of GitLab.
+    #
     def build_can_push?(requested_project)
       # Build can push only to the project from which it originates
-      @authentication_abilities.include?(:build_create_container_image) &&
+      has_authentication_ability?(:build_create_container_image) &&
         requested_project == project
     end
 
     def user_can_push?(requested_project)
-      @authentication_abilities.include?(:create_container_image) &&
+      has_authentication_ability?(:create_container_image) &&
         can?(current_user, :create_container_image, requested_project)
     end
 
     def error(code, status:, message: '')
-      {
-        errors: [{ code: code, message: message }],
-        http_status: status
-      }
+      { errors: [{ code: code, message: message }], http_status: status }
+    end
+
+    def has_authentication_ability?(capability)
+      @authentication_abilities.to_a.include?(capability)
     end
   end
 end

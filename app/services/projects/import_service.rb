@@ -2,16 +2,7 @@ module Projects
   class ImportService < BaseService
     include Gitlab::ShellAdapter
 
-    class Error < StandardError; end
-
-    ALLOWED_TYPES = [
-      'bitbucket',
-      'fogbugz',
-      'gitlab',
-      'github',
-      'google_code',
-      'gitlab_project'
-    ]
+    Error = Class.new(StandardError)
 
     def execute
       add_repository_to_project unless project.gitlab_project_import?
@@ -20,7 +11,7 @@ module Projects
 
       success
     rescue => e
-      error(e.message)
+      error("Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}")
     end
 
     private
@@ -29,7 +20,7 @@ module Projects
       if unknown_url?
         # In this case, we only want to import issues, not a repository.
         create_repository
-      else
+      elsif !project.repository_exists?
         import_repository
       end
     end
@@ -41,22 +32,39 @@ module Projects
     end
 
     def import_repository
+      raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url)
+
       begin
-        gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
-      rescue => e
+        if project.github_import? || project.gitea_import?
+          fetch_repository
+        else
+          clone_repository
+        end
+      rescue Gitlab::Shell::Error => e
         # Expire cache to prevent scenarios such as:
         # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
-        project.repository.before_import if project.repository_exists?
+        project.repository.expire_content_cache if project.repository_exists?
 
-        raise Error,  "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
+        raise Error, e.message
       end
+    end
+
+    def clone_repository
+      gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
+    end
+
+    def fetch_repository
+      project.create_repository
+      project.repository.add_remote(project.import_type, project.import_url)
+      project.repository.set_remote_as_mirror(project.import_type)
+      project.repository.fetch_remote(project.import_type, forced: true)
     end
 
     def import_data
       return unless has_importer?
 
-      project.repository.before_import unless project.gitlab_project_import?
+      project.repository.expire_content_cache unless project.gitlab_project_import?
 
       unless importer.execute
         raise Error, 'The remote data could not be imported.'
@@ -64,14 +72,11 @@ module Projects
     end
 
     def has_importer?
-      ALLOWED_TYPES.include?(project.import_type)
+      Gitlab::ImportSources.importer_names.include?(project.import_type)
     end
 
     def importer
-      return Gitlab::ImportExport::Importer.new(project) if @project.gitlab_project_import?
-
-      class_name = "Gitlab::#{project.import_type.camelize}Import::Importer"
-      class_name.constantize.new(project)
+      Gitlab::ImportSources.importer(project.import_type).new(project)
     end
 
     def unknown_url?

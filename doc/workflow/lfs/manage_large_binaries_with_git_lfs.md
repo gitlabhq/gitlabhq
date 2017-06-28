@@ -4,13 +4,6 @@ Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
 larger than 1GB to preserve performance.
 
-GitLab already supports [managing large files with git annex](http://docs.gitlab.com/ee/workflow/git_annex.html)
-(EE only), however in certain environments it is not always convenient to use
-different commands to differentiate between the large files and regular ones.
-
-Git LFS makes this simpler for the end user by removing the requirement to
-learn new commands.
-
 ## How it works
 
 Git LFS client talks with the GitLab server over HTTPS. It uses HTTP Basic Authentication
@@ -24,6 +17,7 @@ Documentation for GitLab instance administrators is under [LFS administration do
 ## Requirements
 
 * Git LFS is supported in GitLab starting with version 8.2
+* Git LFS must be enabled under project settings
 * [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up
 
 ## Known limitations
@@ -31,10 +25,10 @@ Documentation for GitLab instance administrators is under [LFS administration do
 * Git LFS v1 original API is not supported since it was deprecated early in LFS
   development
 * When SSH is set as a remote, Git LFS objects still go through HTTPS
-* Any Git LFS request will ask for HTTPS credentials to be provided so good Git
+* Any Git LFS request will ask for HTTPS credentials to be provided so a good Git
   credentials store is recommended
 * Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have
-  to add the URL to Git config manually (see #troubleshooting)
+  to add the URL to Git config manually (see [troubleshooting](#troubleshooting))
   
 >**Note**: With 8.12 GitLab added LFS support to SSH. The Git LFS communication
  still goes over HTTP, but now the SSH client passes the correct credentials
@@ -48,7 +42,7 @@ check it into your Git repository:
 
 ```bash
 git clone git@gitlab.example.com:group/project.git
-git lfs install                       # initialize the Git LFS project project
+git lfs install                       # initialize the Git LFS project
 git lfs track "*.iso"                 # select the file extensions that you want to treat as large files
 ```
 
@@ -61,6 +55,12 @@ git add .                             # add the large file to the project
 git commit -am "Added Debian iso"     # commit the file meta data
 git push origin master                # sync the git repo and large file to the GitLab server
 ```
+
+>**Note**: Make sure that `.gitattributes` is tracked by git. Otherwise Git
+ LFS will not be working properly for people cloning the project.
+ ```bash
+ git add .gitattributes
+ ```
 
 Cloning the repository works the same as before. Git automatically detects the
 LFS-tracked files and clones them via HTTP. If you performed the git clone
@@ -95,7 +95,7 @@ available to the project anymore. Probably the object was removed from the serve
 
 * Local git repository is using deprecated LFS API
 
-### Invalid status for <url> : 501
+### Invalid status for `<url>` : 501
 
 Git LFS will log the failures into a log file.
 To view this log file, while in project directory:
@@ -105,6 +105,9 @@ git lfs logs last
 ```
 
 If the status `error 501` is shown, it is because:
+
+* Git LFS is not enabled in project settings. Check your project settings and
+  enable Git LFS.
 
 * Git LFS support is not enabled on the GitLab server. Check with your GitLab
   administrator why Git LFS is not enabled on the server. See
@@ -130,7 +133,6 @@ This behaviour is caused by Git LFS using HTTPS connections by default when a
 To prevent this from happening, set the lfs url in project Git config:
 
 ```bash
-
 git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"
 ```
 

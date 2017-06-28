@@ -42,11 +42,11 @@ module Gitlab
           return unless compare
 
           # This diff is more moderated in number of files and lines
-          @diffs ||= compare.diffs(max_files: 30, max_lines: 5000, no_collapse: true).diff_files
+          @diffs ||= compare.diffs(max_files: 30, max_lines: 5000, expanded: true).diff_files
         end
 
         def diffs_count
-          diffs.size if diffs
+          diffs&.size
         end
 
         def compare
@@ -58,7 +58,7 @@ module Gitlab
         end
 
         def compare_timeout
-          diffs.overflow? if diffs
+          diffs&.overflow?
         end
 
         def reverse_compare?

@@ -1,0 +1,9 @@
+.js-groups-list-holder
+  #dashboard-group-app{ data: { endpoint: dashboard_groups_path(format: :json), path: dashboard_groups_path } }
+    .groups-list-loading
+      = icon('spinner spin', 'v-show' => 'isLoading')
+    %template{ 'v-if' => '!isLoading && isEmpty' }
+      %div{ 'v-cloak' => true }
+        = render 'empty_state'
+    %template{ 'v-else-if' => '!isLoading && !isEmpty' }
+      %groups-component{ ':groups' => 'state.groups', ':page-info' => 'state.pageInfo' }

@@ -1,39 +1,35 @@
-%p
-.commit-info-row
-  Pipeline
-  = link_to "##{@pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @pipeline.id), class: "monospace"
-  with
-  = pluralize @pipeline.statuses.count(:id), "build"
-  - if @pipeline.ref
-    for
-    = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"
-  - if @pipeline.duration
-    in
-    = time_interval_in_words(@pipeline.duration)
-  - if @pipeline.queued_duration
-    = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
-
-  .pull-right
-    = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), class: "ci-status ci-#{@pipeline.status}" do
-      = ci_icon_for_status(@pipeline.status)
-      = ci_label_for_status(@pipeline.status)
+#js-pipeline-header-vue.pipeline-header-container
 
 - if @commit
-  .commit-info-row
-    %span.light Authored by
-    %strong
-      = commit_author_link(@commit, avatar: true, size: 24)
-    #{time_ago_with_tooltip(@commit.authored_date)}
-
-.commit-info-row
-  %span.light Commit
-  = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "monospace"
-  = clipboard_button(clipboard_text: @pipeline.sha)
-
-- if @commit
-  .commit-box.content-block
+  .commit-box
     %h3.commit-title
       = markdown(@commit.title, pipeline: :single_line)
     - if @commit.description.present?
       %pre.commit-description
         = preserve(markdown(@commit.description, pipeline: :single_line))
+
+.info-well
+  - if @commit.status
+    .well-segment.pipeline-info
+      .icon-container
+        = icon('clock-o')
+      = pluralize @pipeline.statuses.count(:id), "job"
+      - if @pipeline.ref
+        from
+        = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
+      - if @pipeline.duration
+        in
+        = time_interval_in_words(@pipeline.duration)
+      - if @pipeline.queued_duration
+        = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
+
+  .well-segment.branch-info
+    .icon-container.commit-icon
+      = custom_icon("icon_commit")
+    = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "commit-sha js-details-short"
+    = link_to("#", class: "js-details-expand hidden-xs hidden-sm") do
+      %span.text-expander
+        \...
+    %span.js-details-content.hide
+      = link_to @pipeline.sha, namespace_project_commit_path(@project.namespace, @project, @pipeline.sha), class: "commit-sha commit-hash-full"
+    = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")

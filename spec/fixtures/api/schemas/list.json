@@ -10,10 +10,10 @@
     "id": { "type": "integer" },
     "list_type": {
       "type": "string",
-      "enum": ["backlog", "label", "done"]
+      "enum": ["backlog", "label", "closed"]
     },
     "label": {
-      "type": ["object"],
+      "type": ["object", "null"],
       "required": [
         "id",
         "color",

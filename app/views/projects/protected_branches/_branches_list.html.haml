@@ -23,6 +23,6 @@
           - if can_admin_project
             %th
       %tbody
-        = render partial: @protected_branches, locals: { can_admin_project: can_admin_project }
+        = render partial: 'projects/protected_branches/protected_branch', collection: @protected_branches, locals: { can_admin_project: can_admin_project}
 
     = paginate @protected_branches, theme: 'gitlab'

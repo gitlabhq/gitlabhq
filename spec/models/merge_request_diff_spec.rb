@@ -6,9 +6,9 @@ describe MergeRequestDiff, models: true do
 
     it { expect(subject).to be_valid }
     it { expect(subject).to be_persisted }
-    it { expect(subject.commits.count).to eq(5) }
-    it { expect(subject.diffs.count).to eq(8) }
-    it { expect(subject.head_commit_sha).to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    it { expect(subject.commits.count).to eq(29) }
+    it { expect(subject.diffs.count).to eq(20) }
+    it { expect(subject.head_commit_sha).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
     it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
   end
@@ -36,9 +36,24 @@ describe MergeRequestDiff, models: true do
     end
 
     context 'when the raw diffs are empty' do
-      before { mr_diff.update_attributes(st_diffs: '') }
+      before do
+        MergeRequestDiffFile.delete_all(merge_request_diff_id: mr_diff.id)
+      end
 
       it 'returns an empty DiffCollection' do
+        expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
+        expect(mr_diff.raw_diffs).to be_empty
+      end
+    end
+
+    context 'when the raw diffs have invalid content' do
+      before do
+        MergeRequestDiffFile.delete_all(merge_request_diff_id: mr_diff.id)
+        mr_diff.update_attributes(st_diffs: ["--broken-diff"])
+      end
+
+      it 'returns an empty DiffCollection' do
+        expect(mr_diff.raw_diffs.to_a).to be_empty
         expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
         expect(mr_diff.raw_diffs).to be_empty
       end
@@ -64,27 +79,80 @@ describe MergeRequestDiff, models: true do
         end
       end
     end
+  end
 
-    describe '#commits_sha' do
-      shared_examples 'returning all commits SHA' do
-        it 'returns all commits SHA' do
-          commits_sha = subject.commits_sha
+  describe '#save_diffs' do
+    it 'saves collected state' do
+      mr_diff = create(:merge_request).merge_request_diff
 
-          expect(commits_sha).to eq(subject.commits.map(&:sha))
-        end
-      end
+      expect(mr_diff.collected?).to be_truthy
+    end
 
-      context 'when commits were loaded' do
-        before do
-          subject.commits
-        end
+    it 'saves overflow state' do
+      allow(Commit).to receive(:max_diff_options)
+        .and_return(max_lines: 0, max_files: 0)
 
-        it_behaves_like 'returning all commits SHA'
-      end
+      mr_diff = create(:merge_request).merge_request_diff
 
-      context 'when commits were not loaded' do
-        it_behaves_like 'returning all commits SHA'
-      end
+      expect(mr_diff.overflow?).to be_truthy
+    end
+
+    it 'saves empty state' do
+      allow_any_instance_of(MergeRequestDiff).to receive(:commits)
+        .and_return([])
+
+      mr_diff = create(:merge_request).merge_request_diff
+
+      expect(mr_diff.empty?).to be_truthy
+    end
+  end
+
+  describe '#commits_sha' do
+    it 'returns all commits SHA using serialized commits' do
+      subject.st_commits = [
+        { id: 'sha1' },
+        { id: 'sha2' }
+      ]
+
+      expect(subject.commits_sha).to eq(%w(sha1 sha2))
+    end
+  end
+
+  describe '#compare_with' do
+    subject { create(:merge_request, source_branch: 'fix').merge_request_diff }
+
+    it 'delegates compare to the service' do
+      expect(CompareService).to receive(:new).and_call_original
+
+      subject.compare_with(nil)
+    end
+
+    it 'uses git diff A..B approach by default' do
+      diffs = subject.compare_with('0b4bc9a49b562e85de7cc9e834518ea6828729b9').diffs
+
+      expect(diffs.size).to eq(3)
+    end
+  end
+
+  describe '#commits_count' do
+    it 'returns number of commits using serialized commits' do
+      subject.st_commits = [
+        { id: 'sha1' },
+        { id: 'sha2' }
+      ]
+
+      expect(subject.commits_count).to eq 2
+    end
+  end
+
+  describe '#utf8_st_diffs' do
+    it 'does not raise error when a hash value is in binary' do
+      subject.st_diffs = [
+        { diff: "\0" },
+        { diff: "\x05\x00\x68\x65\x6c\x6c\x6f" }
+      ]
+
+      expect { subject.utf8_st_diffs }.not_to raise_error
     end
   end
 end

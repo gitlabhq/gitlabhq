@@ -1,19 +1,41 @@
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, object-shorthand, comma-dangle, no-else-return, no-param-reassign, max-len */
 
+import Cookies from 'js-cookie';
+
+(function() {
   this.Sidebar = (function() {
     function Sidebar(currentUser) {
-      this.toggleTodo = bind(this.toggleTodo, this);
+      this.toggleTodo = this.toggleTodo.bind(this);
       this.sidebar = $('aside');
+
+      this.$sidebarInner = this.sidebar.find('.issuable-sidebar');
+      this.$navGitlab = $('.navbar-gitlab');
+      this.$rightSidebar = $('.js-right-sidebar');
+
+      this.removeListeners();
       this.addEventListeners();
     }
 
+    Sidebar.prototype.removeListeners = function () {
+      this.sidebar.off('click', '.sidebar-collapsed-icon');
+      $('.dropdown').off('hidden.gl.dropdown');
+      $('.dropdown').off('loading.gl.dropdown');
+      $('.dropdown').off('loaded.gl.dropdown');
+      $(document).off('click', '.js-sidebar-toggle');
+    };
+
     Sidebar.prototype.addEventListeners = function() {
+      const $document = $(document);
+      const throttledSetSidebarHeight = _.throttle(this.setSidebarHeight.bind(this), 20);
+      const debouncedSetSidebarHeight = _.debounce(this.setSidebarHeight.bind(this), 200);
+
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
-      $(document).off('click', '.js-sidebar-toggle').on('click', '.js-sidebar-toggle', function(e, triggered) {
+      $(window).on('resize', () => throttledSetSidebarHeight());
+      $document.on('scroll', () => debouncedSetSidebarHeight());
+      $document.on('click', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
         $this = $(this);
@@ -29,9 +51,7 @@
           $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
         }
         if (!triggered) {
-          return $.cookie("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'), {
-            path: gon.relative_url_root || '/'
-          });
+          return Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
         }
       });
       return $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
@@ -40,14 +60,15 @@
     Sidebar.prototype.toggleTodo = function(e) {
       var $btnText, $this, $todoLoading, ajaxType, url;
       $this = $(e.currentTarget);
-      $todoLoading = $('.js-issuable-todo-loading');
-      $btnText = $('.js-issuable-todo-text', $this);
       ajaxType = $this.attr('data-delete-path') ? 'DELETE' : 'POST';
       if ($this.attr('data-delete-path')) {
         url = "" + ($this.attr('data-delete-path'));
       } else {
         url = "" + ($this.data('url'));
       }
+
+      $this.tooltip('hide');
+
       return $.ajax({
         url: url,
         type: ajaxType,
@@ -58,39 +79,44 @@
         },
         beforeSend: (function(_this) {
           return function() {
-            return _this.beforeTodoSend($this, $todoLoading);
+            $('.js-issuable-todo').disable()
+              .addClass('is-loading');
           };
         })(this)
       }).done((function(_this) {
         return function(data) {
-          return _this.todoUpdateDone(data, $this, $btnText, $todoLoading);
+          return _this.todoUpdateDone(data);
         };
       })(this));
     };
 
-    Sidebar.prototype.beforeTodoSend = function($btn, $todoLoading) {
-      $btn.disable();
-      return $todoLoading.removeClass('hidden');
-    };
+    Sidebar.prototype.todoUpdateDone = function(data) {
+      const deletePath = data.delete_path ? data.delete_path : null;
+      const attrPrefix = deletePath ? 'mark' : 'todo';
+      const $todoBtns = $('.js-issuable-todo');
 
-    Sidebar.prototype.todoUpdateDone = function(data, $btn, $btnText, $todoLoading) {
-      var $todoPendingCount;
-      $todoPendingCount = $('.todos-pending-count');
-      $todoPendingCount.text(data.count);
-      $btn.enable();
-      $todoLoading.addClass('hidden');
-      if (data.count === 0) {
-        $todoPendingCount.addClass('hidden');
-      } else {
-        $todoPendingCount.removeClass('hidden');
-      }
-      if (data.delete_path != null) {
-        $btn.attr('aria-label', $btn.data('mark-text')).attr('data-delete-path', data.delete_path);
-        return $btnText.text($btn.data('mark-text'));
-      } else {
-        $btn.attr('aria-label', $btn.data('todo-text')).removeAttr('data-delete-path');
-        return $btnText.text($btn.data('todo-text'));
-      }
+      $(document).trigger('todo:toggle', data.count);
+
+      $todoBtns.each((i, el) => {
+        const $el = $(el);
+        const $elText = $el.find('.js-issuable-todo-inner');
+
+        $el.removeClass('is-loading')
+          .enable()
+          .attr('aria-label', $el.data(`${attrPrefix}-text`))
+          .attr('data-delete-path', deletePath)
+          .attr('title', $el.data(`${attrPrefix}-text`));
+
+        if ($el.hasClass('has-tooltip')) {
+          $el.tooltip('fixTitle');
+        }
+
+        if ($el.data(`${attrPrefix}-icon`)) {
+          $elText.html($el.data(`${attrPrefix}-icon`));
+        } else {
+          $elText.text($el.data(`${attrPrefix}-text`));
+        }
+      });
     };
 
     Sidebar.prototype.sidebarDropdownLoading = function(e) {
@@ -186,6 +212,18 @@
       }
     };
 
+    Sidebar.prototype.setSidebarHeight = function() {
+      const $navHeight = this.$navGitlab.outerHeight();
+      const diff = $navHeight - $(window).scrollTop();
+      if (diff > 0) {
+        this.$rightSidebar.outerHeight($(window).height() - diff);
+        this.$sidebarInner.height('100%');
+      } else {
+        this.$rightSidebar.outerHeight('100%');
+        this.$sidebarInner.height('');
+      }
+    };
+
     Sidebar.prototype.isOpen = function() {
       return this.sidebar.is('.right-sidebar-expanded');
     };
@@ -195,7 +233,5 @@
     };
 
     return Sidebar;
-
   })();
-
-}).call(this);
+}).call(window);

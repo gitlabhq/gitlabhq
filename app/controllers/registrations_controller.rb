@@ -1,5 +1,4 @@
 class RegistrationsController < Devise::RegistrationsController
-  before_action :signup_enabled?
   include Recaptcha::Verify
 
   def new
@@ -7,27 +6,32 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
-      # To avoid duplicate form fields on the login page, the registration form
-      # names fields using `new_user`, but Devise still wants the params in
-      # `user`.
-      if params["new_#{resource_name}"].present? && params[resource_name].blank?
-        params[resource_name] = params.delete(:"new_#{resource_name}")
-      end
+    # To avoid duplicate form fields on the login page, the registration form
+    # names fields using `new_user`, but Devise still wants the params in
+    # `user`.
+    if params["new_#{resource_name}"].present? && params[resource_name].blank?
+      params[resource_name] = params.delete(:"new_#{resource_name}")
+    end
 
+    if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
       super
     else
-      flash[:alert] = "There was an error with the reCAPTCHA code below. Please re-enter the code."
+      flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
       flash.delete :recaptcha_error
       render action: 'new'
     end
+  rescue Gitlab::Access::AccessDeniedError
+    redirect_to(new_user_session_path)
   end
 
   def destroy
-    DeleteUserService.new(current_user).execute(current_user)
+    current_user.delete_async(deleted_by: current_user)
 
     respond_to do |format|
-      format.html { redirect_to new_user_session_path, notice: "Account successfully removed." }
+      format.html do
+        session.try(:destroy)
+        redirect_to new_user_session_path, status: 302, notice: "Account scheduled for removal."
+      end
     end
   end
 
@@ -47,14 +51,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   private
 
-  def signup_enabled?
-    unless current_application_settings.signup_enabled?
-      redirect_to(new_user_session_path)
-    end
-  end
-
   def sign_up_params
-    params.require(:user).permit(:username, :email, :name, :password, :password_confirmation)
+    params.require(:user).permit(:username, :email, :email_confirmation, :name, :password)
   end
 
   def resource_name
@@ -62,7 +60,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def resource
-    @resource ||= User.new(sign_up_params)
+    @resource ||= Users::BuildService.new(current_user, sign_up_params).execute
   end
 
   def devise_mapping

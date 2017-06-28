@@ -6,54 +6,60 @@ describe Service, models: true do
     it { is_expected.to have_one :service_hook }
   end
 
-  describe "Mass assignment" do
+  describe 'Validations' do
+    it { is_expected.to validate_presence_of(:type) }
   end
 
   describe "Test Button" do
-    before do
-      @service = Service.new
-    end
+    describe '#can_test?' do
+      let(:service) { create(:service, project: project) }
 
-    describe "Testable" do
-      let(:project) { create :project }
+      context 'when repository is not empty' do
+        let(:project) { create(:project, :repository) }
 
-      before do
-        allow(@service).to receive(:project).and_return(project)
-        @testable = @service.can_test?
+        it 'returns true' do
+          expect(service.can_test?).to be true
+        end
       end
 
-      describe '#can_test?' do
-        it { expect(@testable).to eq(true) }
-      end
+      context 'when repository is empty' do
+        let(:project) { create(:empty_project) }
 
-      describe '#test' do
-        let(:data) { 'test' }
-
-        it 'test runs execute' do
-          expect(@service).to receive(:execute).with(data)
-
-          @service.test(data)
+        it 'returns true' do
+          expect(service.can_test?).to be true
         end
       end
     end
 
-    describe "With commits" do
-      let(:project) { create :project }
+    describe '#test' do
+      let(:data) { 'test' }
+      let(:service) { create(:service, project: project) }
 
-      before do
-        allow(@service).to receive(:project).and_return(project)
-        @testable = @service.can_test?
+      context 'when repository is not empty' do
+        let(:project) { create(:project, :repository) }
+
+        it 'test runs execute' do
+          expect(service).to receive(:execute).with(data)
+
+          service.test(data)
+        end
       end
 
-      describe '#can_test?' do
-        it { expect(@testable).to eq(true) }
+      context 'when repository is empty' do
+        let(:project) { create(:empty_project) }
+
+        it 'test runs execute' do
+          expect(service).to receive(:execute).with(data)
+
+          service.test(data)
+        end
       end
     end
   end
 
   describe "Template" do
     describe "for pushover service" do
-      let(:service_template) do
+      let!(:service_template) do
         PushoverService.create(
           template: true,
           properties: {
@@ -63,16 +69,12 @@ describe Service, models: true do
             api_key: '123456789'
           })
       end
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
 
       describe 'is prefilled for projects pushover service' do
-        before do
-          service_template
-          project.build_missing_services
-        end
-
         it "has all fields prefilled" do
-          service = project.pushover_service
+          service = project.find_or_initialize_service('pushover')
+
           expect(service.template).to eq(false)
           expect(service.device).to eq('MyDevice')
           expect(service.sound).to eq('mic')
@@ -86,7 +88,7 @@ describe Service, models: true do
   describe "{property}_changed?" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: create(:empty_project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -126,7 +128,7 @@ describe Service, models: true do
   describe "{property}_touched?" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: create(:empty_project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -166,7 +168,7 @@ describe Service, models: true do
   describe "{property}_was" do
     let(:service) do
       BambooService.create(
-        project: create(:project),
+        project: create(:empty_project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -206,7 +208,7 @@ describe Service, models: true do
   describe 'initialize service with no properties' do
     let(:service) do
       GitlabIssueTrackerService.create(
-        project: create(:project),
+        project: create(:empty_project),
         title: 'random title'
       )
     end
@@ -221,7 +223,7 @@ describe Service, models: true do
   end
 
   describe "callbacks" do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
     let!(:service) do
       RedmineService.new(
         project: project,

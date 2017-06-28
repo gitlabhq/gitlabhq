@@ -6,7 +6,7 @@ describe 'Unsubscribe links', feature: true do
   let(:recipient) { create(:user) }
   let(:author) { create(:user) }
   let(:project) { create(:empty_project, :public) }
-  let(:params) { { title: 'A bug!', description: 'Fix it!', assignee: recipient } }
+  let(:params) { { title: 'A bug!', description: 'Fix it!', assignees: [recipient] } }
   let(:issue) { Issues::CreateService.new(project, author, params).execute }
 
   let(:mail) { ActionMailer::Base.deliveries.last }
@@ -24,13 +24,13 @@ describe 'Unsubscribe links', feature: true do
         visit body_link
 
         expect(current_path).to eq unsubscribe_sent_notification_path(SentNotification.last)
-        expect(page).to have_text(%(Unsubscribe from issue #{issue.title} (#{issue.to_reference})))
-        expect(page).to have_text(%(Are you sure you want to unsubscribe from issue #{issue.title} (#{issue.to_reference})?))
-        expect(issue.subscribed?(recipient)).to be_truthy
+        expect(page).to have_text(%(Unsubscribe from issue))
+        expect(page).to have_text(%(Are you sure you want to unsubscribe from the issue: #{issue.title} (#{issue.to_reference})?))
+        expect(issue.subscribed?(recipient, project)).to be_truthy
 
         click_link 'Unsubscribe'
 
-        expect(issue.subscribed?(recipient)).to be_falsey
+        expect(issue.subscribed?(recipient, project)).to be_falsey
         expect(current_path).to eq new_user_session_path
       end
 
@@ -38,11 +38,11 @@ describe 'Unsubscribe links', feature: true do
         visit body_link
 
         expect(current_path).to eq unsubscribe_sent_notification_path(SentNotification.last)
-        expect(issue.subscribed?(recipient)).to be_truthy
+        expect(issue.subscribed?(recipient, project)).to be_truthy
 
         click_link 'Cancel'
 
-        expect(issue.subscribed?(recipient)).to be_truthy
+        expect(issue.subscribed?(recipient, project)).to be_truthy
         expect(current_path).to eq new_user_session_path
       end
     end
@@ -51,25 +51,27 @@ describe 'Unsubscribe links', feature: true do
       visit header_link
 
       expect(page).to have_text('unsubscribed')
-      expect(issue.subscribed?(recipient)).to be_falsey
+      expect(issue.subscribed?(recipient, project)).to be_falsey
     end
   end
 
   context 'when logged in' do
-    before { login_as(recipient) }
+    before do
+      sign_in(recipient)
+    end
 
     it 'unsubscribes from the issue when visiting the link from the email body' do
       visit body_link
 
       expect(page).to have_text('unsubscribed')
-      expect(issue.subscribed?(recipient)).to be_falsey
+      expect(issue.subscribed?(recipient, project)).to be_falsey
     end
 
     it 'unsubscribes from the issue when visiting the link from the header' do
       visit header_link
 
       expect(page).to have_text('unsubscribed')
-      expect(issue.subscribed?(recipient)).to be_falsey
+      expect(issue.subscribed?(recipient, project)).to be_falsey
     end
   end
 end

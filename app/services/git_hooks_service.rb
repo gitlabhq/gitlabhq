@@ -1,6 +1,8 @@
 class GitHooksService
   PreReceiveError = Class.new(StandardError)
 
+  attr_accessor :oldrev, :newrev, :ref
+
   def execute(user, repo_path, oldrev, newrev, ref)
     @repo_path  = repo_path
     @user       = Gitlab::GlId.gl_id(user)
@@ -16,15 +18,15 @@ class GitHooksService
       end
     end
 
-    yield
-
-    run_hook('post-receive')
+    yield(self).tap do
+      run_hook('post-receive')
+    end
   end
 
   private
 
   def run_hook(name)
     hook = Gitlab::Git::Hook.new(name, @repo_path)
-    hook.trigger(@user, @oldrev, @newrev, @ref)
+    hook.trigger(@user, oldrev, newrev, ref)
   end
 end

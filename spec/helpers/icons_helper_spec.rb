@@ -1,6 +1,21 @@
 require 'spec_helper'
 
 describe IconsHelper do
+  describe 'icon' do
+    it 'returns aria-hidden by default' do
+      star = icon('star')
+
+      expect(star['aria-hidden']).to eq 'aria-hidden'
+    end
+
+    it 'does not return aria-hidden if aria-label is set' do
+      up = icon('up', 'aria-label' => 'up')
+
+      expect(up['aria-hidden']).to be_nil
+      expect(up['aria-label']).to eq 'aria-label'
+    end
+  end
+
   describe 'file_type_icon_class' do
     it 'returns folder class' do
       expect(file_type_icon_class('folder', 0, 'folder_name')).to eq 'folder'

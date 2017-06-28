@@ -2,16 +2,17 @@ require 'spec_helper'
 
 describe EmailsOnPushWorker do
   include RepoHelpers
+  include EmailHelpers
   include EmailSpec::Matchers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
   let(:recipients) { user.email }
   let(:perform) { subject.perform(project.id, recipients, data.stringify_keys) }
   let(:email) { ActionMailer::Base.deliveries.last }
 
-  subject { EmailsOnPushWorker.new }
+  subject { described_class.new }
 
   describe "#perform" do
     context "when push is a new branch" do
@@ -57,7 +58,7 @@ describe EmailsOnPushWorker do
       end
 
       it "sends a mail with the correct subject" do
-        expect(email.subject).to include('Change some files')
+        expect(email.subject).to include('adds bar folder and branch-test text file')
       end
 
       it "mentions force pushing in the body" do
@@ -70,10 +71,12 @@ describe EmailsOnPushWorker do
     end
 
     context "when there are no errors in sending" do
-      before { perform }
+      before do
+        perform
+      end
 
       it "sends a mail with the correct subject" do
-        expect(email.subject).to include('Change some files')
+        expect(email.subject).to include('adds bar folder and branch-test text file')
       end
 
       it "does not mention force pushing in the body" do
@@ -87,7 +90,7 @@ describe EmailsOnPushWorker do
 
     context "when there is an SMTP error" do
       before do
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
         allow(Notify).to receive(:repository_push_email).and_raise(Net::SMTPFatalError)
         allow(subject).to receive_message_chain(:logger, :info)
         perform
@@ -112,7 +115,7 @@ describe EmailsOnPushWorker do
           original.call(Mail.new(mail.encoded))
         end
 
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
       end
 
       it "sends the mail to each of the recipients" do

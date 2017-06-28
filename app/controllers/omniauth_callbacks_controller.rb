@@ -67,13 +67,20 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def omniauth_error
     @provider = params[:provider]
     @error = params[:error]
-    render 'errors/omniauth_error', layout: "errors", status: 422
+    render 'errors/omniauth_error', layout: "oauth_error", status: 422
   end
 
   def cas3
     ticket = params['ticket']
     if ticket
       handle_service_ticket oauth['provider'], ticket
+    end
+    handle_omniauth
+  end
+
+  def authentiq
+    if params['sid']
+      handle_service_ticket oauth['provider'], params['sid']
     end
     handle_omniauth
   end
@@ -115,7 +122,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       error_message = @user.errors.full_messages.to_sentence
 
-      redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
+      return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
     end
   end
 
@@ -137,7 +144,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def log_audit_event(user, options = {})
-    AuditEventService.new(user, user, options).
-      for_authentication.security_event
+    AuditEventService.new(user, user, options)
+      .for_authentication.security_event
   end
 end

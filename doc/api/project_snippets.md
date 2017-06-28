@@ -3,15 +3,15 @@
 ### Snippet visibility level
 
 Snippets in GitLab can be either private, internal or public.
-You can set it with the `visibility_level` field in the snippet.
+You can set it with the `visibility` field in the snippet.
 
 Constants for snippet visibility levels are:
 
-| Visibility | visibility_level | Description |
-| ---------- | ---------------- | ----------- |
-| Private    | `0`  | The snippet is visible only the snippet creator |
-| Internal   | `10` | The snippet is visible for any logged in user |
-| Public     | `20` | The snippet can be accessed without any authentication |
+| visibility | Description |
+| ---------- | ----------- |
+| `private`  | The snippet is visible only the snippet creator |
+| `internal` | The snippet is visible for any logged in user |
+| `public`   | The snippet can be accessed without any authentication |
 
 ## List snippets
 
@@ -23,7 +23,7 @@ GET /projects/:id/snippets
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 
 ## Single snippet
 
@@ -35,7 +35,7 @@ GET /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet
 
 ```json
@@ -43,6 +43,7 @@ Parameters:
   "id": 1,
   "title": "test",
   "file_name": "add.rb",
+  "description": "Ruby test snippet",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -51,7 +52,6 @@ Parameters:
     "state": "active",
     "created_at": "2012-05-23T08:00:58Z"
   },
-  "expires_at": null,
   "updated_at": "2012-06-28T10:52:04Z",
   "created_at": "2012-06-28T10:52:04Z",
   "web_url": "http://example.com/example/example/snippets/1"
@@ -68,11 +68,12 @@ POST /projects/:id/snippets
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `title` (required) - The title of a snippet
 - `file_name` (required) - The name of a snippet file
+- `description` (optional) - The description of a snippet
 - `code` (required) - The content of a snippet
-- `visibility_level` (required) - The snippet's visibility
+- `visibility` (required) - The snippet's visibility
 
 ## Update snippet
 
@@ -84,12 +85,13 @@ PUT /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet
 - `title` (optional) - The title of a snippet
 - `file_name` (optional) - The name of a snippet file
+- `description` (optional) - The description of a snippet
 - `code` (optional) - The content of a snippet
-- `visibility_level` (optional) - The snippet's visibility
+- `visibility` (optional) - The snippet's visibility
 
 ## Delete snippet
 
@@ -102,7 +104,7 @@ DELETE /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet
 
 ## Snippet content
@@ -115,5 +117,5 @@ GET /projects/:id/snippets/:snippet_id/raw
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet

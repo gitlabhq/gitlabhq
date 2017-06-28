@@ -4,7 +4,7 @@ describe Gitlab::Email::Message::RepositoryPush do
   include RepoHelpers
 
   let!(:group) { create(:group, name: 'my_group') }
-  let!(:project) { create(:project, name: 'my_project', namespace: group) }
+  let!(:project) { create(:project, :repository, name: 'my_project', namespace: group) }
   let!(:author) { create(:author, name: 'Author') }
 
   let(:message) do

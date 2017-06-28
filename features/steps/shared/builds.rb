@@ -11,7 +11,7 @@ module SharedBuilds
 
   step 'project has a recent build' do
     @pipeline = create(:ci_empty_pipeline, project: @project, sha: @project.commit.sha, ref: 'master')
-    @build = create(:ci_build_with_coverage, pipeline: @pipeline)
+    @build = create(:ci_build, :coverage, pipeline: @pipeline)
   end
 
   step 'recent build is successful' do
@@ -27,11 +27,11 @@ module SharedBuilds
   end
 
   step 'I visit recent build details page' do
-    visit namespace_project_build_path(@project.namespace, @project, @build)
+    visit namespace_project_job_path(@project.namespace, @project, @build)
   end
 
   step 'I visit project builds page' do
-    visit namespace_project_builds_path(@project.namespace, @project)
+    visit namespace_project_jobs_path(@project.namespace, @project)
   end
 
   step 'recent build has artifacts available' do
@@ -47,7 +47,7 @@ module SharedBuilds
   end
 
   step 'recent build has a build trace' do
-    @build.trace = 'build trace'
+    @build.trace.set('job trace')
   end
 
   step 'download of build artifacts archive starts' do
@@ -56,11 +56,11 @@ module SharedBuilds
   end
 
   step 'I access artifacts download page' do
-    visit download_namespace_project_build_artifacts_path(@project.namespace, @project, @build)
+    visit download_namespace_project_job_artifacts_path(@project.namespace, @project, @build)
   end
 
   step 'I see details of a build' do
-    expect(page).to have_content "Build ##{@build.id}"
+    expect(page).to have_content "Job ##{@build.id}"
   end
 
   step 'I see build trace' do

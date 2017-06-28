@@ -1,7 +1,12 @@
 require 'rails_helper'
 
 feature 'Admin uses repository checks', feature: true do
-  before { login_as :admin }
+  include StubENV
+
+  before do
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+    gitlab_sign_in :admin
+  end
 
   scenario 'to trigger a single check' do
     project = create(:empty_project)
@@ -18,7 +23,7 @@ feature 'Admin uses repository checks', feature: true do
     project = create(:empty_project)
     project.update_columns(
       last_repository_check_failed: true,
-      last_repository_check_at: Time.now,
+      last_repository_check_at: Time.now
     )
     visit_admin_project_page(project)
 
@@ -29,7 +34,7 @@ feature 'Admin uses repository checks', feature: true do
 
   scenario 'to clear all repository checks', js: true do
     visit admin_application_settings_path
-    
+
     expect(RepositoryCheck::ClearWorker).to receive(:perform_async)
 
     click_link 'Clear all repository checks'

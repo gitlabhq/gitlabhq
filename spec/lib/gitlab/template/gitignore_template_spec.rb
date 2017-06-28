@@ -24,7 +24,7 @@ describe Gitlab::Template::GitignoreTemplate do
     it 'returns the Gitignore object of a valid file' do
       ruby = subject.find('Ruby')
 
-      expect(ruby).to be_a Gitlab::Template::GitignoreTemplate
+      expect(ruby).to be_a described_class
       expect(ruby.name).to eq('Ruby')
     end
   end

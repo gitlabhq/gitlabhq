@@ -6,64 +6,92 @@
   }
 }
 
-.no-ssh-key-message, .project-limit-message {
-  background-color: #f28d35;
-  margin-bottom: 0;
-}
-
 .new_project,
 .edit-project {
-  fieldset {
-    &.features .control-label {
-      font-weight: normal;
+
+  .sharing-and-permissions {
+    .header {
+      padding-top: $gl-vert-padding;
     }
+
+    .label-light {
+      margin-bottom: 0;
+    }
+
+    .help-block {
+      margin-top: 0;
+    }
+
     .form-group {
       margin-bottom: 5px;
     }
-    &> .form-group {
+
+    & > .form-group {
       padding-left: 0;
     }
+
+    select option[disabled] {
+      display: none;
+    }
   }
+
+  select {
+    background: transparent;
+    transition: background 2s ease-out;
+
+    &.highlight-changes {
+      background: $highlight-changes-color;
+      transition: none;
+    }
+  }
+
   .help-block {
     margin-bottom: 10px;
   }
-  .project-path {
-    padding-right: 0;
-    .form-control {
-      border-radius: $border-radius-base;
-    }
+
+  .project-path .form-control {
+    border-radius: $border-radius-base;
   }
+
   .input-group > div {
+
     &:last-child {
       padding-right: 0;
     }
   }
+
   @media (max-width: $screen-xs-max) {
     .input-group > div {
+
       margin-bottom: 14px;
+
       &:last-child {
         margin-bottom: 0;
       }
     }
+
     fieldset > .form-group:first-child {
       padding-right: 0;
     }
   }
 
   .input-group-addon {
+
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
-      border: 1px solid #e5e5e5;
+      border: 1px solid $border-color;
     }
-    &+ .select2 a {
+
+    & + .select2 a {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
   }
 }
 
-.project-home-panel {
+.project-home-panel,
+.group-home-panel {
   padding-top: 24px;
   padding-bottom: 24px;
 
@@ -71,22 +99,24 @@
     border-bottom: 1px solid $border-color;
   }
 
-  .project-avatar {
+  .project-avatar,
+  .group-avatar {
     float: none;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
 
     &.identicon {
       border-radius: 50%;
     }
   }
 
-  .project-title {
+  .project-title,
+  .group-title {
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 24px;
     font-weight: 400;
     line-height: 1;
+    word-wrap: break-word;
 
     .fa {
       margin-left: 2px;
@@ -95,10 +125,11 @@
     }
   }
 
-  .project-home-desc {
+  .project-home-desc,
+  .group-home-desc {
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     max-width: 700px;
 
     > p {
@@ -118,12 +149,19 @@
   }
 }
 
-.project-repo-buttons {
-  font-size: 0;
+.nav > .project-repo-buttons {
+  margin-top: 0;
+}
 
+.project-repo-buttons,
+.group-buttons {
   .btn {
     @include btn-gray;
     padding: 3px 10px;
+
+    &:last-child {
+      margin-left: 0;
+    }
 
     .fa {
       color: $layout-link-gray;
@@ -145,22 +183,33 @@
     }
   }
 
-  .project-repo-btn-group,
-  .notification-dropdown,
-  .project-dropdown {
-    margin-left: 10px;
+  .project-action-button {
+    margin: 15px 5px 0;
+    vertical-align: top;
+  }
+
+  .notification-dropdown .dropdown-menu {
+    @extend .dropdown-menu-align-right;
+  }
+
+  .download-button {
+    @media (max-width: $screen-md-max) {
+      margin-left: 0;
+    }
   }
 
   .count-buttons {
     display: inline-block;
     vertical-align: top;
+    margin-top: 15px;
   }
 
   .project-clone-holder {
     display: inline-block;
+    margin: 15px 5px 0 0;
 
     input {
-      height: 29px;
+      height: 28px;
     }
   }
 
@@ -170,7 +219,7 @@
     margin-left: 4px;
 
     .arrow {
-      &:before {
+      &::before {
         content: '';
         display: inline-block;
         position: absolute;
@@ -182,11 +231,11 @@
         left: 0;
         margin-top: -6px;
         border-width: 7px 5px 7px 0;
-        border-right-color: #dce0e5;
+        border-right-color: $count-arrow-border;
         pointer-events: none;
       }
 
-      &:after {
+      &::after {
         content: '';
         position: absolute;
         width: 0;
@@ -197,23 +246,23 @@
         left: 1px;
         margin-top: -9px;
         border-width: 10px 7px 10px 0;
-        border-right-color: #fff;
+        border-right-color: $white-light;
         pointer-events: none;
       }
     }
+
     .count {
       @include btn-gray;
       display: inline-block;
-      background: white;
+      background: $white-light;
       border-radius: 2px;
       border-width: 1px;
       border-style: solid;
       font-size: 13px;
       font-weight: 600;
       line-height: 13px;
-      padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
-      padding: 7px 14px;
+      padding: 6px 14px;
       text-align: center;
       vertical-align: middle;
       touch-action: manipulation;
@@ -226,9 +275,16 @@
       }
 
       &:hover {
-        background: #fff;
+        background: $white-light;
       }
     }
+  }
+}
+
+.project-repo-buttons {
+  .project-action-button .dropdown-menu {
+    max-height: 250px;
+    overflow-y: auto;
   }
 }
 
@@ -253,12 +309,12 @@
     .option-title {
       font-weight: normal;
       display: inline-block;
-      color: $gl-gray-dark;
+      color: $gl-text-color;
     }
 
     .option-descr {
       margin-left: 29px;
-      color: #54565b;
+      color: $project-option-descr-color;
     }
   }
 }
@@ -266,7 +322,7 @@
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;
-  color: #555;
+  color: $save-project-loader-color;
 }
 
 .transfer-project .select2-container {
@@ -292,7 +348,7 @@
 a.deploy-project-label {
   padding: 5px;
   margin-right: 5px;
-  color: $gl-gray;
+  color: $gl-text-color;
   background-color: $row-hover;
 
   &:hover {
@@ -324,25 +380,21 @@ a.deploy-project-label {
   padding: 0;
   background: transparent;
   border: none;
-  line-height: 36px;
+  line-height: 34px;
   margin: 0;
 
-  > li + li:before {
+  > li + li::before {
     padding: 0 3px;
-    color: #999;
+    color: $project-breadcrumb-color;
   }
 
   a {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
 
   .dropdown-menu {
     width: 240px;
   }
-}
-
-.last-push-widget {
-  margin-top: -1px;
 }
 
 .fork-namespaces {
@@ -354,35 +406,41 @@ a.deploy-project-label {
     justify-content: flex-start;
 
     .fork-thumbnail {
-      @include border-radius($border-radius-base);
+      border-radius: $border-radius-base;
       background-color: $white-light;
       border: 1px solid $border-white-light;
       height: 202px;
       margin: $gl-padding;
       text-align: center;
       width: 169px;
-      &:hover, &.forked {
+
+      &:hover,
+      &.forked {
         background-color: $row-hover;
         border-color: $row-hover-border;
       }
+
       .no-avatar {
         width: 100px;
         height: 100px;
         background-color: $gray-light;
-        border: 1px solid $gray-dark;
+        border: 1px solid $white-normal;
         margin: 0 auto;
-        @include border-radius(50%);
+        border-radius: 50%;
+
         i {
           font-size: 100px;
-          color: $gray-dark;
+          color: $white-normal;
         }
       }
+
       a {
         display: block;
         width: 100%;
         height: 100%;
         padding-top: $gl-padding;
-        color: $gl-gray;
+        color: $gl-text-color;
+
         .caption {
           min-height: 30px;
           padding: $gl-padding 0;
@@ -390,7 +448,7 @@ a.deploy-project-label {
       }
 
       img {
-        @include border-radius(50%);
+        border-radius: 50%;
         max-width: 100px;
       }
     }
@@ -410,31 +468,25 @@ a.deploy-project-label {
     flex-wrap: wrap;
 
     .btn {
-      margin: 0 10px 10px 0;
       padding: 8px;
+      margin-left: 10px;
     }
 
     > div {
+      margin-bottom: 10px;
       padding-left: 0;
-
-      &:last-child {
-        margin-bottom: 0;
-
-        .btn {
-          margin-right: 0;
-        }
-      }
     }
   }
 }
 
 .project-stats {
   font-size: 0;
-  border-bottom: 1px solid $border-color;
+  text-align: center;
 
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
+    border-bottom: 1px solid $border-color;
   }
 
   .nav > li {
@@ -444,12 +496,12 @@ a.deploy-project-label {
       margin-right: $gl-padding;
     }
 
-    &.project-repo-buttons-right {
-      margin-top: 10px;
+    &.right {
+      vertical-align: top;
+      margin-top: 0;
 
-      @media (min-width: $screen-md-min) {
+      @media (min-width: $screen-lg-min) {
         float: right;
-        margin-top: 0;
       }
     }
   }
@@ -457,18 +509,18 @@ a.deploy-project-label {
   .nav > li > a {
     padding: 0;
     background-color: transparent;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 29px;
     color: $notes-light-color;
 
     &:hover,
     &:focus {
-      color: darken($notes-light-color, 15%);
+      color: $gl-text-color;
     }
   }
 
   li.missing {
-    border: 1px dashed $border-gray-light;
+    border: 1px dashed $border-gray-normal;
     border-radius: $border-radius-default;
 
     a {
@@ -485,20 +537,20 @@ a.deploy-project-label {
 }
 
 pre.light-well {
-  border-color: #f1f1f1;
+  border-color: $well-light-border;
 }
 
 .git-empty {
   margin: 0 7px 7px;
 
   h5 {
-    color: #5c5d5e;
+    color: $gl-text-color;
   }
 
   .light-well {
-    @include border-radius (2px);
+    border-radius: 2px;
 
-    color: #5b6169;
+    color: $well-light-text-color;
     font-size: 13px;
     line-height: 1.6em;
   }
@@ -518,38 +570,70 @@ pre.light-well {
 /*
  * Projects list rendered on dashboard and user page
  */
-
 .projects-list {
   @include basic-list;
+  display: flex;
+  flex-direction: column;
 
-  .project-row {
-    border-color: $table-border-color;
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
 
-    .project-full-name {
-      @include str-truncated;
-    }
-
-    .controls {
-      line-height: $list-text-height;
-
-      a:hover {
-        text-decoration: none;
-      }
-
-      > span {
-        margin-left: 10px;
-      }
-
-      svg {
-        position: relative;
-        top: 2px;
-      }
+    .project-row {
+      display: block;
     }
   }
 
-  .bottom {
-    padding-top: $gl-padding;
-    padding-bottom: 0;
+  .project-row {
+    display: flex;
+    align-items: center;
+    @include basic-list-stats;
+  }
+
+  h3 {
+    font-size: $gl-font-size;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+
+  .avatar-container,
+  .controls {
+    flex: 0 0 auto;
+  }
+
+  .avatar-container {
+    align-self: flex-start;
+
+    > a {
+      width: 100%;
+    }
+  }
+
+  .project-details {
+    min-width: 0;
+
+    p,
+    .commit-row-message {
+      @include str-truncated(100%);
+      margin-bottom: 0;
+    }
+  }
+
+  .controls {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .ci-status-link {
+    display: inline-block;
+    line-height: 17px;
+    vertical-align: middle;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -558,80 +642,9 @@ pre.light-well {
   margin: 0;
 }
 
-
-.activity-filter-block {
-  .controls {
-    padding-bottom: 7px;
-    margin-top: 8px;
-    border-bottom: 1px solid $border-color;
-  }
-}
-
-.project-last-commit {
-  @media (min-width: $screen-sm-min) {
-    margin-top: $gl-padding;
-  }
-
-  &.container-fluid {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    background-color: $background-color;
-    border: 1px solid $border-color;
-    border-right-width: 0;
-    border-left-width: 0;
-
-    @media (min-width: $screen-sm-min) {
-      border-right-width: 1px;
-      border-left-width: 1px;
-    }
-  }
-
-  &.container-limited {
-    @media (min-width: 1281px) {
-      border-radius: $border-radius-base;
-    }
-  }
-
-  .ci-status {
-    margin-right: $gl-padding;
-  }
-
-  .commit-row-message {
-    color: $gl-gray;
-  }
-
-  .commit_short_id {
-    margin-right: 5px;
-    color: $gl-link-color;
-    font-weight: 600;
-  }
-
-  .commit-author-link {
-    .commit-author-name {
-      font-weight: 600;
-    }
-  }
-}
-
-.project-show-readme {
-  .row-content-block {
-    background-color: inherit;
-    border: none;
-  }
-
-  .readme-holder {
-    padding: $gl-padding 0;
-    border-top: 0;
-
-    .edit-project-readme {
-      z-index: 2;
-      position: relative;
-    }
-
-    .wiki h1 {
-      border-bottom: none;
-      padding: 0;
-    }
+.commits-search-form {
+  .input-short {
+    min-width: 200px;
   }
 }
 
@@ -644,6 +657,7 @@ pre.light-well {
 
   .clone-options {
     display: table-cell;
+
     a.btn {
       width: 100%;
     }
@@ -651,7 +665,7 @@ pre.light-well {
 
   .form-control {
     @extend .monospace;
-    background: #fff;
+    background: $white-light;
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
@@ -661,30 +675,44 @@ pre.light-well {
 
 .cannot-be-merged,
 .cannot-be-merged:hover {
-  color: #e62958;
+  color: $error-exclamation-point;
   margin-top: 2px;
 }
 
 .private-forks-notice .private-fork-icon {
   i:nth-child(1) {
-    color: #2aa056;
+    color: $project-private-forks-notice-odd;
   }
 
   i:nth-child(2) {
-    color: #fff;
+    color: $white-light;
   }
 }
 
-.new_protected_branch {
+.new_protected_branch,
+.new-protected-tag {
   label {
     margin-top: 6px;
     font-weight: normal;
   }
 }
 
-.protected-branches-list {
+.create-new-protected-branch-button,
+.create-new-protected-tag-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+}
+
+.protected-branches-list,
+.protected-tags-list {
+  margin-bottom: 30px;
+
   a {
-    color: $gl-gray;
+    color: $gl-text-color;
 
     &:hover {
       color: $gl-link-color;
@@ -705,9 +733,21 @@ pre.light-well {
   .table-bordered {
     border-radius: 1px;
 
-    th:not(:last-child), td:not(:last-child) {
+    th:not(:last-child),
+    td:not(:last-child) {
       border-right: solid 1px transparent;
     }
+  }
+}
+
+.protected-tags-list {
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
   }
 }
 
@@ -728,7 +768,8 @@ pre.light-well {
   }
 }
 
-.project-refs-form .dropdown-menu, .dropdown-menu-projects {
+.project-refs-form .dropdown-menu,
+.dropdown-menu-projects {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {
@@ -741,64 +782,25 @@ pre.light-well {
 }
 
 .compare-form-group {
-  .dropdown-menu {
-    width: 300px;
-  }
-
-  &.from .compare-dropdown-toggle {
-    width: 237px;
-  }
-
-  &.to .compare-dropdown-toggle {
-    width: 254px;
-  }
-
-  .dropdown-toggle-text {
-    display: block;
-    height: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .dropdown-menu,
+  .inline-input-group {
     width: 100%;
-  }
-}
 
-.compare-ellipsis {
-  display: inline;
-}
-
-@media (max-width: $screen-xs-max) {
-  .compare-form-group {
-    .input-group {
-      width: 100%;
-
-      & > .compare-dropdown-toggle {
-        width: 100%;
-      }
-    }
-
-    .dropdown-menu {
-      width: 100%;
+    @media (min-width: $screen-sm-min) {
+      width: 300px;
     }
   }
 
-  .compare-switch-container {
-    text-align: center;
-    padding: 0 0 $gl-padding;
-
-    .commits-compare-switch {
-      float: none;
-    }
-  }
-
-  .compare-ellipsis {
-    display: block;
-    text-align: center;
-    padding: 0 0 $gl-padding;
-  }
-
-  .commits-compare-btn {
+  + .compare-ellipsis {
     width: 100%;
+    vertical-align: middle;
+    text-align: center;
+    margin-top: -20px;
+
+    @media (min-width: $screen-sm-min) {
+      margin-top: 0;
+      width: auto;
+    }
   }
 }
 
@@ -813,7 +815,7 @@ pre.light-well {
     top: 7px;
     color: $location-icon-color;
 
-    &:before {
+    &::before {
       font-family: FontAwesome;
       font-weight: normal;
       font-style: normal;
@@ -832,8 +834,92 @@ pre.light-well {
   .form-control {
     min-width: 100px;
   }
+
   .select2-choice {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+  }
+}
+
+.project-home-empty {
+  border-top: 0;
+
+  .container-fluid {
+    background: none;
+  }
+
+  p {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 650px;
+  }
+}
+
+.project-feature {
+  padding-top: 10px;
+
+  @media (min-width: $screen-sm-min) {
+    padding-left: 45px;
+  }
+
+  &.nested {
+    @media (min-width: $screen-sm-min) {
+      padding-left: 90px;
+    }
+  }
+}
+
+.project-repo-select {
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.variables-table {
+  table-layout: fixed;
+
+  &.table-responsive {
+    border: none;
+  }
+
+  .variable-key {
+    max-width: 120px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .variable-value {
+    max-width: 150px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .variable-menu {
+    text-align: right;
+  }
+}
+
+.services-installation-info .row {
+  margin-bottom: 10px;
+}
+
+.service-installation {
+  padding: 32px;
+  margin: 32px;
+  border-radius: 3px;
+  background-color: $white-light;
+
+  h3 {
+    margin-top: 0;
+  }
+
+  hr {
+    margin: 32px 0;
+    border-color: $border-color;
   }
 }

@@ -1,6 +1,6 @@
 .zen-backdrop {
   &.fullscreen {
-    background-color: white;
+    background-color: $white-light;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -12,7 +12,7 @@
       border: none;
       box-shadow: none;
       border-radius: 0;
-      color: #000;
+      color: $black;
       font-size: 20px;
       line-height: 26px;
       padding: 30px;
@@ -20,8 +20,9 @@
       outline: none;
       resize: none;
       height: 100vh;
+      max-height: calc(100vh - 10px);
       max-width: 900px;
-      margin: 0 auto;
+      margin: 0 auto 10px;
     }
 
     .zen-control-leave {
@@ -34,13 +35,13 @@
 
 .zen-control {
   padding: 0;
-  color: #555;
+  color: $zen-control-color;
   background: none;
   border: 0;
 }
 
 .zen-control-full {
-  color: $note-toolbar-color;
+  color: $gl-text-color-secondary;
 
   &:hover {
     color: $gl-link-color;
@@ -57,6 +58,6 @@
   font-size: 36px;
 
   &:hover {
-    color: $zen-control-hover-color;
+    color: $black;
   }
 }

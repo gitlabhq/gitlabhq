@@ -74,7 +74,7 @@ in your SAML IdP:
                    idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
                    idp_sso_target_url: 'https://login.example.com/idp',
                    issuer: 'https://gitlab.example.com',
-                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
                  },
           label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
         }
@@ -91,7 +91,7 @@ in your SAML IdP:
                  idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
                  idp_sso_target_url: 'https://login.example.com/idp',
                  issuer: 'https://gitlab.example.com',
-                 name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+                 name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
                },
           label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
         }
@@ -109,7 +109,8 @@ in your SAML IdP:
 1.  Change the value of `issuer` to a unique name, which will identify the application
     to the IdP.
 
-1.  Restart GitLab for the changes to take effect.
+1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
+    installed GitLab via Omnibus or from source respectively.
 
 1.  Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
     in `issuer`.
@@ -171,7 +172,7 @@ tell GitLab which groups are external via the `external_groups:` element:
           idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
           idp_sso_target_url: 'https://login.example.com/idp',
           issuer: 'https://gitlab.example.com',
-          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
         } }
 ```
 
@@ -200,6 +201,9 @@ Please keep in mind that every sign in attempt will be redirected to the SAML se
 so you will not be able to sign in using local credentials. Make sure that at least one
 of the SAML users has admin permissions.
 
+You may also bypass the auto signin feature by browsing to
+https://gitlab.example.com/users/sign_in?auto_sign_in=false.
+
 ### `attribute_statements`
 
 >**Note:**
@@ -226,7 +230,7 @@ args: {
         idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
         idp_sso_target_url: 'https://login.example.com/idp',
         issuer: 'https://gitlab.example.com',
-        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
         attribute_statements: { email: ['EmailAddress'] }
 }
 ```
@@ -244,7 +248,7 @@ args: {
         idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
         idp_sso_target_url: 'https://login.example.com/idp',
         issuer: 'https://gitlab.example.com',
-        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
         attribute_statements: { email: ['EmailAddress'] },
         allowed_clock_drift: 1 # for one second clock drift
 }
@@ -268,13 +272,20 @@ message `Can't verify CSRF token authenticity`. This means that there is an erro
 the SAML request, but this error never reaches GitLab due to the CSRF check.
 
 To bypass this you can add `skip_before_action :verify_authenticity_token` to the
-`omniauth_callbacks_controller.rb` file. This will allow the error to hit GitLab,
-where it can then be seen in the usual logs, or as a flash message in the login
-screen.
+`omniauth_callbacks_controller.rb` file immediately after the `class` line and
+comment out the `protect_from_forgery` line using a `#` then restart Unicorn. This
+will allow the error to hit GitLab, where it can then be seen in the usual logs,
+or as a flash message on the login screen.
 
-That file is located at `/opt/gitlab/embedded/service/gitlab-rails/app/controllers`
-for Omnibus installations and by default on `/home/git/gitlab/app/controllers` for
-installations from source.
+That file is located in `/opt/gitlab/embedded/service/gitlab-rails/app/controllers`
+for Omnibus installations and by default in `/home/git/gitlab/app/controllers` for
+installations from source. Restart Unicorn using the `sudo gitlab-ctl restart unicorn`
+command on Omnibus installations and `sudo service gitlab restart` on installations
+from source.
+
+You may also find the [SSO Tracer](https://addons.mozilla.org/en-US/firefox/addon/sso-tracer)
+(Firefox) and [SAML Chrome Panel](https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace)
+(Chrome) browser extensions useful in your debugging.
 
 ### Invalid audience
 
@@ -307,3 +318,6 @@ For this you need take the following into account:
 
 Make sure that one of the above described scenarios is valid, or the requests will
 fail with one of the mentioned errors.
+
+[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe EventCreateService, services: true do
+  include UserActivitiesHelpers
+
   let(:service) { EventCreateService.new }
 
   describe 'Issues' do
@@ -9,7 +11,7 @@ describe EventCreateService, services: true do
 
       it { expect(service.open_issue(issue, issue.author)).to be_truthy }
 
-      it "should create new event" do
+      it "creates new event" do
         expect { service.open_issue(issue, issue.author) }.to change { Event.count }
       end
     end
@@ -19,7 +21,7 @@ describe EventCreateService, services: true do
 
       it { expect(service.close_issue(issue, issue.author)).to be_truthy }
 
-      it "should create new event" do
+      it "creates new event" do
         expect { service.close_issue(issue, issue.author) }.to change { Event.count }
       end
     end
@@ -29,7 +31,7 @@ describe EventCreateService, services: true do
 
       it { expect(service.reopen_issue(issue, issue.author)).to be_truthy }
 
-      it "should create new event" do
+      it "creates new event" do
         expect { service.reopen_issue(issue, issue.author) }.to change { Event.count }
       end
     end
@@ -108,6 +110,38 @@ describe EventCreateService, services: true do
       it "creates new event" do
         expect { service.destroy_milestone(milestone, user) }.to change { Event.count }
       end
+    end
+  end
+
+  describe '#push', :redis do
+    let(:project) { create(:empty_project) }
+    let(:user) { create(:user) }
+
+    it 'creates a new event' do
+      expect { service.push(project, user, {}) }.to change { Event.count }
+    end
+
+    it 'updates user last activity' do
+      expect { service.push(project, user, {}) }.to change { user_activity(user) }
+    end
+  end
+
+  describe 'Project' do
+    let(:user) { create :user }
+    let(:project) { create(:empty_project) }
+
+    describe '#join_project' do
+      subject { service.join_project(project, user) }
+
+      it { is_expected.to be_truthy }
+      it { expect { subject }.to change { Event.count }.from(0).to(1) }
+    end
+
+    describe '#expired_leave_project' do
+      subject { service.expired_leave_project(project, user) }
+
+      it { is_expected.to be_truthy }
+      it { expect { subject }.to change { Event.count }.from(0).to(1) }
     end
   end
 end

@@ -1,10 +1,10 @@
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+/* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, max-len */
 
-  this.SingleFileDiff = (function() {
+(function() {
+  window.SingleFileDiff = (function() {
     var COLLAPSED_HTML, ERROR_HTML, LOADING_HTML, WRAPPER;
 
-    WRAPPER = '<div class="diff-content diff-wrap-lines"></div>';
+    WRAPPER = '<div class="diff-content"></div>';
 
     LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>';
 
@@ -14,7 +14,7 @@
 
     function SingleFileDiff(file) {
       this.file = file;
-      this.toggleDiff = bind(this.toggleDiff, this);
+      this.toggleDiff = this.toggleDiff.bind(this);
       this.content = $('.diff-content', this.file);
       this.$toggleIcon = $('.diff-toggle-caret', this.file);
       this.diffForPath = this.content.find('[data-diff-for-path]').data('diff-for-path');
@@ -30,34 +30,36 @@
         this.content.after(this.collapsedContent);
         this.$toggleIcon.addClass('fa-caret-down');
       }
-      $('.file-title, .click-to-expand', this.file).on('click', this.toggleDiff);
+
+      $('.js-file-title, .click-to-expand', this.file).on('click', (function (e) {
+        this.toggleDiff($(e.target));
+      }).bind(this));
     }
 
-    SingleFileDiff.prototype.toggleDiff = function(e) {
-      var $target = $(e.target);
-      if (!$target.hasClass('file-title') && !$target.hasClass('click-to-expand') && !$target.hasClass('diff-toggle-caret')) return;
+    SingleFileDiff.prototype.toggleDiff = function($target, cb) {
+      if (!$target.hasClass('js-file-title') && !$target.hasClass('click-to-expand') && !$target.hasClass('diff-toggle-caret')) return;
       this.isOpen = !this.isOpen;
       if (!this.isOpen && !this.hasError) {
         this.content.hide();
         this.$toggleIcon.addClass('fa-caret-right').removeClass('fa-caret-down');
         this.collapsedContent.show();
-        if (typeof DiffNotesApp !== 'undefined') {
-          DiffNotesApp.compileComponents();
+        if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+          gl.diffNotesCompileComponents();
         }
       } else if (this.content) {
         this.collapsedContent.hide();
         this.content.show();
         this.$toggleIcon.addClass('fa-caret-down').removeClass('fa-caret-right');
-        if (typeof DiffNotesApp !== 'undefined') {
-          DiffNotesApp.compileComponents();
+        if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+          gl.diffNotesCompileComponents();
         }
       } else {
         this.$toggleIcon.addClass('fa-caret-down').removeClass('fa-caret-right');
-        return this.getContentHTML();
+        return this.getContentHTML(cb);
       }
     };
 
-    SingleFileDiff.prototype.getContentHTML = function() {
+    SingleFileDiff.prototype.getContentHTML = function(cb) {
       this.collapsedContent.hide();
       this.loadingContent.show();
       $.get(this.diffForPath, (function(_this) {
@@ -72,23 +74,23 @@
           }
           _this.collapsedContent.after(_this.content);
 
-          if (typeof DiffNotesApp !== 'undefined') {
-            DiffNotesApp.compileComponents();
+          if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+            gl.diffNotesCompileComponents();
           }
+
+          if (cb) cb();
         };
       })(this));
     };
 
     return SingleFileDiff;
-
   })();
 
   $.fn.singleFileDiff = function() {
     return this.each(function() {
       if (!$.data(this, 'singleFileDiff')) {
-        return $.data(this, 'singleFileDiff', new SingleFileDiff(this));
+        return $.data(this, 'singleFileDiff', new window.SingleFileDiff(this));
       }
     });
   };
-
-}).call(this);
+}).call(window);

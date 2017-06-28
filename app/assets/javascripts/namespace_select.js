@@ -1,9 +1,10 @@
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, vars-on-top, one-var-declaration-per-line, comma-dangle, object-shorthand, no-else-return, prefer-template, quotes, prefer-arrow-callback, no-param-reassign, no-cond-assign, max-len */
+import Api from './api';
 
-  this.NamespaceSelect = (function() {
+(function() {
+  window.NamespaceSelect = (function() {
     function NamespaceSelect(opts) {
-      this.onSelectItem = bind(this.onSelectItem, this);
+      this.onSelectItem = this.onSelectItem.bind(this);
       var fieldName, showAny;
       this.dropdown = opts.dropdown;
       showAny = true;
@@ -26,7 +27,7 @@
           if (selected.id == null) {
             return selected.text;
           } else {
-            return selected.kind + ": " + selected.path;
+            return selected.kind + ": " + selected.full_path;
           }
         },
         data: function(term, dataCallback) {
@@ -47,7 +48,7 @@
           if (namespace.id == null) {
             return namespace.text;
           } else {
-            return namespace.kind + ": " + namespace.path;
+            return namespace.kind + ": " + namespace.full_path;
           }
         },
         renderRow: this.renderRow,
@@ -55,15 +56,15 @@
       });
     }
 
-    NamespaceSelect.prototype.onSelectItem = function(item, el, e) {
+    NamespaceSelect.prototype.onSelectItem = function(options) {
+      const { e } = options;
       return e.preventDefault();
     };
 
     return NamespaceSelect;
-
   })();
 
-  this.NamespaceSelects = (function() {
+  window.NamespaceSelects = (function() {
     function NamespaceSelects(opts) {
       var ref;
       if (opts == null) {
@@ -73,14 +74,12 @@
       this.$dropdowns.each(function(i, dropdown) {
         var $dropdown;
         $dropdown = $(dropdown);
-        return new NamespaceSelect({
+        return new window.NamespaceSelect({
           dropdown: $dropdown
         });
       });
     }
 
     return NamespaceSelects;
-
   })();
-
-}).call(this);
+}).call(window);

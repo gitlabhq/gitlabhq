@@ -5,11 +5,27 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def update
-    if @application_setting.update_attributes(application_setting_params)
+    successful = ApplicationSettings::UpdateService
+      .new(@application_setting, current_user, application_setting_params)
+      .execute
+
+    if successful
       redirect_to admin_application_settings_path,
         notice: 'Application settings saved successfully'
     else
       render :show
+    end
+  end
+
+  def usage_data
+    respond_to do |format|
+      format.html do
+        usage_data = Gitlab::UsageData.data
+        usage_data_json = params[:pretty] ? JSON.pretty_generate(usage_data) : usage_data.to_json
+
+        render html: Gitlab::Highlight.highlight('payload.json', usage_data_json)
+      end
+      format.json { render json: Gitlab::UsageData.to_json }
     end
   end
 
@@ -41,15 +57,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def application_setting_params
-    restricted_levels = params[:application_setting][:restricted_visibility_levels]
-    if restricted_levels.nil?
-      params[:application_setting][:restricted_visibility_levels] = []
-    else
-      restricted_levels.map! do |level|
-        level.to_i
-      end
-    end
-
     import_sources = params[:application_setting][:import_sources]
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
@@ -67,60 +74,91 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
-      :default_projects_limit,
-      :default_branch_protection,
-      :signup_enabled,
-      :signin_enabled,
-      :require_two_factor_authentication,
-      :two_factor_grace_period,
-      :gravatar_enabled,
-      :sign_in_text,
-      :after_sign_up_text,
-      :help_page_text,
-      :home_page_url,
-      :after_sign_out_path,
-      :max_attachment_size,
-      :session_expire_delay,
-      :default_project_visibility,
-      :default_snippet_visibility,
-      :default_group_visibility,
-      :domain_whitelist_raw,
-      :domain_blacklist_enabled,
-      :domain_blacklist_raw,
-      :domain_blacklist_file,
-      :version_check_enabled,
+      application_setting_params_ce
+    )
+  end
+
+  def application_setting_params_ce
+    [
       :admin_notification_email,
-      :user_oauth_applications,
-      :user_default_external,
-      :shared_runners_enabled,
-      :shared_runners_text,
-      :max_artifacts_size,
-      :metrics_enabled,
-      :metrics_host,
-      :metrics_port,
-      :metrics_pool_size,
-      :metrics_timeout,
-      :metrics_method_call_threshold,
-      :metrics_sample_interval,
-      :recaptcha_enabled,
-      :recaptcha_site_key,
-      :recaptcha_private_key,
-      :sentry_enabled,
-      :sentry_dsn,
-      :akismet_enabled,
+      :after_sign_out_path,
+      :after_sign_up_text,
       :akismet_api_key,
+      :akismet_enabled,
+      :container_registry_token_expire_delay,
+      :default_artifacts_expire_in,
+      :default_branch_protection,
+      :default_group_visibility,
+      :default_project_visibility,
+      :default_projects_limit,
+      :default_snippet_visibility,
+      :domain_blacklist_enabled,
+      :domain_blacklist_file,
+      :domain_blacklist_raw,
+      :domain_whitelist_raw,
+      :email_author_in_body,
+      :enabled_git_access_protocol,
+      :gravatar_enabled,
+      :help_page_text,
+      :help_page_hide_commercial_content,
+      :help_page_support_url,
+      :home_page_url,
+      :housekeeping_bitmaps_enabled,
+      :housekeeping_enabled,
+      :housekeeping_full_repack_period,
+      :housekeeping_gc_period,
+      :housekeeping_incremental_repack_period,
+      :html_emails_enabled,
       :koding_enabled,
       :koding_url,
-      :email_author_in_body,
-      :repository_checks_enabled,
+      :plantuml_enabled,
+      :plantuml_url,
+      :max_artifacts_size,
+      :max_attachment_size,
+      :max_pages_size,
+      :metrics_enabled,
+      :metrics_host,
+      :metrics_method_call_threshold,
       :metrics_packet_size,
+      :metrics_pool_size,
+      :metrics_port,
+      :metrics_sample_interval,
+      :metrics_timeout,
+      :recaptcha_enabled,
+      :recaptcha_private_key,
+      :recaptcha_site_key,
+      :repository_checks_enabled,
+      :require_two_factor_authentication,
+      :session_expire_delay,
+      :sign_in_text,
+      :signin_enabled,
+      :signup_enabled,
+      :sentry_dsn,
+      :sentry_enabled,
+      :clientside_sentry_dsn,
+      :clientside_sentry_enabled,
       :send_user_confirmation_email,
-      :container_registry_token_expire_delay,
-      :repository_storage,
-      :enabled_git_access_protocol,
-      restricted_visibility_levels: [],
+      :shared_runners_enabled,
+      :shared_runners_text,
+      :sidekiq_throttling_enabled,
+      :sidekiq_throttling_factor,
+      :two_factor_grace_period,
+      :user_default_external,
+      :user_oauth_applications,
+      :unique_ips_limit_per_user,
+      :unique_ips_limit_time_window,
+      :unique_ips_limit_enabled,
+      :version_check_enabled,
+      :terminal_max_session_time,
+      :polling_interval_multiplier,
+      :prometheus_metrics_enabled,
+      :usage_ping_enabled,
+
+      disabled_oauth_sign_in_sources: [],
       import_sources: [],
-      disabled_oauth_sign_in_sources: []
-    )
+      repository_storages: [],
+      restricted_visibility_levels: [],
+      sidekiq_throttling_queues: []
+    ]
   end
 end

@@ -1,8 +1,8 @@
 %ul.content-list.mr-list.issuable-list
-  = render @merge_requests
-  - if @merge_requests.blank?
-    %li
-      .nothing-here-block No merge requests to show
+  - if @merge_requests.exists?
+    = render @merge_requests
+  - else
+    = render 'shared/empty_states/merge_requests'
 
 - if @merge_requests.present?
   = paginate @merge_requests, theme: "gitlab"

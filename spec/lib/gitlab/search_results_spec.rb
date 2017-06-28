@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::SearchResults do
   let(:user) { create(:user) }
-  let!(:project) { create(:project, name: 'foo') }
+  let!(:project) { create(:empty_project, name: 'foo') }
   let!(:issue) { create(:issue, project: project, title: 'foo') }
 
   let!(:merge_request) do
@@ -12,35 +12,57 @@ describe Gitlab::SearchResults do
   let!(:milestone) { create(:milestone, project: project, title: 'foo') }
   let(:results) { described_class.new(user, Project.all, 'foo') }
 
-  describe '#projects_count' do
-    it 'returns the total amount of projects' do
-      expect(results.projects_count).to eq(1)
+  context 'as a user with access' do
+    before do
+      project.team << [user, :developer]
+    end
+
+    describe '#projects_count' do
+      it 'returns the total amount of projects' do
+        expect(results.projects_count).to eq(1)
+      end
+    end
+
+    describe '#issues_count' do
+      it 'returns the total amount of issues' do
+        expect(results.issues_count).to eq(1)
+      end
+    end
+
+    describe '#merge_requests_count' do
+      it 'returns the total amount of merge requests' do
+        expect(results.merge_requests_count).to eq(1)
+      end
+    end
+
+    describe '#milestones_count' do
+      it 'returns the total amount of milestones' do
+        expect(results.milestones_count).to eq(1)
+      end
+    end
+
+    it 'includes merge requests from source and target projects' do
+      forked_project = create(:empty_project, forked_from_project: project)
+      merge_request_2 = create(:merge_request, target_project: project, source_project: forked_project, title: 'foo')
+
+      results = described_class.new(user, Project.where(id: forked_project.id), 'foo')
+
+      expect(results.objects('merge_requests')).to include merge_request_2
     end
   end
 
-  describe '#issues_count' do
-    it 'returns the total amount of issues' do
-      expect(results.issues_count).to eq(1)
-    end
-  end
+  it 'does not list issues on private projects' do
+    private_project = create(:empty_project, :private)
+    issue = create(:issue, project: private_project, title: 'foo')
 
-  describe '#merge_requests_count' do
-    it 'returns the total amount of merge requests' do
-      expect(results.merge_requests_count).to eq(1)
-    end
-  end
-
-  describe '#milestones_count' do
-    it 'returns the total amount of milestones' do
-      expect(results.milestones_count).to eq(1)
-    end
+    expect(results.objects('issues')).not_to include issue
   end
 
   describe 'confidential issues' do
-    let(:project_1) { create(:empty_project) }
-    let(:project_2) { create(:empty_project) }
-    let(:project_3) { create(:empty_project) }
-    let(:project_4) { create(:empty_project) }
+    let(:project_1) { create(:empty_project, :internal) }
+    let(:project_2) { create(:empty_project, :internal) }
+    let(:project_3) { create(:empty_project, :internal) }
+    let(:project_4) { create(:empty_project, :internal) }
     let(:query) { 'issue' }
     let(:limit_projects) { Project.where(id: [project_1.id, project_2.id, project_3.id]) }
     let(:author) { create(:user) }
@@ -50,9 +72,9 @@ describe Gitlab::SearchResults do
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project_1, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project_1, title: 'Security issue 1', author: author) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignee: assignee) }
+    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignees: [assignee]) }
     let!(:security_issue_3) { create(:issue, :confidential, project: project_2, title: 'Security issue 3', author: author) }
-    let!(:security_issue_4) { create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignee: assignee) }
+    let!(:security_issue_4) { create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignees: [assignee]) }
     let!(:security_issue_5) { create(:issue, :confidential, project: project_4, title: 'Security issue 5') }
 
     it 'does not list confidential issues for non project members' do
@@ -138,5 +160,12 @@ describe Gitlab::SearchResults do
       expect(issues).not_to include security_issue_5
       expect(results.issues_count).to eq 5
     end
+  end
+
+  it 'does not list merge requests on projects with limited access' do
+    project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+    project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+
+    expect(results.objects('merge_requests')).not_to include merge_request
   end
 end

@@ -1,59 +1,91 @@
 - @no_container = true
 - page_title "Cycle Analytics"
-= render "projects/pipelines/head"
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_vue')
+  = page_specific_javascript_bundle_tag('cycle_analytics')
 
-#cycle-analytics{class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project)}}
+= render "projects/head"
 
-  .bordered-box.landing.content-block{"v-if" => "!isHelpDismissed"}
-    = icon('times', class: 'dismiss-icon', "@click": "dismissLanding()")
-    .row
-      .col-sm-3.col-xs-12.svg-container
+#cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
+  - if @cycle_analytics_no_data
+    .landing.content-block{ "v-if" => "!isOverviewDialogDismissed" }
+      %button.dismiss-button{ type: 'button', 'aria-label': 'Dismiss Cycle Analytics introduction box' }
+        = icon("times", "@click" => "dismissOverviewDialog()")
+      .svg-container
         = custom_icon('icon_cycle_analytics_splash')
-      .col-sm-8.col-xs-12.inner-content
+      .inner-content
         %h4
-          Introducing Cycle Analytics
+          {{ __('Introducing Cycle Analytics') }}
         %p
-          Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.
-
-        = link_to "Read more",  help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
-
+          {{ __('Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.') }}
+        %p
+          = link_to _('Read more'), help_page_path('user/project/cycle_analytics'), target: '_blank', class: 'btn'
   = icon("spinner spin", "v-show" => "isLoading")
-
-  .wrapper{"v-show" => "!isLoading && !hasError"}
+  .wrapper{ "v-show" => "!isLoading && !hasError" }
     .panel.panel-default
       .panel-heading
-        Pipeline Health
-
+        {{ __('Pipeline Health') }}
       .content-block
         .container-fluid
           .row
-            .col-sm-3.col-xs-12.column{"v-for" => "item in analytics.summary"}
-              %h3.header {{item.value}}
-              %p.text {{item.title}}
-
+            .col-sm-3.col-xs-12.column{ "v-for" => "item in state.summary" }
+              %h3.header {{ item.value }}
+              %p.text {{ item.title }}
             .col-sm-3.col-xs-12.column
               .dropdown.inline.js-ca-dropdown
-                %button.dropdown-menu-toggle{"data-toggle" => "dropdown", :type => "button"}
-                  %span.dropdown-label Last 30 days
+                %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }
+                  %span.dropdown-label {{ n__('Last %d day', 'Last %d days', 30) }}
                   %i.fa.fa-chevron-down
                 %ul.dropdown-menu.dropdown-menu-align-right
                   %li
-                    %a{'href' => "#", 'data-value' => '30'}
-                      Last 30 days
+                    %a{ "href" => "#", "data-value" => "30" }
+                      {{ n__('Last %d day', 'Last %d days', 30) }}
                   %li
-                    %a{'href' => "#", 'data-value' => '90'}
-                      Last 90 days
-
-    .bordered-box
-      %ul.content-list
-        %li{"v-for" => "item in analytics.stats"}
-          .container-fluid
-            .row
-              .col-xs-8.title-col
-                %p.title
-                  {{item.title}}
-                %p.text
-                  {{item.description}}
-              .col-xs-4.value-col
-                %span
-                  {{item.value}}
+                    %a{ "href" => "#", "data-value" => "90" }
+                      {{ n__('Last %d day', 'Last %d days', 90) }}
+    .stage-panel-container
+      .panel.panel-default.stage-panel
+        .panel-heading
+          %nav.col-headers
+            %ul
+              %li.stage-header
+                %span.stage-name
+                  {{ s__('ProjectLifecycle|Stage') }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The phase of the development lifecycle."), "aria-hidden" => "true" }
+              %li.median-header
+                %span.stage-name
+                  {{ __('Median') }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."), "aria-hidden" => "true" }
+              %li.event-header
+                %span.stage-name
+                  {{ currentStage ? __(currentStage.legend) : __('Related Issues') }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The collection of events added to the data gathered for that stage."), "aria-hidden" => "true" }
+              %li.total-time-header
+                %span.stage-name
+                  {{ __('Total Time') }}
+                %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The time taken by each data entry gathered by that stage."), "aria-hidden" => "true" }
+        .stage-panel-body
+          %nav.stage-nav
+            %ul
+              %li.stage-nav-item{ ':class' => '{ active: stage.active }', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
+                .stage-nav-item-cell.stage-name
+                  {{ stage.title }}
+                .stage-nav-item-cell.stage-median
+                  %template{ "v-if" => "stage.isUserAllowed" }
+                    %span{ "v-if" => "stage.value" }
+                      {{ stage.value }}
+                    %span.stage-empty{ "v-else" => true }
+                      {{ __('Not enough data') }}
+                  %template{ "v-else" => true }
+                    %span.not-available
+                      {{ __('Not available') }}
+          .section.stage-events
+            %template{ "v-if" => "isLoadingStage" }
+              = icon("spinner spin")
+            %template{ "v-if" => "currentStage && !currentStage.isUserAllowed" }
+              = render partial: "no_access"
+            %template{ "v-else" => true }
+              %template{ "v-if" => "isEmptyStage && !isLoadingStage" }
+                = render partial: "empty_stage"
+              %template{ "v-if" => "state.events.length && !isLoadingStage && !isEmptyStage" }
+                %component{ ":is" => "currentStage.component", ":stage" => "currentStage", ":items" => "state.events" }

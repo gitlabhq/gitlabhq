@@ -20,6 +20,10 @@ module Gitlab
         "[![#{title}](#{image_url})](#{link_url})"
       end
 
+      def to_asciidoc
+        "image:#{image_url}[link=\"#{link_url}\",title=\"#{title}\"]"
+      end
+
       def title
         raise NotImplementedError
       end

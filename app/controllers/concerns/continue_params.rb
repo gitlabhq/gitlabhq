@@ -7,6 +7,7 @@ module ContinueParams
 
     continue_params = continue_params.permit(:to, :notice, :notice_now)
     return unless continue_params[:to] && continue_params[:to].start_with?('/')
+    return if continue_params[:to].start_with?('//')
 
     continue_params
   end

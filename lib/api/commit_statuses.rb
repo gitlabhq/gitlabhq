@@ -1,22 +1,26 @@
 require 'mime/types'
 
 module API
-  # Project commit statuses API
   class CommitStatuses < Grape::API
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
+      include PaginationParams
+
       before { authenticate! }
 
-      # Get a commit's statuses
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The commit hash
-      #   ref (optional) - The ref
-      #   stage (optional) - The stage
-      #   name (optional) - The name
-      #   all (optional) - Show all statuses, default: false
-      # Examples:
-      #   GET /projects/:id/repository/commits/:sha/statuses
+      desc "Get a commit's statuses" do
+        success Entities::CommitStatus
+      end
+      params do
+        requires :sha,   type: String, desc: 'The commit hash'
+        optional :ref,   type: String, desc: 'The ref'
+        optional :stage, type: String, desc: 'The stage'
+        optional :name,  type: String, desc: 'The name'
+        optional :all,   type: String, desc: 'Show all statuses, default: false'
+        use :pagination
+      end
       get ':id/repository/commits/:sha/statuses' do
         authorize!(:read_commit_status, user_project)
 
@@ -31,22 +35,23 @@ module API
         present paginate(statuses), with: Entities::CommitStatus
       end
 
-      # Post status to commit
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The commit hash
-      #   ref (optional) - The ref
-      #   state (required) - The state of the status. Can be: pending, running, success, failed or canceled
-      #   target_url (optional) - The target URL to associate with this status
-      #   description (optional) - A short description of the status
-      #   name or context (optional) - A string label to differentiate this status from the status of other systems. Default: "default"
-      # Examples:
-      #   POST /projects/:id/statuses/:sha
+      desc 'Post status to a commit' do
+        success Entities::CommitStatus
+      end
+      params do
+        requires :sha,         type: String,  desc: 'The commit hash'
+        requires :state,       type: String,  desc: 'The state of the status',
+                               values: %w(pending running success failed canceled)
+        optional :ref,         type: String,  desc: 'The ref'
+        optional :target_url,  type: String,  desc: 'The target URL to associate with this status'
+        optional :description, type: String,  desc: 'A short description of the status'
+        optional :name,        type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
+        optional :context,     type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
+        optional :coverage,    type: Float,   desc: 'The total code coverage'
+      end
       post ':id/statuses/:sha' do
         authorize! :create_commit_status, user_project
-        required_attributes! [:state]
-        attrs = attributes_for_keys [:target_url, :description]
+
         commit = @project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
@@ -63,15 +68,31 @@ module API
 
         name = params[:name] || params[:context] || 'default'
 
-        pipeline = @project.ensure_pipeline(ref, commit.sha, current_user)
+        pipeline = @project.pipeline_for(ref, commit.sha)
+        unless pipeline
+          pipeline = @project.pipelines.create!(
+            source: :external,
+            sha: commit.sha,
+            ref: ref,
+            user: current_user)
+        end
 
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
-          project: @project, pipeline: pipeline,
-          user: current_user, name: name, ref: ref)
-        status.attributes = attrs
+          project: @project,
+          pipeline: pipeline,
+          name: name,
+          ref: ref,
+          user: current_user
+        )
+
+        optional_attributes =
+          attributes_for_keys(%w[target_url description coverage])
+
+        status.update(optional_attributes) if optional_attributes.any?
+        render_validation_error!(status) if status.invalid?
 
         begin
-          case params[:state].to_s
+          case params[:state]
           when 'pending'
             status.enqueue!
           when 'running'
@@ -86,6 +107,9 @@ module API
           else
             render_api_error!('invalid state', 400)
           end
+
+          MergeRequest.where(source_project: @project, source_branch: ref)
+            .update_all(head_pipeline_id: pipeline) if pipeline.latest?
 
           present status, with: Entities::CommitStatus
         rescue StateMachines::InvalidTransition => e

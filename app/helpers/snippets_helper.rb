@@ -8,6 +8,25 @@ module SnippetsHelper
     end
   end
 
+  def download_snippet_path(snippet)
+    if snippet.project_id
+      raw_namespace_project_snippet_path(@project.namespace, @project, snippet, inline: false)
+    else
+      raw_snippet_path(snippet, inline: false)
+    end
+  end
+
+  # Return the path of a snippets index for a user or for a project
+  #
+  # @returns String, path to snippet index
+  def subject_snippets_path(subject = nil, opts = nil)
+    if subject.is_a?(Project)
+      namespace_project_snippets_path(subject.namespace, subject, opts)
+    else # assume subject === User
+      dashboard_snippets_path(opts)
+    end
+  end
+
   # Get an array of line numbers surrounding a matching
   # line, bounded by min/max.
   #
@@ -31,7 +50,7 @@ module SnippetsHelper
         0,
         lined_content.size,
         surrounding_lines
-      ) if line.include?(query)
+      ) if line.downcase.include?(query.downcase)
     end
 
     used_lines.uniq.sort

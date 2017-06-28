@@ -1,27 +1,29 @@
 require 'spec_helper'
 
 describe Projects::BranchesController do
-  let(:project) { create(:project) }
-  let(:user)    { create(:user) }
+  let(:project)   { create(:project, :repository) }
+  let(:user)      { create(:user) }
+  let(:developer) { create(:user) }
 
   before do
-    sign_in(user)
-
     project.team << [user, :master]
+    project.team << [user, :developer]
 
     allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
     allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
     controller.instance_variable_set(:@project, project)
   end
 
-  describe "POST create" do
+  describe "POST create with HTML format" do
     render_views
 
     context "on creation of a new branch" do
       before do
+        sign_in(user)
+
         post :create,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           branch_name: branch,
           ref: ref
       end
@@ -30,8 +32,8 @@ describe Projects::BranchesController do
         let(:branch) { "merge_branch" }
         let(:ref) { "master" }
         it 'redirects' do
-          expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/merge_branch")
+          expect(subject)
+            .to redirect_to("/#{project.path_with_namespace}/tree/merge_branch")
         end
       end
 
@@ -39,8 +41,8 @@ describe Projects::BranchesController do
         let(:branch) { "<script>alert('merge');</script>" }
         let(:ref) { "master" }
         it 'redirects' do
-          expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/alert('merge');")
+          expect(subject)
+            .to redirect_to("/#{project.path_with_namespace}/tree/alert('merge');")
         end
       end
 
@@ -66,40 +68,139 @@ describe Projects::BranchesController do
 
     describe "created from the new branch button on issues" do
       let(:branch) { "1-feature-branch" }
-      let!(:issue) { create(:issue, project: project) }
+      let(:issue) { create(:issue, project: project) }
+
+      before do
+        sign_in(user)
+      end
 
       it 'redirects' do
         post :create,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           branch_name: branch,
           issue_iid: issue.iid
 
-        expect(subject).
-          to redirect_to("/#{project.path_with_namespace}/tree/1-feature-branch")
+        expect(subject)
+          .to redirect_to("/#{project.path_with_namespace}/tree/1-feature-branch")
       end
 
       it 'posts a system note' do
         expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch")
 
         post :create,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           branch_name: branch,
           issue_iid: issue.iid
       end
+
+      context 'repository-less project' do
+        let(:project) { create :empty_project }
+
+        it 'redirects to newly created branch' do
+          result = { status: :success, branch: double(name: branch) }
+
+          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+
+          post :create,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+
+          expect(response).to redirect_to namespace_project_tree_path(project.namespace, project, branch)
+        end
+
+        it 'redirects to autodeploy setup page' do
+          result = { status: :success, branch: double(name: branch) }
+
+          project.services << build(:kubernetes_service)
+
+          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+
+          post :create,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+
+          expect(response.location).to include(namespace_project_new_blob_path(project.namespace, project, branch))
+          expect(response).to have_http_status(302)
+        end
+      end
+
+      context 'without issue feature access' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+          project.team.truncate
+        end
+
+        it "doesn't post a system note" do
+          expect(SystemNoteService).not_to receive(:new_issue_branch)
+
+          post :create,
+            namespace_id: project.namespace,
+            project_id: project,
+            branch_name: branch,
+            issue_iid: issue.iid
+        end
+      end
+    end
+  end
+
+  describe 'POST create with JSON format' do
+    before do
+      sign_in(user)
+    end
+
+    context 'with valid params' do
+      it 'returns a successful 200 response' do
+        create_branch name: 'my-branch', ref: 'master'
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns the created branch' do
+        create_branch name: 'my-branch', ref: 'master'
+
+        expect(response).to match_response_schema('branch')
+      end
+    end
+
+    context 'with invalid params' do
+      it 'returns an unprocessable entity 422 response' do
+        create_branch name: "<script>alert('merge');</script>", ref: "<script>alert('ref');</script>"
+
+        expect(response).to have_http_status(422)
+      end
+    end
+
+    def create_branch(name:, ref:)
+      post :create, namespace_id: project.namespace.to_param,
+                    project_id: project.to_param,
+                    branch_name: name,
+                    ref: ref,
+                    format: :json
     end
   end
 
   describe "POST destroy with HTML format" do
     render_views
 
+    before do
+      sign_in(user)
+    end
+
     it 'returns 303' do
       post :destroy,
            format: :html,
            id: 'foo/bar/baz',
-           namespace_id: project.namespace.to_param,
-           project_id: project.to_param
+           namespace_id: project.namespace,
+           project_id: project
 
       expect(response).to have_http_status(303)
     end
@@ -109,34 +210,162 @@ describe Projects::BranchesController do
     render_views
 
     before do
+      sign_in(user)
+
       post :destroy,
-           format: :js,
-           id: branch,
-           namespace_id: project.namespace.to_param,
-           project_id: project.to_param
+        format: format,
+        id: branch,
+        namespace_id: project.namespace,
+        project_id: project
     end
 
-    context "valid branch name, valid source" do
+    context 'as JS' do
       let(:branch) { "feature" }
+      let(:format) { :js }
 
-      it { expect(response).to have_http_status(200) }
+      context "valid branch name, valid source" do
+        let(:branch) { "feature" }
+
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.body).to be_blank }
+      end
+
+      context "valid branch name with unencoded slashes" do
+        let(:branch) { "improve/awesome" }
+
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.body).to be_blank }
+      end
+
+      context "valid branch name with encoded slashes" do
+        let(:branch) { "improve%2Fawesome" }
+
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.body).to be_blank }
+      end
+
+      context "invalid branch name, valid ref" do
+        let(:branch) { "no-branch" }
+
+        it { expect(response).to have_http_status(404) }
+        it { expect(response.body).to be_blank }
+      end
     end
 
-    context "valid branch name with unencoded slashes" do
-      let(:branch) { "improve/awesome" }
+    context 'as JSON' do
+      let(:branch) { "feature" }
+      let(:format) { :json }
 
-      it { expect(response).to have_http_status(200) }
+      context 'valid branch name, valid source' do
+        let(:branch) { "feature" }
+
+        it 'returns JSON response with message' do
+          expect(json_response).to eql("message" => 'Branch was removed')
+        end
+
+        it { expect(response).to have_http_status(200) }
+      end
+
+      context 'valid branch name with unencoded slashes' do
+        let(:branch) { "improve/awesome" }
+
+        it 'returns JSON response with message' do
+          expect(json_response).to eql('message' => 'Branch was removed')
+        end
+
+        it { expect(response).to have_http_status(200) }
+      end
+
+      context "valid branch name with encoded slashes" do
+        let(:branch) { 'improve%2Fawesome' }
+
+        it 'returns JSON response with message' do
+          expect(json_response).to eql('message' => 'Branch was removed')
+        end
+
+        it { expect(response).to have_http_status(200) }
+      end
+
+      context 'invalid branch name, valid ref' do
+        let(:branch) { 'no-branch' }
+
+        it 'returns JSON response with message' do
+          expect(json_response).to eql('message' => 'No such branch')
+        end
+
+        it { expect(response).to have_http_status(404) }
+      end
     end
 
-    context "valid branch name with encoded slashes" do
-      let(:branch) { "improve%2Fawesome" }
+    context 'as HTML' do
+      let(:branch) { "feature" }
+      let(:format) { :html }
 
-      it { expect(response).to have_http_status(200) }
+      it 'redirects to branches path' do
+        expect(response)
+          .to redirect_to(namespace_project_branches_path(project.namespace, project))
+      end
     end
-    context "invalid branch name, valid ref" do
-      let(:branch) { "no-branch" }
+  end
 
-      it { expect(response).to have_http_status(404) }
+  describe "DELETE destroy_all_merged" do
+    def destroy_all_merged
+      delete :destroy_all_merged,
+             namespace_id: project.namespace,
+             project_id: project
+    end
+
+    context 'when user is allowed to push' do
+      before do
+        sign_in(user)
+      end
+
+      it 'redirects to branches' do
+        destroy_all_merged
+
+        expect(response).to redirect_to namespace_project_branches_path(project.namespace, project)
+      end
+
+      it 'starts worker to delete merged branches' do
+        expect_any_instance_of(DeleteMergedBranchesService).to receive(:async_execute)
+
+        destroy_all_merged
+      end
+    end
+
+    context 'when user is not allowed to push' do
+      before do
+        sign_in(developer)
+      end
+
+      it 'responds with status 404' do
+        destroy_all_merged
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe "GET index" do
+    render_views
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when rendering a JSON format' do
+      it 'filters branches by name' do
+        get :index,
+            namespace_id: project.namespace,
+            project_id: project,
+            format: :json,
+            search: 'master'
+
+        parsed_response = JSON.parse(response.body)
+
+        expect(parsed_response.length).to eq 1
+        expect(parsed_response.first).to eq 'master'
+      end
     end
   end
 end

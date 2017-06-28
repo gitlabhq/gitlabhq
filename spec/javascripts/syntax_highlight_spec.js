@@ -1,5 +1,6 @@
+/* eslint-disable space-before-function-paren, no-var, no-return-assign, quotes */
 
-/*= require syntax_highlight */
+import '~/syntax_highlight';
 
 (function() {
   describe('Syntax Highlighter', function() {
@@ -12,7 +13,7 @@
     };
     describe('on a js-syntax-highlight element', function() {
       beforeEach(function() {
-        return fixture.set('<div class="js-syntax-highlight"></div>');
+        return setFixtures('<div class="js-syntax-highlight"></div>');
       });
       return it('applies syntax highlighting', function() {
         stubUserColorScheme('monokai');
@@ -22,7 +23,7 @@
     });
     return describe('on a parent element', function() {
       beforeEach(function() {
-        return fixture.set("<div class=\"parent\">\n  <div class=\"js-syntax-highlight\"></div>\n  <div class=\"foo\"></div>\n  <div class=\"js-syntax-highlight\"></div>\n</div>");
+        return setFixtures("<div class=\"parent\">\n  <div class=\"js-syntax-highlight\"></div>\n  <div class=\"foo\"></div>\n  <div class=\"js-syntax-highlight\"></div>\n</div>");
       });
       it('applies highlighting to all applicable children', function() {
         stubUserColorScheme('monokai');
@@ -32,7 +33,7 @@
       });
       return it('prevents an infinite loop when no matches exist', function() {
         var highlight;
-        fixture.set('<div></div>');
+        setFixtures('<div></div>');
         highlight = function() {
           return $('div').syntaxHighlight();
         };
@@ -40,5 +41,4 @@
       });
     });
   });
-
-}).call(this);
+}).call(window);

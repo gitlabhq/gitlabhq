@@ -1,9 +1,10 @@
 class ProjectsController < Projects::ApplicationController
+  include IssuableCollections
   include ExtractsPath
 
-  before_action :authenticate_user!, except: [:show, :activity, :refs]
-  before_action :project, except: [:new, :create]
-  before_action :repository, except: [:new, :create]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :project, except: [:index, :new, :create]
+  before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
 
@@ -29,9 +30,11 @@ class ProjectsController < Projects::ApplicationController
     @project = ::Projects::CreateService.new(current_user, project_params).execute
 
     if @project.saved?
+      cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
+
       redirect_to(
         project_path(@project),
-        notice: "Project '#{@project.name}' was successfully created."
+        notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
       render 'new'
@@ -39,19 +42,16 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def update
-    status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
+    result = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
     # Refresh the repo in case anything changed
-    @repository = project.repository
+    @repository = @project.repository
 
     respond_to do |format|
-      if status
-        flash[:notice] = "Project '#{@project.name}' was successfully updated."
+      if result[:status] == :success
+        flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
         format.html do
-          redirect_to(
-            edit_project_path(@project),
-            notice: "Project '#{@project.name}' was successfully updated."
-          )
+          redirect_to(edit_project_path(@project))
         end
       else
         format.html { render 'edit' }
@@ -76,7 +76,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
     if ::Projects::UnlinkForkService.new(@project, current_user).execute
-      flash[:notice] = 'The fork relationship has been removed.'
+      flash[:notice] = _('The fork relationship has been removed.')
     end
   end
 
@@ -97,27 +97,18 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if @project.pending_delete?
-      flash[:alert] = "Project #{@project.name} queued for deletion."
+      flash[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
     end
 
     respond_to do |format|
       format.html do
         @notification_setting = current_user.notification_settings_for(@project) if current_user
-
-        if @project.repository_exists?
-          if @project.empty_repo?
-            render 'projects/empty'
-          else
-            render :show
-          end
-        else
-          render 'projects/no_repo'
-        end
+        render_landing_page
       end
 
       format.atom do
         load_events
-        render layout: false
+        render layout: 'xml.atom'
       end
     end
   end
@@ -126,44 +117,18 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:alert] = "Project '#{@project.name}' will be deleted."
+    flash[:alert] = _("Project '%{project_name}' will be deleted.") % { project_name: @project.name_with_namespace }
 
-    redirect_to dashboard_projects_path
+    redirect_to dashboard_projects_path, status: 302
   rescue Projects::DestroyService::DestroyError => ex
-    redirect_to edit_project_path(@project), alert: ex.message
+    redirect_to edit_project_path(@project), status: 302, alert: ex.message
   end
 
-  def autocomplete_sources
-    noteable =
-      case params[:type]
-      when 'Issue'
-        IssuesFinder.new(current_user, project_id: @project.id).
-          execute.find_by(iid: params[:type_id])
-      when 'MergeRequest'
-        MergeRequestsFinder.new(current_user, project_id: @project.id).
-          execute.find_by(iid: params[:type_id])
-      when 'Commit'
-        @project.commit(params[:type_id])
-      else
-        nil
-      end
+  def new_issue_address
+    return render_404 unless Gitlab::IncomingEmail.supports_issue_creation?
 
-    autocomplete = ::Projects::AutocompleteService.new(@project, current_user)
-    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(noteable)
-
-    @suggestions = {
-      emojis: Gitlab::AwardEmoji.urls,
-      issues: autocomplete.issues,
-      milestones: autocomplete.milestones,
-      mergerequests: autocomplete.merge_requests,
-      labels: autocomplete.labels,
-      members: participants,
-      commands: autocomplete.commands(noteable, params[:type])
-    }
-
-    respond_to do |format|
-      format.json { render json: @suggestions }
-    end
+    current_user.reset_incoming_email_token!
+    render json: { new_issue_address: @project.new_issue_address(current_user) }
   end
 
   def archive
@@ -191,7 +156,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       project_path(@project),
-      notice: "Housekeeping successfully started"
+      notice: _("Housekeeping successfully started")
     )
   rescue ::Projects::HousekeepingService::LeaseTaken => ex
     redirect_to(
@@ -205,7 +170,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       edit_project_path(@project),
-      notice: "Project export started. A download link will be sent by email."
+      notice: _("Project export started. A download link will be sent by email.")
     )
   end
 
@@ -217,16 +182,16 @@ class ProjectsController < Projects::ApplicationController
     else
       redirect_to(
         edit_project_path(@project),
-        alert: "Project export link has expired. Please generate a new export from your project settings."
+        alert: _("Project export link has expired. Please generate a new export from your project settings.")
       )
     end
   end
 
   def remove_export
     if @project.remove_exports
-      flash[:notice] = "Project export has been deleted."
+      flash[:notice] = _("Project export has been deleted.")
     else
-      flash[:alert] = "Project export could not be deleted."
+      flash[:alert] = _("Project export could not be deleted.")
     end
     redirect_to(edit_project_path(@project))
   end
@@ -237,7 +202,7 @@ class ProjectsController < Projects::ApplicationController
     else
       redirect_to(
         edit_project_path(@project),
-        alert: "Project export could not be deleted."
+        alert: _("Project export could not be deleted.")
       )
     end
   end
@@ -251,27 +216,17 @@ class ProjectsController < Projects::ApplicationController
     }
   end
 
-  def preview_markdown
-    text = params[:text]
-
-    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
-    ext.analyze(text, author: current_user)
-
-    render json: {
-      body:       view_context.markdown(text),
-      references: {
-        users: ext.users.map(&:username)
-      }
-    }
-  end
-
   def refs
+    branches = BranchesFinder.new(@repository, params).execute.map(&:name)
+
     options = {
-      'Branches' => @repository.branch_names,
+      s_('RefSwitcher|Branches') => branches.take(100)
     }
 
     unless @repository.tag_count.zero?
-      options['Tags'] = VersionSorter.rsort(@repository.tag_names)
+      tags = TagsFinder.new(@repository, params).execute.map(&:name)
+
+      options[s_('RefSwitcher|Tags')] = tags.take(100)
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
@@ -283,7 +238,41 @@ class ProjectsController < Projects::ApplicationController
     render json: options.to_json
   end
 
+  def preview_markdown
+    result = PreviewMarkdownService.new(@project, current_user, params).execute
+
+    render json: {
+      body: view_context.markdown(result[:text]),
+      references: {
+        users: result[:users],
+        commands: view_context.markdown(result[:commands])
+      }
+    }
+  end
+
   private
+
+  # Render project landing depending of which features are available
+  # So if page is not availble in the list it renders the next page
+  #
+  # pages list order: repository readme, wiki home, issues list, customize workflow
+  def render_landing_page
+    if can?(current_user, :download_code, @project)
+      return render 'projects/no_repo' unless @project.repository_exists?
+      render 'projects/empty' if @project.empty_repo?
+    else
+      if @project.wiki_enabled?
+        @project_wiki = @project.wiki
+        @wiki_home = @project_wiki.find_page('home', params[:version_id])
+      elsif @project.feature_available?(:issues, current_user)
+        @issues = issues_collection.page(params[:page])
+        @collection_type = 'Issue'
+        @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
+      end
+
+      render :show
+    end
+  end
 
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
@@ -303,24 +292,45 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_params
-    project_feature_attributes =
-      {
-        project_feature_attributes:
-          [
-            :issues_access_level, :builds_access_level,
-            :wiki_access_level, :merge_requests_access_level, :snippets_access_level
-          ]
-      }
+    params.require(:project)
+      .permit(project_params_ce)
+  end
 
-    params.require(:project).permit(
-      :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
+  def project_params_ce
+    [
+      :avatar,
+      :build_allow_git_fetch,
+      :build_coverage_regex,
+      :build_timeout_in_minutes,
       :container_registry_enabled,
-      :issues_tracker_id, :default_branch,
-      :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
-      :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
-      :public_builds, :only_allow_merge_if_build_succeeds, :request_access_enabled,
-      :lfs_enabled, project_feature_attributes
-    )
+      :default_branch,
+      :description,
+      :import_url,
+      :issues_tracker,
+      :issues_tracker_id,
+      :last_activity_at,
+      :lfs_enabled,
+      :name,
+      :namespace_id,
+      :only_allow_merge_if_all_discussions_are_resolved,
+      :only_allow_merge_if_pipeline_succeeds,
+      :printing_merge_request_link_enabled,
+      :path,
+      :public_builds,
+      :request_access_enabled,
+      :runners_token,
+      :tag_list,
+      :visibility_level,
+
+      project_feature_attributes: %i[
+        builds_access_level
+        issues_access_level
+        merge_requests_access_level
+        repository_access_level
+        snippets_access_level
+        wiki_access_level
+      ]
+    ]
   end
 
   def repo_exists?
@@ -333,7 +343,11 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_view_files?
-    current_user && current_user.project_view == 'files'
+    if current_user
+      current_user.project_view == 'files'
+    else
+      project_view_files_allowed?
+    end
   end
 
   # Override extract_ref from ExtractsPath, which returns the branch and file path
@@ -346,5 +360,16 @@ class ProjectsController < Projects::ApplicationController
   # Override get_id from ExtractsPath in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
+  end
+
+  def project_view_files_allowed?
+    !project.empty_repo? && can?(current_user, :download_code, project)
+  end
+
+  def build_canonical_path(project)
+    params[:namespace_id] = project.namespace.to_param
+    params[:id] = project.to_param
+
+    url_for(params)
   end
 end

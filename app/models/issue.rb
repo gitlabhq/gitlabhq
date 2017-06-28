@@ -3,11 +3,15 @@ require 'carrierwave/orm/activerecord'
 class Issue < ActiveRecord::Base
   include InternalId
   include Issuable
+  include Noteable
   include Referable
   include Sortable
-  include Taskable
   include Spammable
   include FasterCacheKeys
+  include RelativePositioning
+  include IgnorableColumn
+
+  ignore_column :position
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -16,8 +20,6 @@ class Issue < ActiveRecord::Base
   DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
 
-  ActsAsTaggableOn.strict_case_match = true
-
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 
@@ -25,11 +27,16 @@ class Issue < ActiveRecord::Base
 
   has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
 
+  has_many :issue_assignees
+  has_many :assignees, class_name: "User", through: :issue_assignees
+
   validates :project, presence: true
 
-  scope :cared, ->(user) { where(assignee_id: user) }
-  scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
+
+  scope :assigned, -> { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
+  scope :unassigned, -> { where('NOT EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
+  scope :assigned_to, ->(u) { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = ? AND issue_id = issues.id)', u.id)}
 
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
@@ -40,8 +47,14 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
+  scope :preload_associations, -> { preload(:labels, project: :namespace) }
+
+  after_save :expire_etag_cache
+
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
+
+  participant :assignees
 
   state_machine :state, initial: :opened do
     event :close do
@@ -55,65 +68,24 @@ class Issue < ActiveRecord::Base
     state :opened
     state :reopened
     state :closed
+
+    before_transition any => :closed do |issue|
+      issue.closed_at = Time.zone.now
+    end
   end
 
   def hook_attrs
-    attributes
-  end
+    assignee_ids = self.assignee_ids
 
-  class << self
-    private
+    attrs = {
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate,
+      assignee_ids: assignee_ids,
+      assignee_id: assignee_ids.first # This key is deprecated
+    }
 
-    # Returns the project that the current scope belongs to if any, nil otherwise.
-    #
-    # Examples:
-    # - my_project.issues.without_due_date.owner_project => my_project
-    # - Issue.all.owner_project => nil
-    def owner_project
-      # No owner if we're not being called from an association
-      return unless all.respond_to?(:proxy_association)
-
-      owner = all.proxy_association.owner
-
-      # Check if the association is or belongs to a project
-      if owner.is_a?(Project)
-        owner
-      else
-        begin
-          owner.association(:project).target
-        rescue ActiveRecord::AssociationNotFoundError
-          nil
-        end
-      end
-    end
-  end
-
-  def self.visible_to_user(user)
-    return where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
-    return all if user.admin?
-
-    # Check if we are scoped to a specific project's issues
-    if owner_project
-      if owner_project.authorized_for_user?(user, Gitlab::Access::REPORTER)
-        # If the project is authorized for the user, they can see all issues in the project
-        return all
-      else
-        # else only non confidential and authored/assigned to them
-        return where('issues.confidential IS NULL OR issues.confidential IS FALSE
-          OR issues.author_id = :user_id OR issues.assignee_id = :user_id',
-          user_id: user.id)
-      end
-    end
-
-    where('
-      issues.confidential IS NULL
-      OR issues.confidential IS FALSE
-      OR (issues.confidential = TRUE
-        AND (issues.author_id = :user_id
-          OR issues.assignee_id = :user_id
-          OR issues.project_id IN(:project_ids)))',
-      user_id: user.id,
-      project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
+    attributes.merge!(attrs)
   end
 
   def self.reference_prefix
@@ -138,6 +110,10 @@ class Issue < ActiveRecord::Base
     reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
   end
 
+  def self.project_foreign_key
+    'project_id'
+  end
+
   def self.sort(method, excluded_labels: [])
     case method.to_s
     when 'due_date_asc' then order_due_date_asc
@@ -147,14 +123,34 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
+  def self.order_by_position_and_priority
+    order_labels_priority
+      .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
+              Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
+              "id DESC")
+  end
+
+  # Returns a Hash of attributes to be used for Twitter card metadata
+  def card_attributes
+    {
+      'Author'   => author.try(:name),
+      'Assignee' => assignee_list
+    }
+  end
+
+  def assignee_or_author?(user)
+    author_id == user.id || assignees.exists?(user.id)
+  end
+
+  def assignee_list
+    assignees.map(&:name).to_sentence
+  end
+
+  # `from` argument can be a Namespace or Project.
+  def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    if cross_project_reference?(from_project)
-      reference = project.to_reference + reference
-    end
-
-    reference
+    "#{project.to_reference(from, full: full)}#{reference}"
   end
 
   def referenced_merge_requests(current_user = nil)
@@ -179,16 +175,12 @@ class Issue < ActiveRecord::Base
     branches_with_iid - branches_with_merge_request
   end
 
-  # Reset issue events cache
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when an issue is updated
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.reset_event_cache_for(self)
+  # Returns boolean if a related branch exists for the current issue
+  # ignores merge requests branchs
+  def has_related_branch?
+    project.repository.branch_names.any? do |branch|
+      /\A#{iid}-(?!\d+-stable)/i =~ branch
+    end
   end
 
   # To allow polymorphism with MergeRequest.
@@ -207,7 +199,13 @@ class Issue < ActiveRecord::Base
       note.all_references(current_user, extractor: ext)
     end
 
-    ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
+    merge_requests = ext.merge_requests.select(&:open?)
+    if merge_requests.any?
+      ids = MergeRequestsClosingIssues.where(merge_request_id: merge_requests.map(&:id), issue_id: id).pluck(:merge_request_id)
+      merge_requests.select { |mr| mr.id.in?(ids) }
+    else
+      []
+    end
   end
 
   def moved?
@@ -241,10 +239,40 @@ class Issue < ActiveRecord::Base
   # Returns `true` if the current issue can be viewed by either a logged in User
   # or an anonymous user.
   def visible_to_user?(user = nil)
+    return false unless project && project.feature_available?(:issues, user)
+
     user ? readable_by?(user) : publicly_visible?
   end
 
+  def overdue?
+    due_date.try(:past?) || false
+  end
+
+  def check_for_spam?
+    project.public? && (title_changed? || description_changed?)
+  end
+
+  def as_json(options = {})
+    super(options).tap do |json|
+      json[:subscribed] = subscribed?(options[:user], project) if options.key?(:user) && options[:user]
+
+      if options.key?(:labels)
+        json[:labels] = labels.as_json(
+          project: project,
+          only: [:id, :title, :description, :color, :priority],
+          methods: [:text_color]
+        )
+      end
+    end
+  end
+
+  private
+
   # Returns `true` if the given User can read the current Issue.
+  #
+  # This method duplicates the same check of issue_policy.rb
+  # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
+  # Make sure to sync this method with issue_policy.rb
   def readable_by?(user)
     if user.admin?
       true
@@ -252,7 +280,7 @@ class Issue < ActiveRecord::Base
       true
     elsif confidential?
       author == user ||
-        assignee == user ||
+        assignees.include?(user) ||
         project.team.member?(user, Gitlab::Access::REPORTER)
     else
       project.public? ||
@@ -266,12 +294,12 @@ class Issue < ActiveRecord::Base
     project.public? && !confidential?
   end
 
-  def overdue?
-    due_date.try(:past?) || false
-  end
-
-  # Only issues on public projects should be checked for spam
-  def check_for_spam?
-    project.public?
+  def expire_etag_cache
+    key = Gitlab::Routing.url_helpers.realtime_changes_namespace_project_issue_path(
+      project.namespace,
+      project,
+      self
+    )
+    Gitlab::EtagCaching::Store.new.touch(key)
   end
 end

@@ -1,14 +1,19 @@
+/* eslint-disable space-before-function-paren, new-parens, quotes, no-var, one-var, one-var-declaration-per-line, comma-dangle, max-len */
+/* global MockU2FDevice */
+/* global U2FRegister */
 
-/*= require u2f/register */
-/*= require u2f/util */
-/*= require u2f/error */
-/*= require u2f */
-/*= require ./mock_u2f_device */
+import '~/u2f/register';
+import '~/u2f/util';
+import '~/u2f/error';
+import 'vendor/u2f';
+import './mock_u2f_device';
 
 (function() {
   describe('U2FRegister', function() {
-    fixture.load('u2f/register');
+    preloadFixtures('u2f/register.html.raw');
+
     beforeEach(function() {
+      loadFixtures('u2f/register.html.raw');
       this.u2fDevice = new MockU2FDevice;
       this.container = $("#js-register-u2f");
       this.component = new U2FRegister(this.container, $("#js-register-u2f-templates"), {}, "token");
@@ -17,7 +22,7 @@
     it('allows registering a U2F device', function() {
       var deviceResponse, inProgressMessage, registeredMessage, setupButton;
       setupButton = this.container.find("#js-setup-u2f-device");
-      expect(setupButton.text()).toBe('Setup New U2F Device');
+      expect(setupButton.text()).toBe('Setup new U2F device');
       setupButton.trigger('click');
       inProgressMessage = this.container.children("p");
       expect(inProgressMessage.text()).toContain("Trying to communicate with your device");
@@ -69,5 +74,4 @@
       });
     });
   });
-
-}).call(this);
+}).call(window);

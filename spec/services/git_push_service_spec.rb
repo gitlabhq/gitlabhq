@@ -3,8 +3,8 @@ require 'spec_helper'
 describe GitPushService, services: true do
   include RepoHelpers
 
-  let(:user)          { create :user }
-  let(:project)       { create :project }
+  let(:user)    { create(:user) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.team << [user, :master]
@@ -27,27 +27,14 @@ describe GitPushService, services: true do
 
       it { is_expected.to be_truthy }
 
-      it 'flushes general cached data' do
-        expect(project.repository).to receive(:expire_cache).
-          with('master', newrev)
+      it 'calls the after_push_commit hook' do
+        expect(project.repository).to receive(:after_push_commit).with('master')
 
         subject
       end
 
-      it 'flushes the visible content cache' do
-        expect(project.repository).to receive(:expire_has_visible_content_cache)
-
-        subject
-      end
-
-      it 'flushes the branches cache' do
-        expect(project.repository).to receive(:expire_branches_cache)
-
-        subject
-      end
-
-      it 'flushes the branch count cache' do
-        expect(project.repository).to receive(:expire_branch_count_cache)
+      it 'calls the after_create_branch hook' do
+        expect(project.repository).to receive(:after_create_branch)
 
         subject
       end
@@ -56,21 +43,8 @@ describe GitPushService, services: true do
     context 'existing branch' do
       it { is_expected.to be_truthy }
 
-      it 'flushes general cached data' do
-        expect(project.repository).to receive(:expire_cache).
-          with('master', newrev)
-
-        subject
-      end
-
-      it 'does not flush the branches cache' do
-        expect(project.repository).not_to receive(:expire_branches_cache)
-
-        subject
-      end
-
-      it 'does not flush the branch count cache' do
-        expect(project.repository).not_to receive(:expire_branch_count_cache)
+      it 'calls the after_push_commit hook' do
+        expect(project.repository).to receive(:after_push_commit).with('master')
 
         subject
       end
@@ -81,27 +55,14 @@ describe GitPushService, services: true do
 
       it { is_expected.to be_truthy }
 
-      it 'flushes the visible content cache' do
-        expect(project.repository).to receive(:expire_has_visible_content_cache)
+      it 'calls the after_push_commit hook' do
+        expect(project.repository).to receive(:after_push_commit).with('master')
 
         subject
       end
 
-      it 'flushes the branches cache' do
-        expect(project.repository).to receive(:expire_branches_cache)
-
-        subject
-      end
-
-      it 'flushes the branch count cache' do
-        expect(project.repository).to receive(:expire_branch_count_cache)
-
-        subject
-      end
-
-      it 'flushes general cached data' do
-        expect(project.repository).to receive(:expire_cache).
-          with('master', newrev)
+      it 'calls the after_remove_branch hook' do
+        expect(project.repository).to receive(:after_remove_branch)
 
         subject
       end
@@ -170,6 +131,19 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "Pipelines" do
+    subject { execute_service(project, user, @oldrev, @newrev, @ref) }
+
+    before do
+      stub_ci_pipeline_to_return_yaml_file
+    end
+
+    it "creates a new pipeline" do
+      expect{ subject }.to change{ Ci::Pipeline.count }
+      expect(Ci::Pipeline.last).to be_push
+    end
+  end
+
   describe "Push Event" do
     before do
       service = execute_service(project, user, @oldrev, @newrev, @ref )
@@ -184,9 +158,16 @@ describe GitPushService, services: true do
 
     context "Updates merge requests" do
       it "when pushing a new branch for the first time" do
-        expect(project).to receive(:update_merge_requests).
-                               with(@blankrev, 'newrev', 'refs/heads/master', user)
+        expect(UpdateMergeRequestsWorker).to receive(:perform_async)
+                                                .with(project.id, user.id, @blankrev, 'newrev', 'refs/heads/master')
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+      end
+    end
+    
+    context "Sends System Push data" do
+      it "when pushing on a branch" do
+        expect(SystemHookPushWorker).to receive(:perform_async).with(@push_data, :push_hooks)
+        execute_service(project, user, @oldrev, @newrev, @ref )
       end
     end
   end
@@ -302,6 +283,9 @@ describe GitPushService, services: true do
         author_email: commit_author.email
       )
 
+      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
+        .and_return(commit)
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
@@ -357,6 +341,9 @@ describe GitPushService, services: true do
         committed_date: commit_time
       )
 
+      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
+        .and_return(commit)
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
@@ -364,7 +351,7 @@ describe GitPushService, services: true do
       it 'sets the metric for referenced issues' do
         execute_service(project, user, @oldrev, @newrev, @ref)
 
-        expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_within(1.second).of(commit_time)
+        expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_like_time(commit_time)
       end
 
       it 'does not set the metric for non-referenced issues' do
@@ -390,8 +377,11 @@ describe GitPushService, services: true do
         author_email: commit_author.email
       )
 
-      allow(project.repository).to receive(:commits_between).
-        and_return([closing_commit])
+      allow(project.repository).to receive(:commits_between)
+        .and_return([closing_commit])
+
+      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
+        .and_return(closing_commit)
 
       project.team << [commit_author, :master]
     end
@@ -413,9 +403,9 @@ describe GitPushService, services: true do
       end
 
       it "doesn't close issues when external issue tracker is in use" do
-        allow_any_instance_of(Project).to receive(:default_issues_tracker?).
-          and_return(false)
-        external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid)
+        allow_any_instance_of(Project).to receive(:default_issues_tracker?)
+          .and_return(false)
+        external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid, reference_pattern: project.issue_reference_pattern)
         allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(external_issue_tracker)
 
         # The push still shouldn't create cross-reference notes.
@@ -451,11 +441,7 @@ describe GitPushService, services: true do
         # project.create_jira_service doesn't seem to invalidate the cache here
         project.has_external_issue_tracker = true
         jira_service_settings
-
-        WebMock.stub_request(:post, jira_api_transition_url)
-        WebMock.stub_request(:post, jira_api_comment_url)
-        WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
-        WebMock.stub_request(:get, jira_api_test_url)
+        stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({
                                                     issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
@@ -463,6 +449,7 @@ describe GitPushService, services: true do
                                                     author_name: commit_author.name,
                                                     author_email: commit_author.email
                                                   })
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end
@@ -475,39 +462,60 @@ describe GitPushService, services: true do
         let(:message) { "this is some work.\n\nrelated to JIRA-1" }
 
         it "initiates one api call to jira server to mention the issue" do
-          execute_service(project, user, @oldrev, @newrev, @ref )
+          execute_service(project, user, @oldrev, @newrev, @ref)
 
-          expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
+          expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
             body: /mentioned this issue in/
           ).once
         end
       end
 
       context "closing an issue" do
-        let(:message) { "this is some work.\n\ncloses JIRA-1" }
+        let(:message)         { "this is some work.\n\ncloses JIRA-1" }
+        let(:comment_body)    { { body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.path_with_namespace}/commit/#{closing_commit.id}]." }.to_json }
 
-        it "initiates one api call to jira server to close the issue" do
-          transition_body = {
-            transition: {
-              id: '2'
-            }
-          }.to_json
+        before do
+          open_issue   = JIRA::Resource::Issue.new(jira_tracker.client, attrs: { "id" => "JIRA-1" })
+          closed_issue = open_issue.dup
+          allow(open_issue).to receive(:resolution).and_return(false)
+          allow(closed_issue).to receive(:resolution).and_return(true)
+          allow(JIRA::Resource::Issue).to receive(:find).and_return(open_issue, closed_issue)
 
-          execute_service(project, commit_author, @oldrev, @newrev, @ref )
-          expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
-            body: transition_body
-          ).once
+          allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return("JIRA-1")
         end
 
-        it "initiates one api call to jira server to comment on the issue" do
-          comment_body = {
-            body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
-          }.to_json
+        context "using right markdown" do
+          it "initiates one api call to jira server to close the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
 
-          execute_service(project, commit_author, @oldrev, @newrev, @ref )
-          expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
-            body: comment_body
-          ).once
+            expect(WebMock).to have_requested(:post, jira_api_transition_url('JIRA-1')).once
+          end
+
+          it "initiates one api call to jira server to comment on the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+            expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
+              body: comment_body
+            ).once
+          end
+        end
+
+        context "using wrong markdown" do
+          let(:message) { "this is some work.\n\ncloses #1" }
+
+          it "does not initiates one api call to jira server to close the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+            expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
+          end
+
+          it "does not initiates one api call to jira server to comment on the issue" do
+            execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+            expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
+              body: comment_body
+            ).once
+          end
         end
       end
     end
@@ -531,7 +539,14 @@ describe GitPushService, services: true do
     let(:housekeeping) { Projects::HousekeepingService.new(project) }
 
     before do
+      # Flush any raw Redis data stored by the housekeeping code.
+      Gitlab::Redis.with { |conn| conn.flushall }
+
       allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
+    end
+
+    after do
+      Gitlab::Redis.with { |conn| conn.flushall }
     end
 
     it 'does not perform housekeeping when not needed' do
@@ -562,6 +577,79 @@ describe GitPushService, services: true do
       expect(housekeeping).to receive(:increment!)
 
       execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+  end
+
+  describe '#update_caches' do
+    let(:service) do
+      described_class.new(project,
+                          user,
+                          oldrev: sample_commit.parent_id,
+                          newrev: sample_commit.id,
+                          ref: 'refs/heads/master')
+    end
+
+    context 'on the default branch' do
+      before do
+        allow(service).to receive(:is_default_branch?).and_return(true)
+      end
+
+      it 'flushes the caches of any special files that have been changed' do
+        commit = double(:commit)
+        diff = double(:diff, new_path: 'README.md')
+
+        expect(commit).to receive(:raw_deltas)
+          .and_return([diff])
+
+        service.push_commits = [commit]
+
+        expect(ProjectCacheWorker).to receive(:perform_async)
+          .with(project.id, %i(readme), %i(commit_count repository_size))
+
+        service.update_caches
+      end
+    end
+
+    context 'on a non-default branch' do
+      before do
+        allow(service).to receive(:is_default_branch?).and_return(false)
+      end
+
+      it 'does not flush any conditional caches' do
+        expect(ProjectCacheWorker).to receive(:perform_async)
+          .with(project.id, [], %i(commit_count repository_size))
+          .and_call_original
+
+        service.update_caches
+      end
+    end
+  end
+
+  describe '#process_commit_messages' do
+    let(:service) do
+      described_class.new(project,
+                          user,
+                          oldrev: sample_commit.parent_id,
+                          newrev: sample_commit.id,
+                          ref: 'refs/heads/master')
+    end
+
+    it 'only schedules a limited number of commits' do
+      allow(service).to receive(:push_commits)
+        .and_return(Array.new(1000, double(:commit, to_hash: {}, matches_cross_reference_regex?: true)))
+
+      expect(ProcessCommitWorker).to receive(:perform_async).exactly(100).times
+
+      service.process_commit_messages
+    end
+
+    it "skips commits which don't include cross-references" do
+      allow(service).to receive(:push_commits)
+        .and_return([double(:commit, to_hash: {}, matches_cross_reference_regex?: false)])
+
+      expect(ProcessCommitWorker).not_to receive(:perform_async)
+
+      service.process_commit_messages
     end
   end
 

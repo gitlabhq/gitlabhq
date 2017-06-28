@@ -2,8 +2,8 @@ module Gitlab
   module Metrics
     # Rack middleware for tracking Rails and Grape requests.
     class RackMiddleware
-      CONTROLLER_KEY = 'action_controller.instance'
-      ENDPOINT_KEY   = 'api.endpoint'
+      CONTROLLER_KEY = 'action_controller.instance'.freeze
+      ENDPOINT_KEY   = 'api.endpoint'.freeze
       CONTENT_TYPES = {
         'text/html' => :html,
         'text/plain' => :txt,
@@ -14,7 +14,7 @@ module Gitlab
         'image/jpeg' => :jpeg,
         'image/gif' => :gif,
         'image/svg+xml' => :svg
-      }
+      }.freeze
 
       def initialize(app)
         @app = app
@@ -70,8 +70,19 @@ module Gitlab
 
       def tag_endpoint(trans, env)
         endpoint = env[ENDPOINT_KEY]
-        path = endpoint_paths_cache[endpoint.route.route_method][endpoint.route.route_path]
-        trans.action = "Grape##{endpoint.route.route_method} #{path}"
+
+        begin
+          route = endpoint.route
+        rescue
+          # endpoint.route is calling env[Grape::Env::GRAPE_ROUTING_ARGS][:route_info]
+          # but env[Grape::Env::GRAPE_ROUTING_ARGS] is nil in the case of a 405 response
+          # so we're rescuing exceptions and bailing out
+        end
+
+        if route
+          path = endpoint_paths_cache[route.request_method][route.path]
+          trans.action = "Grape##{route.request_method} #{path}"
+        end
       end
 
       private

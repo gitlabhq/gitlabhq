@@ -14,7 +14,7 @@ module Banzai
 
       def self.renderer
         @renderer ||= begin
-          renderer = Redcarpet::Render::HTML.new
+          renderer = Banzai::Renderer::HTML.new
           Redcarpet::Markdown.new(renderer, redcarpet_options)
         end
       end

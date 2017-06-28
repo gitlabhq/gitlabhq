@@ -12,6 +12,32 @@ class WikiPage
     ActiveModel::Name.new(self, nil, 'wiki')
   end
 
+  # Sorts and groups pages by directory.
+  #
+  # pages - an array of WikiPage objects.
+  #
+  # Returns an array of WikiPage and WikiDirectory objects. The entries are
+  # sorted by alphabetical order (directories and pages inside each directory).
+  # Pages at the root level come before everything.
+  def self.group_by_directory(pages)
+    return [] if pages.blank?
+
+    pages.sort_by { |page| [page.directory, page.slug] }
+      .group_by(&:directory)
+      .map do |dir, pages|
+        if dir.present?
+          WikiDirectory.new(dir, pages)
+        else
+          pages
+        end
+      end
+      .flatten
+  end
+
+  def self.unhyphenize(name)
+    name.gsub(/-+/, ' ')
+  end
+
   def to_key
     [:slug]
   end
@@ -56,7 +82,7 @@ class WikiPage
   # The formatted title of this page.
   def title
     if @attributes[:title]
-      @attributes[:title].gsub(/-+/, ' ')
+      self.class.unhyphenize(@attributes[:title])
     else
       ""
     end
@@ -69,16 +95,17 @@ class WikiPage
 
   # The raw content of this page.
   def content
-    @attributes[:content] ||= if @page
-                                @page.text_data
-                              end
+    @attributes[:content] ||= @page&.text_data
+  end
+
+  # The hierarchy of the directory this page is contained in.
+  def directory
+    wiki.page_title_and_dir(slug).last
   end
 
   # The processed/formatted content of this page.
   def formatted_content
-    @attributes[:formatted_content] ||= if @page
-                                          @page.formatted_data
-                                        end
+    @attributes[:formatted_content] ||= @page&.formatted_data
   end
 
   # The markup format for the page.
@@ -122,7 +149,13 @@ class WikiPage
   end
 
   # Returns boolean True or False if this instance
-  # has been fully saved to disk or not.
+  # is the latest commit version of the page.
+  def latest?
+    !historical?
+  end
+
+  # Returns boolean True or False if this instance
+  # has been fully created on disk or not.
   def persisted?
     @persisted == true
   end
@@ -174,6 +207,16 @@ class WikiPage
     end
   end
 
+  # Relative path to the partial to be used when rendering collections
+  # of this object.
+  def to_partial_path
+    'projects/wikis/wiki_page'
+  end
+
+  def id
+    page.version.to_s
+  end
+
   private
 
   def set_attributes
@@ -183,6 +226,8 @@ class WikiPage
   end
 
   def save(method, *args)
+    saved = false
+
     project_wiki = wiki
     if valid? && project_wiki.send(method, *args)
 
@@ -200,10 +245,10 @@ class WikiPage
       set_attributes
 
       @persisted = true
+      saved = true
     else
       errors.add(:base, project_wiki.error_message) if project_wiki.error_message
-      @persisted = false
     end
-    @persisted
+    saved
   end
 end

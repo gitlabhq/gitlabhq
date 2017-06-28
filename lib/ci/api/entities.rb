@@ -32,6 +32,10 @@ module Ci
         expose :artifacts_file, using: ArtifactFile, if: ->(build, _) { build.artifacts? }
       end
 
+      class BuildCredentials < Grape::Entity
+        expose :type, :url, :username, :password
+      end
+
       class BuildDetails < Build
         expose :commands
         expose :repo_url
@@ -41,7 +45,21 @@ module Ci
         expose :artifacts_expire_at, if: ->(build, _) { build.artifacts? }
 
         expose :options do |model|
-          model.options
+          # This part ensures that output of old API is still the same after adding support
+          # for extended docker configuration options, used by new API
+          #
+          # I'm leaving this here, not in the model, because it should be removed at the same time
+          # when old API will be removed (planned for August 2017).
+          model.options.dup.tap do |options|
+            options[:image] = options[:image][:name] if options[:image].is_a?(Hash)
+            options[:services].map! do |service|
+              if service.is_a?(Hash)
+                service[:name]
+              else
+                service
+              end
+            end
+          end
         end
 
         expose :timeout do |model|
@@ -50,6 +68,8 @@ module Ci
 
         expose :variables
         expose :depends_on_builds, using: Build
+
+        expose :credentials, using: BuildCredentials
       end
 
       class Runner < Grape::Entity

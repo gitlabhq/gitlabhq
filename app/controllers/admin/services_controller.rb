@@ -16,6 +16,8 @@ class Admin::ServicesController < Admin::ApplicationController
 
   def update
     if service.update_attributes(service_params[:service])
+      PropagateServiceTemplateWorker.perform_async(service.id) if service.active?
+
       redirect_to admin_application_settings_services_path,
         notice: 'Application settings saved successfully'
     else
@@ -26,14 +28,10 @@ class Admin::ServicesController < Admin::ApplicationController
   private
 
   def services_templates
-    templates = []
-
-    Service.available_services_names.each do |service_name|
+    Service.available_services_names.map do |service_name|
       service_template = service_name.concat("_service").camelize.constantize
-      templates << service_template.where(template: true).first_or_create
+      service_template.where(template: true).first_or_create
     end
-
-    templates
   end
 
   def service

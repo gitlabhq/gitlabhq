@@ -1,10 +1,12 @@
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, camelcase, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len */
 
+import d3 from 'd3';
+
+(function() {
   this.Calendar = (function() {
     function Calendar(timestamps, calendar_activities_path) {
       this.calendar_activities_path = calendar_activities_path;
-      this.clickDay = bind(this.clickDay, this);
+      this.clickDay = this.clickDay.bind(this);
       this.currentSelectedDate = '';
       this.daySpace = 1;
       this.daySize = 15;
@@ -16,7 +18,7 @@
       this.timestampsTmp = [];
       var group = 0;
 
-      var today = new Date()
+      var today = new Date();
       today.setHours(0, 0, 0, 0, 0);
 
       var oneYearAgo = new Date(today);
@@ -24,18 +26,18 @@
 
       var days = gl.utils.getDayDifference(oneYearAgo, today);
 
-      for(var i = 0; i <= days; i++) {
+      for (var i = 0; i <= days; i += 1) {
         var date = new Date(oneYearAgo);
         date.setDate(date.getDate() + i);
 
         var day = date.getDay();
-        var count = timestamps[dateFormat(date, 'yyyy-mm-dd')];
+        var count = timestamps[date.format('yyyy-mm-dd')];
 
         // Create a new group array if this is the first day of the week
         // or if is first object
         if ((day === 0 && i !== 0) || i === 0) {
           this.timestampsTmp.push([]);
-          group++;
+          group += 1;
         }
 
         var innerArray = this.timestampsTmp[group - 1];
@@ -70,7 +72,7 @@
       }
 
       return extraWidthPadding;
-    }
+    };
 
     Calendar.prototype.renderSvg = function(group) {
       var width = (group + 1) * this.daySizeWithSpace + this.getExtraWidthPadding(group);
@@ -118,7 +120,7 @@
           if (stamp.count > 0) {
             contribText = stamp.count + " contribution" + (stamp.count > 1 ? 's' : '');
           }
-          dateText = dateFormat(date, 'mmm d, yyyy');
+          dateText = date.format('mmm d, yyyy');
           return contribText + "<br />" + (gl.utils.getDayName(date)) + " " + dateText;
         };
       })(this)).attr('class', 'user-contrib-cell js-tooltip').attr('fill', (function(_this) {
@@ -154,7 +156,7 @@
     };
 
     Calendar.prototype.renderMonths = function() {
-      return this.svg.append('g').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
+      return this.svg.append('g').attr('direction', 'ltr').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
         return date.x;
       }).attr('y', 10).attr('class', 'user-contrib-text').text((function(_this) {
         return function(date) {
@@ -164,15 +166,23 @@
     };
 
     Calendar.prototype.renderKey = function() {
-      var keyColors;
-      keyColors = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
-      return this.svg.append('g').attr('transform', "translate(18, " + (this.daySizeWithSpace * 8 + 16) + ")").selectAll('rect').data(keyColors).enter().append('rect').attr('width', this.daySize).attr('height', this.daySize).attr('x', (function(_this) {
-        return function(color, i) {
-          return _this.daySizeWithSpace * i;
-        };
-      })(this)).attr('y', 0).attr('fill', function(color) {
-        return color;
-      });
+      const keyValues = ['no contributions', '1-9 contributions', '10-19 contributions', '20-29 contributions', '30+ contributions'];
+      const keyColors = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
+
+      this.svg.append('g')
+        .attr('transform', `translate(18, ${this.daySizeWithSpace * 8 + 16})`)
+        .selectAll('rect')
+          .data(keyColors)
+          .enter()
+          .append('rect')
+            .attr('width', this.daySize)
+            .attr('height', this.daySize)
+            .attr('x', (color, i) => this.daySizeWithSpace * i)
+            .attr('y', 0)
+            .attr('fill', color => color)
+            .attr('class', 'js-tooltip')
+            .attr('title', (color, i) => keyValues[i])
+            .attr('data-container', 'body');
     };
 
     Calendar.prototype.initColor = function() {
@@ -205,6 +215,7 @@
           }
         });
       } else {
+        this.currentSelectedDate = '';
         return $('.user-calendar-activities').html('');
       }
     };
@@ -216,7 +227,5 @@
     };
 
     return Calendar;
-
   })();
-
-}).call(this);
+}).call(window);

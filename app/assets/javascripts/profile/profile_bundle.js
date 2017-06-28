@@ -1,6 +1,2 @@
-
-/*= require_tree . */
-
-(function() {
-
-}).call(this);
+import './gl_crop';
+import './profile';

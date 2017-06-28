@@ -8,43 +8,42 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   end
 
   step 'I remove label \'bug\'' do
-    page.within "#label_#{bug_label.id}" do
+    page.within "#project_label_#{bug_label.id}" do
       first(:link, 'Delete').click
     end
   end
 
   step 'I delete all labels' do
     page.within '.labels' do
-      page.all('.remove-row').each do |remove|
-        remove.click
-        sleep 0.05
+      page.all('.remove-row').each do
+        first('.remove-row').click
       end
     end
   end
 
   step 'I should see labels help message' do
     page.within '.labels' do
-      expect(page).to have_content 'Create a label or generate a default set '\
-                                   'of labels'
+      expect(page).to have_content 'Generate a default set of labels'
+      expect(page).to have_content 'New label'
     end
   end
 
   step 'I submit new label \'support\'' do
     fill_in 'Title', with: 'support'
     fill_in 'Background color', with: '#F95610'
-    click_button 'Create Label'
+    click_button 'Create label'
   end
 
   step 'I submit new label \'bug\'' do
     fill_in 'Title', with: 'bug'
     fill_in 'Background color', with: '#F95610'
-    click_button 'Create Label'
+    click_button 'Create label'
   end
 
   step 'I submit new label with invalid color' do
     fill_in 'Title', with: 'support'
     fill_in 'Background color', with: '#12'
-    click_button 'Create Label'
+    click_button 'Create label'
   end
 
   step 'I should see label label exist error message' do

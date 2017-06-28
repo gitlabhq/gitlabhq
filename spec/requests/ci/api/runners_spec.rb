@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe Ci::API::API do
-  include ApiHelpers
+describe Ci::API::Runners do
   include StubGitlabCalls
 
   let(:registration_token) { 'abcdefg123456' }
@@ -13,11 +12,14 @@ describe Ci::API::API do
 
   describe "POST /runners/register" do
     context 'when runner token is provided' do
-      before { post ci_api("/runners/register"), token: registration_token }
+      before do
+        post ci_api("/runners/register"), token: registration_token
+      end
 
       it 'creates runner with default values' do
         expect(response).to have_http_status 201
         expect(Ci::Runner.first.run_untagged).to be true
+        expect(Ci::Runner.first.token).not_to eq(registration_token)
       end
     end
 
@@ -41,7 +43,7 @@ describe Ci::API::API do
 
       it 'creates runner' do
         expect(response).to have_http_status 201
-        expect(Ci::Runner.first.tag_list.sort).to eq(["tag1", "tag2"])
+        expect(Ci::Runner.first.tag_list.sort).to eq(%w(tag1 tag2))
       end
     end
 
@@ -69,11 +71,16 @@ describe Ci::API::API do
 
     context 'when project token is provided' do
       let(:project) { FactoryGirl.create(:empty_project) }
-      before { post ci_api("/runners/register"), token: project.runners_token }
+
+      before do
+        post ci_api("/runners/register"), token: project.runners_token
+      end
 
       it 'creates runner' do
         expect(response).to have_http_status 201
         expect(project.runners.size).to eq(1)
+        expect(Ci::Runner.first.token).not_to eq(registration_token)
+        expect(Ci::Runner.first.token).not_to eq(project.runners_token)
       end
     end
 
@@ -109,10 +116,12 @@ describe Ci::API::API do
   end
 
   describe "DELETE /runners/delete" do
-    let!(:runner) { FactoryGirl.create(:ci_runner) }
-    before { delete ci_api("/runners/delete"), token: runner.token }
+    it 'returns 200' do
+      runner = FactoryGirl.create(:ci_runner)
+      delete ci_api("/runners/delete"), token: runner.token
 
-    it { expect(response).to have_http_status 200 }
-    it { expect(Ci::Runner.count).to eq(0) }
+      expect(response).to have_http_status 200
+      expect(Ci::Runner.count).to eq(0)
+    end
   end
 end

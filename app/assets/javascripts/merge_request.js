@@ -1,11 +1,11 @@
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
+/* global MergeRequestTabs */
 
-/*= require jquery.waitforimages */
-/*= require task_list */
-/*= require merge_request_tabs */
+import 'vendor/jquery.waitforimages';
+import './task_list';
+import './merge_request_tabs';
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
   this.MergeRequest = (function() {
     function MergeRequest(opts) {
       // Initialize MergeRequest behavior
@@ -14,7 +14,7 @@
       //   action - String, current controller action
       //
       this.opts = opts != null ? opts : {};
-      this.submitNoteForm = bind(this.submitNoteForm, this);
+      this.submitNoteForm = this.submitNoteForm.bind(this);
       this.$el = $('.merge-request');
       this.$('.show-all-commits').on('click', (function(_this) {
         return function() {
@@ -22,11 +22,18 @@
         };
       })(this));
       this.initTabs();
-      // Prevent duplicate event bindings
-      this.disableTaskList();
       this.initMRBtnListeners();
+      this.initCommitMessageListeners();
       if ($("a.btn-close").length) {
-        this.initTaskList();
+        this.taskList = new gl.TaskList({
+          dataType: 'merge_request',
+          fieldName: 'description',
+          selector: '.detail-page-description',
+          onSuccess: (result) => {
+            document.querySelector('#task_status').innerText = result.task_status;
+            document.querySelector('#task_status_short').innerText = result.task_status_short;
+          }
+        });
       }
     }
 
@@ -39,17 +46,12 @@
       if (window.mrTabs) {
         window.mrTabs.unbindEvents();
       }
-      window.mrTabs = new MergeRequestTabs(this.opts);
+      window.mrTabs = new gl.MergeRequestTabs(this.opts);
     };
 
     MergeRequest.prototype.showAllCommits = function() {
       this.$('.first-commits').remove();
       return this.$('.all-commits').removeClass('hide');
-    };
-
-    MergeRequest.prototype.initTaskList = function() {
-      $('.detail-page-description .js-task-list-container').taskList('enable');
-      return $(document).on('tasklist:changed', '.detail-page-description .js-task-list-container', this.updateTaskList);
     };
 
     MergeRequest.prototype.initMRBtnListeners = function() {
@@ -82,28 +84,41 @@
       }
     };
 
-    MergeRequest.prototype.disableTaskList = function() {
-      $('.detail-page-description .js-task-list-container').taskList('disable');
-      return $(document).off('tasklist:changed', '.detail-page-description .js-task-list-container');
+    MergeRequest.prototype.initCommitMessageListeners = function() {
+      $(document).on('click', 'a.js-with-description-link', function(e) {
+        var textarea = $('textarea.js-commit-message');
+        e.preventDefault();
+
+        textarea.val(textarea.data('messageWithDescription'));
+        $('.js-with-description-hint').hide();
+        $('.js-without-description-hint').show();
+      });
+
+      $(document).on('click', 'a.js-without-description-link', function(e) {
+        var textarea = $('textarea.js-commit-message');
+        e.preventDefault();
+
+        textarea.val(textarea.data('messageWithoutDescription'));
+        $('.js-with-description-hint').show();
+        $('.js-without-description-hint').hide();
+      });
     };
 
-    MergeRequest.prototype.updateTaskList = function() {
-      var patchData;
-      patchData = {};
-      patchData['merge_request'] = {
-        'description': $('.js-task-list-field', this).val()
-      };
-      return $.ajax({
-        type: 'PATCH',
-        url: $('form.js-issuable-update').attr('action'),
-        data: patchData
-      });
-    // TODO (rspeicher): Make the merge request description inline-editable like a
-    // note so that we can re-use its form here
+    MergeRequest.prototype.updateStatusText = function(classToRemove, classToAdd, newStatusText) {
+      $('.detail-page-header .status-box')
+        .removeClass(classToRemove)
+        .addClass(classToAdd)
+        .find('span')
+        .text(newStatusText);
+    };
+
+    MergeRequest.prototype.decreaseCounter = function(by = 1) {
+      const $el = $('.nav-links .js-merge-counter');
+      const count = Math.max((parseInt($el.text().replace(/[^\d]/, ''), 10) - by), 0);
+
+      $el.text(gl.text.addDelimiter(count));
     };
 
     return MergeRequest;
-
   })();
-
-}).call(this);
+}).call(window);

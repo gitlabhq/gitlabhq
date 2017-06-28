@@ -24,7 +24,7 @@ namespace you can use the `configure` class method. This method simply yields
 the supplied block while passing `Gitlab::Metrics::Instrumentation` as its
 argument. An example:
 
-```
+```ruby
 Gitlab::Metrics::Instrumentation.configure do |conf|
   conf.instrument_method(Foo, :bar)
   conf.instrument_method(Foo, :baz)
@@ -35,13 +35,13 @@ Using this method is in general preferred over directly calling the various
 instrumentation methods.
 
 Method instrumentation should be added in the initializer
-`config/initializers/metrics.rb`.
+`config/initializers/8_metrics.rb`.
 
 ### Examples
 
 Instrumenting a single method:
 
-```
+```ruby
 Gitlab::Metrics::Instrumentation.configure do |conf|
   conf.instrument_method(User, :find_by)
 end
@@ -49,7 +49,7 @@ end
 
 Instrumenting an entire class hierarchy:
 
-```
+```ruby
 Gitlab::Metrics::Instrumentation.configure do |conf|
   conf.instrument_class_hierarchy(ActiveRecord::Base)
 end
@@ -57,7 +57,7 @@ end
 
 Instrumenting all public class methods:
 
-```
+```ruby
 Gitlab::Metrics::Instrumentation.configure do |conf|
   conf.instrument_methods(User)
 end
@@ -68,7 +68,7 @@ end
 The easiest way to check if a method has been instrumented is to check its
 source location. For example:
 
-```
+```ruby
 method = Rugged::TagCollection.instance_method(:[])
 
 method.source_location

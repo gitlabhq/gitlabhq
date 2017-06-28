@@ -5,9 +5,9 @@
   .panel.panel-default
     .panel-heading
       Shared with
-      %strong #{shared_group.name}
+      %strong= shared_group.name
       group, members with
-      %strong #{group_links.human_access}
+      %strong= group_links.human_access
       role (#{shared_group_users_count})
       - if can?(current_user, :admin_group, shared_group)
         .panel-head-actions

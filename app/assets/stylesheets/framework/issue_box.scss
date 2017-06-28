@@ -16,11 +16,11 @@
     margin-top: 5px;
   }
 
-  @include border-radius(3px);
+  border-radius: 3px;
   display: block;
   float: left;
   margin-right: 10px;
-  color: #fff;
+  color: $white-light;
   font-size: $gl-font-size;
   line-height: 25px;
 
@@ -33,10 +33,14 @@
   }
 
   &.status-box-open {
-    background-color: $green-light;
+    background-color: $green-500;
   }
 
   &.status-box-expired {
-    background: #cea61b;
+    background-color: $issue-status-expired;
+  }
+
+  &.status-box-upcoming {
+    background: $gl-text-color-secondary;
   }
 }

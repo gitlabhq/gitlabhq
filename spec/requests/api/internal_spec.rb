@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
-  include ApiHelpers
+describe API::Internal do
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
-  let(:project) { create(:project) }
-  let(:secret_token) { File.read Gitlab.config.gitlab_shell.secret_file }
+  let(:project) { create(:project, :repository) }
+  let(:secret_token) { Gitlab::Shell.secret_token }
 
   describe "GET /internal/check", no_db: true do
     it do
@@ -16,21 +15,43 @@ describe API::API, api: true  do
     end
   end
 
-  describe "GET /internal/broadcast_message" do
-    context "broadcast message exists" do
-      let!(:broadcast_message) { create(:broadcast_message, starts_at: Time.now.yesterday, ends_at: Time.now.tomorrow ) }
+  describe 'GET /internal/broadcast_message' do
+    context 'broadcast message exists' do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
-      it do
-        get api("/internal/broadcast_message"), secret_token: secret_token
+      it 'returns one broadcast message'  do
+        get api('/internal/broadcast_message'), secret_token: secret_token
 
         expect(response).to have_http_status(200)
-        expect(json_response["message"]).to eq(broadcast_message.message)
+        expect(json_response['message']).to eq(broadcast_message.message)
       end
     end
 
-    context "broadcast message doesn't exist" do
-      it do
-        get api("/internal/broadcast_message"), secret_token: secret_token
+    context 'broadcast message does not exist' do
+      it 'returns nothing'  do
+        get api('/internal/broadcast_message'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+  end
+
+  describe 'GET /internal/broadcast_messages' do
+    context 'broadcast message(s) exist' do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
+
+      it 'returns active broadcast message(s)' do
+        get api('/internal/broadcast_messages'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response[0]['message']).to eq(broadcast_message.message)
+      end
+    end
+
+    context 'broadcast message does not exist' do
+      it 'returns nothing' do
+        get api('/internal/broadcast_messages'), secret_token: secret_token
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_empty
@@ -147,10 +168,31 @@ describe API::API, api: true  do
     end
   end
 
-  describe "POST /internal/allowed" do
+  describe "POST /internal/allowed", :redis do
     context "access granted" do
       before do
         project.team << [user, :developer]
+        Timecop.freeze
+      end
+
+      after do
+        Timecop.return
+      end
+
+      context 'with env passed as a JSON' do
+        it 'sets env in RequestStore' do
+          expect(Gitlab::Git::Env).to receive(:set).with({
+            'GIT_OBJECT_DIRECTORY' => 'foo',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar'
+          })
+
+          push(key, project.wiki, env: {
+            GIT_OBJECT_DIRECTORY: 'foo',
+            GIT_ALTERNATE_OBJECT_DIRECTORIES: 'bar'
+          }.to_json)
+
+          expect(response).to have_http_status(200)
+        end
       end
 
       context "git push with project.wiki" do
@@ -160,6 +202,8 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
+          expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
+          expect(user).not_to have_an_activity_record
         end
       end
 
@@ -170,6 +214,8 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
+          expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
+          expect(user).to have_an_activity_record
         end
       end
 
@@ -180,6 +226,8 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+          expect(user).to have_an_activity_record
         end
       end
 
@@ -190,6 +238,30 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+          expect(user).not_to have_an_activity_record
+        end
+
+        context 'project as /namespace/project' do
+          it do
+            pull(key, project_with_repo_path('/' + project.path_with_namespace))
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+          end
+        end
+
+        context 'project as namespace/project' do
+          it do
+            pull(key, project_with_repo_path(project.path_with_namespace))
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+          end
         end
       end
     end
@@ -205,6 +277,7 @@ describe API::API, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
+          expect(user).not_to have_an_activity_record
         end
       end
 
@@ -214,12 +287,13 @@ describe API::API, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
+          expect(user).not_to have_an_activity_record
         end
       end
     end
 
     context "blocked user" do
-      let(:personal_project) { create(:project, namespace: user.namespace) }
+      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
 
       before do
         user.block
@@ -231,6 +305,7 @@ describe API::API, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
+          expect(user).not_to have_an_activity_record
         end
       end
 
@@ -240,13 +315,12 @@ describe API::API, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
+          expect(user).not_to have_an_activity_record
         end
       end
     end
 
     context "archived project" do
-      let(:personal_project) { create(:project, namespace: user.namespace) }
-
       before do
         project.team << [user, :developer]
         project.archive!
@@ -299,7 +373,7 @@ describe API::API, api: true  do
 
     context 'project does not exist' do
       it do
-        pull(key, OpenStruct.new(path_with_namespace: 'gitlab/notexists'))
+        pull(key, project_with_repo_path('gitlab/notexist'))
 
         expect(response).to have_http_status(200)
         expect(json_response["status"]).to be_falsey
@@ -317,8 +391,7 @@ describe API::API, api: true  do
 
     context 'ssh access has been disabled' do
       before do
-        settings = ::ApplicationSetting.create_from_defaults
-        settings.update_attribute(:enabled_git_access_protocol, 'http')
+        stub_application_setting(enabled_git_access_protocol: 'http')
       end
 
       it 'rejects the SSH push' do
@@ -340,8 +413,7 @@ describe API::API, api: true  do
 
     context 'http access has been disabled' do
       before do
-        settings = ::ApplicationSetting.create_from_defaults
-        settings.update_attribute(:enabled_git_access_protocol, 'ssh')
+        stub_application_setting(enabled_git_access_protocol: 'ssh')
       end
 
       it 'rejects the HTTP push' do
@@ -363,13 +435,48 @@ describe API::API, api: true  do
 
     context 'web actions are always allowed' do
       it 'allows WEB push' do
-        settings = ::ApplicationSetting.create_from_defaults
-        settings.update_attribute(:enabled_git_access_protocol, 'ssh')
+        stub_application_setting(enabled_git_access_protocol: 'ssh')
         project.team << [user, :developer]
         push(key, project, 'web')
 
         expect(response.status).to eq(200)
         expect(json_response['status']).to be_truthy
+      end
+    end
+
+    context 'the project path was changed' do
+      let!(:old_path_to_repo) { project.repository.path_to_repo }
+      let!(:old_full_path) { project.full_path }
+      let(:project_moved_message) do
+        <<-MSG.strip_heredoc
+          Project '#{old_full_path}' was moved to '#{project.full_path}'.
+
+          Please update your Git remote and try again:
+
+            git remote set-url origin #{project.ssh_url_to_repo}
+        MSG
+      end
+
+      before do
+        project.team << [user, :developer]
+        project.path = 'new_path'
+        project.save!
+      end
+
+      it 'rejects the push' do
+        push_with_path(key, old_path_to_repo)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq(project_moved_message)
+      end
+
+      it 'rejects the SSH pull' do
+        pull_with_path(key, old_path_to_repo)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq(project_moved_message)
       end
     end
   end
@@ -380,15 +487,126 @@ describe API::API, api: true  do
 
     before do
       project.team << [user, :developer]
-      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
     end
 
     it 'returns link to create new merge request' do
+      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
+
       expect(json_response).to match [{
         "branch_name" => "new_branch",
-        "url" => "http://localhost/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
         "new_merge_request" => true
       }]
+    end
+
+    it 'returns empty array if printing_merge_request_link_enabled is false' do
+      project.update!(printing_merge_request_link_enabled: false)
+
+      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
+
+      expect(json_response).to eq([])
+    end
+
+    context 'with a gl_repository parameter' do
+      let(:gl_repository) { "project-#{project.id}" }
+
+      it 'returns link to create new merge request' do
+        get api("/internal/merge_request_urls?gl_repository=#{gl_repository}&changes=#{changes}"), secret_token: secret_token
+
+        expect(json_response).to match [{
+          "branch_name" => "new_branch",
+          "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+          "new_merge_request" => true
+        }]
+      end
+    end
+  end
+
+  # TODO: Uncomment when the end-point is reenabled
+  # describe 'POST /notify_post_receive' do
+  #   let(:valid_params) do
+  #     { project: project.repository.path, secret_token: secret_token }
+  #   end
+  #
+  #   let(:valid_wiki_params) do
+  #     { project: project.wiki.repository.path, secret_token: secret_token }
+  #   end
+  #
+  #   before do
+  #     allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
+  #   end
+  #
+  #   it "calls the Gitaly client with the project's repository" do
+  #     expect(Gitlab::GitalyClient::Notifications).
+  #       to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
+  #       and_call_original
+  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       to receive(:post_receive)
+  #
+  #     post api("/internal/notify_post_receive"), valid_params
+  #
+  #     expect(response).to have_http_status(200)
+  #   end
+  #
+  #   it "calls the Gitaly client with the wiki's repository if it's a wiki" do
+  #     expect(Gitlab::GitalyClient::Notifications).
+  #       to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
+  #       and_call_original
+  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       to receive(:post_receive)
+  #
+  #     post api("/internal/notify_post_receive"), valid_wiki_params
+  #
+  #     expect(response).to have_http_status(200)
+  #   end
+  #
+  #   it "returns 500 if the gitaly call fails" do
+  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       to receive(:post_receive).and_raise(GRPC::Unavailable)
+  #
+  #     post api("/internal/notify_post_receive"), valid_params
+  #
+  #     expect(response).to have_http_status(500)
+  #   end
+  #
+  #   context 'with a gl_repository parameter' do
+  #     let(:valid_params) do
+  #       { gl_repository: "project-#{project.id}", secret_token: secret_token }
+  #     end
+  #
+  #     let(:valid_wiki_params) do
+  #       { gl_repository: "wiki-#{project.id}", secret_token: secret_token }
+  #     end
+  #
+  #     it "calls the Gitaly client with the project's repository" do
+  #       expect(Gitlab::GitalyClient::Notifications).
+  #         to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
+  #         and_call_original
+  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #         to receive(:post_receive)
+  #
+  #       post api("/internal/notify_post_receive"), valid_params
+  #
+  #       expect(response).to have_http_status(200)
+  #     end
+  #
+  #     it "calls the Gitaly client with the wiki's repository if it's a wiki" do
+  #       expect(Gitlab::GitalyClient::Notifications).
+  #         to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
+  #         and_call_original
+  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #         to receive(:post_receive)
+  #
+  #       post api("/internal/notify_post_receive"), valid_wiki_params
+  #
+  #       expect(response).to have_http_status(200)
+  #     end
+  #   end
+  # end
+
+  def project_with_repo_path(path)
+    double().tap do |fake_project|
+      allow(fake_project).to receive_message_chain('repository.path_to_repo' => path)
     end
   end
 
@@ -396,22 +614,47 @@ describe API::API, api: true  do
     post(
       api("/internal/allowed"),
       key_id: key.id,
-      project: project.path_with_namespace,
+      project: project.repository.path_to_repo,
       action: 'git-upload-pack',
       secret_token: secret_token,
       protocol: protocol
     )
   end
 
-  def push(key, project, protocol = 'ssh')
+  def pull_with_path(key, path_to_repo, protocol = 'ssh')
+    post(
+      api("/internal/allowed"),
+      key_id: key.id,
+      project: path_to_repo,
+      action: 'git-upload-pack',
+      secret_token: secret_token,
+      protocol: protocol
+    )
+  end
+
+  def push(key, project, protocol = 'ssh', env: nil)
     post(
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
-      project: project.path_with_namespace,
+      project: project.repository.path_to_repo,
       action: 'git-receive-pack',
       secret_token: secret_token,
-      protocol: protocol
+      protocol: protocol,
+      env: env
+    )
+  end
+
+  def push_with_path(key, path_to_repo, protocol = 'ssh', env: nil)
+    post(
+      api("/internal/allowed"),
+      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
+      key_id: key.id,
+      project: path_to_repo,
+      action: 'git-receive-pack',
+      secret_token: secret_token,
+      protocol: protocol,
+      env: env
     )
   end
 
@@ -420,7 +663,7 @@ describe API::API, api: true  do
       api("/internal/allowed"),
       ref: 'master',
       key_id: key.id,
-      project: project.path_with_namespace,
+      project: project.repository.path_to_repo,
       action: 'git-upload-archive',
       secret_token: secret_token,
       protocol: 'ssh'
@@ -432,7 +675,7 @@ describe API::API, api: true  do
       api("/internal/lfs_authenticate"),
       key_id: key_id,
       secret_token: secret_token,
-      project: project.path_with_namespace
+      project: project.repository.path_to_repo
     )
   end
 end

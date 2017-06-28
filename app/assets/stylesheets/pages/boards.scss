@@ -1,4 +1,5 @@
-lex
+@import "./issues/issue_count_badge";
+
 [v-cloak] {
   display: none;
 }
@@ -13,6 +14,10 @@ lex
   opacity: 1!important;
 
   * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     // !important to make sure no style can override this when dragging
     cursor: -webkit-grabbing!important;
     cursor: grabbing!important;
@@ -28,7 +33,7 @@ lex
 
   .dropdown-content {
     max-height: 150px;
-	}
+  }
 }
 
 .issue-board-dropdown-content {
@@ -43,9 +48,13 @@ lex
 }
 
 .issue-boards-page {
-  .page-with-sidebar {
+  .content-wrapper {
     padding-bottom: 0;
   }
+}
+
+.boards-app {
+  position: relative;
 }
 
 .boards-app-loading {
@@ -65,8 +74,15 @@ lex
 
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
-    height: calc(100vh - 220px);
+    // scss-lint:disable DuplicateProperty
+    height: calc(100vh - 222px);
+    // scss-lint:enable DuplicateProperty
     min-height: 475px;
+    transition: width .2s;
+
+    &.is-compact {
+      width: calc(100% - 290px);
+    }
   }
 }
 
@@ -82,12 +98,54 @@ lex
   @media (min-width: $screen-sm-min) {
     width: 400px;
   }
+
+  &.is-expandable {
+    .board-header {
+      cursor: pointer;
+    }
+  }
+
+  &.is-collapsed {
+    width: 50px;
+
+    .board-header {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .board-title {
+      position: initial;
+      padding: 0;
+      border-bottom: 0;
+
+      > span {
+        display: block;
+        transform: rotate(90deg) translate(25px, 0);
+      }
+    }
+
+    .board-title-expandable-toggle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -10px;
+    }
+
+    .board-list-component,
+    .issue-count-badge {
+      display: none;
+    }
+  }
 }
 
 .board-inner {
+  position: relative;
   height: 100%;
   font-size: $issue-boards-font-size;
-  background: $background-color;
+  background: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 }
@@ -98,6 +156,12 @@ lex
 
   &.has-border {
     border-top: 3px solid;
+    margin-top: -1px;
+    margin-right: -1px;
+    margin-left: -1px;
+    padding-top: 1px;
+    padding-right: 1px;
+    padding-left: 1px;
 
     .board-title {
       padding-top: ($gl-padding - 3px);
@@ -132,9 +196,9 @@ lex
 }
 
 .board-blank-state {
-  height: 100%;
+  height: calc(100% - 49px);
   padding: $gl-padding;
-  background-color: #fff;
+  background-color: $white-light;
 }
 
 .board-blank-state-list {
@@ -155,17 +219,53 @@ lex
   }
 }
 
-.board-list {
+.slide-down-enter {
+  transform: translateY(-100%);
+}
+
+.slide-down-enter-active {
+  transition: transform $fade-in-duration;
+
+  + .board-list {
+    transform: translateY(-136px);
+    transition: none;
+  }
+}
+
+.slide-down-enter-to {
+  + .board-list {
+    transform: translateY(0);
+    transition: transform $fade-in-duration ease;
+  }
+}
+
+.slide-down-leave {
+  transform: translateY(0);
+}
+
+.slide-down-leave-active {
+  transition: all $fade-in-duration;
+  transform: translateY(-136px);
+
+  + .board-list {
+    transition: transform $fade-in-duration ease;
+    transform: translateY(-136px);
+  }
+}
+
+.board-list-component {
   height: calc(100% - 49px);
+  overflow: hidden;
+}
+
+.board-list {
+  height: 100%;
+  width: 100%;
   margin-bottom: 0;
   padding: 5px;
   list-style: none;
   overflow-y: scroll;
   overflow-x: hidden;
-
-  &.is-smaller {
-    height: calc(100% - 185px);
-  }
 }
 
 .board-list-loading {
@@ -175,14 +275,23 @@ lex
 
 .card {
   position: relative;
-  padding: 10px $gl-padding;
-  background: #fff;
+  padding: 11px 10px 11px $gl-padding;
+  background: $white-light;
   border-radius: $border-radius-default;
-  box-shadow: 0 1px 2px rgba(186, 186, 186, 0.5);
+  box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
 
   &:not(:last-child) {
     margin-bottom: 5px;
+  }
+
+  &.is-active,
+  &.is-active .card-assignee:hover a {
+    background-color: $row-hover;
+
+    &:first-child:not(:only-child) {
+      box-shadow: -10px 0 10px 1px $row-hover;
+    }
   }
 
   .label {
@@ -191,36 +300,115 @@ lex
   }
 
   .confidential-icon {
+    position: relative;
+    top: 1px;
     margin-right: 5px;
   }
 }
 
 .card-title {
-  margin: 0;
+  margin: 0 30px 0 0;
   font-size: 1em;
+  line-height: inherit;
 
   a {
-    color: inherit;
+    color: $gl-text-color;
     word-wrap: break-word;
+    margin-right: 2px;
+  }
+}
+
+.card-header {
+  display: flex;
+  min-height: 20px;
+
+  .card-assignee {
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    right: 15px;
+    height: 20px;
+    width: 20px;
+
+    .avatar-counter {
+      display: none;
+      vertical-align: middle;
+      min-width: 20px;
+      line-height: 19px;
+      height: 20px;
+      padding-left: 2px;
+      padding-right: 2px;
+      border-radius: 2em;
+    }
+
+    img {
+      vertical-align: top;
+    }
+
+    a {
+      position: relative;
+      margin-left: -15px;
+    }
+
+    a:nth-child(1) {
+      z-index: 3;
+    }
+
+    a:nth-child(2) {
+      z-index: 2;
+    }
+
+    a:nth-child(3) {
+      z-index: 1;
+    }
+
+    a:nth-child(4) {
+      display: none;
+    }
+
+    &:hover {
+      .avatar-counter {
+        display: inline-block;
+      }
+
+      a {
+        position: static;
+        background-color: $white-light;
+        transition: background-color 0s;
+        margin-left: auto;
+
+        &:nth-child(4) {
+          display: block;
+        }
+
+        &:first-child:not(:only-child) {
+          box-shadow: -10px 0 10px 1px $white-light;
+        }
+      }
+    }
+  }
+
+  .avatar {
+    margin: 0;
   }
 }
 
 .card-footer {
-  margin-top: 5px;
-  line-height: 25px;
+  margin: 0 0 5px;
 
   .label {
-    margin-right: 5px;
-    font-size: (14px / $issue-boards-font-size) * 1em;
+    margin-top: 5px;
+    margin-right: 6px;
   }
 }
 
 .card-number {
-  margin-right: 5px;
+  font-size: 12px;
+  color: $gl-text-color-secondary;
 }
 
 .issue-boards-search {
-  width: 335px;
+  width: 395px;
 
   .form-control {
     display: inline-block;
@@ -230,7 +418,7 @@ lex
 
 .board-list-count {
   padding: 10px 0;
-  color: $gl-placeholder-color;
+  color: $gl-text-color-secondary;
   font-size: 13px;
 
   > .fa {
@@ -239,29 +427,226 @@ lex
 }
 
 .board-new-issue-form {
+  z-index: 1;
   margin: 5px;
 }
 
-.board-issue-count-holder {
-  margin-top: -3px;
+.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar {
+  &.right-sidebar {
+    top: 0;
+    bottom: 0;
+  }
 
-  .btn {
-    line-height: 12px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+  .issuable-sidebar-header {
+    position: relative;
+  }
+
+  .gutter-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 15px;
+    right: 0;
+    width: 22px;
+    color: $gray-darkest;
+
+    svg {
+      position: absolute;
+      top: 50%;
+      margin-top: (-11px / 2);
+    }
+
+    &:hover {
+      path {
+        fill: $gray-darkest;
+      }
+    }
+  }
+
+  .issuable-header-text {
+    padding-right: 35px;
+
+    > strong {
+      font-weight: 600;
+    }
   }
 }
 
-.board-issue-count {
-  padding-right: 10px;
-  padding-left: 10px;
-  line-height: 21px;
-  border-radius: $border-radius-base;
-  border: 1px solid $border-color;
+.right-sidebar.right-sidebar-expanded {
+  &.boards-sidebar-slide-enter-active,
+  &.boards-sidebar-slide-leave-active {
+    transition: width .2s,
+                padding .2s;
+  }
 
-  &.has-btn {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-width: 1px 0 1px 1px;
+  &.boards-sidebar-slide-enter,
+  &.boards-sidebar-slide-leave-active {
+    width: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.add-issues-modal {
+  display: -webkit-flex;
+  display: flex;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba($black, .3);
+  z-index: 9999;
+}
+
+.add-issues-container {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  width: 90vw;
+  height: 85vh;
+  max-width: 1100px;
+  min-height: 500px;
+  margin: auto;
+  padding: 25px 15px 0;
+  background-color: $white-light;
+  border-radius: $border-radius-default;
+  box-shadow: 0 2px 12px rgba($black, .5);
+
+  .empty-state {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex: 1;
+    flex: 1;
+    margin-top: 0;
+
+    &.add-issues-empty-state-filter {
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      -webkit-justify-content: center;
+      justify-content: center;
+    }
+
+    > .row {
+      width: 100%;
+      margin: auto 0;
+    }
+
+    .svg-content {
+      margin-top: -40px;
+    }
+  }
+}
+
+.add-issues-header {
+  margin: -25px -15px -5px;
+  border-top: 0;
+  border-bottom: 1px solid $border-color;
+  border-top-right-radius: $border-radius-default;
+  border-top-left-radius: $border-radius-default;
+
+  > h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+}
+
+.add-issues-search {
+  display: -webkit-flex;
+  display: flex;
+
+  .issues-filters {
+    -webkit-flex: 1;
+    flex: 1;
+  }
+}
+
+.add-issues-list-column {
+  width: 100%;
+
+  @media (min-width: $screen-sm-min) {
+    width: 50%;
+  }
+
+  @media (min-width: $screen-md-min) {
+    width: (100% / 3);
+  }
+}
+
+.add-issues-list {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex: 1;
+  flex: 1;
+  padding-top: 3px;
+  margin-left: -$gl-vert-padding;
+  margin-right: -$gl-vert-padding;
+  overflow-y: scroll;
+
+  .card-parent {
+    padding: 0 5px 5px;
+  }
+
+  .card {
+    border: 1px solid $border-gray-dark;
+    box-shadow: 0 1px 2px rgba($issue-boards-card-shadow, .3);
+    cursor: pointer;
+  }
+}
+
+.add-issues-list-loading {
+  -webkit-align-self: center;
+  align-self: center;
+  width: 100%;
+  padding-left: $gl-vert-padding;
+  padding-right: $gl-vert-padding;
+  font-size: 35px;
+}
+
+.add-issues-footer {
+  margin: auto -15px 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-bottom-right-radius: $border-radius-default;
+  border-bottom-left-radius: $border-radius-default;
+}
+
+.add-issues-footer-to-list {
+  padding-left: $gl-vert-padding;
+  padding-right: $gl-vert-padding;
+  line-height: 34px;
+}
+
+.issue-card-selected {
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  width: 17px;
+  background-color: $blue-500;
+  color: $white-light;
+  border: 1px solid $blue-600;
+  font-size: 9px;
+  line-height: 15px;
+  border-radius: 50%;
+}
+
+.modal-filters {
+  display: flex;
+
+  > .dropdown {
+    display: none;
+    margin-right: 10px;
+
+    @media (min-width: $screen-sm-min) {
+      display: block;
+    }
+  }
+
+  .dropdown-menu-toggle {
+    width: 100px;
+
+    @media (min-width: $screen-md-min) {
+      width: 140px;
+    }
   }
 }

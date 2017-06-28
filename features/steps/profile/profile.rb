@@ -36,7 +36,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I should see new avatar' do
     expect(@user.avatar).to be_instance_of AvatarUploader
-    expect(@user.avatar.url).to eq "/uploads/user/avatar/#{@user.id}/banana_sample.gif"
+    expect(@user.avatar.url).to eq "/uploads/system/user/avatar/#{@user.id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -104,18 +104,6 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     end
   end
 
-  step 'I reset my token' do
-    page.within '.private-token' do
-      @old_token = @user.private_token
-      click_button "Reset private token"
-    end
-  end
-
-  step 'I should see new token' do
-    expect(find("#token").value).not_to eq @old_token
-    expect(find("#token").value).to eq @user.reload.private_token
-  end
-
   step 'I have activity' do
     create(:closed_issue_event, author: current_user)
   end
@@ -174,7 +162,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I have group with projects' do
     @group = create(:group)
     @group.add_owner(current_user)
-    @project = create(:project, namespace: @group)
+    @project = create(:project, :repository, namespace: @group)
     @event   = create(:closed_issue_event, project: @project)
 
     @project.team << [current_user, :master]

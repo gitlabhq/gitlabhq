@@ -1,45 +1,30 @@
 // Common
 .diff-file {
-  border: 1px solid $border-color;
   margin-bottom: $gl-padding;
-  border-radius: 3px;
 
-  .commit-short-id {
-    font-family: $regular_font;
-    font-weight: 400;
-  }
+  .file-title,
+  .file-title-flex-parent {
+    cursor: pointer;
 
-  .diff-header {
-    position: relative;
-    background: $background-color;
-    border-bottom: 1px solid $border-color;
-    padding: 10px 16px;
-    color: #555;
-    z-index: 10;
-    border-radius: 3px 3px 0 0;
-
-    .diff-title {
-      font-family: $monospace_font;
-      word-break: break-all;
-      display: block;
-
-      .file-mode {
-        color: #777;
-      }
+    a:hover {
+      text-decoration: none;
     }
 
-    .commit-short-id {
-      font-family: $monospace_font;
-      font-size: smaller;
+    &:hover {
+      background-color: $gray-normal;
+    }
+
+    .diff-toggle-caret {
+      padding-right: 6px;
     }
   }
+
   .diff-content {
     overflow: auto;
     overflow-y: hidden;
-    background: #fff;
-    color: #333;
+    background: $white-light;
+    color: $gl-text-color;
     border-radius: 0 0 3px 3px;
-    -webkit-overflow-scrolling: auto;
 
     .unfold {
       cursor: pointer;
@@ -47,7 +32,7 @@
 
     .file-mode-changed {
       padding: 10px;
-      color: #777;
+      color: $file-mode-changed;
     }
 
     .suppressed-container {
@@ -72,6 +57,10 @@
 
       .diff-line-num {
         width: 50px;
+
+        a {
+          transition: none;
+        }
       }
 
       .line_holder td {
@@ -80,24 +69,14 @@
 
         &.noteable_line {
           position: relative;
-
-          &.old {
-            &:before {
-              content: '-';
-              position: absolute;
-            }
-          }
-
-          &.new {
-            &:before {
-              content: '+';
-              position: absolute;
-            }
-          }
         }
 
         span {
           white-space: pre-wrap;
+        }
+
+        .line {
+          word-wrap: break-word;
         }
       }
     }
@@ -108,13 +87,13 @@
       }
 
       .add-diff-note {
-        margin-left: -65px;
+        margin-left: -55px;
       }
     }
 
-    .old_line, .new_line {
+    .old_line,
+    .new_line {
       margin: 0;
-      padding: 0;
       border: none;
       padding: 0 5px;
       border-right: 1px solid;
@@ -123,20 +102,29 @@
       max-width: 50px;
       width: 35px;
       @include user-select(none);
+
       a {
         float: left;
         width: 35px;
         font-weight: normal;
-        &:hover {
-          text-decoration: underline;
+
+        &[disabled] {
+          cursor: default;
+
+          &:hover,
+          &:active {
+            text-decoration: none;
+          }
         }
       }
     }
+
     .line_content {
       display: block;
       margin: 0;
-      padding: 0 0.5em;
+      padding: 0 1.5em;
       border: none;
+      position: relative;
 
       &.parallel {
         display: table-cell;
@@ -145,32 +133,48 @@
           word-break: break-all;
         }
       }
-    }
 
-    .text-file.diff-wrap-lines table .line_holder td span {
-      white-space: pre-wrap;
+      &.old {
+        &::before {
+          content: '-';
+          position: absolute;
+          left: 0.5em;
+        }
+      }
+
+      &.new {
+        &::before {
+          content: '+';
+          position: absolute;
+          left: 0.5em;
+        }
+      }
     }
   }
+
   .image {
-    background: #ddd;
+    background: $file-image-bg;
     text-align: center;
     padding: 30px;
+
     .wrap {
       display: inline-block;
     }
 
     .frame {
       display: inline-block;
-      background-color: #fff;
+      background-color: $white-light;
       line-height: 0;
+
       img {
-        border: 1px solid #fff;
-        background-image: linear-gradient(45deg, #e5e5e5 25%, transparent 25%, transparent 75%, #e5e5e5 75%, #e5e5e5 100%),
-        linear-gradient(45deg, #e5e5e5 25%, transparent 25%, transparent 75%, #e5e5e5 75%, #e5e5e5 100%);
+        border: 1px solid $white-light;
+        background-image: linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%),
+        linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%);
         background-size: 10px 10px;
         background-position: 0 0, 5px 5px;
         max-width: 100%;
       }
+
       &.deleted {
         border: 1px solid $deleted;
       }
@@ -179,10 +183,11 @@
         border: 1px solid $added;
       }
     }
+
     .image-info {
       font-size: 12px;
       margin: 5px 0 0;
-      color: grey;
+      color: $diff-image-info-color;
     }
 
     .view.swipe {
@@ -193,18 +198,21 @@
         margin: auto;
         position: relative;
       }
+
       .swipe-wrap {
         overflow: hidden;
-        border-left: 1px solid #999;
+        border-left: 1px solid $diff-swipe-border;
         position: absolute;
         display: block;
         top: 13px;
         right: 7px;
       }
+
       .frame {
         top: 0;
         right: 0;
         position: absolute;
+
         &.deleted {
           margin: 0;
           display: block;
@@ -212,6 +220,7 @@
           right: 7px;
         }
       }
+
       .swipe-bar {
         display: block;
         height: 100%;
@@ -219,14 +228,17 @@
         z-index: 100;
         position: absolute;
         cursor: pointer;
+
         &:hover {
           .top-handle {
             background-position: -15px 3px;
           }
+
           .bottom-handle {
             background-position: -15px -11px;
           }
         }
+
         .top-handle {
           display: block;
           height: 14px;
@@ -235,6 +247,7 @@
           top: 0;
           background: image-url('swipemode_sprites.gif') 0 3px no-repeat;
         }
+
         .bottom-handle {
           display: block;
           height: 14px;
@@ -252,12 +265,15 @@
         margin: auto;
         position: relative;
       }
-      .frame.added, .frame.deleted {
+
+      .frame.added,
+      .frame.deleted {
         position: absolute;
         display: block;
         top: 0;
         left: 0;
       }
+
       .controls {
         display: block;
         height: 14px;
@@ -311,12 +327,14 @@
     }
     //.view.onion-skin
   }
+
   .view-modes {
     padding: 10px;
     text-align: center;
-    background: #eee;
+    background: $gray-darker;
 
-    ul, li {
+    ul,
+    li {
       list-style: none;
       margin: 0;
       padding: 0;
@@ -324,23 +342,28 @@
     }
 
     li {
-      color: grey;
-      border-left: 1px solid #c1c1c1;
+      color: $diff-view-modes-color;
+      border-left: 1px solid $diff-view-modes-border;
       padding: 0 12px 0 16px;
       cursor: pointer;
+
       &:first-child {
         border-left: none;
       }
+
       &:hover {
         text-decoration: underline;
       }
+
       &.active {
         &:hover {
           text-decoration: none;
         }
+
         cursor: default;
-        color: #333;
+        color: $gl-text-color;
       }
+
       &.disabled {
         display: none;
       }
@@ -365,14 +388,23 @@
   float: right;
 }
 
-.diffs {
-  .content-block {
-    border-bottom: none;
-  }
-}
-
 .files-changed {
   border-bottom: none;
+}
+
+.diff-stats-summary-toggler {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  color: $gl-link-color;
+  transition: color 0.1s linear;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    text-decoration: underline;
+    color: $gl-link-hover-color;
+  }
 }
 
 // Mobile
@@ -432,9 +464,102 @@
 .file-holder {
   .diff-line-num:not(.js-unfold-bottom) {
     a {
-      &:before {
+      &::before {
         content: attr(data-linenumber);
       }
     }
+  }
+}
+
+.diff-comment-avatar-holders {
+  position: absolute;
+  height: 19px;
+  width: 19px;
+  margin-left: -15px;
+
+  &:hover {
+    .diff-comment-avatar,
+    .diff-comments-more-count {
+      @for $i from 1 through 4 {
+        $x-pos: 14px;
+
+        &:nth-child(#{$i}) {
+          @if $i == 4 {
+            $x-pos: 14.5px;
+          }
+
+          transform: translateX((($i * $x-pos) - $x-pos));
+
+          &:hover {
+            transform: translateX((($i * $x-pos) - $x-pos)) scale(1.2);
+          }
+        }
+      }
+    }
+
+    .diff-comments-more-count {
+      padding-left: 2px;
+      padding-right: 2px;
+      width: auto;
+    }
+  }
+}
+
+.diff-comment-avatar,
+.diff-comments-more-count {
+  position: absolute;
+  left: 0;
+  width: 19px;
+  height: 19px;
+  margin-right: 0;
+  border-color: $white-light;
+  cursor: pointer;
+  transition: all .1s ease-out;
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      z-index: (4 - $i);
+    }
+  }
+}
+
+.diff-comments-more-count {
+  width: 19px;
+  min-width: 19px;
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+}
+
+.diff-comments-more-count,
+.diff-notes-collapse {
+  @extend .avatar-counter;
+}
+
+.diff-notes-collapse {
+  position: relative;
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  transition: transform .1s ease-out;
+
+  svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -5.5px;
+    margin-top: -5.5px;
+  }
+
+  path {
+    fill: $white-light;
+  }
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  &:focus {
+    outline: 0;
   }
 }

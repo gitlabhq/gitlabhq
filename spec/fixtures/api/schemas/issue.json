@@ -6,9 +6,12 @@
     "confidential"
   ],
   "properties" : {
+    "id": { "type": "integer" },
     "iid": { "type": "integer" },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
+    "due_date": { "type": ["date", "null"] },
+    "relative_position": { "type": "integer" },
     "labels": {
       "type": "array",
       "items": {
@@ -42,7 +45,26 @@
       "name": { "type": "string" },
       "username": { "type": "string" },
       "avatar_url": { "type": "uri" }
-    }
+    },
+    "assignees": {
+      "type": "array",
+      "items": {
+        "type": ["object", "null"],
+        "required": [
+          "id",
+          "name",
+          "username",
+          "avatar_url"
+        ],
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "avatar_url": { "type": "uri" }
+        }
+      }
+    },
+    "subscribed": { "type": ["boolean", "null"] }
   },
   "additionalProperties": false
 }

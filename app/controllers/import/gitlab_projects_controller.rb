@@ -2,8 +2,8 @@ class Import::GitlabProjectsController < Import::BaseController
   before_action :verify_gitlab_project_import_enabled
 
   def new
-    @namespace_id = project_params[:namespace_id]
-    @namespace_name = Namespace.find(project_params[:namespace_id]).name
+    @namespace = Namespace.find(project_params[:namespace_id])
+    return render_404 unless current_user.can?(:create_projects, @namespace)
     @path = project_params[:path]
   end
 

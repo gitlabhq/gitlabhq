@@ -2,6 +2,14 @@
 require 'rails_helper'
 
 describe Blob do
+  include FakeBlobHelpers
+
+  let(:project) { build(:empty_project, lfs_enabled: true) }
+
+  before do
+    allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+  end
+
   describe '.decorate' do
     it 'returns NilClass when given nil' do
       expect(described_class.decorate(nil)).to be_nil
@@ -12,7 +20,7 @@ describe Blob do
     context 'using a binary blob' do
       it 'returns the data as-is' do
         data = "\n\xFF\xB9\xC3"
-        blob = described_class.new(double(binary?: true, data: data))
+        blob = fake_blob(binary: true, data: data)
 
         expect(blob.data).to eq(data)
       end
@@ -20,120 +28,338 @@ describe Blob do
 
     context 'using a text blob' do
       it 'converts the data to UTF-8' do
-        blob = described_class.new(double(binary?: false, data: "\n\xFF\xB9\xC3"))
+        blob = fake_blob(binary: false, data: "\n\xFF\xB9\xC3")
 
         expect(blob.data).to eq("\n���")
       end
     end
   end
 
-  describe '#svg?' do
-    it 'is falsey when not text' do
-      git_blob = double(text?: false)
+  describe '#external_storage_error?' do
+    context 'if the blob is stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
 
-      expect(described_class.decorate(git_blob)).not_to be_svg
+      context 'when the project has LFS enabled' do
+        it 'returns false' do
+          expect(blob.external_storage_error?).to be_falsey
+        end
+      end
+
+      context 'when the project does not have LFS enabled' do
+        before do
+          project.lfs_enabled = false
+        end
+
+        it 'returns true' do
+          expect(blob.external_storage_error?).to be_truthy
+        end
+      end
     end
 
-    it 'is falsey when no language is detected' do
-      git_blob = double(text?: true, language: nil)
+    context 'if the blob is not stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.md') }
 
-      expect(described_class.decorate(git_blob)).not_to be_svg
-    end
-
-    it' is falsey when language is not SVG' do
-      git_blob = double(text?: true, language: double(name: 'XML'))
-
-      expect(described_class.decorate(git_blob)).not_to be_svg
-    end
-
-    it 'is truthy when language is SVG' do
-      git_blob = double(text?: true, language: double(name: 'SVG'))
-
-      expect(described_class.decorate(git_blob)).to be_svg
-    end
-  end
-
-  describe '#video?' do
-    it 'is falsey with image extension' do
-      git_blob = Gitlab::Git::Blob.new(name: 'image.png')
-
-      expect(described_class.decorate(git_blob)).not_to be_video
-    end
-
-    UploaderHelper::VIDEO_EXT.each do |ext|
-      it "is truthy when extension is .#{ext}" do
-        git_blob = Gitlab::Git::Blob.new(name: "video.#{ext}")
-
-        expect(described_class.decorate(git_blob)).to be_video
+      it 'returns false' do
+        expect(blob.external_storage_error?).to be_falsey
       end
     end
   end
 
-  describe '#to_partial_path' do
-    def stubbed_blob(overrides = {})
-      overrides.reverse_merge!(
-        image?: false,
-        language: nil,
-        lfs_pointer?: false,
-        svg?: false,
-        text?: false
-      )
+  describe '#stored_externally?' do
+    context 'if the blob is stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.pdf', lfs: true) }
 
-      described_class.decorate(double).tap do |blob|
-        allow(blob).to receive_messages(overrides)
+      context 'when the project has LFS enabled' do
+        it 'returns true' do
+          expect(blob.stored_externally?).to be_truthy
+        end
+      end
+
+      context 'when the project does not have LFS enabled' do
+        before do
+          project.lfs_enabled = false
+        end
+
+        it 'returns false' do
+          expect(blob.stored_externally?).to be_falsey
+        end
       end
     end
 
-    it 'handles LFS pointers' do
-      blob = stubbed_blob(lfs_pointer?: true)
+    context 'if the blob is not stored in LFS' do
+      let(:blob) { fake_blob(path: 'file.md') }
 
-      expect(blob.to_partial_path).to eq 'download'
-    end
-
-    it 'handles SVGs' do
-      blob = stubbed_blob(text?: true, svg?: true)
-
-      expect(blob.to_partial_path).to eq 'image'
-    end
-
-    it 'handles images' do
-      blob = stubbed_blob(image?: true)
-
-      expect(blob.to_partial_path).to eq 'image'
-    end
-
-    it 'handles text' do
-      blob = stubbed_blob(text?: true)
-
-      expect(blob.to_partial_path).to eq 'text'
-    end
-
-    it 'defaults to download' do
-      blob = stubbed_blob
-
-      expect(blob.to_partial_path).to eq 'download'
+      it 'returns false' do
+        expect(blob.stored_externally?).to be_falsey
+      end
     end
   end
 
-  describe '#size_within_svg_limits?' do
-    let(:blob) { described_class.decorate(double(:blob)) }
+  describe '#raw_binary?' do
+    context 'if the blob is stored externally' do
+      context 'if the extension has a rich viewer' do
+        context 'if the viewer is binary' do
+          it 'returns true' do
+            blob = fake_blob(path: 'file.pdf', lfs: true)
 
-    it 'returns true when the blob size is smaller than the SVG limit' do
-      expect(blob).to receive(:size).and_return(42)
+            expect(blob.raw_binary?).to be_truthy
+          end
+        end
 
-      expect(blob.size_within_svg_limits?).to eq(true)
+        context 'if the viewer is text-based' do
+          it 'return false' do
+            blob = fake_blob(path: 'file.md', lfs: true)
+
+            expect(blob.raw_binary?).to be_falsey
+          end
+        end
+      end
+
+      context "if the extension doesn't have a rich viewer" do
+        context 'if the extension has a text mime type' do
+          context 'if the extension is for a programming language' do
+            it 'returns false' do
+              blob = fake_blob(path: 'file.txt', lfs: true)
+
+              expect(blob.raw_binary?).to be_falsey
+            end
+          end
+
+          context 'if the extension is not for a programming language' do
+            it 'returns false' do
+              blob = fake_blob(path: 'file.ics', lfs: true)
+
+              expect(blob.raw_binary?).to be_falsey
+            end
+          end
+        end
+
+        context 'if the extension has a binary mime type' do
+          context 'if the extension is for a programming language' do
+            it 'returns false' do
+              blob = fake_blob(path: 'file.rb', lfs: true)
+
+              expect(blob.raw_binary?).to be_falsey
+            end
+          end
+
+          context 'if the extension is not for a programming language' do
+            it 'returns true' do
+              blob = fake_blob(path: 'file.exe', lfs: true)
+
+              expect(blob.raw_binary?).to be_truthy
+            end
+          end
+        end
+
+        context 'if the extension has an unknown mime type' do
+          context 'if the extension is for a programming language' do
+            it 'returns false' do
+              blob = fake_blob(path: 'file.ini', lfs: true)
+
+              expect(blob.raw_binary?).to be_falsey
+            end
+          end
+
+          context 'if the extension is not for a programming language' do
+            it 'returns true' do
+              blob = fake_blob(path: 'file.wtf', lfs: true)
+
+              expect(blob.raw_binary?).to be_truthy
+            end
+          end
+        end
+      end
     end
 
-    it 'returns true when the blob size is equal to the SVG limit' do
-      expect(blob).to receive(:size).and_return(Blob::MAXIMUM_SVG_SIZE)
+    context 'if the blob is not stored externally' do
+      context 'if the blob is binary' do
+        it 'returns true' do
+          blob = fake_blob(path: 'file.pdf', binary: true)
 
-      expect(blob.size_within_svg_limits?).to eq(true)
+          expect(blob.raw_binary?).to be_truthy
+        end
+      end
+
+      context 'if the blob is text-based' do
+        it 'return false' do
+          blob = fake_blob(path: 'file.md')
+
+          expect(blob.raw_binary?).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe '#extension' do
+    it 'returns the extension' do
+      blob = fake_blob(path: 'file.md')
+
+      expect(blob.extension).to eq('md')
+    end
+  end
+
+  describe '#file_type' do
+    it 'returns the file type' do
+      blob = fake_blob(path: 'README.md')
+
+      expect(blob.file_type).to eq(:readme)
+    end
+  end
+
+  describe '#simple_viewer' do
+    context 'when the blob is empty' do
+      it 'returns an empty viewer' do
+        blob = fake_blob(data: '', size: 0)
+
+        expect(blob.simple_viewer).to be_a(BlobViewer::Empty)
+      end
     end
 
-    it 'returns false when the blob size is larger than the SVG limit' do
-      expect(blob).to receive(:size).and_return(1.terabyte)
+    context 'when the file represented by the blob is binary' do
+      it 'returns a download viewer' do
+        blob = fake_blob(binary: true)
 
-      expect(blob.size_within_svg_limits?).to eq(false)
+        expect(blob.simple_viewer).to be_a(BlobViewer::Download)
+      end
+    end
+
+    context 'when the file represented by the blob is text-based' do
+      it 'returns a text viewer' do
+        blob = fake_blob
+
+        expect(blob.simple_viewer).to be_a(BlobViewer::Text)
+      end
+    end
+  end
+
+  describe '#rich_viewer' do
+    context 'when the blob has an external storage error' do
+      before do
+        project.lfs_enabled = false
+      end
+
+      it 'returns nil' do
+        blob = fake_blob(path: 'file.pdf', lfs: true)
+
+        expect(blob.rich_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is empty' do
+      it 'returns nil' do
+        blob = fake_blob(data: '')
+
+        expect(blob.rich_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is stored externally' do
+      it 'returns a matching viewer' do
+        blob = fake_blob(path: 'file.pdf', lfs: true)
+
+        expect(blob.rich_viewer).to be_a(BlobViewer::PDF)
+      end
+    end
+
+    context 'when the blob is binary' do
+      it 'returns a matching binary viewer' do
+        blob = fake_blob(path: 'file.pdf', binary: true)
+
+        expect(blob.rich_viewer).to be_a(BlobViewer::PDF)
+      end
+    end
+
+    context 'when the blob is text-based' do
+      it 'returns a matching text-based viewer' do
+        blob = fake_blob(path: 'file.md')
+
+        expect(blob.rich_viewer).to be_a(BlobViewer::Markup)
+      end
+    end
+  end
+
+  describe '#auxiliary_viewer' do
+    context 'when the blob has an external storage error' do
+      before do
+        project.lfs_enabled = false
+      end
+
+      it 'returns nil' do
+        blob = fake_blob(path: 'LICENSE', lfs: true)
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is empty' do
+      it 'returns nil' do
+        blob = fake_blob(data: '')
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is stored externally' do
+      it 'returns a matching viewer' do
+        blob = fake_blob(path: 'LICENSE', lfs: true)
+
+        expect(blob.auxiliary_viewer).to be_a(BlobViewer::License)
+      end
+    end
+
+    context 'when the blob is binary' do
+      it 'returns nil' do
+        blob = fake_blob(path: 'LICENSE', binary: true)
+
+        expect(blob.auxiliary_viewer).to be_nil
+      end
+    end
+
+    context 'when the blob is text-based' do
+      it 'returns a matching text-based viewer' do
+        blob = fake_blob(path: 'LICENSE')
+
+        expect(blob.auxiliary_viewer).to be_a(BlobViewer::License)
+      end
+    end
+  end
+
+  describe '#rendered_as_text?' do
+    context 'when ignoring errors' do
+      context 'when the simple viewer is text-based' do
+        it 'returns true' do
+          blob = fake_blob(path: 'file.md', size: 100.megabytes)
+
+          expect(blob.rendered_as_text?).to be_truthy
+        end
+      end
+
+      context 'when the simple viewer is binary' do
+        it 'returns false' do
+          blob = fake_blob(path: 'file.pdf', binary: true, size: 100.megabytes)
+
+          expect(blob.rendered_as_text?).to be_falsey
+        end
+      end
+    end
+
+    context 'when not ignoring errors' do
+      context 'when the viewer has render errors' do
+        it 'returns false' do
+          blob = fake_blob(path: 'file.md', size: 100.megabytes)
+
+          expect(blob.rendered_as_text?(ignore_errors: false)).to be_falsey
+        end
+      end
+
+      context "when the viewer doesn't have render errors" do
+        it 'returns true' do
+          blob = fake_blob(path: 'file.md')
+
+          expect(blob.rendered_as_text?(ignore_errors: false)).to be_truthy
+        end
+      end
     end
   end
 end

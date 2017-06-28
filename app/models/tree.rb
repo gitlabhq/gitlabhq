@@ -3,21 +3,24 @@ class Tree
 
   attr_accessor :repository, :sha, :path, :entries
 
-  def initialize(repository, sha, path = '/')
+  def initialize(repository, sha, path = '/', recursive: false)
     path = '/' if path.blank?
 
     @repository = repository
     @sha = sha
     @path = path
+    @recursive = recursive
 
     git_repo = @repository.raw_repository
-    @entries = Gitlab::Git::Tree.where(git_repo, @sha, @path)
+    @entries = get_entries(git_repo, @sha, @path, recursive: @recursive)
   end
 
   def readme
     return @readme if defined?(@readme)
 
-    available_readmes = blobs.select(&:readme?)
+    available_readmes = blobs.select do |blob|
+      Gitlab::FileDetector.type_of(blob.name) == :readme
+    end
 
     previewable_readmes = available_readmes.select do |blob|
       previewable?(blob.name)
@@ -37,10 +40,7 @@ class Tree
 
     readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
 
-    git_repo = repository.raw_repository
-    @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
-    @readme.load_all_data!(git_repo)
-    @readme
+    @readme = repository.blob_at(sha, readme_path)
   end
 
   def trees
@@ -57,5 +57,22 @@ class Tree
 
   def sorted_entries
     trees + blobs + submodules
+  end
+
+  private
+
+  def get_entries(git_repo, sha, path, recursive: false)
+    current_path_entries = Gitlab::Git::Tree.where(git_repo, sha, path)
+    ordered_entries = []
+
+    current_path_entries.each do |entry|
+      ordered_entries << entry
+
+      if recursive && entry.dir?
+        ordered_entries.concat(get_entries(git_repo, sha, entry.path, recursive: true))
+      end
+    end
+
+    ordered_entries
   end
 end

@@ -1,54 +1,71 @@
-require_relative 'base_service'
+class CreateDeploymentService
+  attr_reader :job
 
-class CreateDeploymentService < BaseService
-  def execute(deployable = nil)
-    environment = find_or_create_environment
+  delegate :expanded_environment_name,
+           :variables,
+           :project,
+           to: :job
 
-    deployment = project.deployments.create(
-      environment: environment,
-      ref: params[:ref],
-      tag: params[:tag],
-      sha: params[:sha],
-      user: current_user,
-      deployable: deployable
-    )
+  def initialize(job)
+    @job = job
+  end
 
-    deployment.update_merge_request_metrics!
+  def execute
+    return unless executable?
 
-    deployment
+    ActiveRecord::Base.transaction do
+      environment.external_url = expanded_environment_url if
+        expanded_environment_url
+      environment.fire_state_event(action)
+
+      return unless environment.save
+      return if environment.stopped?
+
+      deploy.tap(&:update_merge_request_metrics!)
+    end
   end
 
   private
 
-  def find_or_create_environment
-    project.environments.find_or_create_by(name: expanded_name) do |environment|
-      environment.external_url = expanded_url
-    end
+  def executable?
+    project && job.environment.present? && environment
   end
 
-  def expanded_name
-    ExpandVariables.expand(name, variables)
+  def deploy
+    project.deployments.create(
+      environment: environment,
+      ref: job.ref,
+      tag: job.tag,
+      sha: job.sha,
+      user: job.user,
+      deployable: job,
+      on_stop: on_stop)
   end
 
-  def expanded_url
-    return unless url
-
-    @expanded_url ||= ExpandVariables.expand(url, variables)
+  def environment
+    @environment ||= job.persisted_environment
   end
 
-  def name
-    params[:environment]
+  def environment_options
+    @environment_options ||= job.options&.dig(:environment) || {}
   end
 
-  def url
-    options[:url]
+  def expanded_environment_url
+    return @expanded_environment_url if defined?(@expanded_environment_url)
+
+    @expanded_environment_url =
+      ExpandVariables.expand(environment_url, variables) if environment_url
   end
 
-  def options
-    params[:options] || {}
+  def environment_url
+    environment_options[:url]
   end
 
-  def variables
-    params[:variables] || []
+  def on_stop
+    environment_options[:on_stop]
+  end
+
+  def action
+    environment_options[:action] || 'start'
   end
 end

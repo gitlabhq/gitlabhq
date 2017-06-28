@@ -21,4 +21,8 @@ module TagsHelper
 
     html.html_safe
   end
+
+  def protected_tag?(project, tag)
+    ProtectedTag.protected?(project, tag.name)
+  end
 end

@@ -1,20 +1,20 @@
-
 require 'gitlab/email/handler/base_handler'
 
 module Gitlab
   module Email
     module Handler
       class CreateIssueHandler < BaseHandler
-        attr_reader :project_path, :authentication_token
+        include ReplyProcessing
+        attr_reader :project_path, :incoming_email_token
 
         def initialize(mail, mail_key)
           super(mail, mail_key)
-          @project_path, @authentication_token =
+          @project_path, @incoming_email_token =
             mail_key && mail_key.split('+', 2)
         end
 
         def can_handle?
-          !authentication_token.nil?
+          !incoming_email_token.nil?
         end
 
         def execute
@@ -29,11 +29,15 @@ module Gitlab
         end
 
         def author
-          @author ||= User.find_by(authentication_token: authentication_token)
+          @author ||= User.find_by(incoming_email_token: incoming_email_token)
         end
 
         def project
-          @project ||= Project.find_with_namespace(project_path)
+          @project ||= Project.find_by_full_path(project_path)
+        end
+
+        def metrics_params
+          super.merge(project: project&.full_path)
         end
 
         private

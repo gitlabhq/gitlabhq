@@ -1,12 +1,17 @@
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, max-len */
+/* global Mousetrap */
+
 // Zen Mode (full screen) textarea
 //
 /*= provides zen_mode:enter */
 /*= provides zen_mode:leave */
-//
-/*= require jquery.scrollTo */
-/*= require dropzone */
-/*= require mousetrap */
-/*= require mousetrap/pause */
+
+import 'vendor/jquery.scrollTo';
+import Dropzone from 'dropzone';
+import 'mousetrap';
+import 'mousetrap/plugins/pause/mousetrap-pause';
+
+window.Dropzone = Dropzone;
 
 //
 // ### Events
@@ -89,7 +94,5 @@
     };
 
     return ZenMode;
-
   })();
-
-}).call(this);
+}).call(window);

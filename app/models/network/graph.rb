@@ -107,12 +107,13 @@ module Network
     def find_commits(skip = 0)
       opts = {
         max_count: self.class.max_count,
-        skip: skip
+        skip: skip,
+        order: :date
       }
 
       opts[:ref] = @commit.id if @filter_ref
 
-      @repo.find_commits(opts)
+      Gitlab::Git::Commit.find_all(@repo.raw_repository, opts)
     end
 
     def commits_sort_by_ref
@@ -161,8 +162,8 @@ module Network
     def is_overlap?(range, overlap_space)
       range.each do |i|
         if i != range.first &&
-          i != range.last &&
-          @commits[i].spaces.include?(overlap_space)
+            i != range.last &&
+            @commits[i].spaces.include?(overlap_space)
 
           return true
         end
@@ -188,11 +189,12 @@ module Network
       end
 
       # and mark it as reserved
-      if parent_time.nil?
-        min_time = leaves.first.time
-      else
-        min_time = parent_time + 1
-      end
+      min_time =
+        if parent_time.nil?
+          leaves.first.time
+        else
+          parent_time + 1
+        end
 
       max_time = leaves.last.time
       leaves.last.parents(@map).each do |parent|

@@ -33,17 +33,17 @@
       %li
         = @primary
         %span.pull-right
-          %span.label.label-success Primary Email
+          %span.label.label-success Primary email
           - if @primary === current_user.public_email
-            %span.label.label-info Public Email
+            %span.label.label-info Public email
           - if @primary === current_user.notification_email
-            %span.label.label-info Notification Email
+            %span.label.label-info Notification email
       - @emails.each do |email|
         %li
           = email.email
           %span.pull-right
             - if email.email === current_user.public_email
-              %span.label.label-info Public Email
+              %span.label.label-info Public email
             - if email.email === current_user.notification_email
-              %span.label.label-info Notification Email
+              %span.label.label-info Notification email
             = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-warning prepend-left-10'

@@ -63,7 +63,7 @@ that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/README.md).
 
 Want to hack on it? Simply fork it, commit and push  your changes. Within a few
-moments the changes will be picked by a public runner and the build will begin.
+moments the changes will be picked by a public runner and the job will begin.
 
 [hub-redis]: https://hub.docker.com/r/_/redis/
 [redis-example-repo]: https://gitlab.com/gitlab-examples/redis

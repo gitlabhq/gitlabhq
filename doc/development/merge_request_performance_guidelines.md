@@ -3,7 +3,7 @@
 To ensure a merge request does not negatively impact performance of GitLab
 _every_ merge request **must** adhere to the guidelines outlined in this
 document. There are no exceptions to this rule unless specifically discussed
-with and agreed upon by merge request endbosses and performance specialists.
+with and agreed upon by backend maintainers and performance specialists.
 
 To measure the impact of a merge request you can use
 [Sherlock](profiling.md#sherlock). It's also highly recommended that you read
@@ -40,9 +40,9 @@ section below for more information.
 about the impact.
 
 Sometimes it's hard to assess the impact of a merge request. In this case you
-should ask one of the merge request (mini) endbosses to review your changes. You
-can find a list of these endbosses at <https://about.gitlab.com/team/>. An
-endboss in turn can request a performance specialist to review the changes.
+should ask one of the merge request reviewers to review your changes. You can
+find a list of these reviewers at <https://about.gitlab.com/team/>. A reviewer
+in turn can request a performance specialist to review the changes.
 
 ## Query Counts
 
@@ -68,7 +68,7 @@ end
 This will end up running one query for every object to update. This code can
 easily overload a database given enough rows to update or many instances of this
 code running in parallel. This particular problem is known as the
-["N+1 query problem"](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations).
+["N+1 query problem"](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecoder](query_recorder.md) to detect this and prevent regressions.
 
 In this particular case the workaround is fairly easy:
 
@@ -116,6 +116,8 @@ Post.all.includes(:author).each do |post|
   puts post.author.name
 end
 ```
+
+Also consider using [QueryRecoder tests](query_recorder.md) to prevent a regression when eager loading.
 
 ## Memory Usage
 

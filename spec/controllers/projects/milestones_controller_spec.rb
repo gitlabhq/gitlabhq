@@ -1,16 +1,34 @@
 require 'spec_helper'
 
 describe Projects::MilestonesController do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:user)    { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
   let(:issue) { create(:issue, project: project, milestone: milestone) }
+  let!(:label) { create(:label, project: project, title: 'Issue Label', issues: [issue]) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, milestone: milestone) }
+  let(:milestone_path) { namespace_project_milestone_path }
 
   before do
     sign_in(user)
     project.team << [user, :master]
     controller.instance_variable_set(:@project, project)
+  end
+
+  it_behaves_like 'milestone tabs'
+
+  describe "#show" do
+    render_views
+
+    def view_milestone
+      get :show, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+    end
+
+    it 'shows milestone page' do
+      view_milestone
+
+      expect(response).to have_http_status(200)
+    end
   end
 
   describe "#destroy" do
@@ -20,7 +38,7 @@ describe Projects::MilestonesController do
       delete :destroy, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid, format: :js
       expect(response).to be_success
 
-      expect(Event.first.action).to eq(Event::DESTROYED)
+      expect(Event.recent.first.action).to eq(Event::DESTROYED)
 
       expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
       issue.reload
@@ -31,7 +49,7 @@ describe Projects::MilestonesController do
 
       # Check system note left for milestone removal
       last_note = project.issues.find(issue.id).notes[-1].note
-      expect(last_note).to eq('Milestone removed')
+      expect(last_note).to eq('removed milestone')
     end
   end
 end

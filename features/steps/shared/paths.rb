@@ -2,6 +2,7 @@ module SharedPaths
   include Spinach::DSL
   include RepoHelpers
   include DashboardHelper
+  include WaitForRequests
 
   step 'I visit new project page' do
     visit new_project_path
@@ -111,10 +112,6 @@ module SharedPaths
     visit dashboard_groups_path
   end
 
-  step 'I visit dashboard todos page' do
-    visit dashboard_todos_path
-  end
-
   step 'I should be redirected to the dashboard groups page' do
     expect(current_path).to eq dashboard_groups_path
   end
@@ -151,7 +148,7 @@ module SharedPaths
     visit profile_preferences_path
   end
 
-  step 'I visit Audit Log page' do
+  step 'I visit Authentication log page' do
     visit audit_log_profile_path
   end
 
@@ -168,7 +165,7 @@ module SharedPaths
   end
 
   step 'I visit admin projects page' do
-    visit admin_namespaces_projects_path
+    visit admin_projects_path
   end
 
   step 'I visit admin users page' do
@@ -191,28 +188,12 @@ module SharedPaths
     visit admin_background_jobs_path
   end
 
-  step 'I visit admin groups page' do
-    visit admin_groups_path
-  end
-
-  step 'I visit admin appearance page' do
-    visit admin_appearances_path
-  end
-
   step 'I visit admin teams page' do
     visit admin_teams_path
   end
 
-  step 'I visit admin settings page' do
-    visit admin_application_settings_path
-  end
-
   step 'I visit spam logs page' do
     visit admin_spam_logs_path
-  end
-
-  step 'I visit applications page' do
-    visit admin_applications_path
   end
 
   # ----------------------------------------
@@ -248,7 +229,7 @@ module SharedPaths
     visit stats_namespace_project_repository_path(@project.namespace, @project)
   end
 
-  step "I visit my project's network page" do
+  step "I visit my project's graph page" do
     # Stub Graph max_size to speed up test (10 commits vs. 650)
     Network::Graph.stub(max_count: 10)
 
@@ -272,7 +253,7 @@ module SharedPaths
   end
 
   step 'I visit project hooks page' do
-    visit namespace_project_hooks_path(@project.namespace, @project)
+    visit namespace_project_settings_integrations_path(@project.namespace, @project)
   end
 
   step 'I visit project deploy keys page' do
@@ -393,23 +374,28 @@ module SharedPaths
 
   step 'I visit merge request page "Bug NS-04"' do
     visit merge_request_path("Bug NS-04")
+    wait_for_requests
   end
 
   step 'I visit merge request page "Bug NS-05"' do
     visit merge_request_path("Bug NS-05")
+    wait_for_requests
   end
 
   step 'I visit merge request page "Bug NS-07"' do
     visit merge_request_path("Bug NS-07")
+    wait_for_requests
   end
 
   step 'I visit merge request page "Bug NS-08"' do
     visit merge_request_path("Bug NS-08")
+    wait_for_requests
   end
 
   step 'I visit merge request page "Bug CO-01"' do
     mr = MergeRequest.find_by(title: "Bug CO-01")
     visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+    wait_for_requests
   end
 
   step 'I visit project "Shop" merge requests page' do

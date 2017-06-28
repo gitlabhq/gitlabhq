@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ProjectMember, models: true do
   describe 'associations' do
-    it { is_expected.to belong_to(:project).class_name('Project').with_foreign_key(:source_id) }
+    it { is_expected.to belong_to(:project).with_foreign_key(:source_id) }
   end
 
   describe 'validations' do
@@ -22,16 +22,15 @@ describe ProjectMember, models: true do
   end
 
   describe '.add_user' do
-    context 'when called with the project owner' do
-      it 'adds the user as a member' do
-        project = create(:empty_project)
+    it 'adds the user as a member' do
+      user = create(:user)
+      project = create(:empty_project)
 
-        expect(project.users).not_to include(project.owner)
+      expect(project.users).not_to include(user)
 
-        described_class.add_user(project, project.owner, :master, current_user: project.owner)
+      described_class.add_user(project, user, :master, current_user: project.owner)
 
-        expect(project.users.reload).to include(project.owner)
-      end
+      expect(project.users.reload).to include(user)
     end
   end
 
@@ -54,6 +53,17 @@ describe ProjectMember, models: true do
       master_todos
     end
 
+    it "creates an expired event when left due to expiry" do
+      expired = create(:project_member, project: project, expires_at: Time.now - 6.days)
+      expired.destroy
+      expect(Event.recent.first.action).to eq(Event::EXPIRED)
+    end
+
+    it "creates a left event when left due to leave" do
+      master.destroy
+      expect(Event.recent.first.action).to eq(Event::LEFT)
+    end
+
     it "destroys itself and delete associated todos" do
       expect(owner.user.todos.size).to eq(2)
       expect(master.user.todos.size).to eq(3)
@@ -72,14 +82,14 @@ describe ProjectMember, models: true do
 
   describe '.import_team' do
     before do
-      @project_1 = create :project
-      @project_2 = create :project
+      @project_1 = create(:empty_project)
+      @project_2 = create(:empty_project)
 
       @user_1 = create :user
       @user_2 = create :user
 
-      @project_1.team << [ @user_1, :developer ]
-      @project_2.team << [ @user_2, :reporter ]
+      @project_1.team << [@user_1, :developer]
+      @project_2.team << [@user_2, :reporter]
 
       @status = @project_2.team.import(@project_1)
     end
@@ -106,7 +116,7 @@ describe ProjectMember, models: true do
       users = create_list(:user, 2)
 
       described_class.add_users_to_projects(
-        [projects.first.id, projects.second],
+        [projects.first.id, projects.second.id],
         [users.first.id, users.second],
         described_class::MASTER)
 
@@ -120,14 +130,14 @@ describe ProjectMember, models: true do
 
   describe '.truncate_teams' do
     before do
-      @project_1 = create :project
-      @project_2 = create :project
+      @project_1 = create(:empty_project)
+      @project_2 = create(:empty_project)
 
       @user_1 = create :user
       @user_2 = create :user
 
-      @project_1.team << [ @user_1, :developer]
-      @project_2.team << [ @user_2, :reporter]
+      @project_1.team << [@user_1, :developer]
+      @project_2.team << [@user_2, :reporter]
 
       ProjectMember.truncate_teams([@project_1.id, @project_2.id])
     end

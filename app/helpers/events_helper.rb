@@ -1,9 +1,21 @@
 module EventsHelper
-  def link_to_author(event)
+  ICON_NAMES_BY_EVENT_TYPE = {
+    'pushed to' => 'icon_commit',
+    'pushed new' => 'icon_commit',
+    'created' => 'icon_status_open',
+    'opened' => 'icon_status_open',
+    'closed' => 'icon_status_closed',
+    'accepted' => 'icon_code_fork',
+    'commented on' => 'icon_comment_o',
+    'deleted' => 'icon_trash_o'
+  }.freeze
+
+  def link_to_author(event, self_added: false)
     author = event.author
 
     if author
-      link_to author.name, user_path(author.username), title: author.name
+      name = self_added ? 'You' : author.name
+      link_to name, user_path(author.username), title: name
     else
       event.author_name
     end
@@ -29,7 +41,7 @@ module EventsHelper
     link_opts = {
       class: "event-filter-link",
       id:    "#{key}_event_filter",
-      title: "Filter by #{tooltip.downcase}",
+      title: "Filter by #{tooltip.downcase}"
     }
 
     content_tag :li, class: active do
@@ -37,6 +49,18 @@ module EventsHelper
         content_tag(:span, ' ' + tooltip)
       end
     end
+  end
+
+  def event_filter_visible(feature_key)
+    return true unless @project
+
+    @project.feature_available?(feature_key, current_user)
+  end
+
+  def comments_visible?
+    event_filter_visible(:repository) ||
+      event_filter_visible(:merge_requests) ||
+      event_filter_visible(:issues)
   end
 
   def event_preposition(event)
@@ -80,7 +104,7 @@ module EventsHelper
     elsif event.merge_request?
       namespace_project_merge_request_url(event.project.namespace,
                                           event.project, event.merge_request)
-    elsif event.note? && event.commit_note?
+    elsif event.commit_note?
       namespace_project_commit_url(event.project.namespace, event.project,
                                    event.note_target)
     elsif event.note?
@@ -121,7 +145,7 @@ module EventsHelper
   end
 
   def event_note_target_path(event)
-    if event.note? && event.commit_note?
+    if event.commit_note?
       namespace_project_commit_path(event.project.namespace,
                                     event.project,
                                     event.note_target,
@@ -140,9 +164,14 @@ module EventsHelper
 
   def event_note_title_html(event)
     if event.note_target
-      link_to(event_note_target_path(event), title: event.target_title, class: 'has-tooltip') do
-        "#{event.note_target_type} #{event.note_target_reference}"
-      end
+      text = raw("#{event.note_target_type} ") +
+        if event.commit_note?
+          content_tag(:span, event.note_target_reference, class: 'commit-sha')
+        else
+          event.note_target_reference
+        end
+
+      link_to(text, event_note_target_path(event), title: event.target_title, class: 'has-tooltip')
     else
       content_tag(:strong, '(deleted)')
     end
@@ -150,11 +179,16 @@ module EventsHelper
 
   def event_note(text, options = {})
     text = first_line_in_markdown(text, 150, options)
-    sanitize(text, tags: %w(a img b pre code p span))
+
+    sanitize(
+      text,
+      tags: %w(a img gl-emoji b pre code p span),
+      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-name', 'data-unicode-version']
+    )
   end
 
   def event_commit_title(message)
-    escape_once(truncate(message.split("\n").first, length: 70))
+    (message.split("\n").first || "").truncate(70)
   rescue
     "--broken encoding"
   end
@@ -164,6 +198,23 @@ module EventsHelper
       "event-block"
     else
       "event-inline"
+    end
+  end
+
+  def icon_for_event(note)
+    icon_name = ICON_NAMES_BY_EVENT_TYPE[note]
+    custom_icon(icon_name) if icon_name
+  end
+
+  def icon_for_profile_event(event)
+    if current_path?('users#show')
+      content_tag :div, class: "system-note-image #{event.action_name.parameterize}-icon" do
+        icon_for_event(event.action_name)
+      end
+    else
+      content_tag :div, class: 'system-note-image user-avatar' do
+        author_avatar(event, size: 32)
+      end
     end
   end
 end

@@ -13,5 +13,21 @@ module Gitlab
     def force_utf8(str)
       str.force_encoding(Encoding::UTF_8)
     end
+
+    def to_boolean(value)
+      return value if [true, false].include?(value)
+      return true if value =~ /^(true|t|yes|y|1|on)$/i
+      return false if value =~ /^(false|f|no|n|0|off)$/i
+
+      nil
+    end
+
+    def boolean_to_yes_no(bool)
+      if bool
+        'Yes'
+      else
+        'No'
+      end
+    end
   end
 end

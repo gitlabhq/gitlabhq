@@ -31,11 +31,17 @@ describe Gitlab::Saml::User, lib: true do
       allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} } })
     end
 
-    before { stub_basic_saml_config }
+    before do
+      stub_basic_saml_config
+    end
 
     describe 'account exists on server' do
-      before { stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true }) }
+      before do
+        stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true })
+      end
+
       let!(:existing_user) { create(:user, email: 'john@mail.com', username: 'john') }
+
       context 'and should bind with SAML' do
         it 'adds the SAML identity to the existing user' do
           saml_user.save
@@ -57,7 +63,10 @@ describe Gitlab::Saml::User, lib: true do
           end
         end
 
-        before { stub_saml_group_config(%w(Interns)) }
+        before do
+          stub_saml_group_config(%w(Interns))
+        end
+
         context 'are defined but the user does not belong there' do
           it 'does not mark the user as external' do
             saml_user.save
@@ -80,7 +89,9 @@ describe Gitlab::Saml::User, lib: true do
     describe 'no account exists on server' do
       shared_examples 'to verify compliance with allow_single_sign_on' do
         context 'with allow_single_sign_on enabled' do
-          before { stub_omniauth_config(allow_single_sign_on: ['saml']) }
+          before do
+            stub_omniauth_config(allow_single_sign_on: ['saml'])
+          end
 
           it 'creates a user from SAML' do
             saml_user.save
@@ -93,14 +104,20 @@ describe Gitlab::Saml::User, lib: true do
         end
 
         context 'with allow_single_sign_on default (["saml"])' do
-          before { stub_omniauth_config(allow_single_sign_on: ['saml']) }
+          before do
+            stub_omniauth_config(allow_single_sign_on: ['saml'])
+          end
+
           it 'does not throw an error' do
             expect{ saml_user.save }.not_to raise_error
           end
         end
 
         context 'with allow_single_sign_on disabled' do
-          before { stub_omniauth_config(allow_single_sign_on: false) }
+          before do
+            stub_omniauth_config(allow_single_sign_on: false)
+          end
+
           it 'throws an error' do
             expect{ saml_user.save }.to raise_error StandardError
           end
@@ -128,15 +145,22 @@ describe Gitlab::Saml::User, lib: true do
       end
 
       context 'with auto_link_ldap_user disabled (default)' do
-        before { stub_omniauth_config({ auto_link_ldap_user: false, auto_link_saml_user: false, allow_single_sign_on: ['saml'] }) }
+        before do
+          stub_omniauth_config({ auto_link_ldap_user: false, auto_link_saml_user: false, allow_single_sign_on: ['saml'] })
+        end
+
         include_examples 'to verify compliance with allow_single_sign_on'
       end
 
       context 'with auto_link_ldap_user enabled' do
-        before { stub_omniauth_config({ auto_link_ldap_user: true, auto_link_saml_user: false }) }
+        before do
+          stub_omniauth_config({ auto_link_ldap_user: true, auto_link_saml_user: false })
+        end
 
         context 'and at least one LDAP provider is defined' do
-          before { stub_ldap_config(providers: %w(ldapmain)) }
+          before do
+            stub_ldap_config(providers: %w(ldapmain))
+          end
 
           context 'and a corresponding LDAP person' do
             before do
@@ -155,11 +179,10 @@ describe Gitlab::Saml::User, lib: true do
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql uid
                 expect(gl_user.email).to eql 'john@mail.com'
-                expect(gl_user.identities.length).to eql 2
+                expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
-                                                            { provider: 'saml', extern_uid: uid }
-                                                          ])
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                                                           { provider: 'saml', extern_uid: uid }])
               end
             end
 
@@ -178,11 +201,10 @@ describe Gitlab::Saml::User, lib: true do
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql 'john'
                 expect(gl_user.email).to eql 'john@mail.com'
-                expect(gl_user.identities.length).to eql 2
+                expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
-                                                            { provider: 'saml', extern_uid: uid }
-                                                          ])
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                                                           { provider: 'saml', extern_uid: uid }])
               end
 
               it 'saves successfully on subsequent tries, when both identities are present' do
@@ -204,24 +226,52 @@ describe Gitlab::Saml::User, lib: true do
                 local_gl_user = local_saml_user.gl_user
 
                 expect(local_gl_user).to be_valid
-                expect(local_gl_user.identities.length).to eql 2
+                expect(local_gl_user.identities.length).to be 2
                 identities_as_hash = local_gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
-                                                            { provider: 'saml', extern_uid: 'uid=user1,ou=People,dc=example' }
-                                                          ])
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                                                           { provider: 'saml', extern_uid: 'uid=user1,ou=People,dc=example' }])
               end
             end
           end
         end
       end
+
+      context 'when signup is disabled' do
+        before do
+          stub_application_setting signup_enabled: false
+        end
+
+        it 'creates the user' do
+          saml_user.save
+
+          expect(gl_user).to be_persisted
+        end
+      end
+
+      context 'when user confirmation email is enabled' do
+        before do
+          stub_application_setting send_user_confirmation_email: true
+        end
+
+        it 'creates and confirms the user anyway' do
+          saml_user.save
+
+          expect(gl_user).to be_persisted
+          expect(gl_user).to be_confirmed
+        end
+      end
     end
 
     describe 'blocking' do
-      before { stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true }) }
+      before do
+        stub_omniauth_config({ allow_single_sign_on: ['saml'], auto_link_saml_user: true })
+      end
 
       context 'signup with SAML only' do
         context 'dont block on create' do
-          before { stub_omniauth_config(block_auto_created_users: false) }
+          before do
+            stub_omniauth_config(block_auto_created_users: false)
+          end
 
           it 'does not block the user' do
             saml_user.save
@@ -231,7 +281,9 @@ describe Gitlab::Saml::User, lib: true do
         end
 
         context 'block on create' do
-          before { stub_omniauth_config(block_auto_created_users: true) }
+          before do
+            stub_omniauth_config(block_auto_created_users: true)
+          end
 
           it 'blocks user' do
             saml_user.save
@@ -248,7 +300,9 @@ describe Gitlab::Saml::User, lib: true do
         end
 
         context 'dont block on create' do
-          before { stub_omniauth_config(block_auto_created_users: false) }
+          before do
+            stub_omniauth_config(block_auto_created_users: false)
+          end
 
           it do
             saml_user.save
@@ -258,7 +312,9 @@ describe Gitlab::Saml::User, lib: true do
         end
 
         context 'block on create' do
-          before { stub_omniauth_config(block_auto_created_users: true) }
+          before do
+            stub_omniauth_config(block_auto_created_users: true)
+          end
 
           it do
             saml_user.save

@@ -5,7 +5,7 @@ feature 'list of badges' do
     user = create(:user)
     project = create(:project)
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
     visit namespace_project_pipelines_settings_path(project.namespace, project)
   end
 
@@ -14,7 +14,8 @@ feature 'list of badges' do
       expect(page).to have_content 'build status'
       expect(page).to have_content 'Markdown'
       expect(page).to have_content 'HTML'
-      expect(page).to have_css('.highlight', count: 2)
+      expect(page).to have_content 'AsciiDoc'
+      expect(page).to have_css('.highlight', count: 3)
       expect(page).to have_xpath("//img[@alt='build status']")
 
       page.within('.highlight', match: :first) do
@@ -28,7 +29,8 @@ feature 'list of badges' do
       expect(page).to have_content 'coverage report'
       expect(page).to have_content 'Markdown'
       expect(page).to have_content 'HTML'
-      expect(page).to have_css('.highlight', count: 2)
+      expect(page).to have_content 'AsciiDoc'
+      expect(page).to have_css('.highlight', count: 3)
       expect(page).to have_xpath("//img[@alt='coverage report']")
 
       page.within('.highlight', match: :first) do

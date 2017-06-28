@@ -4,14 +4,18 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
-  border-bottom: 1px solid $table-border-color;
+  padding: $gl-padding-top 0 $gl-padding-top 40px;
+  border-bottom: 1px solid $white-normal;
   color: $list-text-color;
+  position: relative;
 
   &.event-inline {
-    .avatar {
-      position: relative;
-      top: -2px;
+    .system-note-image {
+      top: 20px;
+    }
+
+    .user-avatar {
+      top: 14px;
     }
 
     .event-title,
@@ -21,11 +25,34 @@
   }
 
   a {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
 
-  .avatar {
-    margin-left: -($gl-avatar-size + $gl-padding-top);
+  .system-note-image {
+    position: absolute;
+    left: 0;
+    top: 14px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: $gl-text-color-secondary;
+    }
+
+    &.opened-icon,
+    &.created-icon {
+      svg {
+        fill: $green-300;
+      }
+    }
+
+    &.closed-icon svg {
+      fill: $red-300;
+    }
+
+    &.accepted-icon svg {
+      fill: $blue-300;
+    }
   }
 
   .event-title {
@@ -41,7 +68,6 @@
       word-wrap: break-word;
 
       .md {
-        color: $gl-grayish-blue;
         font-size: $gl-font-size;
 
         .label {
@@ -62,8 +88,7 @@
         border: none;
         background: $gray-light;
         border-radius: 0;
-        color: #777;
-        margin: 0 20px;
+        color: $events-pre-color;
         overflow: hidden;
       }
 
@@ -78,37 +103,40 @@
         margin-bottom: 0;
       }
     }
+
     .event-note-icon {
-      color: #777;
+      color: $events-pre-color;
       float: left;
       font-size: $gl-font-size;
       line-height: 16px;
       margin-right: 5px;
     }
   }
+
   .event_icon {
     position: relative;
     float: right;
-    border: 1px solid #eee;
+    border: 1px solid $gray-darker;
     padding: 5px;
-    @include border-radius(5px);
+    border-radius: 5px;
     background: $gray-light;
     margin-left: 10px;
     top: -6px;
+
     img {
       width: 20px;
     }
   }
 
-  &:last-child { border: none }
+  &:last-child { border: none; }
 
   .event_commits {
     li {
       &.commit {
         background: transparent;
-        padding: 3px;
-        padding-left: 0;
+        padding: 0;
         border: none;
+
         .commit-row-title {
           font-size: $gl-font-size;
         }
@@ -117,6 +145,7 @@
       &.commits-stat {
         display: block;
         padding: 0 3px 0 0;
+
         &:hover {
           background: none;
         }
@@ -137,7 +166,7 @@
 .event-last-push {
   overflow: auto;
   width: 100%;
-  
+
   .event-last-push-text {
     @include str-truncated(100%);
     padding: 4px 0;
@@ -151,21 +180,21 @@
 
 @media (max-width: $screen-xs-max) {
   .event-item {
-    padding-left: $gl-padding;
+    padding-left: 0;
 
     .event-title {
       white-space: normal;
       overflow: visible;
       max-width: 100%;
     }
-    .avatar {
+
+    .system-note-image {
       display: none;
     }
 
     .event-body {
       margin: 0;
-      border-left: 2px solid #ddd;
-      padding-left: 10px;
+      padding-left: 0;
     }
 
     .event-item-timestamp {
@@ -180,4 +209,3 @@
     display: none;
   }
 }
-

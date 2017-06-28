@@ -1,13 +1,12 @@
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor < Banzai::ReferenceExtractor
-    REFERABLES = %i(user issue label milestone merge_request snippet commit commit_range)
+    REFERABLES = %i(user issue label milestone merge_request snippet commit commit_range directly_addressed_user).freeze
     attr_accessor :project, :current_user, :author
 
     def initialize(project, current_user = nil)
       @project = project
       @current_user = current_user
-
       @references = {}
 
       super()
@@ -19,6 +18,11 @@ module Gitlab
 
     def references(type)
       super(type, project, current_user)
+    end
+
+    def reset_memoized_values
+      @references = {}
+      super()
     end
 
     REFERABLES.each do |type|

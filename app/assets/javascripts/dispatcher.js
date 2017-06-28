@@ -1,3 +1,62 @@
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
+/* global UsernameValidator */
+/* global ActiveTabMemoizer */
+/* global ShortcutsNavigation */
+/* global IssuableIndex */
+/* global ShortcutsIssuable */
+/* global ZenMode */
+/* global Milestone */
+/* global IssuableForm */
+/* global LabelsSelect */
+/* global MilestoneSelect */
+/* global Commit */
+/* global NotificationsForm */
+/* global TreeView */
+/* global NotificationsDropdown */
+/* global GroupAvatar */
+/* global LineHighlighter */
+/* global ProjectFork */
+/* global BuildArtifacts */
+/* global GroupsSelect */
+/* global Search */
+/* global Admin */
+/* global NamespaceSelects */
+/* global Project */
+/* global ProjectAvatar */
+/* global CompareAutocomplete */
+/* global ProjectNew */
+/* global Star */
+/* global ProjectShow */
+/* global Labels */
+/* global Shortcuts */
+/* global Sidebar */
+/* global ShortcutsWiki */
+
+import Issue from './issue';
+import BindInOut from './behaviors/bind_in_out';
+import DeleteModal from './branches/branches_delete_modal';
+import Group from './group';
+import GroupName from './group_name';
+import GroupsList from './groups_list';
+import ProjectsList from './projects_list';
+import setupProjectEdit from './project_edit';
+import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
+import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
+import Landing from './landing';
+import BlobForkSuggestion from './blob/blob_fork_suggestion';
+import UserCallout from './user_callout';
+import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
+import ShortcutsWiki from './shortcuts_wiki';
+import Pipelines from './pipelines';
+import BlobViewer from './blob/viewer/index';
+import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
+import UsersSelect from './users_select';
+import RefSelectDropdown from './ref_select_dropdown';
+import GfmAutoComplete from './gfm_auto_complete';
+import ShortcutsBlob from './shortcuts_blob';
+import initSettingsPanels from './settings_panels';
+import initExperimentalFlags from './experimental_flags';
+
 (function() {
   var Dispatcher;
 
@@ -8,26 +67,83 @@
   Dispatcher = (function() {
     function Dispatcher() {
       this.initSearch();
+      this.initFieldErrors();
       this.initPageScripts();
     }
 
     Dispatcher.prototype.initPageScripts = function() {
-      var page, path, shortcut_handler;
+      var page, path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl;
       page = $('body').attr('data-page');
       if (!page) {
         return false;
       }
       path = page.split(':');
       shortcut_handler = null;
+
+      $('.js-gfm-input').each((i, el) => {
+        const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+        const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+        gfm.setup($(el), {
+          emojis: true,
+          members: enableGFM,
+          issues: enableGFM,
+          milestones: enableGFM,
+          mergeRequests: enableGFM,
+          labels: enableGFM,
+        });
+      });
+
+      function initBlob() {
+        new LineHighlighter();
+
+        new BlobLinePermalinkUpdater(
+          document.querySelector('#blob-content-holder'),
+          '.diff-line-num[data-line-number]',
+          document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
+        );
+
+        shortcut_handler = new ShortcutsNavigation();
+        fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
+        fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
+        new ShortcutsBlob({
+          skipResetBindings: true,
+          fileBlobPermalinkUrl,
+        });
+
+        new BlobForkSuggestion({
+          openButtons: document.querySelectorAll('.js-edit-blob-link-fork-toggler'),
+          forkButtons: document.querySelectorAll('.js-fork-suggestion-button'),
+          cancelButtons: document.querySelectorAll('.js-cancel-fork-suggestion-button'),
+          suggestionSections: document.querySelectorAll('.js-file-fork-suggestion-section'),
+          actionTextPieces: document.querySelectorAll('.js-file-fork-suggestion-section-action'),
+        })
+          .init();
+      }
+
       switch (page) {
+        case 'profiles:preferences:show':
+          initExperimentalFlags();
+          break;
+        case 'sessions:new':
+          new UsernameValidator();
+          new ActiveTabMemoizer();
+          break;
         case 'projects:boards:show':
+        case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
+          new UsersSelect();
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          Issuable.init();
-          new gl.IssuableBulkActions();
+          if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
+            const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
+            filteredSearchManager.setup();
+          }
+          const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
+          IssuableIndex.init(pagePrefix);
+
           shortcut_handler = new ShortcutsNavigation();
+          new UsersSelect();
           break;
         case 'projects:issues:show':
           new Issue();
@@ -38,82 +154,123 @@
         case 'groups:milestones:show':
         case 'dashboard:milestones:show':
           new Milestone();
+          new Sidebar();
+          break;
+        case 'groups:issues':
+        case 'groups:merge_requests':
+          new UsersSelect();
           break;
         case 'dashboard:todos:index':
           new gl.Todos();
           break;
+        case 'dashboard:projects:index':
+        case 'dashboard:projects:starred':
+        case 'explore:projects:index':
+        case 'explore:projects:trending':
+        case 'explore:projects:starred':
+        case 'admin:projects:index':
+          new ProjectsList();
+          break;
+        case 'explore:groups:index':
+          new GroupsList();
+
+          const landingElement = document.querySelector('.js-explore-groups-landing');
+          if (!landingElement) break;
+          const exploreGroupsLanding = new Landing(
+            landingElement,
+            landingElement.querySelector('.dismiss-button'),
+            'explore_groups_landing_dismissed',
+          );
+          exploreGroupsLanding.toggle();
+          break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
-          new ZenMode();
-          new DueDateSelect();
-          new GLForm($('.milestone-form'));
-          break;
+        case 'projects:milestones:update':
         case 'groups:milestones:new':
+        case 'groups:milestones:edit':
+        case 'groups:milestones:update':
           new ZenMode();
+          new gl.DueDateSelectors();
+          new gl.GLForm($('.milestone-form'), true);
           break;
         case 'projects:compare:show':
-          new Diff();
+          new gl.Diff();
+          break;
+        case 'projects:branches:index':
+          gl.AjaxLoadingSpinner.init();
+          new DeleteModal();
           break;
         case 'projects:issues:new':
         case 'projects:issues:edit':
           shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.issue-form'));
+          new gl.GLForm($('.issue-form'), true);
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
+        case 'projects:merge_requests:new_diffs':
         case 'projects:merge_requests:edit':
-          new Diff();
+          new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.merge-request-form'));
+          new gl.GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
           new LabelsSelect();
           new MilestoneSelect();
           new gl.IssuableTemplateSelectors();
+          new AutoWidthDropdownSelect($('.js-target-branch-select')).init();
           break;
         case 'projects:tags:new':
           new ZenMode();
-          new GLForm($('.tag-form'));
+          new gl.GLForm($('.tag-form'), true);
+          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          break;
+        case 'projects:snippets:new':
+        case 'projects:snippets:edit':
+        case 'projects:snippets:create':
+        case 'projects:snippets:update':
+          new gl.GLForm($('.snippet-form'), true);
+          break;
+        case 'snippets:new':
+        case 'snippets:edit':
+        case 'snippets:create':
+        case 'snippets:update':
+          new gl.GLForm($('.snippet-form'), false);
           break;
         case 'projects:releases:edit':
           new ZenMode();
-          new GLForm($('.release-form'));
+          new gl.GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
-          new Diff();
+          new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
-          new MergedButtons();
-          break;
-        case 'projects:merge_requests:commits':
-        case 'projects:merge_requests:builds':
-          new MergedButtons();
           break;
         case "projects:merge_requests:diffs":
-          new Diff();
+          new gl.Diff();
           new ZenMode();
-          new MergedButtons();
-          break;
-        case "projects:merge_requests:conflicts":
-          window.mcui = new MergeConflictResolver()
-          break;
-        case 'projects:merge_requests:index':
-          shortcut_handler = new ShortcutsNavigation();
-          Issuable.init();
           break;
         case 'dashboard:activity':
-          new Activities();
+          new gl.Activities();
           break;
-        case 'dashboard:projects:starred':
-          new Activities();
+        case 'dashboard:issues':
+        case 'dashboard:merge_requests':
+          new UsersSelect();
           break;
         case 'projects:commit:show':
           new Commit();
-          new Diff();
+          new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
+          new MiniPipelineGraph({
+            container: '.js-commit-pipeline-graph',
+          }).bindEvents();
+          break;
+        case 'projects:commit:pipelines':
+          new MiniPipelineGraph({
+            container: '.js-commit-pipeline-graph',
+          }).bindEvents();
           break;
         case 'projects:commits:show':
         case 'projects:activity':
@@ -125,44 +282,79 @@
           if ($('#tree-slider').length) {
             new TreeView();
           }
+          if ($('.blob-viewer').length) {
+            new BlobViewer();
+          }
+          break;
+        case 'projects:edit':
+          setupProjectEdit();
+          break;
+        case 'projects:pipelines:builds':
+        case 'projects:pipelines:failures':
+        case 'projects:pipelines:show':
+          const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
+          const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
+
+          new Pipelines({
+            initTabs: true,
+            pipelineStatusUrl,
+            tabsOptions: {
+              action: controllerAction,
+              defaultAction: 'pipelines',
+              parentEl: '.pipelines-tabs',
+            },
+          });
           break;
         case 'groups:activity':
-          new Activities();
+          new gl.Activities();
           break;
         case 'groups:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
           new NotificationsDropdown();
+          new ProjectsList();
           break;
         case 'groups:group_members:index':
           new gl.MemberExpirationDate();
-          new GroupMembers();
+          new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:project_members:index':
+        case 'projects:members:show':
+          new gl.MemberExpirationDate('.js-access-expiration-date-groups');
+          new GroupsSelect();
           new gl.MemberExpirationDate();
-          new ProjectMembers();
+          new gl.Members();
           new UsersSelect();
           break;
         case 'groups:new':
+        case 'admin:groups:new':
+        case 'groups:create':
+        case 'admin:groups:create':
+          BindInOut.initAll();
+          new Group();
+          new GroupAvatar();
+          break;
         case 'groups:edit':
         case 'admin:groups:edit':
-        case 'admin:groups:new':
           new GroupAvatar();
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
+          new BlobViewer();
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-        case 'projects:blame:show':
-          new LineHighlighter();
-          shortcut_handler = new ShortcutsNavigation();
-          new ShortcutsBlob(true);
+          new BlobViewer();
+          initBlob();
           break;
+        case 'projects:blame:show':
+          initBlob();
+          break;
+        case 'groups:labels:new':
+        case 'groups:labels:edit':
         case 'projects:labels:new':
         case 'projects:labels:edit':
           new Labels();
@@ -181,27 +373,68 @@
           new ProjectFork();
           break;
         case 'projects:artifacts:browse':
+          new ShortcutsNavigation();
           new BuildArtifacts();
           break;
-        case 'projects:group_links:index':
-          new gl.MemberExpirationDate();
-          new GroupsSelect();
+        case 'projects:artifacts:file':
+          new ShortcutsNavigation();
+          new BlobViewer();
+          break;
+        case 'help:index':
+          gl.VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
           break;
         case 'search:show':
           new Search();
           break;
-        case 'projects:protected_branches:index':
+        case 'projects:repository:show':
+          // Initialize Protected Branch Settings
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
+          // Initialize Protected Tag Settings
+          new ProtectedTagCreate();
+          new ProtectedTagEditList();
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
-        case 'projects:cycle_analytics:show':
-          new gl.CycleAnalytics();
+        case 'projects:ci_cd:show':
+          new gl.ProjectVariables();
+          break;
+        case 'ci:lints:create':
+        case 'ci:lints:show':
+          new gl.CILintEditor();
+          break;
+        case 'users:show':
+          new UserCallout();
+          break;
+        case 'admin:conversational_development_index:show':
+          new UserCallout();
+          break;
+        case 'snippets:show':
+          new LineHighlighter();
+          new BlobViewer();
+          break;
+        case 'import:fogbugz:new_user_map':
+          new UsersSelect();
           break;
       }
       switch (path.first()) {
+        case 'sessions':
+        case 'omniauth_callbacks':
+          if (!gon.u2f) break;
+          gl.u2fAuthenticate = new gl.U2FAuthenticate(
+            $('#js-authenticate-u2f'),
+            '#js-login-u2f-form',
+            gon.u2f,
+            document.querySelector('#js-login-2fa-device'),
+            document.querySelector('.js-2fa-form'),
+          );
+          gl.u2fAuthenticate.start();
         case 'admin':
           new Admin();
           switch (path[1]) {
+            case 'cohorts':
+              new gl.UsagePing();
+              break;
             case 'groups':
               new UsersSelect();
               break;
@@ -221,7 +454,10 @@
           break;
         case 'dashboard':
         case 'root':
-          shortcut_handler = new ShortcutsDashboardNavigation();
+          new UserCallout();
+          break;
+        case 'groups':
+          new GroupName();
           break;
         case 'profiles':
           new NotificationsForm();
@@ -230,6 +466,7 @@
         case 'projects':
           new Project();
           new ProjectAvatar();
+          new GroupName();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();
@@ -248,15 +485,17 @@
               new NotificationsDropdown();
               break;
             case 'wikis':
-              new Wikis();
-              shortcut_handler = new ShortcutsNavigation();
+              new gl.Wikis();
+              shortcut_handler = new ShortcutsWiki();
               new ZenMode();
-              new GLForm($('.wiki-form'));
+              new gl.GLForm($('.wiki-form'), true);
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();
               if (path[2] === 'show') {
                 new ZenMode();
+                new LineHighlighter();
+                new BlobViewer();
               }
               break;
             case 'labels':
@@ -276,7 +515,7 @@
       }
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
-        return new Shortcuts();
+        new Shortcuts();
       }
     };
 
@@ -287,8 +526,12 @@
       }
     };
 
+    Dispatcher.prototype.initFieldErrors = function() {
+      $('.gl-show-field-errors').each((i, form) => {
+        new gl.GlFieldErrors(form);
+      });
+    };
+
     return Dispatcher;
-
   })();
-
-}).call(this);
+}).call(window);

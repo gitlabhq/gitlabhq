@@ -1,69 +1,78 @@
 require('spec_helper')
 
 describe Projects::ProjectMembersController do
-  describe '#apply_import' do
-    let(:project) { create(:project) }
-    let(:another_project) { create(:project, :private) }
-    let(:user) { create(:user) }
-    let(:member) { create(:user) }
+  let(:user) { create(:user) }
+  let(:project) { create(:empty_project, :public, :access_requestable) }
+
+  describe 'GET index' do
+    it 'should have the settings/members address with a 302 status code' do
+      get :index, namespace_id: project.namespace, project_id: project
+
+      expect(response).to have_http_status(302)
+      expect(response.location).to include namespace_project_settings_members_path(project.namespace, project)
+    end
+  end
+
+  describe 'POST create' do
+    let(:project_user) { create(:user) }
 
     before do
-      project.team << [user, :master]
-      another_project.team << [member, :guest]
       sign_in(user)
     end
 
-    shared_context 'import applied' do
+    context 'when user does not have enough rights' do
       before do
-        post(:apply_import, namespace_id: project.namespace,
-                            project_id: project,
-                            source_project_id: another_project.id)
+        project.team << [user, :developer]
+      end
+
+      it 'returns 404' do
+        post :create, namespace_id: project.namespace,
+                      project_id: project,
+                      user_ids: project_user.id,
+                      access_level: Gitlab::Access::GUEST
+
+        expect(response).to have_http_status(404)
+        expect(project.users).not_to include project_user
       end
     end
 
-    context 'when user can access source project members' do
-      before { another_project.team << [user, :guest] }
-      include_context 'import applied'
-
-      it 'imports source project members' do
-        expect(project.team_members).to include member
-        expect(response).to set_flash.to 'Successfully imported'
-        expect(response).to redirect_to(
-          namespace_project_project_members_path(project.namespace, project)
-        )
-      end
-    end
-
-    context 'when user is not member of a source project' do
-      include_context 'import applied'
-
-      it 'does not import team members' do
-        expect(project.team_members).not_to include member
+    context 'when user has enough rights' do
+      before do
+        project.team << [user, :master]
       end
 
-      it 'responds with not found' do
-        expect(response.status).to eq 404
+      it 'adds user to members' do
+        expect_any_instance_of(Members::CreateService).to receive(:execute).and_return(status: :success)
+
+        post :create, namespace_id: project.namespace,
+                      project_id: project,
+                      user_ids: project_user.id,
+                      access_level: Gitlab::Access::GUEST
+
+        expect(response).to set_flash.to 'Users were successfully added.'
+        expect(response).to redirect_to(namespace_project_settings_members_path(project.namespace, project))
+      end
+
+      it 'adds no user to members' do
+        expect_any_instance_of(Members::CreateService).to receive(:execute).and_return(status: :failure, message: 'Message')
+
+        post :create, namespace_id: project.namespace,
+                      project_id: project,
+                      user_ids: '',
+                      access_level: Gitlab::Access::GUEST
+
+        expect(response).to set_flash.to 'Message'
+        expect(response).to redirect_to(namespace_project_settings_members_path(project.namespace, project))
       end
     end
   end
 
-  describe '#index' do
-    context 'when user is member' do
-      before do
-        project = create(:project, :private)
-        member = create(:user)
-        project.team << [member, :guest]
-        sign_in(member)
+  describe 'DELETE destroy' do
+    let(:member) { create(:project_member, :developer, project: project) }
 
-        get :index, namespace_id: project.namespace, project_id: project
-      end
-
-      it { expect(response).to have_http_status(200) }
+    before do
+      sign_in(user)
     end
-  end
-
-  describe '#destroy' do
-    let(:project) { create(:project, :public) }
 
     context 'when member is not found' do
       it 'returns 404' do
@@ -76,17 +85,9 @@ describe Projects::ProjectMembersController do
     end
 
     context 'when member is found' do
-      let(:user) { create(:user) }
-      let(:team_user) { create(:user) }
-      let(:member) do
-        project.team << [team_user, :developer]
-        project.members.find_by(user_id: team_user.id)
-      end
-
       context 'when user does not have enough rights' do
         before do
           project.team << [user, :developer]
-          sign_in(user)
         end
 
         it 'returns 404' do
@@ -95,14 +96,13 @@ describe Projects::ProjectMembersController do
                            id: member
 
           expect(response).to have_http_status(404)
-          expect(project.users).to include team_user
+          expect(project.members).to include member
         end
       end
 
       context 'when user has enough rights' do
         before do
           project.team << [user, :master]
-          sign_in(user)
         end
 
         it '[HTML] removes user from members' do
@@ -111,9 +111,9 @@ describe Projects::ProjectMembersController do
                            id: member
 
           expect(response).to redirect_to(
-            namespace_project_project_members_path(project.namespace, project)
+            namespace_project_settings_members_path(project.namespace, project)
           )
-          expect(project.users).not_to include team_user
+          expect(project.members).not_to include member
         end
 
         it '[JS] removes user from members' do
@@ -122,19 +122,18 @@ describe Projects::ProjectMembersController do
                                  id: member
 
           expect(response).to be_success
-          expect(project.users).not_to include team_user
+          expect(project.members).not_to include member
         end
       end
     end
   end
 
-  describe '#leave' do
-    let(:project) { create(:project, :public) }
-    let(:user) { create(:user) }
+  describe 'DELETE leave' do
+    before do
+      sign_in(user)
+    end
 
     context 'when member is not found' do
-      before { sign_in(user) }
-
       it 'returns 404' do
         delete :leave, namespace_id: project.namespace,
                        project_id: project
@@ -147,7 +146,6 @@ describe Projects::ProjectMembersController do
       context 'and is not an owner' do
         before do
           project.team << [user, :developer]
-          sign_in(user)
         end
 
         it 'removes user from members' do
@@ -161,10 +159,10 @@ describe Projects::ProjectMembersController do
       end
 
       context 'and is an owner' do
+        let(:project) { create(:empty_project, namespace: user.namespace) }
+
         before do
-          project.update(namespace_id: user.namespace_id)
-          project.team << [user, :master, user]
-          sign_in(user)
+          project.team << [user, :master]
         end
 
         it 'cannot remove himself from the project' do
@@ -178,7 +176,6 @@ describe Projects::ProjectMembersController do
       context 'and is a requester' do
         before do
           project.request_access(user)
-          sign_in(user)
         end
 
         it 'removes user from members' do
@@ -194,10 +191,7 @@ describe Projects::ProjectMembersController do
     end
   end
 
-  describe '#request_access' do
-    let(:project) { create(:project, :public) }
-    let(:user) { create(:user) }
-
+  describe 'POST request_access' do
     before do
       sign_in(user)
     end
@@ -215,8 +209,12 @@ describe Projects::ProjectMembersController do
     end
   end
 
-  describe '#approve' do
-    let(:project) { create(:project, :public) }
+  describe 'POST approve' do
+    let(:member) { create(:project_member, :access_request, project: project) }
+
+    before do
+      sign_in(user)
+    end
 
     context 'when member is not found' do
       it 'returns 404' do
@@ -229,17 +227,9 @@ describe Projects::ProjectMembersController do
     end
 
     context 'when member is found' do
-      let(:user) { create(:user) }
-      let(:team_requester) { create(:user) }
-      let(:member) do
-        project.request_access(team_requester)
-        project.requesters.find_by(user_id: team_requester.id)
-      end
-
       context 'when user does not have enough rights' do
         before do
           project.team << [user, :developer]
-          sign_in(user)
         end
 
         it 'returns 404' do
@@ -248,14 +238,13 @@ describe Projects::ProjectMembersController do
                                         id: member
 
           expect(response).to have_http_status(404)
-          expect(project.users).not_to include team_requester
+          expect(project.members).not_to include member
         end
       end
 
       context 'when user has enough rights' do
         before do
           project.team << [user, :master]
-          sign_in(user)
         end
 
         it 'adds user to members' do
@@ -264,10 +253,93 @@ describe Projects::ProjectMembersController do
                                         id: member
 
           expect(response).to redirect_to(
-            namespace_project_project_members_path(project.namespace, project)
+            namespace_project_settings_members_path(project.namespace, project)
           )
-          expect(project.users).to include team_requester
+          expect(project.members).to include member
         end
+      end
+    end
+  end
+
+  describe 'POST apply_import' do
+    let(:another_project) { create(:empty_project, :private) }
+    let(:member) { create(:user) }
+
+    before do
+      project.team << [user, :master]
+      another_project.team << [member, :guest]
+      sign_in(user)
+    end
+
+    shared_context 'import applied' do
+      before do
+        post(:apply_import, namespace_id: project.namespace,
+                            project_id: project,
+                            source_project_id: another_project.id)
+      end
+    end
+
+    context 'when user can access source project members' do
+      before do
+        another_project.team << [user, :guest]
+      end
+
+      include_context 'import applied'
+
+      it 'imports source project members' do
+        expect(project.team_members).to include member
+        expect(response).to set_flash.to 'Successfully imported'
+        expect(response).to redirect_to(
+          namespace_project_settings_members_path(project.namespace, project)
+        )
+      end
+    end
+
+    context 'when user is not member of a source project' do
+      include_context 'import applied'
+
+      it 'does not import team members' do
+        expect(project.team_members).not_to include member
+      end
+
+      it 'responds with not found' do
+        expect(response.status).to eq 404
+      end
+    end
+  end
+
+  describe 'POST create' do
+    let(:stranger) { create(:user) }
+
+    context 'when creating owner' do
+      before do
+        project.team << [user, :master]
+        sign_in(user)
+      end
+
+      it 'does not create a member' do
+        expect do
+          post :create, user_ids: stranger.id,
+                        namespace_id: project.namespace,
+                        access_level: Member::OWNER,
+                        project_id: project
+        end.to change { project.members.count }.by(0)
+      end
+    end
+
+    context 'when create master' do
+      before do
+        project.team << [user, :master]
+        sign_in(user)
+      end
+
+      it 'creates a member' do
+        expect do
+          post :create, user_ids: stranger.id,
+                        namespace_id: project.namespace,
+                        access_level: Member::MASTER,
+                        project_id: project
+        end.to change { project.members.count }.by(1)
       end
     end
   end

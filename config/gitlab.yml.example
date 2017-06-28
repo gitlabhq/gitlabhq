@@ -76,14 +76,6 @@ production: &base
 
     # default_can_create_group: false  # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
-    ## Default theme ID
-    ##   1 - Graphite
-    ##   2 - Charcoal
-    ##   3 - Green
-    ##   4 - Gray
-    ##   5 - Violet
-    ##   6 - Blue
-    # default_theme: 2 # default: 2
 
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
@@ -97,7 +89,7 @@ production: &base
       issues: true
       merge_requests: true
       wiki: true
-      snippets: false
+      snippets: true
       builds: true
       container_registry: true
 
@@ -112,7 +104,7 @@ production: &base
 
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
-  # For documentation on how to set this up, see http://doc.gitlab.com/ce/incoming_email/README.html
+  # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
   incoming_email:
     enabled: false
 
@@ -138,6 +130,8 @@ production: &base
 
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "inbox"
+    # The IDLE command timeout.
+    idle_timeout: 60
 
   ## Build Artifacts
   artifacts:
@@ -151,10 +145,31 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 
+  ## GitLab Pages
+  pages:
+    enabled: false
+    # The location where pages are stored (default: shared/pages).
+    # path: shared/pages
+
+    # The domain under which the pages are served:
+    # http://group.example.com/project
+    # or project path can be a group page: group.example.com
+    host: example.com
+    port: 80 # Set to 443 if you serve the pages with HTTPS
+    https: false # Set to true if you serve the pages with HTTPS
+    # external_http: ["1.1.1.1:80", "[2001::1]:80"] # If defined, enables custom domain support in GitLab Pages
+    # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
+
+  ## Mattermost
+  ## For enabling Add to Mattermost button
+  mattermost:
+    enabled: false
+    host: 'https://mattermost.example.com'
+
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
+    # gravatar urls: possible placeholders: %{hash} %{size} %{email} %{username}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
@@ -162,9 +177,12 @@ production: &base
   # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
-    # Flag stuck CI builds as failed
-    stuck_ci_builds_worker:
-      cron: "0 0 * * *"
+    # Flag stuck CI jobs as failed
+    stuck_ci_jobs_worker:
+      cron: "0 * * * *"
+    # Execute scheduled triggers
+    pipeline_schedule_worker:
+      cron: "19 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -319,6 +337,10 @@ production: &base
     # showing GitLab's sign-in page (default: show the GitLab sign-in page)
     # auto_sign_in_with_provider: saml
 
+    # Sync user's email address from the specified Omniauth provider every time the user logs
+    # in (default: nil). And consequently make this field read-only.
+    # sync_email_from_provider: cas3
+
     # CAUTION!
     # This allows users to login without having a user account first. Define the allowed providers
     # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
@@ -360,6 +382,16 @@ production: &base
       #             login_url: '/cas/login',
       #             service_validate_url: '/cas/p3/serviceValidate',
       #             logout_url: '/cas/logout'} }
+      # - { name: 'authentiq',
+      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/
+      #     app_id: 'YOUR_CLIENT_ID',
+      #     app_secret: 'YOUR_CLIENT_SECRET',
+      #     args: {
+      #             scope: 'aq:name email~rs address aq:push'
+      #             # redirect_uri parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
+      #             # redirect_uri: 'YOUR_REDIRECT_URI'
+      #           }
+      #   }
       # - { name: 'github',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
@@ -416,25 +448,32 @@ production: &base
   shared:
     # path: /mnt/gitlab # Default: shared
 
+  # Gitaly settings
+  gitaly:
+    # This setting controls whether GitLab uses Gitaly (new component
+    # introduced in 9.0). Eventually Gitaly use will become mandatory and
+    # this option will disappear.
+    enabled: true
+    # Default Gitaly authentication token. Can be overriden per storage. Can
+    # be left blank when Gitaly is running locally on a Unix socket, which
+    # is the normal way to deploy Gitaly.
+    token:
 
   #
   # 4. Advanced settings
   # ==========================
 
-  # GitLab Satellites
-  #
-  # Note for maintainers: keep the satellites.path setting until GitLab 9.0 at
-  # least. This setting is fed to 'rm -rf' in
-  # db/migrate/20151023144219_remove_satellites.rb
-  satellites:
-    path: /home/git/gitlab-satellites/
-
   ## Repositories settings
   repositories:
     # Paths where repositories can be stored. Give the canonicalized absolute pathname.
-    # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
+    # IMPORTANT: None of the path components may be symlink, because
+    # gitlab-shell invokes Dir.pwd inside the repository path and that results
+    # real path not the symlink.
     storages: # You must have at least a `default` storage path.
-      default: /home/git/repositories/
+      default:
+        path: /home/git/repositories/
+        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
+        # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
 
   ## Backup settings
   backup:
@@ -456,6 +495,8 @@ production: &base
     #   multipart_chunk_size: 104857600
     #   # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
     #   # encryption: 'AES256'
+    #   # Specifies Amazon S3 storage class to use for backups, this is optional
+    #   # storage_class: 'STANDARD'
 
   ## GitLab Shell settings
   gitlab_shell:
@@ -470,8 +511,16 @@ production: &base
     upload_pack: true
     receive_pack: true
 
+    # Git import/fetch timeout
+    # git_timeout: 800
+
     # If you use non-standard ssh port you need to specify it
     # ssh_port: 22
+
+  workhorse:
+    # File that contains the secret key for verifying access for gitlab-workhorse.
+    # Default is '.gitlab_workhorse_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_workhorse_secret
 
   ## Git settings
   # CAUTION!
@@ -484,6 +533,16 @@ production: &base
     max_size: 20971520 # 20.megabytes
     # Git timeout to read a commit, in seconds
     timeout: 10
+
+  ## Webpack settings
+  # If enabled, this will tell rails to serve frontend assets from the webpack-dev-server running
+  # on a given port instead of serving directly from /assets/webpack. This is only indended for use
+  # in development.
+  webpack:
+    # dev_server:
+    #   enabled: true
+    #   host: localhost
+    #   port: 3808
 
   #
   # 5. Extra customization
@@ -531,11 +590,16 @@ test:
     # In order to setup it correctly you need to specify
     # your system username you use to run GitLab
     # user: YOUR_USERNAME
-  satellites:
-    path: tmp/tests/gitlab-satellites/
+  pages:
+    path: tmp/tests/pages
   repositories:
     storages:
-      default: tmp/tests/repositories/
+      default:
+        path: tmp/tests/repositories/
+        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+  gitaly:
+    enabled: true
+    token: secret
   backup:
     path: tmp/tests/backups
   gitlab_shell:
@@ -547,6 +611,10 @@ test:
       project_url: "http://redmine/projects/:issues_tracker_id"
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
+    jira:
+      title: "JIRA"
+      url: https://sample_company.atlassian.net
+      project_key: PROJECT
   ldap:
     enabled: false
     servers:

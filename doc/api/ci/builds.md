@@ -5,7 +5,7 @@ API used by runners to receive and update builds.
 >**Note:**
 This API is intended to be used only by Runners as their own
 communication channel. For the consumer API see the
-[Builds API](../builds.md).
+[Jobs API](../jobs.md).
 
 ## Authentication
 

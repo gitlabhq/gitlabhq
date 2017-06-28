@@ -65,7 +65,7 @@ issues and merge requests assigned to each label.
 >   https://gitlab.com/gitlab-org/gitlab-ce/issues/18554.
 
 Prioritized labels are like any other label, but sorted by priority. This allows
-you to sort issues and merge requests by priority.
+you to sort issues and merge requests by label priority.
 
 To prioritize labels, navigate to your project's **Issues > Labels** and click
 on the star icon next to them to put them in the priority list. Click on the
@@ -77,9 +77,13 @@ having their priority set to null.
 
 ![Prioritize labels](img/labels_prioritize.png)
 
-Now that you have labels prioritized, you can use the 'Priority' filter in the
-issues or merge requests tracker. Those with the highest priority label, will
-appear on top.
+Now that you have labels prioritized, you can use the 'Priority' and 'Label
+priority' filters in the issues or merge requests tracker.
+
+The 'Label priority' filter puts issues with the highest priority label on top.
+
+The 'Priority' filter sorts issues by their soonest milestone due date, then by
+label priority.
 
 ![Filter labels by priority](img/labels_filter_by_priority.png)
 
@@ -156,4 +160,3 @@ mouse over the label in the issue tracker or wherever else the label is
 rendered.
 
 ![Label tooltips](img/labels_description_tooltip.png)
-

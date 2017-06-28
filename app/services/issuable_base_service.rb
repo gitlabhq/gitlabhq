@@ -1,11 +1,6 @@
 class IssuableBaseService < BaseService
   private
 
-  def create_assignee_note(issuable)
-    SystemNoteService.change_assignee(
-      issuable, issuable.project, current_user, issuable.assignee)
-  end
-
   def create_milestone_note(issuable)
     SystemNoteService.change_milestone(
       issuable, issuable.project, current_user, issuable.milestone)
@@ -24,6 +19,10 @@ class IssuableBaseService < BaseService
       issuable, issuable.project, current_user, old_title)
   end
 
+  def create_description_change_note(issuable)
+    SystemNoteService.change_description(issuable, issuable.project, current_user)
+  end
+
   def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
     SystemNoteService.change_branch(
       issuable, issuable.project, current_user, branch_type,
@@ -36,28 +35,54 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def filter_params(issuable_ability_name = :issue)
-    filter_assignee
-    filter_milestone
-    filter_labels
+  def create_time_estimate_note(issuable)
+    SystemNoteService.change_time_estimate(issuable, issuable.project, current_user)
+  end
 
-    ability = :"admin_#{issuable_ability_name}"
+  def create_time_spent_note(issuable)
+    SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
+  end
 
-    unless can?(current_user, ability, project)
+  def filter_params(issuable)
+    ability_name = :"admin_#{issuable.to_ability_name}"
+
+    unless can?(current_user, ability_name, project)
       params.delete(:milestone_id)
       params.delete(:labels)
       params.delete(:add_label_ids)
       params.delete(:remove_label_ids)
       params.delete(:label_ids)
+      params.delete(:assignee_ids)
       params.delete(:assignee_id)
       params.delete(:due_date)
     end
+
+    filter_assignee(issuable)
+    filter_milestone
+    filter_labels
   end
 
-  def filter_assignee
-    if params[:assignee_id] == IssuableFinder::NONE
-      params[:assignee_id] = ''
+  def filter_assignee(issuable)
+    return unless params[:assignee_id].present?
+
+    assignee_id = params[:assignee_id]
+
+    if assignee_id.to_s == IssuableFinder::NONE
+      params[:assignee_id] = ""
+    else
+      params.delete(:assignee_id) unless assignee_can_read?(issuable, assignee_id)
     end
+  end
+
+  def assignee_can_read?(issuable, assignee_id)
+    new_assignee = User.find_by_id(assignee_id)
+
+    return false unless new_assignee
+
+    ability_name = :"read_#{issuable.to_ability_name}"
+    resource     = issuable.persisted? ? issuable : project
+
+    can?(new_assignee, ability_name, resource)
   end
 
   def filter_milestone
@@ -80,18 +105,20 @@ class IssuableBaseService < BaseService
   def filter_labels_in_param(key)
     return if params[key].to_a.empty?
 
-    params[key] = project.labels.where(id: params[key]).pluck(:id)
+    params[key] = available_labels.where(id: params[key]).pluck(:id)
   end
 
   def find_or_create_label_ids
     labels = params.delete(:labels)
+
     return unless labels
 
     params[:label_ids] = labels.split(",").map do |label_name|
-      project.labels.create_with(color: Label::DEFAULT_COLOR)
-                    .find_or_create_by(title: label_name.strip)
-                    .id
-    end
+      service = Labels::FindOrCreateService.new(current_user, project, title: label_name.strip)
+      label   = service.execute
+
+      label.try(:id)
+    end.compact
   end
 
   def process_label_ids(attributes, existing_label_ids: nil)
@@ -111,12 +138,17 @@ class IssuableBaseService < BaseService
     new_label_ids
   end
 
-  def merge_slash_commands_into_params!(issuable)
-    description, command_params =
-      SlashCommands::InterpretService.new(project, current_user).
-      execute(params[:description], issuable)
+  def available_labels
+    LabelsFinder.new(current_user, project_id: @project.id).execute
+  end
 
-    params[:description] = description
+  def merge_quick_actions_into_params!(issuable)
+    description, command_params =
+      QuickActions::InterpretService.new(project, current_user)
+        .execute(params[:description], issuable)
+
+    # Avoid a description already set on an issuable to be overwritten by a nil
+    params[:description] = description if params.key?(:description)
 
     params.merge!(command_params)
   end
@@ -130,11 +162,12 @@ class IssuableBaseService < BaseService
   end
 
   def create(issuable)
-    merge_slash_commands_into_params!(issuable)
-    filter_params
+    merge_quick_actions_into_params!(issuable)
+    filter_params(issuable)
 
     params.delete(:state_event)
     params[:author] ||= current_user
+
     label_ids = process_label_ids(params)
 
     issuable.assign_attributes(params)
@@ -145,6 +178,7 @@ class IssuableBaseService < BaseService
       after_create(issuable)
       issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
+      invalidate_cache_counts(issuable.assignees, issuable)
     end
 
     issuable
@@ -158,41 +192,70 @@ class IssuableBaseService < BaseService
     # To be overridden by subclasses
   end
 
-  def after_update(issuable)
+  def before_update(issuable)
     # To be overridden by subclasses
   end
 
-  def update_issuable(issuable, attributes)
-    issuable.with_transaction_returning_status do
-      issuable.update(attributes.merge(updated_by: current_user))
-    end
+  def after_update(issuable)
+    # To be overridden by subclasses
   end
 
   def update(issuable)
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
-    filter_params
+    toggle_award(issuable)
+    filter_params(issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
+    old_assignees = issuable.assignees.to_a
 
-    params[:label_ids] = process_label_ids(params, existing_label_ids: issuable.label_ids)
+    label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
+    params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
-    if params.present? && update_issuable(issuable, params)
-      issuable.reset_events_cache
+    if issuable.changed? || params.present?
+      issuable.assign_attributes(params.merge(updated_by: current_user))
 
-      # We do not touch as it will affect a update on updated_at field
-      ActiveRecord::Base.no_touching do
-        handle_common_system_notes(issuable, old_labels: old_labels)
+      if has_title_or_description_changed?(issuable)
+        issuable.assign_attributes(last_edited_at: Time.now, last_edited_by: current_user)
       end
 
-      handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
-      after_update(issuable)
-      issuable.create_new_cross_references!(current_user)
-      execute_hooks(issuable, 'update')
+      before_update(issuable)
+
+      if issuable.with_transaction_returning_status { issuable.save }
+        # We do not touch as it will affect a update on updated_at field
+        ActiveRecord::Base.no_touching do
+          handle_common_system_notes(issuable, old_labels: old_labels)
+        end
+
+        handle_changes(
+          issuable,
+          old_labels: old_labels,
+          old_mentioned_users: old_mentioned_users,
+          old_assignees: old_assignees
+        )
+
+        if old_assignees != issuable.assignees
+          new_assignees = issuable.assignees.to_a
+          affected_assignees = (old_assignees + new_assignees) - (old_assignees & new_assignees)
+          invalidate_cache_counts(affected_assignees.compact, issuable)
+        end
+
+        after_update(issuable)
+        issuable.create_new_cross_references!(current_user)
+        execute_hooks(issuable, 'update')
+      end
     end
 
     issuable
+  end
+
+  def labels_changing?(old_label_ids, new_label_ids)
+    old_label_ids.sort != new_label_ids.sort
+  end
+
+  def has_title_or_description_changed?(issuable)
+    issuable.title_changed? || issuable.description_changed?
   end
 
   def change_state(issuable)
@@ -207,9 +270,9 @@ class IssuableBaseService < BaseService
   def change_subscription(issuable)
     case params.delete(:subscription_event)
     when 'subscribe'
-      issuable.subscribe(current_user)
+      issuable.subscribe(current_user, project)
     when 'unsubscribe'
-      issuable.unsubscribe(current_user)
+      issuable.unsubscribe(current_user, project)
     end
   end
 
@@ -223,7 +286,15 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def has_changes?(issuable, old_labels: [])
+  def toggle_award(issuable)
+    award = params.delete(:emoji_award)
+    if award
+      todo_service.new_award_emoji(issuable, current_user)
+      issuable.toggle_award_emoji(award, current_user)
+    end
+  end
+
+  def has_changes?(issuable, old_labels: [], old_assignees: [])
     valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
 
     attrs_changed = valid_attrs.any? do |attr|
@@ -232,7 +303,9 @@ class IssuableBaseService < BaseService
 
     labels_changed = issuable.labels != old_labels
 
-    attrs_changed || labels_changed
+    assignees_changed = issuable.assignees != old_assignees
+
+    attrs_changed || labels_changed || assignees_changed
   end
 
   def handle_common_system_notes(issuable, old_labels: [])
@@ -240,10 +313,30 @@ class IssuableBaseService < BaseService
       create_title_change_note(issuable, issuable.previous_changes['title'].first)
     end
 
-    if issuable.previous_changes.include?('description') && issuable.tasks?
-      create_task_status_note(issuable)
+    if issuable.previous_changes.include?('description')
+      if issuable.tasks? && issuable.updated_tasks.any?
+        create_task_status_note(issuable)
+      else
+        # TODO: Show this note if non-task content was modified.
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/33577
+        create_description_change_note(issuable)
+      end
+    end
+
+    if issuable.previous_changes.include?('time_estimate')
+      create_time_estimate_note(issuable)
+    end
+
+    if issuable.time_spent?
+      create_time_spent_note(issuable)
     end
 
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels
+  end
+
+  def invalidate_cache_counts(users, issuable)
+    users.each do |user|
+      user.public_send("invalidate_#{issuable.model_name.singular}_cache_counts")
+    end
   end
 end

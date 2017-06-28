@@ -2,12 +2,11 @@ require 'spec_helper'
 
 feature 'Projects > Members > User requests access', feature: true do
   let(:user) { create(:user) }
-  let(:master) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :access_requestable) }
+  let(:master) { project.owner }
 
   background do
-    project.team << [master, :master]
-    login_as(user)
+    gitlab_sign_in(user)
     visit namespace_project_path(project.namespace, project)
   end
 
@@ -31,6 +30,17 @@ feature 'Projects > Members > User requests access', feature: true do
     expect(page).not_to have_content 'Leave Project'
   end
 
+  context 'code access is restricted' do
+    scenario 'user can request access' do
+      project.project_feature.update!(repository_access_level: ProjectFeature::PRIVATE,
+                                      builds_access_level: ProjectFeature::PRIVATE,
+                                      merge_requests_access_level: ProjectFeature::PRIVATE)
+      visit namespace_project_path(project.namespace, project)
+
+      expect(page).to have_content 'Request Access'
+    end
+  end
+
   scenario 'user is not listed in the project members page' do
     click_link 'Request Access'
 
@@ -39,7 +49,7 @@ feature 'Projects > Members > User requests access', feature: true do
     open_project_settings_menu
     click_link 'Members'
 
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit namespace_project_settings_members_path(project.namespace, project)
     page.within('.content') do
       expect(page).not_to have_content(user.name)
     end
@@ -57,6 +67,12 @@ feature 'Projects > Members > User requests access', feature: true do
   end
 
   def open_project_settings_menu
-    find('#project-settings-button').click
+    page.within('.layout-nav .nav-links') do
+      click_link('Settings')
+    end
+
+    page.within('.sub-nav') do
+      click_link('Members')
+    end
   end
 end

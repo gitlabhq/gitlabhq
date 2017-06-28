@@ -1,4 +1,4 @@
-# System hooks
+# System hooks API
 
 All methods require administrator authorization.
 
@@ -20,18 +20,21 @@ GET /hooks
 Example request:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/hooks
 ```
 
 Example response:
 
 ```json
 [
-   {
-      "id" : 1,
-      "url" : "https://gitlab.example.com/hook",
-      "created_at" : "2015-11-04T20:07:35.874Z"
-   }
+  {
+    "id":1,
+    "url":"https://gitlab.example.com/hook",
+    "created_at":"2016-10-31T12:32:15.192Z",
+    "push_events":true,
+    "tag_push_events":false,
+    "enable_ssl_verification":true
+  }
 ]
 ```
 
@@ -48,22 +51,29 @@ POST /hooks
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `url` | string | yes | The hook URL |
+| `token` | string | no | Secret token to validate received payloads; this will not be returned in the response |
+| `push_events` | boolean |  no | When true, the hook will fire on push events |
+| `tag_push_events` | boolean | no | When true, the hook will fire on new tags being pushed |
+| `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 
 Example request:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/hooks?url=https://gitlab.example.com/hook"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/hooks?url=https://gitlab.example.com/hook"
 ```
 
 Example response:
 
 ```json
 [
-   {
-      "id" : 2,
-      "url" : "https://gitlab.example.com/hook",
-      "created_at" : "2015-11-04T20:07:35.874Z"
-   }
+  {
+    "id":1,
+    "url":"https://gitlab.example.com/hook",
+    "created_at":"2016-10-31T12:32:15.192Z",
+    "push_events":true,
+    "tag_push_events":false,
+    "enable_ssl_verification":true
+  }
 ]
 ```
 
@@ -80,7 +90,7 @@ GET /hooks/:id
 Example request:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks/2
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/hooks/2
 ```
 
 Example response:
@@ -98,11 +108,7 @@ Example response:
 
 ## Delete system hook
 
-Deletes a system hook. This is an idempotent API function and returns `200 OK`
-even if the hook is not available.
-
-If the hook is deleted, a JSON object is returned. An error is raised if the
-hook is not found.
+Deletes a system hook.
 
 ---
 
@@ -117,24 +123,5 @@ DELETE /hooks/:id
 Example request:
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks/2
-```
-
-Example response:
-
-```json
-{
-   "note_events" : false,
-   "project_id" : null,
-   "enable_ssl_verification" : true,
-   "url" : "https://gitlab.example.com/hook",
-   "updated_at" : "2015-11-04T20:12:15.931Z",
-   "issues_events" : false,
-   "merge_requests_events" : false,
-   "created_at" : "2015-11-04T20:12:15.931Z",
-   "service_id" : null,
-   "id" : 2,
-   "push_events" : true,
-   "tag_push_events" : false
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/hooks/2
 ```

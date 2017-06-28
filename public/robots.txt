@@ -4,13 +4,12 @@
 # User-Agent: *
 # Disallow: /
 
-User-Agent: *
-
 # Add a 1 second delay between successive requests to the same server, limits resources used by crawler
 # Only some crawlers respect this setting, e.g. Googlebot does not
 # Crawl-delay: 1
 
 # Based on details in https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/routes.rb, https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/routing, and using application
+User-Agent: *
 Disallow: /autocomplete/users
 Disallow: /search
 Disallow: /api
@@ -23,12 +22,14 @@ Disallow: /groups/*/edit
 Disallow: /users
 
 # Global snippets
+User-Agent: *
 Disallow: /s/
 Disallow: /snippets/new
 Disallow: /snippets/*/edit
 Disallow: /snippets/*/raw
 
 # Project details
+User-Agent: *
 Disallow: /*/*.git
 Disallow: /*/*/fork/new
 Disallow: /*/*/repository/archive*

@@ -22,6 +22,17 @@ class Ability
       end
     end
 
+    # Given a list of users and a snippet this method returns the users that can
+    # read the given snippet.
+    def users_that_can_read_personal_snippet(users, snippet)
+      case snippet.visibility_level
+      when Snippet::INTERNAL, Snippet::PUBLIC
+        users
+      when Snippet::PRIVATE
+        users.include?(snippet.author) ? [snippet.author] : []
+      end
+    end
+
     # Returns an Array of Issues that can be read by the given user.
     #
     # issues - The issues to reduce down to those readable by the user.
@@ -45,15 +56,16 @@ class Ability
       end
     end
 
-    def allowed?(user, action, subject)
+    def allowed?(user, action, subject = :global)
       allowed(user, subject).include?(action)
     end
 
-    def allowed(user, subject)
+    def allowed(user, subject = :global)
+      return BasePolicy::RuleSet.none if subject.nil?
       return uncached_allowed(user, subject) unless RequestStore.active?
 
       user_key = user ? user.id : 'anonymous'
-      subject_key = subject ? "#{subject.class.name}/#{subject.id}" : 'global'
+      subject_key = subject == :global ? 'global' : "#{subject.class.name}/#{subject.id}"
       key = "/ability/#{user_key}/#{subject_key}"
       RequestStore[key] ||= uncached_allowed(user, subject).freeze
     end

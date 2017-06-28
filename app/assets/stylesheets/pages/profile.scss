@@ -23,6 +23,10 @@
   color: $md-link-color;
 }
 
+.private-tokens-reset div.reset-action:not(:first-child) {
+  padding-top: 15px;
+}
+
 .oauth-buttons {
   .btn-group {
     margin-right: 10px;
@@ -56,8 +60,8 @@
 
 .account-well {
   padding: 10px;
-  background-color: $help-well-bg;
-  border: 1px solid $help-well-border;
+  background-color: $gray-light;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
 
   ul {
@@ -70,21 +74,20 @@
   display: inline;
 
   a {
-    color: $blue-dark;
     text-decoration: none;
   }
 }
 
 // Middle dot divider between each element in a list of items.
 .middle-dot-divider {
-  &:after {
+  &::after {
     content: "\00B7"; // Middle Dot
     padding: 0 6px;
     font-weight: bold;
   }
 
   &:last-child {
-    &:after {
+    &::after {
       content: "";
       padding: 0;
     }
@@ -132,7 +135,7 @@
 .provider-btn-group {
   display: inline-block;
   margin-right: 10px;
-  border: 1px solid $provider-btn-group-border;
+  border: 1px solid $border-color;
   border-radius: 3px;
 
   &:last-child {
@@ -143,7 +146,7 @@
 .provider-btn-image {
   display: inline-block;
   padding: 5px 10px;
-  border-right: 1px solid $provider-btn-group-border;
+  border-right: 1px solid $border-color;
 
   > img {
     width: 20px;
@@ -176,7 +179,7 @@
   .modal-dialog {
     width: 380px;
 
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-xs-max) {
       width: auto;
     }
 
@@ -194,11 +197,7 @@
 }
 
 .personal-access-tokens-never-expires-label {
-  color: $personal-access-tokens-disabled-label-color;
-}
-
-.datepicker.personal-access-tokens-expires-at .ui-state-disabled span {
-  text-align: center;
+  color: $note-disabled-comment-color;
 }
 
 .created-personal-access-token-container {
@@ -212,8 +211,8 @@
   }
 }
 
-.user-profile {
 
+.user-profile {
   .cover-controls a {
     margin-left: 5px;
   }
@@ -227,8 +226,19 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  .user-profile-nav {
+    font-size: 0;
+  }
 
+  .fade-right {
+    right: 0;
+  }
+
+  .fade-left {
+    left: 0;
+  }
+
+  @media (max-width: $screen-xs-max) {
     .cover-block {
       padding-top: 20px;
     }
@@ -243,16 +253,127 @@
       .btn {
         -webkit-flex-grow: 1;
         flex-grow: 1;
+
         &:first-child {
           margin-left: 0;
         }
+      }
+    }
+
+    .user-profile-nav {
+      a {
+        margin-right: 0;
       }
     }
   }
 }
 
 table.u2f-registrations {
-  th:not(:last-child), td:not(:last-child) {
+  th:not(:last-child),
+  td:not(:last-child) {
     border-right: solid 1px transparent;
+  }
+}
+
+.oauth-application-show {
+  .scope-name {
+    font-weight: 600;
+  }
+
+  .scopes-list {
+    padding-left: 18px;
+  }
+}
+
+.user-callout {
+  margin: 0 auto;
+  max-width: $screen-lg-min;
+
+  .bordered-box {
+    border: 1px solid $blue-300;
+    border-radius: $border-radius-default;
+    background-color: $blue-25;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .landing {
+    padding: 32px;
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      opacity: 1;
+
+      .dismiss-icon {
+        float: right;
+        cursor: pointer;
+        color: $blue-300;
+      }
+
+      &:hover {
+        background-color: transparent;
+        border: 0;
+
+        .dismiss-icon {
+          color: $blue-400;
+        }
+      }
+    }
+
+    .svg-container {
+      margin-right: 30px;
+      display: inline-block;
+
+      svg {
+        height: 110px;
+        vertical-align: top;
+      }
+
+      &.convdev {
+        margin: 0 0 0 30px;
+
+        svg {
+          height: 127px;
+        }
+      }
+    }
+
+    .user-callout-copy {
+      display: inline-block;
+      vertical-align: top;
+      max-width: 570px;
+    }
+  }
+
+  @media(max-width: $screen-xs-max) {
+    text-align: center;
+
+    .bordered-box {
+      display: block;
+    }
+
+    .landing {
+      .svg-container,
+      .user-callout-copy {
+        margin: 0 auto;
+        display: block;
+
+        svg {
+          height: 75px;
+        }
+
+        &.convdev {
+          margin: $gl-padding auto 0;
+
+          svg {
+            height: 120px;
+          }
+        }
+      }
+    }
   }
 }

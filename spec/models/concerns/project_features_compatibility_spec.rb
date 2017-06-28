@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ProjectFeaturesCompatibility do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:features) { %w(issues wiki builds merge_requests snippets) }
 
   # We had issues_enabled, snippets_enabled, builds_enabled, merge_requests_enabled and issues_enabled fields on projects table
@@ -19,6 +19,20 @@ describe ProjectFeaturesCompatibility do
   it "converts fields from 'false' to ProjectFeature::DISABLED" do
     features.each do |feature|
       project.update_attribute("#{feature}_enabled".to_sym, "false")
+      expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::DISABLED)
+    end
+  end
+
+  it "converts fields from true to ProjectFeature::ENABLED" do
+    features.each do |feature|
+      project.update_attribute("#{feature}_enabled".to_sym, true)
+      expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::ENABLED)
+    end
+  end
+
+  it "converts fields from false to ProjectFeature::DISABLED" do
+    features.each do |feature|
+      project.update_attribute("#{feature}_enabled".to_sym, false)
       expect(project.project_feature.public_send("#{feature}_access_level")).to eq(ProjectFeature::DISABLED)
     end
   end

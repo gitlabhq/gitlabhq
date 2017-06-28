@@ -1,8 +1,5 @@
 require 'constraints/user_url_constrainer'
 
-get '/u/:username', to: redirect('/%{username}'),
-                    constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
-
 devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
                                   registrations: :registrations,
                                   passwords: :passwords,
@@ -14,21 +11,38 @@ devise_scope :user do
   get '/users/almost_there' => 'confirmations#almost_there'
 end
 
-constraints(UserUrlConstrainer.new) do
-  scope(path: ':username', as: :user, controller: :users) do
-    get '/', action: :show
+scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) do
+  scope(path: 'users/:username',
+        as: :user,
+        controller: :users) do
+    get :calendar
+    get :calendar_activities
+    get :groups
+    get :projects
+    get :contributed, as: :contributed_projects
+    get :snippets
+    get :exists
+    get '/', to: redirect('/%{username}'), as: nil
   end
+
+  # Compatibility with old routing
+  # TODO (dzaporozhets): remove in 10.0
+  get '/u/:username', to: redirect('/%{username}')
+  # TODO (dzaporozhets): remove in 9.0
+  get '/u/:username/groups', to: redirect('/users/%{username}/groups')
+  get '/u/:username/projects', to: redirect('/users/%{username}/projects')
+  get '/u/:username/snippets', to: redirect('/users/%{username}/snippets')
+  get '/u/:username/contributed', to: redirect('/users/%{username}/contributed')
 end
 
-scope(path: 'u/:username',
-      as: :user,
-      constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ },
-      controller: :users) do
-  get :calendar
-  get :calendar_activities
-  get :groups
-  get :projects
-  get :contributed, as: :contributed_projects
-  get :snippets
-  get '/', to: redirect('/%{username}')
+constraints(UserUrlConstrainer.new) do
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }
+
+  scope(path: ':username',
+        as: :user,
+        constraints: { username: Gitlab::PathRegex.root_namespace_route_regex },
+        controller: :users) do
+    get '/', action: :show
+  end
 end

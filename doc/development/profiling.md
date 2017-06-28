@@ -25,3 +25,5 @@ starting GitLab. For example:
 
 Bullet will log query problems to both the Rails log as well as the Chrome
 console.
+
+As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRecoder test](query_recorder.md) to prevent a regression.

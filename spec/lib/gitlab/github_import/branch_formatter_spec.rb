@@ -1,32 +1,32 @@
 require 'spec_helper'
 
 describe Gitlab::GithubImport::BranchFormatter, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:commit) { create(:commit, project: project) }
   let(:repo) { double }
   let(:raw) do
     {
-      ref: 'feature',
+      ref: 'branch-merged',
       repo: repo,
       sha: commit.id
     }
   end
 
   describe '#exists?' do
-    it 'returns true when both branch, and commit exists' do
+    it 'returns true when branch exists and commit is part of the branch' do
       branch = described_class.new(project, double(raw))
 
       expect(branch.exists?).to eq true
     end
 
-    it 'returns false when branch does not exist' do
-      branch = described_class.new(project, double(raw.merge(ref: 'removed-branch')))
+    it 'returns false when branch exists and commit is not part of the branch' do
+      branch = described_class.new(project, double(raw.merge(ref: 'feature')))
 
       expect(branch.exists?).to eq false
     end
 
-    it 'returns false when commit does not exist' do
-      branch = described_class.new(project, double(raw.merge(sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b')))
+    it 'returns false when branch does not exist' do
+      branch = described_class.new(project, double(raw.merge(ref: 'removed-branch')))
 
       expect(branch.exists?).to eq false
     end
@@ -49,14 +49,20 @@ describe Gitlab::GithubImport::BranchFormatter, lib: true do
   end
 
   describe '#valid?' do
-    it 'returns true when raw repo is present' do
+    it 'returns true when raw sha and ref are present' do
       branch = described_class.new(project, double(raw))
 
       expect(branch.valid?).to eq true
     end
 
-    it 'returns false when raw repo is blank' do
-      branch = described_class.new(project, double(raw.merge(repo: nil)))
+    it 'returns false when raw sha is blank' do
+      branch = described_class.new(project, double(raw.merge(sha: nil)))
+
+      expect(branch.valid?).to eq false
+    end
+
+    it 'returns false when raw ref is blank' do
+      branch = described_class.new(project, double(raw.merge(ref: nil)))
 
       expect(branch.valid?).to eq false
     end

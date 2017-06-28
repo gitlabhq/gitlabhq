@@ -3,23 +3,32 @@ require 'spec_helper'
 describe 'Commits' do
   include CiStatusHelper
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
+  let(:user) { create(:user) }
 
   describe 'CI' do
     before do
-      login_as :user
+      sign_in(user)
       stub_ci_pipeline_to_return_yaml_file
     end
 
+    let(:creator) { create(:user) }
+
     let!(:pipeline) do
-      FactoryGirl.create :ci_pipeline, project: project, sha: project.commit.sha
+      create(:ci_pipeline,
+             project: project,
+             user: creator,
+             ref: project.default_branch,
+             sha: project.commit.sha,
+             status: :success,
+             created_at: 5.months.ago)
     end
 
     context 'commit status is Generic Commit Status' do
-      let!(:status) { FactoryGirl.create :generic_commit_status, pipeline: pipeline }
+      let!(:status) { create(:generic_commit_status, pipeline: pipeline) }
 
       before do
-        project.team << [@user, :reporter]
+        project.team << [user, :reporter]
       end
 
       describe 'Commit builds' do
@@ -39,34 +48,45 @@ describe 'Commits' do
     end
 
     context 'commit status is Ci Build' do
-      let!(:build) { FactoryGirl.create :ci_build, pipeline: pipeline }
+      let!(:build) { create(:ci_build, pipeline: pipeline) }
       let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
 
       context 'when logged as developer' do
         before do
-          project.team << [@user, :developer]
+          project.team << [user, :developer]
         end
 
         describe 'Project commits' do
+          let!(:pipeline_from_other_branch) do
+            create(:ci_pipeline,
+                   project: project,
+                   ref: 'fix',
+                   sha: project.commit.sha,
+                   status: :failed)
+          end
+
           before do
             visit namespace_project_commits_path(project.namespace, project, :master)
           end
 
-          it 'shows build status' do
+          it 'shows correct build status from default branch' do
             page.within("//li[@id='commit-#{pipeline.short_sha}']") do
-              expect(page).to have_css(".ci-status-link")
+              expect(page).to have_css('.ci-status-link')
+              expect(page).to have_css('.ci-status-icon-success')
             end
           end
         end
 
-        describe 'Commit builds' do
+        describe 'Commit builds', :feature, :js do
           before do
             visit ci_status_path(pipeline)
           end
 
-          it { expect(page).to have_content pipeline.sha[0..7] }
-          it { expect(page).to have_content pipeline.git_commit_message }
-          it { expect(page).to have_content pipeline.git_author_name }
+          it 'shows pipeline`s data' do
+            expect(page).to have_content pipeline.sha[0..7]
+            expect(page).to have_content pipeline.git_commit_message
+            expect(page).to have_content pipeline.user.name
+          end
         end
 
         context 'Download artifacts' do
@@ -82,7 +102,7 @@ describe 'Commits' do
         end
 
         describe 'Cancel all builds' do
-          it 'cancels commit' do
+          it 'cancels commit', :js do
             visit ci_status_path(pipeline)
             click_on 'Cancel running'
             expect(page).to have_content 'canceled'
@@ -90,9 +110,9 @@ describe 'Commits' do
         end
 
         describe 'Cancel build' do
-          it 'cancels build' do
+          it 'cancels build', :js do
             visit ci_status_path(pipeline)
-            click_on 'Cancel'
+            find('.js-btn-cancel-pipeline').click
             expect(page).to have_content 'canceled'
           end
         end
@@ -127,22 +147,25 @@ describe 'Commits' do
 
       context "when logged as reporter" do
         before do
-          project.team << [@user, :reporter]
+          project.team << [user, :reporter]
           build.update_attributes(artifacts_file: artifacts_file)
           visit ci_status_path(pipeline)
         end
 
-        it do
+        it 'Renders header', :feature, :js do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message
-          expect(page).to have_content pipeline.git_author_name
-          expect(page).to have_link('Download artifacts')
+          expect(page).to have_content pipeline.user.name
           expect(page).not_to have_link('Cancel running')
-          expect(page).not_to have_link('Retry failed')
+          expect(page).not_to have_link('Retry')
+        end
+
+        it do
+          expect(page).to have_link('Download artifacts')
         end
       end
 
-      context 'when accessing internal project with disallowed access' do
+      context 'when accessing internal project with disallowed access', :feature, :js do
         before do
           project.update(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
@@ -154,11 +177,29 @@ describe 'Commits' do
         it do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message
-          expect(page).to have_content pipeline.git_author_name
-          expect(page).not_to have_link('Download artifacts')
+          expect(page).to have_content pipeline.user.name
+
           expect(page).not_to have_link('Cancel running')
-          expect(page).not_to have_link('Retry failed')
+          expect(page).not_to have_link('Retry')
         end
+      end
+    end
+  end
+
+  context 'viewing commits for a branch' do
+    let(:branch_name) { 'master' }
+
+    before do
+      project.team << [user, :master]
+      sign_in(user)
+      visit namespace_project_commits_path(project.namespace, project, branch_name)
+    end
+
+    it 'includes the committed_date for each commit' do
+      commits = project.repository.commits(branch_name)
+
+      commits.each do |commit|
+        expect(page).to have_content("committed #{commit.committed_date.strftime("%b %d, %Y")}")
       end
     end
   end

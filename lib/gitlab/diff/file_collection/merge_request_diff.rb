@@ -8,11 +8,16 @@ module Gitlab
           super(merge_request_diff,
             project: merge_request_diff.project,
             diff_options: diff_options,
-            diff_refs: merge_request_diff.diff_refs)
+            diff_refs: merge_request_diff.diff_refs,
+            fallback_diff_refs: merge_request_diff.fallback_diff_refs)
         end
 
         def diff_files
           super.tap { |_| store_highlight_cache }
+        end
+
+        def real_size
+          @merge_request_diff.real_size
         end
 
         private
@@ -20,7 +25,7 @@ module Gitlab
         # Extracted method to highlight in the same iteration to the diff_collection.
         def decorate_diff!(diff)
           diff_file = super
-          cache_highlight!(diff_file) if cacheable?
+          cache_highlight!(diff_file) if cacheable?(diff_file)
           diff_file
         end
 
@@ -35,16 +40,16 @@ module Gitlab
         # for the highlighted ones, so we just skip their execution.
         # If the highlighted diff files lines are not cached we calculate and cache them.
         #
-        # The content of the cache is a Hash where the key correspond to the file_path and the values are Arrays of
+        # The content of the cache is a Hash where the key identifies the file and the values are Arrays of
         # hashes that represent serialized diff lines.
         #
         def cache_highlight!(diff_file)
-          file_path = diff_file.file_path
+          item_key = diff_file.file_identifier
 
-          if highlight_cache[file_path]
-            highlight_diff_file_from_cache!(diff_file, highlight_cache[file_path])
+          if highlight_cache[item_key]
+            highlight_diff_file_from_cache!(diff_file, highlight_cache[item_key])
           else
-            highlight_cache[file_path] = diff_file.highlighted_diff_lines.map(&:to_hash)
+            highlight_cache[item_key] = diff_file.highlighted_diff_lines.map(&:to_hash)
           end
         end
 
@@ -60,8 +65,8 @@ module Gitlab
           Rails.cache.write(cache_key, highlight_cache) if @highlight_cache_was_empty
         end
 
-        def cacheable?
-          @merge_request_diff.present?
+        def cacheable?(diff_file)
+          @merge_request_diff.present? && diff_file.text? && diff_file.diffable?
         end
 
         def cache_key

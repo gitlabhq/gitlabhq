@@ -16,7 +16,7 @@ feature 'Merge request created from fork' do
 
   background do
     fork_project.team << [user, :master]
-    login_as user
+    gitlab_sign_in user
   end
 
   scenario 'user can access merge request' do
@@ -25,9 +25,21 @@ feature 'Merge request created from fork' do
     expect(page).to have_content 'Test merge request'
   end
 
-  context 'pipeline present in source project' do
-    include WaitForAjax
+  context 'source project is deleted' do
+    background do
+      MergeRequests::MergeService.new(project, user).execute(merge_request)
+      fork_project.destroy!
+    end
 
+    scenario 'user can access merge request', js: true do
+      visit_merge_request(merge_request)
+
+      expect(page).to have_content 'Test merge request'
+      expect(page).to have_content "(removed):#{merge_request.source_branch}"
+    end
+  end
+
+  context 'pipeline present in source project' do
     given(:pipeline) do
       create(:ci_pipeline,
              project: fork_project,
@@ -42,16 +54,12 @@ feature 'Merge request created from fork' do
 
     scenario 'user visits a pipelines page', js: true do
       visit_merge_request(merge_request)
-      page.within('.merge-request-tabs') { click_link 'Builds' }
-      wait_for_ajax
+      page.within('.merge-request-tabs') { click_link 'Pipelines' }
 
-      page.within('table.builds') do
-        expect(page).to have_content 'rspec'
-        expect(page).to have_content 'spinach'
+      page.within('.ci-table') do
+        expect(page).to have_content pipeline.status
+        expect(page).to have_content pipeline.id
       end
-
-      expect(find_link('Cancel running')[:href])
-        .to include fork_project.path_with_namespace
     end
   end
 

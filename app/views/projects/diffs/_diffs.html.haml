@@ -1,11 +1,12 @@
+- environment = local_assigns.fetch(:environment, nil)
 - show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
 - can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_files = diffs.diff_files
 
 .content-block.oneline-block.files-changed
   .inline-parallel-buttons
-    - if !expand_all_diffs? && diff_files.any? { |diff_file| diff_file.collapsed? }
-      = link_to 'Expand all', url_for(params.merge(expand_all_diffs: 1, format: nil)), class: 'btn btn-default'
+    - if !diffs_expanded? && diff_files.any? { |diff_file| diff_file.collapsed? }
+      = link_to 'Expand all', url_for(params.merge(expanded: 1, format: nil)), class: 'btn btn-default'
     - if show_whitespace_toggle
       - if current_controller?(:commit)
         = commit_diff_whitespace_link(diffs.project, @commit, class: 'hidden-xs')
@@ -18,15 +19,8 @@
       = parallel_diff_btn
   = render 'projects/diffs/stats', diff_files: diff_files
 
-- if diff_files.overflow?
-  = render 'projects/diffs/warning', diff_files: diff_files
+- if render_overflow_warning?(diff_files)
+  = render 'projects/diffs/warning', diff_files: diffs
 
 .files{ data: { can_create_note: can_create_note } }
-  - diff_files.each_with_index do |diff_file, index|
-    - diff_commit = commit_for_diff(diff_file)
-    - blob = diff_file.blob(diff_commit)
-    - next unless blob
-    - blob.load_all_data!(diffs.project.repository) unless blob.only_display_raw?
-
-    = render 'projects/diffs/file', index: index, project: diffs.project,
-      diff_file: diff_file, diff_commit: diff_commit, blob: blob
+  = render partial: 'projects/diffs/file', collection: diff_files, as: :diff_file, locals: { project: diffs.project, environment: environment }

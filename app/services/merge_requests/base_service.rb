@@ -38,32 +38,36 @@ module MergeRequests
 
     private
 
-    def filter_params
-      super(:merge_request)
+    def create_assignee_note(merge_request)
+      SystemNoteService.change_assignee(
+        merge_request, merge_request.project, current_user, merge_request.assignee)
     end
 
-    def merge_request_from(commit_status)
-      branches = commit_status.ref
-
-      # This is for ref-less builds
-      branches ||= @project.repository.branch_names_contains(commit_status.sha)
-
-      return [] if branches.blank?
-
-      merge_requests = @project.origin_merge_requests.opened.where(source_branch: branches).to_a
-      merge_requests += @project.fork_merge_requests.opened.where(source_branch: branches).to_a
-
-      merge_requests.uniq.select(&:source_project)
+    # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
+    def merge_requests_for(source_branch, mr_states: [:opened, :reopened])
+      MergeRequest
+        .with_state(mr_states)
+        .where(source_branch: source_branch, source_project_id: @project.id)
+        .preload(:source_project) # we don't need a #includes since we're just preloading for the #select
+        .select(&:source_project)
     end
 
-    def each_merge_request(commit_status)
-      merge_request_from(commit_status).each do |merge_request|
-        pipeline = merge_request.pipeline
+    def pipeline_merge_requests(pipeline)
+      merge_requests_for(pipeline.ref).each do |merge_request|
+        next unless pipeline == merge_request.head_pipeline
+
+        yield merge_request
+      end
+    end
+
+    def commit_status_merge_requests(commit_status)
+      merge_requests_for(commit_status.ref).each do |merge_request|
+        pipeline = merge_request.head_pipeline
 
         next unless pipeline
         next unless pipeline.sha == commit_status.sha
 
-        yield merge_request, pipeline
+        yield merge_request
       end
     end
   end

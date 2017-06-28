@@ -1,0 +1,7 @@
+- page_title _("Edit"), @schedule.description, _("Pipeline Schedule")
+
+%h3.page-title
+  = _("Edit Pipeline Schedule %{id}") % { id: @schedule.id }
+%hr
+
+= render "form"

@@ -8,58 +8,69 @@
   }
 }
 
+@mixin chevron-active {
+  .fa-chevron-down {
+    color: $gray-darkest;
+  }
+}
+
+@mixin set-visible {
+  transform: translateY(0);
+  visibility: visible;
+  opacity: 1;
+  transition-duration: 100ms, 150ms, 25ms;
+  transition-delay: 35ms, 50ms, 25ms;
+}
+
+@mixin set-invisible {
+  transform: translateY(-10px);
+  visibility: hidden;
+  opacity: 0;
+  transition-property: opacity, transform, visibility;
+  transition-duration: 70ms, 250ms, 250ms;
+  transition-timing-function: linear, $dropdown-animation-timing;
+  transition-delay: 25ms, 50ms, 0ms;
+}
+
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
     display: block;
+    @include set-visible;
+
     @media (max-width: $screen-xs-max) {
       width: 100%;
     }
   }
 
+  .dropdown-toggle,
   .dropdown-menu-toggle {
-    border-color: $dropdown-toggle-hover-border-color;
+    @include chevron-active;
+    border-color: $gray-darkest;
+  }
 
-    .fa {
-      color: $dropdown-toggle-hover-icon-color;
-    }
+  [data-toggle="dropdown"] {
+    outline: 0;
   }
 }
 
-.dropdown-menu-toggle {
-  position: relative;
-  width: 160px;
-  padding: 6px 20px 6px 10px;
-  background-color: $dropdown-toggle-bg;
-  color: $dropdown-toggle-color;
-  font-size: 15px;
+.dropdown-toggle {
+  padding: 6px 8px 6px 10px;
+  background-color: $white-light;
+  color: $gl-text-color;
+  font-size: 14px;
   text-align: left;
-  border: 1px solid $dropdown-toggle-border-color;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
-  outline: 0;
-  text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
 
-  .fa {
-    position: absolute;
-    top: 50%;
-    right: 6px;
-    margin-top: -6px;
-    color: $dropdown-toggle-icon-color;
-    font-size: 10px;
-    &.fa-spinner {
-      font-size: 16px;
-      margin-top: -8px;
-    }
+  &[disabled] {
+    opacity: .65;
+    cursor: not-allowed;
   }
 
-  &:hover, {
-    border-color: $dropdown-toggle-hover-border-color;
-
-    .fa {
-      color: $dropdown-toggle-hover-icon-color;
-    }
+  &.no-outline {
+    outline: 0;
   }
 
   &.large {
@@ -82,25 +93,123 @@
     max-width: 100%;
     padding-right: 25px;
   }
+
+  .fa {
+    color: $gray-darkest;
+  }
+
+  .fa-chevron-down {
+    font-size: $dropdown-chevron-size;
+    position: relative;
+    top: -2px;
+    margin-left: 5px;
+  }
+
+  &:hover {
+    @include chevron-active;
+    border-color: $gray-darkest;
+  }
+
+  &:focus:active {
+    @include chevron-active;
+    border-color: $dropdown-toggle-active-border-color;
+    outline: 0;
+  }
+}
+
+.dropdown-menu-toggle {
+  @extend .dropdown-toggle;
+  padding-right: 25px;
+  position: relative;
+  width: 163px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  .fa {
+    position: absolute;
+
+    &.fa-spinner {
+      font-size: 16px;
+      margin-top: -3px;
+    }
+  }
+
+  .fa-chevron-down,
+  .fa-spinner {
+    position: absolute;
+    top: 11px;
+    right: 8px;
+  }
+}
+
+@mixin dropdown-link {
+  display: block;
+  position: relative;
+  padding: 5px 8px;
+  color: $gl-text-color;
+  line-height: initial;
+  text-overflow: ellipsis;
+  border-radius: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &:hover,
+  &:focus,
+  &.is-focused {
+    background-color: $dropdown-link-hover-bg;
+    text-decoration: none;
+
+    .badge {
+      background-color: darken($dropdown-link-hover-bg, 5%);
+    }
+  }
+
+  &.dropdown-menu-empty-link {
+    &.is-focused {
+      background-color: $dropdown-empty-row-bg;
+    }
+  }
+
+  &.dropdown-menu-user-link {
+    line-height: 16px;
+  }
+
+  .icon-play {
+    fill: $gl-text-color-secondary;
+    margin-right: 6px;
+    height: 12px;
+    width: 11px;
+  }
 }
 
 .dropdown-menu,
 .dropdown-menu-nav {
-  display: none;
+  display: block;
   position: absolute;
+  width: 100%;
   top: 100%;
   left: 0;
   z-index: 9;
-  width: 240px;
+  min-width: 240px;
   margin-top: 2px;
   margin-bottom: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: normal;
   padding: 8px 0;
-  background-color: $dropdown-bg;
+  background-color: $white-light;
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
+  @include set-invisible;
+
+  @media (max-width: $screen-sm-min) {
+    width: 100%;
+  }
+
+  &.dropdown-open-left {
+    right: 0;
+    left: auto;
+  }
 
   &.is-loading {
     .dropdown-content {
@@ -112,6 +221,15 @@
     }
   }
 
+  .shortcut-mappings {
+    display: none;
+  }
+
+  &.shortcuts .shortcut-mappings {
+    display: inline-block;
+    margin-right: 5px;
+  }
+
   ul {
     margin: 0;
     padding: 0;
@@ -120,12 +238,12 @@
   li {
     text-align: left;
     list-style: none;
-    padding: 0 8px;
+    padding: 0 10px;
   }
 
   .divider {
     height: 1px;
-    margin: 8px;
+    margin: 6px 10px;
     padding: 0;
     background-color: $dropdown-divider-color;
   }
@@ -139,58 +257,64 @@
   }
 
   a {
-    display: block;
-    position: relative;
-    padding: 5px 8px;
-    color: $dropdown-link-color;
-    line-height: initial;
-    text-overflow: ellipsis;
-    border-radius: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-
-    &:hover,
-    &:focus,
-    &.is-focused {
-      background-color: $dropdown-link-hover-bg;
-      text-decoration: none;
-      outline: 0;
-    }
-
-    &.dropdown-menu-empty-link {
-      &.is-focused {
-        background-color: $dropdown-empty-row-bg;
-      }
-    }
-
-    &.dropdown-menu-user-link {
-      line-height: 16px;
-    }
-
-    .icon-play {
-      fill: $table-text-gray;
-      margin-right: 6px;
-      height: 12px;
-      width: 11px;
-    }
+    @include dropdown-link;
   }
 
   .dropdown-header {
-    color: $dropdown-header-color;
+    color: $gl-text-color-secondary;
     font-size: 13px;
     line-height: 22px;
-    padding: 0 10px;
+    padding: 0 16px;
   }
 
-  .separator + .dropdown-header {
+  &.capitalize-header .dropdown-header {
+    text-transform: capitalize;
+  }
+
+  .dropdown-bold-header {
+    font-weight: 600;
+    line-height: 22px;
+    padding: 0 16px;
+  }
+
+  .separator + .dropdown-header,
+  .separator + .dropdown-bold-header {
     padding-top: 2px;
   }
 
   .unclickable {
     cursor: not-allowed;
     padding: 5px 8px;
-    color: $dropdown-header-color;
+    color: $gl-text-color-secondary;
   }
+
+  .badge {
+    position: absolute;
+    right: 8px;
+    top: 5px;
+  }
+}
+
+.filtered-search-box-input-container .dropdown-menu,
+.filtered-search-box-input-container .dropdown-menu-nav,
+.comment-type-dropdown .dropdown-menu {
+  display: none;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.filtered-search-box-input-container {
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    max-width: 280px;
+    width: auto;
+  }
+}
+
+.dropdown-menu-drop-up {
+  top: auto;
+  bottom: 100%;
 }
 
 .dropdown-menu-large {
@@ -232,8 +356,8 @@
 .dropdown-menu-user {
   .avatar {
     float: left;
-    width: 30px;
-    height: 30px;
+    width: 2 * $gl-padding;
+    height: 2 * $gl-padding;
     margin: 0 10px 0 0;
   }
 }
@@ -262,22 +386,37 @@
 
 .dropdown-select {
   width: $dropdown-width;
+
+  @media (max-width: $screen-sm-min) {
+    width: 100%;
+  }
 }
 
 .dropdown-menu-align-right {
   left: auto;
   right: 0;
+  margin-top: -5px;
+
+  @media (max-width: $screen-xs-max) {
+    left: 0;
+  }
 }
 
 .dropdown-menu-selectable {
   a {
-    padding-left: 25px;
+    padding-left: 26px;
+    position: relative;
 
-    &.is-indeterminate, &.is-active {
+    &.is-indeterminate,
+    &.is-active {
+      font-weight: 600;
+      color: $gl-text-color;
+
       &::before {
         position: absolute;
-        left: 5px;
-        top: 8px;
+        left: 6px;
+        top: 50%;
+        transform: translateY(-50%);
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
@@ -292,6 +431,9 @@
 
     &.is-active::before {
       content: "\f00c";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }
@@ -299,7 +441,7 @@
 
 .dropdown-title {
   position: relative;
-  padding: 0 25px 10px;
+  padding: 2px 25px 10px;
   margin: 0 10px 10px;
   font-weight: 600;
   line-height: 1;
@@ -329,7 +471,7 @@
   right: 5px;
   width: 20px;
   height: 20px;
-  top: -3px;
+  top: -1px;
 }
 
 .dropdown-menu-back {
@@ -346,7 +488,7 @@
     position: absolute;
     top: 10px;
     right: 20px;
-    color: #c7c7c7;
+    color: $dropdown-input-fa-color;
     font-size: 12px;
     pointer-events: none;
   }
@@ -371,7 +513,8 @@
   }
 }
 
-.dropdown-input-field, .default-dropdown-input {
+.dropdown-input-field,
+.default-dropdown-input {
   width: 100%;
   min-height: 30px;
   padding: 0 7px;
@@ -400,7 +543,12 @@
 
 .dropdown-content {
   max-height: 215px;
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+
+.dropdown-info-note {
+  color: $gl-text-color-secondary;
+  text-align: center;
 }
 
 .dropdown-footer {
@@ -461,135 +609,57 @@
     max-height: 230px;
   }
 
-  .ui-widget {
-    table {
-      margin: 0;
-    }
-
-    &.ui-datepicker-inline {
-      padding: 0 10px;
-      border: 0;
-      width: 100%;
-    }
-
-    .ui-datepicker-header {
-      padding: 0 8px 10px;
-      border: 0;
-
-      .ui-icon {
-        background: none;
-        font-size: 20px;
-        text-indent: 0;
-
-        &:before {
-          display: block;
-          position: relative;
-          top: -2px;
-          color: $dropdown-title-btn-color;
-          font: normal normal normal 14px/1 FontAwesome;
-          font-size: inherit;
-          text-rendering: auto;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-      }
-    }
-
-    .ui-datepicker-calendar {
-      .ui-state-hover,
-      .ui-state-active {
-        color: #fff;
-        border: 0;
-      }
-    }
-
-    .ui-datepicker-prev,
-    .ui-datepicker-next {
-      top: 0;
-      height: 15px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: transparent;
-        border: 0;
-
-        .ui-icon:before {
-          color: $md-link-color;
-        }
-      }
-    }
-
-    .ui-datepicker-prev {
-      left: 0;
-
-      .ui-icon:before {
-        content: '\f104';
-        text-align: left;
-      }
-    }
-
-    .ui-datepicker-next {
-      right: 0;
-
-      .ui-icon:before {
-        content: '\f105';
-        text-align: right;
-      }
-    }
-
-    td {
-      padding: 0;
-      border: 1px solid $calendar-border-color;
-
-      &:first-child {
-        border-left: 0;
-      }
-
-      &:last-child {
-        border-right: 0;
-      }
-
-      a {
-        line-height: 17px;
-        border: 0;
-        border-radius: 0;
-      }
-    }
-
-    .ui-datepicker-title {
-      color: $gl-gray;
-      font-size: 15px;
-      line-height: 1;
-      font-weight: normal;
-    }
+  .pika-single {
+    position: relative!important;
+    top: 0!important;
+    border: 0;
+    box-shadow: none;
   }
 
-  th {
-    padding: 2px 0;
-    color: $calendar-header-color;
-    font-weight: normal;
-    text-transform: lowercase;
-    border-top: 1px solid $calendar-border-color;
-  }
-
-  .ui-datepicker-unselectable {
-    background-color: $calendar-unselectable-bg;
+  .pika-lendar {
+    margin-top: -5px;
+    margin-bottom: 0;
   }
 }
 
 .dropdown-menu-inner-title {
   display: block;
-  color: $gl-title-color;
+  color: $gl-text-color;
   font-weight: 600;
 }
 
 .dropdown-menu-inner-content {
   display: block;
-  color: $gl-placeholder-color;
+  color: $gl-text-color-secondary;
 }
 
 .dropdown-toggle-text {
   &.is-default {
-    color: $gl-placeholder-color;
+    color: $gl-text-color-secondary;
   }
+}
+
+.droplab-item-ignore {
+  pointer-events: none;
+}
+
+.pika-single.animate-picker.is-bound,
+.pika-single.animate-picker.is-bound.is-hidden {
+  /*
+   * Having `!important` is not recommended but
+   * since `pikaday` sets positioning inline
+   * there's no way it can be gracefully overridden
+   * using config options.
+   */
+  position: absolute !important;
+  display: block;
+}
+
+.pika-single.animate-picker.is-bound {
+  @include set-visible;
+}
+
+.pika-single.animate-picker.is-bound.is-hidden {
+  @include set-invisible;
+  overflow: hidden;
 }

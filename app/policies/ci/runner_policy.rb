@@ -3,7 +3,7 @@ module Ci
     def rules
       return unless @user
 
-      can! :assign_runner if @user.is_admin?
+      can! :assign_runner if @user.admin?
 
       return if @subject.is_shared? || @subject.locked?
 

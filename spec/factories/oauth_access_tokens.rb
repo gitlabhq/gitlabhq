@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :oauth_access_token do
     resource_owner
     application
-    token '123456'
+    token { Doorkeeper::OAuth::Helpers::UniqueToken.generate }
+    scopes { application.scopes }
   end
 end

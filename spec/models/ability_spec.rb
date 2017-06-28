@@ -1,9 +1,15 @@
 require 'spec_helper'
 
 describe Ability, lib: true do
+  context 'using a nil subject' do
+    it 'is always empty' do
+      expect(Ability.allowed(nil, nil).to_set).to be_empty
+    end
+  end
+
   describe '.can_edit_note?' do
     let(:project) { create(:empty_project) }
-    let!(:note) { create(:note_on_issue, project: project) }
+    let(:note) { create(:note_on_issue, project: project) }
 
     context 'using an anonymous user' do
       it 'returns false' do
@@ -60,22 +66,22 @@ describe Ability, lib: true do
   describe '.users_that_can_read_project' do
     context 'using a public project' do
       it 'returns all the users' do
-        project = create(:project, :public)
+        project = create(:empty_project, :public)
         user = build(:user)
 
-        expect(described_class.users_that_can_read_project([user], project)).
-          to eq([user])
+        expect(described_class.users_that_can_read_project([user], project))
+          .to eq([user])
       end
     end
 
     context 'using an internal project' do
-      let(:project) { create(:project, :internal) }
+      let(:project) { create(:empty_project, :internal) }
 
       it 'returns users that are administrators' do
         user = build(:user, admin: true)
 
-        expect(described_class.users_that_can_read_project([user], project)).
-          to eq([user])
+        expect(described_class.users_that_can_read_project([user], project))
+          .to eq([user])
       end
 
       it 'returns internal users while skipping external users' do
@@ -83,8 +89,8 @@ describe Ability, lib: true do
         user2 = build(:user, external: true)
         users = [user1, user2]
 
-        expect(described_class.users_that_can_read_project(users, project)).
-          to eq([user1])
+        expect(described_class.users_that_can_read_project(users, project))
+          .to eq([user1])
       end
 
       it 'returns external users if they are the project owner' do
@@ -94,8 +100,8 @@ describe Ability, lib: true do
 
         expect(project).to receive(:owner).twice.and_return(user1)
 
-        expect(described_class.users_that_can_read_project(users, project)).
-          to eq([user1])
+        expect(described_class.users_that_can_read_project(users, project))
+          .to eq([user1])
       end
 
       it 'returns external users if they are project members' do
@@ -105,8 +111,8 @@ describe Ability, lib: true do
 
         expect(project.team).to receive(:members).twice.and_return([user1])
 
-        expect(described_class.users_that_can_read_project(users, project)).
-          to eq([user1])
+        expect(described_class.users_that_can_read_project(users, project))
+          .to eq([user1])
       end
 
       it 'returns an empty Array if all users are external users without access' do
@@ -114,19 +120,19 @@ describe Ability, lib: true do
         user2 = build(:user, external: true)
         users = [user1, user2]
 
-        expect(described_class.users_that_can_read_project(users, project)).
-          to eq([])
+        expect(described_class.users_that_can_read_project(users, project))
+          .to eq([])
       end
     end
 
     context 'using a private project' do
-      let(:project) { create(:project, :private) }
+      let(:project) { create(:empty_project, :private) }
 
       it 'returns users that are administrators' do
         user = build(:user, admin: true)
 
-        expect(described_class.users_that_can_read_project([user], project)).
-          to eq([user])
+        expect(described_class.users_that_can_read_project([user], project))
+          .to eq([user])
       end
 
       it 'returns external users if they are the project owner' do
@@ -136,8 +142,8 @@ describe Ability, lib: true do
 
         expect(project).to receive(:owner).twice.and_return(user1)
 
-        expect(described_class.users_that_can_read_project(users, project)).
-          to eq([user1])
+        expect(described_class.users_that_can_read_project(users, project))
+          .to eq([user1])
       end
 
       it 'returns external users if they are project members' do
@@ -147,8 +153,8 @@ describe Ability, lib: true do
 
         expect(project.team).to receive(:members).twice.and_return([user1])
 
-        expect(described_class.users_that_can_read_project(users, project)).
-          to eq([user1])
+        expect(described_class.users_that_can_read_project(users, project))
+          .to eq([user1])
       end
 
       it 'returns an empty Array if all users are internal users without access' do
@@ -156,8 +162,8 @@ describe Ability, lib: true do
         user2 = build(:user)
         users = [user1, user2]
 
-        expect(described_class.users_that_can_read_project(users, project)).
-          to eq([])
+        expect(described_class.users_that_can_read_project(users, project))
+          .to eq([])
       end
 
       it 'returns an empty Array if all users are external users without access' do
@@ -165,9 +171,36 @@ describe Ability, lib: true do
         user2 = build(:user, external: true)
         users = [user1, user2]
 
-        expect(described_class.users_that_can_read_project(users, project)).
-          to eq([])
+        expect(described_class.users_that_can_read_project(users, project))
+          .to eq([])
       end
+    end
+  end
+
+  describe '.users_that_can_read_personal_snippet' do
+    def users_for_snippet(snippet)
+      described_class.users_that_can_read_personal_snippet(users, snippet)
+    end
+
+    let(:users)  { create_list(:user, 3) }
+    let(:author) { users[0] }
+
+    it 'private snippet is readable only by its author' do
+      snippet = create(:personal_snippet, :private, author: author)
+
+      expect(users_for_snippet(snippet)).to match_array([author])
+    end
+
+    it 'internal snippet is readable by all registered users' do
+      snippet = create(:personal_snippet, :public, author: author)
+
+      expect(users_for_snippet(snippet)).to match_array(users)
+    end
+
+    it 'public snippet is readable by all users' do
+      snippet = create(:personal_snippet, :public, author: author)
+
+      expect(users_for_snippet(snippet)).to match_array(users)
     end
   end
 
@@ -177,8 +210,8 @@ describe Ability, lib: true do
         user = build(:user, admin: true)
         issue = build(:issue)
 
-        expect(described_class.issues_readable_by_user([issue], user)).
-          to eq([issue])
+        expect(described_class.issues_readable_by_user([issue], user))
+          .to eq([issue])
       end
     end
 
@@ -189,8 +222,8 @@ describe Ability, lib: true do
 
         expect(issue).to receive(:readable_by?).with(user).and_return(true)
 
-        expect(described_class.issues_readable_by_user([issue], user)).
-          to eq([issue])
+        expect(described_class.issues_readable_by_user([issue], user))
+          .to eq([issue])
       end
 
       it 'returns an empty Array when no issues are readable' do
@@ -211,8 +244,8 @@ describe Ability, lib: true do
         expect(hidden_issue).to receive(:publicly_visible?).and_return(false)
         expect(visible_issue).to receive(:publicly_visible?).and_return(true)
 
-        issues = described_class.
-          issues_readable_by_user([hidden_issue, visible_issue])
+        issues = described_class
+          .issues_readable_by_user([hidden_issue, visible_issue])
 
         expect(issues).to eq([visible_issue])
       end
@@ -220,7 +253,7 @@ describe Ability, lib: true do
   end
 
   describe '.project_disabled_features_rules' do
-    let(:project) { create(:project,  wiki_access_level: ProjectFeature::DISABLED) }
+    let(:project) { create(:empty_project, :wiki_disabled) }
 
     subject { described_class.allowed(project.owner, project) }
 

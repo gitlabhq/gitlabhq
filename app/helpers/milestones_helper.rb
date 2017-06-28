@@ -19,8 +19,8 @@ module MilestonesHelper
     end
   end
 
-  def milestones_browse_issuables_path(milestone, type:)
-    opts = { milestone_title: milestone.title }
+  def milestones_browse_issuables_path(milestone, state: nil, type:)
+    opts = { milestone_title: milestone.title, state: state }
 
     if @project
       polymorphic_path([@project.namespace.becomes(Namespace), @project, type], opts)
@@ -82,10 +82,67 @@ module MilestonesHelper
   def milestone_remaining_days(milestone)
     if milestone.expired?
       content_tag(:strong, 'Past due')
+    elsif milestone.upcoming?
+      content_tag(:strong, 'Upcoming')
     elsif milestone.due_date
-      days    = milestone.remaining_days
+      time_ago = time_ago_in_words(milestone.due_date)
+      content = time_ago.gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
+      content.slice!("about ")
+      content << " remaining"
+      content.html_safe
+    elsif milestone.start_date && milestone.start_date.past?
+      days    = milestone.elapsed_days
       content = content_tag(:strong, days)
-      content << " #{'day'.pluralize(days)} remaining"
+      content << " #{'day'.pluralize(days)} elapsed"
+      content.html_safe
+    end
+  end
+
+  def milestone_date_range(milestone)
+    if milestone.start_date && milestone.due_date
+      "#{milestone.start_date.to_s(:medium)}–#{milestone.due_date.to_s(:medium)}"
+    elsif milestone.due_date
+      if milestone.due_date.past?
+        "expired on #{milestone.due_date.to_s(:medium)}"
+      else
+        "expires on #{milestone.due_date.to_s(:medium)}"
+      end
+    elsif milestone.start_date
+      if milestone.start_date.past?
+        "started on #{milestone.start_date.to_s(:medium)}"
+      else
+        "starts on #{milestone.start_date.to_s(:medium)}"
+      end
+    end
+  end
+
+  def milestone_merge_request_tab_path(milestone)
+    if @project
+      merge_requests_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
+    elsif @group
+      merge_requests_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+    else
+      merge_requests_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
+    end
+  end
+
+  def milestone_participants_tab_path(milestone)
+    if @project
+      participants_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
+    elsif @group
+      participants_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+    else
+      participants_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
+    end
+  end
+
+  def milestone_labels_tab_path(milestone)
+    if @project
+      labels_namespace_project_milestone_path(@project.namespace, @project, milestone, format: :json)
+    elsif @group
+      labels_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+    else
+      labels_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
     end
   end
 end

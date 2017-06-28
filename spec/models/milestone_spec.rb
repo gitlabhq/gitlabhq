@@ -1,11 +1,6 @@
 require 'spec_helper'
 
 describe Milestone, models: true do
-  describe "Associations" do
-    it { is_expected.to belong_to(:project) }
-    it { is_expected.to have_many(:issues) }
-  end
-
   describe "Validation" do
     before do
       allow(subject).to receive(:set_iid).and_return(false)
@@ -13,10 +8,25 @@ describe Milestone, models: true do
 
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:project) }
+
+    describe 'start_date' do
+      it 'adds an error when start_date is greated then due_date' do
+        milestone = build(:milestone, start_date: Date.tomorrow, due_date: Date.yesterday)
+
+        expect(milestone).not_to be_valid
+        expect(milestone.errors[:start_date]).to include("Can't be greater than due date")
+      end
+    end
   end
 
-  let(:milestone) { create(:milestone) }
-  let(:issue) { create(:issue) }
+  describe "Associations" do
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_many(:issues) }
+  end
+
+  let(:project) { create(:empty_project, :public) }
+  let(:milestone) { create(:milestone, project: project) }
+  let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
 
   describe "#title" do
@@ -34,7 +44,7 @@ describe Milestone, models: true do
     end
 
     it "accepts the same title in another project" do
-      project = build(:project)
+      project = build(:empty_project)
       new_milestone = Milestone.new(project: project, title: milestone.title)
 
       expect(new_milestone).to be_valid
@@ -58,18 +68,6 @@ describe Milestone, models: true do
     end
   end
 
-  describe "#expires_at" do
-    it "is nil when due_date is unset" do
-      milestone.update_attributes(due_date: nil)
-      expect(milestone.expires_at).to be_nil
-    end
-
-    it "is not nil when due_date is set" do
-      milestone.update_attributes(due_date: Date.tomorrow)
-      expect(milestone.expires_at).to be_present
-    end
-  end
-
   describe '#expired?' do
     context "expired" do
       before do
@@ -88,6 +86,18 @@ describe Milestone, models: true do
     end
   end
 
+  describe '#upcoming?' do
+    it 'returns true' do
+      milestone = build(:milestone, start_date: Time.now + 1.month)
+      expect(milestone.upcoming?).to be_truthy
+    end
+
+    it 'returns false' do
+      milestone = build(:milestone, start_date: Date.today.prev_year)
+      expect(milestone.upcoming?).to be_falsey
+    end
+  end
+
   describe '#percent_complete' do
     before do
       allow(milestone).to receive_messages(
@@ -99,25 +109,13 @@ describe Milestone, models: true do
     it { expect(milestone.percent_complete(user)).to eq(75) }
   end
 
-  describe :items_count do
-    before do
-      milestone.issues << create(:issue)
-      milestone.issues << create(:closed_issue)
-      milestone.merge_requests << create(:merge_request)
-    end
-
-    it { expect(milestone.closed_items_count(user)).to eq(1) }
-    it { expect(milestone.total_items_count(user)).to eq(3) }
-    it { expect(milestone.is_empty?(user)).to be_falsey }
-  end
-
   describe '#can_be_closed?' do
     it { expect(milestone.can_be_closed?).to be_truthy }
   end
 
   describe '#total_items_count' do
     before do
-      create :closed_issue, milestone: milestone
+      create :closed_issue, milestone: milestone, project: project
       create :merge_request, milestone: milestone
     end
 
@@ -146,35 +144,6 @@ describe Milestone, models: true do
     end
   end
 
-  describe '#sort_issues' do
-    let(:milestone) { create(:milestone) }
-
-    let(:issue1) { create(:issue, milestone: milestone, position: 1) }
-    let(:issue2) { create(:issue, milestone: milestone, position: 2) }
-    let(:issue3) { create(:issue, milestone: milestone, position: 3) }
-    let(:issue4) { create(:issue, position: 42) }
-
-    it 'sorts the given issues' do
-      milestone.sort_issues([issue3.id, issue2.id, issue1.id])
-
-      issue1.reload
-      issue2.reload
-      issue3.reload
-
-      expect(issue1.position).to eq(3)
-      expect(issue2.position).to eq(2)
-      expect(issue3.position).to eq(1)
-    end
-
-    it 'ignores issues not part of the milestone' do
-      milestone.sort_issues([issue3.id, issue2.id, issue1.id, issue4.id])
-
-      issue4.reload
-
-      expect(issue4.position).to eq(42)
-    end
-  end
-
   describe '.search' do
     let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
 
@@ -195,13 +164,13 @@ describe Milestone, models: true do
     end
 
     it 'returns milestones with a partially matching description' do
-      expect(described_class.search(milestone.description[0..2])).
-        to eq([milestone])
+      expect(described_class.search(milestone.description[0..2]))
+        .to eq([milestone])
     end
 
     it 'returns milestones with a matching description regardless of the casing' do
-      expect(described_class.search(milestone.description.upcase)).
-        to eq([milestone])
+      expect(described_class.search(milestone.description.upcase))
+        .to eq([milestone])
     end
   end
 
@@ -235,6 +204,33 @@ describe Milestone, models: true do
       it 'returns no results' do
         expect(milestone_ids).to be_empty
       end
+    end
+  end
+
+  describe '#to_reference' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:milestone) { build(:milestone, iid: 1, project: project) }
+
+    it 'returns a String reference to the object' do
+      expect(milestone.to_reference).to eq "%1"
+    end
+
+    it 'supports a cross-project reference' do
+      another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
+      expect(milestone.to_reference(another_project)).to eq "sample-project%1"
+    end
+  end
+
+  describe '#participants' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:milestone) { build(:milestone, iid: 1, project: project) }
+
+    it 'returns participants without duplicates' do
+      user = create :user
+      create :issue, project: project, milestone: milestone, assignees: [user]
+      create :issue, project: project, milestone: milestone, assignees: [user]
+
+      expect(milestone.participants).to eq [user]
     end
   end
 end

@@ -1,7 +1,6 @@
 class EmailReceiverWorker
   include Sidekiq::Worker
-
-  sidekiq_options queue: :incoming_email
+  include DedicatedSidekiqQueue
 
   def perform(raw)
     return unless Gitlab::IncomingEmail.enabled?

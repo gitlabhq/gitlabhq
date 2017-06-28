@@ -1,87 +1,83 @@
-.container-fluid {
-  .ci-status {
-    padding: 2px 7px;
-    margin-right: 10px;
-    border: 1px solid #eee;
-    white-space: nowrap;
-    @include border-radius(4px);
+@mixin status-color($color-light, $color-main, $color-dark) {
+  color: $color-main;
+  border-color: $color-main;
 
-    &:hover {
-      text-decoration: none;
+  &:not(span):hover {
+    background-color: $color-light;
+    color: $color-dark;
+    border-color: $color-dark;
+
+    svg {
+      fill: $color-dark;
     }
+  }
 
-    &.ci-failed {
-      color: $gl-danger;
-      border-color: $gl-danger;
+  svg {
+    fill: $color-main;
+  }
+}
+
+.ci-status {
+  padding: 2px 7px 4px;
+  border: 1px solid $gray-darker;
+  white-space: nowrap;
+  border-radius: 4px;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+
+  svg {
+    height: 13px;
+    width: 13px;
+    position: relative;
+    top: 2px;
+    overflow: visible;
+  }
+
+  &.ci-failed {
+    @include status-color($red-50, $red-500, $red-600);
+  }
+
+  &.ci-success {
+    @include status-color($green-50, $green-500, $green-700);
+  }
+
+  &.ci-canceled,
+  &.ci-disabled,
+  &.ci-manual {
+    color: $gl-text-color;
+    border-color: $gl-text-color;
+
+    &:not(span):hover {
+      background-color: rgba($gl-text-color, .07);
     }
+  }
 
-    &.ci-success,
-    &.ci-success_with_warnings {
-      color: $gl-success;
-      border-color: $gl-success;
-    }
+  &.ci-pending,
+  &.ci-failed_with_warnings,
+  &.ci-success_with_warnings {
+    @include status-color($orange-50, $orange-500, $orange-700);
+  }
 
-    &.ci-info {
-      color: $gl-info;
-      border-color: $gl-info;
-    }
+  &.ci-info,
+  &.ci-running {
+    @include status-color($blue-50, $blue-500, $blue-600);
+  }
 
-    &.ci-canceled,
-    &.ci-skipped,
-    &.ci-disabled {
-      color: $gl-gray;
-      border-color: $gl-gray;
-    }
+  &.ci-created,
+  &.ci-skipped {
+    color: $gl-text-color-secondary;
+    border-color: $gl-text-color-secondary;
 
-    &.ci-pending {
-      color: $gl-warning;
-      border-color: $gl-warning;
-    }
-
-    &.ci-running {
-      color: $blue-normal;
-      border-color: $blue-normal;
-    }
-
-    &.ci-created {
-      color: $table-text-gray;
-      border-color: $table-text-gray;
-
-      svg {
-        fill: $table-text-gray;
-      }
+    &:not(span):hover {
+      background-color: rgba($gl-text-color-secondary, .07);
     }
 
     svg {
-      height: 13px;
-      width: 13px;
-      position: relative;
-      top: 1px;
-      margin: 0 3px;
-      overflow: visible;
+      fill: $gl-text-color-secondary;
     }
-  }
-
-  .ci-status-icon-success {
-    color: $gl-success;
-  }
-  .ci-status-icon-failed {
-    color: $gl-danger;
-  }
-
-  .ci-status-icon-pending,
-  .ci-status-icon-success_with_warning {
-    color: $gl-warning;
-  }
-  
-  .ci-status-icon-running {
-    color: $blue-normal;
-  }
-  .ci-status-icon-canceled,
-  .ci-status-icon-disabled,
-  .ci-status-icon-not-found,
-  .ci-status-icon-skipped {
-    color: $gl-gray;
   }
 }
 
@@ -90,5 +86,11 @@
     position: relative;
     top: 2px;
     left: 5px;
+  }
+}
+
+.ci-status-link {
+  svg {
+    overflow: visible;
   }
 }

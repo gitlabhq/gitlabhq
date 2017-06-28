@@ -22,9 +22,8 @@
     .form-group
       = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
       .col-sm-10
-        - data_attrs = { toggle: 'buttons' }
-        .btn-group{ data: data_attrs }
-          - restricted_level_checkboxes('restricted-visibility-help').each do |level|
+        - restricted_level_checkboxes('restricted-visibility-help').each do |level|
+          .checkbox
             = level
         %span.help-block#restricted-visibility-help
           Selected levels cannot be used by non-admin users for projects or snippets.
@@ -32,10 +31,8 @@
     .form-group
       = f.label :import_sources, class: 'control-label col-sm-2'
       .col-sm-10
-        - data_attrs = { toggle: 'buttons' }
-        .btn-group{ data: data_attrs }
-          - import_sources_checkboxes('import-sources-help').each do |source|
-            = source
+        - import_sources_checkboxes('import-sources-help').each do |source|
+          .checkbox= source
         %span.help-block#import-sources-help
           Enabled sources for code import during project creation. OmniAuth must be configured for GitHub
           = link_to "(?)", help_page_path("integration/github")
@@ -151,7 +148,7 @@
             Sign-in enabled
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
-        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth Sign-In sources', class: 'control-label col-sm-2'
+        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'control-label col-sm-2'
         .col-sm-10
           .btn-group{ data: { toggle: 'buttons' } }
             - oauth_providers_checkboxes.each do |source|
@@ -183,11 +180,33 @@
       .col-sm-10
         = f.text_area :sign_in_text, class: 'form-control', rows: 4
         .help-block Markdown enabled
+
+  %fieldset
+    %legend Help Page
     .form-group
       = f.label :help_page_text, class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :help_page_text, class: 'form-control', rows: 4
         .help-block Markdown enabled
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :help_page_hide_commercial_content do
+            = f.check_box :help_page_hide_commercial_content
+            Hide marketing-related entries from help
+    .form-group
+      = f.label :help_page_support_url, 'Support page URL', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :help_page_support_url, class: 'form-control', placeholder: 'http://company.example.com/getting-help', :'aria-describedby' => 'support_help_block'
+        %span.help-block#support_help_block Alternate support URL for help page
+
+  %fieldset
+    %legend Pages
+    .form-group
+      = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :max_pages_size, class: 'form-control'
+        .help-block 0 for unlimited
 
   %fieldset
     %legend Continuous Integration
@@ -207,8 +226,16 @@
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
         .help-block
-          Set the maximum file size each build's artifacts can have
-          = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "maximum-artifacts-size")
+          Set the maximum file size for each job's artifacts
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
+    .form-group
+      = f.label :default_artifacts_expire_in, 'Default artifacts expiration', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :default_artifacts_expire_in, class: 'form-control'
+        .help-block
+          Set the default expiration time for each job's artifacts.
+          0 for unlimited.
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
 
   - if Gitlab.config.registry.enabled
     %fieldset
@@ -219,9 +246,13 @@
           = f.number_field :container_registry_token_expire_delay, class: 'form-control'
 
   %fieldset
-    %legend Metrics
+    %legend Metrics - Influx
     %p
-      These settings require a restart to take effect.
+      Setup InfluxDB to measure a wide variety of statistics like the time spent
+      in running SQL queries. These settings require a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/introduction')
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -280,6 +311,51 @@
           results in fewer but larger UDP packets being sent.
 
   %fieldset
+    %legend Metrics - Prometheus
+    %p
+      Enable a Prometheus metrics endpoint at `#{metrics_path}` to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available
+      = link_to 'here', admin_health_check_path
+      \. This setting requires a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/introduction')
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :prometheus_metrics_enabled do
+            = f.check_box :prometheus_metrics_enabled
+            Enable Prometheus Metrics
+            - unless Gitlab::Metrics.metrics_folder_present?
+              .help-block
+                %strong.cred WARNING:
+                Environment variable `prometheus_multiproc_dir` does not exist or is not pointing to a valid directory.
+
+  %fieldset
+    %legend Background Jobs
+    %p
+      These settings require a restart to take effect.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :sidekiq_throttling_enabled do
+            = f.check_box :sidekiq_throttling_enabled
+            Enable Sidekiq Job Throttling
+          .help-block
+            Limit the amount of resources slow running jobs are assigned.
+    .form-group
+      = f.label :sidekiq_throttling_queues, 'Sidekiq queues to throttle', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.select :sidekiq_throttling_queues, sidekiq_queue_options_for_select, { include_hidden: false }, multiple: true, class: 'select2 select-wide', data: { field: 'sidekiq_throttling_queues' }
+        .help-block
+          Choose which queues you wish to throttle.
+    .form-group
+      = f.label :sidekiq_throttling_factor, 'Throttling Factor', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :sidekiq_throttling_factor, class: 'form-control', min: '0.01', max: '0.99', step: '0.01'
+        .help-block
+          The factor by which the queues should be throttled. A value between 0.0 and 1.0, exclusive.
+
+  %fieldset
     %legend Spam and Anti-bot Protection
     .form-group
       .col-sm-offset-2.col-sm-10
@@ -295,7 +371,7 @@
         = f.text_field :recaptcha_site_key, class: 'form-control'
         .help-block
           Generate site and private keys at
-          %a{ href: 'http://www.google.com/recaptcha', target: 'blank'} http://www.google.com/recaptcha
+          %a{ href: 'http://www.google.com/recaptcha', target: 'blank' } http://www.google.com/recaptcha
 
     .form-group
       = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'control-label col-sm-2'
@@ -316,7 +392,30 @@
         = f.text_field :akismet_api_key, class: 'form-control'
         .help-block
           Generate API key at
-          %a{ href: 'http://www.akismet.com', target: 'blank'} http://www.akismet.com
+          %a{ href: 'http://www.akismet.com', target: 'blank' } http://www.akismet.com
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :unique_ips_limit_enabled do
+            = f.check_box :unique_ips_limit_enabled
+            Limit sign in from multiple ips
+          %span.help-block#unique_ip_help_block
+            Helps prevent malicious users hide their activity
+
+    .form-group
+      = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :unique_ips_limit_per_user, class: 'form-control'
+        .help-block
+          Maximum number of unique IPs per user
+
+    .form-group
+      = f.label :unique_ips_limit_time_window, 'IP expiration time', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :unique_ips_limit_time_window, class: 'form-control'
+        .help-block
+          How many seconds an IP will be counted towards the limit
 
   %fieldset
     %legend Abuse reports
@@ -329,8 +428,6 @@
 
   %fieldset
     %legend Error Reporting and Logging
-    %p
-      These settings require a restart to take effect.
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -338,20 +435,36 @@
             = f.check_box :sentry_enabled
             Enable Sentry
           .help-block
+            %p This setting requires a restart to take effect.
             Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
-            %a{ href: 'https://getsentry.com', target: '_blank' } https://getsentry.com
+            %a{ href: 'https://getsentry.com', target: '_blank', rel: 'noopener noreferrer' } https://getsentry.com
 
     .form-group
       = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :sentry_dsn, class: 'form-control'
 
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :clientside_sentry_enabled do
+            = f.check_box :clientside_sentry_enabled
+            Enable Clientside Sentry
+          .help-block
+            Sentry can also be used for reporting and logging clientside exceptions.
+            %a{ href: 'https://sentry.io/for/javascript/', target: '_blank', rel: 'noopener noreferrer' } https://sentry.io/for/javascript/
+
+    .form-group
+      = f.label :clientside_sentry_dsn, 'Clientside Sentry DSN', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :clientside_sentry_dsn, class: 'form-control'
+
   %fieldset
     %legend Repository Storage
     .form-group
-      = f.label :repository_storage, 'Storage path for new projects', class: 'control-label col-sm-2'
+      = f.label :repository_storages, 'Storage paths for new projects', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.select :repository_storage, repository_storage_options_for_select, {}, class: 'form-control'
+        = f.select :repository_storages, repository_storages_options_for_select, {include_hidden: false}, multiple: true, class: 'form-control'
         .help-block
           Manage repository storage paths. Learn more in the
           = succeed "." do
@@ -395,7 +508,24 @@
             = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
 
   %fieldset
-    %legend Usage statistics
+    %legend PlantUML
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :plantuml_enabled do
+            = f.check_box :plantuml_enabled
+            Enable PlantUML
+    .form-group
+      = f.label :plantuml_url, 'PlantUML URL', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :plantuml_url, class: 'form-control', placeholder: 'http://gitlab.your-plantuml-instance.com:8080'
+        .help-block
+          Allow rendering of
+          = link_to "PlantUML", "http://plantuml.com"
+          diagrams in Asciidoc documents using an external PlantUML service.
+
+  %fieldset
+    %legend#usage-statistics Usage statistics
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -404,6 +534,26 @@
             Version check enabled
           .help-block
             Let GitLab inform you when an update is available.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        - can_be_configured = @application_setting.usage_ping_can_be_configured?
+        .checkbox
+          = f.label :usage_ping_enabled do
+            = f.check_box :usage_ping_enabled, disabled: !can_be_configured
+            Usage ping enabled
+            = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
+          .help-block
+            - if can_be_configured
+              Every week GitLab will report license usage back to GitLab, Inc.
+              Disable this option if you do not want this to occur. To see the
+              JSON payload that will be sent, visit the
+              = succeed '.' do
+                = link_to "Cohorts page", admin_cohorts_path(anchor: 'usage-ping')
+            - else
+              The usage ping is disabled, and cannot be configured through this
+              form. For more information, see the documentation on
+              = succeed '.' do
+                = link_to 'deactivating the usage ping', help_page_path('user/admin_area/settings/usage_statistics', anchor: 'deactivate-the-usage-ping')
 
   %fieldset
     %legend Email
@@ -417,6 +567,79 @@
             Some email servers do not support overriding the email sender name.
             Enable this option to include the name of the author of the issue,
             merge request or comment in the email body instead.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :html_emails_enabled do
+            = f.check_box :html_emails_enabled
+            Enable HTML emails
+          .help-block
+            By default GitLab sends emails in HTML and plain text formats so mail
+            clients can choose what format to use. Disable this option if you only
+            want to send emails in plain text format.
+  %fieldset
+    %legend Automatic Git repository housekeeping
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :housekeeping_enabled do
+            = f.check_box :housekeeping_enabled
+            Enable automatic repository housekeeping (git repack, git gc)
+          .help-block
+            If you keep automatic housekeeping disabled for a long time Git
+            repository access on your GitLab server will become slower and your
+            repositories will use more disk space. We recommend to always leave
+            this enabled.
+        .checkbox
+          = f.label :housekeeping_bitmaps_enabled do
+            = f.check_box :housekeeping_bitmaps_enabled
+            Enable Git pack file bitmap creation
+          .help-block
+            Creating pack file bitmaps makes housekeeping take a little longer but
+            bitmaps should accelerate 'git clone' performance.
+    .form-group
+      = f.label :housekeeping_incremental_repack_period, 'Incremental repack period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :housekeeping_incremental_repack_period, class: 'form-control'
+        .help-block
+          Number of Git pushes after which an incremental 'git repack' is run.
+    .form-group
+      = f.label :housekeeping_full_repack_period, 'Full repack period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :housekeeping_full_repack_period, class: 'form-control'
+        .help-block
+          Number of Git pushes after which a full 'git repack' is run.
+    .form-group
+      = f.label :housekeeping_gc_period, 'Git GC period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :housekeeping_gc_period, class: 'form-control'
+        .help-block
+          Number of Git pushes after which 'git gc' is run.
+
+  %fieldset
+    %legend Web terminal
+    .form-group
+      = f.label :terminal_max_session_time, 'Max session time', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :terminal_max_session_time, class: 'form-control'
+        .help-block
+          Maximum time for web terminal websocket connection (in seconds).
+          0 for unlimited.
+
+  %fieldset
+    %legend Real-time features
+    .form-group
+      = f.label :polling_interval_multiplier, 'Polling interval multiplier', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :polling_interval_multiplier, class: 'form-control'
+        .help-block
+          Change this value to influence how frequently the GitLab UI polls for updates.
+          If you set the value to 2 all polling intervals are multiplied
+          by 2, which means that polling happens half as frequently.
+          The multiplier can also have a decimal value.
+          The default value (1) is a reasonable choice for the majority of GitLab
+          installations. Set to 0 to completely disable polling.
+          = link_to icon('question-circle'), help_page_path('administration/polling')
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

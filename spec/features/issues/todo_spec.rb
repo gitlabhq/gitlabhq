@@ -7,37 +7,37 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
     visit namespace_project_issue_path(project.namespace, project, issue)
   end
 
   it 'creates todo when clicking button' do
     page.within '.issuable-sidebar' do
-      click_button 'Add Todo'
-      expect(page).to have_content 'Mark Done'
+      click_button 'Add todo'
+      expect(page).to have_content 'Mark done'
     end
 
-    page.within '.header-content .todos-pending-count' do
+    page.within '.header-content .todos-count' do
       expect(page).to have_content '1'
     end
 
     visit namespace_project_issue_path(project.namespace, project, issue)
 
-    page.within '.header-content .todos-pending-count' do
+    page.within '.header-content .todos-count' do
       expect(page).to have_content '1'
     end
   end
 
   it 'marks a todo as done' do
     page.within '.issuable-sidebar' do
-      click_button 'Add Todo'
-      click_button 'Mark Done'
+      click_button 'Add todo'
+      click_button 'Mark done'
     end
 
-    expect(page).to have_selector('.todos-pending-count', visible: false)
+    expect(page).to have_selector('.todos-count', visible: false)
 
     visit namespace_project_issue_path(project.namespace, project, issue)
 
-    expect(page).to have_selector('.todos-pending-count', visible: false)
+    expect(page).to have_selector('.todos-count', visible: false)
   end
 end

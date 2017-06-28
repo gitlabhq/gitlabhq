@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 describe AutocompleteController do
-  let!(:project) { create(:project) }
+  let!(:project) { create(:empty_project) }
   let!(:user) { create(:user) }
 
-  context 'users and members' do
+  context 'GET users' do
     let!(:user2) { create(:user) }
     let!(:non_member) { create(:user) }
 
     context 'project members' do
       before do
         sign_in(user)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       describe 'GET #users with project ID' do
@@ -22,7 +22,7 @@ describe AutocompleteController do
         let(:body) { JSON.parse(response.body) }
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
+        it { expect(body.size).to eq 2 }
         it { expect(body.map { |u| u["username"] }).to include(user.username) }
       end
 
@@ -69,7 +69,7 @@ describe AutocompleteController do
 
       before do
         sign_in(non_member)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       let(:body) { JSON.parse(response.body) }
@@ -80,8 +80,8 @@ describe AutocompleteController do
         end
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 2 }
-        it { expect(body.map { |u| u['username'] }).to match_array([user.username, non_member.username]) }
+        it { expect(body.size).to eq 3 }
+        it { expect(body.map { |u| u['username'] }).to include(user.username, non_member.username) }
       end
     end
 
@@ -97,18 +97,32 @@ describe AutocompleteController do
       it { expect(body.size).to eq User.count }
     end
 
+    context 'limited users per page' do
+      let(:per_page) { 2 }
+
+      before do
+        sign_in(user)
+        get(:users, per_page: per_page)
+      end
+
+      let(:body) { JSON.parse(response.body) }
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq per_page }
+    end
+
     context 'unauthenticated user' do
       let(:public_project) { create(:project, :public) }
       let(:body) { JSON.parse(response.body) }
 
       describe 'GET #users with public project' do
         before do
-          public_project.team << [user, :guest]
+          public_project.add_guest(user)
           get(:users, project_id: public_project.id)
         end
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
+        it { expect(body.size).to eq 2 }
       end
 
       describe 'GET #users with project' do
@@ -129,7 +143,7 @@ describe AutocompleteController do
 
       describe 'GET #users with inaccessible group' do
         before do
-          project.team << [user, :guest]
+          project.add_guest(user)
           get(:users, group_id: user.namespace.id)
         end
 
@@ -144,30 +158,51 @@ describe AutocompleteController do
         it { expect(body).to be_kind_of(Array) }
         it { expect(body.size).to eq 0 }
       end
+
+      describe 'GET #users with todo filter' do
+        it 'gives an array of users' do
+          get :users, todo_filter: true
+
+          expect(response.status).to eq 200
+          expect(body).to be_kind_of(Array)
+        end
+      end
     end
 
     context 'author of issuable included' do
-      before do
-        sign_in(user)
-      end
-
       let(:body) { JSON.parse(response.body) }
 
-      it 'includes the author' do
-        get(:users, author_id: non_member.id)
+      context 'authenticated' do
+        before do
+          sign_in(user)
+        end
 
-        expect(body.first["username"]).to eq non_member.username
+        it 'includes the author' do
+          get(:users, author_id: non_member.id)
+
+          expect(body.first["username"]).to eq non_member.username
+        end
+
+        it 'rejects non existent user ids' do
+          get(:users, author_id: 99999)
+
+          expect(body.collect { |u| u['id'] }).not_to include(99999)
+        end
       end
 
-      it 'rejects non existent user ids' do
-        get(:users, author_id: 99999)
+      context 'without authenticating' do
+        it 'returns empty result' do
+          get(:users, author_id: non_member.id)
 
-        expect(body.collect { |u| u['id'] }).not_to include(99999)
+          expect(body).to be_empty
+        end
       end
     end
 
     context 'skip_users parameter included' do
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       it 'skips the user IDs passed' do
         get(:users, skip_users: [user, user2].map(&:id))
@@ -180,18 +215,18 @@ describe AutocompleteController do
     end
   end
 
-  context 'projects' do
+  context 'GET projects' do
     let(:authorized_project) { create(:project) }
     let(:authorized_search_project) { create(:project, name: 'rugged') }
 
     before do
       sign_in(user)
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     context 'authorized projects' do
       before do
-        authorized_project.team << [user, :master]
+        authorized_project.add_master(user)
       end
 
       describe 'GET #projects with project ID' do
@@ -216,8 +251,8 @@ describe AutocompleteController do
 
     context 'authorized projects and search' do
       before do
-        authorized_project.team << [user, :master]
-        authorized_search_project.team << [user, :master]
+        authorized_project.add_master(user)
+        authorized_search_project.add_master(user)
       end
 
       describe 'GET #projects with project ID and search' do
@@ -242,9 +277,9 @@ describe AutocompleteController do
         authorized_project2 = create(:project)
         authorized_project3 = create(:project)
 
-        authorized_project.team << [user, :master]
-        authorized_project2.team << [user, :master]
-        authorized_project3.team << [user, :master]
+        authorized_project.add_master(user)
+        authorized_project2.add_master(user)
+        authorized_project3.add_master(user)
 
         stub_const 'MoveToProjectFinder::PAGE_SIZE', 2
       end
@@ -268,9 +303,9 @@ describe AutocompleteController do
         authorized_project2 = create(:project)
         authorized_project3 = create(:project)
 
-        authorized_project.team << [user, :master]
-        authorized_project2.team << [user, :master]
-        authorized_project3.team << [user, :master]
+        authorized_project.add_master(user)
+        authorized_project2.add_master(user)
+        authorized_project3.add_master(user)
       end
 
       describe 'GET #projects with project ID and offset_id' do
@@ -289,7 +324,7 @@ describe AutocompleteController do
 
     context 'authorized projects without admin_issue ability' do
       before(:each) do
-        authorized_project.team << [user, :guest]
+        authorized_project.add_guest(user)
 
         expect(user.can?(:admin_issue, authorized_project)).to eq(false)
       end

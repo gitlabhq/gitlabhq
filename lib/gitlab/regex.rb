@@ -2,17 +2,6 @@ module Gitlab
   module Regex
     extend self
 
-    NAMESPACE_REGEX_STR = '(?:[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_])'.freeze
-
-    def namespace_regex
-      @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze
-    end
-
-    def namespace_regex_message
-      "can contain only letters, digits, '_', '-' and '.'. " \
-      "Cannot start with '-' or end in '.'." \
-    end
-
     def namespace_name_regex
       @namespace_name_regex ||= /\A[\p{Alnum}\p{Pd}_\. ]*\z/.freeze
     end
@@ -22,77 +11,31 @@ module Gitlab
     end
 
     def project_name_regex
-      @project_name_regex ||= /\A[\p{Alnum}_][\p{Alnum}\p{Pd}_\. ]*\z/.freeze
+      @project_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9c0}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9c0}_\. ]*\z/.freeze
     end
 
     def project_name_regex_message
-      "can contain only letters, digits, '_', '.', dash and space. " \
-      "It must start with letter, digit or '_'."
-    end
-
-    def project_path_regex
-      @project_path_regex ||= /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\.]*(?<!\.git|\.atom)\z/.freeze
-    end
-
-    def project_path_regex_message
-      "can contain only letters, digits, '_', '-' and '.'. " \
-      "Cannot start with '-', end in '.git' or end in '.atom'" \
+      "can contain only letters, digits, emojis, '_', '.', dash, space. " \
+      "It must start with letter, digit, emoji or '_'."
     end
 
     def file_name_regex
-      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.\@]*\z/.freeze
+      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@\+]*\z/.freeze
     end
 
     def file_name_regex_message
-      "can contain only letters, digits, '_', '-', '@' and '.'."
-    end
-
-    def file_path_regex
-      @file_path_regex ||= /\A[a-zA-Z0-9_\-\.\/\@]*\z/.freeze
-    end
-
-    def file_path_regex_message
-      "can contain only letters, digits, '_', '-', '@' and '.'. Separate directories with a '/'."
-    end
-
-    def directory_traversal_regex
-      @directory_traversal_regex ||= /\.{2}/.freeze
-    end
-
-    def directory_traversal_regex_message
-      "cannot include directory traversal."
-    end
-
-    def archive_formats_regex
-      #                           |zip|tar|    tar.gz    |         tar.bz2         |
-      @archive_formats_regex ||= /(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/.freeze
-    end
-
-    def git_reference_regex
-      # Valid git ref regex, see:
-      # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
-
-      @git_reference_regex ||= %r{
-        (?!
-           (?# doesn't begins with)
-           \/|                    (?# rule #6)
-           (?# doesn't contain)
-           .*(?:
-              [\/.]\.|            (?# rule #1,3)
-              \/\/|               (?# rule #6)
-              @\{|                (?# rule #8)
-              \\                  (?# rule #9)
-           )
-        )
-        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
-        (?# doesn't end with)
-        (?<!\.lock)               (?# rule #1)
-        (?<![\/.])                (?# rule #6-7)
-      }x.freeze
+      "can contain only letters, digits, '_', '-', '@', '+' and '.'."
     end
 
     def container_registry_reference_regex
-      git_reference_regex
+      Gitlab::PathRegex.git_reference_regex
+    end
+
+    ##
+    # Docker Distribution Registry 2.4.1 repository name rules
+    #
+    def container_repository_name_regex
+      @container_repository_regex ||= %r{\A[a-z0-9]+(?:[-._/][a-z0-9]+)*\Z}
     end
 
     def environment_name_regex
@@ -100,7 +43,24 @@ module Gitlab
     end
 
     def environment_name_regex_message
-      "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.' and spaces"
+      "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', and spaces"
+    end
+
+    def kubernetes_namespace_regex
+      /\A[a-z0-9]([-a-z0-9]*[a-z0-9])?\z/
+    end
+
+    def kubernetes_namespace_regex_message
+      "can contain only letters, digits or '-', and cannot start or end with '-'"
+    end
+
+    def environment_slug_regex
+      @environment_slug_regex ||= /\A[a-z]([a-z0-9-]*[a-z0-9])?\z/.freeze
+    end
+
+    def environment_slug_regex_message
+      "can contain only lowercase letters, digits, and '-'. " \
+      "Must start with a letter, and cannot end with '-'"
     end
   end
 end

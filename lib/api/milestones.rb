@@ -1,6 +1,7 @@
 module API
-  # Milestones API
   class Milestones < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     helpers do
@@ -11,57 +12,63 @@ module API
         else milestones
         end
       end
+
+      params :optional_params do
+        optional :description, type: String, desc: 'The description of the milestone'
+        optional :due_date, type: String, desc: 'The due date of the milestone. The ISO 8601 date format (%Y-%m-%d)'
+        optional :start_date, type: String, desc: 'The start date of the milestone. The ISO 8601 date format (%Y-%m-%d)'
+      end
     end
 
-    resource :projects do
-      # Get a list of project milestones
-      #
-      # Parameters:
-      #   id (required)    - The ID of a project
-      #   state (optional) - Return "active" or "closed" milestones
-      # Example Request:
-      #   GET /projects/:id/milestones
-      #   GET /projects/:id/milestones?iid=42
-      #   GET /projects/:id/milestones?state=active
-      #   GET /projects/:id/milestones?state=closed
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
+      desc 'Get a list of project milestones' do
+        success Entities::Milestone
+      end
+      params do
+        optional :state, type: String, values: %w[active closed all], default: 'all',
+                         desc: 'Return "active", "closed", or "all" milestones'
+        optional :iids, type: Array[Integer], desc: 'The IIDs of the milestones'
+        optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
+        use :pagination
+      end
       get ":id/milestones" do
         authorize! :read_milestone, user_project
 
         milestones = user_project.milestones
         milestones = filter_milestones_state(milestones, params[:state])
-        milestones = filter_by_iid(milestones, params[:iid]) if params[:iid].present?
+        milestones = filter_by_iid(milestones, params[:iids]) if params[:iids].present?
+        milestones = filter_by_search(milestones, params[:search]) if params[:search]
 
         present paginate(milestones), with: Entities::Milestone
       end
 
-      # Get a single project milestone
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   milestone_id (required) - The ID of a project milestone
-      # Example Request:
-      #   GET /projects/:id/milestones/:milestone_id
+      desc 'Get a single project milestone' do
+        success Entities::Milestone
+      end
+      params do
+        requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+      end
       get ":id/milestones/:milestone_id" do
         authorize! :read_milestone, user_project
 
-        @milestone = user_project.milestones.find(params[:milestone_id])
-        present @milestone, with: Entities::Milestone
+        milestone = user_project.milestones.find(params[:milestone_id])
+        present milestone, with: Entities::Milestone
       end
 
-      # Create a new project milestone
-      #
-      # Parameters:
-      #   id (required) - The ID of the project
-      #   title (required) - The title of the milestone
-      #   description (optional) - The description of the milestone
-      #   due_date (optional) - The due date of the milestone
-      # Example Request:
-      #   POST /projects/:id/milestones
+      desc 'Create a new project milestone' do
+        success Entities::Milestone
+      end
+      params do
+        requires :title, type: String, desc: 'The title of the milestone'
+        use :optional_params
+      end
       post ":id/milestones" do
         authorize! :admin_milestone, user_project
-        required_attributes! [:title]
-        attrs = attributes_for_keys [:title, :description, :due_date]
-        milestone = ::Milestones::CreateService.new(user_project, current_user, attrs).execute
+
+        milestone = ::Milestones::CreateService.new(user_project, current_user, declared_params).execute
 
         if milestone.valid?
           present milestone, with: Entities::Milestone
@@ -70,22 +77,23 @@ module API
         end
       end
 
-      # Update an existing project milestone
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   milestone_id (required) - The ID of a project milestone
-      #   title (optional) - The title of a milestone
-      #   description (optional) - The description of a milestone
-      #   due_date (optional) - The due date of a milestone
-      #   state_event (optional) - The state event of the milestone (close|activate)
-      # Example Request:
-      #   PUT /projects/:id/milestones/:milestone_id
+      desc 'Update an existing project milestone' do
+        success Entities::Milestone
+      end
+      params do
+        requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+        optional :title, type: String, desc: 'The title of the milestone'
+        optional :state_event, type: String, values: %w[close activate],
+                               desc: 'The state event of the milestone '
+        use :optional_params
+        at_least_one_of :title, :description, :due_date, :state_event
+      end
       put ":id/milestones/:milestone_id" do
         authorize! :admin_milestone, user_project
-        attrs = attributes_for_keys [:title, :description, :due_date, :state_event]
-        milestone = user_project.milestones.find(params[:milestone_id])
-        milestone = ::Milestones::UpdateService.new(user_project, current_user, attrs).execute(milestone)
+        milestone = user_project.milestones.find(params.delete(:milestone_id))
+
+        milestone_params = declared_params(include_missing: false)
+        milestone = ::Milestones::UpdateService.new(user_project, current_user, milestone_params).execute(milestone)
 
         if milestone.valid?
           present milestone, with: Entities::Milestone
@@ -94,25 +102,52 @@ module API
         end
       end
 
-      # Get all issues for a single project milestone
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   milestone_id (required) - The ID of a project milestone
-      # Example Request:
-      #   GET /projects/:id/milestones/:milestone_id/issues
+      desc 'Get all issues for a single project milestone' do
+        success Entities::IssueBasic
+      end
+      params do
+        requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+        use :pagination
+      end
       get ":id/milestones/:milestone_id/issues" do
         authorize! :read_milestone, user_project
 
-        @milestone = user_project.milestones.find(params[:milestone_id])
+        milestone = user_project.milestones.find(params[:milestone_id])
 
         finder_params = {
           project_id: user_project.id,
-          milestone_title: @milestone.title
+          milestone_title: milestone.title,
+          sort: 'label_priority'
         }
 
         issues = IssuesFinder.new(current_user, finder_params).execute
-        present paginate(issues), with: Entities::Issue, current_user: current_user
+        present paginate(issues), with: Entities::IssueBasic, current_user: current_user, project: user_project
+      end
+
+      desc 'Get all merge requests for a single project milestone' do
+        detail 'This feature was introduced in GitLab 9.'
+        success Entities::MergeRequestBasic
+      end
+      params do
+        requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+        use :pagination
+      end
+      get ':id/milestones/:milestone_id/merge_requests' do
+        authorize! :read_milestone, user_project
+
+        milestone = user_project.milestones.find(params[:milestone_id])
+
+        finder_params = {
+          project_id: user_project.id,
+          milestone_title: milestone.title,
+          sort: 'label_priority'
+        }
+
+        merge_requests = MergeRequestsFinder.new(current_user, finder_params).execute
+        present paginate(merge_requests),
+          with: Entities::MergeRequestBasic,
+          current_user: current_user,
+          project: user_project
       end
     end
   end

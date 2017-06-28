@@ -12,8 +12,8 @@ describe Gitlab::Identifier do
   describe '#identify' do
     context 'without an identifier' do
       it 'identifies the user using a commit' do
-        expect(identifier).to receive(:identify_using_commit).
-          with(project, '123')
+        expect(identifier).to receive(:identify_using_commit)
+          .with(project, '123')
 
         identifier.identify('', project, '123')
       end
@@ -21,8 +21,8 @@ describe Gitlab::Identifier do
 
     context 'with a user identifier' do
       it 'identifies the user using a user ID' do
-        expect(identifier).to receive(:identify_using_user).
-          with("user-#{user.id}")
+        expect(identifier).to receive(:identify_using_user)
+          .with("user-#{user.id}")
 
         identifier.identify("user-#{user.id}", project, '123')
       end
@@ -30,8 +30,8 @@ describe Gitlab::Identifier do
 
     context 'with an SSH key identifier' do
       it 'identifies the user using an SSH key ID' do
-        expect(identifier).to receive(:identify_using_ssh_key).
-          with("key-#{key.id}")
+        expect(identifier).to receive(:identify_using_ssh_key)
+          .with("key-#{key.id}")
 
         identifier.identify("key-#{key.id}", project, '123')
       end
@@ -40,7 +40,7 @@ describe Gitlab::Identifier do
 
   describe '#identify_using_commit' do
     it "returns the User for an existing commit author's Email address" do
-      commit = double(:commit, author_email: user.email)
+      commit = double(:commit, author: user, author_email: user.email)
 
       expect(project).to receive(:commit).with('123').and_return(commit)
 
@@ -62,10 +62,9 @@ describe Gitlab::Identifier do
     end
 
     it 'caches the found users per Email' do
-      commit = double(:commit, author_email: user.email)
+      commit = double(:commit, author: user, author_email: user.email)
 
       expect(project).to receive(:commit).with('123').twice.and_return(commit)
-      expect(User).to receive(:find_by).once.and_call_original
 
       2.times do
         expect(identifier.identify_using_commit(project, '123')).to eq(user)

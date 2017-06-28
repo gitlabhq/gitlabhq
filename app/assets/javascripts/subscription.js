@@ -1,41 +1,47 @@
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+(() => {
+  class Subscription {
+    constructor(containerElm) {
+      this.containerElm = containerElm;
 
-  this.Subscription = (function() {
-    function Subscription(container) {
-      this.toggleSubscription = bind(this.toggleSubscription, this);
-      var $container;
-      $container = $(container);
-      this.url = $container.attr('data-url');
-      this.subscribe_button = $container.find('.js-subscribe-button');
-      this.subscription_status = $container.find('.subscription-status');
-      this.subscribe_button.unbind('click').click(this.toggleSubscription);
+      const subscribeButton = containerElm.querySelector('.js-subscribe-button');
+      if (subscribeButton) {
+        // remove class so we don't bind twice
+        subscribeButton.classList.remove('js-subscribe-button');
+        subscribeButton.addEventListener('click', this.toggleSubscription.bind(this));
+      }
     }
 
-    Subscription.prototype.toggleSubscription = function(event) {
-      var action, btn, current_status;
-      btn = $(event.currentTarget);
-      action = btn.find('span').text();
-      current_status = this.subscription_status.attr('data-status');
-      btn.addClass('disabled');
-      return $.post(this.url, (function(_this) {
-        return function() {
-          var status;
-          btn.removeClass('disabled');
-          status = current_status === 'subscribed' ? 'unsubscribed' : 'subscribed';
-          _this.subscription_status.attr('data-status', status);
-          action = status === 'subscribed' ? 'Unsubscribe' : 'Subscribe';
-          btn.find('span').text(action);
-          _this.subscription_status.find('>div').toggleClass('hidden');
-          if (btn.attr('data-original-title')) {
-            return btn.tooltip('hide').attr('data-original-title', action).tooltip('fixTitle');
-          }
-        };
-      })(this));
-    };
+    toggleSubscription(event) {
+      const button = event.currentTarget;
+      const buttonSpan = button.querySelector('span');
+      if (!buttonSpan || button.classList.contains('disabled')) {
+        return;
+      }
+      button.classList.add('disabled');
 
-    return Subscription;
+      const isSubscribed = buttonSpan.innerHTML.trim().toLowerCase() !== 'subscribe';
+      const toggleActionUrl = this.containerElm.dataset.url;
 
-  })();
+      $.post(toggleActionUrl, () => {
+        button.classList.remove('disabled');
 
-}).call(this);
+        // hack to allow this to work with the issue boards Vue object
+        if (document.querySelector('html').classList.contains('issue-boards-page')) {
+          gl.issueBoards.boardStoreIssueSet(
+            'subscribed',
+            !gl.issueBoards.BoardsStore.detail.issue.subscribed,
+          );
+        } else {
+          buttonSpan.innerHTML = isSubscribed ? 'Subscribe' : 'Unsubscribe';
+        }
+      });
+    }
+
+    static bindAll(selector) {
+      [].forEach.call(document.querySelectorAll(selector), elm => new Subscription(elm));
+    }
+  }
+
+  window.gl = window.gl || {};
+  window.gl.Subscription = Subscription;
+})();

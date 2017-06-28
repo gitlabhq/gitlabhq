@@ -1,380 +1,509 @@
-(function() {
-  this.AwardsHandler = (function() {
-    const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; //For separating lists produced by ruby's Array#toSentence
-    function AwardsHandler() {
-      this.aliases = gl.emojiAliases();
-      $(document).off('click', '.js-add-award').on('click', '.js-add-award', (function(_this) {
-        return function(e) {
-          e.stopPropagation();
-          e.preventDefault();
-          return _this.showEmojiMenu($(e.currentTarget));
-        };
-      })(this));
-      $('html').on('click', function(e) {
-        var $target;
-        $target = $(e.target);
-        if (!$target.closest('.emoji-menu-content').length) {
-          $('.js-awards-block.current').removeClass('current');
+/* eslint-disable class-methods-use-this */
+/* global Flash */
+
+import Cookies from 'js-cookie';
+import * as Emoji from './emoji';
+
+const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
+const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
+const requestAnimationFrame = window.requestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.setTimeout;
+
+const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; // For separating lists produced by ruby's Array#toSentence
+
+const categoryLabelMap = {
+  activity: 'Activity',
+  people: 'People',
+  nature: 'Nature',
+  food: 'Food',
+  travel: 'Travel',
+  objects: 'Objects',
+  symbols: 'Symbols',
+  flags: 'Flags',
+};
+
+function renderCategory(name, emojiList, opts = {}) {
+  return `
+    <h5 class="emoji-menu-title">
+      ${name}
+    </h5>
+    <ul class="clearfix emoji-menu-list ${opts.menuListClass || ''}">
+      ${emojiList.map(emojiName => `
+        <li class="emoji-menu-list-item">
+          <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
+            ${Emoji.glEmojiTag(emojiName, {
+              sprite: true,
+            })}
+          </button>
+        </li>
+      `).join('\n')}
+    </ul>
+  `;
+}
+
+export default class AwardsHandler {
+  constructor() {
+    this.eventListeners = [];
+    // If the user shows intent let's pre-build the menu
+    this.registerEventListener('one', $(document), 'mouseenter focus', '.js-add-award', 'mouseenter focus', () => {
+      const $menu = $('.emoji-menu');
+      if ($menu.length === 0) {
+        requestAnimationFrame(() => {
+          this.createEmojiMenu();
+        });
+      }
+    });
+    this.registerEventListener('on', $(document), 'click', '.js-add-award', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      this.showEmojiMenu($(e.currentTarget));
+    });
+
+    this.registerEventListener('on', $('html'), 'click', (e) => {
+      const $target = $(e.target);
+      if (!$target.closest('.emoji-menu-content').length) {
+        $('.js-awards-block.current').removeClass('current');
+      }
+      if (!$target.closest('.emoji-menu').length) {
+        if ($('.emoji-menu').is(':visible')) {
+          $('.js-add-award.is-active').removeClass('is-active');
+          $('.emoji-menu').removeClass('is-visible');
         }
-        if (!$target.closest('.emoji-menu').length) {
-          if ($('.emoji-menu').is(':visible')) {
-            $('.js-add-award.is-active').removeClass('is-active');
-            return $('.emoji-menu').removeClass('is-visible');
-          }
-        }
-      });
-      $(document).off('click', '.js-emoji-btn').on('click', '.js-emoji-btn', (function(_this) {
-        return function(e) {
-          var $target, emoji;
-          e.preventDefault();
-          $target = $(e.currentTarget);
-          emoji = $target.find('.icon').data('emoji');
-          $target.closest('.js-awards-block').addClass('current');
-          return _this.addAward(_this.getVotesBlock(), _this.getAwardUrl(), emoji);
-        };
-      })(this));
+      }
+    });
+    this.registerEventListener('on', $(document), 'click', '.js-emoji-btn', (e) => {
+      e.preventDefault();
+      const $target = $(e.currentTarget);
+      const $glEmojiElement = $target.find('gl-emoji');
+      const $spriteIconElement = $target.find('.icon');
+      const emoji = ($glEmojiElement.length ? $glEmojiElement : $spriteIconElement).data('name');
+
+      $target.closest('.js-awards-block').addClass('current');
+      this.addAward(this.getVotesBlock(), this.getAwardUrl(), emoji);
+    });
+  }
+
+  registerEventListener(method = 'on', element, ...args) {
+    element[method].call(element, ...args);
+    this.eventListeners.push({
+      element,
+      args,
+    });
+  }
+
+  showEmojiMenu($addBtn) {
+    if ($addBtn.hasClass('js-note-emoji')) {
+      $addBtn.closest('.note').find('.js-awards-block').addClass('current');
+    } else {
+      $addBtn.closest('.js-awards-block').addClass('current');
     }
 
-    AwardsHandler.prototype.showEmojiMenu = function($addBtn) {
-      var $holder, $menu, url;
-      $menu = $('.emoji-menu');
-      if ($addBtn.hasClass('js-note-emoji')) {
-        $addBtn.closest('.note').find('.js-awards-block').addClass('current');
+    const $menu = $('.emoji-menu');
+    const $thumbsBtn = $menu.find('[data-name="thumbsup"], [data-name="thumbsdown"]').parent();
+    const $userAuthored = this.isUserAuthored($addBtn);
+    if ($menu.length) {
+      if ($menu.is('.is-visible')) {
+        $addBtn.removeClass('is-active');
+        $menu.removeClass('is-visible');
+        $('.js-emoji-menu-search').blur();
       } else {
-        $addBtn.closest('.js-awards-block').addClass('current');
+        $addBtn.addClass('is-active');
+        this.positionMenu($menu, $addBtn);
+        $menu.addClass('is-visible');
+        $('.js-emoji-menu-search').focus();
       }
-      if ($menu.length) {
-        $holder = $addBtn.closest('.js-award-holder');
-        if ($menu.is('.is-visible')) {
-          $addBtn.removeClass('is-active');
-          $menu.removeClass('is-visible');
-          return $('#emoji_search').blur();
-        } else {
-          $addBtn.addClass('is-active');
-          this.positionMenu($menu, $addBtn);
-          $menu.addClass('is-visible');
-          return $('#emoji_search').focus();
-        }
-      } else {
-        $addBtn.addClass('is-loading is-active');
-        url = this.getAwardMenuUrl();
-        return this.createEmojiMenu(url, (function(_this) {
-          return function() {
-            $addBtn.removeClass('is-loading');
-            $menu = $('.emoji-menu');
-            _this.positionMenu($menu, $addBtn);
-            if (!_this.frequentEmojiBlockRendered) {
-              _this.renderFrequentlyUsedBlock();
-            }
-            return setTimeout(function() {
-              $menu.addClass('is-visible');
-              $('#emoji_search').focus();
-              return _this.setupSearch();
-            }, 200);
-          };
-        })(this));
-      }
-    };
-
-    AwardsHandler.prototype.createEmojiMenu = function(awardMenuUrl, callback) {
-      return $.get(awardMenuUrl, function(response) {
-        $('body').append(response);
-        return callback();
+    } else {
+      $addBtn.addClass('is-loading is-active');
+      this.createEmojiMenu(() => {
+        const $createdMenu = $('.emoji-menu');
+        $addBtn.removeClass('is-loading');
+        this.positionMenu($createdMenu, $addBtn);
+        return setTimeout(() => {
+          $createdMenu.addClass('is-visible');
+          $('.js-emoji-menu-search').focus();
+        }, 200);
       });
-    };
+    }
 
-    AwardsHandler.prototype.positionMenu = function($menu, $addBtn) {
-      var css, position;
-      position = $addBtn.data('position');
-      // The menu could potentially be off-screen or in a hidden overflow element
-      // So we position the element absolute in the body
-      css = {
-        top: ($addBtn.offset().top + $addBtn.outerHeight()) + "px"
-      };
-      if ((position != null) && position === 'right') {
-        css.left = (($addBtn.offset().left - $menu.outerWidth()) + 20) + "px";
-        $menu.addClass('is-aligned-right');
+    $thumbsBtn.toggleClass('disabled', $userAuthored);
+  }
+
+  // Create the emoji menu with the first category of emojis.
+  // Then render the remaining categories of emojis one by one to avoid jank.
+  createEmojiMenu(callback) {
+    if (this.isCreatingEmojiMenu) {
+      return;
+    }
+    this.isCreatingEmojiMenu = true;
+
+    // Render the first category
+    const categoryMap = Emoji.getEmojiCategoryMap();
+    const categoryNameKey = Object.keys(categoryMap)[0];
+    const emojisInCategory = categoryMap[categoryNameKey];
+    const firstCategory = renderCategory(categoryLabelMap[categoryNameKey], emojisInCategory);
+
+    // Render the frequently used
+    const frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
+    let frequentlyUsedCatgegory = '';
+    if (frequentlyUsedEmojis.length > 0) {
+      frequentlyUsedCatgegory = renderCategory('Frequently used', frequentlyUsedEmojis, {
+        menuListClass: 'frequent-emojis',
+      });
+    }
+
+    const emojiMenuMarkup = `
+      <div class="emoji-menu">
+        <input type="text" name="emoji-menu-search" value="" class="js-emoji-menu-search emoji-search search-input form-control" placeholder="Search emoji" />
+
+        <div class="emoji-menu-content">
+          ${frequentlyUsedCatgegory}
+          ${firstCategory}
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', emojiMenuMarkup);
+
+    this.addRemainingEmojiMenuCategories();
+    this.setupSearch();
+    if (callback) {
+      callback();
+    }
+  }
+
+  addRemainingEmojiMenuCategories() {
+    if (this.isAddingRemainingEmojiMenuCategories) {
+      return;
+    }
+    this.isAddingRemainingEmojiMenuCategories = true;
+
+    const categoryMap = Emoji.getEmojiCategoryMap();
+
+    // Avoid the jank and render the remaining categories separately
+    // This will take more time, but makes UI more responsive
+    const menu = document.querySelector('.emoji-menu');
+    const emojiContentElement = menu.querySelector('.emoji-menu-content');
+    const remainingCategories = Object.keys(categoryMap).slice(1);
+    const allCategoriesAddedPromise = remainingCategories.reduce(
+      (promiseChain, categoryNameKey) =>
+        promiseChain.then(() =>
+          new Promise((resolve) => {
+            const emojisInCategory = categoryMap[categoryNameKey];
+            const categoryMarkup = renderCategory(
+              categoryLabelMap[categoryNameKey],
+              emojisInCategory,
+            );
+            requestAnimationFrame(() => {
+              emojiContentElement.insertAdjacentHTML('beforeend', categoryMarkup);
+              resolve();
+            });
+          }),
+      ),
+      Promise.resolve(),
+    );
+
+    allCategoriesAddedPromise.then(() => {
+      // Used for tests
+      // We check for the menu in case it was destroyed in the meantime
+      if (menu) {
+        menu.dispatchEvent(new CustomEvent('build-emoji-menu-finish'));
+      }
+    }).catch((err) => {
+      emojiContentElement.insertAdjacentHTML('beforeend', '<p>We encountered an error while adding the remaining categories</p>');
+      throw new Error(`Error occurred in addRemainingEmojiMenuCategories: ${err.message}`);
+    });
+  }
+
+  positionMenu($menu, $addBtn) {
+    const position = $addBtn.data('position');
+    // The menu could potentially be off-screen or in a hidden overflow element
+    // So we position the element absolute in the body
+    const css = {
+      top: `${$addBtn.offset().top + $addBtn.outerHeight()}px`,
+    };
+    if (position === 'right') {
+      css.left = `${($addBtn.offset().left - $menu.outerWidth()) + 20}px`;
+      $menu.addClass('is-aligned-right');
+    } else {
+      css.left = `${$addBtn.offset().left}px`;
+      $menu.removeClass('is-aligned-right');
+    }
+    return $menu.css(css);
+  }
+
+  addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
+    const normalizedEmoji = Emoji.normalizeEmojiName(emoji);
+    const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+    this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
+      this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
+      return typeof callback === 'function' ? callback() : undefined;
+    });
+    $('.emoji-menu').removeClass('is-visible');
+    $('.js-add-award.is-active').removeClass('is-active');
+  }
+
+  addAwardToEmojiBar(votesBlock, emoji, checkForMutuality) {
+    if (checkForMutuality || checkForMutuality === null) {
+      this.checkMutuality(votesBlock, emoji);
+    }
+    this.addEmojiToFrequentlyUsedList(emoji);
+    const normalizedEmoji = Emoji.normalizeEmojiName(emoji);
+    const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+    if ($emojiButton.length > 0) {
+      if (this.isActive($emojiButton)) {
+        this.decrementCounter($emojiButton, normalizedEmoji);
       } else {
-        css.left = ($addBtn.offset().left) + "px";
-        $menu.removeClass('is-aligned-right');
+        const counter = $emojiButton.find('.js-counter');
+        counter.text(parseInt(counter.text(), 10) + 1);
+        $emojiButton.addClass('active');
+        this.addYouToUserList(votesBlock, normalizedEmoji);
+        this.animateEmoji($emojiButton);
       }
-      return $menu.css(css);
-    };
+    } else {
+      votesBlock.removeClass('hidden');
+      this.createEmoji(votesBlock, normalizedEmoji);
+    }
+  }
 
-    AwardsHandler.prototype.addAward = function(votesBlock, awardUrl, emoji, checkMutuality, callback) {
-      if (checkMutuality == null) {
-        checkMutuality = true;
+  getVotesBlock() {
+    const currentBlock = $('.js-awards-block.current');
+    let resultantVotesBlock = currentBlock;
+    if (currentBlock.length === 0) {
+      resultantVotesBlock = $('.js-awards-block').eq(0);
+    }
+
+    return resultantVotesBlock;
+  }
+
+  getAwardUrl() {
+    return this.getVotesBlock().data('award-url');
+  }
+
+  checkMutuality(votesBlock, emoji) {
+    const awardUrl = this.getAwardUrl();
+    if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
+      const mutualVote = emoji === 'thumbsup' ? 'thumbsdown' : 'thumbsup';
+      const $emojiButton = votesBlock.find(`[data-name="${mutualVote}"]`).parent();
+      const isAlreadyVoted = $emojiButton.hasClass('active');
+      if (isAlreadyVoted) {
+        this.addAward(votesBlock, awardUrl, mutualVote, false);
       }
-      emoji = this.normilizeEmojiName(emoji);
-      this.postEmoji(awardUrl, emoji, (function(_this) {
-        return function() {
-          _this.addAwardToEmojiBar(votesBlock, emoji, checkMutuality);
-          return typeof callback === "function" ? callback() : void 0;
-        };
-      })(this));
-      return $('.emoji-menu').removeClass('is-visible');
-    };
+    }
+  }
 
-    AwardsHandler.prototype.addAwardToEmojiBar = function(votesBlock, emoji, checkForMutuality) {
-      var $emojiButton, counter;
-      if (checkForMutuality == null) {
-        checkForMutuality = true;
-      }
-      if (checkForMutuality) {
-        this.checkMutuality(votesBlock, emoji);
-      }
-      this.addEmojiToFrequentlyUsedList(emoji);
-      emoji = this.normilizeEmojiName(emoji);
-      $emojiButton = this.findEmojiIcon(votesBlock, emoji).parent();
-      if ($emojiButton.length > 0) {
-        if (this.isActive($emojiButton)) {
-          return this.decrementCounter($emojiButton, emoji);
-        } else {
-          counter = $emojiButton.find('.js-counter');
-          counter.text(parseInt(counter.text()) + 1);
-          $emojiButton.addClass('active');
-          this.addYouToUserList(votesBlock, emoji);
-          return this.animateEmoji($emojiButton);
-        }
-      } else {
-        votesBlock.removeClass('hidden');
-        return this.createEmoji(votesBlock, emoji);
-      }
-    };
+  isActive($emojiButton) {
+    return $emojiButton.hasClass('active');
+  }
 
-    AwardsHandler.prototype.getVotesBlock = function() {
-      var currentBlock;
-      currentBlock = $('.js-awards-block.current');
-      if (currentBlock.length) {
-        return currentBlock;
-      } else {
-        return $('.js-awards-block').eq(0);
-      }
-    };
+  isUserAuthored($button) {
+    return $button.hasClass('js-user-authored');
+  }
 
-    AwardsHandler.prototype.getAwardUrl = function() {
-      return this.getVotesBlock().data('award-url');
-    };
-
-    AwardsHandler.prototype.checkMutuality = function(votesBlock, emoji) {
-      var $emojiButton, awardUrl, isAlreadyVoted, mutualVote;
-      awardUrl = this.getAwardUrl();
-      if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
-        mutualVote = emoji === 'thumbsup' ? 'thumbsdown' : 'thumbsup';
-        $emojiButton = votesBlock.find("[data-emoji=" + mutualVote + "]").parent();
-        isAlreadyVoted = $emojiButton.hasClass('active');
-        if (isAlreadyVoted) {
-          this.addAward(votesBlock, awardUrl, mutualVote, false);
-        }
-      }
-    };
-
-    AwardsHandler.prototype.isActive = function($emojiButton) {
-      return $emojiButton.hasClass('active');
-    };
-
-    AwardsHandler.prototype.decrementCounter = function($emojiButton, emoji) {
-      var counter, counterNumber;
-      counter = $('.js-counter', $emojiButton);
-      counterNumber = parseInt(counter.text(), 10);
-      if (counterNumber > 1) {
-        counter.text(counterNumber - 1);
-        this.removeYouFromUserList($emojiButton, emoji);
-      } else if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
-        $emojiButton.tooltip('destroy');
-        counter.text('0');
-        this.removeYouFromUserList($emojiButton, emoji);
-        if ($emojiButton.parents('.note').length) {
-          this.removeEmoji($emojiButton);
-        }
-      } else {
+  decrementCounter($emojiButton, emoji) {
+    const counter = $('.js-counter', $emojiButton);
+    const counterNumber = parseInt(counter.text(), 10);
+    if (counterNumber > 1) {
+      counter.text(counterNumber - 1);
+      this.removeYouFromUserList($emojiButton);
+    } else if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
+      $emojiButton.tooltip('destroy');
+      counter.text('0');
+      this.removeYouFromUserList($emojiButton);
+      if ($emojiButton.parents('.note').length) {
         this.removeEmoji($emojiButton);
       }
-      return $emojiButton.removeClass('active');
-    };
+    } else {
+      this.removeEmoji($emojiButton);
+    }
+    return $emojiButton.removeClass('active');
+  }
 
-    AwardsHandler.prototype.removeEmoji = function($emojiButton) {
-      var $votesBlock;
-      $emojiButton.tooltip('destroy');
-      $emojiButton.remove();
-      $votesBlock = this.getVotesBlock();
-      if ($votesBlock.find('.js-emoji-btn').length === 0) {
-        return $votesBlock.addClass('hidden');
-      }
-    };
+  removeEmoji($emojiButton) {
+    $emojiButton.tooltip('destroy');
+    $emojiButton.remove();
+    const $votesBlock = this.getVotesBlock();
+    if ($votesBlock.find('.js-emoji-btn').length === 0) {
+      $votesBlock.addClass('hidden');
+    }
+  }
 
-    AwardsHandler.prototype.getAwardTooltip = function($awardBlock) {
-      return $awardBlock.attr('data-original-title') || $awardBlock.attr('data-title') || '';
-    };
+  getAwardTooltip($awardBlock) {
+    return $awardBlock.attr('data-original-title') || $awardBlock.attr('data-title') || '';
+  }
 
-    AwardsHandler.prototype.toSentence = function(list) {
-      if(list.length <= 2){
-        return list.join(' and ');
-      }
-      else{
-        return list.slice(0, -1).join(', ') + ', and ' + list[list.length - 1];
-      }
-    };
+  toSentence(list) {
+    let sentence;
+    if (list.length <= 2) {
+      sentence = list.join(' and ');
+    } else {
+      sentence = `${list.slice(0, -1).join(', ')}, and ${list[list.length - 1]}`;
+    }
 
-    AwardsHandler.prototype.removeYouFromUserList = function($emojiButton, emoji) {
-      var authors, awardBlock, newAuthors, originalTitle;
-      awardBlock = $emojiButton;
-      originalTitle = this.getAwardTooltip(awardBlock);
-      authors = originalTitle.split(FROM_SENTENCE_REGEX);
-      authors.splice(authors.indexOf('You'), 1);
-      return awardBlock
-        .closest('.js-emoji-btn')
-        .removeData('title')
-        .removeAttr('data-title')
-        .removeAttr('data-original-title')
-        .attr('title', this.toSentence(authors))
-        .tooltip('fixTitle');
-    };
+    return sentence;
+  }
 
-    AwardsHandler.prototype.addYouToUserList = function(votesBlock, emoji) {
-      var awardBlock, origTitle, users;
-      awardBlock = this.findEmojiIcon(votesBlock, emoji).parent();
-      origTitle = this.getAwardTooltip(awardBlock);
-      users = [];
-      if (origTitle) {
-        users = origTitle.trim().split(FROM_SENTENCE_REGEX);
-      }
-      users.unshift('You');
-      return awardBlock
-        .attr('title', this.toSentence(users))
-        .tooltip('fixTitle');
-    };
+  removeYouFromUserList($emojiButton) {
+    const awardBlock = $emojiButton;
+    const originalTitle = this.getAwardTooltip(awardBlock);
+    const authors = originalTitle.split(FROM_SENTENCE_REGEX);
+    authors.splice(authors.indexOf('You'), 1);
+    return awardBlock
+      .closest('.js-emoji-btn')
+      .removeData('title')
+      .removeAttr('data-title')
+      .removeAttr('data-original-title')
+      .attr('title', this.toSentence(authors))
+      .tooltip('fixTitle');
+  }
 
-    AwardsHandler.prototype.createEmoji_ = function(votesBlock, emoji) {
-      var $emojiButton, buttonHtml, emojiCssClass;
-      emojiCssClass = this.resolveNameToCssClass(emoji);
-      buttonHtml = "<button class='btn award-control js-emoji-btn has-tooltip active' title='You' data-placement='bottom'> <div class='icon emoji-icon " + emojiCssClass + "' data-emoji='" + emoji + "'></div> <span class='award-control-text js-counter'>1</span> </button>";
-      $emojiButton = $(buttonHtml);
-      $emojiButton.insertBefore(votesBlock.find('.js-award-holder')).find('.emoji-icon').data('emoji', emoji);
-      this.animateEmoji($emojiButton);
-      $('.award-control').tooltip();
-      return votesBlock.removeClass('current');
-    };
+  addYouToUserList(votesBlock, emoji) {
+    const awardBlock = this.findEmojiIcon(votesBlock, emoji).parent();
+    const origTitle = this.getAwardTooltip(awardBlock);
+    let users = [];
+    if (origTitle) {
+      users = origTitle.trim().split(FROM_SENTENCE_REGEX);
+    }
+    users.unshift('You');
+    return awardBlock
+      .attr('title', this.toSentence(users))
+      .tooltip('fixTitle');
+  }
 
-    AwardsHandler.prototype.animateEmoji = function($emoji) {
-      var className = 'pulse animated once short';
-      $emoji.addClass(className);
+  createAwardButtonForVotesBlock(votesBlock, emojiName) {
+    const buttonHtml = `
+      <button class="btn award-control js-emoji-btn has-tooltip active" title="You" data-placement="bottom">
+        ${Emoji.glEmojiTag(emojiName)}
+        <span class="award-control-text js-counter">1</span>
+      </button>
+    `;
+    const $emojiButton = $(buttonHtml);
+    $emojiButton.insertBefore(votesBlock.find('.js-award-holder')).find('.emoji-icon').data('name', emojiName);
+    this.animateEmoji($emojiButton);
+    $('.award-control').tooltip();
+    votesBlock.removeClass('current');
+  }
 
-      $emoji.on('webkitAnimationEnd animationEnd', function() {
-        $(this).removeClass(className);
-      });
-    };
+  animateEmoji($emoji) {
+    const className = 'pulse animated once short';
+    $emoji.addClass(className);
 
-    AwardsHandler.prototype.createEmoji = function(votesBlock, emoji) {
-      if ($('.emoji-menu').length) {
-        return this.createEmoji_(votesBlock, emoji);
-      }
-      return this.createEmojiMenu(this.getAwardMenuUrl(), (function(_this) {
-        return function() {
-          return _this.createEmoji_(votesBlock, emoji);
-        };
-      })(this));
-    };
+    this.registerEventListener('on', $emoji, animationEndEventString, (e) => {
+      $(e.currentTarget).removeClass(className);
+    });
+  }
 
-    AwardsHandler.prototype.getAwardMenuUrl = function() {
-      return gon.award_menu_url;
-    };
+  createEmoji(votesBlock, emoji) {
+    if ($('.emoji-menu').length) {
+      this.createAwardButtonForVotesBlock(votesBlock, emoji);
+    }
+    this.createEmojiMenu(() => {
+      this.createAwardButtonForVotesBlock(votesBlock, emoji);
+    });
+  }
 
-    AwardsHandler.prototype.resolveNameToCssClass = function(emoji) {
-      var emojiIcon, unicodeName;
-      emojiIcon = $(".emoji-menu-content [data-emoji='" + emoji + "']");
-      if (emojiIcon.length > 0) {
-        unicodeName = emojiIcon.data('unicode-name');
-      } else {
-        // Find by alias
-        unicodeName = $(".emoji-menu-content [data-aliases*=':" + emoji + ":']").data('unicode-name');
-      }
-      return "emoji-" + unicodeName;
-    };
-
-    AwardsHandler.prototype.postEmoji = function(awardUrl, emoji, callback) {
-      return $.post(awardUrl, {
-        name: emoji
-      }, function(data) {
+  postEmoji($emojiButton, awardUrl, emoji, callback) {
+    if (this.isUserAuthored($emojiButton)) {
+      this.userAuthored($emojiButton);
+    } else {
+      $.post(awardUrl, {
+        name: emoji,
+      }, (data) => {
         if (data.ok) {
-          return callback();
+          callback();
         }
-      });
-    };
+      }).fail(() => new Flash('Something went wrong on our end.'));
+    }
+  }
 
-    AwardsHandler.prototype.findEmojiIcon = function(votesBlock, emoji) {
-      return votesBlock.find(".js-emoji-btn [data-emoji='" + emoji + "']");
-    };
+  findEmojiIcon(votesBlock, emoji) {
+    return votesBlock.find(`.js-emoji-btn [data-name="${emoji}"]`);
+  }
 
-    AwardsHandler.prototype.scrollToAwards = function() {
-      var options;
-      options = {
-        scrollTop: $('.awards').offset().top - 110
-      };
-      return $('body, html').animate(options, 200);
-    };
+  userAuthored($emojiButton) {
+    const oldTitle = this.getAwardTooltip($emojiButton);
+    const newTitle = 'You cannot vote on your own issue, MR and note';
+    gl.utils.updateTooltipTitle($emojiButton, newTitle).tooltip('show');
+    // Restore tooltip back to award list
+    return setTimeout(() => {
+      $emojiButton.tooltip('hide');
+      gl.utils.updateTooltipTitle($emojiButton, oldTitle);
+    }, 2800);
+  }
 
-    AwardsHandler.prototype.normilizeEmojiName = function(emoji) {
-      return this.aliases[emoji] || emoji;
+  scrollToAwards() {
+    const options = {
+      scrollTop: $('.awards').offset().top - 110,
     };
+    return $('body, html').animate(options, 200);
+  }
 
-    AwardsHandler.prototype.addEmojiToFrequentlyUsedList = function(emoji) {
-      var frequentlyUsedEmojis;
-      frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
-      frequentlyUsedEmojis.push(emoji);
-      return $.cookie('frequently_used_emojis', frequentlyUsedEmojis.join(','), {
-        path: gon.relative_url_root || '/',
-        expires: 365
-      });
-    };
+  addEmojiToFrequentlyUsedList(emoji) {
+    if (Emoji.isEmojiNameValid(emoji)) {
+      this.frequentlyUsedEmojis = _.uniq(this.getFrequentlyUsedEmojis().concat(emoji));
+      Cookies.set('frequently_used_emojis', this.frequentlyUsedEmojis.join(','), { expires: 365 });
+    }
+  }
 
-    AwardsHandler.prototype.getFrequentlyUsedEmojis = function() {
-      var frequentlyUsedEmojis;
-      frequentlyUsedEmojis = ($.cookie('frequently_used_emojis') || '').split(',');
-      return _.compact(_.uniq(frequentlyUsedEmojis));
-    };
+  getFrequentlyUsedEmojis() {
+    return this.frequentlyUsedEmojis || (() => {
+      const frequentlyUsedEmojis = _.uniq((Cookies.get('frequently_used_emojis') || '').split(','));
+      this.frequentlyUsedEmojis = frequentlyUsedEmojis.filter(
+        inputName => Emoji.isEmojiNameValid(inputName),
+      );
 
-    AwardsHandler.prototype.renderFrequentlyUsedBlock = function() {
-      var emoji, frequentlyUsedEmojis, i, len, ul;
-      if ($.cookie('frequently_used_emojis')) {
-        frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
-        ul = $("<ul class='clearfix emoji-menu-list frequent-emojis'>");
-        for (i = 0, len = frequentlyUsedEmojis.length; i < len; i++) {
-          emoji = frequentlyUsedEmojis[i];
-          $(".emoji-menu-content [data-emoji='" + emoji + "']").closest('li').clone().appendTo(ul);
-        }
-        $('.emoji-menu-content').prepend(ul).prepend($('<h5>').text('Frequently used'));
+      return this.frequentlyUsedEmojis;
+    })();
+  }
+
+  setupSearch() {
+    const $search = $('.js-emoji-menu-search');
+
+    this.registerEventListener('on', $search, 'input', (e) => {
+      const term = $(e.target).val().trim();
+      this.searchEmojis(term);
+    });
+
+    const $menu = $('.emoji-menu');
+    this.registerEventListener('on', $menu, transitionEndEventString, (e) => {
+      if (e.target === e.currentTarget) {
+        // Clear the search
+        this.searchEmojis('');
       }
-      return this.frequentEmojiBlockRendered = true;
-    };
+    });
+  }
 
-    AwardsHandler.prototype.setupSearch = function() {
-      return $('input.emoji-search').on('keyup', (function(_this) {
-        return function(ev) {
-          var found_emojis, h5, term, ul;
-          term = $(ev.target).val();
-          // Clean previous search results
-          $('ul.emoji-menu-search, h5.emoji-search').remove();
-          if (term) {
-            // Generate a search result block
-            h5 = $('<h5 class="emoji-search" />').text('Search results');
-            found_emojis = _this.searchEmojis(term).show();
-            ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(found_emojis);
-            $('.emoji-menu-content ul, .emoji-menu-content h5').hide();
-            return $('.emoji-menu-content').append(h5).append(ul);
-          } else {
-            return $('.emoji-menu-content').children().show();
-          }
-        };
-      })(this));
-    };
+  searchEmojis(term) {
+    const $search = $('.js-emoji-menu-search');
+    $search.val(term);
 
-    AwardsHandler.prototype.searchEmojis = function(term) {
-      return $(".emoji-menu-list:not(.frequent-emojis) [data-emoji*='" + term + "']").closest('li').clone();
-    };
+    // Clean previous search results
+    $('ul.emoji-menu-search, h5.emoji-search-title').remove();
+    if (term.length > 0) {
+      // Generate a search result block
+      const h5 = $('<h5 class="emoji-search-title"/>').text('Search results');
+      const foundEmojis = this.findMatchingEmojiElements(term).show();
+      const ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(foundEmojis);
+      $('.emoji-menu-content ul, .emoji-menu-content h5').hide();
+      $('.emoji-menu-content').append(h5).append(ul);
+    } else {
+      $('.emoji-menu-content').children().show();
+    }
+  }
 
-    return AwardsHandler;
+  findMatchingEmojiElements(query) {
+    const emojiMatches = Emoji.filterEmojiNamesByAlias(query);
+    const $emojiElements = $('.emoji-menu-list:not(.frequent-emojis) [data-name]');
+    const $matchingElements = $emojiElements
+      .filter((i, elm) => emojiMatches.indexOf(elm.dataset.name) >= 0);
+    return $matchingElements.closest('li').clone();
+  }
 
-  })();
-
-}).call(this);
+  destroy() {
+    this.eventListeners.forEach((entry) => {
+      entry.element.off.call(entry.element, ...entry.args);
+    });
+    $('.emoji-menu').remove();
+  }
+}

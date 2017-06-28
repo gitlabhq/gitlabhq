@@ -2,11 +2,11 @@ require 'spec_helper'
 
 feature 'Project', feature: true do
   describe 'description' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:path)    { namespace_project_path(project.namespace, project) }
 
     before do
-      login_as(:admin)
+      gitlab_sign_in(:admin)
     end
 
     it 'parses Markdown' do
@@ -18,7 +18,7 @@ feature 'Project', feature: true do
     it 'passes through html-pipeline' do
       project.update_attribute(:description, 'This project is the :poop:')
       visit path
-      expect(page).to have_css('.project-home-desc > p > img')
+      expect(page).to have_css('.project-home-desc > p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do
@@ -36,10 +36,10 @@ feature 'Project', feature: true do
 
   describe 'remove forked relationship', js: true do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:empty_project, namespace: user.namespace) }
 
     before do
-      login_with user
+      gitlab_sign_in user
       create(:forked_project_link, forked_to_project: project)
       visit edit_namespace_project_path(project.namespace, project)
     end
@@ -56,18 +56,18 @@ feature 'Project', feature: true do
   end
 
   describe 'removal', js: true do
-    let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace, name: 'project1') }
+    let(:user)    { create(:user, username: 'test', name: 'test') }
+    let(:project) { create(:empty_project, namespace: user.namespace, name: 'project1') }
 
     before do
-      login_with(user)
+      gitlab_sign_in(user)
       project.team << [user, :master]
       visit edit_namespace_project_path(project.namespace, project)
     end
 
     it 'removes a project' do
       expect { remove_with_confirm('Remove project', project.path) }.to change {Project.count}.by(-1)
-      expect(page).to have_content "Project 'project1' will be deleted."
+      expect(page).to have_content "Project 'test / project1' will be deleted."
       expect(Project.all.count).to be_zero
       expect(project.issues).to be_empty
       expect(project.merge_requests).to be_empty
@@ -75,13 +75,11 @@ feature 'Project', feature: true do
   end
 
   describe 'project title' do
-    include WaitForAjax
-
     let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:empty_project, namespace: user.namespace) }
 
     before do
-      login_with(user)
+      gitlab_sign_in(user)
       project.add_user(user, Gitlab::Access::MASTER)
       visit namespace_project_path(project.namespace, project)
     end
@@ -94,13 +92,13 @@ feature 'Project', feature: true do
 
   describe 'project title' do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
-    let(:project2) { create(:project, namespace: user.namespace, path: 'test') }
+    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project2) { create(:empty_project, namespace: user.namespace, path: 'test') }
     let(:issue) { create(:issue, project: project) }
 
     context 'on issues page', js: true do
       before do
-        login_with(user)
+        gitlab_sign_in(user)
         project.add_user(user, Gitlab::Access::MASTER)
         project2.add_user(user, Gitlab::Access::MASTER)
         visit namespace_project_issue_path(project.namespace, project, issue)
@@ -125,7 +123,7 @@ feature 'Project', feature: true do
 
     before do
       project.team << [user, :master]
-      login_as user
+      gitlab_sign_in user
       visit namespace_project_path(project.namespace, project)
     end
 

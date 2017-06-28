@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Group requester cannot request access to project', feature: true do
+feature 'Projects > Members > Group requester cannot request access to project', feature: true, js: true do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
-  let(:group) { create(:group, :public) }
-  let(:project) { create(:project, :public, namespace: group) }
+  let(:group) { create(:group, :public, :access_requestable) }
+  let(:project) { create(:project, :public, :access_requestable, namespace: group) }
 
   background do
     group.add_owner(owner)
-    login_as(user)
+    gitlab_sign_in(user)
     visit group_path(group)
     perform_enqueued_jobs { click_link 'Request Access' }
     visit namespace_project_path(project.namespace, project)

@@ -1,12 +1,15 @@
 require 'mime/types'
 
 module API
-  # Projects API
   class Repositories < Grape::API
-    before { authenticate! }
+    include PaginationParams
+
     before { authorize! :download_code, user_project }
 
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
@@ -14,85 +17,75 @@ module API
           end
           not_found!
         end
+
+        def assign_blob_vars!
+          authorize! :download_code, user_project
+
+          @repo = user_project.repository
+
+          begin
+            @blob = Gitlab::Git::Blob.raw(@repo, params[:sha])
+            @blob.load_all_data!(@repo)
+          rescue
+            not_found! 'Blob'
+          end
+
+          not_found! 'Blob' unless @blob
+        end
       end
 
-      # Get a project repository tree
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
-      # Example Request:
-      #   GET /projects/:id/repository/tree
+      desc 'Get a project repository tree' do
+        success Entities::RepoTreeObject
+      end
+      params do
+        optional :ref, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
+        optional :path, type: String, desc: 'The path of the tree'
+        optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
+        use :pagination
+      end
       get ':id/repository/tree' do
-        ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
+        ref = params[:ref] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
 
         commit = user_project.commit(ref)
         not_found!('Tree') unless commit
 
-        tree = user_project.repository.tree(commit.id, path)
-
-        present tree.sorted_entries, with: Entities::RepoTreeObject
+        tree = user_project.repository.tree(commit.id, path, recursive: params[:recursive])
+        entries = ::Kaminari.paginate_array(tree.sorted_entries)
+        present paginate(entries), with: Entities::RepoTreeObject
       end
 
-      # Get a raw file contents
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The commit or branch name
-      #   filepath (required) - The path to the file to display
-      # Example Request:
-      #   GET /projects/:id/repository/blobs/:sha
-      get [ ":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob" ] do
-        required_attributes! [:filepath]
+      desc 'Get raw blob contents from the repository'
+      params do
+        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+      end
+      get ':id/repository/blobs/:sha/raw' do
+        assign_blob_vars!
 
-        ref = params[:sha]
-
-        repo = user_project.repository
-
-        commit = repo.commit(ref)
-        not_found! "Commit" unless commit
-
-        blob = Gitlab::Git::Blob.find(repo, commit.id, params[:filepath])
-        not_found! "File" unless blob
-
-        send_git_blob repo, blob
+        send_git_blob @repo, @blob
       end
 
-      # Get a raw blob contents by blob sha
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The blob's sha
-      # Example Request:
-      #   GET /projects/:id/repository/raw_blobs/:sha
-      get ':id/repository/raw_blobs/:sha' do
-        ref = params[:sha]
+      desc 'Get a blob from the repository'
+      params do
+        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+      end
+      get ':id/repository/blobs/:sha' do
+        assign_blob_vars!
 
-        repo = user_project.repository
-
-        begin
-          blob = Gitlab::Git::Blob.raw(repo, ref)
-        rescue
-          not_found! 'Blob'
-        end
-
-        not_found! 'Blob' unless blob
-
-        send_git_blob repo, blob
+        {
+          size: @blob.size,
+          encoding: "base64",
+          content: Base64.strict_encode64(@blob.data),
+          sha: @blob.id
+        }
       end
 
-      # Get a an archive of the repository
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (optional) - the commit sha to download defaults to the tip of the default branch
-      # Example Request:
-      #   GET /projects/:id/repository/archive
-      get ':id/repository/archive',
-          requirements: { format: Gitlab::Regex.archive_formats_regex } do
-        authorize! :download_code, user_project
-
+      desc 'Get an archive of the repository'
+      params do
+        optional :sha, type: String, desc: 'The commit sha of the archive to be downloaded'
+        optional :format, type: String, desc: 'The archive format'
+      end
+      get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         begin
           send_git_archive user_project.repository, ref: params[:sha], format: params[:format]
         rescue
@@ -100,33 +93,28 @@ module API
         end
       end
 
-      # Compare two branches, tags or commits
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   from (required) - the commit sha or branch name
-      #   to (required) - the commit sha or branch name
-      # Example Request:
-      #   GET /projects/:id/repository/compare?from=master&to=feature
+      desc 'Compare two branches, tags, or commits' do
+        success Entities::Compare
+      end
+      params do
+        requires :from, type: String, desc: 'The commit, branch name, or tag name to start comparison'
+        requires :to, type: String, desc: 'The commit, branch name, or tag name to stop comparison'
+      end
       get ':id/repository/compare' do
-        authorize! :download_code, user_project
-        required_attributes! [:from, :to]
         compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to])
         present compare, with: Entities::Compare
       end
 
-      # Get repository contributors
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/repository/contributors
+      desc 'Get repository contributors' do
+        success Entities::Contributor
+      end
+      params do
+        use :pagination
+      end
       get ':id/repository/contributors' do
-        authorize! :download_code, user_project
-
         begin
-          present user_project.repository.contributors,
-                  with: Entities::Contributor
+          contributors = ::Kaminari.paginate_array(user_project.repository.contributors)
+          present paginate(contributors), with: Entities::Contributor
         rescue
           not_found!
         end

@@ -5,11 +5,7 @@ module Gitlab
     def initialize(current_user, project, query, repository_ref = nil)
       @current_user = current_user
       @project = project
-      @repository_ref = if repository_ref.present?
-                          repository_ref
-                        else
-                          nil
-                        end
+      @repository_ref = repository_ref.presence || project.default_branch
       @query = query
     end
 
@@ -44,40 +40,95 @@ module Gitlab
       @commits_count ||= commits.count
     end
 
+    def self.parse_search_result(result)
+      ref = nil
+      filename = nil
+      basename = nil
+      startline = 0
+
+      result.each_line.each_with_index do |line, index|
+        if line =~ /^.*:.*:\d+:/
+          ref, filename, startline = line.split(':')
+          startline = startline.to_i - index
+          extname = Regexp.escape(File.extname(filename))
+          basename = filename.sub(/#{extname}$/, '')
+          break
+        end
+      end
+
+      data = ""
+
+      result.each_line do |line|
+        data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
+      end
+
+      FoundBlob.new(
+        filename: filename,
+        basename: basename,
+        ref: ref,
+        startline: startline,
+        data: data
+      )
+    end
+
+    def single_commit_result?
+      commits_count == 1 && total_result_count == 1
+    end
+
+    def total_result_count
+      issues_count + merge_requests_count + milestones_count + notes_count + blobs_count + wiki_blobs_count + commits_count
+    end
+
     private
 
     def blobs
-      if project.empty_repo? || query.blank?
-        []
-      else
-        project.repository.search_files(query, repository_ref)
-      end
+      return [] unless Ability.allowed?(@current_user, :download_code, @project)
+
+      @blobs ||= Gitlab::FileFinder.new(project, repository_ref).find(query)
     end
 
     def wiki_blobs
-      if project.wiki_enabled? && query.present?
-        project_wiki = ProjectWiki.new(project)
+      return [] unless Ability.allowed?(@current_user, :read_wiki, @project)
 
-        unless project_wiki.empty?
-          project_wiki.search_files(query)
+      @wiki_blobs ||= begin
+        if project.wiki_enabled? && query.present?
+          project_wiki = ProjectWiki.new(project)
+
+          unless project_wiki.empty?
+            project_wiki.search_files(query)
+          else
+            []
+          end
         else
           []
         end
-      else
-        []
       end
     end
 
     def notes
-      project.notes.user.search(query, as_user: @current_user).order('updated_at DESC')
+      @notes ||= NotesFinder.new(project, @current_user, search: query).execute.user.order('updated_at DESC')
     end
 
     def commits
-      if project.empty_repo? || query.blank?
-        []
-      else
-        project.repository.find_commits_by_message(query).compact
-      end
+      @commits ||= find_commits(query)
+    end
+
+    def find_commits(query)
+      return [] unless Ability.allowed?(@current_user, :download_code, @project)
+
+      commits = find_commits_by_message(query)
+      commit_by_sha = find_commit_by_sha(query)
+      commits |= [commit_by_sha] if commit_by_sha
+      commits
+    end
+
+    def find_commits_by_message(query)
+      project.repository.find_commits_by_message(query)
+    end
+
+    def find_commit_by_sha(query)
+      key = query.strip
+      project.repository.commit(key) if Commit.valid_hash?(key)
     end
 
     def project_ids_relation

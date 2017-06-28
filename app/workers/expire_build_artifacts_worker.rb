@@ -1,5 +1,6 @@
 class ExpireBuildArtifactsWorker
   include Sidekiq::Worker
+  include CronjobQueue
 
   def perform
     Rails.logger.info 'Scheduling removal of build artifacts'

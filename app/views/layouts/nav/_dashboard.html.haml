@@ -1,15 +1,18 @@
-%ul.nav.nav-sidebar
+%ul
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: "#{project_tab_class} home"}) do
     = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
+      .shortcut-mappings
+        .key
+          = icon('arrow-up', 'aria-label' => 'hidden')
+          P
       %span
         Projects
-  = nav_link(controller: :todos) do
-    = link_to dashboard_todos_path, title: 'Todos' do
-      %span
-        Todos
-        %span.count= number_with_delimiter(todos_pending_count)
   = nav_link(path: 'dashboard#activity') do
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
+      .shortcut-mappings
+        .key
+          = icon('arrow-up', 'aria-label' => 'hidden')
+          A
       %span
         Activity
   - if koding_enabled?
@@ -18,32 +21,47 @@
         %span
           Koding
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
-    = link_to dashboard_groups_path, title: 'Groups' do
+    = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
+      .shortcut-mappings
+        .key
+          = icon('arrow-up', 'aria-label' => 'hidden')
+          G
       %span
         Groups
   = nav_link(controller: 'dashboard/milestones') do
-    = link_to dashboard_milestones_path, title: 'Milestones' do
+    = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
+      .shortcut-mappings
+        .key
+          = icon('arrow-up', 'aria-label' => 'hidden')
+          L
       %span
         Milestones
   = nav_link(path: 'dashboard#issues') do
     = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
+      .shortcut-mappings
+        .key
+          = icon('arrow-up', 'aria-label' => 'hidden')
+          I
       %span
         Issues
-        %span.count= number_with_delimiter(current_user.assigned_issues.opened.count)
+      .badge= number_with_delimiter(assigned_issuables_count(:issues))
   = nav_link(path: 'dashboard#merge_requests') do
     = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
+      .shortcut-mappings
+        .key
+          = icon('arrow-up', 'aria-label' => 'hidden')
+          M
       %span
         Merge Requests
-        %span.count= number_with_delimiter(current_user.assigned_merge_requests.opened.count)
+      .badge= number_with_delimiter(assigned_issuables_count(:merge_requests))
   = nav_link(controller: 'dashboard/snippets') do
-    = link_to dashboard_snippets_path, title: 'Snippets' do
+    = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
+      .shortcut-mappings
+        .key
+          = icon('arrow-up', 'aria-label' => 'hidden')
+          S
       %span
         Snippets
-  = nav_link(controller: :help) do
-    = link_to help_path, title: 'Help' do
-      %span
-        Help
-  = nav_link(html_options: {class: profile_tab_class}) do
-    = link_to profile_path, title: 'Profile Settings', data: {placement: 'bottom'} do
-      %span
-        Profile Settings
+  %li.divider
+  %li
+    = link_to "Help", help_path, title: 'About GitLab CE', class: 'about-gitlab'

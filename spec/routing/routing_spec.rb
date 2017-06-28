@@ -9,33 +9,33 @@ require 'spec_helper'
 # user_calendar_activities   GET    /u/:username/calendar_activities(.:format)
 describe UsersController, "routing" do
   it "to #show" do
-    allow(User).to receive(:find_by).and_return(true)
+    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
 
     expect(get("/User")).to route_to('users#show', username: 'User')
   end
 
   it "to #groups" do
-    expect(get("/u/User/groups")).to route_to('users#groups', username: 'User')
+    expect(get("/users/User/groups")).to route_to('users#groups', username: 'User')
   end
 
   it "to #projects" do
-    expect(get("/u/User/projects")).to route_to('users#projects', username: 'User')
+    expect(get("/users/User/projects")).to route_to('users#projects', username: 'User')
   end
 
   it "to #contributed" do
-    expect(get("/u/User/contributed")).to route_to('users#contributed', username: 'User')
+    expect(get("/users/User/contributed")).to route_to('users#contributed', username: 'User')
   end
 
   it "to #snippets" do
-    expect(get("/u/User/snippets")).to route_to('users#snippets', username: 'User')
+    expect(get("/users/User/snippets")).to route_to('users#snippets', username: 'User')
   end
 
   it "to #calendar" do
-    expect(get("/u/User/calendar")).to route_to('users#calendar', username: 'User')
+    expect(get("/users/User/calendar")).to route_to('users#calendar', username: 'User')
   end
 
   it "to #calendar_activities" do
-    expect(get("/u/User/calendar_activities")).to route_to('users#calendar_activities', username: 'User')
+    expect(get("/users/User/calendar_activities")).to route_to('users#calendar_activities', username: 'User')
   end
 end
 
@@ -151,6 +151,10 @@ describe ProfilesController, "routing" do
     expect(put("/profile/reset_private_token")).to route_to('profiles#reset_private_token')
   end
 
+  it "to #reset_rss_token" do
+    expect(put("/profile/reset_rss_token")).to route_to('profiles#reset_rss_token')
+  end
+
   it "to #show" do
     expect(get("/profile")).to route_to('profiles#show')
   end
@@ -195,6 +199,8 @@ describe Profiles::KeysController, "routing" do
 
   # get all the ssh-keys of a user
   it "to #get_keys" do
+    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+
     expect(get("/foo.keys")).to route_to('profiles/keys#get_keys', username: 'foo')
   end
 end
@@ -247,26 +253,69 @@ describe RootController, 'routing' do
   end
 end
 
-#        new_user_session GET    /users/sign_in(.:format)               devise/sessions#new
-#            user_session POST   /users/sign_in(.:format)               devise/sessions#create
-#    destroy_user_session DELETE /users/sign_out(.:format)              devise/sessions#destroy
-# user_omniauth_authorize        /users/auth/:provider(.:format)        omniauth_callbacks#passthru
-#  user_omniauth_callback        /users/auth/:action/callback(.:format) omniauth_callbacks#(?-mix:(?!))
-#           user_password POST   /users/password(.:format)              devise/passwords#create
-#       new_user_password GET    /users/password/new(.:format)          devise/passwords#new
-#      edit_user_password GET    /users/password/edit(.:format)         devise/passwords#edit
-#                         PUT    /users/password(.:format)              devise/passwords#update
 describe "Authentication", "routing" do
-  # pending
+  it "GET /users/sign_in" do
+    expect(get("/users/sign_in")).to route_to('sessions#new')
+  end
+
+  it "POST /users/sign_in" do
+    expect(post("/users/sign_in")).to route_to('sessions#create')
+  end
+
+  it "DELETE /users/sign_out" do
+    expect(delete("/users/sign_out")).to route_to('sessions#destroy')
+  end
+
+  it "POST /users/password" do
+    expect(post("/users/password")).to route_to('passwords#create')
+  end
+
+  it "GET /users/password/new" do
+    expect(get("/users/password/new")).to route_to('passwords#new')
+  end
+
+  it "GET /users/password/edit" do
+    expect(get("/users/password/edit")).to route_to('passwords#edit')
+  end
+
+  it "PUT /users/password" do
+    expect(put("/users/password")).to route_to('passwords#update')
+  end
 end
 
 describe "Groups", "routing" do
+  let(:name) { 'complex.group-namegit' }
+
+  before do
+    allow_any_instance_of(GroupUrlConstrainer).to receive(:matches?).and_return(true)
+  end
+
   it "to #show" do
-    expect(get("/groups/1")).to route_to('groups#show', id: '1')
+    expect(get("/groups/#{name}")).to route_to('groups#show', id: name)
+  end
+
+  it "also supports nested groups" do
+    expect(get("/#{name}/#{name}")).to route_to('groups#show', id: "#{name}/#{name}")
   end
 
   it "also display group#show on the short path" do
-    expect(get('/1')).to route_to('namespaces#show', id: '1')
+    expect(get("/#{name}")).to route_to('groups#show', id: name)
+  end
+
+  it "to #activity" do
+    expect(get("/groups/#{name}/activity")).to route_to('groups#activity', id: name)
+  end
+
+  it "to #issues" do
+    expect(get("/groups/#{name}/issues")).to route_to('groups#issues', id: name)
+  end
+
+  it "to #members" do
+    expect(get("/groups/#{name}/group_members")).to route_to('groups/group_members#index', group_id: name)
+  end
+
+  it "also display group#show with slash in the path" do
+    expect(get('/group/subgroup')).to route_to('groups#show', id: 'group/subgroup')
   end
 end
 

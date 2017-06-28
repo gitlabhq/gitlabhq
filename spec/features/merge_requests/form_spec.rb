@@ -1,20 +1,24 @@
 require 'rails_helper'
 
 describe 'New/edit merge request', feature: true, js: true do
+  include GitlabRoutingHelper
+
   let!(:project)   { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:fork_project) { create(:project, forked_from_project: project) }
   let!(:user)      { create(:user)}
+  let!(:user2)      { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
   let!(:label2)    { create(:label, project: project) }
 
   before do
     project.team << [user, :master]
+    project.team << [user2, :master]
   end
 
   context 'owned projects' do
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     context 'new merge request' do
@@ -33,8 +37,14 @@ describe 'New/edit merge request', feature: true, js: true do
       it 'creates new merge request' do
         click_button 'Assignee'
         page.within '.dropdown-menu-user' do
-          click_link user.name
+          click_link user2.name
         end
+        expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user2.id.to_s)
+        page.within '.js-assignee-search' do
+          expect(page).to have_content user2.name
+        end
+
+        click_link 'Assign to me'
         expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
         page.within '.js-assignee-search' do
           expect(page).to have_content user.name
@@ -76,6 +86,22 @@ describe 'New/edit merge request', feature: true, js: true do
             expect(page).to have_content label2.title
           end
         end
+
+        page.within '.issuable-meta' do
+          merge_request = MergeRequest.find_by(source_branch: 'fix')
+
+          expect(page).to have_text("Merge request #{merge_request.to_reference}")
+          # compare paths because the host differ in test
+          expect(find_link(merge_request.to_reference)[:href])
+            .to end_with(merge_request_path(merge_request))
+        end
+      end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
       end
     end
 
@@ -138,13 +164,20 @@ describe 'New/edit merge request', feature: true, js: true do
           end
         end
       end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
+      end
     end
   end
 
   context 'forked project' do
     before do
       fork_project.team << [user, :master]
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     context 'new merge request' do

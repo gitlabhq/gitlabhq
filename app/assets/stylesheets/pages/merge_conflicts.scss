@@ -1,3 +1,5 @@
+// Disabled to use the color map for creating color schemes
+// scss-lint:disable ColorVariable
 $colors: (
   white_header_head_neutral   : #e1fad7,
   white_line_head_neutral     : #effdec,
@@ -98,10 +100,12 @@ $colors: (
   solarized_dark_header_not_chosen     : rgba(#839496, .25),
   solarized_dark_line_not_chosen       : rgba(#839496, .15)
 );
+// scss-lint:enable ColorVariable
 
 
 @mixin color-scheme($color) {
-  .header.line_content, .diff-line-num {
+  .header.line_content,
+  .diff-line-num {
     &.origin {
       background-color: map-get($colors, #{$color}_header_origin_neutral);
       border-color: map-get($colors, #{$color}_header_origin_neutral);
@@ -131,6 +135,7 @@ $colors: (
         }
       }
     }
+
     &.head {
       background-color: map-get($colors, #{$color}_header_head_neutral);
       border-color: map-get($colors, #{$color}_header_head_neutral);
@@ -174,6 +179,7 @@ $colors: (
         background-color: map-get($colors, #{$color}_line_not_chosen);
       }
     }
+
     &.head {
       background-color: map-get($colors, #{$color}_line_head_neutral);
 
@@ -226,13 +232,60 @@ $colors: (
       right: 10px;
       padding: 0;
       outline: none;
-      color: #fff;
+      color: $white-light;
       width: 75px; // static width to make 2 buttons have same width
       height: 19px;
     }
   }
 
   .btn-success .fa-spinner {
-    color: #fff;
+    color: $white-light;
+  }
+
+  .editor-wrap {
+    &.is-loading {
+      .editor {
+        display: none;
+      }
+
+      .loading {
+        display: block;
+      }
+    }
+
+    &.saved {
+      .editor {
+        border-top: solid 2px $green-200;
+      }
+    }
+
+    .editor {
+      pre {
+        height: 350px;
+        border: none;
+        border-radius: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    .loading {
+      display: none;
+    }
+  }
+
+  .discard-changes-alert {
+    background-color: $gray-light;
+    text-align: right;
+    padding: $gl-padding-top $gl-padding;
+    color: $gl-text-color;
+
+    .discard-actions {
+      display: inline-block;
+      margin-left: 10px;
+    }
+  }
+
+  .resolve-conflicts-form {
+    padding-top: $gl-padding;
   }
 }

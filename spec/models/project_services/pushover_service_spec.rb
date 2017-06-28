@@ -8,7 +8,9 @@ describe PushoverService, models: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:api_key) }
       it { is_expected.to validate_presence_of(:user_key) }
@@ -16,7 +18,9 @@ describe PushoverService, models: true do
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:api_key) }
       it { is_expected.not_to validate_presence_of(:user_key) }
@@ -27,7 +31,7 @@ describe PushoverService, models: true do
   describe 'Execute' do
     let(:pushover) { PushoverService.new }
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end

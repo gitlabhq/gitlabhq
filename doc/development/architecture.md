@@ -4,15 +4,15 @@
 
 There are two editions of GitLab: [Enterprise Edition](https://about.gitlab.com/gitlab-ee/) (EE) and [Community Edition](https://about.gitlab.com/gitlab-ce/) (CE). GitLab CE is delivered via git from the [gitlabhq repository](https://gitlab.com/gitlab-org/gitlab-ce/tree/master). New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
 
-EE releases are available not long after CE releases. To obtain the GitLab EE there is a [repository at gitlab.com](https://gitlab.com/subscribers/gitlab-ee). For more information about the release process see the section 'New versions and upgrading' in the readme.
+EE releases are available not long after CE releases. To obtain the GitLab EE there is a [repository at gitlab.com](https://gitlab.com/gitlab-org/gitlab-ee). For more information about the release process see the section 'New versions and upgrading' in the readme.
 
-Both EE and CE require an add-on component called gitlab-shell. It is obtained from the [gitlab-shell repository](https://gitlab.com/gitlab-org/gitlab-shell/tree/master). New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
+Both EE and CE require some add-on components called gitlab-shell and Gitaly. These components are available from the [gitlab-shell](https://gitlab.com/gitlab-org/gitlab-shell/tree/master) and [gitaly](https://gitlab.com/gitlab-org/gitaly/tree/master) repositories respectively. New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
 
 ## Physical office analogy
 
 You can imagine GitLab as a physical office.
 
-**The repositories** are the goods GitLab handling.
+**The repositories** are the goods GitLab handles.
 They can be stored in a warehouse.
 This can be either a hard disk, or something more complex, such as a NFS filesystem;
 
@@ -35,8 +35,10 @@ Their job description:
  - make tasks for Sidekiq;
  - fetch stuff from the warehouse or move things around in there;
 
-**Gitlab-shell** is a third kind of worker that takes orders from a fax machine (SSH) instead of the front desk (HTTP).
-Gitlab-shell communicates with Sidekiq via the “communication board” (Redis), and asks quick questions of the Unicorn workers either directly or via the front desk.
+**GitLab-shell** is a third kind of worker that takes orders from a fax machine (SSH) instead of the front desk (HTTP).
+GitLab-shell communicates with Sidekiq via the “communication board” (Redis), and asks quick questions of the Unicorn workers either directly or via the front desk.
+
+**Gitaly** is a back desk that is specialized on reaching the disks to perform git operations efficiently and keep a copy of the result of costly operations. All git operations go through Gitaly.
 
 **GitLab Enterprise Edition (the application)** is the collection of processes and business practices that the office is run by.
 
@@ -52,8 +54,8 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 
 ### Components
 
-![GitLab Diagram Overview](gitlab_architecture_diagram.png)
- 
+<img src="https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/pub?w=987&amp;h=797">
+
 _[edit diagram (for GitLab team members only)](https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/edit)_
 
 A typical install of GitLab will be on GNU/Linux. It uses Nginx or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets. GitLab serves web pages and a [GitLab API](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/api) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses redis as a non-persistent database backend for job information, meta data, and incoming jobs.
@@ -62,7 +64,11 @@ The GitLab web app uses MySQL or PostgreSQL for persistent database information 
 
 When serving repositories over HTTP/HTTPS GitLab utilizes the GitLab API to resolve authorization and access as well as serving git objects.
 
-The add-on component gitlab-shell serves repositories over SSH. It manages the SSH keys within `/home/git/.ssh/authorized_keys` which should not be manually edited. gitlab-shell accesses the bare repositories directly to serve git objects and communicates with redis to submit jobs to Sidekiq for GitLab to process. gitlab-shell queries the GitLab API to determine authorization and access.
+The add-on component gitlab-shell serves repositories over SSH. It manages the SSH keys within `/home/git/.ssh/authorized_keys` which should not be manually edited. gitlab-shell accesses the bare repositories through Gitaly to serve git objects and communicates with redis to submit jobs to Sidekiq for GitLab to process. gitlab-shell queries the GitLab API to determine authorization and access.
+
+Gitaly executes git operations from gitlab-shell and the GitLab web app, and provides an API to the GitLab web app to get attributes from git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
+
+You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/).
 
 ### Installation Folder Summary
 
@@ -188,3 +194,7 @@ bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
 Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While the sudo commands provided by gitlabhq work in Ubuntu they do not always work in RHEL.
+
+## GitLab.com
+
+We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.

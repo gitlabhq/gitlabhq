@@ -3,6 +3,8 @@
 This styleguide recommends best practices to improve documentation and to keep
 it organized and easy to find.
 
+See also [writing documentation](writing_documentation.md).
+
 ## Location and naming of documents
 
 >**Note:**
@@ -27,6 +29,8 @@ The table below shows what kind of documentation goes where.
 | `doc/legal/` | Legal documents about contributing to GitLab. |
 | `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
 | `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
+| `doc/topics/` | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs) |
+| `doc/articles/` | [Technical Articles](writing_documentation.md#technical-articles): user guides, admin guides, technical overviews, tutorials (`doc/articles/article-title/index.md`). |
 
 ---
 
@@ -56,6 +60,10 @@ The table below shows what kind of documentation goes where.
          own document located at `doc/user/admin_area/settings/`. For example,
          the **Visibility and Access Controls** category should have a document
          located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+1. The `doc/topics/` directory holds topic-related technical content. Create
+   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
+   General user- and admin- related documentation, should be placed accordingly.
+1. For technical articles, place their images under `doc/articles/article-title/img/`.
 
 ---
 
@@ -93,12 +101,14 @@ merge request.
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
   someone in the Merge Request
+- Avoid adding things that show ephemeral statuses. For example, if a feature is
+  considered beta or experimental, put this info in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. It is advised to mention one or all
-  of the following GitLab members for a review: `@axil`, `@rspeicher`,
-  `@dblessing`, `@ashleys`. This is to ensure that no document
-  with wrong heading is going live without an audit, thus preventing dead links
-  and redirection issues when corrected
+  of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`,
+  `@SeanPackham`. This is to ensure that no document with wrong heading is going
+  live without an audit, thus preventing dead links and redirection issues when
+  corrected
 - Leave exactly one newline after a heading
 
 ## Links
@@ -111,16 +121,94 @@ merge request.
   add an alternative text: `[identifier]: https://example.com "Alternative text"`
   that appears when hovering your mouse on a link
 
+### Linking to inline docs
+
+Sometimes it's needed to link to the built-in documentation that GitLab provides
+under `/help`. This is normally done in files inside the `app/views/` directory
+with the help of the `help_page_path` helper method.
+
+In its simplest form, the HAML code to generate a link to the `/help` page is:
+
+```haml
+= link_to 'Help page', help_page_path('user/permissions')
+```
+
+The `help_page_path` contains the path to the document you want to link to with
+the following conventions:
+
+- it is relative to the `doc/` directory in the GitLab repository
+- the `.md` extension must be omitted
+- it must not end with a slash (`/`)
+
+Below are some special cases where should be used depending on the context.
+You can combine one or more of the following:
+
+1. **Linking to an anchor link.** Use `anchor` as part of the `help_page_path`
+   method:
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions', anchor: 'anchor-link')
+    ```
+
+1. **Opening links in a new tab.** This should be the default behavior:
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions'), target: '_blank'
+    ```
+
+1. **Linking to a circle icon.** Usually used in settings where a long
+   description cannot be used, like near checkboxes. You can basically use
+   any font awesome icon, but prefer the `question-circle`:
+
+    ```haml
+    = link_to icon('question-circle'), help_page_path('user/permissions')
+    ```
+
+1. **Using a button link.** Useful in places where text would be out of context
+   with the rest of the page layout:
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
+    ```
+
+1. **Underlining a link.**
+
+    ```haml
+    = link_to 'Help page', help_page_path('user/permissions'), class: 'underlined-link'
+    ```
+
+1. **Using links inline of some text.**
+
+    ```haml
+    Description to #{link_to 'Help page', help_page_path('user/permissions')}.
+    ```
+
+1. **Adding a period at the end of the sentence.** Useful when you don't want
+   the period to be part of the link:
+
+    ```haml
+    = succeed '.' do
+      Learn more in the
+      = link_to 'Help page', help_page_path('user/permissions')
+    ```
+
 ## Images
 
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located. Always prepend their
   names with the name of the document that they will be included in. For
   example, if there is a document called `twitter.md`, then a valid image name
-  could be `twitter_login_screen.png`.
+  could be `twitter_login_screen.png`. [**Exception**: images for
+  [articles](writing_documentation.md#technical-articles) should be
+  put in a directory called `img` underneath `/articles/article_title/img/`, therefore,
+  there's no need to prepend the document name to their filenames.]
 - Images should have a specific, non-generic name that will differentiate them.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
+- Compress all images with <https://tinypng.com/> or similar tool.
+- Compress gifs with <https://ezgif.com/optimize> or similar toll.
+- Images should be used (only when necessary) to _illustrate_ the description
+of a process, not to _replace_ it.
 
 Inside the document:
 
@@ -314,17 +402,34 @@ In this case:
 - different highlighting languages are used for each config in the code block
 - the [references](#references) guide is used for reconfigure/restart
 
+## Fake tokens
+
+There may be times where a token is needed to demonstrate an API call using
+cURL or a secret variable used in CI. It is strongly advised not to use real
+tokens in documentation even if the probability of a token being exploited is
+low.
+
+You can use the following fake tokens as examples.
+
+|     **Token type**    |           **Token value**         |
+| --------------------- | --------------------------------- |
+| Private user token    | `9koXpg98eAheJpvBs5tK`            |
+| Personal access token | `n671WNGecHugsdEDPsyo`            |
+| Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
+| Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
+| Secret CI variable    | `Li8j-mLUVA3eZYjPfd_H`            |
+| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`        |
+| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`            |
+| Trigger token         | `be20d8dcc028677c931e04f3871a9b`  |
+| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`            |
+| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`            |
+| Request profile token | `7VgpS4Ax5utVD2esNstz`            |
+
 ## API
 
 Here is a list of must-have items. Use them in the exact order that appears
 on this document. Further explanation is given below.
 
-- Every method must be described using [Grape's DSL](https://github.com/ruby-grape/grape/tree/v0.13.0#describing-methods)
-  (see https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/environments.rb
-  for a good example):
-  - `desc` for the method summary (you can pass it a block for additional details)
-  - `params` for the method params (this acts as description **and** validation
-    of the params)
 - Every method must have the REST API request. For example:
 
     ```
@@ -354,7 +459,7 @@ Rendered example:
 
 ### cURL commands
 
-- Use `https://gitlab.example.com/api/v3/` as an endpoint.
+- Use `https://gitlab.example.com/api/v4/` as an endpoint.
 - Wherever needed use this private token: `9koXpg98eAheJpvBs5tK`.
 - Always put the request first. `GET` is the default so you don't have to
   include it.
@@ -378,7 +483,7 @@ Below is a set of [cURL][] examples that you can use in the API documentation.
 Get the details of a group:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/gitlab-org
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/gitlab-org
 ```
 
 #### cURL example with parameters passed in the URL
@@ -386,7 +491,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 Create a new project under the authenticated user's namespace:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects?name=foo"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects?name=foo"
 ```
 
 #### Post data using cURL's --data
@@ -396,7 +501,7 @@ cURL's `--data` option. The example below will create a new project `foo` under
 the authenticated user's namespace.
 
 ```bash
-curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
+curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects"
 ```
 
 #### Post data using JSON content
@@ -405,7 +510,7 @@ curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://g
 and double quotes.
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v3/groups
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v4/groups
 ```
 
 #### Post data using form-data
@@ -414,7 +519,7 @@ Instead of using JSON or urlencode you can use multipart/form-data which
 properly handles data encoding:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v3/users/25/keys
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v4/users/25/keys
 ```
 
 The above example is run by and administrator and will add an SSH public key
@@ -428,7 +533,7 @@ contains spaces in its title. Observe how spaces are escaped using the `%20`
 ASCII code.
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/42/issues?title=Hello%20Dude"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20Dude"
 ```
 
 Use `%2F` for slashes (`/`).
@@ -440,12 +545,13 @@ restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
 `example.net`, you would do something like this:
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v3/application/settings
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
 ```
 
 [cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
 [gfm]: http://docs.gitlab.com/ce/user/markdown.html#newlines "GitLab flavored markdown documentation"
+[ce-1242]: https://gitlab.com/gitlab-org/gitlab-ce/issues/1242
 [doc-restart]: ../administration/restart_gitlab.md "GitLab restart documentation"
 [ce-3349]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3349 "Documentation restructure"
 [graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle

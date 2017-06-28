@@ -50,8 +50,12 @@ module GitlabRoutingHelper
     namespace_project_cycle_analytics_path(project.namespace, project, *args)
   end
 
-  def project_builds_path(project, *args)
-    namespace_project_builds_path(project.namespace, project, *args)
+  def project_jobs_path(project, *args)
+    namespace_project_jobs_path(project.namespace, project, *args)
+  end
+
+  def project_ref_path(project, ref_name, *args)
+    namespace_project_commits_path(project.namespace, project, ref_name, *args)
   end
 
   def project_container_registry_path(project, *args)
@@ -74,12 +78,20 @@ module GitlabRoutingHelper
     namespace_project_environment_path(environment.project.namespace, environment.project, environment, *args)
   end
 
+  def environment_metrics_path(environment, *args)
+    metrics_namespace_project_environment_path(environment.project.namespace, environment.project, environment, *args)
+  end
+
   def issue_path(entity, *args)
     namespace_project_issue_path(entity.project.namespace, entity.project, entity, *args)
   end
 
   def merge_request_path(entity, *args)
     namespace_project_merge_request_path(entity.project.namespace, entity.project, entity, *args)
+  end
+
+  def pipeline_path(pipeline, *args)
+    namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, *args)
   end
 
   def milestone_path(entity, *args)
@@ -94,8 +106,32 @@ module GitlabRoutingHelper
     namespace_project_merge_request_url(entity.project.namespace, entity.project, entity, *args)
   end
 
+  def pipeline_url(pipeline, *args)
+    namespace_project_pipeline_url(pipeline.project.namespace, pipeline.project, pipeline.id, *args)
+  end
+
+  def pipeline_job_url(pipeline, build, *args)
+    namespace_project_job_url(pipeline.project.namespace, pipeline.project, build.id, *args)
+  end
+
+  def commits_url(entity, *args)
+    namespace_project_commits_url(entity.project.namespace, entity.project, entity.ref, *args)
+  end
+
+  def commit_url(entity, *args)
+    namespace_project_commit_url(entity.project.namespace, entity.project, entity.sha, *args)
+  end
+
   def project_snippet_url(entity, *args)
     namespace_project_snippet_url(entity.project.namespace, entity.project, entity, *args)
+  end
+
+  def preview_markdown_path(project, *args)
+    if @snippet.is_a?(PersonalSnippet)
+      preview_markdown_snippets_path
+    else
+      preview_markdown_namespace_project_path(project.namespace, project, *args)
+    end
   end
 
   def toggle_subscription_path(entity, *args)
@@ -139,6 +175,11 @@ module GitlabRoutingHelper
     resend_invite_namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member)
   end
 
+  # Snippets
+  def personal_snippet_url(snippet, *args)
+    snippet_url(snippet)
+  end
+
   # Groups
 
   ## Members
@@ -174,11 +215,46 @@ module GitlabRoutingHelper
 
     case action
     when 'download'
-      download_namespace_project_build_artifacts_path(*args)
+      download_namespace_project_job_artifacts_path(*args)
     when 'browse'
-      browse_namespace_project_build_artifacts_path(*args)
+      browse_namespace_project_job_artifacts_path(*args)
     when 'file'
-      file_namespace_project_build_artifacts_path(*args)
+      file_namespace_project_job_artifacts_path(*args)
+    when 'raw'
+      raw_namespace_project_job_artifacts_path(*args)
     end
+  end
+
+  # Pipeline Schedules
+  def pipeline_schedules_path(project, *args)
+    namespace_project_pipeline_schedules_path(project.namespace, project, *args)
+  end
+
+  def pipeline_schedule_path(schedule, *args)
+    project = schedule.project
+    namespace_project_pipeline_schedule_path(project.namespace, project, schedule, *args)
+  end
+
+  def edit_pipeline_schedule_path(schedule)
+    project = schedule.project
+    edit_namespace_project_pipeline_schedule_path(project.namespace, project, schedule)
+  end
+
+  def take_ownership_pipeline_schedule_path(schedule, *args)
+    project = schedule.project
+    take_ownership_namespace_project_pipeline_schedule_path(project.namespace, project, schedule, *args)
+  end
+
+  # Settings
+  def project_settings_integrations_path(project, *args)
+    namespace_project_settings_integrations_path(project.namespace, project, *args)
+  end
+
+  def project_settings_members_path(project, *args)
+    namespace_project_settings_members_path(project.namespace, project, *args)
+  end
+
+  def project_settings_ci_cd_path(project, *args)
+    namespace_project_settings_ci_cd_path(project.namespace, project, *args)
   end
 end

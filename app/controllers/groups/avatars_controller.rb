@@ -5,6 +5,6 @@ class Groups::AvatarsController < Groups::ApplicationController
     @group.remove_avatar!
     @group.save
 
-    redirect_to edit_group_path(@group)
+    redirect_to edit_group_path(@group), status: 302
   end
 end

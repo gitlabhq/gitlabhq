@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe ForkedProjectLink, "add link on fork" do
-  let(:project_from) { create(:project) }
-  let(:namespace) { create(:namespace) }
-  let(:user) { create(:user, namespace: namespace) }
+  let(:project_from) { create(:project, :repository) }
+  let(:user) { create(:user) }
+  let(:namespace) { user.namespace }
 
   before do
     create(:project_member, :reporter, user: user, project: project_from)
@@ -21,7 +21,7 @@ end
 
 describe '#forked?' do
   let(:forked_project_link) { build(:forked_project_link) }
-  let(:project_from) { create(:project) }
+  let(:project_from) { create(:project, :repository) }
   let(:project_to) { create(:project, forked_project_link: forked_project_link) }
 
   before :each do

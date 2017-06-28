@@ -1,14 +1,12 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
-  include ApiHelpers
-
+describe API::Boards do
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }
   let(:guest)       { create(:user) }
   let(:admin)       { create(:user, :admin) }
-  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
+  let!(:project)    { create(:empty_project, :public, creator_id: user.id, namespace: user.namespace ) }
 
   let!(:dev_label) do
     create(:label, title: 'Development', color: '#FFAABB', project: project)
@@ -55,6 +53,7 @@ describe API::API, api: true  do
         get api(base_url, user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(board.id)
@@ -72,6 +71,7 @@ describe API::API, api: true  do
       get api(base_url, user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
       expect(json_response.first['label']['name']).to eq(dev_label.title)
@@ -106,9 +106,20 @@ describe API::API, api: true  do
   describe "POST /projects/:id/board/lists" do
     let(:base_url) { "/projects/#{project.id}/boards/#{board.id}/lists" }
 
-    it 'creates a new issue board list' do
-      post api(base_url, user),
-        label_id: ux_label.id
+    it 'creates a new issue board list for group labels' do
+      group = create(:group)
+      group_label = create(:group_label, group: group)
+      project.update(group: group)
+
+      post api(base_url, user), label_id: group_label.id
+
+      expect(response).to have_http_status(201)
+      expect(json_response['label']['name']).to eq(group_label.title)
+      expect(json_response['position']).to eq(3)
+    end
+
+    it 'creates a new issue board list for project labels' do
+      post api(base_url, user), label_id: ux_label.id
 
       expect(response).to have_http_status(201)
       expect(json_response['label']['name']).to eq(ux_label.title)
@@ -116,15 +127,13 @@ describe API::API, api: true  do
     end
 
     it 'returns 400 when creating a new list if label_id is invalid' do
-      post api(base_url, user),
-        label_id: 23423
+      post api(base_url, user), label_id: 23423
 
       expect(response).to have_http_status(400)
     end
 
-    it "returns 403 for project members with guest role" do
-      put api("#{base_url}/#{test_list.id}", guest),
-        position: 1
+    it 'returns 403 for project members with guest role' do
+      put api("#{base_url}/#{test_list.id}", guest), position: 1
 
       expect(response).to have_http_status(403)
     end
@@ -179,13 +188,12 @@ describe API::API, api: true  do
 
     context "when the user is project owner" do
       let(:owner)     { create(:user) }
-      let(:project)   { create(:project, namespace: owner.namespace) }
+      let(:project)   { create(:empty_project, namespace: owner.namespace) }
 
       it "deletes the list if an admin requests it" do
         delete api("#{base_url}/#{dev_list.id}", owner)
 
-        expect(response).to have_http_status(200)
-        expect(json_response['position']).to eq(1)
+        expect(response).to have_http_status(204)
       end
     end
   end

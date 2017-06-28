@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :merge_request do
-    title
+    title { generate(:title) }
     author
-    source_project factory: :project
+    association :source_project, :repository, factory: :project
     target_project { source_project }
 
     # $ git log --pretty=oneline feature..master
@@ -40,8 +40,16 @@ FactoryGirl.define do
       state :closed
     end
 
+    trait :opened do
+      state :opened
+    end
+
     trait :reopened do
       state :reopened
+    end
+
+    trait :locked do
+      state :locked
     end
 
     trait :simple do
@@ -59,8 +67,8 @@ FactoryGirl.define do
       target_branch "master"
     end
 
-    trait :merge_when_build_succeeds do
-      merge_when_build_succeeds true
+    trait :merge_when_pipeline_succeeds do
+      merge_when_pipeline_succeeds true
       merge_user author
     end
 
@@ -68,5 +76,20 @@ FactoryGirl.define do
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
+    factory :merge_request_with_diff_notes do
+      after(:create) do |mr|
+        create(:diff_note_on_merge_request, noteable: mr, project: mr.source_project)
+      end
+    end
+
+    factory :labeled_merge_request do
+      transient do
+        labels []
+      end
+
+      after(:create) do |merge_request, evaluator|
+        merge_request.update_attributes(labels: evaluator.labels)
+      end
+    end
   end
 end

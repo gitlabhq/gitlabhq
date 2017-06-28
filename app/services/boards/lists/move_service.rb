@@ -1,7 +1,8 @@
 module Boards
   module Lists
-    class MoveService < Boards::BaseService
+    class MoveService < BaseService
       def execute(list)
+        @board = list.board
         @old_position = list.position
         @new_position = params[:position]
 
@@ -16,7 +17,7 @@ module Boards
 
       private
 
-      attr_reader :old_position, :new_position
+      attr_reader :board, :old_position, :new_position
 
       def valid_move?
         new_position.present? && new_position != old_position &&

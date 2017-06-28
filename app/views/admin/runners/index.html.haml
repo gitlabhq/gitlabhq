@@ -11,22 +11,20 @@
       that for future communication.
       %br
       Registration token is
-      %code{ id: 'runners-token' } #{current_application_settings.runners_registration_token}
+      %code#runners-token= current_application_settings.runners_registration_token
 
   .bs-callout.clearfix
     .pull-left
       %p
         You can reset runners registration token by pressing a button below.
-      %p
-        = button_to reset_runners_token_admin_application_settings_path,
+      .prepend-top-10
+        = button_to "Reset runners registration token", reset_runners_token_admin_application_settings_path,
           method: :put, class: 'btn btn-default',
-          data: { confirm: 'Are you sure you want to reset registration token?' } do
-          = icon('refresh')
-          Reset runners registration token
+          data: { confirm: 'Are you sure you want to reset registration token?' }
 
   .bs-callout
     %p
-      A 'Runner' is a process which runs a build.
+      A 'Runner' is a process which runs a job.
       You can setup as many Runners as you need.
       %br
       Runners can be placed on separate users, servers, even on your local machine.
@@ -37,16 +35,16 @@
       %ul
         %li
           %span.label.label-success shared
-          \- Runner runs builds from all unassigned projects
+          \- Runner runs jobs from all unassigned projects
         %li
           %span.label.label-info specific
-          \- Runner runs builds from assigned projects
+          \- Runner runs jobs from assigned projects
         %li
           %span.label.label-warning locked
           \- Runner cannot be assigned to other projects
         %li
           %span.label.label-danger paused
-          \- Runner will not receive any new builds
+          \- Runner will not receive any new jobs
 
   .append-bottom-20.clearfix
     .pull-left
@@ -56,23 +54,27 @@
         = submit_tag 'Search', class: 'btn'
 
     .pull-right.light
-      Runners with last contact less than a minute ago: #{@active_runners_cnt}
+      Runners with last contact more than a minute ago: #{@active_runners_cnt}
 
   %br
 
-  .table-holder
-    %table.table
-      %thead
-        %tr
-          %th Type
-          %th Runner token
-          %th Description
-          %th Projects
-          %th Builds
-          %th Tags
-          %th Last contact
-          %th
+  - if @runners.any?
+    .table-holder
+      %table.table
+        %thead
+          %tr
+            %th Type
+            %th Runner token
+            %th Description
+            %th Version
+            %th Projects
+            %th Jobs
+            %th Tags
+            %th Last contact
+            %th
 
-      - @runners.each do |runner|
-        = render "admin/runners/runner", runner: runner
-  = paginate @runners
+        - @runners.each do |runner|
+          = render "admin/runners/runner", runner: runner
+    = paginate @runners, theme: "gitlab"
+  - else
+    .nothing-here-block No runners found

@@ -18,9 +18,9 @@ The configuration is done via a project's **Services**.
 To enable an external issue tracker you must configure the appropriate **Service**.
 Visit the links below for details:
 
-- [Redmine](../project_services/redmine.md)
-- [Jira](../project_services/jira.md)
-- [Bugzilla](../project_services/bugzilla.md)
+- [Redmine](../user/project/integrations/redmine.md)
+- [Jira](../user/project/integrations/jira.md)
+- [Bugzilla](../user/project/integrations/bugzilla.md)
 
 ### Service Template
 
@@ -28,4 +28,4 @@ To save you the hassle from configuring each project's service individually,
 GitLab provides the ability to set Service Templates which can then be
 overridden in each project's settings.
 
-Read more on [Services Templates](../project_services/services_templates.md).
+Read more on [Services Templates](../user/project/integrations/services_templates.md).

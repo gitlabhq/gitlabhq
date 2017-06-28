@@ -1,5 +1,7 @@
+require './spec/support/sidekiq'
+
 Gitlab::Seeder.quiet do
-  Issue.all.each do |issue|
+  Issue.find_each do |issue|
     project = issue.project
 
     project.team.users.each do |user|
@@ -14,7 +16,7 @@ Gitlab::Seeder.quiet do
     end
   end
 
-  MergeRequest.all.each do |mr|
+  MergeRequest.find_each do |mr|
     project = mr.project
 
     project.team.users.each do |user|

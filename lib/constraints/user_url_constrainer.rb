@@ -1,7 +1,9 @@
-require 'constraints/namespace_url_constrainer'
+class UserUrlConstrainer
+  def matches?(request)
+    full_path = request.params[:username]
 
-class UserUrlConstrainer < NamespaceUrlConstrainer
-  def find_resource(id)
-    User.find_by('lower(username) = ?', id.downcase)
+    return false unless DynamicPathValidator.valid_user_path?(full_path)
+
+    User.find_by_full_path(full_path, follow_redirects: request.get?).present?
   end
 end

@@ -17,7 +17,7 @@ describe 'Import/Export attribute configuration', lib: true do
     # Remove duplicated or add missing models
     # - project is not part of the tree, so it has to be added manually.
     # - milestone, labels have both singular and plural versions in the tree, so remove the duplicates.
-    names.flatten.uniq - ['milestones', 'labels'] + ['project']
+    names.flatten.uniq - %w(milestones labels) + ['project']
   end
 
   let(:safe_attributes_file) { 'spec/lib/gitlab/import_export/safe_model_attributes.yml' }

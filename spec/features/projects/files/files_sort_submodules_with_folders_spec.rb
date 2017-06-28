@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 feature 'User views files page', feature: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:project) { create(:forked_project_with_submodules) }
 
   before do
     project.team << [user, :master]
-    login_as user
+    gitlab_sign_in user
     visit namespace_project_tree_path(project.namespace, project, project.repository.root_ref)
   end
 

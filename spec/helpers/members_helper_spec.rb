@@ -10,12 +10,12 @@ describe MembersHelper do
   end
 
   describe '#remove_member_message' do
-    let(:requester) { build(:user) }
-    let(:project) { create(:empty_project, :public) }
+    let(:requester) { create(:user) }
+    let(:project) { create(:empty_project, :public, :access_requestable) }
     let(:project_member) { build(:project_member, project: project) }
     let(:project_member_invite) { build(:project_member, project: project).tap { |m| m.generate_invite_token! } }
     let(:project_member_request) { project.request_access(requester) }
-    let(:group) { create(:group) }
+    let(:group) { create(:group, :access_requestable) }
     let(:group_member) { build(:group_member, group: group) }
     let(:group_member_invite) { build(:group_member, group: group).tap { |m| m.generate_invite_token! } }
     let(:group_member_request) { group.request_access(requester) }
@@ -31,11 +31,11 @@ describe MembersHelper do
   end
 
   describe '#remove_member_title' do
-    let(:requester) { build(:user) }
-    let(:project) { create(:empty_project, :public) }
+    let(:requester) { create(:user) }
+    let(:project) { create(:empty_project, :public, :access_requestable) }
     let(:project_member) { build(:project_member, project: project) }
     let(:project_member_request) { project.request_access(requester) }
-    let(:group) { create(:group) }
+    let(:group) { create(:group, :access_requestable) }
     let(:group_member) { build(:group_member, group: group) }
     let(:group_member_request) { group.request_access(requester) }
 
@@ -46,7 +46,7 @@ describe MembersHelper do
   end
 
   describe '#leave_confirmation_message' do
-    let(:project) { build_stubbed(:project) }
+    let(:project) { build_stubbed(:empty_project) }
     let(:group) { build_stubbed(:group) }
     let(:user) { build_stubbed(:user) }
 

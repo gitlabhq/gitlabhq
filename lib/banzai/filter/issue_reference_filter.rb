@@ -4,11 +4,19 @@ module Banzai
     # issues that do not exist are ignored.
     #
     # This filter supports cross-project references.
+    #
+    # When external issues tracker like Jira is activated we should not
+    # use issue reference pattern, but we should still be able
+    # to reference issues from other GitLab projects.
     class IssueReferenceFilter < AbstractReferenceFilter
       self.reference_type = :issue
 
       def self.object_class
         Issue
+      end
+
+      def uses_reference_pattern?
+        context[:project].default_issues_tracker?
       end
 
       def find_object(project, iid)
@@ -31,11 +39,12 @@ module Banzai
           projects_per_reference.each do |path, project|
             issue_ids = references_per_project[path]
 
-            if project.default_issues_tracker?
-              issues = project.issues.where(iid: issue_ids.to_a)
-            else
-              issues = issue_ids.map { |id| ExternalIssue.new(id, project) }
-            end
+            issues =
+              if project.default_issues_tracker?
+                project.issues.where(iid: issue_ids.to_a)
+              else
+                issue_ids.map { |id| ExternalIssue.new(id, project) }
+              end
 
             issues.each do |issue|
               hash[project][issue.iid.to_i] = issue
@@ -54,7 +63,7 @@ module Banzai
         end
       end
 
-      def data_attributes_for(text, project, object)
+      def data_attributes_for(text, project, object, link: false)
         if object.is_a?(ExternalIssue)
           data_attribute(
             project: project.id,

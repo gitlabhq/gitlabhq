@@ -2,13 +2,14 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model
 
+    RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     LAST_CONTACT_TIME = 1.hour.ago
-    AVAILABLE_SCOPES = %w[specific shared active paused online]
-    FORM_EDITABLE = %i[description tag_list active run_untagged locked]
+    AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked].freeze
 
-    has_many :builds, class_name: 'Ci::Build'
-    has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
-    has_many :projects, through: :runner_projects, class_name: '::Project', foreign_key: :gl_project_id
+    has_many :builds
+    has_many :runner_projects, dependent: :destroy
+    has_many :projects, through: :runner_projects
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
@@ -23,19 +24,21 @@ module Ci
 
     scope :owned_or_shared, ->(project_id) do
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
-        .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
+        .where("ci_runner_projects.project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
 
     scope :assignable_for, ->(project) do
       # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
       #        Without that, placeholders would miss one and couldn't match.
-      where(locked: false).
-        where.not("id IN (#{project.runners.select(:id).to_sql})").specific
+      where(locked: false)
+        .where.not("id IN (#{project.runners.select(:id).to_sql})").specific
     end
 
     validate :tag_constraints
 
     acts_as_taggable
+
+    after_destroy :cleanup_runner_queue
 
     # Searches for runners matching the given query.
     #
@@ -122,7 +125,34 @@ module Ci
       ]
     end
 
+    def tick_runner_queue
+      SecureRandom.hex.tap do |new_update|
+        ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_update,
+          expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: true)
+      end
+    end
+
+    def ensure_runner_queue_value
+      new_value = SecureRandom.hex
+      ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_value,
+        expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: false)
+    end
+
+    def is_runner_queue_value_latest?(value)
+      ensure_runner_queue_value == value if value.present?
+    end
+
     private
+
+    def cleanup_runner_queue
+      Gitlab::Redis.with do |redis|
+        redis.del(runner_queue_key)
+      end
+    end
+
+    def runner_queue_key
+      "runner:build_queue:#{self.token}"
+    end
 
     def tag_constraints
       unless has_tags? || run_untagged?

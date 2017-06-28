@@ -1,76 +1,121 @@
-(function() {
-  this.Diff = (function() {
-    var UNFOLD_COUNT;
+/* eslint-disable class-methods-use-this */
 
-    UNFOLD_COUNT = 20;
+import './lib/utils/url_utility';
 
-    function Diff() {
-      $('.files .diff-file').singleFileDiff();
-      this.filesCommentButton = $('.files .diff-file').filesCommentButton();
-      if (this.diffViewType() === 'parallel') {
-        $('.content-wrapper .container-fluid').removeClass('container-limited');
-      }
-      $(document).off('click', '.js-unfold');
-      $(document).on('click', '.js-unfold', (function(_this) {
-        return function(event) {
-          var line_number, link, file, offset, old_line, params, prev_new_line, prev_old_line, ref, ref1, since, target, to, unfold, unfoldBottom;
-          target = $(event.target);
-          unfoldBottom = target.hasClass('js-unfold-bottom');
-          unfold = true;
-          ref = _this.lineNumbers(target.parent()), old_line = ref[0], line_number = ref[1];
-          offset = line_number - old_line;
-          if (unfoldBottom) {
-            line_number += 1;
-            since = line_number;
-            to = line_number + UNFOLD_COUNT;
-          } else {
-            ref1 = _this.lineNumbers(target.parent().prev()), prev_old_line = ref1[0], prev_new_line = ref1[1];
-            line_number -= 1;
-            to = line_number;
-            if (line_number - UNFOLD_COUNT > prev_new_line + 1) {
-              since = line_number - UNFOLD_COUNT;
-            } else {
-              since = prev_new_line + 1;
-              unfold = false;
-            }
-          }
-          file = target.parents('.diff-file');
-          link = file.data('blob-diff-path');
-          params = {
-            since: since,
-            to: to,
-            bottom: unfoldBottom,
-            offset: offset,
-            unfold: unfold,
-            // indent is used to compensate for single space indent to fit
-            // '+' and '-' prepended to diff lines,
-            // see https://gitlab.com/gitlab-org/gitlab-ce/issues/707
-            indent: 1,
-            view: file.data('view')
-          };
-          return $.get(link, params, function(response) {
-            return target.parent().replaceWith(response);
-          });
-        };
-      })(this));
+const UNFOLD_COUNT = 20;
+let isBound = false;
+
+class Diff {
+  constructor() {
+    const $diffFile = $('.files .diff-file');
+    $diffFile.singleFileDiff();
+    $diffFile.filesCommentButton();
+
+    $diffFile.each((index, file) => new gl.ImageFile(file));
+
+    if (!isBound) {
+      $(document)
+        .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
+        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
+      isBound = true;
     }
 
-    Diff.prototype.diffViewType = function() {
-      return $('.inline-parallel-buttons a.active').data('view-type');
+    if (gl.utils.getLocationHash()) {
+      this.highlightSelectedLine();
     }
 
-    Diff.prototype.lineNumbers = function(line) {
-      if (!line.children().length) {
-        return [0, 0];
-      }
+    this.openAnchoredDiff();
+  }
 
-      return line.find('.diff-line-num').map(function() {
-        return parseInt($(this).data('linenumber'));
+  handleClickUnfold(e) {
+    const $target = $(e.target);
+    const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
+    const offset = newLineNumber - oldLineNumber;
+    const bottom = $target.hasClass('js-unfold-bottom');
+    let since;
+    let to;
+    let unfold = true;
+
+    if (bottom) {
+      const lineNumber = newLineNumber + 1;
+      since = lineNumber;
+      to = lineNumber + UNFOLD_COUNT;
+    } else {
+      const lineNumber = newLineNumber - 1;
+      since = lineNumber - UNFOLD_COUNT;
+      to = lineNumber;
+
+      // make sure we aren't loading more than we need
+      const prevNewLine = this.lineNumbers($target.parent().prev())[1];
+      if (since <= prevNewLine + 1) {
+        since = prevNewLine + 1;
+        unfold = false;
+      }
+    }
+
+    const file = $target.parents('.diff-file');
+    const link = file.data('blob-diff-path');
+    const view = file.data('view');
+
+    const params = { since, to, bottom, offset, unfold, view };
+    $.get(link, params, response => $target.parent().replaceWith(response));
+  }
+
+  openAnchoredDiff(cb) {
+    const locationHash = gl.utils.getLocationHash();
+    const anchoredDiff = locationHash && locationHash.split('_')[0];
+
+    if (!anchoredDiff) return;
+
+    const diffTitle = $(`#${anchoredDiff}`);
+    const diffFile = diffTitle.closest('.diff-file');
+    const nothingHereBlock = $('.nothing-here-block:visible', diffFile);
+    if (nothingHereBlock.length) {
+      const clickTarget = $('.js-file-title, .click-to-expand', diffFile);
+      diffFile.data('singleFileDiff').toggleDiff(clickTarget, () => {
+        this.highlightSelectedLine();
+        if (cb) cb();
       });
-    };
+    } else if (cb) {
+      cb();
+    }
+  }
 
-    return Diff;
+  handleClickLineNum(e) {
+    const hash = $(e.currentTarget).attr('href');
+    e.preventDefault();
+    if (window.history.pushState) {
+      window.history.pushState(null, null, hash);
+    } else {
+      window.location.hash = hash;
+    }
+    this.highlightSelectedLine();
+  }
 
-  })();
+  diffViewType() {
+    return $('.inline-parallel-buttons a.active').data('view-type');
+  }
 
-}).call(this);
+  lineNumbers(line) {
+    const children = line.find('.diff-line-num').toArray();
+    if (children.length !== 2) {
+      return [0, 0];
+    }
+    return children.map(elm => parseInt($(elm).data('linenumber'), 10) || 0);
+  }
+
+  highlightSelectedLine() {
+    const hash = gl.utils.getLocationHash();
+    const $diffFiles = $('.diff-file');
+    $diffFiles.find('.hll').removeClass('hll');
+
+    if (hash) {
+      $diffFiles
+        .find(`tr#${hash}:not(.match) td, td#${hash}, td[data-line-code="${hash}"]`)
+        .addClass('hll');
+    }
+  }
+}
+
+window.gl = window.gl || {};
+window.gl.Diff = Diff;

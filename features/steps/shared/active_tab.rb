@@ -1,5 +1,10 @@
 module SharedActiveTab
   include Spinach::DSL
+  include WaitForRequests
+
+  after do
+    wait_for_requests if javascript_test?
+  end
 
   def ensure_active_main_tab(content)
     expect(find('.layout-nav li.active')).to have_content(content)

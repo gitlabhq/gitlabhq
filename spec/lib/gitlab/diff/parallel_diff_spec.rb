@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Diff::ParallelDiff, lib: true do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diffs) { commit.raw_diffs }
@@ -12,7 +12,7 @@ describe Gitlab::Diff::ParallelDiff, lib: true do
   subject { described_class.new(diff_file) }
 
   describe '#parallelize' do
-    it 'should return an array of arrays containing the parsed diff' do
+    it 'returns an array of arrays containing the parsed diff' do
       diff_lines = diff_file.highlighted_diff_lines
       expected = [
         # Unchanged lines

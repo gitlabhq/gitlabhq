@@ -1,4 +1,6 @@
 class BambooService < CiService
+  include ReactiveService
+
   prop_accessor :bamboo_url, :build_key, :username, :password
 
   validates :bamboo_url, presence: true, url: true, if: :activated?
@@ -38,51 +40,62 @@ class BambooService < CiService
     'You must set up automatic revision labeling and a repository trigger in Bamboo.'
   end
 
-  def to_param
+  def self.to_param
     'bamboo'
   end
 
   def fields
     [
         { type: 'text', name: 'bamboo_url',
-          placeholder: 'Bamboo root URL like https://bamboo.example.com' },
+          placeholder: 'Bamboo root URL like https://bamboo.example.com', required: true },
         { type: 'text', name: 'build_key',
-          placeholder: 'Bamboo build plan key like KEY' },
+          placeholder: 'Bamboo build plan key like KEY', required: true },
         { type: 'text', name: 'username',
           placeholder: 'A user with API access, if applicable' },
-        { type: 'password', name: 'password' },
+        { type: 'password', name: 'password' }
     ]
   end
 
-  def supported_events
-    %w(push)
-  end
-
-  def build_info(sha)
-    @response = get_path("rest/api/latest/result?label=#{sha}")
-  end
-
   def build_page(sha, ref)
-    build_info(sha) if @response.nil? || !@response.code
+    with_reactive_cache(sha, ref) {|cached| cached[:build_page] }
+  end
 
-    if @response.code != 200 || @response['results']['results']['size'] == '0'
+  def commit_status(sha, ref)
+    with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
+  end
+
+  def execute(data)
+    return unless supported_events.include?(data[:object_kind])
+
+    get_path("updateAndBuild.action?buildKey=#{build_key}")
+  end
+
+  def calculate_reactive_cache(sha, ref)
+    response = get_path("rest/api/latest/result?label=#{sha}")
+
+    { build_page: read_build_page(response), commit_status: read_commit_status(response) }
+  end
+
+  private
+
+  def read_build_page(response)
+    if response.code != 200 || response['results']['results']['size'] == '0'
       # If actual build link can't be determined, send user to build summary page.
       URI.join("#{bamboo_url}/", "browse/#{build_key}").to_s
     else
       # If actual build link is available, go to build result page.
-      result_key = @response['results']['results']['result']['planResultKey']['key']
+      result_key = response['results']['results']['result']['planResultKey']['key']
       URI.join("#{bamboo_url}/", "browse/#{result_key}").to_s
     end
   end
 
-  def commit_status(sha, ref)
-    build_info(sha) if @response.nil? || !@response.code
-    return :error unless @response.code == 200 || @response.code == 404
+  def read_commit_status(response)
+    return :error unless response.code == 200 || response.code == 404
 
-    status = if @response.code == 404 || @response['results']['results']['size'] == '0'
+    status = if response.code == 404 || response['results']['results']['size'] == '0'
                'Pending'
              else
-               @response['results']['results']['result']['buildState']
+               response['results']['results']['result']['buildState']
              end
 
     if status.include?('Success')
@@ -95,14 +108,6 @@ class BambooService < CiService
       :error
     end
   end
-
-  def execute(data)
-    return unless supported_events.include?(data[:object_kind])
-
-    get_path("updateAndBuild.action?buildKey=#{build_key}")
-  end
-
-  private
 
   def build_url(path)
     URI.join("#{bamboo_url}/", path).to_s

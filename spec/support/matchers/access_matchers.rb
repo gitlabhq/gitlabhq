@@ -7,7 +7,7 @@ module AccessMatchers
   extend RSpec::Matchers::DSL
   include Warden::Test::Helpers
 
-  def emulate_user(user)
+  def emulate_user(user, membership = nil)
     case user
     when :user
       login_as(create(:user))
@@ -19,15 +19,27 @@ module AccessMatchers
       login_as(create(:user, external: true))
     when User
       login_as(user)
+    when *Gitlab::Access.sym_options_with_owner.keys
+      raise ArgumentError, "cannot emulate #{user} without membership parent" unless membership
+
+      role = user
+
+      if role == :owner && membership.owner
+        user = membership.owner
+      else
+        user = create(:user)
+        membership.public_send(:"add_#{role}", user)
+      end
+
+      login_as(user)
     else
       raise ArgumentError, "cannot emulate user #{user}"
     end
   end
 
   def description_for(user, type)
-    if user.kind_of?(User)
-      # User#inspect displays too much information for RSpec's description
-      # messages
+    if user.is_a?(User)
+      # User#inspect displays too much information for RSpec's descriptions
       "be #{type} for the specified user"
     else
       "be #{type} for #{user}"
@@ -36,9 +48,14 @@ module AccessMatchers
 
   matcher :be_allowed_for do |user|
     match do |url|
-      emulate_user(user)
-      visit url
-      status_code != 404 && current_path != new_user_session_path
+      emulate_user(user, @membership)
+      visit(url)
+
+      status_code == 200 && current_path != new_user_session_path
+    end
+
+    chain :of do |membership|
+      @membership = membership
     end
 
     description { description_for(user, 'allowed') }
@@ -46,9 +63,14 @@ module AccessMatchers
 
   matcher :be_denied_for do |user|
     match do |url|
-      emulate_user(user)
-      visit url
-      status_code == 404 || current_path == new_user_session_path
+      emulate_user(user, @membership)
+      visit(url)
+
+      [401, 404].include?(status_code) || current_path == new_user_session_path
+    end
+
+    chain :of do |membership|
+      @membership = membership
     end
 
     description { description_for(user, 'denied') }

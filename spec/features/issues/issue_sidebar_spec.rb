@@ -1,13 +1,79 @@
 require 'rails_helper'
 
 feature 'Issue Sidebar', feature: true do
-  let(:project) { create(:project) }
+  include MobileHelpers
+
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
+  let!(:label) { create(:label, project: project, title: 'bug') }
 
   before do
-    create(:label, project: project, title: 'bug')
-    login_as(user)
+    gitlab_sign_in(user)
+  end
+
+  context 'assignee', js: true do
+    let(:user2) { create(:user) }
+    let(:issue2) { create(:issue, project: project, author: user2) }
+
+    before do
+      project.team << [user, :developer]
+      visit_issue(project, issue2)
+
+      find('.block.assignee .edit-link').click
+
+      wait_for_requests
+    end
+
+    it 'shows author in assignee dropdown' do
+      page.within '.dropdown-menu-user' do
+        expect(page).to have_content(user2.name)
+      end
+    end
+
+    it 'shows author when filtering assignee dropdown' do
+      page.within '.dropdown-menu-user' do
+        find('.dropdown-input-field').native.send_keys user2.name
+        sleep 1 # Required to wait for end of input delay
+
+        wait_for_requests
+
+        expect(page).to have_content(user2.name)
+      end
+    end
+
+    it 'assigns yourself' do
+      find('.block.assignee .dropdown-menu-toggle').click
+
+      click_button 'assign yourself'
+
+      wait_for_requests
+
+      find('.block.assignee .edit-link').click
+
+      page.within '.dropdown-menu-user' do
+        expect(page.find('.dropdown-header')).to be_visible
+        expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
+      end
+    end
+
+    it 'keeps your filtered term after filtering and dismissing the dropdown' do
+      find('.dropdown-input-field').native.send_keys user2.name
+
+      wait_for_requests
+
+      page.within '.dropdown-menu-user' do
+        expect(page).not_to have_content 'Unassigned'
+        click_link user2.name
+      end
+
+      find('.js-right-sidebar').click
+      find('.block.assignee .edit-link').click
+
+      expect(page.all('.dropdown-menu-user li').length).to eq(1)
+      expect(find('.dropdown-input-field').value).to eq(user2.name)
+    end
   end
 
   context 'as a allowed user' do
@@ -16,48 +82,88 @@ feature 'Issue Sidebar', feature: true do
       visit_issue(project, issue)
     end
 
-    describe 'when clicking on edit labels', js: true do
-      it 'shows dropdown option to create a new label' do
-        find('.block.labels .edit-link').click
-
-        page.within('.block.labels') do
-          expect(page).to have_content 'Create new'
-        end
+    context 'sidebar', js: true do
+      it 'changes size when the screen size is smaller' do
+        sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
+        # Resize the window
+        resize_screen_sm
+        # Make sure the sidebar is collapsed
+        find(sidebar_selector)
+        expect(page).to have_css(sidebar_selector)
+        # Once is collapsed let's open the sidebard and reload
+        open_issue_sidebar
+        refresh
+        find(sidebar_selector)
+        expect(page).to have_css(sidebar_selector)
+        # Restore the window size as it was including the sidebar
+        restore_window_size
+        open_issue_sidebar
       end
     end
 
-    context 'creating a new label', js: true do
-      it 'shows option to crate a new label is present' do
+    context 'editing issue labels', js: true do
+      before do
         page.within('.block.labels') do
           find('.edit-link').click
+        end
+      end
 
+      it 'shows option to create a new label' do
+        page.within('.block.labels') do
           expect(page).to have_content 'Create new'
         end
       end
 
-      it 'shows dropdown switches to "create label" section' do
-        page.within('.block.labels') do
-          find('.edit-link').click
-          click_link 'Create new'
-
-          expect(page).to have_content 'Create new label'
-        end
-      end
-
-      it 'adds new label' do
-        page.within('.block.labels') do
-          find('.edit-link').click
-          sleep 1
-          click_link 'Create new'
-
-          fill_in 'new_label_name', with: 'wontfix'
-          page.find(".suggest-colors a", match: :first).click
-          click_button 'Create'
-
-          page.within('.dropdown-page-one') do
-            expect(page).to have_content 'wontfix'
+      context 'creating a new label', js: true do
+        before do
+          page.within('.block.labels') do
+            click_link 'Create new'
           end
         end
+
+        it 'shows dropdown switches to "create label" section' do
+          page.within('.block.labels') do
+            expect(page).to have_content 'Create new label'
+          end
+        end
+
+        it 'adds new label' do
+          page.within('.block.labels') do
+            fill_in 'new_label_name', with: 'wontfix'
+            page.find(".suggest-colors a", match: :first).click
+            click_button 'Create'
+
+            page.within('.dropdown-page-one') do
+              expect(page).to have_content 'wontfix'
+            end
+          end
+        end
+
+        it 'shows error message if label title is taken' do
+          page.within('.block.labels') do
+            fill_in 'new_label_name', with: label.title
+            page.find('.suggest-colors a', match: :first).click
+            click_button 'Create'
+
+            page.within('.dropdown-page-two') do
+              expect(page).to have_content 'Title has already been taken'
+            end
+          end
+        end
+      end
+    end
+  end
+
+  context 'as a allowed mobile user', js: true do
+    before do
+      project.team << [user, :developer]
+      resize_screen_xs
+      visit_issue(project, issue)
+    end
+
+    context 'mobile sidebar' do
+      it 'collapses the sidebar for small screens' do
+        expect(page).not_to have_css('aside.right-sidebar.right-sidebar-collapsed')
       end
     end
   end
@@ -75,5 +181,10 @@ feature 'Issue Sidebar', feature: true do
 
   def visit_issue(project, issue)
     visit namespace_project_issue_path(project.namespace, project, issue)
+  end
+
+  def open_issue_sidebar
+    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').trigger('click')
+    find('aside.right-sidebar.right-sidebar-expanded')
   end
 end

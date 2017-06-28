@@ -24,7 +24,7 @@ module ProjectsHelper
 
     return "(deleted)" unless author
 
-    author_html =  ""
+    author_html = ""
 
     # Build avatar image tag
     author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
@@ -45,14 +45,14 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: "author_link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author_link has-tooltip", title: title, data: { container: 'body' } ).html_safe
+      link_to(author_html, user_path(author), class: "author_link has-tooltip", title: title, data: { container: 'body' }).html_safe
     end
   end
 
-  def project_title(project, name = nil, url = nil)
+  def project_title(project)
     namespace_link =
       if project.group
-        link_to(simple_sanitize(project.group.name), group_path(project.group))
+        group_title(project.group)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
@@ -61,31 +61,37 @@ module ProjectsHelper
     project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
 
     if current_user
-      project_link << button_tag(type: 'button', class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" }) do
+      project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
         icon("chevron-down")
       end
     end
 
-    full_title = "#{namespace_link} / #{project_link}".html_safe
-    full_title << ' &middot; '.html_safe << link_to(simple_sanitize(name), url) if name
-
-    full_title
+    "#{namespace_link} / #{project_link}".html_safe
   end
 
   def remove_project_message(project)
-    "You are going to remove #{project.name_with_namespace}.\n Removed project CANNOT be restored!\n Are you ABSOLUTELY sure?"
+    _("You are going to remove %{project_name_with_namespace}.\nRemoved project CANNOT be restored!\nAre you ABSOLUTELY sure?") %
+      { project_name_with_namespace: project.name_with_namespace }
   end
 
   def transfer_project_message(project)
-    "You are going to transfer #{project.name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
+    _("You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?") %
+      { project_name_with_namespace: project.name_with_namespace }
   end
 
   def remove_fork_project_message(project)
-    "You are going to remove the fork relationship to source project #{@project.forked_from_project.name_with_namespace}.  Are you ABSOLUTELY sure?"
+    _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
+      { forked_from_project: @project.forked_from_project.name_with_namespace }
   end
 
   def project_nav_tabs
     @nav_tabs ||= get_project_nav_tabs(@project, current_user)
+  end
+
+  def project_search_tabs?(tab)
+    abilities = Array(search_tab_ability_map[tab])
+
+    abilities.any? { |ability| can?(current_user, ability, @project) }
   end
 
   def project_nav_tab?(name)
@@ -93,10 +99,12 @@ module ProjectsHelper
   end
 
   def project_for_deploy_key(deploy_key)
-    if deploy_key.projects.include?(@project)
+    if deploy_key.has_access_to?(@project)
       @project
     else
-      deploy_key.projects.find { |project| can?(current_user, :read_project, project) }
+      deploy_key.projects.find do |project|
+        can?(current_user, :read_project, project)
+      end
     end
   end
 
@@ -111,15 +119,13 @@ module ProjectsHelper
   end
 
   def license_short_name(project)
-    return 'LICENSE' if project.repository.license_key.nil?
-
-    license = Licensee::License.new(project.repository.license_key)
-
-    license.nickname || license.name
+    license = project.repository.license
+    license&.nickname || license&.name || 'LICENSE'
   end
 
   def last_push_event
     return unless current_user
+    return current_user.recent_push unless @project
 
     project_ids = [@project.id]
     if fork = current_user.fork_of(@project)
@@ -134,15 +140,92 @@ module ProjectsHelper
     options = project_feature_options
 
     if @project.private?
-      options.delete('Everyone with access')
-      highest_available_option = options.values.max if @project.project_feature.send(field) == ProjectFeature::ENABLED
+      level = @project.project_feature.send(field)
+      disabled_option = ProjectFeature::ENABLED
+      highest_available_option = ProjectFeature::PRIVATE if level == disabled_option
     end
 
-    options = options_for_select(options, selected: highest_available_option || @project.project_feature.public_send(field))
-    content_tag(:select, options, name: "project[project_feature_attributes][#{field}]", id: "project_project_feature_attributes_#{field}", class: "pull-right form-control", data: { field: field }).html_safe
+    options = options_for_select(
+      options.invert,
+      selected: highest_available_option || @project.project_feature.public_send(field),
+      disabled: disabled_option
+    )
+
+    content_tag :div, class: "select-wrapper" do
+      concat(
+        content_tag(
+          :select,
+          options,
+          name: "project[project_feature_attributes][#{field}]",
+          id: "project_project_feature_attributes_#{field}",
+          class: "pull-right form-control select-control #{repo_children_classes(field)} ",
+          data: { field: field }
+        )
+      )
+      concat(
+        icon('chevron-down')
+      )
+    end.html_safe
+  end
+
+  def link_to_autodeploy_doc
+    link_to _('About auto deploy'), help_page_path('ci/autodeploy/index'), target: '_blank'
+  end
+
+  def autodeploy_flash_notice(branch_name)
+    translation = _("Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}") %
+      { branch_name: truncate(sanitize(branch_name)), link_to_autodeploy_doc: link_to_autodeploy_doc }
+    translation.html_safe
+  end
+
+  def project_list_cache_key(project)
+    key = [
+      project.route.cache_key,
+      project.cache_key,
+      controller.controller_name,
+      controller.action_name,
+      current_application_settings.cache_key,
+      'v2.4'
+    ]
+
+    key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
+
+    key
+  end
+
+  def load_pipeline_status(projects)
+    Gitlab::Cache::Ci::ProjectPipelineStatus
+      .load_in_batch_for_projects(projects)
+  end
+
+  def show_no_ssh_key_message?
+    cookies[:hide_no_ssh_message].blank? && !current_user.hide_no_ssh_key && current_user.require_ssh_key?
+  end
+
+  def show_no_password_message?
+    cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
+      ( current_user.require_password? || current_user.require_personal_access_token? )
+  end
+
+  def link_to_set_password
+    if current_user.require_password?
+      link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
+    else
+      link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
+    end
   end
 
   private
+
+  def repo_children_classes(field)
+    needs_repo_check = [:merge_requests_access_level, :builds_access_level]
+    return unless needs_repo_check.include?(field)
+
+    classes = "project-repo-select js-repo-select"
+    classes << " disabled" unless @project.feature_available?(:repository, current_user)
+
+    classes
+  end
 
   def get_project_nav_tabs(project, current_user)
     nav_tabs = [:home]
@@ -155,61 +238,54 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if can?(current_user, :read_pipeline, project)
-      nav_tabs << :pipelines
-    end
-
-    if can?(current_user, :read_build, project)
-      nav_tabs << :builds
-    end
-
     if Gitlab.config.registry.enabled && can?(current_user, :read_container_image, project)
       nav_tabs << :container_registry
     end
 
-    if can?(current_user, :read_environment, project)
-      nav_tabs << :environments
+    if project.builds_enabled? && can?(current_user, :read_pipeline, project)
+      nav_tabs << :pipelines
     end
 
-    if can?(current_user, :admin_project, project)
-      nav_tabs << :settings
-    end
-
-    if can?(current_user, :read_project_member, project)
-      nav_tabs << :team
-    end
-
-    if can?(current_user, :read_issue, project)
-      nav_tabs << :issues
-    end
-
-    if can?(current_user, :read_wiki, project)
-      nav_tabs << :wiki
-    end
-
-    if can?(current_user, :read_project_snippet, project)
-      nav_tabs << :snippets
-    end
-
-    if can?(current_user, :read_label, project)
-      nav_tabs << :labels
-    end
-
-    if can?(current_user, :read_milestone, project)
-      nav_tabs << :milestones
+    tab_ability_map.each do |tab, ability|
+      if can?(current_user, ability, project)
+        nav_tabs << tab
+      end
     end
 
     nav_tabs.flatten
   end
 
+  def tab_ability_map
+    {
+      environments: :read_environment,
+      milestones:   :read_milestone,
+      snippets:     :read_project_snippet,
+      settings:     :admin_project,
+      builds:       :read_build,
+      labels:       :read_label,
+      issues:       :read_issue,
+      team:         :read_project_member,
+      wiki:         :read_wiki
+    }
+  end
+
+  def search_tab_ability_map
+    @search_tab_ability_map ||= tab_ability_map.merge(
+      blobs:          :download_code,
+      commits:        :download_code,
+      merge_requests: :read_merge_request,
+      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet]
+    )
+  end
+
   def project_lfs_status(project)
     if project.lfs_enabled?
       content_tag(:span, class: 'lfs-enabled') do
-        'Enabled'
+        s_('LFSStatus|Enabled')
       end
     else
       content_tag(:span, class: 'lfs-disabled') do
-        'Disabled'
+        s_('LFSStatus|Disabled')
       end
     end
   end
@@ -218,7 +294,7 @@ module ProjectsHelper
     if current_user
       current_user.name
     else
-      "Your name"
+      _("Your name")
     end
   end
 
@@ -228,11 +304,6 @@ module ProjectsHelper
     else
       "your@email.com"
     end
-  end
-
-  def repository_size(project = @project)
-    size_in_bytes = project.repository_size * 1.megabyte
-    number_to_human_size(size_in_bytes, delimiter: ',', precision: 2)
   end
 
   def default_url_to_repo(project = @project)
@@ -260,17 +331,20 @@ module ProjectsHelper
     if project.last_activity_at
       time_ago_with_tooltip(project.last_activity_at, placement: 'bottom', html_class: 'last_activity_time_ago')
     else
-      "Never"
+      s_("ProjectLastActivity|Never")
     end
   end
 
-  def add_special_file_path(project, file_name:, commit_message: nil)
+  def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
+    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
     namespace_project_new_blob_path(
       project.namespace,
       project,
       project.default_branch || 'master',
       file_name:      file_name,
-      commit_message: commit_message || "Add #{file_name.downcase}"
+      commit_message: commit_message,
+      branch_name: branch_name,
+      context: context
     )
   end
 
@@ -375,37 +449,9 @@ module ProjectsHelper
     end
   end
 
-  def new_readme_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
-  end
-
-  def new_license_path
-    ref = @repository.root_ref if @repository
-    ref ||= 'master'
-
-    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
-  end
-
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.path_with_namespace, sha, "readme"].join('-')
-  end
-
-  def round_commit_count(project)
-    count = project.commit_count
-
-    if count > 10000
-      '10000+'
-    elsif count > 5000
-      '5000+'
-    elsif count > 1000
-      '1000+'
-    else
-      count
-    end
   end
 
   def current_ref
@@ -425,14 +471,45 @@ module ProjectsHelper
   def sanitize_repo_path(project, message)
     return '' unless message.present?
 
-    message.strip.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
+    exports_path = File.join(Settings.shared['path'], 'tmp/project_exports')
+    filtered_message = message.strip.gsub(exports_path, "[REPO EXPORT PATH]")
+
+    filtered_message.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
   end
 
   def project_feature_options
     {
-      'Disabled' => ProjectFeature::DISABLED,
-      'Only team members' => ProjectFeature::PRIVATE,
-      'Everyone with access' => ProjectFeature::ENABLED
+      ProjectFeature::DISABLED => s_('ProjectFeature|Disabled'),
+      ProjectFeature::PRIVATE => s_('ProjectFeature|Only team members'),
+      ProjectFeature::ENABLED => s_('ProjectFeature|Everyone with access')
     }
+  end
+
+  def project_child_container_class(view_path)
+    view_path == "projects/issues/issues" ? "prepend-top-default" : "project-show-#{view_path}"
+  end
+
+  def project_issues(project)
+    IssuesFinder.new(current_user, project_id: project.id).execute
+  end
+
+  def visibility_select_options(project, selected_level)
+    level_options = Gitlab::VisibilityLevel.values.each_with_object([]) do |level, level_options|
+      next if restricted_levels.include?(level)
+
+      level_options << [
+        visibility_level_label(level),
+        { data: { description: visibility_level_description(level, project) } },
+        level
+      ]
+    end
+
+    options_for_select(level_options, selected_level)
+  end
+
+  def restricted_levels
+    return [] if current_user.admin?
+
+    current_application_settings.restricted_visibility_levels || []
   end
 end

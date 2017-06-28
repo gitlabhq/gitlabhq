@@ -1,17 +1,20 @@
 require 'spec_helper'
 
 describe Projects::ForkService, services: true do
-  describe :fork_by_user do
+  describe 'fork by user' do
     before do
-      @from_namespace = create(:namespace)
-      @from_user = create(:user, namespace: @from_namespace )
+      @from_user = create(:user)
+      @from_namespace = @from_user.namespace
+      avatar = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
       @from_project = create(:project,
+                             :repository,
                              creator_id: @from_user.id,
                              namespace: @from_namespace,
                              star_count: 107,
+                             avatar: avatar,
                              description: 'wow such project')
-      @to_namespace = create(:namespace)
-      @to_user = create(:user, namespace: @to_namespace)
+      @to_user = create(:user)
+      @to_namespace = @to_user.namespace
       @from_project.add_user(@to_user, :developer)
     end
 
@@ -36,12 +39,23 @@ describe Projects::ForkService, services: true do
         it { expect(to_project.namespace).to eq(@to_user.namespace) }
         it { expect(to_project.star_count).to be_zero }
         it { expect(to_project.description).to eq(@from_project.description) }
+        it { expect(to_project.avatar.file).to be_exists }
+
+        # This test is here because we had a bug where the from-project lost its
+        # avatar after being forked.
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/26158
+        it "after forking the from-project still has its avatar" do
+          # If we do not fork the project first we cannot detect the bug.
+          expect(to_project).to be_persisted
+
+          expect(@from_project.avatar.file).to be_exists
+        end
       end
     end
 
     context 'project already exists' do
       it "fails due to validation, not transaction failure" do
-        @existing_project = create(:project, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
+        @existing_project = create(:project, :repository, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
         @to_project = fork_project(@from_project, @to_user)
         expect(@existing_project).to be_persisted
 
@@ -87,13 +101,14 @@ describe Projects::ForkService, services: true do
     end
   end
 
-  describe :fork_to_namespace do
+  describe 'fork to namespace' do
     before do
       @group_owner = create(:user)
       @developer   = create(:user)
-      @project     = create(:project, creator_id: @group_owner.id,
-                                      star_count: 777,
-                                      description: 'Wow, such a cool project!')
+      @project     = create(:project, :repository,
+                            creator_id: @group_owner.id,
+                            star_count: 777,
+                            description: 'Wow, such a cool project!')
       @group = create(:group)
       @group.add_user(@group_owner, GroupMember::OWNER)
       @group.add_user(@developer,   GroupMember::DEVELOPER)
@@ -126,8 +141,9 @@ describe Projects::ForkService, services: true do
 
     context 'project already exists in group' do
       it 'fails due to validation, not transaction failure' do
-        existing_project = create(:project, name: @project.name,
-                                            namespace: @group)
+        existing_project = create(:project, :repository,
+                                  name: @project.name,
+                                  namespace: @group)
         to_project = fork_project(@project, @group_owner, @opts)
         expect(existing_project.persisted?).to be_truthy
         expect(to_project.errors[:name]).to eq(['has already been taken'])

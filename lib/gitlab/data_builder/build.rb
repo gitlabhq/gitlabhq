@@ -8,6 +8,8 @@ module Gitlab
         commit = build.pipeline
         user = build.user
 
+        author_url = build_author_url(build.commit, commit)
+
         data = {
           object_kind: 'build',
 
@@ -34,7 +36,7 @@ module Gitlab
           user: {
             id: user.try(:id),
             name: user.try(:name),
-            email: user.try(:email),
+            email: user.try(:email)
           },
 
           commit: {
@@ -43,10 +45,11 @@ module Gitlab
             message: commit.git_commit_message,
             author_name: commit.git_author_name,
             author_email: commit.git_author_email,
+            author_url: author_url,
             status: commit.status,
             duration: commit.duration,
             started_at: commit.started_at,
-            finished_at: commit.finished_at,
+            finished_at: commit.finished_at
           },
 
           repository: {
@@ -57,10 +60,17 @@ module Gitlab
             git_http_url: project.http_url_to_repo,
             git_ssh_url: project.ssh_url_to_repo,
             visibility_level: project.visibility_level
-          },
+          }
         }
 
         data
+      end
+
+      private
+
+      def build_author_url(commit, pipeline)
+        author = commit.try(:author)
+        author ? Gitlab::Routing.url_helpers.user_url(author) : "mailto:#{pipeline.git_author_email}"
       end
     end
   end

@@ -1,63 +1,78 @@
-(function() {
-  this.Pager = {
-    init: function(limit, preload, disable, callback) {
-      this.limit = limit != null ? limit : 0;
-      this.disable = disable != null ? disable : false;
-      this.callback = callback != null ? callback : $.noop;
+import '~/lib/utils/common_utils';
+import '~/lib/utils/url_utility';
+
+(() => {
+  const ENDLESS_SCROLL_BOTTOM_PX = 400;
+  const ENDLESS_SCROLL_FIRE_DELAY_MS = 1000;
+
+  const Pager = {
+    init(limit = 0, preload = false, disable = false, prepareData = $.noop, callback = $.noop) {
+      this.url = $('.content_list').data('href') || gl.utils.removeParams(['limit', 'offset']);
+      this.limit = limit;
+      this.offset = parseInt(gl.utils.getParameterByName('offset'), 10) || this.limit;
+      this.disable = disable;
+      this.prepareData = prepareData;
+      this.callback = callback;
       this.loading = $('.loading').first();
       if (preload) {
         this.offset = 0;
         this.getOld();
-      } else {
-        this.offset = this.limit;
       }
-      return this.initLoadMore();
+      this.initLoadMore();
     },
-    getOld: function() {
+
+    getOld() {
       this.loading.show();
-      return $.ajax({
-        type: "GET",
-        url: $(".content_list").data('href') || location.href,
-        data: "limit=" + this.limit + "&offset=" + this.offset,
-        complete: (function(_this) {
-          return function() {
-            return _this.loading.hide();
-          };
-        })(this),
-        success: function(data) {
-          Pager.append(data.count, data.html);
-          return Pager.callback();
+      $.ajax({
+        type: 'GET',
+        url: this.url,
+        data: `limit=${this.limit}&offset=${this.offset}`,
+        dataType: 'json',
+        error: () => this.loading.hide(),
+        success: (data) => {
+          this.append(data.count, this.prepareData(data.html));
+          this.callback();
+
+          // keep loading until we've filled the viewport height
+          if (!this.disable && !this.isScrollable()) {
+            this.getOld();
+          } else {
+            this.loading.hide();
+          }
         },
-        dataType: "json"
       });
     },
-    append: function(count, html) {
-      $(".content_list").append(html);
+
+    append(count, html) {
+      $('.content_list').append(html);
       if (count > 0) {
-        return this.offset += count;
+        this.offset += count;
       } else {
-        return this.disable = true;
+        this.disable = true;
       }
     },
-    initLoadMore: function() {
+
+    isScrollable() {
+      const $w = $(window);
+      return $(document).height() > $w.height() + $w.scrollTop() + ENDLESS_SCROLL_BOTTOM_PX;
+    },
+
+    initLoadMore() {
       $(document).unbind('scroll');
-      return $(document).endlessScroll({
-        bottomPixels: 400,
-        fireDelay: 1000,
+      $(document).endlessScroll({
+        bottomPixels: ENDLESS_SCROLL_BOTTOM_PX,
+        fireDelay: ENDLESS_SCROLL_FIRE_DELAY_MS,
         fireOnce: true,
-        ceaseFire: function() {
-          return Pager.disable;
+        ceaseFire: () => this.disable === true,
+        callback: () => {
+          if (!this.loading.is(':visible')) {
+            this.loading.show();
+            this.getOld();
+          }
         },
-        callback: (function(_this) {
-          return function(i) {
-            if (!_this.loading.is(':visible')) {
-              _this.loading.show();
-              return Pager.getOld();
-            }
-          };
-        })(this)
       });
-    }
+    },
   };
 
-}).call(this);
+  window.Pager = Pager;
+})();

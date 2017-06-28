@@ -1,21 +1,24 @@
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, max-len */
+/* global u2f */
+/* global U2FError */
+/* global U2FUtil */
+
 // Register U2F (universal 2nd factor) devices for users to authenticate with.
 //
 // State Flow #1: setup -> in_progress -> registered -> POST to server
 // State Flow #2: setup -> in_progress -> error -> setup
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
   this.U2FRegister = (function() {
     function U2FRegister(container, u2fParams) {
       this.container = container;
-      this.renderNotSupported = bind(this.renderNotSupported, this);
-      this.renderRegistered = bind(this.renderRegistered, this);
-      this.renderError = bind(this.renderError, this);
-      this.renderInProgress = bind(this.renderInProgress, this);
-      this.renderSetup = bind(this.renderSetup, this);
-      this.renderTemplate = bind(this.renderTemplate, this);
-      this.register = bind(this.register, this);
-      this.start = bind(this.start, this);
+      this.renderNotSupported = this.renderNotSupported.bind(this);
+      this.renderRegistered = this.renderRegistered.bind(this);
+      this.renderError = this.renderError.bind(this);
+      this.renderInProgress = this.renderInProgress.bind(this);
+      this.renderSetup = this.renderSetup.bind(this);
+      this.renderTemplate = this.renderTemplate.bind(this);
+      this.register = this.register.bind(this);
+      this.start = this.start.bind(this);
       this.appId = u2fParams.app_id;
       this.registerRequests = u2fParams.register_requests;
       this.signRequests = u2fParams.sign_requests;
@@ -34,7 +37,7 @@
         return function(response) {
           var error;
           if (response.errorCode) {
-            error = new U2FError(response.errorCode);
+            error = new U2FError(response.errorCode, 'register');
             return _this.renderError(error);
           } else {
             return _this.renderRegistered(JSON.stringify(response));
@@ -71,7 +74,8 @@
 
     U2FRegister.prototype.renderError = function(error) {
       this.renderTemplate('error', {
-        error_message: error.message()
+        error_message: error.message(),
+        error_code: error.errorCode
       });
       return this.container.find('#js-u2f-try-again').on('click', this.renderSetup);
     };
@@ -88,7 +92,5 @@
     };
 
     return U2FRegister;
-
   })();
-
-}).call(this);
+}).call(window);

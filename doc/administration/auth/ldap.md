@@ -35,6 +35,10 @@ of one hour.
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.
 
+There is a Rake task to check LDAP configuration. After configuring LDAP
+using the documentation below, see [LDAP check Rake task](../raketasks/check.md#ldap-check)
+for information on the LDAP check Rake task.
+
 >**Note**: In GitLab EE, you can configure multiple LDAP servers to connect to
 one GitLab server.
 
@@ -62,10 +66,14 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   # Example: 'Paris' or 'Acme, Ltd.'
   label: 'LDAP'
 
+  # Example: 'ldap.mydomain.com'
   host: '_your_ldap_server'
+  # This port is an example, it is sometimes different but it is always an integer and not a string
   port: 389
-  uid: 'sAMAccountName'
+  uid: 'sAMAccountName' # This should be the attribute, not the value that maps to uid.
   method: 'plain' # "tls" or "ssl" or "plain"
+
+  # Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
 
@@ -97,7 +105,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 
   # Base where we can search for users
   #
-  #   Ex. ou=People,dc=gitlab,dc=example
+  #   Ex. 'ou=People,dc=gitlab,dc=example' or 'DC=mydomain,DC=com'
   #
   base: ''
 
@@ -107,6 +115,9 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #   Ex. (employeeType=developer)
   #
   #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
+  #
+  #   Below an example for get only specific users
+  #   Example: '(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'
   #
   user_filter: ''
 
@@ -217,7 +228,7 @@ Tip: If you want to limit access to the nested members of an Active Directory
 group you can use the following syntax:
 
 ```
-(memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
+(memberOf=CN=My Group,DC=Example,DC=com)
 ```
 
 Please note that GitLab does not support the custom filter syntax used by
@@ -253,6 +264,24 @@ the LDAP server's SSL certificate is performed.
 
 ## Troubleshooting
 
+### Debug LDAP user filter with ldapsearch
+
+This example uses ldapsearch and assumes you are using ActiveDirectory. The
+following query returns the login names of the users that will be allowed to
+log in to GitLab if you configure your own user_filter.
+
+```
+ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$base" "$user_filter" sAMAccountName
+```
+
+- Variables beginning with a `$` refer to a variable from the LDAP section of
+  your configuration file.
+- Replace ldaps:// with ldap:// if you are using the plain authentication method.
+  Port `389` is the default `ldap://` port and `636` is the default `ldaps://`
+  port.
+- We are assuming the password for the bind_dn user is in bind_dn_password.txt.
+
+
 ### Invalid credentials when logging in
 
 - Make sure the user you are binding with has enough permissions to read the user's
@@ -276,8 +305,11 @@ LDAP server please double-check the LDAP `port` and `method` settings used by
 GitLab. Common combinations are `method: 'plain'` and `port: 389`, OR
 `method: 'ssl'` and `port: 636`.
 
-### Login with valid credentials rejected
+### Troubleshooting
 
-If there is an unexpected error while authenticating the user with the LDAP
-backend, the login is rejected and details about the error are logged to
+If a user account is blocked or unblocked due to the LDAP configuration, a
+message will be logged to `application.log`.
+
+If there is an unexpected error during an LDAP lookup (configuration error,
+timeout), the login is rejected and a message will be logged to
 `production.log`.

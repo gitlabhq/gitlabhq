@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe VisibilityLevelHelper do
-  let(:project)          { build(:project) }
+  let(:project)          { build(:empty_project) }
   let(:group)            { build(:group) }
   let(:personal_snippet) { build(:personal_snippet) }
   let(:project_snippet)  { build(:project_snippet) }
@@ -37,7 +37,7 @@ describe VisibilityLevelHelper do
 
     it "describes public projects" do
       expect(project_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC))
-            .to eq "The project can be cloned without any authentication."
+            .to eq "The project can be accessed without any authentication."
     end
   end
 
@@ -60,8 +60,8 @@ describe VisibilityLevelHelper do
 
   describe "skip_level?" do
     describe "forks" do
-      let(:project)       { create(:project, :internal) }
-      let(:fork_project)  { create(:project, forked_from_project: project) }
+      let(:project)       { create(:empty_project, :internal) }
+      let(:fork_project)  { create(:empty_project, forked_from_project: project) }
 
       it "skips levels" do
         expect(skip_level?(fork_project, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
@@ -71,7 +71,7 @@ describe VisibilityLevelHelper do
     end
 
     describe "non-forked project" do
-      let(:project) { create(:project, :internal) }
+      let(:project) { create(:empty_project, :internal) }
 
       it "skips levels" do
         expect(skip_level?(project, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey

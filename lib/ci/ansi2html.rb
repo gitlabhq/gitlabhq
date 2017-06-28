@@ -13,15 +13,15 @@ module Ci
       5 => 'magenta',
       6 => 'cyan',
       7 => 'white', # not that this is gray in the dark (aka default) color table
-    }
+    }.freeze
 
     STYLE_SWITCHES = {
       bold:       0x01,
       italic:     0x02,
       underline:  0x04,
       conceal:    0x08,
-      cross:      0x10,
-    }
+      cross:      0x10
+    }.freeze
 
     def self.convert(ansi, state = nil)
       Converter.new.convert(ansi, state)
@@ -29,93 +29,157 @@ module Ci
 
     class Converter
       def on_0(s) reset()                            end
+
       def on_1(s) enable(STYLE_SWITCHES[:bold])      end
+
       def on_3(s) enable(STYLE_SWITCHES[:italic])    end
+
       def on_4(s) enable(STYLE_SWITCHES[:underline]) end
+
       def on_8(s) enable(STYLE_SWITCHES[:conceal])   end
+
       def on_9(s) enable(STYLE_SWITCHES[:cross])     end
 
       def on_21(s) disable(STYLE_SWITCHES[:bold])      end
+
       def on_22(s) disable(STYLE_SWITCHES[:bold])      end
+
       def on_23(s) disable(STYLE_SWITCHES[:italic])    end
+
       def on_24(s) disable(STYLE_SWITCHES[:underline]) end
+
       def on_28(s) disable(STYLE_SWITCHES[:conceal])   end
+
       def on_29(s) disable(STYLE_SWITCHES[:cross])     end
 
       def on_30(s) set_fg_color(0) end
+
       def on_31(s) set_fg_color(1) end
+
       def on_32(s) set_fg_color(2) end
+
       def on_33(s) set_fg_color(3) end
+
       def on_34(s) set_fg_color(4) end
+
       def on_35(s) set_fg_color(5) end
+
       def on_36(s) set_fg_color(6) end
+
       def on_37(s) set_fg_color(7) end
+
       def on_38(s) set_fg_color_256(s) end
+
       def on_39(s) set_fg_color(9) end
 
       def on_40(s) set_bg_color(0) end
+
       def on_41(s) set_bg_color(1) end
+
       def on_42(s) set_bg_color(2) end
+
       def on_43(s) set_bg_color(3) end
+
       def on_44(s) set_bg_color(4) end
+
       def on_45(s) set_bg_color(5) end
+
       def on_46(s) set_bg_color(6) end
+
       def on_47(s) set_bg_color(7) end
+
       def on_48(s) set_bg_color_256(s) end
+
       def on_49(s) set_bg_color(9) end
 
       def on_90(s) set_fg_color(0, 'l') end
+
       def on_91(s) set_fg_color(1, 'l') end
+
       def on_92(s) set_fg_color(2, 'l') end
+
       def on_93(s) set_fg_color(3, 'l') end
+
       def on_94(s) set_fg_color(4, 'l') end
+
       def on_95(s) set_fg_color(5, 'l') end
+
       def on_96(s) set_fg_color(6, 'l') end
+
       def on_97(s) set_fg_color(7, 'l') end
+
       def on_99(s) set_fg_color(9, 'l') end
 
       def on_100(s) set_bg_color(0, 'l') end
+
       def on_101(s) set_bg_color(1, 'l') end
+
       def on_102(s) set_bg_color(2, 'l') end
+
       def on_103(s) set_bg_color(3, 'l') end
+
       def on_104(s) set_bg_color(4, 'l') end
+
       def on_105(s) set_bg_color(5, 'l') end
+
       def on_106(s) set_bg_color(6, 'l') end
+
       def on_107(s) set_bg_color(7, 'l') end
+
       def on_109(s) set_bg_color(9, 'l') end
 
       attr_accessor :offset, :n_open_tags, :fg_color, :bg_color, :style_mask
 
-      STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask]
+      STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask].freeze
 
-      def convert(raw, new_state)
+      def convert(stream, new_state)
         reset_state
-        restore_state(raw, new_state) if new_state.present?
+        restore_state(new_state, stream) if new_state.present?
 
-        start = @offset
-        ansi = raw[@offset..-1]
+        append = false
+        truncated = false
+
+        cur_offset = stream.tell
+        if cur_offset > @offset
+          @offset = cur_offset
+          truncated = true
+        else
+          stream.seek(@offset)
+          append = @offset > 0
+        end
+        start_offset = @offset
 
         open_new_tag
 
-        s = StringScanner.new(ansi)
-        until s.eos?
-          if s.scan(/\e([@-_])(.*?)([@-~])/)
-            handle_sequence(s)
-          elsif s.scan(/\e(([@-_])(.*?)?)?$/)
-            break
-          elsif s.scan(/</)
-            @out << '&lt;'
-          elsif s.scan(/\n/)
-            @out << '<br>'
-          else
-            @out << s.scan(/./m)
+        stream.each_line do |line|
+          s = StringScanner.new(line)
+          until s.eos?
+            if s.scan(/\e([@-_])(.*?)([@-~])/)
+              handle_sequence(s)
+            elsif s.scan(/\e(([@-_])(.*?)?)?$/)
+              break
+            elsif s.scan(/</)
+              @out << '&lt;'
+            elsif s.scan(/\r?\n/)
+              @out << '<br>'
+            else
+              @out << s.scan(/./m)
+            end
+            @offset += s.matched_size
           end
-          @offset += s.matched_size
         end
 
         close_open_tags()
 
-        { state: state, html: @out, text: ansi[0, @offset - start], append: start > 0 }
+        OpenStruct.new(
+          html: @out.force_encoding(Encoding.default_external),
+          state: state,
+          append: append,
+          truncated: truncated,
+          offset: start_offset,
+          size: stream.tell - start_offset,
+          total: stream.size
+        )
       end
 
       def handle_sequence(s)
@@ -126,7 +190,7 @@ module Ci
         # We are only interested in color and text style changes - triggered by
         # sequences starting with '\e[' and ending with 'm'. Any other control
         # sequence gets stripped (including stuff like "delete last line")
-        return unless indicator == '[' and terminator == 'm'
+        return unless indicator == '[' && terminator == 'm'
 
         close_open_tags()
 
@@ -196,10 +260,10 @@ module Ci
         Base64.urlsafe_encode64(state.to_json)
       end
 
-      def restore_state(raw, new_state)
+      def restore_state(new_state, stream)
         state = Base64.urlsafe_decode64(new_state)
         state = JSON.parse(state, symbolize_names: true)
-        return if state[:offset].to_i > raw.length
+        return if state[:offset].to_i > stream.size
 
         STATE_PARAMS.each do |param|
           send("#{param}=".to_sym, state[param])

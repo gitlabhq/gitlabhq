@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe "Dashboard Issues filtering", feature: true, js: true do
   let(:user)      { create(:user) }
-  let(:project)   { create(:project) }
+  let(:project)   { create(:empty_project) }
   let(:milestone) { create(:milestone, project: project) }
 
   context 'filtering by milestone' do
     before do
       project.team << [user, :master]
-      login_as(user)
+      gitlab_sign_in(user)
 
-      create(:issue, project: project, author: user, assignee: user)
-      create(:issue, project: project, author: user, assignee: user, milestone: milestone)
+      create(:issue, project: project, author: user, assignees: [user])
+      create(:issue, project: project, author: user, assignees: [user], milestone: milestone)
 
       visit_issues
     end
@@ -44,6 +44,22 @@ describe "Dashboard Issues filtering", feature: true, js: true do
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
     end
+
+    it 'updates atom feed link' do
+      visit_issues(milestone_title: '', assignee_id: user.id)
+
+      link = find('.nav-controls a[title="Subscribe"]')
+      params = CGI.parse(URI.parse(link[:href]).query)
+      auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
+      auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
+
+      expect(params).to include('rss_token' => [user.rss_token])
+      expect(params).to include('milestone_title' => [''])
+      expect(params).to include('assignee_id' => [user.id.to_s])
+      expect(auto_discovery_params).to include('rss_token' => [user.rss_token])
+      expect(auto_discovery_params).to include('milestone_title' => [''])
+      expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
+    end
   end
 
   def show_milestone_dropdown
@@ -51,7 +67,7 @@ describe "Dashboard Issues filtering", feature: true, js: true do
     expect(page).to have_selector('.dropdown-content', visible: true)
   end
 
-  def visit_issues
-    visit issues_dashboard_path
+  def visit_issues(*args)
+    visit issues_dashboard_path(*args)
   end
 end

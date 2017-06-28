@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 feature "Admin Health Check", feature: true do
-  include WaitForAjax
+  include StubENV
 
   before do
-    login_as :admin
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+    gitlab_sign_in :admin
   end
 
   describe '#show' do
@@ -12,20 +13,22 @@ feature "Admin Health Check", feature: true do
       visit admin_health_check_path
     end
 
-    it { page.has_text? 'Health Check' }
-    it { page.has_text? 'Health information can be retrieved' }
-
     it 'has a health check access token' do
+      page.has_text? 'Health Check'
+      page.has_text? 'Health information can be retrieved'
+
       token = current_application_settings.health_check_access_token
+
       expect(page).to have_content("Access token is #{token}")
       expect(page).to have_selector('#health-check-token', text: token)
     end
 
-    describe 'reload access token', js: true do
+    describe 'reload access token' do
       it 'changes the access token' do
         orig_token = current_application_settings.health_check_access_token
         click_button 'Reset health check access token'
-        wait_for_ajax
+
+        expect(page).to have_content('New health check access token has been generated!')
         expect(find('#health-check-token').text).not_to eq orig_token
       end
     end

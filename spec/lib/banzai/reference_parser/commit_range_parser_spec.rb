@@ -8,6 +8,16 @@ describe Banzai::ReferenceParser::CommitRangeParser, lib: true do
   subject { described_class.new(project, user) }
   let(:link) { empty_html_link }
 
+  describe '#nodes_visible_to_user' do
+    context 'when the link has a data-issue attribute' do
+      before do
+        link['data-commit-range'] = '123..456'
+      end
+
+      it_behaves_like "referenced feature visibility", "repository"
+    end
+  end
+
   describe '#referenced_by' do
     context 'when the link has a data-project attribute' do
       before do
@@ -22,17 +32,17 @@ describe Banzai::ReferenceParser::CommitRangeParser, lib: true do
         it 'returns an Array of commit ranges' do
           range = double(:range)
 
-          expect(subject).to receive(:find_object).
-            with(project, '123..456').
-            and_return(range)
+          expect(subject).to receive(:find_object)
+            .with(project, '123..456')
+            .and_return(range)
 
           expect(subject.referenced_by([link])).to eq([range])
         end
 
         it 'returns an empty Array when the commit range could not be found' do
-          expect(subject).to receive(:find_object).
-            with(project, '123..456').
-            and_return(nil)
+          expect(subject).to receive(:find_object)
+            .with(project, '123..456')
+            .and_return(nil)
 
           expect(subject.referenced_by([link])).to eq([])
         end
@@ -78,17 +88,17 @@ describe Banzai::ReferenceParser::CommitRangeParser, lib: true do
     it 'returns an Array of range objects' do
       range = double(:commit)
 
-      expect(subject).to receive(:find_object).
-        with(project, '123..456').
-        and_return(range)
+      expect(subject).to receive(:find_object)
+        .with(project, '123..456')
+        .and_return(range)
 
       expect(subject.find_ranges(project, ['123..456'])).to eq([range])
     end
 
     it 'skips ranges that could not be found' do
-      expect(subject).to receive(:find_object).
-        with(project, '123..456').
-        and_return(nil)
+      expect(subject).to receive(:find_object)
+        .with(project, '123..456')
+        .and_return(nil)
 
       expect(subject.find_ranges(project, ['123..456'])).to eq([])
     end

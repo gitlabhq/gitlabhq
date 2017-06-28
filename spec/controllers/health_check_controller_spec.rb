@@ -1,9 +1,15 @@
 require 'spec_helper'
 
 describe HealthCheckController do
+  include StubENV
+
   let(:token) { current_application_settings.health_check_access_token }
   let(:json_response) { JSON.parse(response.body) }
   let(:xml_response) { Hash.from_xml(response.body)['hash'] }
+
+  before do
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+  end
 
   describe 'GET #index' do
     context 'when services are up but NO access token' do
@@ -58,8 +64,8 @@ describe HealthCheckController do
 
     context 'when a service is down and an access token is provided' do
       before do
-        allow(HealthCheck::Utils).to receive(:process_checks).with('standard').and_return('The server is on fire')
-        allow(HealthCheck::Utils).to receive(:process_checks).with('email').and_return('Email is on fire')
+        allow(HealthCheck::Utils).to receive(:process_checks).with(['standard']).and_return('The server is on fire')
+        allow(HealthCheck::Utils).to receive(:process_checks).with(['email']).and_return('Email is on fire')
       end
 
       it 'supports passing the token in the header' do

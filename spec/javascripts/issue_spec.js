@@ -1,119 +1,198 @@
+/* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
+import Issue from '~/issue';
 
-/*= require lib/utils/text_utility */
-/*= require issue */
+import '~/lib/utils/text_utility';
 
-(function() {
-  describe('Issue', function() {
-    return describe('task lists', function() {
-      fixture.preload('issues_show.html');
-      beforeEach(function() {
-        fixture.load('issues_show.html');
-        return this.issue = new Issue();
+describe('Issue', function() {
+  let $boxClosed, $boxOpen, $btnClose, $btnReopen;
+
+  preloadFixtures('issues/closed-issue.html.raw');
+  preloadFixtures('issues/issue-with-task-list.html.raw');
+  preloadFixtures('issues/open-issue.html.raw');
+
+  function expectErrorMessage() {
+    const $flashMessage = $('div.flash-alert');
+    expect($flashMessage).toExist();
+    expect($flashMessage).toBeVisible();
+    expect($flashMessage).toHaveText('Unable to update this issue at this time.');
+  }
+
+  function expectIssueState(isIssueOpen) {
+    expectVisibility($boxClosed, !isIssueOpen);
+    expectVisibility($boxOpen, isIssueOpen);
+
+    expectVisibility($btnClose, isIssueOpen);
+    expectVisibility($btnReopen, !isIssueOpen);
+  }
+
+  function expectNewBranchButtonState(isPending, canCreate) {
+    if (Issue.$btnNewBranch.length === 0) {
+      return;
+    }
+
+    const $available = Issue.$btnNewBranch.find('.available');
+    expect($available).toHaveText('New branch');
+
+    if (!isPending && canCreate) {
+      expect($available).toBeVisible();
+    } else {
+      expect($available).toBeHidden();
+    }
+
+    const $unavailable = Issue.$btnNewBranch.find('.unavailable');
+    expect($unavailable).toHaveText('New branch unavailable');
+
+    if (!isPending && !canCreate) {
+      expect($unavailable).toBeVisible();
+    } else {
+      expect($unavailable).toBeHidden();
+    }
+  }
+
+  function expectVisibility($element, shouldBeVisible) {
+    if (shouldBeVisible) {
+      expect($element).not.toHaveClass('hidden');
+    } else {
+      expect($element).toHaveClass('hidden');
+    }
+  }
+
+  function findElements() {
+    $boxClosed = $('div.status-box-closed');
+    expect($boxClosed).toExist();
+    expect($boxClosed).toHaveText('Closed');
+
+    $boxOpen = $('div.status-box-open');
+    expect($boxOpen).toExist();
+    expect($boxOpen).toHaveText('Open');
+
+    $btnClose = $('.btn-close.btn-grouped');
+    expect($btnClose).toExist();
+    expect($btnClose).toHaveText('Close issue');
+
+    $btnReopen = $('.btn-reopen.btn-grouped');
+    expect($btnReopen).toExist();
+    expect($btnReopen).toHaveText('Reopen issue');
+  }
+
+  describe('task lists', function() {
+    beforeEach(function() {
+      loadFixtures('issues/issue-with-task-list.html.raw');
+      this.issue = new Issue();
+    });
+
+    it('submits an ajax request on tasklist:changed', function() {
+      spyOn(jQuery, 'ajax').and.callFake(function(req) {
+        expect(req.type).toBe('PATCH');
+        expect(req.url).toBe(gl.TEST_HOST + '/frontend-fixtures/issues-project/issues/1.json'); // eslint-disable-line prefer-template
+        expect(req.data.issue.description).not.toBe(null);
       });
-      it('modifies the Markdown field', function() {
-        spyOn(jQuery, 'ajax').and.stub();
-        $('input[type=checkbox]').attr('checked', true).trigger('change');
-        return expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
-      });
-      return it('submits an ajax request on tasklist:changed', function() {
-        spyOn(jQuery, 'ajax').and.callFake(function(req) {
-          expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('/foo');
-          return expect(req.data.issue.description).not.toBe(null);
-        });
-        return $('.js-task-list-field').trigger('tasklist:changed');
-      });
+
+      $('.js-task-list-field').trigger('tasklist:changed');
     });
   });
 
-  describe('reopen/close issue', function() {
-    fixture.preload('issues_show.html');
-    beforeEach(function() {
-      fixture.load('issues_show.html');
-      return this.issue = new Issue();
-    });
-    it('closes an issue', function() {
-      var $btnClose, $btnReopen;
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expect(req.type).toBe('PUT');
-        expect(req.url).toBe('http://gitlab.com/issues/6/close');
-        return req.success({
+  [true, false].forEach((isIssueInitiallyOpen) => {
+    describe(`with ${isIssueInitiallyOpen ? 'open' : 'closed'} issue`, function() {
+      const action = isIssueInitiallyOpen ? 'close' : 'reopen';
+
+      function ajaxSpy(req) {
+        if (req.url === this.$triggeredButton.attr('href')) {
+          expect(req.type).toBe('PUT');
+          expect(this.$triggeredButton).toHaveProp('disabled', true);
+          expectNewBranchButtonState(true, false);
+          return this.issueStateDeferred;
+        } else if (req.url === Issue.createMrDropdownWrap.dataset.canCreatePath) {
+          expect(req.type).toBe('GET');
+          expectNewBranchButtonState(true, false);
+          return this.canCreateBranchDeferred;
+        }
+
+        expect(req.url).toBe('unexpected');
+        return null;
+      }
+
+      beforeEach(function() {
+        if (isIssueInitiallyOpen) {
+          loadFixtures('issues/open-issue.html.raw');
+        } else {
+          loadFixtures('issues/closed-issue.html.raw');
+        }
+
+        findElements();
+        this.issue = new Issue();
+        expectIssueState(isIssueInitiallyOpen);
+        this.$triggeredButton = isIssueInitiallyOpen ? $btnClose : $btnReopen;
+
+        this.$projectIssuesCounter = $('.issue_counter');
+        this.$projectIssuesCounter.text('1,001');
+
+        this.issueStateDeferred = new jQuery.Deferred();
+        this.canCreateBranchDeferred = new jQuery.Deferred();
+
+        spyOn(jQuery, 'ajax').and.callFake(ajaxSpy.bind(this));
+      });
+
+      it(`${action}s the issue`, function() {
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.resolve({
           id: 34
         });
+        this.canCreateBranchDeferred.resolve({
+          can_create_branch: !isIssueInitiallyOpen
+        });
+
+        expectIssueState(!isIssueInitiallyOpen);
+        expect(this.$triggeredButton).toHaveProp('disabled', false);
+        expect(this.$projectIssuesCounter.text()).toBe(isIssueInitiallyOpen ? '1,000' : '1,002');
+        expectNewBranchButtonState(false, !isIssueInitiallyOpen);
       });
-      $btnClose = $('a.btn-close');
-      $btnReopen = $('a.btn-reopen');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose.text()).toBe('Close');
-      expect(typeof $btnClose.prop('disabled')).toBe('undefined');
-      $btnClose.trigger('click');
-      expect($btnReopen).toBeVisible();
-      expect($btnClose).toBeHidden();
-      expect($('div.status-box-closed')).toBeVisible();
-      return expect($('div.status-box-open')).toBeHidden();
-    });
-    it('fails to close an issue with success:false', function() {
-      var $btnClose, $btnReopen;
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expect(req.type).toBe('PUT');
-        expect(req.url).toBe('http://goesnowhere.nothing/whereami');
-        return req.success({
+
+      it(`fails to ${action} the issue if saved:false`, function() {
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.resolve({
           saved: false
         });
-      });
-      $btnClose = $('a.btn-close');
-      $btnReopen = $('a.btn-reopen');
-      $btnClose.attr('href', 'http://goesnowhere.nothing/whereami');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose.text()).toBe('Close');
-      expect(typeof $btnClose.prop('disabled')).toBe('undefined');
-      $btnClose.trigger('click');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose).toBeVisible();
-      expect($('div.status-box-closed')).toBeHidden();
-      expect($('div.status-box-open')).toBeVisible();
-      expect($('div.flash-alert')).toBeVisible();
-      return expect($('div.flash-alert').text()).toBe('Unable to update this issue at this time.');
-    });
-    it('fails to closes an issue with HTTP error', function() {
-      var $btnClose, $btnReopen;
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expect(req.type).toBe('PUT');
-        expect(req.url).toBe('http://goesnowhere.nothing/whereami');
-        return req.error();
-      });
-      $btnClose = $('a.btn-close');
-      $btnReopen = $('a.btn-reopen');
-      $btnClose.attr('href', 'http://goesnowhere.nothing/whereami');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose.text()).toBe('Close');
-      expect(typeof $btnClose.prop('disabled')).toBe('undefined');
-      $btnClose.trigger('click');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose).toBeVisible();
-      expect($('div.status-box-closed')).toBeHidden();
-      expect($('div.status-box-open')).toBeVisible();
-      expect($('div.flash-alert')).toBeVisible();
-      return expect($('div.flash-alert').text()).toBe('Unable to update this issue at this time.');
-    });
-    return it('reopens an issue', function() {
-      var $btnClose, $btnReopen;
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expect(req.type).toBe('PUT');
-        expect(req.url).toBe('http://gitlab.com/issues/6/reopen');
-        return req.success({
-          id: 34
+        this.canCreateBranchDeferred.resolve({
+          can_create_branch: isIssueInitiallyOpen
         });
+
+        expectIssueState(isIssueInitiallyOpen);
+        expect(this.$triggeredButton).toHaveProp('disabled', false);
+        expectErrorMessage();
+        expect(this.$projectIssuesCounter.text()).toBe('1,001');
+        expectNewBranchButtonState(false, isIssueInitiallyOpen);
       });
-      $btnClose = $('a.btn-close');
-      $btnReopen = $('a.btn-reopen');
-      expect($btnReopen.text()).toBe('Reopen');
-      $btnReopen.trigger('click');
-      expect($btnReopen).toBeHidden();
-      expect($btnClose).toBeVisible();
-      expect($('div.status-box-open')).toBeVisible();
-      return expect($('div.status-box-closed')).toBeHidden();
+
+      it(`fails to ${action} the issue if HTTP error occurs`, function() {
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.reject();
+        this.canCreateBranchDeferred.resolve({
+          can_create_branch: isIssueInitiallyOpen
+        });
+
+        expectIssueState(isIssueInitiallyOpen);
+        expect(this.$triggeredButton).toHaveProp('disabled', true);
+        expectErrorMessage();
+        expect(this.$projectIssuesCounter.text()).toBe('1,001');
+        expectNewBranchButtonState(false, isIssueInitiallyOpen);
+      });
+
+      it('disables the new branch button if Ajax call fails', function() {
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.reject();
+        this.canCreateBranchDeferred.reject();
+
+        expectNewBranchButtonState(false, false);
+      });
+
+      it('does not trigger Ajax call if new branch button is missing', function() {
+        Issue.$btnNewBranch = $();
+        this.canCreateBranchDeferred = null;
+
+        this.$triggeredButton.trigger('click');
+        this.issueStateDeferred.reject();
+      });
     });
   });
-
-}).call(this);
+});

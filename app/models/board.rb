@@ -9,7 +9,7 @@ class Board < ActiveRecord::Base
     lists.merge(List.backlog).take
   end
 
-  def done_list
-    lists.merge(List.done).take
+  def closed_list
+    lists.merge(List.closed).take
   end
 end

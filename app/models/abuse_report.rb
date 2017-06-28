@@ -15,8 +15,7 @@ class AbuseReport < ActiveRecord::Base
   alias_method :author, :reporter
 
   def remove_user(deleted_by:)
-    user.block
-    DeleteUserWorker.perform_async(deleted_by.id, user.id, delete_solo_owned_groups: true)
+    user.delete_async(deleted_by: deleted_by, params: { hard_delete: true })
   end
 
   def notify

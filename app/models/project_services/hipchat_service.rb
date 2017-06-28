@@ -1,14 +1,21 @@
 class HipchatService < Service
-  MAX_COMMITS = 3
+  include ActionView::Helpers::SanitizeHelper
 
-  prop_accessor :token, :room, :server, :notify, :color, :api_version
-  boolean_accessor :notify_only_broken_builds
+  MAX_COMMITS = 3
+  HIPCHAT_ALLOWED_TAGS = %w[
+    a b i strong em br img pre code
+    table th tr td caption colgroup col thead tbody tfoot
+    ul ol li dl dt dd
+  ].freeze
+
+  prop_accessor :token, :room, :server, :color, :api_version
+  boolean_accessor :notify_only_broken_pipelines, :notify
   validates :token, presence: true, if: :activated?
 
   def initialize_properties
     if properties.nil?
       self.properties = {}
-      self.notify_only_broken_builds = true
+      self.notify_only_broken_pipelines = true
     end
   end
 
@@ -20,26 +27,26 @@ class HipchatService < Service
     'Private group chat and IM'
   end
 
-  def to_param
+  def self.to_param
     'hipchat'
   end
 
   def fields
     [
-      { type: 'text', name: 'token',     placeholder: 'Room token' },
+      { type: 'text', name: 'token',     placeholder: 'Room token', required: true },
       { type: 'text', name: 'room',      placeholder: 'Room name or ID' },
       { type: 'checkbox', name: 'notify' },
-      { type: 'select', name: 'color', choices: ['yellow', 'red', 'green', 'purple', 'gray', 'random'] },
+      { type: 'select', name: 'color', choices: %w(yellow red green purple gray random) },
       { type: 'text', name: 'api_version',
         placeholder: 'Leave blank for default (v2)' },
       { type: 'text', name: 'server',
         placeholder: 'Leave blank for default. https://hipchat.example.com' },
-      { type: 'checkbox', name: 'notify_only_broken_builds' },
+      { type: 'checkbox', name: 'notify_only_broken_pipelines' }
     ]
   end
 
-  def supported_events
-    %w(push issue confidential_issue merge_request note tag_push build)
+  def self.supported_events
+    %w(push issue confidential_issue merge_request note tag_push pipeline)
   end
 
   def execute(data)
@@ -68,7 +75,7 @@ class HipchatService < Service
   end
 
   def message_options(data = nil)
-    { notify: notify.present? && notify == '1', color: message_color(data) }
+    { notify: notify.present? && Gitlab::Utils.to_boolean(notify), color: message_color(data) }
   end
 
   def create_message(data)
@@ -83,9 +90,13 @@ class HipchatService < Service
       create_merge_request_message(data) unless is_update?(data)
     when "note"
       create_note_message(data)
-    when "build"
-      create_build_message(data) if should_build_be_notified?(data)
+    when "pipeline"
+      create_pipeline_message(data) if should_pipeline_be_notified?(data)
     end
+  end
+
+  def render_line(text)
+    markdown(text.lines.first.chomp, pipeline: :single_line) if text
   end
 
   def create_push_message(push)
@@ -110,7 +121,7 @@ class HipchatService < Service
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
 
       push[:commits].take(MAX_COMMITS).each do |commit|
-        message << "<br /> - #{commit[:message].lines.first} (<a href=\"#{commit[:url]}\">#{commit[:id][0..5]}</a>)"
+        message << "<br /> - #{render_line(commit[:message])} (<a href=\"#{commit[:url]}\">#{commit[:id][0..5]}</a>)"
       end
 
       if push[:commits].count > MAX_COMMITS
@@ -121,12 +132,22 @@ class HipchatService < Service
     message
   end
 
-  def format_body(body)
-    if body
-      body = body.truncate(200, separator: ' ', omission: '...')
-    end
+  def markdown(text, options = {})
+    return "" unless text
 
-    "<pre>#{body}</pre>"
+    context = {
+      project: project,
+      pipeline: :email
+    }
+
+    Banzai.render(text, context)
+
+    context.merge!(options)
+
+    html = Banzai.post_process(Banzai.render(text, context), context)
+    sanitized_html = sanitize(html, tags: HIPCHAT_ALLOWED_TAGS, attributes: %w[href title alt])
+
+    sanitized_html.truncate(200, separator: ' ', omission: '...')
   end
 
   def create_issue_message(data)
@@ -134,7 +155,7 @@ class HipchatService < Service
 
     obj_attr = data[:object_attributes]
     obj_attr = HashWithIndifferentAccess.new(obj_attr)
-    title = obj_attr[:title]
+    title = render_line(obj_attr[:title])
     state = obj_attr[:state]
     issue_iid = obj_attr[:iid]
     issue_url = obj_attr[:url]
@@ -143,10 +164,7 @@ class HipchatService < Service
     issue_link = "<a href=\"#{issue_url}\">issue ##{issue_iid}</a>"
     message = "#{user_name} #{state} #{issue_link} in #{project_link}: <b>#{title}</b>"
 
-    if description
-      description = format_body(description)
-      message << description
-    end
+    message << "<pre>#{markdown(description)}</pre>"
 
     message
   end
@@ -159,23 +177,20 @@ class HipchatService < Service
     merge_request_id = obj_attr[:iid]
     state = obj_attr[:state]
     description = obj_attr[:description]
-    title = obj_attr[:title]
+    title = render_line(obj_attr[:title])
 
     merge_request_url = "#{project_url}/merge_requests/#{merge_request_id}"
     merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_id}</a>"
     message = "#{user_name} #{state} #{merge_request_link} in " \
       "#{project_link}: <b>#{title}</b>"
 
-    if description
-      description = format_body(description)
-      message << description
-    end
+    message << "<pre>#{markdown(description)}</pre>"
 
     message
   end
 
   def format_title(title)
-    "<b>" + title.lines.first.chomp + "</b>"
+    "<b>#{render_line(title)}</b>"
   end
 
   def create_note_message(data)
@@ -186,11 +201,13 @@ class HipchatService < Service
     note = obj_attr[:note]
     note_url = obj_attr[:url]
     noteable_type = obj_attr[:noteable_type]
+    commit_id = nil
 
     case noteable_type
     when "Commit"
       commit_attr = HashWithIndifferentAccess.new(data[:commit])
-      subject_desc = commit_attr[:id]
+      commit_id = commit_attr[:id]
+      subject_desc = commit_id
       subject_desc = Commit.truncate_sha(subject_desc)
       subject_type = "commit"
       title = format_title(commit_attr[:message])
@@ -218,36 +235,34 @@ class HipchatService < Service
     message = "#{user_name} commented on #{subject_html} in #{project_link}: "
     message << title
 
-    if note
-      note = format_body(note)
-      message << note
-    end
+    message << "<pre>#{markdown(note, ref: commit_id)}</pre>"
 
     message
   end
 
-  def create_build_message(data)
-    ref_type = data[:tag] ? 'tag' : 'branch'
-    ref = data[:ref]
-    sha = data[:sha]
-    user_name = data[:commit][:author_name]
-    status = data[:commit][:status]
-    duration = data[:commit][:duration]
+  def create_pipeline_message(data)
+    pipeline_attributes = data[:object_attributes]
+    pipeline_id = pipeline_attributes[:id]
+    ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'
+    ref = pipeline_attributes[:ref]
+    user_name = (data[:user] && data[:user][:name]) || 'API'
+    status = pipeline_attributes[:status]
+    duration = pipeline_attributes[:duration]
 
     branch_link = "<a href=\"#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"
-    commit_link = "<a href=\"#{project_url}/commit/#{CGI.escape(sha)}/builds\">#{Commit.truncate_sha(sha)}</a>"
+    pipeline_url = "<a href=\"#{project_url}/pipelines/#{pipeline_id}\">##{pipeline_id}</a>"
 
-    "#{project_link}: Commit #{commit_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status(status)} in #{duration} second(s)"
+    "#{project_link}: Pipeline #{pipeline_url} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status(status)} in #{duration} second(s)"
   end
 
   def message_color(data)
-    build_status_color(data) || color || 'yellow'
+    pipeline_status_color(data) || color || 'yellow'
   end
 
-  def build_status_color(data)
-    return unless data && data[:object_kind] == 'build'
+  def pipeline_status_color(data)
+    return unless data && data[:object_kind] == 'pipeline'
 
-    case data[:commit][:status]
+    case data[:object_attributes][:status]
     when 'success'
       'green'
     else
@@ -280,10 +295,10 @@ class HipchatService < Service
     end
   end
 
-  def should_build_be_notified?(data)
-    case data[:commit][:status]
+  def should_pipeline_be_notified?(data)
+    case data[:object_attributes][:status]
     when 'success'
-      !notify_only_broken_builds?
+      !notify_only_broken_pipelines?
     when 'failed'
       true
     else

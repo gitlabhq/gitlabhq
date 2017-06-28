@@ -61,6 +61,7 @@ executing commands in the following snippet.
 ```bash
 git clone https://github.com/koding/koding.git
 cd koding
+docker-compose -f docker-compose-init.yml run init
 docker-compose up
 ```
 

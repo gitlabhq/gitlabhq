@@ -3,7 +3,7 @@
 
 %div
   - if @user.errors.any?
-    %div.alert.alert-danger
+    .alert.alert-danger
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
@@ -30,9 +30,14 @@
       %br
       .clearfix
       .form-group.pull-left.global-notification-setting
-        = render 'shared/notifications/button', notification_setting: @global_notification_setting, left_align: true
+        = render 'shared/notifications/button', notification_setting: @global_notification_setting
 
       .clearfix
+
+      = form_for @user, url: profile_notifications_path, method: :put do |f|
+        %label{ for: 'user_notified_of_own_activity' }
+          = f.check_box :notified_of_own_activity
+          %span Receive notifications about your own activity
 
       %hr
       %h5

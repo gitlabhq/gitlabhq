@@ -12,14 +12,23 @@ module Issuable
   include Subscribable
   include StripAttribute
   include Awardable
+  include Taskable
+  include TimeTrackable
+  include Importable
+  include Editable
+
+  # This object is used to gather issuable meta data for displaying
+  # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
+  # lists avoiding n+1 queries and improving performance.
+  IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count, :merge_requests_count)
 
   included do
     cache_markdown_field :title, pipeline: :single_line
-    cache_markdown_field :description
+    cache_markdown_field :description, issuable_state_filter_enabled: true
 
     belongs_to :author, class_name: "User"
-    belongs_to :assignee, class_name: "User"
     belongs_to :updated_by, class_name: "User"
+    belongs_to :last_edited_by, class_name: 'User'
     belongs_to :milestone
     has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do
       def authors_loaded?
@@ -39,14 +48,25 @@ module Issuable
 
     has_one :metrics
 
+    delegate :name,
+             :email,
+             :public_email,
+             to: :author,
+             allow_nil: true,
+             prefix: true
+
+    delegate :name,
+             :email,
+             :public_email,
+             to: :assignee,
+             allow_nil: true,
+             prefix: true
+
     validates :author, presence: true
-    validates :title, presence: true, length: { within: 0..255 }
+    validates :title, presence: true, length: { maximum: 255 }
 
     scope :authored, ->(user) { where(author_id: user) }
-    scope :assigned_to, ->(u) { where(assignee_id: u.id)}
     scope :recent, -> { reorder(id: :desc) }
-    scope :assigned, -> { where("assignee_id IS NOT NULL") }
-    scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
     scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
@@ -61,40 +81,21 @@ module Issuable
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :join_project, -> { joins(:project) }
-    scope :inc_notes_with_associations, -> { includes(notes: [ :project, :author, :award_emoji ]) }
+    scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
-
-    delegate :name,
-             :email,
-             to: :author,
-             prefix: true
-
-    delegate :name,
-             :email,
-             to: :assignee,
-             allow_nil: true,
-             prefix: true
 
     attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description
 
     participant :author
-    participant :assignee
     participant :notes_with_associations
 
     strip_attributes :title
 
     acts_as_paranoid
 
-    after_save :update_assignee_cache_counts, if: :assignee_id_changed?
-    after_save :record_metrics
-
-    def update_assignee_cache_counts
-      # make sure we flush the cache for both the old *and* new assignee
-      User.find(assignee_id_was).update_cache_counts if assignee_id_was
-      assignee.update_cache_counts if assignee
-    end
+    after_save :record_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
@@ -135,7 +136,8 @@ module Issuable
                when 'milestone_due_desc' then order_milestone_due_desc
                when 'downvotes_desc' then order_downvotes_desc
                when 'upvotes_desc' then order_upvotes_desc
-               when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'label_priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'priority' then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
                else
                  order_by(method)
                end
@@ -144,13 +146,45 @@ module Issuable
       sorted.order(id: :desc)
     end
 
-    def order_labels_priority(excluded_labels: [])
-      condition_field = "#{table_name}.id"
-      highest_priority = highest_label_priority(name, condition_field, excluded_labels: excluded_labels).to_sql
+    def order_due_date_and_labels_priority(excluded_labels: [])
+      # The order_ methods also modify the query in other ways:
+      #
+      # - For milestones, we add a JOIN.
+      # - For label priority, we change the SELECT, and add a GROUP BY.#
+      #
+      # After doing those, we need to reorder to the order we want. The existing
+      # ORDER BYs won't work because:
+      #
+      # 1. We need milestone due date first.
+      # 2. We can't ORDER BY a column that isn't in the GROUP BY and doesn't
+      #    have an aggregate function applied, so we do a useless MIN() instead.
+      #
+      milestones_due_date = 'MIN(milestones.due_date)'
 
-      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
-        group(arel_table[:id]).
-        reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+      order_milestone_due_asc
+        .order_labels_priority(excluded_labels: excluded_labels, extra_select_columns: [milestones_due_date])
+        .reorder(Gitlab::Database.nulls_last_order(milestones_due_date, 'ASC'),
+                Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+    end
+
+    def order_labels_priority(excluded_labels: [], extra_select_columns: [])
+      params = {
+        target_type: name,
+        target_column: "#{table_name}.id",
+        project_column: "#{table_name}.#{project_foreign_key}",
+        excluded_labels: excluded_labels
+      }
+
+      highest_priority = highest_label_priority(params).to_sql
+
+      select_columns = [
+        "#{table_name}.*",
+        "(#{highest_priority}) AS highest_priority"
+      ] + extra_select_columns
+
+      select(select_columns.join(', '))
+        .group(arel_table[:id])
+        .reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
 
     def with_label(title, sort = nil)
@@ -168,13 +202,17 @@ module Issuable
     def grouping_columns(sort)
       grouping_columns = [arel_table[:id]]
 
-      if ["milestone_due_desc", "milestone_due_asc"].include?(sort)
+      if %w(milestone_due_desc milestone_due_asc).include?(sort)
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]
       end
 
       grouping_columns
+    end
+
+    def to_ability_name
+      model_name.singular
     end
   end
 
@@ -184,10 +222,6 @@ module Issuable
 
   def new?
     today? && created_at == updated_at
-  end
-
-  def is_being_reassigned?
-    assignee_id_changed?
   end
 
   def open?
@@ -204,7 +238,7 @@ module Issuable
     end
   end
 
-  def subscribed_without_subscriptions?(user)
+  def subscribed_without_subscriptions?(user, project)
     participants(user).include?(user)
   end
 
@@ -214,10 +248,15 @@ module Issuable
       user: user.hook_attrs,
       project: project.hook_attrs,
       object_attributes: hook_attrs,
+      labels: labels.map(&:hook_attrs),
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }
-    hook_data.merge!(assignee: assignee.hook_attrs) if assignee
+    if self.is_a?(Issue)
+      hook_data[:assignees] = assignees.map(&:hook_attrs) if assignees.any?
+    else
+      hook_data[:assignee] = assignee.hook_attrs if assignee
+    end
 
     hook_data
   end
@@ -230,18 +269,6 @@ module Issuable
     labels.order('title ASC').pluck(:title)
   end
 
-  def remove_labels
-    labels.delete_all
-  end
-
-  def add_labels_by_names(label_names)
-    label_names.each do |label_name|
-      label = project.labels.create_with(color: Label::DEFAULT_COLOR).
-        find_or_create_by(title: label_name.strip)
-      self.labels << label
-    end
-  end
-
   # Convert this Issuable class name to a format usable by Ability definitions
   #
   # Examples:
@@ -249,7 +276,7 @@ module Issuable
   #   issuable.class           # => MergeRequest
   #   issuable.to_ability_name # => "merge_request"
   def to_ability_name
-    self.class.to_s.underscore
+    self.class.to_ability_name
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata

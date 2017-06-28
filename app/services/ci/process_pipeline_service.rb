@@ -5,41 +5,37 @@ module Ci
     def execute(pipeline)
       @pipeline = pipeline
 
-      # This method will ensure that our pipeline does have all builds for all stages created
-      if created_builds.empty?
-        create_builds!
-      end
+      update_retried
 
-      @pipeline.with_lock do
-        new_builds =
-          stage_indexes_of_created_builds.map do |index|
-            process_stage(index)
-          end
+      new_builds =
+        stage_indexes_of_created_builds.map do |index|
+          process_stage(index)
+        end
 
-        # Return a flag if a when builds got enqueued
-        new_builds.flatten.any?
-      end
+      @pipeline.update_status
+
+      new_builds.flatten.any?
     end
 
     private
 
-    def create_builds!
-      Ci::CreatePipelineBuildsService.new(project, current_user).execute(pipeline)
-    end
-
     def process_stage(index)
       current_status = status_for_prior_stages(index)
 
-      created_builds_in_stage(index).select do |build|
-        if HasStatus::COMPLETED_STATUSES.include?(current_status)
-          process_build(build, current_status)
+      return if HasStatus::BLOCKED_STATUS == current_status
+
+      if HasStatus::COMPLETED_STATUSES.include?(current_status)
+        created_builds_in_stage(index).select do |build|
+          Gitlab::OptimisticLocking.retry_lock(build) do |subject|
+            process_build(subject, current_status)
+          end
         end
       end
     end
 
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
-        build.enqueue
+        build.action? ? build.actionize : build.enqueue
         true
       else
         build.skip
@@ -50,11 +46,13 @@ module Ci
     def valid_statuses_for_when(value)
       case value
       when 'on_success'
-        %w[success]
+        %w[success skipped]
       when 'on_failure'
         %w[failed]
       when 'always'
-        %w[success failed]
+        %w[success failed skipped]
+      when 'manual'
+        %w[success skipped]
       else
         []
       end
@@ -74,6 +72,24 @@ module Ci
 
     def created_builds
       pipeline.builds.created
+    end
+
+    # This method is for compatibility and data consistency and should be removed with 9.3 version of GitLab
+    # This replicates what is db/post_migrate/20170416103934_upate_retried_for_ci_build.rb
+    # and ensures that functionality will not be broken before migration is run
+    # this updates only when there are data that needs to be updated, there are two groups with no retried flag
+    def update_retried
+      # find the latest builds for each name
+      latest_statuses = pipeline.statuses.latest
+        .group(:name)
+        .having('count(*) > 1')
+        .pluck('max(id)', 'name')
+
+      # mark builds that are retried
+      pipeline.statuses.latest
+        .where(name: latest_statuses.map(&:second))
+        .where.not(id: latest_statuses.map(&:first))
+        .update_all(retried: true) if latest_statuses.any?
     end
   end
 end

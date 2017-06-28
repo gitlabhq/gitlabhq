@@ -12,7 +12,7 @@ module Banzai
 
       def self.references_in(text, pattern = Commit.reference_pattern)
         text.gsub(pattern) do |match|
-          yield match, $~[:commit], $~[:project], $~
+          yield match, $~[:commit], $~[:project], $~[:namespace], $~
         end
       end
 

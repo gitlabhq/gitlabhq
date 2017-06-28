@@ -1,6 +1,6 @@
 # rubocop:disable all
 class UserColorScheme < ActiveRecord::Migration
-  include Gitlab::Database
+  include Gitlab::Database::MigrationHelpers
 
   def up
     add_column :users, :color_scheme_id, :integer, null: false, default: 1

@@ -1,8 +1,9 @@
 - page_title "New Branch"
+- default_ref = params[:ref] || @project.default_branch
 
 - if @error
   .alert.alert-danger
-    %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
+    %button.close{ type: "button", "data-dismiss" => "alert" } &times;
     = @error
 %h3.page-title
   New Branch
@@ -12,12 +13,17 @@
   .form-group
     = label_tag :branch_name, nil, class: 'control-label'
     .col-sm-10
-      = text_field_tag :branch_name, params[:branch_name], required: true, tabindex: 1, autofocus: true, class: 'form-control js-branch-name'
+      = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name'
       .help-block.text-danger.js-branch-name-error
   .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
-    .col-sm-10
-      = text_field_tag :ref, params[:ref] || @project.default_branch, required: true, tabindex: 2, class: 'form-control'
+    .col-sm-10.create-from
+      .dropdown
+        = hidden_field_tag :ref, default_ref
+        = button_tag type: 'button', title: default_ref, class: 'dropdown-menu-toggle wide form-control js-branch-select git-revision-dropdown-toggle', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
+          .text-left.dropdown-toggle-text= default_ref
+          = icon('chevron-down')
+        = render 'shared/ref_dropdown', dropdown_class: 'wide'
       .help-block Existing branch name, tag, or commit SHA
   .form-actions
     = button_tag 'Create branch', class: 'btn btn-create', tabindex: 3

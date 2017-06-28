@@ -1,31 +1,39 @@
 - page_title 'Preferences'
 = render 'profiles/head'
 
-= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'row prepend-top-default js-preferences-form'} do |f|
-  .col-lg-3.profile-settings-sidebar
-    %h4.prepend-top-0
-      Application theme
-    %p
-      This setting allows you to customize the appearance of the site, e.g. the sidebar.
-  .col-lg-9.application-theme
-    - Gitlab::Themes.each do |theme|
-      = label_tag do
-        .preview{class: theme.css_class}
-        = f.radio_button :theme_id, theme.id
-        = theme.name
-  .col-sm-12
-    %hr
+= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
       Syntax highlighting theme
     %p
-      This setting allow you to customize the appearance of the syntax.
+      This setting allows you to customize the appearance of the syntax.
+      = succeed '.' do
+        = link_to 'Learn more', help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank'
   .col-lg-9.syntax-theme
     - Gitlab::ColorSchemes.each do |scheme|
       = label_tag do
         .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
         = f.radio_button :color_scheme_id, scheme.id
         = scheme.name
+  - if can_toggle_new_nav?
+    .col-sm-12
+      %hr
+    .col-lg-3.profile-settings-sidebar#new-navigation
+      %h4.prepend-top-0
+        New Navigation
+      %p
+        This setting allows you to turn on or off the new upcoming navigation concept.
+        = succeed '.' do
+          = link_to 'Learn more', '', target: '_blank'
+    .col-lg-9.syntax-theme
+      = label_tag do
+        .preview= image_tag "old_nav.png"
+        %input.js-experiment-feature-toggle{ type: "radio", value: "false", name: "new_nav", checked: !show_new_nav? }
+        Old
+      = label_tag do
+        .preview= image_tag "new_nav.png"
+        %input.js-experiment-feature-toggle{ type: "radio", value: "true", name: "new_nav", checked: show_new_nav? }
+        New
   .col-sm-12
     %hr
   .col-lg-3.profile-settings-sidebar
@@ -33,6 +41,8 @@
       Behavior
     %p
       This setting allows you to customize the behavior of the system layout and default views.
+      = succeed '.' do
+        = link_to 'Learn more', help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank'
   .col-lg-9
     .form-group
       = f.label :layout, class: 'label-light' do
@@ -42,15 +52,13 @@
         Choose between fixed (max. 1200px) and fluid (100%) application layout.
     .form-group
       = f.label :dashboard, class: 'label-light' do
-        Default Dashboard
-        = link_to('(?)', help_page_path('profile/preferences') + '#default-dashboard', target: '_blank')
+        Default dashboard
       = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
     .form-group
       = f.label :project_view, class: 'label-light' do
-        Project view
-        = link_to('(?)', help_page_path('profile/preferences') + '#default-project-view', target: '_blank')
+        Project home page content
       = f.select :project_view, project_view_choices, {}, class: 'form-control'
       .help-block
-        Choose what content you want to see on a project's home page.
+        Choose what content you want to see on a project’s home page
     .form-group
       = f.submit 'Save changes', class: 'btn btn-save'

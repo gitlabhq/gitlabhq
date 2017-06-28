@@ -62,12 +62,18 @@ class EventCreateService
     create_event(project, current_user, Event::LEFT)
   end
 
+  def expired_leave_project(project, current_user)
+    create_event(project, current_user, Event::EXPIRED)
+  end
+
   def create_project(project, current_user)
     create_event(project, current_user, Event::CREATED)
   end
 
   def push(project, current_user, push_data)
     create_event(project, current_user, Event::PUSHED, data: push_data)
+
+    Users::ActivityService.new(current_user, 'push').execute
   end
 
   private

@@ -43,30 +43,48 @@
         %h4
           Features
         %hr
-        %p
-          Sign up
+        - sign_up = "Sign up"
+        %p{ "aria-label" => "#{sign_up}: status " + (signup_enabled? ? "on" : "off") }
+          = sign_up
           %span.light.pull-right
             = boolean_to_icon signup_enabled?
-        %p
-          LDAP
+        - ldap = "LDAP"
+        %p{ "aria-label" => "#{ldap}: status " + (Gitlab.config.ldap.enabled ? "on" : "off") }
+          = ldap
           %span.light.pull-right
             = boolean_to_icon Gitlab.config.ldap.enabled
-        %p
-          Gravatar
+        - gravatar = "Gravatar"
+        %p{ "aria-label" => "#{gravatar}: status " + (gravatar_enabled? ? "on" : "off") }
+          = gravatar
           %span.light.pull-right
             = boolean_to_icon gravatar_enabled?
-        %p
-          OmniAuth
+        - omniauth = "OmniAuth"
+        %p{ "aria-label" => "#{omniauth}: status " + (Gitlab.config.omniauth.enabled ? "on" : "off") }
+          = omniauth
           %span.light.pull-right
             = boolean_to_icon Gitlab.config.omniauth.enabled
-        %p
-          Reply by email
+        - reply_email = "Reply by email"
+        %p{ "aria-label" => "#{reply_email}: status " + (Gitlab::IncomingEmail.enabled? ? "on" : "off") }
+          = reply_email
           %span.light.pull-right
             = boolean_to_icon Gitlab::IncomingEmail.enabled?
-        %p
-          Container Registry
+        - container_reg = "Container Registry"
+        %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
+          = container_reg
           %span.light.pull-right
             = boolean_to_icon Gitlab.config.registry.enabled
+        - gitlab_pages = 'GitLab Pages'
+        - gitlab_pages_enabled = Gitlab.config.pages.enabled
+        %p{ "aria-label" => "#{gitlab_pages}: status " + (gitlab_pages_enabled ? "on" : "off") }
+          = gitlab_pages
+          %span.light.pull-right
+            = boolean_to_icon gitlab_pages_enabled
+        - gitlab_shared_runners = 'Shared Runners'
+        - gitlab_shared_runners_enabled = Gitlab.config.gitlab_ci.shared_runners_enabled
+        %p{ "aria-label" => "#{gitlab_shared_runners}: status " + (gitlab_shared_runners_enabled ? "on" : "off") }
+          = gitlab_shared_runners
+          %span.light.pull-right
+            = boolean_to_icon gitlab_shared_runners_enabled
 
       .col-md-4
         %h4
@@ -87,7 +105,7 @@
         %p
           GitLab Workhorse
           %span.pull-right
-            = Gitlab::Workhorse.version
+            = gitlab_workhorse_version
         %p
           GitLab API
           %span.pull-right
@@ -113,29 +131,29 @@
     %hr
     .row
       .col-sm-4
-        .light-well
+        .light-well.well-centered
           %h4 Projects
           .data
-            = link_to admin_namespaces_projects_path do
+            = link_to admin_projects_path do
               %h1= number_with_delimiter(Project.cached_count)
             %hr
-            = link_to('New Project', new_project_path, class: "btn btn-new")
+            = link_to('New project', new_project_path, class: "btn btn-new")
       .col-sm-4
-        .light-well
+        .light-well.well-centered
           %h4 Users
           .data
             = link_to admin_users_path do
               %h1= number_with_delimiter(User.count)
             %hr
-            = link_to 'New User', new_admin_user_path, class: "btn btn-new"
+            = link_to 'New user', new_admin_user_path, class: "btn btn-new"
       .col-sm-4
-        .light-well
+        .light-well.well-centered
           %h4 Groups
           .data
             = link_to admin_groups_path do
               %h1= number_with_delimiter(Group.count)
             %hr
-            = link_to 'New Group', new_admin_group_path, class: "btn btn-new"
+            = link_to 'New group', new_admin_group_path, class: "btn btn-new"
 
     .row.prepend-top-10
       .col-md-4
@@ -143,7 +161,7 @@
         %hr
         - @projects.each do |project|
           %p
-            = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated'
+            = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated-60'
             %span.light.pull-right
               #{time_ago_with_tooltip(project.created_at)}
 
@@ -152,7 +170,7 @@
         %hr
         - @users.each do |user|
           %p
-            = link_to [:admin, user], class: 'str-truncated' do
+            = link_to [:admin, user], class: 'str-truncated-60' do
               = user.name
             %span.light.pull-right
               #{time_ago_with_tooltip(user.created_at)}
@@ -162,7 +180,7 @@
         %hr
         - @groups.each do |group|
           %p
-            = link_to [:admin, group], class: 'str-truncated' do
-              = group.name
+            = link_to [:admin, group], class: 'str-truncated-60' do
+              = group.full_name
             %span.light.pull-right
               #{time_ago_with_tooltip(group.created_at)}

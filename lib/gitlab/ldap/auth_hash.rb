@@ -25,7 +25,7 @@ module Gitlab
       end
 
       def get_raw(key)
-        auth_hash.extra[:raw_info][key]
+        auth_hash.extra[:raw_info][key] if auth_hash.extra
       end
 
       def ldap_config

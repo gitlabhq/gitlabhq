@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe CommitStatus, models: true do
-  let(:project) { create(:project) }
+describe CommitStatus, :models do
+  let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id)
@@ -16,6 +16,7 @@ describe CommitStatus, models: true do
   it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:auto_canceled_by) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
@@ -30,23 +31,40 @@ describe CommitStatus, models: true do
 
   describe '#author' do
     subject { commit_status.author }
-    before { commit_status.author = User.new }
+
+    before do
+      commit_status.author = User.new
+    end
 
     it { is_expected.to eq(commit_status.user) }
+  end
+
+  describe 'status state machine' do
+    let!(:commit_status) { create(:commit_status, :running, project: project) }
+
+    it 'invalidates the cache after a transition' do
+      expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
+
+      commit_status.success!
+    end
   end
 
   describe '#started?' do
     subject { commit_status.started? }
 
     context 'without started_at' do
-      before { commit_status.started_at = nil }
+      before do
+        commit_status.started_at = nil
+      end
 
       it { is_expected.to be_falsey }
     end
 
     %w[running success failed].each do |status|
       context "if commit status is #{status}" do
-        before { commit_status.status = status }
+        before do
+          commit_status.status = status
+        end
 
         it { is_expected.to be_truthy }
       end
@@ -54,7 +72,9 @@ describe CommitStatus, models: true do
 
     %w[pending canceled].each do |status|
       context "if commit status is #{status}" do
-        before { commit_status.status = status }
+        before do
+          commit_status.status = status
+        end
 
         it { is_expected.to be_falsey }
       end
@@ -66,7 +86,9 @@ describe CommitStatus, models: true do
 
     %w[pending running].each do |state|
       context "if commit_status.status is #{state}" do
-        before { commit_status.status = state }
+        before do
+          commit_status.status = state
+        end
 
         it { is_expected.to be_truthy }
       end
@@ -74,7 +96,9 @@ describe CommitStatus, models: true do
 
     %w[success failed canceled].each do |state|
       context "if commit_status.status is #{state}" do
-        before { commit_status.status = state }
+        before do
+          commit_status.status = state
+        end
 
         it { is_expected.to be_falsey }
       end
@@ -86,7 +110,9 @@ describe CommitStatus, models: true do
 
     %w[success failed canceled].each do |state|
       context "if commit_status.status is #{state}" do
-        before { commit_status.status = state }
+        before do
+          commit_status.status = state
+        end
 
         it { is_expected.to be_truthy }
       end
@@ -94,9 +120,37 @@ describe CommitStatus, models: true do
 
     %w[pending running].each do |state|
       context "if commit_status.status is #{state}" do
-        before { commit_status.status = state }
+        before do
+          commit_status.status = state
+        end
 
         it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  describe '#auto_canceled?' do
+    subject { commit_status.auto_canceled? }
+
+    context 'when it is canceled' do
+      before do
+        commit_status.update(status: 'canceled')
+      end
+
+      context 'when there is auto_canceled_by' do
+        before do
+          commit_status.update(auto_canceled_by: create(:ci_empty_pipeline))
+        end
+
+        it 'is auto canceled' do
+          is_expected.to be_truthy
+        end
+      end
+
+      context 'when there is no auto_canceled_by' do
+        it 'is not auto canceled' do
+          is_expected.to be_falsey
+        end
       end
     end
   end
@@ -127,12 +181,12 @@ describe CommitStatus, models: true do
   end
 
   describe '.latest' do
-    subject { CommitStatus.latest.order(:id) }
+    subject { described_class.latest.order(:id) }
 
     let(:statuses) do
-      [create_status(name: 'aa', ref: 'bb', status: 'running'),
-       create_status(name: 'cc', ref: 'cc', status: 'pending'),
-       create_status(name: 'aa', ref: 'cc', status: 'success'),
+      [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
+       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
        create_status(name: 'cc', ref: 'bb', status: 'success'),
        create_status(name: 'aa', ref: 'bb', status: 'success')]
     end
@@ -142,8 +196,24 @@ describe CommitStatus, models: true do
     end
   end
 
+  describe '.retried' do
+    subject { described_class.retried.order(:id) }
+
+    let(:statuses) do
+      [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
+       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
+       create_status(name: 'cc', ref: 'bb', status: 'success'),
+       create_status(name: 'aa', ref: 'bb', status: 'success')]
+    end
+
+    it 'returns unique statuses' do
+      is_expected.to contain_exactly(*statuses.values_at(0, 1, 2))
+    end
+  end
+
   describe '.running_or_pending' do
-    subject { CommitStatus.running_or_pending.order(:id) }
+    subject { described_class.running_or_pending.order(:id) }
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running'),
@@ -154,12 +224,26 @@ describe CommitStatus, models: true do
     end
 
     it 'returns statuses that are running or pending' do
-      is_expected.to eq(statuses.values_at(0, 1))
+      is_expected.to contain_exactly(*statuses.values_at(0, 1))
+    end
+  end
+
+  describe '.after_stage' do
+    subject { described_class.after_stage(0) }
+
+    let(:statuses) do
+      [create_status(name: 'aa', stage_idx: 0),
+       create_status(name: 'cc', stage_idx: 1),
+       create_status(name: 'aa', stage_idx: 2)]
+    end
+
+    it 'returns statuses from second and third stage' do
+      is_expected.to eq(statuses.values_at(1, 2))
     end
   end
 
   describe '.exclude_ignored' do
-    subject { CommitStatus.exclude_ignored.order(:id) }
+    subject { described_class.exclude_ignored.order(:id) }
 
     let(:statuses) do
       [create_status(when: 'manual', status: 'skipped'),
@@ -171,11 +255,67 @@ describe CommitStatus, models: true do
        create_status(allow_failure: true, status: 'success'),
        create_status(allow_failure: true, status: 'failed'),
        create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed')]
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
     end
 
     it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(1, 2, 4, 5, 6, 8, 9))
+      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
+    end
+  end
+
+  describe '.failed_but_allowed' do
+    subject { described_class.failed_but_allowed.order(:id) }
+
+    let(:statuses) do
+      [create_status(allow_failure: true, status: 'success'),
+       create_status(allow_failure: true, status: 'failed'),
+       create_status(allow_failure: false, status: 'success'),
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'canceled'),
+       create_status(allow_failure: false, status: 'canceled'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
+    end
+
+    it 'returns statuses without what we want to ignore' do
+      is_expected.to eq(statuses.values_at(1, 4))
+    end
+  end
+
+  describe '.status' do
+    context 'when there are multiple statuses present' do
+      before do
+        create_status(status: 'running')
+        create_status(status: 'success')
+        create_status(allow_failure: true, status: 'failed')
+      end
+
+      it 'returns a correct compound status' do
+        expect(described_class.all.status).to eq 'running'
+      end
+    end
+
+    context 'when there are only allowed to fail commit statuses present' do
+      before do
+        create_status(allow_failure: true, status: 'failed')
+      end
+
+      it 'returns status that indicates success' do
+        expect(described_class.all.status).to eq 'success'
+      end
+    end
+
+    context 'when using a scope to select latest statuses' do
+      before do
+        create_status(name: 'test', retried: true, status: 'failed')
+        create_status(allow_failure: true, name: 'test', status: 'failed')
+      end
+
+      it 'returns status according to the scope' do
+        expect(described_class.latest.status).to eq 'success'
+      end
     end
   end
 
@@ -183,7 +323,9 @@ describe CommitStatus, models: true do
     subject { commit_status.before_sha }
 
     context 'when no before_sha is set for pipeline' do
-      before { pipeline.before_sha = nil }
+      before do
+        pipeline.before_sha = nil
+      end
 
       it 'returns blank sha' do
         is_expected.to eq(Gitlab::Git::BLANK_SHA)
@@ -192,53 +334,13 @@ describe CommitStatus, models: true do
 
     context 'for before_sha set for pipeline' do
       let(:value) { '1234' }
-      before { pipeline.before_sha = value }
+
+      before do
+        pipeline.before_sha = value
+      end
 
       it 'returns the set value' do
         is_expected.to eq(value)
-      end
-    end
-  end
-
-  describe '#stages' do
-    before do
-      create :commit_status, pipeline: pipeline, stage: 'build', name: 'linux', stage_idx: 0, status: 'success'
-      create :commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'failed'
-      create :commit_status, pipeline: pipeline, stage: 'deploy', name: 'staging', stage_idx: 2, status: 'running'
-      create :commit_status, pipeline: pipeline, stage: 'test', name: 'rspec', stage_idx: 1, status: 'success'
-    end
-
-    context 'stages list' do
-      subject { CommitStatus.where(pipeline: pipeline).stages }
-
-      it 'returns ordered list of stages' do
-        is_expected.to eq(%w[build test deploy])
-      end
-    end
-
-    context 'stages with statuses' do
-      subject { CommitStatus.where(pipeline: pipeline).latest.stages_status }
-
-      it 'returns list of stages with statuses' do
-        is_expected.to eq({
-          'build' => 'failed',
-          'test' => 'success',
-          'deploy' => 'running'
-        })
-      end
-
-      context 'when build is retried' do
-        before do
-          create :commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'success'
-        end
-
-        it 'ignores a previous state' do
-          is_expected.to eq({
-            'build' => 'success',
-            'test' => 'success',
-            'deploy' => 'running'
-          })
-        end
       end
     end
   end
@@ -274,6 +376,70 @@ describe CommitStatus, models: true do
         commit_status.name = name
 
         is_expected.to eq(group_name)
+      end
+    end
+  end
+
+  describe '#detailed_status' do
+    let(:user) { create(:user) }
+
+    it 'returns a detailed status' do
+      expect(commit_status.detailed_status(user))
+        .to be_a Gitlab::Ci::Status::Success
+    end
+  end
+
+  describe '#sortable_name' do
+    tests = {
+      'karma' => ['karma'],
+      'karma 0 20' => ['karma ', 0, ' ', 20],
+      'karma 10 20' => ['karma ', 10, ' ', 20],
+      'karma 50:100' => ['karma ', 50, ':', 100],
+      'karma 1.10' => ['karma ', 1, '.', 10],
+      'karma 1.5.1' => ['karma ', 1, '.', 5, '.', 1],
+      'karma 1 a' => ['karma ', 1, ' a']
+    }
+
+    tests.each do |name, sortable_name|
+      it "'#{name}' sorts as '#{sortable_name}'" do
+        commit_status.name = name
+        expect(commit_status.sortable_name).to eq(sortable_name)
+      end
+    end
+  end
+
+  describe '#locking_enabled?' do
+    before do
+      commit_status.lock_version = 100
+    end
+
+    subject { commit_status.locking_enabled? }
+
+    context "when changing status" do
+      before do
+        commit_status.status = "running"
+      end
+
+      it "lock" do
+        is_expected.to be true
+      end
+
+      it "raise exception when trying to update" do
+        expect{ commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
+      end
+    end
+
+    context "when changing description" do
+      before do
+        commit_status.description = "test"
+      end
+
+      it "do not lock" do
+        is_expected.to be false
+      end
+
+      it "save correctly" do
+        expect(commit_status.save).to be true
       end
     end
   end

@@ -10,13 +10,17 @@ describe IrkerService, models: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:recipients) }
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:recipients) }
     end
@@ -25,7 +29,7 @@ describe IrkerService, models: true do
   describe 'Execute' do
     let(:irker) { IrkerService.new }
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end
@@ -59,8 +63,8 @@ describe IrkerService, models: true do
 
       conn = @irker_server.accept
       conn.readlines.each do |line|
-        msg = JSON.load(line.chomp("\n"))
-        expect(msg.keys).to match_array(['to', 'privmsg'])
+        msg = JSON.parse(line.chomp("\n"))
+        expect(msg.keys).to match_array(%w(to privmsg))
         expect(msg['to']).to match_array(["irc://chat.freenode.net/#commits",
                                           "irc://test.net/#test"])
       end

@@ -25,8 +25,7 @@ describe Profiles::PreferencesController do
     def go(params: {}, format: :js)
       params.reverse_merge!(
         color_scheme_id: '1',
-        dashboard: 'stars',
-        theme_id: '1'
+        dashboard: 'stars'
       )
 
       patch :update, user: params, format: format
@@ -41,11 +40,11 @@ describe Profiles::PreferencesController do
       it "changes the user's preferences" do
         prefs = {
           color_scheme_id: '1',
-          dashboard: 'stars',
-          theme_id: '2'
+          dashboard: 'stars'
         }.with_indifferent_access
 
-        expect(user).to receive(:update_attributes).with(prefs)
+        expect(user).to receive(:assign_attributes).with(prefs)
+        expect(user).to receive(:save)
 
         go params: prefs
       end
@@ -53,7 +52,7 @@ describe Profiles::PreferencesController do
 
     context 'on failed update' do
       it 'sets the flash' do
-        expect(user).to receive(:update_attributes).and_return(false)
+        expect(user).to receive(:save).and_return(false)
 
         go
 

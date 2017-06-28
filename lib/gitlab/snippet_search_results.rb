@@ -31,11 +31,11 @@ module Gitlab
     private
 
     def snippet_titles
-      limit_snippets.search(query).order('updated_at DESC')
+      limit_snippets.search(query).order('updated_at DESC').includes(:author)
     end
 
     def snippet_blobs
-      limit_snippets.search_code(query).order('updated_at DESC')
+      limit_snippets.search_code(query).order('updated_at DESC').includes(:author)
     end
 
     def default_scope

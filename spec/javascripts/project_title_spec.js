@@ -1,48 +1,57 @@
+/* global Project */
 
-/*= require bootstrap */
-/*= require select2 */
-/*= require lib/utils/type_utility */
-/*= require gl_dropdown */
-/*= require api */
-/*= require project_select */
-/*= require project */
+import 'select2/select2';
+import '~/gl_dropdown';
+import '~/api';
+import '~/project_select';
+import '~/project';
 
-(function() {
-  window.gon || (window.gon = {});
+describe('Project Title', () => {
+  preloadFixtures('issues/open-issue.html.raw');
+  loadJSONFixtures('projects.json');
 
-  window.gon.api_version = 'v3';
+  beforeEach(() => {
+    loadFixtures('issues/open-issue.html.raw');
 
-  describe('Project Title', function() {
-    fixture.preload('project_title.html');
-    fixture.preload('projects.json');
-    beforeEach(function() {
-      fixture.load('project_title.html');
-      return this.project = new Project();
-    });
-    return describe('project list', function() {
-      beforeEach((function(_this) {
-        return function() {
-          _this.projects_data = fixture.load('projects.json')[0];
-          return spyOn(jQuery, 'ajax').and.callFake(function(req) {
-            var d;
-            expect(req.url).toBe('/api/v3/projects.json?simple=true');
-            d = $.Deferred();
-            d.resolve(_this.projects_data);
-            return d.promise();
-          });
-        };
-      })(this));
-      it('to show on toggle click', (function(_this) {
-        return function() {
-          $('.js-projects-dropdown-toggle').click();
-          return expect($('.header-content').hasClass('open')).toBe(true);
-        };
-      })(this));
-      return it('hide dropdown', function() {
-        $(".dropdown-menu-close-icon").click();
-        return expect($('.header-content').hasClass('open')).toBe(false);
+    window.gon = {};
+    window.gon.api_version = 'v3';
+
+    // eslint-disable-next-line no-new
+    new Project();
+  });
+
+  describe('project list', () => {
+    let reqUrl;
+    let reqData;
+
+    beforeEach(() => {
+      const fakeResponseData = getJSONFixture('projects.json');
+      spyOn(jQuery, 'ajax').and.callFake((req) => {
+        const def = $.Deferred();
+        reqUrl = req.url;
+        reqData = req.data;
+        def.resolve(fakeResponseData);
+        return def.promise();
       });
+    });
+
+    it('toggles dropdown', () => {
+      const $menu = $('.js-dropdown-menu-projects');
+      $('.js-projects-dropdown-toggle').click();
+      expect($menu).toHaveClass('open');
+      expect(reqUrl).toBe('/api/v3/projects.json?simple=true');
+      expect(reqData).toEqual({
+        search: '',
+        order_by: 'last_activity_at',
+        per_page: 20,
+        membership: true,
+      });
+      $menu.find('.dropdown-menu-close-icon').click();
+      expect($menu).not.toHaveClass('open');
     });
   });
 
-}).call(this);
+  afterEach(() => {
+    window.gon = {};
+  });
+});

@@ -99,6 +99,28 @@ describe Banzai::Filter::AutolinkFilter, lib: true do
       expect(doc.at_css('a')['href']).to eq link
     end
 
+    it 'autolinks rdar' do
+      link = 'rdar://localhost.com/blah'
+      doc = filter("See #{link}")
+
+      expect(doc.at_css('a').text).to eq link
+      expect(doc.at_css('a')['href']).to eq link
+    end
+
+    it 'does not autolink javascript' do
+      link = 'javascript://alert(document.cookie);'
+      doc = filter("See #{link}")
+
+      expect(doc.at_css('a')).to be_nil
+    end
+
+    it 'does not autolink bad URLs' do
+      link = 'foo://23423:::asdf'
+      doc = filter("See #{link}")
+
+      expect(doc.to_s).to eq("See #{link}")
+    end
+
     it 'does not include trailing punctuation' do
       doc = filter("See #{link}.")
       expect(doc.at_css('a').text).to eq link

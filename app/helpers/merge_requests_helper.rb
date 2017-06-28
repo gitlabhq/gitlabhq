@@ -1,6 +1,6 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
-    target_project = event.project.forked_from_project || event.project
+    target_project = event.project.default_merge_request_target
     new_namespace_project_merge_request_path(
       event.project.namespace,
       event.project,
@@ -47,41 +47,17 @@ module MergeRequestsHelper
     end
   end
 
-  def issues_sentence(issues)
-    # Sorting based on the `#123` or `group/project#123` reference will sort
-    # local issues first.
-    issues.map do |issue|
-      issue.to_reference(@project)
-    end.sort.to_sentence
-  end
-
-  def mr_closes_issues
-    @mr_closes_issues ||= @merge_request.closes_issues
-  end
-
   def mr_change_branches_path(merge_request)
     new_namespace_project_merge_request_path(
       @project.namespace, @project,
       merge_request: {
-        source_project_id: @merge_request.source_project_id,
-        target_project_id: @merge_request.target_project_id,
-        source_branch: @merge_request.source_branch,
-        target_branch: @merge_request.target_branch,
+        source_project_id: merge_request.source_project_id,
+        target_project_id: merge_request.target_project_id,
+        source_branch: merge_request.source_branch,
+        target_branch: merge_request.target_branch
       },
       change_branches: true
     )
-  end
-
-  def source_branch_with_namespace(merge_request)
-    branch = link_to(merge_request.source_branch, namespace_project_commits_path(merge_request.source_project.namespace, merge_request.source_project, merge_request.source_branch))
-
-    if merge_request.for_fork?
-      namespace = link_to(merge_request.source_project_namespace,
-        project_path(merge_request.source_project))
-      namespace + ":" + branch
-    else
-      branch
-    end
   end
 
   def format_mr_branch_names(merge_request)
@@ -97,6 +73,10 @@ module MergeRequestsHelper
     end
   end
 
+  def target_projects(project)
+    [project, project.default_merge_request_target].uniq
+  end
+
   def merge_request_button_visibility(merge_request, closed)
     return 'hidden' if merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
   end
@@ -109,5 +89,21 @@ module MergeRequestsHelper
 
   def version_index(merge_request_diff)
     @merge_request_diffs.size - @merge_request_diffs.index(merge_request_diff)
+  end
+
+  def different_base?(version1, version2)
+    version1 && version2 && version1.base_commit_sha != version2.base_commit_sha
+  end
+
+  def merge_params(merge_request)
+    {
+      merge_when_pipeline_succeeds: true,
+      should_remove_source_branch: true,
+      sha: merge_request.diff_head_sha
+    }.merge(merge_params_ee(merge_request))
+  end
+
+  def merge_params_ee(merge_request)
+    {}
   end
 end

@@ -1,11 +1,8 @@
 module ToggleAwardEmoji
   extend ActiveSupport::Concern
 
-  included do
-    before_action :authenticate_user!, only: [:toggle_award_emoji]
-  end
-
   def toggle_award_emoji
+    authenticate_user!
     name = params.require(:name)
 
     if awardable.user_can_award?(current_user, name)
@@ -25,7 +22,8 @@ module ToggleAwardEmoji
   def to_todoable(awardable)
     case awardable
     when Note
-      awardable.noteable
+      # we don't create todos for personal snippet comments for now
+      awardable.for_personal_snippet? ? nil : awardable.noteable
     when MergeRequest, Issue
       awardable
     when Snippet

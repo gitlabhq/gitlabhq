@@ -18,7 +18,7 @@ describe AsanaService, models: true do
 
   describe 'Execute' do
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
 
     def create_data_for_commits(*messages)
       {
@@ -28,7 +28,7 @@ describe AsanaService, models: true do
         commits: messages.map do |m|
           {
             message: m,
-            url: 'https://gitlab.com/',
+            url: 'https://gitlab.com/'
           }
         end
       }

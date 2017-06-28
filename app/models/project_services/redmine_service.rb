@@ -1,4 +1,6 @@
 class RedmineService < IssueTrackerService
+  validates :project_url, :issues_url, :new_issue_url, presence: true, url: true, if: :activated?
+
   prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
 
   def title
@@ -17,7 +19,7 @@ class RedmineService < IssueTrackerService
     end
   end
 
-  def to_param
+  def self.to_param
     'redmine'
   end
 end

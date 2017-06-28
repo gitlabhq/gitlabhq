@@ -39,11 +39,6 @@ Feature: Groups
     When I visit group "Owned" merge requests page
     Then I should not see merge requests from the archived project
 
-  Scenario: I should see edit group "Owned" page
-    When I visit group "Owned" settings page
-    And I change group "Owned" name to "new-name"
-    Then I should see new group "Owned" name
-
   Scenario: I edit group "Owned" avatar
     When I visit group "Owned" settings page
     And I change group "Owned" avatar

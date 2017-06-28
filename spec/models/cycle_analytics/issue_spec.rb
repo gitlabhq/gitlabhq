@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'CycleAnalytics#issue', models: true do
   extend CycleAnalyticsHelpers::TestGeneration
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
   subject { CycleAnalytics.new(project, from: from_date) }
@@ -28,23 +28,19 @@ describe 'CycleAnalytics#issue', models: true do
       if data[:issue].persisted?
         context.create_merge_request_closing_issue(data[:issue].reload)
         context.merge_merge_requests_closing_issue(data[:issue])
-        context.deploy_master
       end
     end)
 
   context "when a regular label (instead of a list label) is added to the issue" do
     it "returns nil" do
-      5.times do
-        regular_label = create(:label)
-        issue = create(:issue, project: project)
-        issue.update(label_ids: [regular_label.id])
+      regular_label = create(:label)
+      issue = create(:issue, project: project)
+      issue.update(label_ids: [regular_label.id])
 
-        create_merge_request_closing_issue(issue)
-        merge_merge_requests_closing_issue(issue)
-        deploy_master
-      end
+      create_merge_request_closing_issue(issue)
+      merge_merge_requests_closing_issue(issue)
 
-      expect(subject.issue).to be_nil
+      expect(subject[:issue].median).to be_nil
     end
   end
 end

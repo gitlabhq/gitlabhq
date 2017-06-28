@@ -5,6 +5,7 @@ Feature: Snippets
     And I have public "Personal snippet one" snippet
     And I have private "Personal snippet private" snippet
 
+  @javascript
   Scenario: I create new snippet
     Given I visit new snippet page
     And I submit new snippet "Personal snippet three"

@@ -1,6 +1,6 @@
 # rubocop:disable all
 class AddVisibilityLevelToSnippet < ActiveRecord::Migration
-  include Gitlab::Database
+  include Gitlab::Database::MigrationHelpers
 
   def up
     add_column :snippets, :visibility_level, :integer, :default => 0, :null => false

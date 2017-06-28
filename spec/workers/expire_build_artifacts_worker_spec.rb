@@ -5,10 +5,14 @@ describe ExpireBuildArtifactsWorker do
 
   let(:worker) { described_class.new }
 
-  before { Sidekiq::Worker.clear_all }
+  before do
+    Sidekiq::Worker.clear_all
+  end
 
   describe '#perform' do
-    before { build }
+    before do
+      build
+    end
 
     subject! do
       Sidekiq::Testing.fake! { worker.perform }

@@ -1,8 +1,8 @@
 - page_title       @user.name
 - page_description @user.bio
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/d3.js')
-  = page_specific_javascript_tag('users/users_bundle.js')
+  = page_specific_javascript_bundle_tag('common_d3')
+  = page_specific_javascript_bundle_tag('users')
 - header_title     @user.name, user_path(@user)
 - @no_container = true
 
@@ -10,31 +10,30 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  .cover-block.user-cover-block
+  .cover-block.user-cover-block.layout-nav
     .cover-controls
       - if @user == current_user
-        = link_to profile_path, class: 'btn btn-gray' do
+        = link_to profile_path, class: 'btn btn-gray has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
           = icon('pencil')
       - elsif current_user
         - if @user.abuse_report
           %button.btn.btn-danger{ title: 'Already reported for abuse',
-            data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }}
+            data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }
             = icon('exclamation-circle')
         - else
           = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
-            title: 'Report abuse', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+            title: 'Report abuse', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
-      - if current_user
-        = link_to user_path(@user, :atom, { private_token: current_user.private_token }), class: 'btn btn-gray' do
-          = icon('rss')
-        - if current_user.admin?
-          = link_to [:admin, @user], class: 'btn btn-gray', title: 'View user in admin area',
-            data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-            = icon('users')
+      = link_to user_path(@user, rss_url_options), class: 'btn btn-gray has-tooltip', title: 'Subscribe', 'aria-label': 'Subscribe' do
+        = icon('rss')
+      - if current_user && current_user.admin?
+        = link_to [:admin, @user], class: 'btn btn-gray', title: 'View user in admin area',
+          data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+          = icon('users')
 
     .profile-header
       .avatar-holder
-        = link_to avatar_icon(@user, 400), target: '_blank' do
+        = link_to avatar_icon(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = image_tag avatar_icon(@user, 90), class: "avatar s90", alt: ''
 
       .user-info
@@ -45,7 +44,7 @@
           %span.middle-dot-divider
             @#{@user.username}
           %span.middle-dot-divider
-            Member since #{@user.created_at.to_s(:medium)}
+            Member since #{@user.created_at.to_date.to_s(:long)}
 
         .cover-desc
           - unless @user.public_email.blank?
@@ -57,11 +56,11 @@
                 = icon('skype')
           - unless @user.linkedin.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to "https://www.linkedin.com/in/#{@user.linkedin}", title: "LinkedIn" do
+              = link_to linkedin_url(@user), title: "LinkedIn" do
                 = icon('linkedin-square')
           - unless @user.twitter.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to "https://twitter.com/#{@user.twitter}", title: "Twitter" do
+              = link_to twitter_url(@user), title: "Twitter" do
                 = icon('twitter-square')
           - unless @user.website_url.blank?
             .profile-link-holder.middle-dot-divider
@@ -72,7 +71,7 @@
               = @user.location
           - unless @user.organization.blank?
             .profile-link-holder.middle-dot-divider
-              = icon('building')
+              = icon('briefcase')
               = @user.organization
 
     - if @user.bio.present?
@@ -80,46 +79,53 @@
         %p.profile-user-bio
           = @user.bio
 
-    %ul.nav-links.center.user-profile-nav
-      %li.js-activity-tab
-        = link_to user_path, data: {target: 'div#activity', action: 'activity', toggle: 'tab'} do
-          Activity
-      %li.js-groups-tab
-        = link_to user_groups_path, data: {target: 'div#groups', action: 'groups', toggle: 'tab'} do
-          Groups
-      %li.js-contributed-tab
-        = link_to user_contributed_projects_path, data: {target: 'div#contributed', action: 'contributed', toggle: 'tab'} do
-          Contributed projects
-      %li.js-projects-tab
-        = link_to user_projects_path, data: {target: 'div#projects', action: 'projects', toggle: 'tab'} do
-          Personal projects
-      %li.js-snippets-tab
-        = link_to user_snippets_path, data: {target: 'div#snippets', action: 'snippets', toggle: 'tab'} do
-          Snippets
+    .scrolling-tabs-container
+      .fade-left= icon('angle-left')
+      .fade-right= icon('angle-right')
+      %ul.nav-links.user-profile-nav.scrolling-tabs
+        %li.js-activity-tab
+          = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
+            Activity
+        %li.js-groups-tab
+          = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
+            Groups
+        %li.js-contributed-tab
+          = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
+            Contributed projects
+        %li.js-projects-tab
+          = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
+            Personal projects
+        %li.js-snippets-tab
+          = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
+            Snippets
 
   %div{ class: container_class }
+    - if @user == current_user && show_callout?('user_callout_dismissed')
+      = render 'shared/user_callout'
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs
-          .user-calendar{data: {href: user_calendar_path}}
+          .user-calendar{ data: { href: user_calendar_path } }
             %h4.center.light
               %i.fa.fa-spinner.fa-spin
           .user-calendar-activities
 
-        .content_list{ data: {href: user_path} }
+        %h4.prepend-top-20
+          Most Recent Activity
+        .content_list{ data: { href: user_path } }
         = spinner
 
       #groups.tab-pane
-        - # This tab is always loaded via AJAX
+        -# This tab is always loaded via AJAX
 
       #contributed.tab-pane
-        - # This tab is always loaded via AJAX
+        -# This tab is always loaded via AJAX
 
       #projects.tab-pane
-        - # This tab is always loaded via AJAX
+        -# This tab is always loaded via AJAX
 
       #snippets.tab-pane
-        - # This tab is always loaded via AJAX
+        -# This tab is always loaded via AJAX
 
     .loading-status
       = spinner

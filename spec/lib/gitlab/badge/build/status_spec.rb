@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Badge::Build::Status do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:sha) { project.commit.sha }
   let(:branch) { 'master' }
   let(:badge) { described_class.new(project, branch) }
@@ -29,7 +29,9 @@ describe Gitlab::Badge::Build::Status do
     let!(:build) { create_build(project, sha, branch) }
 
     context 'build success' do
-      before { build.success! }
+      before do
+        build.success!
+      end
 
       describe '#status' do
         it 'is successful' do
@@ -39,7 +41,9 @@ describe Gitlab::Badge::Build::Status do
     end
 
     context 'build failed' do
-      before { build.drop! }
+      before do
+        build.drop!
+      end
 
       describe '#status' do
         it 'failed' do
@@ -69,8 +73,8 @@ describe Gitlab::Badge::Build::Status do
         new_build.success!
       end
 
-      it 'reports the compound status' do
-        expect(badge.status).to eq 'failed'
+      it 'does not take outdated pipeline into account' do
+        expect(badge.status).to eq 'success'
       end
     end
   end

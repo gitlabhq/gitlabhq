@@ -19,6 +19,10 @@ FactoryGirl.define do
       status 'canceled'
     end
 
+    trait :skipped do
+      status 'skipped'
+    end
+
     trait :running do
       status 'running'
     end
@@ -29,6 +33,10 @@ FactoryGirl.define do
 
     trait :created do
       status 'created'
+    end
+
+    trait :manual do
+      status 'manual'
     end
 
     after(:build) do |build, evaluator|

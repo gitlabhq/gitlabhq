@@ -15,13 +15,6 @@ Kerberos and Atlassian Crowd are only available on the Enterprise Edition, so
 you should disable these mechanisms before downgrading and you should provide
 alternative authentication methods to your users.
 
-### Git Annex
-
-Git Annex is also only available on the Enterprise Edition. This means that if
-you have repositories that use Git Annex to store large files, these files will
-no longer be easily available via Git. You should consider migrating these
-repositories to use Git LFS before downgrading to the Community Edition.
-
 ### Remove Jenkins CI Service entries from the database
 
 The `JenkinsService` class is only available on the Enterprise Edition codebase,

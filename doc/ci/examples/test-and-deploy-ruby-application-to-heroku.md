@@ -34,7 +34,7 @@ production:
 This project has three jobs:
 1. `test` - used to test Rails application,
 2. `staging` - used to automatically deploy staging environment every push to `master` branch
-3. `production` - used to automatically deploy production environmnet for every created tag
+3. `production` - used to automatically deploy production environment for every created tag
 
 ### Store API keys
 You'll need to create two variables in `Project > Variables`:
@@ -50,11 +50,11 @@ You can do this through the [Dashboard](https://dashboard.heroku.com/).
 ### Create runner
 First install [Docker Engine](https://docs.docker.com/installation/).
 To build this project you also need to have [GitLab Runner](https://about.gitlab.com/gitlab-ci/#gitlab-runner).
-You can use public runners available on `gitlab.com/ci`, but you can register your own:
+You can use public runners available on `gitlab.com`, but you can register your own:
 ```
 gitlab-ci-multi-runner register \
   --non-interactive \
-  --url "https://gitlab.com/ci/" \
+  --url "https://gitlab.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
   --description "ruby-2.2" \
   --executor "docker" \

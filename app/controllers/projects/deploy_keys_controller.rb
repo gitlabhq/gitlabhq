@@ -1,58 +1,83 @@
 class Projects::DeployKeysController < Projects::ApplicationController
+  include RepositorySettingsRedirect
   respond_to :html
 
   # Authorize
   before_action :authorize_admin_project!
+  before_action :authorize_update_deploy_key!, only: [:edit, :update]
 
-  layout "project_settings"
+  layout 'project_settings'
 
   def index
-    @key = DeployKey.new
-    set_index_vars
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json do
+        render json: Projects::Settings::DeployKeysPresenter.new(@project, current_user: current_user).as_json
+      end
+    end
   end
 
   def new
-    redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def create
-    @key = DeployKey.new(deploy_key_params)
-    set_index_vars
+    @key = DeployKey.new(create_params.merge(user: current_user))
 
-    if @key.valid? && @project.deploy_keys << @key
-      redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
+    unless @key.valid? && @project.deploy_keys << @key
+      flash[:alert] = @key.errors.full_messages.join(', ').html_safe
+    end
+    redirect_to_repository_settings(@project)
+  end
+
+  def edit
+  end
+
+  def update
+    if deploy_key.update_attributes(update_params)
+      flash[:notice] = 'Deploy key was successfully updated.'
+      redirect_to_repository_settings(@project)
     else
-      render "index"
+      render 'edit'
     end
   end
 
   def enable
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
 
-    redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
   end
 
   def disable
-    @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
+    deploy_key_project = @project.deploy_keys_projects.find_by(deploy_key_id: params[:id])
+    return render_404 unless deploy_key_project
 
-    redirect_back_or_default(default: { action: 'index' })
+    deploy_key_project.destroy!
+
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+      format.json { head :ok }
+    end
   end
 
   protected
 
-  def set_index_vars
-    @enabled_keys           ||= @project.deploy_keys
-
-    @available_keys         ||= current_user.accessible_deploy_keys - @enabled_keys
-    @available_project_keys ||= current_user.project_deploy_keys - @enabled_keys
-    @available_public_keys  ||= DeployKey.are_public - @enabled_keys
-
-    # Public keys that are already used by another accessible project are already
-    # in @available_project_keys.
-    @available_public_keys -= @available_project_keys
+  def deploy_key
+    @deploy_key ||= DeployKey.find(params[:id])
   end
 
-  def deploy_key_params
-    params.require(:deploy_key).permit(:key, :title)
+  def create_params
+    params.require(:deploy_key).permit(:key, :title, :can_push)
+  end
+
+  def update_params
+    params.require(:deploy_key).permit(:title, :can_push)
+  end
+
+  def authorize_update_deploy_key!
+    access_denied! unless can?(current_user, :update_deploy_key, deploy_key)
   end
 end

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Projects::DiscussionsController do
-  let(:user)    { create(:user) }
-  let(:project) { create(:project) }
-  let(:merge_request) { create(:merge_request, source_project: project) }
-  let(:note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+  let(:user) { create(:user) }
+  let(:merge_request) { create(:merge_request) }
+  let(:project) { merge_request.source_project }
+  let(:note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
   let(:discussion) { note.discussion }
 
   let(:request_params) do

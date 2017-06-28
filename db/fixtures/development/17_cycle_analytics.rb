@@ -1,4 +1,4 @@
-require 'sidekiq/testing'
+require './spec/support/sidekiq'
 require './spec/support/test_env'
 
 class Gitlab::Seeder::CycleAnalytics
@@ -155,16 +155,8 @@ class Gitlab::Seeder::CycleAnalytics
 
       issue.project.repository.add_branch(@user, branch_name, 'master')
 
-      options = {
-        committer: issue.project.repository.user_to_committer(@user),
-        author: issue.project.repository.user_to_committer(@user),
-        commit: { message: "Commit for ##{issue.iid}", branch: branch_name, update_ref: true },
-        file: { content: "content", path: filename, update: false }
-      }
-
-      commit_sha = Gitlab::Git::Blob.commit(issue.project.repository, options)
+      commit_sha = issue.project.repository.create_file(@user, filename, "content", message: "Commit for ##{issue.iid}", branch_name: branch_name)
       issue.project.repository.commit(commit_sha)
-
 
       GitPushService.new(issue.project,
                          @user,
@@ -198,11 +190,13 @@ class Gitlab::Seeder::CycleAnalytics
       service = Ci::CreatePipelineService.new(merge_request.project,
                                               @user,
                                               ref: "refs/heads/#{merge_request.source_branch}")
-      pipeline = service.execute(ignore_skip_ci: true, save_on_errors: false)
+      pipeline = service.execute(:push, ignore_skip_ci: true, save_on_errors: false)
 
       pipeline.run!
       Timecop.travel rand(1..6).hours.from_now
       pipeline.succeed!
+
+      PipelineMetricsWorker.new.perform(pipeline.id)
     end
   end
 
@@ -218,18 +212,17 @@ class Gitlab::Seeder::CycleAnalytics
     merge_requests.each do |merge_request|
       Timecop.travel 12.hours.from_now
 
-      CreateDeploymentService.new(merge_request.project, @user, {
-                                    environment: 'production',
-                                    ref: 'master',
-                                    tag: false,
-                                    sha: @project.repository.commit('master').sha
-                                  }).execute
+      job = merge_request.head_pipeline.builds.where.not(environment: nil).last
+
+      CreateDeploymentService.new(job).execute
     end
   end
 end
 
 Gitlab::Seeder.quiet do
-  if ENV['SEED_CYCLE_ANALYTICS']
+  flag = 'SEED_CYCLE_ANALYTICS'
+
+  if ENV[flag]
     Project.all.each do |project|
       seeder = Gitlab::Seeder::CycleAnalytics.new(project)
       seeder.seed!
@@ -241,6 +234,6 @@ Gitlab::Seeder.quiet do
     seeder = Gitlab::Seeder::CycleAnalytics.new(Project.order(:id).first, perf: true)
     seeder.seed_metrics!
   else
-    puts "Not running the cycle analytics seed file. Use the `SEED_CYCLE_ANALYTICS` environment variable to enable it."
+    puts "Skipped. Use the `#{flag}` environment variable to enable."
   end
 end

@@ -3,50 +3,23 @@ module API
   class Internal < Grape::API
     before { authenticate_by_gitlab_shell_token! }
 
+    helpers ::API::Helpers::InternalHelpers
+
     namespace 'internal' do
       # Check if git command is allowed to project
       #
       # Params:
       #   key_id - ssh key id for Git over SSH
       #   user_id - user id for Git over HTTP
+      #   protocol - Git access protocol being used, e.g. HTTP or SSH
       #   project - project path with namespace
       #   action - git action (git-upload-pack or git-receive-pack)
-      #   ref - branch name
-      #   forced_push - forced_push
-      #   protocol - Git access protocol being used, e.g. HTTP or SSH
-      #
-
-      helpers do
-        def wiki?
-          @wiki ||= params[:project].end_with?('.wiki') &&
-            !Project.find_with_namespace(params[:project])
-        end
-
-        def project
-          @project ||= begin
-            project_path = params[:project]
-
-            # Check for *.wiki repositories.
-            # Strip out the .wiki from the pathname before finding the
-            # project. This applies the correct project permissions to
-            # the wiki repository as well.
-            project_path.chomp!('.wiki') if wiki?
-
-            Project.find_with_namespace(project_path)
-          end
-        end
-
-        def ssh_authentication_abilities
-          [
-            :read_project,
-            :download_code,
-            :push_code
-          ]
-        end
-      end
-
+      #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
       post "/allowed" do
         status 200
+
+        # Stores some Git-specific env thread-safely
+        Gitlab::Git::Env.set(parse_env)
 
         actor =
           if params[:key_id]
@@ -57,35 +30,33 @@ module API
 
         protocol = params[:protocol]
 
-        access =
-          if wiki?
-            Gitlab::GitAccessWiki.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
-          else
-            Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
-          end
+        actor.update_last_used_at if actor.is_a?(Key)
 
-        access_status = access.check(params[:action], params[:changes])
+        access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+        access_checker = access_checker_klass
+          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path)
 
-        response = { status: access_status.status, message: access_status.message }
-
-        if access_status.status
-          # Return the repository full path so that gitlab-shell has it when
-          # handling ssh commands
-          response[:repository_path] =
-            if wiki?
-              project.wiki.repository.path_to_repo
-            else
-              project.repository.path_to_repo
-            end
+        begin
+          access_checker.check(params[:action], params[:changes])
+        rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
+          return { status: false, message: e.message }
         end
 
-        response
+        log_user_activity(actor)
+
+        {
+          status: true,
+          gl_repository: gl_repository,
+          repository_path: repository_path
+        }
       end
 
       post "/lfs_authenticate" do
         status 200
 
         key = Key.find(params[:key_id])
+        key.update_last_used_at
+
         token_handler = Gitlab::LfsToken.new(key)
 
         {
@@ -100,23 +71,36 @@ module API
       end
 
       #
-      # Discover user by ssh key
+      # Discover user by ssh key or user id
       #
       get "/discover" do
-        key = Key.find(params[:key_id])
-        present key.user, with: Entities::UserSafe
+        if params[:key_id]
+          key = Key.find(params[:key_id])
+          user = key.user
+        elsif params[:user_id]
+          user = User.find_by(id: params[:user_id])
+        end
+        present user, with: Entities::UserSafe
       end
 
       get "/check" do
         {
           api_version: API.version,
           gitlab_version: Gitlab::VERSION,
-          gitlab_rev: Gitlab::REVISION,
+          gitlab_rev: Gitlab::REVISION
         }
       end
 
+      get "/broadcast_messages" do
+        if messages = BroadcastMessage.current
+          present messages, with: Entities::BroadcastMessage
+        else
+          []
+        end
+      end
+
       get "/broadcast_message" do
-        if message = BroadcastMessage.current
+        if message = BroadcastMessage.current.last
           present message, with: Entities::BroadcastMessage
         else
           {}
@@ -128,7 +112,9 @@ module API
 
         key = Key.find_by(id: params[:key_id])
 
-        unless key
+        if key
+          key.update_last_used_at
+        else
           return { 'success' => false, 'message' => 'Could not find the given key' }
         end
 
@@ -146,10 +132,27 @@ module API
           return { success: false, message: 'Two-factor authentication is not enabled for this user' }
         end
 
-        codes = user.generate_otp_backup_codes!
-        user.save!
+        codes = nil
+
+        ::Users::UpdateService.new(user).execute! do |user|
+          codes = user.generate_otp_backup_codes!
+        end
 
         { success: true, recovery_codes: codes }
+      end
+
+      post "/notify_post_receive" do
+        status 200
+
+        # TODO: Re-enable when Gitaly is processing the post-receive notification
+        # return unless Gitlab::GitalyClient.enabled?
+        #
+        # begin
+        #   repository = wiki? ? project.wiki.repository : project.repository
+        #   Gitlab::GitalyClient::Notifications.new(repository.raw_repository).post_receive
+        # rescue GRPC::Unavailable => e
+        #   render_api_error!(e, 500)
+        # end
       end
     end
   end

@@ -91,6 +91,54 @@ eos
     end
   end
 
+  describe '\ No newline at end of file' do
+    it "parses nonewline in one file correctly" do
+      first_nonewline_diff = <<~END
+        --- a/test
+        +++ b/test
+        @@ -1,2 +1,2 @@
+        +ipsum
+         lorem
+        -ipsum
+        \\ No newline at end of file
+      END
+      lines = parser.parse(first_nonewline_diff.lines).to_a
+
+      expect(lines[0].type).to eq('new')
+      expect(lines[0].text).to eq('+ipsum')
+      expect(lines[2].type).to eq('old')
+      expect(lines[3].type).to eq('old-nonewline')
+      expect(lines[1].old_pos).to eq(1)
+      expect(lines[1].new_pos).to eq(2)
+    end
+
+    it "parses nonewline in two files correctly" do
+      both_nonewline_diff = <<~END
+        --- a/test
+        +++ b/test
+        @@ -1,2 +1,2 @@
+        -lorem
+        -ipsum
+        \\ No newline at end of file
+        +ipsum
+        +lorem
+        \\ No newline at end of file
+      END
+      lines = parser.parse(both_nonewline_diff.lines).to_a
+
+      expect(lines[0].type).to eq('old')
+      expect(lines[1].type).to eq('old')
+      expect(lines[2].type).to eq('old-nonewline')
+      expect(lines[5].type).to eq('new-nonewline')
+      expect(lines[3].text).to eq('+ipsum')
+      expect(lines[3].old_pos).to eq(3)
+      expect(lines[3].new_pos).to eq(1)
+      expect(lines[4].text).to eq('+lorem')
+      expect(lines[4].old_pos).to eq(3)
+      expect(lines[4].new_pos).to eq(2)
+    end
+  end
+
   context 'when lines is empty' do
     it { expect(parser.parse([])).to eq([]) }
     it { expect(parser.parse(nil)).to eq([]) }

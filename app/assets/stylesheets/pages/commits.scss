@@ -1,15 +1,116 @@
+.commit-description {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 10px;
+  word-break: normal;
+  white-space: pre-wrap;
+}
+
+.js-details-expand {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.commit-box {
+  border-top: 1px solid $border-color;
+  padding: $gl-padding 0;
+
+  .commit-title {
+    margin: 0;
+    color: $gl-text-color;
+  }
+
+  .commit-description {
+    margin-top: 15px;
+  }
+}
+
+.commit-hash-full {
+  @media (max-width: $screen-sm-max) {
+    width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: bottom;
+  }
+}
+
+.pipeline-info {
+  .status-icon-container {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 3px;
+
+    svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .mr-widget-pipeline-graph {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 -6px 0 0;
+
+    .dropdown-menu {
+      margin-top: 11px;
+    }
+  }
+}
+
+.branch-info .commit-icon {
+  margin-right: 3px;
+
+  svg {
+    top: 3px;
+  }
+}
+
+/*
+ * Commit message textarea for web editor and
+ * custom merge request message
+ */
+.commit-message-container {
+  background-color: $body-bg;
+  position: relative;
+  font-family: $monospace_font;
+  $left: 12px;
+  overflow: hidden; // See https://gitlab.com/gitlab-org/gitlab-ce/issues/13987
+  .max-width-marker {
+    width: 72ch;
+    color: $commit-max-width-marker-color;
+    font-family: inherit;
+    left: $left;
+    height: 100%;
+    border-right: 1px solid mix($input-border, $white-light);
+    position: absolute;
+    z-index: 1;
+  }
+
+  textarea {
+    background-color: $commit-message-text-area-bg;
+    font-family: inherit;
+    padding-left: $left;
+    position: relative;
+    z-index: 2;
+  }
+}
+
+
 .commits-compare-switch {
-  @include btn-default;
-  @include btn-white;
   float: left;
   margin-right: 9px;
 }
 
 .commit-header {
   padding: 5px 10px;
-  background-color: $background-color;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  background-color: $gray-light;
+  border-bottom: 1px solid $gray-darker;
+  border-top: 1px solid $gray-darker;
   font-size: 14px;
 
   &:first-child {
@@ -18,8 +119,6 @@
 }
 
 .commit-row-title {
-  line-height: 1.35;
-
   .notes_count {
     float: right;
     margin-right: 10px;
@@ -30,40 +129,74 @@
   }
 
   .commit-row-message {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
   }
+}
 
-  .text-expander {
-    display: inline-block;
+.text-expander {
+  display: inline-block;
+  background: $white-light;
+  color: $gl-text-color-secondary;
+  padding: 0 5px;
+  cursor: pointer;
+  border: 1px solid $border-gray-dark;
+  border-radius: $border-radius-default;
+  margin-left: 5px;
+  font-size: $gl-font-size;
+  line-height: $gl-font-size;
+  outline: none;
+
+  &.open {
     background: $gray-light;
-    color: $gl-placeholder-color;
-    padding: 0 5px;
-    cursor: pointer;
-    border: 1px solid $border-gray-dark;
-    border-radius: $border-radius-default;
-    margin-left: 5px;
-    line-height: 1;
-
-    &:hover {
-      background-color: darken($gray-light, 10%);
-      text-decoration: none;
-    }
+    box-shadow: inset 0 0 2px rgba($black, 0.2);
   }
+
+  &:hover {
+    background-color: darken($gray-light, 10%);
+    text-decoration: none;
+  }
+}
+
+.commit.flex-list {
+  display: flex;
+}
+
+.avatar-cell {
+  width: 46px;
+
+  img {
+    margin-right: 0;
+  }
+}
+
+.commit-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-grow: 1;
+
+  .merge-request-branches & {
+    flex-direction: column;
+  }
+}
+
+.commit-content {
+  padding-right: 10px;
 }
 
 .commit-actions {
   @media (min-width: $screen-sm-min) {
-    float: right;
-    margin-left: $gl-padding;
-    margin-top: 2px;
     font-size: 0;
   }
 
   .ci-status-link {
     display: inline-block;
+    position: relative;
+    top: 1px;
   }
 
-  .btn-clipboard, .btn-transparent {
+  .btn-clipboard,
+  .btn-transparent {
     padding-left: 0;
     padding-right: 0;
   }
@@ -73,52 +206,29 @@
       margin-left: $gl-padding;
     }
   }
+
+  .commit-sha {
+    font-size: 14px;
+    font-weight: 600;
+  }
 }
 
-.commit-short-id {
-  font-family: $monospace_font;
-  font-weight: 600;
-}
-
-.commit {
-  padding: 10px 0;
-  position: relative;
-
-  @media (min-width: $screen-sm-min) {
-    padding-left: 46px;
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid #eee;
-  }
+.commit,
+.generic_commit_status {
 
   a,
   button {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
     vertical-align: baseline;
-  }
-
-
-  .avatar {
-    margin-left: -46px;
-  }
-
-  .item-title {
-    display: inline-block;
-
-    @media (min-width: $screen-sm-min) {
-      max-width: 70%;
-    }
   }
 
   .commit-row-description {
     font-size: 14px;
-    border-left: 1px solid $btn-gray-hover;
     padding: 10px 15px;
     margin: 10px 0;
     background: $gray-light;
     display: none;
-    white-space: pre-line;
+    white-space: pre-wrap;
     word-break: normal;
 
     pre {
@@ -130,20 +240,7 @@
     }
 
     a {
-      color: $gl-dark-link-color;
-    }
-  }
-
-  .commit-row-info {
-    color: $gl-gray;
-    line-height: 1.35;
-
-    a {
-      color: $gl-gray;
-    }
-
-    .avatar {
-      margin-right: 8px;
+      color: $gl-text-color;
     }
   }
 
@@ -160,64 +257,25 @@
 }
 
 .branch-commit {
-  color: $gl-gray;
-  .commit-id, .commit-row-message {
-    color: $gl-gray;
-  }
-}
+  color: $gl-text-color;
 
-.divergence-graph {
-  padding: 12px 12px 0 0;
-  float: right;
+  .commit-icon {
+    text-align: center;
+    display: inline-block;
 
-  .graph-side {
-    position: relative;
-    width: 80px;
-    height: 22px;
-    padding: 5px 0 13px;
-    float: left;
-
-    .bar {
-      position: absolute;
-      height: 4px;
-      background-color: #ccc;
-    }
-
-    .bar-behind {
-      right: 0;
-      border-radius: 3px 0 0 3px;
-    }
-
-    .bar-ahead {
-      left: 0;
-      border-radius: 0 3px 3px 0;
-    }
-
-    .count {
-      padding-top: 6px;
-      padding-bottom: 0;
-      font-size: 12px;
-      color: #333;
-      display: block;
-    }
-
-    .count-behind {
-      padding-right: 4px;
-      text-align: right;
-    }
-
-    .count-ahead {
-      padding-left: 4px;
-      text-align: left;
+    svg {
+      height: 14px;
+      width: 14px;
+      vertical-align: middle;
+      fill: $gl-text-color-secondary;
     }
   }
 
-  .graph-separator {
-    position: relative;
-    width: 1px;
-    height: 18px;
-    margin: 5px 0 0;
-    float: left;
-    background-color: #ccc;
+  .commit-sha {
+    color: $gl-link-color;
+  }
+
+  .commit-row-message {
+    color: $gl-text-color;
   }
 }

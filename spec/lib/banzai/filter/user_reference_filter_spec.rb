@@ -16,6 +16,11 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     expect(reference_filter(act).to_html).to eq(exp)
   end
 
+  it 'ignores references with text before the @ sign' do
+    exp = act = "Hey foo#{reference}"
+    expect(reference_filter(act).to_html).to eq(exp)
+  end
+
   %w(pre code a style).each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Hey #{reference}</#{elem}>"
@@ -24,6 +29,8 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
   end
 
   context 'mentioning @all' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:reference) { User.reference_prefix + 'all' }
 
     before do
@@ -60,6 +67,8 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
   end
 
   context 'mentioning a user' do
+    it_behaves_like 'a reference containing an element node'
+
     it 'links to a User' do
       doc = reference_filter("Hey #{reference}")
       expect(doc.css('a').first.attr('href')).to eq urls.user_url(user)
@@ -79,6 +88,14 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
       expect(doc.css('a').length).to eq 1
     end
 
+    it 'links to a User with different case-sensitivity' do
+      user = create(:user, username: 'RescueRanger')
+
+      doc = reference_filter("Hey #{user.to_reference.upcase}")
+      expect(doc.css('a').length).to eq 1
+      expect(doc.css('a').text).to eq(user.to_reference)
+    end
+
     it 'includes a data-user attribute' do
       doc = reference_filter("Hey #{reference}")
       link = doc.css('a').first
@@ -89,6 +106,8 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
   end
 
   context 'mentioning a group' do
+    it_behaves_like 'a reference containing an element node'
+
     let(:group)     { create(:group) }
     let(:reference) { group.to_reference }
 
@@ -103,6 +122,25 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
       expect(link).to have_attribute('data-group')
       expect(link.attr('data-group')).to eq group.id.to_s
+    end
+  end
+
+  context 'mentioning a nested group' do
+    it_behaves_like 'a reference containing an element node'
+
+    let(:group)     { create(:group, :nested) }
+    let(:reference) { group.to_reference }
+
+    it 'links to the nested group' do
+      doc = reference_filter("Hey #{reference}")
+
+      expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+    end
+
+    it 'has the full group name as a title' do
+      doc = reference_filter("Hey #{reference}")
+
+      expect(doc.css('a').first.attr('title')).to eq group.full_name
     end
   end
 
@@ -143,6 +181,30 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
       expect(link).to have_attribute('data-user')
       expect(link.attr('data-user')).to eq user.namespace.owner_id.to_s
+    end
+  end
+
+  context 'when a project is not specified' do
+    let(:project) { nil }
+
+    it 'does not link a User' do
+      doc = reference_filter("Hey #{reference}")
+
+      expect(doc).not_to include('a')
+    end
+
+    context 'when skip_project_check set to true' do
+      it 'links to a User' do
+        doc = reference_filter("Hey #{reference}", skip_project_check: true)
+
+        expect(doc.css('a').first.attr('href')).to eq urls.user_url(user)
+      end
+
+      it 'does not link users using @all reference' do
+        doc = reference_filter("Hey #{User.reference_prefix}all", skip_project_check: true)
+
+        expect(doc).not_to include('a')
+      end
     end
   end
 

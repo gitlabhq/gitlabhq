@@ -32,19 +32,6 @@ Feature: Dashboard
     Then I see prefilled new Merge Request page
 
   @javascript
-  Scenario: I should see User joined Project event
-    Given user with name "John Doe" joined project "Shop"
-    When I visit dashboard activity page
-    Then I should see "John Doe joined project Shop" event
-
-  @javascript
-  Scenario: I should see User left Project event
-    Given user with name "John Doe" joined project "Shop"
-    And user with name "John Doe" left project "Shop"
-    When I visit dashboard activity page
-    Then I should see "John Doe left project Shop" event
-
-  @javascript
   Scenario: Sorting Issues
     Given I visit dashboard issues page
     And I sort the list by "Oldest updated"
@@ -76,7 +63,8 @@ Feature: Dashboard
 
   @javascript
   Scenario: Visiting Project's merge requests after sorting
-    Given I visit dashboard merge requests page
+    Given project "Shop" has a "Bugfix MR" merge request open
+    And I visit dashboard merge requests page
     And I sort the list by "Oldest updated"
     And I visit project "Shop" merge requests page
     Then The list should be sorted by "Oldest updated"

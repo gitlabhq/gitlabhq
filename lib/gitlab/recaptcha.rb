@@ -10,5 +10,9 @@ module Gitlab
         true
       end
     end
+
+    def self.enabled?
+      current_application_settings.recaptcha_enabled
+    end
   end
 end

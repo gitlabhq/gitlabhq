@@ -11,8 +11,12 @@ module Gitlab
         }
       end
 
-      def klass
-        Release
+      def project_association
+        :releases
+      end
+
+      def find_condition
+        { tag: raw_data.tag_name }
       end
 
       def valid?

@@ -5,7 +5,7 @@ describe Gitlab::ChangesList do
   let(:invalid_changes) { 1 }
 
   context 'when changes is a valid string' do
-    let(:changes_list) { Gitlab::ChangesList.new(valid_changes_string) }
+    let(:changes_list) { described_class.new(valid_changes_string) }
 
     it 'splits elements by newline character' do
       expect(changes_list).to contain_exactly({

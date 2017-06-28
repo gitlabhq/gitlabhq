@@ -1,8 +1,8 @@
-#modal-confirm-danger.modal{tabindex: -1}
+#modal-confirm-danger.modal{ tabindex: -1 }
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title
           Confirmation required
 
@@ -14,7 +14,7 @@
           To prevent accidental actions we ask you to confirm your intention.
           %br
           Please type
-          %code.js-confirm-danger-match #{phrase}
+          %code.js-confirm-danger-match= phrase
           to proceed or close this modal to cancel.
 
         .form-group

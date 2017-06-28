@@ -12,7 +12,7 @@ module Projects
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
+      unless Gitlab::VisibilityLevel.allowed_for?(current_user, @project.visibility_level)
         deny_visibility_level(@project)
         return @project
       end
@@ -22,17 +22,7 @@ module Projects
         return @project
       end
 
-      # Set project name from path
-      if @project.name.present? && @project.path.present?
-        # if both name and path set - everything is ok
-      elsif @project.path.present?
-        # Set project name from path
-        @project.name = @project.path.dup
-      elsif @project.name.present?
-        # For compatibility - set path from name
-        # TODO: remove this in 8.0
-        @project.path = @project.name.dup.parameterize
-      end
+      set_project_name_from_path
 
       # get namespace id
       namespace_id = params[:namespace_id]
@@ -58,16 +48,18 @@ module Projects
 
       save_project_and_import_data(import_data)
 
-      @project.import_start if @project.import?
-
       after_create_actions if @project.persisted?
 
       if @project.errors.empty?
-        @project.add_import_job if @project.import?
+        @project.import_schedule if @project.import?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end
+
       @project
+    rescue ActiveRecord::RecordInvalid => e
+      message = "Unable to save #{e.record.type}: #{e.record.errors.full_messages.join(", ")} "
+      fail(error: message)
     rescue => e
       fail(error: e.message)
     end
@@ -95,7 +87,7 @@ module Projects
 
       unless @project.gitlab_project_import?
         @project.create_wiki unless skip_wiki?
-        @project.build_missing_services
+        create_services_from_active_templates(@project)
 
         @project.create_labels
       end
@@ -104,8 +96,11 @@ module Projects
       system_hook_service.execute_hooks_for(@project, :create)
 
       unless @project.group || @project.gitlab_project_import?
-        @project.team << [current_user, :master, current_user]
+        owners = [current_user, @project.namespace.owner].compact.uniq
+        @project.add_master(owners, current_user: current_user)
       end
+
+      @project.group&.refresh_members_authorized_projects
     end
 
     def skip_wiki?
@@ -134,6 +129,27 @@ module Projects
       end
 
       @project
+    end
+
+    def create_services_from_active_templates(project)
+      Service.where(template: true, active: true).each do |template|
+        service = Service.build_from_template(project.id, template)
+        service.save!
+      end
+    end
+
+    def set_project_name_from_path
+      # Set project name from path
+      if @project.name.present? && @project.path.present?
+        # if both name and path set - everything is ok
+      elsif @project.path.present?
+        # Set project name from path
+        @project.name = @project.path.dup
+      elsif @project.name.present?
+        # For compatibility - set path from name
+        # TODO: remove this in 8.0
+        @project.path = @project.name.dup.parameterize
+      end
     end
   end
 end

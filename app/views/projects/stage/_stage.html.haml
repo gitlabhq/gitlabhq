@@ -1,0 +1,13 @@
+%tr
+  %th{ colspan: 10 }
+    %strong
+      %a{ name: stage.name }
+      %span{ class: "ci-status-link ci-status-icon-#{stage.status}" }
+        = ci_icon_for_status(stage.status)
+      &nbsp;
+      = stage.name.titleize
+= render stage.statuses.latest_ordered, stage: false, ref: false, pipeline_link: false, allow_retry: true
+= render stage.statuses.retried_ordered, stage: false, ref: false, pipeline_link: false, retried: true
+%tr
+  %td{ colspan: 10 }
+    &nbsp;

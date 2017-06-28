@@ -1,26 +1,32 @@
 class Projects::MilestonesController < Projects::ApplicationController
-  before_action :module_enabled
-  before_action :milestone, only: [:edit, :update, :destroy, :show, :sort_issues, :sort_merge_requests]
+  include MilestoneActions
+
+  before_action :check_issuables_available!
+  before_action :milestone, only: [:edit, :update, :destroy, :show, :merge_requests, :participants, :labels]
 
   # Allow read any milestone
   before_action :authorize_read_milestone!
 
   # Allow admin milestone
-  before_action :authorize_admin_milestone!, except: [:index, :show]
+  before_action :authorize_admin_milestone!, except: [:index, :show, :merge_requests, :participants, :labels]
 
   respond_to :html
 
   def index
     @milestones =
       case params[:state]
-      when 'all' then @project.milestones.reorder(due_date: :desc, title: :asc)
-      when 'closed' then @project.milestones.closed.reorder(due_date: :desc, title: :asc)
-      else @project.milestones.active.reorder(due_date: :asc, title: :asc)
+      when 'all' then @project.milestones
+      when 'closed' then @project.milestones.closed
+      else @project.milestones.active
       end
 
-    @milestones = @milestones.includes(:project)
+    @sort = params[:sort] || 'due_date_asc'
+    @milestones = @milestones.sort(@sort)
+
     respond_to do |format|
       format.html do
+        @project_namespace = @project.namespace.becomes(Namespace)
+        @milestones = @milestones.includes(:project)
         @milestones = @milestones.page(params[:page])
       end
       format.json do
@@ -74,25 +80,9 @@ class Projects::MilestonesController < Projects::ApplicationController
     Milestones::DestroyService.new(project, current_user).execute(milestone)
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_milestones_path }
+      format.html { redirect_to namespace_project_milestones_path, status: 302 }
       format.js { head :ok }
     end
-  end
-
-  def sort_issues
-    @milestone.sort_issues(params['sortable_issue'].map(&:to_i))
-
-    render json: { saved: true }
-  end
-
-  def sort_merge_requests
-    @merge_requests = @milestone.merge_requests.where(id: params['sortable_merge_request'])
-    @merge_requests.each do |merge_request|
-      merge_request.position = params['sortable_merge_request'].index(merge_request.id.to_s) + 1
-      merge_request.save
-    end
-
-    render json: { saved: true }
   end
 
   protected
@@ -105,13 +95,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     return render_404 unless can?(current_user, :admin_milestone, @project)
   end
 
-  def module_enabled
-    unless @project.feature_available?(:issues, current_user) || @project.feature_available?(:merge_requests, current_user)
-      return render_404
-    end
-  end
-
   def milestone_params
-    params.require(:milestone).permit(:title, :description, :due_date, :state_event)
+    params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
   end
 end

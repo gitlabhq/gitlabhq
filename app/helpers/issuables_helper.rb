@@ -1,6 +1,8 @@
 module IssuablesHelper
+  include GitlabRoutingHelper
+
   def sidebar_gutter_toggle_icon
-    sidebar_gutter_collapsed? ? icon('angle-double-left') : icon('angle-double-right')
+    sidebar_gutter_collapsed? ? icon('angle-double-left', { 'aria-hidden': 'true' }) : icon('angle-double-right', { 'aria-hidden': 'true' })
   end
 
   def sidebar_gutter_collapsed_class
@@ -23,10 +25,55 @@ module IssuablesHelper
   def issuable_json_path(issuable)
     project = issuable.project
 
-    if issuable.kind_of?(MergeRequest)
+    if issuable.is_a?(MergeRequest)
       namespace_project_merge_request_path(project.namespace, project, issuable.iid, :json)
     else
       namespace_project_issue_path(project.namespace, project, issuable.iid, :json)
+    end
+  end
+
+  def serialize_issuable(issuable)
+    case issuable
+    when Issue
+      IssueSerializer.new.represent(issuable).to_json
+    when MergeRequest
+      MergeRequestSerializer
+        .new(current_user: current_user, project: issuable.project)
+        .represent(issuable)
+        .to_json
+    end
+  end
+
+  def template_dropdown_tag(issuable, &block)
+    title = selected_template(issuable) || "Choose a template"
+    options = {
+      toggle_class: 'js-issuable-selector',
+      title: title,
+      filter: true,
+      placeholder: 'Filter',
+      footer_content: true,
+      data: {
+        data: issuable_templates(issuable),
+        field_name: 'issuable_template',
+        selected: selected_template(issuable),
+        project_path: ref_project.path,
+        namespace_path: ref_project.namespace.full_path
+      }
+    }
+
+    dropdown_tag(title, options: options) do
+      capture(&block)
+    end
+  end
+
+  def users_dropdown_label(selected_users)
+    case selected_users.length
+    when 0
+      "Unassigned"
+    when 1
+      selected_users[0].name
+    else
+      "#{selected_users[0].name} + #{selected_users.length - 1} more"
     end
   end
 
@@ -57,20 +104,44 @@ module IssuablesHelper
   end
 
   def milestone_dropdown_label(milestone_title, default_label = "Milestone")
-    if milestone_title == Milestone::Upcoming.name
-      milestone_title = Milestone::Upcoming.title
-    end
+    title =
+      case milestone_title
+      when Milestone::Upcoming.name then Milestone::Upcoming.title
+      when Milestone::Started.name then Milestone::Started.title
+      else milestone_title.presence
+      end
 
-    h(milestone_title.presence || default_label)
+    h(title || default_label)
+  end
+
+  def to_url_reference(issuable)
+    case issuable
+    when Issue
+      link_to issuable.to_reference, issue_url(issuable)
+    when MergeRequest
+      link_to issuable.to_reference, merge_request_url(issuable)
+    else
+      issuable.to_reference
+    end
   end
 
   def issuable_meta(issuable, project, text)
-    output = content_tag :strong, "#{text} #{issuable.to_reference}", class: "identifier"
+    output = content_tag(:strong, class: "identifier") do
+      concat("#{text} ")
+      concat(to_url_reference(issuable))
+    end
+
     output << " opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
     end
+
+    output << "&ensp;".html_safe
+    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "hidden-xs hidden-sm")
+    output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "hidden-md hidden-lg")
+
+    output
   end
 
   def issuable_todo(issuable)
@@ -106,6 +177,66 @@ module IssuablesHelper
     html.html_safe
   end
 
+  def assigned_issuables_count(issuable_type)
+    current_user.public_send("assigned_open_#{issuable_type}_count")
+  end
+
+  def issuable_filter_params
+    [
+      :search,
+      :author_id,
+      :assignee_id,
+      :milestone_title,
+      :label_name
+    ]
+  end
+
+  def issuable_reference(issuable)
+    @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
+  end
+
+  def issuable_filter_present?
+    issuable_filter_params.any? { |k| params.key?(k) }
+  end
+
+  def issuable_initial_data(issuable)
+    data = {
+      endpoint: namespace_project_issue_path(@project.namespace, @project, issuable),
+      canUpdate: can?(current_user, :update_issue, issuable),
+      canDestroy: can?(current_user, :destroy_issue, issuable),
+      canMove: current_user ? issuable.can_move?(current_user) : false,
+      issuableRef: issuable.to_reference,
+      isConfidential: issuable.confidential,
+      markdownPreviewUrl: preview_markdown_path(@project),
+      markdownDocs: help_page_path('user/markdown'),
+      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
+      issuableTemplates: issuable_templates(issuable),
+      projectPath: ref_project.path,
+      projectNamespace: ref_project.namespace.full_path,
+      initialTitleHtml: markdown_field(issuable, :title),
+      initialTitleText: issuable.title,
+      initialDescriptionHtml: markdown_field(issuable, :description),
+      initialDescriptionText: issuable.description,
+      initialTaskStatus: issuable.task_status
+    }
+
+    data.merge!(updated_at_by(issuable))
+
+    data.to_json
+  end
+
+  def updated_at_by(issuable)
+    return {} unless issuable.is_edited?
+
+    {
+      updatedAt: issuable.updated_at.to_time.iso8601,
+      updatedBy: {
+        name: issuable.last_edited_by.name,
+        path: user_path(issuable.last_edited_by)
+      }
+    }
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -125,20 +256,59 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
-    issuables_finder = public_send("#{issuable_type}_finder")
-    issuables_finder.params[:state] = state
-
-    issuables_finder.execute.page(1).total_count
+    @counts ||= {}
+    @counts[issuable_type] ||= public_send("#{issuable_type}_finder").count_by_state
+    @counts[issuable_type][state]
   end
 
-  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page]
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
   private_constant :IRRELEVANT_PARAMS_FOR_CACHE_KEY
 
   def issuables_state_counter_cache_key(issuable_type, state)
     opts = params.with_indifferent_access
     opts[:state] = state
     opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
+    opts.delete_if { |_, value| value.blank? }
 
     hexdigest(['issuables_count', issuable_type, opts.sort].flatten.join('-'))
+  end
+
+  def issuable_templates(issuable)
+    @issuable_templates ||=
+      case issuable
+      when Issue
+        issue_template_names
+      when MergeRequest
+        merge_request_template_names
+      else
+        raise 'Unknown issuable type!'
+      end
+  end
+
+  def merge_request_template_names
+    @merge_request_templates ||= Gitlab::Template::MergeRequestTemplate.dropdown_names(ref_project)
+  end
+
+  def issue_template_names
+    @issue_templates ||= Gitlab::Template::IssueTemplate.dropdown_names(ref_project)
+  end
+
+  def selected_template(issuable)
+    params[:issuable_template] if issuable_templates(issuable).any?{ |template| template[:name] == params[:issuable_template] }
+  end
+
+  def issuable_todo_button_data(issuable, todo, is_collapsed)
+    {
+      todo_text: "Add todo",
+      mark_text: "Mark done",
+      todo_icon: (is_collapsed ? icon('plus-square') : nil),
+      mark_icon: (is_collapsed ? icon('check-square', class: 'todo-undone') : nil),
+      issuable_id: issuable.id,
+      issuable_type: issuable.class.name.underscore,
+      url: namespace_project_todos_path(@project.namespace, @project),
+      delete_path: (dashboard_todo_path(todo) if todo),
+      placement: (is_collapsed ? 'left' : nil),
+      container: (is_collapsed ? 'body' : nil)
+    }
   end
 end

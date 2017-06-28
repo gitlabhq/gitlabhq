@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequest::Metrics, models: true do
-  let(:project) { create(:project) }
-
-  subject { create(:merge_request, source_project: project) }
+  subject { create(:merge_request) }
 
   describe "when recording the default set of metrics on merge request save" do
     it "records the merge time" do
@@ -12,7 +10,7 @@ describe MergeRequest::Metrics, models: true do
       metrics = subject.metrics
 
       expect(metrics).to be_present
-      expect(metrics.merged_at).to be_within(1.second).of(time)
+      expect(metrics.merged_at).to be_like_time(time)
     end
   end
 end

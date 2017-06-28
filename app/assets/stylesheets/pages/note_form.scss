@@ -8,9 +8,10 @@
 .diff-file .diff-content {
   tr.line_holder:hover > td .line_note_link {
     opacity: 1.0;
-    filter: alpha(opacity=100);
+    filter: alpha(opacity = 100);
   }
 }
+
 .diff-file,
 .discussion {
   .new-note {
@@ -23,9 +24,11 @@
   display: none;
 }
 
-.new-note, .note-edit-form {
+.new-note,
+.note-edit-form {
   .note-form-actions {
-    margin-top: $gl-padding;
+    position: relative;
+    margin: $gl-padding 0 0;
   }
 
   .note-preview-holder {
@@ -42,7 +45,7 @@
 .note-textarea {
   display: block;
   padding: 10px 0;
-  color: $gl-gray;
+  color: $gl-text-color;
   font-family: $regular_font;
   border: 0;
 
@@ -60,7 +63,7 @@
 .common-note-form {
   .md-area {
     padding: $gl-padding-top $gl-padding;
-    border: 1px solid $note-form-border-color;
+    border: 1px solid $border-color;
     border-radius: $border-radius-base;
     transition: border-color ease-in-out 0.15s,
                 box-shadow ease-in-out 0.15s;
@@ -107,30 +110,66 @@
   margin: auto;
   margin-top: 0;
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
+  align-items: center;
 
-  @media (max-width: $screen-md-min) {
+  @media (max-width: $screen-md-max) {
     // On smaller devices the warning becomes the fourth item in the list,
     // rather than centering, and grows to span the full width of the
     // comment area.
     order: 4;
-    -webkit-order: 4;
+    margin: 6px auto;
+    width: 100%;
+  }
+
+  .fa {
+    margin-right: 8px;
+  }
+}
+
+.right-sidebar-expanded {
+  .confidential-issue-warning {
+    // When the sidebar is open the warning becomes the fourth item in the list,
+    // rather than centering, and grows to span the full width of the
+    // comment area.
+    order: 4;
     margin: 6px auto;
     width: 100%;
   }
 }
 
+
 .discussion-form {
-  padding: $gl-padding-top $gl-padding;
+  padding: $gl-padding-top $gl-padding $gl-padding;
   background-color: $white-light;
+}
+
+.discussion-notes .disabled-comment {
+  padding: 6px 0;
+}
+
+.notes.notes-form > li.timeline-entry {
+  @include notes-media('max', $screen-sm-max) {
+    padding: 0;
+  }
+
+  .timeline-content {
+    @include notes-media('max', $screen-sm-max) {
+      margin: 0;
+    }
+  }
+
+  .timeline-entry-inner {
+    border: 0;
+  }
 }
 
 .note-edit-form {
   display: none;
-  font-size: 15px;
+  font-size: 14px;
 
   .md-area {
-    background-color: #fff;
+    background-color: $white-light;
   }
 }
 
@@ -145,14 +184,22 @@
 .error-alert > .alert {
   margin-top: 5px;
   margin-bottom: 5px;
+
+  &.alert-dismissable {
+    .close {
+      color: $white-light;
+      opacity: 0.85;
+      font-weight: normal;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .discussion-body,
 .diff-file {
-  .notes .note {
-    padding: 10px 15px;
-  }
-
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
@@ -175,8 +222,25 @@
       padding-right: 5px;
     }
 
-    &:last-child {
-      padding-left: 5px;
+  }
+
+  .discussion-actions {
+    display: table;
+
+    .new-issue-for-discussion path {
+      fill: $gray-darkest;
+    }
+
+    .btn-group {
+      display: table-cell;
+
+      &:first-child {
+        padding-right: 0;
+      }
+
+      &:first-child:not(:last-child) > div {
+        border-right: 0;
+      }
     }
   }
 
@@ -194,6 +258,7 @@
     min-height: 140px;
     max-height: 500px;
   }
+
   .note-form-actions {
     background: transparent;
   }
@@ -201,7 +266,7 @@
 
 .comment-toolbar {
   padding-top: $gl-padding-top;
-  color: $note-toolbar-color;
+  color: $gl-text-color-secondary;
   border-top: 1px solid $border-color;
 }
 
@@ -244,6 +309,7 @@
 .toolbar-text {
   font-size: 14px;
   line-height: 16px;
+  margin-top: 2px;
 
   @media (min-width: $screen-md-min) {
     float: left;
@@ -261,4 +327,153 @@
       }
     }
   }
+}
+
+.note-edit-warning.settings-message {
+  display: none;
+  padding: 5px 10px;
+  position: absolute;
+  left: 127px;
+  top: 2px;
+
+  @media (max-width: $screen-xs-max) {
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-bottom: 10px;
+  }
+}
+
+.comment-type-dropdown {
+  .comment-btn {
+    width: auto;
+  }
+
+  .dropdown-toggle {
+    float: right;
+
+    .toggle-icon {
+      color: $white-light;
+      padding-right: 2px;
+      margin-top: 2px;
+      pointer-events: none;
+    }
+  }
+
+  .dropdown-menu {
+    top: initial;
+    bottom: 40px;
+    width: 298px;
+  }
+
+  .description {
+    display: inline-block;
+    white-space: normal;
+    margin-left: 8px;
+    padding-right: 33px;
+  }
+
+  li {
+    padding-top: 6px;
+
+    & > a {
+      margin: 0;
+      padding: 0;
+      color: inherit;
+      border-radius: 0;
+      text-overflow: inherit;
+
+      &:hover,
+      &:focus {
+        background-color: inherit;
+        color: inherit;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      background-color: $dropdown-hover-color;
+      color: $white-light;
+    }
+
+    &.droplab-item-selected i {
+      visibility: visible;
+    }
+
+    i {
+      visibility: hidden;
+    }
+  }
+
+  i {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 2px;
+  }
+
+  .divider {
+    margin: 0 8px;
+    padding: 0;
+    border-top: $gray-darkest;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+
+    .comment-btn {
+      flex-grow: 1;
+      flex-shrink: 0;
+      width: auto;
+    }
+
+    .dropdown-toggle {
+      flex-grow: 0;
+      flex-shrink: 1;
+      width: auto;
+    }
+  }
+}
+
+.uploading-container {
+  float: right;
+
+  @media (max-width: $screen-xs-max) {
+    float: left;
+    margin-top: 5px;
+  }
+}
+
+.uploading-error-icon,
+.uploading-error-message {
+  color: $gl-text-red;
+}
+
+.uploading-error-message {
+  @media (max-width: $screen-xs-max) {
+    &::after {
+      content: "\a";
+      white-space: pre;
+    }
+  }
+}
+
+.uploading-progress {
+  margin-right: 5px;
+}
+
+.attach-new-file,
+.button-attach-file,
+.retry-uploading-link {
+  color: $gl-link-color;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.markdown-selector {
+  color: $gl-link-color;
 }

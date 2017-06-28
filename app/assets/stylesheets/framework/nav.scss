@@ -24,10 +24,10 @@
 }
 
 @mixin scrolling-links() {
-  white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  display: flex;
 
   &::-webkit-scrollbar {
     display: none;
@@ -35,6 +35,7 @@
 }
 
 .nav-links {
+  display: flex;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -42,56 +43,66 @@
   border-bottom: 1px solid $border-color;
 
   li {
-    display: inline-block;
+    display: flex;
 
     a {
-      display: inline-block;
       padding: $gl-btn-padding;
       padding-bottom: 11px;
-      margin-bottom: -1px;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 28px;
-      color: #959494;
+      color: $gl-text-color-secondary;
       border-bottom: 2px solid transparent;
+      white-space: nowrap;
 
-      &:hover, &:active, &:focus {
+      &:hover,
+      &:active,
+      &:focus {
         text-decoration: none;
-        outline: none;
+        border-bottom: 2px solid $gray-darkest;
+        color: $black;
+
+        .badge {
+          color: $black;
+        }
       }
     }
 
     &.active a {
       border-bottom: 2px solid $link-underline-blue;
       color: $black;
-    }
+      font-weight: 600;
 
-    .badge {
-      font-weight: normal;
-      background-color: #eee;
-      color: $btn-transparent-color;
-      vertical-align: baseline;
+      .badge {
+        color: $black;
+      }
     }
   }
 
   &.sub-nav {
     text-align: center;
-    background-color: $dark-background-color;
+    background-color: $gray-normal;
 
     .container-fluid {
-      background-color: $dark-background-color;
+      background-color: $gray-normal;
       margin-bottom: 0;
+      display: flex;
     }
 
     li {
+      &.active a {
+        border-bottom: none;
+        color: $link-underline-blue;
+      }
 
       a {
         margin: 0;
         padding: 11px 10px 9px;
-      }
 
-      &.active a {
-        border-bottom: none;
-        color: $link-underline-blue;
+        &:hover,
+        &:active,
+        &:focus {
+          border-color: transparent;
+        }
       }
     }
   }
@@ -99,17 +110,17 @@
 
 .top-area {
   @include clearfix;
-  border-bottom: 1px solid $btn-gray-hover;
+  border-bottom: 1px solid $border-color;
 
   .nav-text {
     padding-top: 16px;
     padding-bottom: 11px;
     display: inline-block;
-    width: 50%;
     line-height: 28px;
+    white-space: normal;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-xs-max) {
       width: 100%;
     }
   }
@@ -126,14 +137,17 @@
   }
 
   .nav-links {
-    display: inline-block;
-    width: 50%;
     margin-bottom: 0;
     border-bottom: none;
+    float: left;
 
     &.wide {
       width: 100%;
       display: block;
+    }
+
+    &.scrolling-tabs {
+      float: left;
     }
 
     li a {
@@ -147,30 +161,24 @@
   }
 
   .nav-controls {
-    width: 50%;
     display: inline-block;
     float: right;
     text-align: right;
     padding: 11px 0;
     margin-bottom: 0;
 
-    > .dropdown {
+    > .btn,
+    > .btn-container,
+    > .dropdown,
+    > input,
+    > form {
       margin-right: $gl-padding-top;
       display: inline-block;
       vertical-align: top;
 
       &:last-child {
         margin-right: 0;
-      }
-    }
-
-    > .btn {
-      margin-right: $gl-padding-top;
-      display: inline-block;
-      vertical-align: top;
-
-      &:last-child {
-        margin-right: 0;
+        float: right;
       }
     }
 
@@ -178,19 +186,21 @@
       float: none;
     }
 
-    > form {
-      display: inline-block;
-    }
-
     .icon-label {
       display: none;
     }
 
-    input {
+    .btn,
+    .dropdown,
+    .dropdown-toggle,
+    input,
+    form {
       height: 35px;
+    }
+
+    input {
       display: inline-block;
       position: relative;
-      margin-right: $gl-padding-top;
 
       /* Medium devices (desktops, 992px and up) */
       @media (min-width: $screen-md-min) { width: 200px; }
@@ -210,7 +220,13 @@
     @media (max-width: $screen-xs-max) {
       padding-bottom: 0;
       width: 100%;
-      .btn, form, .dropdown, .dropdown-menu-toggle, .form-control {
+
+      .btn,
+      form,
+      .dropdown,
+      .dropdown-toggle,
+      .dropdown-menu-toggle,
+      .form-control {
         margin: 0 0 10px;
         display: block;
         width: 100%;
@@ -244,33 +260,52 @@
   }
 
   &.adjust {
-    .nav-text, .nav-controls {
+    .nav-text,
+    .nav-controls {
       width: auto;
+
+      @media (max-width: $screen-xs-max) {
+        width: 100%;
+      }
     }
+  }
+
+  &.multi-line {
+    .nav-text {
+      line-height: 20px;
+    }
+
+    .nav-controls {
+      padding: 17px 0;
+    }
+  }
+
+  pre {
+    width: 100%;
   }
 }
 
 .layout-nav {
-  position: fixed;
-  top: $header-height;
   width: 100%;
-  z-index: 11;
-  background: $background-color;
+  background: $gray-light;
   border-bottom: 1px solid $border-color;
   transition: padding $sidebar-transition-duration;
   text-align: center;
+  margin-top: $header-height;
 
   .container-fluid {
     position: relative;
+
+    .nav-control {
+      @media (max-width: $screen-sm-max) {
+        margin-right: 2px;
+      }
+    }
   }
 
   .controls {
     float: right;
     padding: 7px 0 0;
-
-    @media (max-width: $screen-sm-max) {
-      display: none;
-    }
 
     i {
       color: $layout-link-gray;
@@ -283,7 +318,7 @@
 
     .fa-caret-down {
       margin-left: 5px;
-      color: $gl-icon-color;
+      color: $gl-text-color-secondary;
     }
 
     .dropdown {
@@ -302,34 +337,13 @@
     border-bottom: none;
     height: 51px;
 
-    li {
+    @media (min-width: $screen-sm-min) {
+      justify-content: center;
+    }
 
+    li {
       a {
         padding-top: 10px;
-      }
-
-      a, i {
-        color: $layout-link-gray;
-      }
-
-      &.active {
-
-        a, i {
-          color: $black;
-        }
-
-        svg {
-          path,
-          polygon {
-            fill: $black;
-          }
-        }
-      }
-
-      &:hover {
-        a, i {
-          color: $black;
-        }
       }
     }
   }
@@ -338,12 +352,16 @@
 .scrolling-tabs-container {
   position: relative;
 
+  .merge-request-tabs-container & {
+    overflow: hidden;
+  }
+
   .nav-links {
     @include scrolling-links();
   }
 
   .fade-right {
-    @include fade(left, $background-color);
+    @include fade(left, $gray-light);
     right: -5px;
 
     .fa {
@@ -352,8 +370,9 @@
   }
 
   .fade-left {
-    @include fade(right, $background-color);
+    @include fade(right, $gray-light);
     left: -5px;
+    text-align: center;
 
     .fa {
       left: -7px;
@@ -363,7 +382,7 @@
   &.sub-nav-scroll {
 
     .fade-right {
-      @include fade(left, $dark-background-color);
+      @include fade(left, $gray-normal);
       right: 0;
 
       .fa {
@@ -372,7 +391,7 @@
     }
 
     .fade-left {
-      @include fade(right, $dark-background-color);
+      @include fade(right, $gray-normal);
       left: 0;
 
       .fa {
@@ -409,20 +428,101 @@
 }
 
 .page-with-layout-nav {
-  margin-top: $header-height + 2;
-
   .right-sidebar {
-    top: ($header-height * 2) + 2;
+    top: ($header-height + 1) * 2;
+  }
+
+  &.page-with-sub-nav {
+    .right-sidebar {
+      top: ($header-height + 1) * 3;
+
+      &.affix {
+        top: $header-height;
+      }
+    }
   }
 }
 
-.activities {
-
-  .nav-block {
+.nav-block {
+  &.activities {
     border-bottom: 1px solid $border-color;
 
     .nav-links {
       border-bottom: none;
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .top-area {
+    flex-flow: row wrap;
+
+    .nav-controls {
+      $controls-margin: $btn-xs-side-margin - 2px;
+      flex: 0 0 100%;
+
+      &.controls-flex {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0 $gl-padding-top;
+      }
+
+      .controls-item,
+      .controls-item-full,
+      .controls-item:last-child {
+        flex: 1 1 35%;
+        display: block;
+        width: 100%;
+        margin: $controls-margin;
+
+        .btn,
+        .dropdown {
+          margin: 0;
+        }
+      }
+
+      .controls-item-full {
+        flex: 1 1 100%;
+      }
+    }
+  }
+}
+
+.inner-page-scroll-tabs {
+  position: relative;
+
+  .fade-right {
+    @include fade(left, $white-light);
+    right: 0;
+    text-align: right;
+
+    .fa {
+      right: 5px;
+    }
+  }
+
+  .fade-left {
+    @include fade(right, $white-light);
+    left: 0;
+    text-align: left;
+
+    .fa {
+      left: 5px;
+    }
+  }
+
+  .fade-right,
+  .fade-left {
+    top: 16px;
+    bottom: auto;
+  }
+
+  &.is-smaller {
+    .fade-right,
+    .fade-left {
+      top: 11px;
     }
   }
 }

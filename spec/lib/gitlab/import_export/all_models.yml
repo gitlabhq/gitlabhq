@@ -3,18 +3,21 @@ issues:
 - subscriptions
 - award_emoji
 - author
-- assignee
+- assignees
 - updated_by
 - milestone
 - notes
 - label_links
 - labels
+- last_edited_by
 - todos
 - user_agent_detail
 - moved_to
 - events
 - merge_requests_closing_issues
 - metrics
+- timelogs
+- issue_assignees
 events:
 - author
 - project
@@ -25,9 +28,11 @@ notes:
 - noteable
 - author
 - updated_by
+- last_edited_by
 - resolved_by
 - todos
 - events
+- system_note_metadata
 label_links:
 - target
 - label
@@ -38,6 +43,7 @@ label:
 - label_links
 - issues
 - merge_requests
+- priorities
 milestone:
 - project
 - issues
@@ -50,6 +56,7 @@ snippets:
 - project
 - notes
 - award_emoji
+- user_agent_detail
 releases:
 - project
 project_members:
@@ -67,6 +74,7 @@ merge_requests:
 - notes
 - label_links
 - labels
+- last_edited_by
 - todos
 - target_project
 - source_project
@@ -76,23 +84,54 @@ merge_requests:
 - events
 - merge_requests_closing_issues
 - metrics
+- timelogs
+- head_pipeline
 merge_request_diff:
 - merge_request
+- merge_request_diff_files
+merge_request_diff_files:
+- merge_request_diff
 pipelines:
 - project
 - user
+- stages
 - statuses
 - builds
 - trigger_requests
+- auto_canceled_by
+- auto_canceled_pipelines
+- auto_canceled_jobs
+- pending_builds
+- retryable_builds
+- cancelable_statuses
+- manual_actions
+- artifacts
+- pipeline_schedule
+- merge_requests
+stages:
+- project
+- pipeline
+- statuses
+- builds
 statuses:
 - project
 - pipeline
+- stage
 - user
+- auto_canceled_by
 variables:
 - project
 triggers:
 - project
 - trigger_requests
+- owner
+pipeline_schedules:
+- project
+- owner
+- pipelines
+- last_pipeline
+pipeline_schedule:
+- pipelines
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -102,37 +141,54 @@ services:
 - service_hook
 hooks:
 - project
+- web_hook_logs
 protected_branches:
 - project
 - merge_access_levels
 - push_access_levels
+protected_tags:
+- project
+- create_access_levels
 merge_access_levels:
 - protected_branch
 push_access_levels:
 - protected_branch
+create_access_levels:
+- user
+- protected_tag
+- group
+container_repositories:
+- project
+- name
 project:
 - taggings
 - base_tags
 - tag_taggings
 - tags
+- chat_services
 - creator
 - group
 - namespace
-- board
+- boards
 - last_event
 - services
 - campfire_service
 - drone_ci_service
 - emails_on_push_service
-- builds_email_service
+- pipelines_email_service
+- mattermost_slash_commands_service
+- slack_slash_commands_service
 - irker_service
 - pivotaltracker_service
+- prometheus_service
 - hipchat_service
 - flowdock_service
 - assembla_service
 - asana_service
 - gemnasium_service
 - slack_service
+- microsoft_teams_service
+- mattermost_service
 - buildkite_service
 - bamboo_service
 - teamcity_service
@@ -143,6 +199,10 @@ project:
 - bugzilla_service
 - gitlab_issue_tracker_service
 - external_wiki_service
+- kubernetes_service
+- mock_ci_service
+- mock_deployment_service
+- mock_monitoring_service
 - forked_project_link
 - forked_from_project
 - forked_project_links
@@ -157,6 +217,7 @@ project:
 - snippets
 - hooks
 - protected_branches
+- protected_tags
 - project_members
 - users
 - requesters
@@ -177,11 +238,27 @@ project:
 - builds
 - runner_projects
 - runners
+- active_runners
 - variables
 - triggers
+- pipeline_schedules
 - environments
 - deployments
 - project_feature
+- pages_domains
+- authorized_users
+- project_authorizations
+- route
+- redirect_routes
+- statistics
+- container_repositories
+- uploads
 award_emoji:
 - awardable
+- user
+priorities:
+- label
+timelogs:
+- issue
+- merge_request
 - user

@@ -1,6 +1,11 @@
 module SharedDiffNote
   include Spinach::DSL
   include RepoHelpers
+  include WaitForRequests
+
+  after do
+    wait_for_requests if javascript_test?
+  end
 
   step 'I cancel the diff comment' do
     page.within(diff_file_selector) do
@@ -191,7 +196,7 @@ module SharedDiffNote
   step 'The diff comment preview tab should display rendered Markdown' do
     page.within(diff_file_selector) do
       find('.js-md-preview-button').click
-      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
+      expect(find('.js-md-preview')).to have_css('gl-emoji', visible: true)
     end
   end
 
@@ -205,12 +210,12 @@ module SharedDiffNote
 
   step 'I should see a diff comment with an emoji image' do
     page.within("#{diff_file_selector} .note") do
-      expect(page).to have_xpath("//img[@alt=':smile:']")
+      expect(page).to have_xpath("//gl-emoji[@data-name='smile']")
     end
   end
 
   step 'I click side-by-side diff button' do
-    find('#parallel-diff-btn').click
+    find('#parallel-diff-btn').trigger('click')
   end
 
   step 'I see side-by-side diff button' do

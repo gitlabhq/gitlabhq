@@ -3,7 +3,7 @@ class Admin::SystemInfoController < Admin::ApplicationController
     'nobrowse',
     'read-only',
     'ro'
-  ]
+  ].freeze
 
   EXCLUDED_MOUNT_TYPES = [
     'autofs',
@@ -21,12 +21,13 @@ class Admin::SystemInfoController < Admin::ApplicationController
     'mqueue',
     'proc',
     'pstore',
+    'rpc_pipefs',
     'securityfs',
     'sysfs',
     'tmpfs',
     'tracefs',
     'vfat'
-  ]
+  ].freeze
 
   def show
     @cpus = Vmstat.cpu rescue nil

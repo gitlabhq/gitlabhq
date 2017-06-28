@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::GithubImport::LabelFormatter, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:raw) { double(name: 'improvements', color: 'e6e6e6') }
 
   subject { described_class.new(project, raw) }
@@ -25,7 +25,7 @@ describe Gitlab::GithubImport::LabelFormatter, lib: true do
 
     context 'when label exists' do
       it 'does not create a new label' do
-        project.labels.create(name: raw.name)
+        Labels::CreateService.new(name: raw.name).execute(project: project)
 
         expect { subject.create! }.not_to change(Label, :count)
       end

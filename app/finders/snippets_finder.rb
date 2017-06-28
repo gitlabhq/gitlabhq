@@ -1,63 +1,74 @@
-class SnippetsFinder
-  def execute(current_user, params = {})
-    filter = params[:filter]
+class SnippetsFinder < UnionFinder
+  attr_accessor :current_user, :params
 
-    case filter
-    when :all then
-      snippets(current_user).fresh
-    when :by_user then
-      by_user(current_user, params[:user], params[:scope])
-    when :by_project
-      by_project(current_user, params[:project])
-    end
+  def initialize(current_user, params = {})
+    @current_user = current_user
+    @params = params
+  end
+
+  def execute
+    items = init_collection
+    items = by_project(items)
+    items = by_author(items)
+    items = by_visibility(items)
+
+    items.fresh
   end
 
   private
 
-  def snippets(current_user)
-    if current_user
-      Snippet.public_and_internal
-    else
-      # Not authenticated
-      #
-      # Return only:
-      #   public snippets
-      Snippet.are_public
-    end
+  def init_collection
+    items = Snippet.all
+
+    accessible(items)
   end
 
-  def by_user(current_user, user, scope)
-    snippets = user.snippets.fresh
+  def accessible(items)
+    segments = []
+    segments << items.public_to_user(current_user)
+    segments << authorized_to_user(items)  if current_user
 
-    return snippets.are_public unless current_user
-
-    if user == current_user
-      case scope
-      when 'are_internal' then
-        snippets.are_internal
-      when 'are_private' then
-        snippets.are_private
-      when 'are_public' then
-        snippets.are_public
-      else
-        snippets
-      end
-    else
-      snippets.public_and_internal
-    end
+    find_union(segments, Snippet)
   end
 
-  def by_project(current_user, project)
-    snippets = project.snippets.fresh
+  def authorized_to_user(items)
+    items.where(
+      'author_id = :author_id
+       OR project_id IN (:project_ids)',
+       author_id: current_user.id,
+       project_ids: current_user.authorized_projects.select(:id))
+  end
 
-    if current_user
-      if project.team.member?(current_user) || current_user.admin?
-        snippets
-      else
-        snippets.public_and_internal
-      end
+  def by_visibility(items)
+    visibility = params[:visibility] || visibility_from_scope
+
+    return items unless visibility
+
+    items.where(visibility_level: visibility)
+  end
+
+  def by_author(items)
+    return items unless params[:author]
+
+    items.where(author_id: params[:author].id)
+  end
+
+  def by_project(items)
+    return items unless params[:project]
+
+    items.where(project_id: params[:project].id)
+  end
+
+  def visibility_from_scope
+    case params[:scope].to_s
+    when 'are_private'
+      Snippet::PRIVATE
+    when 'are_internal'
+      Snippet::INTERNAL
+    when 'are_public'
+      Snippet::PUBLIC
     else
-      snippets.are_public
+      nil
     end
   end
 end

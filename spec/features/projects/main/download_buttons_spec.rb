@@ -22,7 +22,7 @@ feature 'Download buttons in project main page', feature: true do
   end
 
   background do
-    login_as(user)
+    gitlab_sign_in(user)
     project.team << [user, role]
   end
 
@@ -38,6 +38,13 @@ feature 'Download buttons in project main page', feature: true do
           job: 'build')
 
         expect(page).to have_link "Download '#{build.name}'", href: href
+      end
+
+      scenario 'download links have download attribute' do
+        expect(page).to have_selector('a', text: 'Download')
+        page.all('a', text: 'Download').each do |link|
+          expect(link[:download]).to eq ''
+        end
       end
     end
   end

@@ -3,12 +3,12 @@ require 'spec_helper'
 feature 'Projects > Members > Master manages access requests', feature: true do
   let(:user) { create(:user) }
   let(:master) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public, :access_requestable) }
 
   background do
     project.request_access(user)
     project.team << [master, :master]
-    login_as(master)
+    gitlab_sign_in(master)
   end
 
   scenario 'master can see access requests' do
@@ -41,7 +41,7 @@ feature 'Projects > Members > Master manages access requests', feature: true do
 
   def expect_visible_access_request(project, user)
     expect(project.requesters.exists?(user_id: user)).to be_truthy
-    expect(page).to have_content "#{project.name} access requests 1"
+    expect(page).to have_content "Users requesting access to #{project.name} 1"
     expect(page).to have_content user.name
   end
 end

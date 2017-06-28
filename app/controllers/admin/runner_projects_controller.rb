@@ -18,13 +18,13 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
     runner = rp.runner
     rp.destroy
 
-    redirect_to admin_runner_path(runner)
+    redirect_to admin_runner_path(runner), status: 302
   end
 
   private
 
   def project
-    @project = Project.find_with_namespace(
+    @project = Project.find_by_full_path(
       [params[:namespace_id], '/', params[:project_id]].join('')
     )
     @project || render_404

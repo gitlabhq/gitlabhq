@@ -1,24 +1,20 @@
 require 'rails_helper'
 
 describe 'Issue Boards shortcut', feature: true, js: true do
-  include WaitForVueResource
-
   let(:project) { create(:empty_project) }
 
   before do
-    project.create_board
-    project.board.lists.create(list_type: :backlog)
-    project.board.lists.create(list_type: :done)
+    create(:board, project: project)
 
-    login_as :admin
+    gitlab_sign_in :admin
 
     visit namespace_project_path(project.namespace, project)
   end
 
   it 'takes user to issue board index' do
-    find('body').native.send_keys('gl')
+    find('body').native.send_keys('gb')
     expect(page).to have_selector('.boards-list')
 
-    wait_for_vue_resource
+    wait_for_requests
   end
 end

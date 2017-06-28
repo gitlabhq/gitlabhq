@@ -9,21 +9,23 @@ module Banzai
       end
 
       def find_object(project, id)
-        project.labels.find(id)
+        find_labels(project).find(id)
       end
 
       def self.references_in(text, pattern = Label.reference_pattern)
         unescape_html_entities(text).gsub(pattern) do |match|
-          yield match, $~[:label_id].to_i, $~[:label_name], $~[:project], $~
+          yield match, $~[:label_id].to_i, $~[:label_name], $~[:project], $~[:namespace], $~
         end
       end
 
       def references_in(text, pattern = Label.reference_pattern)
         unescape_html_entities(text).gsub(pattern) do |match|
-          label = find_label($~[:project], $~[:label_id], $~[:label_name])
+          namespace, project = $~[:namespace], $~[:project]
+          project_path = full_project_path(namespace, project)
+          label = find_label(project_path, $~[:label_id], $~[:label_name])
 
           if label
-            yield match, label.id, $~[:project], $~
+            yield match, label.id, project, namespace, $~
           else
             match
           end
@@ -35,7 +37,11 @@ module Banzai
         return unless project
 
         label_params = label_params(label_id, label_name)
-        project.labels.find_by(label_params)
+        find_labels(project).find_by(label_params)
+      end
+
+      def find_labels(project)
+        LabelsFinder.new(nil, project_id: project.id).execute(skip_authorization: true)
       end
 
       # Parameters to pass to `Label.find_by` based on the given arguments
@@ -60,11 +66,12 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        if context[:project] == object.project
-          LabelsHelper.render_colored_label(object)
-        else
-          LabelsHelper.render_colored_cross_project_label(object)
-        end
+        project_path     = full_project_path(matches[:namespace], matches[:project])
+        project_from_ref = project_from_ref_cached(project_path)
+        reference        = project_from_ref.to_human_reference(project)
+        label_suffix     = " <i>in #{reference}</i>" if reference.present?
+
+        LabelsHelper.render_colored_label(object, label_suffix)
       end
 
       def unescape_html_entities(text)

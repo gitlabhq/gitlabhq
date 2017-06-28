@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe Gitlab::Gfm::ReferenceRewriter do
   let(:text) { 'some text' }
-  let(:old_project) { create(:project) }
-  let(:new_project) { create(:project) }
+  let(:old_project) { create(:empty_project, name: 'old-project') }
+  let(:new_project) { create(:empty_project, name: 'new-project') }
   let(:user) { create(:user) }
 
-  before { old_project.team << [user, :guest] }
+  before do
+    old_project.team << [user, :reporter]
+  end
 
   describe '#rewrite' do
     subject do
@@ -29,7 +31,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
       context 'description with ignored elements' do
         let(:text) do
           "Hi. This references #1, but not `#2`\n" +
-          '<pre>and not !1</pre>'
+            '<pre>and not !1</pre>'
         end
 
         it { is_expected.to include issue_first.to_reference(new_project) }
@@ -62,9 +64,9 @@ describe Gitlab::Gfm::ReferenceRewriter do
           it { is_expected.to eq "#{ref}, `#1`, #{ref}, `#1`" }
         end
 
-        context 'description with labels' do
+        context 'description with project labels' do
           let!(:label) { create(:label, id: 123, name: 'test', project: old_project) }
-          let(:project_ref) { old_project.to_reference }
+          let(:project_ref) { old_project.to_reference(new_project) }
 
           context 'label referenced by id' do
             let(:text) { '#1 and ~123' }
@@ -74,6 +76,26 @@ describe Gitlab::Gfm::ReferenceRewriter do
           context 'label referenced by text' do
             let(:text) { '#1 and ~"test"' }
             it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~123} }
+          end
+        end
+
+        context 'description with group labels' do
+          let(:old_group) { create(:group) }
+          let!(:group_label) { create(:group_label, id: 321, name: 'group label', group: old_group) }
+          let(:project_ref) { old_project.to_reference(new_project) }
+
+          before do
+            old_project.update(namespace: old_group)
+          end
+
+          context 'label referenced by id' do
+            let(:text) { '#1 and ~321' }
+            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~321} }
+          end
+
+          context 'label referenced by text' do
+            let(:text) { '#1 and ~"group label"' }
+            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~321} }
           end
         end
       end

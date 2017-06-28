@@ -1,4 +1,4 @@
-# Merge requests
+# Merge requests API
 
 ## List merge requests
 
@@ -10,16 +10,24 @@ The pagination parameters `page` and `per_page` can be used to restrict the list
 GET /projects/:id/merge_requests
 GET /projects/:id/merge_requests?state=opened
 GET /projects/:id/merge_requests?state=all
-GET /projects/:id/merge_requests?iid=42
+GET /projects/:id/merge_requests?iids[]=42&iids[]=43
+GET /projects/:id/merge_requests?milestone=release
+GET /projects/:id/merge_requests?labels=bug,reproduced
 ```
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `iid` (optional) - Return the request having the given `iid`
-- `state` (optional) - Return `all` requests or just those that are `merged`, `opened` or `closed`
-- `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `iids` | Array[integer] | no | Return the request having the given `iid` |
+| `state`   | string  | no    | Return all merge requests or just those that are `opened`, `closed`, or `merged`|
+| `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
+| `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
+| `milestone`  | string  | no | Return merge requests for a specific milestone |
+| `labels`  | string  | no | Return merge requests matching a comma separated list of labels |
+| `created_after` | datetime | no | Return merge requests created after the given time (inclusive) |
+| `created_before` | datetime | no | Return merge requests created before the given time (inclusive) |
 
 ```json
 [
@@ -65,9 +73,8 @@ Parameters:
       "updated_at": "2015-02-02T19:49:26.013Z",
       "due_date": null
     },
-    "merge_when_build_succeeds": true,
+    "merge_when_pipeline_succeeds": true,
     "merge_status": "can_be_merged",
-    "subscribed" : false,
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 1,
@@ -83,13 +90,13 @@ Parameters:
 Shows information about a single merge request.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id
+GET /projects/:id/merge_requests/:merge_request_iid
 ```
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required) - The internal ID of the merge request
 
 ```json
 {
@@ -134,7 +141,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -151,13 +158,13 @@ Parameters:
 Get a list of merge request commits.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/commits
+GET /projects/:id/merge_requests/:merge_request_iid/commits
 ```
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required) - The internal ID of the merge request
 
 
 ```json
@@ -188,13 +195,13 @@ Parameters:
 Shows information about the merge request including its files and changes.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/changes
+GET /projects/:id/merge_requests/:merge_request_iid/changes
 ```
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required) - The internal ID of the merge request
 
 ```json
 {
@@ -239,7 +246,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -270,17 +277,18 @@ Creates a new merge request.
 POST /projects/:id/merge_requests
 ```
 
-Parameters:
-
-- `id` (required)                - The ID of a project
-- `source_branch` (required)     - The source branch
-- `target_branch` (required)     - The target branch
-- `assignee_id` (optional)       - Assignee user ID
-- `title` (required)             - Title of MR
-- `description` (optional)       - Description of MR
-- `target_project_id` (optional) - The target project (numeric id)
-- `labels` (optional)            - Labels for MR as a comma-separated list
-- `milestone_id` (optional)      - Milestone ID
+| Attribute              | Type    | Required | Description                                                                     |
+| ---------              | ----    | -------- | -----------                                                                     |
+| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `source_branch`        | string  | yes      | The source branch                                                               |
+| `target_branch`        | string  | yes      | The target branch                                                               |
+| `title`                | string  | yes      | Title of MR                                                                     |
+| `assignee_id`          | integer | no       | Assignee user ID                                                                |
+| `description`          | string  | no       | Description of MR                                                               |
+| `target_project_id`    | integer | no       | The target project (numeric id)                                                 |
+| `labels`               | string  | no       | Labels for MR as a comma-separated list                                         |
+| `milestone_id`         | integer | no       | The ID of a milestone                                                           |
+| `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 
 ```json
 {
@@ -325,7 +333,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -337,28 +345,28 @@ Parameters:
 }
 ```
 
-If the operation is successful, 200 and the newly created merge request is returned.
-If an error occurs, an error number and a message explaining the reason is returned.
-
 ## Update MR
 
 Updates an existing merge request. You can change the target branch, title, or even close the MR.
 
 ```
-PUT /projects/:id/merge_requests/:merge_request_id
+PUT /projects/:id/merge_requests/:merge_request_iid
 ```
 
-Parameters:
+| Attribute              | Type    | Required | Description                                                                     |
+| ---------              | ----    | -------- | -----------                                                                     |
+| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `merge_request_iid`    | integer | yes      | The ID of a merge request                                                       |
+| `target_branch`        | string  | no       | The target branch                                                               |
+| `title`                | string  | no       | Title of MR                                                                     |
+| `assignee_id`          | integer | no       | Assignee user ID                                                                |
+| `description`          | string  | no       | Description of MR                                                               |
+| `state_event`          | string  | no       | New state (close/reopen)                                                        |
+| `labels`               | string  | no       | Labels for MR as a comma-separated list                                         |
+| `milestone_id`         | integer | no       | The ID of a milestone                                                           |
+| `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 
-- `id` (required)               - The ID of a project
-- `merge_request_id` (required) - ID of MR
-- `target_branch`               - The target branch
-- `assignee_id`                 - Assignee user ID
-- `title`                       - Title of MR
-- `description`                 - Description of MR
-- `state_event`                 - New state (close|reopen|merge)
-- `labels` (optional)           - Labels for MR as a comma-separated list
-- `milestone_id` (optional)     - Milestone ID
+Must include at least one non-required attribute from above.
 
 ```json
 {
@@ -402,7 +410,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -414,53 +422,47 @@ Parameters:
 }
 ```
 
-If the operation is successful, 200 and the updated merge request is returned.
-If an error occurs, an error number and a message explaining the reason is returned.
-
 ## Delete a merge request
 
 Only for admins and project owners. Soft deletes the merge request in question.
-If the operation is successful, a status code `200` is returned. In case you cannot
-destroy this merge request, or it is not present, code `404` is given.
 
 ```
-DELETE /projects/:id/merge_requests/:merge_request_id
+DELETE /projects/:id/merge_requests/:merge_request_iid
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`            | integer | yes | The ID of a project |
-| `merge_request_id` | integer | yes | The ID of a project's merge request |
+| Attribute | Type    | Required | Description                          |
+| --------- | ----    | -------- | -----------                          |
+| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/merge_request/85
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/merge_requests/85
 ```
 
 ## Accept MR
 
 Merge changes submitted with MR using this API.
 
-If the merge succeeds you'll get a `200 OK`.
 
-If it has some conflicts and can not be merged - you'll get a 405 and the error message 'Branch cannot be merged'
+If it has some conflicts and can not be merged - you'll get a `405` and the error message 'Branch cannot be merged'
 
-If merge request is already merged or closed - you'll get a 406 and the error message 'Method Not Allowed'
+If merge request is already merged or closed - you'll get a `406` and the error message 'Method Not Allowed'
 
-If the `sha` parameter is passed and does not match the HEAD of the source - you'll get a 409 and the error message 'SHA does not match HEAD of source branch'
+If the `sha` parameter is passed and does not match the HEAD of the source - you'll get a `409` and the error message 'SHA does not match HEAD of source branch'
 
-If you don't have permissions to accept this merge request - you'll get a 401
+If you don't have permissions to accept this merge request - you'll get a `401`
 
 ```
-PUT /projects/:id/merge_requests/:merge_request_id/merge
+PUT /projects/:id/merge_requests/:merge_request_iid/merge
 ```
 
 Parameters:
 
-- `id` (required)                           - The ID of a project
-- `merge_request_id` (required)             - ID of MR
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required)            - Internal ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
-- `merge_when_build_succeeds` (optional)    - if `true` the MR is merged when the build succeeds
+- `merge_when_pipeline_succeeds` (optional)    - if `true` the MR is merged when the pipeline succeeds
 - `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
 
 ```json
@@ -506,7 +508,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -518,22 +520,20 @@ Parameters:
 }
 ```
 
-## Cancel Merge When Build Succeeds
+## Cancel Merge When Pipeline Succeeds
 
-If successful you'll get `200 OK`.
+If you don't have permissions to accept this merge request - you'll get a `401`
 
-If you don't have permissions to accept this merge request - you'll get a 401
+If the merge request is already merged or closed - you get `405` and error message 'Method Not Allowed'
 
-If the merge request is already merged or closed - you get 405 and error message 'Method Not Allowed'
-
-In case the merge request is not set to be merged when the build succeeds, you'll also get a 406 error.
+In case the merge request is not set to be merged when the pipeline succeeds, you'll also get a `406` error.
 ```
-PUT /projects/:id/merge_requests/:merge_request_id/cancel_merge_when_build_succeeds
+PUT /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
 ```
 Parameters:
 
-- `id` (required)                           - The ID of a project
-- `merge_request_id` (required)             - ID of MR
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required)            - Internal ID of MR
 
 ```json
 {
@@ -578,7 +578,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -599,16 +599,16 @@ Comments are done via the [notes](notes.md) resource.
 Get all the issues that would be closed by merging the provided merge request.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/closes_issues
+GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `merge_request_id` | integer | yes   | The ID of the merge request |
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/closes_issues
 ```
 
 Example response when the GitLab issue tracker is used:
@@ -621,7 +621,7 @@ Example response when the GitLab issue tracker is used:
       "author" : {
          "state" : "active",
          "id" : 18,
-         "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+         "web_url" : "https://gitlab.example.com/eileen.lowe",
          "name" : "Alexandra Bashirian",
          "avatar_url" : null,
          "username" : "eileen.lowe"
@@ -642,7 +642,7 @@ Example response when the GitLab issue tracker is used:
          "state" : "active",
          "id" : 1,
          "name" : "Administrator",
-         "web_url" : "https://gitlab.example.com/u/root",
+         "web_url" : "https://gitlab.example.com/root",
          "avatar_url" : null,
          "username" : "root"
       },
@@ -670,23 +670,20 @@ Example response when an external issue tracker (e.g. JIRA) is used:
 
 ## Subscribe to a merge request
 
-Subscribes the authenticated user to a merge request to receive notification. If
-the operation is successful, status code `201` together with the updated merge
-request is returned. If the user is already subscribed to the merge request, the
-status code `304` is returned. If the project or merge request is not found,
-status code `404` is returned.
+Subscribes the authenticated user to a merge request to receive notification. If the user is already subscribed to the merge request, the
+status code `304` is returned.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/subscription
+POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `merge_request_id` | integer | yes   | The ID of the merge request |
+| Attribute           | Type    | Required | Description                 |
+| ---------           | ----    | -------- | -----------                 |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user         |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/subscribe
 ```
 
 Example response:
@@ -711,7 +708,7 @@ Example response:
     "id": 19,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/leila"
+    "web_url": "https://gitlab.example.com/leila"
   },
   "assignee": {
     "name": "Celine Wehner",
@@ -719,7 +716,7 @@ Example response:
     "id": 16,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/carli"
+    "web_url": "https://gitlab.example.com/carli"
   },
   "source_project_id": 5,
   "target_project_id": 5,
@@ -736,7 +733,7 @@ Example response:
     "updated_at": "2016-04-05T21:41:40.905Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": false,
+  "merge_when_pipeline_succeeds": false,
   "merge_status": "cannot_be_merged",
   "subscribed": true,
   "sha": "8888888888888888888888888888888888888888",
@@ -747,22 +744,20 @@ Example response:
 ## Unsubscribe from a merge request
 
 Unsubscribes the authenticated user from a merge request to not receive
-notifications from that merge request. If the operation is successful, status
-code `200` together with the updated merge request is returned. If the user is
-not subscribed to the merge request, the status code `304` is returned. If the
-project or merge request is not found, status code `404` is returned.
+notifications from that merge request. If the user is
+not subscribed to the merge request, the status code `304` is returned.
 
 ```
-DELETE /projects/:id/merge_requests/:merge_request_id/subscription
+POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `merge_request_id` | integer | yes   | The ID of the merge request |
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/unsubscribe
 ```
 
 Example response:
@@ -787,7 +782,7 @@ Example response:
     "id": 19,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/39ce4a2822cc896933ffbd68c1470e55?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/leila"
+    "web_url": "https://gitlab.example.com/leila"
   },
   "assignee": {
     "name": "Celine Wehner",
@@ -795,7 +790,7 @@ Example response:
     "id": 16,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/f4cd5605b769dd2ce405a27c6e6f2684?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/carli"
+    "web_url": "https://gitlab.example.com/carli"
   },
   "source_project_id": 5,
   "target_project_id": 5,
@@ -812,7 +807,7 @@ Example response:
     "updated_at": "2016-04-05T21:41:40.905Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": false,
+  "merge_when_pipeline_succeeds": false,
   "merge_status": "cannot_be_merged",
   "subscribed": false,
   "sha": "8888888888888888888888888888888888888888",
@@ -822,22 +817,21 @@ Example response:
 
 ## Create a todo
 
-Manually creates a todo for the current user on a merge request. If the
-request is successful, status code `200` together with the created todo is
-returned. If there already exists a todo for the user on that merge request,
+Manually creates a todo for the current user on a merge request.
+If there already exists a todo for the user on that merge request,
 status code `304` is returned.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/todo
+POST /projects/:id/merge_requests/:merge_request_iid/todo
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `merge_request_id` | integer | yes   | The ID of the merge request |
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/27/todo
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/27/todo
 ```
 
 Example response:
@@ -858,7 +852,7 @@ Example response:
     "id": 1,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/u/root"
+    "web_url": "https://gitlab.example.com/root"
   },
   "action_name": "marked",
   "target_type": "MergeRequest",
@@ -881,7 +875,7 @@ Example response:
       "id": 14,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/francisca"
+      "web_url": "https://gitlab.example.com/francisca"
     },
     "assignee": {
       "name": "Dr. Gabrielle Strosin",
@@ -889,7 +883,7 @@ Example response:
       "id": 4,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/733005fcd7e6df12d2d8580171ccb966?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/u/barrett.krajcik"
+      "web_url": "https://gitlab.example.com/barrett.krajcik"
     },
     "source_project_id": 3,
     "target_project_id": 3,
@@ -906,7 +900,7 @@ Example response:
       "updated_at": "2016-06-17T07:47:33.840Z",
       "due_date": null
     },
-    "merge_when_build_succeeds": false,
+    "merge_when_pipeline_succeeds": false,
     "merge_status": "unchecked",
     "subscribed": true,
     "sha": "8888888888888888888888888888888888888888",
@@ -928,16 +922,16 @@ Example response:
 Get a list of merge request diff versions.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/versions
+GET /projects/:id/merge_requests/:merge_request_iid/versions
 ```
 
-| Attribute | Type    | Required | Description           |
-| --------- | ------- | -------- | --------------------- |
-| `id`      | String  | yes      | The ID of the project |
-| `merge_request_id` | integer | yes | The ID of the merge request |
+| Attribute           | Type    | Required | Description                 |
+| ---------           | ------- | -------- | ---------------------       |
+| `id`                | String  | yes      | The ID of the project       |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions
 ```
 
 Example response:
@@ -969,17 +963,17 @@ Example response:
 Get a single merge request diff version.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/versions/:version_id
+GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 ```
 
-| Attribute | Type    | Required | Description           |
-| --------- | ------- | -------- | --------------------- |
-| `id`      | String  | yes      | The ID of the project |
-| `merge_request_id` | integer | yes | The ID of the merge request |
-| `version_id` | integer | yes | The ID of the merge request diff version |
+| Attribute           | Type    | Required | Description                              |
+| ---------           | ------- | -------- | ---------------------                    |
+| `id`                | String  | yes      | The ID of the project                    |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request     |
+| `version_id`        | integer | yes      | The ID of the merge request diff version |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions/1
 ```
 
 Example response:
@@ -1029,5 +1023,144 @@ Example response:
     "renamed_file": false,
     "deleted_file": false
   }]
+}
+```
+## Set a time estimate for a merge request
+
+Sets an estimated time of work for this merge request.
+
+```
+POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
+```
+
+| Attribute           | Type    | Required | Description                              |
+| ---------           | ----    | -------- | -----------                              |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                      |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request     |
+| `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_estimate?duration=3h30m
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": "3h 30m",
+  "human_total_time_spent": null,
+  "time_estimate": 12600,
+  "total_time_spent": 0
+}
+```
+
+## Reset the time estimate for a merge request
+
+Resets the estimated time for this merge request to 0 seconds.
+
+```
+POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
+```
+
+| Attribute           | Type    | Required | Description                                  |
+| ---------           | ----    | -------- | -----------                                  |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                          |
+| `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_time_estimate
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": null,
+  "human_total_time_spent": null,
+  "time_estimate": 0,
+  "total_time_spent": 0
+}
+```
+
+## Add spent time for a merge request
+
+Adds spent time for this merge request
+
+```
+POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
+```
+
+| Attribute           | Type    | Required | Description                              |
+| ---------           | ----    | -------- | -----------                              |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                      |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request     |
+| `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": null,
+  "human_total_time_spent": "1h",
+  "time_estimate": 0,
+  "total_time_spent": 3600
+}
+```
+
+## Reset spent time for a merge request
+
+Resets the total spent time for this merge request to 0 seconds.
+
+```
+POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
+```
+
+| Attribute           | Type    | Required | Description                                  |
+| ---------           | ----    | -------- | -----------                                  |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                          |
+| `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_spent_time
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": null,
+  "human_total_time_spent": null,
+  "time_estimate": 0,
+  "total_time_spent": 0
+}
+```
+
+## Get time tracking stats
+
+```
+GET /projects/:id/merge_requests/:merge_request_iid/time_stats
+```
+
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
+```
+
+Example response:
+
+```json
+{
+  "human_time_estimate": "2h",
+  "human_total_time_spent": "1h",
+  "time_estimate": 7200,
+  "total_time_spent": 3600
 }
 ```

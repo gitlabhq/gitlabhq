@@ -1,12 +1,5 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
-require 'api/api'
-
-class ActionDispatch::Routing::Mapper
-  def draw(routes_name)
-    instance_eval(File.read(Rails.root.join("config/routes/#{routes_name}.rb")))
-  end
-end
 
 Rails.application.routes.draw do
   concern :access_requestable do
@@ -28,13 +21,12 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  use_doorkeeper_openid_connect
+
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
-
-  # Emojis
-  resources :emojis, only: :index
 
   # Search
   get 'search' => 'search#show'
@@ -45,6 +37,13 @@ Rails.application.routes.draw do
 
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
+
+  scope path: '-' do
+    get 'liveness' => 'health#liveness'
+    get 'readiness' => 'health#readiness'
+    resources :metrics, only: [:index]
+    mount Peek::Railtie => '/peek'
+  end
 
   # Koding route
   get 'koding' => 'koding#index'
@@ -84,10 +83,9 @@ Rails.application.routes.draw do
   draw :user
   draw :project
 
-  # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
-
-  get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
-
   root to: "root#index"
+
+  draw :test if Rails.env.test?
+
+  get '*unmatched_route', to: 'application#route_not_found'
 end

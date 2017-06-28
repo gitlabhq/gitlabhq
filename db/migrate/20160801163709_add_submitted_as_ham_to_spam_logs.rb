@@ -14,7 +14,11 @@ class AddSubmittedAsHamToSpamLogs < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_column_with_default :spam_logs, :submitted_as_ham, :boolean, default: false
+  end
+
+  def down
+    remove_column :spam_logs, :submitted_as_ham
   end
 end

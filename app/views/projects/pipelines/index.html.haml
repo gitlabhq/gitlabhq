@@ -2,54 +2,19 @@
 - page_title "Pipelines"
 = render "projects/pipelines/head"
 
-%div{ class: container_class }
-  .top-area
-    %ul.nav-links
-      %li{class: ('active' if @scope.nil?)}
-        = link_to project_pipelines_path(@project) do
-          All
-          %span.badge.js-totalbuilds-count
-            = number_with_delimiter(@pipelines_count)
+#pipelines-list-vue{ data: { endpoint: namespace_project_pipelines_path(@project.namespace, @project, format: :json),
+  "css-class" => container_class,
+  "help-page-path" => help_page_path('ci/quick_start/README'),
+  "new-pipeline-path" => new_namespace_project_pipeline_path(@project.namespace, @project),
+  "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
+  "all-path" =>  project_pipelines_path(@project),
+  "pending-path" => project_pipelines_path(@project, scope: :pending),
+  "running-path" => project_pipelines_path(@project, scope: :running),
+  "finished-path" => project_pipelines_path(@project, scope: :finished),
+  "branches-path" => project_pipelines_path(@project, scope: :branches),
+  "tags-path" => project_pipelines_path(@project, scope: :tags),
+  "has-ci" => @repository.gitlab_ci_yml,
+  "ci-lint-path" => ci_lint_path } }
 
-      %li{class: ('active' if @scope == 'running')}
-        = link_to project_pipelines_path(@project, scope: :running) do
-          Running
-          %span.badge.js-running-count
-            = number_with_delimiter(@running_or_pending_count)
-
-      %li{class: ('active' if @scope == 'branches')}
-        = link_to project_pipelines_path(@project, scope: :branches) do
-          Branches
-
-      %li{class: ('active' if @scope == 'tags')}
-        = link_to project_pipelines_path(@project, scope: :tags) do
-          Tags
-
-    .nav-controls
-      - if can? current_user, :create_pipeline, @project
-        = link_to new_namespace_project_pipeline_path(@project.namespace, @project), class: 'btn btn-create' do
-          Run pipeline
-
-        - unless @repository.gitlab_ci_yml
-          = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
-
-        = link_to ci_lint_path, class: 'btn btn-default' do
-          %span CI Lint
-
-  %div.content-list.pipelines
-    - stages = @pipelines.stages
-    - if @pipelines.blank?
-      %div
-        .nothing-here-block No pipelines to show
-    - else
-      .table-holder
-        %table.table.builds
-          %thead
-            %th.col-xs-1.col-sm-1 Status
-            %th.col-xs-2.col-sm-4 Pipeline
-            %th.col-xs-2.col-sm-2 Stages
-            %th.col-xs-2.col-sm-2
-            %th.hidden-xs.col-sm-3
-          = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
-
-      = paginate @pipelines, theme: 'gitlab'
+= page_specific_javascript_bundle_tag('common_vue')
+= page_specific_javascript_bundle_tag('pipelines')

@@ -1,5 +1,5 @@
 %h3.page-title Authorization required
-%main{:role => "main"}
+%main{ :role => "main" }
   %p.h4
     Authorize
     %strong.text-info= @pre_auth.client.name
@@ -10,7 +10,7 @@
       %p
         = icon("exclamation-triangle fw")
         You are an admin, which means granting access to
-        %strong #{@pre_auth.client.name}
+        %strong= @pre_auth.client.name
         will allow them to interact with GitLab as an admin as well. Proceed with caution.
 
   - if @pre_auth.scopes
@@ -27,6 +27,7 @@
       = hidden_field_tag :state, @pre_auth.state
       = hidden_field_tag :response_type, @pre_auth.response_type
       = hidden_field_tag :scope, @pre_auth.scope
+      = hidden_field_tag :nonce, @pre_auth.nonce
       = submit_tag "Authorize", class: "btn btn-success wide pull-left"
     = form_tag oauth_authorization_path, method: :delete do
       = hidden_field_tag :client_id, @pre_auth.client.uid
@@ -34,4 +35,5 @@
       = hidden_field_tag :state, @pre_auth.state
       = hidden_field_tag :response_type, @pre_auth.response_type
       = hidden_field_tag :scope, @pre_auth.scope
+      = hidden_field_tag :nonce, @pre_auth.nonce
       = submit_tag "Deny", class: "btn btn-danger prepend-left-10"

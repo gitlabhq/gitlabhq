@@ -11,17 +11,16 @@
   > li {
     padding: 10px 15px;
     min-height: 20px;
-    border-bottom: 1px solid #eee;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid $list-border;
 
-    &:after {
+    &::after {
       content: " ";
       display: table;
       clear: both;
     }
 
     &.disabled {
-      color: #888;
+      color: $list-text-disabled-color;
     }
 
     &.unstyled {
@@ -31,14 +30,14 @@
     }
 
     &.warning-row {
-      background-color: #fcf8e3;
-      border-color: #faebcc;
-      color: #8a6d3b;
+      background-color: $list-warning-row-bg;
+      border-color: $list-warning-row-border;
+      color: $list-warning-row-color;
     }
 
-    &.smoke { background-color: $background-color; }
+    &.smoke { background-color: $gray-light; }
 
-    &:hover {
+    &:not(.ui-sort-disabled):hover {
       background: $row-hover;
     }
 
@@ -46,7 +45,7 @@
       border-bottom: none;
 
       &.bottom {
-        background: $background-color;
+        background: $gray-light;
       }
     }
 
@@ -59,7 +58,8 @@
     p {
       padding-top: 1px;
       margin: 0;
-      color: $gray-dark;
+      color: $white-normal;
+
       img {
         position: relative;
         top: 3px;
@@ -75,14 +75,16 @@
 
 
 /** light list with border-bottom between li **/
-ul.bordered-list, ul.unstyled-list {
+ul.bordered-list,
+ul.unstyled-list {
   @include basic-list;
 
   &.top-list {
     li:first-child {
       padding-top: 0;
 
-      h4, h5 {
+      h4,
+      h5 {
         margin-top: 0;
       }
     }
@@ -93,24 +95,14 @@ ul.unstyled-list > li {
   border-bottom: none;
 }
 
-ul.task-list {
-  li.task-list-item {
-    list-style-type: none;
-  }
-
-  ul:not(.task-list) {
-    padding-left: 1.3em;
-  }
-}
-
+// Generic content list
 ul.content-list {
   @include basic-list;
-
   margin: 0;
   padding: 0;
 
-  > li {
-    border-color: $table-border-color;
+  li {
+    border-color: $white-normal;
     font-size: $list-font-size;
     color: $list-text-color;
 
@@ -125,7 +117,11 @@ ul.content-list {
     }
 
     a {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
+    }
+
+    .member-group-link {
+      color: $blue-600;
     }
 
     .description {
@@ -133,10 +129,6 @@ ul.content-list {
         @include str-truncated;
         margin-bottom: 0;
       }
-    }
-
-    .avatar {
-      margin-right: 15px;
     }
 
     .controls {
@@ -152,19 +144,33 @@ ul.content-list {
       }
 
       > .btn,
-      > .btn-group {
+      > .btn-group,
+      > .dropdown.inline {
         margin-right: $gl-padding-top;
         display: inline-block;
         margin-top: 3px;
         margin-bottom: 4px;
 
+        &.has-tooltip,
         &:last-child {
           margin-right: 0;
+
+          @media(max-width: $screen-xs-max) {
+            margin: 0 auto;
+          }
         }
       }
 
       .no-comments {
         opacity: .5;
+      }
+    }
+
+    .member-controls {
+      float: none;
+
+      @media (min-width: $screen-sm-min) {
+        float: right;
       }
     }
 
@@ -175,25 +181,59 @@ ul.content-list {
 
     &.list-placeholder {
       background-color: $gray-light;
-      border: dotted 1px $gray-dark;
+      border: dotted 1px $white-normal;
       margin: 1px 0;
       min-height: 52px;
     }
   }
 }
 
-.panel > .content-list > li {
-  padding: $gl-padding-top $gl-padding;
+// Content list using flexbox
+.flex-list {
+  .flex-row {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
 
-  &.commit {
-    @media (min-width: $screen-sm-min) {
-      padding-left: 46px + $gl-padding;
+  .row-main-content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    padding-right: 8px;
+  }
+
+  .row-fixed-content {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .row-title {
+    font-weight: 600;
+  }
+
+  .row-second-line {
+    display: block;
+  }
+
+  .dropdown {
+    .btn-block {
+      margin-bottom: 0;
+      line-height: inherit;
     }
+  }
+
+  .label-default {
+    color: $gl-text-color-secondary;
   }
 }
 
+.panel > .content-list > li {
+  padding: $gl-padding-top $gl-padding;
+}
+
 ul.controls {
-  padding-top: 1px;
   float: right;
   list-style: none;
 
@@ -215,7 +255,112 @@ ul.controls {
       .avatar-inline {
         margin-left: 0;
         margin-right: 0;
+        margin-bottom: 0;
       }
     }
+  }
+}
+
+ul.indent-list {
+  padding: 10px 0 0 30px;
+}
+
+
+// Specific styles for tree list
+.group-list-tree {
+  .folder-toggle-wrap {
+    float: left;
+    line-height: $list-text-height;
+    font-size: 0;
+
+    span {
+      font-size: $gl-font-size;
+    }
+  }
+
+  .folder-caret,
+  .folder-icon {
+    display: inline-block;
+  }
+
+  .folder-caret {
+    width: 15px;
+  }
+
+  .folder-icon {
+    width: 20px;
+  }
+
+  > .group-row:not(.has-subgroups) {
+    .folder-caret .fa {
+      opacity: 0;
+    }
+  }
+
+  .content-list li:last-child {
+    padding-bottom: 0;
+  }
+
+  .group-list-tree {
+    margin-bottom: 0;
+    margin-left: 30px;
+    position: relative;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 0;
+      position: absolute;
+      top: 5px;
+      bottom: 0;
+      left: -16px;
+      border-left: 2px solid $border-white-normal;
+    }
+
+    .group-row {
+      position: relative;
+
+      &::before {
+        content: "";
+        display: block;
+        width: 10px;
+        height: 0;
+        border-top: 2px solid $border-white-normal;
+        position: absolute;
+        top: 30px;
+        left: -16px;
+      }
+
+      &:last-child::before {
+        background: $white-light;
+        height: auto;
+        top: 30px;
+        bottom: 0;
+      }
+    }
+  }
+
+  .group-row {
+    padding: 0;
+    border: none;
+  }
+
+  .group-row-contents {
+    padding: 10px 10px 8px;
+    border-top: solid 1px transparent;
+    border-bottom: solid 1px $white-normal;
+
+    &:hover {
+      border-color: $row-hover-border;
+      background-color: $row-hover;
+      cursor: pointer;
+    }
+  }
+}
+
+.js-groups-list-holder {
+  .groups-list-loading {
+    font-size: 34px;
+    text-align: center;
   }
 }

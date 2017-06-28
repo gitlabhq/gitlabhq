@@ -1,14 +1,12 @@
 require 'spec_helper'
 
-describe API::Runners, api: true  do
-  include ApiHelpers
-
+describe API::Runners do
   let(:admin) { create(:user, :admin) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
 
-  let(:project) { create(:project, creator_id: user.id) }
-  let(:project2) { create(:project, creator_id: user.id) }
+  let(:project) { create(:empty_project, creator_id: user.id) }
+  let(:project2) { create(:empty_project, creator_id: user.id) }
 
   let!(:shared_runner) { create(:ci_runner, :shared) }
   let!(:unused_specific_runner) { create(:ci_runner) }
@@ -37,18 +35,20 @@ describe API::Runners, api: true  do
     context 'authorized user' do
       it 'returns user available runners' do
         get api('/runners', user)
-        shared = json_response.any?{ |r| r['is_shared'] }
 
+        shared = json_response.any?{ |r| r['is_shared'] }
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
 
       it 'filters runners by scope' do
         get api('/runners?scope=active', user)
-        shared = json_response.any?{ |r| r['is_shared'] }
 
+        shared = json_response.any?{ |r| r['is_shared'] }
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
@@ -73,9 +73,10 @@ describe API::Runners, api: true  do
       context 'with admin privileges' do
         it 'returns all runners' do
           get api('/runners/all', admin)
-          shared = json_response.any?{ |r| r['is_shared'] }
 
+          shared = json_response.any?{ |r| r['is_shared'] }
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(shared).to be_truthy
         end
@@ -91,9 +92,10 @@ describe API::Runners, api: true  do
 
       it 'filters runners by scope' do
         get api('/runners/all?scope=specific', admin)
-        shared = json_response.any?{ |r| r['is_shared'] }
 
+        shared = json_response.any?{ |r| r['is_shared'] }
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
@@ -183,6 +185,7 @@ describe API::Runners, api: true  do
         it 'updates runner' do
           description = shared_runner.description
           active = shared_runner.active
+          runner_queue_value = shared_runner.ensure_runner_queue_value
 
           update_runner(shared_runner.id, admin, description: "#{description}_updated",
                                                  active: !active,
@@ -197,18 +200,24 @@ describe API::Runners, api: true  do
           expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
           expect(shared_runner.run_untagged?).to be(false)
           expect(shared_runner.locked?).to be(true)
+          expect(shared_runner.ensure_runner_queue_value)
+            .not_to eq(runner_queue_value)
         end
       end
 
       context 'when runner is not shared' do
         it 'updates runner' do
           description = specific_runner.description
+          runner_queue_value = specific_runner.ensure_runner_queue_value
+
           update_runner(specific_runner.id, admin, description: 'test')
           specific_runner.reload
 
           expect(response).to have_http_status(200)
           expect(specific_runner.description).to eq('test')
           expect(specific_runner.description).not_to eq(description)
+          expect(specific_runner.ensure_runner_queue_value)
+            .not_to eq(runner_queue_value)
         end
       end
 
@@ -226,7 +235,7 @@ describe API::Runners, api: true  do
     context 'authorized user' do
       context 'when runner is shared' do
         it 'does not update runner' do
-          put api("/runners/#{shared_runner.id}", user)
+          put api("/runners/#{shared_runner.id}", user), description: 'test'
 
           expect(response).to have_http_status(403)
         end
@@ -234,7 +243,7 @@ describe API::Runners, api: true  do
 
       context 'when runner is not shared' do
         it 'does not update runner without access to it' do
-          put api("/runners/#{specific_runner.id}", user2)
+          put api("/runners/#{specific_runner.id}", user2), description: 'test'
 
           expect(response).to have_http_status(403)
         end
@@ -266,8 +275,9 @@ describe API::Runners, api: true  do
         it 'deletes runner' do
           expect do
             delete api("/runners/#{shared_runner.id}", admin)
+
+            expect(response).to have_http_status(204)
           end.to change{ Ci::Runner.shared.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
       end
 
@@ -275,15 +285,17 @@ describe API::Runners, api: true  do
         it 'deletes unused runner' do
           expect do
             delete api("/runners/#{unused_specific_runner.id}", admin)
+
+            expect(response).to have_http_status(204)
           end.to change{ Ci::Runner.specific.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
 
         it 'deletes used runner' do
           expect do
             delete api("/runners/#{specific_runner.id}", admin)
+
+            expect(response).to have_http_status(204)
           end.to change{ Ci::Runner.specific.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
       end
 
@@ -316,8 +328,9 @@ describe API::Runners, api: true  do
         it 'deletes runner for one owned project' do
           expect do
             delete api("/runners/#{specific_runner.id}", user)
+
+            expect(response).to have_http_status(204)
           end.to change{ Ci::Runner.specific.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
       end
     end
@@ -335,9 +348,10 @@ describe API::Runners, api: true  do
     context 'authorized user with master privileges' do
       it "returns project's runners" do
         get api("/projects/#{project.id}/runners", user)
-        shared = json_response.any?{ |r| r['is_shared'] }
 
+        shared = json_response.any?{ |r| r['is_shared'] }
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(shared).to be_truthy
       end
@@ -445,8 +459,9 @@ describe API::Runners, api: true  do
         it "disables project's runner" do
           expect do
             delete api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user)
+
+            expect(response).to have_http_status(204)
           end.to change{ project.runners.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
       end
 

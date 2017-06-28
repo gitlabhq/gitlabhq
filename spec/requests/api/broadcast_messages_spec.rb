@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::BroadcastMessages, api: true do
-  include ApiHelpers
-
+describe API::BroadcastMessages do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
 
@@ -25,6 +23,7 @@ describe API::BroadcastMessages, api: true do
       get api('/broadcast_messages', admin)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_kind_of(Array)
       expect(json_response.first.keys)
         .to match_array(%w(id message starts_at ends_at color font active))
@@ -173,8 +172,11 @@ describe API::BroadcastMessages, api: true do
     end
 
     it 'deletes the broadcast message for admins' do
-      expect { delete api("/broadcast_messages/#{message.id}", admin) }
-        .to change { BroadcastMessage.count }.by(-1)
+      expect do
+        delete api("/broadcast_messages/#{message.id}", admin)
+
+        expect(response).to have_http_status(204)
+      end.to change { BroadcastMessage.count }.by(-1)
     end
   end
 end

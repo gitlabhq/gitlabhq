@@ -3,13 +3,17 @@ require 'spec_helper'
 describe EventFilter, lib: true do
   describe '#apply_filter' do
     let(:source_user) { create(:user) }
-    let!(:public_project) { create(:project, :public) }
+    let!(:public_project) { create(:empty_project, :public) }
 
-    let!(:push_event) { create(:event, action: Event::PUSHED, project: public_project, target: public_project, author: source_user) }
-    let!(:merged_event) { create(:event, action: Event::MERGED, project: public_project, target: public_project, author: source_user) }
-    let!(:comments_event) { create(:event, action: Event::COMMENTED, project: public_project, target: public_project, author: source_user) }
-    let!(:joined_event) { create(:event, action: Event::JOINED, project: public_project, target: public_project, author: source_user) }
-    let!(:left_event) { create(:event, action: Event::LEFT, project: public_project, target: public_project, author: source_user) }
+    let!(:push_event)     { create(:event, :pushed,    project: public_project, target: public_project, author: source_user) }
+    let!(:merged_event)   { create(:event, :merged,    project: public_project, target: public_project, author: source_user) }
+    let!(:created_event)  { create(:event, :created,   project: public_project, target: public_project, author: source_user) }
+    let!(:updated_event)  { create(:event, :updated,   project: public_project, target: public_project, author: source_user) }
+    let!(:closed_event)   { create(:event, :closed,    project: public_project, target: public_project, author: source_user) }
+    let!(:reopened_event) { create(:event, :reopened,  project: public_project, target: public_project, author: source_user) }
+    let!(:comments_event) { create(:event, :commented, project: public_project, target: public_project, author: source_user) }
+    let!(:joined_event)   { create(:event, :joined,    project: public_project, target: public_project, author: source_user) }
+    let!(:left_event)     { create(:event, :left,      project: public_project, target: public_project, author: source_user) }
 
     it 'applies push filter' do
       events = EventFilter.new(EventFilter.push).apply_filter(Event.all)
@@ -19,6 +23,11 @@ describe EventFilter, lib: true do
     it 'applies merged filter' do
       events = EventFilter.new(EventFilter.merged).apply_filter(Event.all)
       expect(events).to contain_exactly(merged_event)
+    end
+
+    it 'applies issue filter' do
+      events = EventFilter.new(EventFilter.issue).apply_filter(Event.all)
+      expect(events).to contain_exactly(created_event, updated_event, closed_event, reopened_event)
     end
 
     it 'applies comments filter' do
@@ -33,17 +42,17 @@ describe EventFilter, lib: true do
 
     it 'applies all filter' do
       events = EventFilter.new(EventFilter.all).apply_filter(Event.all)
-      expect(events).to contain_exactly(push_event, merged_event, comments_event, joined_event, left_event)
+      expect(events).to contain_exactly(push_event, merged_event, created_event, updated_event, closed_event, reopened_event, comments_event, joined_event, left_event)
     end
 
     it 'applies no filter' do
       events = EventFilter.new(nil).apply_filter(Event.all)
-      expect(events).to contain_exactly(push_event, merged_event, comments_event, joined_event, left_event)
+      expect(events).to contain_exactly(push_event, merged_event, created_event, updated_event, closed_event, reopened_event, comments_event, joined_event, left_event)
     end
 
     it 'applies unknown filter' do
       events = EventFilter.new('').apply_filter(Event.all)
-      expect(events).to contain_exactly(push_event, merged_event, comments_event, joined_event, left_event)
+      expect(events).to contain_exactly(push_event, merged_event, created_event, updated_event, closed_event, reopened_event, comments_event, joined_event, left_event)
     end
   end
 end

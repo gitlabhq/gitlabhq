@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def valid?
-        raw_data.is_a?(Hash) && raw_data["kind"] == "projecthosting#user" && raw_data.has_key?("projects")
+        raw_data.is_a?(Hash) && raw_data["kind"] == "projecthosting#user" && raw_data.key?("projects")
       end
 
       def repos

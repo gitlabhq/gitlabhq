@@ -1,4 +1,4 @@
-# Build Variables
+# Build Variables  API
 
 ## List project variables
 
@@ -10,10 +10,10 @@ GET /projects/:id/variables
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```
-curl --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/variables"
 ```
 
 ```json
@@ -39,11 +39,11 @@ GET /projects/:id/variables/:key
 
 | Attribute | Type    | required | Description           |
 |-----------|---------|----------|-----------------------|
-| `id`      | integer | yes      | The ID of a project   |
+| `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user   |
 | `key`     | string  | yes      | The `key` of a variable |
 
 ```
-curl --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/TEST_VARIABLE_1"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/variables/TEST_VARIABLE_1"
 ```
 
 ```json
@@ -61,20 +61,22 @@ Create a new build variable.
 POST /projects/:id/variables
 ```
 
-| Attribute | Type    | required | Description           |
-|-----------|---------|----------|-----------------------|
-| `id`      | integer | yes      | The ID of a project   |
-| `key`     | string  | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
-| `value`   | string  | yes      | The `value` of a variable |
+| Attribute   | Type    | required | Description           |
+|-------------|---------|----------|-----------------------|
+| `id`        | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user   |
+| `key`       | string  | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
+| `value`     | string  | yes      | The `value` of a variable |
+| `protected` | boolean | no       | Whether the variable is protected |
 
 ```
-curl --request POST --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"
 ```
 
 ```json
 {
     "key": "NEW_VARIABLE",
-    "value": "new value"
+    "value": "new value",
+    "protected": false
 }
 ```
 
@@ -86,20 +88,22 @@ Update a project's build variable.
 PUT /projects/:id/variables/:key
 ```
 
-| Attribute | Type    | required | Description             |
-|-----------|---------|----------|-------------------------|
-| `id`      | integer | yes      | The ID of a project     |
-| `key`     | string  | yes      | The `key` of a variable   |
-| `value`   | string  | yes      | The `value` of a variable |
+| Attribute   | Type    | required | Description             |
+|-------------|---------|----------|-------------------------|
+| `id`        | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user     |
+| `key`       | string  | yes      | The `key` of a variable   |
+| `value`     | string  | yes      | The `value` of a variable |
+| `protected` | boolean | no       | Whether the variable is protected |
 
 ```
-curl --request PUT --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/NEW_VARIABLE" --form "value=updated value"
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/variables/NEW_VARIABLE" --form "value=updated value"
 ```
 
 ```json
 {
     "key": "NEW_VARIABLE",
-    "value": "updated value"
+    "value": "updated value",
+    "protected": true
 }
 ```
 
@@ -113,16 +117,9 @@ DELETE /projects/:id/variables/:key
 
 | Attribute | Type    | required | Description             |
 |-----------|---------|----------|-------------------------|
-| `id`      | integer | yes      | The ID of a project     |
+| `id`      | integer/string | yes      | The ID of a project or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) owned by the authenticated user     |
 | `key`     | string  | yes      | The `key` of a variable |
 
 ```
-curl --request DELETE --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/VARIABLE_1"
-```
-
-```json
-{
-    "key": "VARIABLE_1",
-    "value": "VALUE_1"
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1"
 ```

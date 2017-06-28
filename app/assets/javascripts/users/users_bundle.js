@@ -1,6 +1,1 @@
-
-/*= require_tree . */
-
-(function() {
-
-}).call(this);
+import './calendar';

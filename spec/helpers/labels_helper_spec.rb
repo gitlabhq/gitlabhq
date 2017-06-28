@@ -5,27 +5,26 @@ describe LabelsHelper do
     let(:project) { create(:empty_project) }
     let(:label) { create(:label, project: project) }
 
-    context 'with @project set' do
-      before do
-        @project = project
-      end
-
-      it 'uses the instance variable' do
-        expect(link_to_label(label)).to match %r{<a href="/#{@project.to_reference}/issues\?label_name%5B%5D=#{label.name}"><span class="[\w\s\-]*has-tooltip".*</span></a>}
-      end
-    end
-
-    context 'without @project set' do
+    context 'without subject' do
       it "uses the label's project" do
-        expect(link_to_label(label)).to match %r{<a href="/#{label.project.to_reference}/issues\?label_name%5B%5D=#{label.name}">.*</a>}
+        expect(link_to_label(label)).to match %r{<a href="/#{label.project.path_with_namespace}/issues\?label_name%5B%5D=#{label.name}">.*</a>}
       end
     end
 
-    context 'with a project argument' do
-      let(:another_project) { double('project', namespace: 'foo3', to_param: 'bar3') }
+    context 'with a project as subject' do
+      let(:namespace) { build(:namespace, name: 'foo3') }
+      let(:another_project) { build(:empty_project, namespace: namespace, name: 'bar3') }
 
-      it 'links to merge requests page' do
-        expect(link_to_label(label, project: another_project)).to match %r{<a href="/foo3/bar3/issues\?label_name%5B%5D=#{label.name}">.*</a>}
+      it 'links to project issues page' do
+        expect(link_to_label(label, subject: another_project)).to match %r{<a href="/foo3/bar3/issues\?label_name%5B%5D=#{label.name}">.*</a>}
+      end
+    end
+
+    context 'with a group as subject' do
+      let(:group) { build(:group, name: 'bar') }
+
+      it 'links to group issues page' do
+        expect(link_to_label(label, subject: group)).to match %r{<a href="/groups/bar/issues\?label_name%5B%5D=#{label.name}">.*</a>}
       end
     end
 
@@ -33,7 +32,7 @@ describe LabelsHelper do
       ['issue', :issue, 'merge_request', :merge_request].each do |type|
         context "set to #{type}" do
           it 'links to correct page' do
-            expect(link_to_label(label, type: type)).to match %r{<a href="/#{label.project.to_reference}/#{type.to_s.pluralize}\?label_name%5B%5D=#{label.name}">.*</a>}
+            expect(link_to_label(label, type: type)).to match %r{<a href="/#{label.project.path_with_namespace}/#{type.to_s.pluralize}\?label_name%5B%5D=#{label.name}">.*</a>}
           end
         end
       end
@@ -56,8 +55,8 @@ describe LabelsHelper do
 
     context 'without block' do
       it 'uses render_colored_label as the link content' do
-        expect(self).to receive(:render_colored_label).
-          with(label, tooltip: true).and_return('Foo')
+        expect(self).to receive(:render_colored_label)
+          .with(label, tooltip: true).and_return('Foo')
         expect(link_to_label(label)).to match('Foo')
       end
     end
