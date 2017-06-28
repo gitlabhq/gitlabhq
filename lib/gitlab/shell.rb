@@ -247,6 +247,8 @@ module Gitlab
     def remove_keys_not_found_in_db
       return unless self.authorized_keys_enabled?
 
+      Rails.logger.info("Removing keys not found in DB")
+
       batch_read_key_ids do |ids_in_file|
         ids_in_file.uniq!
         keys_in_db = Key.where(id: ids_in_file)
@@ -255,6 +257,7 @@ module Gitlab
 
         ids_to_remove = ids_in_file - keys_in_db.pluck(:id)
         ids_to_remove.each do |id|
+          Rails.logger.info("Removing key-#{id} not found in DB")
           remove_key("key-#{id}")
         end
       end
