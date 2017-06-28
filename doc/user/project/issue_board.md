@@ -25,7 +25,7 @@ issue tracker.
 ## Use-cases
 
 GitLab Workflow allows you to discuss proposals in issues, categorize them
-with labels, and and from there organize and prioritize them in Issue Boards.
+with labels, and and from there organize and prioritize them with Issue Boards.
 
 - For example, let's consider this simplified development workflow:
 you have a repository hosting your app's codebase
