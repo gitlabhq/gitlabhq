@@ -1,4 +1,4 @@
 ---
-title: Drop default ORDER scope when calling a find method on a Sortable model
+title: Improve performance of lookups of issues, merge requests etc by dropping unnecessary ORDER BY clause
 merge_request:
 author:
