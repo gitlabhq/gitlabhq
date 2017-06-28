@@ -1,4 +1,4 @@
-# Issue board
+# Issue Board
 
 >**Notes:**
 - [Introduced][ce-5554] in GitLab 8.11.
@@ -21,6 +21,42 @@ leverages the power of [labels] by utilizing them as lists of the scrum board.
 With the Issue Board you can have a different view of your issues while also
 maintaining the same filtering and sorting abilities you see across the
 issue tracker.
+
+With [Multiple Issue Boards](#multiple-issue-boards), available only in [GitLab
+Enterprise Edition](https://about.gitlab.com/gitlab-ee/), your workflow gets
+empowered with the ability to create multiple boards per project.
+
+## Use-cases
+
+GitLab Workflow allows you to discuss proposals in issues, categorize them
+with labels, and and from there organize and prioritize them in Issue Boards.
+
+- For example, let's consider this simplified development workflow:
+you have a repository hosting your app's codebase
+and your team actively contributing to code. Your backend team starts working a new
+implementation, gathers feedback and approval, and pass it to frontend.
+From there, when frontend is complete, the new feature
+is deployed to staging to be tested. When successful, it goes to production. If we have
+the labels "backend", "frontend", "staging", and "production", and an Issue Board with
+a list for each, we can:
+  - Visualize the entire flow of implementations since the
+beginning of the dev lifecycle until deployed to production
+  - Prioritize the issues in a list by moving them vertically
+  - Move issues between lists to organize them according to the labels you've set
+
+To enhance the workflow exemplified above, with [Multiple Issue Boards](#multiple-issue-boards),
+available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
+each team (frontend and backend) can have their own boards to organize their flow among the
+members of their teams. For that, we could have, therefore, three Issue Boards for this case:
+
+  - **Backend**, for the backend team and their own labels and workflow
+  - **Frontend**, same as above, for the frontend team
+  - **Deployment**, for the entire process (backend > frontend > staging > production)
+
+For a broader use-case, please check the blog post
+[GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+
+## Issue Board terminology
 
 Below is a table of the definitions used for GitLab's Issue Board.
 
@@ -57,7 +93,7 @@ In short, here's a list of actions you can take in an Issue Board:
 If you are not able to perform one or more of the things above, make sure you
 have the right [permissions](#permissions).
 
-## First time using the issue board
+## First time using the Issue Board
 
 The first time you navigate to your Issue Board, you will be presented with
 a default list (**Done**) and a welcoming message that gives
@@ -98,7 +134,7 @@ list view that is removed. You can always add it back later if you need.
 ## Adding issues to a list
 
 You can add issues to a list by clicking the **Add issues** button that is
-present in the upper right corner of the issue board. This will open up a modal
+present in the upper right corner of the Issue Board. This will open up a modal
 window where you can see all the issues that do not belong to any list.
 
 Select one or more issues by clicking on the cards and then click **Add issues**
