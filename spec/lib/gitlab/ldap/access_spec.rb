@@ -37,6 +37,12 @@ describe Gitlab::LDAP::Access, lib: true do
 
         access.allowed?
       end
+
+      context 'when looking for a user by email' do
+        let(:user) { create(:omniauth_user, external_email: true) }
+
+        it { is_expected.to be_falsey }
+      end
     end
 
     context 'when the user is found' do

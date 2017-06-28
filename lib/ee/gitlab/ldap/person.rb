@@ -12,6 +12,8 @@ module EE
               found_user = adapter.user(possible_attribute, email)
               return found_user if found_user
             end
+
+            nil
           end
         end
 
