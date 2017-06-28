@@ -348,7 +348,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
     context 'where repo has submodules' do
-      let(:submodules) { repository.submodules('master') }
+      let(:submodules) { repository.send(:submodules, 'master') }
       let(:submodule) { submodules.first }
 
       it { expect(submodules).to be_kind_of Hash }
@@ -383,12 +383,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it 'should not have an entry for an uncommited submodule dir' do
-        submodules = repository.submodules('fix-existing-submodule-dir')
+        submodules = repository.send(:submodules, 'fix-existing-submodule-dir')
         expect(submodules).not_to have_key('submodule-existing-dir')
       end
 
       it 'should handle tags correctly' do
-        submodules = repository.submodules('v1.2.1')
+        submodules = repository.send(:submodules, 'v1.2.1')
 
         expect(submodules.first).to eq([
           "six", {
@@ -414,7 +414,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context 'where repo doesn\'t have submodules' do
-      let(:submodules) { repository.submodules('6d39438') }
+      let(:submodules) { repository.send(:submodules, '6d39438') }
       it 'should return an empty hash' do
         expect(submodules).to be_empty
       end
