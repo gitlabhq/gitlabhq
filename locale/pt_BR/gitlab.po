@@ -1,4 +1,6 @@
+# Alexandre Alencar <alexandre.alencar@gmail.com>, 2017. #zanata
 # Fabio Beneditto <fabiobeneditto@gmail.com>, 2017. #zanata
+# Leandro Nunes dos Santos <leandronunes@gmail.com>, 2017. #zanata
 # Huang Tao <htve@outlook.com>, 2017. #zanata
 msgid ""
 msgstr ""
