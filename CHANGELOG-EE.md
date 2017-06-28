@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.1 (2017-06-26)
+
+- Geo: fix removal of repositories from disk on secondary nodes. !2210
+- Fix Geo middleware to work properly with multiple requests.
+
 ## 9.3.0 (2017-06-22)
 
 - Per user/group access levels for Protected Tags. !1629
