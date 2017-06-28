@@ -28,17 +28,16 @@ class AccessTokenValidationService
   end
 
   # True if the token's scope contains any of the passed scopes.
-  def include_any_scope?(scopes)
-    if scopes.blank?
+  def include_any_scope?(required_scopes)
+    if required_scopes.blank?
       true
     else
-      # Remove any scopes whose `if` condition does not return `true`
-      scopes = scopes.select { |scope| scope.if.nil? || scope.if.call(request) }
-
-      # Check whether the token is allowed access to any of the required scopes.
-      passed_scope_names = scopes.map { |scope| scope.name.to_sym }
-      token_scope_names = token.scopes.map(&:to_sym)
-      Set.new(passed_scope_names).intersection(Set.new(token_scope_names)).present?
+      # We're comparing each required_scope against all token scopes, which would
+      # take quadratic time. This consideration is irrelevant here because of the
+      # small number of records involved.
+      # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12300/#note_33689006
+      token_scopes = token.scopes.map(&:to_sym)
+      required_scopes.any? { |scope| scope.sufficient?(token_scopes, request) }
     end
   end
 end

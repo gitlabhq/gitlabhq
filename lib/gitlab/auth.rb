@@ -136,11 +136,11 @@ module Gitlab
       end
 
       def valid_oauth_token?(token)
-        token && token.accessible? && valid_scoped_token?(token, ['api'])
+        token && token.accessible? && valid_scoped_token?(token, [:api])
       end
 
       def valid_scoped_token?(token, scopes)
-        scopes = scopes.map { |scope| OpenStruct.new(name: scope) }
+        scopes = scopes.map { |scope| API::Scope.new(scope) }
         AccessTokenValidationService.new(token).include_any_scope?(scopes)
       end
 

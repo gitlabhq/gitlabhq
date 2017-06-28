@@ -31,7 +31,7 @@ module API
       # the scopes are all aggregated.
       def allow_access_with_scope(scopes, options = {})
         Array(scopes).each do |scope|
-          allowed_scopes << OpenStruct.new(name: scope.to_sym, if: options[:if])
+          allowed_scopes << Scope.new(scope, options)
         end
       end
 
