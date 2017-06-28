@@ -194,3 +194,7 @@ bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
 Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While the sudo commands provided by gitlabhq work in Ubuntu they do not always work in RHEL.
+
+## GitLab.com
+
+We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.
