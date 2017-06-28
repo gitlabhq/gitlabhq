@@ -1,9 +1,9 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
-  before_action :schedule, only: [:edit, :update, :destroy, :take_ownership]
+  before_action :schedule, except: [:index, :new, :create]
 
   before_action :authorize_read_pipeline_schedule!
   before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
-  before_action :authorize_update_pipeline_schedule!, only: [:edit, :take_ownership, :update]
+  before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
 
   def index
