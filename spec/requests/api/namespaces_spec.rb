@@ -51,7 +51,7 @@ describe API::Namespaces do
     end
 
     context "when authenticated as a regular user" do
-      it "returns members_count_with_descendants if user can admin group" do
+      it "returns correct attributes when user can admin group" do
         group1.add_owner(user)
 
         get api("/namespaces", user)
@@ -62,7 +62,7 @@ describe API::Namespaces do
                                                              'parent_id', 'members_count_with_descendants')
       end
 
-      it "does not returns members_count_with_descendants if user cannot admin group" do
+      it "returns correct attributes when user cannot admin group" do
         group1.add_guest(user)
 
         get api("/namespaces", user)
