@@ -15,9 +15,10 @@ class MigrateStageIdReferenceInBackground < ActiveRecord::Migration
     Build.where(stage_id: nil)
       .find_in_batches(batch_size: BATCH_SIZE)
       .with_index do |builds, batch|
-        migrations = builds.map { |build| [MIGRATION, [build.id]] }
-
-        BackgroundMigrationWorker.perform_bulk(*migrations)
+        builds.each do |build|
+          schedule = (batch - 1) * 5.minutes
+          BackgroundMigrationWorker.perform_at(schedule, MIGRATION, [build.id])
+        end
       end
   end
 

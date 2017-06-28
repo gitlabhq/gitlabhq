@@ -1,7 +1,37 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170628080858_migrate_stage_id_reference_in_background')
 
-describe MigrateStageIdReferenceInBackground, :migration, :redis do
+RSpec::Matchers.define :have_migrated do |*expected|
+  match do |migration|
+    BackgroundMigrationWorker.jobs.any? do |job|
+      job['enqueued_at'].present? && job['args'] == [migration, expected]
+    end
+  end
+
+  failure_message do |migration|
+    <<-EOS
+      Background migration `#{migration}` with args `#{expected.inspect}`
+      not migrated!
+    EOS
+  end
+end
+
+RSpec::Matchers.define :have_scheduled_migration do |time, *expected|
+  match do |migration|
+    BackgroundMigrationWorker.jobs.any? do |job|
+      job['args'] == [migration, expected] && job['at'] >= time
+    end
+  end
+
+  failure_message do |migration|
+    <<-EOS
+      Background migration `#{migration}` with args `#{expected.inspect}`
+      not scheduled!
+    EOS
+  end
+end
+
+describe MigrateStageIdReferenceInBackground, :migration do
   let(:jobs) { table(:ci_builds) }
   let(:stages) { table(:ci_stages) }
   let(:pipelines) { table(:ci_pipelines) }
@@ -23,11 +53,24 @@ describe MigrateStageIdReferenceInBackground, :migration, :redis do
     stages.create(id: 103, pipeline_id: 1, project_id: 123, name: 'deploy')
   end
 
+  it 'correctly schedules background migrations' do
+    Sidekiq::Testing.fake! do
+      migrate!
+
+      expect(described_class::MIGRATION).to have_migrated(1)
+      expect(described_class::MIGRATION).to have_migrated(2)
+      expect(described_class::MIGRATION).to have_scheduled_migration(5.minutes, 3)
+      expect(described_class::MIGRATION).to have_scheduled_migration(5.minutes, 4)
+    end
+  end
+
   it 'schedules background migrations' do
-    expect(jobs.where(stage_id: nil)).to be_present
+    Sidekiq::Testing.inline! do
+      expect(jobs.where(stage_id: nil)).to be_present
 
-    migrate!
+      migrate!
 
-    expect(jobs.where(stage_id: nil)).to be_empty
+      expect(jobs.where(stage_id: nil)).to be_empty
+    end
   end
 end
