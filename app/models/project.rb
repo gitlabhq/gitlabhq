@@ -1095,6 +1095,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def ensure_repository
+    create_repository unless repository_exists?
+  end
+
   def repository_exists?
     !!repository.exists?
   end
