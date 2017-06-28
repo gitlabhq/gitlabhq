@@ -61,7 +61,7 @@ describe API::Namespaces do
         owned_group_response = json_response.find { |resource| resource['id'] == group1.id }
 
         expect(owned_group_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
-                                                             'parent_id', 'members_count_with_descendants')
+                                                             'plan', 'parent_id', 'members_count_with_descendants')
       end
 
       it "returns correct attributes when user cannot admin group" do

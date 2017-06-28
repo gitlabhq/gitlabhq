@@ -38,7 +38,8 @@ Example response:
     "kind": "group"
     "full_path": "group1",
     "parent_id": "null",
-    "members_count_with_descendants": 2
+    "members_count_with_descendants": 2,
+    "plan": "bronze"
   },
   {
     "id": 3,
@@ -51,7 +52,7 @@ Example response:
 ]
 ```
 
-**Note**: `members_count_with_descendants` are presented only for group masters/owners.
+**Note**: `members_count_with_descendants` and `plan` are presented only for group masters/owners.
 
 ## Search for namespace
 
