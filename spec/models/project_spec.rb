@@ -1761,11 +1761,11 @@ describe Project, models: true do
     let(:project) { create(:empty_project) }
 
     let!(:secret_variable) do
-      create(:ci_variable, value: 'secret', project: project)
+      create(:ci_project_variable, value: 'secret', project: project)
     end
 
     let!(:protected_variable) do
-      create(:ci_variable, :protected, value: 'protected', project: project)
+      create(:ci_project_variable, :protected, value: 'protected', project: project)
     end
 
     subject { project.secret_variables_for('ref') }

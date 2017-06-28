@@ -11,7 +11,7 @@ describe Ci::ProjectVariable, models: true do
 
     context 'when variable is protected' do
       before do
-        create(:ci_variable, :protected)
+        create(:ci_project_variable, :protected)
       end
 
       it 'returns nothing' do
@@ -20,7 +20,7 @@ describe Ci::ProjectVariable, models: true do
     end
 
     context 'when variable is not protected' do
-      let(:variable) { create(:ci_variable, protected: false) }
+      let(:variable) { create(:ci_project_variable, protected: false) }
 
       it 'returns the variable' do
         is_expected.to contain_exactly(variable)

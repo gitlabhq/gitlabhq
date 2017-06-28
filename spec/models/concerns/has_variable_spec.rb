@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe HasVariable do
-  subject { build(:ci_variable) }
+  subject { build(:ci_project_variable) }
 
   it { is_expected.to validate_presence_of(:key) }
   it { is_expected.to validate_length_of(:key).is_at_most(255) }

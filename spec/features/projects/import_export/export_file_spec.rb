@@ -16,7 +16,7 @@ feature 'Import/Export - project export integration test', feature: true, js: tr
   let(:safe_list) do
     {
       token: [ProjectHook, Ci::Trigger, CommitStatus],
-      key: [Project, Ci::Variable, :yaml_variables]
+      key: [Project, Ci::ProjectVariable, :yaml_variables]
     }
   end
   let(:safe_hashes) { { yaml_variables: %w[key value public] } }
