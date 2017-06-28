@@ -7,9 +7,6 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
   class ApplicationSetting < ActiveRecord::Base
     self.table_name = 'application_settings'
   end
-  class Key < ActiveRecord::Base
-    self.table_name = 'keys'
-  end
 
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
@@ -97,19 +94,7 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
   end
 
   def update_authorized_keys_file_since(cutoff_datetime)
-    add_keys_since(cutoff_datetime)
-
-    remove_keys_not_found_in_db
-  end
-
-  def add_keys_since(cutoff_datetime)
-    start_key = Key.select(:id).where("created_at >= ?", cutoff_datetime).take
-    if start_key
-      GitlabShellWorker.perform_async(:batch_add_keys_in_db_starting_from, start_key.id)
-    end
-  end
-
-  def remove_keys_not_found_in_db
-    GitlabShellWorker.perform_async(:remove_keys_not_found_in_db)
+    job = ['UpdateAuthorizedKeysFileSince', [cutoff_datetime]]
+    BackgroundMigrationWorker.perform_bulk(job)
   end
 end
