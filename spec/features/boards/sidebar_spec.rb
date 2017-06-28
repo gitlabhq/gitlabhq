@@ -17,9 +17,9 @@ describe 'Issue Boards', feature: true, js: true do
 
   before do
     Timecop.freeze
+    TestLicense.destroy!
 
     project.team << [user, :master]
-    project.team.add_developer(user2)
 
     gitlab_sign_in(user)
 
@@ -117,26 +117,6 @@ describe 'Issue Boards', feature: true, js: true do
       expect(card).to have_selector('.avatar')
     end
 
-    it 'adds multiple assignees' do
-      click_card(card)
-
-      page.within('.assignee') do
-        click_link 'Edit'
-
-        wait_for_requests
-
-        page.within('.dropdown-menu-user') do
-          click_link user.name
-          click_link user2.name
-        end
-
-        expect(page).to have_content(user.name)
-        expect(page).to have_content(user2.name)
-      end
-
-      expect(card.all('.avatar').length).to eq(2)
-    end
-
     it 'removes the assignee' do
       card_two = find('.board:nth-child(2)').find('.card:nth-child(2)')
       click_card(card_two)
@@ -149,8 +129,6 @@ describe 'Issue Boards', feature: true, js: true do
         page.within('.dropdown-menu-user') do
           click_link 'Unassigned'
         end
-
-        find('.dropdown-menu-toggle').click
 
         wait_for_requests
 
