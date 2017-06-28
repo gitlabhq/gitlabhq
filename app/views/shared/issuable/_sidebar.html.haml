@@ -115,7 +115,7 @@
                 - if can? current_user, :admin_label, @project and @project
                   = render partial: "shared/issuable/label_page_create"
 
-      - if issuable.respond_to?(:weight)
+      - if issuable.supports_weight?
         .block.weight
           .sidebar-collapsed-icon
             = icon('balance-scale')

@@ -313,7 +313,7 @@ module API
       expose :upvotes, :downvotes
       expose :due_date
       expose :confidential
-      expose :weight
+      expose :weight, if: ->(issue, _) { issue.supports_weight? }
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)

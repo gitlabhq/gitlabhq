@@ -50,5 +50,9 @@ module EE
       super && project.feature_available?(:merge_request_squash)
     end
     alias_method :squash?, :squash
+
+    def supports_weight?
+      false
+    end
   end
 end
