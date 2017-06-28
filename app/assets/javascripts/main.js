@@ -164,14 +164,6 @@ import './visibility_select';
 import './wikis';
 import './zen_mode';
 
-// set url root for webpack async chunks (assumes config.output.publicPath is an absolute path)
-if (gon && gon.relative_url_root) {
-  const basePath = gon.relative_url_root.replace(/\/$/, '');
-
-  // eslint-disable-next-line camelcase, no-undef
-  __webpack_public_path__ = basePath + __webpack_public_path__;
-}
-
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
