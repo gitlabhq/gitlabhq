@@ -56,11 +56,11 @@ The snippet should look like this:
 
 ```xml
 <distributionManagement>
-    <repository>
-        <id>central</id>
-        <name>83d43b5afeb5-releases</name>
-        <url>${repoUrl}/libs-release-local</url>
-    </repository>
+  <repository>
+    <id>central</id>
+    <name>83d43b5afeb5-releases</name>
+    <url>${repoUrl}/libs-release-local</url>
+  </repository>
 </distributionManagement>
 ```
 
@@ -132,7 +132,7 @@ deploy:
 
 We're going to use the latest Docker image publicly available for Maven, which already contains everything we need to perform our tasks. Environment variables are set to instruct Maven to use the homedir of our repo instead of the user's home. Caching the `.m2` folder, where all the Maven files are stored, and the `target` folder, that is the location where our application will be created, is useful in order to speed up the process: Maven runs all its phases in a sequential order, so executing `mvn test` will automatically run `mvn compile` if needed, but we want to improve performances by caching everything that has been already created in a previous stage. Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the repository.
 
-Deployment copies the configuration file in the proper location, and then deploys to Artifactory as defined by the secret variables we set up earlier. The deployment occurs only if we're pushing or merging to `master` branch, so development versions are tested but not published.
+Deploy to Artifactory is done as defined by the secret variables we set up earlier. The deployment occurs only if we're pushing or merging to `master` branch, so development versions are tested but not published.
 
 Done! We've now our changes in the GitLab repo, and a pipeline has already been started for this commit. Let's go to the **Pipelines** tab and see what happens.
 If we've no errors, we can see some text like this at the end of the `deploy` job output log:
@@ -145,7 +145,7 @@ If we've no errors, we can see some text like this at the end of the `deploy` jo
 
 ```
 
-**Note**: the `mvn` command downloads a lot of files from the Internet, so you'll see a lot of extra activity in the log.
+**Note**: the `mvn` command downloads a lot of files from the Internet, so you'll see a lot of extra activity in the log the first time you run it.
 
 Wow! We did it! Checking in Artifactory will confirm that we've a new artifact available in the `libs-release-local` repo.
 
@@ -163,9 +163,9 @@ Let's go back to Artifactory, and browse the `libs-release-local` repository sel
 
 ```xml
 <dependency>
-    <groupId>com.example.dep</groupId>
-    <artifactId>simple-maven-dep</artifactId>
-    <version>1.0</version>
+  <groupId>com.example.dep</groupId>
+  <artifactId>simple-maven-dep</artifactId>
+  <version>1.0</version>
 </dependency>
 ```
 
