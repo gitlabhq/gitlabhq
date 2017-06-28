@@ -75,6 +75,24 @@ describe SystemCheck::SimpleExecutor, lib: true do
     end
   end
 
+  class BugousCheck < SystemCheck::BaseCheck
+    CustomError = Class.new(StandardError)
+    set_name 'my bugous check'
+
+    def check?
+      raise CustomError, 'omg'
+    end
+  end
+
+  before do
+    @rainbow = Rainbow.enabled
+    Rainbow.enabled = false
+  end
+
+  after do
+    Rainbow.enabled = @rainbow
+  end
+
   describe '#component' do
     it 'returns stored component name' do
       expect(subject.component).to eq('Test')
@@ -217,6 +235,12 @@ describe SystemCheck::SimpleExecutor, lib: true do
 
           subject.run_check(SkipMultiCheck)
         end
+      end
+    end
+
+    context 'when there is an exception' do
+      it 'rescues the exception' do
+        expect{ subject.run_check(BugousCheck) }.not_to raise_exception
       end
     end
   end
