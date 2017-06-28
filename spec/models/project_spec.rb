@@ -1509,6 +1509,40 @@ describe Project, models: true do
     end
   end
 
+  describe 'project import state transitions' do
+    context 'state transition: [:started] => [:finished]' do
+      let(:housekeeping_service) { spy }
+
+      before do
+        allow(Projects::HousekeepingService).to receive(:new) { housekeeping_service }
+      end
+
+      it 'performs housekeeping when an import of a fresh project is completed' do
+        project = create(:project_empty_repo, :import_started, import_type: :github)
+
+        project.import_finish
+
+        expect(housekeeping_service).to have_received(:execute)
+      end
+
+      it 'does not perform housekeeping when project repository does not exist' do
+        project = create(:empty_project, :import_started, import_type: :github)
+
+        project.import_finish
+
+        expect(housekeeping_service).not_to have_received(:execute)
+      end
+
+      it 'does not perform housekeeping when project does not have a valid import type' do
+        project = create(:empty_project, :import_started, import_type: nil)
+
+        project.import_finish
+
+        expect(housekeeping_service).not_to have_received(:execute)
+      end
+    end
+  end
+
   describe '#latest_successful_builds_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
