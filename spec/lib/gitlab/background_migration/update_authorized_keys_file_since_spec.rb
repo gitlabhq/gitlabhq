@@ -89,8 +89,8 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
         file = File.read(Rails.root.join('tmp/tests/.ssh/authorized_keys'))
         expect(file.scan(/ssh-rsa/).count).to eq(7)
 
-        expect(file).to_not include(Gitlab::Shell.strip_key(@keys[0].key))
-        expect(file).to_not include(Gitlab::Shell.strip_key(@keys[2].key))
+        expect(file).not_to include(Gitlab::Shell.strip_key(@keys[0].key))
+        expect(file).not_to include(Gitlab::Shell.strip_key(@keys[2].key))
         expect(file).to include(Gitlab::Shell.strip_key(@keys[3].key))
         expect(file).to include(Gitlab::Shell.strip_key(@keys[9].key))
       end

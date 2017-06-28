@@ -9,6 +9,8 @@ module Gitlab
         end
       end
 
+      delegate :remove_keys_not_found_in_db, to: :gitlab_shell
+
       def perform(cutoff_datetime)
         add_keys_since(cutoff_datetime)
 
@@ -20,10 +22,6 @@ module Gitlab
         if start_key
           batch_add_keys_in_db_starting_from(start_key.id)
         end
-      end
-
-      def remove_keys_not_found_in_db
-        gitlab_shell.remove_keys_not_found_in_db
       end
 
       # Not added to Gitlab::Shell because I don't expect this to be used again

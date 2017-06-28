@@ -331,7 +331,7 @@ describe Gitlab::Shell, lib: true do
           end
         end
 
-        expect(ids).to eq(["1\n", "2\n", "3\n", "4\n"])
+        expect(ids).to eq(%W{1\n 2\n 3\n 4\n})
       end
     end
 
