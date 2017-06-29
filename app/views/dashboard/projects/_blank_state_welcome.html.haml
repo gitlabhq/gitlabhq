@@ -1,0 +1,40 @@
+- publicish_project_count = ProjectsFinder.new(current_user: current_user).execute.count
+.blank-state.blank-state-welcome
+  %h2.blank-state-welcome-title
+    Welcome to GitLab
+  %p.blank-state-text
+    Code, test, and deploy together
+
+.blank-state.clearfix
+  .col-md-3.blank-state-icon
+    = custom_icon("add_new_user", size: 50)
+  .col-md-9.blank-state-body
+    %h3.blank-state-title
+      Add user
+    %p.blank-state-text
+      Add your team members and others to GitLab.
+    = link_to new_admin_user_path, class: "btn btn-new" do
+      New user
+
+.blank-state.clearfix
+  .col-md-3.blank-state-icon
+    = custom_icon("configure_server", size: 50)
+  .col-md-9.blank-state-body
+    %h3.blank-state-title
+      Configure your server
+    %p.blank-state-text
+      Make adjustments to how your GitLab server is setup.
+    = link_to new_group_path, class: "btn btn-new" do
+      Configure server
+
+- if current_user.can_create_group?
+  .blank-state.clearfix
+    .col-md-3.blank-state-icon
+      = custom_icon("add_new_group", size: 50)
+    .col-md-9.blank-state-body
+      %h3.blank-state-title
+        Create a group
+      %p.blank-state-text
+        Groups are a great way to organise projects and people.
+      = link_to new_group_path, class: "btn btn-new" do
+        New group
