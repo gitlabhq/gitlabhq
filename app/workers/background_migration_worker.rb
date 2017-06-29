@@ -14,7 +14,7 @@ class BackgroundMigrationWorker
                               'args' => jobs)
   end
 
-  # Schedules a number of jobs in bulk, with a delay.
+  # Schedules multiple jobs in bulk, with a delay.
   #
   def self.perform_bulk_in(delay, jobs)
     now = Time.now.to_f

@@ -15,7 +15,7 @@ module ActiveRecord
       relation = relation.where(arel_table[primary_key].lteq(finish)) if finish
       batch_relation = relation
 
-      loop do
+      1.step do |index|
         if load
           records = batch_relation.records
           ids = records.map(&:id)
@@ -31,7 +31,7 @@ module ActiveRecord
         primary_key_offset = ids.last
         raise ArgumentError.new("Primary key not included in the custom select clause") unless primary_key_offset
 
-        yield yielded_relation
+        yield yielded_relation, index
 
         break if ids.length < of
         batch_relation = relation.where(arel_table[primary_key].gt(primary_key_offset))
