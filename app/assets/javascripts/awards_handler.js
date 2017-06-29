@@ -2,11 +2,7 @@
 /* global Flash */
 
 import Cookies from 'js-cookie';
-
-import emojiMap from 'emojis/digests.json';
-import emojiAliases from 'emojis/aliases.json';
-import { glEmojiTag } from './behaviors/gl_emoji';
-import isEmojiNameValid from './behaviors/gl_emoji/is_emoji_name_valid';
+import * as Emoji from './emoji';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -16,8 +12,6 @@ const requestAnimationFrame = window.requestAnimationFrame ||
   window.setTimeout;
 
 const FROM_SENTENCE_REGEX = /(?:, and | and |, )/; // For separating lists produced by ruby's Array#toSentence
-
-let categoryMap = null;
 
 const categoryLabelMap = {
   activity: 'Activity',
@@ -30,26 +24,6 @@ const categoryLabelMap = {
   flags: 'Flags',
 };
 
-function buildCategoryMap() {
-  return Object.keys(emojiMap).reduce((currentCategoryMap, emojiNameKey) => {
-    const emojiInfo = emojiMap[emojiNameKey];
-    if (currentCategoryMap[emojiInfo.category]) {
-      currentCategoryMap[emojiInfo.category].push(emojiNameKey);
-    }
-
-    return currentCategoryMap;
-  }, {
-    activity: [],
-    people: [],
-    nature: [],
-    food: [],
-    travel: [],
-    objects: [],
-    symbols: [],
-    flags: [],
-  });
-}
-
 function renderCategory(name, emojiList, opts = {}) {
   return `
     <h5 class="emoji-menu-title">
@@ -59,7 +33,7 @@ function renderCategory(name, emojiList, opts = {}) {
       ${emojiList.map(emojiName => `
         <li class="emoji-menu-list-item">
           <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
-            ${glEmojiTag(emojiName, {
+            ${Emoji.glEmojiTag(emojiName, {
               sprite: true,
             })}
           </button>
@@ -72,7 +46,6 @@ function renderCategory(name, emojiList, opts = {}) {
 export default class AwardsHandler {
   constructor() {
     this.eventListeners = [];
-    this.aliases = emojiAliases;
     // If the user shows intent let's pre-build the menu
     this.registerEventListener('one', $(document), 'mouseenter focus', '.js-add-award', 'mouseenter focus', () => {
       const $menu = $('.emoji-menu');
@@ -81,8 +54,6 @@ export default class AwardsHandler {
           this.createEmojiMenu();
         });
       }
-      // Prebuild the categoryMap
-      categoryMap = categoryMap || buildCategoryMap();
     });
     this.registerEventListener('on', $(document), 'click', '.js-add-award', (e) => {
       e.stopPropagation();
@@ -168,7 +139,7 @@ export default class AwardsHandler {
     this.isCreatingEmojiMenu = true;
 
     // Render the first category
-    categoryMap = categoryMap || buildCategoryMap();
+    const categoryMap = Emoji.getEmojiCategoryMap();
     const categoryNameKey = Object.keys(categoryMap)[0];
     const emojisInCategory = categoryMap[categoryNameKey];
     const firstCategory = renderCategory(categoryLabelMap[categoryNameKey], emojisInCategory);
@@ -208,7 +179,7 @@ export default class AwardsHandler {
     }
     this.isAddingRemainingEmojiMenuCategories = true;
 
-    categoryMap = categoryMap || buildCategoryMap();
+    const categoryMap = Emoji.getEmojiCategoryMap();
 
     // Avoid the jank and render the remaining categories separately
     // This will take more time, but makes UI more responsive
@@ -262,14 +233,8 @@ export default class AwardsHandler {
     return $menu.css(css);
   }
 
-  addAward(
-    votesBlock,
-    awardUrl,
-    emoji,
-    checkMutuality,
-    callback,
-  ) {
-    const normalizedEmoji = this.normalizeEmojiName(emoji);
+  addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
+    const normalizedEmoji = Emoji.normalizeEmojiName(emoji);
     const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
     this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
       this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
@@ -279,16 +244,12 @@ export default class AwardsHandler {
     $('.js-add-award.is-active').removeClass('is-active');
   }
 
-  addAwardToEmojiBar(
-    votesBlock,
-    emoji,
-    checkForMutuality,
-  ) {
+  addAwardToEmojiBar(votesBlock, emoji, checkForMutuality) {
     if (checkForMutuality || checkForMutuality === null) {
       this.checkMutuality(votesBlock, emoji);
     }
     this.addEmojiToFrequentlyUsedList(emoji);
-    const normalizedEmoji = this.normalizeEmojiName(emoji);
+    const normalizedEmoji = Emoji.normalizeEmojiName(emoji);
     const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
     if ($emojiButton.length > 0) {
       if (this.isActive($emojiButton)) {
@@ -413,7 +374,7 @@ export default class AwardsHandler {
   createAwardButtonForVotesBlock(votesBlock, emojiName) {
     const buttonHtml = `
       <button class="btn award-control js-emoji-btn has-tooltip active" title="You" data-placement="bottom">
-        ${glEmojiTag(emojiName)}
+        ${Emoji.glEmojiTag(emojiName)}
         <span class="award-control-text js-counter">1</span>
       </button>
     `;
@@ -478,12 +439,8 @@ export default class AwardsHandler {
     return $('body, html').animate(options, 200);
   }
 
-  normalizeEmojiName(emoji) {
-    return Object.prototype.hasOwnProperty.call(this.aliases, emoji) ? this.aliases[emoji] : emoji;
-  }
-
   addEmojiToFrequentlyUsedList(emoji) {
-    if (isEmojiNameValid(emoji)) {
+    if (Emoji.isEmojiNameValid(emoji)) {
       this.frequentlyUsedEmojis = _.uniq(this.getFrequentlyUsedEmojis().concat(emoji));
       Cookies.set('frequently_used_emojis', this.frequentlyUsedEmojis.join(','), { expires: 365 });
     }
@@ -493,7 +450,7 @@ export default class AwardsHandler {
     return this.frequentlyUsedEmojis || (() => {
       const frequentlyUsedEmojis = _.uniq((Cookies.get('frequently_used_emojis') || '').split(','));
       this.frequentlyUsedEmojis = frequentlyUsedEmojis.filter(
-        inputName => isEmojiNameValid(inputName),
+        inputName => Emoji.isEmojiNameValid(inputName),
       );
 
       return this.frequentlyUsedEmojis;
@@ -535,21 +492,11 @@ export default class AwardsHandler {
     }
   }
 
-  findMatchingEmojiElements(term) {
-    const safeTerm = term.toLowerCase();
-
-    const namesMatchingAlias = [];
-    Object.keys(emojiAliases).forEach((alias) => {
-      if (alias.indexOf(safeTerm) >= 0) {
-        namesMatchingAlias.push(emojiAliases[alias]);
-      }
-    });
-    const $matchingElements = namesMatchingAlias.concat(safeTerm)
-      .reduce(
-        ($result, searchTerm) =>
-          $result.add($(`.emoji-menu-list:not(.frequent-emojis) [data-name*="${searchTerm}"]`)),
-        $([]),
-      );
+  findMatchingEmojiElements(query) {
+    const emojiMatches = Emoji.filterEmojiNamesByAlias(query);
+    const $emojiElements = $('.emoji-menu-list:not(.frequent-emojis) [data-name]');
+    const $matchingElements = $emojiElements
+      .filter((i, elm) => emojiMatches.indexOf(elm.dataset.name) >= 0);
     return $matchingElements.closest('li').clone();
   }
 

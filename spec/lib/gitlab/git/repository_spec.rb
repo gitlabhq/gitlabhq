@@ -26,6 +26,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
+    it 'returns UTF-8' do
+      expect(repository.root_ref.encoding).to eq(Encoding.find('UTF-8'))
+    end
+
     context 'with gitaly enabled' do
       before do
         stub_gitaly
@@ -123,6 +127,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it 'has SeedRepo::Repo::BRANCHES.size elements' do
       expect(subject.size).to eq(SeedRepo::Repo::BRANCHES.size)
     end
+
+    it 'returns UTF-8' do
+      expect(subject.first.encoding).to eq(Encoding.find('UTF-8'))
+    end
+
     it { is_expected.to include("master") }
     it { is_expected.not_to include("branch-from-space") }
 
@@ -158,8 +167,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.tag_names }
 
     it { is_expected.to be_kind_of Array }
+
     it 'has SeedRepo::Repo::TAGS.size elements' do
       expect(subject.size).to eq(SeedRepo::Repo::TAGS.size)
+    end
+
+    it 'returns UTF-8' do
+      expect(subject.first.encoding).to eq(Encoding.find('UTF-8'))
     end
 
     describe '#last' do
@@ -348,7 +362,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
     context 'where repo has submodules' do
-      let(:submodules) { repository.submodules('master') }
+      let(:submodules) { repository.send(:submodules, 'master') }
       let(:submodule) { submodules.first }
 
       it { expect(submodules).to be_kind_of Hash }
@@ -383,12 +397,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it 'should not have an entry for an uncommited submodule dir' do
-        submodules = repository.submodules('fix-existing-submodule-dir')
+        submodules = repository.send(:submodules, 'fix-existing-submodule-dir')
         expect(submodules).not_to have_key('submodule-existing-dir')
       end
 
       it 'should handle tags correctly' do
-        submodules = repository.submodules('v1.2.1')
+        submodules = repository.send(:submodules, 'v1.2.1')
 
         expect(submodules.first).to eq([
           "six", {
@@ -414,7 +428,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context 'where repo doesn\'t have submodules' do
-      let(:submodules) { repository.submodules('6d39438') }
+      let(:submodules) { repository.send(:submodules, '6d39438') }
       it 'should return an empty hash' do
         expect(submodules).to be_empty
       end
@@ -1101,35 +1115,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#find_commits' do
-    it 'should return a return a collection of commits' do
-      commits = repository.find_commits
-
-      expect(commits).not_to be_empty
-      expect(commits).to all( be_a_kind_of(Gitlab::Git::Commit) )
-    end
-
-    context 'while applying a sort order based on the `order` option' do
-      it "allows ordering topologically (no parents shown before their children)" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_TOPO)
-
-        repository.find_commits(order: :topo)
-      end
-
-      it "allows ordering by date" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE | Rugged::SORT_TOPO)
-
-        repository.find_commits(order: :date)
-      end
-
-      it "applies no sorting by default" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_NONE)
-
-        repository.find_commits
-      end
-    end
-  end
-
   describe '#branches with deleted branch' do
     before(:each) do
       ref = double()
@@ -1303,6 +1288,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       after do
         Gitlab::GitalyClient.clear_stubs!
+      end
+
+      it 'returns a Branch with UTF-8 fields' do
+        branches = @repo.local_branches.to_a
+        expect(branches.size).to be > 0
+        utf_8 = Encoding.find('utf-8')
+        branches.each do |branch|
+          expect(branch.name.encoding).to eq(utf_8)
+          expect(branch.target.encoding).to eq(utf_8) unless branch.target.nil?
+        end
       end
 
       it 'gets the branches from GitalyClient' do

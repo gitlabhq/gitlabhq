@@ -45,6 +45,7 @@ class Environment < ActiveRecord::Base
       .to_sql
     order(Gitlab::Database.nulls_first_order("(#{max_deployment_id_sql})", 'ASC'))
   end
+  scope :in_review_folder, -> { where(environment_type: "review") }
 
   state_machine :state, initial: :available do
     event :start do

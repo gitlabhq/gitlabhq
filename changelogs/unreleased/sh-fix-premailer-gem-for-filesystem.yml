@@ -1,5 +1,0 @@
----
-title: Bump premailer-rails gem to 1.9.7 and its dependencies to prevent network retrieval
-  of assets
-merge_request:
-author:

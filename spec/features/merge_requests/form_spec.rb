@@ -23,7 +23,7 @@ describe 'New/edit merge request', feature: true, js: true do
 
     context 'new merge request' do
       before do
-        visit new_namespace_project_merge_request_path(
+        visit namespace_project_new_merge_request_path(
           project.namespace,
           project,
           merge_request: {
@@ -182,7 +182,7 @@ describe 'New/edit merge request', feature: true, js: true do
 
     context 'new merge request' do
       before do
-        visit new_namespace_project_merge_request_path(
+        visit namespace_project_new_merge_request_path(
           fork_project.namespace,
           fork_project,
           merge_request: {
