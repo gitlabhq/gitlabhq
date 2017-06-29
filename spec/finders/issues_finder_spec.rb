@@ -295,7 +295,7 @@ describe IssuesFinder do
     end
   end
 
-  describe '#not_restricted_by_confidentiality' do
+  describe '#with_confidentiality_access_check' do
     let(:guest) { create(:user) }
     set(:authorized_user) { create(:user) }
     set(:project) { create(:empty_project, namespace: authorized_user.namespace) }
@@ -306,7 +306,7 @@ describe IssuesFinder do
       let(:params) { {} }
 
       context 'for an anonymous user' do
-        subject { described_class.new(nil, params).not_restricted_by_confidentiality }
+        subject { described_class.new(nil, params).with_confidentiality_access_check }
 
         it 'returns only public issues' do
           expect(subject).to include(public_issue)
@@ -315,7 +315,7 @@ describe IssuesFinder do
       end
 
       context 'for a user without project membership' do
-        subject { described_class.new(user, params).not_restricted_by_confidentiality }
+        subject { described_class.new(user, params).with_confidentiality_access_check }
 
         it 'returns only public issues' do
           expect(subject).to include(public_issue)
@@ -324,7 +324,7 @@ describe IssuesFinder do
       end
 
       context 'for a guest user' do
-        subject { described_class.new(guest, params).not_restricted_by_confidentiality }
+        subject { described_class.new(guest, params).with_confidentiality_access_check }
 
         before do
           project.add_guest(guest)
@@ -337,7 +337,7 @@ describe IssuesFinder do
       end
 
       context 'for a project member with access to view confidential issues' do
-        subject { described_class.new(authorized_user, params).not_restricted_by_confidentiality }
+        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
 
         it 'returns all issues' do
           expect(subject).to include(public_issue, confidential_issue)
@@ -349,7 +349,7 @@ describe IssuesFinder do
       let(:params) { { project_id: project.id } }
 
       context 'for an anonymous user' do
-        subject { described_class.new(nil, params).not_restricted_by_confidentiality }
+        subject { described_class.new(nil, params).with_confidentiality_access_check }
 
         it 'returns only public issues' do
           expect(subject).to include(public_issue)
@@ -364,7 +364,7 @@ describe IssuesFinder do
       end
 
       context 'for a user without project membership' do
-        subject { described_class.new(user, params).not_restricted_by_confidentiality }
+        subject { described_class.new(user, params).with_confidentiality_access_check }
 
         it 'returns only public issues' do
           expect(subject).to include(public_issue)
@@ -379,7 +379,7 @@ describe IssuesFinder do
       end
 
       context 'for a guest user' do
-        subject { described_class.new(guest, params).not_restricted_by_confidentiality }
+        subject { described_class.new(guest, params).with_confidentiality_access_check }
 
         before do
           project.add_guest(guest)
@@ -398,7 +398,7 @@ describe IssuesFinder do
       end
 
       context 'for a project member with access to view confidential issues' do
-        subject { described_class.new(authorized_user, params).not_restricted_by_confidentiality }
+        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
 
         it 'returns all issues' do
           expect(subject).to include(public_issue, confidential_issue)
