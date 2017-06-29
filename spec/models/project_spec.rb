@@ -284,15 +284,6 @@ describe Project, models: true do
     end
   end
 
-  describe 'default_scope' do
-    it 'excludes projects pending deletion from the results' do
-      project = create(:empty_project)
-      create(:empty_project, pending_delete: true)
-
-      expect(Project.all).to eq [project]
-    end
-  end
-
   describe 'project token' do
     it 'sets an random token if none provided' do
       project = FactoryGirl.create :empty_project, runners_token: ''

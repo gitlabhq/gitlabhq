@@ -47,6 +47,8 @@ class Namespace < ActiveRecord::Base
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
+  default_scope { with_deleted }
+
   scope :for_user, -> { where('type IS NULL') }
 
   scope :with_statistics, -> do
