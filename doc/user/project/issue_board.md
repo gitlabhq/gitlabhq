@@ -66,13 +66,13 @@ members of their teams. For that, we could have, therefore, three Issue Boards f
 ### Boards for Milestones
 
 From the use-cases above, let's assume that you have now created a milestone per release for
-your app. You can create a milestone exclusive for each release, and associate it with a board.
+your app. You can create a milestone exclusive for each release, and [associate it with a board](#board-with-a-milestone).
 Therefore, you'll have everything organized in a board per release.
 
-### Focus Mode
+### Using Focus Mode
 
 When you are organizing your issues through an Issue Board and want to avoid distractions,
-you can use the [Issue Board Forcus Mode](#focus-mode).
+you can use the [Issue Board Focus Mode](#focus-mode).
 
 ## Issue Board terminology
 
