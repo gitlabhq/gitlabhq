@@ -60,6 +60,8 @@ module Gitlab
       end
 
       def sort_by_param(sort_by)
+        sort_by = 'name' if sort_by == 'name_asc'
+
         enum_value = Gitaly::FindLocalBranchesRequest::SortBy.resolve(sort_by.upcase.to_sym)
         raise ArgumentError, "Invalid sort_by key `#{sort_by}`" unless enum_value
         enum_value
