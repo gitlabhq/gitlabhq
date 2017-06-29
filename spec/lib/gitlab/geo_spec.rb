@@ -121,6 +121,8 @@ describe Gitlab::Geo, lib: true do
   end
 
   describe '.configure_cron_jobs!' do
+    JOBS = %w(ldap_test geo_bulk_notify_worker geo_repository_sync_worker geo_file_download_dispatch_worker).freeze
+
     def init_cron_job(job_name, class_name)
       job = Sidekiq::Cron::Job.new(
         name: job_name,
@@ -132,8 +134,11 @@ describe Gitlab::Geo, lib: true do
     end
 
     before(:all) do
-      jobs = %w(ldap_test geo_bulk_notify_worker geo_repository_sync_worker geo_file_download_dispatch_worker)
-      jobs.each { |job| init_cron_job(job, job.camelize) }
+      JOBS.each { |job| init_cron_job(job, job.camelize) }
+    end
+
+    after(:all) do
+      JOBS.each { |job| Sidekiq::Cron::Job.find(job)&.destroy }
     end
 
     it 'activates cron jobs for primary' do
