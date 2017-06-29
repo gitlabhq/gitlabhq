@@ -28,7 +28,7 @@ feature 'issuable templates', feature: true, js: true do
         longtemplate_content,
         message: 'added issue template',
         branch_name: 'master')
-      visit edit_namespace_project_issue_path project.namespace, project, issue
+      visit edit_project_issue_path project, issue
       fill_in :'issue[title]', with: 'test issue title'
     end
 
@@ -81,7 +81,7 @@ feature 'issuable templates', feature: true, js: true do
         template_content,
         message: 'added issue template',
         branch_name: 'master')
-      visit edit_namespace_project_issue_path project.namespace, project, issue
+      visit edit_project_issue_path project, issue
       fill_in :'issue[title]', with: 'test issue title'
       fill_in :'issue[description]', with: prior_description
     end
@@ -105,7 +105,7 @@ feature 'issuable templates', feature: true, js: true do
         template_content,
         message: 'added merge request template',
         branch_name: 'master')
-      visit edit_namespace_project_merge_request_path project.namespace, project, merge_request
+      visit edit_project_merge_request_path project, merge_request
       fill_in :'merge_request[title]', with: 'test merge request title'
     end
 
@@ -135,7 +135,7 @@ feature 'issuable templates', feature: true, js: true do
         template_content,
         message: 'added merge request template',
         branch_name: 'master')
-      visit edit_namespace_project_merge_request_path project.namespace, project, merge_request
+      visit edit_project_merge_request_path project, merge_request
       fill_in :'merge_request[title]', with: 'test merge request title'
     end
 

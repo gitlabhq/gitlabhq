@@ -42,7 +42,7 @@ class Spinach::Features::ProjectGroupLinks < Spinach::FeatureSteps
   end
 
   step 'I visit project group links page' do
-    visit namespace_project_group_links_path(project.namespace, project)
+    visit project_group_links_path(project)
   end
 
   def project

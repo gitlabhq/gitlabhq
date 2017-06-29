@@ -20,8 +20,8 @@ module BuildsHelper
 
   def javascript_build_options
     {
-      page_url: namespace_project_job_url(@project.namespace, @project, @build),
-      build_url: namespace_project_job_url(@project.namespace, @project, @build, :json),
+      page_url: project_job_url(@project, @build),
+      build_url: project_job_url(@project, @build, :json),
       build_status: @build.status,
       build_stage: @build.stage,
       log_state: ''
@@ -31,7 +31,7 @@ module BuildsHelper
   def build_failed_issue_options
     {
       title: "Build Failed ##{@build.id}",
-      description: namespace_project_job_url(@project.namespace, @project, @build)
+      description: project_job_url(@project, @build)
     }
   end
 end

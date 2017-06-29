@@ -96,20 +96,13 @@ module Gitlab
         def target_url
           if @action == :push && commits
             if commits.length > 1
-              namespace_project_compare_url(project_namespace,
-                                            project,
-                                            from: compare.start_commit,
-                                            to:   compare.head_commit)
+              project_compare_url(project, from: compare.start_commit, to: compare.head_commit)
             else
-              namespace_project_commit_url(project_namespace,
-                                           project,
-                                           commits.first)
+              project_commit_url(project, commits.first)
             end
           else
             unless @action == :delete
-              namespace_project_tree_url(project_namespace,
-                                         project,
-                                         ref_name)
+              project_tree_url(project, ref_name)
             end
           end
         end

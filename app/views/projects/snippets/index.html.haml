@@ -7,13 +7,13 @@
 
     .nav-controls.hidden-xs
       - if can?(current_user, :create_project_snippet, @project)
-        = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "New snippet" do
+        = link_to new_project_snippet_path(@project), class: "btn btn-new", title: "New snippet" do
           New snippet
 
 - if can?(current_user, :create_project_snippet, @project)
   .visible-xs
     &nbsp;
-    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new btn-block", title: "New snippet" do
+    = link_to new_project_snippet_path(@project), class: "btn btn-new btn-block", title: "New snippet" do
       New snippet
 
 = render 'snippets/snippets'

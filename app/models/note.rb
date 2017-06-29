@@ -330,8 +330,7 @@ class Note < ActiveRecord::Base
   def expire_etag_cache
     return unless for_issue?
 
-    key = Gitlab::Routing.url_helpers.namespace_project_noteable_notes_path(
-      noteable.project.namespace,
+    key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
       noteable.project,
       target_type: noteable_type.underscore,
       target_id: noteable.id

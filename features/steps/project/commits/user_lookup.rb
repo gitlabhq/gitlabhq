@@ -4,11 +4,11 @@ class Spinach::Features::ProjectCommitsUserLookup < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I click on commit link' do
-    visit namespace_project_commit_path(@project.namespace, @project, sample_commit.id)
+    visit project_commit_path(@project, sample_commit.id)
   end
 
   step 'I click on another commit link' do
-    visit namespace_project_commit_path(@project.namespace, @project, sample_commit.parent_id)
+    visit project_commit_path(@project, sample_commit.parent_id)
   end
 
   step 'I have user with primary email' do

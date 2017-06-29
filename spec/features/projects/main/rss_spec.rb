@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Project RSS' do
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:path) { namespace_project_path(project.namespace, project) }
+  let(:path) { project_path(project) }
 
   context 'when signed in' do
     before do

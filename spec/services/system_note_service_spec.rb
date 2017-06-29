@@ -807,7 +807,7 @@ describe SystemNoteService, services: true do
             body: hash_including(
               GlobalID: "GitLab",
               object: {
-                url: namespace_project_commit_url(project.namespace, project, commit),
+                url: project_commit_url(project, commit),
                 title: "GitLab: Mentioned on commit - #{commit.title}",
                 icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
                 status: { resolved: false }
@@ -833,7 +833,7 @@ describe SystemNoteService, services: true do
             body: hash_including(
               GlobalID: "GitLab",
               object: {
-                url: namespace_project_issue_url(project.namespace, project, issue),
+                url: project_issue_url(project, issue),
                 title: "GitLab: Mentioned on issue - #{issue.title}",
                 icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
                 status: { resolved: false }
@@ -859,7 +859,7 @@ describe SystemNoteService, services: true do
             body: hash_including(
               GlobalID: "GitLab",
               object: {
-                url: namespace_project_snippet_url(project.namespace, project, snippet),
+                url: project_snippet_url(project, snippet),
                 title: "GitLab: Mentioned on snippet - #{snippet.title}",
                 icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
                 status: { resolved: false }
@@ -1098,7 +1098,7 @@ describe SystemNoteService, services: true do
 
       diff_id = merge_request.merge_request_diff.id
       line_code = change_position.line_code(project.repository)
-      expect(subject.note).to include(diffs_namespace_project_merge_request_url(project.namespace, project, merge_request, diff_id: diff_id, anchor: line_code))
+      expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
     end
   end
 end

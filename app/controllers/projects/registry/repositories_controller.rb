@@ -10,11 +10,11 @@ module Projects
 
       def destroy
         if image.destroy
-          redirect_to project_container_registry_path(@project),
+          redirect_to project_container_registry_index_path(@project),
                       status: 302,
                       notice: 'Image repository has been removed successfully!'
         else
-          redirect_to project_container_registry_path(@project),
+          redirect_to project_container_registry_index_path(@project),
                       status: 302,
                       alert: 'Failed to remove image repository!'
         end

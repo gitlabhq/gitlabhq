@@ -347,8 +347,7 @@ module ProjectsHelper
 
   def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
     commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       project.default_branch || 'master',
       file_name:      file_name,
@@ -359,8 +358,7 @@ module ProjectsHelper
   end
 
   def add_koding_stack_path(project)
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       project.default_branch || 'master',
       file_name:      '.koding.yml',
@@ -414,8 +412,7 @@ module ProjectsHelper
 
   def contribution_guide_path(project)
     if project && contribution_guide = project.repository.contribution_guide
-      namespace_project_blob_path(
-        project.namespace,
+      project_blob_path(
         project,
         tree_join(project.default_branch,
                   contribution_guide.name)
@@ -445,7 +442,7 @@ module ProjectsHelper
 
   def project_wiki_path_with_version(proj, page, version, is_newest)
     url_params = is_newest ? {} : { version_id: version }
-    namespace_project_wiki_path(proj.namespace, proj, page, url_params)
+    project_wiki_path(proj, page, url_params)
   end
 
   def project_status_css_class(status)
@@ -470,8 +467,7 @@ module ProjectsHelper
 
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
-      namespace_project_blob_path(
-        project.namespace,
+      project_blob_path(
         project,
         tree_join(project.default_branch, blob.name)
       )

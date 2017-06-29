@@ -86,7 +86,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       let(:merge_request) { create_merge_request('conflict-resolvable') }
 
       before do
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
       end
 
       it 'shows a link to the conflict resolution page' do
@@ -117,7 +117,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       let(:merge_request) { create_merge_request('conflict-contains-conflict-markers') }
 
       before do
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
         click_link('conflicts', href: /\/conflicts\Z/)
       end
 
@@ -166,7 +166,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
         project.team << [user, :developer]
         gitlab_sign_in(user)
 
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
       end
 
       it 'does not show a link to the conflict resolution page' do
