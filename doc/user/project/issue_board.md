@@ -28,6 +28,14 @@ empowered with the ability to create multiple boards per project.
 
 ## Use-cases
 
+There are inumerous use-cases for the use of Issue Boards, we will just
+exemplify with a couple situations, but the possilities go where our creativity goes.
+
+For a broader use-case, please check the blog post
+[GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+
+### Single Board
+
 GitLab Workflow allows you to discuss proposals in issues, categorize them
 with labels, and and from there organize and prioritize them with Issue Boards.
 
@@ -44,6 +52,8 @@ beginning of the dev lifecycle until deployed to production
   - Prioritize the issues in a list by moving them vertically
   - Move issues between lists to organize them according to the labels you've set
 
+### Multiple Boards
+
 To enhance the workflow exemplified above, with [Multiple Issue Boards](#multiple-issue-boards),
 available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
 each team (frontend and backend) can have their own boards to organize their flow among the
@@ -53,8 +63,16 @@ members of their teams. For that, we could have, therefore, three Issue Boards f
   - **Frontend**, same as above, for the frontend team
   - **Deployment**, for the entire process (backend > frontend > staging > production)
 
-For a broader use-case, please check the blog post
-[GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+### Boards for Milestones
+
+From the use-cases above, let's assume that you have now created a milestone per release for
+your app. You can create a milestone exclusive for each release, and associate it with a board.
+Therefore, you'll have everything organized in a board per release.
+
+### Focus Mode
+
+When you are organizing your issues through an Issue Board and want to avoid distractions,
+you can use the [Issue Board Forcus Mode](#focus-mode).
 
 ## Issue Board terminology
 
