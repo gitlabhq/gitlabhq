@@ -28,7 +28,12 @@ shared_examples 'issuable record that supports quick actions in its description 
   describe "new #{issuable_type}", js: true do
     context 'with commands in the description' do
       it "creates the #{issuable_type} and interpret commands accordingly" do
-        visit public_send("new_namespace_project_#{issuable_type}_path", project.namespace, project, new_url_opts)
+        case issuable_type
+        when :merge_request
+          visit public_send("namespace_project_new_merge_request_path", project.namespace, project, new_url_opts)
+        when :issue
+          visit public_send("new_namespace_project_issue_path", project.namespace, project, new_url_opts)
+        end
         fill_in "#{issuable_type}_title", with: 'bug 345'
         fill_in "#{issuable_type}_description", with: "bug description\n/label ~bug\n/milestone %\"ASAP\""
         click_button "Submit #{issuable_type}".humanize

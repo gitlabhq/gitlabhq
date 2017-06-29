@@ -31,7 +31,9 @@
               %span.badge.count.issue_counter= number_with_delimiter(IssuesFinder.new(current_user, project_id: @project.id).execute.opened.count)
 
     - if project_nav_tab? :merge_requests
-      = nav_link(controller: @project.default_issues_tracker? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
+      - controllers = [:merge_requests, 'projects/merge_requests/conflicts']
+      - controllers.push(:merge_requests, :labels, :milestones) unless @project.default_issues_tracker?
+      = nav_link(controller: controllers) do
         = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests', class: 'shortcuts-merge_requests' do
           %span
             Merge Requests
