@@ -24,7 +24,7 @@ The number of approvers can be higher than the required approvals.
 
 ### Can overwrite approvers and approvals required per merge request
 
-> [Introduced][https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2016] in GitLab Enterprise Edition 9.3.
+> [Introduced][https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2016] in GitLab Enterprise Edition 9.4.
 
 When this setting is enabled, the approvers for a project can be overridden for
 a merge request. When editing a merge request you can add or remove approvers,
