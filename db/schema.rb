@@ -614,8 +614,8 @@ ActiveRecord::Schema.define(version: 20170627211700) do
     t.text "deleted_path", null: false
     t.text "deleted_wiki_path"
     t.text "deleted_project_name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
   end
 
   add_index "geo_repository_deleted_events", ["project_id"], name: "index_geo_repository_deleted_events_on_project_id", using: :btree
