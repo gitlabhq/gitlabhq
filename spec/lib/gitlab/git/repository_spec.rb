@@ -5,11 +5,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
-  after do
-    # Prevent cached stubs (gRPC connection objects) from poisoning tests.
-    Gitlab::GitalyClient.clear_stubs!
-  end
-
   describe "Respond to" do
     subject { repository }
 
