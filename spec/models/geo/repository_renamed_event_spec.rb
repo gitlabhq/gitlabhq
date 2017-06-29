@@ -13,7 +13,7 @@ RSpec.describe Geo::RepositoryRenamedEvent, type: :model do
     it { is_expected.to validate_presence_of(:new_path_with_namespace) }
     it { is_expected.to validate_presence_of(:old_wiki_path_with_namespace) }
     it { is_expected.to validate_presence_of(:new_wiki_path_with_namespace) }
-    it { is_expected.to validate_presence_of(:old_project_name) }
-    it { is_expected.to validate_presence_of(:new_project_name) }
+    it { is_expected.to validate_presence_of(:old_path) }
+    it { is_expected.to validate_presence_of(:new_path) }
   end
 end
