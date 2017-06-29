@@ -151,33 +151,6 @@ The following guide assumes that:
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening to the server's
    public IP.
-1. New for 9.4: Choose a database-friendly name to use for your secondary to use as the
-   replication slot name. For example, if your domain is
-   `geo-secondary.mydomain.com`, you may use `geo_secondary_my_domain_com` as
-   the slot name.
-1. New for 9.4: Create a replication slot in PostgreSQL for the secondary. To do this, you must
-   login to your PostgreSQL instance with database superuser account an issue a SQL
-   command:
-
-    ```sql
-    SELECT * FROM pg_create_physical_replication_slot('geo_secondary_my_domain_com');
-    ```
-
-    For example, on an Omnibus-provided PostgreSQL database, it would be done
-    in the following way:
-
-    ```
-    $ sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h /var/opt/gitlab/postgresql -d gitlabhq_production
-    psql (9.6.1)
-    Type "help" for help.
-
-    gitlabhq_production=# SELECT * FROM pg_create_physical_replication_slot('geo_secondary_my_domain');
-       slot_name             | xlog_position
-    -------------------------+---------------
-     geo_secondary_my_domain |
-    (1 row)
-    ```
-
 1. Continue to [set up the secondary server](#step-2-configure-the-secondary-server).
 
 ### Step 2. Configure the secondary server
@@ -232,6 +205,11 @@ data before running `pg_basebackup`.
     ```
     sudo -i
     ```
+
+1. New for 9.4: Choose a database-friendly name to use for your secondary to use as the
+   replication slot name. For example, if your domain is
+   `geo-secondary.mydomain.com`, you may use `geo_secondary_my_domain_com` as
+   the slot name.
 
 1. Execute the command below to start a backup/restore and begin the replication:
 
