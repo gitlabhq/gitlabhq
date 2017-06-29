@@ -1,4 +1,4 @@
-# Features API
+# Features flags API
 
 All methods require administrator authorization.
 
