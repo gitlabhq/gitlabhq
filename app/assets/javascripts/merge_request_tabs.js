@@ -163,7 +163,7 @@ import StickyTabs from './sticky_tabs';
       if (location.hash) {
         const offset = 0 - (
           $('.navbar-gitlab').outerHeight() +
-          (this.stickyTabs ? this.stickyTabs.unstickyTabsHeight : $('.js-tabs-affix').outerHeight())
+          (this.stickyTabs ? this.stickyTabs.unstickyTabsHeight : $('.js-sticky-tabs').outerHeight())
         );
         const $el = $(`${container} ${location.hash}:not(.match)`);
         if ($el.length) {
