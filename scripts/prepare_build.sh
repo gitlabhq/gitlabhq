@@ -60,4 +60,4 @@ if [ "$SETUP_DB" != "false" ]; then
 fi
 
 # EE-only
-sed -i '' -e '/geo_secondary_role\:/ {' -e 'n; s/enabled\: false/enabled\: true/' -e '}' config/gitlab.yml
+sed -i -e '/geo_secondary_role\:/ {' -e 'n; s/enabled\: false/enabled\: true/' -e '}' config/gitlab.yml
