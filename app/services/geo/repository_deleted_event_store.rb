@@ -1,28 +1,17 @@
 module Geo
-  class RepositoryDeletedEventStore
-    attr_reader :project, :repo_path, :wiki_path
+  class RepositoryDeletedEventStore < EventStore
+    self.event_type = :repository_deleted_event
 
-    def initialize(project, repo_path:, wiki_path:)
-      @project = project
-      @repo_path = repo_path
-      @wiki_path = wiki_path
-    end
+    private
 
-    def create
-      return unless Gitlab::Geo.primary?
-
-      Geo::EventLog.transaction do
-        event_log = Geo::EventLog.new
-        deleted_event = Geo::RepositoryDeletedEvent.new(
-          project: project,
-          repository_storage_name: project.repository.storage,
-          repository_storage_path: project.repository_storage_path,
-          deleted_path: repo_path,
-          deleted_wiki_path: wiki_path,
-          deleted_project_name: project.name)
-        event_log.repository_deleted_event = deleted_event
-        event_log.save
-      end
+    def build_event
+      Geo::RepositoryDeletedEvent.new(
+        project: project,
+        repository_storage_name: project.repository.storage,
+        repository_storage_path: project.repository_storage_path,
+        deleted_path: params.fetch(:repo_path),
+        deleted_wiki_path: params.fetch(:wiki_path),
+        deleted_project_name: project.name)
     end
   end
 end

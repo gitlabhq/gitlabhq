@@ -1,24 +1,6 @@
 module Geo
-  class RepositoryRenamedEventStore
-    attr_reader :project, :old_path, :old_path_with_namespace
-
-    def initialize(project, old_path:, old_path_with_namespace:)
-      @project = project
-      @old_path = old_path
-      @old_path_with_namespace = old_path_with_namespace
-    end
-
-    def create
-      return unless Gitlab::Geo.primary?
-
-      Geo::EventLog.transaction do
-        event_log = Geo::EventLog.new
-        event_log.repository_renamed_event = build_event
-        event_log.save!
-      end
-    rescue ActiveRecord::RecordInvalid
-      log("Renamed event could not be created")
-    end
+  class RepositoryRenamedEventStore < EventStore
+    self.event_type = :repository_renamed_event
 
     private
 
@@ -31,9 +13,13 @@ module Geo
         new_path_with_namespace: project.full_path,
         old_wiki_path_with_namespace: old_wiki_path_with_namespace,
         new_wiki_path_with_namespace: new_wiki_path_with_namespace,
-        old_path: old_path,
+        old_path: params.fetch(:old_path),
         new_path: project.path
       )
+    end
+
+    def old_path_with_namespace
+      params.fetch(:old_path_with_namespace)
     end
 
     def old_wiki_path_with_namespace
@@ -42,10 +28,6 @@ module Geo
 
     def new_wiki_path_with_namespace
       project.wiki.path_with_namespace
-    end
-
-    def log(message)
-      Rails.logger.info("#{self.class.name}: #{message} for project #{project.path_with_namespace} (#{project.id})")
     end
   end
 end
