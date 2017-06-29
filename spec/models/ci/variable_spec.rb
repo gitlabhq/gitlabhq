@@ -7,7 +7,6 @@ describe Ci::Variable, models: true do
 
   describe 'validations' do
     it { is_expected.to include_module(HasVariable) }
-    it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope) }
     it { is_expected.to validate_length_of(:key).is_at_most(255) }
     it { is_expected.to allow_value('foo').for(:key) }
