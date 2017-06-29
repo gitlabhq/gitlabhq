@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
   include IgnorableColumn
+  include FeatureGate
   prepend EE::GeoAwareAvatar
   prepend EE::User
 
