@@ -84,11 +84,18 @@ module EE
       mirror? && self.mirror_last_update_at
     end
 
-    def updating_mirror?
-      return false unless mirror? && !empty_repo?
-      return true if import_in_progress?
+    def mirror_with_content?
+      mirror? && !empty_repo
+    end
 
-      self.mirror_data.next_execution_timestamp < Time.now
+    def scheduled_mirror?
+      enqueued = self.mirror_data.next_execution_timestamp < Time.now
+
+      mirror_with_content? && import_scheduled? && enqueued
+    end
+
+    def updating_mirror?
+      mirror_with_content? && import_started?
     end
 
     def mirror_last_update_status
