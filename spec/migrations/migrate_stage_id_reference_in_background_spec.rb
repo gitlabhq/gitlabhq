@@ -58,11 +58,11 @@ describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
 
   it 'schedules background migrations' do
     Sidekiq::Testing.inline! do
-      expect(jobs.where(stage_id: nil)).to be_present
+      expect(jobs.where(stage_id: nil).count).to eq 5
 
       migrate!
 
-      expect(jobs.where(stage_id: nil)).to be_one
+      expect(jobs.where(stage_id: nil).count).to eq 1
     end
   end
 end
