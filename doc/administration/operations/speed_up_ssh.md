@@ -51,6 +51,18 @@ sudo service sshd reload
 
 Confirm that SSH is working by removing your user's SSH key in the UI, adding a new one, and attempting to pull a repo.
 
+> **Warning:** Do not disable writes until SSH is confirmed to be working perfectly because the file will quickly become out-of-date.
+
+In the case of lookup failures (which are not uncommon), the `authorized_keys` file will still be scanned. So git SSH performance will still be slow for many users as long as a large file exists.
+
+You can disable any more writes to the `authorized_keys` file by unchecking `Write to "authorized_keys" file` in the Application Settings of your GitLab installation.
+
+![Write to authorized keys setting](img/write_to_authorized_keys_setting.png)
+
+Again, confirm that SSH is working by removing your user's SSH key in the UI, adding a new one, and attempting to pull a repo.
+
+Then you can backup and delete your `authorized_keys` file for best performance.
+
 ## How to go back to using the `authorized_keys` file
 
 This is a brief overview. Please refer to the above instructions for more context.
