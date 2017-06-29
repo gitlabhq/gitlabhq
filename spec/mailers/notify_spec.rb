@@ -1357,16 +1357,16 @@ describe Notify do
     end
 
     it 'is sent to recipient' do
-      should deliver_to user.email
+      is_expected.to deliver_to user.email
     end
 
     it 'has the correct subject' do
-      should have_subject 'Admin announcement'
+      is_expected.to have_subject 'Admin announcement'
     end
 
     it 'includes unsubscribe link' do
       unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
-      should have_body_text(unsubscribe_link)
+      is_expected.to have_body_text(unsubscribe_link)
     end
   end
 

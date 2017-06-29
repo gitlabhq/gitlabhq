@@ -3,5 +3,5 @@ require 'spec_helper'
 describe ApproverGroup do
   subject { create(:approver_group) }
 
-  it { should be_valid }
+  it { is_expected.to be_valid }
 end
