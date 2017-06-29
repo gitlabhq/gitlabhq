@@ -342,7 +342,7 @@ import RepoBundle from './repo/repo_bundle';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          new RepoBundle();
+          new RepoBundle();  
           break;
         case 'projects:blame:show':
           initBlob();

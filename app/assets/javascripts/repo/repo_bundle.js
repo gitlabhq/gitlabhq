@@ -6,6 +6,7 @@ import Helper from './repo_helper'
 
 export default class RepoBundle {
   constructor() {
+    console.log(document.getElementById('ide'))
     const url = document.getElementById('ide').dataset.url;
     Store.service = Service;
     Store.service.url = url;

@@ -11,6 +11,21 @@ let RepoHelper = {
   ? window.performance
   : Date,
 
+  getLanguagesForMimeType(mimetypeNeedle, monaco) {
+    const langs = monaco.languages.getLanguages();
+    let lang = '';
+    langs.every((lang) => {
+      const hasLang = lang.mimetypes.some((mimetype) => {
+        return mimetypeNeedle === mimetype
+      });
+      if(hasLang) {
+        lang = lang.id;
+        return true;
+      }
+      return false;
+    });
+  },
+
   blobURLtoParent(url) {
     const split = url.split('/');
     split.pop();
@@ -24,7 +39,7 @@ let RepoHelper = {
     // may be tree or file.
   getContent() {
     Service.getContent()
-    .then((response)=> {
+    .then((response) => {
       let data = response.data;
       Store.isTree = this.isTree(data);
       if(!Store.isTree) {
@@ -32,10 +47,10 @@ let RepoHelper = {
         const parentURL = this.blobURLtoParent(Service.url);
         Store.blobRaw = data.plain;
         Service.getContent(parentURL)
-        .then((response)=> {
-          console.log(response.data)
+        .then((response) => {
+          Store.files = this.dataToListOfFiles(response.data);
         })
-        .catch((response)=> {
+        .catch((response) => {
 
         });
       } else {
@@ -61,7 +76,9 @@ let RepoHelper = {
         type: 'blob',
         name: blob.name,
         url: blob.url,
-        icon: this.toFA(blob.icon)
+        icon: this.toFA(blob.icon),
+        lastCommitMessage: blob.last_commit.message,
+        lastCommitUpdate: blob.last_commit.committed_date
       })
     });
 
@@ -104,7 +121,6 @@ let RepoHelper = {
     var history = window.history;
     this._key = this.genKey();
     history.pushState({ key: this._key }, '', url);
-    window.scrollTo(0, 0);
   }
 };
 

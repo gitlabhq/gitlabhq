@@ -2,6 +2,13 @@
   display: none;
 }
 
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 300px;
+}
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s
 }
@@ -16,12 +23,22 @@
 
 header {
   background: $gray-light;
-  padding: 10px 25px;
-  border-bottom: 1px solid $border-color;
-  font-size: $code_font_size;
+  padding: 10px 15px;
+}
+
+#ide {
+  display: inline-block;
+  width: 85%;
 }
 
 #sidebar {
+  &.sidebar-mini {
+    display: inline-block;
+    vertical-align: top;
+    width: 15%;
+    border-right: 1px solid $white-normal;
+  }
+
   ul {
     list-style-type: none;
     padding: 0;

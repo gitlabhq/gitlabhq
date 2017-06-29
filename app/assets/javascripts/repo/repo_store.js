@@ -2,7 +2,6 @@ let RepoStore = {
   service: '',
   editor: '',
   sidebar: '',
-
   isTree: false,
   trees: [],
   blobs: [],

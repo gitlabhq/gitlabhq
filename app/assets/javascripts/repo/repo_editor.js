@@ -35,20 +35,26 @@ export default class RepoEditor {
             )
           );
         }
-
-        if(this.isTree) {
-          self.el.styles = 'display: none';
-        } else {
-          self.el.styles = 'display: inline-block';
-        }
       },
 
       watch: {
+        isTree() {
+          if(this.isTree) {
+            self.el.style.display = 'none';
+          } else {
+            self.el.style.display = 'inline-block';
+          }
+        },
+
         blobRaw() {
           if(this.isTree) {
           } else {
-            // this.blobRaw
-            // console.log('models', editor.getModels())
+            self.monacoEditor.setModel(
+              monaco.editor.createModel(
+                this.blobRaw,
+                'plain'
+              )
+            );
           }
         }
       }
