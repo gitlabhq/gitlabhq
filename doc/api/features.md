@@ -61,7 +61,8 @@ POST /features/:name
 | `feature_group` | string | no | A Feature group name |
 | `user` | string | no | A GitLab username |
 
-Note that `feature_group` and `user` are mutually exclusive.
+Note that `feature_group` and `user` are mutually exclusive, with
+`feature_group` taking priority.
 
 ```bash
 curl --data "value=30" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/new_library
