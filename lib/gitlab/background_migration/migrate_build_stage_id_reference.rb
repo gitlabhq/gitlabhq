@@ -2,7 +2,7 @@ module Gitlab
   module BackgroundMigration
     class MigrateBuildStageIdReference
       def perform(id)
-        raise ArgumentError unless id.is_a?(Integer)
+        raise ArgumentError unless id.present?
 
         sql = <<-SQL.strip_heredoc
           UPDATE "ci_builds" SET "stage_id" = (
