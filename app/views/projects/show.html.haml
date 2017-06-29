@@ -6,11 +6,7 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
-= content_for flash_message_container do
-  = render 'deletion_failed'
-  - if current_user && can?(current_user, :download_code, @project)
-    = render 'shared/no_ssh'
-    = render 'shared/no_password'
+= render partial: 'flash_messages', locals: { project: @project }
 
 = render "projects/head"
 = render "projects/last_push"
