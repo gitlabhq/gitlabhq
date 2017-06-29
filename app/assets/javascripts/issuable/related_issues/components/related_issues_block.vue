@@ -76,8 +76,8 @@ export default {
     hasBody() {
       return this.isFormVisible || this.shouldShowTokenBody;
     },
-    relatedIssueCount() {
-      return this.relatedIssues.length;
+    badgeLabel() {
+      return this.isFetching && this.relatedIssues.length === 0 ? '...' : this.relatedIssues.length;
     },
     hasHelpPath() {
       return this.helpPath.length > 0;
@@ -113,15 +113,13 @@ export default {
             <span
               class="issue-count-badge-count"
               :class="{ 'has-btn': this.canAddRelatedIssues }">
-              {{ relatedIssueCount }}
+              {{ badgeLabel }}
             </span>
             <button
               v-if="canAddRelatedIssues"
-              v-tooltip
               ref="issueCountBadgeAddButton"
               type="button"
               class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-small btn-default"
-              title="Add an issue"
               aria-label="Add an issue"
               data-placement="top"
               @click="toggleAddRelatedIssuesForm">
@@ -143,7 +141,6 @@ export default {
           :is-submitting="isSubmitting"
           :input-value="inputValue"
           :pending-references="pendingReferences"
-          add-button-label="Add related issues"
           :auto-complete-sources="autoCompleteSources" />
       </div>
       <div

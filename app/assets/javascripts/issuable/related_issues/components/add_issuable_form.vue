@@ -12,10 +12,6 @@ export default {
       type: String,
       required: true,
     },
-    addButtonLabel: {
-      type: String,
-      required: true,
-    },
     pendingReferences: {
       type: Array,
       required: false,
@@ -46,8 +42,12 @@ export default {
   },
 
   computed: {
+    inputPlaceholder() {
+      return 'Paste issue link or <#issue id>';
+    },
     isSubmitButtonDisabled() {
-      return this.pendingReferences.length === 0 || this.isSubmitting;
+      return (this.inputValue.length === 0 && this.pendingReferences.length === 0)
+        || this.isSubmitting;
     },
   },
 
@@ -84,12 +84,15 @@ export default {
 
   mounted() {
     const $input = $(this.$refs.input);
+
     new GfmAutoComplete(this.autoCompleteSources).setup($input, {
       issues: true,
     });
     $input.on('shown-issues.atwho', this.onAutoCompleteToggled.bind(this, true));
     $input.on('hidden-issues.atwho', this.onAutoCompleteToggled.bind(this, false));
     $input.on('inserted-issues.atwho', this.onInput);
+
+    this.$refs.input.focus();
   },
 
   beforeDestroy() {
@@ -126,7 +129,7 @@ export default {
             type="text"
             class="js-add-issuable-form-input add-issuable-form-input"
             :value="inputValue"
-            placeholder="Search issues..."
+            :placeholder="inputPlaceholder"
             @input="onInput"
             @focus="onFocus"
             @blur="onBlur" />
@@ -140,7 +143,7 @@ export default {
         class="js-add-issuable-form-add-button btn btn-new pull-left"
         @click="onFormSubmit"
         :disabled="isSubmitButtonDisabled">
-        {{ addButtonLabel }}
+        Add
         <loadingIcon
           ref="loadingIcon"
           v-if="isSubmitting"

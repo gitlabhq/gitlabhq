@@ -40,41 +40,51 @@ describe('AddIssuableForm', () => {
 
   describe('with data', () => {
     describe('without references', () => {
-      beforeEach(() => {
-        vm = new AddIssuableForm({
-          propsData: {
-            inputValue: '',
-            addButtonLabel: 'Submit',
-            pendingReferences: [],
-          },
-        }).$mount();
+      describe('without any input text', () => {
+        beforeEach(() => {
+          vm = new AddIssuableForm({
+            propsData: {
+              inputValue: '',
+              pendingReferences: [],
+            },
+          }).$mount();
+        });
+
+        it('should have disabled submit button', () => {
+          expect(vm.$refs.addButton.disabled).toBe(true);
+          expect(vm.$refs.loadingIcon).toBeUndefined();
+        });
       });
 
-      it('should have disabled submit button', () => {
-        expect(vm.$refs.addButton.disabled).toBe(true);
-        expect(vm.$refs.loadingIcon).toBeUndefined();
+      describe('with input text', () => {
+        beforeEach(() => {
+          vm = new AddIssuableForm({
+            propsData: {
+              inputValue: 'foo',
+              pendingReferences: [],
+            },
+          }).$mount();
+        });
+
+        it('should not have disabled submit button', () => {
+          expect(vm.$refs.addButton.disabled).toBe(false);
+        });
       });
     });
 
     describe('with references', () => {
       const inputValue = 'foo #123';
-      const addButtonLabel = 'Add issuable';
 
       beforeEach(() => {
         vm = new AddIssuableForm({
           propsData: {
             inputValue,
-            addButtonLabel,
             pendingReferences: [
               issuable1.reference,
               issuable2.reference,
             ],
           },
         }).$mount();
-      });
-
-      it('should put button label in place', () => {
-        expect(vm.$refs.addButton.textContent.trim()).toEqual(addButtonLabel);
       });
 
       it('should put input value in place', () => {
@@ -84,6 +94,10 @@ describe('AddIssuableForm', () => {
       it('should render pending issuables items', () => {
         expect(vm.$el.querySelectorAll('.js-add-issuable-form-token-list-item').length).toEqual(2);
       });
+
+      it('should not have disabled submit button', () => {
+        expect(vm.$refs.addButton.disabled).toBe(false);
+      });
     });
 
     describe('when submitting', () => {
@@ -91,7 +105,6 @@ describe('AddIssuableForm', () => {
         vm = new AddIssuableForm({
           propsData: {
             inputValue: '',
-            addButtonLabel: 'Submit',
             pendingReferences: [
               issuable1.reference,
               issuable2.reference,
@@ -131,7 +144,6 @@ describe('AddIssuableForm', () => {
       vm = new AddIssuableForm({
         propsData: {
           inputValue: '',
-          addButtonLabel: 'Add issuable',
           pendingIssuables: [
             issuable1,
           ],
