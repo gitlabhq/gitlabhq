@@ -72,7 +72,7 @@ Therefore, you'll have everything organized in a board per release.
 ### Using Focus Mode
 
 When you are organizing your issues through an Issue Board and want to avoid distractions,
-you can use the [Issue Board Focus Mode](#focus-mode).
+you can use the [Issue Board on Focus Mode](#focus-mode).
 
 ## Issue Board terminology
 
