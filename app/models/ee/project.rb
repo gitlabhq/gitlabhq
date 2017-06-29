@@ -433,8 +433,8 @@ module EE
       path_was = previous_changes['path'].first
       old_path_with_namespace = File.join(namespace.full_path, path_was)
 
-      ::Geo::RepositoryRenamedEventStore.new(self, old_path: path_was,
-        old_path_with_namespace: old_path_with_namespace).create
+      ::Geo::RepositoryRenamedEventStore.new(self,
+        old_path: path_was, old_path_with_namespace: old_path_with_namespace).create
     end
 
     private
