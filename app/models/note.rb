@@ -230,10 +230,14 @@ class Note < ActiveRecord::Base
     for_personal_snippet?
   end
 
+  def commit
+    project.commit(commit_id) if commit_id.present?
+  end
+
   # override to return commits, which are not active record
   def noteable
     if for_commit?
-      @commit ||= project.commit(commit_id)
+      @commit ||= commit
     else
       super
     end
