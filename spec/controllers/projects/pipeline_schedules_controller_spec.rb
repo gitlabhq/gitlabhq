@@ -357,7 +357,7 @@ describe Projects::PipelineSchedulesController do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
-      # it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_allowed_for(:developer).of(project).own([pipeline_schedule]) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
@@ -420,7 +420,7 @@ describe Projects::PipelineSchedulesController do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
-      # it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_allowed_for(:developer).of(project).own([pipeline_schedule]) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
@@ -438,7 +438,7 @@ describe Projects::PipelineSchedulesController do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
-      # it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_allowed_for(:developer).of(project).own([pipeline_schedule]) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
