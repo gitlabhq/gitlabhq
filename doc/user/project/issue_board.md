@@ -28,7 +28,7 @@ empowered with the ability to create multiple boards per project.
 
 ## Use-cases
 
-There are inumerous use-cases for the use of Issue Boards, we will just
+There are numerous use-cases for the use of Issue Boards, we will just
 exemplify with a couple situations, but the possilities go where our creativity goes.
 
 For a broader use-case, please check the blog post
