@@ -39,14 +39,27 @@ export default {
     },
   },
   mounted() {
-    const path = this.$el.parentNode.dataset.discussionsPath;
-    this.$store.dispatch('fetchNotes', path)
+    const { discussionsPath, notesPath, lastFetchedAt }  = this.$el.parentNode.dataset;
+    this.$store.dispatch('fetchNotes', discussionsPath)
       .then(() => {
         this.isLoading = false;
       })
       .catch(() => {
         new Flash('Something went wrong while fetching issue comments. Please try again.'); // eslint-disable-line
       });
+
+    const options = {
+      endpoint: `${notesPath}?full_data=1`,
+      lastFetchedAt,
+    };
+
+    // FIXME: @fatihacet Implement real polling mechanism
+    setInterval(() => {
+      this.$store.dispatch('poll', options)
+        .then((res) => {
+          options.lastFetchedAt = res.last_fetched_at;
+        });
+    }, 6000);
   },
 };
 </script>

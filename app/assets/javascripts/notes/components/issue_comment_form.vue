@@ -133,13 +133,13 @@ export default {
             ref="textarea"
             slot="textarea"
             placeholder="Write a comment or drag your files here..."
-            @keydown.meta.enter="handleSave">
+            @keydown.meta.enter="handleSave()">
           </textarea>
         </markdown-field>
         <div class="note-form-actions clearfix">
           <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown">
             <input
-              @click="handleSave"
+              @click="handleSave()"
               :disabled="!note.length"
               :value="commentButtonTitle"
               class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"

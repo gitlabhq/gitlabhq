@@ -15,7 +15,7 @@ const getters = {
 };
 
 const mutations = {
-  setNotes(storeState, notes) {
+  setInitialNotes(storeState, notes) {
     storeState.notes = notes;
   },
   toggleDiscussion(storeState, { discussionId }) {
@@ -40,7 +40,9 @@ const mutations = {
   addNewReplyToDiscussion(storeState, note) {
     const noteObj = findNoteObjectById(storeState.notes, note.discussion_id);
 
-    noteObj.notes.push(note);
+    if (noteObj) {
+      noteObj.notes.push(note);
+    }
   },
   updateNote(storeState, note) {
     const noteObj = findNoteObjectById(storeState.notes, note.discussion_id);
@@ -72,7 +74,7 @@ const actions = {
       .fetchNotes(path)
       .then(res => res.json())
       .then((res) => {
-        context.commit('setNotes', res);
+        context.commit('setInitialNotes', res);
       });
   },
   deleteNote(context, note) {
@@ -111,6 +113,45 @@ const actions = {
         if (!res.errors) {
           context.commit('addNewNote', res);
         }
+        return res;
+      });
+  },
+  poll(context, data) {
+    const { endpoint, lastFetchedAt } = data;
+
+    return service
+      .poll(endpoint, lastFetchedAt)
+      .then(res => res.json())
+      .then((res) => {
+        if (res.notes.length) {
+          const notesById = {};
+
+          // Simple lookup object to check whether we have a discussion id already in our store
+          context.state.notes.forEach((note) => {
+            note.notes.forEach((n) => {
+              notesById[n.id] = true;
+            });
+          });
+
+          res.notes.forEach((note) => {
+            if (notesById[note.id]) {
+              context.commit('updateNote', note);
+            } else {
+              if (note.type === 'DiscussionNote') {
+                const discussion = findNoteObjectById(context.state.notes, note.discussion_id);
+
+                if (discussion) {
+                  context.commit('addNewReplyToDiscussion', note);
+                } else {
+                  context.commit('addNewNote', note);
+                }
+              } else {
+                context.commit('addNewNote', note);
+              }
+            }
+          });
+        }
+
         return res;
       });
   },
