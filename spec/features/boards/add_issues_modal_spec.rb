@@ -14,7 +14,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
   before do
     project.team << [user, :master]
 
-    login_as(user)
+    gitlab_sign_in(user)
 
     visit namespace_project_board_path(project.namespace, project, board)
     wait_for_requests
@@ -231,7 +231,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           click_button 'Add 1 issue'
         end
 
-        page.within(first('.board')) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page).to have_selector('.card')
         end
       end
@@ -247,7 +247,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           click_button 'Add 1 issue'
         end
 
-        page.within(find('.board:nth-child(2)')) do
+        page.within(find('.board:nth-child(3)')) do
           expect(page).to have_selector('.card')
         end
       end

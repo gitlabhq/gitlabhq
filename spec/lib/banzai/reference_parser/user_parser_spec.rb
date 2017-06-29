@@ -43,17 +43,8 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         expect(subject.referenced_by([link])).to eq([user])
       end
 
-      context 'when RequestStore is active' do
+      context 'when RequestStore is active', :request_store do
         let(:other_user) { create(:user) }
-
-        before do
-          RequestStore.begin!
-        end
-
-        after do
-          RequestStore.end!
-          RequestStore.clear!
-        end
 
         it 'does not return users from the first call in the second' do
           link['data-user'] = user.id.to_s
@@ -105,17 +96,17 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
         end
 
         it 'returns the nodes if the user can read the group' do
-          expect(Ability).to receive(:allowed?).
-            with(user, :read_group, group).
-            and_return(true)
+          expect(Ability).to receive(:allowed?)
+            .with(user, :read_group, group)
+            .and_return(true)
 
           expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
         end
 
         it 'returns an empty Array if the user can not read the group' do
-          expect(Ability).to receive(:allowed?).
-            with(user, :read_group, group).
-            and_return(false)
+          expect(Ability).to receive(:allowed?)
+            .with(user, :read_group, group)
+            .and_return(false)
 
           expect(subject.nodes_visible_to_user(user, [link])).to eq([])
         end
@@ -138,9 +129,9 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
 
             link['data-project'] = other_project.id.to_s
 
-            expect(Ability).to receive(:allowed?).
-              with(user, :read_project, other_project).
-              and_return(true)
+            expect(Ability).to receive(:allowed?)
+              .with(user, :read_project, other_project)
+              .and_return(true)
 
             expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
           end
@@ -150,9 +141,9 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
 
             link['data-project'] = other_project.id.to_s
 
-            expect(Ability).to receive(:allowed?).
-              with(user, :read_project, other_project).
-              and_return(false)
+            expect(Ability).to receive(:allowed?)
+              .with(user, :read_project, other_project)
+              .and_return(false)
 
             expect(subject.nodes_visible_to_user(user, [link])).to eq([])
           end

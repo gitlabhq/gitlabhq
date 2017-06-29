@@ -142,15 +142,17 @@
       }
     }
   }
+}
 
-  .selected {
-    .name {
-      background-color: $filter-name-selected-color;
-    }
+.filtered-search-token:hover,
+.filtered-search-token .selected,
+.filtered-search-term .selected {
+  .name {
+    background-color: $filter-name-selected-color;
+  }
 
-    .value-container {
-      background-color: $filter-value-selected-color;
-    }
+  .value-container {
+    box-shadow: inset 0 0 0 100px $filtered-search-term-shadow-color;
   }
 }
 
@@ -234,9 +236,6 @@
     width: 35px;
     background-color: $white-light;
     border: none;
-    position: static;
-    right: 0;
-    height: 100%;
     outline: none;
     z-index: 1;
 

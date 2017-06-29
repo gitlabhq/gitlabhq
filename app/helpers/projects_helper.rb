@@ -70,15 +70,18 @@ module ProjectsHelper
   end
 
   def remove_project_message(project)
-    "You are going to remove #{project.name_with_namespace}.\n Removed project CANNOT be restored!\n Are you ABSOLUTELY sure?"
+    _("You are going to remove %{project_name_with_namespace}.\nRemoved project CANNOT be restored!\nAre you ABSOLUTELY sure?") %
+      { project_name_with_namespace: project.name_with_namespace }
   end
 
   def transfer_project_message(project)
-    "You are going to transfer #{project.name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
+    _("You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?") %
+      { project_name_with_namespace: project.name_with_namespace }
   end
 
   def remove_fork_project_message(project)
-    "You are going to remove the fork relationship to source project #{@project.forked_from_project.name_with_namespace}.  Are you ABSOLUTELY sure?"
+    _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
+      { forked_from_project: @project.forked_from_project.name_with_namespace }
   end
 
   def project_nav_tabs
@@ -143,28 +146,36 @@ module ProjectsHelper
     end
 
     options = options_for_select(
-      options,
+      options.invert,
       selected: highest_available_option || @project.project_feature.public_send(field),
       disabled: disabled_option
     )
 
-    content_tag(
-      :select,
-      options,
-      name: "project[project_feature_attributes][#{field}]",
-      id: "project_project_feature_attributes_#{field}",
-      class: "pull-right form-control #{repo_children_classes(field)}",
-      data: { field: field }
-    ).html_safe
+    content_tag :div, class: "select-wrapper" do
+      concat(
+        content_tag(
+          :select,
+          options,
+          name: "project[project_feature_attributes][#{field}]",
+          id: "project_project_feature_attributes_#{field}",
+          class: "pull-right form-control select-control #{repo_children_classes(field)} ",
+          data: { field: field }
+        )
+      )
+      concat(
+        icon('chevron-down')
+      )
+    end.html_safe
   end
 
   def link_to_autodeploy_doc
-    link_to 'About auto deploy', help_page_path('ci/autodeploy/index'), target: '_blank'
+    link_to _('About auto deploy'), help_page_path('ci/autodeploy/index'), target: '_blank'
   end
 
   def autodeploy_flash_notice(branch_name)
-    "Branch <strong>#{truncate(sanitize(branch_name))}</strong> was created. To set up auto deploy, \
-      choose a GitLab CI Yaml template and commit your changes. #{link_to_autodeploy_doc}".html_safe
+    translation = _("Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}") %
+      { branch_name: truncate(sanitize(branch_name)), link_to_autodeploy_doc: link_to_autodeploy_doc }
+    translation.html_safe
   end
 
   def project_list_cache_key(project)
@@ -183,8 +194,25 @@ module ProjectsHelper
   end
 
   def load_pipeline_status(projects)
-    Gitlab::Cache::Ci::ProjectPipelineStatus.
-      load_in_batch_for_projects(projects)
+    Gitlab::Cache::Ci::ProjectPipelineStatus
+      .load_in_batch_for_projects(projects)
+  end
+
+  def show_no_ssh_key_message?
+    cookies[:hide_no_ssh_message].blank? && !current_user.hide_no_ssh_key && current_user.require_ssh_key?
+  end
+
+  def show_no_password_message?
+    cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
+      ( current_user.require_password? || current_user.require_personal_access_token? )
+  end
+
+  def link_to_set_password
+    if current_user.require_password?
+      link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
+    else
+      link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
+    end
   end
 
   private
@@ -214,6 +242,10 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
+    if project.builds_enabled? && can?(current_user, :read_pipeline, project)
+      nav_tabs << :pipelines
+    end
+
     tab_ability_map.each do |tab, ability|
       if can?(current_user, ability, project)
         nav_tabs << tab
@@ -227,7 +259,6 @@ module ProjectsHelper
     {
       environments: :read_environment,
       milestones:   :read_milestone,
-      pipelines:    :read_pipeline,
       snippets:     :read_project_snippet,
       settings:     :admin_project,
       builds:       :read_build,
@@ -250,11 +281,11 @@ module ProjectsHelper
   def project_lfs_status(project)
     if project.lfs_enabled?
       content_tag(:span, class: 'lfs-enabled') do
-        'Enabled'
+        s_('LFSStatus|Enabled')
       end
     else
       content_tag(:span, class: 'lfs-disabled') do
-        'Disabled'
+        s_('LFSStatus|Disabled')
       end
     end
   end
@@ -263,7 +294,7 @@ module ProjectsHelper
     if current_user
       current_user.name
     else
-      "Your name"
+      _("Your name")
     end
   end
 
@@ -300,17 +331,18 @@ module ProjectsHelper
     if project.last_activity_at
       time_ago_with_tooltip(project.last_activity_at, placement: 'bottom', html_class: 'last_activity_time_ago')
     else
-      "Never"
+      s_("ProjectLastActivity|Never")
     end
   end
 
   def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
+    commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
     namespace_project_new_blob_path(
       project.namespace,
       project,
       project.default_branch || 'master',
       file_name:      file_name,
-      commit_message: commit_message || "Add #{file_name.downcase}",
+      commit_message: commit_message,
       branch_name: branch_name,
       context: context
     )
@@ -447,9 +479,9 @@ module ProjectsHelper
 
   def project_feature_options
     {
-      'Disabled' => ProjectFeature::DISABLED,
-      'Only team members' => ProjectFeature::PRIVATE,
-      'Everyone with access' => ProjectFeature::ENABLED
+      ProjectFeature::DISABLED => s_('ProjectFeature|Disabled'),
+      ProjectFeature::PRIVATE => s_('ProjectFeature|Only team members'),
+      ProjectFeature::ENABLED => s_('ProjectFeature|Everyone with access')
     }
   end
 

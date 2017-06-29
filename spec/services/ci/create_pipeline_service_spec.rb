@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::CreatePipelineService, services: true do
+describe Ci::CreatePipelineService, :services do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
   let(:ref_name) { 'refs/heads/master' }
@@ -37,11 +37,20 @@ describe Ci::CreatePipelineService, services: true do
       it 'creates a pipeline' do
         expect(pipeline).to be_kind_of(Ci::Pipeline)
         expect(pipeline).to be_valid
+        expect(pipeline).to be_persisted
         expect(pipeline).to be_push
         expect(pipeline).to eq(project.pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
+      end
+
+      it 'increments the prometheus counter' do
+        expect(Gitlab::Metrics).to receive(:counter)
+          .with(:pipelines_created_count, "Pipelines created count")
+          .and_call_original
+
+        pipeline
       end
 
       context 'when merge requests already exist for this source branch' do

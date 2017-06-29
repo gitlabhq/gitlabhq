@@ -7,7 +7,7 @@ describe 'Pipelines', :feature, :js do
     let(:user) { create(:user) }
 
     before do
-      login_as(user)
+      gitlab_sign_in(user)
       project.team << [user, :developer]
     end
 
@@ -149,7 +149,9 @@ describe 'Pipelines', :feature, :js do
           create(:ci_pipeline, :invalid, project: project)
         end
 
-        before { visit_project_pipelines }
+        before do
+          visit_project_pipelines
+        end
 
         it 'contains badge that indicates errors' do
           expect(page).to have_content 'yaml invalid'
@@ -171,10 +173,12 @@ describe 'Pipelines', :feature, :js do
             commands: 'test')
         end
 
-        before { visit_project_pipelines }
+        before do
+          visit_project_pipelines
+        end
 
         it 'has a dropdown with play button' do
-          expect(page).to have_selector('.dropdown-toggle.btn.btn-default .icon-play')
+          expect(page).to have_selector('.dropdown-new.btn.btn-default .icon-play')
         end
 
         it 'has link to the manual action' do
@@ -204,7 +208,9 @@ describe 'Pipelines', :feature, :js do
               stage: 'test')
           end
 
-          before { visit_project_pipelines }
+          before do
+            visit_project_pipelines
+          end
 
           it 'is cancelable' do
             expect(page).to have_selector('.js-pipelines-cancel-button')
@@ -215,7 +221,9 @@ describe 'Pipelines', :feature, :js do
           end
 
           context 'when canceling' do
-            before { find('.js-pipelines-cancel-button').trigger('click') }
+            before do
+              find('.js-pipelines-cancel-button').trigger('click')
+            end
 
             it 'indicates that pipeline was canceled' do
               expect(page).not_to have_selector('.js-pipelines-cancel-button')
@@ -255,7 +263,9 @@ describe 'Pipelines', :feature, :js do
               stage: 'test')
           end
 
-          before { visit_project_pipelines }
+          before do
+            visit_project_pipelines
+          end
 
           it 'has artifats' do
             expect(page).to have_selector('.build-artifacts')
@@ -284,7 +294,9 @@ describe 'Pipelines', :feature, :js do
               stage: 'test')
           end
 
-          before { visit_project_pipelines }
+          before do
+            visit_project_pipelines
+          end
 
           it { expect(page).not_to have_selector('.build-artifacts') }
         end
@@ -297,7 +309,9 @@ describe 'Pipelines', :feature, :js do
               stage: 'test')
           end
 
-          before { visit_project_pipelines }
+          before do
+            visit_project_pipelines
+          end
 
           it { expect(page).not_to have_selector('.build-artifacts') }
         end
@@ -310,7 +324,9 @@ describe 'Pipelines', :feature, :js do
                                       name: 'build')
         end
 
-        before { visit_project_pipelines }
+        before do
+          visit_project_pipelines
+        end
 
         it 'should render a mini pipeline graph' do
           expect(page).to have_selector('.js-mini-pipeline-graph')
@@ -437,7 +453,9 @@ describe 'Pipelines', :feature, :js do
         end
 
         context 'with gitlab-ci.yml' do
-          before { stub_ci_pipeline_to_return_yaml_file }
+          before do
+            stub_ci_pipeline_to_return_yaml_file
+          end
 
           it 'creates a new pipeline' do
             expect { click_on 'Create pipeline' }
@@ -448,7 +466,9 @@ describe 'Pipelines', :feature, :js do
         end
 
         context 'without gitlab-ci.yml' do
-          before { click_on 'Create pipeline' }
+          before do
+            click_on 'Create pipeline'
+          end
 
           it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
         end

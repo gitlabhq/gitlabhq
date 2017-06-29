@@ -20,7 +20,9 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       ).exec
     end
 
-    before { project.add_developer(user) }
+    before do
+      project.add_developer(user)
+    end
 
     context 'without failed checks' do
       it "doesn't raise an error" do
@@ -50,7 +52,9 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         let!(:protected_tag) { create(:protected_tag, project: project, name: 'v*') }
 
         context 'as master' do
-          before { project.add_master(user) }
+          before do
+            project.add_master(user)
+          end
 
           context 'deletion' do
             let(:oldrev) { 'be93687618e4b132087f430a4d8fc3a609c9b77c' }

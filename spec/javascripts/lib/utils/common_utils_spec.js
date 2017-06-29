@@ -150,6 +150,14 @@ import '~/lib/utils/common_utils';
         const value = gl.utils.getParameterByName('fakeParameter');
         expect(value).toBe(null);
       });
+
+      it('should return valid paramentes if URL is provided', () => {
+        let value = gl.utils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
+        expect(value).toBe('bar');
+
+        value = gl.utils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
+        expect(value).toBe('canchu');
+      });
     });
 
     describe('gl.utils.normalizedHeaders', () => {

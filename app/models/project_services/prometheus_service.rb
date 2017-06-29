@@ -28,17 +28,6 @@ class PrometheusService < MonitoringService
     'Prometheus monitoring'
   end
 
-  def help
-    <<-MD.strip_heredoc
-      Retrieves the Kubernetes node metrics `container_cpu_usage_seconds_total`
-      and `container_memory_usage_bytes` from the configured Prometheus server.
-
-      If you are not using [Auto-Deploy](https://docs.gitlab.com/ee/ci/autodeploy/index.html)
-      or have set up your own Prometheus server, an `environment` label is required on each metric to
-      [identify the Environment](https://docs.gitlab.com/ce/user/project/integrations/prometheus.html#metrics-and-labels).
-    MD
-  end
-
   def self.to_param
     'prometheus'
   end
@@ -50,6 +39,7 @@ class PrometheusService < MonitoringService
         name: 'api_url',
         title: 'API URL',
         placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/',
+        help: 'By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.',
         required: true
       }
     ]
@@ -65,23 +55,34 @@ class PrometheusService < MonitoringService
   end
 
   def environment_metrics(environment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &:itself)
+    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &method(:rename_data_to_metrics))
   end
 
   def deployment_metrics(deployment)
-    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &:itself)
-    metrics&.merge(deployment_time: created_at.to_i) || {}
+    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &method(:rename_data_to_metrics))
+    metrics&.merge(deployment_time: deployment.created_at.to_i) || {}
+  end
+
+  def additional_environment_metrics(environment)
+    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsEnvironmentQuery.name, environment.id, &:itself)
+  end
+
+  def additional_deployment_metrics(deployment)
+    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery.name, deployment.id, &:itself)
+  end
+
+  def matched_metrics
+    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, &:itself)
   end
 
   # Cache metrics for specific environment
   def calculate_reactive_cache(query_class_name, *args)
     return unless active? && project && !project.pending_delete?
 
-    metrics = Kernel.const_get(query_class_name).new(client).query(*args)
-
+    data = Kernel.const_get(query_class_name).new(client).query(*args)
     {
       success: true,
-      metrics: metrics,
+      data: data,
       last_update: Time.now.utc
     }
   rescue Gitlab::PrometheusError => err
@@ -90,5 +91,12 @@ class PrometheusService < MonitoringService
 
   def client
     @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url)
+  end
+
+  private
+
+  def rename_data_to_metrics(metrics)
+    metrics[:metrics] = metrics.delete :data
+    metrics
   end
 end

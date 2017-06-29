@@ -12,6 +12,7 @@ import './mock_data';
 describe('Issue boards new issue form', () => {
   let vm;
   let list;
+  let newIssueMock;
   const promiseReturn = {
     json() {
       return {
@@ -19,8 +20,13 @@ describe('Issue boards new issue form', () => {
       };
     },
   };
+
   const submitIssue = () => {
-    vm.$el.querySelector('.btn-success').click();
+    const dummySubmitEvent = {
+      preventDefault() {},
+    };
+    vm.$refs.submitButton = vm.$el.querySelector('.btn-success');
+    return vm.submit(dummySubmitEvent);
   };
 
   beforeEach((done) => {
@@ -31,29 +37,35 @@ describe('Issue boards new issue form', () => {
     gl.issueBoards.BoardsStore.create();
     gl.IssueBoardsApp = new Vue();
 
-    setTimeout(() => {
-      list = new List(listObj);
+    list = new List(listObj);
 
-      spyOn(gl.boardService, 'newIssue').and.callFake(() => new Promise((resolve, reject) => {
-        if (vm.title === 'error') {
-          reject();
-        } else {
-          resolve(promiseReturn);
-        }
-      }));
+    newIssueMock = Promise.resolve(promiseReturn);
+    spyOn(list, 'newIssue').and.callFake(() => newIssueMock);
 
-      vm = new BoardNewIssueComp({
-        propsData: {
-          list,
-        },
-      }).$mount();
+    vm = new BoardNewIssueComp({
+      propsData: {
+        list,
+      },
+    }).$mount();
 
-      done();
-    }, 0);
+    Vue.nextTick()
+      .then(done)
+      .catch(done.fail);
   });
 
-  afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, boardsMockInterceptor);
+  it('calls submit if submit button is clicked', (done) => {
+    spyOn(vm, 'submit');
+    vm.title = 'Testing Title';
+
+    Vue.nextTick()
+      .then(() => {
+        vm.$el.querySelector('.btn-success').click();
+
+        expect(vm.submit.calls.count()).toBe(1);
+        expect(vm.$refs['submit-button']).toBe(vm.$el.querySelector('.btn-success'));
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('disables submit button if title is empty', () => {
@@ -63,128 +75,122 @@ describe('Issue boards new issue form', () => {
   it('enables submit button if title is not empty', (done) => {
     vm.title = 'Testing Title';
 
-    setTimeout(() => {
-      expect(vm.$el.querySelector('.form-control').value).toBe('Testing Title');
-      expect(vm.$el.querySelector('.btn-success').disabled).not.toBe(true);
-
-      done();
-    }, 0);
+    Vue.nextTick()
+      .then(() => {
+        expect(vm.$el.querySelector('.form-control').value).toBe('Testing Title');
+        expect(vm.$el.querySelector('.btn-success').disabled).not.toBe(true);
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('clears title after clicking cancel', (done) => {
     vm.$el.querySelector('.btn-default').click();
 
-    setTimeout(() => {
-      expect(vm.title).toBe('');
-      done();
-    }, 0);
+    Vue.nextTick()
+      .then(() => {
+        expect(vm.title).toBe('');
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('does not create new issue if title is empty', (done) => {
-    submitIssue();
-
-    setTimeout(() => {
-      expect(gl.boardService.newIssue).not.toHaveBeenCalled();
-      done();
-    }, 0);
+    submitIssue()
+      .then(() => {
+        expect(list.newIssue).not.toHaveBeenCalled();
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   describe('submit success', () => {
     it('creates new issue', (done) => {
       vm.title = 'submit title';
 
-      setTimeout(() => {
-        submitIssue();
-
-        expect(gl.boardService.newIssue).toHaveBeenCalled();
-        done();
-      }, 0);
+      Vue.nextTick()
+        .then(submitIssue)
+        .then(() => {
+          expect(list.newIssue).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('enables button after submit', (done) => {
       vm.title = 'submit issue';
 
-      setTimeout(() => {
-        submitIssue();
-
-        expect(vm.$el.querySelector('.btn-success').disbled).not.toBe(true);
-        done();
-      }, 0);
+      Vue.nextTick()
+        .then(submitIssue)
+        .then(() => {
+          expect(vm.$el.querySelector('.btn-success').disabled).toBe(false);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('clears title after submit', (done) => {
       vm.title = 'submit issue';
 
-      setTimeout(() => {
-        submitIssue();
-
-        expect(vm.title).toBe('');
-        done();
-      }, 0);
-    });
-
-    it('adds new issue to list after submit', (done) => {
-      vm.title = 'submit issue';
-
-      setTimeout(() => {
-        submitIssue();
-
-        expect(list.issues.length).toBe(2);
-        expect(list.issues[1].title).toBe('submit issue');
-        expect(list.issues[1].subscribed).toBe(true);
-        done();
-      }, 0);
+      Vue.nextTick()
+        .then(submitIssue)
+        .then(() => {
+          expect(vm.title).toBe('');
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('sets detail issue after submit', (done) => {
+      expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe(undefined);
       vm.title = 'submit issue';
 
-      setTimeout(() => {
-        submitIssue();
-
-        expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe('submit issue');
-        done();
-      });
+      Vue.nextTick()
+        .then(submitIssue)
+        .then(() => {
+          expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe('submit issue');
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('sets detail list after submit', (done) => {
       vm.title = 'submit issue';
 
-      setTimeout(() => {
-        submitIssue();
-
-        expect(gl.issueBoards.BoardsStore.detail.list.id).toBe(list.id);
-        done();
-      }, 0);
+      Vue.nextTick()
+        .then(submitIssue)
+        .then(() => {
+          expect(gl.issueBoards.BoardsStore.detail.list.id).toBe(list.id);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
   describe('submit error', () => {
-    it('removes issue', (done) => {
+    beforeEach(() => {
+      newIssueMock = Promise.reject(new Error('My hovercraft is full of eels!'));
       vm.title = 'error';
+    });
 
-      setTimeout(() => {
-        submitIssue();
-
-        setTimeout(() => {
+    it('removes issue', (done) => {
+      Vue.nextTick()
+        .then(submitIssue)
+        .then(() => {
           expect(list.issues.length).toBe(1);
-          done();
-        }, 500);
-      }, 0);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('shows error', (done) => {
-      vm.title = 'error';
-      submitIssue();
-
-      setTimeout(() => {
-        submitIssue();
-
-        setTimeout(() => {
+      Vue.nextTick()
+        .then(submitIssue)
+        .then(() => {
           expect(vm.error).toBe(true);
-          done();
-        }, 500);
-      }, 0);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

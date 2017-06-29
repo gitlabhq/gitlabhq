@@ -41,13 +41,14 @@
       <textarea
         id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"
-        data-supports-slash-commands="false"
+        data-supports-quick-actionss="false"
         aria-label="Description"
         v-model="formState.description"
         ref="textarea"
         slot="textarea"
         placeholder="Write a comment or drag your files here..."
-        @keydown.meta.enter="updateIssuable">
+        @keydown.meta.enter="updateIssuable"
+        @keydown.ctrl.enter="updateIssuable">
       </textarea>
     </markdown-field>
   </div>

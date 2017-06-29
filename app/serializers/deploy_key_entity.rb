@@ -11,4 +11,11 @@ class DeployKeyEntity < Grape::Entity
   expose :projects, using: ProjectEntity do |deploy_key|
     deploy_key.projects.select { |project| options[:user].can?(:read_project, project) }
   end
+  expose :can_edit
+
+  private
+
+  def can_edit
+    options[:user].can?(:update_deploy_key, object)
+  end
 end

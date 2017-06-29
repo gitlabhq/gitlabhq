@@ -1,11 +1,12 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase do
+describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :truncate do
   let(:migration) { FakeRenameReservedPathMigrationV1.new }
   let(:subject) { described_class.new(['the-path'], migration) }
 
   before do
     allow(migration).to receive(:say)
+    TestEnv.clean_test_path
   end
 
   def migration_namespace(namespace)
@@ -153,6 +154,30 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase do
     end
   end
 
+  describe '#perform_rename' do
+    describe 'for namespaces' do
+      let(:namespace) { create(:namespace, path: 'the-path') }
+      it 'renames the path' do
+        subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')
+
+        expect(namespace.reload.path).to eq('renamed')
+      end
+
+      it 'renames all the routes for the namespace' do
+        child = create(:group, path: 'child', parent: namespace)
+        project = create(:project, namespace: child, path: 'the-project')
+        other_one = create(:namespace, path: 'the-path-is-similar')
+
+        subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')
+
+        expect(namespace.reload.route.path).to eq('renamed')
+        expect(child.reload.route.path).to eq('renamed/child')
+        expect(project.reload.route.path).to eq('renamed/child/the-project')
+        expect(other_one.reload.route.path).to eq('the-path-is-similar')
+      end
+    end
+  end
+
   describe '#move_pages' do
     it 'moves the pages directory' do
       expect(subject).to receive(:move_folders)
@@ -201,6 +226,55 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase do
       subject.move_folders(uploads_dir, File.join('parent-group', 'sub-group'), File.join('parent-group', 'moved-group'))
 
       expect(File.exist?(expected_file)).to be(true)
+    end
+  end
+
+  describe '#track_rename', redis: true do
+    it 'tracks a rename in redis' do
+      key = 'rename:FakeRenameReservedPathMigrationV1:namespace'
+
+      subject.track_rename('namespace', 'path/to/namespace', 'path/to/renamed')
+
+      old_path, new_path = [nil, nil]
+      Gitlab::Redis.with do |redis|
+        rename_info = redis.lpop(key)
+        old_path, new_path = JSON.parse(rename_info)
+      end
+
+      expect(old_path).to eq('path/to/namespace')
+      expect(new_path).to eq('path/to/renamed')
+    end
+  end
+
+  describe '#reverts_for_type', redis: true do
+    it 'yields for each tracked rename' do
+      subject.track_rename('project', 'old_path', 'new_path')
+      subject.track_rename('project', 'old_path2', 'new_path2')
+      subject.track_rename('namespace', 'namespace_path', 'new_namespace_path')
+
+      expect { |b| subject.reverts_for_type('project', &b) }
+        .to yield_successive_args(%w(old_path2 new_path2), %w(old_path new_path))
+      expect { |b| subject.reverts_for_type('namespace', &b) }
+        .to yield_with_args('namespace_path', 'new_namespace_path')
+    end
+
+    it 'keeps the revert in redis if it failed' do
+      subject.track_rename('project', 'old_path', 'new_path')
+
+      subject.reverts_for_type('project') do
+        raise 'whatever happens, keep going!'
+      end
+
+      key = 'rename:FakeRenameReservedPathMigrationV1:project'
+      stored_renames = nil
+      rename_count = 0
+      Gitlab::Redis.with do |redis|
+        stored_renames = redis.lrange(key, 0, 1)
+        rename_count = redis.llen(key)
+      end
+
+      expect(rename_count).to eq(1)
+      expect(JSON.parse(stored_renames.first)).to eq(%w(old_path new_path))
     end
   end
 end

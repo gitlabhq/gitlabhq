@@ -11,7 +11,7 @@ describe API::Users do
   let(:not_existing_user_id) { (User.maximum('id') || 0 ) + 10 }
   let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
 
-  describe "GET /users" do
+  describe 'GET /users' do
     context "when unauthenticated" do
       it "returns authentication error" do
         get api("/users")
@@ -76,6 +76,12 @@ describe API::Users do
 
         expect(response).to have_http_status(403)
       end
+
+      it 'does not reveal the `is_admin` flag of the user' do
+        get api('/users', user)
+
+        expect(json_response.first.keys).not_to include 'is_admin'
+      end
     end
 
     context "when admin" do
@@ -92,6 +98,7 @@ describe API::Users do
         expect(json_response.first.keys).to include 'two_factor_enabled'
         expect(json_response.first.keys).to include 'last_sign_in_at'
         expect(json_response.first.keys).to include 'confirmed_at'
+        expect(json_response.first.keys).to include 'is_admin'
       end
 
       it "returns an array of external users" do
@@ -160,7 +167,9 @@ describe API::Users do
   end
 
   describe "POST /users" do
-    before { admin }
+    before do
+      admin
+    end
 
     it "creates user" do
       expect do
@@ -280,14 +289,14 @@ describe API::Users do
            bio: 'g' * 256,
            projects_limit: -1
       expect(response).to have_http_status(400)
-      expect(json_response['message']['password']).
-        to eq(['is too short (minimum is 8 characters)'])
-      expect(json_response['message']['bio']).
-        to eq(['is too long (maximum is 255 characters)'])
-      expect(json_response['message']['projects_limit']).
-        to eq(['must be greater than or equal to 0'])
-      expect(json_response['message']['username']).
-        to eq([Gitlab::PathRegex.namespace_format_message])
+      expect(json_response['message']['password'])
+        .to eq(['is too short (minimum is 8 characters)'])
+      expect(json_response['message']['bio'])
+        .to eq(['is too long (maximum is 255 characters)'])
+      expect(json_response['message']['projects_limit'])
+        .to eq(['must be greater than or equal to 0'])
+      expect(json_response['message']['username'])
+        .to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
     it "is not available for non admin users" do
@@ -349,10 +358,13 @@ describe API::Users do
   describe "PUT /users/:id" do
     let!(:admin_user) { create(:admin) }
 
-    before { admin }
+    before do
+      admin
+    end
 
     it "updates user with new bio" do
       put api("/users/#{user.id}", admin), { bio: 'new test bio' }
+
       expect(response).to have_http_status(200)
       expect(json_response['bio']).to eq('new test bio')
       expect(user.reload.bio).to eq('new test bio')
@@ -373,15 +385,34 @@ describe API::Users do
       expect(user.reload.organization).to eq('GitLab')
     end
 
+    it 'updates user with avatar' do
+      put api("/users/#{user.id}", admin), { avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+
+      user.reload
+
+      expect(user.avatar).to be_present
+      expect(response).to have_http_status(200)
+      expect(json_response['avatar_url']).to include(user.avatar_path)
+    end
+
     it 'updates user with his own email' do
       put api("/users/#{user.id}", admin), email: user.email
+
       expect(response).to have_http_status(200)
       expect(json_response['email']).to eq(user.email)
       expect(user.reload.email).to eq(user.email)
     end
 
+    it 'updates user with a new email' do
+      put api("/users/#{user.id}", admin), email: 'new@email.com'
+
+      expect(response).to have_http_status(200)
+      expect(user.reload.notification_email).to eq('new@email.com')
+    end
+
     it 'updates user with his own username' do
       put api("/users/#{user.id}", admin), username: user.username
+
       expect(response).to have_http_status(200)
       expect(json_response['username']).to eq(user.username)
       expect(user.reload.username).to eq(user.username)
@@ -389,12 +420,14 @@ describe API::Users do
 
     it "updates user's existing identity" do
       put api("/users/#{omniauth_user.id}", admin), provider: 'ldapmain', extern_uid: '654321'
+
       expect(response).to have_http_status(200)
       expect(omniauth_user.reload.identities.first.extern_uid).to eq('654321')
     end
 
     it 'updates user with new identity' do
       put api("/users/#{user.id}", admin), provider: 'github', extern_uid: 'john'
+
       expect(response).to have_http_status(200)
       expect(user.reload.identities.first.extern_uid).to eq('john')
       expect(user.reload.identities.first.provider).to eq('github')
@@ -402,12 +435,14 @@ describe API::Users do
 
     it "updates admin status" do
       put api("/users/#{user.id}", admin), { admin: true }
+
       expect(response).to have_http_status(200)
       expect(user.reload.admin).to eq(true)
     end
 
     it "updates external status" do
       put api("/users/#{user.id}", admin), { external: true }
+
       expect(response.status).to eq 200
       expect(json_response['external']).to eq(true)
       expect(user.reload.external?).to be_truthy
@@ -415,6 +450,7 @@ describe API::Users do
 
     it "does not update admin status" do
       put api("/users/#{admin_user.id}", admin), { can_create_group: false }
+
       expect(response).to have_http_status(200)
       expect(admin_user.reload.admin).to eq(true)
       expect(admin_user.can_create_group).to eq(false)
@@ -422,17 +458,24 @@ describe API::Users do
 
     it "does not allow invalid update" do
       put api("/users/#{user.id}", admin), { email: 'invalid email' }
+
       expect(response).to have_http_status(400)
       expect(user.reload.email).not_to eq('invalid email')
     end
 
-    it "is not available for non admin users" do
-      put api("/users/#{user.id}", user), attributes_for(:user)
-      expect(response).to have_http_status(403)
+    context 'when the current user is not an admin' do
+      it "is not available" do
+        expect do
+          put api("/users/#{user.id}", user), attributes_for(:user)
+        end.not_to change { user.reload.attributes }
+
+        expect(response).to have_http_status(403)
+      end
     end
 
     it "returns 404 for non-existing user" do
       put api("/users/999999", admin), { bio: 'update should fail' }
+
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
@@ -452,14 +495,14 @@ describe API::Users do
           bio: 'g' * 256,
           projects_limit: -1
       expect(response).to have_http_status(400)
-      expect(json_response['message']['password']).
-        to eq(['is too short (minimum is 8 characters)'])
-      expect(json_response['message']['bio']).
-        to eq(['is too long (maximum is 255 characters)'])
-      expect(json_response['message']['projects_limit']).
-        to eq(['must be greater than or equal to 0'])
-      expect(json_response['message']['username']).
-        to eq([Gitlab::PathRegex.namespace_format_message])
+      expect(json_response['message']['password'])
+        .to eq(['is too short (minimum is 8 characters)'])
+      expect(json_response['message']['bio'])
+        .to eq(['is too long (maximum is 255 characters)'])
+      expect(json_response['message']['projects_limit'])
+        .to eq(['must be greater than or equal to 0'])
+      expect(json_response['message']['username'])
+        .to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
     it 'returns 400 if provider is missing for identity update' do
@@ -483,6 +526,7 @@ describe API::Users do
 
       it 'returns 409 conflict error if email address exists' do
         put api("/users/#{@user.id}", admin), email: 'test@example.com'
+
         expect(response).to have_http_status(409)
         expect(@user.reload.email).to eq(@user.email)
       end
@@ -490,6 +534,7 @@ describe API::Users do
       it 'returns 409 conflict error if username taken' do
         @user_id = User.all.last.id
         put api("/users/#{@user.id}", admin), username: 'test'
+
         expect(response).to have_http_status(409)
         expect(@user.reload.username).to eq(@user.username)
       end
@@ -497,7 +542,9 @@ describe API::Users do
   end
 
   describe "POST /users/:id/keys" do
-    before { admin }
+    before do
+      admin
+    end
 
     it "does not create invalid ssh key" do
       post api("/users/#{user.id}/keys", admin), { title: "invalid key" }
@@ -527,7 +574,9 @@ describe API::Users do
   end
 
   describe 'GET /user/:id/keys' do
-    before { admin }
+    before do
+      admin
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -558,7 +607,9 @@ describe API::Users do
   end
 
   describe 'DELETE /user/:id/keys/:key_id' do
-    before { admin }
+    before do
+      admin
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -596,7 +647,9 @@ describe API::Users do
   end
 
   describe "POST /users/:id/emails" do
-    before { admin }
+    before do
+      admin
+    end
 
     it "does not create invalid email" do
       post api("/users/#{user.id}/emails", admin), {}
@@ -620,7 +673,9 @@ describe API::Users do
   end
 
   describe 'GET /user/:id/emails' do
-    before { admin }
+    before do
+      admin
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -649,7 +704,7 @@ describe API::Users do
       end
 
       it "returns a 404 for invalid ID" do
-        put api("/users/ASDF/emails", admin)
+        get api("/users/ASDF/emails", admin)
 
         expect(response).to have_http_status(404)
       end
@@ -657,7 +712,9 @@ describe API::Users do
   end
 
   describe 'DELETE /user/:id/emails/:email_id' do
-    before { admin }
+    before do
+      admin
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -703,7 +760,10 @@ describe API::Users do
   describe "DELETE /users/:id" do
     let!(:namespace) { user.namespace }
     let!(:issue) { create(:issue, author: user) }
-    before { admin }
+
+    before do
+      admin
+    end
 
     it "deletes user" do
       Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
@@ -1063,7 +1123,10 @@ describe API::Users do
   end
 
   describe 'POST /users/:id/block' do
-    before { admin }
+    before do
+      admin
+    end
+
     it 'blocks existing user' do
       post api("/users/#{user.id}/block", admin)
       expect(response).to have_http_status(201)
@@ -1091,7 +1154,10 @@ describe API::Users do
 
   describe 'POST /users/:id/unblock' do
     let(:blocked_user)  { create(:user, state: 'blocked') }
-    before { admin }
+
+    before do
+      admin
+    end
 
     it 'unblocks existing user' do
       post api("/users/#{user.id}/unblock", admin)

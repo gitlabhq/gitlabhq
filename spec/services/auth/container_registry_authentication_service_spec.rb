@@ -34,7 +34,9 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       end
 
       context 'for changed configuration' do
-        before { stub_application_setting(container_registry_token_expire_delay: expire_delay) }
+        before do
+          stub_application_setting(container_registry_token_expire_delay: expire_delay)
+        end
 
         it { expect(expires_at).to be_within(2.seconds).of(Time.now + expire_delay.minutes) }
       end
@@ -117,7 +119,9 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       end
 
       context 'allow developer to push images' do
-        before { project.team << [current_user, :developer] }
+        before do
+          project.team << [current_user, :developer]
+        end
 
         let(:current_params) do
           { scope: "repository:#{project.path_with_namespace}:push" }
@@ -128,7 +132,9 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       end
 
       context 'allow reporter to pull images' do
-        before { project.team << [current_user, :reporter] }
+        before do
+          project.team << [current_user, :reporter]
+        end
 
         context 'when pulling from root level repository' do
           let(:current_params) do
@@ -141,7 +147,9 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       end
 
       context 'return a least of privileges' do
-        before { project.team << [current_user, :reporter] }
+        before do
+          project.team << [current_user, :reporter]
+        end
 
         let(:current_params) do
           { scope: "repository:#{project.path_with_namespace}:push,pull" }
@@ -152,7 +160,9 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       end
 
       context 'disallow guest to pull or push images' do
-        before { project.team << [current_user, :guest] }
+        before do
+          project.team << [current_user, :guest]
+        end
 
         let(:current_params) do
           { scope: "repository:#{project.path_with_namespace}:pull,push" }
@@ -355,7 +365,9 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     context 'for project without container registry' do
       let(:project) { create(:empty_project, :public, container_registry_enabled: false) }
 
-      before { project.update(container_registry_enabled: false) }
+      before do
+        project.update(container_registry_enabled: false)
+      end
 
       context 'disallow when pulling' do
         let(:current_params) do

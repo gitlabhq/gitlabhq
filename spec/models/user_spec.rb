@@ -13,6 +13,10 @@ describe User, models: true do
     it { is_expected.to include_module(TokenAuthenticatable) }
   end
 
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
+  end
+
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
@@ -447,6 +451,40 @@ describe User, models: true do
     end
   end
 
+  describe '#ensure_user_rights_and_limits' do
+    describe 'with external user' do
+      let(:user) { create(:user, external: true) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: false)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        stub_config_setting(default_can_create_group: true)
+
+        expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
+          .and change { user.projects_limit }.to(current_application_settings.default_projects_limit)
+      end
+    end
+
+    describe 'without external user' do
+      let(:user) { create(:user, external: false) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: true)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        expect { user.update_attributes(external: true) }.to change { user.can_create_group }.to(false)
+          .and change { user.projects_limit }.to(0)
+      end
+    end
+  end
+
   describe 'rss token' do
     it 'ensures an rss token on read' do
       user = create(:user, rss_token: nil)
@@ -874,8 +912,8 @@ describe User, models: true do
 
   describe '.find_by_username!' do
     it 'raises RecordNotFound' do
-      expect { described_class.find_by_username!('JohnDoe') }.
-        to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.find_by_username!('JohnDoe') }
+        .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'is case-insensitive' do
@@ -983,7 +1021,7 @@ describe User, models: true do
 
     context 'when avatar file is uploaded' do
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-      let(:avatar_path) { "/uploads/user/avatar/#{user.id}/dk.png" }
+      let(:avatar_path) { "/uploads/system/user/avatar/#{user.id}/dk.png" }
 
       it 'shows correct avatar url' do
         expect(user.avatar_url).to eq(avatar_path)
@@ -1519,8 +1557,8 @@ describe User, models: true do
     end
 
     it 'returns the projects when using an ActiveRecord relation' do
-      projects = user.
-        projects_with_reporter_access_limited_to(Project.select(:id))
+      projects = user
+        .projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end
@@ -1580,7 +1618,9 @@ describe User, models: true do
     end
 
     context 'user is member of the top group' do
-      before { group.add_owner(user) }
+      before do
+        group.add_owner(user)
+      end
 
       if Group.supports_nested_groups?
         it 'returns all groups' do
@@ -1598,7 +1638,9 @@ describe User, models: true do
     end
 
     context 'user is member of the first child (internal node), branch 1', :nested_groups do
-      before { nested_group_1.add_owner(user) }
+      before do
+        nested_group_1.add_owner(user)
+      end
 
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [
@@ -1609,7 +1651,9 @@ describe User, models: true do
     end
 
     context 'user is member of the first child (internal node), branch 2', :nested_groups do
-      before { nested_group_2.add_owner(user) }
+      before do
+        nested_group_2.add_owner(user)
+      end
 
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [
@@ -1620,7 +1664,9 @@ describe User, models: true do
     end
 
     context 'user is member of the last child (leaf node)', :nested_groups do
-      before { nested_group_1_1.add_owner(user) }
+      before do
+        nested_group_1_1.add_owner(user)
+      end
 
       it 'returns the groups in the hierarchy' do
         is_expected.to match_array [
@@ -1684,6 +1730,20 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
+    end
+  end
+
+  describe '#full_private_access?' do
+    it 'returns false for regular user' do
+      user = build(:user)
+
+      expect(user.full_private_access?).to be_falsy
+    end
+
+    it 'returns true for admin user' do
+      user = build(:user, :admin)
+
+      expect(user.full_private_access?).to be_truthy
     end
   end
 

@@ -70,7 +70,9 @@ describe SpamService, services: true do
         end
 
         context 'when not indicated as spam by akismet' do
-          before { allow(AkismetService).to receive(:new).and_return(double(is_spam?: false)) }
+          before do
+            allow(AkismetService).to receive(:new).and_return(double(is_spam?: false))
+          end
 
           it 'returns false' do
             expect(check_spam(issue, request, false)).to be_falsey

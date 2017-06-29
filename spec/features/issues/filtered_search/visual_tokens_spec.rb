@@ -25,7 +25,7 @@ describe 'Visual tokens', js: true, feature: true do
   before do
     project.add_user(user, :master)
     project.add_user(user_rock, :master)
-    login_as(user)
+    gitlab_sign_in(user)
     create(:issue, project: project)
 
     visit namespace_project_issues_path(project.namespace, project)
@@ -34,7 +34,7 @@ describe 'Visual tokens', js: true, feature: true do
   describe 'editing author token' do
     before do
       input_filtered_search('author:@root assignee:none', submit: false)
-      first('.tokens-container .filtered-search-token').double_click
+      first('.tokens-container .filtered-search-token').click
     end
 
     it 'opens author dropdown' do
@@ -331,7 +331,7 @@ describe 'Visual tokens', js: true, feature: true do
     it 'does not tokenize incomplete token' do
       filtered_search.send_keys('author:')
 
-      find('#content-body').click
+      find('body').click
       token = page.all('.tokens-container .js-visual-token')[1]
 
       expect_filtered_search_input_empty

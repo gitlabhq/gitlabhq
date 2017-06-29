@@ -7,7 +7,7 @@ feature 'Group activity page', feature: true do
   context 'when signed in' do
     before do
       user = create(:group_member, :developer, user: create(:user), group: group ).user
-      login_as(user)
+      gitlab_sign_in(user)
       visit path
     end
 

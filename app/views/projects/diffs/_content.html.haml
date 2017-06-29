@@ -1,27 +1,2 @@
-- blob = diff_file.blob
-
 .diff-content
-  - if diff_file.too_large?
-    .nothing-here-block This diff could not be displayed because it is too large.
-  - elsif blob.truncated?
-    .nothing-here-block The file could not be displayed because it is too large.
-  - elsif blob.readable_text?
-    - if !diff_file.repository.diffable?(blob)
-      .nothing-here-block This diff was suppressed by a .gitattributes entry.
-    - elsif diff_file.collapsed?
-      - url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier))
-      .nothing-here-block.diff-collapsed{ data: { diff_for_path: url } }
-        This diff is collapsed.
-        %a.click-to-expand
-          Click to expand it.
-    - elsif diff_file.diff_lines.length > 0
-      = render "projects/diffs/viewers/text", diff_file: diff_file
-    - else
-      - if diff_file.mode_changed?
-        .nothing-here-block File mode changed
-      - elsif diff_file.renamed_file?
-        .nothing-here-block File moved
-  - elsif blob.image?
-    = render "projects/diffs/viewers/image", diff_file: diff_file
-  - else
-    .nothing-here-block No preview for this file type
+  = render 'projects/diffs/viewer', viewer: diff_file.rich_viewer || diff_file.simple_viewer

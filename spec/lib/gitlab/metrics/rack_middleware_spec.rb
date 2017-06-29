@@ -26,8 +26,8 @@ describe Gitlab::Metrics::RackMiddleware do
 
       allow(app).to receive(:call).with(env)
 
-      expect(middleware).to receive(:tag_controller).
-        with(an_instance_of(Gitlab::Metrics::Transaction), env)
+      expect(middleware).to receive(:tag_controller)
+        .with(an_instance_of(Gitlab::Metrics::Transaction), env)
 
       middleware.call(env)
     end
@@ -40,8 +40,8 @@ describe Gitlab::Metrics::RackMiddleware do
 
       allow(app).to receive(:call).with(env)
 
-      expect(middleware).to receive(:tag_endpoint).
-        with(an_instance_of(Gitlab::Metrics::Transaction), env)
+      expect(middleware).to receive(:tag_endpoint)
+        .with(an_instance_of(Gitlab::Metrics::Transaction), env)
 
       middleware.call(env)
     end
@@ -49,8 +49,8 @@ describe Gitlab::Metrics::RackMiddleware do
     it 'tracks any raised exceptions' do
       expect(app).to receive(:call).with(env).and_raise(RuntimeError)
 
-      expect_any_instance_of(Gitlab::Metrics::Transaction).
-        to receive(:add_event).with(:rails_exception)
+      expect_any_instance_of(Gitlab::Metrics::Transaction)
+        .to receive(:add_event).with(:rails_exception)
 
       expect { middleware.call(env) }.to raise_error(RuntimeError)
     end

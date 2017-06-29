@@ -7,7 +7,7 @@ feature 'Slack slash commands', feature: true do
 
   background do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
     visit edit_namespace_project_service_path(project.namespace, project, service)
   end
 

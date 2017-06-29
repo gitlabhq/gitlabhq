@@ -63,16 +63,6 @@ class Project < ActiveRecord::Base
 
   # update visibility_level of forks
   after_update :update_forks_visibility_level
-  def update_forks_visibility_level
-    return unless visibility_level < visibility_level_was
-
-    forks.each do |forked_project|
-      if forked_project.visibility_level > visibility_level
-        forked_project.visibility_level = visibility_level
-        forked_project.save!
-      end
-    end
-  end
 
   after_validation :check_pending_delete
 
@@ -165,7 +155,7 @@ class Project < ActiveRecord::Base
   has_many :todos, dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source
 
-  has_one :import_data, dependent: :delete, class_name: "ProjectImportData"
+  has_one :import_data, dependent: :delete, class_name: 'ProjectImportData'
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
   has_many :container_repositories, dependent: :destroy
@@ -232,9 +222,8 @@ class Project < ActiveRecord::Base
   has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
-  default_scope { where(pending_delete: false) }
-
-  scope :with_deleted, -> { unscope(where: :pending_delete) }
+  scope :pending_delete, -> { where(pending_delete: true) }
+  scope :without_deleted, -> { where(pending_delete: false) }
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
@@ -254,8 +243,8 @@ class Project < ActiveRecord::Base
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.
-    joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'").
-      where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
+    joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'")
+      .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
   end
 
   # "enabled" here means "not disabled". It includes private features!
@@ -276,20 +265,49 @@ class Project < ActiveRecord::Base
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
+  # Returns a collection of projects that is either public or visible to the
+  # logged in user.
+  def self.public_or_visible_to_user(user = nil)
+    if user
+      authorized = user
+        .project_authorizations
+        .select(1)
+        .where('project_authorizations.project_id = projects.id')
+
+      levels = Gitlab::VisibilityLevel.levels_for_user(user)
+
+      where('EXISTS (?) OR projects.visibility_level IN (?)', authorized, levels)
+    else
+      public_to_user
+    end
+  end
+
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
   # the feature is either enabled, or internal with permission for the user.
+  #
+  # This method uses an optimised version of `with_feature_access_level` for
+  # logged in users to more efficiently get private projects with the given
+  # feature.
   def self.with_feature_available_for_user(feature, user)
-    return with_feature_enabled(feature) if user.try(:admin?)
+    visible = [nil, ProjectFeature::ENABLED]
 
-    unconditional = with_feature_access_level(feature, [nil, ProjectFeature::ENABLED])
-    return unconditional if user.nil?
+    if user&.admin?
+      with_feature_enabled(feature)
+    elsif user
+      column = ProjectFeature.quoted_access_level_column(feature)
 
-    conditional = with_feature_access_level(feature, ProjectFeature::PRIVATE)
-    authorized = user.authorized_projects.merge(conditional.reorder(nil))
+      authorized = user.project_authorizations.select(1)
+        .where('project_authorizations.project_id = projects.id')
 
-    union = Gitlab::SQL::Union.new([unconditional.select(:id), authorized.select(:id)])
-    where(arel_table[:id].in(Arel::Nodes::SqlLiteral.new(union.to_sql)))
+      with_project_feature
+        .where("#{column} IN (?) OR (#{column} = ? AND EXISTS (?))",
+              visible,
+              ProjectFeature::PRIVATE,
+              authorized)
+    else
+      with_feature_access_level(feature, visible)
+    end
   end
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
@@ -331,7 +349,19 @@ class Project < ActiveRecord::Base
       project.run_after_commit { add_import_job }
     end
 
-    after_transition started: :finished, do: :reset_cache_and_import_attrs
+    after_transition started: :finished do |project, _|
+      project.reset_cache_and_import_attrs
+
+      if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
+        project.run_after_commit do
+          begin
+            Projects::HousekeepingService.new(project).execute
+          rescue Projects::HousekeepingService::LeaseTaken => e
+            Rails.logger.info("Could not perform housekeeping for project #{project.path_with_namespace} (#{project.id}): #{e}")
+          end
+        end
+      end
+    end
   end
 
   class << self
@@ -350,14 +380,14 @@ class Project < ActiveRecord::Base
       # unscoping unnecessary conditions that'll be applied
       # when executing `where("projects.id IN (#{union.to_sql})")`
       projects = unscoped.select(:id).where(
-        ptable[:path].matches(pattern).
-          or(ptable[:name].matches(pattern)).
-          or(ptable[:description].matches(pattern))
+        ptable[:path].matches(pattern)
+          .or(ptable[:name].matches(pattern))
+          .or(ptable[:description].matches(pattern))
       )
 
-      namespaces = unscoped.select(:id).
-        joins(:namespace).
-        where(ntable[:name].matches(pattern))
+      namespaces = unscoped.select(:id)
+        .joins(:namespace)
+        .where(ntable[:name].matches(pattern))
 
       union = Gitlab::SQL::Union.new([projects, namespaces])
 
@@ -398,8 +428,8 @@ class Project < ActiveRecord::Base
     end
 
     def trending
-      joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id').
-        reorder('trending_projects.id ASC')
+      joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id')
+        .reorder('trending_projects.id ASC')
     end
 
     def cached_count
@@ -488,7 +518,7 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
-    self.import_data&.destroy
+    import_data&.destroy
   end
 
   def import_url=(value)
@@ -666,7 +696,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity_date
-    last_activity_at || updated_at
+    last_repository_updated_at || last_activity_at || updated_at
   end
 
   def project_id
@@ -785,7 +815,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
+    @ci_service ||= ci_services.find_by(active: true)
   end
 
   def deployment_services
@@ -793,7 +823,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_service
-    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
+    @deployment_service ||= deployment_services.find_by(active: true)
   end
 
   def monitoring_services
@@ -801,7 +831,7 @@ class Project < ActiveRecord::Base
   end
 
   def monitoring_service
-    @monitoring_service ||= monitoring_services.reorder(nil).find_by(active: true)
+    @monitoring_service ||= monitoring_services.find_by(active: true)
   end
 
   def jira_tracker?
@@ -1056,8 +1086,23 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def ensure_repository
+    create_repository unless repository_exists?
+  end
+
   def repository_exists?
     !!repository.exists?
+  end
+
+  def update_forks_visibility_level
+    return unless visibility_level < visibility_level_was
+
+    forks.each do |forked_project|
+      if forked_project.visibility_level > visibility_level
+        forked_project.visibility_level = visibility_level
+        forked_project.save!
+      end
+    end
   end
 
   def create_wiki
@@ -1066,6 +1111,10 @@ class Project < ActiveRecord::Base
   rescue ProjectWiki::CouldNotCreateWikiError
     errors.add(:base, 'Failed create wiki')
     false
+  end
+
+  def wiki
+    @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
   def jira_tracker_active?
@@ -1188,10 +1237,6 @@ class Project < ActiveRecord::Base
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.full_path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
-  end
-
-  def wiki
-    @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
   def running_or_pending_build_count(force: false)
@@ -1407,7 +1452,7 @@ class Project < ActiveRecord::Base
   def pending_delete_twin
     return false unless path
 
-    Project.unscoped.where(pending_delete: true).find_by_full_path(path_with_namespace)
+    Project.pending_delete.find_by_full_path(path_with_namespace)
   end
 
   ##

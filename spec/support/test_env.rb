@@ -54,6 +54,8 @@ module TestEnv
     'conflict-resolvable-fork'   => '404fa3f'
   }.freeze
 
+  TMP_TEST_PATH = Rails.root.join('tmp', 'tests', '**')
+
   # Test environment
   #
   # See gitlab.yml.example test section for paths
@@ -81,13 +83,13 @@ module TestEnv
   end
 
   def disable_mailer
-    allow_any_instance_of(NotificationService).to receive(:mailer).
-      and_return(double.as_null_object)
+    allow_any_instance_of(NotificationService).to receive(:mailer)
+      .and_return(double.as_null_object)
   end
 
   def enable_mailer
-    allow_any_instance_of(NotificationService).to receive(:mailer).
-      and_call_original
+    allow_any_instance_of(NotificationService).to receive(:mailer)
+      .and_call_original
   end
 
   def disable_pre_receive
@@ -98,9 +100,7 @@ module TestEnv
   #
   # Keeps gitlab-shell and gitlab-test
   def clean_test_path
-    tmp_test_path = Rails.root.join('tmp', 'tests', '**')
-
-    Dir[tmp_test_path].each do |entry|
+    Dir[TMP_TEST_PATH].each do |entry|
       unless File.basename(entry) =~ /\A(gitaly|gitlab-(shell|test|test_bare|test-fork|test-fork_bare))\z/
         FileUtils.rm_rf(entry)
       end
@@ -111,19 +111,30 @@ module TestEnv
     FileUtils.mkdir_p(pages_path)
   end
 
-  def setup_gitlab_shell
-    unless File.directory?(Gitlab.config.gitlab_shell.path)
-      unless system('rake', 'gitlab:shell:install')
-        raise 'Can`t clone gitlab-shell'
+  def clean_gitlab_test_path
+    Dir[TMP_TEST_PATH].each do |entry|
+      if File.basename(entry) =~ /\A(gitlab-(test|test_bare|test-fork|test-fork_bare))\z/
+        FileUtils.rm_rf(entry)
       end
+    end
+  end
+
+  def setup_gitlab_shell
+    shell_needs_update = component_needs_update?(Gitlab.config.gitlab_shell.path,
+      Gitlab::Shell.version_required)
+
+    unless !shell_needs_update || system('rake', 'gitlab:shell:install')
+      raise 'Can`t clone gitlab-shell'
     end
   end
 
   def setup_gitaly
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
+    gitaly_needs_update = component_needs_update?(gitaly_dir,
+      Gitlab::GitalyClient.expected_server_version)
 
-    unless !gitaly_needs_update?(gitaly_dir) || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
+    unless !gitaly_needs_update || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
       raise "Can't clone gitaly"
     end
 
@@ -249,17 +260,17 @@ module TestEnv
 
       # Before we used Git clone's --mirror option, bare repos could end up
       # with missing refs, clearing them and retrying should fix the issue.
-      cleanup && init unless reset.call
+      cleanup && clean_gitlab_test_path && init unless reset.call
     end
   end
 
-  def gitaly_needs_update?(gitaly_dir)
-    gitaly_version = File.read(File.join(gitaly_dir, 'VERSION')).strip
+  def component_needs_update?(component_folder, expected_version)
+    version = File.read(File.join(component_folder, 'VERSION')).strip
 
     # Notice that this will always yield true when using branch versions
     # (`=branch_name`), but that actually makes sure the server is always based
     # on the latest branch revision.
-    gitaly_version != Gitlab::GitalyClient.expected_server_version
+    version != expected_version
   rescue Errno::ENOENT
     true
   end

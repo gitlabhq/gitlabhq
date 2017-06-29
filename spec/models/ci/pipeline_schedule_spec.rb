@@ -40,8 +40,8 @@ describe Ci::PipelineSchedule, models: true do
 
     context 'when creates new pipeline schedule' do
       let(:expected_next_run_at) do
-        Gitlab::Ci::CronParser.new(pipeline_schedule.cron, pipeline_schedule.cron_timezone).
-          next_time_from(Time.now)
+        Gitlab::Ci::CronParser.new(pipeline_schedule.cron, pipeline_schedule.cron_timezone)
+          .next_time_from(Time.now)
       end
 
       it 'updates next_run_at automatically' do
@@ -53,8 +53,8 @@ describe Ci::PipelineSchedule, models: true do
       let(:new_cron) { '0 0 1 1 *' }
 
       let(:expected_next_run_at) do
-        Gitlab::Ci::CronParser.new(new_cron, pipeline_schedule.cron_timezone).
-          next_time_from(Time.now)
+        Gitlab::Ci::CronParser.new(new_cron, pipeline_schedule.cron_timezone)
+          .next_time_from(Time.now)
       end
 
       it 'updates next_run_at automatically' do
@@ -72,8 +72,8 @@ describe Ci::PipelineSchedule, models: true do
       let(:future_time) { 10.days.from_now }
 
       let(:expected_next_run_at) do
-        Gitlab::Ci::CronParser.new(pipeline_schedule.cron, pipeline_schedule.cron_timezone).
-          next_time_from(future_time)
+        Gitlab::Ci::CronParser.new(pipeline_schedule.cron, pipeline_schedule.cron_timezone)
+          .next_time_from(future_time)
       end
 
       it 'points to proper next_run_at' do

@@ -88,9 +88,13 @@ merge_requests:
 - head_pipeline
 merge_request_diff:
 - merge_request
+- merge_request_diff_files
+merge_request_diff_files:
+- merge_request_diff
 pipelines:
 - project
 - user
+- stages
 - statuses
 - builds
 - trigger_requests
@@ -104,9 +108,15 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
+stages:
+- project
+- pipeline
+- statuses
+- builds
 statuses:
 - project
 - pipeline
+- stage
 - user
 - auto_canceled_by
 variables:

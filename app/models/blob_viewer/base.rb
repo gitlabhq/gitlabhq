@@ -6,15 +6,15 @@ module BlobViewer
 
     self.loading_partial_name = 'loading'
 
-    delegate :partial_path, :loading_partial_path, :rich?, :simple?, :text?, :binary?, to: :class
+    delegate :partial_path, :loading_partial_path, :rich?, :simple?, :load_async?, :text?, :binary?, to: :class
 
     attr_reader :blob
-    attr_accessor :expanded
 
     delegate :project, to: :blob
 
     def initialize(blob)
       @blob = blob
+      @initially_binary = blob.binary?
     end
 
     def self.partial_path
@@ -52,25 +52,25 @@ module BlobViewer
     def self.can_render?(blob, verify_binary: true)
       return false if verify_binary && binary? != blob.binary?
       return true if extensions&.include?(blob.extension)
-      return true if file_types&.include?(Gitlab::FileDetector.type_of(blob.path))
+      return true if file_types&.include?(blob.file_type)
 
       false
-    end
-
-    def load_async?
-      self.class.load_async? && render_error.nil?
     end
 
     def collapsed?
       return @collapsed if defined?(@collapsed)
 
-      @collapsed = !expanded && collapse_limit && blob.raw_size > collapse_limit
+      @collapsed = !blob.expanded? && collapse_limit && blob.raw_size > collapse_limit
     end
 
     def too_large?
       return @too_large if defined?(@too_large)
 
       @too_large = size_limit && blob.raw_size > size_limit
+    end
+
+    def binary_detected_after_load?
+      !@initially_binary && blob.binary?
     end
 
     # This method is used on the server side to check whether we can attempt to

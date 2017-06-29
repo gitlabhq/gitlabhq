@@ -6,12 +6,12 @@ feature 'Work In Progress help message', feature: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'with WIP commits' do
     it 'shows a specific WIP hint' do
-      visit new_namespace_project_merge_request_path(
+      visit namespace_project_new_merge_request_path(
         project.namespace,
         project,
         merge_request: {
@@ -32,7 +32,7 @@ feature 'Work In Progress help message', feature: true do
 
   context 'without WIP commits' do
     it 'shows the regular WIP message' do
-      visit new_namespace_project_merge_request_path(
+      visit namespace_project_new_merge_request_path(
         project.namespace,
         project,
         merge_request: {

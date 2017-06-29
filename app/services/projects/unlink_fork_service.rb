@@ -10,7 +10,7 @@ module Projects
       merge_requests = @project.forked_from_project.merge_requests.opened.from_project(@project)
 
       merge_requests.each do |mr|
-        MergeRequests::CloseService.new(@project, @current_user).execute(mr)
+        ::MergeRequests::CloseService.new(@project, @current_user).execute(mr)
       end
 
       @project.forked_project_link.destroy

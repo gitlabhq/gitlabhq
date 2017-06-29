@@ -4,7 +4,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
-  before_action :builds_enabled, only: :charts
 
   wrap_parameters Ci::Pipeline
 
@@ -99,7 +98,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def stage
-    @stage = pipeline.stage(params[:stage])
+    @stage = pipeline.legacy_stage(params[:stage])
     return not_found unless @stage
 
     respond_to do |format|
@@ -136,7 +135,12 @@ class Projects::PipelinesController < Projects::ApplicationController
     @charts[:week] = Ci::Charts::WeekChart.new(project)
     @charts[:month] = Ci::Charts::MonthChart.new(project)
     @charts[:year] = Ci::Charts::YearChart.new(project)
-    @charts[:build_times] = Ci::Charts::BuildTime.new(project)
+    @charts[:pipeline_times] = Ci::Charts::PipelineTime.new(project)
+
+    @counts = {}
+    @counts[:total] = @project.pipelines.count(:all)
+    @counts[:success] = @project.pipelines.success.count(:all)
+    @counts[:failed] = @project.pipelines.failed.count(:all)
   end
 
   private

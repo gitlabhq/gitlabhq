@@ -316,6 +316,26 @@ describe 'Git HTTP requests', lib: true do
             it_behaves_like 'pushes require Basic HTTP Authentication'
           end
         end
+
+        context 'and the user requests a redirected path' do
+          let!(:redirect) { project.route.create_redirect('foo/bar') }
+          let(:path) { "#{redirect.path}.git" }
+          let(:project_moved_message) do
+            <<-MSG.strip_heredoc
+              Project '#{redirect.path}' was moved to '#{project.full_path}'.
+
+              Please update your Git remote and try again:
+
+                git remote set-url origin #{project.http_url_to_repo}
+            MSG
+          end
+
+          it 'downloads get status 404 with "project was moved" message' do
+            clone_get(path, {})
+            expect(response).to have_http_status(:not_found)
+            expect(response.body).to match(project_moved_message)
+          end
+        end
       end
 
       context "when the project is private" do
@@ -418,17 +438,17 @@ describe 'Git HTTP requests', lib: true do
                 end
 
                 context 'when username and password are provided' do
-                  it 'rejects pulls with 2FA error message' do
+                  it 'rejects pulls with personal access token error message' do
                     download(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_http_status(:unauthorized)
-                      expect(response.body).to include('You have 2FA enabled, please use a personal access token for Git over HTTP')
+                      expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
                     end
                   end
 
-                  it 'rejects the push attempt' do
+                  it 'rejects the push attempt with personal access token error message' do
                     upload(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_http_status(:unauthorized)
-                      expect(response.body).to include('You have 2FA enabled, please use a personal access token for Git over HTTP')
+                      expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
                     end
                   end
                 end
@@ -438,6 +458,41 @@ describe 'Git HTTP requests', lib: true do
 
                   it_behaves_like 'pulls are allowed'
                   it_behaves_like 'pushes are allowed'
+                end
+              end
+
+              context 'when internal auth is disabled' do
+                before do
+                  allow_any_instance_of(ApplicationSetting).to receive(:signin_enabled?) { false }
+                end
+
+                it 'rejects pulls with personal access token error message' do
+                  download(path, user: 'foo', password: 'bar') do |response|
+                    expect(response).to have_http_status(:unauthorized)
+                    expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+                  end
+                end
+
+                it 'rejects pushes with personal access token error message' do
+                  upload(path, user: 'foo', password: 'bar') do |response|
+                    expect(response).to have_http_status(:unauthorized)
+                    expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+                  end
+                end
+
+                context 'when LDAP is configured' do
+                  before do
+                    allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+                    allow_any_instance_of(Gitlab::LDAP::Authentication)
+                      .to receive(:login).and_return(nil)
+                  end
+
+                  it 'does not display the personal access token error message' do
+                    upload(path, user: 'foo', password: 'bar') do |response|
+                      expect(response).to have_http_status(:unauthorized)
+                      expect(response.body).not_to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+                    end
+                  end
                 end
               end
 
@@ -468,6 +523,33 @@ describe 'Git HTTP requests', lib: true do
                   end
 
                   Rack::Attack::Allow2Ban.reset(ip, options)
+                end
+              end
+
+              context 'and the user requests a redirected path' do
+                let!(:redirect) { project.route.create_redirect('foo/bar') }
+                let(:path) { "#{redirect.path}.git" }
+                let(:project_moved_message) do
+                  <<-MSG.strip_heredoc
+                    Project '#{redirect.path}' was moved to '#{project.full_path}'.
+
+                    Please update your Git remote and try again:
+
+                      git remote set-url origin #{project.http_url_to_repo}
+                  MSG
+                end
+
+                it 'downloads get status 404 with "project was moved" message' do
+                  clone_get(path, env)
+                  expect(response).to have_http_status(:not_found)
+                  expect(response.body).to match(project_moved_message)
+                end
+
+                it 'uploads get status 404 with "project was moved" message' do
+                  upload(path, env) do |response|
+                    expect(response).to have_http_status(:not_found)
+                    expect(response.body).to match(project_moved_message)
+                  end
                 end
               end
             end
@@ -592,7 +674,9 @@ describe 'Git HTTP requests', lib: true do
           let(:path) { "/#{project.path_with_namespace}/info/refs" }
 
           context "when no params are added" do
-            before { get path }
+            before do
+              get path
+            end
 
             it "redirects to the .git suffix version" do
               expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs")
@@ -601,7 +685,10 @@ describe 'Git HTTP requests', lib: true do
 
           context "when the upload-pack service is requested" do
             let(:params) { { service: 'git-upload-pack' } }
-            before { get path, params }
+
+            before do
+              get path, params
+            end
 
             it "redirects to the .git suffix version" do
               expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
@@ -610,7 +697,10 @@ describe 'Git HTTP requests', lib: true do
 
           context "when the receive-pack service is requested" do
             let(:params) { { service: 'git-receive-pack' } }
-            before { get path, params }
+
+            before do
+              get path, params
+            end
 
             it "redirects to the .git suffix version" do
               expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
@@ -619,7 +709,10 @@ describe 'Git HTTP requests', lib: true do
 
           context "when the params are anything else" do
             let(:params) { { service: 'git-implode-pack' } }
-            before { get path, params }
+
+            before do
+              get path, params
+            end
 
             it "redirects to the sign-in page" do
               expect(response).to redirect_to(new_user_session_path)
@@ -634,7 +727,7 @@ describe 'Git HTTP requests', lib: true do
         end
 
         context "POST git-receive-pack" do
-          it "failes to find a route" do
+          it "fails to find a route" do
             expect { push_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
           end
         end
@@ -648,7 +741,7 @@ describe 'Git HTTP requests', lib: true do
             # Provide a dummy file in its place
             allow_any_instance_of(Repository).to receive(:blob_at).and_call_original
             allow_any_instance_of(Repository).to receive(:blob_at).with('b83d6e391c22777fca1ed3012fce84f633d7fed0', 'info/refs') do
-              Gitlab::Git::Blob.find(project.repository, 'master', 'bar/branch-test.txt')
+              Blob.decorate(Gitlab::Git::Blob.find(project.repository, 'master', 'bar/branch-test.txt'), project)
             end
 
             get "/#{project.path_with_namespace}/blob/master/info/refs"
@@ -660,7 +753,9 @@ describe 'Git HTTP requests', lib: true do
         end
 
         context "when the file does not exist" do
-          before { get "/#{project.path_with_namespace}/blob/master/info/refs" }
+          before do
+            get "/#{project.path_with_namespace}/blob/master/info/refs"
+          end
 
           it "returns not found" do
             expect(response).to have_http_status(:not_found)

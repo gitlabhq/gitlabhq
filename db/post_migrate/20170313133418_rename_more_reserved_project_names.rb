@@ -21,17 +21,17 @@ class RenameMoreReservedProjectNames < ActiveRecord::Migration
   private
 
   def reserved_projects
-    Project.unscoped.
-      includes(:namespace).
-      where('EXISTS (SELECT 1 FROM namespaces WHERE projects.namespace_id = namespaces.id)').
-      where('projects.path' => KNOWN_PATHS)
+    Project.unscoped
+      .includes(:namespace)
+      .where('EXISTS (SELECT 1 FROM namespaces WHERE projects.namespace_id = namespaces.id)')
+      .where('projects.path' => KNOWN_PATHS)
   end
 
   def route_exists?(full_path)
     quoted_path = ActiveRecord::Base.connection.quote_string(full_path)
 
-    ActiveRecord::Base.connection.
-      select_all("SELECT id, path FROM routes WHERE path = '#{quoted_path}'").present?
+    ActiveRecord::Base.connection
+      .select_all("SELECT id, path FROM routes WHERE path = '#{quoted_path}'").present?
   end
 
   # Adds number to the end of the path that is not taken by other route

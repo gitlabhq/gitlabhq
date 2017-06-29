@@ -21,13 +21,13 @@ below.
 
 ## How to enter data
 
-Time Tracking uses two [slash commands] that GitLab introduced with this new
+Time Tracking uses two [quick actions] that GitLab introduced with this new
 feature: `/spend` and `/estimate`.
 
-Slash commands can be used in the body of an issue or a merge request, but also
+Quick actions can be used in the body of an issue or a merge request, but also
 in a comment in both an issue or a merge request.
 
-Below is an example of how you can use those new slash commands inside a comment.
+Below is an example of how you can use those new quick actions inside a comment.
 
 ![Time tracking example in a comment](time-tracking/time-tracking-example.png)
 
@@ -70,4 +70,4 @@ The following time units are available:
 Default conversion rates are 1w = 5d and 1d = 8h.
 
 [landing]: https://about.gitlab.com/features/time-tracking
-[slash-commands]: ../user/project/slash_commands.md
+[quick actions]: ../user/project/quick_actions.md

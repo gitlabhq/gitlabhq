@@ -8,7 +8,7 @@ class Member < ActiveRecord::Base
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
-  belongs_to :source, polymorphic: true
+  belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -99,9 +99,9 @@ class Member < ActiveRecord::Base
       users = User.arel_table
       members = Member.arel_table
 
-      member_users = members.join(users, Arel::Nodes::OuterJoin).
-                             on(members[:user_id].eq(users[:id])).
-                             join_sources
+      member_users = members.join(users, Arel::Nodes::OuterJoin)
+                             .on(members[:user_id].eq(users[:id]))
+                             .join_sources
 
       joins(member_users)
     end

@@ -12,7 +12,7 @@ feature 'Pipeline Schedules', :feature do
   before do
     project.add_master(user)
 
-    login_as(user)
+    gitlab_sign_in(user)
     visit_page
   end
 
@@ -127,7 +127,7 @@ feature 'Pipeline Schedules', :feature do
       end
 
       it 'shows the pipeline schedule with default ref' do
-        page.within('.git-revision-dropdown-toggle') do
+        page.within('.js-target-branch-dropdown') do
           expect(first('.dropdown-toggle-text').text).to eq('master')
         end
       end

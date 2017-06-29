@@ -37,6 +37,7 @@ describe Gitlab::UsageData do
         deploy_keys
         deployments
         environments
+        in_review_folder
         groups
         issues
         keys

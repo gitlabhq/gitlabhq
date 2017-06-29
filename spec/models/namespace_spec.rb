@@ -43,6 +43,12 @@ describe Namespace, models: true do
         end
       end
 
+      context "is case insensitive" do
+        let(:group) { build(:group, path: "System") }
+
+        it { expect(group).not_to be_valid }
+      end
+
       context 'top-level group' do
         let(:group) { build(:group, path: 'tree') }
 
@@ -178,8 +184,8 @@ describe Namespace, models: true do
       let(:parent) { create(:group, name: 'parent', path: 'parent') }
       let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
       let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child) }
-      let(:uploads_dir) { File.join(CarrierWave.root, 'uploads') }
-      let(:pages_dir) { TestEnv.pages_path }
+      let(:uploads_dir) { File.join(CarrierWave.root, FileUploader.base_dir) }
+      let(:pages_dir) { File.join(TestEnv.pages_path) }
 
       before do
         FileUtils.mkdir_p(File.join(uploads_dir, 'parent', 'child', 'the-project'))
@@ -317,10 +323,29 @@ describe Namespace, models: true do
     end
   end
 
+  describe '#users_with_descendants', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+
+    it 'returns member users on every nest level without duplication' do
+      group.add_developer(user_a)
+      nested_group.add_developer(user_b)
+      deep_nested_group.add_developer(user_a)
+
+      expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(deep_nested_group.users_with_descendants).to contain_exactly(user_a)
+    end
+  end
+
   describe '#user_ids_for_project_authorizations' do
     it 'returns the user IDs for which to refresh authorizations' do
-      expect(namespace.user_ids_for_project_authorizations).
-        to eq([namespace.owner_id])
+      expect(namespace.user_ids_for_project_authorizations)
+        .to eq([namespace.owner_id])
     end
   end
 

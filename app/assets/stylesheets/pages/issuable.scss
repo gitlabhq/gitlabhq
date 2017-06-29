@@ -11,7 +11,9 @@
   .commit-box,
   .info-well,
   .commit-ci-menu,
-  .files-changed {
+  .files-changed,
+  .limited-header-width,
+  .limited-width-notes {
     @extend .fixed-width-container;
   }
 
@@ -58,7 +60,7 @@
   }
 
   .emoji-block {
-    padding: 10px 0 4px;
+    padding: 10px 0;
   }
 }
 
@@ -204,7 +206,7 @@
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: 100%;
+    height: calc(100% - #{$header-height});
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
@@ -226,6 +228,12 @@
       padding-top: 10px;
     }
 
+    &:not(.issue-boards-sidebar):not([data-signed-in]) {
+      .issuable-sidebar-header {
+        display: none;
+      }
+    }
+
     .assign-yourself .btn-link {
       padding-left: 0;
     }
@@ -245,6 +253,10 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+    }
+
+    .title .gutter-toggle {
+      margin-top: 0;
     }
 
     .assignee .avatar {

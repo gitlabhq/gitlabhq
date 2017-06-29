@@ -1,8 +1,6 @@
-import emojiMap from 'emojis/digests.json';
-import emojiAliases from 'emojis/aliases.json';
-import { glEmojiTag } from '~/behaviors/gl_emoji';
-import glRegexp from '~/lib/utils/regexp';
-import AjaxCache from '~/lib/utils/ajax_cache';
+import { validEmojiNames, glEmojiTag } from './emoji';
+import glRegexp from './lib/utils/regexp';
+import AjaxCache from './lib/utils/ajax_cache';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
@@ -34,7 +32,7 @@ class GfmAutoComplete {
       const $input = $(input);
       $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
       // This triggers at.js again
-      // Needed for slash commands with suffixes (ex: /label ~)
+      // Needed for quick actions with suffixes (ex: /label ~)
       $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
       $input.on('clear-commands-cache.atwho', () => this.clearCache());
     });
@@ -48,8 +46,8 @@ class GfmAutoComplete {
     if (this.enableMap.mergeRequests) this.setupMergeRequests($input);
     if (this.enableMap.labels) this.setupLabels($input);
 
-    // We don't instantiate the slash commands autocomplete for note and issue/MR edit forms
-    $input.filter('[data-supports-slash-commands="true"]').atwho({
+    // We don't instantiate the quick actions autocomplete for note and issue/MR edit forms
+    $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
       alias: 'commands',
       searchKey: 'search',
@@ -375,7 +373,7 @@ class GfmAutoComplete {
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
-      this.loadData($input, at, Object.keys(emojiMap).concat(Object.keys(emojiAliases)));
+      this.loadData($input, at, validEmojiNames);
     } else {
       AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
         .then((data) => {

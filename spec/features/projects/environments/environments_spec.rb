@@ -7,7 +7,7 @@ feature 'Environments page', :feature, :js do
 
   background do
     project.team << [user, role]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   given!(:environment) { }
@@ -151,7 +151,7 @@ feature 'Environments page', :feature, :js do
           find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(action.name.humanize)
 
-          expect { find('.js-manual-action-link').click }
+          expect { find('.js-manual-action-link').trigger('click') }
             .not_to change { Ci::Pipeline.count }
         end
 

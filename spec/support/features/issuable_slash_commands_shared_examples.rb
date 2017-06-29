@@ -1,8 +1,8 @@
 # Specifications for behavior common to all objects with executable attributes.
 # It takes a `issuable_type`, and expect an `issuable`.
 
-shared_examples 'issuable record that supports slash commands in its description and notes' do |issuable_type|
-  include SlashCommandsHelpers
+shared_examples 'issuable record that supports quick actions in its description and notes' do |issuable_type|
+  include QuickActionsHelpers
 
   let(:master) { create(:user) }
   let(:assignee) { create(:user, username: 'bob') }
@@ -17,7 +17,7 @@ shared_examples 'issuable record that supports slash commands in its description
     project.team << [master, :master]
     project.team << [assignee, :developer]
     project.team << [guest, :guest]
-    login_with(master)
+    gitlab_sign_in(master)
   end
 
   after do
@@ -28,7 +28,12 @@ shared_examples 'issuable record that supports slash commands in its description
   describe "new #{issuable_type}", js: true do
     context 'with commands in the description' do
       it "creates the #{issuable_type} and interpret commands accordingly" do
-        visit public_send("new_namespace_project_#{issuable_type}_path", project.namespace, project, new_url_opts)
+        case issuable_type
+        when :merge_request
+          visit public_send("namespace_project_new_merge_request_path", project.namespace, project, new_url_opts)
+        when :issue
+          visit public_send("new_namespace_project_issue_path", project.namespace, project, new_url_opts)
+        end
         fill_in "#{issuable_type}_title", with: 'bug 345'
         fill_in "#{issuable_type}_description", with: "bug description\n/label ~bug\n/milestone %\"ASAP\""
         click_button "Submit #{issuable_type}".humanize
@@ -105,8 +110,8 @@ shared_examples 'issuable record that supports slash commands in its description
 
       context "when current user cannot close #{issuable_type}" do
         before do
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -140,8 +145,8 @@ shared_examples 'issuable record that supports slash commands in its description
 
       context "when current user cannot reopen #{issuable_type}" do
         before do
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -170,8 +175,8 @@ shared_examples 'issuable record that supports slash commands in its description
 
       context "when current user cannot change title of #{issuable_type}" do
         before do
-          logout
-          login_with(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -260,7 +265,7 @@ shared_examples 'issuable record that supports slash commands in its description
   end
 
   describe "preview of note on #{issuable_type}" do
-    it 'removes slash commands from note and explains them' do
+    it 'removes quick actions from note and explains them' do
       visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
 
       page.within('.js-main-target-form') do

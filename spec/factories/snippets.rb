@@ -3,6 +3,7 @@ FactoryGirl.define do
     author
     title { generate(:title) }
     content { generate(:title) }
+    description { generate(:title) }
     file_name { generate(:filename) }
 
     trait :public do

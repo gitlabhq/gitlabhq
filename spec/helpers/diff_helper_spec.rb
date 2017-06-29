@@ -8,7 +8,7 @@ describe DiffHelper do
   let(:commit) { project.commit(sample_commit.id) }
   let(:diffs) { commit.raw_diffs }
   let(:diff) { diffs.first }
-  let(:diff_refs) { [commit.parent, commit] }
+  let(:diff_refs) { commit.diff_refs }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
 
   describe 'diff_view' do
@@ -148,11 +148,20 @@ describe DiffHelper do
 
     it 'puts comments on added lines' do
       left = Gitlab::Diff::Line.new('\\nonewline', 'old-nonewline', 3, 3, 3)
-      right = Gitlab::Diff::Line.new('new line', 'add', 3, 3, 3)
+      right = Gitlab::Diff::Line.new('new line', 'new', 3, 3, 3)
 
       result = helper.parallel_diff_discussions(left, right, diff_file)
 
       expect(result).to eq([nil, 'comment'])
+    end
+
+    it 'puts comments on unchanged lines' do
+      left = Gitlab::Diff::Line.new('unchanged line', nil, 3, 3, 3)
+      right = Gitlab::Diff::Line.new('unchanged line', nil, 3, 3, 3)
+
+      result = helper.parallel_diff_discussions(left, right, diff_file)
+
+      expect(result).to eq(['comment', nil])
     end
   end
 
@@ -205,6 +214,43 @@ describe DiffHelper do
       expect(output).to have_css "td:nth-child(1):not(.js-unfold-bottom).diff-line-num.unfold.js-unfold.new_line[data-linenumber='#{new_pos}']", text: '...'
       expect(output).to have_css 'td:nth-child(2).line_content.match.parallel', text: text
       expect(output).not_to have_css 'td:nth-child(3)'
+    end
+  end
+
+  context 'viewer related' do
+    let(:viewer) { diff_file.simple_viewer }
+
+    before do
+      assign(:project, project)
+    end
+
+    describe '#diff_render_error_reason' do
+      context 'for error :too_large' do
+        before do
+          expect(viewer).to receive(:render_error).and_return(:too_large)
+        end
+
+        it 'returns an error message' do
+          expect(helper.diff_render_error_reason(viewer)).to eq('it is too large')
+        end
+      end
+
+      context 'for error :server_side_but_stored_externally' do
+        before do
+          expect(viewer).to receive(:render_error).and_return(:server_side_but_stored_externally)
+          expect(diff_file).to receive(:external_storage).and_return(:lfs)
+        end
+
+        it 'returns an error message' do
+          expect(helper.diff_render_error_reason(viewer)).to eq('it is stored in LFS')
+        end
+      end
+    end
+
+    describe '#diff_render_error_options' do
+      it 'includes a "view the blob" link' do
+        expect(helper.diff_render_error_options(viewer)).to include(/view the blob/)
+      end
     end
   end
 end

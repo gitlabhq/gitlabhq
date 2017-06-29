@@ -39,10 +39,6 @@ import './shortcuts_network';
 // behaviors
 import './behaviors/';
 
-// blob
-import './blob/create_branch_dropdown';
-import './blob/target_branch_dropdown';
-
 // templates
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
@@ -303,9 +299,10 @@ $(function () {
   // Commit show suppressed diff
   });
   $('.navbar-toggle').on('click', function () {
-    $('.header-content .title').toggle();
+    $('.header-content .title, .header-content .navbar-sub-nav').toggle();
     $('.header-content .header-logo').toggle();
     $('.header-content .navbar-collapse').toggle();
+    $('.js-navbar-toggle-left, .js-navbar-toggle-right, .title-container').toggle();
     return $('.navbar-toggle').toggleClass('active');
   });
   // Show/hide comments on diff

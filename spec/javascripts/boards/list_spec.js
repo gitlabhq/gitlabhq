@@ -150,4 +150,41 @@ describe('List model', () => {
       expect(list.getIssues).toHaveBeenCalled();
     });
   });
+
+  describe('newIssue', () => {
+    beforeEach(() => {
+      spyOn(gl.boardService, 'newIssue').and.returnValue(Promise.resolve({
+        json() {
+          return {
+            iid: 42,
+          };
+        },
+      }));
+    });
+
+    it('adds new issue to top of list', (done) => {
+      list.issues.push(new ListIssue({
+        title: 'Testing',
+        iid: _.random(10000),
+        confidential: false,
+        labels: [list.label],
+        assignees: [],
+      }));
+      const dummyIssue = new ListIssue({
+        title: 'new issue',
+        iid: _.random(10000),
+        confidential: false,
+        labels: [list.label],
+        assignees: [],
+      });
+
+      list.newIssue(dummyIssue)
+        .then(() => {
+          expect(list.issues.length).toBe(2);
+          expect(list.issues[0]).toBe(dummyIssue);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });

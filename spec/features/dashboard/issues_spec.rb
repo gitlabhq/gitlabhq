@@ -12,7 +12,7 @@ RSpec.describe 'Dashboard Issues', feature: true do
 
   before do
     [project, project_with_issues_disabled].each { |project| project.team << [current_user, :master] }
-    login_as(current_user)
+    gitlab_sign_in(current_user)
     visit issues_dashboard_path(assignee_id: current_user.id)
   end
 
@@ -57,6 +57,11 @@ RSpec.describe 'Dashboard Issues', feature: true do
       expect(page).to have_content(authored_issue_on_public_project.title)
       expect(page).to have_content(assigned_issue.title)
       expect(page).to have_content(other_issue.title)
+    end
+
+    it 'state filter tabs work' do
+      find('#state-closed').click
+      expect(page).to have_current_path(issues_dashboard_url(assignee_id: current_user.id, scope: 'all', state: 'closed'), url: true)
     end
 
     it_behaves_like "it has an RSS button with current_user's RSS token"

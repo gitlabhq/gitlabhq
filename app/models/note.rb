@@ -32,7 +32,7 @@ class Note < ActiveRecord::Base
   # Banzai::ObjectRenderer
   attr_accessor :user_visible_reference_count
 
-  # Attribute used to store the attributes that have ben changed by slash commands.
+  # Attribute used to store the attributes that have ben changed by quick actions.
   attr_accessor :commands_changes
 
   default_value_for :system, false
@@ -41,7 +41,7 @@ class Note < ActiveRecord::Base
   participant :author
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true, touch: true
+  belongs_to :noteable, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
   belongs_to :last_edited_by, class_name: 'User'
@@ -137,9 +137,9 @@ class Note < ActiveRecord::Base
     end
 
     def count_for_collection(ids, type)
-      user.select('noteable_id', 'COUNT(*) as count').
-        group(:noteable_id).
-        where(noteable_type: type, noteable_id: ids)
+      user.select('noteable_id', 'COUNT(*) as count')
+        .group(:noteable_id)
+        .where(noteable_type: type, noteable_id: ids)
     end
   end
 

@@ -18,7 +18,9 @@ feature 'Merge immediately', :feature, :js do
                          sha: project.repository.commit('master').id)
   end
 
-  before { project.team << [user, :master] }
+  before do
+    project.team << [user, :master]
+  end
 
   context 'when there is active pipeline for merge request' do
     background do
@@ -26,7 +28,7 @@ feature 'Merge immediately', :feature, :js do
     end
 
     before do
-      login_as user
+      gitlab_sign_in user
       visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
     end
 

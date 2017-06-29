@@ -15,8 +15,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        Gitlab::PollingInterval.set_header(response, interval: 3_000)
-
         render json: {
           environments: EnvironmentSerializer
             .new(project: @project, current_user: @current_user)
@@ -127,6 +125,16 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.html
       format.json do
         render json: @metrics, status: @metrics.any? ? :ok : :no_content
+      end
+    end
+  end
+
+  def additional_metrics
+    respond_to do |format|
+      format.json do
+        additional_metrics = environment.additional_metrics || {}
+
+        render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
       end
     end
   end

@@ -3,7 +3,7 @@
     .avatar-container.s70.group-avatar
       = image_tag group_icon(@group), class: "avatar s70 avatar-tile"
     %h1.group-title
-      @#{@group.path}
+      = @group.name
       %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
         = visibility_level_icon(@group.visibility_level, fw: false)
 

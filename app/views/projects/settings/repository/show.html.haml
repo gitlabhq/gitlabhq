@@ -1,10 +1,11 @@
 - page_title "Repository"
+- @content_class = "limit-container-width" unless fluid_layout
 = render "projects/settings/head"
 
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('deploy_keys')
 
-= render @deploy_keys
 = render "projects/protected_branches/index"
 = render "projects/protected_tags/index"
+= render @deploy_keys

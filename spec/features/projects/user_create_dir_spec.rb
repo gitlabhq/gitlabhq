@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 feature 'New directory creation', feature: true, js: true do
-  include TargetBranchHelpers
-
   given(:user) { create(:user) }
   given(:role) { :developer }
   given(:project) { create(:project) }
 
   background do
-    login_as(user)
+    gitlab_sign_in(user)
     project.team << [user, role]
     visit namespace_project_tree_path(project.namespace, project, 'master')
     open_new_directory_modal
@@ -36,23 +34,11 @@ feature 'New directory creation', feature: true, js: true do
     end
   end
 
-  context 'with different target branch' do
-    background do
-      select_branch('feature')
-      create_directory
-    end
-
-    scenario 'creates the directory in the different branch' do
-      expect(page).to have_content 'feature'
-      expect(page).to have_content 'The directory has been successfully created'
-    end
-  end
-
   context 'with a new target branch' do
     given(:new_branch_name) { 'new-feature' }
 
     background do
-      create_new_branch(new_branch_name)
+      fill_in :branch_name, with: new_branch_name
       create_directory
     end
 
@@ -65,7 +51,7 @@ feature 'New directory creation', feature: true, js: true do
       expect(page).to have_content 'New Merge Request'
       expect(page).to have_content "From #{new_branch_name} into master"
       expect(page).to have_content 'Add new directory'
-      expect(current_path).to eq(new_namespace_project_merge_request_path(project.namespace, project))
+      expect(current_path).to eq(namespace_project_new_merge_request_path(project.namespace, project))
     end
   end
 end

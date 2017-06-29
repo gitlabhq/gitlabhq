@@ -7,7 +7,7 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
     visit namespace_project_issue_path(project.namespace, project, issue)
   end
 

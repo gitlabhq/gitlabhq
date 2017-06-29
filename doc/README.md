@@ -1,12 +1,24 @@
-# GitLab Community Edition
+# GitLab Documentation
 
-[GitLab](https://about.gitlab.com/) is a Git-based fully featured platform
-for software development.
+Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
+platform for software development!
 
-**GitLab Community Edition (CE)** is an opensource product, self-hosted, free to use.
-All [GitLab products](https://about.gitlab.com/products/) contain the features
-available in GitLab CE. Premium features are available in
-[GitLab Enterprise Edition (EE)](https://about.gitlab.com/gitlab-ee/).
+We offer four different products for you and your company:
+
+- **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
+self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
+- **GitLab Enterprise Edition (EE)** is an [opencore product](https://gitlab.com/gitlab-org/gitlab-ee/),
+self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)** and **GitLab Enterprise Edition Premium (EEP)**.
+- **GitLab.com**: SaaS GitLab solution, with [free and paid subscriptions](https://about.gitlab.com/gitlab-com/). GitLab.com is hosted by GitLab, Inc., and administrated by GitLab (users don't have access to admin settings).
+
+**GitLab EE** contains all features available in **GitLab CE**,
+plus premium features available in each version: **Enterprise Edition Starter**
+(**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
+**EES** is also available in **EEP**.
+
+**Note:** _We are unifying the documentation for CE and EE. To check if certain feature is
+available in CE or EE, look for a note right below the page title containing the GitLab
+version which introduced that feature._
 
 ----
 
@@ -24,7 +36,7 @@ Shortcuts to GitLab's most visited docs:
 - [GitLab Workflow](workflow/README.md): Enhance your workflow with the best of GitLab Workflow.
   - See also [GitLab Workflow - an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 - [GitLab Markdown](user/markdown.md): GitLab's advanced formatting system (GitLab Flavored Markdown).
-- [GitLab Slash Commands](user/project/slash_commands.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
+- [GitLab Quick Actions](user/project/quick_actions.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
 
 ### User account
 
@@ -59,6 +71,7 @@ Manage files and branches from the UI (user interface):
 - Branches
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
   - [Protected branches](user/project/protected_branches.md#protected-branches)
+  - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
 
 ### Issues and Merge Requests (MRs)
 
@@ -124,7 +137,7 @@ have access to GitLab administration tools and settings.
 - [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
 
-### GitLab admins' superpowers
+### Features
 
 - [Container Registry](administration/container_registry.md): Configure Docker Registry with GitLab.
 - [Custom Git hooks](administration/custom_hooks.md): Custom Git hooks (on the filesystem) for when webhooks aren't enough.

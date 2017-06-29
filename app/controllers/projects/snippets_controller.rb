@@ -5,7 +5,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   include SnippetsActions
   include RendersBlob
 
-  before_action :module_enabled
+  before_action :check_snippets_available!
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji, :mark_as_spam]
 
   # Allow read any snippet
@@ -79,7 +79,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to namespace_project_snippets_path(@project.namespace, @project)
+    redirect_to namespace_project_snippets_path(@project.namespace, @project), status: 302
   end
 
   protected
@@ -102,11 +102,7 @@ class Projects::SnippetsController < Projects::ApplicationController
     return render_404 unless can?(current_user, :admin_project_snippet, @snippet)
   end
 
-  def module_enabled
-    return render_404 unless @project.feature_available?(:snippets, current_user)
-  end
-
   def snippet_params
-    params.require(:project_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
+    params.require(:project_snippet).permit(:title, :content, :file_name, :private, :visibility_level, :description)
   end
 end

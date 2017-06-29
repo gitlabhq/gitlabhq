@@ -31,6 +31,26 @@ is installed on.
 
 ![Schedules list](img/pipeline_schedules_list.png)
 
+## Using only and except
+
+To configure that a job can be executed only when the pipeline has been
+scheduled (or the opposite), you can use
+[only and except](../../../ci/yaml/README.md#only-and-except) configuration keywords.
+
+```
+job:on-schedule:
+  only:
+    - schedules
+  script:
+    - make world
+
+job:
+  except:
+    - schedules
+  script:
+    - make build
+```
+
 ## Taking ownership
 
 Pipelines are executed as a user, who owns a schedule. This influences what

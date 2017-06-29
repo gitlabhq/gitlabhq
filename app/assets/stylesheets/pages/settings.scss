@@ -1,3 +1,94 @@
+@keyframes expandMaxHeight {
+  0% {
+    max-height: 0;
+  }
+
+  99% {
+    max-height: 100vh;
+  }
+
+  100% {
+    max-height: none;
+  }
+}
+
+@keyframes collapseMaxHeight {
+  0% {
+    max-height: 100vh;
+  }
+
+  100% {
+    max-height: 0;
+  }
+}
+
+.settings {
+  overflow: hidden;
+  border-bottom: 1px solid $gray-darker;
+
+  &:first-of-type {
+    margin-top: 10px;
+  }
+
+  &.expanded {
+    overflow: visible;
+  }
+}
+
+.settings-header {
+  position: relative;
+  padding: 20px 110px 10px 0;
+
+  h4 {
+    margin-top: 0;
+  }
+
+  button {
+    position: absolute;
+    top: 20px;
+    right: 6px;
+    min-width: 80px;
+  }
+}
+
+.settings-content {
+  max-height: 1px;
+  overflow-y: scroll;
+  margin-right: -20px;
+  padding-right: 130px;
+  animation: collapseMaxHeight 300ms ease-out;
+
+  &.expanded {
+    max-height: none;
+    overflow-y: visible;
+    animation: expandMaxHeight 300ms ease-in;
+  }
+
+  &.no-animate {
+    animation: none;
+  }
+
+  @media(max-width: $screen-sm-max) {
+    padding-right: 20px;
+  }
+
+  &::before {
+    content: ' ';
+    display: block;
+    height: 1px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  &::after {
+    content: ' ';
+    display: block;
+    height: 1px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+}
+
 .settings-list-icon {
   color: $gl-text-color-secondary;
   font-size: $settings-icon-size;
@@ -33,5 +124,68 @@
 
   .btn-clipboard {
     margin-left: 5px;
+  }
+}
+
+.prometheus-metrics-monitoring {
+  .panel {
+    .panel-toggle {
+      width: 14px;
+    }
+
+    .badge {
+      font-size: inherit;
+    }
+
+    .panel-heading .badge-count {
+      color: $white-light;
+      background: $common-gray-dark;
+    }
+
+    .panel-body {
+      padding: 0;
+    }
+
+    .flash-container {
+      margin-bottom: 0;
+      cursor: default;
+
+      .flash-notice {
+        border-radius: 0;
+      }
+    }
+  }
+
+  .loading-metrics,
+  .empty-metrics {
+    padding: 30px 10px;
+
+    p,
+    .btn {
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+  }
+
+  .loading-metrics .metrics-load-spinner {
+    color: $loading-color;
+  }
+
+  .metrics-list {
+    margin-bottom: 0;
+
+    li {
+      padding: $gl-padding;
+
+      .badge {
+        margin-left: 5px;
+        background: $badge-bg;
+      }
+    }
+
+    /* Ensure we don't add border if there's only single li */
+    li + li {
+      border-top: 1px solid $border-color;
+    }
   }
 }

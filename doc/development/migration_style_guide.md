@@ -122,7 +122,7 @@ limit can vary from installation to installation. As a result it's recommended
 you do not use more than 32 threads in a single migration. Usually 4-8 threads
 should be more than enough.
 
-## Removing indices
+## Removing indexes
 
 When removing an index make sure to use the method `remove_concurrent_index` instead
 of the regular `remove_index` method. The `remove_concurrent_index` method
@@ -142,7 +142,7 @@ class MyMigration < ActiveRecord::Migration
 end
 ```
 
-## Adding indices
+## Adding indexes
 
 If you need to add a unique index please keep in mind there is the possibility
 of existing duplicates being present in the database. This means that should
@@ -221,6 +221,41 @@ add_column_with_default(:projects, :foo, :integer, default: 10, limit: 8)
 
 add_column(:projects, :foo, :integer, default: 10, limit: 8)
 ```
+
+## Timestamp column type
+
+By default, Rails uses the `timestamp` data type that stores timestamp data without timezone information.        
+The `timestamp` data type is used by calling either the `add_timestamps` or the `timestamps` method.       
+Also Rails converts the `:datetime` data type to the `timestamp` one.        
+
+Example:
+
+```ruby
+# timestamps
+create_table :users do |t|
+  t.timestamps
+end
+
+# add_timestamps
+def up
+  add_timestamps :users
+end
+
+# :datetime
+def up
+  add_column :users, :last_sign_in, :datetime
+end
+```
+
+Instead of using these methods one should use the following methods to store timestamps with timezones:
+
+* `add_timestamps_with_timezone`
+* `timestamps_with_timezone`
+
+This ensures all timestamps have a time zone specified. This in turn means existing timestamps won't
+suddenly use a different timezone when the system's timezone changes. It also makes it very clear which
+timezone was used in the first place.
+
 
 ## Testing
 

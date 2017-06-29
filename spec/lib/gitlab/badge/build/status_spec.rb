@@ -29,7 +29,9 @@ describe Gitlab::Badge::Build::Status do
     let!(:build) { create_build(project, sha, branch) }
 
     context 'build success' do
-      before { build.success! }
+      before do
+        build.success!
+      end
 
       describe '#status' do
         it 'is successful' do
@@ -39,7 +41,9 @@ describe Gitlab::Badge::Build::Status do
     end
 
     context 'build failed' do
-      before { build.drop! }
+      before do
+        build.drop!
+      end
 
       describe '#status' do
         it 'failed' do

@@ -17,6 +17,9 @@ export default {
 
       return hasCI && !ciStatus;
     },
+    hasPipeline() {
+      return Object.keys(this.mr.pipeline || {}).length > 0;
+    },
     svg() {
       return statusIconEntityMap.icon_status_failed;
     },
@@ -30,7 +33,11 @@ export default {
   template: `
     <div class="mr-widget-heading">
       <div class="ci-widget">
-        <template v-if="hasCIError">
+        <template v-if="!hasPipeline">
+          <i class="fa fa-spinner fa-spin append-right-10" aria-hidden="true"></i>
+          Waiting for pipeline...
+        </template>
+        <template v-else-if="hasCIError">
           <div class="ci-status-icon ci-status-icon-failed ci-error js-ci-error">
             <span class="js-icon-link icon-link">
               <span

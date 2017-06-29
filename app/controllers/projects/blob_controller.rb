@@ -26,8 +26,6 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
-    set_start_branch_to_branch_name
-
     create_commit(Files::CreateService, success_notice: "The file has been successfully created.",
                                         success_path: -> { namespace_project_blob_path(@project.namespace, @project, File.join(@branch_name, @file_path)) },
                                         failure_view: :new,
@@ -55,7 +53,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def edit
     if can_collaborate_with_project?
-      blob.load_all_data!(@repository)
+      blob.load_all_data!
     else
       redirect_to action: 'show'
     end
@@ -74,7 +72,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def preview
     @content = params[:content]
-    @blob.load_all_data!(@repository)
+    @blob.load_all_data!
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..-1]
     diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines)
@@ -93,9 +91,11 @@ class Projects::BlobController < Projects::ApplicationController
   def diff
     apply_diff_view_cookie!
 
-    @form  = UnfoldForm.new(params)
-    @lines = Gitlab::Highlight.highlight_lines(repository, @ref, @path)
-    @lines = @lines[@form.since - 1..@form.to - 1]
+    @blob.load_all_data!
+    @lines = Gitlab::Highlight.highlight(@blob.path, @blob.data, repository: @repository).lines
+
+    @form = UnfoldForm.new(params)
+    @lines = @lines[@form.since - 1..@form.to - 1].map(&:html_safe)
 
     if @form.bottom?
       @match_line = ''
@@ -111,7 +111,7 @@ class Projects::BlobController < Projects::ApplicationController
   private
 
   def blob
-    @blob ||= Blob.decorate(@repository.blob_at(@commit.id, @path), @project)
+    @blob ||= @repository.blob_at(@commit.id, @path)
 
     if @blob
       @blob
@@ -187,7 +187,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def set_last_commit_sha
-    @last_commit_sha = Gitlab::Git::Commit.
-      last_for_path(@repository, @ref, @path).sha
+    @last_commit_sha = Gitlab::Git::Commit
+      .last_for_path(@repository, @ref, @path).sha
   end
 end

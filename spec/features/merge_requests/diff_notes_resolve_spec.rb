@@ -19,7 +19,7 @@ feature 'Diff notes resolve', feature: true, js: true do
   context 'no discussions' do
     before do
       project.team << [user, :master]
-      login_as user
+      gitlab_sign_in user
       note.destroy
       visit_merge_request
     end
@@ -33,7 +33,7 @@ feature 'Diff notes resolve', feature: true, js: true do
   context 'as authorized user' do
     before do
       project.team << [user, :master]
-      login_as user
+      gitlab_sign_in user
       visit_merge_request
     end
 
@@ -402,7 +402,7 @@ feature 'Diff notes resolve', feature: true, js: true do
 
     before do
       project.team << [guest, :guest]
-      login_as guest
+      gitlab_sign_in guest
     end
 
     context 'someone elses merge request' do

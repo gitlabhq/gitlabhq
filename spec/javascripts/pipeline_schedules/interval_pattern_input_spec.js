@@ -1,5 +1,8 @@
 import Vue from 'vue';
-import IntervalPatternInput from '~/pipeline_schedules/components/interval_pattern_input';
+import Translate from '~/vue_shared/translate';
+import IntervalPatternInput from '~/pipeline_schedules/components/interval_pattern_input.vue';
+
+Vue.use(Translate);
 
 const IntervalPatternInputComponent = Vue.extend(IntervalPatternInput);
 const inputNameAttribute = 'schedule[cron]';
@@ -95,7 +98,7 @@ describe('Interval Pattern Input Component', function () {
 
   describe('User Actions', function () {
     beforeEach(function () {
-      // For an unknown reason, Phantom.js doesn't trigger click events
+      // For an unknown reason, some browsers do not propagate click events
       // on radio buttons in a way Vue can register. So, we have to mount
       // to a fixture.
       setFixtures('<div id="my-mount"></div>');

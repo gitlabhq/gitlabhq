@@ -47,8 +47,8 @@ describe Projects::BlobController do
       context 'redirect to tree' do
         let(:id) { 'markdown/doc' }
         it 'redirects' do
-          expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/markdown/doc")
+          expect(subject)
+            .to redirect_to("/#{project.path_with_namespace}/tree/markdown/doc")
         end
       end
     end
@@ -235,7 +235,7 @@ describe Projects::BlobController do
           put :update, default_params
 
           expect(response).to redirect_to(
-            new_namespace_project_merge_request_path(
+            namespace_project_new_merge_request_path(
               forked_project.namespace,
               forked_project,
               merge_request: {

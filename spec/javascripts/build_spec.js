@@ -58,7 +58,7 @@ describe('Build', () => {
 
       it('displays the remove date correctly', () => {
         const removeDateElement = document.querySelector('.js-artifacts-remove');
-        expect(removeDateElement.innerText.trim()).toBe('1 year');
+        expect(removeDateElement.innerText.trim()).toBe('1 year remaining');
       });
     });
 
@@ -131,23 +131,6 @@ describe('Build', () => {
 
         expect($('#build-trace .js-build-output').text()).not.toMatch(/Update/);
         expect($('#build-trace .js-build-output').text()).toMatch(/Different/);
-      });
-
-      it('reloads the page when the build is done', () => {
-        spyOn(gl.utils, 'visitUrl');
-        const deferred = $.Deferred();
-
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
-        deferred.resolve({
-          html: '<span>Final</span>',
-          status: 'passed',
-          append: true,
-          complete: true,
-        });
-
-        this.build = new Build();
-
-        expect(gl.utils.visitUrl).toHaveBeenCalledWith(BUILD_URL);
       });
     });
 

@@ -34,13 +34,13 @@ module Gitlab
       # THREAD_CPUTIME is not supported on OS X
       if Process.const_defined?(:CLOCK_THREAD_CPUTIME_ID)
         def self.cpu_time
-          Process.
-            clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :millisecond)
+          Process
+            .clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :millisecond)
         end
       else
         def self.cpu_time
-          Process.
-            clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :millisecond)
+          Process
+            .clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :millisecond)
         end
       end
 

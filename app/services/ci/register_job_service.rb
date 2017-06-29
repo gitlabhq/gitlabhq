@@ -54,24 +54,24 @@ module Ci
     def builds_for_shared_runner
       new_builds.
         # don't run projects which have not enabled shared runners and builds
-        joins(:project).where(projects: { shared_runners_enabled: true }).
-        joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id').
-        where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
+        joins(:project).where(projects: { shared_runners_enabled: true, pending_delete: false })
+        .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
+        .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
 
         # Implement fair scheduling
         # this returns builds that are ordered by number of running builds
         # we prefer projects that don't use shared runners at all
-        joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id").
-        order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
+        joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
+        .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
 
     def builds_for_specific_runner
-      new_builds.where(project: runner.projects.with_builds_enabled).order('created_at ASC')
+      new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('created_at ASC')
     end
 
     def running_builds_for_shared_runners
-      Ci::Build.running.where(runner: Ci::Runner.shared).
-        group(:project_id).select(:project_id, 'count(*) AS running_builds')
+      Ci::Build.running.where(runner: Ci::Runner.shared)
+        .group(:project_id).select(:project_id, 'count(*) AS running_builds')
     end
 
     def new_builds

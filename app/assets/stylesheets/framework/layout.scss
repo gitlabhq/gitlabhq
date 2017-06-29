@@ -51,6 +51,10 @@ body {
   &.limit-container-width {
     max-width: $limited-layout-width;
   }
+
+  &.limit-container-width-sm {
+    max-width: $limited-layout-width-sm;
+  }
 }
 
 .alert-wrapper {

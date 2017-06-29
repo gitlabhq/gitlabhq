@@ -13,7 +13,7 @@
   - if projects.any?
     %ul.projects-list
       - projects.each_with_index do |project, i|
-        - css_class = (i >= projects_limit) ? 'hide' : nil
+        - css_class = (i >= projects_limit) || project.pending_delete? ? 'hide' : nil
         = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
           avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar,
           forks: forks, show_last_commit_as_description: show_last_commit_as_description

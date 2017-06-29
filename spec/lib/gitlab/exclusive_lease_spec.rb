@@ -19,6 +19,19 @@ describe Gitlab::ExclusiveLease, type: :redis do
     end
   end
 
+  describe '#renew' do
+    it 'returns true when we have the existing lease' do
+      lease = described_class.new(unique_key, timeout: 3600)
+      expect(lease.try_obtain).to be_present
+      expect(lease.renew).to be_truthy
+    end
+
+    it 'returns false when we dont have a lease' do
+      lease = described_class.new(unique_key, timeout: 3600)
+      expect(lease.renew).to be_falsey
+    end
+  end
+
   describe '#exists?' do
     it 'returns true for an existing lease' do
       lease = described_class.new(unique_key, timeout: 3600)

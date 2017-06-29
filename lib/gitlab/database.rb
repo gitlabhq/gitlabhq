@@ -83,6 +83,22 @@ module Gitlab
       end
     end
 
+    def self.bulk_insert(table, rows)
+      return if rows.empty?
+
+      keys = rows.first.keys
+      columns = keys.map { |key| connection.quote_column_name(key) }
+
+      tuples = rows.map do |row|
+        row.values_at(*keys).map { |value| connection.quote(value) }
+      end
+
+      connection.execute <<-EOF
+        INSERT INTO #{table} (#{columns.join(', ')})
+        VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
+      EOF
+    end
+
     # pool_size - The size of the DB pool.
     # host - An optional host name to use instead of the default one.
     def self.create_connection_pool(pool_size, host = nil)

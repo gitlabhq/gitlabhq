@@ -157,7 +157,9 @@ describe "Public Project Access", feature: true  do
     subject { namespace_project_jobs_path(project.namespace, project) }
 
     context "when allowed for public" do
-      before { project.update(public_builds: true) }
+      before do
+        project.update(public_builds: true)
+      end
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -171,7 +173,9 @@ describe "Public Project Access", feature: true  do
     end
 
     context "when disallowed for public" do
-      before { project.update(public_builds: false) }
+      before do
+        project.update(public_builds: false)
+      end
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -191,7 +195,9 @@ describe "Public Project Access", feature: true  do
     subject { namespace_project_job_path(project.namespace, project, build.id) }
 
     context "when allowed for public" do
-      before { project.update(public_builds: true) }
+      before do
+        project.update(public_builds: true)
+      end
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -205,7 +211,9 @@ describe "Public Project Access", feature: true  do
     end
 
     context "when disallowed for public" do
-      before { project.update(public_builds: false) }
+      before do
+        project.update(public_builds: false)
+      end
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -444,7 +452,7 @@ describe "Public Project Access", feature: true  do
   end
 
   describe "GET /:project_path/merge_requests/new" do
-    subject { new_namespace_project_merge_request_path(project.namespace, project) }
+    subject { namespace_project_new_merge_request_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }

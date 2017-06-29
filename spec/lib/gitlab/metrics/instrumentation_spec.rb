@@ -78,11 +78,11 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'tracks the call duration upon calling the method' do
-        allow(Gitlab::Metrics).to receive(:method_call_threshold).
-          and_return(0)
+        allow(Gitlab::Metrics).to receive(:method_call_threshold)
+          .and_return(0)
 
-        allow(described_class).to receive(:transaction).
-          and_return(transaction)
+        allow(described_class).to receive(:transaction)
+          .and_return(transaction)
 
         expect_any_instance_of(Gitlab::Metrics::MethodCall).to receive(:measure)
 
@@ -90,8 +90,8 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'does not track method calls below a given duration threshold' do
-        allow(Gitlab::Metrics).to receive(:method_call_threshold).
-          and_return(100)
+        allow(Gitlab::Metrics).to receive(:method_call_threshold)
+          .and_return(100)
 
         expect(transaction).not_to receive(:add_metric)
 
@@ -137,8 +137,8 @@ describe Gitlab::Metrics::Instrumentation do
       before do
         allow(Gitlab::Metrics).to receive(:enabled?).and_return(true)
 
-        described_class.
-          instrument_instance_method(@dummy, :bar)
+        described_class
+          .instrument_instance_method(@dummy, :bar)
       end
 
       it 'instruments instances of the Class' do
@@ -156,11 +156,11 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'tracks the call duration upon calling the method' do
-        allow(Gitlab::Metrics).to receive(:method_call_threshold).
-          and_return(0)
+        allow(Gitlab::Metrics).to receive(:method_call_threshold)
+          .and_return(0)
 
-        allow(described_class).to receive(:transaction).
-          and_return(transaction)
+        allow(described_class).to receive(:transaction)
+          .and_return(transaction)
 
         expect_any_instance_of(Gitlab::Metrics::MethodCall).to receive(:measure)
 
@@ -168,8 +168,8 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'does not track method calls below a given duration threshold' do
-        allow(Gitlab::Metrics).to receive(:method_call_threshold).
-          and_return(100)
+        allow(Gitlab::Metrics).to receive(:method_call_threshold)
+          .and_return(100)
 
         expect(transaction).not_to receive(:add_metric)
 
@@ -183,8 +183,8 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'does not instrument the method' do
-        described_class.
-          instrument_instance_method(@dummy, :bar)
+        described_class
+          .instrument_instance_method(@dummy, :bar)
 
         expect(described_class.instrumented?(@dummy)).to eq(false)
       end

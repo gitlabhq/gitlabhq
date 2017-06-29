@@ -8,10 +8,10 @@ class NotificationRecipientService
     @project = project
   end
 
-  def build_recipients(target, current_user, action: nil, previous_assignee: nil, skip_current_user: true)
+  def build_recipients(target, current_user, action:, previous_assignee: nil, skip_current_user: true)
     custom_action = build_custom_key(action, target)
 
-    recipients = target.participants(current_user)
+    recipients = participants(target, current_user)
     recipients = add_project_watchers(recipients)
     recipients = add_custom_notifications(recipients, custom_action)
     recipients = reject_mention_users(recipients)
@@ -59,7 +59,7 @@ class NotificationRecipientService
 
     return [] if notification_setting.mention? || notification_setting.disabled?
 
-    return [] if notification_setting.custom? && !notification_setting.public_send(custom_action)
+    return [] if notification_setting.custom? && !notification_setting.event_enabled?(custom_action)
 
     return [] if (notification_setting.watch? || notification_setting.participating?) && NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
 
@@ -86,12 +86,7 @@ class NotificationRecipientService
     mentioned_users = note.mentioned_users.select { |user| user.can?(ability, subject) }
 
     # Add all users participating in the thread (author, assignee, comment authors)
-    recipients =
-      if target.respond_to?(:participants)
-        target.participants(note.author)
-      else
-        mentioned_users
-      end
+    recipients = participants(target, note.author) || mentioned_users
 
     unless note.for_personal_snippet?
       # Merge project watchers
@@ -122,6 +117,14 @@ class NotificationRecipientService
   end
 
   protected
+
+  # Ensure that if we modify this array, we aren't modifying the memoised
+  # participants on the target.
+  def participants(target, user)
+    return unless target.respond_to?(:participants)
+
+    target.participants(user).dup
+  end
 
   # Get project/group users with CUSTOM notification level
   def add_custom_notifications(recipients, action)
@@ -176,7 +179,7 @@ class NotificationRecipientService
 
     if notification_level
       settings = resource.notification_settings.where(level: NotificationSetting.levels[notification_level])
-      settings = settings.select { |setting| setting.events[action] } if action.present?
+      settings = settings.select { |setting| setting.event_enabled?(action) } if action.present?
       settings.map(&:user_id)
     else
       resource.notification_settings.pluck(:user_id)
@@ -225,7 +228,7 @@ class NotificationRecipientService
 
   def user_ids_with_global_level_custom(ids, action)
     settings = settings_with_global_level_of(:custom, ids)
-    settings = settings.select { |setting| setting.events[action] }
+    settings = settings.select { |setting| setting.event_enabled?(action) }
     settings.map(&:user_id)
   end
 

@@ -115,6 +115,82 @@ describe ProjectsHelper do
     end
   end
 
+  describe '#show_no_ssh_key_message?' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'user has no keys' do
+      it 'returns true' do
+        expect(helper.show_no_ssh_key_message?).to be_truthy
+      end
+    end
+
+    context 'user has an ssh key' do
+      it 'returns false' do
+        create(:personal_key, user: user)
+
+        expect(helper.show_no_ssh_key_message?).to be_falsey
+      end
+    end
+  end
+
+  describe '#show_no_password_message?' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'user has password set' do
+      it 'returns false' do
+        expect(helper.show_no_password_message?).to be_falsey
+      end
+    end
+
+    context 'user requires a password' do
+      let(:user) { create(:user, password_automatically_set: true) }
+
+      it 'returns true' do
+        expect(helper.show_no_password_message?).to be_truthy
+      end
+    end
+
+    context 'user requires a personal access token' do
+      it 'returns true' do
+        stub_application_setting(signin_enabled?: false)
+
+        expect(helper.show_no_password_message?).to be_truthy
+      end
+    end
+  end
+
+  describe '#link_to_set_password' do
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'user requires a password' do
+      let(:user) { create(:user, password_automatically_set: true) }
+
+      it 'returns link to set a password' do
+        expect(helper.link_to_set_password).to match %r{<a href="#{edit_profile_password_path}">set a password</a>}
+      end
+    end
+
+    context 'user requires a personal access token' do
+      let(:user) { create(:user) }
+
+      it 'returns link to create a personal access token' do
+        stub_application_setting(signin_enabled?: false)
+
+        expect(helper.link_to_set_password).to match %r{<a href="#{profile_personal_access_tokens_path}">create a personal access token</a>}
+      end
+    end
+  end
+
   describe 'link_to_member' do
     let(:group)   { create(:group) }
     let(:project) { create(:empty_project, group: group) }
@@ -250,7 +326,9 @@ describe ProjectsHelper do
     end
 
     context "when project is private" do
-      before { project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      before do
+        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
 
       it "shows only allowed options" do
         helper.instance_variable_set(:@project, project)
@@ -298,6 +376,39 @@ describe ProjectsHelper do
 
     it "includes the Private level" do
       expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Private')
+    end
+  end
+
+  describe '#get_project_nav_tabs' do
+    let(:project) { create(:empty_project) }
+    let(:user)    { create(:user) }
+
+    before do
+      allow(helper).to receive(:can?) { true }
+    end
+
+    subject do
+      helper.send(:get_project_nav_tabs, project, user)
+    end
+
+    context 'when builds feature is enabled' do
+      before do
+        allow(project).to receive(:builds_enabled?).and_return(true)
+      end
+
+      it "does include pipelines tab" do
+        is_expected.to include(:pipelines)
+      end
+    end
+
+    context 'when builds feature is disabled' do
+      before do
+        allow(project).to receive(:builds_enabled?).and_return(false)
+      end
+
+      it "do not include pipelines tab" do
+        is_expected.not_to include(:pipelines)
+      end
     end
   end
 end

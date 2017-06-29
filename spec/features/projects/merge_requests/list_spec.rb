@@ -7,7 +7,7 @@ feature 'Merge Requests List' do
   background do
     project.team << [user, :developer]
 
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   scenario 'user does not see create new list button' do
@@ -27,7 +27,7 @@ feature 'Merge Requests List' do
   it 'empty state should have a create merge request button' do
     visit namespace_project_merge_requests_path(project.namespace, project)
 
-    expect(page).to have_link 'New merge request', href: new_namespace_project_merge_request_path(project.namespace, project)
+    expect(page).to have_link 'New merge request', href: namespace_project_new_merge_request_path(project.namespace, project)
   end
 
   context 'if there are merge requests' do

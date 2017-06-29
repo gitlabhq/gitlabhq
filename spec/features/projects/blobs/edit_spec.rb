@@ -14,7 +14,7 @@ feature 'Editing file blob', feature: true, js: true do
 
     before do
       project.team << [user, role]
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     def edit_and_commit
@@ -61,7 +61,7 @@ feature 'Editing file blob', feature: true, js: true do
         it 'redirects to sign in and returns' do
           expect(page).to have_current_path(new_user_session_path)
 
-          login_as(user)
+          gitlab_sign_in(user)
 
           expect(page).to have_current_path(namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path)))
         end
@@ -77,7 +77,7 @@ feature 'Editing file blob', feature: true, js: true do
         it 'redirects to sign in and returns' do
           expect(page).to have_current_path(new_user_session_path)
 
-          login_as(user)
+          gitlab_sign_in(user)
 
           expect(page).to have_current_path(namespace_project_blob_path(project.namespace, project, tree_join(branch, file_path)))
         end
@@ -92,7 +92,7 @@ feature 'Editing file blob', feature: true, js: true do
         project.team << [user, :developer]
         project.repository.add_branch(user, protected_branch, 'master')
         create(:protected_branch, project: project, name: protected_branch)
-        login_as(user)
+        gitlab_sign_in(user)
       end
 
       context 'on some branch' do
@@ -102,7 +102,7 @@ feature 'Editing file blob', feature: true, js: true do
 
         it 'shows blob editor with same branch' do
           expect(page).to have_current_path(namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path)))
-          expect(find('.js-target-branch .dropdown-toggle-text').text).to eq(branch)
+          expect(find('.js-branch-name').value).to eq(branch)
         end
       end
 
@@ -112,7 +112,7 @@ feature 'Editing file blob', feature: true, js: true do
         end
 
         it 'shows blob editor with patch branch' do
-          expect(find('.js-target-branch .dropdown-toggle-text').text).to eq('patch-1')
+          expect(find('.js-branch-name').value).to eq('patch-1')
         end
       end
     end
@@ -122,13 +122,13 @@ feature 'Editing file blob', feature: true, js: true do
 
       before do
         project.team << [user, :master]
-        login_as(user)
+        gitlab_sign_in(user)
         visit namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path))
       end
 
       it 'shows blob editor with same branch' do
         expect(page).to have_current_path(namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path)))
-        expect(find('.js-target-branch .dropdown-toggle-text').text).to eq(branch)
+        expect(find('.js-branch-name').value).to eq(branch)
       end
     end
   end

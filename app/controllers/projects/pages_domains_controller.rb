@@ -27,8 +27,9 @@ class Projects::PagesDomainsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to(namespace_project_pages_path(@project.namespace, @project),
-                    notice: 'Domain was removed')
+        redirect_to namespace_project_pages_path(@project.namespace, @project),
+                    status: 302,
+                    notice: 'Domain was removed'
       end
       format.js
     end

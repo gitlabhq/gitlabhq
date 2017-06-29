@@ -89,10 +89,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the new branch name' do
-    first('button.js-target-branch', visible: true).click
-    find('.create-new-branch', visible: true).click
-    find('#new_branch_name', visible: true).set('new_branch_name')
-    find('.js-new-branch-btn', visible: true).click
+    fill_in :branch_name, with: 'new_branch_name', visible: true
   end
 
   step 'I fill the new file name with an illegal name' do
@@ -269,12 +266,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I am redirected to the new merge request page' do
-    expect(current_path).to eq(new_namespace_project_merge_request_path(@project.namespace, @project))
+    expect(current_path).to eq(namespace_project_new_merge_request_path(@project.namespace, @project))
   end
 
   step "I am redirected to the fork's new merge request page" do
     fork = @user.fork_of(@project)
-    expect(current_path).to eq(new_namespace_project_merge_request_path(fork.namespace, fork))
+    expect(current_path).to eq(namespace_project_new_merge_request_path(fork.namespace, fork))
   end
 
   step 'I am redirected to the root directory' do
@@ -372,7 +369,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       expect(page).to have_content 'Permalink'
       expect(page).not_to have_content 'Edit'
       expect(page).not_to have_content 'Blame'
-      expect(page).not_to have_content 'Annotate'
       expect(page).to have_content 'Delete'
       expect(page).to have_content 'Replace'
     end

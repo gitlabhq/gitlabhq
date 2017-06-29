@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Admin Conversational Development Index' do
   before do
-    login_as :admin
+    gitlab_sign_in :admin
   end
 
   context 'when usage ping is disabled' do

@@ -16,27 +16,27 @@ module Gitlab
       # Can't use Event.contributions here because we need to check 3 different
       # project_features for the (currently) 3 different contribution types
       date_from = 1.year.ago
-      repo_events = event_counts(date_from, :repository).
-        having(action: Event::PUSHED)
-      issue_events = event_counts(date_from, :issues).
-        having(action: [Event::CREATED, Event::CLOSED], target_type: "Issue")
-      mr_events = event_counts(date_from, :merge_requests).
-        having(action: [Event::MERGED, Event::CREATED, Event::CLOSED], target_type: "MergeRequest")
-      note_events = event_counts(date_from, :merge_requests).
-        having(action: [Event::COMMENTED], target_type: "Note")
+      repo_events = event_counts(date_from, :repository)
+        .having(action: Event::PUSHED)
+      issue_events = event_counts(date_from, :issues)
+        .having(action: [Event::CREATED, Event::CLOSED], target_type: "Issue")
+      mr_events = event_counts(date_from, :merge_requests)
+        .having(action: [Event::MERGED, Event::CREATED, Event::CLOSED], target_type: "MergeRequest")
+      note_events = event_counts(date_from, :merge_requests)
+        .having(action: [Event::COMMENTED], target_type: "Note")
 
       union = Gitlab::SQL::Union.new([repo_events, issue_events, mr_events, note_events])
       events = Event.find_by_sql(union.to_sql).map(&:attributes)
 
-      @activity_events = events.each_with_object(Hash.new {|h, k| h[k] = 0 }) do |event, activities|
+      @activity_dates = events.each_with_object(Hash.new {|h, k| h[k] = 0 }) do |event, activities|
         activities[event["date"]] += event["total_amount"]
       end
     end
 
     def events_by_date(date)
-      events = Event.contributions.where(author_id: contributor.id).
-        where(created_at: date.beginning_of_day..date.end_of_day).
-        where(project_id: projects)
+      events = Event.contributions.where(author_id: contributor.id)
+        .where(created_at: date.beginning_of_day..date.end_of_day)
+        .where(project_id: projects)
 
       # Use visible_to_user? instead of the complicated logic in activity_dates
       # because we're only viewing the events for a single day.
@@ -60,20 +60,20 @@ module Gitlab
       # use IN(project_ids...) instead. It's the intersection of two users so
       # the list will be (relatively) short
       @contributed_project_ids ||= projects.uniq.pluck(:id)
-      authed_projects = Project.where(id: @contributed_project_ids).
-        with_feature_available_for_user(feature, current_user).
-        reorder(nil).
-        select(:id)
+      authed_projects = Project.where(id: @contributed_project_ids)
+        .with_feature_available_for_user(feature, current_user)
+        .reorder(nil)
+        .select(:id)
 
-      conditions = t[:created_at].gteq(date_from.beginning_of_day).
-        and(t[:created_at].lteq(Date.today.end_of_day)).
-        and(t[:author_id].eq(contributor.id))
+      conditions = t[:created_at].gteq(date_from.beginning_of_day)
+        .and(t[:created_at].lteq(Date.today.end_of_day))
+        .and(t[:author_id].eq(contributor.id))
 
-      Event.reorder(nil).
-        select(t[:project_id], t[:target_type], t[:action], 'date(created_at) AS date', 'count(id) as total_amount').
-        group(t[:project_id], t[:target_type], t[:action], 'date(created_at)').
-        where(conditions).
-        having(t[:project_id].in(Arel::Nodes::SqlLiteral.new(authed_projects.to_sql)))
+      Event.reorder(nil)
+        .select(t[:project_id], t[:target_type], t[:action], 'date(created_at) AS date', 'count(id) as total_amount')
+        .group(t[:project_id], t[:target_type], t[:action], 'date(created_at)')
+        .where(conditions)
+        .having(t[:project_id].in(Arel::Nodes::SqlLiteral.new(authed_projects.to_sql)))
     end
   end
 end

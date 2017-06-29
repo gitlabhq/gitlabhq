@@ -10,7 +10,9 @@ describe DroneCiService, models: true, caching: true do
 
   describe 'validations' do
     context 'active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:drone_url) }
@@ -18,7 +20,9 @@ describe DroneCiService, models: true, caching: true do
     end
 
     context 'inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:token) }
       it { is_expected.not_to validate_presence_of(:drone_url) }

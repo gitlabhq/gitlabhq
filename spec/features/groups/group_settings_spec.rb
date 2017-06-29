@@ -6,7 +6,7 @@ feature 'Edit group settings', feature: true do
 
   background do
     group.add_owner(user)
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe 'when the group path is changed' do
@@ -18,14 +18,14 @@ feature 'Edit group settings', feature: true do
       update_path(new_group_path)
       visit new_group_full_path
       expect(current_path).to eq(new_group_full_path)
-      expect(find('h1.group-title')).to have_content(new_group_path)
+      expect(find('h1.group-title')).to have_content(group.name)
     end
 
     scenario 'the old group path redirects to the new path' do
       update_path(new_group_path)
       visit old_group_full_path
       expect(current_path).to eq(new_group_full_path)
-      expect(find('h1.group-title')).to have_content(new_group_path)
+      expect(find('h1.group-title')).to have_content(group.name)
     end
 
     context 'with a subgroup' do
@@ -37,14 +37,14 @@ feature 'Edit group settings', feature: true do
         update_path(new_group_path)
         visit new_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
-        expect(find('h1.group-title')).to have_content(subgroup.path)
+        expect(find('h1.group-title')).to have_content(subgroup.name)
       end
 
       scenario 'the old subgroup path redirects to the new path' do
         update_path(new_group_path)
         visit old_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
-        expect(find('h1.group-title')).to have_content(subgroup.path)
+        expect(find('h1.group-title')).to have_content(subgroup.name)
       end
     end
 
@@ -52,9 +52,14 @@ feature 'Edit group settings', feature: true do
       given!(:project) { create(:project, group: group, path: 'project') }
       given(:old_project_full_path) { "/#{group.path}/#{project.path}" }
       given(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
-      
-      before(:context) { TestEnv.clean_test_path }
-      after(:example) { TestEnv.clean_test_path }
+
+      before(:context) do
+        TestEnv.clean_test_path
+      end
+
+      after(:example) do
+        TestEnv.clean_test_path
+      end
 
       scenario 'the project is accessible via the new path' do
         update_path(new_group_path)

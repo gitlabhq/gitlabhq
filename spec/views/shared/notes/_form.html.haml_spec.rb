@@ -20,8 +20,8 @@ describe 'shared/notes/_form' do
     context "with a note on #{noteable}" do
       let(:note) { build(:"note_on_#{noteable}", project: project) }
 
-      it 'says that markdown and slash commands are supported' do
-        expect(rendered).to have_content('Markdown and slash commands are supported')
+      it 'says that markdown and quick actions are supported' do
+        expect(rendered).to have_content('Markdown and quick actions are supported')
       end
     end
   end
@@ -29,7 +29,7 @@ describe 'shared/notes/_form' do
   context 'with a note on a commit' do
     let(:note) { build(:note_on_commit, project: project) }
 
-    it 'says that only markdown is supported, not slash commands' do
+    it 'says that only markdown is supported, not quick actions' do
       expect(rendered).to have_content('Markdown is supported')
     end
   end

@@ -16,7 +16,7 @@ feature 'Merge request created from fork' do
 
   background do
     fork_project.team << [user, :master]
-    login_as user
+    gitlab_sign_in user
   end
 
   scenario 'user can access merge request' do
@@ -56,7 +56,7 @@ feature 'Merge request created from fork' do
       visit_merge_request(merge_request)
       page.within('.merge-request-tabs') { click_link 'Pipelines' }
 
-      page.within('table.ci-table') do
+      page.within('.ci-table') do
         expect(page).to have_content pipeline.status
         expect(page).to have_content pipeline.id
       end

@@ -105,9 +105,12 @@ module Gitlab
     config.assets.precompile << "katex.css"
     config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
+    config.assets.precompile << "peek.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
+    config.assets.precompile << "new_nav.css"
+    config.assets.precompile << "new_sidebar.css"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

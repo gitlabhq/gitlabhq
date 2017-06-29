@@ -4,7 +4,7 @@ feature 'Profile > Account', feature: true do
   given(:user) { create(:user, username: 'foo') }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe 'Change username' do
@@ -31,8 +31,13 @@ feature 'Profile > Account', feature: true do
       given(:new_project_path) { "/#{new_username}/#{project.path}" }
       given(:old_project_path) { "/#{user.username}/#{project.path}" }
 
-      before(:context) { TestEnv.clean_test_path }
-      after(:example) { TestEnv.clean_test_path }
+      before(:context) do
+        TestEnv.clean_test_path
+      end
+
+      after(:example) do
+        TestEnv.clean_test_path
+      end
 
       scenario 'the project is accessible via the new path' do
         update_username(new_username)

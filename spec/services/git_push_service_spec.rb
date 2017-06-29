@@ -158,8 +158,8 @@ describe GitPushService, services: true do
 
     context "Updates merge requests" do
       it "when pushing a new branch for the first time" do
-        expect(UpdateMergeRequestsWorker).to receive(:perform_async).
-                                                with(project.id, user.id, @blankrev, 'newrev', 'refs/heads/master')
+        expect(UpdateMergeRequestsWorker).to receive(:perform_async)
+                                                .with(project.id, user.id, @blankrev, 'newrev', 'refs/heads/master')
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
     end
@@ -283,8 +283,8 @@ describe GitPushService, services: true do
         author_email: commit_author.email
       )
 
-      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit).
-        and_return(commit)
+      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
+        .and_return(commit)
 
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
@@ -341,8 +341,8 @@ describe GitPushService, services: true do
         committed_date: commit_time
       )
 
-      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit).
-        and_return(commit)
+      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
+        .and_return(commit)
 
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
@@ -377,11 +377,11 @@ describe GitPushService, services: true do
         author_email: commit_author.email
       )
 
-      allow(project.repository).to receive(:commits_between).
-        and_return([closing_commit])
+      allow(project.repository).to receive(:commits_between)
+        .and_return([closing_commit])
 
-      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit).
-        and_return(closing_commit)
+      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
+        .and_return(closing_commit)
 
       project.team << [commit_author, :master]
     end
@@ -403,8 +403,8 @@ describe GitPushService, services: true do
       end
 
       it "doesn't close issues when external issue tracker is in use" do
-        allow_any_instance_of(Project).to receive(:default_issues_tracker?).
-          and_return(false)
+        allow_any_instance_of(Project).to receive(:default_issues_tracker?)
+          .and_return(false)
         external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid, reference_pattern: project.issue_reference_pattern)
         allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(external_issue_tracker)
 
@@ -598,13 +598,13 @@ describe GitPushService, services: true do
         commit = double(:commit)
         diff = double(:diff, new_path: 'README.md')
 
-        expect(commit).to receive(:raw_deltas).
-          and_return([diff])
+        expect(commit).to receive(:raw_deltas)
+          .and_return([diff])
 
         service.push_commits = [commit]
 
-        expect(ProjectCacheWorker).to receive(:perform_async).
-          with(project.id, %i(readme), %i(commit_count repository_size))
+        expect(ProjectCacheWorker).to receive(:perform_async)
+          .with(project.id, %i(readme), %i(commit_count repository_size))
 
         service.update_caches
       end
@@ -616,9 +616,9 @@ describe GitPushService, services: true do
       end
 
       it 'does not flush any conditional caches' do
-        expect(ProjectCacheWorker).to receive(:perform_async).
-          with(project.id, [], %i(commit_count repository_size)).
-          and_call_original
+        expect(ProjectCacheWorker).to receive(:perform_async)
+          .with(project.id, [], %i(commit_count repository_size))
+          .and_call_original
 
         service.update_caches
       end
@@ -635,8 +635,8 @@ describe GitPushService, services: true do
     end
 
     it 'only schedules a limited number of commits' do
-      allow(service).to receive(:push_commits).
-        and_return(Array.new(1000, double(:commit, to_hash: {}, matches_cross_reference_regex?: true)))
+      allow(service).to receive(:push_commits)
+        .and_return(Array.new(1000, double(:commit, to_hash: {}, matches_cross_reference_regex?: true)))
 
       expect(ProcessCommitWorker).to receive(:perform_async).exactly(100).times
 
@@ -644,8 +644,8 @@ describe GitPushService, services: true do
     end
 
     it "skips commits which don't include cross-references" do
-      allow(service).to receive(:push_commits).
-        and_return([double(:commit, to_hash: {}, matches_cross_reference_regex?: false)])
+      allow(service).to receive(:push_commits)
+        .and_return([double(:commit, to_hash: {}, matches_cross_reference_regex?: false)])
 
       expect(ProcessCommitWorker).not_to receive(:perform_async)
 

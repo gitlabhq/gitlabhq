@@ -7,7 +7,7 @@ describe 'Edit Project Settings', feature: true do
   let(:project) { create(:empty_project, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe 'Project settings section', js: true do
@@ -58,8 +58,13 @@ describe 'Edit Project Settings', feature: true do
       # Not using empty project because we need a repo to exist
       let(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
 
-      before(:context) { TestEnv.clean_test_path }
-      after(:example) { TestEnv.clean_test_path }
+      before(:context) do
+        TestEnv.clean_test_path
+      end
+
+      after(:example) do
+        TestEnv.clean_test_path
+      end
 
       specify 'the project is accessible via the new path' do
         rename_project(project, path: 'bar')
@@ -96,9 +101,17 @@ describe 'Edit Project Settings', feature: true do
     let!(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
     let!(:group) { create(:group) }
 
-    before(:context) { TestEnv.clean_test_path }
-    before(:example) { group.add_owner(user) }
-    after(:example) { TestEnv.clean_test_path }
+    before(:context) do
+      TestEnv.clean_test_path
+    end
+
+    before(:example) do
+      group.add_owner(user)
+    end
+
+    after(:example) do
+      TestEnv.clean_test_path
+    end
 
     specify 'the project is accessible via the new path' do
       transfer_project(project, group)
