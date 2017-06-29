@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Pipeline Schedules', :feature do
+feature 'Pipeline Schedules', :feature, js: true do
   include PipelineSchedulesHelper
 
   let!(:project) { create(:project) }
@@ -11,13 +11,13 @@ feature 'Pipeline Schedules', :feature do
 
   before do
     project.add_master(user)
-
     gitlab_sign_in(user)
-    visit_page
   end
 
   describe 'GET /projects/pipeline_schedules' do
-    let(:visit_page) { visit_pipelines_schedules }
+    before do
+      visit_pipelines_schedules
+    end
 
     it 'avoids N + 1 queries' do
       control_count = ActiveRecord::QueryRecorder.new { visit_pipelines_schedules }.count
@@ -78,8 +78,10 @@ feature 'Pipeline Schedules', :feature do
     end
   end
 
-  describe 'POST /projects/pipeline_schedules/new', js: true do
-    let(:visit_page) { visit_new_pipeline_schedule }
+  describe 'POST /projects/pipeline_schedules/new' do
+    before do
+      visit_new_pipeline_schedule
+    end
 
     it 'sets defaults for timezone and target branch' do
       expect(page).to have_button('master')
@@ -98,19 +100,10 @@ feature 'Pipeline Schedules', :feature do
 
       expect(page).to have_content('This field is required')
     end
-
-    it 'sets a variable' do
-      fill_in_schedule_form
-      fill_in_variable
-
-      save_pipeline_schedule
-
-      expect(Ci::PipelineSchedule.last.job_variables).to eq([{ key: 'foo', value: 'bar', public: false }])
-    end
   end
 
-  describe 'PATCH /projects/pipelines_schedules/:id/edit', js: true do
-    let(:visit_page) do
+  describe 'PATCH /projects/pipelines_schedules/:id/edit' do
+    before do
       edit_pipeline_schedule
     end
 
@@ -129,14 +122,6 @@ feature 'Pipeline Schedules', :feature do
       expect(page).to have_content('my brand new description')
     end
 
-    it 'adds a new variable' do
-      fill_in_variable
-
-      save_pipeline_schedule
-
-      expect(Ci::PipelineSchedule.last.job_variables).to eq([{ key: 'foo', value: 'bar', public: false }])
-    end
-
     context 'when ref is nil' do
       before do
         pipeline_schedule.update_attribute(:ref, nil)
@@ -149,39 +134,63 @@ feature 'Pipeline Schedules', :feature do
         end
       end
     end
+  end
 
-    context 'when variables already exist' do
-      before do
-        create(:ci_pipeline_schedule_variable, key: 'some_key', value: 'some_value', pipeline_schedule: pipeline_schedule)
-        edit_pipeline_schedule
+  context 'when user creates a new pipeline schedule with variables' do
+    background do
+      visit_pipelines_schedules
+      click_link 'New schedule'
+      fill_in_schedule_form
+      all('[name="schedule[variables_attributes][][key]"]')[0].set('AAA')
+      all('[name="schedule[variables_attributes][][value]"]')[0].set('AAA123')
+      all('[name="schedule[variables_attributes][][key]"]')[1].set('BBB')
+      all('[name="schedule[variables_attributes][][value]"]')[1].set('BBB123')
+      save_pipeline_schedule
+    end
+
+    scenario 'user sees the new variable in edit window' do
+      find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
+      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('AAA')
+      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('AAA123')
+      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(2) .pipeline-variable-key-input").value).to eq('BBB')
+      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(2) .pipeline-variable-value-input").value).to eq('BBB123')
+    end
+  end
+
+  context 'when user edits a variable of a pipeline schedule' do
+    background do
+      create(:ci_pipeline_schedule, owner: user).tap do |pipeline_schedule|
+        create(:ci_pipeline_schedule_variable, key: 'AAA', value: 'AAA123', pipeline_schedule: pipeline_schedule)
       end
+      visit_pipelines_schedules
+      find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
+      all('[name="schedule[variables_attributes][][key]"]')[0].set('foo')
+      all('[name="schedule[variables_attributes][][value]"]')[0].set('bar')
+      click_button 'Save pipeline schedule'
+    end
 
-      it 'edits existing variable' do
-        expect(first('[name="schedule[variables_attributes][][key]"]').value).to eq('some_key')
-        expect(first('[name="schedule[variables_attributes][][value]"]').value).to eq('some_value')
+    scenario 'user sees the updated variable in edit window' do
+      find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
+      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('foo')
+      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('bar')
+    end
+  end
 
-        fill_in_variable
-        save_pipeline_schedule
-
-        expect(Ci::PipelineSchedule.last.job_variables).to eq([{ key: 'foo', value: 'bar', public: false }])
+  context 'when user removes a variable of a pipeline schedule' do
+    background do
+      create(:ci_pipeline_schedule, owner: user).tap do |pipeline_schedule|
+        create(:ci_pipeline_schedule_variable, key: 'AAA', value: 'AAA123', pipeline_schedule: pipeline_schedule)
       end
+      visit_pipelines_schedules
+      find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
+      first('.pipeline-variable-list .pipeline-variable-row-remove-button').click
+      click_button 'Save pipeline schedule'
+    end
 
-      it 'removes an existing variable' do
-        remove_variable
-        save_pipeline_schedule
-
-        expect(Ci::PipelineSchedule.last.job_variables).to eq([])
-      end
-
-      it 'adds another variable' do
-        fill_in_variable(1)
-        save_pipeline_schedule
-
-        expect(Ci::PipelineSchedule.last.job_variables).to eq([
-          { key: 'some_key', value: 'some_value', public: false },
-          { key: 'foo', value: 'bar', public: false }
-        ])
-      end
+    scenario 'user does not see the removed variable in edit window' do
+      find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
+      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('')
+      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('')
     end
   end
 
@@ -209,15 +218,6 @@ feature 'Pipeline Schedules', :feature do
 
   def save_pipeline_schedule
     click_button 'Save pipeline schedule'
-  end
-
-  def fill_in_variable(index = 0)
-    all('[name="schedule[variables_attributes][][key]"]')[index].set('foo')
-    all('[name="schedule[variables_attributes][][value]"]')[index].set('bar')
-  end
-
-  def remove_variable
-    first('.js-pipeline-variable-list .js-row-remove-button').click
   end
 
   def fill_in_schedule_form
