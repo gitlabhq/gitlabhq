@@ -31,6 +31,15 @@ is installed on.
 
 ![Schedules list](img/pipeline_schedules_list.png)
 
+### Making use of scheduled pipeline variables
+
+> [Introduced][ce-12328] in GitLab 9.4.
+
+You can pass any number of arbitrary variables and they will be available in
+GitLab CI so that they can be used in your `.gitlab-ci.yml` file.
+
+![Scheduled pipeline variables](img/pipeline_schedule_variables.png)
+
 ## Using only and except
 
 To configure that a job can be executed only when the pipeline has been
@@ -79,4 +88,5 @@ don't have admin access to the server, ask your administrator.
 
 [ce-10533]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10533
 [ce-10853]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10853
+[ce-12328]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12328
 [settings]: https://about.gitlab.com/gitlab-com/settings/#cron-jobs
