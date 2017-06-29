@@ -1,4 +1,4 @@
-- if @merge_request_diffs.size > 1
+- if @merge_request_diff && @merge_request_diffs.size > 1
   .mr-version-controls
     .mr-version-menus-container.content-block
       Changes between
@@ -71,27 +71,3 @@
                         (base)
                     %div
                       %strong.commit-sha= short_sha(@merge_request_diff.base_commit_sha)
-
-    - if different_base?(@start_version, @merge_request_diff)
-      .content-block
-        = icon('info-circle')
-        Selected versions have different base commits.
-        Changes will include
-        = link_to project_compare_path(@project, from: @start_version.base_commit_sha, to: @merge_request_diff.base_commit_sha) do
-          new commits
-        from
-        = succeed '.' do
-          %code= @merge_request.target_branch
-
-    - if @start_version || !@merge_request_diff.latest?
-      .comments-disabled-notif.content-block
-        = icon('info-circle')
-        Not all comments are displayed because you're
-        - if @start_version
-          comparing two versions
-        - else
-          viewing an old version
-        of the diff.
-
-        .pull-right
-          = link_to 'Show latest version', diffs_project_merge_request_path(@project, @merge_request), class: 'btn btn-sm'
