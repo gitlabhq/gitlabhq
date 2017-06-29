@@ -202,34 +202,34 @@ to another list the label changes and a system not is recorded.
 
 ![Issue Board system notes](img/issue_board_system_notes.png)
 
-## Multiple issue boards
+## Multiple Issue Boards
 
 > Introduced in [GitLab Enterprise Edition][ee] 8.13.
 
-Multiple issue boards, as the name suggests, allow for more than one issue board
+Multiple Issue Boards, as the name suggests, allow for more than one Issue Board
 for a given project. This is great for large projects with more than one team
 or in situations where a repository is used to host the code of multiple
 products.
 
 Clicking on the current board name in the upper left corner will reveal a
-menu from where you can create another issue board and rename or delete the
+menu from where you can create another Issue Board and rename or delete the
 existing one.
 
-![Multiple issue boards](img/issue_boards_multiple.png)
+![Multiple Issue Boards](img/issue_boards_multiple.png)
 
 ### Board with a milestone
 
 > Introduced in [GitLab Enterprise Edition][ee] 9.0.
 
-An issue board can be associated with a milestone which will automatically filter
+An Issue Board can be associated with a milestone which will automatically filter
 the issue to that milestone. This allows you to create unique boards for
 individual milestones.
 
-You can assign a milestone to a board when creating a new issue board or you
-can update current issue boards to also have a milestone. Once a specific
-milestone is assigned to an issue board, you will no longer be able to filter
+You can assign a milestone to a board when creating a new Issue Board or you
+can update current Issue Boards to also have a milestone. Once a specific
+milestone is assigned to an Issue Board, you will no longer be able to filter
 through any other milestone. In order to do that, you need to remove the
-defined milestone from the issue board.
+defined milestone from the Issue Board.
 
 There are also two pre-defined milestones, **Any milestone** which will filter
 the issues with any milestone, and **Upcoming** which will filter issues to the
