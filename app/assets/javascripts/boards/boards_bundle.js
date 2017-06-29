@@ -141,6 +141,7 @@ $(() => {
       modal: ModalStore.store,
       store: Store.state,
       isFullscreen: false,
+      focusModeAvailable: gl.utils.convertPermissionToBoolean($boardApp.dataset.focusModeAvailable),
     },
     watch: {
       disabled() {
@@ -177,6 +178,8 @@ $(() => {
         }
       },
       toggleFocusMode() {
+        if (!this.focusModeAvailable) { return; }
+
         $(this.$refs.toggleFocusModeButton).tooltip('hide');
         issueBoardsContent.classList.toggle('is-focused');
 
@@ -206,6 +209,7 @@ $(() => {
           aria-label="Toggle focus mode"
           title="Toggle focus mode"
           ref="toggleFocusModeButton"
+          v-if="focusModeAvailable"
           @click="toggleFocusMode">
           <span v-show="isFullscreen">
             ${collapseIcon}

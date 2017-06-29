@@ -1,4 +1,6 @@
 module BoardsHelper
+  prepend EE::BoardsHelper
+
   def board_data
     board = @board || @boards.first
 
