@@ -88,11 +88,7 @@ describe 'Milestones on EE', feature: true do
       end
     end
 
-    context 'with the burndown chart feature disabled' do
-      before do
-        stub_licensed_features(burndown_charts: false)
-      end
-
+    shared_examples 'burndown charts disabled' do
       it 'has a link to upgrade to Bronze when checking the namespace plan' do
         # Not using `stub_application_setting` because the method is prepended in
         # `EE::ApplicationSetting` which breaks when using `any_instance`
@@ -117,6 +113,22 @@ describe 'Milestones on EE', feature: true do
           expect(page).not_to have_selector('.burndown-chart')
         end
       end
+    end
+
+    context 'with the burndown chart feature disabled' do
+      before do
+        stub_licensed_features(burndown_charts: false)
+      end
+
+      include_examples 'burndown charts disabled'
+    end
+
+    context 'with the issuable weights feature disabled' do
+      before do
+        stub_licensed_features(issue_weights: false)
+      end
+
+      include_examples 'burndown charts disabled'
     end
   end
 

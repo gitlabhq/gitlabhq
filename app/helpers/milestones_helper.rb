@@ -134,14 +134,16 @@ module MilestonesHelper
   end
 
   def can_generate_chart?(burndown)
-    return unless @project.feature_available?(:burndown_charts, current_user)
+    return unless @project.feature_available?(:burndown_charts, current_user) &&
+        @project.feature_available?(:issue_weights, current_user)
 
     burndown&.valid? && !burndown&.empty?
   end
 
   def show_burndown_placeholder?(warning)
     return false if cookies['hide_burndown_message'].present?
-    return false unless @project.feature_available?(:burndown_charts, current_user)
+    return false unless @project.feature_available?(:burndown_charts, current_user) &&
+        @project.feature_available?(:issue_weights, current_user)
 
     warning.nil? && can?(current_user, :admin_milestone, @project)
   end
