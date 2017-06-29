@@ -50,6 +50,10 @@ module Gitlab
       Gitlab.config.geo_secondary_role['enabled']
     end
 
+    def self.geo_database_configured?
+      Rails.configuration.respond_to?(:geo_database)
+    end
+
     def self.license_allows?
       ::License.feature_available?(:geo)
     end
