@@ -58,7 +58,7 @@ const mutations = {
       expanded: true,
       id: discussion_id,
       individual_note: !(type === 'DiscussionNote'),
-      notes: [ note ],
+      notes: [note],
       reply_id: discussion_id,
     };
 

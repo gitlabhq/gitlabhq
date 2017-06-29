@@ -18,5 +18,5 @@ export default {
   },
   createNewNote(endpoint, data) {
     return Vue.http.post(endpoint, data, { emulateJSON: true });
-  }
+  },
 };

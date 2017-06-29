@@ -28,43 +28,63 @@ export default {
     commentButtonTitle() {
       return this.noteType === 'comment' ? 'Comment' : 'Start discussion';
     },
+    isIssueOpen() {
+      return this.issueState === 'opened' || this.issueState === 'reopened';
+    },
     issueActionButtonTitle() {
       if (this.note.length) {
-        const actionText = this.issueState === 'open' ? 'close' : 'reopen';
+        const actionText = this.isIssueOpen ? 'close' : 'reopen';
 
         return this.noteType === 'comment' ? `Comment & ${actionText} issue` : `Start discussion & ${actionText} issue`;
       }
 
-      return this.issueState === 'open' ? 'Close issue' : 'Reopen issue';
+      return this.isIssueOpen ? 'Close issue' : 'Reopen issue';
     },
   },
   methods: {
-    handleSave() {
-      const data = {
-        endpoint: this.endpoint,
-        noteData: {
-          full_data: true,
-          note: {
-            noteable_type: 'Issue',
-            noteable_id: window.gl.issueData.id,
-            note: this.note,
-          }
-        },
-      };
+    handleSave(withIssueAction) {
+      if (this.note.length) {
+        const data = {
+          endpoint: this.endpoint,
+          noteData: {
+            full_data: true,
+            note: {
+              noteable_type: 'Issue',
+              noteable_id: window.gl.issueData.id,
+              note: this.note,
+            },
+          },
+        };
 
-      if (this.noteType === 'discussion') {
-        data.noteData.note.type = 'DiscussionNote';
+        if (this.noteType === 'discussion') {
+          data.noteData.note.type = 'DiscussionNote';
+        }
+
+        this.$store.dispatch('createNewNote', data)
+          .then((res) => {
+            if (res.errors) {
+              this.handleError();
+            } else {
+              this.discard();
+            }
+          })
+          .catch(this.handleError);
       }
 
-      this.$store.dispatch('createNewNote', data)
-        .then((res) => {
-          if (res.errors) {
-            return this.handleError();
-          }
+      if (withIssueAction) {
+        if (this.isIssueOpen) {
+          gl.issueData.state = 'closed';
+          this.issueState = 'closed';
+        } else {
+          gl.issueData.state = 'reopened';
+          this.issueState = 'reopened';
+        }
+        this.isIssueOpen = !this.isIssueOpen;
 
-          this.discard();
-        })
-        .catch(this.handleError);
+        // This is out of scope for the Notes Vue component.
+        // It was the shortest path to update the issue state and relevant places.
+        $('.js-btn-issue-action:visible').trigger('click');
+      }
     },
     discard() {
       this.note = '';
@@ -171,6 +191,7 @@ export default {
             </ul>
           </div>
           <a
+            @click="handleSave(true)"
             :class="{'btn-reopen': issueState === 'closed', 'btn-close': issueState === 'open'}"
             class="btn btn-nr btn-comment">
             {{issueActionButtonTitle}}

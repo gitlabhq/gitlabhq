@@ -59,8 +59,9 @@ export default {
     },
     formUpdateHandler(note) {
       const data = {
-        endpoint: `${this.note.path}?full_data=1`,
+        endpoint: this.note.path,
         note: {
+          full_data: true,
           target_type: 'issue',
           target_id: this.note.noteable_id,
           note,
