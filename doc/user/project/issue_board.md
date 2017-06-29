@@ -26,9 +26,9 @@ With [Multiple Issue Boards](#multiple-issue-boards), available only in [GitLab
 Enterprise Edition](https://about.gitlab.com/gitlab-ee/), your workflow gets
 empowered with the ability to create multiple boards per project.
 
-## Use-cases
+## Use cases
 
-There are numerous use-cases for Issue Boards, we will just
+There are numerous use cases for Issue Boards, we will just
 exemplify with a couple situations.
 
 For a broader use-case, please check the blog post
@@ -65,7 +65,7 @@ members of their teams. We could have, therefore, three Issue Boards for this ca
 
 ### Boards for Milestones
 
-From the use-cases above, let's assume that you have now created a milestone per release for
+From the use cases above, let's assume that you have now created a milestone per release for
 your app. You can create a milestone exclusive for each release, and [associate it with a board](#board-with-a-milestone).
 Therefore, you'll have everything organized in a board per release.
 
