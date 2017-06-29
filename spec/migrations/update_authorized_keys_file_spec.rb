@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20170626202753_update_authorized_keys_file.rb')
 
-describe UpdateAuthorizedKeysFile do
+describe UpdateAuthorizedKeysFile, :migration do
   let(:migration) { described_class.new }
 
   describe '#up' do
@@ -105,7 +105,7 @@ describe UpdateAuthorizedKeysFile do
 
         context 'when authorized_keys_enabled is explicitly false' do
           before do
-            ApplicationSetting.first.update(authorized_keys_enabled: false)
+            ApplicationSetting.first.update!(authorized_keys_enabled: false)
           end
 
           it { is_expected.to be_falsey }
