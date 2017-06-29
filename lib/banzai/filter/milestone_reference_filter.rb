@@ -49,7 +49,7 @@ module Banzai
 
       def url_for_object(milestone, project)
         h = Gitlab::Routing.url_helpers
-        h.namespace_project_milestone_url(project.namespace, project, milestone,
+        h.project_milestone_url(project, milestone,
                                         only_path: context[:only_path])
       end
 

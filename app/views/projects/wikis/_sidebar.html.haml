@@ -3,7 +3,7 @@
     %a.gutter-toggle.pull-right.visible-xs-block.visible-sm-block.js-sidebar-wiki-toggle{ href: "#" }
       = icon('angle-double-right')
 
-    - git_access_url = namespace_project_wikis_git_access_path(@project.namespace, @project)
+    - git_access_url = project_wikis_git_access_path(@project)
     = link_to git_access_url, class: active_nav_link?(path: 'wikis#git_access') ? 'active' : '' do
       = succeed '&nbsp;' do
         = icon('cloud-download')
@@ -15,7 +15,7 @@
         = render @sidebar_wiki_entries, context: 'sidebar'
 
     .block
-      = link_to namespace_project_wikis_pages_path(@project.namespace, @project), class: 'btn btn-block' do
+      = link_to project_wikis_pages_path(@project), class: 'btn btn-block' do
         More Pages
 
 = render 'projects/wikis/new'

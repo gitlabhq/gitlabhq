@@ -8,10 +8,7 @@ class TriggeredPipelineEntity < Grape::Entity
   expose :source
 
   expose :path do |pipeline|
-    namespace_project_pipeline_path(
-      pipeline.project.namespace,
-      pipeline.project,
-      pipeline)
+    project_pipeline_path(pipeline.project, pipeline)
   end
 
   expose :details do

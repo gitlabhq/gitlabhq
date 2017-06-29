@@ -76,7 +76,7 @@ describe ApplicationHelper do
 
       allow_any_instance_of(Project).to receive(:avatar_in_git).and_return(true)
 
-      avatar_url = "#{gitlab_host}#{namespace_project_avatar_path(project.namespace, project)}"
+      avatar_url = "#{gitlab_host}#{project_avatar_path(project)}"
       expect(helper.project_icon(project.full_path).to_s).to match(image_tag(avatar_url))
     end
   end

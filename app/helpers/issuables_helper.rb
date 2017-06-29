@@ -26,9 +26,9 @@ module IssuablesHelper
     project = issuable.project
 
     if issuable.is_a?(MergeRequest)
-      namespace_project_merge_request_path(project.namespace, project, issuable.iid, :json)
+      project_merge_request_path(project, issuable.iid, :json)
     else
-      namespace_project_issue_path(project.namespace, project, issuable.iid, :json)
+      project_issue_path(project, issuable.iid, :json)
     end
   end
 
@@ -205,7 +205,7 @@ module IssuablesHelper
 
   def issuable_initial_data(issuable)
     data = {
-      endpoint: namespace_project_issue_path(@project.namespace, @project, issuable),
+      endpoint: project_issue_path(@project, issuable),
       canUpdate: can?(current_user, :update_issue, issuable),
       canDestroy: can?(current_user, :destroy_issue, issuable),
       canMove: current_user ? issuable.can_move?(current_user) : false,
@@ -303,7 +303,7 @@ module IssuablesHelper
       mark_icon: (is_collapsed ? icon('check-square', class: 'todo-undone') : nil),
       issuable_id: issuable.id,
       issuable_type: issuable.class.name.underscore,
-      url: namespace_project_todos_path(@project.namespace, @project),
+      url: project_todos_path(@project),
       delete_path: (dashboard_todo_path(todo) if todo),
       placement: (is_collapsed ? 'left' : nil),
       container: (is_collapsed ? 'body' : nil)

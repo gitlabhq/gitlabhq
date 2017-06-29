@@ -13,7 +13,7 @@ feature 'Issues List' do
   scenario 'user does not see create new list button' do
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
 
     expect(page).not_to have_selector('.js-new-board-list')
   end

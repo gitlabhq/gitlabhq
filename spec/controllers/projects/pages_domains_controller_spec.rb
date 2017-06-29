@@ -46,7 +46,7 @@ describe Projects::PagesDomainsController do
         post(:create, request_params.merge(pages_domain: pages_domain_params))
       end.to change { PagesDomain.count }.by(1)
 
-      expect(response).to redirect_to(namespace_project_pages_path(project.namespace, project))
+      expect(response).to redirect_to(project_pages_path(project))
     end
   end
 
@@ -56,7 +56,7 @@ describe Projects::PagesDomainsController do
         delete(:destroy, request_params.merge(id: pages_domain.domain))
       end.to change { PagesDomain.count }.by(-1)
 
-      expect(response).to redirect_to(namespace_project_pages_path(project.namespace, project))
+      expect(response).to redirect_to(project_pages_path(project))
     end
   end
 

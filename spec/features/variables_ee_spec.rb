@@ -15,7 +15,7 @@ describe 'Project variables EE', js: true do
     project.team << [user, :master]
     project.variables << variable
 
-    visit namespace_project_settings_ci_cd_path(project.namespace, project)
+    visit project_settings_ci_cd_path(project)
   end
 
   it 'adds new variable with a special environment scope' do

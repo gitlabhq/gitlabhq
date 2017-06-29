@@ -35,7 +35,7 @@ describe Projects::IssuesController do
       it "returns 301 if request path doesn't match project path" do
         get :index, namespace_id: project.namespace, project_id: project.path.upcase
 
-        expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
+        expect(response).to redirect_to(project_issues_path(project))
       end
 
       it "returns 404 when issues are disabled" do
@@ -329,7 +329,7 @@ describe Projects::IssuesController do
               update_verified_issue
 
               expect(response)
-                .to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+                .to redirect_to(project_issue_path(project, issue))
             end
 
             it 'accepts an issue after recaptcha is verified' do

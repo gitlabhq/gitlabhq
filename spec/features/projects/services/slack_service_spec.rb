@@ -13,7 +13,7 @@ feature 'Projects > Slack service > Setup events', feature: true do
   end
 
   scenario 'user can filter events by channel' do
-    visit edit_namespace_project_service_path(project.namespace, project, service)
+    visit edit_project_service_path(project, service)
 
     expect(page.find_field("service_push_channel").value).to have_content '1'
     expect(page.find_field("service_issue_channel").value).to have_content '2'

@@ -500,7 +500,7 @@ module API
         target_url    = "namespace_project_#{target_type}_url"
         target_anchor = "note_#{todo.note_id}" if todo.note_id?
 
-        Gitlab::Application.routes.url_helpers.public_send(target_url,
+        Gitlab::Routing.url_helpers.public_send(target_url,
           todo.project.namespace, todo.project, todo.target, anchor: target_anchor)
       end
 

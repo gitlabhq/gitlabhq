@@ -33,7 +33,7 @@ describe 'Filter issues weight', js: true, feature: true do
       assignees: [user])
     issue.labels << label
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'only weight' do

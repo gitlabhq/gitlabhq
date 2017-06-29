@@ -121,7 +121,7 @@ describe Projects::MergeRequestsController do
 
           it 'updates the merge request' do
             expect(merge_request.reload).to be_valid
-            expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+            expect(response).to redirect_to(project_merge_request_path(project, merge_request))
           end
         end
 
@@ -136,7 +136,7 @@ describe Projects::MergeRequestsController do
 
           it 'updates the merge request' do
             expect(merge_request.reload).to be_valid
-            expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+            expect(response).to redirect_to(project_merge_request_path(project, merge_request))
           end
         end
 
@@ -151,7 +151,7 @@ describe Projects::MergeRequestsController do
 
           it 'updates the merge request' do
             expect(merge_request.reload).to be_valid
-            expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+            expect(response).to redirect_to(project_merge_request_path(project, merge_request))
           end
         end
       end
@@ -172,7 +172,7 @@ describe Projects::MergeRequestsController do
 
           it 'updates the merge request' do
             expect(merge_request.reload).to be_valid
-            expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+            expect(response).to redirect_to(project_merge_request_path(project, merge_request))
           end
         end
 
@@ -187,7 +187,7 @@ describe Projects::MergeRequestsController do
 
           it 'updates the merge request' do
             expect(merge_request.reload).to be_valid
-            expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+            expect(response).to redirect_to(project_merge_request_path(project, merge_request))
           end
         end
 
@@ -202,7 +202,7 @@ describe Projects::MergeRequestsController do
 
           it 'updates the merge request' do
             expect(merge_request.reload).to be_valid
-            expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+            expect(response).to redirect_to(project_merge_request_path(project, merge_request))
           end
         end
 
@@ -217,7 +217,7 @@ describe Projects::MergeRequestsController do
 
           it 'updates the merge request' do
             expect(merge_request.reload).to be_valid
-            expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+            expect(response).to redirect_to(project_merge_request_path(project, merge_request))
           end
         end
       end

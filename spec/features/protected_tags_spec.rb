@@ -28,7 +28,7 @@ feature 'Projected Tags', feature: true, js: true do
 
   describe "explicit protected tags" do
     it "allows creating explicit protected tags" do
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
       set_allowed_to('create')
       click_on "Protect"
@@ -42,7 +42,7 @@ feature 'Projected Tags', feature: true, js: true do
       commit = create(:commit, project: project)
       project.repository.add_tag(user, 'some-tag', commit.id)
 
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
       set_allowed_to('create')
       click_on "Protect"
@@ -51,7 +51,7 @@ feature 'Projected Tags', feature: true, js: true do
     end
 
     it "displays an error message if the named tag does not exist" do
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
       set_allowed_to('create')
       click_on "Protect"
@@ -62,7 +62,7 @@ feature 'Projected Tags', feature: true, js: true do
 
   describe "wildcard protected tags" do
     it "allows creating protected tags with a wildcard" do
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
       set_allowed_to('create')
       click_on "Protect"
@@ -76,7 +76,7 @@ feature 'Projected Tags', feature: true, js: true do
       project.repository.add_tag(user, 'production-stable', 'master')
       project.repository.add_tag(user, 'staging-stable', 'master')
 
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
       set_allowed_to('create')
       click_on "Protect"
@@ -89,12 +89,12 @@ feature 'Projected Tags', feature: true, js: true do
       project.repository.add_tag(user, 'staging-stable', 'master')
       project.repository.add_tag(user, 'development', 'master')
 
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
       set_allowed_to('create')
       click_on "Protect"
 
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       click_on "2 matching tags"
 
       within(".protected-tags-list") do

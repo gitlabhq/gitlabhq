@@ -18,7 +18,7 @@ feature 'Projects > Wiki > User previews markdown changes', feature: true, js: t
 
     gitlab_sign_in(user)
 
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
     find('.shortcuts-wiki').trigger('click')
   end
 

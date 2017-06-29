@@ -21,7 +21,7 @@ describe 'New/edit issue (EE)', :feature, :js do
 
   context 'new issue' do
     before do
-      visit new_namespace_project_issue_path(project.namespace, project)
+      visit new_project_issue_path(project)
     end
 
     describe 'shorten users API pagination limit (CE)' do
@@ -39,7 +39,7 @@ describe 'New/edit issue (EE)', :feature, :js do
           options
         end
 
-        visit new_namespace_project_issue_path(project.namespace, project)
+        visit new_project_issue_path(project)
 
         click_button 'Unassigned'
 

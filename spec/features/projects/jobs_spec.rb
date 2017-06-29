@@ -5,7 +5,6 @@ feature 'Jobs', :feature do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project) }
-  let(:namespace) { project.namespace }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
@@ -25,7 +24,7 @@ feature 'Jobs', :feature do
 
     context "Pending scope" do
       before do
-        visit namespace_project_jobs_path(project.namespace, project, scope: :pending)
+        visit project_jobs_path(project, scope: :pending)
       end
 
       it "shows Pending tab jobs" do
@@ -40,7 +39,7 @@ feature 'Jobs', :feature do
     context "Running scope" do
       before do
         job.run!
-        visit namespace_project_jobs_path(project.namespace, project, scope: :running)
+        visit project_jobs_path(project, scope: :running)
       end
 
       it "shows Running tab jobs" do
@@ -55,7 +54,7 @@ feature 'Jobs', :feature do
     context "Finished scope" do
       before do
         job.run!
-        visit namespace_project_jobs_path(project.namespace, project, scope: :finished)
+        visit project_jobs_path(project, scope: :finished)
       end
 
       it "shows Finished tab jobs" do
@@ -68,7 +67,7 @@ feature 'Jobs', :feature do
     context "All jobs" do
       before do
         project.builds.running_or_pending.each(&:success)
-        visit namespace_project_jobs_path(project.namespace, project)
+        visit project_jobs_path(project)
       end
 
       it "shows All tab jobs" do
@@ -82,7 +81,7 @@ feature 'Jobs', :feature do
 
     context "when visiting old URL" do
       let(:jobs_url) do
-        namespace_project_jobs_path(project.namespace, project)
+        project_jobs_path(project)
       end
 
       before do
@@ -98,7 +97,7 @@ feature 'Jobs', :feature do
   describe "POST /:project/jobs/:id/cancel_all" do
     before do
       job.run!
-      visit namespace_project_jobs_path(project.namespace, project)
+      visit project_jobs_path(project)
       click_link "Cancel running"
     end
 
@@ -117,7 +116,7 @@ feature 'Jobs', :feature do
       let(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
       before do
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       it 'shows commit`s data' do
@@ -136,7 +135,7 @@ feature 'Jobs', :feature do
       let(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
       before do
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       it 'shows retry button' do
@@ -153,7 +152,7 @@ feature 'Jobs', :feature do
         let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
 
         before do
-          visit namespace_project_job_path(namespace, project, job)
+          visit project_job_path(project, job)
         end
 
         it 'shows New issue button' do
@@ -162,10 +161,10 @@ feature 'Jobs', :feature do
 
         it 'links to issues/new with the title and description filled in' do
           button_title = "Build Failed ##{job.id}"
-          job_path = namespace_project_job_path(namespace, project, job)
+          job_path = project_job_path(project, job)
           options = { issue: { title: button_title, description: job_path } }
 
-          href = new_namespace_project_issue_path(namespace, project, options)
+          href = new_project_issue_path(project, options)
 
           page.within('.header-action-buttons') do
             expect(find('.js-new-issue')['href']).to include(href)
@@ -176,7 +175,7 @@ feature 'Jobs', :feature do
 
     context "Job from other project" do
       before do
-        visit namespace_project_job_path(project.namespace, project, job2)
+        visit project_job_path(project, job2)
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -185,7 +184,7 @@ feature 'Jobs', :feature do
     context "Download artifacts" do
       before do
         job.update_attributes(artifacts_file: artifacts_file)
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       it 'has button to download artifacts' do
@@ -198,7 +197,7 @@ feature 'Jobs', :feature do
         job.update_attributes(artifacts_file: artifacts_file,
                               artifacts_expire_at: expire_at)
 
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       context 'no expire date defined' do
@@ -244,7 +243,7 @@ feature 'Jobs', :feature do
 
     context "when visiting old URL" do
       let(:job_url) do
-        namespace_project_job_path(project.namespace, project, job)
+        project_job_path(project, job)
       end
 
       before do
@@ -260,7 +259,7 @@ feature 'Jobs', :feature do
       before do
         job.run!
 
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       it do
@@ -272,7 +271,7 @@ feature 'Jobs', :feature do
       before do
         job.run!
 
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       context 'when job has an initial trace' do
@@ -296,7 +295,7 @@ feature 'Jobs', :feature do
       end
 
       before do
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       it 'shows variable key and value after click', js: true do
@@ -321,7 +320,7 @@ feature 'Jobs', :feature do
         let(:job) { create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
 
         it 'shows a link for the job' do
-          visit namespace_project_job_path(project.namespace, project, job)
+          visit project_job_path(project, job)
 
           expect(page).to have_link environment.name
         end
@@ -331,7 +330,7 @@ feature 'Jobs', :feature do
         let(:job) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link for the job' do
-          visit namespace_project_job_path(project.namespace, project, job)
+          visit project_job_path(project, job)
 
           expect(page).to have_link environment.name
         end
@@ -342,7 +341,7 @@ feature 'Jobs', :feature do
         let(:job) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link to latest deployment' do
-          visit namespace_project_job_path(project.namespace, project, job)
+          visit project_job_path(project, job)
 
           expect(page).to have_link('latest deployment')
         end
@@ -354,7 +353,7 @@ feature 'Jobs', :feature do
       let(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
 
       it 'displays a warning message' do
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
 
         expect(page).to have_content('You have used all your shared Runners pipeline minutes.')
       end
@@ -365,7 +364,7 @@ feature 'Jobs', :feature do
     context "Job from project" do
       before do
         job.run!
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
         find('.js-cancel-job').click()
       end
 
@@ -380,7 +379,7 @@ feature 'Jobs', :feature do
     context "Job from project", :js do
       before do
         job.run!
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
         find('.js-cancel-job').click()
         find('.js-retry-button').trigger('click')
       end
@@ -401,7 +400,7 @@ feature 'Jobs', :feature do
 
         gitlab_sign_out_direct
         gitlab_sign_in(create(:user))
-        visit namespace_project_job_path(project.namespace, project, job)
+        visit project_job_path(project, job)
       end
 
       it 'does not show the Retry button' do
@@ -415,14 +414,14 @@ feature 'Jobs', :feature do
   describe "GET /:project/jobs/:id/download" do
     before do
       job.update_attributes(artifacts_file: artifacts_file)
-      visit namespace_project_job_path(project.namespace, project, job)
+      visit project_job_path(project, job)
       click_link 'Download'
     end
 
     context "Build from other project" do
       before do
         job2.update_attributes(artifacts_file: artifacts_file)
-        visit download_namespace_project_job_artifacts_path(project.namespace, project, job2)
+        visit download_project_job_artifacts_path(project, job2)
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -435,7 +434,7 @@ feature 'Jobs', :feature do
         before do
           Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           job.run!
-          visit namespace_project_job_path(project.namespace, project, job)
+          visit project_job_path(project, job)
           find('.js-raw-link-controller').click()
         end
 
@@ -450,7 +449,7 @@ feature 'Jobs', :feature do
         before do
           Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           job2.run!
-          visit raw_namespace_project_job_path(project.namespace, project, job2)
+          visit raw_project_job_path(project, job2)
         end
 
         it 'sends the right headers' do
@@ -478,7 +477,7 @@ feature 'Jobs', :feature do
             .to receive(:paths)
             .and_return([existing_file])
 
-          visit namespace_project_job_path(namespace, project, job)
+          visit project_job_path(project, job)
 
           find('.js-raw-link-controller').click
         end
@@ -496,7 +495,7 @@ feature 'Jobs', :feature do
             .to receive(:paths)
             .and_return([])
 
-          visit namespace_project_job_path(namespace, project, job)
+          visit project_job_path(project, job)
         end
 
         it 'sends the right headers' do
@@ -507,7 +506,7 @@ feature 'Jobs', :feature do
 
     context "when visiting old URL" do
       let(:raw_job_url) do
-        raw_namespace_project_job_path(project.namespace, project, job)
+        raw_project_job_path(project, job)
       end
 
       before do
@@ -523,7 +522,7 @@ feature 'Jobs', :feature do
   describe "GET /:project/jobs/:id/trace.json" do
     context "Job from project" do
       before do
-        visit trace_namespace_project_job_path(project.namespace, project, job, format: :json)
+        visit trace_project_job_path(project, job, format: :json)
       end
 
       it { expect(page.status_code).to eq(200) }
@@ -531,7 +530,7 @@ feature 'Jobs', :feature do
 
     context "Job from other project" do
       before do
-        visit trace_namespace_project_job_path(project.namespace, project, job2, format: :json)
+        visit trace_project_job_path(project, job2, format: :json)
       end
 
       it { expect(page.status_code).to eq(404) }
@@ -541,7 +540,7 @@ feature 'Jobs', :feature do
   describe "GET /:project/jobs/:id/status" do
     context "Job from project" do
       before do
-        visit status_namespace_project_job_path(project.namespace, project, job)
+        visit status_project_job_path(project, job)
       end
 
       it { expect(page.status_code).to eq(200) }
@@ -549,7 +548,7 @@ feature 'Jobs', :feature do
 
     context "Job from other project" do
       before do
-        visit status_namespace_project_job_path(project.namespace, project, job2)
+        visit status_project_job_path(project, job2)
       end
 
       it { expect(page.status_code).to eq(404) }

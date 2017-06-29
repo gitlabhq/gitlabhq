@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'New/edit issue', :feature, :js do
-  include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
   include FormHelper
 
@@ -21,7 +20,7 @@ describe 'New/edit issue', :feature, :js do
 
   context 'new issue' do
     before do
-      visit new_namespace_project_issue_path(project.namespace, project)
+      visit new_project_issue_path(project)
     end
 
     xdescribe 'shorten users API pagination limit (CE)' do
@@ -39,7 +38,7 @@ describe 'New/edit issue', :feature, :js do
           options
         end
 
-        visit new_namespace_project_issue_path(project.namespace, project)
+        visit new_project_issue_path(project)
 
         click_button 'Unassigned'
 
@@ -239,7 +238,7 @@ describe 'New/edit issue', :feature, :js do
 
   context 'edit issue' do
     before do
-      visit edit_namespace_project_issue_path(project.namespace, project, issue)
+      visit edit_project_issue_path(project, issue)
     end
 
     it 'allows user to update issue' do
@@ -300,7 +299,7 @@ describe 'New/edit issue', :feature, :js do
     before do
       sub_group_project.add_master(user)
 
-      visit new_namespace_project_issue_path(sub_group_project.namespace, sub_group_project)
+      visit new_project_issue_path(sub_group_project)
     end
 
     it 'creates new label from dropdown' do

@@ -52,7 +52,7 @@ class Projects::WikisController < Projects::ApplicationController
       Gitlab::Geo.notify_wiki_update(@project) if Gitlab::Geo.primary?
 
       redirect_to(
-        namespace_project_wiki_path(@project.namespace, @project, @page),
+        project_wiki_path(@project, @page),
         notice: 'Wiki was successfully updated.'
       )
     else
@@ -67,7 +67,7 @@ class Projects::WikisController < Projects::ApplicationController
       # Triggers repository update on secondary nodes when Geo is enabled
       Gitlab::Geo.notify_wiki_update(@project) if Gitlab::Geo.primary?
       redirect_to(
-        namespace_project_wiki_path(@project.namespace, @project, @page),
+        project_wiki_path(@project, @page),
         notice: 'Wiki was successfully updated.'
       )
     else
@@ -80,7 +80,7 @@ class Projects::WikisController < Projects::ApplicationController
 
     unless @page
       redirect_to(
-        namespace_project_wiki_path(@project.namespace, @project, :home),
+        project_wiki_path(@project, :home),
         notice: "Page not found"
       )
     end
@@ -91,7 +91,7 @@ class Projects::WikisController < Projects::ApplicationController
 
     WikiPages::DestroyService.new(@project, current_user).execute(@page)
 
-    redirect_to namespace_project_wiki_path(@project.namespace, @project, :home),
+    redirect_to project_wiki_path(@project, :home),
                 status: 302,
                 notice: "Page was successfully deleted"
   end

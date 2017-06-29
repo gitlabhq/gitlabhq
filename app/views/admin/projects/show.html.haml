@@ -110,7 +110,7 @@
       .panel-heading
         Transfer project
       .panel-body
-        = form_for @project, url: transfer_admin_namespace_project_path(@project.namespace, @project), method: :put, html: { class: 'form-horizontal' } do |f|
+        = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
           .form-group
             = f.label :new_namespace_id, "Namespace", class: 'control-label'
             .col-sm-10
@@ -130,7 +130,7 @@
       .panel-heading
         Repository check
       .panel-body
-        = form_for @project, url: repository_check_admin_namespace_project_path(@project.namespace, @project), method: :post do |f|
+        = form_for @project, url: repository_check_admin_project_path(@project), method: :post do |f|
           .form-group
             - if @project.last_repository_check_at.nil?
               This repository has never been checked.

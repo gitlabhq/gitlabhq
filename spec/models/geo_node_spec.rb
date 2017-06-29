@@ -8,7 +8,7 @@ describe GeoNode, type: :model do
   subject(:node) { create(:geo_node) }
 
   let(:dummy_url) { 'https://localhost:3000/gitlab' }
-  let(:url_helpers) { Gitlab::Application.routes.url_helpers }
+  let(:url_helpers) { Gitlab::Routing.url_helpers }
   let(:api_version) { API::API.version }
 
   context 'associations' do

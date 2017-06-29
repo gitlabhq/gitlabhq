@@ -15,7 +15,7 @@ describe 'Sub-group project issue boards', :feature, :js do
 
     gitlab_sign_in(user)
 
-    visit namespace_project_board_path(project.namespace, project, board)
+    visit project_board_path(project, board)
     wait_for_requests
   end
 

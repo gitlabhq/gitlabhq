@@ -16,7 +16,7 @@ describe Projects::MirrorsController do
     end
 
     it 'complains about passing an empty URL' do
-      patch namespace_project_mirror_path(project.namespace, project),
+      patch project_mirror_path(project),
         project: {
         mirror: '1',
         import_url: '',
@@ -25,7 +25,7 @@ describe Projects::MirrorsController do
       }
 
       expect(response).to have_http_status(302)
-      expect(response).to redirect_to(namespace_project_settings_repository_path(project.namespace, project))
+      expect(response).to redirect_to(project_settings_repository_path(project))
       expect(flash[:alert]).to include("Import url can't be blank")
     end
   end
