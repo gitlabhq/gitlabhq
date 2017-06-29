@@ -19,6 +19,14 @@ describe Projects::PipelineSchedulesController do
       expect(response).to render_template(:index)
     end
 
+    it 'avoids N + 1 queries' do
+      control_count = ActiveRecord::QueryRecorder.new { visit_pipelines_schedules }.count
+
+      create_list(:ci_pipeline_schedule, 2, project: project)
+
+      expect { visit_pipelines_schedules }.not_to exceed_query_limit(control_count)
+    end
+
     context 'when the scope is set to active' do
       let(:scope) { 'active' }
 
@@ -158,13 +166,11 @@ describe Projects::PipelineSchedulesController do
       #     expect(assigns(:schedule).errors['variables.key']).not_to be_empty
       #   end
       # end
-
-      def go
-        post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule
-      end
     end
 
     describe 'security' do
+      let(:schedule) { { description: 'aaaaaaaa', cron: '0 4 * * *', cron_timezone: 'UTC', ref: 'master', active: '1' } }
+
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
@@ -174,14 +180,10 @@ describe Projects::PipelineSchedulesController do
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
       it { expect { go }.to be_denied_for(:visitor) }
+    end
 
-      def go
-        post :create, namespace_id: project.namespace.to_param,
-                      project_id: project,
-                      schedule: { description: 'aaaaaaaa', cron: '0 4 * * *',
-                                  cron_timezone: 'UTC', ref: 'master',
-                                  active: '1' }
-      end
+    def go
+      post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule
     end
   end
 
@@ -280,8 +282,8 @@ describe Projects::PipelineSchedulesController do
         end
 
         let!(:pipeline_schedule_variable) do
-          create(:ci_pipeline_schedule_variable, key: 'CCC',
-            pipeline_schedule: pipeline_schedule)
+          create(:ci_pipeline_schedule_variable,
+            key: 'CCC', pipeline_schedule: pipeline_schedule)
         end
 
         context 'when params do not include variables' do
@@ -307,7 +309,7 @@ describe Projects::PipelineSchedulesController do
           context 'when adds a new variable' do
             let(:schedule) do
               basic_param.merge({
-                variables_attributes: [ { key: 'AAA', value: 'AAA123' }]
+                variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
               })
             end
 
@@ -321,7 +323,7 @@ describe Projects::PipelineSchedulesController do
           context 'when updates a variable' do
             let(:schedule) do
               basic_param.merge({
-                variables_attributes: [ { id: pipeline_schedule_variable.id, value: 'new_value' } ]
+                variables_attributes: [{ id: pipeline_schedule_variable.id, value: 'new_value' }]
               })
             end
 
@@ -337,7 +339,7 @@ describe Projects::PipelineSchedulesController do
           context 'when deletes a variable' do
             let(:schedule) do
               basic_param.merge({
-                variables_attributes: [ { id: pipeline_schedule_variable.id, _destroy: true } ]
+                variables_attributes: [{ id: pipeline_schedule_variable.id, _destroy: true }]
               })
             end
 
@@ -347,15 +349,21 @@ describe Projects::PipelineSchedulesController do
           end
         end
       end
-
-      def go
-        put :update, namespace_id: project.namespace.to_param,
-                     project_id: project, id: pipeline_schedule,
-                     schedule: schedule
-      end
     end
 
     describe 'security' do
+      let(:schedule) { { description: 'updated_desc' } }
+
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      # it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:visitor) }
+
       context 'when a developer created a pipeline schedule' do
         let(:developer_1) { create(:user) }
         let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer_1) }
@@ -364,17 +372,9 @@ describe Projects::PipelineSchedulesController do
           project.add_developer(developer_1)
         end
 
-        context 'when the developer updates' do
-          it { expect { go }.to be_allowed_for(developer_1) }
-        end
-
-        context 'when another developer updates' do
-          it { expect { go }.to be_denied_for(:developer).of(project) }
-        end
-
-        context 'when a master updates' do
-          it { expect { go }.to be_allowed_for(:master).of(project) }
-        end
+        it { expect { go }.to be_allowed_for(developer_1) }
+        it { expect { go }.to be_denied_for(:developer).of(project) }
+        it { expect { go }.to be_allowed_for(:master).of(project) }
       end
 
       context 'when a master created a pipeline schedule' do
@@ -385,41 +385,69 @@ describe Projects::PipelineSchedulesController do
           project.add_master(master_1)
         end
 
-        context 'when the master updates' do
-          it { expect { go }.to be_allowed_for(master_1) }
-        end
-
-        context 'when other masters updates' do
-          it { expect { go }.to be_allowed_for(:master).of(project) }
-        end
-
-        context 'when a developer updates' do
-          it { expect { go }.to be_denied_for(:developer).of(project) }
-        end
+        it { expect { go }.to be_allowed_for(master_1) }
+        it { expect { go }.to be_allowed_for(:master).of(project) }
+        it { expect { go }.to be_denied_for(:developer).of(project) }
       end
     end
 
     def go
       put :update, namespace_id: project.namespace.to_param,
                    project_id: project, id: pipeline_schedule,
-                   schedule: { description: 'updated_desc' }
+                   schedule: schedule
     end
   end
 
-  describe 'GET edit' do
-    let(:user) { create(:user) }
+  describe 'GET #edit' do
+    describe 'functionality' do
+      let(:user) { create(:user) }
 
-    before do
-      project.add_master(user)
+      before do
+        project.add_master(user)
 
-      sign_in(user)
+        sign_in(user)
+      end
+
+      it 'loads the pipeline schedule' do
+        get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+
+        expect(response).to have_http_status(:ok)
+        expect(assigns(:schedule)).to eq(pipeline_schedule)
+      end
     end
 
-    it 'loads the pipeline schedule' do
-      get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      # it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:visitor) }
+    end
 
-      expect(response).to have_http_status(:ok)
-      expect(assigns(:schedule)).to eq(pipeline_schedule)
+    def go
+      get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+    end
+  end
+
+  describe 'GET #take_ownership' do
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      # it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:visitor) }
+    end
+
+    def go
+      post :take_ownership, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
     end
   end
 
@@ -451,59 +479,6 @@ describe Projects::PipelineSchedulesController do
         end.to change { project.pipeline_schedules.count }.by(-1)
 
         expect(response).to have_http_status(302)
-      end
-    end
-  end
-
-  describe 'security' do
-    include AccessMatchersForController
-
-    describe 'GET edit' do
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
-      it { expect { go }.to be_allowed_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
-      it { expect { go }.to be_denied_for(:visitor) }
-
-      def go
-        get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
-      end
-    end
-
-    describe 'GET take_ownership' do
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
-      it { expect { go }.to be_allowed_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
-      it { expect { go }.to be_denied_for(:visitor) }
-
-      def go
-        post :take_ownership, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
-      end
-    end
-
-    describe 'PUT update' do
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
-      it { expect { go }.to be_allowed_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
-      it { expect { go }.to be_denied_for(:visitor) }
-
-      def go
-        put :update, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id,
-                     schedule: { description: 'a' }
       end
     end
   end
