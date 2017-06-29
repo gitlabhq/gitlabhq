@@ -39,22 +39,22 @@ $(() => {
     created() {
       mergeConflictsService
         .fetchConflictsData()
-        .done((data) => {
+        .then((data) => {
           if (data.type === 'error') {
             mergeConflictsStore.setFailedRequest(data.message);
           } else {
             mergeConflictsStore.setConflictsData(data);
           }
         })
-        .error(() => {
-          mergeConflictsStore.setFailedRequest();
-        })
-        .always(() => {
+        .then(() => {
           mergeConflictsStore.setLoadingState(false);
 
           this.$nextTick(() => {
             $('.js-syntax-highlight').syntaxHighlight();
           });
+        })
+        .catch(() => {
+          mergeConflictsStore.setFailedRequest();
         });
     },
     methods: {
@@ -81,10 +81,10 @@ $(() => {
 
         mergeConflictsService
           .submitResolveConflicts(mergeConflictsStore.getCommitData())
-          .done((data) => {
+          .then((data) => {
             window.location.href = data.redirect_to;
           })
-          .error(() => {
+          .catch(() => {
             mergeConflictsStore.setSubmitState(false);
             new Flash('Failed to save merge conflicts resolutions. Please try again!');
           });

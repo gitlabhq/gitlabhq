@@ -90,8 +90,8 @@ $(() => {
             this.isLoading = false;
           })
           .catch(() => {
-            this.handleError();
             this.isLoading = false;
+            this.handleError();
           });
       },
       selectDefaultStage() {
@@ -124,7 +124,6 @@ $(() => {
           })
           .catch(() => {
             this.isEmptyStage = true;
-            this.isLoadingStage = false;
           });
       },
       dismissOverviewDialog() {
