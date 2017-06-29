@@ -3,6 +3,7 @@ let RepoStore = {
   editor: '',
   sidebar: '',
   isTree: false,
+  prevURL: '',
   trees: [],
   blobs: [],
   submodules: [],

@@ -1,16 +1,16 @@
 .tree-content-holder
-  %header
-    Project
-  #sidebar.isworking{ ":class" => "{'sidebar-mini' : !isTree}" }<
+  #sidebar{ ":class" => "{'sidebar-mini' : !isTree}" }<
     %table.table
       %thead{"v-if" => "isTree"}
-        %th
+        %th{"v-if" => "isTree"}
           Name
+        %th{"v-else"}
+          Project
         %th{"v-if" => "isTree"}
           Last Commit
         %th{"v-if" => "isTree"}
           Last Update
-      %tr{ is: "repo-previous-directory" }
+      %tr{ is: "repo-previous-directory", ":prevurl" => "prevURL", "@linkclicked" => "linkClicked" }
       %tr{ is: "repo-file", "v-for" => "file in files", ":key" => "file.id", ":file" => "file","@linkclicked" => "linkClicked(file)", ":is-tree" => "isTree" }
   #ide{ data: { url: repo_url }, style: "height:400px;" }>
 

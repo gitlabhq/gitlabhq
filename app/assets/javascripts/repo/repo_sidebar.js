@@ -37,14 +37,16 @@ export default class RepoSidebar {
         },
 
         linkClicked(file) {
-          if(file === 'prev'){
-            
+          let url = '';
+          if(typeof file === 'string'){
+            // go back
+            url = file;
           } else {
-            Service.url = file.url;
-            Helper.getContent();
-            Helper.toURL(file.url);  
+            url = file.url;
           }
-          
+          Service.url = url;
+          Helper.getContent();
+          Helper.toURL(url);
         }
       },
     });

@@ -46,6 +46,7 @@ let RepoHelper = {
         // it's a blob
         const parentURL = this.blobURLtoParent(Service.url);
         Store.blobRaw = data.plain;
+        Store.prevURL = this.blobURLtoParent(parentURL);
         Service.getContent(parentURL)
         .then((response) => {
           Store.files = this.dataToListOfFiles(response.data);
@@ -56,6 +57,7 @@ let RepoHelper = {
       } else {
         // it's a tree
         Store.files = this.dataToListOfFiles(data);
+        Store.prevURL = this.blobURLtoParent(Service.url);
       }
     })
     .catch((response)=> {
