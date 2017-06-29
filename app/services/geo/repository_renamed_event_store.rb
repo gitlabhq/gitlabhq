@@ -1,12 +1,11 @@
 module Geo
   class RepositoryRenamedEventStore
-    attr_reader :project, :old_repo_path, :old_wiki_path, :old_name
+    attr_reader :project, :old_path, :old_path_with_namespace
 
-    def initialize(project, old_repo_path:, old_wiki_path:, old_name:)
+    def initialize(project, old_path:, old_path_with_namespace:)
       @project = project
-      @old_repo_path = old_repo_path
-      @old_wiki_path = old_wiki_path
-      @old_name = old_name
+      @old_path = old_path
+      @old_path_with_namespace = old_path_with_namespace
     end
 
     def create
@@ -28,13 +27,21 @@ module Geo
         project: project,
         repository_storage_name: project.repository.storage,
         repository_storage_path: project.repository_storage_path,
+        old_path_with_namespace: old_path_with_namespace,
         new_path_with_namespace: project.full_path,
-        old_path_with_namespace: old_repo_path,
-        old_wiki_path_with_namespace: old_wiki_path,
-        new_wiki_path_with_namespace: project.wiki.path_with_namespace,
-        old_project_name: old_project_name,
-        new_project_name: project.name
+        old_wiki_path_with_namespace: old_wiki_path_with_namespace,
+        new_wiki_path_with_namespace: new_wiki_path_with_namespace,
+        old_path: old_path,
+        new_path: project.path
       )
+    end
+
+    def old_wiki_path_with_namespace
+      "#{old_path_with_namespace}.wiki"
+    end
+
+    def new_wiki_path_with_namespace
+      project.wiki.path_with_namespace
     end
 
     def log(message)
