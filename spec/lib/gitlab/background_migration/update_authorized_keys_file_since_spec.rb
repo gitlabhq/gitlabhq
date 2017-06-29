@@ -49,6 +49,7 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
       before do
         Timecop.travel 1.day.from_now
         @key = create(:key)
+        create(:key) # other key
       end
 
       it 'calls batch_add_keys_in_db_starting_from with the start key ID' do
