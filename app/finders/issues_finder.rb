@@ -54,6 +54,21 @@ class IssuesFinder < IssuableFinder
       project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
   end
 
+  # Anonymous users can't see any confidential issues.
+  #
+  # Users without access to see _all_ confidential issues (as in
+  # `user_can_see_all_confidential_issues?`) are more complicated, because they
+  # can see confidential issues where:
+  # 1. They are an assignee.
+  # 2. The are an author.
+  #
+  # That's fine for most cases, but if we're just counting, we need to cache
+  # effectively. If we cached this accurately, we'd have a cache key for every
+  # authenticated user without sufficient access to the project. Instead, when
+  # we are counting, we treat them as if they can't see any confidential issues.
+  #
+  # This does mean the counts may be wrong for those users, but avoids an
+  # explosion in cache keys.
   def user_cannot_see_confidential_issues?(for_counting: false)
     return false if user_can_see_all_confidential_issues?
 
