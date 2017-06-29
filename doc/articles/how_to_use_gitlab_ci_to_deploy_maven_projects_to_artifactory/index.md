@@ -34,7 +34,7 @@ We also assume that an Artifactory instance is available and reachable from the 
 
 First of all, we need an application to work with: in this specific case we're going to make it simple, but it could be any Maven application. This will be our dependency we want to package and deploy to Artifactory, in order to be available to other projects.
 
-For this article we'll use a Maven app that can be cloned at `https://gitlab.com/gitlab-examples/maven/simple-maven-dep.git`, so let's login into our GitLab account and create a new project 
+For this article we'll use a Maven app that can be cloned from `https://gitlab.com/gitlab-examples/maven/simple-maven-dep.git`, so let's login into our GitLab account and create a new project 
 with **Import project from ➔ Repo by URL**. Let's make it `public` so anyone can contribute!
 
 This application is nothing more than a basic class with a stub for a JUnit based test suite.
@@ -125,7 +125,7 @@ test:
 deploy:
   stage: deploy
   script:
-    - mvn deploy $fMAVEN_CLI_OPTS -DrepoUrl=$ARTIFACTORY_REPO_URL -DrepoUser=$ARTIFACTORY_REPO_USER -DrepoKey=$ARTIFACTORY_REPO_KEY
+    - mvn deploy $MAVEN_CLI_OPTS -DrepoUrl=$ARTIFACTORY_REPO_URL -DrepoUser=$ARTIFACTORY_REPO_USER -DrepoKey=$ARTIFACTORY_REPO_KEY
   only:
     - master
 ```
@@ -181,7 +181,7 @@ Here is how we can get the content of the file directly from Artifactory:
 2. click on **Generate Maven Settings**
 3. click on **Generate Settings**
 3. copy to clipboard the configuration file
-4. save the file as `.m2/settings.xml` in your repo, removing the `servers` section entirely
+4. save the file as `.m2/settings.xml` in your repo
 
 Now we're ready to use our Artifactory repository to resolve dependencies and use `simple-maven-dep` in our application!
 
