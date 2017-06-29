@@ -22,9 +22,9 @@ With the Issue Board you can have a different view of your issues while also
 maintaining the same filtering and sorting abilities you see across the
 issue tracker.
 
-## Use-cases
+## Use cases
 
-There are numerous use-cases for Issue Boards, we will just
+There are numerous use cases for Issue Boards, we will just
 exemplify with a couple situations.
 
 GitLab Workflow allows you to discuss proposals in issues, categorize them
