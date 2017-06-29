@@ -630,12 +630,12 @@ ActiveRecord::Schema.define(version: 20170627211700) do
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
     t.text "repository_storage_path", null: false
-    t.text "old_repo_path_with_namespace", null: false
-    t.text "new_repo_path_with_namespace", null: false
+    t.text "old_path_with_namespace", null: false
+    t.text "new_path_with_namespace", null: false
     t.text "old_wiki_path_with_namespace", null: false
     t.text "new_wiki_path_with_namespace", null: false
-    t.text "old_project_name", null: false
-    t.text "new_project_name", null: false
+    t.text "old_path", null: false
+    t.text "new_path", null: false
   end
 
   add_index "geo_repository_renamed_events", ["project_id"], name: "index_geo_repository_renamed_events_on_project_id", using: :btree
