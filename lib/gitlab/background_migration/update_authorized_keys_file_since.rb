@@ -1,6 +1,8 @@
 module Gitlab
   module BackgroundMigration
     class UpdateAuthorizedKeysFileSince
+      include Gitlab::ShellAdapter
+
       class Key < ActiveRecord::Base
         self.table_name = 'keys'
 
@@ -33,10 +35,6 @@ module Gitlab
             adder.add_key(key.shell_id, key.key)
           end
         end
-      end
-
-      def gitlab_shell
-        @gitlab_shell ||= Gitlab::Shell.new
       end
     end
   end
