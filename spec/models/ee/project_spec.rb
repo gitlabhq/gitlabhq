@@ -99,6 +99,13 @@ describe Project, models: true do
       end
     end
 
+    it 'only loads licensed availability once' do
+      expect(project).to receive(:load_licensed_feature_available)
+                             .once.and_call_original
+
+      2.times { project.feature_available?(:service_desk) }
+    end
+
     context 'when feature symbol is not included on Namespace features code' do
       let(:feature) { :issues }
 
