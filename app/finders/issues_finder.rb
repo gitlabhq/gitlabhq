@@ -22,7 +22,7 @@ class IssuesFinder < IssuableFinder
     Issue
   end
 
-  def not_restricted_by_confidentiality
+  def with_confidentiality_access_check
     return Issue.all if user_can_see_all_confidential_issues?
     return Issue.where('issues.confidential IS NOT TRUE') if user_cannot_see_confidential_issues?
 
@@ -36,7 +36,15 @@ class IssuesFinder < IssuableFinder
       project_ids: current_user.authorized_projects(CONFIDENTIAL_ACCESS_LEVEL).select(:id))
   end
 
+  private
+
+  def init_collection
+    with_confidentiality_access_check
+  end
+
   def user_can_see_all_confidential_issues?
+    return @user_can_see_all_confidential_issues if defined?(@user_can_see_all_confidential_issues)
+
     return @user_can_see_all_confidential_issues = false if current_user.blank?
     return @user_can_see_all_confidential_issues = true if current_user.full_private_access?
 
@@ -46,16 +54,19 @@ class IssuesFinder < IssuableFinder
       project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
   end
 
-  def user_cannot_see_confidential_issues?
+  def user_cannot_see_confidential_issues?(for_counting: false)
     return false if user_can_see_all_confidential_issues?
 
-    current_user.blank? || params[:for_counting]
+    current_user.blank? || for_counting || params[:for_counting]
   end
 
-  private
+  def state_counter_cache_key_components(state)
+    extra_components = [
+      user_can_see_all_confidential_issues?,
+      user_cannot_see_confidential_issues?(for_counting: true)
+    ]
 
-  def init_collection
-    not_restricted_by_confidentiality
+    super + extra_components
   end
 
   def by_assignee(items)

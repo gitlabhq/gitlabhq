@@ -20,6 +20,7 @@
 #
 class IssuableFinder
   NONE = '0'.freeze
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
 
   SCALAR_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight).freeze
   ARRAY_PARAMS = { label_name: [], iids: [] }.freeze
@@ -89,6 +90,10 @@ class IssuableFinder
 
   def find_by!(*params)
     execute.find_by!(*params)
+  end
+
+  def state_counter_cache_key(state)
+    Digest::SHA1.hexdigest(state_counter_cache_key_components(state).flatten.join('-'))
   end
 
   def group
@@ -447,5 +452,14 @@ class IssuableFinder
 
   def current_user_related?
     params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
+  end
+
+  def state_counter_cache_key_components(state)
+    opts = params.with_indifferent_access
+    opts[:state] = state
+    opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
+    opts.delete_if { |_, value| value.blank? }
+
+    ['issuables_count', klass.to_ability_name, opts.sort]
   end
 end
