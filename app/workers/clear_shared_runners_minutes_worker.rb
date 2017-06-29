@@ -7,13 +7,15 @@ class ClearSharedRunnersMinutesWorker
   def perform
     return unless try_obtain_lease
 
-    ProjectStatistics.update_all(
-      shared_runners_seconds: 0,
-      shared_runners_seconds_last_reset: Time.now)
+    NamespaceStatistics.where.not(shared_runners_seconds: 0)
+      .update_all(
+        shared_runners_seconds: 0,
+        shared_runners_seconds_last_reset: Time.now)
 
-    NamespaceStatistics.update_all(
-      shared_runners_seconds: 0,
-      shared_runners_seconds_last_reset: Time.now)
+    ProjectStatistics.where.not(shared_runners_seconds: 0)
+      .update_all(
+        shared_runners_seconds: 0,
+        shared_runners_seconds_last_reset: Time.now)
   end
 
   private
