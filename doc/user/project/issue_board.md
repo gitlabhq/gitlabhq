@@ -235,13 +235,13 @@ existing one.
 
 ![Multiple Issue Boards](img/issue_boards_multiple.png)
 
-### Board with a milestone
+### Board with a Milestone
 
 > Introduced in [GitLab Enterprise Edition][ee] 9.0.
 
-An Issue Board can be associated with a milestone which will automatically filter
-the issue to that milestone. This allows you to create unique boards for
-individual milestones.
+An Issue Board can be associated with a GitLab [Milestone](milestones/index.md#milestones)
+which will automatically filter the issue to that milestone. This allows you to
+create unique boards for individual milestones.
 
 You can assign a milestone to a board when creating a new Issue Board or you
 can update current Issue Boards to also have a milestone. Once a specific
