@@ -50,6 +50,21 @@ where you have to fix (all commands and path locations are for Omnibus installs)
         # remove old entries to your primary gitlab in known_hosts
         ssh-keyscan -R your-primary-gitlab.example.com
 
+- How do I fix the message, "ERROR:  replication slots can only be used if max_replication_slots > 0"?
+
+  - This means that the `max_replication_slots` PostgreSQL variable needs to
+    be set on the primary database. In GitLab 9.4, we have made this setting
+    default to 1. You may need to increase this value if you have more Geo
+    secondary nodes. Be sure to restart PostgreSQL for this to take
+    effect. See the [PostgreSQL replication
+    setup](database.md#postgresql-replication) guide for more details.
+
+- How do I fix the message, "FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist"?
+
+  - This occurs when PostgreSQL does not have a replication slot for the
+    secondary by that name. You may want to rerun the [replication
+    process](database.md) on the secondary.
+
 Visit the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`) in
 your browser. We perform the following health checks on each secondary node
 to help identify if something is wrong:

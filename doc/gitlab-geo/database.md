@@ -78,7 +78,7 @@ The following guide assumes that:
     postgresql['listen_address'] = "1.2.3.4"
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
-    # New for 9.4: Set this to be the number of Geo secondary nodes you want
+    # New for 9.4: Set this to be the number of Geo secondary nodes you have
     postgresql['max_replication_slots'] = 1
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
@@ -125,7 +125,7 @@ The following guide assumes that:
     postgresql['listen_address'] = "10.1.5.3"
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','10.1.5.3/32']
     postgresql['md5_auth_cidr_addresses'] = ['10.1.10.5/32']
-    postgresql['max_replication_slots'] = 1
+    postgresql['max_replication_slots'] = 1 # Number of Geo secondary nodes
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
     ```
@@ -222,13 +222,8 @@ data before running `pg_basebackup`.
     the `gitlab_replicator` user in the first step.
 
     New for 9.4: Change the `--slot-name` to the name of the replication slot
-    created on the primary database. Note that this MUST match the name used
-    earlier. Otherwise, PostgreSQL on the secondary will report an error that
-    reads something like:
-
-    ```
-    FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist
-    ```
+    to be used on the primary database. The script will attempt to create the
+    replication slot automatically if it does not exist.
 
 The replication process is now over.
 
