@@ -11,6 +11,8 @@ module Projects
     include Gitlab::ShellAdapter
     TransferError = Class.new(StandardError)
 
+    prepend ::EE::Projects::TransferService
+
     def execute(new_namespace)
       @new_namespace = new_namespace
 
