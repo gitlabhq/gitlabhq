@@ -51,8 +51,11 @@ class ProjectFeature < ActiveRecord::Base
   default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
   def feature_available?(feature, user)
-    access_level = public_send(ProjectFeature.access_level_attribute(feature))
-    get_permission(user, access_level)
+    get_permission(user, access_level(feature))
+  end
+
+  def access_level(feature)
+    public_send(ProjectFeature.access_level_attribute(feature))
   end
 
   def builds_enabled?
