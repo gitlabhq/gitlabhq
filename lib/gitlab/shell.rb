@@ -253,7 +253,7 @@ module Gitlab
         ids_in_file.uniq!
         keys_in_db = Key.where(id: ids_in_file)
 
-        return unless ids_in_file.size > keys_in_db.count # optimization
+        next unless ids_in_file.size > keys_in_db.count # optimization
 
         ids_to_remove = ids_in_file - keys_in_db.pluck(:id)
         ids_to_remove.each do |id|

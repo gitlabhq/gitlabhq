@@ -326,6 +326,22 @@ describe Gitlab::Shell, lib: true do
         gitlab_shell.remove_keys_not_found_in_db
       end
     end
+
+    unless ENV['CI'] # Skip in CI, it takes 1 minute
+      context 'when the first batch can be skipped, but the next batch has keys that are not in the DB' do
+        before do
+          gitlab_shell.remove_all_keys
+          100.times { |i| create(:key) } # first batch is all in the DB
+          gitlab_shell.add_key('key-1234', 'ssh-rsa ASDFASDF')
+        end
+
+        it 'removes the keys not in the DB' do
+          expect(find_in_authorized_keys_file(1234)).to be_truthy
+          gitlab_shell.remove_keys_not_found_in_db
+          expect(find_in_authorized_keys_file(1234)).to be_falsey
+        end
+      end
+    end
   end
 
   describe '#batch_read_key_ids' do
