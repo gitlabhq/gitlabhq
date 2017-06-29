@@ -196,6 +196,7 @@ window.Build = (function () {
     })
       .done((log) => {
         gl.utils.setCiStatusFavicon(`${this.pageUrl}/status.json`);
+
         if (log.state) {
           this.state = log.state;
         }
@@ -220,7 +221,11 @@ window.Build = (function () {
         }
 
         if (!log.complete) {
-          this.toggleScrollAnimation(true);
+          if (!this.hasBeenScrolled) {
+            this.toggleScrollAnimation(true);
+          } else {
+            this.toggleScrollAnimation(false);
+          }
 
           Build.timeout = setTimeout(() => {
             //eslint-disable-next-line
