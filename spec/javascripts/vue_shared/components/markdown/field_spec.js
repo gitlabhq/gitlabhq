@@ -2,9 +2,13 @@ import Vue from 'vue';
 import fieldComponent from '~/vue_shared/components/markdown/field.vue';
 
 describe('Markdown field component', () => {
+  let el;
   let vm;
 
   beforeEach((done) => {
+    el = document.createElement('div');
+    document.body.appendChild(el);
+
     vm = new Vue({
       data() {
         return {
@@ -25,9 +29,13 @@ describe('Markdown field component', () => {
           </textarea>
         </field-component>
       `,
-    }).$mount();
+    }).$mount(el);
 
     Vue.nextTick(done);
+  });
+
+  afterEach(() => {
+    vm.$destroy();
   });
 
   describe('mounted', () => {
