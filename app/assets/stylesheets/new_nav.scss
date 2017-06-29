@@ -11,20 +11,19 @@ header.navbar-gitlab-new {
     padding-left: 0;
 
     .title-container {
+      align-items: stretch;
       padding-top: 0;
       overflow: visible;
     }
 
     .title {
-      display: block;
-      height: 100%;
+      display: flex;
       padding-right: 0;
       color: currentColor;
 
       > a {
         display: flex;
         align-items: center;
-        height: 100%;
         padding-top: 3px;
         padding-right: $gl-padding;
         padding-left: $gl-padding;
