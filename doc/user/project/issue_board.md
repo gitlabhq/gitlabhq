@@ -28,8 +28,8 @@ empowered with the ability to create multiple boards per project.
 
 ## Use-cases
 
-There are numerous use-cases for the use of Issue Boards, we will just
-exemplify with a couple situations, but the possibilities go where our creativity goes.
+There are numerous use-cases for Issue Boards, we will just
+exemplify with a couple situations.
 
 For a broader use-case, please check the blog post
 [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
@@ -37,7 +37,7 @@ For a broader use-case, please check the blog post
 ### Single Board
 
 GitLab Workflow allows you to discuss proposals in issues, categorize them
-with labels, and and from there organize and prioritize them with Issue Boards.
+with labels, and from there organize and prioritize them with Issue Boards.
 
 - For example, let's consider this simplified development workflow:
 you have a repository hosting your app's codebase
@@ -57,7 +57,7 @@ beginning of the dev lifecycle until deployed to production
 To enhance the workflow exemplified above, with [Multiple Issue Boards](#multiple-issue-boards),
 available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
 each team (frontend and backend) can have their own boards to organize their flow among the
-members of their teams. For that, we could have, therefore, three Issue Boards for this case:
+members of their teams. We could have, therefore, three Issue Boards for this case:
 
   - **Backend**, for the backend team and their own labels and workflow
   - **Frontend**, same as above, for the frontend team
@@ -235,7 +235,7 @@ existing one.
 
 ![Multiple Issue Boards](img/issue_boards_multiple.png)
 
-### Board with a Milestone
+### Board with a milestone
 
 > Introduced in [GitLab Enterprise Edition][ee] 9.0.
 
