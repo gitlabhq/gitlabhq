@@ -121,17 +121,24 @@ describe Gitlab::Geo, lib: true do
   end
 
   describe '.configure_cron_jobs!' do
+    JOBS = %w(ldap_test geo_bulk_notify_worker geo_repository_sync_worker geo_file_download_dispatch_worker).freeze
+
     def init_cron_job(job_name, class_name)
-      Sidekiq::Cron::Job.create(
+      job = Sidekiq::Cron::Job.new(
         name: job_name,
         cron: '0 * * * *',
         class: class_name
       )
+
+      job.enable!
     end
 
     before(:all) do
-      jobs = %w(geo_bulk_notify_worker geo_repository_sync_worker geo_file_download_dispatch_worker)
-      jobs.each { |job| init_cron_job(job, job.camelize) }
+      JOBS.each { |job| init_cron_job(job, job.camelize) }
+    end
+
+    after(:all) do
+      JOBS.each { |job| Sidekiq::Cron::Job.find(job)&.destroy }
     end
 
     it 'activates cron jobs for primary' do
@@ -143,6 +150,7 @@ describe Gitlab::Geo, lib: true do
       expect(described_class.bulk_notify_job).to be_enabled
       expect(described_class.repository_sync_job).not_to be_enabled
       expect(described_class.file_download_job).not_to be_enabled
+      expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
     end
 
     it 'activates cron jobs for secondary' do
@@ -151,6 +159,7 @@ describe Gitlab::Geo, lib: true do
 
       described_class.configure_cron_jobs!
 
+      expect(Sidekiq::Cron::Job.find('ldap_test')).not_to be_enabled
       expect(described_class.bulk_notify_job).not_to be_enabled
       expect(described_class.repository_sync_job).to be_enabled
       expect(described_class.file_download_job).to be_enabled
@@ -165,6 +174,21 @@ describe Gitlab::Geo, lib: true do
       expect(described_class.bulk_notify_job).not_to be_enabled
       expect(described_class.repository_sync_job).not_to be_enabled
       expect(described_class.file_download_job).not_to be_enabled
+      expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
+    end
+
+    it 'reactivates cron jobs when node turns off Geo' do
+      allow(described_class).to receive(:primary_role_enabled?).and_return(false)
+      allow(described_class).to receive(:secondary_role_enabled?).and_return(true)
+
+      described_class.configure_cron_jobs!
+      expect(Sidekiq::Cron::Job.find('ldap_test')).not_to be_enabled
+
+      allow(described_class).to receive(:primary_role_enabled?).and_return(false)
+      allow(described_class).to receive(:secondary_role_enabled?).and_return(false)
+
+      described_class.configure_cron_jobs!
+      expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
     end
   end
 end
