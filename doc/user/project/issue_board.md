@@ -29,7 +29,7 @@ empowered with the ability to create multiple boards per project.
 ## Use-cases
 
 There are numerous use-cases for the use of Issue Boards, we will just
-exemplify with a couple situations, but the possilities go where our creativity goes.
+exemplify with a couple situations, but the possibilities go where our creativity goes.
 
 For a broader use-case, please check the blog post
 [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
