@@ -24,6 +24,9 @@ issue tracker.
 
 ## Use-cases
 
+There are numerous use-cases for the use of Issue Boards, we will just
+exemplify with a couple situations, but the possibilities go where our creativity goes.
+
 GitLab Workflow allows you to discuss proposals in issues, categorize them
 with labels, and and from there organize and prioritize them with Issue Boards.
 
