@@ -1864,6 +1864,28 @@ describe Project, models: true do
     end
   end
 
+  describe '#scheduled_mirror?' do
+    context 'when mirror is expected to run soon' do
+      it 'returns true' do
+        timestamp = Time.now
+        project = create(:project, :mirror, :import_finished)
+
+        project.mirror_last_update_at = timestamp - 3.minutes
+        project.mirror_data.next_execution_timestamp = timestamp - 2.minutes
+
+        expect(project.scheduled_mirror?).to be true
+      end
+    end
+
+    context 'when mirror was scheduled' do
+      it 'returns true' do
+        project = create(:project, :mirror, :import_scheduled)
+
+        expect(project.scheduled_mirror?).to be true
+      end
+    end
+  end
+
   describe  '#updating_mirror?' do
     context 'when repository is empty' do
       it 'returns false' do
@@ -1881,21 +1903,9 @@ describe Project, models: true do
       end
     end
 
-    context 'when project is in progress' do
+    context 'when mirror is in progress' do
       it 'returns true' do
         project = create(:project, :mirror, :import_started)
-
-        expect(project.updating_mirror?).to be true
-      end
-    end
-
-    context 'when project is expected to run soon' do
-      it 'returns true' do
-        timestamp = Time.now
-        project = create(:project, :mirror, :import_finished)
-
-        project.mirror_last_update_at = timestamp - 3.minutes
-        project.mirror_data.next_execution_timestamp = timestamp - 2.minutes
 
         expect(project.updating_mirror?).to be true
       end

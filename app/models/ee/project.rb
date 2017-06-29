@@ -85,13 +85,14 @@ module EE
     end
 
     def mirror_with_content?
-      mirror? && !empty_repo
+      mirror? && !empty_repo?
     end
 
     def scheduled_mirror?
-      enqueued = self.mirror_data.next_execution_timestamp < Time.now
+      return false unless mirror_with_content?
+      return true if import_scheduled?
 
-      mirror_with_content? && import_scheduled? && enqueued
+      self.mirror_data.next_execution_timestamp <= Time.now
     end
 
     def updating_mirror?
