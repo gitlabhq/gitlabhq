@@ -58,3 +58,7 @@ or in different cloud availability zones.
 Components/Servers Required: 2 servers/virtual machines (one active/one passive)
 
 ![Active/Passive HA Diagram](../img/high_availability/active-passive-diagram.png)
+
+## Installation Guides
+
+* [High Availability on AWS EC2](aws/README.md)
