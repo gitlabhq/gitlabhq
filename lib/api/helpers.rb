@@ -268,6 +268,7 @@ module API
       finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
       finder_params[:archived] = params[:archived]
       finder_params[:search] = params[:search] if params[:search]
+      finder_params[:user] = params.delete(:user) if params[:user]
       finder_params
     end
 
@@ -313,7 +314,7 @@ module API
 
     def present_artifacts!(artifacts_file)
       return not_found! unless artifacts_file.exists?
-  
+
       if artifacts_file.file_storage?
         present_file!(artifacts_file.path, artifacts_file.filename)
       else
