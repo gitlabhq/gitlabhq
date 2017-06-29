@@ -22,7 +22,7 @@ describe Project, models: true do
       before do
         stub_application_setting('check_namespace_plan?' => check_namespace_plan)
         allow(Gitlab).to receive(:com?) { true }
-        expect(License).to receive(:feature_available?).with(feature) { allowed_on_global_license }
+        stub_licensed_features(feature => allowed_on_global_license)
         allow(namespace).to receive(:plan) { plan_license }
       end
 
@@ -97,6 +97,13 @@ describe Project, models: true do
           end
         end
       end
+    end
+
+    it 'only loads licensed availability once' do
+      expect(project).to receive(:load_licensed_feature_available)
+                             .once.and_call_original
+
+      2.times { project.feature_available?(:service_desk) }
     end
 
     context 'when feature symbol is not included on Namespace features code' do

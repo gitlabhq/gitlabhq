@@ -43,37 +43,64 @@ describe Namespace, models: true do
   end
 
   describe '#feature_available?' do
+    let(:plan_license) { Namespace::BRONZE_PLAN }
     let(:group) { create(:group, plan: plan_license) }
+    let(:feature) { :service_desk }
 
     subject { group.feature_available?(feature) }
 
-    context 'when feature available' do
-      let(:feature) { :deploy_board }
-      let(:plan_license) { Namespace::GOLD_PLAN }
+    before do
+      stub_licensed_features(feature => true)
+    end
 
-      context 'when feature available for current group' do
-        it 'returns false' do
-          is_expected.to eq(true)
-        end
+    it 'uses the global setting when running on premise' do
+      stub_application_setting_on_object(group, should_check_namespace_plan: false)
+
+      is_expected.to be_truthy
+    end
+
+    it 'only checks the plan once' do
+      expect(group).to receive(:load_feature_available).once.and_call_original
+
+      2.times { group.feature_available?(:service_desk) }
+    end
+
+    context 'when checking namespace plan' do
+      before do
+        stub_application_setting_on_object(group, should_check_namespace_plan: true)
       end
 
-      if Group.supports_nested_groups?
-        context 'when license is applied to parent group' do
-          let(:child_group) { create :group, parent: group }
+      it 'combines the global setting with the group setting when not running on premise' do
+        is_expected.to be_falsy
+      end
 
-          it 'child group has feature available' do
-            expect(child_group.feature_available?(feature)).to eq(true)
+      context 'when feature available on the plan' do
+        let(:plan_license) { Namespace::GOLD_PLAN }
+
+        context 'when feature available for current group' do
+          it 'returns true' do
+            is_expected.to be_truthy
+          end
+        end
+
+        if Group.supports_nested_groups?
+          context 'when license is applied to parent group' do
+            let(:child_group) { create :group, parent: group }
+
+            it 'child group has feature available' do
+              expect(child_group.feature_available?(feature)).to be_truthy
+            end
           end
         end
       end
-    end
 
-    context 'when feature not available' do
-      let(:feature) { :deploy_board }
-      let(:plan_license) { Namespace::BRONZE_PLAN }
+      context 'when feature not available in the plan' do
+        let(:feature) { :deploy_board }
+        let(:plan_license) { Namespace::BRONZE_PLAN }
 
-      it 'returns false' do
-        is_expected.to eq(false)
+        it 'returns false' do
+          is_expected.to be_falsy
+        end
       end
     end
   end
