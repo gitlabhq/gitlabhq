@@ -78,4 +78,13 @@ describe Gitlab::GitalyClient::Ref do
       expect { client.local_branches(sort_by: 'invalid_sort') }.to raise_error(ArgumentError)
     end
   end
+
+  describe '#find_ref_name', seed_helper: true do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+    let(:client) { described_class.new(repository) }
+    subject { client.find_ref_name(SeedRepo::Commit::ID, 'refs/heads/master') }
+
+    it { should be_utf8 }
+    it { should eq('refs/heads/master') }
+  end
 end
