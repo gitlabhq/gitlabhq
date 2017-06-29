@@ -17,8 +17,8 @@ class BackgroundMigrationWorker
   # Schedules multiple jobs in bulk, with a delay.
   #
   def self.perform_bulk_in(delay, jobs)
-    now = Time.now.to_f
-    schedule = now + delay.to_f
+    now = Time.now.to_i
+    schedule = now + delay.to_i
 
     raise ArgumentError if schedule <= now
 

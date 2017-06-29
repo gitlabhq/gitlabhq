@@ -6,7 +6,7 @@ describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
     match do |migration|
       BackgroundMigrationWorker.jobs.any? do |job|
         job['args'] == [migration, expected] &&
-          job['at'].to_f == (delay.to_f + Time.now.to_f)
+          job['at'].to_f == (delay.to_i + Time.now.to_i)
       end
     end
 
