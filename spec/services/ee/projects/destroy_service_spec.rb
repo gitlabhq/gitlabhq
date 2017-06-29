@@ -10,32 +10,22 @@ describe Projects::DestroyService, services: true do
   let!(:wiki_path) { project.path_with_namespace + '.wiki' }
   let!(:storage_name) { project.repository_storage }
   let!(:storage_path) { project.repository_storage_path }
-  let!(:geo_node) { create(:geo_node, :primary, :current) }
+
+  subject { described_class.new(project, user, {}) }
 
   before do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
   end
 
-  context 'Geo primary' do
-    it 'logs the event' do
+  context 'when running on a primary node' do
+    let!(:geo_node) { create(:geo_node, :primary, :current) }
+
+    it 'logs an event to the Geo event log' do
       # Run sidekiq immediatly to check that renamed repository will be removed
-      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
-
-      event = Geo::RepositoryDeletedEvent.first
-
-      expect(Geo::EventLog.count).to eq(1)
-      expect(Geo::RepositoryDeletedEvent.count).to eq(1)
-      expect(event.project_id).to eq(project_id)
-      expect(event.deleted_path).to eq(project_path)
-      expect(event.deleted_wiki_path).to eq(wiki_path)
-      expect(event.deleted_project_name).to eq(project_name)
-      expect(event.repository_storage_name).to eq(storage_name)
-      expect(event.repository_storage_path).to eq(storage_path)
+      Sidekiq::Testing.inline! do
+        expect { subject.execute }.to change(Geo::RepositoryDeletedEvent, :count).by(1)
+      end
     end
-  end
-
-  def destroy_project(project, user, params = {})
-    described_class.new(project, user, params).execute
   end
 end
