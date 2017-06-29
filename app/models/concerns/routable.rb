@@ -103,8 +103,11 @@ module Routable
   def full_path
     return uncached_full_path unless RequestStore.active?
 
-    key = "routable/full_path/#{self.class.name}/#{self.id}"
-    RequestStore[key] ||= uncached_full_path
+    RequestStore[full_path_key] ||= uncached_full_path
+  end
+
+  def expires_full_path_cache
+    RequestStore.delete(full_path_key) if RequestStore.active?
   end
 
   def build_full_path
@@ -133,6 +136,10 @@ module Routable
 
   def full_path_changed?
     path_changed? || parent_changed?
+  end
+
+  def full_path_key
+    @full_path_key ||= "routable/full_path/#{self.class.name}/#{self.id}"
   end
 
   def build_full_name

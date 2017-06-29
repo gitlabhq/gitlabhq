@@ -1216,6 +1216,8 @@ describe Project, models: true do
 
       expect(project).to receive(:expire_caches_before_rename)
 
+      expect(project).to receive(:expires_full_path_cache)
+
       project.rename_repo
     end
 

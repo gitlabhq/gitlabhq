@@ -132,6 +132,18 @@ describe Group, 'Routable' do
     end
   end
 
+  describe '#expires_full_path_cache' do
+    context 'with RequestStore active', :request_store do
+      it 'expires the full_path cache' do
+        expect(group).to receive(:uncached_full_path).twice.and_call_original
+
+        3.times { group.full_path }
+        group.expires_full_path_cache
+        3.times { group.full_path }
+      end
+    end
+  end
+
   describe '#full_name' do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
