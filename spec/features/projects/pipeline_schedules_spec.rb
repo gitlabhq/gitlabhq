@@ -19,19 +19,12 @@ feature 'Pipeline Schedules', :feature, js: true do
       visit_pipelines_schedules
     end
 
-    it 'avoids N + 1 queries' do
-      control_count = ActiveRecord::QueryRecorder.new { visit_pipelines_schedules }.count
-
-      create_list(:ci_pipeline_schedule, 2, project: project)
-
-      expect { visit_pipelines_schedules }.not_to exceed_query_limit(control_count)
-    end
-
     describe 'The view' do
       it 'displays the required information description' do
         page.within('.pipeline-schedule-table-row') do
           expect(page).to have_content('pipeline schedule')
-          expect(page).to have_content(pipeline_schedule.real_next_run.strftime('%b %d, %Y'))
+          expect(find(".next-run-cell time")['data-original-title'])
+            .to include(pipeline_schedule.real_next_run.strftime('%b %d, %Y'))
           expect(page).to have_link('master')
           expect(page).to have_link("##{pipeline.id}")
         end
@@ -62,7 +55,7 @@ feature 'Pipeline Schedules', :feature, js: true do
       it 'deletes the pipeline' do
         click_link 'Delete'
 
-        expect(page).not_to have_content('pipeline schedule')
+        expect(page).not_to have_css(".pipeline-schedule-table-row")
       end
     end
 
@@ -150,16 +143,18 @@ feature 'Pipeline Schedules', :feature, js: true do
 
     scenario 'user sees the new variable in edit window' do
       find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('AAA')
-      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('AAA123')
-      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(2) .pipeline-variable-key-input").value).to eq('BBB')
-      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(2) .pipeline-variable-value-input").value).to eq('BBB123')
+      page.within('.pipeline-variable-list') do
+        expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('AAA')
+        expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('AAA123')
+        expect(find(".pipeline-variable-row:nth-child(2) .pipeline-variable-key-input").value).to eq('BBB')
+        expect(find(".pipeline-variable-row:nth-child(2) .pipeline-variable-value-input").value).to eq('BBB123')
+      end
     end
   end
 
   context 'when user edits a variable of a pipeline schedule' do
     background do
-      create(:ci_pipeline_schedule, owner: user).tap do |pipeline_schedule|
+      create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
         create(:ci_pipeline_schedule_variable, key: 'AAA', value: 'AAA123', pipeline_schedule: pipeline_schedule)
       end
       visit_pipelines_schedules
@@ -171,26 +166,30 @@ feature 'Pipeline Schedules', :feature, js: true do
 
     scenario 'user sees the updated variable in edit window' do
       find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('foo')
-      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('bar')
+      page.within('.pipeline-variable-list') do
+        expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('foo')
+        expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('bar')
+      end
     end
   end
 
   context 'when user removes a variable of a pipeline schedule' do
     background do
-      create(:ci_pipeline_schedule, owner: user).tap do |pipeline_schedule|
+      create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
         create(:ci_pipeline_schedule_variable, key: 'AAA', value: 'AAA123', pipeline_schedule: pipeline_schedule)
       end
       visit_pipelines_schedules
       find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-      first('.pipeline-variable-list .pipeline-variable-row-remove-button').click
+      find('.pipeline-variable-list .pipeline-variable-row-remove-button').click
       click_button 'Save pipeline schedule'
     end
 
     scenario 'user does not see the removed variable in edit window' do
       find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
-      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('')
-      expect(find(".pipeline-variable-list .pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('')
+      page.within('.pipeline-variable-list') do
+        expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('')
+        expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('')
+      end
     end
   end
 
