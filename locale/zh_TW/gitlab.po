@@ -11,7 +11,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-27 11:32-0400\n"
+"PO-Revision-Date: 2017-06-28 11:13-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
 "Language-Team: Chinese (Taiwan) (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: zh-TW\n"
@@ -88,7 +88,7 @@ msgid "ChangeTypeActionLabel|Revert in branch"
 msgstr "還原分支 (branch) "
 
 msgid "ChangeTypeAction|Cherry-pick"
-msgstr "優選"
+msgstr "挑選"
 
 msgid "ChangeTypeAction|Revert"
 msgstr "還原"
@@ -778,16 +778,16 @@ msgid ""
 "The production stage shows the total time it takes between creating an issue "
 "and deploying the code to production. The data will be automatically added "
 "once you have completed the full idea to production cycle."
-msgstr "營運階段顯示從建立一個議題 (issue) 到部署程式至營運的總時間。當完成從想法到產品實現的循環後，資料將自動填入。"
+msgstr "營運階段顯示從建立議題 (issue) 到部署程式上線所花的時間。完成從發想到上線的完整開發週期後，資料將自動填入。"
 
 msgid "The project can be accessed by any logged in user."
-msgstr "該專案允許已登入的用戶存取。"
+msgstr "本專案可讓任何已登入的使用者存取"
 
 msgid "The project can be accessed without any authentication."
-msgstr "該專案允許任何人存取。"
+msgstr "本專案可讓任何人存取"
 
 msgid "The repository for this project does not exist."
-msgstr "此專案的檔案庫 (repository)不存在。"
+msgstr "本專案沒有檔案庫 (repository) "
 
 msgid ""
 "The review stage shows the time from creating the merge request to merging "
@@ -822,7 +822,7 @@ msgstr "中位數是一個數列中最中間的值。例如在 3、5、9 之間�
 msgid ""
 "This means you can not push code until you create an empty repository or "
 "import existing one."
-msgstr "在建立一個空的檔案庫 (repository) 或匯入現有檔案庫之後，才可以推送档案。"
+msgstr "這代表在您建立一個空的檔案庫 (repository) 或是匯入一個現存的檔案庫之前，您將無法上傳更新 (push) 。"
 
 msgid "Time before an issue gets scheduled"
 msgstr "議題 (issue) 被列入日程表的時間"
@@ -861,10 +861,10 @@ msgid "Timeago|%s seconds remaining"
 msgstr "剩下 %s 秒"
 
 msgid "Timeago|%s weeks ago"
-msgstr " %s 星期前"
+msgstr " %s 週前"
 
 msgid "Timeago|%s weeks remaining"
-msgstr "剩下 %s 星期"
+msgstr "剩下 %s 週"
 
 msgid "Timeago|%s years ago"
 msgstr " %s 年前"
@@ -885,7 +885,7 @@ msgid "Timeago|1 month remaining"
 msgstr "剩下 1 個月"
 
 msgid "Timeago|1 week remaining"
-msgstr "剩下 1 星期"
+msgstr "剩下 1 週"
 
 msgid "Timeago|1 year remaining"
 msgstr "剩下 1 年"
@@ -900,7 +900,7 @@ msgid "Timeago|a month ago"
 msgstr " 1 個月前"
 
 msgid "Timeago|a week ago"
-msgstr " 1 星期前"
+msgstr " 1 週前"
 
 msgid "Timeago|a while"
 msgstr "剛剛"
@@ -933,7 +933,7 @@ msgid "Timeago|in %s seconds"
 msgstr " %s 秒後"
 
 msgid "Timeago|in %s weeks"
-msgstr " %s 星期後"
+msgstr " %s 週後"
 
 msgid "Timeago|in %s years"
 msgstr " %s 年後"
@@ -948,10 +948,10 @@ msgid "Timeago|in 1 minute"
 msgstr " 1 分鐘後"
 
 msgid "Timeago|in 1 month"
-msgstr " 1 月後"
+msgstr " 1 個月後"
 
 msgid "Timeago|in 1 week"
-msgstr " 1 星期後"
+msgstr " 1 週後"
 
 msgid "Timeago|in 1 year"
 msgstr " 1 年後"
@@ -992,7 +992,7 @@ msgid "VisibilityLevel|Internal"
 msgstr "內部"
 
 msgid "VisibilityLevel|Private"
-msgstr "私人"
+msgstr "私有"
 
 msgid "VisibilityLevel|Public"
 msgstr "公開"
@@ -1004,7 +1004,7 @@ msgid "We don't have enough data to show this stage."
 msgstr "因該階段的資料不足而無法顯示相關資訊"
 
 msgid "Withdraw Access Request"
-msgstr "取消權限申请"
+msgstr "取消權限申請"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
@@ -1034,7 +1034,7 @@ msgid "You have reached your project limit"
 msgstr "您已達到專案數量限制"
 
 msgid "You must sign in to star a project"
-msgstr "必須登錄才能收藏專案"
+msgstr "必須登入才能收藏專案"
 
 msgid "You need permission."
 msgstr "需要權限才能這麼做。"
@@ -1061,12 +1061,12 @@ msgid ""
 "You won't be able to pull or push project code via %{protocol} until you "
 "%{set_password_link} on your account"
 msgstr ""
-"在帳號上  %{set_password_link} 之前，將無法使用 %{protocol} 來上傳 (push) 或下載 (pull) 專案更新。"
+"在帳號上 %{set_password_link} 之前， 將無法使用 %{protocol} 上傳 (push) 或下載 (pull) 程式碼。"
 
 msgid ""
 "You won't be able to pull or push project code via SSH until you "
 "%{add_ssh_key_link} to your profile"
-msgstr "在個人帳號中  %{add_ssh_key_link} 之前，將無法使用 SSH 來上傳 (push) 或下載 (pull) 專案更新。"
+msgstr "在個人帳號中 %{add_ssh_key_link} 之前， 將無法使用 SSH 上傳 (push) 或下載 (pull) 程式碼。"
 
 msgid "Your name"
 msgstr "您的名字"
@@ -1083,5 +1083,5 @@ msgstr "通知信"
 
 msgid "parent"
 msgid_plural "parents"
-msgstr[0] "父級"
+msgstr[0] "上層"
 
