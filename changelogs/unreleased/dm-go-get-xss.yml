@@ -1,0 +1,4 @@
+---
+title: Fix XSS issue in go-get handling
+merge_request:
+author:
