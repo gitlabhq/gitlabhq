@@ -284,7 +284,7 @@ module BlobHelper
 
     merge_project = can?(current_user, :create_merge_request, project) ? project : (current_user && current_user.fork_of(project))
     if merge_project
-      options << link_to("create a merge request", new_namespace_project_merge_request_path(project.namespace, project))
+      options << link_to("create a merge request", namespace_project_new_merge_request_path(project.namespace, project))
     end
 
     options
