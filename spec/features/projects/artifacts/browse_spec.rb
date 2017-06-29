@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Browse artifact', :js, feature: true do
+feature 'Browse artifact', :js do
   let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
   let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }

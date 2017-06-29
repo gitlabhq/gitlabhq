@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Edit Project Settings', feature: true do
+describe 'Edit Project Settings' do
   let(:member) { create(:user) }
   let!(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
   let!(:issue) { create(:issue, project: project) }

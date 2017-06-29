@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Issues', feature: true do
+RSpec.describe 'Dashboard Issues' do
   let(:current_user) { create :user }
   let(:user) { current_user } # Shared examples depend on this being available
   let!(:public_project) { create(:empty_project, :public) }

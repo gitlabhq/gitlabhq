@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Discussion Comments Issue', :feature, :js do
+describe 'Discussion Comments Issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, project: project) }

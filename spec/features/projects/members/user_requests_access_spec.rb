@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > User requests access', feature: true do
+feature 'Projects > Members > User requests access' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :access_requestable) }
   let(:master) { project.owner }

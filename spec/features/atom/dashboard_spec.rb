@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Dashboard Feed", feature: true  do
+describe "Dashboard Feed"  do
   describe "GET /" do
     let!(:user) { create(:user, name: "Jonh") }
 

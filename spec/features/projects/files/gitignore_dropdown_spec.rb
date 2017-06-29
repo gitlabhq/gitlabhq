@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User wants to add a .gitignore file', feature: true do
+feature 'User wants to add a .gitignore file' do
   before do
     user = create(:user)
     project = create(:project)

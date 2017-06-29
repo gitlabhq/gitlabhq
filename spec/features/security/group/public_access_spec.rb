@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Public Group access', feature: true do
+describe 'Public Group access' do
   include AccessMatchers
 
   let(:group)   { create(:group, :public) }

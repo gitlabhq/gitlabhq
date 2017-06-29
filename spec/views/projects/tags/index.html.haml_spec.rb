@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/tags/index', :view do
+describe 'projects/tags/index' do
   let(:project) { create(:project) }
 
   before do

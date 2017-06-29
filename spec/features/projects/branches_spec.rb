@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Branches', feature: true do
+describe 'Branches' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:repository) { project.repository }

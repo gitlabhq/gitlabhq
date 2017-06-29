@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User wants to add a .gitlab-ci.yml file', feature: true do
+feature 'User wants to add a .gitlab-ci.yml file' do
   before do
     user = create(:user)
     project = create(:project)

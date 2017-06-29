@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SentNotification, model: true do
+describe SentNotification do
   describe 'validation' do
     describe 'note validity' do
       context "when the project doesn't match the noteable's project" do

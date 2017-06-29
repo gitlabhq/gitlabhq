@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Members > Manage access requests', feature: true do
+feature 'Groups > Members > Manage access requests' do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:group) { create(:group, :public, :access_requestable) }

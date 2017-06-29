@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User updates wiki page', feature: true do
+feature 'Projects > Wiki > User updates wiki page' do
   let(:user) { create(:user) }
 
   background do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Projects > Wiki > User views Git access wiki page', :feature do
+describe 'Projects > Wiki > User views Git access wiki page' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:wiki_page) do
