@@ -1,5 +1,6 @@
 class Groups::ApplicationController < ApplicationController
   include RoutableActions
+  prepend EE::Groups::ApplicationController
 
   layout 'group'
 
