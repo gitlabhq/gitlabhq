@@ -1,4 +1,6 @@
 class BasePolicy
+  include Gitlab::CurrentSettings
+
   class RuleSet
     attr_reader :can_set, :cannot_set
     def initialize(can_set, cannot_set)
@@ -123,5 +125,9 @@ class BasePolicy
     @rule_set = RuleSet.empty
     yield
     @rule_set
+  end
+
+  def restricted_public_level?
+    current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
   end
 end

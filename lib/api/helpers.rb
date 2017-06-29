@@ -410,8 +410,8 @@ module API
 
     # Does the current route match the route identified by
     # `description`?
-    def route_matches_description?(description)
-      options.dig(:route_options, :description) == description
+    def request_matches_route?(method, route)
+      request.request_method == method && request.path == route
     end
   end
 end

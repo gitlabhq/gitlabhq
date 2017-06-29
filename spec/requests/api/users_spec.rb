@@ -34,7 +34,7 @@ describe API::Users do
       it "returns authorization error when the `username` parameter refers to an inaccessible user" do
         user = create(:user)
 
-        expect(Ability).to receive(:allowed?).with(nil, :read_user, user).and_return(false)
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
 
         get api("/users"), username: user.username
 

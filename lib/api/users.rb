@@ -4,7 +4,7 @@ module API
 
     before do
       allow_access_with_scope :read_user if request.get?
-      authenticate! unless route_matches_description?("Get the list of users")
+      authenticate! unless request_matches_route?('GET', '/api/v4/users')
     end
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
@@ -55,22 +55,18 @@ module API
 
         users = UsersFinder.new(current_user, params).execute
 
-        authorized =
-          if current_user
-            can?(current_user, :read_users_list)
-          else
-            # When `current_user` is not present, require that the `username`
-            # parameter is passed, to prevent an unauthenticated user from accessing
-            # a list of all the users on the GitLab instance. `UsersFinder` performs
-            # an exact match on the `username` parameter, so we are guaranteed to
-            # get either 0 or 1 `users` here.
-            params[:username].present? &&
-              users.all? { |user| can?(current_user, :read_user, user) }
-          end
+        authorized = can?(current_user, :read_users_list)
 
-        render_api_error!("Not authorized.", 403) unless authorized
+        # When `current_user` is not present, require that the `username`
+        # parameter is passed, to prevent an unauthenticated user from accessing
+        # a list of all the users on the GitLab instance. `UsersFinder` performs
+        # an exact match on the `username` parameter, so we are guaranteed to
+        # get either 0 or 1 `users` here.
+        authorized &&= params[:username].present? if current_user.blank?
 
-        entity = current_user.try(:admin?) ? Entities::UserWithAdmin : Entities::UserBasic
+        forbidden!("Not authorized to access /api/v4/users") unless authorized
+
+        entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         present paginate(users), with: entity
       end
 
