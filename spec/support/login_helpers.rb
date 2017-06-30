@@ -67,7 +67,7 @@ module LoginHelpers
     visit new_user_session_path
     expect(page).to have_content('Sign in with')
 
-    check "Remember Me" if remember_me
+    check 'Remember Me' if remember_me
 
     click_link "oauth-login-#{provider}"
   end
