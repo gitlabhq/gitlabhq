@@ -157,7 +157,6 @@ import './tree';
 import './usage_ping';
 import './user';
 import './user_tabs';
-import './username_validator';
 import './users_select';
 
 // eslint-disable-next-line global-require, import/no-commonjs

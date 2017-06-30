@@ -8,7 +8,7 @@ const successMessageSelector = '.username .validation-success';
 const pendingMessageSelector = '.username .validation-pending';
 const invalidMessageSelector = '.username .gl-field-error';
 
-class UsernameValidator {
+export default class UsernameValidator {
   constructor() {
     this.inputElement = $('#new_user_username');
     this.inputDomElement = this.inputElement.get(0);
@@ -129,5 +129,3 @@ class UsernameValidator {
     $inputErrorMessage.show();
   }
 }
-
-window.UsernameValidator = UsernameValidator;
