@@ -24,11 +24,7 @@
         - if @can_bulk_update
           = button_tag "Edit Merge Requests", class: "btn js-bulk-update-toggle"
         - if merge_project
-<<<<<<< HEAD
-          = link_to namespace_project_new_merge_request_path(merge_project.namespace, merge_project), class: "btn btn-new", title: "New merge request" do
-=======
           = link_to new_merge_request_path, class: "btn btn-new", title: "New merge request" do
->>>>>>> ce/master
             New merge request
 
     = render 'shared/issuable/search_bar', type: :merge_requests
