@@ -116,7 +116,7 @@ window.dateFormat = dateFormat;
       const timeagoEls = $els || document.querySelectorAll('.js-timeago-render');
 
       // timeago.js sets timeouts internally for each timeago value to be updated in real time
-      gl.utils.getTimeago().render(timeagoEls);
+      gl.utils.getTimeago().render(timeagoEls, lang);
     };
 
     w.gl.utils.getDayDifference = function(a, b) {
