@@ -55,6 +55,7 @@ import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import initSettingsPanels from './settings_panels';
+import initExperimentalFlags from './experimental_flags';
 
 (function() {
   var Dispatcher;
@@ -120,6 +121,9 @@ import initSettingsPanels from './settings_panels';
       }
 
       switch (page) {
+        case 'profiles:preferences:show':
+          initExperimentalFlags();
+          break;
         case 'sessions:new':
           new UsernameValidator();
           new ActiveTabMemoizer();
@@ -205,8 +209,8 @@ import initSettingsPanels from './settings_panels';
           new MilestoneSelect();
           new gl.IssuableTemplateSelectors();
           break;
-        case 'projects:merge_requests:new':
-        case 'projects:merge_requests:new_diffs':
+        case 'projects:merge_requests:creations:new':
+        case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
@@ -241,10 +245,6 @@ import initSettingsPanels from './settings_panels';
         case 'projects:merge_requests:show':
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
-          new ZenMode();
-          break;
-        case "projects:merge_requests:diffs":
-          new gl.Diff();
           new ZenMode();
           break;
         case 'dashboard:activity':
@@ -315,7 +315,7 @@ import initSettingsPanels from './settings_panels';
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:members:show':
+        case 'projects:settings:members:show':
           new gl.MemberExpirationDate('.js-access-expiration-date-groups');
           new GroupsSelect();
           new gl.MemberExpirationDate();
@@ -382,7 +382,7 @@ import initSettingsPanels from './settings_panels';
         case 'search:show':
           new Search();
           break;
-        case 'projects:repository:show':
+        case 'projects:settings:repository:show':
           // Initialize Protected Branch Settings
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
@@ -392,7 +392,7 @@ import initSettingsPanels from './settings_panels';
           // Initialize expandable settings panels
           initSettingsPanels();
           break;
-        case 'projects:ci_cd:show':
+        case 'projects:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
         case 'ci:lints:create':

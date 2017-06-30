@@ -222,9 +222,8 @@ class Project < ActiveRecord::Base
   has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
-  default_scope { where(pending_delete: false) }
-
-  scope :with_deleted, -> { unscope(where: :pending_delete) }
+  scope :pending_delete, -> { where(pending_delete: true) }
+  scope :without_deleted, -> { where(pending_delete: false) }
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
@@ -350,7 +349,19 @@ class Project < ActiveRecord::Base
       project.run_after_commit { add_import_job }
     end
 
-    after_transition started: :finished, do: :reset_cache_and_import_attrs
+    after_transition started: :finished do |project, _|
+      project.reset_cache_and_import_attrs
+
+      if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
+        project.run_after_commit do
+          begin
+            Projects::HousekeepingService.new(project).execute
+          rescue Projects::HousekeepingService::LeaseTaken => e
+            Rails.logger.info("Could not perform housekeeping for project #{project.path_with_namespace} (#{project.id}): #{e}")
+          end
+        end
+      end
+    end
   end
 
   class << self
@@ -507,10 +518,6 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
-    remove_import_data
-  end
-
-  def remove_import_data
     import_data&.destroy
   end
 
@@ -689,7 +696,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity_date
-    last_activity_at || updated_at
+    last_repository_updated_at || last_activity_at || updated_at
   end
 
   def project_id
@@ -1079,6 +1086,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def ensure_repository
+    create_repository unless repository_exists?
+  end
+
   def repository_exists?
     !!repository.exists?
   end
@@ -1441,7 +1452,7 @@ class Project < ActiveRecord::Base
   def pending_delete_twin
     return false unless path
 
-    Project.unscoped.where(pending_delete: true).find_by_full_path(path_with_namespace)
+    Project.pending_delete.find_by_full_path(path_with_namespace)
   end
 
   ##

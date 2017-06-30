@@ -1,0 +1,4 @@
+---
+title: Replace 'profile/notifications.feature' spinach test with an rspec analog
+merge_request: 12345
+author: @blackst0ne

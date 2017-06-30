@@ -829,6 +829,8 @@ export default class Notes {
    */
   setupDiscussionNoteForm(dataHolder, form) {
     // setup note target
+    const diffFileData = dataHolder.closest('.text-file');
+
     var discussionID = dataHolder.data('discussionId');
 
     if (discussionID) {
@@ -839,9 +841,10 @@ export default class Notes {
     form.attr('data-line-code', dataHolder.data('lineCode'));
     form.find('#line_type').val(dataHolder.data('lineType'));
 
-    form.find('#note_noteable_type').val(dataHolder.data('noteableType'));
-    form.find('#note_noteable_id').val(dataHolder.data('noteableId'));
-    form.find('#note_commit_id').val(dataHolder.data('commitId'));
+    form.find('#note_noteable_type').val(diffFileData.data('noteableType'));
+    form.find('#note_noteable_id').val(diffFileData.data('noteableId'));
+    form.find('#note_commit_id').val(diffFileData.data('commitId'));
+
     form.find('#note_type').val(dataHolder.data('noteType'));
 
     // LegacyDiffNote
@@ -1485,7 +1488,7 @@ export default class Notes {
     const cachedNoteBodyText = $noteBodyText.html();
 
     // Show updated comment content temporarily
-    $noteBodyText.html(_.escape(formContent));
+    $noteBodyText.html(formContent);
     $editingNote.removeClass('is-editing fade-in-full').addClass('being-posted fade-in-half');
     $editingNote.find('.note-headline-meta a').html('<i class="fa fa-spinner fa-spin" aria-label="Comment is being updated" aria-hidden="true"></i>');
 

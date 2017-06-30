@@ -78,7 +78,7 @@ module CreatesCommit
   end
 
   def new_merge_request_path
-    new_namespace_project_merge_request_path(
+    namespace_project_new_merge_request_path(
       @project_to_commit_into.namespace,
       @project_to_commit_into,
       merge_request: {

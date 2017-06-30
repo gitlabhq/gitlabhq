@@ -144,7 +144,9 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
         this.resetViewContainer();
         this.mountPipelinesView();
       } else {
-        this.expandView();
+        if (Breakpoints.get().getBreakpointSize() !== 'xs') {
+          this.expandView();
+        }
         this.resetViewContainer();
         this.destroyPipelinesView();
       }
@@ -168,9 +170,8 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 
     // Activate a tab based on the current action
     activateTab(action) {
-      const activate = action === 'show' ? 'notes' : action;
       // important note: the .tab('show') method triggers 'shown.bs.tab' event itself
-      $(`.merge-request-tabs a[data-action='${activate}']`).tab('show');
+      $(`.merge-request-tabs a[data-action='${action}']`).tab('show');
     }
 
     // Replaces the current Merge Request-specific action in the URL with a new one
@@ -185,7 +186,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
     //   location.pathname # => "/namespace/project/merge_requests/1/diffs"
     //
     //   location.pathname # => "/namespace/project/merge_requests/1/diffs"
-    //   setCurrentAction('notes')
+    //   setCurrentAction('show')
     //   location.pathname # => "/namespace/project/merge_requests/1"
     //
     //   location.pathname # => "/namespace/project/merge_requests/1/diffs"
@@ -194,13 +195,13 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
     //
     // Returns the new URL String
     setCurrentAction(action) {
-      this.currentAction = action === 'show' ? 'notes' : action;
+      this.currentAction = action;
 
-      // Remove a trailing '/commits' '/diffs' '/pipelines' '/new' '/new/diffs'
-      let newState = location.pathname.replace(/\/(commits|diffs|pipelines|new|new\/diffs)(\.html)?\/?$/, '');
+      // Remove a trailing '/commits' '/diffs' '/pipelines'
+      let newState = location.pathname.replace(/\/(commits|diffs|pipelines)(\.html)?\/?$/, '');
 
       // Append the new action if we're on a tab other than 'notes'
-      if (this.currentAction !== 'notes') {
+      if (this.currentAction !== 'show' && this.currentAction !== 'new') {
         newState += `/${this.currentAction}`;
       }
 

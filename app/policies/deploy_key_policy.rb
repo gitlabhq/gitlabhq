@@ -1,11 +1,11 @@
 class DeployKeyPolicy < BasePolicy
-  def rules
-    return unless @user
+  with_options scope: :subject, score: 0
+  condition(:private_deploy_key) { @subject.private? }
 
-    can! :update_deploy_key if @user.admin?
+  condition(:has_deploy_key) { @user.project_deploy_keys.exists?(id: @subject.id) }
 
-    if @subject.private? && @user.project_deploy_keys.exists?(id: @subject.id)
-      can! :update_deploy_key
-    end
-  end
+  rule { anonymous }.prevent_all
+
+  rule { admin }.enable :update_deploy_key
+  rule { private_deploy_key & has_deploy_key }.enable :update_deploy_key
 end

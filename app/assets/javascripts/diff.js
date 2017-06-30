@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import './lib/utils/url_utility';
+import FilesCommentButton from './files_comment_button';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;
@@ -8,8 +9,10 @@ let isBound = false;
 class Diff {
   constructor() {
     const $diffFile = $('.files .diff-file');
+
     $diffFile.singleFileDiff();
-    $diffFile.filesCommentButton();
+
+    FilesCommentButton.init($diffFile);
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
 

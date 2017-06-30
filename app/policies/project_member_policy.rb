@@ -1,22 +1,16 @@
 class ProjectMemberPolicy < BasePolicy
-  def rules
-    # anonymous users have no abilities here
-    return unless @user
+  delegate { @subject.project }
 
-    target_user = @subject.user
-    project = @subject.project
+  condition(:target_is_owner, scope: :subject) { @subject.user == @subject.project.owner }
+  condition(:target_is_self) { @user && @subject.user == @user }
 
-    return if target_user == project.owner
+  rule { anonymous }.prevent_all
+  rule { target_is_owner }.prevent_all
 
-    can_manage = Ability.allowed?(@user, :admin_project_member, project)
-
-    if can_manage
-      can! :update_project_member
-      can! :destroy_project_member
-    end
-
-    if @user == target_user
-      can! :destroy_project_member
-    end
+  rule { can?(:admin_project_member) }.policy do
+    enable :update_project_member
+    enable :destroy_project_member
   end
+
+  rule { target_is_self }.enable :destroy_project_member
 end

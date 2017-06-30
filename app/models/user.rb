@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
   include IgnorableColumn
+  include FeatureGate
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -53,7 +54,7 @@ class User < ActiveRecord::Base
     lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
     return unless lease.try_obtain
 
-    save(validate: false)
+    Users::UpdateService.new(self).execute(validate: false)
   end
 
   attr_accessor :force_random_password
@@ -299,11 +300,20 @@ class User < ActiveRecord::Base
       table   = arel_table
       pattern = "%#{query}%"
 
+      order = <<~SQL
+        CASE
+          WHEN users.name = %{query} THEN 0
+          WHEN users.username = %{query} THEN 1
+          WHEN users.email = %{query} THEN 2
+          ELSE 3
+        END
+      SQL
+
       where(
         table[:name].matches(pattern)
           .or(table[:email].matches(pattern))
           .or(table[:username].matches(pattern))
-      )
+      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, id: :desc)
     end
 
     # searches user by given pattern
@@ -494,10 +504,8 @@ class User < ActiveRecord::Base
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
-      primary_email_record.destroy
-      emails.create(email: email_was)
-
-      update_secondary_emails!
+      Emails::DestroyService.new(self, email: email).execute
+      Emails::CreateService.new(self, email: email_was).execute
     end
   end
 
@@ -572,7 +580,13 @@ class User < ActiveRecord::Base
   end
 
   def require_password?
-    password_automatically_set? && !ldap_user?
+    password_automatically_set? && !ldap_user? && current_application_settings.signin_enabled?
+  end
+
+  def require_personal_access_token?
+    return false if current_application_settings.signin_enabled? || ldap_user?
+
+    PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
   end
 
   def can_change_username?
@@ -965,7 +979,7 @@ class User < ActiveRecord::Base
     if attempts_exceeded?
       lock_access! unless access_locked?
     else
-      save(validate: false)
+      Users::UpdateService.new(self).execute(validate: false)
     end
   end
 
@@ -1129,7 +1143,8 @@ class User < ActiveRecord::Base
       email: email,
       &creation_block
     )
-    user.save(validate: false)
+
+    Users::UpdateService.new(user).execute(validate: false)
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)

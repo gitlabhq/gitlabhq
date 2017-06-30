@@ -1,4 +1,5 @@
 - page_title "Account"
+- @content_class = "limit-container-width" unless fluid_layout
 = render 'profiles/head'
 
 - if current_user.ldap_user?
@@ -6,13 +7,13 @@
     Some options are unavailable for LDAP accounts
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       Private Tokens
     %p
       Keep these tokens secret, anyone with access to them can interact with
       GitLab as if they were you.
-  .col-lg-9.private-tokens-reset
+  .col-lg-8.private-tokens-reset
     = render partial: 'reset_token', locals: { label: 'Private token', button_label: 'Reset private token', help_text: 'Your private token is used to access the API and Atom feeds without username/password authentication.' }
 
     = render partial: 'reset_token', locals: { label: 'RSS token', button_label: 'Reset RSS token', help_text: 'Your RSS token is used to create urls for personalized RSS feeds.' }
@@ -22,12 +23,12 @@
 
 %hr
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       Two-Factor Authentication
     %p
       Increase your account's security by enabling Two-Factor Authentication (2FA).
-  .col-lg-9
+  .col-lg-8
     %p
       Status: #{current_user.two_factor_enabled? ? 'Enabled' : 'Disabled'}
     - if current_user.two_factor_enabled?
@@ -43,12 +44,12 @@
 %hr
 - if button_based_providers.any?
   .row.prepend-top-default
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
         Social sign-in
       %p
         Activate signin with one of the following services
-    .col-lg-9
+    .col-lg-8
       %label.label-light
         Connected Accounts
       %p Click on icon to activate signin with one of the following services
@@ -69,12 +70,12 @@
   %hr
 - if current_user.can_change_username?
   .row.prepend-top-default
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0.warning-title
         Change username
       %p
         Changing your username will change path to all personal projects!
-    .col-lg-9
+    .col-lg-8
       = form_for @user, url: update_username_profile_path, method: :put, html: {class: "update-username"} do |f|
         .form-group
           = f.label :username, "Path", class: "label-light"
@@ -93,10 +94,10 @@
 
 - if signup_enabled?
   .row.prepend-top-default
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0.danger-title
         Remove account
-    .col-lg-9
+    .col-lg-8
       - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
         %p
           Deleting an account has the following effects:

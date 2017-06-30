@@ -1,27 +1,28 @@
 class PersonalSnippetPolicy < BasePolicy
-  def rules
-    can! :read_personal_snippet if @subject.public?
-    return unless @user
+  condition(:public_snippet, scope: :subject) { @subject.public? }
+  condition(:is_author) { @user && @subject.author == @user }
+  condition(:internal_snippet, scope: :subject) { @subject.internal? }
 
-    if @subject.public?
-      can! :comment_personal_snippet
-    end
-
-    if @subject.author == @user
-      can! :read_personal_snippet
-      can! :update_personal_snippet
-      can! :destroy_personal_snippet
-      can! :admin_personal_snippet
-      can! :comment_personal_snippet
-    end
-
-    unless @user.external?
-      can! :create_personal_snippet
-    end
-
-    if @subject.internal? && !@user.external?
-      can! :read_personal_snippet
-      can! :comment_personal_snippet
-    end
+  rule { public_snippet }.policy do
+    enable :read_personal_snippet
+    enable :comment_personal_snippet
   end
+
+  rule { is_author }.policy do
+    enable :read_personal_snippet
+    enable :update_personal_snippet
+    enable :destroy_personal_snippet
+    enable :admin_personal_snippet
+    enable :comment_personal_snippet
+  end
+
+  rule { ~anonymous }.enable :create_personal_snippet
+  rule { external_user }.prevent :create_personal_snippet
+
+  rule { internal_snippet & ~external_user }.policy do
+    enable :read_personal_snippet
+    enable :comment_personal_snippet
+  end
+
+  rule { anonymous }.prevent :comment_personal_snippet
 end

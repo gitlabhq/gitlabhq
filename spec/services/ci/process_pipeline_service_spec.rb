@@ -62,6 +62,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
       fail_running_or_pending
 
       expect(builds_statuses).to eq %w(failed pending)
+
+      fail_running_or_pending
+
+      expect(pipeline.reload).to be_success
     end
   end
 

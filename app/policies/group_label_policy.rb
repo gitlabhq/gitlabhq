@@ -1,5 +1,3 @@
 class GroupLabelPolicy < BasePolicy
-  def rules
-    delegate! @subject.group
-  end
+  delegate { @subject.group }
 end

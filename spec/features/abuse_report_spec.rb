@@ -12,7 +12,7 @@ feature 'Abuse reports', feature: true do
 
     click_link 'Report abuse'
 
-    fill_in 'abuse_report_message', with: 'This user send spam'
+    fill_in 'abuse_report_message', with: 'This user sends spam'
     click_button 'Send report'
 
     expect(page).to have_content 'Thank you for your report'

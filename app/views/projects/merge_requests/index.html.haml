@@ -13,6 +13,9 @@
 
 = render 'projects/last_push'
 
+- merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
+- new_merge_request_path = namespace_project_new_merge_request_path(merge_project.namespace, merge_project) if merge_project
+
 - if @project.merge_requests.exists?
   %div{ class: container_class }
     .top-area
@@ -20,9 +23,8 @@
       .nav-controls
         - if @can_bulk_update
           = button_tag "Edit Merge Requests", class: "btn js-bulk-update-toggle"
-        - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
         - if merge_project
-          = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project), class: "btn btn-new", title: "New merge request" do
+          = link_to new_merge_request_path, class: "btn btn-new", title: "New merge request" do
             New merge request
 
     = render 'shared/issuable/search_bar', type: :merge_requests
@@ -33,4 +35,4 @@
     .merge-requests-holder
       = render 'merge_requests'
 - else
-  = render 'shared/empty_states/merge_requests', button_path: new_namespace_project_merge_request_path(@project.namespace, @project)
+  = render 'shared/empty_states/merge_requests', button_path: new_merge_request_path
