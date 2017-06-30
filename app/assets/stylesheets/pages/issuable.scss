@@ -659,8 +659,7 @@
     @media(max-width: $screen-md-max) {
       .task-status,
       .issuable-due-date,
-      .project-ref-path,
-      .issuable-weight {
+      .issuable-weight,
       .project-ref-path {
         display: none;
       }
