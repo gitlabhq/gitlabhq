@@ -11,11 +11,11 @@ describe Geo::NodeStatusService, services: true do
   end
 
   describe '#call' do
-    it 'parses a 401 response' do
+    it 'strips tags from a 401 response' do
       request = double(success?: false,
                        code: 401,
                        message: 'Unauthorized',
-                       parsed_response: { 'message' => 'Test' } )
+                       parsed_response: { 'message' => '<html><h1>Test</h1></html>' } )
       allow(described_class).to receive(:get).and_return(request)
 
       status = subject.call(secondary)
@@ -38,6 +38,18 @@ describe Geo::NodeStatusService, services: true do
       status = subject.call(secondary)
 
       expect(status).to have_attributes(data)
+    end
+
+    it 'omits full response text in status' do
+      request = double(success?: false,
+                       code: 401,
+                       message: 'Unauthorized',
+                       parsed_response: '<html><h1>You are not allowed</h1></html>')
+      allow(described_class).to receive(:get).and_return(request)
+
+      status = subject.call(secondary)
+
+      expect(status.health).to eq("Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\n")
     end
   end
 end

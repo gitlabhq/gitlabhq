@@ -1,5 +1,6 @@
 module Geo
   class NodeStatusService
+    include ActionView::Helpers::SanitizeHelper
     include Gitlab::CurrentSettings
     include HTTParty
 
@@ -28,10 +29,11 @@ module Geo
               if payload.is_a?(Hash)
                 payload['message']
               else
-                payload
+                ''
               end
 
-            Array([message, details].compact.join("\n"))
+            summary = [message, details].compact.join("\n")
+            [sanitize(summary)]
           end
         rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => e
           [e.message]
@@ -41,6 +43,10 @@ module Geo
     end
 
     private
+
+    def sanitize(message)
+      ActionView::Base.full_sanitizer.sanitize(message)
+    end
 
     def headers
       Gitlab::Geo::BaseRequest.new.headers
