@@ -14,6 +14,8 @@
       = render "layouts/broadcast"
       = render "layouts/flash"
       = yield :flash_message
+    - if show_new_nav?
+      = render "layouts/nav/breadcrumbs"
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
         = yield
