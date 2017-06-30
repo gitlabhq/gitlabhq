@@ -27,6 +27,6 @@
         = text_field_tag :number_of_users, params[:number_of_users], class: "form-control", required: true
       .form-group
         = label_tag :country
-        = text_field_tag :country, params[:country], class: "form-control", required: true
+        = select_tag :country, options_for_select(CountryCodes.for_select, params[:country]), prompt: '- Select One -', class: "form-control", required: true
       .form-group
         = submit_tag 'Start your free trial', class: "btn btn-default"
