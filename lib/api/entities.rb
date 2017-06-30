@@ -519,13 +519,10 @@ module API
       def expose_members_count_with_descendants?(namespace, opts)
         namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
       end
-<<<<<<< HEAD
 
       # EE-only
       expose :shared_runners_minutes_limit, if: lambda { |_, options| options[:current_user]&.admin? }
       expose :plan, if: -> (namespace, opts) { Ability.allowed?(opts[:current_user], :admin_namespace, namespace) }
-=======
->>>>>>> ce/master
     end
 
     class MemberAccess < Grape::Entity
