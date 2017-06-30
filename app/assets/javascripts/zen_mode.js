@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, max-len, class-methods-use-this */
 /* global Mousetrap */
 
 // Zen Mode (full screen) textarea
@@ -35,8 +35,8 @@ window.Dropzone = Dropzone;
 // **Target** a.js-zen-leave
 //
 
-window.ZenMode = (function() {
-  function ZenMode() {
+class ZenMode {
+  constructor() {
     this.active_backdrop = null;
     this.active_textarea = null;
     $(document).on('click', '.js-zen-enter', function(e) {
@@ -66,7 +66,7 @@ window.ZenMode = (function() {
     });
   }
 
-  ZenMode.prototype.enter = function(backdrop) {
+  enter(backdrop) {
     Mousetrap.pause();
     this.active_backdrop = $(backdrop);
     this.active_backdrop.addClass('fullscreen');
@@ -74,9 +74,9 @@ window.ZenMode = (function() {
     // Prevent a user-resized textarea from persisting to fullscreen
     this.active_textarea.removeAttr('style');
     return this.active_textarea.focus();
-  };
+  }
 
-  ZenMode.prototype.exit = function() {
+  exit() {
     if (this.active_textarea) {
       Mousetrap.unpause();
       this.active_textarea.closest('.zen-backdrop').removeClass('fullscreen');
@@ -85,13 +85,13 @@ window.ZenMode = (function() {
       this.active_backdrop = null;
       return Dropzone.forElement('.div-dropzone').enable();
     }
-  };
+  }
 
-  ZenMode.prototype.scrollTo = function(zen_area) {
+  scrollTo(zen_area) {
     return $.scrollTo(zen_area, 0, {
       offset: -150
     });
-  };
+  }
+}
 
-  return ZenMode;
-})();
+window.ZenMode = ZenMode;
