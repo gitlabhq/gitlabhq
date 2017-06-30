@@ -22,7 +22,6 @@ let RepoFile = {
 
   methods: {
     linkClicked(file) {
-      console.log(this.isTree)
       this.$emit('linkclicked', file);
     }
   }

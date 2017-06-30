@@ -11,7 +11,6 @@ export default class RepoSidebar {
     this.url = url;
     this.initVue();
     this.el = document.getElementById('ide');
-    console.log(document.getElementById('sidebar'))
   }
 
   initVue() {
@@ -48,6 +47,10 @@ export default class RepoSidebar {
           }
           Service.url = url;
           if(typeof file === 'object') {
+            if(file.type === 'tree' && file.opened) {
+              Helper.removeChildFilesOfTree(file);
+              return;
+            }
             Helper.getContent(file);
           }
         }

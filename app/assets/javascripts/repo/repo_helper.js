@@ -84,6 +84,13 @@ let RepoHelper = {
     }
   },
 
+  setDirectoryOpen(tree) {
+    if(tree) {
+      tree.opened = true;
+      tree.icon = 'fa-folder-open';
+    }
+  },
+
     // may be tree or file.
   getContent(file) {
     Service.getContent()
@@ -98,9 +105,9 @@ let RepoHelper = {
         data.url = file.url;
         this.addToOpenedFiles(data);
         this.setActiveFile(data);
-        console.log(data);
       } else {
         // it's a tree
+        this.setDirectoryOpen(file);
         let newDirectory = this.dataToListOfFiles(data);
         Store.files = this.insertNewFilesIntoParentDir(file, Store.files, newDirectory);
         Store.prevURL = this.blobURLtoParent(Service.url);
@@ -112,7 +119,25 @@ let RepoHelper = {
   },
 
   toFA(icon) {
-    return `fa-${icon}`
+    return `fa-${icon}`;
+  },
+
+  removeChildFilesOfTree(tree) {
+    let foundTree = false;
+    Store.files = Store.files.filter((file) => {
+      if(file.url === tree.url) {
+        foundTree = true;
+      }
+      if(foundTree) {
+        return file.level <= tree.level
+      } else {
+        return true;
+      }
+    });
+
+    tree.opened = false;
+    tree.icon = 'fa-folder';
+
   },
 
   dataToListOfFiles(data) {
