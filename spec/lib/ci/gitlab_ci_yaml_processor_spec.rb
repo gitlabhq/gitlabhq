@@ -651,7 +651,7 @@ module Ci
             options: {
                 image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
                 services: [{ name: "postgresql", alias: "db-pg", entrypoint: ["/usr/local/bin/init", "run"],
-                             command: ["/usr/local/bin/init", "run"]},
+                             command: ["/usr/local/bin/init", "run"] },
                            { name: "docker:dind" }]
             },
             allow_failure: false,
