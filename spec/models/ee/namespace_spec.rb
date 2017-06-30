@@ -42,6 +42,34 @@ describe Namespace, models: true do
     end
   end
 
+  describe '#move_dir' do
+    context 'when running on a primary node' do
+      let!(:geo_node) { create(:geo_node, :primary, :current) }
+      let(:gitlab_shell) { Gitlab::Shell.new }
+
+      it 'logs the Geo::RepositoryRenamedEvent for each project inside namespace' do
+        parent = create(:namespace)
+        child = create(:group, name: 'child', path: 'child', parent: parent)
+        project_1 = create(:project_empty_repo, namespace: parent)
+        project_2 = create(:project_empty_repo, namespace: child)
+        full_path_was = "#{parent.full_path}_old"
+        new_path = parent.full_path
+
+        allow(parent).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(parent).to receive(:path_changed?).and_return(true)
+        allow(parent).to receive(:full_path_was).and_return(full_path_was)
+        allow(parent).to receive(:full_path).and_return(new_path)
+
+        allow(gitlab_shell).to receive(:mv_namespace)
+          .ordered
+          .with(project_1.repository_storage_path, full_path_was, new_path)
+          .and_return(true)
+
+        expect { parent.move_dir }.to change(Geo::RepositoryRenamedEvent, :count).by(2)
+      end
+    end
+  end
+
   describe '#feature_available?' do
     let(:plan_license) { Namespace::BRONZE_PLAN }
     let(:group) { create(:group, plan: plan_license) }
