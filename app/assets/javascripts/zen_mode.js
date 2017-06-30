@@ -35,7 +35,7 @@ window.Dropzone = Dropzone;
 // **Target** a.js-zen-leave
 //
 
-class ZenMode {
+export default class ZenMode {
   constructor() {
     this.active_backdrop = null;
     this.active_textarea = null;
@@ -93,5 +93,3 @@ class ZenMode {
     });
   }
 }
-
-window.ZenMode = ZenMode;

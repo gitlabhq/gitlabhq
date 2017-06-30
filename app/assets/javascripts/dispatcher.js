@@ -4,7 +4,6 @@
 /* global ShortcutsNavigation */
 /* global IssuableIndex */
 /* global ShortcutsIssuable */
-/* global ZenMode */
 /* global Milestone */
 /* global IssuableForm */
 /* global LabelsSelect */
@@ -54,6 +53,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
