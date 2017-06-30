@@ -35,8 +35,5 @@
     .merge-requests-holder
       = render 'merge_requests'
 - else
-<<<<<<< HEAD
-  = render 'shared/empty_states/merge_requests', button_path: namespace_project_new_merge_request_path(@project.namespace, @project)
-=======
   = render 'shared/empty_states/merge_requests', button_path: new_merge_request_path
->>>>>>> ce/master
+
