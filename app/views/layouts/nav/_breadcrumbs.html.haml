@@ -1,0 +1,19 @@
+- breadcrumb_title = @breadcrumb_title || controller.controller_name.humanize
+- hide_top_links = @hide_top_links || false
+
+%nav.breadcrumbs{ role: "navigation" }
+  .breadcrumbs-container{ class: container_class }
+    .breadcrumbs-links.js-title-container
+      - unless hide_top_links
+        .title
+          = link_to "GitLab", root_path
+          \/
+          = header_title
+      %h2.breadcrumbs-sub-title
+        %ul.list-unstyled
+          - if content_for?(:sub_title_before)
+            = yield :sub_title_before
+          %li= link_to breadcrumb_title, request.path
+    - if content_for?(:breadcrumbs_extra)
+      .breadcrumbs-extra.hidden-xs= yield :breadcrumbs_extra
+    = yield :header_content
