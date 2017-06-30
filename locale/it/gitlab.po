@@ -1,3 +1,4 @@
+# Huang Tao <htve@outlook.com>, 2017. #zanata
 # Paolo Falomo <info@paolofalomo.it>, 2017. #zanata
 msgid ""
 msgstr ""
@@ -74,7 +75,7 @@ msgid "Browse files"
 msgstr "Guarda i files"
 
 msgid "ByAuthor|by"
-msgstr "PerAutore|per"
+msgstr "per"
 
 msgid "CI configuration"
 msgstr "Configurazione CI (Integrazione Continua)"
@@ -83,16 +84,16 @@ msgid "Cancel"
 msgstr "Cancella"
 
 msgid "ChangeTypeActionLabel|Pick into branch"
-msgstr "CambiaEtichettaDelTipoDiAzione|Preleva nella branch"
+msgstr "Preleva nella branch"
 
 msgid "ChangeTypeActionLabel|Revert in branch"
-msgstr "CambiaEtichettaDelTipoDiAzione|Ripristina nella branch"
+msgstr "Ripristina nella branch"
 
 msgid "ChangeTypeAction|Cherry-pick"
-msgstr "CambiaTipoDiAzione|Cherry-pick"
+msgstr "Cherry-pick"
 
 msgid "ChangeTypeAction|Revert"
-msgstr "CambiaTipoDiAzione|Ripristina"
+msgstr "Ripristina"
 
 msgid "Changelog"
 msgstr "Changelog"
@@ -107,58 +108,58 @@ msgid "Cherry-pick this merge request"
 msgstr "Cherry-pick questa richiesta di merge"
 
 msgid "CiStatusLabel|canceled"
-msgstr "CiStatusLabel|cancellato"
+msgstr "cancellato"
 
 msgid "CiStatusLabel|created"
-msgstr "CiStatusLabel|creato"
+msgstr "creato"
 
 msgid "CiStatusLabel|failed"
-msgstr "CiStatusLabel|fallito"
+msgstr "fallito"
 
 msgid "CiStatusLabel|manual action"
-msgstr "CiStatusLabel|azione manuale"
+msgstr "azione manuale"
 
 msgid "CiStatusLabel|passed"
-msgstr "CiStatusLabel|superata"
+msgstr "superata"
 
 msgid "CiStatusLabel|passed with warnings"
-msgstr "CiStatusLabel|superata con avvisi"
+msgstr "superata con avvisi"
 
 msgid "CiStatusLabel|pending"
-msgstr "CiStatusLabel|in coda"
+msgstr "in coda"
 
 msgid "CiStatusLabel|skipped"
-msgstr "CiStatusLabel|saltata"
+msgstr "saltata"
 
 msgid "CiStatusLabel|waiting for manual action"
-msgstr "CiStatusLabel|in attesa di azione manuale"
+msgstr "in attesa di azione manuale"
 
 msgid "CiStatusText|blocked"
-msgstr "CiStatusText|bloccata"
+msgstr "bloccata"
 
 msgid "CiStatusText|canceled"
-msgstr "CiStatusText|cancellata"
+msgstr "cancellata"
 
 msgid "CiStatusText|created"
-msgstr "CiStatusText|creata"
+msgstr "creata"
 
 msgid "CiStatusText|failed"
-msgstr "CiStatusText|fallita"
+msgstr "fallita"
 
 msgid "CiStatusText|manual"
-msgstr "CiStatusText|manuale"
+msgstr "manuale"
 
 msgid "CiStatusText|passed"
-msgstr "CiStatusText|superata"
+msgstr "superata"
 
 msgid "CiStatusText|pending"
-msgstr "CiStatusText|in coda"
+msgstr "in coda"
 
 msgid "CiStatusText|skipped"
-msgstr "CiStatusText|saltata"
+msgstr "saltata"
 
 msgid "CiStatus|running"
-msgstr "CiStatus|in corso"
+msgstr "in corso"
 
 msgid "Commit"
 msgid_plural "Commits"
@@ -169,16 +170,16 @@ msgid "Commit message"
 msgstr "Messaggio del commit"
 
 msgid "CommitBoxTitle|Commit"
-msgstr "CommitBoxTitle|Commit"
+msgstr "Commit"
 
 msgid "CommitMessage|Add %{file_name}"
-msgstr "CommitMessage|Aggiungi %{file_name}"
+msgstr "Aggiungi %{file_name}"
 
 msgid "Commits"
 msgstr "Commits"
 
 msgid "Commits|History"
-msgstr "Commits|Cronologia"
+msgstr "Cronologia"
 
 msgid "Committed by"
 msgstr "Committato da "
@@ -214,10 +215,10 @@ msgid "Create new..."
 msgstr "Crea nuovo..."
 
 msgid "CreateNewFork|Fork"
-msgstr "CreateNewFork|Fork"
+msgstr "Fork"
 
 msgid "CreateTag|Tag"
-msgstr "CreateTag|Tag"
+msgstr "Tag"
 
 msgid "Cron Timezone"
 msgstr "Cron Timezone"
@@ -248,25 +249,25 @@ msgstr ""
 "ed il rilascio in produzione del tuo progetto"
 
 msgid "CycleAnalyticsStage|Code"
-msgstr "StadioAnalisiCiclica|Codice"
+msgstr "Codice"
 
 msgid "CycleAnalyticsStage|Issue"
-msgstr "StadioAnalisiCiclica|Issue"
+msgstr "Issue"
 
 msgid "CycleAnalyticsStage|Plan"
-msgstr "StadioAnalisiCiclica|Pianificazione"
+msgstr "Pianificazione"
 
 msgid "CycleAnalyticsStage|Production"
-msgstr "StadioAnalisiCiclica|Produzione"
+msgstr "Produzione"
 
 msgid "CycleAnalyticsStage|Review"
-msgstr "StadioAnalisiCiclica|Revisione"
+msgstr "Revisione"
 
 msgid "CycleAnalyticsStage|Staging"
-msgstr "StadioAnalisiCiclica|Pre-rilascio"
+msgstr "Pre-rilascio"
 
 msgid "CycleAnalyticsStage|Test"
-msgstr "StadioAnalisiCiclica|Test"
+msgstr "Test"
 
 msgid "Define a custom pattern with cron syntax"
 msgstr "Definisci un patter personalizzato mediante la sintassi cron"
@@ -304,16 +305,16 @@ msgid "Download zip"
 msgstr "Scarica zip"
 
 msgid "DownloadArtifacts|Download"
-msgstr "DownloadArtifacts|Scarica"
+msgstr "Scarica"
 
 msgid "DownloadCommit|Email Patches"
-msgstr "DownloadCommit|Email Patches"
+msgstr "Email Patches"
 
 msgid "DownloadCommit|Plain Diff"
-msgstr "DownloadCommit|Differenze"
+msgstr "Differenze"
 
 msgid "DownloadSource|Download"
-msgstr "DownloadSource|Scarica"
+msgstr "Scarica"
 
 msgid "Edit"
 msgstr "Modifica"
@@ -346,10 +347,10 @@ msgid "Find file"
 msgstr "Trova file"
 
 msgid "FirstPushedBy|First"
-msgstr "PrimoPushDel|Primo"
+msgstr "Primo"
 
 msgid "FirstPushedBy|pushed by"
-msgstr "PrimoPushDel|Push di"
+msgstr "Push di"
 
 msgid "Fork"
 msgid_plural "Forks"
@@ -357,7 +358,7 @@ msgstr[0] "Fork"
 msgstr[1] "Forks"
 
 msgid "ForkedFromProjectPath|Forked from"
-msgstr "ForkedFromProjectPath|Fork da"
+msgstr "Fork da"
 
 msgid "From issue creation until deploy to production"
 msgstr "Dalla creazione di un issue fino al rilascio in produzione"
@@ -371,7 +372,7 @@ msgid "Go to your fork"
 msgstr "Vai il tuo fork"
 
 msgid "GoToYourFork|Fork"
-msgstr "GoToYourFork|Fork"
+msgstr "Fork"
 
 msgid "Home"
 msgstr "Home"
@@ -389,10 +390,10 @@ msgid "Introducing Cycle Analytics"
 msgstr "Introduzione delle Analisi Cicliche"
 
 msgid "LFSStatus|Disabled"
-msgstr "LFSStatus|Disabilitato"
+msgstr "Disabilitato"
 
 msgid "LFSStatus|Enabled"
-msgstr "LFSStatus|Abilitato"
+msgstr "Abilitato"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -412,7 +413,7 @@ msgid "Learn more in the"
 msgstr "Leggi di più su"
 
 msgid "Learn more in the|pipeline schedules documentation"
-msgstr "Leggi di più su|documentazione sulla pianificazione delle pipelines"
+msgstr "documentazione sulla pianificazione delle pipelines"
 
 msgid "Leave group"
 msgstr "Abbandona il gruppo"
@@ -429,7 +430,7 @@ msgid "Median"
 msgstr "Mediano"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
-msgstr "MissingSSHKeyWarningLink|aggiungi una chiave SSH"
+msgstr "aggiungi una chiave SSH"
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -479,58 +480,58 @@ msgid "Notification events"
 msgstr "Notifica eventi"
 
 msgid "NotificationEvent|Close issue"
-msgstr "NotificationEvent|Chiudi issue"
+msgstr "Chiudi issue"
 
 msgid "NotificationEvent|Close merge request"
-msgstr "NotificationEvent|Chiudi richiesta di merge"
+msgstr "Chiudi richiesta di merge"
 
 msgid "NotificationEvent|Failed pipeline"
-msgstr "NotificationEvent|Pipeline fallita"
+msgstr "Pipeline fallita"
 
 msgid "NotificationEvent|Merge merge request"
-msgstr "NotificationEvent|Completa la richiesta di merge"
+msgstr "Completa la richiesta di merge"
 
 msgid "NotificationEvent|New issue"
-msgstr "NotificationEvent|Nuovo issue"
+msgstr "Nuovo issue"
 
 msgid "NotificationEvent|New merge request"
-msgstr "NotificationEvent|Nuova richiesta di merge"
+msgstr "Nuova richiesta di merge"
 
 msgid "NotificationEvent|New note"
-msgstr "NotificationEvent|Nuova nota"
+msgstr "Nuova nota"
 
 msgid "NotificationEvent|Reassign issue"
-msgstr "NotificationEvent|Riassegna issue"
+msgstr "Riassegna issue"
 
 msgid "NotificationEvent|Reassign merge request"
-msgstr "NotificationEvent|Riassegna richiesta di Merge"
+msgstr "Riassegna richiesta di Merge"
 
 msgid "NotificationEvent|Reopen issue"
-msgstr "NotificationEvent|Riapri issue"
+msgstr "Riapri issue"
 
 msgid "NotificationEvent|Successful pipeline"
-msgstr "NotificationEvent|Pipeline Completata"
+msgstr "Pipeline Completata"
 
 msgid "NotificationLevel|Custom"
-msgstr "NotificationLevel|Personalizzato"
+msgstr "Personalizzato"
 
 msgid "NotificationLevel|Disabled"
-msgstr "NotificationLevel|Disabilitato"
+msgstr "Disabilitato"
 
 msgid "NotificationLevel|Global"
-msgstr "NotificationLevel|Globale"
+msgstr "Globale"
 
 msgid "NotificationLevel|On mention"
-msgstr "NotificationLevel|Se menzionato"
+msgstr "Se menzionato"
 
 msgid "NotificationLevel|Participate"
-msgstr "NotificationLevel|Partecipa"
+msgstr "Partecipa"
 
 msgid "NotificationLevel|Watch"
-msgstr "NotificationLevel|Osserva"
+msgstr "Osserva"
 
 msgid "OfSearchInADropdown|Filter"
-msgstr "OfSearchInADropdown|Filtra"
+msgstr "Filtra"
 
 msgid "OpenedNDaysAgo|Opened"
 msgstr "ApertoNGiorniFa|Aperto"
@@ -554,40 +555,40 @@ msgid "Pipeline Schedules"
 msgstr "Pianificazione multipla Pipeline"
 
 msgid "PipelineSchedules|Activated"
-msgstr "PipelineSchedules|Attivata"
+msgstr "Attivata"
 
 msgid "PipelineSchedules|Active"
-msgstr "PipelineSchedules|Attiva"
+msgstr "Attiva"
 
 msgid "PipelineSchedules|All"
-msgstr "PipelineSchedules|Tutto"
+msgstr "Tutto"
 
 msgid "PipelineSchedules|Inactive"
-msgstr "PipelineSchedules|Inattiva"
+msgstr "Inattiva"
 
 msgid "PipelineSchedules|Next Run"
-msgstr "PipelineSchedules|Prossima esecuzione"
+msgstr "Prossima esecuzione"
 
 msgid "PipelineSchedules|None"
-msgstr "PipelineSchedules|Nessuna"
+msgstr "Nessuna"
 
 msgid "PipelineSchedules|Provide a short description for this pipeline"
-msgstr "PipelineSchedules|Fornisci una breve descrizione per questa pipeline"
+msgstr "Fornisci una breve descrizione per questa pipeline"
 
 msgid "PipelineSchedules|Take ownership"
-msgstr "PipelineSchedules|Prendi possesso"
+msgstr "Prendi possesso"
 
 msgid "PipelineSchedules|Target"
-msgstr "PipelineSchedules|Target"
+msgstr "Target"
 
 msgid "PipelineSheduleIntervalPattern|Custom"
-msgstr "PipelineSheduleIntervalPattern|Personalizzato"
+msgstr "Personalizzato"
 
 msgid "Pipeline|with stage"
-msgstr "Pipeline|con stadio"
+msgstr "con stadio"
 
 msgid "Pipeline|with stages"
-msgstr "Pipeline|con più stadi"
+msgstr "con più stadi"
 
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "Il Progetto '%{project_name}' in coda di eliminazione."
@@ -626,25 +627,25 @@ msgid "Project home"
 msgstr "Home di progetto"
 
 msgid "ProjectFeature|Disabled"
-msgstr "ProjectFeature|Disabilitato"
+msgstr "Disabilitato"
 
 msgid "ProjectFeature|Everyone with access"
-msgstr "ProjectFeature|Chiunque con accesso"
+msgstr "Chiunque con accesso"
 
 msgid "ProjectFeature|Only team members"
-msgstr "ProjectFeature|Solo i membri del team"
+msgstr "Solo i membri del team"
 
 msgid "ProjectFileTree|Name"
-msgstr "ProjectFileTree|Nome"
+msgstr "Nome"
 
 msgid "ProjectLastActivity|Never"
-msgstr "ProjectLastActivity|Mai"
+msgstr "Mai"
 
 msgid "ProjectLifecycle|Stage"
 msgstr "ProgettoCicloVitale|Stadio"
 
 msgid "ProjectNetworkGraph|Graph"
-msgstr "ProjectNetworkGraph|Grafico"
+msgstr "Grafico"
 
 msgid "Read more"
 msgstr "Continua..."
@@ -653,10 +654,10 @@ msgid "Readme"
 msgstr "Leggimi"
 
 msgid "RefSwitcher|Branches"
-msgstr "RefSwitcher|Branches"
+msgstr "Branches"
 
 msgid "RefSwitcher|Tags"
-msgstr "RefSwitcher|Tags"
+msgstr "Tags"
 
 msgid "Related Commits"
 msgstr "Commit correlati"
@@ -727,7 +728,7 @@ msgid "Set up auto deploy"
 msgstr "Configura il rilascio automatico"
 
 msgid "SetPasswordToCloneLink|set a password"
-msgstr "SetPasswordToCloneLink|imposta una password"
+msgstr "imposta una password"
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
@@ -738,7 +739,7 @@ msgid "Source code"
 msgstr "Codice Sorgente"
 
 msgid "StarProject|Star"
-msgstr "StarProject|Star"
+msgstr "Star"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "inizia una %{new_merge_request} con queste modifiche"
@@ -882,140 +883,140 @@ msgid "Time until first merge request"
 msgstr "Il tempo fino alla prima richiesta di merge"
 
 msgid "Timeago|%s days ago"
-msgstr "Timeago|%s giorni fa"
+msgstr "%s giorni fa"
 
 msgid "Timeago|%s days remaining"
-msgstr "Timeago|%s giorni rimanenti"
+msgstr "%s giorni rimanenti"
 
 msgid "Timeago|%s hours remaining"
-msgstr "Timeago|%s ore rimanenti"
+msgstr "%s ore rimanenti"
 
 msgid "Timeago|%s minutes ago"
-msgstr "Timeago|%s minuti fa"
+msgstr "%s minuti fa"
 
 msgid "Timeago|%s minutes remaining"
-msgstr "Timeago|%s minuti rimanenti"
+msgstr "%s minuti rimanenti"
 
 msgid "Timeago|%s months ago"
-msgstr "Timeago|%s minuti fa"
+msgstr "%s minuti fa"
 
 msgid "Timeago|%s months remaining"
-msgstr "Timeago|%s mesi rimanenti"
+msgstr "%s mesi rimanenti"
 
 msgid "Timeago|%s seconds remaining"
-msgstr "Timeago|%s secondi rimanenti"
+msgstr "%s secondi rimanenti"
 
 msgid "Timeago|%s weeks ago"
-msgstr "Timeago|%s settimane fa"
+msgstr "%s settimane fa"
 
 msgid "Timeago|%s weeks remaining"
-msgstr "Timeago|%s settimane rimanenti"
+msgstr "%s settimane rimanenti"
 
 msgid "Timeago|%s years ago"
-msgstr "Timeago|%s anni fa"
+msgstr "%s anni fa"
 
 msgid "Timeago|%s years remaining"
-msgstr "Timeago|%s anni rimanenti"
+msgstr "%s anni rimanenti"
 
 msgid "Timeago|1 day remaining"
-msgstr "Timeago|1 giorno rimanente"
+msgstr "1 giorno rimanente"
 
 msgid "Timeago|1 hour remaining"
-msgstr "Timeago|1 ora rimanente"
+msgstr "1 ora rimanente"
 
 msgid "Timeago|1 minute remaining"
-msgstr "Timeago|1 minuto rimanente"
+msgstr "1 minuto rimanente"
 
 msgid "Timeago|1 month remaining"
-msgstr "Timeago|1 mese rimanente"
+msgstr "1 mese rimanente"
 
 msgid "Timeago|1 week remaining"
-msgstr "Timeago|1 settimana rimanente"
+msgstr "1 settimana rimanente"
 
 msgid "Timeago|1 year remaining"
-msgstr "Timeago|1 anno rimanente"
+msgstr "1 anno rimanente"
 
 msgid "Timeago|Past due"
-msgstr "Timeago|Entro"
+msgstr "Entro"
 
 msgid "Timeago|a day ago"
-msgstr "Timeago|un giorno fa"
+msgstr "un giorno fa"
 
 msgid "Timeago|a month ago"
-msgstr "Timeago|un mese fa"
+msgstr "un mese fa"
 
 msgid "Timeago|a week ago"
-msgstr "Timeago|una settimana fa"
+msgstr "una settimana fa"
 
 msgid "Timeago|a while"
-msgstr "Timeago|poco fa"
+msgstr "poco fa"
 
 msgid "Timeago|a year ago"
-msgstr "Timeago|un anno fa"
+msgstr "un anno fa"
 
 msgid "Timeago|about %s hours ago"
-msgstr "Timeago|circa %s ore fa"
+msgstr "circa %s ore fa"
 
 msgid "Timeago|about a minute ago"
-msgstr "Timeago|circa un minuto fa"
+msgstr "circa un minuto fa"
 
 msgid "Timeago|about an hour ago"
-msgstr "Timeago|circa un ora fa"
+msgstr "circa un ora fa"
 
 msgid "Timeago|in %s days"
-msgstr "Timeago|in %s giorni"
+msgstr "in %s giorni"
 
 msgid "Timeago|in %s hours"
-msgstr "Timeago|in %s ore"
+msgstr "in %s ore"
 
 msgid "Timeago|in %s minutes"
-msgstr "Timeago|in %s minuti"
+msgstr "in %s minuti"
 
 msgid "Timeago|in %s months"
-msgstr "Timeago|in %s mesi"
+msgstr "in %s mesi"
 
 msgid "Timeago|in %s seconds"
-msgstr "Timeago|in %s secondi"
+msgstr "in %s secondi"
 
 msgid "Timeago|in %s weeks"
-msgstr "Timeago|in %s settimane"
+msgstr "in %s settimane"
 
 msgid "Timeago|in %s years"
-msgstr "Timeago|in %s anni"
+msgstr "in %s anni"
 
 msgid "Timeago|in 1 day"
-msgstr "Timeago|in 1 giorno"
+msgstr "in 1 giorno"
 
 msgid "Timeago|in 1 hour"
-msgstr "Timeago|in 1 ora"
+msgstr "in 1 ora"
 
 msgid "Timeago|in 1 minute"
-msgstr "Timeago|in 1 minuto"
+msgstr "in 1 minuto"
 
 msgid "Timeago|in 1 month"
-msgstr "Timeago|in 1 mese"
+msgstr "in 1 mese"
 
 msgid "Timeago|in 1 week"
-msgstr "Timeago|in 1 settimana"
+msgstr "in 1 settimana"
 
 msgid "Timeago|in 1 year"
-msgstr "Timeago|in 1 anno"
+msgstr "in 1 anno"
 
 msgid "Timeago|less than a minute ago"
-msgstr "Timeago|meno di un minuto fa"
+msgstr "meno di un minuto fa"
 
 msgid "Time|hr"
 msgid_plural "Time|hrs"
-msgstr[0] "Tempo|hr"
-msgstr[1] "Tempo|hr"
+msgstr[0] "hr"
+msgstr[1] "hr"
 
 msgid "Time|min"
 msgid_plural "Time|mins"
-msgstr[0] "Tempo|min"
-msgstr[1] "Tempo|mins"
+msgstr[0] "min"
+msgstr[1] "mins"
 
 msgid "Time|s"
-msgstr "Tempo|s"
+msgstr "s"
 
 msgid "Total Time"
 msgstr "Tempo Totale"
@@ -1036,13 +1037,13 @@ msgid "Use your global notification setting"
 msgstr "Usa le tue impostazioni globali "
 
 msgid "VisibilityLevel|Internal"
-msgstr "VisibilityLevel|Interno"
+msgstr "Interno"
 
 msgid "VisibilityLevel|Private"
-msgstr "VisibilityLevel|Privato"
+msgstr "Privato"
 
 msgid "VisibilityLevel|Public"
-msgstr "VisibilityLevel|Pubblico"
+msgstr "Pubblico"
 
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
