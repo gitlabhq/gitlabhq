@@ -187,7 +187,7 @@ class Project < ActiveRecord::Base
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_file,
-    format: { without: /\.{2}/.freeze,
+    format: { without: /\.{2}/,
               message: 'cannot include directory traversal.' },
     length: { maximum: 255 },
     allow_blank: true
@@ -222,7 +222,6 @@ class Project < ActiveRecord::Base
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
-  before_validation :clean_ci_config_file
 
   mount_uploader :avatar, AvatarUploader
   has_many :uploads, as: :model, dependent: :destroy
@@ -525,6 +524,11 @@ class Project < ActiveRecord::Base
     end
 
     import_data&.destroy
+  end
+
+  def ci_config_file=(value)
+    # Strip all leading slashes so that //foo -> foo
+    super(value&.sub(%r{\A/+}, ''))
   end
 
   def import_url=(value)
@@ -1483,11 +1487,5 @@ class Project < ActiveRecord::Base
     end
 
     raise ex
-  end
-
-  def clean_ci_config_file
-    return unless self.ci_config_file
-    # Cleanup path removing leading/trailing slashes
-    self.ci_config_file = ci_config_file.gsub(/^\/+|\/+$/, '')
   end
 end

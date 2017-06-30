@@ -47,11 +47,11 @@
 
         %hr
         .form-group
-          = f.label :ci_config_file, 'Custom CI Config File', class: 'label-light'
+          = f.label :ci_config_file, 'Custom CI config file', class: 'label-light'
           = f.text_field :ci_config_file, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.help-block
-            Optionally specify the location of your CI config file, e.g. my/path or my/path/.my-config.yml.
-            Default is to use '.gitlab-ci.yml' in the repository root.
+            The path to CI config file. Default to <code>.gitlab-ci.yml</code>
+            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-file'), target: '_blank'
 
         %hr
         .form-group

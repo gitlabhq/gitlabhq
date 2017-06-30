@@ -748,38 +748,26 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe 'yaml config file resolution' do
-    let(:project) { FactoryGirl.build(:project) }
+  describe '#ci_yaml_file_path' do
+    let(:project) { create(:empty_project) }
     let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
-    it 'uses custom ci config file path when present' do
+    it 'returns the path from project' do
       allow(project).to receive(:ci_config_file) { 'custom/path' }
 
-      expect(pipeline.ci_yaml_file_path).to eq('custom/path/.gitlab-ci.yml')
+      expect(pipeline.ci_yaml_file_path).to eq('custom/path')
     end
 
-    it 'uses root when custom path is nil' do
+    it 'returns default when custom path is nil' do
       allow(project).to receive(:ci_config_file) { nil }
 
       expect(pipeline.ci_yaml_file_path).to eq('.gitlab-ci.yml')
     end
 
-    it 'uses root when custom path is empty' do
+    it 'returns default when custom path is empty' do
       allow(project).to receive(:ci_config_file) { '' }
 
       expect(pipeline.ci_yaml_file_path).to eq('.gitlab-ci.yml')
-    end
-
-    it 'allows custom filename' do
-      allow(project).to receive(:ci_config_file) { 'custom/path/.my-config.yml' }
-
-      expect(pipeline.ci_yaml_file_path).to eq('custom/path/.my-config.yml')
-    end
-
-    it 'custom filename must be yml' do
-      allow(project).to receive(:ci_config_file) { 'custom/path/.my-config.cnf' }
-
-      expect(pipeline.ci_yaml_file_path).to eq('custom/path/.my-config.cnf/.gitlab-ci.yml')
     end
 
     it 'reports error if the file is not found' do
@@ -788,7 +776,7 @@ describe Ci::Pipeline, models: true do
       pipeline.ci_yaml_file
 
       expect(pipeline.yaml_errors)
-        .to eq('Failed to load CI/CD config file at custom/.gitlab-ci.yml')
+        .to eq('Failed to load CI/CD config file at custom')
     end
   end
 

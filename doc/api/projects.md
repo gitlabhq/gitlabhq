@@ -346,7 +346,7 @@ Parameters:
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
-| `ci_config_file` | boolean | no | The relative path to the CI config file (E.g. my/path or my/path/.gitlab-ci.yml or my/path/my-config.yml) |
+| `ci_config_file` | boolean | no | The path to CI config file |
 
 ### Create project for user
 
@@ -383,7 +383,7 @@ Parameters:
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
-| `ci_config_file` | boolean | no | The relative path to the CI config file (E.g. my/path or my/path/.gitlab-ci.yml or my/path/my-config.yml) |
+| `ci_config_file` | boolean | no | The path to CI config file |
 
 ### Edit project
 
@@ -418,7 +418,7 @@ Parameters:
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
-| `ci_config_file` | boolean | no | The relative path to the CI config file (E.g. my/path or my/path/.gitlab-ci.yml or my/path/my-config.yml) |
+| `ci_config_file` | boolean | no | The path to CI config file |
 
 ### Fork project
 

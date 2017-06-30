@@ -27,7 +27,7 @@ The default value is 60 minutes. Decrease the time limit if you want to impose
 a hard limit on your jobs' running time or increase it otherwise. In any case,
 if the job surpasses the threshold, it is marked as failed.
 
-## Custom CI Config File
+## Custom CI config file
 
 >  - [Introduced][ce-12509] in GitLab 9.4.
 

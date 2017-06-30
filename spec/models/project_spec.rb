@@ -144,6 +144,8 @@ describe Project, models: true do
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
 
     it { is_expected.to validate_length_of(:ci_config_file).is_at_most(255) }
+    it { is_expected.to allow_value('').for(:ci_config_file) }
+    it { is_expected.not_to allow_value('test/../foo').for(:ci_config_file) }
 
     it { is_expected.to validate_presence_of(:creator) }
 
@@ -1488,6 +1490,28 @@ describe Project, models: true do
         expect(project).to receive(:container_repositories)
         expect(project).not_to have_container_registry_tags
       end
+    end
+  end
+
+  describe '#ci_config_file=' do
+    let(:project) { create(:empty_project) }
+
+    it 'sets nil' do
+      project.update!(ci_config_file: nil)
+
+      expect(project.ci_config_file).to be_nil
+    end
+
+    it 'sets a string' do
+      project.update!(ci_config_file: 'foo/.gitlab_ci.yml')
+
+      expect(project.ci_config_file).to eq('foo/.gitlab_ci.yml')
+    end
+
+    it 'sets a string but remove all leading slashes' do
+      project.update!(ci_config_file: '///foo//.gitlab_ci.yml')
+
+      expect(project.ci_config_file).to eq('foo//.gitlab_ci.yml')
     end
   end
 

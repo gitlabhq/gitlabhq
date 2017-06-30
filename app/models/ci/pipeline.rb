@@ -343,10 +343,11 @@ module Ci
     end
 
     def ci_yaml_file_path
-      return '.gitlab-ci.yml' if project.ci_config_file.blank?
-      return project.ci_config_file if File.extname(project.ci_config_file.to_s) == '.yml'
-
-      File.join(project.ci_config_file || '', '.gitlab-ci.yml')
+      if project.ci_config_file.blank?
+        '.gitlab-ci.yml'
+      else
+        project.ci_config_file
+      end
     end
 
     def environments
