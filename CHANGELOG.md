@@ -4,6 +4,7 @@ entry.
 
 ## 9.3.3 (2017-06-30)
 
+- No changes.
 - Fix head pipeline stored in merge request for external pipelines. !12478
 - Bring back branches badge to main project page. !12548
 - Fix diff of requirements.txt file by not matching newlines as part of package names.
