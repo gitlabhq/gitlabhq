@@ -11,7 +11,7 @@ module API
     # Are the `scopes` passed in sufficient to adequately authorize the passed
     # request for the scope represented by the current instance of this class?
     def sufficient?(scopes, request)
-      verify_if_condition(request) && scopes.include?(self.name)
+      scopes.include?(self.name) && verify_if_condition(request)
     end
 
     private

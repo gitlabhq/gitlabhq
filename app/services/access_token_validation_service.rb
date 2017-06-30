@@ -37,7 +37,14 @@ class AccessTokenValidationService
       # small number of records involved.
       # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12300/#note_33689006
       token_scopes = token.scopes.map(&:to_sym)
-      required_scopes.any? { |scope| scope.sufficient?(token_scopes, request) }
+
+      required_scopes.any? do |scope|
+        if scope.respond_to?(:sufficient?)
+          scope.sufficient?(token_scopes, request)
+        else
+          API::Scope.new(scope).sufficient?(token_scopes, request)
+        end
+      end
     end
   end
 end
