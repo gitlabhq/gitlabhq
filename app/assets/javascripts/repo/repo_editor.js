@@ -39,7 +39,15 @@ export default class RepoEditor {
 
       watch: {
         isTree() {
-          if(this.isTree) {
+          if(this.isTree && !this.openedFiles.length) {
+            self.el.style.display = 'none';
+          } else {
+            self.el.style.display = 'inline-block';
+          }
+        },
+
+        openedFiles() {
+          if(this.isTree && !this.openedFiles.length) {
             self.el.style.display = 'none';
           } else {
             self.el.style.display = 'inline-block';
@@ -47,8 +55,7 @@ export default class RepoEditor {
         },
 
         blobRaw() {
-          if(this.isTree) {
-          } else {
+          if(!this.isTree) {
             self.monacoEditor.setModel(
               monaco.editor.createModel(
                 this.blobRaw,

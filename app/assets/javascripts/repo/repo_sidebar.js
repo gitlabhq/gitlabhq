@@ -4,6 +4,7 @@ import Vue from 'vue'
 import Store from './repo_store'
 import RepoPreviousDirectory from './repo_prev_directory'
 import RepoFile from './repo_file'
+import RepoMiniMixin from './repo_mini_mixin'
 
 export default class RepoSidebar {
   constructor(url) {
@@ -16,6 +17,7 @@ export default class RepoSidebar {
   initVue() {
     this.vue = new Vue({
       el: '#sidebar',
+      mixins: [RepoMiniMixin],
       components: {
         'repo-previous-directory': RepoPreviousDirectory,
         'repo-file': RepoFile,
@@ -45,8 +47,9 @@ export default class RepoSidebar {
             url = file.url;
           }
           Service.url = url;
-          Helper.getContent();
-          Helper.toURL(url);
+          if(typeof file === 'object') {
+            Helper.getContent(file);
+          }
         }
       },
     });

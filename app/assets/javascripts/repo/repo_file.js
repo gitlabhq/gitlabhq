@@ -2,13 +2,13 @@ let RepoFile = {
   template: `
   <tr>
     <td>
-      <i class='fa' :class='file.icon'></i>
-      <a :href='file.url' @click.prevent='linkClicked(file)'>{{file.name}}</a>
+      <i class='fa' :class='file.icon' :style='{"margin-left": file.level * 10 + "px"}'></i>
+      <a :href='file.url' @click.prevent='linkClicked(file)' :title='file.url'>{{file.name}}</a>
     </td>
-    <td v-if='isTree'>
+    <td v-if='!isMini'>
       <div class='ellipsis'>{{file.lastCommitMessage}}</div>
     </td>
-    <td v-if='isTree'>
+    <td v-if='!isMini'>
       <span>{{file.lastCommitUpdate}}</span>
     </td>
   </tr>
@@ -16,7 +16,8 @@ let RepoFile = {
   props: {
     name: 'repo-file',
     file: Object,
-    isTree: Boolean
+    isTree: Boolean,
+    isMini: Boolean
   },
 
   methods: {

@@ -36,8 +36,56 @@ let RepoHelper = {
     return split.join('/');
   },
 
+  insertNewFilesIntoParentDir(inDirectory, oldList, newList) {
+    let indexOfFile;
+    if(!inDirectory) {
+      return newList;
+    }
+    oldList.find((file, i) => {
+      if(file.url === inDirectory.url){
+        indexOfFile = i+1;
+        return true;
+      }
+      return false;
+    });
+    if(indexOfFile){
+      // insert new list into old list
+      newList.forEach((newFile) => {
+        newFile.level = inDirectory.level + 1;
+        oldList.splice(indexOfFile, 0, newFile);
+      });
+      return oldList;
+    }
+    return newList;
+  },
+
+  setActiveFile(file) {
+    Store.openedFiles = Store.openedFiles.map((openedFile) => {
+      openedFile.active = file.url === openedFile.url;
+      return openedFile;
+    });
+    Store.blobRaw = file.plain;
+    this.toURL(file.url);
+  },
+
+  removeFromOpenedFiles(file) {
+    if(file.type === 'tree') return;
+    Store.openedFiles = Store.openedFiles.filter((openedFile) => {
+      return openedFile.url !== file.url;
+    });
+  },
+
+  addToOpenedFiles(file) {
+    const openedFilesAlreadyExists = Store.openedFiles.some((openedFile) => {
+      return openedFile.url === file.url
+    });
+    if(!openedFilesAlreadyExists) {
+      Store.openedFiles.push(file);
+    }
+  },
+
     // may be tree or file.
-  getContent() {
+  getContent(file) {
     Service.getContent()
     .then((response) => {
       let data = response.data;
@@ -47,16 +95,14 @@ let RepoHelper = {
         const parentURL = this.blobURLtoParent(Service.url);
         Store.blobRaw = data.plain;
         Store.prevURL = this.blobURLtoParent(parentURL);
-        Service.getContent(parentURL)
-        .then((response) => {
-          Store.files = this.dataToListOfFiles(response.data);
-        })
-        .catch((response) => {
-
-        });
+        data.url = file.url;
+        this.addToOpenedFiles(data);
+        this.setActiveFile(data);
+        console.log(data);
       } else {
         // it's a tree
-        Store.files = this.dataToListOfFiles(data);
+        let newDirectory = this.dataToListOfFiles(data);
+        Store.files = this.insertNewFilesIntoParentDir(file, Store.files, newDirectory);
         Store.prevURL = this.blobURLtoParent(Service.url);
       }
     })
@@ -80,7 +126,8 @@ let RepoHelper = {
         url: blob.url,
         icon: this.toFA(blob.icon),
         lastCommitMessage: blob.last_commit.message,
-        lastCommitUpdate: blob.last_commit.committed_date
+        lastCommitUpdate: blob.last_commit.committed_date,
+        level: 0
       })
     });
 
@@ -89,7 +136,8 @@ let RepoHelper = {
         type: 'tree',
         name: tree.name,
         url: tree.url,
-        icon: this.toFA(tree.icon)
+        icon: this.toFA(tree.icon),
+        level: 0
       })
     });
 
@@ -98,7 +146,8 @@ let RepoHelper = {
         type: 'submodule',
         name: submodule.name,
         url: submodule.url,
-        icon: this.toFA(submodule.icon)
+        icon: this.toFA(submodule.icon),
+        level: 0
       })
     });
 

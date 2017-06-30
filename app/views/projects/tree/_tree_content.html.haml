@@ -1,18 +1,21 @@
 .tree-content-holder
-  #sidebar{ ":class" => "{'sidebar-mini' : !isTree}" }<
+  #sidebar{ ":class" => "{'sidebar-mini' : isMini}" }<
     %table.table
-      %thead{"v-if" => "isTree"}
-        %th{"v-if" => "isTree"}
+      %thead{"v-if" => "!isMini"}
+        %th{"v-if" => "!isMini"}
           Name
-        %th{"v-else"}
+        %th{"v-else" => "1"}
           Project
-        %th{"v-if" => "isTree"}
+        %th{"v-if" => "!isMini"}
           Last Commit
-        %th{"v-if" => "isTree"}
+        %th{"v-if" => "!isMini"}
           Last Update
       %tr{ is: "repo-previous-directory", ":prevurl" => "prevURL", "@linkclicked" => "linkClicked" }
-      %tr{ is: "repo-file", "v-for" => "file in files", ":key" => "file.id", ":file" => "file","@linkclicked" => "linkClicked(file)", ":is-tree" => "isTree" }
-  #ide{ data: { url: repo_url }, style: "height:400px;" }>
+      %tr{ is: "repo-file", "v-for" => "file in files", ":key" => "file.id", ":file" => "file",":is-mini" => "isMini", "@linkclicked" => "linkClicked(file)", ":is-tree" => "isTree" }
+  .panel-right>
+    %ul#tabs{"v-if" => "isMini"}
+      %li{ is: "repo-tab", "v-for" => "tab in openedFiles", ":key" => "tab.id", ":tab" => "tab", ":class" => "{'active' : tab.active}" }
+    #ide{ data: { url: repo_url } }
 
 - if can_edit_tree?
   = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post

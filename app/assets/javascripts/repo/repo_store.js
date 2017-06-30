@@ -9,7 +9,7 @@ let RepoStore = {
   submodules: [],
   blobRaw: '',
   blobRendered: '',
-
+  openedFiles: [],
   files: []
 };
 export default RepoStore;

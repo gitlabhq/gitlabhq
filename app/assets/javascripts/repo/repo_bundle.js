@@ -1,3 +1,4 @@
+import Tabs from './repo_tabs'
 import Sidebar from './repo_sidebar'
 import Editor from './repo_editor'
 import Service from './repo_service'
@@ -10,6 +11,7 @@ export default class RepoBundle {
     const url = document.getElementById('ide').dataset.url;
     Store.service = Service;
     Store.service.url = url;
+    Store.tabs = new Tabs();
     Store.sidebar = new Sidebar(url);
     Store.editor = new Editor();
     Helper.getContent();

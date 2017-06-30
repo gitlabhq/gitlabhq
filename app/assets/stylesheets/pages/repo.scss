@@ -26,10 +26,43 @@ header {
   padding: 10px 15px;
 }
 
-#ide {
+.panel-right{
   display: inline-block;
   width: 85%;
+  #tabs {
+    height: 41px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-left: 0;
+    margin-bottom: 0;
+    background: $gray-light;
+
+    li {
+      list-style-type: none;
+      background: $gray-normal;
+      display: inline-block;
+      padding: 10px 18px;
+      border-right: 1px solid $border-color;
+
+      &.active {
+        background: $white-light;
+      }
+
+      a {
+        color: black;
+      }
+
+      i.fa.fa-times {
+        float: right;
+        margin-top: 3px;
+        margin-left: 15px;
+      }
+    }
+  }
+  #ide {
+    height: 70vh;
+  }  
 }
+
 
 #sidebar {
   &.sidebar-mini {
@@ -37,6 +70,12 @@ header {
     vertical-align: top;
     width: 15%;
     border-right: 1px solid $white-normal;
+    height: 75vh;
+    overflow: auto;
+  }
+
+  a {
+    color: $almost-black;
   }
 
   ul {
