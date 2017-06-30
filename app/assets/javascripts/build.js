@@ -85,9 +85,8 @@ window.Build = (function () {
         if (!this.hasBeenScrolled) {
           this.scrollToBottom();
         }
-      });
-
-    this.verifyTopPosition();
+      })
+      .then(() => this.verifyTopPosition());
   }
 
   Build.prototype.canScroll = function () {
@@ -176,7 +175,7 @@ window.Build = (function () {
     }
 
     if ($flashError.length) {
-      topPostion += $flashError.outerHeight();
+      topPostion += $flashError.outerHeight() + prependTopDefault;
     }
 
     this.$buildTrace.css({
@@ -234,7 +233,8 @@ window.Build = (function () {
                 if (!this.hasBeenScrolled) {
                   this.scrollToBottom();
                 }
-              });
+              })
+              .then(() => this.verifyTopPosition());
           }, 4000);
         } else {
           this.$buildRefreshAnimation.remove();
