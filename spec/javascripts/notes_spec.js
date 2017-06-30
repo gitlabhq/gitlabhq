@@ -523,6 +523,51 @@ import '~/notes';
       });
     });
 
+    describe('postComment with Slash commands', () => {
+      const sampleComment = '/assign @root\n/award :100:';
+      const note = {
+        commands_changes: {
+          assignee_id: 1,
+          emoji_award: '100'
+        },
+        errors: {
+          commands_only: ['Commands applied']
+        },
+        valid: false
+      };
+      let $form;
+      let $notesContainer;
+
+      beforeEach(() => {
+        this.notes = new Notes('', []);
+        window.gon.current_username = 'root';
+        window.gon.current_user_fullname = 'Administrator';
+        gl.awardsHandler = {
+          addAwardToEmojiBar: () => {},
+          scrollToAwards: () => {}
+        };
+        gl.GfmAutoComplete = {
+          dataSources: {
+            commands: '/root/test-project/autocomplete_sources/commands'
+          }
+        };
+        $form = $('form.js-main-target-form');
+        $notesContainer = $('ul.main-notes-list');
+        $form.find('textarea.js-note-text').val(sampleComment);
+      });
+
+      it('should remove slash command placeholder when comment with slash commands is done posting', () => {
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        spyOn(gl.awardsHandler, 'addAwardToEmojiBar').and.callThrough();
+        $('.js-comment-button').click();
+
+        expect($notesContainer.find('.system-note.being-posted').length).toEqual(1); // Placeholder shown
+        deferred.resolve(note);
+        expect($notesContainer.find('.system-note.being-posted').length).toEqual(0); // Placeholder removed
+      });
+    });
+
     describe('update comment with script tags', () => {
       const sampleComment = '<script></script>';
       const updatedComment = '<script></script>';
