@@ -11,6 +11,8 @@ describe API::Milestones do
 
   before do
     project.team << [user, :developer]
+
+    TestLicense.destroy!
   end
 
   describe 'GET /projects/:id/milestones' do
