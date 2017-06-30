@@ -9,6 +9,10 @@ describe('StickyTabs', () => {
     stickyTabs = new StickyTabs(stickyTabsEl, unstickyTabsEl);
   });
 
+  afterEach(() => {
+    stickyTabs.unbindEvents();
+  });
+
   describe('class constructor', () => {
     it('sets stickyTabs, unstickyTabs, unstickyTabsHeight and eventListeners', () => {
       expect(stickyTabs.stickyTabs).toBe(stickyTabsEl);
