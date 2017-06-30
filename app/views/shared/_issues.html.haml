@@ -1,6 +1,6 @@
 - if @issues.to_a.any?
   .panel.panel-default.panel-small.panel-without-border
-    %ul.content-list.issues-list
+    %ul.content-list.issues-list.issuable-list
       = render partial: 'projects/issues/issue', collection: @issues
   = paginate @issues, theme: "gitlab"
 - else
