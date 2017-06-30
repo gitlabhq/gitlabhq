@@ -1,7 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, quotes, consistent-return, no-var, one-var, one-var-declaration-per-line, no-else-return, prefer-arrow-callback, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, quotes, consistent-return, no-var, one-var, one-var-declaration-per-line, no-else-return, prefer-arrow-callback, class-methods-use-this */
 
-window.TreeView = (function() {
-  function TreeView() {
+class TreeView {
+  constructor() {
     this.initKeyNav();
     // Code browser tree slider
     // Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
@@ -22,7 +22,7 @@ window.TreeView = (function() {
     $('span.log_loading:first').removeClass('hide');
   }
 
-  TreeView.prototype.initKeyNav = function() {
+  initKeyNav() {
     var li, liSelected;
     li = $("tr.tree-item");
     liSelected = null;
@@ -60,7 +60,7 @@ window.TreeView = (function() {
         }
       }
     });
-  };
+  }
+}
 
-  return TreeView;
-})();
+window.TreeView = TreeView;
