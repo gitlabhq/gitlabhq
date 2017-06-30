@@ -26,6 +26,7 @@
               .node-badge.primary-node Primary
               %span.help-block Primary node
             - else
+              = status_loading_icon
               .js-geo-node-status{ style: 'display: none' }
                 - if node.enabled?
                   %p

@@ -2,13 +2,17 @@ module EE
   module GeoHelper
     def node_status_icon(node)
       unless node.primary?
-        status = node.enabled? ? 'healthy' : 'disabled'
+        status = node.enabled? ? 'unknown' : 'disabled'
         icon = status == 'healthy' ? 'check' : 'times'
 
         icon "#{icon} fw",
              class: "js-geo-node-icon geo-node-#{status}",
              title: status.capitalize
       end
+    end
+
+    def status_loading_icon
+      icon "spinner spin fw", class: 'js-geo-node-loading'
     end
 
     def node_class(node)
