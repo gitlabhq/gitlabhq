@@ -53,6 +53,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
@@ -483,7 +484,7 @@ import OAuthRememberMe from './oauth_remember_me';
               new NotificationsDropdown();
               break;
             case 'wikis':
-              new gl.Wikis();
+              new Wikis();
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);
