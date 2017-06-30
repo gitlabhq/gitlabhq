@@ -160,7 +160,6 @@ import './user_tabs';
 import './username_validator';
 import './users_select';
 import './version_check_image';
-import './visibility_select';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
