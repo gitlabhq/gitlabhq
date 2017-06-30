@@ -157,7 +157,6 @@ import './tree';
 import './usage_ping';
 import './user';
 import './user_tabs';
-import './users_select';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
