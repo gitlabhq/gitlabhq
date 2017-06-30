@@ -131,13 +131,13 @@ configuration options for image and services:
 ```yaml
 image:
   name: ruby:2.2
-  entrypoint: /bin/bash
+  entrypoint: ["/bin/bash"]
 
 services:
 - name: my-postgres:9.4
   alias: db-postgres
-  entrypoint: /usr/local/bin/db-postgres
-  command: start
+  entrypoint: ["/usr/local/bin/db-postgres"]
+  command: ["start"]
 
 before_script:
 - bundle install
@@ -182,15 +182,15 @@ services:
 | Setting    | Required | Description |
 |------------|----------|-------------|
 | name       | yes      | Full name of the image that should be used. It should contain the registry part if needed. |
-| entrypoint | no       | Command or script that should be executed as container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating container. |
+| entrypoint | no       | Command or script that should be executed as container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating container. The syntax is similar to `Dockerfile`'s `ENTRYPOINT` directive, where each shell token is a separate string in the array. |
 
 ### Available settings for `services` entry
 
 | Setting    | Required | Description |
 |------------|----------|-------------|
 | name       | yes      | Full name of the image that should be used. It should contain the registry part if needed. |
-| entrypoint | no       | Command or script that should be used as container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating container. |
-| command    | no       | Command or script and eventual arguments that should be used as container's command. It will be translated to arguments passed to Docker after image's name. |
+| entrypoint | no       | Command or script that should be used as container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating container. The syntax is similar to `Dockerfile`'s `ENTRYPOINT` directive, where each shell token is a separate string in the array. |
+| command    | no       | Command or script and eventual arguments that should be used as container's command. It will be translated to arguments passed to Docker after image's name. The syntax is similar to `Dockerfile`'s `CMD` directive, where each shell token is a separate string in the array. |
 | alias      | no       | Additional alias, that can be used to access service from job's container. Read [Accessing the services](#accessing-the-services) for more information. |
 
 ### Example usages
@@ -250,7 +250,7 @@ services:
 - my-super-sql:latest
 ```
 
-With docker extended docker configuration we can now do this simple, setting
+With extended docker configuration we can now do this simple, setting
 only proper configuration in `.gitlab-ci.yml`, e.g:
 
 ```yaml
@@ -258,13 +258,15 @@ only proper configuration in `.gitlab-ci.yml`, e.g:
 
 services:
 - name: super/sql:latest
-  command: /usr/bin/super-sql run
+  command: ["/usr/bin/super-sql", "run"]
 ```
+
+As you can see the syntax of `command` entry is similar to Dockerfile's `CMD`.
 
 #### Overriding entrypoint of job's image
 
 Let's assume we have a `super/sql:experimental` image with some SQL database
-inside. We would like to use it as base for our job, because we wan't to
+inside. We would like to use it as base for our job, because we want to
 execute some tests with this database binary. The problem is that this image
 is configured with `/usr/bin/super-sql run` as entrypoint. That means, that
 when starting container without additional options it will run database's
@@ -295,7 +297,10 @@ only proper configuration in `.gitlab-ci.yml`, e.g:
 
 image:
   name: super/sql:experimental
-  entrypoint: /bin/sh
+  entrypoint: ["/bin/sh"]
+```
+
+As you can see the syntax of `entrypoint` entry is similar to Dockerfile's `ENTRYPOINT`.
 
 ## Define image and services in `config.toml`
 
