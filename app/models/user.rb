@@ -12,11 +12,9 @@ class User < ActiveRecord::Base
   include TokenAuthenticatable
   include IgnorableColumn
   include FeatureGate
-<<<<<<< HEAD
+
   prepend EE::GeoAwareAvatar
   prepend EE::User
-=======
->>>>>>> ce/master
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 

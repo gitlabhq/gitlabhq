@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-require 'declarative_policy'
-=======
 require_dependency 'declarative_policy'
->>>>>>> ce/master
 
 class Ability
   class << self
