@@ -1,4 +1,0 @@
----
-title: Fix shared runners minutes query to update only projects with used allowance
-merge_request:
-author:

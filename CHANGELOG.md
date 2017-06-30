@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.3 (2017-06-30)
+
+- Fix head pipeline stored in merge request for external pipelines. !12478
+- Bring back branches badge to main project page. !12548
+- Fix diff of requirements.txt file by not matching newlines as part of package names.
+- Fixed issue boards closed list not showing all closed issues.
+- Fixed multi-line markdown tooltip buttons in issue edit form.
+- Fix shared runners minutes query to update only projects with used allowance.
+- Perform housekeeping only when an import of a fresh project is completed.
+
 ## 9.3.2 (2017-06-27)
 
 - API: Fix optional arugments for POST :id/variables. !12474
