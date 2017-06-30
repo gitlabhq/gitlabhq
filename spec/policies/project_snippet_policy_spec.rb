@@ -93,7 +93,6 @@ describe ProjectSnippetPolicy, models: true do
       it do
         expect_allowed(:read_project_snippet)
         expect_disallowed(*author_permissions)
-<<<<<<< HEAD
       end
     end
 
@@ -104,8 +103,6 @@ describe ProjectSnippetPolicy, models: true do
       it do
         is_expected.to be_disallowed(:read_project_snippet)
         is_expected.to be_disallowed(*author_permissions)
-=======
->>>>>>> ce/master
       end
     end
   end
@@ -163,7 +160,6 @@ describe ProjectSnippetPolicy, models: true do
       it do
         expect_allowed(:read_project_snippet)
         expect_disallowed(*author_permissions)
-<<<<<<< HEAD
       end
     end
 
@@ -174,8 +170,6 @@ describe ProjectSnippetPolicy, models: true do
       it do
         is_expected.to be_allowed(:read_project_snippet)
         is_expected.to be_disallowed(*author_permissions)
-=======
->>>>>>> ce/master
       end
     end
 

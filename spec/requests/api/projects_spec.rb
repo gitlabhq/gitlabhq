@@ -749,12 +749,8 @@ describe API::Projects do
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
           'full_path' => user.namespace.full_path,
-<<<<<<< HEAD
           'parent_id' => nil,
           'plan' => nil
-=======
-          'parent_id' => nil
->>>>>>> ce/master
         })
       end
 

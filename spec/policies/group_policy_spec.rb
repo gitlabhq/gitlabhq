@@ -204,7 +204,6 @@ describe GroupPolicy, models: true do
         expect_allowed(*reporter_permissions)
         expect_allowed(*master_permissions)
         expect_allowed(*owner_permissions)
-<<<<<<< HEAD
       end
     end
 
@@ -215,8 +214,6 @@ describe GroupPolicy, models: true do
         is_expected.to be_allowed(:read_group)
         is_expected.to be_disallowed(*master_permissions)
         is_expected.to be_disallowed(*owner_permissions)
-=======
->>>>>>> ce/master
       end
     end
   end
