@@ -87,5 +87,9 @@ describe Gitlab::DependencyLinker::RequirementsTxtLinker, lib: true do
     it 'links URLs' do
       expect(subject).to include(link('http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884-cp34-none-win_amd64.whl', 'http://wxpython.org/Phoenix/snapshot-builds/wxPython_Phoenix-3.0.3.dev1820+49a8884-cp34-none-win_amd64.whl'))
     end
+
+    it 'does not contain link with a newline as package name' do
+      expect(subject).not_to include(link("\n", "https://pypi.python.org/pypi/\n"))
+    end
   end
 end

@@ -402,6 +402,7 @@
 
 .build-light-text {
   color: $gl-text-color-secondary;
+  word-wrap: break-word;
 }
 
 .build-gutter-toggle {
