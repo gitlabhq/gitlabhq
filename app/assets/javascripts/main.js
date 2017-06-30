@@ -70,7 +70,7 @@ import './ajax_loading_spinner';
 import './api';
 import './aside';
 import './autosave';
-import AwardsHandler from './awards_handler';
+import loadAwardsHandler from './awards_handler';
 import './breakpoints';
 import './broadcast_message';
 import './build';
@@ -355,7 +355,7 @@ $(function () {
   $window.off('resize.app').on('resize.app', function () {
     return fitSidebarForSize();
   });
-  gl.awardsHandler = new AwardsHandler();
+  loadAwardsHandler();
   new Aside();
 
   gl.utils.renderTimeago();

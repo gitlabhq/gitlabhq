@@ -18,6 +18,7 @@ import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import CommentTypeToggle from './comment_type_toggle';
+import loadAwardsHandler from './awards_handler';
 import './autosave';
 import './dropzone_input';
 import './task_list';
@@ -291,8 +292,13 @@ export default class Notes {
 
       if ('emoji_award' in noteEntity.commands_changes) {
         votesBlock = $('.js-awards-block').eq(0);
-        gl.awardsHandler.addAwardToEmojiBar(votesBlock, noteEntity.commands_changes.emoji_award);
-        return gl.awardsHandler.scrollToAwards();
+
+        loadAwardsHandler().then((awardsHandler) => {
+          awardsHandler.addAwardToEmojiBar(votesBlock, noteEntity.commands_changes.emoji_award);
+          awardsHandler.scrollToAwards();
+        }).catch(() => {
+          // ignore
+        });
       }
     }
   }
