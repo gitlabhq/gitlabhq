@@ -9,7 +9,6 @@
 /* global MilestoneSelect */
 /* global Commit */
 /* global NotificationsForm */
-/* global TreeView */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
@@ -52,6 +51,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import TreeView from './tree';
 import UsagePing from './usage_ping';
 import UsernameValidator from './username_validator';
 import VersionCheckImage from './version_check_image';

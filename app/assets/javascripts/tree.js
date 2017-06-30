@@ -1,6 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, quotes, consistent-return, no-var, one-var, one-var-declaration-per-line, no-else-return, prefer-arrow-callback, class-methods-use-this */
 
-class TreeView {
+export default class TreeView {
   constructor() {
     this.initKeyNav();
     // Code browser tree slider
@@ -62,5 +62,3 @@ class TreeView {
     });
   }
 }
-
-window.TreeView = TreeView;
