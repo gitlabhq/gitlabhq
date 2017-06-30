@@ -30,40 +30,54 @@ describe Projects::BoardsController do # rubocop:disable RSpec/FilePath
   end
 
   describe 'POST create' do
-    context 'with valid params' do
-      it 'returns a successful 200 response' do
-        create_board name: 'Backend'
-
-        expect(response).to have_http_status(200)
-      end
-
-      it 'returns the created board' do
-        create_board name: 'Backend'
-
-        expect(response).to match_response_schema('board')
-      end
-    end
-
-    context 'with invalid params' do
-      it 'returns an unprocessable entity 422 response' do
-        create_board name: nil
-
-        expect(response).to have_http_status(422)
-      end
-    end
-
-    context 'with unauthorized user' do
+    context 'with the multiple issue boards available' do
       before do
-        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-        allow(Ability).to receive(:allowed?).with(user, :admin_board, project).and_return(false)
+        stub_licensed_features(multiple_issue_boards: true)
       end
 
-      it 'returns a not found 404 response' do
-        create_board name: 'Backend'
+      context 'with valid params' do
+        it 'returns a successful 200 response' do
+          create_board name: 'Backend'
 
-        expect(response.content_type).to eq 'application/json'
-        expect(response).to have_http_status(404)
+          expect(response).to have_http_status(200)
+        end
+
+        it 'returns the created board' do
+          create_board name: 'Backend'
+
+          expect(response).to match_response_schema('board')
+        end
       end
+
+      context 'with invalid params' do
+        it 'returns an unprocessable entity 422 response' do
+          create_board name: nil
+
+          expect(response).to have_http_status(422)
+        end
+      end
+
+      context 'with unauthorized user' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+          allow(Ability).to receive(:allowed?).with(user, :admin_board, project).and_return(false)
+        end
+
+        it 'returns a not found 404 response' do
+          create_board name: 'Backend'
+
+          expect(response.content_type).to eq 'application/json'
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    it 'renders a 404 when multiple issue boards are not available' do
+      stub_licensed_features(multiple_issue_boards: false)
+
+      create_board name: 'Backend'
+
+      expect(response).to have_http_status(404)
     end
 
     def create_board(name:)

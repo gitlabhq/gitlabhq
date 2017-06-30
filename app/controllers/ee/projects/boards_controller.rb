@@ -3,6 +3,7 @@ module EE
     module BoardsController
       extend ActiveSupport::Concern
       prepended do
+        before_action :check_multiple_issue_boards_available!, only: [:create]
         before_action :authorize_admin_board!, only: [:create, :update, :destroy]
         before_action :find_board, only: [:update, :destroy]
       end
