@@ -1,5 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.3 (2017-06-30)
+
+- Add metrics to both remote and non remote mirroring. !2118
+- Forces import worker with mirror to insert mirror in front of queue. !2231
+- Fix locked and stale SSH keys file from 9.3.0 upgrade. !2240
+- Fix crash in LDAP sync when user was removed. !2289
+- allow rebase for unapproved merge requests.
+- Geo - Fix path_with_namespace for instances of Geo::DeletedProject.
+
 ## 9.3.2 (2017-06-27)
 
 - Fix GitLab check: Problem with Elastic Search. !2278
