@@ -25,43 +25,35 @@ describe Gitlab::PerformanceBar do
     end
   end
 
-  describe '.allowed_actor?' do
-    it 'returns false when given actor is not a User' do
-      actor = double('actor', thing: double)
+  describe '.allowed_user?' do
+    let(:user) { create(:user) }
 
-      expect(described_class.allowed_actor?(actor)).to be_falsy
+    before do
+      stub_performance_bar_setting(allowed_group: 'my-group')
     end
 
-    context 'when given actor is a User' do
-      let(:actor) { double('actor', thing: create(:user)) }
-
-      before do
-        stub_performance_bar_setting(allowed_group: 'my-group')
+    context 'when allowed group does not exist' do
+      it 'returns false' do
+        expect(described_class.allowed_user?(user)).to be_falsy
       end
+    end
 
-      context 'when allowed group does not exist' do
+    context 'when allowed group exists' do
+      let!(:my_group) { create(:group, path: 'my-group') }
+
+      context 'when user is not a member of the allowed group' do
         it 'returns false' do
-          expect(described_class.allowed_actor?(actor)).to be_falsy
+          expect(described_class.allowed_user?(user)).to be_falsy
         end
       end
 
-      context 'when allowed group exists' do
-        let!(:my_group) { create(:group, path: 'my-group') }
-
-        context 'when user is not a member of the allowed group' do
-          it 'returns false' do
-            expect(described_class.allowed_actor?(actor)).to be_falsy
-          end
+      context 'when user is a member of the allowed group' do
+        before do
+          my_group.add_developer(user)
         end
 
-        context 'when user is a member of the allowed group' do
-          before do
-            my_group.add_developer(actor.thing)
-          end
-
-          it 'returns true' do
-            expect(described_class.allowed_actor?(actor)).to be_truthy
-          end
+        it 'returns true' do
+          expect(described_class.allowed_user?(user)).to be_truthy
         end
       end
     end

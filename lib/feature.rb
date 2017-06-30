@@ -54,15 +54,13 @@ class Feature
         adapter = Flipper::Adapters::ActiveRecord.new(
           feature_class: FlipperFeature, gate_class: FlipperGate)
 
-        Flipper.new(adapter).tap do
-          register_feature_groups
-        end
+        Flipper.new(adapter)
       end
     end
 
     def register_feature_groups
       Flipper.register(:performance_team) do |actor|
-        Gitlab::PerformanceBar.allowed_actor?(actor)
+        actor.thing&.is_a?(User) && Gitlab::PerformanceBar.allowed_user?(actor.thing)
       end
     end
   end

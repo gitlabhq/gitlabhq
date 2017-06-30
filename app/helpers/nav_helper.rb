@@ -23,7 +23,7 @@ module NavHelper
   def nav_header_class
     class_name = ''
     class_name << " with-horizontal-nav" if defined?(nav) && nav
-    class_name << " with-peek" if peek_enabled?
+    class_name << " with-peek" if performance_bar_enabled?
 
     class_name
   end
