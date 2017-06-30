@@ -358,7 +358,7 @@ $(function () {
   gl.awardsHandler = new AwardsHandler();
   new Aside();
 
-  gl.utils.initTimeagoTimeout();
+  gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
 });
