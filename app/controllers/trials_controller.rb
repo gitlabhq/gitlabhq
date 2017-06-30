@@ -1,6 +1,4 @@
 class TrialsController < ApplicationController
-  SUBSCRIPTIONS_PORTAL_URL = 'https://customers.gitlab.com'
-
   before_filter :check_presence_of_license
 
   def new
@@ -24,7 +22,7 @@ class TrialsController < ApplicationController
   end
 
   def save_license
-    result = HTTParty.post("#{SUBSCRIPTIONS_PORTAL_URL}/trials", body: params)
+    result = HTTParty.post("#{Gitlab::SUBSCRIPTIONS_URL}/trials", body: params)
 
     if result.ok?
       @license.data = result['license_key']

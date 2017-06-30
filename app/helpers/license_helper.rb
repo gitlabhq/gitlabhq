@@ -19,7 +19,7 @@ module LicenseHelper
   def trial_license_message
     return unless signed_in? && current_license&.trial?
 
-    buy_now_link = link_to('Buy now!', 'https://customers.gitlab.com/plans', target: '_blank')
+    buy_now_link = link_to('Buy now!', "#{Gitlab::SUBSCRIPTIONS_URL}/plans", target: '_blank')
     message =
       if current_license.expired?
         if current_user.admin?
