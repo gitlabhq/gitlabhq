@@ -12,8 +12,11 @@ class User < ActiveRecord::Base
   include TokenAuthenticatable
   include IgnorableColumn
   include FeatureGate
+<<<<<<< HEAD
   prepend EE::GeoAwareAvatar
   prepend EE::User
+=======
+>>>>>>> ce/master
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -322,11 +325,20 @@ class User < ActiveRecord::Base
       table   = arel_table
       pattern = "%#{query}%"
 
+      order = <<~SQL
+        CASE
+          WHEN users.name = %{query} THEN 0
+          WHEN users.username = %{query} THEN 1
+          WHEN users.email = %{query} THEN 2
+          ELSE 3
+        END
+      SQL
+
       where(
         table[:name].matches(pattern)
           .or(table[:email].matches(pattern))
           .or(table[:username].matches(pattern))
-      )
+      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, id: :desc)
     end
 
     # searches user by given pattern

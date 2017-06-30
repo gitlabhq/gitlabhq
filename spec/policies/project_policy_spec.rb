@@ -236,6 +236,7 @@ describe ProjectPolicy, models: true do
         expect_allowed(*developer_permissions)
         expect_allowed(*master_permissions)
         expect_allowed(*owner_permissions)
+<<<<<<< HEAD
       end
     end
 
@@ -247,6 +248,8 @@ describe ProjectPolicy, models: true do
         is_expected.to be_disallowed(*master_permissions)
         is_expected.to be_disallowed(*owner_permissions)
         is_expected.to be_allowed(*auditor_permissions)
+=======
+>>>>>>> ce/master
       end
     end
   end

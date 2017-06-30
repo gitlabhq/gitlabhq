@@ -1,12 +1,16 @@
 class GroupPolicy < BasePolicy
+<<<<<<< HEAD
   prepend EE::GroupPolicy
 
+=======
+>>>>>>> ce/master
   desc "Group is public"
   with_options scope: :subject, score: 0
   condition(:public_group) { @subject.public? }
 
   with_score 0
   condition(:logged_in_viewable) { @user && @subject.internal? && !@user.external? }
+<<<<<<< HEAD
 
   condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
@@ -15,6 +19,16 @@ class GroupPolicy < BasePolicy
   condition(:master) { access_level >= GroupMember::MASTER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
 
+=======
+
+  condition(:has_access) { access_level != GroupMember::NO_ACCESS }
+
+  condition(:guest) { access_level >= GroupMember::GUEST }
+  condition(:owner) { access_level >= GroupMember::OWNER }
+  condition(:master) { access_level >= GroupMember::MASTER }
+  condition(:reporter) { access_level >= GroupMember::REPORTER }
+
+>>>>>>> ce/master
   condition(:has_projects) do
     GroupProjectsFinder.new(group: @subject, current_user: @user).execute.any?
   end

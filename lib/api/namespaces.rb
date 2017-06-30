@@ -18,6 +18,7 @@ module API
         namespaces = namespaces.search(params[:search]) if params[:search].present?
 
         present paginate(namespaces), with: Entities::Namespace, current_user: current_user
+<<<<<<< HEAD
       end
 
       desc 'Update a namespace' do
@@ -39,6 +40,8 @@ module API
         else
           render_validation_error!(namespace)
         end
+=======
+>>>>>>> ce/master
       end
     end
   end

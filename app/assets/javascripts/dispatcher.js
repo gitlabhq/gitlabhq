@@ -393,6 +393,7 @@ import AuditLogs from './audit_logs';
         case 'search:show':
           new Search();
           break;
+<<<<<<< HEAD
         case 'projects:mirrors:show':
         case 'projects:mirrors:update':
           new UsersSelect();
@@ -403,6 +404,8 @@ import AuditLogs from './audit_logs';
         case 'admin:audit_logs:index':
           new AuditLogs();
           break;
+=======
+>>>>>>> ce/master
         case 'projects:settings:repository:show':
           // Initialize Protected Branch Settings
           new gl.ProtectedBranchCreate();

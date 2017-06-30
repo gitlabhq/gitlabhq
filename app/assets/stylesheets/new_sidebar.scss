@@ -5,14 +5,43 @@
 $new-sidebar-width: 220px;
 
 .page-with-new-sidebar {
-
   @media (min-width: $screen-sm-min) {
     padding-left: $new-sidebar-width;
   }
 
+  // Override position: absolute
   .right-sidebar {
     position: fixed;
     height: 100%;
+  }
+}
+
+.context-header {
+  background-color: $gray-normal;
+  border-bottom: 1px solid $border-color;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+
+  .avatar-container {
+    flex: 0 0 40px;
+  }
+
+  &:hover {
+    background-color: $border-color;
+  }
+}
+
+.settings-avatar {
+  background-color: $white-light;
+
+  i {
+    font-size: 20px;
+    width: 100%;
+    color: $gl-text-color-secondary;
+    text-align: center;
+    align-self: center;
   }
 }
 

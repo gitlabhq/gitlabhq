@@ -1,7 +1,10 @@
 class Projects::MergeRequests::CreationsController < Projects::MergeRequests::ApplicationController
   include DiffForPath
   include DiffHelper
+<<<<<<< HEAD
   prepend ::EE::Projects::MergeRequests::CreationsController
+=======
+>>>>>>> ce/master
 
   skip_before_action :merge_request
   skip_before_action :ensure_ref_fetched

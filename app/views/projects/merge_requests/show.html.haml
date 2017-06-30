@@ -5,7 +5,10 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('diff_notes')
+<<<<<<< HEAD
   = webpack_bundle_tag('issuable')
+=======
+>>>>>>> ce/master
 
 .merge-request{ 'data-url' => merge_request_path(@merge_request, format: :json), 'data-project-path' => project_path(@merge_request.project) }
   = render "projects/merge_requests/mr_title"
@@ -19,6 +22,7 @@
     :javascript
       window.gl.mrWidgetData = #{serialize_issuable(@merge_request)}
 
+<<<<<<< HEAD
       // Append static, server-generated data not included in merge request entity (EE-Only)
       // Object.assign would be useful here, but it blows up Phantom.js in tests
       window.gl.mrWidgetData.is_geo_secondary_node = '#{Gitlab::Geo.secondary?}' === 'true';
@@ -26,6 +30,8 @@
       window.gl.mrWidgetData.enable_squash_before_merge = '#{@merge_request.project.feature_available?(:merge_request_squash)}' === 'true';
       window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
 
+=======
+>>>>>>> ce/master
     #js-vue-mr-widget.mr-widget
 
     - content_for :page_specific_javascripts do

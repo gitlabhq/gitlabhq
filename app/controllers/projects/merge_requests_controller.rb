@@ -9,6 +9,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   skip_before_action :merge_request, only: [:index, :bulk_update]
   skip_before_action :ensure_ref_fetched, only: [:index, :bulk_update]
 
+<<<<<<< HEAD
+=======
+  skip_before_action :merge_request, only: [:index, :bulk_update]
+  skip_before_action :ensure_ref_fetched, only: [:index, :bulk_update]
+
+>>>>>>> ce/master
   before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
 
   before_action :authenticate_user!, only: [:assign_related_issues]

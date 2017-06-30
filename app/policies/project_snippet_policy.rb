@@ -27,7 +27,10 @@ class ProjectSnippetPolicy < BasePolicy
     all?(private_snippet | (internal & external_user),
          ~project.guest,
          ~admin,
+<<<<<<< HEAD
          ~auditor,
+=======
+>>>>>>> ce/master
          ~is_author)
   end.prevent :read_project_snippet
 

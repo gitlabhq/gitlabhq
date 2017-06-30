@@ -24,11 +24,17 @@ describe API::Namespaces do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(group_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
+<<<<<<< HEAD
                                                                  'parent_id', 'members_count_with_descendants',
                                                                  'plan', 'shared_runners_minutes_limit')
 
         expect(user_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
                                                                 'parent_id', 'plan', 'shared_runners_minutes_limit')
+=======
+                                                                 'parent_id', 'members_count_with_descendants')
+
+        expect(user_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path', 'parent_id')
+>>>>>>> ce/master
       end
 
       it "admin: returns an array of all namespaces" do
@@ -61,7 +67,11 @@ describe API::Namespaces do
         owned_group_response = json_response.find { |resource| resource['id'] == group1.id }
 
         expect(owned_group_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
+<<<<<<< HEAD
                                                              'plan', 'parent_id', 'members_count_with_descendants')
+=======
+                                                             'parent_id', 'members_count_with_descendants')
+>>>>>>> ce/master
       end
 
       it "returns correct attributes when user cannot admin group" do

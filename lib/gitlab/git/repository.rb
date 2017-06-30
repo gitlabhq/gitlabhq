@@ -113,9 +113,7 @@ module Gitlab
       def local_branches(sort_by: nil)
         gitaly_migrate(:local_branches) do |is_enabled|
           if is_enabled
-            gitaly_ref_client.local_branches(sort_by: sort_by).map do |gitaly_branch|
-              Gitlab::Git::Branch.new(self, gitaly_branch.name, gitaly_branch)
-            end
+            gitaly_ref_client.local_branches(sort_by: sort_by)
           else
             branches(filter: :local, sort_by: sort_by)
           end

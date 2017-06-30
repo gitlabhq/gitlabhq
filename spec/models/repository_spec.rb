@@ -780,7 +780,7 @@ describe Repository, models: true do
     context 'when pre hooks were successful' do
       it 'runs without errors' do
         expect_any_instance_of(GitHooksService).to receive(:execute)
-          .with(user, project.repository.path_to_repo, old_rev, blank_sha, 'refs/heads/feature')
+          .with(user, project, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
@@ -823,12 +823,7 @@ describe Repository, models: true do
         service = GitHooksService.new
         expect(GitHooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(
-            user,
-            repository.path_to_repo,
-            old_rev,
-            new_rev,
-            'refs/heads/feature')
+          .with(user, project, old_rev, new_rev, 'refs/heads/feature')
           .and_yield(service).and_return(true)
       end
 
@@ -1544,9 +1539,9 @@ describe Repository, models: true do
 
       it 'passes commit SHA to pre-receive and update hooks,\
         and tag SHA to post-receive hook' do
-        pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', repository.path_to_repo)
-        update_hook = Gitlab::Git::Hook.new('update', repository.path_to_repo)
-        post_receive_hook = Gitlab::Git::Hook.new('post-receive', repository.path_to_repo)
+        pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', project)
+        update_hook = Gitlab::Git::Hook.new('update', project)
+        post_receive_hook = Gitlab::Git::Hook.new('post-receive', project)
 
         allow(Gitlab::Git::Hook).to receive(:new)
           .and_return(pre_receive_hook, update_hook, post_receive_hook)

@@ -396,6 +396,13 @@ class GfmAutoComplete {
     this.cachedData = {};
   }
 
+  destroy() {
+    this.input.each((i, input) => {
+      const $input = $(input);
+      $input.atwho('destroy');
+    });
+  }
+
   static isLoading(data) {
     let dataToInspect = data;
     if (data && data.length > 0) {
