@@ -17,24 +17,21 @@ module LicenseHelper
   end
 
   def trial_license_message
-    if signed_in? && current_license&.trial?
-      status = current_license.expired? ? :expired : :active
+    return unless signed_in? && current_license&.trial?
 
-      message =
+    buy_now_link = link_to('Buy now!', 'https://customers.gitlab.com/plans', target: '_blank')
+    message =
+      if current_license.expired?
         if current_user.admin?
-          buy_now_link = link_to('Buy now!', 'https://customers.gitlab.com/plans', target: '_blank')
-
-          if status == :active
-            remaining_days = (current_license.expires_at - Date.today).to_i
-
-            "Your GitLab Enterprise Edition trial license remains #{pluralize(remaining_days, 'day')}. #{buy_now_link}".html_safe
-          else
-            "Your GitLab Enterprise Edition trial license expired. #{buy_now_link}".html_safe
-          end
-        elsif status == :expired
+          "Your GitLab Enterprise Edition trial license expired. #{buy_now_link}".html_safe
+        else
           "Your GitLab Enterprise Edition trial license expired. Please contact your administrator."
         end
-    end
+      elsif current_user.admin?
+        remaining_days = (current_license.expires_at - Date.today).to_i
+
+        "Your GitLab Enterprise Edition trial license will expire in #{pluralize(remaining_days, 'day')}. #{buy_now_link}".html_safe
+      end
 
     message
   end
