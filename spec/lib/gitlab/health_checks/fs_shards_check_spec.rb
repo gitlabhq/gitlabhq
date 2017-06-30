@@ -103,30 +103,34 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           example.run_with_retry retry: times_to_try
         end
 
-        it { is_expected.to all(have_attributes(labels: { shard: :default })) }
+        it 'provides metrics' do
+          expect(subject).to all(have_attributes(labels: { shard: :default }))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
 
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_accessible, value: 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_readable, value: 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_writable, value: 0)) }
-
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0)) }
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+        end
       end
 
       context 'storage points to directory that has both read and write rights' do
         before do
           FileUtils.chmod_R(0755, tmp_dir)
         end
-        it { is_expected.to all(have_attributes(labels: { shard: :default })) }
 
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_accessible, value: 1)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_readable, value: 1)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_writable, value: 1)) }
+        it 'provides metrics' do
+          expect(subject).to all(have_attributes(labels: { shard: :default }))
 
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0)) }
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_accessible, value: 1))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 1))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 1))
+
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+        end
       end
     end
   end
