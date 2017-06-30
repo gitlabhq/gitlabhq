@@ -1,9 +1,6 @@
 class Projects::MergeRequests::ApplicationController < Projects::ApplicationController
-<<<<<<< HEAD
   prepend ::EE::Projects::MergeRequests::ApplicationController
 
-=======
->>>>>>> ce/master
   before_action :check_merge_requests_available!
   before_action :merge_request
   before_action :authorize_read_merge_request!
