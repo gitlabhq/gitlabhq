@@ -220,7 +220,7 @@ FactoryGirl.define do
         active: true,
         properties: {
           'project_url' => 'http://redmine/projects/project_name_in_redmine',
-          'issues_url' => "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          'issues_url' => 'http://redmine/projects/project_name_in_redmine/issues/:id',
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )
