@@ -705,7 +705,7 @@ class Project < ActiveRecord::Base
   end
 
   def last_activity_date
-    last_activity_at || updated_at
+    last_repository_updated_at || last_activity_at || updated_at
   end
 
   def project_id

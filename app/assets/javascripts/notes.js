@@ -1485,7 +1485,7 @@ export default class Notes {
     const cachedNoteBodyText = $noteBodyText.html();
 
     // Show updated comment content temporarily
-    $noteBodyText.html(_.escape(formContent));
+    $noteBodyText.html(formContent);
     $editingNote.removeClass('is-editing fade-in-full').addClass('being-posted fade-in-half');
     $editingNote.find('.note-headline-meta a').html('<i class="fa fa-spinner fa-spin" aria-label="Comment is being updated" aria-hidden="true"></i>');
 

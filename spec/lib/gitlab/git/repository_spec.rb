@@ -348,7 +348,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
     context 'where repo has submodules' do
-      let(:submodules) { repository.submodules('master') }
+      let(:submodules) { repository.send(:submodules, 'master') }
       let(:submodule) { submodules.first }
 
       it { expect(submodules).to be_kind_of Hash }
@@ -383,12 +383,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it 'should not have an entry for an uncommited submodule dir' do
-        submodules = repository.submodules('fix-existing-submodule-dir')
+        submodules = repository.send(:submodules, 'fix-existing-submodule-dir')
         expect(submodules).not_to have_key('submodule-existing-dir')
       end
 
       it 'should handle tags correctly' do
-        submodules = repository.submodules('v1.2.1')
+        submodules = repository.send(:submodules, 'v1.2.1')
 
         expect(submodules.first).to eq([
           "six", {
@@ -414,7 +414,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context 'where repo doesn\'t have submodules' do
-      let(:submodules) { repository.submodules('6d39438') }
+      let(:submodules) { repository.send(:submodules, '6d39438') }
       it 'should return an empty hash' do
         expect(submodules).to be_empty
       end
@@ -1098,35 +1098,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it "raise an exception if the ref is nil" do
       expect { repository.ref_name_for_sha(ref_path, nil) }.to raise_error(ArgumentError)
-    end
-  end
-
-  describe '#find_commits' do
-    it 'should return a return a collection of commits' do
-      commits = repository.find_commits
-
-      expect(commits).not_to be_empty
-      expect(commits).to all( be_a_kind_of(Gitlab::Git::Commit) )
-    end
-
-    context 'while applying a sort order based on the `order` option' do
-      it "allows ordering topologically (no parents shown before their children)" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_TOPO)
-
-        repository.find_commits(order: :topo)
-      end
-
-      it "allows ordering by date" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE | Rugged::SORT_TOPO)
-
-        repository.find_commits(order: :date)
-      end
-
-      it "applies no sorting by default" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_NONE)
-
-        repository.find_commits
-      end
     end
   end
 

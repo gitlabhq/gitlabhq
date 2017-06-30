@@ -168,6 +168,7 @@ var config = {
         'issue_show',
         'job_details',
         'merge_conflicts',
+        'monitoring',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',

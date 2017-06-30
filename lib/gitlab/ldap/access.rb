@@ -20,7 +20,7 @@ module Gitlab
           # permissions to keep things clean
           if access.allowed?
             access.update_user
-            Users::UpdateService.new(user, last_credential_check_a: Time.now).execute
+            Users::UpdateService.new(user, last_credential_check_at: Time.now).execute
 
             true
           else

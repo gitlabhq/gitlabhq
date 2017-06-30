@@ -395,7 +395,7 @@ GEM
       temple (~> 0.7.6)
       thor
       tilt
-    hashdiff (0.3.2)
+    hashdiff (0.3.4)
     hashie (3.5.5)
     hashie-forbidden_attributes (0.1.1)
       hashie (>= 3.0)
@@ -491,7 +491,7 @@ GEM
     mimemagic (0.3.0)
     mini_portile2 (2.1.0)
     minitest (5.7.0)
-    mmap2 (2.2.6)
+    mmap2 (2.2.7)
     mousetrap-rails (1.4.6)
     msgpack (1.1.0)
     multi_json (1.12.1)
@@ -919,7 +919,7 @@ GEM
     vmstat (2.3.0)
     warden (1.2.6)
       rack (>= 1.0)
-    webmock (1.24.6)
+    webmock (2.3.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
@@ -1158,7 +1158,7 @@ DEPENDENCIES
   version_sorter (~> 2.1.0)
   virtus (~> 1.0.1)
   vmstat (~> 2.3.0)
-  webmock (~> 1.24.0)
+  webmock (~> 2.3.2)
   webpack-rails (~> 0.9.10)
   wikicloth (= 0.8.1)
 

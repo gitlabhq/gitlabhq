@@ -1,8 +1,6 @@
-import emojiMap from 'emojis/digests.json';
-import emojiAliases from 'emojis/aliases.json';
-import { glEmojiTag } from '~/behaviors/gl_emoji';
-import glRegexp from '~/lib/utils/regexp';
-import AjaxCache from '~/lib/utils/ajax_cache';
+import { validEmojiNames, glEmojiTag } from './emoji';
+import glRegexp from './lib/utils/regexp';
+import AjaxCache from './lib/utils/ajax_cache';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
@@ -375,7 +373,7 @@ class GfmAutoComplete {
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
-      this.loadData($input, at, Object.keys(emojiMap).concat(Object.keys(emojiAliases)));
+      this.loadData($input, at, validEmojiNames);
     } else {
       AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
         .then((data) => {
