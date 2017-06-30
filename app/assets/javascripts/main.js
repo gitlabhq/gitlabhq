@@ -154,7 +154,6 @@ import './syntax_highlight';
 import './task_list';
 import './todos';
 import './tree';
-import './usage_ping';
 import './user';
 
 // eslint-disable-next-line global-require, import/no-commonjs

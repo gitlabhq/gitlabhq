@@ -52,6 +52,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import UsagePing from './usage_ping';
 import UsernameValidator from './username_validator';
 import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
@@ -433,7 +434,7 @@ import OAuthRememberMe from './oauth_remember_me';
           new Admin();
           switch (path[1]) {
             case 'cohorts':
-              new gl.UsagePing();
+              new UsagePing();
               break;
             case 'groups':
               new UsersSelect();
