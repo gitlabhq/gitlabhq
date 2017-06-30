@@ -60,7 +60,7 @@ class IssuesFinder < IssuableFinder
   # `user_can_see_all_confidential_issues?`) are more complicated, because they
   # can see confidential issues where:
   # 1. They are an assignee.
-  # 2. The are an author.
+  # 2. They are an author.
   #
   # That's fine for most cases, but if we're just counting, we need to cache
   # effectively. If we cached this accurately, we'd have a cache key for every
