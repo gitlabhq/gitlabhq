@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-require 'declarative_policy'
-=======
 require_dependency 'declarative_policy'
->>>>>>> ce/master
 
 class BasePolicy < DeclarativePolicy::Base
   desc "User is an instance admin"
@@ -14,7 +10,6 @@ class BasePolicy < DeclarativePolicy::Base
 
   with_options scope: :user, score: 0
   condition(:can_create_group) { @user&.can_create_group }
-<<<<<<< HEAD
 
   # EE Extensions
   with_scope :user
@@ -25,6 +20,4 @@ class BasePolicy < DeclarativePolicy::Base
 
   with_scope :global
   condition(:license_block) { License.block_changes? }
-=======
->>>>>>> ce/master
 end

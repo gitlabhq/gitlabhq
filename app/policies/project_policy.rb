@@ -1,5 +1,4 @@
 class ProjectPolicy < BasePolicy
-<<<<<<< HEAD
   prepend EE::ProjectPolicy
 
   def self.create_read_update_admin(name)
@@ -30,36 +29,6 @@ class ProjectPolicy < BasePolicy
   desc "User has reporter access"
   condition(:reporter) { team_access_level >= Gitlab::Access::REPORTER }
 
-=======
-  def self.create_read_update_admin(name)
-    [
-      :"create_#{name}",
-      :"read_#{name}",
-      :"update_#{name}",
-      :"admin_#{name}"
-    ]
-  end
-
-  desc "User is a project owner"
-  condition :owner do
-    @user && project.owner == @user || (project.group && project.group.has_owner?(@user))
-  end
-
-  desc "Project has public builds enabled"
-  condition(:public_builds, scope: :subject) { project.public_builds? }
-
-  # For guest access we use #is_team_member? so we can use
-  # project.members, which gets cached in subject scope.
-  # This is safe because team_access_level is guaranteed
-  # by ProjectAuthorization's validation to be at minimum
-  # GUEST
-  desc "User has guest access"
-  condition(:guest) { is_team_member? }
-
-  desc "User has reporter access"
-  condition(:reporter) { team_access_level >= Gitlab::Access::REPORTER }
-
->>>>>>> ce/master
   desc "User has developer access"
   condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
 
