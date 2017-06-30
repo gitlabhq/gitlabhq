@@ -56,8 +56,7 @@ Usually it's better to enqueue jobs in bulk, for this you can use
 ```ruby
 BackgroundMigrationWorker.perform_bulk(
   [['BackgroundMigrationClassName', [1]],
-   ['BackgroundMigrationClassName', [2]],
-   ...]
+   ['BackgroundMigrationClassName', [2]]]
 )
 ```
 
@@ -73,8 +72,7 @@ If you would like to schedule jobs in bulk with a delay, you can use
 
 ```ruby
 jobs = [['BackgroundMigrationClassName', [1]],
-        ['BackgroundMigrationClassName', [2]],
-        ...]
+        ['BackgroundMigrationClassName', [2]]]
 
 BackgroundMigrationWorker.perform_bulk_in(5.minutes, jobs)
 ```
