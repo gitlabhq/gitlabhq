@@ -233,6 +233,18 @@ module IssuablesHelper
     }
   end
 
+  def issuables_count_for_state(issuable_type, state, finder: nil)
+    finder ||= public_send("#{issuable_type}_finder")
+    cache_key = finder.state_counter_cache_key(state)
+
+    @counts ||= {}
+    @counts[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
+      finder.count_by_state
+    end
+
+    @counts[cache_key][state]
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -249,18 +261,6 @@ module IssuablesHelper
     else
       issuable.open? ? :opened : :closed
     end
-  end
-
-  def issuables_count_for_state(issuable_type, state, finder: nil)
-    finder ||= public_send("#{issuable_type}_finder")
-    cache_key = finder.state_counter_cache_key(state)
-
-    @counts ||= {}
-    @counts[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
-      finder.count_by_state
-    end
-
-    @counts[cache_key][state]
   end
 
   def issuable_templates(issuable)
