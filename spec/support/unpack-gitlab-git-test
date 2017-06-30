@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+
+REPO = 'spec/support/gitlab-git-test.git'.freeze
+PACK_DIR = REPO + '/objects/pack'
+GIT = %W[git --git-dir=#{REPO}].freeze
+BASE_PACK = 'pack-691247af2a6acb0b63b73ac0cb90540e93614043'.freeze
+
+def main
+  unpack
+  # We want to store the refs in a packed-refs file because if we don't
+  # they can get mangled by filesystems.
+  abort unless system(*GIT, *%w[pack-refs --all])
+  abort unless system(*GIT, 'fsck')
+end
+
+# We don't want contributors to commit new pack files because those
+# create unnecessary churn.
+def unpack
+  pack_files = Dir[File.join(PACK_DIR, '*')].reject do |pack|
+    pack.start_with?(File.join(PACK_DIR, BASE_PACK))
+  end
+  return if pack_files.empty?
+
+  pack_files.each do |pack|
+    unless pack.end_with?('.pack')
+      FileUtils.rm(pack)
+      next
+    end
+
+    File.open(pack, 'rb') do |open_pack|
+      File.unlink(pack)
+      abort unless system(*GIT, 'unpack-objects', in: open_pack)
+    end
+  end
+end
+
+main

@@ -170,6 +170,11 @@ describe SubmoduleHelper do
         expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])
       end
 
+      it 'with trailing whitespace' do
+        result = relative_self_links('../test.git ', commit_id)
+        expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])
+      end
+
       it 'two levels down' do
         result = relative_self_links('../../test.git', commit_id)
         expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])

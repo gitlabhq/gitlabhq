@@ -9,7 +9,7 @@ module CompareHelper
   end
 
   def create_mr_path(from = params[:from], to = params[:to], project = @project)
-    new_namespace_project_merge_request_path(
+    namespace_project_new_merge_request_path(
       project.namespace,
       project,
       merge_request: {

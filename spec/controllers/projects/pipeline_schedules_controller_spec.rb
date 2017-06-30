@@ -84,4 +84,57 @@ describe Projects::PipelineSchedulesController do
       end
     end
   end
+
+  describe 'security' do
+    include AccessMatchersForController
+
+    describe 'GET edit' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:visitor) }
+
+      def go
+        get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+      end
+    end
+
+    describe 'GET take_ownership' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:visitor) }
+
+      def go
+        post :take_ownership, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+      end
+    end
+
+    describe 'PUT update' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:visitor) }
+
+      def go
+        put :update, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id,
+                     schedule: { description: 'a' }
+      end
+    end
+  end
 end

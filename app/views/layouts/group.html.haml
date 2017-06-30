@@ -1,6 +1,10 @@
 - page_title       @group.name
 - page_description @group.description  unless page_description
 - header_title     group_title(@group) unless header_title
-- nav              "group"
+- if show_new_nav?
+  - nav            "new_group_sidebar"
+  - @new_sidebar = true
+- else
+  - nav            "group"
 
 = render template: "layouts/application"

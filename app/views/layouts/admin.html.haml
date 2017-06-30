@@ -1,5 +1,9 @@
 - page_title    "Admin Area"
 - header_title  "Admin Area", admin_root_path
-- nav           "admin"
+- if show_new_nav?
+  - nav         "new_admin_sidebar"
+  - @new_sidebar = true
+- else
+  - nav         "admin"
 
 = render template: "layouts/application"

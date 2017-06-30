@@ -1,7 +1,9 @@
 class AbuseReportsController < ApplicationController
+  before_action :set_user, only: [:new]
+
   def new
     @abuse_report = AbuseReport.new
-    @abuse_report.user_id = params[:user_id]
+    @abuse_report.user_id = @user.id
     @ref_url = params.fetch(:ref_url, '')
   end
 
@@ -26,5 +28,15 @@ class AbuseReportsController < ApplicationController
       message
       user_id
     ))
+  end
+
+  def set_user
+    @user = User.find_by(id: params[:user_id])
+
+    if @user.nil?
+      redirect_to root_path, alert: "Cannot create the abuse report. The user has been deleted."
+    elsif @user.blocked?
+      redirect_to @user, alert: "Cannot create the abuse report. This user has been blocked."
+    end
   end
 end
