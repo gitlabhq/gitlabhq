@@ -401,18 +401,6 @@ describe GitPushService, services: true do
         expect(SystemNoteService).not_to receive(:cross_reference)
         execute_service(project, commit_author, @oldrev, @newrev, @ref )
       end
-
-      it "doesn't close issues when external issue tracker is in use" do
-        allow_any_instance_of(Project).to receive(:default_issues_tracker?)
-          .and_return(false)
-        external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid, reference_pattern: project.issue_reference_pattern)
-        allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(external_issue_tracker)
-
-        # The push still shouldn't create cross-reference notes.
-        expect do
-          execute_service(project, commit_author, @oldrev, @newrev,  'refs/heads/hurf' )
-        end.not_to change { Note.where(project_id: project.id, system: true).count }
-      end
     end
 
     context "to non-default branches" do
