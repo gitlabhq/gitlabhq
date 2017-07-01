@@ -22,7 +22,8 @@ class License < ActiveRecord::Base
   MULTIPLE_ISSUE_BOARDS_FEATURE = 'GitLab_MultipleIssueBoards'.freeze
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   PUSH_RULES_FEATURE = 'GitLab_PushRules'.freeze
-  RELATED_ISSUES_FEATURE = 'GitLab_RelatedIssues'.freeze
+  REF_PERMISSIONS_FOR_USERS_FEATURE = 'GitLab_RefPermissionsForUsers'.freeze
+  RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
   VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VariableEnvironmentScope'.freeze
 
@@ -52,7 +53,7 @@ class License < ActiveRecord::Base
     merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE,
     multiple_issue_assignees: MULTIPLE_ISSUE_ASSIGNEES_FEATURE,
     multiple_issue_boards: MULTIPLE_ISSUE_BOARDS_FEATURE,
-    push_rules: PUSH_RULES_FEATURE
+    ref_permissions_for_users: REF_PERMISSIONS_FOR_USERS_FEATURE
   }.freeze
 
   STARTER_PLAN = 'starter'.freeze
@@ -77,6 +78,7 @@ class License < ActiveRecord::Base
     { MULTIPLE_ISSUE_ASSIGNEES_FEATURE => 1 },
     { MULTIPLE_ISSUE_BOARDS_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
+    { REF_PERMISSIONS_FOR_USERS_FEATURE => 1 },
     { RELATED_ISSUES_FEATURE => 1 }
   ].freeze
 
@@ -123,6 +125,7 @@ class License < ActiveRecord::Base
     { MULTIPLE_ISSUE_BOARDS_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
+    { REF_PERMISSIONS_FOR_USERS_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 }
   ].freeze
 
