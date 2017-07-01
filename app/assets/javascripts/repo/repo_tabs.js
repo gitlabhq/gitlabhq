@@ -5,6 +5,7 @@ import RepoMiniMixin from './repo_mini_mixin'
 
 export default class RepoTabs {
   constructor() {
+    this.styleTabsForWindows();
     this.initVue();
   }
 
@@ -17,5 +18,11 @@ export default class RepoTabs {
       },
       data: () => Store,
     });
+  }
+
+  styleTabsForWindows() {
+    const scrollWidth = Number(document.body.dataset.scrollWidth);
+    Store.scrollWidth = scrollWidth;
+    console.log(Store.scrollWidth)
   }
 }

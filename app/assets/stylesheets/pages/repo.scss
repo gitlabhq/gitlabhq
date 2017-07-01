@@ -38,7 +38,8 @@ header {
     display: inline-block;
     white-space: nowrap;
     width: 100%;
-    overflow: scroll;
+    overflow-y: none;
+    overflow-x: scroll;
 
     li {
       list-style-type: none;

@@ -13,7 +13,7 @@
       %tr{ is: "repo-previous-directory", ":prevurl" => "prevURL", "@linkclicked" => "linkClicked" }
       %tr{ is: "repo-file", "v-for" => "file in files", ":key" => "file.id", ":file" => "file",":is-mini" => "isMini", "@linkclicked" => "linkClicked(file)", ":is-tree" => "isTree" }
   .panel-right>
-    %ul#tabs{"v-if" => "isMini"}
+    %ul#tabs{"v-if" => "isMini", ":style" => "{height: 41 + scrollWidth + 'px'}"}
       %li{ is: "repo-tab", "v-for" => "tab in openedFiles", ":key" => "tab.id", ":tab" => "tab", ":class" => "{'active' : tab.active}" }
     #ide{ data: { url: repo_url } }
     #binary-viewer{ "v-if" => "binary" }

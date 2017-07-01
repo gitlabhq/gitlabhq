@@ -14,6 +14,8 @@ let RepoStore = {
   files: [],
   binary: false,
   binaryMimeType: '',
+  //scroll bar space for windows
+  scrollWidth: 0,
   binaryTypes: {
     png: false
   }
