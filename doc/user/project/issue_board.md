@@ -15,53 +15,71 @@ Other interesting links:
 
 ## Overview
 
-The Issue Board builds on GitLab's existing issue tracking functionality and
+The Issue Board builds on GitLab's existing
+[issue tracking functionality](issues/index.md#issue-tracker) and
 leverages the power of [labels] by utilizing them as lists of the scrum board.
 
-With the Issue Board you can have a different view of your issues while also
+With the Issue Board you can have a different view of your issues while
 maintaining the same filtering and sorting abilities you see across the
-issue tracker.
+issue tracker. An Issue Board is based on its project's label structure, therefore, it
+applies the same descriptive labels to indicate placement on the board, keeping
+consistency throughout the entire development lifecycle.
 
-With [Multiple Issue Boards](#multiple-issue-boards), available only in [GitLab
-Enterprise Edition](https://about.gitlab.com/gitlab-ee/), your workflow gets
-empowered with the ability to create multiple boards per project.
+An Issue Board shows you what issues your team is working on, who is assigned to each,
+and where in the workflow those issues are.
+
+GitLab offers a major gain in productivity for your team, as it's an all-in-one
+platform. You create issues, host code, perform reviews, build, test,
+and deploy from one single platform. Issue Boards help you to visualize
+and manage the entire process _in_ GitLab.
+
+With [Multiple Issue Boards](#multiple-issue-boards), available
+only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
+you go even further, as you can not only keep yourself and your project
+organized from a broader perspective with one Issue Board per project,
+but also allow your team members to organize their own workflow by creating
+multiple Issue Boards within the same project.
 
 ## Use cases
-
-There are numerous use cases for Issue Boards, we will just
-exemplify with a couple situations.
-
-For a broader use-case, please check the blog post
-[GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
 
 ### Single Board
 
 GitLab Workflow allows you to discuss proposals in issues, categorize them
 with labels, and from there organize and prioritize them with Issue Boards.
 
-- For example, let's consider this simplified development workflow:
-you have a repository hosting your app's codebase
-and your team actively contributing to code. Your backend team starts working a new
-implementation, gathers feedback and approval, and pass it to frontend.
-From there, when frontend is complete, the new feature
-is deployed to staging to be tested. When successful, it goes to production. If we have
-the labels "backend", "frontend", "staging", and "production", and an Issue Board with
-a list for each, we can:
-  - Visualize the entire flow of implementations since the
+For example, let's consider this simplified development workflow:
+
+- You have a repository hosting your app's codebase
+and your team actively contributing to code
+- Your backend team starts working a new
+implementation, gathers feedback and approval, and pass it to frontend
+- When frontend is complete, the new feature is deployed to staging to be tested
+- When successful, it is deployed to production
+
+If we have the labels "backend", "frontend", "staging", and
+"production", and an Issue Board with a list for each, we can:
+
+- Visualize the entire flow of implementations since the
 beginning of the dev lifecycle until deployed to production
-  - Prioritize the issues in a list by moving them vertically
-  - Move issues between lists to organize them according to the labels you've set
+- Prioritize the issues in a list by moving them vertically
+- Move issues between lists to organize them according to the labels you've set
+- Add multiple issues to lists in the board by selecting one or more existing issues
+
+![issue card moving](img/issue_board_move_issue_card_list.png)
 
 ### Multiple Boards
 
-To enhance the workflow exemplified above, with [Multiple Issue Boards](#multiple-issue-boards),
-available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
+To enhance the workflow exemplified above, with
+[Multiple Issue Boards](#multiple-issue-boards), available only in
+[GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
 each team (frontend and backend) can have their own boards to organize their flow among the
 members of their teams. We could have, therefore, three Issue Boards for this case:
 
   - **Backend**, for the backend team and their own labels and workflow
   - **Frontend**, same as above, for the frontend team
-  - **Deployment**, for the entire process (backend > frontend > staging > production)
+  - **Workflow**, for the entire process (backend > frontend > staging > production)
+
+GitLab Issue Boards not just position issue cards in a column, but also allows them to be in multiple boards and still have meaning without the context of a particular board.
 
 ### Boards for Milestones
 
@@ -69,10 +87,24 @@ From the use cases above, let's assume that you have now created a milestone per
 your app. You can create a milestone exclusive for each release, and [associate it with a board](#board-with-a-milestone).
 Therefore, you'll have everything organized in a board per release.
 
+_Available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
+
 ### Using Focus Mode
 
 When you are organizing your issues through an Issue Board and want to avoid distractions,
 you can use the [Issue Board on Focus Mode](#focus-mode).
+
+_Available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
+
+> **Notes:**
+>
+>- For a broader use-case, please check the blog post
+[GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+>
+>- For a real use case, please check why
+[Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
+to improve their workflow with
+multiple boards.
 
 ## Issue Board terminology
 
@@ -237,7 +269,7 @@ existing one.
 
 ### Board with a milestone
 
-> Introduced in [GitLab Enterprise Edition][ee] 9.0.
+> Introduced in [GitLab Enterprise Edition 9.0](https://about.gitlab.com/2017/03/22/gitlab-9-0-released/#boards-with-milestones-ees-eep)
 
 An Issue Board can be associated with a GitLab [Milestone](milestones/index.md#milestones)
 which will automatically filter the issue to that milestone. This allows you to
@@ -256,6 +288,8 @@ milestone with the due date that is next.
 ![Update boards milestone](img/issue_board_multiple_milestone.png)
 
 ## Focus mode
+
+> Introduced in [GitLab Enterprise Edition 9.1](https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
 
 Click the button at the top right to toggle focus mode on and off. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
 
