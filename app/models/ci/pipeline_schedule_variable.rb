@@ -5,6 +5,6 @@ module Ci
 
     belongs_to :pipeline_schedule
 
-    validates :key, uniqueness: { scope: :pipeline_schedule_id }, presence: { unless: :importing? }
+    validates :key, uniqueness: { scope: :pipeline_schedule_id }
   end
 end
