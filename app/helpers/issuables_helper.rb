@@ -245,36 +245,30 @@ module IssuablesHelper
     @counts[cache_key][state]
   end
 
-  def close_issuable_path(issuable)
-    params = state_event_hash(issuable, :close)
-    params[:format] = 'json' if issuable.is_a?(Issue)
+  def close_issuable_url(issuable)
+    params = {}
+    params[:state_event] = :close
+    params[:format] = :json if issuable.is_a?(Issue)
 
-    issuable_path(issuable, params)
+    issuable_url(issuable, params)
   end
 
-  def reopen_issuable_path(issuable)
-    params = state_event_hash(issuable, :reopen)
-    params[:format] = 'json' if issuable.is_a?(Issue)
+  def reopen_issuable_url(issuable)
+    params = {}
+    params[:state_event] = :reopen
+    params[:format] = :json if issuable.is_a?(Issue)
 
-    issuable_path(issuable, params)
+    issuable_url(issuable, params)
   end
 
-  def close_reopen_issuable_path(issuable)
-    issuable.closed? ? reopen_issuable_path(issuable) : close_issuable_path(issuable)
+  def close_reopen_issuable_url(issuable)
+    issuable.closed? ? reopen_issuable_url(issuable) : close_issuable_url(issuable)
   end
 
-  def issuable_path(issuable, *path_options)
+  def issuable_url(issuable, *options)
     case issuable
-    when Issue then issue_path(issuable, *path_options)
-    when MergeRequest then merge_request_path(issuable, *path_options)
-    else raise 'unknown issuable type'
-    end
-  end
-
-  def issuable_url(issuable, *path_options)
-    case issuable
-    when Issue then issue_url(issuable, *path_options)
-    when MergeRequest then merge_request_url(issuable, *path_options)
+    when Issue then issue_url(issuable, *options)
+    when MergeRequest then merge_request_url(issuable, *options)
     else raise 'unknown issuable type'
     end
   end
@@ -334,12 +328,5 @@ module IssuablesHelper
       placement: (is_collapsed ? 'left' : nil),
       container: (is_collapsed ? 'body' : nil)
     }
-  end
-
-  def state_event_hash(issuable, event_symbol)
-    event_hash = {}
-    event_hash[:"#{issuable.class.to_s.underscore}"] = { state_event: event_symbol }
-
-    event_hash
   end
 end

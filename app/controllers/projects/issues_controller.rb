@@ -271,7 +271,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
-    params.require(:issue).permit(*issue_params_attributes)
+    params.permit(*issue_params_attributes)
   end
 
   def issue_params_attributes
