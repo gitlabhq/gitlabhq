@@ -1,14 +1,11 @@
 module Issues
   class BuildService < Issues::BaseService
     include ResolveDiscussions
+    prepend ::EE::Issues::BuildService
 
     def execute
       filter_resolve_discussion_params
       @issue = project.issues.new(issue_params)
-    end
-
-    def issue_params_from_template
-      { description: project.issues_template }
     end
 
     def issue_params_with_info_from_discussions
@@ -58,13 +55,8 @@ module Issues
       [discussion_info, quote].join("\n\n")
     end
 
-    # Issue params can be built from 3 types of passed params,
-    # They take precedence over eachother like this
-    # passed params > discussion params > template params
     def issue_params
-      @issue_params ||= issue_params_from_template
-                          .merge(issue_params_with_info_from_discussions)
-                          .merge(whitelisted_issue_params)
+      @issue_params ||= issue_params_with_info_from_discussions.merge(whitelisted_issue_params)
     end
 
     def whitelisted_issue_params
