@@ -89,6 +89,19 @@ module TabHelper
     end
   end
 
+  def link_to_protected_feature(url, *args, &block)
+    link_text   = capture(&block)
+    options     = args.extract_options!
+    feature_key = options.delete(:feature)
+    user        = options.delete(:user)
+
+    if @project.feature_available?(feature_key, user)
+      link_to(link_text, url, options)
+    else
+      link_to(link_text, '#', options)
+    end
+  end
+
   def current_path?(path)
     c, a, _ = path.split('#')
     current_controller?(c) && current_action?(a)
