@@ -10,6 +10,7 @@ let RepoStore = {
   blobRaw: '',
   blobRendered: '',
   openedFiles: [],
+  activeFile: '',
   files: []
 };
 export default RepoStore;

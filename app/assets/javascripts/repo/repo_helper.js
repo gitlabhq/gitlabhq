@@ -6,12 +6,14 @@ let RepoHelper = {
     return data.hasOwnProperty('blobs');
   },
 
+  monacoInstance: undefined,
+
   Time: window.performance
   && window.performance.now
   ? window.performance
   : Date,
 
-  getLanguagesForMimeType(mimetypeNeedle, monaco) {
+  getLanguagesForMimeType(mimetypeNeedle) {
     const langs = monaco.languages.getLanguages();
     let lang = '';
     langs.every((lang) => {
@@ -62,6 +64,9 @@ let RepoHelper = {
   setActiveFile(file) {
     Store.openedFiles = Store.openedFiles.map((openedFile) => {
       openedFile.active = file.url === openedFile.url;
+      if(openedFile.active) {
+        Store.activeFile = openedFile;
+      }
       return openedFile;
     });
     Store.blobRaw = file.plain;

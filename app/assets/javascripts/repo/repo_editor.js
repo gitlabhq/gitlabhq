@@ -1,6 +1,7 @@
 /* global monaco */
 import Vue from 'vue';
 import Store from './repo_store'
+import Helper from './repo_helper'
 
 export default class RepoEditor {
   constructor() {
@@ -17,6 +18,7 @@ export default class RepoEditor {
           model: null
         }
       )
+      Helper.monacoInstance = monaco;
       this.initVue();
     });
   }
@@ -59,7 +61,7 @@ export default class RepoEditor {
             self.monacoEditor.setModel(
               monaco.editor.createModel(
                 this.blobRaw,
-                'plain'
+                this.activeFile.mime_type
               )
             );
           }
