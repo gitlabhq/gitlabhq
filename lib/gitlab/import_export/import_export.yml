@@ -42,8 +42,7 @@ project_tree:
     - :stages
     - :statuses
   - :triggers
-  - pipeline_schedules:
-    - :variables
+  - :pipeline_schedules
   - :services
   - :hooks
   - protected_branches:
