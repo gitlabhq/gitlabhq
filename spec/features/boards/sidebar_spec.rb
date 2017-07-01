@@ -81,7 +81,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   it 'does not show remove button for backlog or closed issues' do
     create(:issue, project: project)
-    create(:issue, project: project).close
+    create(:issue, :closed, project: project)
 
     visit namespace_project_board_path(project.namespace, project, board)
     wait_for_requests

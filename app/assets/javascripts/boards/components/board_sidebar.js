@@ -36,7 +36,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
       return this.issue.milestone ? this.issue.milestone.title : 'No Milestone';
     },
     canRemove() {
-      return !/^(closed|backlog)$/.test(this.list.type);
+      return !this.list.preset;
     },
   },
   watch: {
