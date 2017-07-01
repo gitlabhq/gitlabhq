@@ -1371,8 +1371,10 @@ describe Ci::Build, :models do
 
     context 'when a job was triggered by a pipeline schedule' do
       let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+
       let!(:pipeline_schedule_variable) do
-        create(:ci_pipeline_schedule_variable, key: 'SCHEDULE_VARIABLE_KEY',
+        create(:ci_pipeline_schedule_variable,
+          key: 'SCHEDULE_VARIABLE_KEY',
           pipeline_schedule: pipeline_schedule)
       end
 

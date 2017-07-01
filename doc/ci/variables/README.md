@@ -9,7 +9,7 @@ and a list of **user-defined variables**.
 The variables can be overwritten and they take precedence over each other in
 this order:
 
-1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules#making-use-of-scheduled-pipeline-variables) (take precedence over all)
+1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables) (take precedence over all)
 1. [Secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
