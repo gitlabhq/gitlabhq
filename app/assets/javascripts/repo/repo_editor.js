@@ -20,6 +20,7 @@ export default class RepoEditor {
       )
       Helper.monacoInstance = monaco;
       this.initVue();
+      monaco.languages.getLanguages();
     });
   }
 
@@ -49,14 +50,21 @@ export default class RepoEditor {
         },
 
         openedFiles() {
-          if(this.isTree && !this.openedFiles.length) {
+          if((this.isTree && !this.openedFiles.length) || this.binary) {
             self.el.style.display = 'none';
           } else {
+            console.log('inline-block');
             self.el.style.display = 'inline-block';
           }
         },
 
         blobRaw() {
+          if(this.binary) {
+            self.el.style.display = 'none';
+          } else {
+            console.log('inline-block2');
+            self.el.style.display = 'inline-block'; 
+          }
           if(!this.isTree) {
             self.monacoEditor.setModel(
               monaco.editor.createModel(

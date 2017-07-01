@@ -35,6 +35,10 @@ header {
     padding-left: 0;
     margin-bottom: 0;
     background: $gray-light;
+    display: inline-block;
+    white-space: nowrap;
+    width: 100%;
+    overflow: scroll;
 
     li {
       list-style-type: none;
@@ -42,6 +46,7 @@ header {
       display: inline-block;
       padding: 10px 18px;
       border-right: 1px solid $border-color;
+      white-space: nowrap;
 
       &.active {
         background: $white-light;
@@ -63,6 +68,11 @@ header {
   }  
 }
 
+#binary-viewer {
+  img {
+    max-width: 100%;
+  }
+}
 
 #sidebar {
   &.sidebar-mini {

@@ -13,13 +13,22 @@ module RendersBlob
       end
     return render_404 unless viewer
     puts blob
-    render json: {
-      html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false),
-      plain: blob.data,
-      name: blob.name,
-      size: blob.size,
-      mime_type: blob.mime_type
-    }
+    if blob.binary?
+      render json: {
+        binary: true,
+        mime_type: blob.mime_type,
+        name: blob.name,
+        size: blob.size
+      }
+    else
+      render json: {
+        html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false),
+        plain: blob.data,
+        name: blob.name,
+        size: blob.size,
+        mime_type: blob.mime_type
+      }
+    end
   end
 
   def conditionally_expand_blob(blob)

@@ -69,8 +69,14 @@ let RepoHelper = {
       }
       return openedFile;
     });
-    Store.blobRaw = file.plain;
+    if(file.binary) {
+      Store.blobRaw = file.base64;
+      console.log('binary', file)
+    } else {
+      Store.blobRaw = file.plain;
+    }
     this.toURL(file.url);
+    Store.binary = file.binary;
   },
 
   removeFromOpenedFiles(file) {
@@ -96,6 +102,19 @@ let RepoHelper = {
     }
   },
 
+  getRawURLFromBlobURL(url) {
+    return url.replace('blob', 'raw');
+  },
+
+  setBinaryDataAsBase64(url, file) {
+    Service.getBase64Content(url)
+    .then((response) => {
+      Store.blobRaw = response;
+      file.base64 = response
+      console.log('file',file);
+    });
+  },
+
     // may be tree or file.
   getContent(file) {
     Service.getContent()
@@ -104,12 +123,26 @@ let RepoHelper = {
       Store.isTree = this.isTree(data);
       if(!Store.isTree) {
         // it's a blob
-        const parentURL = this.blobURLtoParent(Service.url);
-        Store.blobRaw = data.plain;
-        Store.prevURL = this.blobURLtoParent(parentURL);
-        data.url = file.url;
-        this.addToOpenedFiles(data);
-        this.setActiveFile(data);
+        Store.binary = data.binary;
+        if(data.binary) {
+          Store.binaryMimeType = data.mime_type;
+          this.setBinaryDataAsBase64(
+            this.getRawURLFromBlobURL(file.url),
+            data
+          );
+          data.binary = true;
+          data.url = file.url;
+          this.addToOpenedFiles(data);
+          this.setActiveFile(data);
+        } else {
+          const parentURL = this.blobURLtoParent(Service.url);
+          Store.blobRaw = data.plain;
+          Store.prevURL = this.blobURLtoParent(parentURL);
+          data.url = file.url;
+          data.binary = false;
+          this.addToOpenedFiles(data);
+          this.setActiveFile(data);  
+        }
       } else {
         // it's a tree
         this.setDirectoryOpen(file);

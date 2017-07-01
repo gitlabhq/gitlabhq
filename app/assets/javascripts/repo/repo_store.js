@@ -11,6 +11,11 @@ let RepoStore = {
   blobRendered: '',
   openedFiles: [],
   activeFile: '',
-  files: []
+  files: [],
+  binary: false,
+  binaryMimeType: '',
+  binaryTypes: {
+    png: false
+  }
 };
 export default RepoStore;
