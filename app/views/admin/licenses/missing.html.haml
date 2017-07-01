@@ -1,0 +1,15 @@
+- page_title "License"
+
+%h3.page-title
+  Your License
+  = link_to 'Buy License', "#{Gitlab::SUBSCRIPTIONS_URL}/plans", target: '_blank', class: "btn btn-new pull-right"
+  = link_to 'Upload New License', new_admin_license_path, class: "btn pull-right"
+
+%hr
+
+%h4 You do not have a license.
+
+%p You can start a 30 day free trial for all premium features.
+
+= link_to 'Start free trial', new_trial_url, class: "btn btn-new"
+

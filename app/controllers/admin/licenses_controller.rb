@@ -1,11 +1,15 @@
 class Admin::LicensesController < Admin::ApplicationController
   before_action :license, only: [:show, :download, :destroy]
-  before_action :require_license, only: [:show, :download, :destroy]
+  before_action :require_license, only: [:download, :destroy]
 
   respond_to :html
 
   def show
-    @previous_licenses = License.previous
+    if @license.blank?
+      render :missing
+    else
+      @previous_licenses = License.previous
+    end
   end
 
   def download

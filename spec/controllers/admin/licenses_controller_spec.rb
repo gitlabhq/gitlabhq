@@ -15,4 +15,26 @@ describe Admin::LicensesController do
       expect(flash[:alert]).to include 'Please enter or upload a license.'
     end
   end
+
+  describe 'GET #show' do
+    context 'with an existent license' do
+      it 'renders the license details' do
+        allow(License).to receive(:current).and_return(create(:license))
+
+        get :show
+
+        expect(response).to render_template(:show)
+      end
+    end
+
+    context 'without a license' do
+      it 'renders missing license page' do
+        allow(License).to receive(:current).and_return(nil)
+
+        get :show
+
+        expect(response).to render_template(:missing)
+      end
+    end
+  end
 end
