@@ -17,7 +17,13 @@ module ProtectedRef
   class_methods do
     def protected_ref_access_levels(*types)
       types.each do |type|
-        has_many :"#{type}_access_levels", dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+        # We need to set `inverse_of` to make sure the `belongs_to`-object is set
+        # when creating children using `accepts_nested_attributes_for`.
+        #
+        # If we don't `protected_branch` or `protected_tag` would be empty and
+        # `project` cannot be delegated to it, which in turn would cause validations
+        # to fail.
+        has_many :"#{type}_access_levels", dependent: :destroy, inverse_of: self.model_name.singular # rubocop:disable Cop/ActiveRecordDependent
 
         validates :"#{type}_access_levels", length: { is: 1, message: "are restricted to a single instance per #{self.model_name.human}." }
 
