@@ -18,6 +18,10 @@ let RepoStore = {
   scrollWidth: 0,
   binaryTypes: {
     png: false
+  },
+  loading: {
+    tree: false,
+    blob: false
   }
 };
 export default RepoStore;

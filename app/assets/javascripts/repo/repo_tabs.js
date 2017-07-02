@@ -23,6 +23,5 @@ export default class RepoTabs {
   styleTabsForWindows() {
     const scrollWidth = Number(document.body.dataset.scrollWidth);
     Store.scrollWidth = scrollWidth;
-    console.log(Store.scrollWidth)
   }
 }

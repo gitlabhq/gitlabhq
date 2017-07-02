@@ -42,7 +42,7 @@ export default class RepoEditor {
 
       watch: {
         isTree() {
-          if(this.isTree && !this.openedFiles.length) {
+          if(this.isTree || !this.openedFiles.length) {
             self.el.style.display = 'none';
           } else {
             self.el.style.display = 'inline-block';
@@ -50,10 +50,9 @@ export default class RepoEditor {
         },
 
         openedFiles() {
-          if((this.isTree && !this.openedFiles.length) || this.binary) {
+          if((this.isTree || !this.openedFiles.length) || this.binary) {
             self.el.style.display = 'none';
           } else {
-            console.log('inline-block');
             self.el.style.display = 'inline-block';
           }
         },
@@ -62,7 +61,6 @@ export default class RepoEditor {
           if(this.binary) {
             self.el.style.display = 'none';
           } else {
-            console.log('inline-block2');
             self.el.style.display = 'inline-block'; 
           }
           if(!this.isTree) {

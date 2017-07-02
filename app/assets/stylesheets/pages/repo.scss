@@ -42,6 +42,7 @@ header {
     overflow-x: scroll;
 
     li {
+      -webkit-animation: fadein 0.5s;
       list-style-type: none;
       background: $gray-normal;
       display: inline-block;
@@ -69,6 +70,15 @@ header {
   }  
 }
 
+#view-toggler {
+  height: 41px;
+  position: relative;
+  display: block;
+  border-bottom: 1px solid $white-normal;
+  background: white;
+  margin-top: -5px;
+}
+
 #binary-viewer {
   img {
     max-width: 100%;
@@ -76,6 +86,7 @@ header {
 }
 
 #sidebar {
+
   &.sidebar-mini {
     display: inline-block;
     vertical-align: top;
@@ -83,6 +94,10 @@ header {
     border-right: 1px solid $white-normal;
     height: 75vh;
     overflow: auto;
+  }
+
+  tr {
+    -webkit-animation: fadein 0.5s;
   }
 
   a {
@@ -107,4 +122,85 @@ header {
   }
 }
   
+}
+
+.animation-container {
+  background: #f6f7f9;
+  height: 40px;
+  overflow: hidden;
+  position: relative;
+
+  &.animation-container-small {
+    height: 12px;
+  }
+  
+  &::before {
+    -webkit-animation-duration: 1s;
+    -webkit-animation-fill-mode: forwards;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: blockTextShine;
+    -webkit-animation-timing-function: linear;
+    background-image: linear-gradient(to right, #f6f7f9 0%, #e9ebee 20%, #f6f7f9 40%, #f6f7f9 100%);
+    background-repeat: no-repeat;
+    background-size: 800px 45px;
+    content: ' ';
+    display: block;
+    height: 100%;
+    position: relative;
+  }
+  
+  div {
+    background: #fff;
+    height: 6px;
+    left: 0;
+    position: absolute;
+    right: 0
+  }
+  
+  .line-of-code-1 {
+    left: 0;
+    top: 8px;
+  }
+  
+  .line-of-code-2 {
+    left: 150px;
+    top: 0px;
+    height: 10px;
+  }
+  
+  .line-of-code-3 {
+    left: 0;
+    top: 23px;
+  }
+  
+  .line-of-code-4 {
+    left: 0;
+    top: 38px;
+  }
+  
+  .line-of-code-5 {
+    left: 200px;
+    top: 28px;
+    height: 10px;
+  }
+  
+  .line-of-code-6 {
+    top: 14px;
+    left: 230px;
+    height: 10px;
+  }
+}
+
+@-webkit-keyframes blockTextShine {
+    0% {
+        transform: translateX(-468px)
+    }
+    100% {
+        transform: translateX(468px)
+    }
+}
+
+@-webkit-keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }

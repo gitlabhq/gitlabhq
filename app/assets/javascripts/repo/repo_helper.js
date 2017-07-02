@@ -75,11 +75,14 @@ let RepoHelper = {
     } else {
       Store.blobRaw = file.plain;
     }
-    this.toURL(file.url);
+    if(!file.loading){
+      this.toURL(file.url);  
+    }
     Store.binary = file.binary;
   },
 
   removeFromOpenedFiles(file) {
+    console.log('file remove', file)
     if(file.type === 'tree') return;
     Store.openedFiles = Store.openedFiles.filter((openedFile) => {
       return openedFile.url !== file.url;
@@ -115,11 +118,44 @@ let RepoHelper = {
     });
   },
 
+  toggleFakeTab(loading, file) {
+    if(loading) {
+      const randomURL = this.Time.now();
+      const newFakeFile = {
+        active: false,
+        binary: true,
+        type: 'blob',
+        loading: true,
+        mime_type:'loading',
+        name: 'loading',
+        url: randomURL
+      };
+      Store.openedFiles.push(newFakeFile);
+      return newFakeFile;
+    } else {
+      this.removeFromOpenedFiles(file);
+      return null;
+    }
+  },
+
+  setLoading(loading, file) {
+    if(Service.url.indexOf('tree') > -1) {
+      Store.loading.tree = loading;
+    } else if(Service.url.indexOf('blob') > -1) {
+      Store.loading.blob = loading;
+      return this.toggleFakeTab(loading, file);
+    }
+  },
+
     // may be tree or file.
   getContent(file) {
+    const loadingData = this.setLoading(true);
+    console.log('loading data', loadingData)
     Service.getContent()
     .then((response) => {
+      console.log('loadddd')
       let data = response.data;
+      this.setLoading(false, loadingData);
       Store.isTree = this.isTree(data);
       if(!Store.isTree) {
         // it's a blob
@@ -149,10 +185,12 @@ let RepoHelper = {
         let newDirectory = this.dataToListOfFiles(data);
         Store.files = this.insertNewFilesIntoParentDir(file, Store.files, newDirectory);
         Store.prevURL = this.blobURLtoParent(Service.url);
+        console.log('Store.prevURL',Store.prevURL);
       }
     })
     .catch((response)=> {
-      console.log('error response', response);
+      this.setLoading(false, loadingData);
+      new Flash('Unable to load the file at this time.')
     });
   },
 

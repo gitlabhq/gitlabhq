@@ -4,6 +4,7 @@ import Vue from 'vue'
 import Store from './repo_store'
 import RepoPreviousDirectory from './repo_prev_directory'
 import RepoFile from './repo_file'
+import RepoLoadingFile from './repo_loading_file'
 import RepoMiniMixin from './repo_mini_mixin'
 
 export default class RepoSidebar {
@@ -20,6 +21,7 @@ export default class RepoSidebar {
       components: {
         'repo-previous-directory': RepoPreviousDirectory,
         'repo-file': RepoFile,
+        'repo-loading-file': RepoLoadingFile,
       },
 
       created() {

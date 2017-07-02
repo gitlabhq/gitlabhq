@@ -1,6 +1,6 @@
 let RepoFile = {
   template: `
-  <tr>
+  <tr v-if='!loading.tree || hasFiles'>
     <td>
       <i class='fa' :class='file.icon' :style='{"margin-left": file.level * 10 + "px"}'></i>
       <a :href='file.url' @click.prevent='linkClicked(file)' :title='file.url'>{{file.name}}</a>
@@ -17,7 +17,9 @@ let RepoFile = {
     name: 'repo-file',
     file: Object,
     isTree: Boolean,
-    isMini: Boolean
+    isMini: Boolean,
+    loading: Object,
+    hasFiles: Boolean
   },
 
   methods: {

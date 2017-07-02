@@ -18,6 +18,7 @@ module RendersBlob
         binary: true,
         mime_type: blob.mime_type,
         name: blob.name,
+        extension: blob.extension,
         size: blob.size
       }
     else
@@ -25,6 +26,7 @@ module RendersBlob
         html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false),
         plain: blob.data,
         name: blob.name,
+        extension: blob.extension,
         size: blob.size,
         mime_type: blob.mime_type
       }
