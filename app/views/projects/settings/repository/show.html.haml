@@ -11,8 +11,9 @@
 
 - if @project.feature_available?(:ref_permissions_for_users, current_user)
   = render "projects/protected_branches/ee/index"
+  = render "projects/protected_tags/ee/index"
 - else
   = render "projects/protected_branches/index"
+  = render "projects/protected_tags/index"
 
-= render "projects/protected_tags/index"
 = render @deploy_keys

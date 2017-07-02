@@ -1,8 +1,8 @@
 - expanded = Rails.env.test?
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('protected_tags')
+  = page_specific_javascript_bundle_tag('ee_protected_tags')
 
-%section.settings
+%section.settings.js-protected-tags-container{ data: { "groups-autocomplete" => "#{autocomplete_project_groups_path(format: :json)}", "users-autocomplete" => "#{autocomplete_users_path(format: :json)}" } }
   .settings-header
     %h4
       Protected Tags
@@ -21,6 +21,6 @@
     %p Read more about #{link_to "protected tags", help_page_path("user/project/protected_tags"), class: "underlined-link"}.
 
     - if can? current_user, :admin_project, @project
-      = render 'projects/protected_tags/create_protected_tag'
+      = render 'projects/protected_tags/ee/create_protected_tag'
 
-    = render "projects/protected_tags/tags_list"
+    = render "projects/protected_tags/ee/tags_list"
