@@ -132,7 +132,7 @@ pipeline_schedules:
 - last_pipeline
 pipeline_schedule:
 - pipelines
-- pipeline_schedule_variables
+- variables
 pipeline_schedule_variables:
 - pipeline_schedule
 deploy_keys:
