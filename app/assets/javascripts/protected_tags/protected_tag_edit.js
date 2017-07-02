@@ -1,115 +1,52 @@
 /* eslint-disable no-new */
 /* global Flash */
 
-import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 
 export default class ProtectedTagEdit {
   constructor(options) {
-    this.hasChanges = false;
     this.$wrap = options.$wrap;
     this.$allowedToCreateDropdownButton = this.$wrap.find('.js-allowed-to-create');
-
-    this.$allowedToCreateDropdownContainer = this.$allowedToCreateDropdownButton.closest('.create_access_levels-container');
+    this.onSelectCallback = this.onSelect.bind(this);
 
     this.buildDropdowns();
   }
 
   buildDropdowns() {
     // Allowed to create dropdown
-    this[`${ACCESS_LEVELS.CREATE}_dropdown`] = new ProtectedTagAccessDropdown({
-      accessLevel: ACCESS_LEVELS.CREATE,
-      accessLevelsData: gon.create_access_levels,
+    this.protectedTagAccessDropdown = new ProtectedTagAccessDropdown({
       $dropdown: this.$allowedToCreateDropdownButton,
-      onSelect: this.onSelectOption.bind(this),
-      onHide: this.onDropdownHide.bind(this),
+      data: gon.create_access_levels,
+      onSelect: this.onSelectCallback,
     });
   }
 
-  onSelectOption() {
-    this.hasChanges = true;
-  }
+  onSelect() {
+    const $allowedToCreateInput = this.$wrap.find(`input[name="${this.$allowedToCreateDropdownButton.data('fieldName')}"]`);
 
-  onDropdownHide() {
-    if (!this.hasChanges) {
-      return;
-    }
+    // Do not update if one dropdown has not selected any option
+    if (!$allowedToCreateInput.length) return;
 
-    this.hasChanges = true;
-    this.updatePermissions();
-  }
+    this.$allowedToCreateDropdownButton.disable();
 
-  updatePermissions() {
-    const formData = Object.keys(ACCESS_LEVELS).reduce((acc, level) => {
-      /* eslint-disable no-param-reassign */
-      const accessLevelName = ACCESS_LEVELS[level];
-      const inputData = this[`${accessLevelName}_dropdown`].getInputData(accessLevelName);
-      acc[`${accessLevelName}_attributes`] = inputData;
-
-      return acc;
-    }, {});
-
-    return $.ajax({
+    $.ajax({
       type: 'POST',
       url: this.$wrap.data('url'),
       dataType: 'json',
       data: {
         _method: 'PATCH',
-        protected_tag: formData,
-      },
-      success: (response) => {
-        this.hasChanges = false;
-
-        Object.keys(ACCESS_LEVELS).forEach((level) => {
-          const accessLevelName = ACCESS_LEVELS[level];
-
-          // The data coming from server will be the new persisted *state* for each dropdown
-          this.setSelectedItemsToDropdown(response[accessLevelName], `${accessLevelName}_dropdown`);
-        });
+        protected_tag: {
+          create_access_levels_attributes: [{
+            id: this.$allowedToCreateDropdownButton.data('access-level-id'),
+            access_level: $allowedToCreateInput.val(),
+          }],
+        },
       },
       error() {
-        $.scrollTo(0);
-        new Flash('Failed to update tag!');
+        new Flash('Failed to update tag!', null, $('.js-protected-tags-list'));
       },
     }).always(() => {
       this.$allowedToCreateDropdownButton.enable();
     });
-  }
-
-  setSelectedItemsToDropdown(items = [], dropdownName) {
-    const itemsToAdd = items.map((currentItem) => {
-      if (currentItem.user_id) {
-        // Do this only for users for now
-        // get the current data for selected items
-        const selectedItems = this[dropdownName].getSelectedItems();
-        const currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
-
-        return {
-          id: currentItem.id,
-          user_id: currentItem.user_id,
-          type: LEVEL_TYPES.USER,
-          persisted: true,
-          name: currentSelectedItem.name,
-          username: currentSelectedItem.username,
-          avatar_url: currentSelectedItem.avatar_url,
-        };
-      } else if (currentItem.group_id) {
-        return {
-          id: currentItem.id,
-          group_id: currentItem.group_id,
-          type: LEVEL_TYPES.GROUP,
-          persisted: true,
-        };
-      }
-
-      return {
-        id: currentItem.id,
-        access_level: currentItem.access_level,
-        type: LEVEL_TYPES.ROLE,
-        persisted: true,
-      };
-    });
-
-    this[dropdownName].setSelectedItems(itemsToAdd);
   }
 }

@@ -62,6 +62,7 @@ var config = {
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     ee_protected_branches: './protected_branches/ee/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
+    ee_protected_tags:    './protected_tags/ee',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
