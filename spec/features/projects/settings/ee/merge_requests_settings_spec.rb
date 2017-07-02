@@ -83,4 +83,28 @@ describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
       expect(find('.js-current-approvers')).not_to have_content(group.name)
     end
   end
+
+  context 'issuable default templates feature not available' do
+    before do
+      stub_licensed_features(issuable_default_templates: false)
+    end
+
+    scenario 'input to configure merge request template is not shown' do
+      visit edit_project_path(project)
+
+      expect(page).not_to have_selector('#project_merge_requests_template')
+    end
+  end
+
+  context 'issuable default templates feature is available' do
+    before do
+      stub_licensed_features(issuable_default_templates: true)
+    end
+
+    scenario 'input to configure merge request template is not shown' do
+      visit edit_project_path(project)
+
+      expect(page).to have_selector('#project_merge_requests_template')
+    end
+  end
 end
