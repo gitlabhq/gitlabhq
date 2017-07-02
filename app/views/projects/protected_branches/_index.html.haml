@@ -1,6 +1,9 @@
 - expanded = Rails.env.test?
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('protected_branches')
+  - if @project.feature_available?(:ref_permissions_for_users, current_user)
+    = webpack_bundle_tag('ee_protected_branches')
+  - else
+    = webpack_bundle_tag('protected_branches')
 
 %section.settings
   .settings-header
