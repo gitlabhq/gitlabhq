@@ -18,6 +18,9 @@ module EE
       validates :user_id, uniqueness: { scope: protected_type, allow_nil: true }
       validates :access_level, uniqueness: { scope: protected_type, if: :role?,
                                              conditions: -> { where(user_id: nil, group_id: nil) } }
+      validates :group, :user,
+               absence: true,
+               unless: proc { |access| access.type != :role && access.project.feature_available?(:ref_permissions_for_users) }
 
       scope :by_user, -> (user) { where(user: user ) }
       scope :by_group, -> (group) { where(group: group ) }
