@@ -57,56 +57,18 @@ using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and fa
     mailroom['enable'] = false
 
     # PostgreSQL configuration
-    postgresql['md5_auth_cidr_addresses'] = ['0.0.0.0/0']
+    postgresql['md5_auth_cidr_addresses'] = %w(0.0.0.0/0)
     postgresql['listen_address'] = '0.0.0.0'
     postgresql['sql_user_password'] = 'PASSWORD_HASH' # This is the hash generated in the previous step
-    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.0/24']
+    postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.0/24)
     postgresql['hot_standby'] = 'on'
     postgresql['wal_level'] = 'replica'
     postgresql['max_wal_senders'] = X # Should be set to at least 1 more than the number of nodes in the cluster
     postgresql['shared_preload_libraries'] = 'repmgr_funcs' # If this attribute is already defined, append the new value as a comma separated list
-    postgresql['custom_pg_hba_entries']['repmgr'] = [
-      {
-        type: 'local',
-        database: 'replication',
-        user: 'gitlab_replicator',
-        method: 'trust',
-      },
-      {
-        type: 'host',
-        database: 'replication',
-        user: 'gitlab_replicator',
-        cidr: '127.0.0.1/32',
-        method: 'trust'
-      },
-      {
-        type: 'host',
-        database: 'replication',
-        user: 'gitlab_replicator',
-        cidr: 'XXX.XXX.XXX.XXX/YY', # This should be the CIDR of the network your database nodes are on
-        method: 'trust'
-      },
-      {
-        type: 'local',
-        database: 'repmgr',
-        user: 'gitlab_replicator',
-        method: 'trust',
-      },
-      {
-        type: 'host',
-        database: 'repmgr',
-        user: 'gitlab_replicator',
-        cidr: '127.0.0.1/32',
-        method: 'trust'
-      },
-      {
-        type: 'host',
-        database: 'repmgr',
-        user: 'gitlab_replicator',
-        cidr: 'XXX.XXX.XXX.XXX/YY', # This should be the CIDR of the network your database nodes are on
-        method: 'trust'
-      }
-    ]
+
+    # repmgr configuration
+    repmgr['enable'] = true
+    repmgr['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY) # This should be the CIDR of the network your database nodes are on
 
     # Disable automatic database migrations
     gitlab_rails['auto_migrate'] = false
@@ -115,20 +77,6 @@ using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and fa
 1. Reconfigure GitLab for the new settings to take effect
     ```
     # gitlab-ctl reconfigure
-    ```
-
-1. Create `/var/opt/gitlab/postgresql/repmgr.conf` with the following content. Use a unique integer for the value of node.
-    ```
-    cluster=gitlab_cluster
-    node=X
-    node_name=HOSTNAME
-    conninfo='host=HOSTNAME user=gitlab_replicator dbname=repmgr'
-    pg_bindir='/opt/gitlab/embedded/bin'
-    service_start_command = '/opt/gitlab/bin/gitlab-ctl start postgresql'
-    service_stop_command = '/opt/gitlab/bin/gitlab-ctl stop postgresql'
-    service_restart_command = '/opt/gitlab/bin/gitlab-ctl restart postgresql'
-    promote_command = '/opt/gitlab/embedded/bin/repmgr standby promote -f /var/opt/gitlab/postgresql/repmgr.conf'
-    follow_command = '/opt/gitlab/embedded/bin/repmgr standby follow -f /var/opt/gitlab/postgresql/repmgr.conf'
     ```
 
 ### On the primary database node
@@ -157,12 +105,6 @@ using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and fa
     Enter it again:
     ```
 
-1. Create the repmgr database:
-    ```
-    template1=# ALTER USER gitlab_replicator WITH SUPERUSER;
-    template1=# CREATE DATABASE repmgr WITH OWNER gitlab_replicator;
-    ```
-
 1. Switch to the GitLab database and Enable the `pg_trgm` extension:
     ```
     template1=# \c gitlabhq_production
@@ -175,56 +117,27 @@ using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and fa
 
 1. Exit the database prompt by typing `\q` and Enter.
 
-1. Register the node as the initial master node for the repmgr cluster
-    ```
-    # su - gitlab-psql
-    $ repmgr -f /var/opt/gitlab/postgresql/repmgr.conf master register
-    NOTICE: master node correctly registered for cluster 'gitlab_cluster' with id X (conninfo: host=HOSTNAME user=gitlab_replicator dbname=repmgr)
-    ```
-
 1. Verify the cluster is initialized with one node
    ```
-   $ repmgr -f /var/opt/gitlab/postgresql/repmgr.conf cluster show
+   # gitlab-ctl repmgr cluster show
    Role      | Name        | Upstream | Connection String
    ----------+-------------|----------|----------------------------------------
-   * master  | HOSTNAME    |          | host=HOSTNAME user=gitlab_replicator dbname=repmgr
+   * master  | HOSTNAME    |          | host=HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
    ```
 
 ### On each standby node
-1. Stop postgresql
+1. Setup the repmgr standby
     ```
-    # gitlab-ctl stop postgresql
-    ```
-
-1. Clear out the current data directory
-    ```
-    # rm -rf /var/opt/gitlab/postgresql/data/*
-    ```
-
-1. Synchronize the data from the primary node:
-   ```
-   # su - gitlab-psql
-   $ repmgr -h PRIMARY_HOSTNAME -U gitlab_replicator -d repmgr -D /var/opt/gitlab/postgresql/data/ -f /var/opt/gitlab/postgresql/repmgr.conf standby clone
-   ```
-
-1. Start the database
-    ```
-    $ gitlab-ctl start postgresql
-    ```
-
-1. Register the node with the cluster
-    ```
-    $ repmgr -f /var/opt/gitlab/postgresql/repmgr.conf standby register
-    NOTICE: standby node correctly registered for cluster gitlab_cluster with id X (conninfo: host=HOSTNAME user=gitlab_replicator dbname=repmgr)
+    # gitlab-ctl repmgr standby setup MASTER_NODE
     ```
 
 1. Verify the node now appears in the cluster
    ```
-   $ repmgr -f /var/opt/gitlab/postgresql/repmgr.conf cluster show
+   # gitlab-ctl repmgr cluster show
    Role      | Name       | Upstream   | Connection String
    ----------+------------|------------|------------------------------------------------
-   * master  | MASTER     |            | host=MASTER_HOSTNAME  user=gitlab_replicator dbname=repmgr
-     standby | STANDBY    | MASTER     | host=STANDBY_HOSTNAME user=gitlab_replicator  dbname=repmgr
+   * master  | MASTER     |            | host=MASTER_HOSTNAME  user=gitlab_repmgr dbname=gitlab_repmgr
+     standby | STANDBY    | MASTER     | host=STANDBY_HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
    ```
 
 ### (Optional) Enable repmgrd
@@ -257,14 +170,12 @@ If your master node is experiencing an issue, you can manually failover.
 
 1. Login to the server that should become the new master and run the following
     ```
-    # su - gitlab-psql
-    $ repmgr -f /var/opt/gitlab/postgresql/repmgr.conf standby promote
+    # gitlab-ctl repmgr standby promote
     ```
 
 1. If there are any other standby servers in the cluster, have them follow the new master server
     ```
-    # su - gitlab-psql
-    # repmgr -f /var/opt/gitlab/postgresql/repmgr.conf -h NEW_MASTER -U gitlab_replicator -d repmgr -d /var/opt/gitlab/postgresql/data standby follow
+    # gitlab-ctl repmgr standby follow NEW_MASTER
     ```
 
 1. On the servers that run `gitlab-rails`, set the `gitlab_rails['db_host']` attribute to the new master, and run `gitlab-ctl reconfigure`
@@ -273,14 +184,12 @@ If your master node is experiencing an issue, you can manually failover.
 
 1. If you want to remove the node from the cluster, on any other node in the cluster, run:
     ```
-    # su - gitlab-psql
-    $ repmgr -f /var/opt/gitlab/postgresql/repmgr.conf standby unregister --node=X # X should be the value of node in repmgr.conf on the old server
+    # gitlab-ctl repmgr standby unregister --node=X # X should be the value of node in repmgr.conf on the old server
     ```
 
 1. If the failed master has been recovered, it can be converted to a standby server and follow the new master server[^1]
     ```
-    # su - gitlab-psql
-    # repmgr -f /var/opt/gitlab/postgresql/repmgr.conf -h NEW_MASTER -U gitlab_replicator -d repmgr -d /var/opt/gitlab/postgresql/data standby follow
+    # gitlab-ctl repmgr standby follow NEW_MASTER
     ```
 
 [^1]: When the server is back online, and before you switch it to a standby node, repmgr will report that there are two masters.
