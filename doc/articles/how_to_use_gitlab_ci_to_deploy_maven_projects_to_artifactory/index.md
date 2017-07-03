@@ -59,7 +59,7 @@ The snippet should look like this:
   <repository>
     <id>central</id>
     <name>83d43b5afeb5-releases</name>
-    <url>${repoUrl}/libs-release-local</url>
+    <url>${env.MAVEN_REPO_URL}/libs-release-local</url>
   </repository>
 </distributionManagement>
 ```
@@ -76,8 +76,8 @@ For this scope, let's create a folder called `.m2` in the root of our repo. Insi
   <servers>
     <server>
       <id>central</id>
-      <username>${repoUser}</username>
-      <password>${repoKey}</password>
+      <username>${env.MAVEN_REPO_USER}</username>
+      <password>${env.MAVEN_REPO_KEY}</password>
     </server>
   </servers>
 </settings>
@@ -92,9 +92,9 @@ We should remember to commit all the changes to our repo!
 Now it's time we set up GitLab CI to automatically build, test and deploy our dependency!  
 
 First of all, we should remember that we need to setup some secret variable for making the deploy happen, so let's go in the **Settings ➔ Pipelines** and add the following secret variables (replace them with your current values, of course):
-- **ARTIFACTORY_REPO_URL**: `http://artifactory.example.com:8081/artifactory` (your Artifactory URL)
-- **ARTIFACTORY_REPO_USER**: `gitlab` (your Artifactory username)
-- **ARTIFACTORY_REPO_KEY**: `AKCp2WXr3G61Xjz1PLmYa3arm3yfBozPxSta4taP3SeNu2HPXYa7FhNYosnndFNNgoEds8BCS` (your Artifactory API Key)
+- **MAVEN_REPO_URL**: `http://artifactory.example.com:8081/artifactory` (your Artifactory URL)
+- **MAVEN_REPO_USER**: `gitlab` (your Artifactory username)
+- **MAVEN_REPO_KEY**: `AKCp2WXr3G61Xjz1PLmYa3arm3yfBozPxSta4taP3SeNu2HPXYa7FhNYosnndFNNgoEds8BCS` (your Artifactory API Key)
 
 Now it's time to define stages in our `.gitlab-ci.yml` file: once pushed to our repo it will instruct the GitLab Runner with all the needed commands.
 
@@ -104,7 +104,7 @@ Let's see the content of the file:
 image: maven:latest
 
 variables:
-  MAVEN_CLI_OPTS: "-s .m2/settings.xml"
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 cache:
@@ -125,7 +125,7 @@ test:
 deploy:
   stage: deploy
   script:
-    - mvn deploy $MAVEN_CLI_OPTS -DrepoUrl=$ARTIFACTORY_REPO_URL -DrepoUser=$ARTIFACTORY_REPO_USER -DrepoKey=$ARTIFACTORY_REPO_KEY
+    - mvn $MAVEN_CLI_OPTS deploy
   only:
     - master
 ```
@@ -202,7 +202,7 @@ stages:
   - run
 
 variables:
-  MAVEN_CLI_OPTS: "-s .m2/settings.xml"
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 cache:
