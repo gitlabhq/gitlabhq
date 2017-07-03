@@ -323,7 +323,7 @@ header.navbar-gitlab-new {
     white-space: nowrap;
 
     > a {
-      &:last-of-type {
+      &:last-of-type:not(:first-child) {
         font-weight: 600;
       }
     }

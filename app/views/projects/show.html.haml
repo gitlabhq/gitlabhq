@@ -1,4 +1,5 @@
 - @no_container = true
+- @breadcrumb_title = "Project"
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, namespace_project_path(@project.namespace, @project, rss_url_options), title: "#{@project.name} activity")
