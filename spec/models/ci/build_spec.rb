@@ -1383,6 +1383,7 @@ describe Ci::Build, :models do
       end
 
       before do
+        pipeline_schedule.reload
         pipeline_schedule.pipelines << pipeline
       end
 
