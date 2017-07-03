@@ -92,9 +92,7 @@ export default {
         <p v-if="mr.shouldRemoveSourceBranch">
           The source branch will be removed.
         </p>
-        <p
-          v-else
-          class="with-button">
+        <p v-else>
           The source branch will not be removed.
           <a
             v-if="canRemoveSourceBranch"

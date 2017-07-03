@@ -117,6 +117,7 @@
 
   .mr-widget-body,
   .mr-widget-footer {
+    @include clearfix;
     margin: 16px;
   }
 
@@ -202,6 +203,7 @@
 
     &.mr-links {
       margin-left: 28px;
+      margin-top: -10px;
     }
 
     &.mr-memory-usage {
@@ -231,6 +233,7 @@
 
   .mr-widget-body {
     h4 {
+      float: left;
       font-weight: bold;
       font-size: 15px;
       margin: 5px 0;
@@ -276,12 +279,6 @@
 
     .mr-widget-help {
       margin: $gl-padding 0;
-    }
-
-    .with-button {
-      position: relative;
-      top: 6px;
-      margin-bottom: 24px;
     }
 
     .spacing,
@@ -368,7 +365,6 @@
     }
 
     &.mr-state-locked .mr-info-list {
-      margin-top: 10px;
       margin-left: 12px;
     }
 
@@ -507,8 +503,9 @@
 }
 
 .mr-info-list {
+  clear: left;
   position: relative;
-  margin: 10px 0 $gl-padding 12px;
+  margin-left: 12px;
 
   p {
     margin: 6px 0;
@@ -679,7 +676,8 @@
 }
 
 .merged-buttons {
-  margin-top: 20px;
+  float: left;
+  margin-left: 10px;
 
   .btn {
     float: left;

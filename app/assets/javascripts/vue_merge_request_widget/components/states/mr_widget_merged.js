@@ -61,32 +61,6 @@ export default {
         :author="mr.mergedBy"
         :dateTitle="mr.updatedAt"
         :dateReadable="mr.mergedAt" />
-      <section class="mr-info-list">
-        <div class="legend"></div>
-        <p>
-          The changes were merged into
-          <span class="label-branch">
-            <a :href="mr.targetBranchPath">{{mr.targetBranch}}</a>
-          </span>
-        </p>
-        <p v-if="mr.sourceBranchRemoved">The source branch has been removed.</p>
-        <p v-if="shouldShowRemoveSourceBranch">
-          You can remove source branch now.
-          <button
-            @click="removeSourceBranch"
-            :class="{ disabled: isMakingRequest }"
-            type="button"
-            class="btn btn-xs btn-default js-remove-branch-button">
-            Remove Source Branch
-          </button>
-        </p>
-        <p v-if="shouldShowSourceBranchRemoving">
-          <i
-            class="fa fa-spinner fa-spin"
-            aria-hidden="true" />
-          The source branch is being removed.
-        </p>
-      </section>
       <div
         v-if="shouldShowMergedButtons"
         class="merged-buttons clearfix">
@@ -125,6 +99,32 @@ export default {
           Cherry-pick
         </a>
       </div>
+      <section class="mr-info-list">
+        <div class="legend"></div>
+        <p>
+          The changes were merged into
+          <span class="label-branch">
+            <a :href="mr.targetBranchPath">{{mr.targetBranch}}</a>
+          </span>
+        </p>
+        <p v-if="mr.sourceBranchRemoved">The source branch has been removed.</p>
+        <p v-if="shouldShowRemoveSourceBranch">
+          You can remove source branch now.
+          <button
+            @click="removeSourceBranch"
+            :class="{ disabled: isMakingRequest }"
+            type="button"
+            class="btn btn-xs btn-default js-remove-branch-button">
+            Remove Source Branch
+          </button>
+        </p>
+        <p v-if="shouldShowSourceBranchRemoving">
+          <i
+            class="fa fa-spinner fa-spin"
+            aria-hidden="true" />
+          The source branch is being removed.
+        </p>
+      </section>
     </div>
   `,
 };

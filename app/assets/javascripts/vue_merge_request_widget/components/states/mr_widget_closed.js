@@ -16,7 +16,7 @@ export default {
         :dateTitle="mr.updatedAt"
         :dateReadable="mr.closedAt"
       />
-      <section>
+      <section class="mr-info-list">
         <p>
           The changes were not merged into
           <a
