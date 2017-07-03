@@ -18,6 +18,7 @@ module LicenseHelper
 
   def trial_license_message
     return unless signed_in? && current_license&.trial?
+    return unless 7.days.since(Date.today) >= current_license.expires_at
 
     buy_now_link = link_to('Buy now!', "#{Gitlab::SUBSCRIPTIONS_URL}/plans", target: '_blank')
     message =
