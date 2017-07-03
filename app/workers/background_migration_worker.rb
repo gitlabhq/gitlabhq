@@ -20,7 +20,9 @@ class BackgroundMigrationWorker
     now = Time.now.to_i
     schedule = now + delay.to_i
 
-    raise ArgumentError, 'Delay time invalid!' if schedule <= now
+    if schedule <= now
+      raise ArgumentError, 'The schedule time must be in the future!'
+    end
 
     Sidekiq::Client.push_bulk('class' => self,
                               'queue' => sidekiq_options['queue'],
