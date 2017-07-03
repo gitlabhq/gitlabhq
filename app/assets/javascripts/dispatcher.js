@@ -135,7 +135,7 @@ import AuditLogs from './audit_logs';
         case 'sessions:new':
           new UsernameValidator();
           new ActiveTabMemoizer();
-          new OAuthRememberMe({ container: $("#remember_me") }).bindEvents();
+          new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':

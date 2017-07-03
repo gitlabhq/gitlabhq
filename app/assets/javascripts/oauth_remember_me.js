@@ -12,13 +12,14 @@ export default class OAuthRememberMe {
   }
 
   bindEvents() {
-    this.container.on('click', this.constructor.toggleRememberMe);
+    $('#remember_me', this.container).on('click', this.toggleRememberMe);
   }
 
-  static toggleRememberMe(event) {
+  // eslint-disable-next-line class-methods-use-this
+  toggleRememberMe(event) {
     const rememberMe = $(event.target).is(':checked');
 
-    $('.oauth-login').each((i, element) => {
+    $('.oauth-login', this.container).each((i, element) => {
       const href = $(element).attr('href');
 
       if (rememberMe) {
