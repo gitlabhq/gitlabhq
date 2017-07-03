@@ -20,7 +20,7 @@ module Gitlab
     end
 
     def file_name_regex
-      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@\+]*\z/.freeze
+      @file_name_regex ||= /\A[^\/\0]*\z/.freeze
     end
 
     def file_name_regex_message

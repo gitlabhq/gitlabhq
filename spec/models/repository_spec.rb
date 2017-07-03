@@ -347,6 +347,16 @@ describe Repository, models: true do
       expect(blob.data).to eq('Changelog!')
     end
 
+    it 'creates new file with spaces in between successfully' do
+      expect do
+        repository.create_file(user, 'NEW FILE', 'File!',
+                               message: 'Create NEW FILE',
+                               branch_name: 'master')
+      end.to change { repository.commits('master').count }.by(1)
+
+      expect(repository.blob_at('master', 'NEW FILE').data).to eq('File!')
+    end
+
     it 'respects the autocrlf setting' do
       repository.create_file(user, 'hello.txt', "Hello,\r\nWorld",
                              message: 'Add hello world',
