@@ -108,6 +108,7 @@ module Routable
 
   def expires_full_path_cache
     RequestStore.delete(full_path_key) if RequestStore.active?
+    @full_path = nil
   end
 
   def build_full_path

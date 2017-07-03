@@ -135,11 +135,12 @@ describe Group, 'Routable' do
   describe '#expires_full_path_cache' do
     context 'with RequestStore active', :request_store do
       it 'expires the full_path cache' do
-        expect(group).to receive(:uncached_full_path).twice.and_call_original
+        expect(group.full_path).to eq('foo')
 
-        3.times { group.full_path }
+        group.route.update(path: 'bar', name: 'bar')
         group.expires_full_path_cache
-        3.times { group.full_path }
+
+        expect(group.full_path).to eq('bar')
       end
     end
   end
