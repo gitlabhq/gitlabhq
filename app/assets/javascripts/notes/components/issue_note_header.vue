@@ -38,6 +38,22 @@ export default {
   components: {
     TimeAgoTooltip,
   },
+  data() {
+    return {
+      isExpanded: true,
+    }
+  },
+  computed: {
+    toggleChevronClass() {
+      return this.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down';
+    },
+  },
+  methods: {
+    handleToggle() {
+      this.isExpanded = !this.isExpanded;
+      this.toggleHandler();
+    },
+  },
 };
 </script>
 
@@ -71,12 +87,13 @@ export default {
       v-if="includeToggle"
       class="discussion-actions">
       <button
-        @click="toggleHandler"
+        @click="handleToggle"
         class="note-action-button discussion-toggle-button js-toggle-button"
         type="button">
           <i
-            aria-hidden="true"
-            class="fa fa-chevron-up"></i>
+            :class="toggleChevronClass"
+            class="fa"
+            aria-hidden="true"></i>
           Toggle discussion
       </button>
     </div>
