@@ -136,18 +136,16 @@ const actions = {
           res.notes.forEach((note) => {
             if (notesById[note.id]) {
               context.commit('updateNote', note);
-            } else {
-              if (note.type === 'DiscussionNote') {
-                const discussion = findNoteObjectById(context.state.notes, note.discussion_id);
+            } else if (note.type === 'DiscussionNote') {
+              const discussion = findNoteObjectById(context.state.notes, note.discussion_id);
 
-                if (discussion) {
-                  context.commit('addNewReplyToDiscussion', note);
-                } else {
-                  context.commit('addNewNote', note);
-                }
+              if (discussion) {
+                context.commit('addNewReplyToDiscussion', note);
               } else {
                 context.commit('addNewNote', note);
               }
+            } else {
+              context.commit('addNewNote', note);
             }
           });
         }

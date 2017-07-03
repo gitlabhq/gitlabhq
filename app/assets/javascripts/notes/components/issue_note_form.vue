@@ -24,6 +24,7 @@ export default {
   },
   data() {
     return {
+      initialNote: this.noteBody,
       note: this.noteBody,
       markdownPreviewUrl: '',
       markdownDocsUrl: '',
@@ -37,6 +38,11 @@ export default {
       this.updateHandler({
         note: this.note,
       });
+    },
+  },
+  computed: {
+    isDirty() {
+      return this.initialNote !== this.note;
     },
   },
   mounted() {
@@ -68,7 +74,8 @@ export default {
           ref="textarea"
           slot="textarea"
           placeholder="Write a comment or drag your files here..."
-          @keydown.meta.enter="handleUpdate">
+          @keydown.meta.enter="handleUpdate"
+          @keydown.esc="cancelHandler(true)">
         </textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
@@ -79,7 +86,7 @@ export default {
           {{saveButtonTitle}}
         </button>
         <button
-          @click="cancelHandler"
+          @click="cancelHandler()"
           class="btn btn-nr btn-cancel"
           type="button">
           Cancel

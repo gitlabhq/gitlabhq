@@ -23,7 +23,7 @@ export default {
     const options = {
       headers: {
         'X-Last-Fetched-At': lastFetchedAt,
-      }
+      },
     };
 
     return Vue.http.get(endpoint, options);

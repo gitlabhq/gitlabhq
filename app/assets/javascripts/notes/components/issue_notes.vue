@@ -39,7 +39,8 @@ export default {
     },
   },
   mounted() {
-    const { discussionsPath, notesPath, lastFetchedAt }  = this.$el.parentNode.dataset;
+    const { discussionsPath, notesPath, lastFetchedAt } = this.$el.parentNode.dataset;
+
     this.$store.dispatch('fetchNotes', discussionsPath)
       .then(() => {
         this.isLoading = false;
@@ -58,6 +59,9 @@ export default {
       this.$store.dispatch('poll', options)
         .then((res) => {
           options.lastFetchedAt = res.last_fetched_at;
+        })
+        .catch(() => {
+          new Flash('Something went wrong while fetching latest comments.'); // eslint-disable-line
         });
     }, 6000);
   },

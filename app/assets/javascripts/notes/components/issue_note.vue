@@ -76,7 +76,15 @@ export default {
           new Flash('Something went wrong while editing your comment. Please try again.'); // eslint-disable-line
         });
     },
-    formCancelHandler() {
+    formCancelHandler(shouldConfirm) {
+      if (shouldConfirm && this.$refs.noteBody.$refs.noteForm.isDirty) {
+        const msg = 'Are you sure you want to cancel editing this comment?';
+        const isConfirmed = confirm(msg); // eslint-disable-line
+        if (!isConfirmed) {
+          return;
+        }
+      }
+
       this.isEditing = false;
     },
   },
@@ -115,7 +123,8 @@ export default {
           :note="note"
           :isEditing="isEditing"
           :formUpdateHandler="formUpdateHandler"
-          :formCancelHandler="formCancelHandler" />
+          :formCancelHandler="formCancelHandler"
+          ref="noteBody" />
       </div>
     </div>
   </li>

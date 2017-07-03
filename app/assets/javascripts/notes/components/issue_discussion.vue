@@ -61,7 +61,15 @@ export default {
     showReplyForm() {
       this.isReplying = true;
     },
-    cancelReplyForm() {
+    cancelReplyForm(shouldConfirm) {
+      if (shouldConfirm && this.$refs.noteForm.isDirty) {
+        const msg = 'Are you sure you want to cancel creating this comment?';
+        const isConfirmed = confirm(msg); // eslint-disable-line
+        if (!isConfirmed) {
+          return;
+        }
+      }
+
       this.isReplying = false;
     },
     saveReply({ note }) {
@@ -139,7 +147,8 @@ export default {
                       v-if="isReplying"
                       saveButtonTitle="Comment"
                       :updateHandler="saveReply"
-                      :cancelHandler="cancelReplyForm" />
+                      :cancelHandler="cancelReplyForm"
+                      ref="noteForm" />
                   <div
                     v-if="!canReply"
                     class="disabled-comment text-center">
