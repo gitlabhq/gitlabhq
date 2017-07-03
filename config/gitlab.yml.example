@@ -552,7 +552,8 @@ production: &base
   # Built in monitoring settings
   monitoring:
     # IP whitelist to access monitoring endpoints
-    access_whitelist: 127.0.0.0/8
+    ip_whitelist:
+      - 127.0.0.0/8
 
   #
   # 5. Extra customization

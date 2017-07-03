@@ -5,6 +5,7 @@ describe HealthCheckController do
 
   let(:json_response) { JSON.parse(response.body) }
   let(:xml_response) { Hash.from_xml(response.body)['hash'] }
+  let(:token) { current_application_settings.health_check_access_token }
   let(:whitelisted_ip) { '127.0.0.1' }
   let(:not_whitelisted_ip) { '127.0.0.2' }
 
@@ -22,6 +23,21 @@ describe HealthCheckController do
       it 'returns a not found page' do
         get :index
         expect(response).to be_not_found
+      end
+
+      context 'when services are accessed with token' do
+        it 'supports passing the token in the header' do
+          request.headers['TOKEN'] = token
+          get :index
+          expect(response).to be_success
+          expect(response.content_type).to eq 'text/plain'
+        end
+
+        it 'supports successful plaintest response' do
+          get :index, token: token
+          expect(response).to be_success
+          expect(response.content_type).to eq 'text/plain'
+        end
       end
     end
 

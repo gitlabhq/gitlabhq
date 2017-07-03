@@ -5,6 +5,7 @@
   - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and will
     be deprecated in GitLab 9.1. Read more in the [old behavior](#old-behavior)
     section.
+  - [Access token](#access-token) has been deprecated in GitLab 9.4 in favor of [IP Whitelist](#ip-whitelist)
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the
@@ -12,7 +13,19 @@ database connection, Redis connection, and access to the filesystem. These
 endpoints [can be provided to schedulers like Kubernetes][kubernetes] to hold
 traffic until the system is ready or restart the container as needed.
 
-## Access Token
+## IP Whitelist
+
+To access monitoring resources client IP needs to be included in the whitelist.
+To add or remove hosts or ip ranges from the list you can edit `gitlab.yml`.
+
+Example whitelist configuration:
+```yaml
+monitoring:
+  ip_whitelist:
+    - 127.0.0.0/8 # by default only local IPs are allowed to access monitoring resources
+```
+
+## Access Token (Deprecated)
 
 An access token needs to be provided while accessing the probe endpoints. The current
 accepted token can be found under the **Admin area ➔ Monitoring ➔ Health check**
@@ -47,10 +60,10 @@ which will then provide a report of system health in JSON format:
 
 ## Using the Endpoint
 
-Once you have the access token, the probes can be accessed:
+With default whitelist settings, the probes can be accessed from localhost:
 
-- `https://gitlab.example.com/-/readiness?token=ACCESS_TOKEN`
-- `https://gitlab.example.com/-/liveness?token=ACCESS_TOKEN`
+- `http://localhost/-/readiness`
+- `http://localhost/-/liveness`
 
 ## Status
 
@@ -71,7 +84,7 @@ the database connection, the state of the database migrations, and the ability t
 and access the cache. This endpoint can be provided to uptime monitoring services like
 [Pingdom][pingdom], [Nagios][nagios-health], and [NewRelic][newrelic-health].
 
-Once you have the [access token](#access-token), health information can be
+Once you have the [access token](#access-token) or your client IP is [whitelisted](#ip-whitelist), health information can be
 retrieved as plain text, JSON, or XML using the `health_check` endpoint:
 
 - `https://gitlab.example.com/health_check?token=ACCESS_TOKEN`
