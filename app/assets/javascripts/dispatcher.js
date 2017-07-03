@@ -150,6 +150,9 @@ import initExperimentalFlags from './experimental_flags';
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
           break;
+        case 'dashboard:milestones:index':
+          new ProjectSelect();
+          break;
         case 'projects:milestones:show':
         case 'groups:milestones:show':
         case 'dashboard:milestones:show':

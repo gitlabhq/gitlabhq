@@ -388,3 +388,13 @@ header.navbar-gitlab-new {
     color: $gl-text-color;
   }
 }
+
+.top-area {
+  .nav-controls-new-nav {
+    .dropdown {
+      @media (min-width: $screen-sm-min) {
+        margin-right: 0;
+      }
+    }
+  }
+}
