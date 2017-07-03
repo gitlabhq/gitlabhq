@@ -132,7 +132,7 @@ module API
       expose :printing_merge_request_link_enabled
 
       # EE only
-      expose :approvals_before_merge
+      expose :approvals_before_merge, if: ->(project, _) { project.feature_available?(:merge_request_approvers) }
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end

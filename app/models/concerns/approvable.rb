@@ -22,6 +22,12 @@ module Approvable
     approvals_before_merge || target_project.approvals_before_merge
   end
 
+  def approvals_before_merge
+    return 0 unless project&.feature_available?(:merge_request_approvers)
+
+    super
+  end
+
   # An MR can potentially be approved by:
   # - anyone in the approvers list
   # - any other project member with developer access or higher (if there are no approvers

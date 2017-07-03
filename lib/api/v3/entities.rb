@@ -116,7 +116,7 @@ module API
         expose :repository_storage, if: lambda { |_project, options| options[:current_user].try(:admin?) }
         expose :request_access_enabled
         expose :only_allow_merge_if_all_discussions_are_resolved
-        expose :approvals_before_merge
+        expose :approvals_before_merge, if: ->(project, _) { project.feature_available?(:merge_request_approvers) }
 
         expose :statistics, using: '::API::V3::Entities::ProjectStatistics', if: :statistics
       end

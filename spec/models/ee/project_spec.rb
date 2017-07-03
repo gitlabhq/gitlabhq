@@ -295,6 +295,72 @@ describe Project, models: true do
     end
   end
 
+  describe '#approvals_before_merge' do
+    [
+      { license: true,  database: 5,  expected: 5 },
+      { license: true,  database: 0,  expected: 0 },
+      { license: false, database: 5,  expected: 0 },
+      { license: false, database: 0,  expected: 0 }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:project) { build(:project, approvals_before_merge: spec[:database]) }
+
+        subject { project.approvals_before_merge }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
+    end
+  end
+
+  describe "#reset_approvals_on_push?" do
+    [
+      { license: true,  database: true,  expected: true },
+      { license: true,  database: false, expected: false },
+      { license: false, database: true,  expected: false },
+      { license: false, database: false, expected: false }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:project) { build(:project, reset_approvals_on_push: spec[:database]) }
+
+        subject { project.reset_approvals_on_push? }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
+    end
+  end
+
+  describe '#approvals_before_merge' do
+    [
+      { license: true,  database: 5,  expected: 5 },
+      { license: true,  database: 0,  expected: 0 },
+      { license: false, database: 5,  expected: 0 },
+      { license: false, database: 0,  expected: 0 }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:project) { build(:project, approvals_before_merge: spec[:database]) }
+
+        subject { project.approvals_before_merge }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
+    end
+  end
+
   describe '#merge_method' do
     [
       { ff: true,  rebase: true,  ff_licensed: true,  rebase_licensed: true,  method: :ff },
