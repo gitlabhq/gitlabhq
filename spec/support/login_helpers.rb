@@ -118,6 +118,7 @@ module LoginHelpers
     end
     allow(Gitlab::OAuth::Provider).to receive_messages(providers: [:saml], config_for: mock_saml_config)
     stub_omniauth_setting(messages)
-    expect_any_instance_of(Object).to receive(:omniauth_authorize_path).with(:user, "saml").and_return('/users/auth/saml')
+    allow_any_instance_of(Object).to receive(:user_saml_omniauth_authorize_path).and_return('/users/auth/saml')
+    allow_any_instance_of(Object).to receive(:omniauth_authorize_path).with(:user, "saml").and_return('/users/auth/saml')
   end
 end
