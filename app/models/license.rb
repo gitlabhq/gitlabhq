@@ -59,9 +59,8 @@ class License < ActiveRecord::Base
     { DEPLOY_BOARD_FEATURE => 1 },
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
-    { AUDITOR_USER_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 },
     { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 }
   ].freeze
 
