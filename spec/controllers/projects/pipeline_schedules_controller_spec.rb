@@ -150,22 +150,21 @@ describe Projects::PipelineSchedulesController do
         end
       end
 
-      # This test no longer passes, since we removed a custom validation
-      # context 'when variables_attributes has two variables and duplicted' do
-      #   let(:schedule) do
-      #     basic_param.merge({
-      #       variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
-      #     })
-      #   end
+      context 'when variables_attributes has two variables and duplicted' do
+        let(:schedule) do
+          basic_param.merge({
+            variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
+          })
+        end
 
-      #   it 'returns an error that the keys of variable are duplicated' do
-      #     expect { go }
-      #       .to change { Ci::PipelineSchedule.count }.by(0)
-      #       .and change { Ci::PipelineScheduleVariable.count }.by(0)
+        it 'returns an error that the keys of variable are duplicated' do
+          expect { go }
+            .to change { Ci::PipelineSchedule.count }.by(0)
+            .and change { Ci::PipelineScheduleVariable.count }.by(0)
 
-      #     expect(assigns(:schedule).errors['variables.key']).not_to be_empty
-      #   end
-      # end
+          expect(assigns(:schedule).errors['variables.key']).not_to be_empty
+        end
+      end
     end
 
     describe 'security' do
@@ -194,7 +193,6 @@ describe Projects::PipelineSchedulesController do
 
       before do
         project.add_developer(user)
-
         sign_in(user)
       end
 
@@ -210,7 +208,6 @@ describe Projects::PipelineSchedulesController do
             go
 
             pipeline_schedule.reload
-
             expect(response).to have_http_status(:found)
             expect(pipeline_schedule.description).to eq('updated_desc')
             expect(pipeline_schedule.cron).to eq('0 1 * * *')
@@ -232,7 +229,6 @@ describe Projects::PipelineSchedulesController do
             expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(1)
 
             pipeline_schedule.reload
-
             expect(response).to have_http_status(:found)
             expect(pipeline_schedule.variables.last.key).to eq('AAA')
             expect(pipeline_schedule.variables.last.value).to eq('AAA123')
@@ -250,7 +246,6 @@ describe Projects::PipelineSchedulesController do
             expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(2)
 
             pipeline_schedule.reload
-
             expect(response).to have_http_status(:found)
             expect(pipeline_schedule.variables.first.key).to eq('AAA')
             expect(pipeline_schedule.variables.first.value).to eq('AAA123')
@@ -259,21 +254,20 @@ describe Projects::PipelineSchedulesController do
           end
         end
 
-        # This test no longer passes, since we removed a custom validation
-        # context 'when params include two duplicated variables' do
-        #   let(:schedule) do
-        #     basic_param.merge({
-        #       variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
-        #     })
-        #   end
+        context 'when params include two duplicated variables' do
+          let(:schedule) do
+            basic_param.merge({
+              variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
+            })
+          end
 
-        #   it 'returns an error that variables are duplciated' do
-        #     put :update, namespace_id: project.namespace.to_param,
-        #       project_id: project, id: pipeline_schedule, schedule: schedule
+          it 'returns an error that variables are duplciated' do
+            put :update, namespace_id: project.namespace.to_param,
+              project_id: project, id: pipeline_schedule, schedule: schedule
 
-        #     expect(assigns(:schedule).errors['variables.key']).not_to be_empty
-        #   end
-        # end
+            expect(assigns(:schedule).errors['variables.key']).not_to be_empty
+          end
+        end
       end
 
       context 'when a pipeline schedule has one variable' do
@@ -293,7 +287,6 @@ describe Projects::PipelineSchedulesController do
             go
 
             pipeline_schedule.reload
-
             expect(response).to have_http_status(:found)
             expect(pipeline_schedule.description).to eq('updated_desc')
             expect(pipeline_schedule.cron).to eq('0 1 * * *')
@@ -316,6 +309,7 @@ describe Projects::PipelineSchedulesController do
             it 'adds the new variable' do
               expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(1)
 
+              pipeline_schedule.reload
               expect(pipeline_schedule.variables.last.key).to eq('AAA')
             end
           end
@@ -331,7 +325,6 @@ describe Projects::PipelineSchedulesController do
               expect { go }.not_to change { Ci::PipelineScheduleVariable.count }
 
               pipeline_schedule_variable.reload
-
               expect(pipeline_schedule_variable.value).to eq('new_value')
             end
           end
