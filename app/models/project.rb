@@ -1073,7 +1073,7 @@ class Project < ActiveRecord::Base
     merge_requests.where(source_project_id: self.id)
   end
 
-  def create_repository(force = false)
+  def create_repository(force: false)
     # Forked import is handled asynchronously
     return if forked? && !force
 
@@ -1087,7 +1087,7 @@ class Project < ActiveRecord::Base
   end
 
   def ensure_repository
-    create_repository(true) unless repository_exists?
+    create_repository(force: true) unless repository_exists?
   end
 
   def repository_exists?

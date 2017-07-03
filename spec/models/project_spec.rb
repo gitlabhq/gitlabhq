@@ -1344,7 +1344,7 @@ describe Project, models: true do
         .with(project.repository_storage_path, project.path_with_namespace)
         .and_return(true)
 
-      expect(project).to receive(:create_repository)
+      expect(project).to receive(:create_repository).with(force: true)
 
       project.ensure_repository
     end
