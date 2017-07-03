@@ -42,6 +42,11 @@ export default {
       emojiSmiley,
     };
   },
+  computed: {
+    shouldShowActionsDropdown() {
+      return window.gon.current_user_id && (this.canEdit || this.canReportAsAbuse);
+    },
+  },
 };
 </script>
 
@@ -71,7 +76,9 @@ export default {
           v-html="emojiSmile"
           class="link-highlight award-control-icon-super-positive"></span>
     </a>
-    <div class="dropdown more-actions">
+    <div
+      v-if="shouldShowActionsDropdown"
+      class="dropdown more-actions">
       <button
         type="button"
         title="More actions"
