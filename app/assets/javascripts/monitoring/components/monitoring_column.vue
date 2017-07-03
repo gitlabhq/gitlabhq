@@ -35,7 +35,7 @@
 
     data() {
       return {
-        graphHeight: 500,
+        graphHeight: 450,
         graphWidth: 600,
         graphHeightOffset: 120,
         xScale: {},
@@ -88,7 +88,9 @@
       },
 
       paddingBottomRootSvg() {
-        return (Math.ceil(this.graphHeight * 100) / this.graphWidth) || 0;
+        return {
+          paddingBottom: `${(Math.ceil(this.graphHeight * 100) / this.graphWidth) || 0}%`,
+        };
       },
     },
 
@@ -198,7 +200,7 @@
     watch: {
       updateAspectRatio() {
         if (this.updateAspectRatio) {
-          this.graphHeight = 500;
+          this.graphHeight = 450;
           this.graphWidth = 600;
           this.measurements = measurements.large;
           this.draw();
@@ -216,14 +218,14 @@
   <div 
     :class="classType">
     <h5 
-      class="text-center">
+      class="text-center graph-title">
         {{columnData.title}}
     </h5>
-    <div 
-      class="prometheus-svg-container">
+    <div
+      class="prometheus-svg-container"
+      :style="paddingBottomRootSvg">
       <svg 
         :viewBox="outterViewBox"
-        :style="{ 'padding-bottom': paddingBottomRootSvg }"
         ref="baseSvg">
         <g
           class="x-axis"
