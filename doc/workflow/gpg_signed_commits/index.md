@@ -3,6 +3,8 @@
 ## Getting started
 
 - [Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
+- [Git Tools - Signing Your Work: GPG introduction](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work#_gpg_introduction)
+- [Git Tools - Signing Your Work: Signing commits](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work#_signing_commits)
 
 ## How GitLab handles GPG
 

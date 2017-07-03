@@ -271,6 +271,13 @@ module CommitsHelper
       )
 
       concat "GPG key ID: #{signature.gpg_key_primary_keyid}"
+      concat(
+        link_to(
+          'Learn about signing commits',
+          help_page_path('workflow/gpg_signed_commits/index.md'),
+          class: 'gpg-badge-popover-help-link'
+        )
+      )
     end
 
     title = capture do

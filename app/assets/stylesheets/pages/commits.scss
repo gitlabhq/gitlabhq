@@ -331,3 +331,8 @@
 .gpg-badge-popover-username {
   font-weight: bold;
 }
+
+.commit .gpg-badge-popover-help-link {
+  display: block;
+  color: $link-color;
+}

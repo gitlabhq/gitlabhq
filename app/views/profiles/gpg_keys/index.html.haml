@@ -9,7 +9,10 @@
       GPG keys allow you to verify signed commits.
   .col-lg-9
     %h5.prepend-top-0
-      Add an GPG key
+      Add a GPG key
+    %p.profile-settings-content
+      Before you can add a GPG key you need to
+      = link_to 'generate it.', help_page_path('workflow/gpg_signed_commits/index.md')
     = render 'form'
     %hr
     %h5
