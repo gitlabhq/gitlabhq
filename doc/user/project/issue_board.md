@@ -1,7 +1,7 @@
 # Issue Board
 
->**Notes:**
-- [Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
+>**Note:**
+[Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
 
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -326,5 +326,5 @@ A few things to remember:
 [kanban]: https://en.wikipedia.org/wiki/Kanban_(development)
 [create-labels]: ./labels.md#create-new-labels
 [label-priority]: ./labels.md#prioritize-labels
-[landing]: https://about.gitlab.com/solutions/issueboard
+[landing]: https://about.gitlab.com/features/issueboard/
 [youtube]: https://www.youtube.com/watch?v=UWsJ8tkHAa8
