@@ -8,15 +8,15 @@ end
 
 RSpec.shared_examples 'allows project key on reference pattern' do |url_attr|
   it 'allows underscores in the project name' do
-    expect(subject.reference_pattern.match('EXT_EXT-1234')[0]).to eq 'EXT_EXT-1234'
+    expect(described_class.reference_pattern.match('EXT_EXT-1234')[0]).to eq 'EXT_EXT-1234'
   end
 
   it 'allows numbers in the project name' do
-    expect(subject.reference_pattern.match('EXT3_EXT-1234')[0]).to eq 'EXT3_EXT-1234'
+    expect(described_class.reference_pattern.match('EXT3_EXT-1234')[0]).to eq 'EXT3_EXT-1234'
   end
 
   it 'requires the project name to begin with A-Z' do
-    expect(subject.reference_pattern.match('3EXT_EXT-1234')).to eq nil
-    expect(subject.reference_pattern.match('EXT_EXT-1234')[0]).to eq 'EXT_EXT-1234'
+    expect(described_class.reference_pattern.match('3EXT_EXT-1234')).to eq nil
+    expect(described_class.reference_pattern.match('EXT_EXT-1234')[0]).to eq 'EXT_EXT-1234'
   end
 end

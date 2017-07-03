@@ -227,7 +227,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue
     return @issue if defined?(@issue)
     # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.find_by!(iid: params[:id])
+    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
 
     return render_404 unless can?(current_user, :read_issue, @issue)
 
@@ -267,10 +267,22 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
-    params.require(:issue).permit(
-      :title, :assignee_id, :position, :description, :confidential,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
-    )
+    params.require(:issue).permit(*issue_params_attributes)
+  end
+
+  def issue_params_attributes
+    %i[
+      title
+      assignee_id
+      position
+      description
+      confidential
+      milestone_id
+      due_date
+      state_event
+      task_num
+      lock_version
+    ] + [{ label_ids: [], assignee_ids: [] }]
   end
 
   def authenticate_user!

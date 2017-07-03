@@ -25,7 +25,7 @@
       %div
       - if Gitlab::Recaptcha.enabled?
         = recaptcha_tags
-      %div
+      .submit-container
         = f.submit "Register", class: "btn-register btn"
 .clearfix.submit-container
   %p

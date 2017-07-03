@@ -727,8 +727,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def issue_reference_pattern
-    issues_tracker.reference_pattern
+  def external_issue_reference_pattern
+    external_issue_tracker.class.reference_pattern
   end
 
   def default_issues_tracker?
@@ -815,7 +815,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    @ci_service ||= ci_services.find_by(active: true)
+    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
   def deployment_services
@@ -823,7 +823,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_service
-    @deployment_service ||= deployment_services.find_by(active: true)
+    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
@@ -831,7 +831,7 @@ class Project < ActiveRecord::Base
   end
 
   def monitoring_service
-    @monitoring_service ||= monitoring_services.find_by(active: true)
+    @monitoring_service ||= monitoring_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
@@ -963,6 +963,7 @@ class Project < ActiveRecord::Base
       begin
         gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
+        expires_full_path_cache
 
         @old_path_with_namespace = old_path_with_namespace
 

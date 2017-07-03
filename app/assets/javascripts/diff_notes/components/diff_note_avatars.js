@@ -139,9 +139,9 @@ const DiffNoteAvatars = Vue.extend({
       const notesCount = this.notesCount;
 
       $(this.$el).closest('.js-avatar-container')
-        .toggleClass('js-no-comment-btn', notesCount > 0)
+        .toggleClass('no-comment-btn', notesCount > 0)
         .nextUntil('.js-avatar-container')
-        .toggleClass('js-no-comment-btn', notesCount > 0);
+        .toggleClass('no-comment-btn', notesCount > 0);
     },
     toggleDiscussionsToggleState() {
       const $notesHolders = $(this.$el).closest('.code').find('.notes_holder');

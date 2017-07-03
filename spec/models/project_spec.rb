@@ -1170,6 +1170,16 @@ describe Project, models: true do
 
       expect(relation.search(project.namespace.name)).to eq([project])
     end
+
+    describe 'with pending_delete project' do
+      let(:pending_delete_project) { create(:empty_project, pending_delete: true) }
+
+      it 'shows pending deletion project' do
+        search_result = described_class.search(pending_delete_project.name)
+
+        expect(search_result).to eq([pending_delete_project])
+      end
+    end
   end
 
   describe '#rename_repo' do
@@ -1205,6 +1215,8 @@ describe Project, models: true do
         .with('foo', project.path, project.namespace.full_path)
 
       expect(project).to receive(:expire_caches_before_rename)
+
+      expect(project).to receive(:expires_full_path_cache)
 
       project.rename_repo
     end

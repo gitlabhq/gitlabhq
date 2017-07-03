@@ -39,16 +39,6 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
         expect(subject.nodes_visible_to_user(user, [link])).to eq([])
       end
     end
-
-    context 'when the project uses an external issue tracker' do
-      it 'returns all nodes' do
-        link = double(:link)
-
-        expect(project).to receive(:external_issue_tracker).and_return(true)
-
-        expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
-      end
-    end
   end
 
   describe '#referenced_by' do
