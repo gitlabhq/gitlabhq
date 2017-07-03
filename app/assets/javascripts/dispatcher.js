@@ -152,8 +152,6 @@ import initExperimentalFlags from './experimental_flags';
           new ZenMode();
           break;
         case 'dashboard:milestones:index':
-        case 'dashboard:issues':
-        case 'dashboard:merge_requests':
           new ProjectSelect();
           break;
         case 'projects:milestones:show':
@@ -259,6 +257,7 @@ import initExperimentalFlags from './experimental_flags';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
+          new ProjectSelect();
           new UsersSelect();
           break;
         case 'projects:commit:show':
