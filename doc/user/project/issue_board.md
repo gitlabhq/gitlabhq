@@ -99,7 +99,7 @@ _Available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-e
 
 > **Notes:**
 >
->- For a broader use-case, please check the blog post
+>- For a broader use case, please check the blog post
 [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
 >
 >- For a real use case, please check why
