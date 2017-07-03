@@ -54,6 +54,10 @@
             this.markdownPreviewLoading = false;
             this.markdownPreview = data.body;
 
+            if (!this.markdownPreview) {
+              this.markdownPreview = 'Nothing to preview.';
+            }
+
             this.$nextTick(() => {
               $(this.$refs['markdown-preview']).renderGFM();
             });
