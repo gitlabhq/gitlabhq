@@ -128,7 +128,7 @@ import OAuthRememberMe from './oauth_remember_me';
         case 'sessions:new':
           new UsernameValidator();
           new ActiveTabMemoizer();
-          new OAuthRememberMe({ container: $("#remember_me") }).bindEvents();
+          new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':
