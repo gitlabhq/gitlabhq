@@ -1,5 +1,8 @@
 import Vue from 'vue';
-import IntervalPatternInput from '~/pipeline_schedules/components/interval_pattern_input';
+import Translate from '~/vue_shared/translate';
+import IntervalPatternInput from '~/pipeline_schedules/components/interval_pattern_input.vue';
+
+Vue.use(Translate);
 
 const IntervalPatternInputComponent = Vue.extend(IntervalPatternInput);
 const inputNameAttribute = 'schedule[cron]';

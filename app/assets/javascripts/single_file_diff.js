@@ -1,5 +1,7 @@
 /* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, max-len */
 
+import FilesCommentButton from './files_comment_button';
+
 (function() {
   window.SingleFileDiff = (function() {
     var COLLAPSED_HTML, ERROR_HTML, LOADING_HTML, WRAPPER;
@@ -77,6 +79,8 @@
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             gl.diffNotesCompileComponents();
           }
+
+          FilesCommentButton.init($(_this.file));
 
           if (cb) cb();
         };

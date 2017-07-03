@@ -310,7 +310,7 @@ If there are no merge conflicts and the feature branches are short lived the ris
 If there are merge conflicts you merge the master branch into the feature branch and the CI server will rerun the tests.
 If you have long lived feature branches that last for more than a few days you should make your issues smaller.
 
-## Working wih feature branches
+## Working with feature branches
 
 ![Shell output showing git pull output](git_pull.png)
 

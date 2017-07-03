@@ -22,7 +22,7 @@ describe Project, models: true do
       before do
         stub_application_setting('check_namespace_plan?' => check_namespace_plan)
         allow(Gitlab).to receive(:com?) { true }
-        expect(License).to receive(:feature_available?).with(feature) { allowed_on_global_license }
+        stub_licensed_features(feature => allowed_on_global_license)
         allow(namespace).to receive(:plan) { plan_license }
       end
 
@@ -99,6 +99,13 @@ describe Project, models: true do
       end
     end
 
+    it 'only loads licensed availability once' do
+      expect(project).to receive(:load_licensed_feature_available)
+                             .once.and_call_original
+
+      2.times { project.feature_available?(:service_desk) }
+    end
+
     context 'when feature symbol is not included on Namespace features code' do
       let(:feature) { :issues }
 
@@ -107,6 +114,27 @@ describe Project, models: true do
 
         subject
       end
+    end
+  end
+
+  describe '#mirror_waiting_duration' do
+    it 'returns in seconds the time spent in the queue' do
+      project = create(:empty_project, :mirror, :import_scheduled)
+      mirror_data = project.mirror_data
+
+      mirror_data.update_attributes(last_update_started_at: mirror_data.last_update_scheduled_at + 5.minutes)
+
+      expect(project.mirror_waiting_duration).to eq(300)
+    end
+  end
+
+  describe '#mirror_update_duration' do
+    it 'returns in seconds the time spent updating' do
+      project = create(:empty_project, :mirror, :import_started)
+
+      project.update_attributes(mirror_last_update_at: project.mirror_data.last_update_started_at + 5.minutes)
+
+      expect(project.mirror_update_duration).to eq(300)
     end
   end
 
@@ -435,6 +463,40 @@ describe Project, models: true do
              partially_matched_variable,
              perfectly_matched_variable])
         end
+      end
+    end
+  end
+
+  describe '#merge_method' do
+    [
+      { ff: true,  rebase: true,  ff_licensed: true,  rebase_licensed: true,  method: :ff },
+      { ff: true,  rebase: true,  ff_licensed: true,  rebase_licensed: false, method: :ff },
+      { ff: true,  rebase: true,  ff_licensed: false, rebase_licensed: true,  method: :rebase_merge },
+      { ff: true,  rebase: true,  ff_licensed: false, rebase_licensed: false, method: :merge },
+      { ff: true,  rebase: false, ff_licensed: true,  rebase_licensed: true,  method: :ff },
+      { ff: true,  rebase: false, ff_licensed: true,  rebase_licensed: false, method: :ff },
+      { ff: true,  rebase: false, ff_licensed: false, rebase_licensed: true,  method: :merge },
+      { ff: true,  rebase: false, ff_licensed: false, rebase_licensed: false, method: :merge },
+      { ff: false, rebase: true,  ff_licensed: true,  rebase_licensed: true,  method: :rebase_merge },
+      { ff: false, rebase: true,  ff_licensed: true,  rebase_licensed: false, method: :merge },
+      { ff: false, rebase: true,  ff_licensed: false, rebase_licensed: true,  method: :rebase_merge },
+      { ff: false, rebase: true,  ff_licensed: false, rebase_licensed: false, method: :merge },
+      { ff: false, rebase: false, ff_licensed: true,  rebase_licensed: true,  method: :merge },
+      { ff: false, rebase: false, ff_licensed: true,  rebase_licensed: false, method: :merge },
+      { ff: false, rebase: false, ff_licensed: false, rebase_licensed: true,  method: :merge },
+      { ff: false, rebase: false, ff_licensed: false, rebase_licensed: false, method: :merge }
+    ].each do |spec|
+      context spec.inspect do
+        let(:project) { build(:empty_project, merge_requests_rebase_enabled: spec[:rebase], merge_requests_ff_only_enabled: spec[:ff]) }
+        let(:spec) { spec }
+
+        subject { project.merge_method }
+
+        before do
+          stub_licensed_features(merge_request_rebase: spec[:rebase_licensed], fast_forward_merge: spec[:ff_licensed])
+        end
+
+        it { is_expected.to eq(spec[:method]) }
       end
     end
   end

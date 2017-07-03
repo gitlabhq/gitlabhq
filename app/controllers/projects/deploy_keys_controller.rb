@@ -6,7 +6,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   before_action :authorize_admin_project!
   before_action :authorize_update_deploy_key!, only: [:edit, :update]
 
-  layout "project_settings"
+  layout 'project_settings'
 
   def index
     respond_to do |format|
@@ -73,7 +73,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   protected
 
   def deploy_key
-    @deploy_key ||= @project.deploy_keys.find(params[:id])
+    @deploy_key ||= DeployKey.find(params[:id])
   end
 
   def create_params

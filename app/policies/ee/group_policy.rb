@@ -1,16 +1,24 @@
 module EE
   module GroupPolicy
-    def rules
-      raise NotImplementedError unless defined?(super)
+    extend ActiveSupport::Concern
 
-      super
+    prepended do
+      with_scope :subject
+      condition(:ldap_synced) { @subject.ldap_synced? }
 
-      return unless @user
+      rule { ldap_synced }.prevent :admin_group_member
 
-      if @subject.ldap_synced?
-        cannot! :admin_group_member
-        can! :override_group_member if @user.admin? || @subject.has_owner?(@user)
+      rule { ldap_synced & admin }.policy do
+        enable :override_group_member
+        enable :update_group_member
       end
+
+      rule { ldap_synced & owner }.policy do
+        enable :override_group_member
+        enable :update_group_member
+      end
+
+      rule { auditor }.enable :read_group
     end
   end
 end

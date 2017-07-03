@@ -16,9 +16,16 @@ describe('Stop Component', () => {
     }).$mount();
   });
 
+  describe('computed', () => {
+    it('title', () => {
+      expect(component.title).toEqual('Terminal');
+    });
+  });
+
   it('should render a link to open a web terminal with the provided path', () => {
     expect(component.$el.tagName).toEqual('A');
-    expect(component.$el.getAttribute('title')).toEqual('Terminal');
+    expect(component.$el.getAttribute('data-original-title')).toEqual('Terminal');
+    expect(component.$el.getAttribute('aria-label')).toEqual('Terminal');
     expect(component.$el.getAttribute('href')).toEqual(terminalPath);
   });
 });

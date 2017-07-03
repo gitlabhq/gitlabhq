@@ -52,10 +52,6 @@ module EE
       license_allows_auditor_user? && self.auditor
     end
 
-    def admin_or_auditor?
-      admin? || auditor?
-    end
-
     def access_level
       if auditor?
         :auditor
@@ -73,8 +69,8 @@ module EE
     end
 
     # Does the user have access to all private groups & projects?
-    def has_full_private_access?
-      admin_or_auditor?
+    def full_private_access?
+      super || auditor?
     end
 
     def remember_me!

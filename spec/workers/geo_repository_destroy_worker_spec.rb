@@ -7,7 +7,7 @@ describe GeoRepositoryDestroyWorker do
   let(:perform!) { subject.perform(project.id, project.name, path) }
 
   it 'delegates project removal to Projects::DestroyService' do
-    expect_any_instance_of(::Projects::DestroyService).to receive(:geo_replicate)
+    expect_any_instance_of(EE::Projects::DestroyService).to receive(:geo_replicate)
 
     perform!
   end

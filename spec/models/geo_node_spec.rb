@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe GeoNode, type: :model do
-  subject(:new_node) { described_class.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
-  subject(:new_primary_node) { described_class.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab', primary: true) }
+  subject(:new_node) { create(:geo_node, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab', primary: false) }
+  subject(:new_primary_node) { create(:geo_node, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab', primary: true) }
   subject(:empty_node) { described_class.new }
-  subject(:primary_node) { FactoryGirl.create(:geo_node, :primary) }
-  subject(:node) { FactoryGirl.create(:geo_node) }
+  subject(:primary_node) { create(:geo_node, :primary) }
+  subject(:node) { create(:geo_node) }
 
   let(:dummy_url) { 'https://localhost:3000/gitlab' }
   let(:url_helpers) { Gitlab::Application.routes.url_helpers }
@@ -43,6 +43,19 @@ describe GeoNode, type: :model do
 
     it 'defines a default primary flag' do
       expect(subject.primary).to eq(false)
+    end
+  end
+
+  context 'system hooks' do
+    it 'primary does not create a system hook' do
+      expect(primary_node.system_hook).to be_nil
+    end
+
+    it 'secondary creates a system hook with repository update events' do
+      hook = new_node.system_hook
+      expect(hook.push_events).to be_falsey
+      expect(hook.tag_push_events).to be_falsey
+      expect(hook.repository_update_events).to be_truthy
     end
   end
 
@@ -151,6 +164,10 @@ describe GeoNode, type: :model do
     end
 
     context 'when required fields are not filled' do
+      it 'returns an initialized Geo node key' do
+        expect(empty_node.geo_node_key).not_to be_nil
+      end
+
       it 'returns an URI object' do
         expect(empty_node.uri).to be_a URI
       end

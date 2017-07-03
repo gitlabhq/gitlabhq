@@ -28,10 +28,18 @@ FactoryGirl.define do
 
     trait :import_scheduled do
       import_status :scheduled
+
+      after(:create) do |project, _|
+        project.mirror_data&.update_attributes(last_update_scheduled_at: Time.now)
+      end
     end
 
     trait :import_started do
       import_status :started
+
+      after(:create) do |project, _|
+        project.mirror_data&.update_attributes(last_update_started_at: Time.now)
+      end
     end
 
     trait :import_finished do
@@ -241,7 +249,7 @@ FactoryGirl.define do
         active: true,
         properties: {
           'project_url' => 'http://redmine/projects/project_name_in_redmine',
-          'issues_url' => "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          'issues_url' => 'http://redmine/projects/project_name_in_redmine/issues/:id',
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )

@@ -58,7 +58,17 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
+    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
+      output =
+        if show_new_nav?
+          project_icon(project, alt: project.name, class: 'avatar-tile', width: 16, height: 16)
+        else
+          ""
+        end
+
+      output << simple_sanitize(project.name)
+      output.html_safe
+    end
 
     if current_user
       project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
@@ -196,6 +206,23 @@ module ProjectsHelper
   def load_pipeline_status(projects)
     Gitlab::Cache::Ci::ProjectPipelineStatus
       .load_in_batch_for_projects(projects)
+  end
+
+  def show_no_ssh_key_message?
+    cookies[:hide_no_ssh_message].blank? && !current_user.hide_no_ssh_key && current_user.require_ssh_key?
+  end
+
+  def show_no_password_message?
+    cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
+      ( current_user.require_password? || current_user.require_personal_access_token? )
+  end
+
+  def link_to_set_password
+    if current_user.require_password?
+      link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
+    else
+      link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
+    end
   end
 
   private

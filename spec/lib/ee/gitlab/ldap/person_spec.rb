@@ -3,19 +3,29 @@ require 'spec_helper'
 describe Gitlab::LDAP::Person do
   include LdapHelpers
 
+  let(:entry) { ldap_user_entry('john.doe') }
+
   it 'includes the EE module' do
     expect(described_class).to include(EE::Gitlab::LDAP::Person)
   end
 
   describe '.find_by_email' do
-    it 'tries finding for each configured email attribute' do
-      adapter = ldap_adapter
+    let(:adapter) { ldap_adapter }
 
+    it 'tries finding for each configured email attribute' do
       expect(adapter).to receive(:user).with('mail', 'jane@gitlab.com')
       expect(adapter).to receive(:user).with('email', 'jane@gitlab.com')
       expect(adapter).to receive(:user).with('userPrincipalName', 'jane@gitlab.com')
 
       described_class.find_by_email('jane@gitlab.com', adapter)
+    end
+
+    it 'returns nil when no user was found' do
+      allow(adapter).to receive(:user)
+
+      found_user = described_class.find_by_email('jane@gitlab.com', adapter)
+
+      expect(found_user).to eq(nil)
     end
   end
 
@@ -106,6 +116,53 @@ describe Gitlab::LDAP::Person do
         expect(subject.ssh_keys).to include('ssh-rsa keykeykey')
         expect(subject.ssh_keys).not_to include('KerberosKey:bogus')
       end
+    end
+  end
+
+  describe '#memberof' do
+    it 'returns an empty array if the field was not present' do
+      person = described_class.new(entry, 'ldapmain')
+
+      expect(person.memberof).to eq([])
+    end
+
+    it 'returns the values of `memberof` if the field was present' do
+      example_memberof = ['CN=Group Policy Creator Owners,CN=Users,DC=Vosmaer,DC=com',
+                          'CN=Domain Admins,CN=Users,DC=Vosmaer,DC=com',
+                          'CN=Enterprise Admins,CN=Users,DC=Vosmaer,DC=com',
+                          'CN=Schema Admins,CN=Users,DC=Vosmaer,DC=com',
+                          'CN=Administrators,CN=Builtin,DC=Vosmaer,DC=com']
+      entry['memberof'] = example_memberof
+      person = described_class.new(entry, 'ldapmain')
+
+      expect(person.memberof).to eq(example_memberof)
+    end
+  end
+
+  describe '#cn_from_memberof' do
+    it 'gets the group cn from the memberof value' do
+      person = described_class.new(entry, 'ldapmain')
+
+      expect(person.cn_from_memberof('cN=Group Policy Creator Owners,CN=Users,DC=Vosmaer,DC=com'))
+        .to eq('Group Policy Creator Owners')
+    end
+
+    it "doesn't break when there is no CN property" do
+      person = described_class.new(entry, 'ldapmain')
+
+      expect(person.cn_from_memberof('DC=Vosmaer,DC=com'))
+        .to be_nil
+    end
+  end
+
+  describe '#group_cns' do
+    it 'returns only CNs from the memberof values' do
+      example_memberof = ['CN=Group Policy Creator Owners,CN=Users,DC=Vosmaer,DC=com',
+                          'CN=Administrators,CN=Builtin,DC=Vosmaer,DC=com']
+      entry['memberof'] = example_memberof
+      person = described_class.new(entry, 'ldapmain')
+
+      expect(person.group_cns).to eq(['Group Policy Creator Owners', 'Administrators'])
     end
   end
 end

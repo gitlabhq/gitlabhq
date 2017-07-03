@@ -11,8 +11,7 @@ describe IssueLinks::CreateService, service: true do
     end
 
     before do
-      allow_any_instance_of(License).to receive(:feature_available?) { false }
-      allow_any_instance_of(License).to receive(:feature_available?).with(:related_issues) { true }
+      stub_licensed_features(related_issues: true)
 
       project.team << [user, :developer]
     end

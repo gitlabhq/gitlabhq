@@ -12,6 +12,8 @@ module EE
               found_user = adapter.user(possible_attribute, email)
               return found_user if found_user
             end
+
+            nil
           end
         end
 
@@ -42,6 +44,22 @@ module EE
           .map { |rdn| rdn[:value] }
             .reverse
             .join('.')
+        end
+
+        def memberof
+          return [] unless entry.attribute_names.include?(:memberof)
+
+          entry.memberof
+        end
+
+        def group_cns
+          memberof.map { |memberof_value| cn_from_memberof(memberof_value) }
+        end
+
+        def cn_from_memberof(memberof)
+          # Only get the first CN value of the string, that's the one that contains
+          # the group name
+          memberof.match(/(?:cn=([\w\s]+))/i)&.captures&.first
         end
       end
     end

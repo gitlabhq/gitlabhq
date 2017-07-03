@@ -65,7 +65,7 @@ module API
 
         users = UsersFinder.new(current_user, params).execute
 
-        entity = current_user.admin? ? Entities::UserPublic : Entities::UserBasic
+        entity = current_user.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         present paginate(users), with: entity
       end
 
@@ -104,7 +104,7 @@ module API
         authenticated_as_admin!
 
         params = declared_params(include_missing: false)
-        user = ::Users::CreateService.new(current_user, params).execute
+        user = ::Users::CreateService.new(current_user, params).execute(skip_authorization: true)
 
         if user.persisted?
           present user, with: Entities::UserPublic
@@ -162,7 +162,9 @@ module API
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
-        if user.update_attributes(user_params.except(:extern_uid, :provider))
+        result = ::Users::UpdateService.new(user, user_params.except(:extern_uid, :provider)).execute
+
+        if result[:status] == :success
           present user, with: Entities::UserPublic
         else
           render_validation_error!(user)
@@ -240,9 +242,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        email = user.emails.new(declared_params(include_missing: false))
+        email = Emails::CreateService.new(user, declared_params(include_missing: false)).execute
 
-        if email.save
+        if email.errors.blank?
           NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
@@ -280,8 +282,7 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        email.destroy
-        user.update_secondary_emails!
+        Emails::DestroyService.new(user, email: email.email).execute
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -493,9 +494,9 @@ module API
         requires :email, type: String, desc: 'The new email'
       end
       post "emails" do
-        email = current_user.emails.new(declared_params)
+        email = Emails::CreateService.new(current_user, declared_params).execute
 
-        if email.save
+        if email.errors.blank?
           NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
@@ -511,8 +512,7 @@ module API
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        email.destroy
-        current_user.update_secondary_emails!
+        Emails::DestroyService.new(current_user, email: email.email).execute
       end
 
       desc 'Get a list of user activities'

@@ -335,6 +335,36 @@ describe Namespace, models: true do
     end
   end
 
+  describe '#users_with_descendants', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+
+    it 'returns member users on every nest level without duplication' do
+      group.add_developer(user_a)
+      nested_group.add_developer(user_b)
+      deep_nested_group.add_developer(user_a)
+
+      expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(deep_nested_group.users_with_descendants).to contain_exactly(user_a)
+    end
+  end
+
+  describe '#soft_delete_without_removing_associations' do
+    let(:project1) { create(:project_empty_repo, namespace: namespace) }
+
+    it 'updates the deleted_at timestamp but preserves projects' do
+      namespace.soft_delete_without_removing_associations
+
+      expect(Project.all).to include(project1)
+      expect(namespace.deleted_at).not_to be_nil
+    end
+  end
+
   describe '#user_ids_for_project_authorizations' do
     it 'returns the user IDs for which to refresh authorizations' do
       expect(namespace.user_ids_for_project_authorizations)

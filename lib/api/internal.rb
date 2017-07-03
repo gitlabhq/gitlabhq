@@ -83,11 +83,16 @@ module API
       end
 
       #
-      # Discover user by ssh key
+      # Discover user by ssh key or user id
       #
       get "/discover" do
-        key = Key.find(params[:key_id])
-        present key.user, with: Entities::UserSafe
+        if params[:key_id]
+          key = Key.find(params[:key_id])
+          user = key.user
+        elsif params[:user_id]
+          user = User.find_by(id: params[:user_id])
+        end
+        present user, with: Entities::UserSafe
       end
 
       get "/check" do
@@ -139,8 +144,11 @@ module API
           return { success: false, message: 'Two-factor authentication is not enabled for this user' }
         end
 
-        codes = user.generate_otp_backup_codes!
-        user.save!
+        codes = nil
+
+        ::Users::UpdateService.new(user).execute! do |user|
+          codes = user.generate_otp_backup_codes!
+        end
 
         { success: true, recovery_codes: codes }
       end

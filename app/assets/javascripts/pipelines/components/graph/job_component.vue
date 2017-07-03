@@ -2,7 +2,7 @@
   import actionComponent from './action_component.vue';
   import dropdownActionComponent from './dropdown_action_component.vue';
   import jobNameComponent from './job_name_component.vue';
-  import tooltipMixin from '../../../vue_shared/mixins/tooltip';
+  import tooltip from '../../../vue_shared/directives/tooltip';
 
   /**
    * Renders the badge for the pipeline graph and the job's dropdown.
@@ -54,9 +54,9 @@
       jobNameComponent,
     },
 
-    mixins: [
-      tooltipMixin,
-    ],
+    directives: {
+      tooltip,
+    },
 
     computed: {
       tooltipText() {
@@ -77,12 +77,11 @@
 <template>
   <div>
     <a
+      v-tooltip
       v-if="job.status.details_path"
       :href="job.status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"
-      ref="tooltip"
-      data-toggle="tooltip"
       data-container="body">
 
       <job-name-component
@@ -93,10 +92,9 @@
 
     <div
       v-else
+      v-tooltip
       :title="tooltipText"
       :class="cssClassJobName"
-      ref="tooltip"
-      data-toggle="tooltip"
       data-container="body">
 
       <job-name-component

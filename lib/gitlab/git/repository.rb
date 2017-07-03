@@ -113,9 +113,7 @@ module Gitlab
       def local_branches(sort_by: nil)
         gitaly_migrate(:local_branches) do |is_enabled|
           if is_enabled
-            gitaly_ref_client.local_branches(sort_by: sort_by).map do |gitaly_branch|
-              Gitlab::Git::Branch.new(self, gitaly_branch.name, gitaly_branch)
-            end
+            gitaly_ref_client.local_branches(sort_by: sort_by)
           else
             branches(filter: :local, sort_by: sort_by)
           end
@@ -494,70 +492,6 @@ module Gitlab
         end
       end
 
-      # Returns commits collection
-      #
-      # Ex.
-      #   repo.find_commits(
-      #     ref: 'master',
-      #     max_count: 10,
-      #     skip: 5,
-      #     order: :date
-      #   )
-      #
-      #   +options+ is a Hash of optional arguments to git
-      #     :ref is the ref from which to begin (SHA1 or name)
-      #     :contains is the commit contained by the refs from which to begin (SHA1 or name)
-      #     :max_count is the maximum number of commits to fetch
-      #     :skip is the number of commits to skip
-      #     :order is the commits order and allowed value is :none (default), :date,
-      #        :topo, or any combination of them (in an array). Commit ordering types
-      #        are documented here:
-      #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
-      #
-      def find_commits(options = {})
-        actual_options = options.dup
-
-        allowed_options = [:ref, :max_count, :skip, :contains, :order]
-
-        actual_options.keep_if do |key|
-          allowed_options.include?(key)
-        end
-
-        default_options = { skip: 0 }
-        actual_options = default_options.merge(actual_options)
-
-        walker = Rugged::Walker.new(rugged)
-
-        if actual_options[:ref]
-          walker.push(rugged.rev_parse_oid(actual_options[:ref]))
-        elsif actual_options[:contains]
-          branches_contains(actual_options[:contains]).each do |branch|
-            walker.push(branch.target_id)
-          end
-        else
-          rugged.references.each("refs/heads/*") do |ref|
-            walker.push(ref.target_id)
-          end
-        end
-
-        sort_type = rugged_sort_type(actual_options[:order])
-        walker.sorting(sort_type)
-
-        commits = []
-        offset = actual_options[:skip]
-        limit = actual_options[:max_count]
-        walker.each(offset: offset, limit: limit) do |commit|
-          gitlab_commit = Gitlab::Git::Commit.decorate(commit)
-          commits.push(gitlab_commit)
-        end
-
-        walker.reset
-
-        commits
-      rescue Rugged::OdbError
-        []
-      end
-
       # Returns branch names collection that contains the special commit(SHA1
       # or name)
       #
@@ -613,32 +547,20 @@ module Gitlab
         rugged.rev_parse(oid_or_ref_name)
       end
 
-      # Return hash with submodules info for this repository
+      # Returns url for submodule
       #
       # Ex.
-      #   {
-      #     "current_path/rack"  => {
-      #       "name" => "original_path/rack",
-      #       "id" => "c67be4624545b4263184c4a0e8f887efd0a66320",
-      #       "url" => "git://github.com/chneukirchen/rack.git"
-      #     },
-      #     "encoding" => {
-      #       "id" => ....
-      #     }
-      #   }
+      #   @repository.submodule_url_for('master', 'rack')
+      #   # => git@localhost:rack.git
       #
-      def submodules(ref)
-        commit = rev_parse_target(ref)
-        return {} unless commit
+      def submodule_url_for(ref, path)
+        if submodules(ref).any?
+          submodule = submodules(ref)[path]
 
-        begin
-          content = blob_content(commit, ".gitmodules")
-        rescue InvalidBlobName
-          return {}
+          if submodule
+            submodule['url']
+          end
         end
-
-        parser = GitmodulesParser.new(content)
-        fill_submodule_ids(commit, parser.parse)
       end
 
       # Return total commits count accessible from passed ref
@@ -976,6 +898,23 @@ module Gitlab
 
       private
 
+      # We are trying to deprecate this method because it does a lot of work
+      # but it seems to be used only to look up submodule URL's.
+      # https://gitlab.com/gitlab-org/gitaly/issues/329
+      def submodules(ref)
+        commit = rev_parse_target(ref)
+        return {} unless commit
+
+        begin
+          content = blob_content(commit, ".gitmodules")
+        rescue InvalidBlobName
+          return {}
+        end
+
+        parser = GitmodulesParser.new(content)
+        fill_submodule_ids(commit, parser.parse)
+      end
+
       def alternate_object_directories
         Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).compact
       end
@@ -1227,20 +1166,6 @@ module Gitlab
         raise NoRepository.new(e)
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
-      end
-
-      # Returns the `Rugged` sorting type constant for one or more given
-      # sort types. Valid keys are `:none`, `:topo`, and `:date`, or an array
-      # containing more than one of them. `:date` uses a combination of date and
-      # topological sorting to closer mimic git's native ordering.
-      def rugged_sort_type(sort_type)
-        @rugged_sort_types ||= {
-          none: Rugged::SORT_NONE,
-          topo: Rugged::SORT_TOPO,
-          date: Rugged::SORT_DATE | Rugged::SORT_TOPO
-        }
-
-        @rugged_sort_types.fetch(sort_type, Rugged::SORT_NONE)
       end
     end
   end

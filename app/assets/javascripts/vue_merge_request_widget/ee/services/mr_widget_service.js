@@ -6,7 +6,13 @@ export default class MRWidgetService extends CEWidgetService {
   constructor(mr) {
     super(mr);
 
-    this.approvalsResource = Vue.resource(mr.approvalsPath);
+    // Set as a text/plain request so BE doesn't try to parse
+    // See https://gitlab.com/gitlab-org/gitlab-ce/issues/34534
+    this.approvalsResource = Vue.resource(mr.approvalsPath, {}, {}, {
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    });
     this.rebaseResource = Vue.resource(mr.rebasePath);
   }
 

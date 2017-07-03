@@ -17,7 +17,7 @@ module API
 
         namespaces = namespaces.search(params[:search]) if params[:search].present?
 
-        present paginate(namespaces), with: Entities::Namespace
+        present paginate(namespaces), with: Entities::Namespace, current_user: current_user
       end
 
       desc 'Update a namespace' do
@@ -25,6 +25,7 @@ module API
       end
       params do
         optional :plan, type: String, desc: "Namespace or Group plan"
+        optional :shared_runners_minutes_limit, type: Integer, desc: "Pipeline minutes quota for this namespace"
       end
       put ':id' do
         authenticated_as_admin!

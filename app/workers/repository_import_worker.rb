@@ -26,9 +26,9 @@ class RepositoryImportWorker
     project.repository.after_import
     project.import_finish
 
-    # Explicitly schedule mirror for update so
+    # Explicitly enqueue mirror for update so
     # that upstream remote is created and fetched
-    project.import_schedule if project.mirror?
+    project.force_import_job! if project.mirror?
   rescue ImportError => ex
     fail_import(project, ex.message)
     raise

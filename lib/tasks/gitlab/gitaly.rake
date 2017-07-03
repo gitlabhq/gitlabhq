@@ -58,8 +58,9 @@ namespace :gitlab do
 
         storages << { name: key, path: val['path'] }
       end
-
-      TOML.dump(socket_path: address.sub(%r{\Aunix:}, ''), storage: storages)
+      config = { socket_path: address.sub(%r{\Aunix:}, ''), storage: storages }
+      config[:auth] = { token: 'secret' } if Rails.env.test?
+      TOML.dump(config)
     end
 
     def create_gitaly_configuration

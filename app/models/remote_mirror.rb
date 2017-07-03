@@ -78,6 +78,7 @@ class RemoteMirror < ActiveRecord::Base
 
   def sync
     return unless project && enabled
+    return if project.pending_delete?
     return if Gitlab::Geo.secondary?
 
     RepositoryUpdateRemoteMirrorWorker.perform_in(BACKOFF_DELAY, self.id, Time.now) if project&.repository_exists?

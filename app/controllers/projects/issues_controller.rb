@@ -6,12 +6,12 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
-  include ::EE::Projects::IssuesController
+  prepend ::EE::Projects::IssuesController
 
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
-  before_action :module_enabled
+  before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update, :export_csv]
 
   # Allow write(create) issue
@@ -253,7 +253,7 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
   end
 
-  def module_enabled
+  def check_issues_available!
     return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
   end
 
@@ -270,10 +270,22 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
-    params.require(:issue).permit(
-      :title, :assignee_id, :position, :description, :confidential, :weight,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
-    )
+    params.require(:issue).permit(*issue_params_attributes)
+  end
+
+  def issue_params_attributes
+    %i[
+      title
+      assignee_id
+      position
+      description
+      confidential
+      milestone_id
+      due_date
+      state_event
+      task_num
+      lock_version
+    ] + [{ label_ids: [], assignee_ids: [] }]
   end
 
   def authenticate_user!

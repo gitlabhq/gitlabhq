@@ -6,17 +6,14 @@ class UpdateAllMirrorsWorker
   LEASE_KEY = 'update_all_mirrors'.freeze
 
   def perform
-    # This worker requires updating the database state, which we can't
-    # do on a Geo secondary
-    return if Gitlab::Geo.secondary?
-
     lease_uuid = try_obtain_lease
     return unless lease_uuid
 
     fail_stuck_mirrors!
 
-    return if Gitlab::Mirror.max_mirror_capacity_reached?
-    Project.mirrors_to_sync.find_each(batch_size: 200, &:import_schedule)
+    unless Gitlab::Mirror.max_mirror_capacity_reached?
+      Project.mirrors_to_sync.find_each(batch_size: 200, &:import_schedule)
+    end
 
     cancel_lease(lease_uuid)
   end

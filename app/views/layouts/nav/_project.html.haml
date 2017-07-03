@@ -28,14 +28,16 @@
           %span
             Issues
             - if @project.default_issues_tracker?
-              %span.badge.count.issue_counter= number_with_delimiter(IssuesFinder.new(current_user, project_id: @project.id).execute.opened.count)
+              %span.badge.count.issue_counter= number_with_delimiter(issuables_count_for_state(:issues, :opened, finder: IssuesFinder.new(current_user, project_id: @project.id)))
 
     - if project_nav_tab? :merge_requests
-      = nav_link(controller: @project.default_issues_tracker? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
+      - controllers = [:merge_requests, 'projects/merge_requests/conflicts']
+      - controllers.push(:merge_requests, :labels, :milestones) unless @project.default_issues_tracker?
+      = nav_link(controller: controllers) do
         = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests', class: 'shortcuts-merge_requests' do
           %span
             Merge Requests
-            %span.badge.count.merge_counter.js-merge-counter= number_with_delimiter(MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.count)
+            %span.badge.count.merge_counter.js-merge-counter= number_with_delimiter(issuables_count_for_state(:merge_requests, :opened, finder: MergeRequestsFinder.new(current_user, project_id: @project.id)))
 
     - if project_nav_tab? :pipelines
       = nav_link(controller: [:pipelines, :builds, :environments, :artifacts]) do

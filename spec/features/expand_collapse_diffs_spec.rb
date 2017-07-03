@@ -129,7 +129,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
         before do
           large_diff.find('.diff-line-num', match: :prefer_exact).hover
-          large_diff.find('.add-diff-note').click
+          large_diff.find('.add-diff-note', match: :prefer_exact).click
           large_diff.find('.note-textarea').send_keys comment_text
           large_diff.find_button('Comment').click
           wait_for_requests

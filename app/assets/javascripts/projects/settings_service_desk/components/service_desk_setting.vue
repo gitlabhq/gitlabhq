@@ -1,5 +1,6 @@
 <script>
 import eventHub from '../event_hub';
+import tooltip from '../../../vue_shared/directives/tooltip';
 
 export default {
   name: 'ServiceDeskSetting',
@@ -14,6 +15,10 @@ export default {
       required: false,
       default: '',
     },
+  },
+
+  directives: {
+    tooltip,
   },
 
   methods: {
@@ -55,8 +60,9 @@ export default {
             {{ incomingEmail }}
           </span>
           <button
+            v-tooltip
             type="button"
-            class="btn btn-clipboard btn-transparent has-tooltip"
+            class="btn btn-clipboard btn-transparent"
             title="Copy incoming email address to clipboard"
             :data-clipboard-text="incomingEmail">
             <i

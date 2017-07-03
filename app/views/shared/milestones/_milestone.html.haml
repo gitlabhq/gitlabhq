@@ -4,7 +4,7 @@
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
     .col-sm-6
-      %strong= link_to_gfm truncate(milestone.title, length: 100), milestone_path
+      %strong= link_to truncate(milestone.title, length: 100), milestone_path
     .col-sm-6
       .pull-right.light #{milestone.percent_complete(current_user)}% complete
   .row

@@ -146,7 +146,7 @@ describe 'Issues', feature: true do
 
       visit namespace_project_issues_path(project.namespace, project)
 
-      page.within(first('.issue-info')) do
+      page.within(first('.issuable-info')) do
         expect(page).to have_selector('.fa-balance-scale')
         expect(page).to have_content(2)
       end

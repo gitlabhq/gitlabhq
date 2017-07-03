@@ -1,7 +1,7 @@
 class Projects::MilestonesController < Projects::ApplicationController
   include MilestoneActions
 
-  before_action :module_enabled
+  before_action :check_issuables_available!
   before_action :milestone, only: [:edit, :update, :destroy, :show, :merge_requests, :participants, :labels]
 
   # Allow read any milestone
@@ -45,7 +45,10 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def show
-    @burndown = Burndown.new(@milestone)
+    if @project.feature_available?(:burndown_charts, current_user) &&
+        @project.feature_available?(:issue_weights, current_user)
+      @burndown = Burndown.new(@milestone)
+    end
   end
 
   def create
@@ -94,12 +97,6 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def authorize_admin_milestone!
     return render_404 unless can?(current_user, :admin_milestone, @project)
-  end
-
-  def module_enabled
-    unless @project.feature_available?(:issues, current_user) || @project.feature_available?(:merge_requests, current_user)
-      return render_404
-    end
   end
 
   def milestone_params

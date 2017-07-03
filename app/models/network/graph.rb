@@ -113,7 +113,7 @@ module Network
 
       opts[:ref] = @commit.id if @filter_ref
 
-      @repo.find_commits(opts)
+      Gitlab::Git::Commit.find_all(@repo.raw_repository, opts)
     end
 
     def commits_sort_by_ref

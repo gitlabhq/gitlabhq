@@ -12,6 +12,7 @@
  * this information in the tooltip and the colors.
  * Mockup is https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1551#note_26595150
  */
+import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   props: {
@@ -40,6 +41,10 @@ export default {
     },
   },
 
+  directives: {
+    tooltip,
+  },
+
   computed: {
     cssClass() {
       let cssClassName = `deploy-board-instance-${this.status}`;
@@ -55,10 +60,10 @@ export default {
 </script>
 <template>
   <div
-    class="deploy-board-instance has-tooltip"
+    v-tooltip
+    class="deploy-board-instance"
     :class="cssClass"
     :data-title="tooltipText"
-    data-toggle="tooltip"
     data-placement="top">
   </div>
 </template>

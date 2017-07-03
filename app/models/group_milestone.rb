@@ -1,4 +1,6 @@
 class GroupMilestone < GlobalMilestone
+  include ::EE::GroupMilestone
+
   attr_accessor :group
 
   def self.build_collection(group, projects, params)

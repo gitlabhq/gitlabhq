@@ -84,5 +84,14 @@ describe DynamicPathValidator do
 
       expect(group.errors[:path]).to include('users is a reserved name')
     end
+
+    it 'updating to an invalid path is not allowed' do
+      project = create(:empty_project)
+      project.path = 'update'
+
+      validator.validate_each(project, :path, 'update')
+
+      expect(project.errors[:path]).to include('update is a reserved name')
+    end
   end
 end

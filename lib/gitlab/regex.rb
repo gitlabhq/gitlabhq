@@ -48,7 +48,7 @@ module Gitlab
     end
 
     def environment_name_regex_message
-      "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.' and spaces"
+      "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', and spaces"
     end
 
     def kubernetes_namespace_regex

@@ -15,6 +15,22 @@ describe API::Namespaces do
     end
 
     context "when authenticated as admin" do
+      it "returns correct attributes" do
+        get api("/namespaces", admin)
+
+        group_kind_json_response = json_response.find { |resource| resource['kind'] == 'group' }
+        user_kind_json_response = json_response.find { |resource| resource['kind'] == 'user' }
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(group_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
+                                                                 'parent_id', 'members_count_with_descendants',
+                                                                 'plan', 'shared_runners_minutes_limit')
+
+        expect(user_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
+                                                                'parent_id', 'plan', 'shared_runners_minutes_limit')
+      end
+
       it "admin: returns an array of all namespaces" do
         get api("/namespaces", admin)
 
@@ -37,6 +53,27 @@ describe API::Namespaces do
     end
 
     context "when authenticated as a regular user" do
+      it "returns correct attributes when user can admin group" do
+        group1.add_owner(user)
+
+        get api("/namespaces", user)
+
+        owned_group_response = json_response.find { |resource| resource['id'] == group1.id }
+
+        expect(owned_group_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
+                                                             'plan', 'parent_id', 'members_count_with_descendants')
+      end
+
+      it "returns correct attributes when user cannot admin group" do
+        group1.add_guest(user)
+
+        get api("/namespaces", user)
+
+        guest_group_response = json_response.find { |resource| resource['id'] == group1.id }
+
+        expect(guest_group_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path', 'parent_id')
+      end
+
       it "user: returns an array of namespaces" do
         get api("/namespaces", user)
 
@@ -59,18 +96,20 @@ describe API::Namespaces do
 
   describe 'PUT /namespaces/:id' do
     context 'when authenticated as admin' do
-      it 'updates plan using full_path' do
-        put api("/namespaces/#{group1.full_path}", admin), plan: 'silver'
+      it 'updates namespace using full_path' do
+        put api("/namespaces/#{group1.full_path}", admin), plan: 'silver', shared_runners_minutes_limit: 9001
 
         expect(response).to have_http_status(200)
         expect(json_response['plan']).to eq('silver')
+        expect(json_response['shared_runners_minutes_limit']).to eq(9001)
       end
 
-      it 'updates plan using id' do
-        put api("/namespaces/#{group1.id}", admin), plan: 'silver'
+      it 'updates namespace using id' do
+        put api("/namespaces/#{group1.id}", admin), plan: 'silver', shared_runners_minutes_limit: 9001
 
         expect(response).to have_http_status(200)
         expect(json_response['plan']).to eq('silver')
+        expect(json_response['shared_runners_minutes_limit']).to eq(9001)
       end
     end
 

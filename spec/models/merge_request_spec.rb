@@ -913,68 +913,6 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
-  describe '#rebase_in_progress?' do
-    it 'returns true when there is a current rebase directory' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(subject.rebase_in_progress?).to be_truthy
-    end
-
-    it 'returns false when there is no rebase directory' do
-      allow(File).to receive(:exist?).with(subject.rebase_dir_path).and_return(false)
-
-      expect(subject.rebase_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the rebase directory has expired' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(20.minutes.ago)
-
-      expect(subject.rebase_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the source project has been removed' do
-      allow(subject).to receive(:source_project).and_return(nil)
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(File).not_to have_received(:exist?)
-      expect(subject.rebase_in_progress?).to be_falsey
-    end
-  end
-
-  describe '#squash_in_progress?' do
-    it 'returns true when there is a current squash directory' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(subject.squash_in_progress?).to be_truthy
-    end
-
-    it 'returns false when there is no squash directory' do
-      allow(File).to receive(:exist?).with(subject.squash_dir_path).and_return(false)
-
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the squash directory has expired' do
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(20.minutes.ago)
-
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-
-    it 'returns false when the source project has been removed' do
-      allow(subject).to receive(:source_project).and_return(nil)
-      allow(File).to receive(:exist?).and_return(true)
-      allow(File).to receive(:mtime).and_return(Time.now)
-
-      expect(File).not_to have_received(:exist?)
-      expect(subject.squash_in_progress?).to be_falsey
-    end
-  end
-
   describe '#commits_sha' do
     before do
       allow(subject.merge_request_diff).to receive(:commits_sha)
@@ -2121,6 +2059,42 @@ describe MergeRequest, models: true do
 
     context 'without codeclimate artifact' do
       it { expect(subject.has_codeclimate_data?).to be_falsey }
+    end
+  end
+
+  describe '#fetch_ref' do
+    it 'sets "ref_fetched" flag to true' do
+      subject.update!(ref_fetched: nil)
+
+      subject.fetch_ref
+
+      expect(subject.reload.ref_fetched).to be_truthy
+    end
+  end
+
+  describe '#ref_fetched?' do
+    it 'does not perform git operation when value is cached' do
+      subject.ref_fetched = true
+
+      expect_any_instance_of(Repository).not_to receive(:ref_exists?)
+      expect(subject.ref_fetched?).to be_truthy
+    end
+
+    it 'caches the value when ref exists but value is not cached' do
+      subject.update!(ref_fetched: nil)
+      allow_any_instance_of(Repository).to receive(:ref_exists?)
+        .and_return(true)
+
+      expect(subject.ref_fetched?).to be_truthy
+      expect(subject.reload.ref_fetched).to be_truthy
+    end
+
+    it 'returns false when ref does not exist' do
+      subject.update!(ref_fetched: nil)
+      allow_any_instance_of(Repository).to receive(:ref_exists?)
+        .and_return(false)
+
+      expect(subject.ref_fetched?).to be_falsey
     end
   end
 end

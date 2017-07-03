@@ -782,42 +782,49 @@ describe User, models: true do
   end
 
   describe '.search' do
-    let(:user) { create(:user) }
+    let!(:user) { create(:user, name: 'user', username: 'usern', email: 'email@gmail.com') }
+    let!(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@gmail.com') }
 
-    it 'returns users with a matching name' do
-      expect(described_class.search(user.name)).to eq([user])
+    describe 'name matching' do
+      it 'returns users with a matching name with exact match first' do
+        expect(described_class.search(user.name)).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching name' do
+        expect(described_class.search(user.name[0..2])).to eq([user2, user])
+      end
+
+      it 'returns users with a matching name regardless of the casing' do
+        expect(described_class.search(user2.name.upcase)).to eq([user2])
+      end
     end
 
-    it 'returns users with a partially matching name' do
-      expect(described_class.search(user.name[0..2])).to eq([user])
+    describe 'email matching' do
+      it 'returns users with a matching Email' do
+        expect(described_class.search(user.email)).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching Email' do
+        expect(described_class.search(user.email[0..2])).to eq([user2, user])
+      end
+
+      it 'returns users with a matching Email regardless of the casing' do
+        expect(described_class.search(user2.email.upcase)).to eq([user2])
+      end
     end
 
-    it 'returns users with a matching name regardless of the casing' do
-      expect(described_class.search(user.name.upcase)).to eq([user])
-    end
+    describe 'username matching' do
+      it 'returns users with a matching username' do
+        expect(described_class.search(user.username)).to eq([user, user2])
+      end
 
-    it 'returns users with a matching Email' do
-      expect(described_class.search(user.email)).to eq([user])
-    end
+      it 'returns users with a partially matching username' do
+        expect(described_class.search(user.username[0..2])).to eq([user2, user])
+      end
 
-    it 'returns users with a partially matching Email' do
-      expect(described_class.search(user.email[0..2])).to eq([user])
-    end
-
-    it 'returns users with a matching Email regardless of the casing' do
-      expect(described_class.search(user.email.upcase)).to eq([user])
-    end
-
-    it 'returns users with a matching username' do
-      expect(described_class.search(user.username)).to eq([user])
-    end
-
-    it 'returns users with a partially matching username' do
-      expect(described_class.search(user.username[0..2])).to eq([user])
-    end
-
-    it 'returns users with a matching username regardless of the casing' do
-      expect(described_class.search(user.username.upcase)).to eq([user])
+      it 'returns users with a matching username regardless of the casing' do
+        expect(described_class.search(user2.username.upcase)).to eq([user2])
+      end
     end
   end
 
@@ -1801,30 +1808,24 @@ describe User, models: true do
     end
   end
 
-  describe '#has_full_private_access?' do
+  describe '#full_private_access?' do
     it 'returns false for regular user' do
       user = build(:user)
 
-      expect(user.has_full_private_access?).to be_falsy
+      expect(user.full_private_access?).to be_falsy
     end
 
     it 'returns true for admin user' do
       user = build(:user, :admin)
 
-      expect(user.has_full_private_access?).to be_truthy
+      expect(user.full_private_access?).to be_truthy
     end
   end
 
   describe 'the GitLab_Auditor_User add-on' do
-    let(:license) { build(:license) }
-
-    before do
-      allow(::License).to receive(:current).and_return(license)
-    end
-
     context 'creating an auditor user' do
       it "does not allow creating an auditor user if the addon isn't enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user, :auditor)).to be_invalid
       end
@@ -1836,13 +1837,13 @@ describe User, models: true do
       end
 
       it "allows creating an auditor user if the addon is enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+        stub_licensed_features(auditor_user: true)
 
         expect(build(:user, :auditor)).to be_valid
       end
 
       it "allows creating a regular user if the addon isn't enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user)).to be_valid
       end
@@ -1850,64 +1851,27 @@ describe User, models: true do
 
     context '#auditor?' do
       it "returns true for an auditor user if the addon is enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+        stub_licensed_features(auditor_user: true)
 
         expect(build(:user, :auditor)).to be_auditor
       end
 
       it "returns false for an auditor user if the addon is not enabled" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user, :auditor)).not_to be_auditor
       end
 
       it "returns false for an auditor user if a license is not present" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { false }
+        stub_licensed_features(auditor_user: false)
 
         expect(build(:user, :auditor)).not_to be_auditor
       end
 
       it "returns false for a non-auditor user even if the addon is present" do
-        allow_any_instance_of(License).to receive(:feature_available?).with(:auditor_user) { true }
+        stub_licensed_features(auditor_user: true)
 
         expect(build(:user)).not_to be_auditor
-      end
-    end
-  end
-
-  describe '.ghost' do
-    it "creates a ghost user if one isn't already present" do
-      ghost = User.ghost
-
-      expect(ghost).to be_ghost
-      expect(ghost).to be_persisted
-    end
-
-    it "does not create a second ghost user if one is already present" do
-      expect do
-        User.ghost
-        User.ghost
-      end.to change { User.count }.by(1)
-      expect(User.ghost).to eq(User.ghost)
-    end
-
-    context "when a regular user exists with the username 'ghost'" do
-      it "creates a ghost user with a non-conflicting username" do
-        create(:user, username: 'ghost')
-        ghost = User.ghost
-
-        expect(ghost).to be_persisted
-        expect(ghost.username).to eq('ghost1')
-      end
-    end
-
-    context "when a regular user exists with the email 'ghost@example.com'" do
-      it "creates a ghost user with a non-conflicting email" do
-        create(:user, email: 'ghost@example.com')
-        ghost = User.ghost
-
-        expect(ghost).to be_persisted
-        expect(ghost.email).to eq('ghost1@example.com')
       end
     end
   end

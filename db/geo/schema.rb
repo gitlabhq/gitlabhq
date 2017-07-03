@@ -11,10 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170526214010) do
+ActiveRecord::Schema.define(version: 20170627195211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "event_log_states", primary_key: "event_id", force: :cascade do |t|
+  end
 
   create_table "file_registry", force: :cascade do |t|
     t.string "file_type", null: false
@@ -32,7 +35,16 @@ ActiveRecord::Schema.define(version: 20170526214010) do
     t.datetime "last_repository_synced_at"
     t.datetime "last_repository_successful_sync_at"
     t.datetime "created_at", null: false
+    t.boolean "resync_repository", default: true, null: false
+    t.boolean "resync_wiki", default: true, null: false
+    t.datetime "last_wiki_synced_at"
+    t.datetime "last_wiki_successful_sync_at"
   end
 
+  add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree
+  add_index "project_registry", ["last_repository_synced_at"], name: "index_project_registry_on_last_repository_synced_at", using: :btree
   add_index "project_registry", ["project_id"], name: "index_project_registry_on_project_id", using: :btree
+  add_index "project_registry", ["resync_repository"], name: "index_project_registry_on_resync_repository", using: :btree
+  add_index "project_registry", ["resync_wiki"], name: "index_project_registry_on_resync_wiki", using: :btree
+
 end

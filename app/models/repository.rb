@@ -612,22 +612,6 @@ class Repository
     end
   end
 
-  # Returns url for submodule
-  #
-  # Ex.
-  #   @repository.submodule_url_for('master', 'rack')
-  #   # => git@localhost:rack.git
-  #
-  def submodule_url_for(ref, path)
-    if submodules(ref).any?
-      submodule = submodules(ref)[path]
-
-      if submodule
-        submodule['url']
-      end
-    end
-  end
-
   def last_commit_for_path(sha, path)
     sha = last_commit_id_for_path(sha, path)
     commit(sha)

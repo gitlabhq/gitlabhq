@@ -10,7 +10,7 @@ module Gitlab
 
     delegate :sidekiq_throttling_enabled?, to: :current_application_settings
 
-    def fake_application_settings(defaults = ApplicationSetting.defaults)
+    def fake_application_settings(defaults = ::ApplicationSetting.defaults)
       FakeApplicationSettings.new(defaults)
     end
 
@@ -24,7 +24,7 @@ module Gitlab
 
     def cached_application_settings
       begin
-        ApplicationSetting.cached
+        ::ApplicationSetting.cached
       rescue ::Redis::BaseError, ::Errno::ENOENT
         # In case Redis isn't running or the Redis UNIX socket file is not available
       end
@@ -35,7 +35,7 @@ module Gitlab
 
       # This loads from the database into the cache, so handle Redis errors
       begin
-        db_settings = ApplicationSetting.current
+        db_settings = ::ApplicationSetting.current
       rescue ::Redis::BaseError, ::Errno::ENOENT
         # In case Redis isn't running or the Redis UNIX socket file is not available
       end
@@ -45,14 +45,14 @@ module Gitlab
       # and other callers from failing, use any loaded settings and return
       # defaults for missing columns.
       if ActiveRecord::Migrator.needs_migration?
-        defaults = ApplicationSetting.defaults
+        defaults = ::ApplicationSetting.defaults
         defaults.merge!(db_settings.attributes.symbolize_keys) if db_settings.present?
         return fake_application_settings(defaults)
       end
 
       return db_settings if db_settings.present?
 
-      ApplicationSetting.create_from_defaults || in_memory_application_settings
+      ::ApplicationSetting.create_from_defaults || in_memory_application_settings
     end
 
     def in_memory_application_settings

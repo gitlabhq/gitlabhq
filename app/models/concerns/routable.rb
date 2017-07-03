@@ -107,6 +107,14 @@ module Routable
     RequestStore[key] ||= uncached_full_path
   end
 
+  def build_full_path
+    if parent && path
+      parent.full_path + '/' + path
+    else
+      path
+    end
+  end
+
   private
 
   def uncached_full_path
@@ -135,15 +143,9 @@ module Routable
     end
   end
 
-  def build_full_path
-    if parent && path
-      parent.full_path + '/' + path
-    else
-      path
-    end
-  end
-
   def update_route
+    return if Gitlab::Geo.secondary?
+
     prepare_route
     route.save
   end

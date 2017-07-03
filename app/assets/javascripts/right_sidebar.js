@@ -1,12 +1,14 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, object-shorthand, comma-dangle, no-else-return, no-param-reassign, max-len */
 
 import Cookies from 'js-cookie';
+import SidebarHeightManager from './sidebar_height_manager';
 
 (function() {
   this.Sidebar = (function() {
     function Sidebar(currentUser) {
       this.toggleTodo = this.toggleTodo.bind(this);
       this.sidebar = $('aside');
+
       this.removeListeners();
       this.addEventListeners();
     }
@@ -20,15 +22,14 @@ import Cookies from 'js-cookie';
     };
 
     Sidebar.prototype.addEventListeners = function() {
+      SidebarHeightManager.init();
       const $document = $(document);
-      const throttledSetSidebarHeight = _.throttle(this.setSidebarHeight, 10);
 
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
-      $(window).on('resize', () => throttledSetSidebarHeight());
-      $document.on('scroll', () => throttledSetSidebarHeight());
+
       $document.on('click', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
@@ -203,17 +204,6 @@ import Cookies from 'js-cookie';
         if (this.isOpen()) {
           return this.triggerOpenSidebar();
         }
-      }
-    };
-
-    Sidebar.prototype.setSidebarHeight = function() {
-      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight() + $('.sub-nav-scroll').outerHeight();
-      const $rightSidebar = $('.js-right-sidebar');
-      const diff = $navHeight - $(window).scrollTop();
-      if (diff > 0) {
-        $rightSidebar.outerHeight($(window).height() - diff);
-      } else {
-        $rightSidebar.outerHeight('100%');
       }
     };
 

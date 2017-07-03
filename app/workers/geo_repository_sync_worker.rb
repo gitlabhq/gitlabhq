@@ -12,7 +12,7 @@ class GeoRepositorySyncWorker
 
     start_time = Time.now
     project_ids_not_synced = find_project_ids_not_synced
-    project_ids_updated_recently = find_synced_project_ids_updated_recently
+    project_ids_updated_recently = find_project_ids_updated_recently
     project_ids = interleave(project_ids_not_synced, project_ids_updated_recently)
 
     logger.info "Started Geo repository syncing for #{project_ids.length} project(s)"
@@ -43,22 +43,16 @@ class GeoRepositorySyncWorker
 
   def find_project_ids_not_synced
     Project.where.not(id: Geo::ProjectRegistry.synced.pluck(:project_id))
+           .order(last_repository_updated_at: :desc)
            .limit(BATCH_SIZE)
            .pluck(:id)
   end
 
-  def find_synced_project_ids_updated_recently
-    Geo::ProjectRegistry.where(project_id: find_project_ids_updated_recently)
-                        .where('last_repository_synced_at <= ?', LAST_SYNC_INTERVAL.ago)
-                        .order(last_repository_synced_at: :asc)
+  def find_project_ids_updated_recently
+    Geo::ProjectRegistry.dirty
+                        .order(Gitlab::Database.nulls_first_order(:last_repository_synced_at, :desc))
                         .limit(BATCH_SIZE)
                         .pluck(:project_id)
-  end
-
-  def find_project_ids_updated_recently
-    Project.where(id: Geo::ProjectRegistry.synced.pluck(:project_id))
-           .where('last_repository_updated_at >= ?', LAST_SYNC_INTERVAL.ago)
-           .pluck(:id)
   end
 
   def interleave(first, second)
@@ -66,7 +60,7 @@ class GeoRepositorySyncWorker
       first.zip(second)
     else
       second.zip(first).map(&:reverse)
-    end.flatten(1).compact.take(BATCH_SIZE)
+    end.flatten(1).uniq.compact.take(BATCH_SIZE)
   end
 
   def over_time?(start_time)

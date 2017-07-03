@@ -85,9 +85,8 @@ window.Build = (function () {
         if (!this.hasBeenScrolled) {
           this.scrollToBottom();
         }
-      });
-
-    this.verifyTopPosition();
+      })
+      .then(() => this.verifyTopPosition());
   }
 
   Build.prototype.canScroll = function () {
@@ -176,7 +175,7 @@ window.Build = (function () {
     }
 
     if ($flashError.length) {
-      topPostion += $flashError.outerHeight();
+      topPostion += $flashError.outerHeight() + prependTopDefault;
     }
 
     this.$buildTrace.css({
@@ -196,6 +195,7 @@ window.Build = (function () {
     })
       .done((log) => {
         gl.utils.setCiStatusFavicon(`${this.pageUrl}/status.json`);
+
         if (log.state) {
           this.state = log.state;
         }
@@ -220,7 +220,11 @@ window.Build = (function () {
         }
 
         if (!log.complete) {
-          this.toggleScrollAnimation(true);
+          if (!this.hasBeenScrolled) {
+            this.toggleScrollAnimation(true);
+          } else {
+            this.toggleScrollAnimation(false);
+          }
 
           Build.timeout = setTimeout(() => {
             //eslint-disable-next-line
@@ -229,7 +233,8 @@ window.Build = (function () {
                 if (!this.hasBeenScrolled) {
                   this.scrollToBottom();
                 }
-              });
+              })
+              .then(() => this.verifyTopPosition());
           }, 4000);
         } else {
           this.$buildRefreshAnimation.remove();

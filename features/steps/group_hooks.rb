@@ -65,6 +65,6 @@ class Spinach::Features::GroupHooks < Spinach::FeatureSteps
 
   step 'I should see hook service down error message' do
     expect(page).to have_selector '.flash-alert',
-                              text: 'Hook execution failed: Exception from'
+                              text: 'Hook execution failed: Failed to open'
   end
 end

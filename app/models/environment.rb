@@ -45,6 +45,7 @@ class Environment < ActiveRecord::Base
       .to_sql
     order(Gitlab::Database.nulls_first_order("(#{max_deployment_id_sql})", 'ASC'))
   end
+  scope :in_review_folder, -> { where(environment_type: "review") }
 
   state_machine :state, initial: :available do
     event :start do
@@ -159,6 +160,16 @@ class Environment < ActiveRecord::Base
 
   def metrics
     project.monitoring_service.environment_metrics(self) if has_metrics?
+  end
+
+  def has_additional_metrics?
+    project.prometheus_service.present? && available? && last_deployment.present?
+  end
+
+  def additional_metrics
+    if has_additional_metrics?
+      project.prometheus_service.additional_environment_metrics(self)
+    end
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS

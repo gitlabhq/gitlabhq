@@ -3,6 +3,7 @@ import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
 import RecentSearchesService from './services/recent_searches_service';
 import eventHub from './event_hub';
+import { addClassIfElementExists } from '../lib/utils/dom_utils';
 
 class FilteredSearchManager {
   constructor(page) {
@@ -44,6 +45,10 @@ class FilteredSearchManager {
         return [];
       })
       .then((searches) => {
+        if (!searches) {
+          return;
+        }
+
         // Put any searches that may have come in before
         // we fetched the saved searches ahead of the already saved ones
         const resultantSearches = this.recentSearchesStore.setRecentSearches(
@@ -227,11 +232,7 @@ class FilteredSearchManager {
   }
 
   addInputContainerFocus() {
-    const inputContainer = this.filteredSearchInput.closest('.filtered-search-box');
-
-    if (inputContainer) {
-      inputContainer.classList.add('focus');
-    }
+    addClassIfElementExists(this.filteredSearchInput.closest('.filtered-search-box'), 'focus');
   }
 
   removeInputContainerFocus(e) {
@@ -491,6 +492,7 @@ class FilteredSearchManager {
   }
 
   searchState(e) {
+    e.preventDefault();
     const target = e.currentTarget;
     // remove focus outline after click
     target.blur();

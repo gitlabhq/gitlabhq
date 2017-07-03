@@ -40,7 +40,7 @@ $(document).on('keydown.quick_submit', '.js-quick-submit', (e) => {
 
   e.preventDefault();
   const $form = $(e.target).closest('form');
-  const $submitButton = $form.find('input[type=submit], button[type=submit]');
+  const $submitButton = $form.find('input[type=submit], button[type=submit]').first();
 
   if (!$submitButton.attr('disabled')) {
     $submitButton.trigger('click', [e]);

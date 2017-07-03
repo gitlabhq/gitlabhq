@@ -1,5 +1,59 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.3 (2017-06-30)
+
+- Add metrics to both remote and non remote mirroring. !2118
+- Forces import worker with mirror to insert mirror in front of queue. !2231
+- Fix locked and stale SSH keys file from 9.3.0 upgrade. !2240
+- Fix crash in LDAP sync when user was removed. !2289
+- allow rebase for unapproved merge requests.
+- Geo - Fix path_with_namespace for instances of Geo::DeletedProject.
+
+## 9.3.2 (2017-06-27)
+
+- Fix GitLab check: Problem with Elastic Search. !2278
+
+## 9.3.1 (2017-06-26)
+
+- Geo: fix removal of repositories from disk on secondary nodes. !2210
+- Fix Geo middleware to work properly with multiple requests.
+
+## 9.3.0 (2017-06-22)
+
+- Per user/group access levels for Protected Tags. !1629
+- Add a user's memberships when logging in through LDAP. !1819
+- Add server-wide Audit Log admin screen. !1852
+- Move pull mirroring to adaptive scheduling. !1853
+- Create a push rule to check the branch name. !1896 (Riccardo Padovani)
+- Add shared_runners_minutes_limit to groups and users API. !1942
+- Compare codeclimate artifacts on the merge request page. !1984
+- Lookup users by email in LDAP if lookup by DN fails during sync. !2003
+- Update mirror_user for project when mirror_user is deleted. !2013 (Athar Hameed)
+- Geo: persist clone url prefix in the database. !2015
+- Geo: prevent Gitlab::Git::Repository::NoRepository from stucking replication. !2115
+- Geo: fixed Dynamic Backoff strategy that was not being used by workers. !2128
+- [Elasticsearch] Improve code search for camel case.
+- Fixed header being over issue boards when in focus mode.
+- Fix: Approvals not reset if changing target branch.
+- Fix bug where files over 2 GB would not be saved in Geo tracking DB.
+- Add primary node clone URL to Geo secondary 'How to work faster with Geo' popover.
+- Fix broken time sync leeway with Geo.
+- Gracefully handle case when Geo secondary does not have the right db_key_base.
+- Use the current node configuration to populate suggested new URL for Geo node.
+- Check if a merge request is approved when merging from API or slash command.
+- Add closed_at field to issue CSV export.
+- Geo - Properly set tracking database connection and cron jobs on secondary nodes.
+- Add push events to Geo event log.
+- fix Rebase being disabled for unapproved MRs.
+- Fix approvers dropdown when creating a merge request from a fork.
+- Add relation between Pipelines.
+- Allow to Trigger Pipeline using CI Job Token.
+- Allow to view Personal pipelines quota.
+- Geo - Use GeoNode#clone_url_prefix for the Geo::RepositorySyncService.
+- Elasticsearch searches through the project description.
+- Fix: /unassign by default unassigns everyone. Implement /reassign command.
+- Speed up checking for approvers remaining.
+
 ## 9.2.7 (2017-06-21)
 
 - Geo: fixed Dynamic Backoff strategy that was not being used by workers. !2128
