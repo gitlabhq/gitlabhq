@@ -51,8 +51,7 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
   },
   template: `
     <div
-      class="block list"
-      v-if="list.type !== 'closed'">
+      class="block list">
       <button
         class="btn btn-default btn-block"
         type="button"

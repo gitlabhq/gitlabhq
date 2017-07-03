@@ -11,6 +11,9 @@ class Groups::MilestonesController < Groups::ApplicationController
         @milestone_states = GlobalMilestone.states_count(@projects)
         @milestones = Kaminari.paginate_array(milestones).page(params[:page])
       end
+      format.json do
+        render json: milestones.map { |m| m.for_display.slice(:title, :name) }
+      end
     end
   end
 
