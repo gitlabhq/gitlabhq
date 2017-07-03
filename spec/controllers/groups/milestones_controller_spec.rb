@@ -23,6 +23,21 @@ describe Groups::MilestonesController do
     project.team << [user, :master]
   end
 
+  describe "#index" do
+    it 'shows group milestones page' do
+      get :index, group_id: group.to_param
+
+      expect(response).to have_http_status(200)
+    end
+
+    it 'shows group milestones JSON' do
+      get :index, group_id: group.to_param, format: :json
+
+      expect(response).to have_http_status(200)
+      expect(response.content_type).to eq 'application/json'
+    end
+  end
+
   it_behaves_like 'milestone tabs'
 
   describe "#create" do
