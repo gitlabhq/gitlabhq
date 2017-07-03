@@ -64,7 +64,7 @@ describe 'Dropdown hint', :js do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-author', visible: true)
-      expect_tokens([{ name: 'author' }])
+      expect_tokens([{ name: 'Author' }])
       expect_filtered_search_input_empty
     end
 
@@ -73,7 +73,7 @@ describe 'Dropdown hint', :js do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-assignee', visible: true)
-      expect_tokens([{ name: 'assignee' }])
+      expect_tokens([{ name: 'Assignee' }])
       expect_filtered_search_input_empty
     end
 
@@ -82,7 +82,7 @@ describe 'Dropdown hint', :js do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-milestone', visible: true)
-      expect_tokens([{ name: 'milestone' }])
+      expect_tokens([{ name: 'Milestone' }])
       expect_filtered_search_input_empty
     end
 
@@ -91,7 +91,7 @@ describe 'Dropdown hint', :js do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-label', visible: true)
-      expect_tokens([{ name: 'label' }])
+      expect_tokens([{ name: 'Label' }])
       expect_filtered_search_input_empty
     end
   end
@@ -103,7 +103,7 @@ describe 'Dropdown hint', :js do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-author', visible: true)
-      expect_tokens([{ name: 'author' }])
+      expect_tokens([{ name: 'Author' }])
       expect_filtered_search_input_empty
     end
 
@@ -113,7 +113,7 @@ describe 'Dropdown hint', :js do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-assignee', visible: true)
-      expect_tokens([{ name: 'assignee' }])
+      expect_tokens([{ name: 'Assignee' }])
       expect_filtered_search_input_empty
     end
 
@@ -123,7 +123,7 @@ describe 'Dropdown hint', :js do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-milestone', visible: true)
-      expect_tokens([{ name: 'milestone' }])
+      expect_tokens([{ name: 'Milestone' }])
       expect_filtered_search_input_empty
     end
 
@@ -133,7 +133,7 @@ describe 'Dropdown hint', :js do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-label', visible: true)
-      expect_tokens([{ name: 'label' }])
+      expect_tokens([{ name: 'Label' }])
       expect_filtered_search_input_empty
     end
   end
@@ -144,7 +144,7 @@ describe 'Dropdown hint', :js do
       filtered_search.send_keys(:backspace)
       click_hint('author')
 
-      expect_tokens([{ name: 'author' }])
+      expect_tokens([{ name: 'Author' }])
       expect_filtered_search_input_empty
     end
 
@@ -153,7 +153,7 @@ describe 'Dropdown hint', :js do
       filtered_search.send_keys(:backspace)
       click_hint('assignee')
 
-      expect_tokens([{ name: 'assignee' }])
+      expect_tokens([{ name: 'Assignee' }])
       expect_filtered_search_input_empty
     end
 
@@ -162,7 +162,7 @@ describe 'Dropdown hint', :js do
       filtered_search.send_keys(:backspace)
       click_hint('milestone')
 
-      expect_tokens([{ name: 'milestone' }])
+      expect_tokens([{ name: 'Milestone' }])
       expect_filtered_search_input_empty
     end
 
@@ -171,7 +171,7 @@ describe 'Dropdown hint', :js do
       filtered_search.send_keys(:backspace)
       click_hint('label')
 
-      expect_tokens([{ name: 'label' }])
+      expect_tokens([{ name: 'Label' }])
       expect_filtered_search_input_empty
     end
   end

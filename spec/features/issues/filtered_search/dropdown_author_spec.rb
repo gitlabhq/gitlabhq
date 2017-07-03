@@ -122,7 +122,7 @@ describe 'Dropdown author', js: true do
       click_author(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: "@#{user_jacob.username}" }])
+      expect_tokens([{ name: 'Author', value: "@#{user_jacob.username}" }])
       expect_filtered_search_input_empty
     end
 
@@ -130,7 +130,7 @@ describe 'Dropdown author', js: true do
       click_author(user.name)
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+      expect_tokens([{ name: 'Author', value: "@#{user.username}" }])
       expect_filtered_search_input_empty
     end
   end
@@ -149,7 +149,7 @@ describe 'Dropdown author', js: true do
       find('#js-dropdown-author .filter-dropdown-item', text: user.username).click
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: user.username }])
+      expect_tokens([{ name: 'Author', value: user.username }])
       expect_filtered_search_input_empty
     end
   end

@@ -47,7 +47,7 @@ describe 'Dropdown label', js: true do
 
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect_tokens([{ name: 'label', value: "~#{bug_label.title}" }])
+      expect_tokens([{ name: 'Label', value: "~#{bug_label.title}" }])
       expect_filtered_search_input_empty
     end
   end
@@ -178,7 +178,7 @@ describe 'Dropdown label', js: true do
       click_label(bug_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ name: 'label', value: "~#{bug_label.title}" }])
+      expect_tokens([{ name: 'Label', value: "~#{bug_label.title}" }])
       expect_filtered_search_input_empty
     end
 
@@ -187,7 +187,7 @@ describe 'Dropdown label', js: true do
       click_label(bug_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ name: 'label', value: "~#{bug_label.title}" }])
+      expect_tokens([{ name: 'Label', value: "~#{bug_label.title}" }])
       expect_filtered_search_input_empty
     end
 
@@ -195,7 +195,7 @@ describe 'Dropdown label', js: true do
       click_label(two_words_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ name: 'label', value: "\"#{two_words_label.title}\"" }])
+      expect_tokens([{ name: 'Label', value: "\"#{two_words_label.title}\"" }])
       expect_filtered_search_input_empty
     end
 
@@ -203,7 +203,7 @@ describe 'Dropdown label', js: true do
       click_label(long_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ name: 'label', value: "\"#{long_label.title}\"" }])
+      expect_tokens([{ name: 'Label', value: "\"#{long_label.title}\"" }])
       expect_filtered_search_input_empty
     end
 
@@ -211,7 +211,7 @@ describe 'Dropdown label', js: true do
       click_label(wont_fix_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ name: 'label', value: "~'#{wont_fix_label.title}'" }])
+      expect_tokens([{ name: 'Label', value: "~'#{wont_fix_label.title}'" }])
       expect_filtered_search_input_empty
     end
 
@@ -219,7 +219,7 @@ describe 'Dropdown label', js: true do
       click_label(uppercase_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ name: 'label', value: "~#{uppercase_label.title}" }])
+      expect_tokens([{ name: 'Label', value: "~#{uppercase_label.title}" }])
       expect_filtered_search_input_empty
     end
 
@@ -227,7 +227,7 @@ describe 'Dropdown label', js: true do
       click_label(special_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ name: 'label', value: "~#{special_label.title}" }])
+      expect_tokens([{ name: 'Label', value: "~#{special_label.title}" }])
       expect_filtered_search_input_empty
     end
 
@@ -235,7 +235,7 @@ describe 'Dropdown label', js: true do
       find("#{js_dropdown_label} .filter-dropdown-item", text: 'No Label').click
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ name: 'label', value: 'none' }])
+      expect_tokens([{ name: 'Label', value: 'none' }])
       expect_filtered_search_input_empty
     end
   end

@@ -25,7 +25,7 @@ feature 'Merge Request filtering by Milestone' do
     visit_merge_requests(project)
     input_filtered_search('milestone:none')
 
-    expect_tokens([{ name: 'milestone', value: 'none' }])
+    expect_tokens([{ name: 'Milestone', value: 'none' }])
     expect_filtered_search_input_empty
 
     expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)

@@ -198,7 +198,7 @@ describe "Search"  do
           sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+          expect_tokens([{ name: 'Assignee', value: "@#{user.username}" }])
           expect_filtered_search_input_empty
         end
 
@@ -207,7 +207,7 @@ describe "Search"  do
           sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+          expect_tokens([{ name: 'Author', value: "@#{user.username}" }])
           expect_filtered_search_input_empty
         end
 
@@ -216,7 +216,7 @@ describe "Search"  do
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+          expect_tokens([{ name: 'Assignee', value: "@#{user.username}" }])
           expect_filtered_search_input_empty
         end
 
@@ -225,7 +225,7 @@ describe "Search"  do
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+          expect_tokens([{ name: 'Author', value: "@#{user.username}" }])
           expect_filtered_search_input_empty
         end
       end

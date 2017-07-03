@@ -135,7 +135,7 @@ describe 'Dropdown assignee', :js do
       click_assignee(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: "@#{user_jacob.username}" }])
+      expect_tokens([{ name: 'Assignee', value: "@#{user_jacob.username}" }])
       expect_filtered_search_input_empty
     end
 
@@ -144,7 +144,7 @@ describe 'Dropdown assignee', :js do
       click_assignee(user.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_tokens([{ name: 'Assignee', value: "@#{user.username}" }])
       expect_filtered_search_input_empty
     end
 
@@ -152,7 +152,7 @@ describe 'Dropdown assignee', :js do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: 'none' }])
+      expect_tokens([{ name: 'Assignee', value: 'none' }])
       expect_filtered_search_input_empty
     end
   end
@@ -171,7 +171,7 @@ describe 'Dropdown assignee', :js do
       find('#js-dropdown-assignee .filter-dropdown-item', text: user.username).click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: user.username }])
+      expect_tokens([{ name: 'Assignee', value: user.username }])
       expect_filtered_search_input_empty
     end
   end

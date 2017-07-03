@@ -32,7 +32,7 @@ describe 'Search bar', js: true do
     it 'selects item' do
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect_tokens([{ name: 'author' }])
+      expect_tokens([{ name: 'Author' }])
       expect_filtered_search_input_empty
     end
   end
