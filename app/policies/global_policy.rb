@@ -18,7 +18,6 @@ class GlobalPolicy < BasePolicy
     prevent :receive_notifications
     prevent :use_quick_actions
     prevent :create_group
-    prevent :log_in
   end
 
   rule { default }.policy do
