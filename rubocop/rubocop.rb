@@ -1,6 +1,6 @@
 require_relative 'cop/custom_error_class'
 require_relative 'cop/gem_fetcher'
-require_relative 'cop/activerecord_serialize'
+require_relative 'cop/active_record_serialize'
 require_relative 'cop/redirect_with_status'
 require_relative 'cop/polymorphic_associations'
 require_relative 'cop/project_path_helper'

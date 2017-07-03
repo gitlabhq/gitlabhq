@@ -1,9 +1,9 @@
 require 'spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
-require_relative '../../../rubocop/cop/activerecord_serialize'
+require_relative '../../../rubocop/cop/active_record_serialize'
 
-describe RuboCop::Cop::ActiverecordSerialize do
+describe RuboCop::Cop::ActiveRecordSerialize do
   include CopHelper
 
   subject(:cop) { described_class.new }

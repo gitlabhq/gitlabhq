@@ -3,7 +3,7 @@ class PersonalAccessToken < ActiveRecord::Base
   include TokenAuthenticatable
   add_authentication_token_field :token
 
-  serialize :scopes, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   belongs_to :user
 
