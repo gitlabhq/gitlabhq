@@ -13,7 +13,11 @@ module RequiresWhitelistedMonitoringClient
   def client_ip_whitelisted?
     Settings.monitoring.ip_whitelist.any? { |e| e.include?(Gitlab::RequestContext.client_ip) }
   end
-  
+
+  def ip_whitelist
+    @ip_whitelist ||= Settings.monitoring.ip_whitelist.map(&IPAddr.method(:new))
+  end
+
   def token_valid?
     token = params[:token].presence || request.headers['TOKEN']
     token.present? &&
