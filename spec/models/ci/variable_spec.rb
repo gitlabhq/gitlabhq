@@ -5,14 +5,13 @@ describe Ci::Variable, models: true do
 
   let(:secret_value) { 'secret' }
 
-  it { is_expected.to include_module(HasVariable) }
-
   describe 'validations' do
     # EE
     before do
       stub_licensed_features(variable_environment_scope: true)
     end
 
+    it { is_expected.to include_module(HasVariable) }
     it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope) }
     it { is_expected.to validate_length_of(:key).is_at_most(255) }
