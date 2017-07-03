@@ -51,7 +51,7 @@ describe Namespace, models: true do
         parent = create(:namespace)
         child = create(:group, name: 'child', path: 'child', parent: parent)
         project_1 = create(:project_empty_repo, namespace: parent)
-        project_2 = create(:project_empty_repo, namespace: child)
+        create(:project_empty_repo, namespace: child)
         full_path_was = "#{parent.full_path}_old"
         new_path = parent.full_path
 
