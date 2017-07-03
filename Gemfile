@@ -333,7 +333,7 @@ group :development, :test do
 
   gem 'capybara', '~> 2.14.4'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist', '~> 1.9.0'
+  gem 'poltergeist', '~> 1.15.0'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
