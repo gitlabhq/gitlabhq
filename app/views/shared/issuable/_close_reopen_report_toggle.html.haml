@@ -7,7 +7,7 @@
 - button_method = issuable.is_a?(MergeRequest) ? 'put' : ''
 
 .pull-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
-  = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_url(issuable), { method: button_method.to_s, class: "#{button_class} btn-#{button_action}", title: "#{display_button_action} #{display_issuable_type}" }
+  = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_url(issuable), { method: button_method, class: "#{button_class} btn-#{button_action}", title: "#{display_button_action} #{display_issuable_type}" }
 
   = button_tag type: 'button', class: "#{toggle_class} btn-#{button_action}-color", data: { 'dropdown-trigger' => '#issuable-close-menu' }, 'aria-label' => 'Toggle dropdown' do
     = icon('caret-down', class: 'toggle-icon icon')
@@ -31,14 +31,14 @@
             = display_issuable_type
           %p
 
-    %li.divider.droplab-item-ignore
+      %li.divider.droplab-item-ignore
 
-    %li.report-item{ data: { text: 'Report abuse', url: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)), button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
-      %button.btn.btn-transparent
-        = icon('check', class: 'icon')
-        .description
-          %strong Report abuse
-          %p
-            Report
-            = display_issuable_type.pluralize
-            that are abusive, inappropriate or spam.
+      %li.report-item{ data: { text: 'Report abuse', url: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)), button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
+        %button.btn.btn-transparent
+          = icon('check', class: 'icon')
+          .description
+            %strong Report abuse
+            %p
+              Report
+              = display_issuable_type.pluralize
+              that are abusive, inappropriate or spam.

@@ -31,6 +31,11 @@ class Issue {
 
     this.initCloseReopenReport();
 
+    if (!this.closeReopenReportToggle) {
+      this.closeButtons = $('a.btn-close');
+      this.reopenButtons = $('a.btn-reopen');
+    }
+
     if (Issue.createMrDropdownWrap) {
       this.createMergeRequestDropdown = new CreateMergeRequestDropdown(Issue.createMrDropdownWrap);
     }
@@ -52,7 +57,7 @@ class Issue {
         Issue.submitNoteForm($button.closest('form'));
       }
 
-      this.closeReopenReportToggle.setDisable(true);
+      this.disableCloseReopenButton($button, true);
 
       url = $button.attr('href');
       return $.ajax({
@@ -68,7 +73,7 @@ class Issue {
           isClosedBadge.toggleClass('hidden', !isClosed);
           isOpenBadge.toggleClass('hidden', isClosed);
 
-          this.closeReopenReportToggle.updateButton(isClosed);
+          this.toggleCloseReopenButton(isClosed);
 
           let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));
           numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
@@ -87,13 +92,16 @@ class Issue {
           new Flash(issueFailMessage);
         }
 
-        this.closeReopenReportToggle.setDisable(false);
+        this.disableCloseReopenButton($button, false);
       });
     });
   }
 
   initCloseReopenReport() {
     const container = document.querySelector('.js-issuable-close-dropdown');
+
+    if (!container) return;
+
     const dropdownTrigger = container.querySelector('.js-issuable-close-toggle');
     const dropdownList = container.querySelector('.js-issuable-close-menu');
     const button = container.querySelector('.js-issuable-close-button');
@@ -105,6 +113,23 @@ class Issue {
     });
 
     this.closeReopenReportToggle.initDroplab();
+  }
+
+  disableCloseReopenButton($button, shouldDisable) {
+    if (this.closeReopenReportToggle) {
+      this.closeReopenReportToggle.setDisable(shouldDisable);
+    } else {
+      $button.prop('disabled', shouldDisable);
+    }
+  }
+
+  toggleCloseReopenButton(isClosed) {
+    if (this.closeReopenReportToggle) {
+      this.closeReopenReportToggle.updateButton(isClosed);
+    } else {
+      this.closeButtons.toggleClass('hidden', isClosed);
+      this.reopenButtons.toggleClass('hidden', !isClosed);
+    }
   }
 
   static submitNoteForm(form) {

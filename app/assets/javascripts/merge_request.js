@@ -22,10 +22,12 @@ import CloseReopenReportToggle from './close_reopen_report_toggle';
           return _this.showAllCommits();
         };
       })(this));
+      
       this.initTabs();
       this.initMRBtnListeners();
       this.initCommitMessageListeners();
-      MergeRequest.initCloseReopenReport();
+      this.initCloseReopenReport();
+      
       if ($("a.btn-close").length) {
         this.taskList = new gl.TaskList({
           dataType: 'merge_request',
@@ -66,11 +68,15 @@ import CloseReopenReportToggle from './close_reopen_report_toggle';
         if (shouldSubmit && $this.data('submitted')) {
           return;
         }
+
+        _this.disableCloseReopenButton($this, true);
+
         if (shouldSubmit) {
           if ($this.hasClass('btn-comment-and-close') || $this.hasClass('btn-comment-and-reopen')) {
             e.preventDefault();
             e.stopImmediatePropagation();
-            return _this.submitNoteForm($this.closest('form'), $this);
+
+            _this.submitNoteForm($this.closest('form'), $this);
           }
         }
       });
@@ -121,7 +127,7 @@ import CloseReopenReportToggle from './close_reopen_report_toggle';
       $el.text(gl.text.addDelimiter(count));
     };
 
-    MergeRequest.initCloseReopenReport = function () {
+    MergeRequest.prototype.initCloseReopenReport = function () {
       const container = document.querySelector('.js-issuable-close-dropdown');
 
       if (!container) return;
@@ -130,13 +136,21 @@ import CloseReopenReportToggle from './close_reopen_report_toggle';
       const dropdownList = container.querySelector('.js-issuable-close-menu');
       const button = container.querySelector('.js-issuable-close-button');
 
-      const closeReopenReportToggle = new CloseReopenReportToggle({
+      this.closeReopenReportToggle = new CloseReopenReportToggle({
         dropdownTrigger,
         dropdownList,
         button,
       });
 
-      closeReopenReportToggle.initDroplab();
+      this.closeReopenReportToggle.initDroplab();
+    };
+
+    MergeRequest.prototype.disableCloseReopenButton = function ($button, shouldDisable) {
+      if (this.closeReopenReportToggle) {
+        this.closeReopenReportToggle.setDisable(shouldDisable);
+      } else {
+        $button.prop('disabled', shouldDisable);
+      }
     };
 
     return MergeRequest;

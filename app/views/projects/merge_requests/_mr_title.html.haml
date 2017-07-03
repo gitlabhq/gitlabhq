@@ -26,7 +26,8 @@
         %ul
           - if can_update_merge_request
             %li= link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'issuable-edit'
-          %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
+          - unless current_user == @merge_request.author
+            %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
           - if can_update_merge_request
             %li{ class: merge_request_button_visibility(@merge_request, true) }
               = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, title: 'Close merge request'

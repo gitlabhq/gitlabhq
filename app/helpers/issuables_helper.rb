@@ -261,8 +261,11 @@ module IssuablesHelper
     issuable_url(issuable, params)
   end
 
-  def close_reopen_issuable_url(issuable)
-    issuable.closed? ? reopen_issuable_url(issuable) : close_issuable_url(issuable)
+  def close_reopen_issuable_url(issuable, should_inverse = false)
+    is_closed = issuable.closed?
+    is_closed = !is_closed if should_inverse
+
+    is_closed ? reopen_issuable_url(issuable) : close_issuable_url(issuable)
   end
 
   def issuable_url(issuable, *options)
