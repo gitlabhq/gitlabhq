@@ -46,8 +46,7 @@ module Groups
     end
 
     def group_params
-      params.require(:variable)
-        .permit([:key, :value, :protected])
+      params.require(:variable).permit([:key, :value, :protected])
     end
 
     def variable

@@ -13,18 +13,21 @@ class Projects::VariablesController < Projects::ApplicationController
 
   def update
     if @variable.update(project_params)
-      redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variable was successfully updated.'
+      redirect_to namespace_project_variables_path(project.namespace, project),
+                  notice: 'Variable was successfully updated.'
     else
       render "show"
     end
   end
 
   def create
-    @variable = Ci::Variable.new(project_params)
+    new_variable = Ci::Variable.new(project_params)
 
-    if @variable.valid? && @project.variables << @variable
-      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project), notice: 'Variables were successfully updated.'
+    if new_variable.valid? && @project.variables << new_variable
+      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
+                  notice: 'Variables were successfully updated.'
     else
+      @variable = new_variable.present(current_user: current_user)
       render "show"
     end
   end
@@ -40,8 +43,7 @@ class Projects::VariablesController < Projects::ApplicationController
   private
 
   def project_params
-    params.require(:variable)
-      .permit([:id, :key, :value, :protected, :_destroy])
+    params.require(:variable).permit([:id, :key, :value, :protected, :_destroy])
   end
 
   def variable
