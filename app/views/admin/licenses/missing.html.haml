@@ -2,14 +2,13 @@
 
 %h3.page-title
   Your License
-  = link_to 'Buy License', "#{Gitlab::SUBSCRIPTIONS_URL}/plans", target: '_blank', class: "btn btn-new pull-right"
-  = link_to 'Upload New License', new_admin_license_path, class: "btn pull-right"
+  = render "upload_buy_license"
 
 %hr
 
-%h4 You do not have a license.
-
-%p You can start a free trial of GitLab Enterprise Edition without any obligation or payment details.
-
-= link_to 'Start free trial', new_admin_trials_url, class: "btn btn-new"
-
+.container.blank-state-container
+  .row.text-center
+    = custom_icon("missing_license")
+    %h4 You do not have a license.
+    %p.trial-description You can start a free trial of GitLab Enterprise Edition without any obligation or payment details.
+    = link_to 'Start free trial', new_admin_trials_url, class: "btn btn-new btn-start-trial"

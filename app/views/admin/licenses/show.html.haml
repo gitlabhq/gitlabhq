@@ -2,8 +2,7 @@
 %h3.page-title
   Your License
   - if current_license.trial?
-    = link_to 'Buy License', "#{Gitlab::SUBSCRIPTIONS_URL}/plans", target: '_blank', class: "btn btn-new pull-right"
-    = link_to 'Upload New License', new_admin_license_path, class: "btn pull-right"
+    = render "upload_buy_license"
   - else
     = link_to 'Upload New License', new_admin_license_path, class: "btn btn-new pull-right"
 
