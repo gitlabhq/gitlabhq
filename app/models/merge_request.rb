@@ -32,7 +32,7 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :assignee, class_name: "User"
 
-  serialize :merge_params, Hash # rubocop:disable Cop/ActiverecordSerialize
+  serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
