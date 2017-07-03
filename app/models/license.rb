@@ -1,6 +1,7 @@
 class License < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
+  AUDIT_EVENTS_FEATURE = 'GitLab_AuditEvents'.freeze
   AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
   BURNDOWN_CHARTS_FEATURE = 'GitLab_BurndownCharts'.freeze
   CONTRIBUTION_ANALYTICS_FEATURE = 'GitLab_ContributionAnalytics'.freeze
@@ -36,6 +37,7 @@ class License < ActiveRecord::Base
     variable_environment_scope: VARIABLE_ENVIRONMENT_SCOPE_FEATURE,
 
     # Features that make sense to Namespace:
+    audit_events: AUDIT_EVENTS_FEATURE,
     burndown_charts: BURNDOWN_CHARTS_FEATURE,
     contribution_analytics: CONTRIBUTION_ANALYTICS_FEATURE,
     deploy_board: DEPLOY_BOARD_FEATURE,
@@ -61,6 +63,7 @@ class License < ActiveRecord::Base
   EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
   EES_FEATURES = [
+    { AUDIT_EVENTS_FEATURE => 1 },
     { BURNDOWN_CHARTS_FEATURE => 1 },
     { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
     { ELASTIC_SEARCH_FEATURE => 1 },
@@ -103,6 +106,7 @@ class License < ActiveRecord::Base
   # Early adopters should not earn new features as they're
   # introduced.
   EARLY_ADOPTER_FEATURES = [
+    { AUDIT_EVENTS_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
     { BURNDOWN_CHARTS_FEATURE => 1 },
     { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
