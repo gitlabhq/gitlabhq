@@ -55,7 +55,7 @@ module FilteredSearchHelpers
   # .tokens-container to make sure the correct names and values are rendered
   def expect_tokens(tokens)
     page.find '.filtered-search-box .tokens-container' do
-      page.all(:css, '.tokens-container li').each_with_index do |el, index|
+      page.all(:css, '.tokens-container li.js-visual-token').each_with_index do |el, index|
         token_name = tokens[index][:name]
         token_value = tokens[index][:value]
 
