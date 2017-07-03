@@ -1,5 +1,4 @@
 import installCustomElements from 'document-register-element';
-import { emojiImageTag, emojiFallbackImageSrc } from '../emoji';
 import isEmojiUnicodeSupported from '../emoji/support';
 
 installCustomElements(window);
@@ -32,11 +31,19 @@ export default function installGlEmojiElement() {
         // IE 11 doesn't like adding multiple at once :(
         this.classList.add('emoji-icon');
         this.classList.add(fallbackSpriteClass);
-      } else if (hasImageFallback) {
-        this.innerHTML = emojiImageTag(name, fallbackSrc);
       } else {
-        const src = emojiFallbackImageSrc(name);
-        this.innerHTML = emojiImageTag(name, src);
+        import(/* webpackChunkName: 'emoji' */ '../emoji')
+          .then(({ emojiImageTag, emojiFallbackImageSrc }) => {
+            if (hasImageFallback) {
+              this.innerHTML = emojiImageTag(name, fallbackSrc);
+            } else {
+              const src = emojiFallbackImageSrc(name);
+              this.innerHTML = emojiImageTag(name, src);
+            }
+          })
+          .catch(() => {
+            // do nothing
+          });
       }
     }
   };

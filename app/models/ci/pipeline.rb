@@ -140,6 +140,7 @@ module Ci
         where(id: max_id)
       end
     end
+    scope :internal, -> { where(source: internal_sources) }
 
     def self.latest_status(ref = nil)
       latest(ref).status
@@ -175,6 +176,10 @@ module Ci
         else
           false
         end
+    end
+
+    def self.internal_sources
+      sources.reject { |source| source == "external" }.values
     end
 
     def stages_count

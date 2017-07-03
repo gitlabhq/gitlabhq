@@ -1170,6 +1170,16 @@ describe Project, models: true do
 
       expect(relation.search(project.namespace.name)).to eq([project])
     end
+
+    describe 'with pending_delete project' do
+      let(:pending_delete_project) { create(:empty_project, pending_delete: true) }
+
+      it 'shows pending deletion project' do
+        search_result = described_class.search(pending_delete_project.name)
+
+        expect(search_result).to eq([pending_delete_project])
+      end
+    end
   end
 
   describe '#rename_repo' do
@@ -1205,6 +1215,8 @@ describe Project, models: true do
         .with('foo', project.path, project.namespace.full_path)
 
       expect(project).to receive(:expire_caches_before_rename)
+
+      expect(project).to receive(:expires_full_path_cache)
 
       project.rename_repo
     end
@@ -1334,7 +1346,7 @@ describe Project, models: true do
         .with(project.repository_storage_path, project.path_with_namespace)
         .and_return(true)
 
-      expect(project).to receive(:create_repository)
+      expect(project).to receive(:create_repository).with(force: true)
 
       project.ensure_repository
     end
@@ -1344,6 +1356,19 @@ describe Project, models: true do
         .and_return(true)
 
       expect(project).not_to receive(:create_repository)
+
+      project.ensure_repository
+    end
+
+    it 'creates the repository if it is a fork' do
+      expect(project).to receive(:forked?).and_return(true)
+
+      allow(project).to receive(:repository_exists?)
+        .and_return(false)
+
+      expect(shell).to receive(:add_repository)
+        .with(project.repository_storage_path, project.path_with_namespace)
+        .and_return(true)
 
       project.ensure_repository
     end

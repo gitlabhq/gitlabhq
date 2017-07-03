@@ -1,5 +1,5 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid
+  acts_as_paranoid without_default_scope: true
 
   include CacheMarkdownField
   include Sortable
@@ -46,8 +46,6 @@ class Namespace < ActiveRecord::Base
   # Save the storage paths before the projects are destroyed to use them on after destroy
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
-
-  default_scope { with_deleted }
 
   scope :for_user, -> { where('type IS NULL') }
 
@@ -219,6 +217,12 @@ class Namespace < ActiveRecord::Base
 
   def has_parent?
     parent.present?
+  end
+
+  def soft_delete_without_removing_associations
+    # We can't use paranoia's `#destroy` since this will hard-delete projects.
+    # Project uses `pending_delete` instead of the acts_as_paranoia gem.
+    self.deleted_at = Time.now
   end
 
   private

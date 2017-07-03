@@ -1,24 +1,13 @@
 module Ci
   class PipelinePolicy < BasePolicy
-    alias_method :pipeline, :subject
+    delegate { pipeline.project }
 
-    def rules
-      delegate! pipeline.project
-
-      if can?(:update_pipeline) && !can_user_update?
-        cannot! :update_pipeline
-      end
+    condition(:user_cannot_update) do
+      !::Gitlab::UserAccess
+        .new(@user, project: @subject.project)
+        .can_push_or_merge_to_branch?(@subject.ref)
     end
 
-    private
-
-    def can_user_update?
-      user_access.can_push_or_merge_to_branch?(pipeline.ref)
-    end
-
-    def user_access
-      @user_access ||= ::Gitlab::UserAccess
-        .new(user, project: pipeline.project)
-    end
+    rule { user_cannot_update }.prevent :update_pipeline
   end
 end

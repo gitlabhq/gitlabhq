@@ -598,8 +598,10 @@ module Ci
     describe "Image and service handling" do
       context "when extended docker configuration is used" do
         it "returns image and service when defined" do
-          config = YAML.dump({ image: { name: "ruby:2.1" },
-                               services: ["mysql", { name: "docker:dind", alias: "docker" }],
+          config = YAML.dump({ image: { name: "ruby:2.1", entrypoint: ["/usr/local/bin/init", "run"] },
+                               services: ["mysql", { name: "docker:dind", alias: "docker",
+                                                     entrypoint: ["/usr/local/bin/init", "run"],
+                                                     command: ["/usr/local/bin/init", "run"] }],
                                before_script: ["pwd"],
                                rspec: { script: "rspec" } })
 
@@ -614,8 +616,10 @@ module Ci
             coverage_regex: nil,
             tag_list: [],
             options: {
-                image: { name: "ruby:2.1" },
-                services: [{ name: "mysql" }, { name: "docker:dind", alias: "docker" }]
+                image: { name: "ruby:2.1", entrypoint: ["/usr/local/bin/init", "run"] },
+                services: [{ name: "mysql" },
+                           { name: "docker:dind", alias: "docker", entrypoint: ["/usr/local/bin/init", "run"],
+                             command: ["/usr/local/bin/init", "run"] }]
             },
             allow_failure: false,
             when: "on_success",
@@ -628,8 +632,11 @@ module Ci
           config = YAML.dump({ image: "ruby:2.1",
                                services: ["mysql"],
                                before_script: ["pwd"],
-                               rspec: { image: { name: "ruby:2.5" },
-                                        services: [{ name: "postgresql", alias: "db-pg" }, "docker:dind"], script: "rspec" } })
+                               rspec: { image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
+                                        services: [{ name: "postgresql", alias: "db-pg",
+                                                     entrypoint: ["/usr/local/bin/init", "run"],
+                                                     command: ["/usr/local/bin/init", "run"] }, "docker:dind"],
+                                        script: "rspec" } })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
 
@@ -642,8 +649,10 @@ module Ci
             coverage_regex: nil,
             tag_list: [],
             options: {
-                image: { name: "ruby:2.5" },
-                services: [{ name: "postgresql", alias: "db-pg" }, { name: "docker:dind" }]
+                image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
+                services: [{ name: "postgresql", alias: "db-pg", entrypoint: ["/usr/local/bin/init", "run"],
+                             command: ["/usr/local/bin/init", "run"] },
+                           { name: "docker:dind" }]
             },
             allow_failure: false,
             when: "on_success",

@@ -15,6 +15,11 @@ module Gitlab
           super(user, action, overriden_subject || subject)
         end
 
+        # delegate all #can? queries to the subject
+        def declarative_policy_delegate
+          subject
+        end
+
         class_methods do
           def presenter?
             true

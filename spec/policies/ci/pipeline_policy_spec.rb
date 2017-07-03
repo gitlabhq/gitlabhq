@@ -23,7 +23,7 @@ describe Ci::PipelinePolicy, :models do
         let(:branch_policy) { :no_one_can_push }
 
         it 'does not include ability to update pipeline' do
-          expect(policies).not_to include :update_pipeline
+          expect(policies).to be_disallowed :update_pipeline
         end
       end
 
@@ -31,7 +31,7 @@ describe Ci::PipelinePolicy, :models do
         let(:branch_policy) { :developers_can_push }
 
         it 'includes ability to update pipeline' do
-          expect(policies).to include :update_pipeline
+          expect(policies).to be_allowed :update_pipeline
         end
       end
 
@@ -39,7 +39,7 @@ describe Ci::PipelinePolicy, :models do
         let(:branch_policy) { :developers_can_merge }
 
         it 'includes ability to update pipeline' do
-          expect(policies).to include :update_pipeline
+          expect(policies).to be_allowed :update_pipeline
         end
       end
     end

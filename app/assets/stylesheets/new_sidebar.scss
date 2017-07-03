@@ -5,14 +5,43 @@
 $new-sidebar-width: 220px;
 
 .page-with-new-sidebar {
-
   @media (min-width: $screen-sm-min) {
     padding-left: $new-sidebar-width;
   }
 
+  // Override position: absolute
   .right-sidebar {
     position: fixed;
     height: 100%;
+  }
+}
+
+.context-header {
+  background-color: $gray-normal;
+  border-bottom: 1px solid $border-color;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+
+  .avatar-container {
+    flex: 0 0 40px;
+  }
+
+  &:hover {
+    background-color: $border-color;
+  }
+}
+
+.settings-avatar {
+  background-color: $white-light;
+
+  i {
+    font-size: 20px;
+    width: 100%;
+    color: $gl-text-color-secondary;
+    text-align: center;
+    align-self: center;
   }
 }
 
@@ -20,6 +49,7 @@ $new-sidebar-width: 220px;
   position: fixed;
   z-index: 400;
   width: $new-sidebar-width;
+  transition: width $sidebar-transition-duration;
   top: 50px;
   bottom: 0;
   left: 0;
@@ -33,6 +63,8 @@ $new-sidebar-width: 220px;
   }
 
   li {
+    white-space: nowrap;
+
     a {
       display: block;
       padding: 12px 14px;
@@ -42,6 +74,10 @@ $new-sidebar-width: 220px;
   a {
     color: $gl-text-color;
     text-decoration: none;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    width: 0;
   }
 }
 
