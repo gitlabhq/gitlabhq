@@ -55,6 +55,10 @@ header {
       }
     }
 
+    &.has-trial-banner {
+      top: 50px;
+    }
+
     .container-fluid {
       width: 100% !important;
       filter: none;
@@ -310,6 +314,29 @@ header {
       &.todos-count {
         background-color: $blue-500;
       }
+    }
+  }
+}
+
+.gitlab-ee-trial-banner {
+  padding: 15px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    display: inline-block;
+
+    a {
+      font-weight: bold;
+    }
+  }
+
+  .close-trial-banner {
+    float: right;
+    margin-top: 2px;
+
+    &:hover {
+      cursor: pointer;
     }
   }
 }
