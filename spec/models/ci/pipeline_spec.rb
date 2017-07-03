@@ -748,30 +748,9 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#ci_yaml_file_path' do
-    let(:project) { create(:empty_project) }
-    let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
-    it 'returns the path from project' do
-      allow(project).to receive(:ci_config_file) { 'custom/path' }
-
-      expect(pipeline.ci_yaml_file_path).to eq('custom/path')
-    end
-
-    it 'returns default when custom path is nil' do
-      allow(project).to receive(:ci_config_file) { nil }
-
-      expect(pipeline.ci_yaml_file_path).to eq('.gitlab-ci.yml')
-    end
-
-    it 'returns default when custom path is empty' do
-      allow(project).to receive(:ci_config_file) { '' }
-
-      expect(pipeline.ci_yaml_file_path).to eq('.gitlab-ci.yml')
-    end
-
+  describe '#ci_yaml_file' do
     it 'reports error if the file is not found' do
-      allow(project).to receive(:ci_config_file) { 'custom' }
+      allow(pipeline.project).to receive(:ci_config_file) { 'custom' }
 
       pipeline.ci_yaml_file
 
