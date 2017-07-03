@@ -1,6 +1,10 @@
 - if @project.mirror? && can?(current_user, :push_code, @project)
   .append-bottom-default
-    - if @project.updating_mirror?
+    - if @project.scheduled_mirror?
+      %span.btn.disabled
+        = icon("refresh spin")
+        Update Scheduled&hellip;
+    - elsif @project.updating_mirror?
       %span.btn.disabled
         = icon("refresh spin")
         Updating&hellip;
