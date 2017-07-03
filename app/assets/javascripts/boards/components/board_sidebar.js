@@ -37,7 +37,10 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     },
     milestoneTitle() {
       return this.issue.milestone ? this.issue.milestone.title : 'No Milestone';
-    }
+    },
+    canRemove() {
+      return !this.list.preset;
+    },
   },
   watch: {
     detail: {
