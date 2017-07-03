@@ -1,10 +1,10 @@
 - is_current_user = current_user == issuable.author
 - display_issuable_type = issuable.model_name.human.downcase
-- button_method = issuable.is_a?(MergeRequest) ? 'put' : ''
+- button_method = issuable.is_a?(MergeRequest) ? :put : nil
 
 - if can_update && is_current_user
-  = link_to "Close #{display_issuable_type}", close_issuable_url(issuable), { method: button_method, class: "hidden-xs hidden-sm btn btn-close btn-grouped #{'hidden' if issuable.closed?}", title: "Close #{display_issuable_type}" }
-  = link_to "Reopen #{display_issuable_type}", reopen_issuable_url(issuable), { method: button_method, class: "hidden-xs hidden-sm btn btn-reopen btn-grouped #{'hidden' unless issuable.closed?}", title: "Reopen #{display_issuable_type}" }
+  = link_to "Close #{display_issuable_type}", close_issuable_url(issuable), method: button_method, class: "hidden-xs hidden-sm btn btn-close btn-grouped #{'hidden' if issuable.closed?}", title: "Close #{display_issuable_type}"
+  = link_to "Reopen #{display_issuable_type}", reopen_issuable_url(issuable), method: button_method, class: "hidden-xs hidden-sm btn btn-reopen btn-grouped #{'hidden' unless issuable.closed?}", title: "Reopen #{display_issuable_type}"
 - elsif can_update && !is_current_user
   = render 'shared/issuable/close_reopen_report_toggle', issuable: issuable
 - else

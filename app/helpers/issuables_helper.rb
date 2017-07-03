@@ -247,7 +247,8 @@ module IssuablesHelper
 
   def close_issuable_url(issuable)
     params = {}
-    params[:state_event] = :close
+    params[issuable.model_name.to_s.underscore] = {}
+    params[issuable.model_name.to_s.underscore][:state_event] = :close
     params[:format] = :json if issuable.is_a?(Issue)
 
     issuable_url(issuable, params)
@@ -255,7 +256,8 @@ module IssuablesHelper
 
   def reopen_issuable_url(issuable)
     params = {}
-    params[:state_event] = :reopen
+    params[issuable.model_name.to_s.underscore] = {}
+    params[issuable.model_name.to_s.underscore][:state_event] = :reopen
     params[:format] = :json if issuable.is_a?(Issue)
 
     issuable_url(issuable, params)
