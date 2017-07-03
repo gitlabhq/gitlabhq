@@ -27,8 +27,7 @@ consistency throughout the entire development lifecycle.
 An Issue Board shows you what issues your team is working on, who is assigned to each,
 and where in the workflow those issues are.
 
-GitLab offers a major gain in productivity for your team, as it's an all-in-one
-platform. You create issues, host code, perform reviews, build, test,
+You create issues, host code, perform reviews, build, test,
 and deploy from one single platform. Issue Boards help you to visualize
 and manage the entire process _in_ GitLab.
 
@@ -70,32 +69,37 @@ beginning of the development lifecycle until deployed to production
 
 ### Use cases for Multiple Issue Boards
 
-To enhance the workflow exemplified above, with
-[Multiple Issue Boards](#multiple-issue-boards), available only in
+With [Multiple Issue Boards](#multiple-issue-boards), available only in
 [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
-each team (frontend and backend) can have their own boards to organize their flow among the
-members of their teams. We could have, therefore, three Issue Boards for this case:
+each team can have their own board to organize their workflow individually.
 
-  - **Backend**, for the backend team and their own labels and workflow
-  - **Frontend**, same as above, for the frontend team
-  - **Workflow**, for the entire process (backend > frontend > staging > production)
+#### Scrum team
 
-GitLab Issue Boards not just position issue cards in a column, but also allows them to be in multiple boards and still have meaning without the context of a particular board.
+With multiple Issue Boards, each team has one board. For each sprint, you can
+[associate a milestone](#board-with-a-milestone). Now you can move issues through each
+part of the process. For instance: **To Do**, **Doing**, and **Done**.
 
-### Use cases for Boards with Milestones
+#### Organization of topics
 
-From the use cases above, let's assume that you have now created a milestone per release for
-your app. You can create a milestone exclusive for each release, and [associate it with a board](#board-with-a-milestone).
-Therefore, you'll have everything organized in a board per release.
+Create lists to order things by topic and quickly change them between topics or groups,
+such as between **UX**, **Frontend**, and **Backend**. The changes will be reflected across boards,
+as changing lists will update the label accordingly.
 
-_Available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
+#### Advanced team handover
 
-### Use cases for Focus Mode
+For example, suppose we have a UX team with an Issue Board that contains:
 
-When you are organizing your issues through an Issue Board and want to avoid distractions,
-you can use the [Issue Board on Focus Mode](#focus-mode).
+- **To Do**
+- **Doing**
+- **Frontend**
 
-_Available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
+When done with something, they move the card to **Frontend**. The Frontend team's board looks like: 
+
+- **Frontend**
+- **Doing**
+- **Done**
+
+Cards finished by the UX team will automatically appear in the **Frontend** column when they're ready for them.
 
 > **Notes:**
 >
