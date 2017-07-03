@@ -489,11 +489,13 @@ import '~/notes';
       });
 
       it('should reset Form when new comment is done posting', () => {
-        const deferred = $.Deferred();
-        spyOn($, 'ajax').and.returnValue(deferred.promise());
-        $('.js-comment-button').click();
+        spyOn(jQuery, 'ajax').and.callFake(() => {
+          const def = $.Deferred();
+          def.resolve(note);
+          return def.promise();
+        });
 
-        deferred.resolve(note);
+        $('.js-comment-button').click();
         expect($form.find('textarea.js-note-text').val()).toEqual('');
       });
 
