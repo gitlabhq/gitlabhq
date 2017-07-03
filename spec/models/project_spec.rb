@@ -1532,8 +1532,8 @@ describe Project, models: true do
       expect(project.ci_config_file).to eq('foo/.gitlab_ci.yml')
     end
 
-    it 'sets a string but remove all leading slashes' do
-      project.update!(ci_config_file: '///foo//.gitlab_ci.yml')
+    it 'sets a string but remove all leading slashes and null characters' do
+      project.update!(ci_config_file: "///f\0oo/\0/.gitlab_ci.yml")
 
       expect(project.ci_config_file).to eq('foo//.gitlab_ci.yml')
     end
