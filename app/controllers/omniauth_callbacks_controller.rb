@@ -153,6 +153,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def remember_me?
     request_params = request.env['omniauth.params']
-    request_params['remember_me'] == '1'
+    (request_params['remember_me'] == '1') if request_params.present?
   end
 end
