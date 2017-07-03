@@ -11,19 +11,20 @@ module Ci
         cannot! :"#{rule}_commit_status" unless can? :"#{rule}_build"
       end
 
-      if can?(:update_build) && protected_action?
+      if can?(:update_build) && !can_user_update?
         cannot! :update_build
       end
     end
 
     private
 
-    def protected_action?
-      return false unless build.action?
+    def can_user_update?
+      user_access.can_push_or_merge_to_branch?(build.ref)
+    end
 
-      !::Gitlab::UserAccess
+    def user_access
+      @user_access ||= ::Gitlab::UserAccess
         .new(user, project: build.project)
-        .can_merge_to_branch?(build.ref)
     end
   end
 end

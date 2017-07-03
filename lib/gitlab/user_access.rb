@@ -48,6 +48,10 @@ module Gitlab
       end
     end
 
+    def can_push_or_merge_to_branch?(ref)
+      can_push_to_branch?(ref) || can_merge_to_branch?(ref)
+    end
+
     def can_push_to_branch?(ref)
       return false unless can_access_git?
 

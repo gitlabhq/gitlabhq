@@ -169,7 +169,7 @@ module Ci
 
       Ability.allowed?(user, :create_pipeline, project) &&
         if repo.ref_exists?("#{Gitlab::Git::BRANCH_REF_PREFIX}#{ref}")
-          access.can_merge_to_branch?(ref)
+          access.can_push_or_merge_to_branch?(ref)
         elsif repo.ref_exists?("#{Gitlab::Git::TAG_REF_PREFIX}#{ref}")
           access.can_create_tag?(ref)
         else
