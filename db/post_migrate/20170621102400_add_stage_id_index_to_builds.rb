@@ -3,19 +3,15 @@ class AddStageIdIndexToBuilds < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
+  ##
+  # Improved in 20170703102400_add_stage_id_foreign_key_to_builds.rb
+  #
 
   def up
-    unless index_exists?(:ci_builds, :stage_id)
-      add_concurrent_foreign_key(:ci_builds, :ci_stages, column: :stage_id, on_delete: :cascade)
-      add_concurrent_index(:ci_builds, :stage_id)
-    end
+    # noop
   end
 
   def down
-    if index_exists?(:ci_builds, :stage_id)
-      remove_foreign_key(:ci_builds, column: :stage_id)
-      remove_concurrent_index(:ci_builds, :stage_id)
-    end
+    # noop
   end
 end
