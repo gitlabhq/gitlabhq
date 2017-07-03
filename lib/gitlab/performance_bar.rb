@@ -21,10 +21,10 @@ module Gitlab
 
       if RequestStore.active?
         RequestStore.fetch('performance_bar:allowed_group') do
-          Group.by_path(Gitlab.config.performance_bar.allowed_group)
+          Group.find_by_full_path(Gitlab.config.performance_bar.allowed_group)
         end
       else
-        Group.by_path(Gitlab.config.performance_bar.allowed_group)
+        Group.find_by_full_path(Gitlab.config.performance_bar.allowed_group)
       end
     end
 

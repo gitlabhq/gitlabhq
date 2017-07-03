@@ -74,9 +74,32 @@ describe Gitlab::PerformanceBar do
       let!(:my_group) { create(:group, path: 'my-group') }
 
       context 'when user is not a member of the allowed group' do
-        it 'returns false' do
+        it 'returns the group' do
           expect(described_class.allowed_group).to eq(my_group)
         end
+      end
+    end
+
+    context 'when allowed group is nested', :nested_groups do
+      let!(:nested_my_group) { create(:group, parent: create(:group, path: 'my-org'), path: 'my-group') }
+
+      before do
+        create(:group, path: 'my-group')
+        stub_performance_bar_setting(allowed_group: 'my-org/my-group')
+      end
+
+      it 'returns the nested group' do
+        expect(described_class.allowed_group).to eq(nested_my_group)
+      end
+    end
+
+    context 'when a nested group has the same path', :nested_groups do
+      before do
+        create(:group, :nested, path: 'my-group')
+      end
+
+      it 'returns false' do
+        expect(described_class.allowed_group).to be_falsy
       end
     end
   end

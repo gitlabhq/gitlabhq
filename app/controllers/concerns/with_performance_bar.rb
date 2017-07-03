@@ -3,8 +3,6 @@ module WithPerformanceBar
 
   included do
     include Peek::Rblineprof::CustomControllerHelpers
-    alias_method :performance_bar_enabled?, :peek_enabled?
-    helper_method :performance_bar_enabled?
   end
 
   def peek_enabled?
