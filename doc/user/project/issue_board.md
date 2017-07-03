@@ -1,8 +1,7 @@
-# Issue board
+# Issue Board
 
->**Notes:**
-- [Introduced][ce-5554] in GitLab 8.11.
-- The Backlog column was replaced by the **Add issues** button in GitLab 8.17.
+>**Note:**
+[Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
 
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -15,12 +14,104 @@ Other interesting links:
 
 ## Overview
 
-The Issue Board builds on GitLab's existing issue tracking functionality and
+The Issue Board builds on GitLab's existing
+[issue tracking functionality](issues/index.md#issue-tracker) and
 leverages the power of [labels] by utilizing them as lists of the scrum board.
 
-With the Issue Board you can have a different view of your issues while also
+With the Issue Board you can have a different view of your issues while
 maintaining the same filtering and sorting abilities you see across the
-issue tracker.
+issue tracker. An Issue Board is based on its project's label structure, therefore, it
+applies the same descriptive labels to indicate placement on the board, keeping
+consistency throughout the entire development lifecycle.
+
+An Issue Board shows you what issues your team is working on, who is assigned to each,
+and where in the workflow those issues are.
+
+You create issues, host code, perform reviews, build, test,
+and deploy from one single platform. Issue Boards help you to visualize
+and manage the entire process _in_ GitLab.
+
+With [Multiple Issue Boards](#multiple-issue-boards), available
+only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
+you go even further, as you can not only keep yourself and your project
+organized from a broader perspective with one Issue Board per project,
+but also allow your team members to organize their own workflow by creating
+multiple Issue Boards within the same project.
+
+## Use cases
+
+You can see below a few different use cases for GitLab's Issue Boards.
+
+### Use cases for a single Issue Board
+
+GitLab Workflow allows you to discuss proposals in issues, categorize them
+with labels, and from there organize and prioritize them with Issue Boards.
+
+For example, let's consider this simplified development workflow:
+
+1. You have a repository hosting your app's codebase
+and your team actively contributing to code
+1. Your **backend** team starts working a new
+implementation, gathers feedback and approval, and pass it over to **frontend**
+1. When frontend is complete, the new feature is deployed to **staging** to be tested
+1. When successful, it is deployed to **production**
+
+If we have the labels "**backend**", "**frontend**", "**staging**", and
+"**production**", and an Issue Board with a list for each, we can:
+
+- Visualize the entire flow of implementations since the
+beginning of the development lifecycle until deployed to production
+- Prioritize the issues in a list by moving them vertically
+- Move issues between lists to organize them according to the labels you've set
+- Add multiple issues to lists in the board by selecting one or more existing issues
+
+![issue card moving](img/issue_board_move_issue_card_list.png)
+
+### Use cases for Multiple Issue Boards
+
+With [Multiple Issue Boards](#multiple-issue-boards), available only in
+[GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
+each team can have their own board to organize their workflow individually.
+
+#### Scrum team
+
+With multiple Issue Boards, each team has one board. For each sprint, you can
+[associate a milestone](#board-with-a-milestone). Now you can move issues through each
+part of the process. For instance: **To Do**, **Doing**, and **Done**.
+
+#### Organization of topics
+
+Create lists to order things by topic and quickly change them between topics or groups,
+such as between **UX**, **Frontend**, and **Backend**. The changes will be reflected across boards,
+as changing lists will update the label accordingly.
+
+#### Advanced team handover
+
+For example, suppose we have a UX team with an Issue Board that contains:
+
+- **To Do**
+- **Doing**
+- **Frontend**
+
+When done with something, they move the card to **Frontend**. The Frontend team's board looks like: 
+
+- **Frontend**
+- **Doing**
+- **Done**
+
+Cards finished by the UX team will automatically appear in the **Frontend** column when they're ready for them.
+
+> **Notes:**
+>
+>- For a broader use case, please check the blog post
+[GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+>
+>- For a real use case, please check why
+[Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
+to improve their workflow with
+multiple boards.
+
+## Issue Board terminology
 
 Below is a table of the definitions used for GitLab's Issue Board.
 
@@ -57,7 +148,7 @@ In short, here's a list of actions you can take in an Issue Board:
 If you are not able to perform one or more of the things above, make sure you
 have the right [permissions](#permissions).
 
-## First time using the issue board
+## First time using the Issue Board
 
 The first time you navigate to your Issue Board, you will be presented with
 a default list (**Done**) and a welcoming message that gives
@@ -98,7 +189,7 @@ list view that is removed. You can always add it back later if you need.
 ## Adding issues to a list
 
 You can add issues to a list by clicking the **Add issues** button that is
-present in the upper right corner of the issue board. This will open up a modal
+present in the upper right corner of the Issue Board. This will open up a modal
 window where you can see all the issues that do not belong to any list.
 
 Select one or more issues by clicking on the cards and then click **Add issues**
@@ -166,34 +257,34 @@ to another list the label changes and a system not is recorded.
 
 ![Issue Board system notes](img/issue_board_system_notes.png)
 
-## Multiple issue boards
+## Multiple Issue Boards
 
-> Introduced in [GitLab Enterprise Edition][ee] 8.13.
+> Introduced in [GitLab Enterprise Edition 8.13](https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#multiple-issue-boards-ee).
 
-Multiple issue boards, as the name suggests, allow for more than one issue board
+Multiple Issue Boards, as the name suggests, allow for more than one Issue Board
 for a given project. This is great for large projects with more than one team
 or in situations where a repository is used to host the code of multiple
 products.
 
 Clicking on the current board name in the upper left corner will reveal a
-menu from where you can create another issue board and rename or delete the
+menu from where you can create another Issue Board and rename or delete the
 existing one.
 
-![Multiple issue boards](img/issue_boards_multiple.png)
+![Multiple Issue Boards](img/issue_boards_multiple.png)
 
 ### Board with a milestone
 
-> Introduced in [GitLab Enterprise Edition][ee] 9.0.
+> Introduced in [GitLab Enterprise Edition 9.0](https://about.gitlab.com/2017/03/22/gitlab-9-0-released/#boards-with-milestones-ees-eep).
 
-An issue board can be associated with a milestone which will automatically filter
-the issue to that milestone. This allows you to create unique boards for
-individual milestones.
+An Issue Board can be associated with a GitLab [Milestone](milestones/index.md#milestones)
+which will automatically filter the issue to that milestone. This allows you to
+create unique boards for individual milestones.
 
-You can assign a milestone to a board when creating a new issue board or you
-can update current issue boards to also have a milestone. Once a specific
-milestone is assigned to an issue board, you will no longer be able to filter
+You can assign a milestone to a board when creating a new Issue Board or you
+can update current Issue Boards to also have a milestone. Once a specific
+milestone is assigned to an Issue Board, you will no longer be able to filter
 through any other milestone. In order to do that, you need to remove the
-defined milestone from the issue board.
+defined milestone from the Issue Board.
 
 There are also two pre-defined milestones, **Any milestone** which will filter
 the issues with any milestone, and **Upcoming** which will filter issues to the
@@ -202,6 +293,8 @@ milestone with the due date that is next.
 ![Update boards milestone](img/issue_board_multiple_milestone.png)
 
 ## Focus mode
+
+> Introduced in [GitLab Enterprise Edition 9.1](https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
 
 Click the button at the top right to toggle focus mode on and off. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
 
@@ -237,5 +330,5 @@ A few things to remember:
 [kanban]: https://en.wikipedia.org/wiki/Kanban_(development)
 [create-labels]: ./labels.md#create-new-labels
 [label-priority]: ./labels.md#prioritize-labels
-[landing]: https://about.gitlab.com/solutions/issueboard
+[landing]: https://about.gitlab.com/features/issueboard/
 [youtube]: https://www.youtube.com/watch?v=UWsJ8tkHAa8
