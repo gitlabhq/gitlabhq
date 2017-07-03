@@ -47,11 +47,11 @@ describe Projects::PipelineSchedulesController do
   end
 
   describe 'GET #new' do
+    set(:user) { create(:user) }
+
     before do
-      create(:user).tap do |user|
-        project.add_developer(user)
-        sign_in(user)
-      end
+      project.add_developer(user)
+      sign_in(user)
     end
 
     it 'initializes a pipeline schedule model' do
@@ -64,11 +64,11 @@ describe Projects::PipelineSchedulesController do
 
   describe 'POST #create' do
     describe 'functionality' do
+      set(:user) { create(:user) }
+
       before do
-        create(:user).tap do |user|
-          project.add_developer(user)
-          sign_in(user)
-        end
+        project.add_developer(user)
+        sign_in(user)
       end
 
       let(:basic_param) do
@@ -188,7 +188,7 @@ describe Projects::PipelineSchedulesController do
 
   describe 'PUT #update' do
     describe 'functionality' do
-      let(:user) { create(:user) }
+      set(:user) { create(:user) }
       let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
 
       before do
@@ -397,7 +397,6 @@ describe Projects::PipelineSchedulesController do
 
       before do
         project.add_master(user)
-
         sign_in(user)
       end
 
