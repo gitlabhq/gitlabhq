@@ -1,14 +1,18 @@
 - page_title 'Labels'
+- if show_new_nav? && can?(current_user, :admin_label, @group)
+  - content_for :breadcrumbs_extra do
+    = link_to "New label", new_group_label_path(@group), class: "btn btn-new"
+
 = render "groups/head_issues"
+
 
 .top-area.adjust
   .nav-text
     Labels can be applied to issues and merge requests. Group labels are available for any project within the group.
 
-  .nav-controls
+  .nav-controls{ class: ("visible-xs" if show_new_nav?) }
     - if can?(current_user, :admin_label, @group)
-      = link_to new_group_label_path(@group), class: "btn btn-new" do
-        New label
+      = link_to "New label", new_group_label_path(@group), class: "btn btn-new"
 
 .labels
   .other-labels
