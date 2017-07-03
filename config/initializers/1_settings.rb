@@ -495,6 +495,13 @@ Settings.webpack.dev_server['host']    ||= 'localhost'
 Settings.webpack.dev_server['port']    ||= 3808
 
 #
+# Monitoring settings
+#
+Settings['monitoring'] ||= Settingslogic.new({})
+Settings.monitoring['ip_whitelist'] ||= %w{127.0.0.1/8}
+Settings.monitoring.ip_whitelist.map!(&IPAddr.method(:new))
+
+#
 # Prometheus metrics settings
 #
 Settings['prometheus'] ||= Settingslogic.new({})

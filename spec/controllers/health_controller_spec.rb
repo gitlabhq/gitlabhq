@@ -3,17 +3,19 @@ require 'spec_helper'
 describe HealthController do
   include StubENV
 
-  let(:token) { current_application_settings.health_check_access_token }
   let(:json_response) { JSON.parse(response.body) }
+  let(:whitelisted_ip) { '127.0.0.1' }
+  let(:not_whitelisted_ip) { '127.0.0.2' }
 
   before do
+    allow(Settings.monitoring).to receive(:ip_whitelist).and_return([IPAddr.new(whitelisted_ip)])
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
   describe '#readiness' do
-    context 'authorization token provided' do
+    context 'accessed from whitelisted ip' do
       before do
-        request.headers['TOKEN'] = token
+        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
       end
 
       it 'returns proper response' do
@@ -25,7 +27,11 @@ describe HealthController do
       end
     end
 
-    context 'without authorization token' do
+    context 'accessed from not whitelisted ip' do
+      before do
+        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(not_whitelisted_ip)
+      end
+
       it 'returns proper response' do
         get :readiness
         expect(response.status).to eq(404)
@@ -34,9 +40,9 @@ describe HealthController do
   end
 
   describe '#liveness' do
-    context 'authorization token provided' do
+    context 'accessed from whitelisted ip' do
       before do
-        request.headers['TOKEN'] = token
+        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
       end
 
       it 'returns proper response' do
@@ -47,7 +53,11 @@ describe HealthController do
       end
     end
 
-    context 'without authorization token' do
+    context 'accessed from not whitelisted ip' do
+      before do
+        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(not_whitelisted_ip)
+      end
+
       it 'returns proper response' do
         get :liveness
         expect(response.status).to eq(404)
