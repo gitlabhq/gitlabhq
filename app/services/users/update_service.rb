@@ -2,7 +2,8 @@ module Users
   class UpdateService < BaseService
     include NewUserNotifier
 
-    def initialize(user, params = {})
+    def initialize(current_user, user, params = {})
+      @current_user = current_user
       @user = user
       @params = params.dup
     end
@@ -39,6 +40,10 @@ module Users
       end
 
       @user.assign_attributes(params) if params.any?
+    end
+
+    def model
+      @user
     end
   end
 end

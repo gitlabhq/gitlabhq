@@ -31,7 +31,7 @@ describe Users::UpdateService do
     end
 
     def update_user(user, opts)
-      described_class.new(user, opts).execute
+      described_class.new(user, user, opts).execute
     end
   end
 
@@ -65,7 +65,7 @@ describe Users::UpdateService do
     end
 
     def update_user(user, opts)
-      described_class.new(user, opts).execute!
+      described_class.new(user, user, opts).execute!
     end
   end
 end
