@@ -218,7 +218,7 @@ describe Projects::JobsController do
 
   describe 'POST retry' do
     before do
-      project.add_developer(user)
+      project.add_master(user)
       sign_in(user)
 
       post_retry
@@ -250,7 +250,7 @@ describe Projects::JobsController do
 
   describe 'POST play' do
     before do
-      project.add_developer(user)
+      project.add_master(user)
 
       create(:protected_branch, :developers_can_merge,
              name: 'master', project: project)
@@ -290,7 +290,7 @@ describe Projects::JobsController do
 
   describe 'POST cancel' do
     before do
-      project.add_developer(user)
+      project.add_master(user)
       sign_in(user)
 
       post_cancel
@@ -326,7 +326,7 @@ describe Projects::JobsController do
 
   describe 'POST cancel_all' do
     before do
-      project.add_developer(user)
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -368,7 +368,7 @@ describe Projects::JobsController do
 
   describe 'POST erase' do
     before do
-      project.add_developer(user)
+      project.add_master(user)
       sign_in(user)
 
       post_erase

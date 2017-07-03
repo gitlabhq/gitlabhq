@@ -9,7 +9,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
   end
 
   before do
-    project.add_developer(user)
+    project.add_master(user)
   end
 
   context 'when simple pipeline is defined' do

@@ -8,7 +8,7 @@ describe Projects::PipelinesController do
   let(:feature) { ProjectFeature::DISABLED }
 
   before do
-    project.add_developer(user)
+    project.add_master(user)
     project.project_feature.update(
       builds_access_level: feature)
 
@@ -158,7 +158,7 @@ describe Projects::PipelinesController do
 
     context 'when builds are enabled' do
       let(:feature) { ProjectFeature::ENABLED }
-  
+
       it 'retries a pipeline without returning any content' do
         expect(response).to have_http_status(:no_content)
         expect(build.reload).to be_retried
@@ -175,7 +175,7 @@ describe Projects::PipelinesController do
   describe 'POST cancel.json' do
     let!(:pipeline) { create(:ci_pipeline, project: project) }
     let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
-  
+
     before do
       post :cancel, namespace_id: project.namespace,
                     project_id: project,
@@ -185,7 +185,7 @@ describe Projects::PipelinesController do
 
     context 'when builds are enabled' do
       let(:feature) { ProjectFeature::ENABLED }
-  
+
       it 'cancels a pipeline without returning any content' do
         expect(response).to have_http_status(:no_content)
         expect(pipeline.reload).to be_canceled

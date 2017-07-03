@@ -244,7 +244,7 @@ describe CreateDeploymentService, services: true do
       context 'when job is retried' do
         it_behaves_like 'creates deployment' do
           before do
-            project.add_developer(user)
+            project.add_master(user)
           end
 
           let(:deployable) { Ci::Build.retry(job, user) }

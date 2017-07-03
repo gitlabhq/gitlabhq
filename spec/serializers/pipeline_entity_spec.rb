@@ -52,7 +52,7 @@ describe PipelineEntity do
 
       context 'user has ability to retry pipeline' do
         before do
-          project.team << [user, :developer]
+          project.add_master(user)
         end
 
         it 'contains retry path' do
@@ -80,7 +80,7 @@ describe PipelineEntity do
 
       context 'user has ability to cancel pipeline' do
         before do
-          project.add_developer(user)
+          project.add_master(user)
         end
 
         it 'contains cancel path' do

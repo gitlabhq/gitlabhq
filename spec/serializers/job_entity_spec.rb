@@ -8,7 +8,7 @@ describe JobEntity do
 
   before do
     allow(request).to receive(:current_user).and_return(user)
-    project.add_developer(user)
+    project.add_master(user)
   end
 
   let(:entity) do
@@ -90,6 +90,10 @@ describe JobEntity do
     end
 
     context 'when user is not allowed to trigger action' do
+      before do
+        project.team.truncate
+      end
+
       it 'does not contain path to play action' do
         expect(subject).not_to include(:play_path)
       end

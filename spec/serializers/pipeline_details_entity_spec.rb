@@ -52,7 +52,7 @@ describe PipelineDetailsEntity do
 
       context 'user has ability to retry pipeline' do
         before do
-          project.team << [user, :developer]
+          project.add_master(user)
         end
 
         it 'retryable flag is true' do
@@ -80,7 +80,7 @@ describe PipelineDetailsEntity do
 
       context 'user has ability to cancel pipeline' do
         before do
-          project.add_developer(user)
+          project.add_master(user)
         end
 
         it 'cancelable flag is true' do
@@ -97,7 +97,7 @@ describe PipelineDetailsEntity do
 
     context 'when pipeline has commit statuses' do
       let(:pipeline) { create(:ci_empty_pipeline) }
-    
+
       before do
         create(:generic_commit_status, pipeline: pipeline)
       end

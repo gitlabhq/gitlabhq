@@ -20,7 +20,7 @@ describe Gitlab::Ci::Status::Build::Stop do
     describe '#has_action?' do
       context 'when user is allowed to update build' do
         before do
-          build.project.team << [user, :developer]
+          build.project.add_master(user)
         end
 
         it { is_expected.to have_action }
