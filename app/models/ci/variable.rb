@@ -5,7 +5,7 @@ module Ci
 
     belongs_to :project
 
-    validates :key, uniqueness: { scope: :project_id }
+    validates :key, uniqueness: { scope: [:project_id, :environment_scope] }
 
     scope :unprotected, -> { where(protected: false) }
   end
