@@ -42,7 +42,6 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
-import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
@@ -416,8 +415,8 @@ import AuditLogs from './audit_logs';
           new gl.ProtectedBranchEditList();
           new UsersSelect();
           // Initialize Protected Tag Settings
-          new ProtectedTagCreate();
-          new ProtectedTagEditList();
+          new gl.ProtectedTagCreate();
+          new gl.ProtectedTagEditList();
           // Initialize expandable settings panels
           initSettingsPanels();
           break;
