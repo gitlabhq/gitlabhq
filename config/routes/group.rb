@@ -24,11 +24,13 @@ scope(path: 'groups/*group_id',
     post :toggle_subscription, on: :member
   end
 
-  namespace :settings do
-    resource :ci_cd, only: [:show], controller: 'ci_cd'
-  end
+  scope path: '-' do
+    namespace :settings do
+      resource :ci_cd, only: [:show], controller: 'ci_cd'
+    end
 
-  resources :variables, only: [:index, :show, :update, :create, :destroy]
+    resources :variables, only: [:index, :show, :update, :create, :destroy]
+  end
 end
 
 scope(path: 'groups/*id',
