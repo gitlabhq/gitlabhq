@@ -1,4 +1,4 @@
-require 'declarative_policy'
+require_dependency 'declarative_policy'
 
 class BasePolicy < DeclarativePolicy::Base
   desc "User is an instance admin"

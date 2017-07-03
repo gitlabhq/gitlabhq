@@ -1,4 +1,5 @@
 .tree-holder {
+
   .nav-block {
     margin: 10px 0;
 
@@ -13,6 +14,11 @@
         text-align: right;
 
         .btn-group {
+          margin-left: 10px;
+        }
+
+        .control {
+          float: left;
           margin-left: 10px;
         }
       }

@@ -326,15 +326,6 @@ describe Project, models: true do
     end
   end
 
-  describe 'default_scope' do
-    it 'excludes projects pending deletion from the results' do
-      project = create(:empty_project)
-      create(:empty_project, pending_delete: true)
-
-      expect(Project.all).to eq [project]
-    end
-  end
-
   describe 'project token' do
     it 'sets an random token if none provided' do
       project = FactoryGirl.create :empty_project, runners_token: ''
@@ -1421,6 +1412,16 @@ describe Project, models: true do
 
       expect(relation.search(project.namespace.name)).to eq([project])
     end
+
+    describe 'with pending_delete project' do
+      let(:pending_delete_project) { create(:empty_project, pending_delete: true) }
+
+      it 'shows pending deletion project' do
+        search_result = described_class.search(pending_delete_project.name)
+
+        expect(search_result).to eq([pending_delete_project])
+      end
+    end
   end
 
   describe '#rename_repo' do
@@ -1781,6 +1782,40 @@ describe Project, models: true do
         expect_any_instance_of(RepositoryImportWorker).to receive(:perform).with(project.id).and_call_original
 
         project.import_schedule
+      end
+    end
+  end
+
+  describe 'project import state transitions' do
+    context 'state transition: [:started] => [:finished]' do
+      let(:housekeeping_service) { spy }
+
+      before do
+        allow(Projects::HousekeepingService).to receive(:new) { housekeeping_service }
+      end
+
+      it 'performs housekeeping when an import of a fresh project is completed' do
+        project = create(:project_empty_repo, :import_started, import_type: :github)
+
+        project.import_finish
+
+        expect(housekeeping_service).to have_received(:execute)
+      end
+
+      it 'does not perform housekeeping when project repository does not exist' do
+        project = create(:empty_project, :import_started, import_type: :github)
+
+        project.import_finish
+
+        expect(housekeeping_service).not_to have_received(:execute)
+      end
+
+      it 'does not perform housekeeping when project does not have a valid import type' do
+        project = create(:empty_project, :import_started, import_type: nil)
+
+        project.import_finish
+
+        expect(housekeeping_service).not_to have_received(:execute)
       end
     end
   end

@@ -4,6 +4,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include RendersNotes
   include ToggleAwardEmoji
   include IssuableCollections
+
   prepend ::EE::Projects::MergeRequestsController
 
   skip_before_action :merge_request, only: [:index, :bulk_update]

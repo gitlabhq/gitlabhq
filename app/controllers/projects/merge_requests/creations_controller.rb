@@ -1,6 +1,7 @@
 class Projects::MergeRequests::CreationsController < Projects::MergeRequests::ApplicationController
   include DiffForPath
   include DiffHelper
+
   prepend ::EE::Projects::MergeRequests::CreationsController
 
   skip_before_action :merge_request

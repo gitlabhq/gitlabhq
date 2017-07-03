@@ -24,7 +24,7 @@
       %li
         = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
           #{n_('Commit', 'Commits', @project.statistics.commit_count)} (#{number_with_delimiter(@project.statistics.commit_count)})
-      %l
+      %li
         = link_to namespace_project_branches_path(@project.namespace, @project) do
           #{n_('Branch', 'Branches', @repository.branch_count)} (#{number_with_delimiter(@repository.branch_count)})
       %li
