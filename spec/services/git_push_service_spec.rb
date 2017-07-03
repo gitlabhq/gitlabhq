@@ -436,6 +436,7 @@ describe GitPushService, services: true do
         expect(SystemNoteService).not_to receive(:cross_reference)
         execute_service(project, commit_author, oldrev, newrev, ref)
       end
+<<<<<<< HEAD
 
       it "doesn't close issues when external issue tracker is in use" do
         allow_any_instance_of(Project).to receive(:default_issues_tracker?)
@@ -448,6 +449,8 @@ describe GitPushService, services: true do
           execute_service(project, commit_author, oldrev, newrev,  'refs/heads/hurf')
         end.not_to change { Note.where(project_id: project.id, system: true).count }
       end
+=======
+>>>>>>> ce-com/master
     end
 
     context "to non-default branches" do

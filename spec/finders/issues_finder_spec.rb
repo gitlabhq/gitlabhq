@@ -314,8 +314,11 @@ describe IssuesFinder do
   describe '#with_confidentiality_access_check' do
     let(:guest) { create(:user) }
     set(:authorized_user) { create(:user) }
+<<<<<<< HEAD
     let(:admin_user) { create(:user, :admin) }
     let(:auditor_user) { create(:user, :auditor) }
+=======
+>>>>>>> ce-com/master
     set(:project) { create(:empty_project, namespace: authorized_user.namespace) }
     set(:public_issue) { create(:issue, project: project) }
     set(:confidential_issue) { create(:issue, project: project, confidential: true) }
@@ -325,6 +328,7 @@ describe IssuesFinder do
 
       context 'for an anonymous user' do
         subject { described_class.new(nil, params).with_confidentiality_access_check }
+<<<<<<< HEAD
 
         it 'returns only public issues' do
           expect(subject).to include(public_issue)
@@ -373,6 +377,40 @@ describe IssuesFinder do
       context 'for an admin' do
         subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 
+=======
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+      end
+
+      context 'for a user without project membership' do
+        subject { described_class.new(user, params).with_confidentiality_access_check }
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+      end
+
+      context 'for a guest user' do
+        subject { described_class.new(guest, params).with_confidentiality_access_check }
+
+        before do
+          project.add_guest(guest)
+        end
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+      end
+
+      context 'for a project member with access to view confidential issues' do
+        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
+
+>>>>>>> ce-com/master
         it 'returns all issues' do
           expect(subject).to include(public_issue, confidential_issue)
         end
@@ -444,6 +482,7 @@ describe IssuesFinder do
           subject
         end
       end
+<<<<<<< HEAD
 
       context 'for an auditor' do
         subject { described_class.new(auditor_user, params).with_confidentiality_access_check }
@@ -472,6 +511,8 @@ describe IssuesFinder do
           subject
         end
       end
+=======
+>>>>>>> ce-com/master
     end
   end
 end

@@ -1,18 +1,20 @@
 - model_name = source.model_name.to_s.downcase
 
-.project-action-button.inline
-  - if can?(current_user, :"destroy_#{model_name}_member", source.members.find_by(user_id: current_user.id))
+- if can?(current_user, :"destroy_#{model_name}_member", source.members.find_by(user_id: current_user.id))
+  .project-action-button.inline
     - link_text = source.is_a?(Group) ? _('Leave group') : _('Leave project')
     = link_to link_text, polymorphic_path([:leave, source, :members]),
               method: :delete,
               data: { confirm: leave_confirmation_message(source) },
               class: 'btn'
-  - elsif requester = source.requesters.find_by(user_id: current_user.id)
+- elsif requester = source.requesters.find_by(user_id: current_user.id)
+  .project-action-button.inline
     = link_to _('Withdraw Access Request'), polymorphic_path([:leave, source, :members]),
               method: :delete,
               data: { confirm: remove_member_message(requester) },
               class: 'btn'
-  - elsif source.request_access_enabled && can?(current_user, :request_access, source)
+- elsif source.request_access_enabled && can?(current_user, :request_access, source)
+  .project-action-button.inline
     = link_to _('Request Access'), polymorphic_path([:request_access, source, :members]),
               method: :post,
               class: 'btn'

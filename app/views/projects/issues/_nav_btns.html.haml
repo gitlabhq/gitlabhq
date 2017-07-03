@@ -1,6 +1,9 @@
 = link_to params.merge(rss_url_options), class: 'btn btn-default append-right-10 has-tooltip', title: 'Subscribe' do
   = icon('rss')
+<<<<<<< HEAD
 = render 'projects/issues/export_issues/button'
+=======
+>>>>>>> ce-com/master
 - if @can_bulk_update
   = button_tag "Edit Issues", class: "btn btn-default append-right-10 js-bulk-update-toggle"
 = link_to "New issue", new_namespace_project_issue_path(@project.namespace,

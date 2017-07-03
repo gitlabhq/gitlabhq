@@ -2,11 +2,14 @@
 
 module Gitlab
   module GonHelper
+    include WebpackHelper
+
     def add_gon_variables
       gon.api_version            = 'v4'
       gon.default_avatar_url     = URI.join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
       gon.max_file_size          = current_application_settings.max_attachment_size
       gon.asset_host             = ActionController::Base.asset_host
+      gon.webpack_public_path    = webpack_public_path
       gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
       gon.shortcuts_path         = help_page_path('shortcuts')
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class

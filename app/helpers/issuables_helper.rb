@@ -165,7 +165,10 @@ module IssuablesHelper
     }
 
     state_title = titles[state] || state.to_s.humanize
+<<<<<<< HEAD
 
+=======
+>>>>>>> ce-com/master
     count = issuables_count_for_state(issuable_type, state)
 
     html = content_tag(:span, state_title)
