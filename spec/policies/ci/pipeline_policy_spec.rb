@@ -4,8 +4,8 @@ describe Ci::PipelinePolicy, :models do
   let(:user) { create(:user) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
-  let(:policies) do
-    described_class.abilities(user, pipeline).to_set
+  let(:policy) do
+    described_class.new(user, pipeline)
   end
 
   describe 'rules' do
@@ -23,7 +23,7 @@ describe Ci::PipelinePolicy, :models do
         let(:branch_policy) { :no_one_can_push }
 
         it 'does not include ability to update pipeline' do
-          expect(policies).to be_disallowed :update_pipeline
+          expect(policy).to be_disallowed :update_pipeline
         end
       end
 
@@ -31,7 +31,7 @@ describe Ci::PipelinePolicy, :models do
         let(:branch_policy) { :developers_can_push }
 
         it 'includes ability to update pipeline' do
-          expect(policies).to be_allowed :update_pipeline
+          expect(policy).to be_allowed :update_pipeline
         end
       end
 
@@ -39,7 +39,7 @@ describe Ci::PipelinePolicy, :models do
         let(:branch_policy) { :developers_can_merge }
 
         it 'includes ability to update pipeline' do
-          expect(policies).to be_allowed :update_pipeline
+          expect(policy).to be_allowed :update_pipeline
         end
       end
     end

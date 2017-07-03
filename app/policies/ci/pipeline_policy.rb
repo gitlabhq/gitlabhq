@@ -1,6 +1,6 @@
 module Ci
   class PipelinePolicy < BasePolicy
-    delegate { pipeline.project }
+    delegate { @subject.project }
 
     condition(:user_cannot_update) do
       !::Gitlab::UserAccess

@@ -51,18 +51,12 @@ module Ci
         return error('No stages / jobs for this pipeline.')
       end
 
-      process!
+      process! do
+        pipeline_created_counter.increment(source: source)
+      end
     end
 
     private
-
-    def triggering_user_allowed_for_ref?(trigger_request, ref)
-      triggering_user = current_user || trigger_request.trigger.owner
-
-      (triggering_user &&
-        Ci::Pipeline.allowed_to_create?(triggering_user, project, ref)) ||
-        !project.protected_for?(ref)
-    end
 
     def process!
       Ci::Pipeline.transaction do
@@ -75,9 +69,17 @@ module Ci
 
       cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
 
-      pipeline_created_counter.increment(source: source)
+      yield
 
       pipeline.tap(&:process!)
+    end
+
+    def triggering_user_allowed_for_ref?(trigger_request, ref)
+      triggering_user = current_user || trigger_request.trigger.owner
+
+      (triggering_user &&
+        Ci::Pipeline.allowed_to_create?(triggering_user, project, ref)) ||
+        !project.protected_for?(ref)
     end
 
     def update_merge_requests_head_pipeline

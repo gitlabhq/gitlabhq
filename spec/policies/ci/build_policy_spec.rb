@@ -110,7 +110,7 @@ describe Ci::BuildPolicy, :models do
         let(:branch_policy) { :no_one_can_push }
 
         it 'does not include ability to update build' do
-          expect(policies).to be_disallowed :update_build
+          expect(policy).to be_disallowed :update_build
         end
       end
 
@@ -118,7 +118,7 @@ describe Ci::BuildPolicy, :models do
         let(:branch_policy) { :developers_can_push }
 
         it 'includes ability to update build' do
-          expect(policies).to be_allowed :update_build
+          expect(policy).to be_allowed :update_build
         end
       end
 
@@ -126,7 +126,7 @@ describe Ci::BuildPolicy, :models do
         let(:branch_policy) { :developers_can_merge }
 
         it 'includes ability to update build' do
-          expect(policies).to be_allowed :update_build
+          expect(policy).to be_allowed :update_build
         end
       end
     end
