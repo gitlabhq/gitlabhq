@@ -47,6 +47,18 @@ module NotesHelper
     data
   end
 
+  def add_diff_note_button(line_code, position, line_type)
+    return if @diff_notes_disabled
+
+    button_tag '',
+      class: 'add-diff-note js-add-diff-note-button',
+      type: 'submit', name: 'button',
+      data: diff_view_line_data(line_code, position, line_type),
+      title: 'Add a comment to this line' do
+      icon('comment-o')
+    end
+  end
+
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 

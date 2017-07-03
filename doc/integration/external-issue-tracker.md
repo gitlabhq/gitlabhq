@@ -8,6 +8,9 @@ you to do the following:
   issue index of the external tracker
 - clicking **New issue** on the project dashboard creates a new issue on the
   external tracker
+- you can reference these external issues inside GitLab interface
+  (merge requests, commits, comments) and they will be automatically converted
+  into links
 
 ## Configuration
 

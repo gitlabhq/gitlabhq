@@ -17,7 +17,7 @@
         = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
           = brand_header_logo
 
-      .title-container
+      .title-container.js-title-container
         %h1.title{ class: ('initializing' if @has_group_title) }= title
 
       .navbar-collapse.collapse
