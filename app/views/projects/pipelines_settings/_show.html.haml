@@ -50,7 +50,7 @@
           = f.label :ci_config_file, 'Custom CI config file', class: 'label-light'
           = f.text_field :ci_config_file, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.help-block
-            The path to CI config file. Default to <code>.gitlab-ci.yml</code>
+            The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-file'), target: '_blank'
 
         %hr
