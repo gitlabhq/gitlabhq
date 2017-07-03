@@ -964,6 +964,7 @@ class Project < ActiveRecord::Base
       begin
         gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
+        expires_full_path_cache
 
         @old_path_with_namespace = old_path_with_namespace
 
