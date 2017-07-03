@@ -1,5 +1,33 @@
+- group: AWS Elastic Load Balancer
+  priority: 10
+  metrics:
+  - title: "Request Rate"
+    y_label: "Requests/Min"
+    required_metrics:
+      - aws_elb_request_count_sum
+    weight: 1
+    queries:
+    - query_range: 'sum(aws_elb_request_count_sum{%{environment_filter}})'
+      label: Requests per minute
+      unit: requests
+  - title: "Latency"
+    y_label: "Average Latency"
+    required_metrics:
+     - aws_elb_latency_average
+    weight: 1
+    queries:
+    - query_range: 'avg(aws_elb_latency_average{%{environment_filter}})'
+      unit: seconds
+  - title: "Error Rate"
+    y_label: "Percent HTTP Errors / minute"
+    required_metrics:
+     - aws_elb_request_count_sum
+     - aws_elb_httpcode_backend_5_xx_sum
+    weight: 1
+    queries:
+    - query_range: 'sum(aws_elb_httpcode_backend_5_xx_sum{%{environment_filter}}) / sum(aws_elb_request_count_sum{%{environment_filter}})'
 - group: Kubernetes
-  priority: 1
+  priority: 5
   metrics:
   - title: "Memory usage"
     y_label: "Values"
@@ -23,7 +51,13 @@
      - container_cpu_usage_seconds_total
     weight: 1
     queries:
-    - query_range: 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100'
+    - query_range: 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) by (cpu) * 100'
+      series:
+        label: cpu
+        - value: cpu00
+          color: red
+        - value: cpu01
+          color: blue
   - title: "Current CPU usage"
     required_metrics:
      - container_cpu_usage_seconds_total
