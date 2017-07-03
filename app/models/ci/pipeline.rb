@@ -331,7 +331,7 @@ module Ci
 
       @ci_yaml_file = begin
         project.repository.gitlab_ci_yml_for(sha)
-      rescue Rugged::ReferenceError, GRPC::NotFound
+      rescue Rugged::ReferenceError, GRPC::NotFound, GRPC::Internal
         self.yaml_errors =
           "Failed to load CI/CD config file at #{project.ci_config_file_for_pipeline}"
         nil
