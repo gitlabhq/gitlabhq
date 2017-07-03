@@ -121,6 +121,7 @@ describe Ci::PipelineSchedule, models: true do
 
   describe '#job_variables' do
     let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly) }
+
     let!(:pipeline_schedule_variables) do
       create_list(:ci_pipeline_schedule_variable, 2, pipeline_schedule: pipeline_schedule)
     end

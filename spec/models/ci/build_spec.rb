@@ -1379,8 +1379,8 @@ describe Ci::Build, :models do
       end
 
       before do
-        pipeline_schedule.reload
         pipeline_schedule.pipelines << pipeline
+        pipeline_schedule.reload
       end
 
       it { is_expected.to include(pipeline_schedule_variable.to_runner_variable) }
