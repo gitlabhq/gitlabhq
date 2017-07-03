@@ -35,6 +35,9 @@ export default {
         'disabled-content': this.isDeleting,
       };
     },
+    canReportAsAbuse() {
+      return this.note.report_abuse_path && this.author.id !== window.gon.current_user_id;
+    },
   },
   methods: {
     editHandler() {
@@ -116,6 +119,7 @@ export default {
             :canAward="note.emoji_awardable"
             :canEdit="note.current_user.can_edit"
             :canDelete="note.current_user.can_edit"
+            :canReportAsAbuse="canReportAsAbuse"
             :reportAbusePath="note.report_abuse_path"
             :editHandler="editHandler"
             :deleteHandler="deleteHandler" />

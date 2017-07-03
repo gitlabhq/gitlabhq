@@ -22,6 +22,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    canReportAsAbuse: {
+      type: Boolean,
+      required: true,
+    },
     editHandler: {
       type: Function,
       required: true,
@@ -90,7 +94,7 @@ export default {
           </li>
           <li class="divider"></li>
         </template>
-        <li v-if="reportAbusePath">
+        <li v-if="canReportAsAbuse">
           <a :href="reportAbusePath">
             Report as abuse
           </a>
