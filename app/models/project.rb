@@ -536,7 +536,7 @@ class Project < ActiveRecord::Base
 
   def ci_config_file=(value)
     # Strip all leading slashes so that //foo -> foo
-    super(value&.sub(%r{\A/+}, ''))
+    super(value&.sub(%r{\A/+}, '')&.delete("\0"))
   end
 
   def import_url=(value)
