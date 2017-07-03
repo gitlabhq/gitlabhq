@@ -27,7 +27,4 @@
           = link_to admin_requests_profiles_path, title: 'Requests Profiles' do
             %span
               Requests Profiles
-        = nav_link path: 'audit_logs#index' do
-          = link_to admin_audit_logs_path, title: 'Audit Log' do
-            %span
-              Audit Log
+        = render 'admin/monitoring/ee/nav'
