@@ -16,7 +16,7 @@ class MigrateStageIdReferenceInBackground < ActiveRecord::Migration
 
     Build.where(stage_id: nil).in_batches(of: BATCH_SIZE) do |relation|
       jobs = relation.pluck(:id).map { |id| [MIGRATION, [id]] }
-      schedule = index * 5.minutes
+      schedule = index * 2.minutes
       index += 1
 
       BackgroundMigrationWorker.perform_bulk_in(schedule, jobs)
