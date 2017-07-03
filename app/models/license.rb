@@ -1,6 +1,7 @@
 class License < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
+  ADMIN_AUDIT_LOG_FEATURE = 'GitLab_AdminAuditLog'.freeze
   AUDIT_EVENTS_FEATURE = 'GitLab_AuditEvents'.freeze
   AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
   BURNDOWN_CHARTS_FEATURE = 'GitLab_BurndownCharts'.freeze
@@ -28,6 +29,7 @@ class License < ActiveRecord::Base
   VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VariableEnvironmentScope'.freeze
 
   FEATURE_CODES = {
+    admin_audit_log: ADMIN_AUDIT_LOG_FEATURE,
     auditor_user: AUDITOR_USER_FEATURE,
     elastic_search: ELASTIC_SEARCH_FEATURE,
     geo: GEO_FEATURE,
@@ -85,6 +87,7 @@ class License < ActiveRecord::Base
 
   EEP_FEATURES = [
     *EES_FEATURES,
+    { ADMIN_AUDIT_LOG_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
     { FILE_LOCKS_FEATURE => 1 },
