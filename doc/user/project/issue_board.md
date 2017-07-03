@@ -1,8 +1,7 @@
 # Issue Board
 
->**Notes:**
-- [Introduced][ce-5554] in GitLab 8.11.
-- The Backlog column was replaced by the **Add issues** button in GitLab 8.17.
+>**Note:**
+[Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
 
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -15,36 +14,63 @@ Other interesting links:
 
 ## Overview
 
-The Issue Board builds on GitLab's existing issue tracking functionality and
+The Issue Board builds on GitLab's existing
+[issue tracking functionality](issues/index.md#issue-tracker) and
 leverages the power of [labels] by utilizing them as lists of the scrum board.
 
-With the Issue Board you can have a different view of your issues while also
+With the Issue Board you can have a different view of your issues while
 maintaining the same filtering and sorting abilities you see across the
-issue tracker.
+issue tracker. An Issue Board is based on its project's label structure, therefore, it
+applies the same descriptive labels to indicate placement on the board, keeping
+consistency throughout the entire development lifecycle.
+
+An Issue Board shows you what issues your team is working on, who is assigned to each,
+and where in the workflow those issues are.
+
+You create issues, host code, perform reviews, build, test,
+and deploy from one single platform. Issue Boards help you to visualize
+and manage the entire process _in_ GitLab.
+
+With [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards), available
+only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
+you go even further, as you can not only keep yourself and your project
+organized from a broader perspective with one Issue Board per project,
+but also allow your team members to organize their own workflow by creating
+multiple Issue Boards within the same project.
 
 ## Use cases
-
-There are numerous use cases for Issue Boards, we will just
-exemplify with a couple situations.
 
 GitLab Workflow allows you to discuss proposals in issues, categorize them
 with labels, and from there organize and prioritize them with Issue Boards.
 
-- For example, let's consider this simplified development workflow:
-you have a repository hosting your app's codebase
-and your team actively contributing to code. Your backend team starts working a new
-implementation, gathers feedback and approval, and pass it to frontend.
-From there, when frontend is complete, the new feature
-is deployed to staging to be tested. When successful, it goes to production. If we have
-the labels "backend", "frontend", "staging", and "production", and an Issue Board with
-a list for each, we can:
-  - Visualize the entire flow of implementations since the
-beginning of the dev lifecycle until deployed to production
-  - Prioritize the issues in a list by moving them vertically
-  - Move issues between lists to organize them according to the labels you've set
+For example, let's consider this simplified development workflow:
 
-For a broader use-case, please check the blog post
+1. You have a repository hosting your app's codebase
+and your team actively contributing to code
+1. Your **backend** team starts working a new
+implementation, gathers feedback and approval, and pass it over to **frontend**
+1. When frontend is complete, the new feature is deployed to **staging** to be tested
+1. When successful, it is deployed to **production**
+
+If we have the labels "**backend**", "**frontend**", "**staging**", and
+"**production**", and an Issue Board with a list for each, we can:
+
+- Visualize the entire flow of implementations since the
+beginning of the development lifecycle until deployed to production
+- Prioritize the issues in a list by moving them vertically
+- Move issues between lists to organize them according to the labels you've set
+- Add multiple issues to lists in the board by selecting one or more existing issues
+
+![issue card moving](img/issue_board_move_issue_card_list.png)
+
+> **Notes:**
+>
+>- For a broader use case, please check the blog post
 [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+>
+>- For a real use case, please check why
+[Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
+to improve their workflow with [multiple boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
 
 ## Issue Board terminology
 
