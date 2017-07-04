@@ -9,7 +9,6 @@ describe MigrateStagesStatuses, :migration do
 
   STATUSES = { created: 0, pending: 1, running: 2, success: 3,
                failed: 4, canceled: 5, skipped: 6, manual: 7 }
-  STAGES  = { test: 1, build: 2, deploy: 3}
 
   before do
     projects.create!(id: 1, name: 'gitlab1', path: 'gitlab1')
@@ -42,8 +41,10 @@ describe MigrateStagesStatuses, :migration do
   end
 
   def create_job(project:, pipeline:, stage:, status:, **opts)
+    stages  = { test: 1, build: 2, deploy: 3}
+
     jobs.create!(project_id: project, commit_id: pipeline,
-                 stage_idx: STAGES[stage.to_sym], stage: stage,
+                 stage_idx: stages[stage.to_sym], stage: stage,
                  status: status, **opts)
   end
 end

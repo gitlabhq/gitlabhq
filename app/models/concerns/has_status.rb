@@ -8,6 +8,8 @@ module HasStatus
   ACTIVE_STATUSES = %w[pending running].freeze
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
   ORDERED_STATUSES = %w[failed pending running manual canceled success skipped created].freeze
+  STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
+                    failed: 4, canceled: 5, skipped: 6, manual: 7 }
 
   class_methods do
     def status_sql
@@ -53,6 +55,14 @@ module HasStatus
 
     def all_state_names
       state_machines.values.flat_map(&:states).flat_map { |s| s.map(&:name) }
+    end
+
+    private
+
+    def enumerated_status!
+      @status_strategy = :enumerator
+
+      enum status: HasStatus::STATUSES_ENUM
     end
   end
 

@@ -1,6 +1,9 @@
 module Ci
   class Stage < ActiveRecord::Base
     extend Ci::Model
+    include HasStatus
+
+    enumerated_status!
 
     belongs_to :project
     belongs_to :pipeline
