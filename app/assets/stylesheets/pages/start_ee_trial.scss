@@ -12,7 +12,7 @@
 }
 
 .start-trial-body {
-  .section-body.ee-features {
+  .ee-features {
     border: 1px solid $border-color;
     border-radius: 5px;
     padding: 20px 40px;
@@ -20,8 +20,8 @@
 }
 
 .start-trial-body {
-  .section-body.trial-form {
-    .form-group label {
+  .trial-form {
+    label {
       font-weight: normal;
     }
   }

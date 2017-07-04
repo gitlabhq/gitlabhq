@@ -56,7 +56,7 @@ header {
     }
 
     &.has-trial-banner {
-      top: 50px;
+      top: 52px;
     }
 
     .container-fluid {
@@ -319,7 +319,7 @@ header {
 }
 
 .gitlab-ee-trial-banner {
-  padding: 15px;
+  padding: $gl-padding;
   text-align: center;
 
   p {

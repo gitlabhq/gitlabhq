@@ -1,7 +1,7 @@
 .blank-state-parent-container {
   display: flex;
 
-  .col-md-6 {
+  .section-container {
     display: flex;
     flex: 1;
     padding: 10px;
@@ -11,10 +11,12 @@
     width: 100%;
     height: 100%;
     border: 1px solid $border-color;
-    border-radius: 5px;
+    border-radius: $border-radius-default;
 
     &.section-ee-trial {
-      display: table;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
@@ -33,10 +35,8 @@
 }
 
 .blank-state.ee-trial {
-  display: table-cell;
   padding: 20px;
   text-align: center;
-  vertical-align: middle;
 }
 
 .blank-state-no-icon {
