@@ -39,6 +39,14 @@ describe Groups::AnalyticsController do
     create_push_event(user3, project)
   end
 
+  it 'returns 404 when feature is not available' do
+    stub_licensed_features(contribution_analytics: false)
+
+    get :show, group_id: group.path
+
+    expect(response).to have_http_status(404)
+  end
+
   it 'sets instance variables properly' do
     get :show, group_id: group.path
 

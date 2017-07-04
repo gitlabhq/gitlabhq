@@ -3,6 +3,7 @@ class License < ActiveRecord::Base
 
   AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
   BURNDOWN_CHARTS_FEATURE = 'BurndownCharts'.freeze
+  CONTRIBUTION_ANALYTICS_FEATURE = 'ContributionAnalytics'.freeze
   DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
   ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
   EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
@@ -26,6 +27,7 @@ class License < ActiveRecord::Base
 
     # Features that make sense to Namespace:
     burndown_charts: BURNDOWN_CHARTS_FEATURE,
+    contribution_analytics: CONTRIBUTION_ANALYTICS_FEATURE,
     deploy_board: DEPLOY_BOARD_FEATURE,
     export_issues: EXPORT_ISSUES_FEATURE,
     fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
@@ -42,6 +44,7 @@ class License < ActiveRecord::Base
 
   EES_FEATURES = [
     { BURNDOWN_CHARTS_FEATURE => 1 },
+    { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
     { ELASTIC_SEARCH_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
     { FAST_FORWARD_MERGE_FEATURE => 1 },
@@ -73,10 +76,9 @@ class License < ActiveRecord::Base
   # Early adopters should not earn new features as they're
   # introduced.
   EARLY_ADOPTER_FEATURES = [
-    # TODO: Add EES features
-    # https://gitlab.com/gitlab-org/gitlab-ee/issues/2335)
     { AUDITOR_USER_FEATURE => 1 },
     { BURNDOWN_CHARTS_FEATURE => 1 },
+    { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
     { FAST_FORWARD_MERGE_FEATURE => 1 },
