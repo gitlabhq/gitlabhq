@@ -61,8 +61,10 @@ describe API::Issues do
   before(:all) do
     project.team << [user, :reporter]
     project.team << [guest, :guest]
+  end
 
-    TestLicense.destroy!
+  before do
+    stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
   end
 
   describe "GET /issues" do

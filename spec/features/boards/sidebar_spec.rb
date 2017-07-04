@@ -17,7 +17,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   before do
     Timecop.freeze
-    TestLicense.destroy!
+    stub_licensed_features(multiple_issue_assignees: false)
 
     project.team << [user, :master]
 

@@ -13,7 +13,7 @@ describe 'New/edit issue', :feature, :js do
   let!(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
 
   before do
-    TestLicense.destroy!
+    stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
 
     project.team << [user, :master]
     project.team << [user2, :master]
@@ -32,8 +32,8 @@ describe 'New/edit issue', :feature, :js do
         # the original method, resulting in infinite recurison when called.
         # This is likely a bug with helper modules included into dynamically generated view classes.
         # To work around this, we have to hold on to and call to the original implementation manually.
-        original_issue_dropdown_options = FormHelper.instance_method(:issue_assignees_dropdown_options)
-        allow_any_instance_of(FormHelper).to receive(:issue_assignees_dropdown_options).and_wrap_original do |original, *args|
+        original_issue_dropdown_options = EE::FormHelper.instance_method(:issue_assignees_dropdown_options)
+        allow_any_instance_of(EE::FormHelper).to receive(:issue_assignees_dropdown_options).and_wrap_original do |original, *args|
           options = original_issue_dropdown_options.bind(original.receiver).call(*args)
           options[:data][:per_page] = 2
 
@@ -144,18 +144,14 @@ describe 'New/edit issue', :feature, :js do
       page.within '.dropdown-menu-labels' do
         click_link label.title
         click_link label2.title
+
+        find('.dropdown-menu-close').click
       end
       page.within '.js-label-select' do
         expect(page).to have_content label.title
       end
       expect(page.all('input[name="issue[label_ids][]"]', visible: false)[1].value).to match(label.id.to_s)
       expect(page.all('input[name="issue[label_ids][]"]', visible: false)[2].value).to match(label2.id.to_s)
-
-      click_button 'Weight'
-
-      page.within '.dropdown-menu-weight' do
-        click_link '1'
-      end
 
       click_button 'Submit issue'
 

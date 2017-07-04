@@ -12,7 +12,7 @@ describe API::Milestones do
   before do
     project.team << [user, :developer]
 
-    TestLicense.destroy!
+    stub_licensed_features(issue_weights: false)
   end
 
   describe 'GET /projects/:id/milestones' do
