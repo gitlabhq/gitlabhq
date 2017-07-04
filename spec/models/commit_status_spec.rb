@@ -7,10 +7,10 @@ describe CommitStatus, :models do
     create(:ci_pipeline, project: project, sha: project.commit.id)
   end
 
-  let(:commit_status) { create_status }
+  let(:commit_status) { create_status(stage: 'test') }
 
-  def create_status(args = {})
-    create(:commit_status, args.merge(pipeline: pipeline))
+  def create_status(**opts)
+    create(:commit_status, pipeline: pipeline, **opts)
   end
 
   it { is_expected.to belong_to(:pipeline) }
@@ -407,6 +407,18 @@ describe CommitStatus, :models do
       end
     end
   end
+
+  describe '#stage_entity' do
+    let!(:stage) do
+      create(:ci_stage_entity, pipeline: commit_status.pipeline,
+                               name: commit_status.stage)
+    end
+
+    it 'has a correct association with persisted stage' do
+      expect(commit_status.stage_entity).to eq stage
+    end
+  end
+
 
   describe '#locking_enabled?' do
     before do

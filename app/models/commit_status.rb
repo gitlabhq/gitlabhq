@@ -38,6 +38,15 @@ class CommitStatus < ActiveRecord::Base
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
+  ##
+  # TODO, we will change this to `belongs_to :stage` when we phase out
+  # `ci_builds.stage` attribute and migrate `ci_builds.stage_id` reference in
+  # one of upcoming releases.
+  #
+  def stage_entity
+    Ci::Stage.find_by(pipeline: pipeline, name: stage)
+  end
+
   state_machine :status do
     event :enqueue do
       transition [:created, :skipped, :manual] => :pending
