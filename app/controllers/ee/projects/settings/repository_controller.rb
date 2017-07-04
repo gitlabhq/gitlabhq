@@ -5,17 +5,18 @@ module EE
         extend ActiveSupport::Concern
 
         prepended do
+          before_action :push_rule, only: [:show]
           before_action :remote_mirror, only: [:show]
         end
 
-        def show
-          super
+        private
+
+        def push_rule
+          return unless project.feature_available?(:push_rules)
 
           project.create_push_rule unless project.push_rule
           @push_rule = project.push_rule
         end
-
-        private
 
         def remote_mirror
           @remote_mirror = @project.remote_mirrors.first_or_initialize

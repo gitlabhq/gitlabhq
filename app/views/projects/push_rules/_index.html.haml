@@ -1,3 +1,5 @@
+- return unless @project.feature_available?(:push_rules)
+
 - expanded = Rails.env.test?
 %section.settings
   .settings-header

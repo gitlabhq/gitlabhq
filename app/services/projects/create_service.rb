@@ -164,6 +164,8 @@ module Projects
     end
 
     def create_predefined_push_rule
+      return unless project.feature_available?(:push_rules)
+
       predefined_push_rule = PushRule.find_by(is_sample: true)
 
       if predefined_push_rule

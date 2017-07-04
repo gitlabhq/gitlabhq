@@ -11,6 +11,22 @@ describe Project, models: true do
     it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:namespace) }
   end
 
+  describe '#push_rule' do
+    let(:project) { create(:project, push_rule: create(:push_rule)) }
+
+    subject(:push_rule) { project.push_rule(true) }
+
+    it { is_expected.not_to be_nil }
+
+    context 'push rules unlicensed' do
+      before do
+        stub_licensed_features(push_rules: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#feature_available?' do
     let(:namespace) { build_stubbed(:namespace) }
     let(:project) { build_stubbed(:project, namespace: namespace) }

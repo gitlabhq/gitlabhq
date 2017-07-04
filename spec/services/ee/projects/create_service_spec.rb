@@ -34,13 +34,26 @@ describe Projects::CreateService, '#execute', services: true do
   end
 
   context 'git hook sample' do
+    let!(:sample) { create(:push_rule_sample) }
+
+    subject(:push_rule) { create_project(user, opts).push_rule }
+
     it 'creates git hook from sample' do
-      push_rule_sample = create(:push_rule_sample)
+      is_expected.to have_attributes(
+        force_push_regex: sample.force_push_regex,
+        deny_delete_tag: sample.deny_delete_tag,
+        delete_branch_regex: sample.delete_branch_regex,
+        commit_message_regex: sample.commit_message_regex
+      )
+    end
 
-      push_rule = create_project(user, opts).push_rule
+    context 'push rules unlicensed' do
+      before do
+        stub_licensed_features(push_rules: false)
+      end
 
-      [:force_push_regex, :deny_delete_tag, :delete_branch_regex, :commit_message_regex].each do |attr_name|
-        expect(push_rule.send(attr_name)).to eq push_rule_sample.send(attr_name)
+      it 'ignores the push rule sample' do
+        is_expected.to be_nil
       end
     end
   end

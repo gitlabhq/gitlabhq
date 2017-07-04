@@ -25,7 +25,7 @@ module EE
       belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
       has_one :mirror_data, dependent: :delete, autosave: true, class_name: 'ProjectMirrorData'
-      has_one :push_rule, dependent: :destroy
+      has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }, dependent: :destroy
       has_one :index_status, dependent: :destroy
       has_one :jenkins_service, dependent: :destroy
       has_one :jenkins_deprecated_service, dependent: :destroy
