@@ -48,7 +48,13 @@ module API
         optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
       end
       post ':id/variables' do
-        variable = user_project.variables.create(declared_params(include_missing: false))
+        variable_params = declared_params(include_missing: false)
+
+        # EE
+        variable_params.delete(:environment_scope) unless
+            user_project.feature_available?(:variable_environment_scope)
+
+        variable = user_project.variables.create(variable_params)
 
         if variable.valid?
           present variable, with: Entities::Variable
@@ -73,7 +79,13 @@ module API
 
         return not_found!('Variable') unless variable
 
-        if variable.update(declared_params(include_missing: false).except(:key))
+        variable_params = declared_params(include_missing: false).except(:key)
+
+        # EE
+        variable_params.delete(:environment_scope) unless
+            user_project.feature_available?(:variable_environment_scope)
+
+        if variable.update(variable_params)
           present variable, with: Entities::Variable
         else
           render_validation_error!(variable)

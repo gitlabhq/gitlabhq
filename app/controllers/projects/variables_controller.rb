@@ -1,4 +1,6 @@
 class Projects::VariablesController < Projects::ApplicationController
+  prepend ::EE::Projects::VariablesController
+
   before_action :authorize_admin_build!
 
   layout 'project_settings'
@@ -44,15 +46,10 @@ class Projects::VariablesController < Projects::ApplicationController
   private
 
   def variable_params
-    params.require(:variable)
-      .permit(variable_params_ce.concat(variable_params_ee))
+    params.require(:variable).permit(*variable_params_attributes)
   end
 
-  def variable_params_ce
+  def variable_params_attributes
     %i[id key value protected _destroy]
-  end
-
-  def variable_params_ee
-    %i[environment_scope]
   end
 end

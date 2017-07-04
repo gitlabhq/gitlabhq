@@ -15,7 +15,7 @@ class License < ActiveRecord::Base
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
-  VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VARIABLE_ENVIRONMENT_SCOPE'.freeze
+  VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'VariableEnvironmentScope'.freeze
 
   FEATURE_CODES = {
     auditor_user: AUDITOR_USER_FEATURE,

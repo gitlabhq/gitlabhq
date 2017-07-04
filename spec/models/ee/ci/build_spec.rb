@@ -85,10 +85,6 @@ describe Ci::Build, models: true do
                 environment_varialbe.slice(:key, :value)
                   .merge(project: project, environment_scope: 'stag*'))
 
-        # Skip this validation so that we could test for existing data
-        allow(variable).to receive(:verify_updating_environment_scope)
-          .and_return(true)
-
         variable.save!
       end
 

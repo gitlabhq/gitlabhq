@@ -320,12 +320,6 @@ describe Project, models: true do
         project.secret_variables_for(ref: 'ref', environment: environment)
       end
 
-      before do
-        # Skip this validation so that we could test for existing data
-        allow_any_instance_of(EE::Ci::Variable)
-          .to receive(:verify_updating_environment_scope).and_return(true)
-      end
-
       shared_examples 'matching environment scope' do
         context 'when variable environment scope is available' do
           before do
