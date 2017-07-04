@@ -3,6 +3,7 @@ module API
     class ProjectPushRule < Grape::API
       before { authenticate! }
       before { authorize_admin_project }
+      before { check_project_feature_available!(:push_rules) }
 
       params do
         requires :id, type: String, desc: 'The ID of a project'
