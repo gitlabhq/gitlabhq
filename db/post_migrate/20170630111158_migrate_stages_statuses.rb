@@ -5,13 +5,17 @@ class MigrateStagesStatuses < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
+  STATUSES = { created: 0, pending: 1, running: 2, success: 3,
+               failed: 4, canceled: 5, skipped: 6, manual: 7 }
+
+  class Stage < ActiveRecord::Base
+    self.table_name = 'ci_stages'
+  end
+
   class Build < ActiveRecord::Base
     self.table_name = 'ci_builds'
 
-    scope :relevant, -> do
-      where(status: %w[pending running success failed canceled skipped manual])
-    end
-
+    scope :latest, -> { where(retried: [false, nil]) }
     scope :created, -> { where(status: 'created') }
     scope :running, -> { where(status: 'running') }
     scope :pending, -> { where(status: 'pending') }
@@ -27,12 +31,12 @@ class MigrateStagesStatuses < ActiveRecord::Migration
 
     scope :exclude_ignored, -> do
       where("allow_failure = ? OR status IN (?)",
-        false, all_state_names - [:failed, :canceled, :manual])
+        false, %w[created pending running success skipped])
     end
 
-    def status_sql
-      scope_relevant = relevant.exclude_ignored
-      scope_warnings = relevant.failed_but_allowed
+    def self.status_sql
+      scope_relevant = latest.exclude_ignored
+      scope_warnings = latest.failed_but_allowed
 
       builds = scope_relevant.select('count(*)').to_sql
       created = scope_relevant.created.select('count(*)').to_sql
@@ -45,24 +49,33 @@ class MigrateStagesStatuses < ActiveRecord::Migration
       warnings = scope_warnings.select('count(*) > 0').to_sql
 
       "(CASE
-        WHEN (#{builds})=(#{skipped}) AND (#{warnings}) THEN 'success'
-        WHEN (#{builds})=(#{skipped}) THEN 'skipped'
-        WHEN (#{builds})=(#{success}) THEN 'success'
-        WHEN (#{builds})=(#{created}) THEN 'created'
-        WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'success'
-        WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
-        WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
-        WHEN (#{running})+(#{pending})>0 THEN 'running'
-        WHEN (#{manual})>0 THEN 'manual'
-        WHEN (#{created})>0 THEN 'running'
-        ELSE 'failed'
+        WHEN (#{builds})=(#{skipped}) AND (#{warnings}) THEN #{STATUSES[:success]}
+        WHEN (#{builds})=(#{skipped}) THEN #{STATUSES[:skipped]}
+        WHEN (#{builds})=(#{success}) THEN #{STATUSES[:success]}
+        WHEN (#{builds})=(#{created}) THEN #{STATUSES[:created]}
+        WHEN (#{builds})=(#{success})+(#{skipped}) THEN #{STATUSES[:success]}
+        WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN #{STATUSES[:canceled]}
+        WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN #{STATUSES[:pending]}
+        WHEN (#{running})+(#{pending})>0 THEN '#{STATUSES[:running]}
+        WHEN (#{manual})>0 THEN #{STATUSES[:manual]}
+        WHEN (#{created})>0 THEN #{STATUSES[:running]}
+        ELSE #{STATUSES[:failed]}
       END)"
     end
   end
 
   def up
-    execute <<-SQL.strip_heredoc
-    SQL
+    Stage.all.in_batches(of: 10000) do |relation|
+      status_sql = Build
+        .where('ci_builds.commit_id = ci_stages.pipeline_id')
+        .where('ci_builds.stage = ci_stages.name')
+        .status_sql
+
+      execute <<-SQL.strip_heredoc
+        UPDATE ci_stages SET status = #{status_sql}
+          WHERE id = (#{relation.select(:id).to_sql})
+      SQL
+    end
   end
 
   def down
