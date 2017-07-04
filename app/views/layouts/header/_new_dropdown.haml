@@ -33,7 +33,7 @@
               = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project)
           - if merge_project
             %li
-              = link_to 'New merge request', new_namespace_project_merge_request_path(merge_project.namespace, merge_project)
+              = link_to 'New merge request', namespace_project_new_merge_request_path(merge_project.namespace, merge_project)
           - if create_project_snippet
             %li.header-new-project-snippet
               = link_to 'New snippet', new_namespace_project_snippet_path(@project.namespace, @project)

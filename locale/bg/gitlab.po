@@ -1,13 +1,14 @@
+# Huang Tao <htve@outlook.com>, 2017. #zanata
 # Lyubomir Vasilev <lyubomirv@abv.bg>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-12 19:29-0500\n"
+"POT-Creation-Date: 2017-06-15 21:59-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-13 04:23-0400\n"
+"PO-Revision-Date: 2017-06-20 06:26-0400\n"
 "Last-Translator: Lyubomir Vasilev <lyubomirv@abv.bg>\n"
 "Language-Team: Bulgarian (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: bg\n"
@@ -90,11 +91,8 @@ msgstr "Отмяна в клона"
 msgid "ChangeTypeAction|Cherry-pick"
 msgstr "Подбиране"
 
-msgid "ChangeType|commit"
-msgstr "подаване"
-
-msgid "ChangeType|merge request"
-msgstr "заявка за сливане"
+msgid "ChangeTypeAction|Revert"
+msgstr "Отмяна"
 
 msgid "Changelog"
 msgstr "Списък с промени"
@@ -105,7 +103,7 @@ msgstr "Графики"
 msgid "Cherry-pick this commit"
 msgstr "Подбиране на това подаване"
 
-msgid "Cherry-pick this merge-request"
+msgid "Cherry-pick this merge request"
 msgstr "Подбиране на тази заявка за сливане"
 
 msgid "CiStatusLabel|canceled"
@@ -170,6 +168,9 @@ msgstr[1] "Подавания"
 msgid "Commit message"
 msgstr "Съобщение за подаването"
 
+msgid "CommitBoxTitle|Commit"
+msgstr "Подаване"
+
 msgid "CommitMessage|Add %{file_name}"
 msgstr "Добавяне на „%{file_name}“"
 
@@ -223,9 +224,6 @@ msgstr "Часова зона за „Cron“"
 
 msgid "Cron syntax"
 msgstr "Синтаксис на „Cron“"
-
-msgid "Custom"
-msgstr "Персонализиран"
 
 msgid "Custom notification events"
 msgstr "Персонализирани събития за известяване"
@@ -412,6 +410,9 @@ msgstr "Последно подаване"
 msgid "Learn more in the"
 msgstr "Научете повече в"
 
+msgid "Learn more in the|pipeline schedules documentation"
+msgstr "документацията относно планирането на схеми"
+
 msgid "Leave group"
 msgstr "Напускане на групата"
 
@@ -578,6 +579,15 @@ msgstr "Поемане на собствеността"
 msgid "PipelineSchedules|Target"
 msgstr "Цел"
 
+msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr "собствен"
+
+msgid "Pipeline|with stage"
+msgstr "с етап"
+
+msgid "Pipeline|with stages"
+msgstr "с етапи"
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "Проектът „%{project_name}“ е добавен в опашката за изтриване."
 
@@ -677,7 +687,7 @@ msgstr "Заявка за достъп"
 msgid "Revert this commit"
 msgstr "Отмяна на това подаване"
 
-msgid "Revert this merge-request"
+msgid "Revert this merge request"
 msgstr "Отмяна на тази заявка за сливане"
 
 msgid "Save pipeline schedule"
@@ -690,7 +700,7 @@ msgid "Scheduling Pipelines"
 msgstr "Планиране на схемите"
 
 msgid "Search branches and tags"
-msgstr "Търсене в клоновете и етикетите"
+msgstr "Търсете в клоновете и етикетите"
 
 msgid "Select Archive Format"
 msgstr "Изберете формата на архива"
@@ -729,8 +739,8 @@ msgstr "Изходен код"
 msgid "StarProject|Star"
 msgstr "Звезда"
 
-msgid "Start a <strong>new merge request</strong> with these changes"
-msgstr "Създайте <strong>нова заявка за сливане</strong> с тези промени"
+msgid "Start a %{new_merge_request} with these changes"
+msgstr "Създайте %{new_merge_request} с тези промени"
 
 msgid "Switch branch/tag"
 msgstr "Преминаване към клон/етикет"
@@ -779,7 +789,7 @@ msgid ""
 "specific branches or tags. Those scheduled pipelines will inherit limited "
 "project access based on their associated user."
 msgstr ""
-"Този план за схема ще изпълнява схемите в бъдеще, периодично, за определени "
+"Планът за схемата ще изпълнява схемите в бъдеще, периодично, за определени "
 "клонове или етикети. Тези планирани схеми ще наследят ограниченията на "
 "достъпа до проекта на свързания с тях потребител."
 
@@ -1069,6 +1079,9 @@ msgstr ""
 msgid "You can only add files when you are on a branch"
 msgstr "Можете да добавяте файлове само когато се намирате в клон"
 
+msgid "You have reached your project limit"
+msgstr "Не можете да създавате повече проекти"
+
 msgid "You must sign in to star a project"
 msgstr "Трябва да се впишете, за да отбележите проект със звезда"
 
@@ -1115,6 +1128,9 @@ msgid_plural "days"
 msgstr[0] "ден"
 msgstr[1] "дни"
 
+msgid "new merge request"
+msgstr "нова заявка за сливане"
+
 msgid "notification emails"
 msgstr "известия по е-поща"
 
@@ -1122,12 +1138,4 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] "родител"
 msgstr[1] "родители"
-
-msgid "pipeline schedules documentation"
-msgstr "документацията за планирането на схеми"
-
-msgid "with stage"
-msgid_plural "with stages"
-msgstr[0] "с етап"
-msgstr[1] "с етапи"
 

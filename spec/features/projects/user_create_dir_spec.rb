@@ -51,7 +51,7 @@ feature 'New directory creation', feature: true, js: true do
       expect(page).to have_content 'New Merge Request'
       expect(page).to have_content "From #{new_branch_name} into master"
       expect(page).to have_content 'Add new directory'
-      expect(current_path).to eq(new_namespace_project_merge_request_path(project.namespace, project))
+      expect(current_path).to eq(namespace_project_new_merge_request_path(project.namespace, project))
     end
   end
 end

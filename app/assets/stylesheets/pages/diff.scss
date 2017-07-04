@@ -20,8 +20,6 @@
   }
 
   .diff-content {
-    overflow: auto;
-    overflow-y: hidden;
     background: $white-light;
     color: $gl-text-color;
     border-radius: 0 0 3px 3px;
@@ -476,6 +474,7 @@
   height: 19px;
   width: 19px;
   margin-left: -15px;
+  z-index: 100;
 
   &:hover {
     .diff-comment-avatar,
@@ -491,7 +490,7 @@
           transform: translateX((($i * $x-pos) - $x-pos));
 
           &:hover {
-            transform: translateX((($i * $x-pos) - $x-pos)) scale(1.2);
+            transform: translateX((($i * $x-pos) - $x-pos));
           }
         }
       }
@@ -542,6 +541,7 @@
   height: 19px;
   padding: 0;
   transition: transform .1s ease-out;
+  z-index: 100;
 
   svg {
     position: absolute;
@@ -553,10 +553,6 @@
 
   path {
     fill: $white-light;
-  }
-
-  &:hover {
-    transform: scale(1.2);
   }
 
   &:focus {

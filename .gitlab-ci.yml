@@ -63,7 +63,7 @@ stages:
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
     - /mysql/
-    - /-stable$/
+    - /-stable/
     - master@gitlab-org/gitlab-ce
     - master@gitlab/gitlabhq
     - tags@gitlab-org/gitlab-ce
@@ -474,8 +474,8 @@ codeclimate:
   services:
     - docker:dind
   script:
-    - docker pull codeclimate/codeclimate
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate analyze -f json > codeclimate.json
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate analyze -f json > raw_codeclimate.json
+    - cat raw_codeclimate.json | docker run -i stedolan/jq -c 'map({check_name,fingerprint,location})' > codeclimate.json
   artifacts:
     paths: [codeclimate.json]
 
@@ -550,3 +550,9 @@ cache gems:
   only:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
+
+gitlab_git_test:
+  variables:
+    SETUP_DB: "false"
+  script:
+    - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes

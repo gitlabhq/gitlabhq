@@ -16,11 +16,12 @@ module GroupsHelper
     full_title = ''
 
     group.ancestors.reverse.each do |parent|
-      full_title += link_to(simple_sanitize(parent.name), group_path(parent), class: 'group-path hidable')
+      full_title += group_title_link(parent, hidable: true)
+
       full_title += '<span class="hidable"> / </span>'.html_safe
     end
 
-    full_title += link_to(simple_sanitize(group.name), group_path(group), class: 'group-path')
+    full_title += group_title_link(group)
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path') if name
 
     content_tag :span, class: 'group-title' do
@@ -55,5 +56,21 @@ module GroupsHelper
 
   def group_issues(group)
     IssuesFinder.new(current_user, group_id: group.id).execute
+  end
+
+  private
+
+  def group_title_link(group, hidable: false)
+    link_to(group_path(group), class: "group-path #{'hidable' if hidable}") do
+      output =
+        if show_new_nav?
+          image_tag(group_icon(group), class: "avatar-tile", width: 16, height: 16)
+        else
+          ""
+        end
+
+      output << simple_sanitize(group.name)
+      output.html_safe
+    end
   end
 end

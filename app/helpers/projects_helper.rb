@@ -58,7 +58,17 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
+    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
+      output =
+        if show_new_nav?
+          project_icon(project, alt: project.name, class: 'avatar-tile', width: 16, height: 16)
+        else
+          ""
+        end
+
+      output << simple_sanitize(project.name)
+      output.html_safe
+    end
 
     if current_user
       project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do

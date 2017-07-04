@@ -147,10 +147,9 @@
     top: 35px;
     left: 10px;
     bottom: 0;
-    overflow-y: scroll;
-    overflow-x: hidden;
     padding: 10px 20px 20px 5px;
-    white-space: pre;
+    white-space: pre-wrap;
+    overflow: auto;
   }
 
   .environment-information {
@@ -399,6 +398,7 @@
 
 .build-light-text {
   color: $gl-text-color-secondary;
+  word-wrap: break-word;
 }
 
 .build-gutter-toggle {

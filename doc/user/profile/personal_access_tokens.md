@@ -14,6 +14,9 @@ accepted method of authentication when you have
 Once you have your token, [pass it to the API][usage] using either the
 `private_token` parameter or the `PRIVATE-TOKEN` header.
 
+The expiration of personal access tokens happens on the date you define,
+at midnight UTC.
+
 ## Creating a personal access token
 
 You can create as many personal access tokens as you like from your GitLab

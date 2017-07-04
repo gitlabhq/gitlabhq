@@ -55,27 +55,14 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     render_merge_request(example.description, merge_request)
   end
 
-  it 'merge_requests/inline_changes_tab_with_comments.json' do |example|
-    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
-    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
-    render_merge_request(example.description, merge_request, action: :diffs, format: :json)
-  end
-
-  it 'merge_requests/parallel_changes_tab_with_comments.json' do |example|
-    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
-    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
-    render_merge_request(example.description, merge_request, action: :diffs, format: :json, view: 'parallel')
-  end
-
   private
 
-  def render_merge_request(fixture_file_name, merge_request, action: :show, format: :html, view: 'inline')
-    get action,
+  def render_merge_request(fixture_file_name, merge_request)
+    get :show,
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: merge_request.to_param,
-      format: format,
-      view: view
+      format: :html
 
     expect(response).to be_success
     store_frontend_fixture(response, fixture_file_name)

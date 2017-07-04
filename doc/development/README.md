@@ -54,6 +54,7 @@
 - [Polymorphic Associations](polymorphic_associations.md)
 - [Single Table Inheritance](single_table_inheritance.md)
 - [Background Migrations](background_migrations.md)
+- [Storing SHA1 Hashes As Binary](sha1_as_binary.md)
 
 ## i18n
 

@@ -284,15 +284,6 @@ describe Project, models: true do
     end
   end
 
-  describe 'default_scope' do
-    it 'excludes projects pending deletion from the results' do
-      project = create(:empty_project)
-      create(:empty_project, pending_delete: true)
-
-      expect(Project.all).to eq [project]
-    end
-  end
-
   describe 'project token' do
     it 'sets an random token if none provided' do
       project = FactoryGirl.create :empty_project, runners_token: ''
@@ -1179,6 +1170,16 @@ describe Project, models: true do
 
       expect(relation.search(project.namespace.name)).to eq([project])
     end
+
+    describe 'with pending_delete project' do
+      let(:pending_delete_project) { create(:empty_project, pending_delete: true) }
+
+      it 'shows pending deletion project' do
+        search_result = described_class.search(pending_delete_project.name)
+
+        expect(search_result).to eq([pending_delete_project])
+      end
+    end
   end
 
   describe '#rename_repo' do
@@ -1214,6 +1215,8 @@ describe Project, models: true do
         .with('foo', project.path, project.namespace.full_path)
 
       expect(project).to receive(:expire_caches_before_rename)
+
+      expect(project).to receive(:expires_full_path_cache)
 
       project.rename_repo
     end
@@ -1324,6 +1327,50 @@ describe Project, models: true do
 
         project.create_repository
       end
+    end
+  end
+
+  describe '#ensure_repository' do
+    let(:project) { create(:project, :repository) }
+    let(:shell) { Gitlab::Shell.new }
+
+    before do
+      allow(project).to receive(:gitlab_shell).and_return(shell)
+    end
+
+    it 'creates the repository if it not exist' do
+      allow(project).to receive(:repository_exists?)
+        .and_return(false)
+
+      allow(shell).to receive(:add_repository)
+        .with(project.repository_storage_path, project.path_with_namespace)
+        .and_return(true)
+
+      expect(project).to receive(:create_repository).with(force: true)
+
+      project.ensure_repository
+    end
+
+    it 'does not create the repository if it exists' do
+      allow(project).to receive(:repository_exists?)
+        .and_return(true)
+
+      expect(project).not_to receive(:create_repository)
+
+      project.ensure_repository
+    end
+
+    it 'creates the repository if it is a fork' do
+      expect(project).to receive(:forked?).and_return(true)
+
+      allow(project).to receive(:repository_exists?)
+        .and_return(false)
+
+      expect(shell).to receive(:add_repository)
+        .with(project.repository_storage_path, project.path_with_namespace)
+        .and_return(true)
+
+      project.ensure_repository
     end
   end
 
@@ -1475,6 +1522,40 @@ describe Project, models: true do
       project.import_schedule
 
       expect(project.reload.import_status).to eq('finished')
+    end
+  end
+
+  describe 'project import state transitions' do
+    context 'state transition: [:started] => [:finished]' do
+      let(:housekeeping_service) { spy }
+
+      before do
+        allow(Projects::HousekeepingService).to receive(:new) { housekeeping_service }
+      end
+
+      it 'performs housekeeping when an import of a fresh project is completed' do
+        project = create(:project_empty_repo, :import_started, import_type: :github)
+
+        project.import_finish
+
+        expect(housekeeping_service).to have_received(:execute)
+      end
+
+      it 'does not perform housekeeping when project repository does not exist' do
+        project = create(:empty_project, :import_started, import_type: :github)
+
+        project.import_finish
+
+        expect(housekeeping_service).not_to have_received(:execute)
+      end
+
+      it 'does not perform housekeeping when project does not have a valid import type' do
+        project = create(:empty_project, :import_started, import_type: nil)
+
+        project.import_finish
+
+        expect(housekeeping_service).not_to have_received(:execute)
+      end
     end
   end
 

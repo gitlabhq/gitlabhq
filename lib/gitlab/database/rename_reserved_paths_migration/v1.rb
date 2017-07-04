@@ -29,6 +29,11 @@ module Gitlab
           paths = Array(paths)
           RenameNamespaces.new(paths, self).rename_namespaces(type: :top_level)
         end
+
+        def revert_renames
+          RenameProjects.new([], self).revert_renames
+          RenameNamespaces.new([], self).revert_renames
+        end
       end
     end
   end

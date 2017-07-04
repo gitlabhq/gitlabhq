@@ -1,5 +1,5 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid
+  acts_as_paranoid without_default_scope: true
 
   include CacheMarkdownField
   include Sortable
@@ -217,6 +217,12 @@ class Namespace < ActiveRecord::Base
 
   def has_parent?
     parent.present?
+  end
+
+  def soft_delete_without_removing_associations
+    # We can't use paranoia's `#destroy` since this will hard-delete projects.
+    # Project uses `pending_delete` instead of the acts_as_paranoia gem.
+    self.deleted_at = Time.now
   end
 
   private

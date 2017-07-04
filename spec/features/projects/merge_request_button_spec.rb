@@ -23,7 +23,7 @@ feature 'Merge Request button', feature: true do
       end
 
       it 'shows Create merge request button' do
-        href = new_namespace_project_merge_request_path(project.namespace,
+        href = namespace_project_new_merge_request_path(project.namespace,
                                                         project,
                                                         merge_request: { source_branch: 'feature',
                                                                          target_branch: 'master' })
@@ -67,7 +67,7 @@ feature 'Merge Request button', feature: true do
         let(:user) { forked_project.owner }
 
         it 'shows Create merge request button' do
-          href = new_namespace_project_merge_request_path(forked_project.namespace,
+          href = namespace_project_new_merge_request_path(forked_project.namespace,
                                                           forked_project,
                                                           merge_request: { source_branch: 'feature',
                                                                            target_branch: 'master' })

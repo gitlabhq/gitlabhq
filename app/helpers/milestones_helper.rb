@@ -74,6 +74,8 @@ module MilestonesHelper
     project = @target_project || @project
     if project
       namespace_project_milestones_path(project.namespace, project, :json)
+    elsif @group
+      group_milestones_path(@group, :json)
     else
       dashboard_milestones_path(:json)
     end

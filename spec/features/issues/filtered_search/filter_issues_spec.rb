@@ -459,7 +459,7 @@ describe 'Filter issues', js: true, feature: true do
 
     context 'issue label clicked' do
       before do
-        find('.issues-list .issue .issue-info a .label', text: multiple_words_label.title).click
+        find('.issues-list .issue .issue-main-info .issuable-info a .label', text: multiple_words_label.title).click
       end
 
       it 'filters' do

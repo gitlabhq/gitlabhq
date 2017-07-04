@@ -31,8 +31,8 @@ describe 'New/edit issue', :feature, :js do
         # the original method, resulting in infinite recurison when called.
         # This is likely a bug with helper modules included into dynamically generated view classes.
         # To work around this, we have to hold on to and call to the original implementation manually.
-        original_issue_dropdown_options = FormHelper.instance_method(:issue_dropdown_options)
-        allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
+        original_issue_dropdown_options = FormHelper.instance_method(:issue_assignees_dropdown_options)
+        allow_any_instance_of(FormHelper).to receive(:issue_assignees_dropdown_options).and_wrap_original do |original, *args|
           options = original_issue_dropdown_options.bind(original.receiver).call(*args)
           options[:data][:per_page] = 2
 

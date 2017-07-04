@@ -87,13 +87,8 @@ constraints(ProjectUrlConstrainer.new) do
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 
-      resources :merge_requests, concerns: :awardable, constraints: { id: /\d+/ } do
+      resources :merge_requests, concerns: :awardable, except: [:new, :create], constraints: { id: /\d+/ } do
         member do
-          get :commits
-          get :diffs
-          get :conflicts
-          get :conflict_for_path
-          get :pipelines
           get :commit_change_content
           post :merge
           post :cancel_merge_when_pipeline_succeeds
@@ -101,18 +96,32 @@ constraints(ProjectUrlConstrainer.new) do
           get :ci_environments_status
           post :toggle_subscription
           post :remove_wip
-          get :diff_for_path
-          post :resolve_conflicts
           post :assign_related_issues
+
+          scope constraints: { format: nil }, action: :show do
+            get :commits, defaults: { tab: 'commits' }
+            get :pipelines, defaults: { tab: 'pipelines' }
+            get :diffs, defaults: { tab: 'diffs' }
+          end
+
+          scope constraints: { format: 'json' }, as: :json do
+            get :commits
+            get :pipelines
+            get :diffs, to: 'merge_requests/diffs#show'
+          end
+
+          get :diff_for_path, controller: 'merge_requests/diffs'
+
+          scope controller: 'merge_requests/conflicts' do
+            get :conflicts, action: :show
+            get :conflict_for_path
+            post :resolve_conflicts
+          end
         end
 
         collection do
-          get :branch_from
-          get :branch_to
-          get :update_branches
           get :diff_for_path
           post :bulk_update
-          get :new_diffs, path: 'new/diffs'
         end
 
         resources :discussions, only: [], constraints: { id: /\h{40}/ } do
@@ -120,6 +129,29 @@ constraints(ProjectUrlConstrainer.new) do
             post :resolve
             delete :resolve, action: :unresolve
           end
+        end
+      end
+
+      controller 'merge_requests/creations', path: 'merge_requests' do
+        post '', action: :create, as: nil
+
+        scope path: 'new', as: :new_merge_request do
+          get '', action: :new
+
+          scope constraints: { format: nil }, action: :new do
+            get :diffs, defaults: { tab: 'diffs' }
+            get :pipelines, defaults: { tab: 'pipelines' }
+          end
+
+          scope constraints: { format: 'json' }, as: :json do
+            get :diffs
+            get :pipelines
+          end
+
+          get :diff_for_path
+          get :update_branches
+          get :branch_from
+          get :branch_to
         end
       end
 

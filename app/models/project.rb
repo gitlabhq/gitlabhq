@@ -222,9 +222,8 @@ class Project < ActiveRecord::Base
   has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
-  default_scope { where(pending_delete: false) }
-
-  scope :with_deleted, -> { unscope(where: :pending_delete) }
+  scope :pending_delete, -> { where(pending_delete: true) }
+  scope :without_deleted, -> { where(pending_delete: false) }
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
@@ -352,7 +351,16 @@ class Project < ActiveRecord::Base
 
     after_transition started: :finished do |project, _|
       project.reset_cache_and_import_attrs
-      project.perform_housekeeping
+
+      if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
+        project.run_after_commit do
+          begin
+            Projects::HousekeepingService.new(project).execute
+          rescue Projects::HousekeepingService::LeaseTaken => e
+            Rails.logger.info("Could not perform housekeeping for project #{project.path_with_namespace} (#{project.id}): #{e}")
+          end
+        end
+      end
     end
   end
 
@@ -510,22 +518,6 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
-    remove_import_data
-  end
-
-  def perform_housekeeping
-    return unless repo_exists?
-
-    run_after_commit do
-      begin
-        Projects::HousekeepingService.new(self).execute
-      rescue Projects::HousekeepingService::LeaseTaken => e
-        Rails.logger.info("Could not perform housekeeping for project #{self.path_with_namespace} (#{self.id}): #{e}")
-      end
-    end
-  end
-
-  def remove_import_data
     import_data&.destroy
   end
 
@@ -735,8 +727,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def issue_reference_pattern
-    issues_tracker.reference_pattern
+  def external_issue_reference_pattern
+    external_issue_tracker.class.reference_pattern
   end
 
   def default_issues_tracker?
@@ -971,6 +963,7 @@ class Project < ActiveRecord::Base
       begin
         gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
+        expires_full_path_cache
 
         @old_path_with_namespace = old_path_with_namespace
 
@@ -1081,17 +1074,21 @@ class Project < ActiveRecord::Base
     merge_requests.where(source_project_id: self.id)
   end
 
-  def create_repository
+  def create_repository(force: false)
     # Forked import is handled asynchronously
-    unless forked?
-      if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
-        repository.after_create
-        true
-      else
-        errors.add(:base, 'Failed to create repository via gitlab-shell')
-        false
-      end
+    return if forked? && !force
+
+    if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
+      repository.after_create
+      true
+    else
+      errors.add(:base, 'Failed to create repository via gitlab-shell')
+      false
     end
+  end
+
+  def ensure_repository
+    create_repository(force: true) unless repository_exists?
   end
 
   def repository_exists?
@@ -1456,7 +1453,7 @@ class Project < ActiveRecord::Base
   def pending_delete_twin
     return false unless path
 
-    Project.unscoped.where(pending_delete: true).find_by_full_path(path_with_namespace)
+    Project.pending_delete.find_by_full_path(path_with_namespace)
   end
 
   ##

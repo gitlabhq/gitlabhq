@@ -64,6 +64,12 @@
       */
       return new gl.GLForm($(this.$refs['gl-form']), true);
     },
+    beforeDestroy() {
+      const glForm = $(this.$refs['gl-form']).data('gl-form');
+      if (glForm) {
+        glForm.destroy();
+      }
+    },
   };
 </script>
 
