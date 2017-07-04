@@ -1,16 +1,13 @@
 module Ci
-  class CreatePipelineScheduleService < BaseService
-    def execute
-      pipeline_schedule = project.pipeline_schedules.build(pipeline_schedule_params)
-
+  class UpdatePipelineScheduleService < BaseService
+    def execute(pipeline_schedule)
       if Ci::NestedUniquenessValidator.duplicated?(pipeline_schedule_params['variables_attributes'], 'key')
         pipeline_schedule.errors.add('variables.key', "keys are duplicated")
 
-        return pipeline_schedule
+        return false
       end
 
-      pipeline_schedule.save
-      pipeline_schedule
+      pipeline_schedule.update(pipeline_schedule_params)
     end
 
     private
