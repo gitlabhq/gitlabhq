@@ -1,11 +1,14 @@
 - is_current_user = current_user == issuable.author
 - display_issuable_type = issuable.model_name.human.downcase
-- button_method = issuable.is_a?(MergeRequest) ? :put : nil
+- button_method = issuable_close_reopen_button_method(issuable)
 
 - if can_update && is_current_user
-  = link_to "Close #{display_issuable_type}", close_issuable_url(issuable), method: button_method, class: "hidden-xs hidden-sm btn btn-close btn-grouped #{'hidden' if issuable.closed?}", title: "Close #{display_issuable_type}"
-  = link_to "Reopen #{display_issuable_type}", reopen_issuable_url(issuable), method: button_method, class: "hidden-xs hidden-sm btn btn-reopen btn-grouped #{'hidden' unless issuable.closed?}", title: "Reopen #{display_issuable_type}"
+  = link_to "Close #{display_issuable_type}", close_issuable_url(issuable), method: button_method,
+            class: "btn btn-grouped btn-close #{issuable_button_visibility(issuable, true)}", title: "Close #{display_issuable_type}"
+  = link_to "Reopen #{display_issuable_type}", reopen_issuable_url(issuable), method: button_method,
+            class: "btn btn-grouped btn-reopen #{issuable_button_visibility(issuable, false)}", title: "Reopen #{display_issuable_type}"
 - elsif can_update && !is_current_user
   = render 'shared/issuable/close_reopen_report_toggle', issuable: issuable
 - else
-  = link_to 'Report abuse', new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)), class: 'hidden-xs hidden-sm btn btn-grouped btn-close-color', title: 'Report abuse'
+  = link_to 'Report abuse', new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)),
+            class: 'hidden-xs hidden-sm btn btn-grouped btn-close-color', title: 'Report abuse'

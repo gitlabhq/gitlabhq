@@ -69,7 +69,7 @@ import CloseReopenReportToggle from './close_reopen_report_toggle';
           return;
         }
 
-        _this.disableCloseReopenButton($this, true);
+        if (this.closeReopenReportToggle) this.closeReopenReportToggle.setDisable();
 
         if (shouldSubmit) {
           if ($this.hasClass('btn-comment-and-close') || $this.hasClass('btn-comment-and-reopen')) {
@@ -143,14 +143,6 @@ import CloseReopenReportToggle from './close_reopen_report_toggle';
       });
 
       this.closeReopenReportToggle.initDroplab();
-    };
-
-    MergeRequest.prototype.disableCloseReopenButton = function ($button, shouldDisable) {
-      if (this.closeReopenReportToggle) {
-        this.closeReopenReportToggle.setDisable(shouldDisable);
-      } else {
-        $button.prop('disabled', shouldDisable);
-      }
     };
 
     return MergeRequest;

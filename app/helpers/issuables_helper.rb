@@ -246,21 +246,11 @@ module IssuablesHelper
   end
 
   def close_issuable_url(issuable)
-    params = {}
-    params[issuable.model_name.to_s.underscore] = {}
-    params[issuable.model_name.to_s.underscore][:state_event] = :close
-    params[:format] = :json if issuable.is_a?(Issue)
-
-    issuable_url(issuable, params)
+    issuable_url(issuable, close_reopen_params(issuable, :close))
   end
 
   def reopen_issuable_url(issuable)
-    params = {}
-    params[issuable.model_name.to_s.underscore] = {}
-    params[issuable.model_name.to_s.underscore][:state_event] = :reopen
-    params[:format] = :json if issuable.is_a?(Issue)
-
-    issuable_url(issuable, params)
+    issuable_url(issuable, close_reopen_params(issuable, :reopen))
   end
 
   def close_reopen_issuable_url(issuable, should_inverse = false)
@@ -274,6 +264,22 @@ module IssuablesHelper
     case issuable
     when Issue then issue_url(issuable, *options)
     when MergeRequest then merge_request_url(issuable, *options)
+    else raise 'unknown issuable type'
+    end
+  end
+
+  def issuable_button_visibility(issuable, closed)
+    case issuable
+    when Issue then issue_button_visibility(issuable, closed)
+    when MergeRequest then merge_request_button_visibility(issuable, closed)
+    else raise 'unknown issuable type'
+    end
+  end
+
+  def issuable_close_reopen_button_method(issuable)
+    case issuable
+    when Issue then ''
+    when MergeRequest then 'put'
     else raise 'unknown issuable type'
     end
   end
@@ -333,5 +339,13 @@ module IssuablesHelper
       placement: (is_collapsed ? 'left' : nil),
       container: (is_collapsed ? 'body' : nil)
     }
+  end
+
+  def close_reopen_params(issuable, action)
+    params = {}
+    params[issuable.model_name.to_s.underscore] = {}
+    params[issuable.model_name.to_s.underscore][:state_event] = action
+    params[:format] = :json if issuable.is_a?(Issue)
+    params
   end
 end

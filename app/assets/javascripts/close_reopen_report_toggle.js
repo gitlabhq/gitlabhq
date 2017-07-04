@@ -44,7 +44,7 @@ class CloseReopenReportToggle {
     return isClosed ? [this.reopenItem, this.closeItem] : [this.closeItem, this.reopenItem];
   }
 
-  setDisable(shouldDisable) {
+  setDisable(shouldDisable = true) {
     if (shouldDisable) {
       this.button.setAttribute('disabled', 'true');
       this.dropdownTrigger.setAttribute('disabled', 'true');

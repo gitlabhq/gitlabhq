@@ -57,7 +57,7 @@ class Issue {
         Issue.submitNoteForm($button.closest('form'));
       }
 
-      this.disableCloseReopenButton($button, true);
+      this.disableCloseReopenButton($button);
 
       url = $button.attr('href');
       return $.ajax({

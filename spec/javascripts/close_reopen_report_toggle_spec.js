@@ -198,6 +198,13 @@ describe('CloseReopenReportToggle', () => {
       expect(dropdownTrigger.setAttribute).toHaveBeenCalledWith('disabled', 'true');
     });
 
+    it('disable .button and .dropdownTrigger if shouldDisable is undefined', () => {
+      closeReopenReportToggle.setDisable();
+
+      expect(button.setAttribute).toHaveBeenCalledWith('disabled', 'true');
+      expect(dropdownTrigger.setAttribute).toHaveBeenCalledWith('disabled', 'true');
+    });
+
     it('enable .button and .dropdownTrigger if shouldDisable is false', () => {
       closeReopenReportToggle.setDisable(false);
 
