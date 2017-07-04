@@ -1,4 +1,5 @@
 - publicish_project_count = ProjectsFinder.new(current_user: current_user).execute.count
+- state_body_class = current_license&.trial? ? 'col-md-3' : 'col-md-9'
 .blank-state.blank-state-welcome
   %h2.blank-state-welcome-title
     Welcome to GitLab
@@ -6,35 +7,47 @@
     Code, test, and deploy together
 
 .blank-state.clearfix
+  - if current_license&.trial?
+    .col-md-3
   .col-md-3.blank-state-icon
     = custom_icon("add_new_user", size: 50)
-  .col-md-9.blank-state-body
+  .blank-state-body{ class: state_body_class }
     %h3.blank-state-title
       Add user
     %p.blank-state-text
       Add your team members and others to GitLab.
     = link_to new_admin_user_path, class: "btn btn-new" do
       New user
+  - if current_license&.trial?
+    .col-md-3
 
 .blank-state.clearfix
+  - if current_license&.trial?
+    .col-md-3
   .col-md-3.blank-state-icon
     = custom_icon("configure_server", size: 50)
-  .col-md-9.blank-state-body
+  .blank-state-body{ class: state_body_class }
     %h3.blank-state-title
       Configure your server
     %p.blank-state-text
       Make adjustments to how your GitLab server is setup.
-    = link_to new_group_path, class: "btn btn-new" do
+    = link_to admin_root_path, class: "btn btn-new" do
       Configure server
+  - if current_license&.trial?
+    .col-md-3
 
 - if current_user.can_create_group?
   .blank-state.clearfix
+    - if current_license&.trial?
+      .col-md-3
     .col-md-3.blank-state-icon
       = custom_icon("add_new_group", size: 50)
-    .col-md-9.blank-state-body
+    .blank-state-body{ class: state_body_class }
       %h3.blank-state-title
         Create a group
       %p.blank-state-text
         Groups are a great way to organise projects and people.
       = link_to new_group_path, class: "btn btn-new" do
         New group
+    - if current_license&.trial?
+      .col-md-3
