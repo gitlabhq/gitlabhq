@@ -27,34 +27,24 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns UTF-8' do
-      expect(repository.root_ref.encoding).to eq(Encoding.find('UTF-8'))
+      expect(repository.root_ref).to be_utf8
     end
 
-    context 'with gitaly enabled' do
-      before do
-        stub_gitaly
-      end
+    it 'gets the branch name from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+      repository.root_ref
+    end
 
-      after do
-        Gitlab::GitalyClient.clear_stubs!
-      end
+    it 'wraps GRPC not found' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+        .and_raise(GRPC::NotFound)
+      expect { repository.root_ref }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
 
-      it 'gets the branch name from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
-        repository.root_ref
-      end
-
-      it 'wraps GRPC not found' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
-          .and_raise(GRPC::NotFound)
-        expect { repository.root_ref }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-
-      it 'wraps GRPC exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
-          .and_raise(GRPC::Unknown)
-        expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
-      end
+    it 'wraps GRPC exceptions' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+        .and_raise(GRPC::Unknown)
+      expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
     end
   end
 
@@ -129,37 +119,27 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns UTF-8' do
-      expect(subject.first.encoding).to eq(Encoding.find('UTF-8'))
+      expect(subject.first).to be_utf8
     end
 
     it { is_expected.to include("master") }
     it { is_expected.not_to include("branch-from-space") }
 
-    context 'with gitaly enabled' do
-      before do
-        stub_gitaly
-      end
+    it 'gets the branch names from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+      subject
+    end
 
-      after do
-        Gitlab::GitalyClient.clear_stubs!
-      end
+    it 'wraps GRPC not found' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+        .and_raise(GRPC::NotFound)
+      expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
 
-      it 'gets the branch names from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
-        subject
-      end
-
-      it 'wraps GRPC not found' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
-          .and_raise(GRPC::NotFound)
-        expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-
-      it 'wraps GRPC other exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
-          .and_raise(GRPC::Unknown)
-        expect { subject }.to raise_error(Gitlab::Git::CommandError)
-      end
+    it 'wraps GRPC other exceptions' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+        .and_raise(GRPC::Unknown)
+      expect { subject }.to raise_error(Gitlab::Git::CommandError)
     end
   end
 
@@ -173,7 +153,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns UTF-8' do
-      expect(subject.first.encoding).to eq(Encoding.find('UTF-8'))
+      expect(subject.first).to be_utf8
     end
 
     describe '#last' do
@@ -183,31 +163,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to include("v1.0.0") }
     it { is_expected.not_to include("v5.0.0") }
 
-    context 'with gitaly enabled' do
-      before do
-        stub_gitaly
-      end
+    it 'gets the tag names from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+      subject
+    end
 
-      after do
-        Gitlab::GitalyClient.clear_stubs!
-      end
+    it 'wraps GRPC not found' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+        .and_raise(GRPC::NotFound)
+      expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
 
-      it 'gets the tag names from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
-        subject
-      end
-
-      it 'wraps GRPC not found' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
-          .and_raise(GRPC::NotFound)
-        expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-
-      it 'wraps GRPC exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
-          .and_raise(GRPC::Unknown)
-        expect { subject }.to raise_error(Gitlab::Git::CommandError)
-      end
+    it 'wraps GRPC exceptions' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+        .and_raise(GRPC::Unknown)
+      expect { subject }.to raise_error(Gitlab::Git::CommandError)
     end
   end
 
@@ -1281,42 +1251,31 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(@repo.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
     end
 
-    context 'with gitaly enabled' do
-      before do
-        stub_gitaly
+    it 'returns a Branch with UTF-8 fields' do
+      branches = @repo.local_branches.to_a
+      expect(branches.size).to be > 0
+      branches.each do |branch|
+        expect(branch.name).to be_utf8
+        expect(branch.target).to be_utf8 unless branch.target.nil?
       end
+    end
 
-      after do
-        Gitlab::GitalyClient.clear_stubs!
-      end
+    it 'gets the branches from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
+        .and_return([])
+      @repo.local_branches
+    end
 
-      it 'returns a Branch with UTF-8 fields' do
-        branches = @repo.local_branches.to_a
-        expect(branches.size).to be > 0
-        utf_8 = Encoding.find('utf-8')
-        branches.each do |branch|
-          expect(branch.name.encoding).to eq(utf_8)
-          expect(branch.target.encoding).to eq(utf_8) unless branch.target.nil?
-        end
-      end
+    it 'wraps GRPC not found' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
+        .and_raise(GRPC::NotFound)
+      expect { @repo.local_branches }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
 
-      it 'gets the branches from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
-          .and_return([])
-        @repo.local_branches
-      end
-
-      it 'wraps GRPC not found' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
-          .and_raise(GRPC::NotFound)
-        expect { @repo.local_branches }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-
-      it 'wraps GRPC exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
-          .and_raise(GRPC::Unknown)
-        expect { @repo.local_branches }.to raise_error(Gitlab::Git::CommandError)
-      end
+    it 'wraps GRPC exceptions' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
+        .and_raise(GRPC::Unknown)
+      expect { @repo.local_branches }.to raise_error(Gitlab::Git::CommandError)
     end
   end
 
@@ -1394,12 +1353,5 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     sha = Rugged::Commit.create(repo, options)
     repo.lookup(sha)
-  end
-
-  def stub_gitaly
-    allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(true)
-
-    stub = double(:stub)
-    allow(Gitaly::Ref::Stub).to receive(:new).and_return(stub)
   end
 end
