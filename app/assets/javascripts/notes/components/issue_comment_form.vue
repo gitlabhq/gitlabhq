@@ -3,6 +3,7 @@
 
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import MarkdownField from '../../vue_shared/components/markdown/field.vue';
+import IssueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
 
 export default {
   props: {},
@@ -23,8 +24,12 @@ export default {
   components: {
     UserAvatarLink,
     MarkdownField,
+    IssueNoteSignedOutWidget,
   },
   computed: {
+    isLoggedIn() {
+      return window.gon.current_user_id;
+    },
     commentButtonTitle() {
       return this.noteType === 'comment' ? 'Comment' : 'Start discussion';
     },
@@ -109,102 +114,108 @@ export default {
 </script>
 
 <template>
-  <ul class="notes notes-form timeline new-note">
-    <li class="timeline-entry">
-      <div class="timeline-icon hidden-xs hidden-sm">
-        <user-avatar-link
-          :linkHref="author.path"
-          :imgSrc="author.avatar_url"
-          :imgAlt="author.name"
-          :imgSize="40" />
-      </div>
-      <div class="timeline-content timeline-content-form common-note-form">
-        <markdown-field
-          :markdown-preview-url="markdownPreviewUrl"
-          :markdown-docs="markdownDocsUrl"
-          :addSpacingClasses="false">
-          <textarea
-            id="note-body"
-            class="note-textarea js-gfm-input js-autosize markdown-area"
-            data-supports-slash-commands="true"
-            data-supports-quick-actions="true"
-            aria-label="Description"
-            v-model="note"
-            ref="textarea"
-            slot="textarea"
-            placeholder="Write a comment or drag your files here..."
-            @keydown.meta.enter="handleSave()">
-          </textarea>
-        </markdown-field>
-        <div class="note-form-actions clearfix">
-          <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown">
-            <input
-              @click="handleSave()"
-              :disabled="!note.length"
-              :value="commentButtonTitle"
-              class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
-              type="submit" />
-            <button
-              :disabled="!note.length"
-              name="button"
-              type="button"
-              class="btn btn-nr comment-btn note-type-toggle js-note-new-discussion"
-              data-toggle="dropdown"
-              aria-label="Open comment type dropdown">
-              <i
-                aria-hidden="true"
-                class="fa fa-caret-down toggle-icon"></i>
-            </button>
-            <ul
-              class="dropdown-menu note-type-dropdown dropdown-open-top">
-              <li
-                :class="{ 'item-selected': noteType === 'comment' }"
-                @click.prevent="setNoteType('comment')">
-                <a href="#">
-                  <i
-                    aria-hidden="true"
-                    class="fa fa-check"></i>
-                  <div class="description">
-                    <strong>Comment</strong>
-                    <p>
-                      Add a general comment to this issue.
-                    </p>
-                  </div>
-                </a>
-              </li>
-              <li class="divider"></li>
-              <li
-                :class="{ 'item-selected': noteType === 'discussion' }"
-                @click.prevent="setNoteType('discussion')">
-                <a href="#">
-                  <i
-                    aria-hidden="true"
-                    class="fa fa-check"></i>
-                  <div class="description">
-                    <strong>Start discussion</strong>
-                    <p>
-                      Discuss a specific suggestion or question.
-                    </p>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </div>
-          <a
-            @click="handleSave(true)"
-            :class="{'btn-reopen': issueState === 'closed', 'btn-close': issueState === 'open'}"
-            class="btn btn-nr btn-comment">
-            {{issueActionButtonTitle}}
-          </a>
-          <a
-            v-if="note.length"
-            @click="discard"
-            class="btn btn-cancel js-note-discard"
-            role="button">
-            Discard draft
-          </a>
+  <div>
+    <issue-note-signed-out-widget v-if="!isLoggedIn" />
+    <ul
+      v-if="isLoggedIn"
+      class="notes notes-form timeline new-note">
+      <li class="timeline-entry">
+        <div class="timeline-icon hidden-xs hidden-sm">
+          <user-avatar-link
+            v-if="author"
+            :linkHref="author.path"
+            :imgSrc="author.avatar_url"
+            :imgAlt="author.name"
+            :imgSize="40" />
         </div>
-      </div>
-    </li>
-  </ul>
+        <div class="timeline-content timeline-content-form common-note-form">
+          <markdown-field
+            :markdown-preview-url="markdownPreviewUrl"
+            :markdown-docs="markdownDocsUrl"
+            :addSpacingClasses="false">
+            <textarea
+              id="note-body"
+              class="note-textarea js-gfm-input js-autosize markdown-area"
+              data-supports-slash-commands="true"
+              data-supports-quick-actions="true"
+              aria-label="Description"
+              v-model="note"
+              ref="textarea"
+              slot="textarea"
+              placeholder="Write a comment or drag your files here..."
+              @keydown.meta.enter="handleSave()">
+            </textarea>
+          </markdown-field>
+          <div class="note-form-actions clearfix">
+            <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown">
+              <input
+                @click="handleSave()"
+                :disabled="!note.length"
+                :value="commentButtonTitle"
+                class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
+                type="submit" />
+              <button
+                :disabled="!note.length"
+                name="button"
+                type="button"
+                class="btn btn-nr comment-btn note-type-toggle js-note-new-discussion"
+                data-toggle="dropdown"
+                aria-label="Open comment type dropdown">
+                <i
+                  aria-hidden="true"
+                  class="fa fa-caret-down toggle-icon"></i>
+              </button>
+              <ul
+                class="dropdown-menu note-type-dropdown dropdown-open-top">
+                <li
+                  :class="{ 'item-selected': noteType === 'comment' }"
+                  @click.prevent="setNoteType('comment')">
+                  <a href="#">
+                    <i
+                      aria-hidden="true"
+                      class="fa fa-check"></i>
+                    <div class="description">
+                      <strong>Comment</strong>
+                      <p>
+                        Add a general comment to this issue.
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li class="divider"></li>
+                <li
+                  :class="{ 'item-selected': noteType === 'discussion' }"
+                  @click.prevent="setNoteType('discussion')">
+                  <a href="#">
+                    <i
+                      aria-hidden="true"
+                      class="fa fa-check"></i>
+                    <div class="description">
+                      <strong>Start discussion</strong>
+                      <p>
+                        Discuss a specific suggestion or question.
+                      </p>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <a
+              @click="handleSave(true)"
+              :class="{'btn-reopen': issueState === 'closed', 'btn-close': issueState === 'open'}"
+              class="btn btn-nr btn-comment">
+              {{issueActionButtonTitle}}
+            </a>
+            <a
+              v-if="note.length"
+              @click="discard"
+              class="btn btn-cancel js-note-discard"
+              role="button">
+              Discard draft
+            </a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>

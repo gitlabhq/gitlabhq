@@ -5,6 +5,7 @@ import IssueNote from './issue_note.vue';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueNoteHeader from './issue_note_header.vue';
 import IssueNoteActions from './issue_note_actions.vue';
+import IssueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
 import IssueNoteEditedText from './issue_note_edited_text.vue';
 import IssueNoteForm from './issue_note_form.vue';
 
@@ -17,8 +18,6 @@ export default {
   },
   data() {
     return {
-      registerLink: '#',
-      signInLink: '#',
       newNotePath: window.gl.issueData.create_note_path,
       isReplying: false,
     };
@@ -40,17 +39,8 @@ export default {
     IssueNoteHeader,
     IssueNoteActions,
     IssueNoteEditedText,
+    IssueNoteSignedOutWidget,
     IssueNoteForm,
-  },
-  mounted() {
-    // We need to grab the register and sign in links from DOM for the time being.
-    const registerLink = document.querySelector('.js-disabled-comment .js-register-link');
-    const signInLink = document.querySelector('.js-disabled-comment .js-sign-in-link');
-
-    if (registerLink && signInLink) {
-      this.registerLink = registerLink.getAttribute('href');
-      this.signInLink = signInLink.getAttribute('href');
-    }
   },
   methods: {
     toggleDiscussion() {
@@ -149,15 +139,7 @@ export default {
                       :updateHandler="saveReply"
                       :cancelHandler="cancelReplyForm"
                       ref="noteForm" />
-                  <div
-                    v-if="!canReply"
-                    class="disabled-comment text-center">
-                    Please
-                    <a :href="registerLink">register</a>
-                    or
-                    <a :href="signInLink">sign in</a>
-                    to reply
-                  </div>
+                  <issue-note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>
             </div>
