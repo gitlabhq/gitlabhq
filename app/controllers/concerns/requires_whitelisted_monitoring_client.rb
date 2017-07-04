@@ -1,17 +1,17 @@
 module RequiresWhitelistedMonitoringClient
   extend ActiveSupport::Concern
   included do
-    before_action :validate_ip_whitelisted!
+    before_action :validate_ip_whitelisted_or_token_is_valid!
   end
 
   private
 
-  def validate_ip_whitelisted!
+  def validate_ip_whitelisted_or_token_is_valid!
     render_404 unless client_ip_whitelisted? || token_valid?
   end
 
   def client_ip_whitelisted?
-    Settings.monitoring.ip_whitelist.any? { |e| e.include?(Gitlab::RequestContext.client_ip) }
+    ip_whitelist.any? { |e| e.include?(Gitlab::RequestContext.client_ip) }
   end
 
   def ip_whitelist
