@@ -318,25 +318,17 @@ header {
   }
 }
 
-.gitlab-ee-trial-banner {
-  padding: $gl-padding;
+.gitlab-ee-trial-banner.alert {
   text-align: center;
 
-  p {
-    margin: 0;
-    display: inline-block;
-
-    a {
-      font-weight: bold;
-    }
-  }
-
-  .close-trial-banner {
-    float: right;
-    margin-top: 2px;
+  p a {
+    color: $gl-link-color;
+    text-decoration: none;
+    font-weight: bold;
 
     &:hover {
-      cursor: pointer;
+      color: $gl-link-hover-color;
+      text-decoration: underline;
     }
   }
 }
