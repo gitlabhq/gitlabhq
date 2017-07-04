@@ -169,6 +169,7 @@ describe API::Users do
   describe "GET /users/:id" do
     it "returns a user by id" do
       get api("/users/#{user.id}", user)
+
       expect(response).to have_http_status(200)
       expect(json_response['username']).to eq(user.username)
     end
@@ -179,9 +180,22 @@ describe API::Users do
       expect(json_response['is_admin']).to be_nil
     end
 
-    it "returns a 401 if unauthenticated" do
-      get api("/users/9998")
-      expect(response).to have_http_status(401)
+    context 'for an anonymous user' do
+      it "returns a user by id" do
+        get api("/users/#{user.id}")
+
+        expect(response).to have_http_status(200)
+        expect(json_response['username']).to eq(user.username)
+      end
+
+      it "returns a 404 if the target user is present but inaccessible" do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(nil, :read_user, user).and_return(false)
+
+        get api("/users/#{user.id}")
+
+        expect(response).to have_http_status(404)
+      end
     end
 
     it "returns a 404 error if user id not found" do

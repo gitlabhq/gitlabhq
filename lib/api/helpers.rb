@@ -407,11 +407,5 @@ module API
 
       exception.status == 500
     end
-
-    # Does the current route match the route identified by
-    # `description`?
-    def request_matches_route?(method, route)
-      request.request_method == method && request.path == route
-    end
   end
 end

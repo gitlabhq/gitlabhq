@@ -4,10 +4,13 @@ module API
 
     before do
       allow_access_with_scope :read_user if request.get?
-      authenticate! unless request_matches_route?('GET', '/api/v4/users')
     end
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+      before do
+        authenticate_non_get!
+      end
+
       helpers do
         def find_user(params)
           id = params[:user_id] || params[:id]
@@ -405,6 +408,10 @@ module API
     end
 
     resource :user do
+      before do
+        authenticate!
+      end
+
       desc 'Get the currently authenticated user' do
         success Entities::UserPublic
       end
