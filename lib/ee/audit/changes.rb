@@ -1,10 +1,12 @@
 module EE
   module Audit
     module Changes
-      def audit_changes(current_user, column, options = {})
+      def audit_changes(column, options = {})
+        column = options[:column] || column
+
         return unless changed?(column)
 
-        audit_event(current_user, parse_options(column, options))
+        audit_event(parse_options(column, options))
       end
 
       protected
@@ -35,8 +37,8 @@ module EE
         end
       end
 
-      def audit_event(current_user, options)
-        AuditEventService.new(current_user, model, options).
+      def audit_event(options)
+        AuditEventService.new(@current_user, model, options).
           for_changes.security_event
       end
     end

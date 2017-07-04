@@ -3,10 +3,11 @@ require 'spec_helper'
 describe EE::Audit::Changes do
   describe '.audit_changes' do
     let(:user) { create(:user) }
-    let(:foo_class) { Class.new { include EE::Audit::Changes } }
+    let(:foo_instance) { Class.new { include EE::Audit::Changes }.new }
 
     before do
-      allow_any_instance_of(foo_class).to receive(:model).and_return(user)
+      foo_instance.instance_variable_set(:@current_user, user)
+      allow(foo_instance).to receive(:model).and_return(user)
     end
 
     describe 'non audit changes' do
@@ -14,7 +15,7 @@ describe EE::Audit::Changes do
         expect_any_instance_of(AuditEventService).not_to receive(:security_event)
 
         user.update!(name: 'new name')
-        foo_class.new.audit_changes(user, :email)
+        foo_instance.audit_changes(:email)
       end
     end
 
@@ -23,7 +24,7 @@ describe EE::Audit::Changes do
         expect_any_instance_of(AuditEventService).to receive(:security_event)
 
         user.update!(name: 'new name')
-        foo_class.new.audit_changes(user, :name)
+        foo_instance.audit_changes(:name)
       end
     end
   end

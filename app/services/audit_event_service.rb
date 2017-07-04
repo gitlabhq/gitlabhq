@@ -16,6 +16,21 @@ class AuditEventService
     self
   end
 
+  def for_changes
+    @details =
+      {
+        change: @details[:as] || @details[:column],
+        from: @details[:from],
+        to: @details[:to],
+        author_name: @author.name,
+        target_id: @entity.id,
+        target_type: @entity.class,
+        target_details: @entity.name
+      }
+    self
+  end
+
+
   def security_event
     SecurityEvent.create(
       author_id: @author.id,
