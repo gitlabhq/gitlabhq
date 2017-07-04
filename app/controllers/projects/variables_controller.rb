@@ -21,9 +21,9 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def create
-    new_variable = Ci::Variable.new(project_params)
+    new_variable = project.variables.create(project_params)
 
-    if new_variable.valid? && @project.variables << new_variable
+    if new_variable.persisted?
       redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
                   notice: 'Variables were successfully updated.'
     else
@@ -33,11 +33,15 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def destroy
-    variable.destroy
-
-    redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
-                status: 302,
-                notice: 'Variable was successfully removed.'
+    if variable.destroy
+      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
+                  status: 302,
+                  notice: 'Variable was successfully removed.'
+    else
+      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
+                  status: 302,
+                  notice: 'Failed to remove the variable'
+    end
   end
 
   private

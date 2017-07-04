@@ -20,9 +20,9 @@ module Groups
     end
 
     def create
-      new_variable = Ci::GroupVariable.new(group_params)
+      new_variable = group.variables.create(group_params)
 
-      if new_variable.valid? && group.variables << new_variable
+      if new_variable.persisted?
         redirect_to group_settings_ci_cd_path(group),
                     notice: 'Variables were successfully updated.'
       else
@@ -32,11 +32,15 @@ module Groups
     end
 
     def destroy
-      variable.destroy
-
-      redirect_to group_settings_ci_cd_path(group),
-                  status: 302,
-                  notice: 'Variable was successfully removed.'
+      if variable.destroy
+        redirect_to group_settings_ci_cd_path(group),
+                    status: 302,
+                    notice: 'Variable was successfully removed.'
+      else
+        redirect_to group_settings_ci_cd_path(group),
+                    status: 302,
+                    notice: 'Failed to remove the variable'
+      end
     end
 
     private
