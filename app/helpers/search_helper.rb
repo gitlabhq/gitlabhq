@@ -126,6 +126,18 @@ module SearchHelper
     search_path(options)
   end
 
+  def search_filter_input_options(type)
+    {
+      id: "filtered-search-#{type}",
+      placeholder: 'Search or filter results...',
+      data: {
+        'project-id' => @project.id,
+        'username-params' => @users.to_json(only: [:id, :username]),
+        'base-endpoint' => namespace_project_path(@project.namespace, @project)
+      }
+    }
+  end
+
   # Sanitize a HTML field for search display. Most tags are stripped out and the
   # maximum length is set to 200 characters.
   def search_md_sanitize(object, field)

@@ -197,9 +197,17 @@ class MergeRequest < ActiveRecord::Base
     }
   end
 
-  # This method is needed for compatibility with issues to not mess view and other code
+  # These method are needed for compatibility with issues to not mess view and other code
   def assignees
     Array(assignee)
+  end
+
+  def assignee_ids
+    Array(assignee_id)
+  end
+
+  def assignee_ids=(ids)
+    write_attribute(:assignee_id, ids.last)
   end
 
   def assignee_or_author?(user)
