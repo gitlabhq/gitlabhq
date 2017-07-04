@@ -72,7 +72,9 @@ class MigrateStagesStatuses < ActiveRecord::Migration
       .where('ci_builds.stage = ci_stages.name')
       .status_sql
 
-    update_column_in_batches(:ci_stages, :status, Arel.sql("(#{status_sql})"))
+    update_column_in_batches(:ci_stages, :status, Arel.sql("(#{status_sql})")) do |table, query|
+      query.where(table[:status].eq(nil))
+    end
   end
 
   def down
