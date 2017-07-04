@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Metrics::Sampler do
+describe Gitlab::Metrics::InfluxSampler do
   let(:sampler) { described_class.new(5) }
 
   after do
@@ -8,10 +8,10 @@ describe Gitlab::Metrics::Sampler do
   end
 
   describe '#start' do
-    it 'gathers a sample at a given interval' do
-      expect(sampler).to receive(:sleep).with(a_kind_of(Numeric))
-      expect(sampler).to receive(:sample)
-      expect(sampler).to receive(:loop).and_yield
+    it 'runs once and gathers a sample at a given interval' do
+      expect(sampler).to receive(:sleep).with(a_kind_of(Numeric)).twice
+      expect(sampler).to receive(:sample).once
+      expect(sampler).to receive(:running).and_return(false, true, false)
 
       sampler.start.join
     end

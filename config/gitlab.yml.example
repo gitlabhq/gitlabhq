@@ -543,6 +543,10 @@ production: &base
     #   enabled: true
     #   host: localhost
     #   port: 3808
+  prometheus:
+    # Time between sampling of unicorn socket metrics, in seconds
+    # unicorn_sampler_interval: 10
+
 
   #
   # 5. Extra customization
