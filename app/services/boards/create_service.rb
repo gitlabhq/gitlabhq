@@ -1,12 +1,19 @@
 module Boards
   class CreateService < BaseService
     def execute
-      board = project.boards.create(params)
-
-      if board.persisted?
-        board.lists.create(list_type: :backlog)
-        board.lists.create(list_type: :closed)
+      if project.boards.empty?
+        create_board!
+      else
+        project.boards.first
       end
+    end
+
+    private
+
+    def create_board!
+      board = project.boards.create
+      board.lists.create(list_type: :backlog)
+      board.lists.create(list_type: :closed)
 
       board
     end

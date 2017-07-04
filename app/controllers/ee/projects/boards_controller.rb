@@ -9,7 +9,7 @@ module EE
       end
 
       def create
-        board = ::Boards::CreateService.new(project, current_user, board_params).execute
+        board = EE::Boards::CreateService.new(project, current_user, board_params).execute
 
         respond_to do |format|
           format.json do
