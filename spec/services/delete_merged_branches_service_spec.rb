@@ -24,6 +24,14 @@ describe DeleteMergedBranchesService, services: true do
       expect(project.repository.branch_names).to include('master')
     end
 
+    it 'keeps protected branches' do
+      create(:protected_branch, project: project, name: 'improve/awesome')
+
+      service.execute
+
+      expect(project.repository.branch_names).to include('improve/awesome')
+    end
+
     context 'user without rights' do
       let(:user) { create(:user) }
 

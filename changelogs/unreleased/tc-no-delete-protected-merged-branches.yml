@@ -1,0 +1,4 @@
+---
+title: Do not delete protected branches when deleting all merged branches
+merge_request: 12624
+author:

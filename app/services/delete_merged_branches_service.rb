@@ -10,6 +10,8 @@ class DeleteMergedBranchesService < BaseService
     branches = branches.select { |branch| project.repository.merged_to_root_ref?(branch) }
     # Prevent deletion of branches relevant to open merge requests
     branches -= merge_request_branch_names
+    # Prevent deletion of protected branches
+    branches -= project.protected_branches.pluck(:name)
 
     branches.each do |branch|
       DeleteBranchService.new(project, current_user).execute(branch)
