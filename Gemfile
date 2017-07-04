@@ -285,6 +285,7 @@ group :metrics do
 
   # Prometheus
   gem 'prometheus-client-mmap', '~>0.7.0.beta5'
+  gem 'raindrops', '~> 0.18'
 end
 
 group :development do
