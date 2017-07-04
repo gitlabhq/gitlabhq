@@ -31,11 +31,7 @@ You create issues, host code, perform reviews, build, test,
 and deploy from one single platform. Issue Boards help you to visualize
 and manage the entire process _in_ GitLab.
 
-<<<<<<< HEAD
 With [Multiple Issue Boards](#multiple-issue-boards), available
-=======
-With [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards), available
->>>>>>> b5b4054d5882782892d0a860c7e95db9a22bfdec
 only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/),
 you go even further, as you can not only keep yourself and your project
 organized from a broader perspective with one Issue Board per project,
@@ -44,13 +40,10 @@ multiple Issue Boards within the same project.
 
 ## Use cases
 
-<<<<<<< HEAD
 You can see below a few different use cases for GitLab's Issue Boards.
 
 ### Use cases for a single Issue Board
 
-=======
->>>>>>> b5b4054d5882782892d0a860c7e95db9a22bfdec
 GitLab Workflow allows you to discuss proposals in issues, categorize them
 with labels, and from there organize and prioritize them with Issue Boards.
 
@@ -74,7 +67,6 @@ beginning of the development lifecycle until deployed to production
 
 ![issue card moving](img/issue_board_move_issue_card_list.png)
 
-<<<<<<< HEAD
 ### Use cases for Multiple Issue Boards
 
 With [Multiple Issue Boards](#multiple-issue-boards), available only in
@@ -101,7 +93,7 @@ For example, suppose we have a UX team with an Issue Board that contains:
 - **Doing**
 - **Frontend**
 
-When done with something, they move the card to **Frontend**. The Frontend team's board looks like: 
+When done with something, they move the card to **Frontend**. The Frontend team's board looks like:
 
 - **Frontend**
 - **Doing**
@@ -109,8 +101,6 @@ When done with something, they move the card to **Frontend**. The Frontend team'
 
 Cards finished by the UX team will automatically appear in the **Frontend** column when they're ready for them.
 
-=======
->>>>>>> b5b4054d5882782892d0a860c7e95db9a22bfdec
 > **Notes:**
 >
 >- For a broader use case, please check the blog post
@@ -118,12 +108,7 @@ Cards finished by the UX team will automatically appear in the **Frontend** colu
 >
 >- For a real use case, please check why
 [Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
-<<<<<<< HEAD
-to improve their workflow with
-multiple boards.
-=======
-to improve their workflow with [multiple boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
->>>>>>> b5b4054d5882782892d0a860c7e95db9a22bfdec
+to improve their workflow with multiple boards.
 
 ## Issue Board terminology
 
