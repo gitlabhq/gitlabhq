@@ -57,8 +57,9 @@ describe Gitlab::Shell, lib: true do
 
     describe '#mv_repository' do
       it 'executes the command' do
-        expect(Gitlab::Utils).to receive(:system_silent)
-          .with([projects_path, 'mv-project', 'storage/path', 'project/path.git', 'new/path.git'])
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
+          [projects_path, 'mv-project', 'storage/path', 'project/path.git', 'new/path.git']
+        )
         gitlab_shell.mv_repository('storage/path', 'project/path', 'new/path')
       end
     end
@@ -68,22 +69,6 @@ describe Gitlab::Shell, lib: true do
         expect(Gitlab::Utils).to receive(:system_silent)
           .with([projects_path, 'mv-storage', 'current/storage', 'project/path.git', 'new/storage'])
         gitlab_shell.mv_storage('current/storage', 'project/path', 'new/storage')
-      end
-    end
-
-    describe '#fetch_remote' do
-      it 'executes the command' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '800']).and_return([nil, 0])
-
-        expect(gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage')).to be true
-      end
-
-      it 'fails to execute the command' do
-        expect(Gitlab::Popen).to receive(:popen)
-        .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '800']).and_return(["error", 1])
-
-        expect { gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage') }.to raise_error(Gitlab::Shell::Error, "error")
       end
     end
 
@@ -135,7 +120,7 @@ describe Gitlab::Shell, lib: true do
 
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
         )
 
@@ -188,7 +173,7 @@ describe Gitlab::Shell, lib: true do
     context 'when authorized_keys_enabled is true' do
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'rm-key', 'key-123', 'ssh-rsa foobar']
         )
 
@@ -202,7 +187,7 @@ describe Gitlab::Shell, lib: true do
       end
 
       it 'does nothing' do
-        expect(Gitlab::Utils).not_to receive(:system_silent)
+        expect(gitlab_shell).not_to receive(:gitlab_shell_fast_execute)
 
         gitlab_shell.remove_key('key-123', 'ssh-rsa foobar')
       end
@@ -215,7 +200,7 @@ describe Gitlab::Shell, lib: true do
 
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'rm-key', 'key-123', 'ssh-rsa foobar']
         )
 
@@ -226,7 +211,7 @@ describe Gitlab::Shell, lib: true do
     context 'when key content is not given' do
       it 'calls rm-key with only one argument' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'rm-key', 'key-123']
         )
 
@@ -239,7 +224,7 @@ describe Gitlab::Shell, lib: true do
     context 'when authorized_keys_enabled is true' do
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with([:gitlab_shell_keys_path, 'clear'])
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with([:gitlab_shell_keys_path, 'clear'])
 
         gitlab_shell.remove_all_keys
       end
@@ -251,7 +236,7 @@ describe Gitlab::Shell, lib: true do
       end
 
       it 'does nothing' do
-        expect(Gitlab::Utils).not_to receive(:system_silent)
+        expect(gitlab_shell).not_to receive(:gitlab_shell_fast_execute)
 
         gitlab_shell.remove_all_keys
       end
@@ -264,7 +249,9 @@ describe Gitlab::Shell, lib: true do
 
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with([:gitlab_shell_keys_path, 'clear'])
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
+          [:gitlab_shell_keys_path, 'clear']
+        )
 
         gitlab_shell.remove_all_keys
       end
