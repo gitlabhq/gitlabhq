@@ -196,15 +196,10 @@ module Gitlab
     #   add_key("key-42", "sha-rsa ...")
     #
     def add_key(key_id, key_content)
-<<<<<<< HEAD
       return unless self.authorized_keys_enabled?
 
-      Gitlab::Utils.system_silent([gitlab_shell_keys_path,
-                                   'add-key', key_id, self.class.strip_key(key_content)])
-=======
       gitlab_shell_fast_execute([gitlab_shell_keys_path,
                                  'add-key', key_id, self.class.strip_key(key_content)])
->>>>>>> b5b4054d5882782892d0a860c7e95db9a22bfdec
     end
 
     # Batch-add keys to authorized_keys
@@ -224,20 +219,12 @@ module Gitlab
     # Ex.
     #   remove_key("key-342", "sha-rsa ...")
     #
-<<<<<<< HEAD
     def remove_key(key_id, key_content = nil)
       return unless self.authorized_keys_enabled?
 
       args = [gitlab_shell_keys_path, 'rm-key', key_id]
       args << key_content if key_content
-      Gitlab::Utils.system_silent(args)
-=======
-    def remove_key(key_id, key_content)
-      args = [gitlab_shell_keys_path, 'rm-key', key_id]
-      args << key_content if key_content
-
       gitlab_shell_fast_execute(args)
->>>>>>> b5b4054d5882782892d0a860c7e95db9a22bfdec
     end
 
     # Remove all ssh keys from gitlab shell
@@ -246,13 +233,9 @@ module Gitlab
     #   remove_all_keys
     #
     def remove_all_keys
-<<<<<<< HEAD
       return unless self.authorized_keys_enabled?
 
-      Gitlab::Utils.system_silent([gitlab_shell_keys_path, 'clear'])
-=======
       gitlab_shell_fast_execute([gitlab_shell_keys_path, 'clear'])
->>>>>>> b5b4054d5882782892d0a860c7e95db9a22bfdec
     end
 
     # Remove ssh keys from gitlab shell that are not in the DB
@@ -433,14 +416,12 @@ module Gitlab
       File.join(gitlab_shell_path, 'bin', 'gitlab-keys')
     end
 
-<<<<<<< HEAD
     def authorized_keys_enabled?
       # Return true if nil to ensure the authorized_keys methods work while
       # fixing the authorized_keys file during migration.
       return true if current_application_settings.authorized_keys_enabled.nil?
 
       current_application_settings.authorized_keys_enabled
-=======
     private
 
     def gitlab_shell_fast_execute(cmd)
@@ -465,7 +446,6 @@ module Gitlab
       # Don't pass along the entire parent environment to prevent gitlab-shell
       # from wasting I/O by searching through GEM_PATH
       Bundler.with_original_env { Popen.popen(cmd, nil, vars) }
->>>>>>> b5b4054d5882782892d0a860c7e95db9a22bfdec
     end
   end
 end

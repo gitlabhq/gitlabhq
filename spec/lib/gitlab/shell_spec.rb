@@ -105,11 +105,10 @@ describe Gitlab::Shell, lib: true do
   end
 
   describe '#add_key' do
-<<<<<<< HEAD
     context 'when authorized_keys_enabled is true' do
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
         )
 
@@ -169,13 +168,6 @@ describe Gitlab::Shell, lib: true do
         end
       end
     end
-=======
-    it 'removes trailing garbage' do
-      allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-      expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
-        [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
-      )
->>>>>>> b5b4054d5882782892d0a860c7e95db9a22bfdec
 
     context 'when authorized_keys_enabled is nil' do
       before do
