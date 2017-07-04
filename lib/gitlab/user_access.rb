@@ -1,5 +1,11 @@
 module Gitlab
   class UserAccess
+    extend Gitlab::Cache::RequestStoreWrap
+
+    request_store_wrap_key do
+      [user&.id, project&.id]
+    end
+
     attr_reader :user, :project
 
     def initialize(user, project: nil)
@@ -52,7 +58,7 @@ module Gitlab
       can_push_to_branch?(ref) || can_merge_to_branch?(ref)
     end
 
-    def can_push_to_branch?(ref)
+    request_store_wrap def can_push_to_branch?(ref)
       return false unless can_access_git?
 
       if ProtectedBranch.protected?(project, ref)
@@ -64,7 +70,7 @@ module Gitlab
       end
     end
 
-    def can_merge_to_branch?(ref)
+    request_store_wrap def can_merge_to_branch?(ref)
       return false unless can_access_git?
 
       if ProtectedBranch.protected?(project, ref)
