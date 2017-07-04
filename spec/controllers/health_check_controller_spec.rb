@@ -10,7 +10,7 @@ describe HealthCheckController do
   let(:not_whitelisted_ip) { '127.0.0.2' }
 
   before do
-    allow(Settings.monitoring).to receive(:ip_whitelist).and_return([IPAddr.new(whitelisted_ip)])
+    allow(Settings.monitoring).to receive(:ip_whitelist).and_return([whitelisted_ip])
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
@@ -22,19 +22,23 @@ describe HealthCheckController do
 
       it 'returns a not found page' do
         get :index
+
         expect(response).to be_not_found
       end
 
       context 'when services are accessed with token' do
         it 'supports passing the token in the header' do
           request.headers['TOKEN'] = token
+
           get :index
+
           expect(response).to be_success
           expect(response.content_type).to eq 'text/plain'
         end
 
         it 'supports successful plaintest response' do
           get :index, token: token
+
           expect(response).to be_success
           expect(response.content_type).to eq 'text/plain'
         end
@@ -50,12 +54,14 @@ describe HealthCheckController do
 
       it 'supports successful plaintest response' do
         get :index
+
         expect(response).to be_success
         expect(response.content_type).to eq 'text/plain'
       end
 
       it 'supports successful json response' do
         get :index, format: :json
+
         expect(response).to be_success
         expect(response.content_type).to eq 'application/json'
         expect(json_response['healthy']).to be true
@@ -63,6 +69,7 @@ describe HealthCheckController do
 
       it 'supports successful xml response' do
         get :index, format: :xml
+
         expect(response).to be_success
         expect(response.content_type).to eq 'application/xml'
         expect(xml_response['healthy']).to be true
@@ -70,6 +77,7 @@ describe HealthCheckController do
 
       it 'supports successful responses for specific checks' do
         get :index, checks: 'email', format: :json
+
         expect(response).to be_success
         expect(response.content_type).to eq 'application/json'
         expect(json_response['healthy']).to be true
@@ -79,6 +87,7 @@ describe HealthCheckController do
     context 'when a service is down but NO access token' do
       it 'returns a not found page' do
         get :index
+
         expect(response).to be_not_found
       end
     end
@@ -92,6 +101,7 @@ describe HealthCheckController do
 
       it 'supports failure plaintest response' do
         get :index
+
         expect(response).to have_http_status(500)
         expect(response.content_type).to eq 'text/plain'
         expect(response.body).to include('The server is on fire')
@@ -99,6 +109,7 @@ describe HealthCheckController do
 
       it 'supports failure json response' do
         get :index, format: :json
+
         expect(response).to have_http_status(500)
         expect(response.content_type).to eq 'application/json'
         expect(json_response['healthy']).to be false
@@ -107,6 +118,7 @@ describe HealthCheckController do
 
       it 'supports failure xml response' do
         get :index, format: :xml
+
         expect(response).to have_http_status(500)
         expect(response.content_type).to eq 'application/xml'
         expect(xml_response['healthy']).to be false
@@ -115,6 +127,7 @@ describe HealthCheckController do
 
       it 'supports failure responses for specific checks' do
         get :index, checks: 'email', format: :json
+
         expect(response).to have_http_status(500)
         expect(response.content_type).to eq 'application/json'
         expect(json_response['healthy']).to be false

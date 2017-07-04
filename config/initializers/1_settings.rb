@@ -498,7 +498,7 @@ Settings.webpack.dev_server['port']    ||= 3808
 # Monitoring settings
 #
 Settings['monitoring'] ||= Settingslogic.new({})
-Settings.monitoring['ip_whitelist'] ||= %w{127.0.0.1/8}
+Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
 
 #
 # Prometheus metrics settings
