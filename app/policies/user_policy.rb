@@ -1,11 +1,4 @@
 class UserPolicy < BasePolicy
-  include Gitlab::CurrentSettings
-
-  desc "The application is restricted from public visibility"
-  condition(:restricted_public_level, scope: :global) do
-    current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
-  end
-
   desc "The current user is the user in question"
   condition(:user_is_self, score: 0) { @subject == @user }
 
