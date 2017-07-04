@@ -77,7 +77,7 @@ module AccessMatchersForController
       @membership = membership
     end
 
-    chain :own do |objects|
+    chain :own do |*objects|
       @objects = objects
     end
 
@@ -96,6 +96,10 @@ module AccessMatchersForController
 
     chain :of do |membership|
       @membership = membership
+    end
+
+    chain :own do |*objects|
+      @objects = objects
     end
 
     description { description_for(role, 'denied', EXPECTED_STATUS_CODE_DENIED, response.status) }

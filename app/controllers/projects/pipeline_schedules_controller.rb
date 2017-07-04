@@ -53,7 +53,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
       redirect_to pipeline_schedules_path(@project), status: 302
     else
       redirect_to pipeline_schedules_path(@project),
-                  status: 302,
+                  status: :forbidden,
                   alert: _("Failed to remove the pipeline schedule")
     end
   end

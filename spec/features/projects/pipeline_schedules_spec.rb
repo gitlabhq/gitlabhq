@@ -157,6 +157,7 @@ feature 'Pipeline Schedules', :feature, js: true do
       create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
         create(:ci_pipeline_schedule_variable, key: 'AAA', value: 'AAA123', pipeline_schedule: pipeline_schedule)
       end
+
       visit_pipelines_schedules
       find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
       all('[name="schedule[variables_attributes][][key]"]')[0].set('foo')
@@ -178,6 +179,7 @@ feature 'Pipeline Schedules', :feature, js: true do
       create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
         create(:ci_pipeline_schedule_variable, key: 'AAA', value: 'AAA123', pipeline_schedule: pipeline_schedule)
       end
+
       visit_pipelines_schedules
       find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
       find('.pipeline-variable-list .pipeline-variable-row-remove-button').click

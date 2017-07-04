@@ -72,7 +72,7 @@ describe Projects::PipelineSchedulesController do
       end
 
       let(:basic_param) do
-        { description: 'aaaaaaaa', cron: '0 4 * * *', cron_timezone: 'UTC', ref: 'master', active: '1' }
+        attributes_for(:ci_pipeline_schedule)
       end
 
       context 'when variables_attributes is empty' do
@@ -100,8 +100,11 @@ describe Projects::PipelineSchedulesController do
             .and change { Ci::PipelineScheduleVariable.count }.by(1)
 
           expect(response).to have_http_status(:found)
-          expect(Ci::PipelineScheduleVariable.last.key).to eq("AAA")
-          expect(Ci::PipelineScheduleVariable.last.value).to eq("AAA123")
+
+          Ci::PipelineScheduleVariable.last.tap do |v|
+            expect(v.key).to eq("AAA")
+            expect(v.value).to eq("AAA123")
+          end
         end
 
         context 'when the same key has already been persisted' do
@@ -143,10 +146,16 @@ describe Projects::PipelineSchedulesController do
             .and change { Ci::PipelineScheduleVariable.count }.by(2)
 
           expect(response).to have_http_status(:found)
-          expect(Ci::PipelineScheduleVariable.first.key).to eq("AAA")
-          expect(Ci::PipelineScheduleVariable.first.value).to eq("AAA123")
-          expect(Ci::PipelineScheduleVariable.last.key).to eq("BBB")
-          expect(Ci::PipelineScheduleVariable.last.value).to eq("BBB123")
+
+          Ci::PipelineScheduleVariable.first.tap do |v|
+            expect(v.key).to eq("AAA")
+            expect(v.value).to eq("AAA123")
+          end
+
+          Ci::PipelineScheduleVariable.last.tap do |v|
+            expect(v.key).to eq("BBB")
+            expect(v.value).to eq("BBB123")
+          end
         end
       end
 
@@ -168,7 +177,7 @@ describe Projects::PipelineSchedulesController do
     end
 
     describe 'security' do
-      let(:schedule) { { description: 'aaaaaaaa', cron: '0 4 * * *', cron_timezone: 'UTC', ref: 'master', active: '1' } }
+      let(:schedule) { attributes_for(:ci_pipeline_schedule) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
@@ -198,7 +207,7 @@ describe Projects::PipelineSchedulesController do
 
       context 'when a pipeline schedule has no variables' do
         let(:basic_param) do
-          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'patch-x', active: '1' }
+          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'patch-x', active: true }
         end
 
         context 'when params do not include variables' do
@@ -209,11 +218,7 @@ describe Projects::PipelineSchedulesController do
 
             pipeline_schedule.reload
             expect(response).to have_http_status(:found)
-            expect(pipeline_schedule.description).to eq('updated_desc')
-            expect(pipeline_schedule.cron).to eq('0 1 * * *')
-            expect(pipeline_schedule.cron_timezone).to eq('UTC')
-            expect(pipeline_schedule.ref).to eq('patch-x')
-            expect(pipeline_schedule.active).to eq(true)
+            expect(pipeline_schedule).to have_attributes(basic_param)
             expect(pipeline_schedule.variables).to be_empty
           end
         end
@@ -272,7 +277,7 @@ describe Projects::PipelineSchedulesController do
 
       context 'when a pipeline schedule has one variable' do
         let(:basic_param) do
-          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'patch-x', active: '1' }
+          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'patch-x', active: true }
         end
 
         let!(:pipeline_schedule_variable) do
@@ -288,12 +293,7 @@ describe Projects::PipelineSchedulesController do
 
             pipeline_schedule.reload
             expect(response).to have_http_status(:found)
-            expect(pipeline_schedule.description).to eq('updated_desc')
-            expect(pipeline_schedule.cron).to eq('0 1 * * *')
-            expect(pipeline_schedule.cron_timezone).to eq('UTC')
-            expect(pipeline_schedule.ref).to eq('patch-x')
-            expect(pipeline_schedule.active).to eq(true)
-            expect(pipeline_schedule.variables.count).to eq(1)
+            expect(pipeline_schedule).to have_attributes(basic_param)
             expect(pipeline_schedule.variables.last.key).to eq('CCC')
           end
         end
@@ -350,7 +350,7 @@ describe Projects::PipelineSchedulesController do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
-      it { expect { go }.to be_allowed_for(:developer).of(project).own([pipeline_schedule]) }
+      it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
@@ -412,7 +412,7 @@ describe Projects::PipelineSchedulesController do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
-      it { expect { go }.to be_allowed_for(:developer).of(project).own([pipeline_schedule]) }
+      it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
@@ -430,7 +430,7 @@ describe Projects::PipelineSchedulesController do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
-      it { expect { go }.to be_allowed_for(:developer).of(project).own([pipeline_schedule]) }
+      it { expect { go }.to be_allowed_for(:developer).of(project).own(pipeline_schedule) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
@@ -455,7 +455,7 @@ describe Projects::PipelineSchedulesController do
       end
 
       it 'does not delete the pipeline schedule' do
-        expect(response).not_to have_http_status(:ok)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
