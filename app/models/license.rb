@@ -12,6 +12,7 @@ class License < ActiveRecord::Base
   GEO_FEATURE = 'GitLab_Geo'.freeze
   ISSUE_BOARDS_FOCUS_MODE_FEATURE = 'IssueBoardsFocusMode'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
+  MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
   MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
@@ -35,6 +36,7 @@ class License < ActiveRecord::Base
     file_lock: FILE_LOCK_FEATURE,
     issue_board_focus_mode: ISSUE_BOARDS_FOCUS_MODE_FEATURE,
     issue_weights: ISSUE_WEIGHTS_FEATURE,
+    merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
     merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
     merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE
   }.freeze
@@ -52,6 +54,7 @@ class License < ActiveRecord::Base
     { FAST_FORWARD_MERGE_FEATURE => 1 },
     { ISSUE_BOARDS_FOCUS_MODE_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
+    { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },
     { RELATED_ISSUES_FEATURE => 1 }
@@ -89,6 +92,7 @@ class License < ActiveRecord::Base
     { GEO_FEATURE => 1 },
     { ISSUE_BOARDS_FOCUS_MODE_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
+    { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
