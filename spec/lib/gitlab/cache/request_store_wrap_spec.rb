@@ -1,8 +1,16 @@
 require 'spec_helper'
 
 describe Gitlab::Cache::RequestStoreWrap, :request_store do
-  class ExpensiveAlgorithm < Struct.new(:id, :name, :result)
+  class ExpensiveAlgorithm
     extend Gitlab::Cache::RequestStoreWrap
+
+    attr_accessor :id, :name, :result
+
+    def initialize(id, name, result)
+      self.id = id
+      self.name = name
+      self.result = result
+    end
 
     request_store_wrap_key do
       [id, name]
