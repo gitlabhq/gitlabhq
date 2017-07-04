@@ -422,6 +422,8 @@ module Gitlab
       return true if current_application_settings.authorized_keys_enabled.nil?
 
       current_application_settings.authorized_keys_enabled
+    end
+
     private
 
     def gitlab_shell_fast_execute(cmd)
