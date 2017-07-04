@@ -39,13 +39,14 @@
             %span.descr
               When fast-forward merge is not possible, the user is given the option to rebase.
 
-.form-group
-  = form.label :merge_requests_template, class: 'label-light' do
-    Default description template for merge requests
-    = link_to icon('question-circle'), help_page_path('user/project/description_templates', anchor: 'setting-a-default-template-for-issues-and-merge-requests'), target: '_blank'
-  = form.text_area :merge_requests_template, class: "form-control", rows: 3
-  .hint
-    Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
+- if @project.feature_available?(:issuable_default_templates)
+  .form-group
+    = form.label :merge_requests_template, class: 'label-light' do
+      Default description template for merge requests
+      = link_to icon('question-circle'), help_page_path('user/project/description_templates', anchor: 'setting-a-default-template-for-issues-and-merge-requests'), target: '_blank'
+    = form.text_area :merge_requests_template, class: "form-control", rows: 3
+    .hint
+      Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
 
 = render 'projects/ee/merge_request_approvals_settings', project: project, form: form
 

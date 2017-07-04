@@ -10,6 +10,7 @@ class License < ActiveRecord::Base
   FAST_FORWARD_MERGE_FEATURE = 'GitLab_FastForwardMerge'.freeze
   FILE_LOCK_FEATURE = 'GitLab_FileLocks'.freeze
   GEO_FEATURE = 'GitLab_Geo'.freeze
+  ISSUABLE_DEFAULT_TEMPLATES_FEATURE = 'GitLab_IssuableDefaultTemplates'.freeze
   ISSUE_BOARDS_FOCUS_MODE_FEATURE = 'IssueBoardsFocusMode'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
   MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
@@ -34,6 +35,7 @@ class License < ActiveRecord::Base
     export_issues: EXPORT_ISSUES_FEATURE,
     fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
     file_lock: FILE_LOCK_FEATURE,
+    issuable_default_templates: ISSUABLE_DEFAULT_TEMPLATES_FEATURE,
     issue_board_focus_mode: ISSUE_BOARDS_FOCUS_MODE_FEATURE,
     issue_weights: ISSUE_WEIGHTS_FEATURE,
     merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
@@ -52,6 +54,7 @@ class License < ActiveRecord::Base
     { ELASTIC_SEARCH_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
     { FAST_FORWARD_MERGE_FEATURE => 1 },
+    { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
     { ISSUE_BOARDS_FOCUS_MODE_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
@@ -90,6 +93,7 @@ class License < ActiveRecord::Base
     { FAST_FORWARD_MERGE_FEATURE => 1 },
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
+    { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
     { ISSUE_BOARDS_FOCUS_MODE_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
