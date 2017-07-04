@@ -376,6 +376,7 @@ header.navbar-gitlab-new {
       &::after {
         content: "/";
         margin: 0 2px 0 5px;
+        color: rgba($black, .65);
       }
     }
 
