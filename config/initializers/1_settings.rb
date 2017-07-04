@@ -499,12 +499,7 @@ Settings.webpack.dev_server['port']    ||= 3808
 #
 Settings['monitoring'] ||= Settingslogic.new({})
 Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
-
-#
-# Prometheus metrics settings
-#
-Settings['prometheus'] ||= Settingslogic.new({})
-Settings.prometheus['unicorn_sampler_interval'] ||= 10
+Settings.monitoring['unicorn_sampler_interval'] ||= 10
 
 #
 # Testing settings
