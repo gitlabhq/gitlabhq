@@ -61,7 +61,18 @@ module FilteredSearchHelpers
 
         expect(el.find('.name')).to have_content(token_name)
         if token_value
-          expect(el.find('.value')).to have_content(token_value)
+          value_container = el.find('.value-container')
+
+          # There is a race condition here for the Author dropdown where it first fills the value with
+          # the user and then changes to display the Name. We don't have to wait, just need to handle both "states"
+          if value_container['data-original-value']
+            # container finished loading, so we can get value from data attribute
+
+            expect(value_container['data-original-value']).to eq(token_value)
+          else
+            # container still loading, we can get value from the node's content
+            expect(el.find('.value')).to have_content(token_value)
+          end
         end
       end
     end
