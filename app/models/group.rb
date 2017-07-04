@@ -250,10 +250,9 @@ class Group < Namespace
   end
 
   def secret_variables_for(ref, project)
-    variables = []
-    variables += parent.secret_variables_for(ref, project) if has_parent?
-    variables += project.protected_for?(ref) ? self.variables : self.variables.unprotected
-    variables
+    list_of_ids = ([self] + ancestors).map { |l| l.id }
+    variables = Ci::GroupVariable.where("group_id IN (#{list_of_ids.join(", ")})")
+    project.protected_for?(ref) ? variables : variables.unprotected
   end
 
   protected
