@@ -112,7 +112,7 @@ export default {
           <issue-note-header
             :author="author"
             :createdAt="note.created_at"
-            :notePath="note.path"
+            :noteId="note.id"
             actionText="commented" />
           <issue-note-actions
             :accessLevel="note.human_access"

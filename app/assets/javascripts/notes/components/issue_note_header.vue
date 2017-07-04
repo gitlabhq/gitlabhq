@@ -21,8 +21,8 @@ export default {
       required: false,
       default: '',
     },
-    notePath: {
-      type: String,
+    noteId: {
+      type: Number,
       required: true,
     },
     includeToggle: {
@@ -46,6 +46,9 @@ export default {
   computed: {
     toggleChevronClass() {
       return this.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down';
+    },
+    noteTimestampLink() {
+      return `#note_${this.noteId}`;
     },
   },
   methods: {
@@ -76,7 +79,7 @@ export default {
           v-if="actionTextHtml"
           v-html="actionTextHtml"
           class="system-note-message"></span>
-        <a :href="notePath">
+        <a :href="noteTimestampLink">
           <time-ago-tooltip
             :time="createdAt"
             tooltipPlacement="bottom" />

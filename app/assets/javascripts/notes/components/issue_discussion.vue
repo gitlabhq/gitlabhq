@@ -102,7 +102,7 @@ export default {
             <issue-note-header
               :author="author"
               :createdAt="discussion.created_at"
-              :notePath="discussion.path"
+              :noteId="discussion.id"
               :includeToggle="true"
               :toggleHandler="toggleDiscussion"
               actionText="started a discussion" />

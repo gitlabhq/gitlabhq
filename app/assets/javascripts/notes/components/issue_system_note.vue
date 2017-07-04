@@ -31,7 +31,7 @@ export default {
           <issue-note-header
             :author="note.author"
             :createdAt="note.created_at"
-            :notePath="note.path"
+            :noteId="note.id"
             :actionTextHtml="note.note_html" />
         </div>
       </div>
