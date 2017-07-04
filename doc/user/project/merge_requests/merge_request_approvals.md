@@ -22,7 +22,7 @@ This sets the amount of approvals required before being able to merge a merge re
 
 The number of approvers can be higher than the required approvals.
 
-### Can overwrite approvers and approvals required per merge request
+### Can override approvers and approvals required per merge request
 
 > Introduced in GitLab Enterprise Edition 9.4.
 
