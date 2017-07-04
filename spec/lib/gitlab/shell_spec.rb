@@ -55,7 +55,7 @@ describe Gitlab::Shell do
     context 'when authorized_keys_enabled is true' do
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
         )
 
@@ -69,7 +69,7 @@ describe Gitlab::Shell do
       end
 
       it 'does nothing' do
-        expect(Gitlab::Utils).not_to receive(:system_silent)
+        expect(Gitlab::Utils).not_to receive(:gitlab_shell_fast_execute)
 
         gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
       end
@@ -82,7 +82,7 @@ describe Gitlab::Shell do
 
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
         )
 
@@ -135,7 +135,7 @@ describe Gitlab::Shell do
     context 'when authorized_keys_enabled is true' do
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'rm-key', 'key-123', 'ssh-rsa foobar']
         )
 
@@ -149,7 +149,7 @@ describe Gitlab::Shell do
       end
 
       it 'does nothing' do
-        expect(Gitlab::Utils).not_to receive(:system_silent)
+        expect(gitlab_shell).not_to receive(:gitlab_shell_fast_execute)
 
         gitlab_shell.remove_key('key-123', 'ssh-rsa foobar')
       end
@@ -162,7 +162,7 @@ describe Gitlab::Shell do
 
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'rm-key', 'key-123', 'ssh-rsa foobar']
         )
 
@@ -173,7 +173,7 @@ describe Gitlab::Shell do
     context 'when key content is not given' do
       it 'calls rm-key with only one argument' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with(
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
           [:gitlab_shell_keys_path, 'rm-key', 'key-123']
         )
 
@@ -186,7 +186,7 @@ describe Gitlab::Shell do
     context 'when authorized_keys_enabled is true' do
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with([:gitlab_shell_keys_path, 'clear'])
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with([:gitlab_shell_keys_path, 'clear'])
 
         gitlab_shell.remove_all_keys
       end
@@ -198,7 +198,7 @@ describe Gitlab::Shell do
       end
 
       it 'does nothing' do
-        expect(Gitlab::Utils).not_to receive(:system_silent)
+        expect(gitlab_shell).not_to receive(:gitlab_shell_fast_execute)
 
         gitlab_shell.remove_all_keys
       end
@@ -211,7 +211,9 @@ describe Gitlab::Shell do
 
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-        expect(Gitlab::Utils).to receive(:system_silent).with([:gitlab_shell_keys_path, 'clear'])
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
+          [:gitlab_shell_keys_path, 'clear']
+        )
 
         gitlab_shell.remove_all_keys
       end
