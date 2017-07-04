@@ -2,7 +2,7 @@
   - if current_user.admin?
     .col-md-6.section-container
       .section-body.section-welcome
-        = render "blank_state_welcome"
+        = render "blank_state_admin_welcome"
   - unless current_license&.trial?
     .col-md-6.section-container
       .section-body.section-ee-trial
