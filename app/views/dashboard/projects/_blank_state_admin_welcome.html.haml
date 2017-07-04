@@ -1,10 +1,4 @@
-- publicish_project_count = ProjectsFinder.new(current_user: current_user).execute.count
 - state_body_class = current_license&.trial? ? 'col-md-3' : 'col-md-9'
-.blank-state.blank-state-welcome
-  %h2.blank-state-welcome-title
-    Welcome to GitLab
-  %p.blank-state-text
-    Code, test, and deploy together
 
 .blank-state.clearfix
   - if current_license&.trial?
