@@ -140,7 +140,7 @@ module EE
     end
 
     def can_override_approvers?
-      !disable_overriding_approvers_per_merge_request
+      !disable_overriding_approvers_per_merge_request?
     end
 
     def shared_runners_available?
