@@ -24,6 +24,7 @@ describe MigrateStagesStatuses, :migration do
     create_job(project: 1, pipeline: 1, stage: 'build', status: 'failed')
     create_job(project: 2, pipeline: 2, stage: 'test', status: 'success')
     create_job(project: 2, pipeline: 2, stage: 'test', status: 'success')
+    create_job(project: 2, pipeline: 2, stage: 'test', status: 'failed', retried: true)
 
     stages.create!(id: 1, pipeline_id: 1, project_id: 1, name: 'test', status: nil)
     stages.create!(id: 2, pipeline_id: 1, project_id: 1, name: 'build', status: nil)
@@ -40,10 +41,9 @@ describe MigrateStagesStatuses, :migration do
       .to eq [STATUSES[:running], STATUSES[:failed], STATUSES[:success]]
   end
 
-  def create_job(project:, pipeline:, stage:, status:)
-    stage_idx = STAGES[stage.to_sym]
-
+  def create_job(project:, pipeline:, stage:, status:, **opts)
     jobs.create!(project_id: project, commit_id: pipeline,
-                 stage_idx: stage_idx, stage: stage, status: status)
+                 stage_idx: STAGES[stage.to_sym], stage: stage,
+                 status: status, **opts)
   end
 end
