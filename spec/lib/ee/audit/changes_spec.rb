@@ -13,8 +13,8 @@ describe EE::Audit::Changes do
       it 'does not call the audit event service' do
         expect_any_instance_of(AuditEventService).not_to receive(:security_event)
 
-        user.name = 'new name'
-        foo_class.new.audit_changes(:email)
+        user.update!(name: 'new name')
+        foo_class.new.audit_changes(user, :email)
       end
     end
 
@@ -22,8 +22,8 @@ describe EE::Audit::Changes do
       it 'calls the audit event service' do
         expect_any_instance_of(AuditEventService).to receive(:security_event)
 
-        user.name = 'new name'
-        foo_class.new.audit_changes(:name)
+        user.update!(name: 'new name')
+        foo_class.new.audit_changes(user, :name)
       end
     end
   end
