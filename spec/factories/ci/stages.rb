@@ -19,6 +19,8 @@ FactoryGirl.define do
   factory :ci_stage_entity, class: Ci::Stage do
     project factory: :empty_project
     pipeline factory: :ci_empty_pipeline
+
+    name 'test'
     status 'pending'
   end
 end

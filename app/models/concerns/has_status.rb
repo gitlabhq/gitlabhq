@@ -12,6 +12,10 @@ module HasStatus
                     failed: 4, canceled: 5, skipped: 6, manual: 7 }
 
   class_methods do
+    def enumerated_status!
+      enum status: HasStatus::STATUSES_ENUM
+    end
+
     def status_sql
       scope_relevant = respond_to?(:exclude_ignored) ? exclude_ignored : all
       scope_warnings = respond_to?(:failed_but_allowed) ? failed_but_allowed : none
@@ -55,14 +59,6 @@ module HasStatus
 
     def all_state_names
       state_machines.values.flat_map(&:states).flat_map { |s| s.map(&:name) }
-    end
-
-    private
-
-    def enumerated_status!
-      @status_strategy = :enumerator
-
-      enum status: HasStatus::STATUSES_ENUM
     end
   end
 
