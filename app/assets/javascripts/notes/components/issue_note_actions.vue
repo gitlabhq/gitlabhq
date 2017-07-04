@@ -46,6 +46,9 @@ export default {
     shouldShowActionsDropdown() {
       return window.gon.current_user_id && (this.canEdit || this.canReportAsAbuse);
     },
+    canAddAwardEmoji() {
+      return window.gon.current_user_id;
+    },
   },
 };
 </script>
@@ -58,6 +61,7 @@ export default {
       {{accessLevel}}
     </span>
     <a
+      v-if="canAddAwardEmoji"
       class="note-action-button note-emoji-button js-add-award js-note-emoji js-user-authored has-tooltip"
       data-position="right"
       href="#"
