@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.4 (2017-07-03)
+
+- No changes.
+
 ## 9.3.3 (2017-06-30)
 
 - Fix head pipeline stored in merge request for external pipelines. !12478
