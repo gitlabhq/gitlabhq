@@ -22,7 +22,7 @@ module Projects
         return @project
       end
 
-      # Repository size limit comes as MB from the view
+      # EE-only: Repository size limit comes as MB from the view
       set_repository_size_limit_as_bytes
 
       set_project_name_from_path
@@ -103,12 +103,8 @@ module Projects
         @project.add_master(owners, current_user: current_user)
       end
 
-      predefined_push_rule = PushRule.find_by(is_sample: true)
-
-      if predefined_push_rule
-        push_rule = predefined_push_rule.dup.tap{ |gh| gh.is_sample = false }
-        project.push_rule = push_rule
-      end
+      # EE-only
+      create_predefined_push_rule
 
       @project.group&.refresh_members_authorized_projects
     end
@@ -164,6 +160,15 @@ module Projects
         # For compatibility - set path from name
         # TODO: remove this in 8.0
         @project.path = @project.name.dup.parameterize
+      end
+    end
+
+    def create_predefined_push_rule
+      predefined_push_rule = PushRule.find_by(is_sample: true)
+
+      if predefined_push_rule
+        push_rule = predefined_push_rule.dup.tap{ |gh| gh.is_sample = false }
+        project.push_rule = push_rule
       end
     end
   end
