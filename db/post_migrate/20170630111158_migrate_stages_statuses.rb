@@ -48,34 +48,31 @@ class MigrateStagesStatuses < ActiveRecord::Migration
       canceled = scope_relevant.canceled.select('count(*)').to_sql
       warnings = scope_warnings.select('count(*) > 0').to_sql
 
-      "(CASE
-        WHEN (#{builds})=(#{skipped}) AND (#{warnings}) THEN #{STATUSES[:success]}
-        WHEN (#{builds})=(#{skipped}) THEN #{STATUSES[:skipped]}
-        WHEN (#{builds})=(#{success}) THEN #{STATUSES[:success]}
-        WHEN (#{builds})=(#{created}) THEN #{STATUSES[:created]}
-        WHEN (#{builds})=(#{success})+(#{skipped}) THEN #{STATUSES[:success]}
-        WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN #{STATUSES[:canceled]}
-        WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN #{STATUSES[:pending]}
-        WHEN (#{running})+(#{pending})>0 THEN '#{STATUSES[:running]}
-        WHEN (#{manual})>0 THEN #{STATUSES[:manual]}
-        WHEN (#{created})>0 THEN #{STATUSES[:running]}
-        ELSE #{STATUSES[:failed]}
-      END)"
+      <<-SQL.strip_heredoc
+        (CASE
+          WHEN (#{builds}) = (#{skipped}) AND (#{warnings}) THEN #{STATUSES[:success]}
+          WHEN (#{builds}) = (#{skipped}) THEN #{STATUSES[:skipped]}
+          WHEN (#{builds}) = (#{success}) THEN #{STATUSES[:success]}
+          WHEN (#{builds}) = (#{created}) THEN #{STATUSES[:created]}
+          WHEN (#{builds}) = (#{success}) + (#{skipped}) THEN #{STATUSES[:success]}
+          WHEN (#{builds}) = (#{success}) + (#{skipped}) + (#{canceled}) THEN #{STATUSES[:canceled]}
+          WHEN (#{builds}) = (#{created}) + (#{skipped}) + (#{pending}) THEN #{STATUSES[:pending]}
+          WHEN (#{running}) + (#{pending}) > 0 THEN #{STATUSES[:running]}
+          WHEN (#{manual}) > 0 THEN #{STATUSES[:manual]}
+          WHEN (#{created}) > 0 THEN #{STATUSES[:running]}
+          ELSE #{STATUSES[:failed]}
+        END)
+      SQL
     end
   end
 
   def up
-    Stage.all.in_batches(of: 10000) do |relation|
-      status_sql = Build
-        .where('ci_builds.commit_id = ci_stages.pipeline_id')
-        .where('ci_builds.stage = ci_stages.name')
-        .status_sql
+    status_sql = Build
+      .where('ci_builds.commit_id = ci_stages.pipeline_id')
+      .where('ci_builds.stage = ci_stages.name')
+      .status_sql
 
-      execute <<-SQL.strip_heredoc
-        UPDATE ci_stages SET status = #{status_sql}
-          WHERE id = (#{relation.select(:id).to_sql})
-      SQL
-    end
+    update_column_in_batches(:ci_stages, :status, Arel.sql("(#{status_sql})"))
   end
 
   def down
@@ -83,7 +80,4 @@ class MigrateStagesStatuses < ActiveRecord::Migration
       UPDATE ci_stages SET status = null
     SQL
   end
-
-  private
-
 end
