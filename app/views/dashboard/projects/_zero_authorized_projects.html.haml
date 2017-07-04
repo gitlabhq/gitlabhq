@@ -1,7 +1,9 @@
 .row.blank-state-parent-container
-  .col-md-6
-    .section-body.section-welcome
-      = render "blank_state_welcome"
-  .col-md-6
-    .section-body.section-ee-trial
-      = render "blank_state_ee_trial"
+  - if current_user.admin?
+    .col-md-6.section-container
+      .section-body.section-welcome
+        = render "blank_state_welcome"
+  - unless current_license&.trial?
+    .col-md-6.section-container
+      .section-body.section-ee-trial
+        = render "blank_state_ee_trial"
