@@ -1,9 +1,16 @@
 .row.blank-state-parent-container
-  - if current_user.admin?
-    .col-md-6.section-container
-      .section-body.section-welcome
+  .col-md-6.section-container
+    .section-body.section-welcome
+      .blank-state.blank-state-welcome
+        %h2.blank-state-welcome-title
+          Welcome to GitLab
+        %p.blank-state-text
+          Code, test, and deploy together
+      - if current_user.admin?
         = render "blank_state_admin_welcome"
-  - unless current_license&.trial?
+      - else
+        = render "blank_state_welcome"
+  - if !current_license&.trial? && current_user.admin?
     .col-md-6.section-container
       .section-body.section-ee-trial
         = render "blank_state_ee_trial"
