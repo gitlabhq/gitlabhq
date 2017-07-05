@@ -1,4 +1,4 @@
-# Using Docker Images
+# Using Docker images
 
 GitLab CI in conjunction with [GitLab Runner](../runners/README.md) can use
 [Docker Engine](https://www.docker.com/) to test and build any application.
@@ -17,14 +17,16 @@ can also run on your workstation. The added benefit is that you can test all
 the commands that we will explore later from your shell, rather than having to
 test them on a dedicated CI server.
 
-## Register docker runner
+## Register Docker Runner
 
-To use GitLab Runner with docker you need to register a new runner to use the
-`docker` executor:
+To use GitLab Runner with Docker you need to [register a new Runner][register]
+to use the `docker` executor.
+
+A one-line example can be seen below:
 
 ```bash
-gitlab-ci-multi-runner register \
-  --url "https://gitlab.com/" \
+sudo gitlab-runner register \
+  --url "https://gitlab.example.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
   --description "docker-ruby-2.1" \
   --executor "docker" \
@@ -33,32 +35,37 @@ gitlab-ci-multi-runner register \
   --docker-mysql latest
 ```
 
-The registered runner will use the `ruby:2.1` docker image and will run two
+The registered runner will use the `ruby:2.1` Docker image and will run two
 services, `postgres:latest` and `mysql:latest`, both of which will be
 accessible during the build process.
 
 ## What is an image
 
-The `image` keyword is the name of the docker image the docker executor
-will run to perform the CI tasks.  
+The `image` keyword is the name of the Docker image the Docker executor
+will run to perform the CI tasks.
 
-By default the executor will only pull images from [Docker Hub][hub],
+By default, the executor will only pull images from [Docker Hub][hub],
 but this can be configured in the `gitlab-runner/config.toml` by setting
-the [docker pull policy][] to allow using local images.
+the [Docker pull policy][] to allow using local images.
 
 For more information about images and Docker Hub please read
 the [Docker Fundamentals][] documentation.
 
 ## What is a service
 
-The `services` keyword defines just another docker image that is run during
-your job and is linked to the docker image that the `image` keyword defines.
+The `services` keyword defines just another Docker image that is run during
+your job and is linked to the Docker image that the `image` keyword defines.
 This allows you to access the service image during build time.
 
 The service image can run any application, but the most common use case is to
 run a database container, eg. `mysql`. It's easier and faster to use an
 existing image and run it as an additional container than install `mysql` every
 time the project is built.
+
+You are not limited to have only database services. You can add as many
+services you need to `.gitlab-ci.yml` or manually modify `config.toml`.
+Any image found at [Docker Hub][hub] or your private Container Registry can be
+used as a service.
 
 You can see some widely used services examples in the relevant documentation of
 [CI services examples](../services/README.md).
@@ -73,22 +80,49 @@ then be used to create a container that is linked to the job container.
 
 The service container for MySQL will be accessible under the hostname `mysql`.
 So, in order to access your database service you have to connect to the host
-named `mysql` instead of a socket or `localhost`.
+named `mysql` instead of a socket or `localhost`. Read more in [accessing the
+services](#accessing-the-services).
 
-## Overwrite image and services
+### Accessing the services
 
-See [How to use other images as services](#how-to-use-other-images-as-services).
+Let's say that you need a Wordpress instance to test some API integration with
+your application.
 
-## How to use other images as services
+You can then use for example the [tutum/wordpress][] image in your
+`.gitlab-ci.yml`:
 
-You are not limited to have only database services. You can add as many
-services you need to `.gitlab-ci.yml` or manually modify `config.toml`.
-Any image found at [Docker Hub][hub] can be used as a service.
+```yaml
+services:
+- tutum/wordpress:latest
+```
 
-## Define image and services from `.gitlab-ci.yml`
+If you don't [specify a service alias](#available-settings-for-services-entry),
+when the job is run, `tutum/wordpress` will be started and you will have
+access to it from your build container under two hostnames to choose from:
+
+- `tutum-wordpress`
+- `tutum__wordpress`
+
+>**Note:**
+Hostnames with underscores are not RFC valid and may cause problems in 3rd party
+applications.
+
+The default aliases for the service's hostname are created from its image name
+following these rules:
+
+- Everything after the colon (`:`) is stripped
+- Slash (`/`) is replaced with double underscores (`__`) and the primary alias
+  is created
+- Slash (`/`) is replaced with a single dash (`-`) and the secondary alias is
+  created (requires GitLab Runner v1.1.0 or higher)
+
+To override the default behavior, you can
+[specify a service alias](#available-settings-for-services-entry).
+
+## Define `image` and `services` from `.gitlab-ci.yml`
 
 You can simply define an image that will be used for all jobs and a list of
-services that you want to use during build time.
+services that you want to use during build time:
 
 ```yaml
 image: ruby:2.2
@@ -125,6 +159,203 @@ test:2.2:
   - bundle exec rake spec
 ```
 
+Or you can pass some [extended configuration options](#extended-docker-configuration-options)
+for `image` and `services`:
+
+```yaml
+image:
+  name: ruby:2.2
+  entrypoint: ["/bin/bash"]
+
+services:
+- name: my-postgres:9.4
+  alias: db-postgres
+  entrypoint: ["/usr/local/bin/db-postgres"]
+  command: ["start"]
+
+before_script:
+- bundle install
+
+test:
+  script:
+  - bundle exec rake spec
+```
+
+## Extended Docker configuration options
+
+> **Note:**
+This feature requires GitLab 9.4 and GitLab Runner 9.4 or higher.
+
+When configuring the `image` or `services` entries, you can use a string or a map as
+options:
+
+- when using a string as an option, it must be the full name of the image to use
+  (including the Registry part if you want to download the image from a Registry
+  other than Docker Hub)
+- when using a map as an option, then it must contain at least the `name`
+  option, which is the same name of the image as used for the string setting
+
+For example, the following two definitions are equal:
+
+1. Using a string as an option to `image` and `services`:
+
+    ```yaml
+    image: "registry.example.com/my/image:latest"
+
+    services:
+    - postgresql:9.4
+    - redis:latest
+    ```
+
+1. Using a map as an option to `image` and `services`. The use of `image:name` is
+   required:
+
+    ```yaml
+    image:
+      name: "registry.example.com/my/image:latest"
+
+    services:
+    - name: postgresql:9.4
+    - name: redis:latest
+    ```
+
+### Available settings for `image`
+
+> **Note:**
+This feature requires GitLab 9.4 and GitLab Runner 9.4 or higher.
+
+| Setting    | Required | Description |
+|------------|----------|-------------|
+| `name`     | yes, when used with any other option      | Full name of the image that should be used. It should contain the Registry part if needed. |
+| `entrypoint` | no     | Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
+
+### Available settings for `services`
+
+> **Note:**
+This feature requires GitLab 9.4 and GitLab Runner 9.4 or higher.
+
+| Setting    | Required | Description |
+|------------|----------|-------------|
+| `name`       | yes, when used with any other option      | Full name of the image that should be used. It should contain the Registry part if needed. |
+| `entrypoint` | no     | Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
+| `command`    | no       | Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`][cmd] directive, where each shell token is a separate string in the array. |
+| `alias`      | no       | Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
+
+### Starting multiple services from the same image
+
+Before the new extended Docker configuration options, the following configuration
+would not work properly:
+
+```yaml
+services:
+- mysql:latest
+- mysql:latest
+```
+
+The Runner would start two containers using the `mysql:latest` image, but both
+of them would be added to the job's container with the `mysql` alias based on
+the [default hostname naming](#accessing-the-services). This would end with one
+of the services not being accessible.
+
+After the new extended Docker configuration options, the above example would
+look like:
+
+```yaml
+services:
+- name: mysql:latest
+  alias: mysql-1
+- name: mysql:latest
+  alias: mysql-2
+```
+
+The Runner will still start two containers using the `mysql:latest` image,
+but now each of them will also be accessible with the alias configured
+in `.gitlab-ci.yml` file.
+
+### Setting a command for the service
+
+Let's assume you have a `super/sql:latest` image with some SQL database
+inside it and you would like to use it as a service for your job. Let's also
+assume that this image doesn't start the database process while starting
+the container and the user needs to manually use `/usr/bin/super-sql run` as
+a command to start the database.
+
+Before the new extended Docker configuration options, you would need to create
+your own image based on the `super/sql:latest` image, add the default command,
+and then use it in job's configuration, like:
+
+```Dockerfile
+# my-super-sql:latest image's Dockerfile
+
+FROM super/sql:latest
+CMD ["/usr/bin/super-sql", "run"]
+```
+
+```yaml
+# .gitlab-ci.yml
+
+services:
+- my-super-sql:latest
+```
+
+After the new extended Docker configuration options, you can now simply
+set a `command` in `.gitlab-ci.yml`, like:
+
+```yaml
+# .gitlab-ci.yml
+
+services:
+- name: super/sql:latest
+  command: ["/usr/bin/super-sql", "run"]
+```
+
+As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`][cmd].
+
+### Overriding the entrypoint of an image
+
+Let's assume you have a `super/sql:experimental` image with some SQL database
+inside it and you would like to use it as a base image for your job because you
+want to execute some tests with this database binary. Let's also assume that
+this image is configured with `/usr/bin/super-sql run` as an entrypoint. That
+means, that when starting the container without additional options, it will run
+the database's process, while Runner expects that the image will have no
+entrypoint or at least will start with a shell as its entrypoint.
+
+Previously we would need to create our own image based on the
+`super/sql:experimental` image, set the entrypoint to a shell, and then use
+it in job's configuration, e.g.:
+
+Before the new extended Docker configuration options, you would need to create
+your own image based on the `super/sql:experimental` image, set the entrypoint
+to a shell and then use it in job's configuration, like:
+
+```Dockerfile
+# my-super-sql:experimental image's Dockerfile
+
+FROM super/sql:experimental
+ENTRYPOINT ["/bin/sh"]
+```
+
+```yaml
+# .gitlab-ci.yml
+
+image: my-super-sql:experimental
+```
+
+After the new extended Docker configuration options, you can now simply
+set an `entrypoint` in `.gitlab-ci.yml`, like:
+
+```yaml
+# .gitlab-ci.yml
+
+image:
+  name: super/sql:experimental
+  entrypoint: ["/bin/sh"]
+```
+
+As you can see the syntax of `entrypoint` is similar to
+[Dockerfile's `ENTRYPOINT`][entrypoint].
+
 ## Define image and services in `config.toml`
 
 Look for the `[runners.docker]` section:
@@ -138,7 +369,7 @@ Look for the `[runners.docker]` section:
 The image and services defined this way will be added to all job run by
 that runner.
 
-## Define an image from a private Docker registry
+## Define an image from a private Container Registry
 
 > **Notes:**
 - This feature requires GitLab Runner **1.8** or higher
@@ -193,44 +424,6 @@ To configure access for `registry.example.com`, follow these steps:
 You can add configuration for as many registries as you want, adding more
 registries to the `"auths"` hash as described above.
 
-## Accessing the services
-
-Let's say that you need a Wordpress instance to test some API integration with
-your application.
-
-You can then use for example the [tutum/wordpress][] image in your
-`.gitlab-ci.yml`:
-
-```yaml
-services:
-- tutum/wordpress:latest
-```
-
-When the job is run, `tutum/wordpress` will be started and you will have
-access to it from your build container under the hostnames `tutum-wordpress`
-(requires GitLab Runner v1.1.0 or newer) and `tutum__wordpress`.
-
-When using a private registry, the image name also includes a hostname and port
-of the registry. 
-
-```yaml
-services:
-- docker.example.com:5000/wordpress:latest
-```
-
-The service hostname will also include the registry hostname. Service will be
-available under hostnames `docker.example.com-wordpress` (requires GitLab Runner v1.1.0 or newer)
-and `docker.example.com__wordpress`.
-
-*Note: hostname with underscores is not RFC valid and may cause problems in 3rd party applications.*
-
-The alias hostnames for the service are made from the image name following these
-rules:
-
-1. Everything after `:` is stripped
-2. Slash (`/`) is replaced with double underscores (`__`) - primary alias
-3. Slash (`/`) is replaced with dash (`-`) - secondary alias, requires GitLab Runner v1.1.0 or newer
-
 ## Configuring services
 
 Many services accept environment variables which allow you to easily change
@@ -257,7 +450,7 @@ See the specific documentation for
 
 ## How Docker integration works
 
-Below is a high level overview of the steps performed by docker during job
+Below is a high level overview of the steps performed by Docker during job
 time.
 
 1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
@@ -274,7 +467,7 @@ time.
 ## How to debug a job locally
 
 *Note: The following commands are run without root privileges. You should be
-able to run docker with your regular user account.*
+able to run Docker with your regular user account.*
 
 First start with creating a file named `build_script`:
 
@@ -334,3 +527,6 @@ creation.
 [mysql-hub]: https://hub.docker.com/r/_/mysql/
 [runner-priv-reg]: http://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-container-registry
 [secret variable]: ../variables/README.md#secret-variables
+[entrypoint]: https://docs.docker.com/engine/reference/builder/#entrypoint
+[cmd]: https://docs.docker.com/engine/reference/builder/#cmd
+[register]: https://docs.gitlab.com/runner/register/

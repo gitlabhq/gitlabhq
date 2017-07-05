@@ -41,13 +41,10 @@ feature 'issue move to another project' do
       find('#issuable-move', visible: false).set(new_project.id)
       click_button('Save changes')
 
-      wait_for_requests
-
-      expect(current_url).to include project_path(new_project)
-
       expect(page).to have_content("Text with #{cross_reference}#{mr.to_reference}")
       expect(page).to have_content("moved from #{cross_reference}#{issue.to_reference}")
       expect(page).to have_content(issue.title)
+      expect(page.current_path).to include project_path(new_project)
     end
 
     scenario 'searching project dropdown', js: true do

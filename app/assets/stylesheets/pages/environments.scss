@@ -254,7 +254,7 @@
   .text-metric-usage {
     fill: $black;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .legend-axis-text {
@@ -262,7 +262,11 @@
   }
 
   .tick > text {
-    font-size: 14px;
+    font-size: 12px;
+  }
+
+  .text-metric-title {
+    font-size: 12px;
   }
 
   @media (max-width: $screen-sm-max) {
@@ -275,5 +279,11 @@
     .tick > text {
       font-size: 8px;
     }
+  }
+}
+
+.prometheus-row {
+  h5 {
+    font-size: 16px;
   }
 }

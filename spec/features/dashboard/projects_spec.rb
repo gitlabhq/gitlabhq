@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Projects', feature: true do
+feature 'Dashboard Projects' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, name: "awesome stuff") }
+  let(:project) { create(:project, name: 'awesome stuff') }
   let(:project2) { create(:project, :public, name: 'Community project') }
 
   before do
@@ -13,6 +13,14 @@ RSpec.describe 'Dashboard Projects', feature: true do
   it 'shows the project the user in a member of in the list' do
     visit dashboard_projects_path
     expect(page).to have_content('awesome stuff')
+  end
+
+  it 'shows "New project" button' do
+    visit dashboard_projects_path
+
+    page.within '#content-body' do
+      expect(page).to have_link('New project')
+    end
   end
 
   context 'when last_repository_updated_at, last_activity_at and update_at are present' do
@@ -47,8 +55,8 @@ RSpec.describe 'Dashboard Projects', feature: true do
     end
   end
 
-  describe "with a pipeline", redis: true do
-    let!(:pipeline) {  create(:ci_pipeline, project: project, sha: project.commit.sha) }
+  describe 'with a pipeline', redis: true do
+    let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha) }
 
     before do
       # Since the cache isn't updated when a new pipeline is created

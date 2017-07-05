@@ -11,10 +11,16 @@ class GlobalPolicy < BasePolicy
   with_options scope: :user, score: 0
   condition(:access_locked) { @user.access_locked? }
 
-  rule { anonymous }.prevent_all
+  rule { anonymous }.policy do
+    prevent :log_in
+    prevent :access_api
+    prevent :access_git
+    prevent :receive_notifications
+    prevent :use_quick_actions
+    prevent :create_group
+  end
 
   rule { default }.policy do
-    enable :read_users_list
     enable :log_in
     enable :access_api
     enable :access_git
@@ -36,5 +42,9 @@ class GlobalPolicy < BasePolicy
 
   rule { access_locked }.policy do
     prevent :log_in
+  end
+
+  rule { ~restricted_public_level }.policy do
+    enable :read_users_list
   end
 end
