@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Geo::RepositorySyncService, services: true do
+RSpec.describe Geo::WikiSyncService, services: true do
   let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
   let(:lease) { double(try_obtain: true) }
 
@@ -17,19 +17,11 @@ RSpec.describe Geo::RepositorySyncService, services: true do
 
   describe '#execute' do
     let(:project) { create(:project_empty_repo) }
-    let(:repository) { project.repository }
-    let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.path_with_namespace}.git" }
+    let(:repository) { project.wiki.repository }
+    let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.path_with_namespace}.wiki.git" }
 
-    it 'fetches project repository' do
+    it 'fetches wiki repository' do
       expect(repository).to receive(:fetch_geo_mirror).with(url_to_repo).once
-
-      subject.execute
-    end
-
-    it 'expires repository caches' do
-      expect_any_instance_of(Repository).to receive(:expire_all_method_caches).once
-      expect_any_instance_of(Repository).to receive(:expire_branch_cache).once
-      expect_any_instance_of(Repository).to receive(:expire_content_cache).once
 
       subject.execute
     end
@@ -41,7 +33,7 @@ RSpec.describe Geo::RepositorySyncService, services: true do
       subject.execute
     end
 
-    it 'does not fetch project repository if cannot obtain a lease' do
+    it 'does not fetch wiki repository if cannot obtain a lease' do
       allow(lease).to receive(:try_obtain) { false }
 
       expect(repository).not_to receive(:fetch_geo_mirror)
@@ -49,16 +41,14 @@ RSpec.describe Geo::RepositorySyncService, services: true do
       subject.execute
     end
 
-    it 'rescues when Gitlab::Shell::Error is raised' do
+    it 'rescues exception when Gitlab::Shell::Error is raised' do
       allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Shell::Error }
 
       expect { subject.execute }.not_to raise_error
     end
 
-    it 'rescues exception and fires after_create hook when Gitlab::Git::Repository::NoRepository is raised' do
+    it 'rescues exception when Gitlab::Git::Repository::NoRepository is raised' do
       allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Git::Repository::NoRepository }
-
-      expect(repository).to receive(:after_create)
 
       expect { subject.execute }.not_to raise_error
     end
@@ -81,18 +71,17 @@ RSpec.describe Geo::RepositorySyncService, services: true do
           subject.execute
         end
 
-        it 'sets last_repository_synced_at' do
-          expect(registry.last_repository_synced_at).not_to be_nil
+        it 'sets last_wiki_synced_at' do
+          expect(registry.last_wiki_synced_at).not_to be_nil
         end
 
-        it 'sets last_repository_successful_sync_at' do
-          expect(registry.last_repository_successful_sync_at).not_to be_nil
+        it 'sets last_wiki_successful_sync_at' do
+          expect(registry.last_wiki_successful_sync_at).not_to be_nil
         end
       end
 
-      context 'when repository sync fail' do
+      context 'when wiki sync fail' do
         let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
-        let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.path_with_namespace}.git" }
 
         before do
           allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Shell::Error }
@@ -100,12 +89,12 @@ RSpec.describe Geo::RepositorySyncService, services: true do
           subject.execute
         end
 
-        it 'sets last_repository_synced_at' do
-          expect(registry.last_repository_synced_at).not_to be_nil
+        it 'sets last_wiki_synced_at' do
+          expect(registry.last_wiki_synced_at).not_to be_nil
         end
 
-        it 'resets last_repository_successful_sync_at' do
-          expect(registry.last_repository_successful_sync_at).to be_nil
+        it 'resets last_wiki_successful_sync_at' do
+          expect(registry.last_wiki_successful_sync_at).to be_nil
         end
       end
     end
