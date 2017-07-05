@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
+  include Storage::LegacyProject
 
   extend Gitlab::ConfigHelper
 
@@ -45,7 +46,6 @@ class Project < ActiveRecord::Base
 
   after_create :ensure_dir_exist
   after_create :create_project_feature, unless: :project_feature
-  after_save :ensure_dir_exist, if: :namespace_id_changed?
   after_save :update_project_statistics, if: :namespace_id_changed?
 
   # set last_activity_at to the same as created_at
@@ -66,6 +66,10 @@ class Project < ActiveRecord::Base
   after_update :update_forks_visibility_level
 
   after_validation :check_pending_delete
+
+  # Legacy Storage specific hooks
+
+  after_save :ensure_dir_exist, if: :namespace_id_changed?
 
   acts_as_taggable
 
@@ -974,56 +978,6 @@ class Project < ActiveRecord::Base
     !group
   end
 
-  def rename_repo
-    path_was = previous_changes['path'].first
-    old_path_with_namespace = File.join(namespace.full_path, path_was)
-    new_path_with_namespace = File.join(namespace.full_path, path)
-
-    Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
-
-    if has_container_registry_tags?
-      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present!"
-
-      # we currently doesn't support renaming repository if it contains images in container registry
-      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
-    end
-
-    expire_caches_before_rename(old_path_with_namespace)
-
-    if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
-      # If repository moved successfully we need to send update instructions to users.
-      # However we cannot allow rollback since we moved repository
-      # So we basically we mute exceptions in next actions
-      begin
-        gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
-        send_move_instructions(old_path_with_namespace)
-        expires_full_path_cache
-
-        @old_path_with_namespace = old_path_with_namespace
-
-        SystemHooksService.new.execute_hooks_for(self, :rename)
-
-        @repository = nil
-      rescue => e
-        Rails.logger.error "Exception renaming #{old_path_with_namespace} -> #{new_path_with_namespace}: #{e}"
-        # Returning false does not rollback after_* transaction but gives
-        # us information about failing some of tasks
-        false
-      end
-    else
-      Rails.logger.error "Repository could not be renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
-
-      # if we cannot move namespace directory we should rollback
-      # db changes in order to prevent out of sync between db and fs
-      raise StandardError.new('repository cannot be renamed')
-    end
-
-    Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
-
-    Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.full_path)
-    Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.full_path)
-  end
-
   # Expires various caches before a project is renamed.
   def expire_caches_before_rename(old_path)
     repo = Repository.new(old_path, self)
@@ -1107,19 +1061,6 @@ class Project < ActiveRecord::Base
 
   def origin_merge_requests
     merge_requests.where(source_project_id: self.id)
-  end
-
-  def create_repository(force: false)
-    # Forked import is handled asynchronously
-    return if forked? && !force
-
-    if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
-      repository.after_create
-      true
-    else
-      errors.add(:base, 'Failed to create repository via gitlab-shell')
-      false
-    end
   end
 
   def ensure_repository
@@ -1325,10 +1266,6 @@ class Project < ActiveRecord::Base
   def remove_exports
     _, status = Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
     status.zero?
-  end
-
-  def ensure_dir_exist
-    gitlab_shell.add_namespace(repository_storage_path, namespace.full_path)
   end
 
   def predefined_variables
