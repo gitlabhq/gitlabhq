@@ -67,6 +67,19 @@ describe API::V3::Users do
         expect(json_response.first['title']).to eq(key.title)
       end
     end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { "/users/#{user.id}/keys" }
+      let(:api_call) { method(:v3_api) }
+
+      before do
+        user.keys << key
+        user.save
+      end
+
+      include_examples 'allows the "read_user" scope'
+    end
   end
 
   describe 'GET /user/:id/emails' do
@@ -287,7 +300,7 @@ describe API::V3::Users do
     end
 
     it 'returns a 404 error if not found' do
-      get v3_api('/users/42/events', user)
+      get v3_api('/users/420/events', user)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -311,6 +324,14 @@ describe API::V3::Users do
       post v3_api('/users', admin), attributes_for(:user)
 
       expect(json_response['is_admin']).to be_nil
+    end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { '/users' }
+      let(:api_call) { method(:v3_api) }
+
+      include_examples 'does not allow the "read_user" scope'
     end
   end
 end
