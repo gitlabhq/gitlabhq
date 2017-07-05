@@ -823,13 +823,13 @@ describe Project, models: true do
 
       let(:avatar_path) { "/#{project.full_path}/avatar" }
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'when git repo is empty' do
       let(:project) { create(:empty_project) }
 
-      it { should eq nil }
+      it { is_expected.to eq nil }
     end
   end
 
