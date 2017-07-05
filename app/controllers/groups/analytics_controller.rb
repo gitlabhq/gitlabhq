@@ -1,6 +1,6 @@
 class Groups::AnalyticsController < Groups::ApplicationController
   before_action :group
-  before_action :check_group_contribution_analytics_available!
+  before_action :check_contribution_analytics_available!
 
   layout 'group'
 
