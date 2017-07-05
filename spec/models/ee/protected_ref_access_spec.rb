@@ -28,7 +28,7 @@ describe EE::ProtectedRefAccess do
           expect(access_level.errors).to include(:group)
         end
 
-        it "allows creating an #{included_in_class} with a group" do
+        it "allows creating an #{included_in_class} with a user" do
           access_level.user = create(:user)
 
           expect(access_level).not_to be_valid
@@ -47,7 +47,7 @@ describe EE::ProtectedRefAccess do
           expect(access_level).to be_valid
         end
 
-        it "allows creating an #{included_in_class} with a group" do
+        it "allows creating an #{included_in_class} with a user" do
           access_level.user = create(:user)
 
           expect(access_level).to be_valid

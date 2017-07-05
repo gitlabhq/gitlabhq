@@ -20,7 +20,7 @@ module EE
                                              conditions: -> { where(user_id: nil, group_id: nil) } }
       validates :group, :user,
                absence: true,
-               unless: proc { |access| access.type != :role && access.project.feature_available?(:ref_permissions_for_users) }
+               unless: :ref_permissions_for_users_required_and_available
 
       scope :by_user, -> (user) { where(user: user ) }
       scope :by_group, -> (group) { where(group: group ) }
@@ -54,6 +54,14 @@ module EE
       return group.users.exists?(user.id) if self.group.present?
 
       super
+    end
+
+    # We don't need to validate the license if this access applies to a role.
+    #
+    # If it applies to a user/group we can only skip validation `nil`-validation
+    # if the feature is available
+    def ref_permissions_for_users_required_and_available
+      type != :role && project.feature_available?(:ref_permissions_for_users)
     end
   end
 end

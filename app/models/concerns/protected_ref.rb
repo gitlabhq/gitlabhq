@@ -25,15 +25,9 @@ module ProtectedRef
         # to fail.
         has_many :"#{type}_access_levels", dependent: :destroy, inverse_of: self.model_name.singular # rubocop:disable Cop/ActiveRecordDependent
 
-        validates :"#{type}_access_levels", length: { minimum: 0 }
+        validates :"#{type}_access_levels", length: { is: 1, message: "are restricted to a single instance per #{self.model_name.human}." }
 
         accepts_nested_attributes_for :"#{type}_access_levels", allow_destroy: true
-
-        # Returns access levels that grant the specified access type to the given user / group.
-        access_level_class = const_get("#{type}_access_level".classify)
-        protected_type = self.model_name.singular
-        scope :"#{type}_access_by_user", -> (user) { access_level_class.joins(protected_type.to_sym).where("#{protected_type}_id" => self.ids).merge(access_level_class.by_user(user)) }
-        scope :"#{type}_access_by_group", -> (group) { access_level_class.joins(protected_type.to_sym).where("#{protected_type}_id" => self.ids).merge(access_level_class.by_group(group)) }
       end
     end
 
