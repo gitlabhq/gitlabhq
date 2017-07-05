@@ -11,6 +11,8 @@ describe MigrateStagesStatuses, :migration do
                failed: 4, canceled: 5, skipped: 6, manual: 7 }
 
   before do
+    stub_const("#{described_class.name}::BATCH_SIZE", 2)
+
     projects.create!(id: 1, name: 'gitlab1', path: 'gitlab1')
     projects.create!(id: 2, name: 'gitlab2', path: 'gitlab2')
 
@@ -31,14 +33,30 @@ describe MigrateStagesStatuses, :migration do
   end
 
   it 'correctly migrates stages statuses' do
-    expect(stages.where(status: nil).count).to eq 3
+    Sidekiq::Testing.inline! do
+      expect(stages.where(status: nil).count).to eq 3
 
-    migrate!
+      migrate!
 
-    expect(stages.where(status: nil)).to be_empty
-    expect(stages.all.order('id ASC').pluck(:status))
-      .to eq [STATUSES[:running], STATUSES[:failed], STATUSES[:success]]
+      expect(stages.where(status: nil)).to be_empty
+      expect(stages.all.order('id ASC').pluck(:status))
+        .to eq [STATUSES[:running], STATUSES[:failed], STATUSES[:success]]
+    end
   end
+
+  it 'correctly schedules background migrations' do
+    Sidekiq::Testing.fake! do
+      Timecop.freeze do
+        migrate!
+
+        expect(described_class::MIGRATION).to be_scheduled_migration(5.minutes, 1)
+        expect(described_class::MIGRATION).to be_scheduled_migration(5.minutes, 2)
+        expect(described_class::MIGRATION).to be_scheduled_migration(10.minutes, 3)
+        expect(BackgroundMigrationWorker.jobs.size).to eq 3
+      end
+    end
+  end
+
 
   def create_job(project:, pipeline:, stage:, status:, **opts)
     stages  = { test: 1, build: 2, deploy: 3}
