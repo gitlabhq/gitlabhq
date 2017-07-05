@@ -1,9 +1,11 @@
-- state_body_class = current_license&.trial? ? 'col-md-3' : 'col-md-9'
+-# variable        = trial license present   ?  use this ELSE use this
+- state_edge_class = current_license&.trial? ? 'col-md-4' : 'col-md-1'
+- state_icon_class = current_license&.trial? ? 'col-md-1' : 'col-md-2'
+- state_body_class = current_license&.trial? ? 'col-md-3' : 'col-md-8'
 
 .blank-state.clearfix
-  - if current_license&.trial?
-    .col-md-3
-  .col-md-3.blank-state-icon
+  %div{ class: state_edge_class }
+  .blank-state-icon{ class: state_icon_class }
     = custom_icon("add_new_user", size: 50)
   .blank-state-body{ class: state_body_class }
     %h3.blank-state-title
@@ -12,13 +14,11 @@
       Add your team members and others to GitLab.
     = link_to new_admin_user_path, class: "btn btn-new" do
       New user
-  - if current_license&.trial?
-    .col-md-3
+  %div{ class: state_edge_class }
 
 .blank-state.clearfix
-  - if current_license&.trial?
-    .col-md-3
-  .col-md-3.blank-state-icon
+  %div{ class: state_edge_class }
+  .blank-state-icon{ class: state_icon_class }
     = custom_icon("configure_server", size: 50)
   .blank-state-body{ class: state_body_class }
     %h3.blank-state-title
@@ -27,14 +27,12 @@
       Make adjustments to how your GitLab server is setup.
     = link_to admin_root_path, class: "btn btn-new" do
       Configure server
-  - if current_license&.trial?
-    .col-md-3
+  %div{ class: state_edge_class }
 
 - if current_user.can_create_group?
   .blank-state.clearfix
-    - if current_license&.trial?
-      .col-md-3
-    .col-md-3.blank-state-icon
+    %div{ class: state_edge_class }
+    .blank-state-icon{ class: state_icon_class }
       = custom_icon("add_new_group", size: 50)
     .blank-state-body{ class: state_body_class }
       %h3.blank-state-title
@@ -43,5 +41,4 @@
         Groups are a great way to organise projects and people.
       = link_to new_group_path, class: "btn btn-new" do
         New group
-    - if current_license&.trial?
-      .col-md-3
+    %div{ class: state_edge_class }
