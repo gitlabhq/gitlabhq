@@ -13,7 +13,8 @@ During runtime you can set the values for the gates via the
 Starting from GitLab 9.4 we support feature groups via
 [Flipper groups](https://github.com/jnunemaker/flipper/blob/v0.10.2/docs/Gates.md#2-group).
 
-Feature groups must be defined statically in `lib/feature.rb` (in the `.register_feature_groups` method), but their implementation can obviously be
+Feature groups must be defined statically in `lib/feature.rb` (in the
+`.register_feature_groups` method), but their implementation can obviously be
 dynamic (querying the DB etc.). You can see how the `performance_team` feature
 group for a concrete example.
 

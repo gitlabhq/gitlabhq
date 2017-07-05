@@ -1,7 +1,8 @@
 # Performance Bar
 
 >**Note:**
-Available since GitLab 9.4.
+Available since GitLab 9.4. For installations from source you'll have to
+configure it yourself.
 
 A Performance Bar can be displayed, to dig into the performance of a page. When
 activated, it looks as follows:
@@ -22,8 +23,9 @@ It allows you to:
 
 ## Enable the Performance Bar
 
-By default, the Performance Bar is disabled. You can enable it either for a
-given feature group or user.
+By default, the Performance Bar is disabled. You can enable it for a group
+and/or users. Note that it's possible to enable it for a group and for
+individual users at the same time.
 
 1. Edit `/etc/gitlab/gitlab.rb`
 1. Find the following line, and set it to the group's **full path** that should
@@ -47,7 +49,10 @@ The `performance_team` feature group maps to the group specified by the
 curl --data "feature_group=performance_team" --data "value=true" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/performance_bar
 ```
 
-### Enable for a specific user
+### Enable for specific users
+
+It's possible to enable the Performance Bar for specific users in addition to a
+group, or even instead of a group:
 
 ```
 curl --data "user=my_username" --data "value=true" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/performance_bar
