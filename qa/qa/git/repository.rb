@@ -66,6 +66,10 @@ module QA
       def commits
         `git log --oneline`.split("\n")
       end
+
+      def last_commit_sha
+        `git show -s --format=%H HEAD`.strip
+      end
     end
   end
 end

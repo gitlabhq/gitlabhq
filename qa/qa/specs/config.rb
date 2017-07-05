@@ -55,10 +55,15 @@ module QA
         Capybara.register_driver :chrome do |app|
           capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
             'chromeOptions' => {
-              'binary' => '/usr/bin/google-chrome-stable',
+              # 'binary' => '/usr/bin/google-chrome-stable',
+              'binary' => '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
               'args' => %w[headless no-sandbox disable-gpu]
             }
           )
+
+          Capybara::Screenshot.register_driver(:chrome) do |driver, path|
+            driver.browser.save_screenshot(path)
+          end
 
           Capybara::Selenium::Driver
             .new(app, browser: :chrome, desired_capabilities: capabilities)
