@@ -8,10 +8,6 @@ class MigrateStagesStatuses < ActiveRecord::Migration
   STATUSES = { created: 0, pending: 1, running: 2, success: 3,
                failed: 4, canceled: 5, skipped: 6, manual: 7 }
 
-  class Stage < ActiveRecord::Base
-    self.table_name = 'ci_stages'
-  end
-
   class Build < ActiveRecord::Base
     self.table_name = 'ci_builds'
 
@@ -67,6 +63,8 @@ class MigrateStagesStatuses < ActiveRecord::Migration
   end
 
   def up
+    disable_statement_timeout
+
     status_sql = Build
       .where('ci_builds.commit_id = ci_stages.pipeline_id')
       .where('ci_builds.stage = ci_stages.name')
@@ -78,6 +76,8 @@ class MigrateStagesStatuses < ActiveRecord::Migration
   end
 
   def down
+    disable_statement_timeout
+
     execute <<-SQL.strip_heredoc
       UPDATE ci_stages SET status = null
     SQL
