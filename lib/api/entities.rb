@@ -875,5 +875,11 @@ module API
         expose :dependencies, using: Dependency
       end
     end
+
+    class UserAgentDetail < Grape::Entity
+      expose :user_agent
+      expose :ip_address
+      expose :submitted
+    end
   end
 end
