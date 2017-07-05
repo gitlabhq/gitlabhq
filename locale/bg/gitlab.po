@@ -15,9 +15,9 @@ msgstr ""
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-msgid "%d additional commit have been omitted to prevent performance issues."
+msgid "%d additional commit has been omitted to prevent performance issues."
 msgid_plural ""
-"%d additional commits has been omitted to prevent performance issues."
+"%d additional commits have been omitted to prevent performance issues."
 msgstr[0] "%d подаване беше пропуснато, за да не се натоварва системата."
 msgstr[1] "%d подавания бяха пропуснати, за да не се натоварва системата."
 
