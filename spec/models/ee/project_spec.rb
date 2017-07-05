@@ -311,7 +311,6 @@ describe Project, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe '#secret_variables_for' do
     let(:project) { create(:empty_project) }
 
