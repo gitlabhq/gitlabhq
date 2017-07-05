@@ -6,6 +6,8 @@ class GpgKey < ActiveRecord::Base
   belongs_to :user
   has_many :gpg_signatures, dependent: :nullify
 
+  validates :user, presence: true
+
   validates :key,
     presence: true,
     uniqueness: true,
