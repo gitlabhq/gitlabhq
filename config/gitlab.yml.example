@@ -619,53 +619,6 @@ test:
       title: "JIRA"
       url: https://sample_company.atlassian.net
       project_key: PROJECT
-
-  omniauth:
-    enabled: true
-    allow_single_sign_on: true
-    external_providers: []
-
-    providers:
-      - { name: 'cas3',
-          label: 'cas3',
-          args: { url: 'https://sso.example.com',
-                  disable_ssl_verification: false,
-                  login_url: '/cas/login',
-                  service_validate_url: '/cas/p3/serviceValidate',
-                  logout_url: '/cas/logout'} }
-      - { name: 'authentiq',
-          app_id: 'YOUR_CLIENT_ID',
-          app_secret: 'YOUR_CLIENT_SECRET',
-          args: { scope: 'aq:name email~rs address aq:push' } }
-      - { name: 'github',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET',
-          url: "https://github.com/",
-          verify_ssl: false,
-          args: { scope: 'user:email' } }
-      - { name: 'bitbucket',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET' }
-      - { name: 'gitlab',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET',
-          args: { scope: 'api' } }
-      - { name: 'google_oauth2',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET',
-          args: { access_type: 'offline', approval_prompt: '' } }
-      - { name: 'facebook',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET' }
-      - { name: 'twitter',
-          app_id: 'YOUR_APP_ID',
-          app_secret: 'YOUR_APP_SECRET' }
-      - { name: 'auth0',
-          args: {
-            client_id: 'YOUR_AUTH0_CLIENT_ID',
-            client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
-            namespace: 'YOUR_AUTH0_DOMAIN' } }
-
   ldap:
     enabled: false
     servers:

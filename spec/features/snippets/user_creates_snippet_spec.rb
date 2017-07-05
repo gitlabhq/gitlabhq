@@ -1,10 +1,12 @@
 require 'rails_helper'
 
-feature 'Create Snippet', :js, feature: true do
+feature 'User creates snippet', :js, feature: true do
   include DropzoneHelper
 
+  let(:user) { create(:user) }
+
   before do
-    gitlab_sign_in :user
+    sign_in(user)
     visit new_snippet_path
   end
 
