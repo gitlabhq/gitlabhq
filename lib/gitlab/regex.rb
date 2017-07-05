@@ -1,6 +1,7 @@
 module Gitlab
   module Regex
     extend self
+    extend EE::Gitlab::Regex
 
     def namespace_name_regex
       @namespace_name_regex ||= /\A[\p{Alnum}\p{Pd}_\. ]*\z/.freeze
@@ -38,8 +39,12 @@ module Gitlab
       @container_repository_regex ||= %r{\A[a-z0-9]+(?:[-._/][a-z0-9]+)*\Z}
     end
 
+    def environment_name_regex_chars
+      'a-zA-Z0-9_/\\$\\{\\}\\. -'
+    end
+
     def environment_name_regex
-      @environment_name_regex ||= /\A[a-zA-Z0-9_\\\/\${}. -]+\z/.freeze
+      @environment_name_regex ||= /\A[#{environment_name_regex_chars}]+\z/.freeze
     end
 
     def environment_name_regex_message

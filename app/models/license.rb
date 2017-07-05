@@ -22,6 +22,7 @@ class License < ActiveRecord::Base
   PUSH_RULES_FEATURE = 'GitLab_PushRules'.freeze
   RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
+  VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'VariableEnvironmentScope'.freeze
 
   FEATURE_CODES = {
     auditor_user: AUDITOR_USER_FEATURE,
@@ -30,6 +31,7 @@ class License < ActiveRecord::Base
     object_storage: OBJECT_STORAGE_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
     service_desk: SERVICE_DESK_FEATURE,
+    variable_environment_scope: VARIABLE_ENVIRONMENT_SCOPE_FEATURE,
 
     # Features that make sense to Namespace:
     burndown_charts: BURNDOWN_CHARTS_FEATURE,
@@ -79,7 +81,8 @@ class License < ActiveRecord::Base
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 }
+    { SERVICE_DESK_FEATURE => 1 },
+    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 }
   ].freeze
 
   EEU_FEATURES = [

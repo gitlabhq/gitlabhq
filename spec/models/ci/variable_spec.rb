@@ -4,7 +4,15 @@ describe Ci::Variable, models: true do
   subject { build(:ci_variable) }
 
   it { is_expected.to include_module(HasVariable) }
-  it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id) }
+
+  describe 'validations' do
+    # EE
+    before do
+      stub_licensed_features(variable_environment_scope: true)
+    end
+
+    it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope) }
+  end
 
   describe '.unprotected' do
     subject { described_class.unprotected }

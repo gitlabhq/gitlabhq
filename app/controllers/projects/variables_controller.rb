@@ -1,4 +1,6 @@
 class Projects::VariablesController < Projects::ApplicationController
+  prepend ::EE::Projects::VariablesController
+
   before_action :authorize_admin_build!
 
   layout 'project_settings'
@@ -14,7 +16,7 @@ class Projects::VariablesController < Projects::ApplicationController
   def update
     @variable = @project.variables.find(params[:id])
 
-    if @variable.update_attributes(project_params)
+    if @variable.update_attributes(variable_params)
       redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variable was successfully updated.'
     else
       render action: "show"
@@ -22,9 +24,9 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def create
-    @variable = Ci::Variable.new(project_params)
+    @variable = @project.variables.new(variable_params)
 
-    if @variable.valid? && @project.variables << @variable
+    if @variable.save
       flash[:notice] = 'Variables were successfully updated.'
       redirect_to namespace_project_settings_ci_cd_path(project.namespace, project)
     else
@@ -43,8 +45,11 @@ class Projects::VariablesController < Projects::ApplicationController
 
   private
 
-  def project_params
-    params.require(:variable)
-      .permit([:id, :key, :value, :protected, :_destroy])
+  def variable_params
+    params.require(:variable).permit(*variable_params_attributes)
+  end
+
+  def variable_params_attributes
+    %i[id key value protected _destroy]
   end
 end

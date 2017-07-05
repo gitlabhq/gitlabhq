@@ -2326,7 +2326,12 @@ describe Project, models: true do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.secret_variables_for('ref') }
+    subject { project.secret_variables_for(ref: 'ref') }
+
+    before do
+      stub_application_setting(
+        default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    end
 
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
@@ -2335,11 +2340,6 @@ describe Project, models: true do
     end
 
     context 'when the ref is not protected' do
-      before do
-        stub_application_setting(
-          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-      end
-
       it 'contains only the secret variables' do
         is_expected.to contain_exactly(secret_variable)
       end

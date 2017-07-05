@@ -210,6 +210,56 @@ module EE
       end
     end
 
+    def secret_variables_for(ref:, environment: nil)
+      return super.where(environment_scope: '*') unless
+        environment && feature_available?(:variable_environment_scope)
+
+      query = super
+
+      where = <<~SQL
+        environment_scope IN (:wildcard, :environment_name) OR
+          :environment_name LIKE
+            #{::Gitlab::SQL::Glob.to_like('environment_scope')}
+      SQL
+
+      order = <<~SQL
+        CASE environment_scope
+          WHEN %{wildcard} THEN 0
+          WHEN %{environment_name} THEN 2
+          ELSE 1
+        END
+      SQL
+
+      values = {
+        wildcard: '*',
+        environment_name: environment.name
+      }
+
+      quoted_values =
+        values.transform_values(&self.class.connection.method(:quote))
+
+      # The query is trying to find variables with scopes matching the
+      # current environment name. Suppose the environment name is
+      # 'review/app', and we have variables with environment scopes like:
+      # * variable A: review
+      # * variable B: review/app
+      # * variable C: review/*
+      # * variable D: *
+      # And the query should find variable B, C, and D, because it would
+      # try to convert the scope into a LIKE pattern for each variable:
+      # * A: review
+      # * B: review/app
+      # * C: review/%
+      # * D: %
+      # Note that we'll match % and _ literally therefore we'll escape them.
+      # In this case, B, C, and D would match. We also want to prioritize
+      # the exact matched name, and put * last, and everything else in the
+      # middle. So the order should be: D < C < B
+      query
+        .where(where, values)
+        .order(order % quoted_values) # `order` cannot escape for us!
+    end
+
     def cache_has_external_issue_tracker
       super unless ::Gitlab::Geo.secondary?
     end
