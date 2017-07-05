@@ -191,49 +191,70 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
-    before do
-      stub_artifacts_object_storage
-      job
-      get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
-    end
-
-    context 'job with artifacts' do
-      context 'when artifacts are stored locally' do
-        let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
-
-        context 'authorized user' do
-          let(:download_headers) do
-            { 'Content-Transfer-Encoding' => 'binary',
-              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
-          end
-
-          it 'returns specific job artifacts' do
-            expect(response).to have_http_status(200)
-            expect(response.headers).to include(download_headers)
-            expect(response.body).to match_file(job.artifacts_file.file.file)
-          end
-        end
-
-        context 'unauthorized user' do
-          let(:api_user) { nil }
-
-          it 'does not return specific job artifacts' do
-            expect(response).to have_http_status(401)
-          end
-        end
+    context 'normal authenticatin' do
+      before do
+        stub_artifacts_object_storage
+        job
+        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
       end
 
-      context 'when artifacts are stored remotely' do
-        let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+      context 'job with artifacts' do
+        context 'when artifacts are stored locally' do
+          let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
-        it 'returns location redirect' do
-          expect(response).to have_http_status(302)
+          context 'authorized user' do
+            let(:download_headers) do
+              { 'Content-Transfer-Encoding' => 'binary',
+                'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+            end
+
+            it 'returns specific job artifacts' do
+              expect(response).to have_http_status(200)
+              expect(response.headers).to include(download_headers)
+              expect(response.body).to match_file(job.artifacts_file.file.file)
+            end
+          end
+
+          context 'unauthorized user' do
+            let(:api_user) { nil }
+
+            it 'does not return specific job artifacts' do
+              expect(response).to have_http_status(401)
+            end
+          end
+        end
+
+        context 'when artifacts are stored remotely' do
+          let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+
+          it 'returns location redirect' do
+            expect(response).to have_http_status(302)
+          end
+        end
+
+        it 'does not return job artifacts if not uploaded' do
+          expect(response).to have_http_status(404)
         end
       end
     end
 
-    it 'does not return job artifacts if not uploaded' do
-      expect(response).to have_http_status(404)
+    context 'authorized by ci_job_token' do
+      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: user) }
+
+      let(:download_headers) do
+        { 'Content-Transfer-Encoding' => 'binary',
+          'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+      end
+
+      before do
+        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts"), ci_job_token: job.token
+      end
+
+      it 'returns specific job artifacts' do
+        expect(response).to have_http_status(200)
+        expect(response.headers).to include(download_headers)
+        expect(response.body).to match_file(job.artifacts_file.file.file)
+      end
     end
   end
 

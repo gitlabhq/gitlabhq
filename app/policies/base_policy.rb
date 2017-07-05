@@ -27,4 +27,6 @@ class BasePolicy < DeclarativePolicy::Base
 
   with_scope :global
   condition(:license_block) { License.block_changes? }
+
+  rule { ci_job_user }.prevent_all
 end

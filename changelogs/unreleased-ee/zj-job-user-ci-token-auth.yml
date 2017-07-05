@@ -1,0 +1,4 @@
+---
+title: Allow artifacts access with CI_JOB_TOKEN
+merge_request:
+author:
