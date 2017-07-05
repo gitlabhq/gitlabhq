@@ -15,5 +15,9 @@ RSpec.describe Geo::ProjectSyncWorker do
 
       expect(repository_sync_service).to have_received(:execute).once
     end
+
+    it 'does not raise an error when project could not be found' do
+      expect { subject.perform(999, Time.now) }.not_to raise_error
+    end
   end
 end
