@@ -17,7 +17,7 @@ msgstr ""
 
 msgid "%d additional commit have been omitted to prevent performance issues."
 msgid_plural ""
-"%d additional commits have been omitted to prevent performance issues."
+"%d additional commits has been omitted to prevent performance issues."
 msgstr[0] "%d enmetado estis transsaltita, por ne troŝarĝi la sistemon."
 msgstr[1] "%d enmetadoj estis transsaltitaj, por ne troŝarĝi la sistemon."
 
