@@ -74,7 +74,10 @@ module CycleAnalyticsHelpers
 
   def dummy_pipeline
     @dummy_pipeline ||=
-      project.pipelines.build(sha: project.repository.commit('master').sha)
+      project.pipelines.build(
+        sha: project.repository.commit('master').sha,
+        ref: 'master',
+        source: :push)
   end
 
   def new_dummy_job(environment)
