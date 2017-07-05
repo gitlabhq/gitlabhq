@@ -59,6 +59,11 @@ module EE
         enable :read_environment
         enable :read_deployment
         enable :read_pages
+
+        prevent :create_project
+        prevent :create_issue
+        prevent :create_note
+        prevent :upload_file
       end
 
       rule { ~can?(:push_code) }.prevent :push_code_to_protected_branches

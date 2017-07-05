@@ -246,6 +246,7 @@ describe ProjectPolicy, models: true do
         is_expected.to be_disallowed(*developer_permissions)
         is_expected.to be_disallowed(*master_permissions)
         is_expected.to be_disallowed(*owner_permissions)
+        is_expected.to be_disallowed(*(guest_permissions - auditor_permissions))
         is_expected.to be_allowed(*auditor_permissions)
       end
     end
