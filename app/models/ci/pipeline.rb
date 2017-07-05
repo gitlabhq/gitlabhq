@@ -327,10 +327,10 @@ module Ci
     end
 
     def ci_yaml_file_path
-      if project.ci_config_file.blank?
+      if project.ci_config_path.blank?
         '.gitlab-ci.yml'
       else
-        project.ci_config_file
+        project.ci_config_path
       end
     end
 

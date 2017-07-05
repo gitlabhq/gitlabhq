@@ -10,7 +10,7 @@ module API
     helpers do
       params :optional_params_ce do
         optional :description, type: String, desc: 'The description of the project'
-        optional :ci_config_file, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
+        optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
         optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
         optional :merge_requests_enabled, type: Boolean, desc: 'Flag indication if merge requests are enabled'
         optional :wiki_enabled, type: Boolean, desc: 'Flag indication if the wiki is enabled'

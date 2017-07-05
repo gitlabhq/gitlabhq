@@ -1474,7 +1474,7 @@ describe Ci::Build, :models do
       let(:ci_config_path) { { key: 'CI_CONFIG_PATH', value: 'custom', public: true } }
 
       before do
-        project.update(ci_config_file: 'custom')
+        project.update(ci_config_path: 'custom')
       end
 
       it { is_expected.to include(ci_config_path) }

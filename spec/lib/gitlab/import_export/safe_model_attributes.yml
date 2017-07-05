@@ -383,7 +383,7 @@ Project:
 - printing_merge_request_link_enabled
 - build_allow_git_fetch
 - last_repository_updated_at
-- ci_config_file
+- ci_config_path
 Author:
 - name
 ProjectFeature:
