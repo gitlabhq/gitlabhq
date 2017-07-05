@@ -15,11 +15,7 @@ module Ci
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :description, presence: true
-    validates :variables, uniqueness_of_in_memory: {
-                :collection => :variables,
-                :attrs => [:pipeline_schedule_id, :key],
-                :message => ['variables.key', 'keys are duplicated']
-              }
+    validates :variables, variable_duplicates: true
 
     before_save :set_next_run_at
 
