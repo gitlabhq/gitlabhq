@@ -25,16 +25,6 @@ describe Gitlab::Git::Index, seed_helper: true do
         expect(entry).not_to be_nil
         expect(repository.lookup(entry[:oid]).content).to eq(options[:content])
       end
-
-      it 'creates the file if file_path has spaces in between words' do
-        options[:file_path] = 'new file.txt'
-
-        index.create(options)
-        entry = index.get(options[:file_path])
-
-        expect(entry).not_to be_nil
-        expect(repository.lookup(entry[:oid]).content).to eq(options[:content])
-      end
     end
 
     context 'when a file at that path exists' do
@@ -87,15 +77,6 @@ describe Gitlab::Git::Index, seed_helper: true do
       it 'creates the dir in the index' do
         index.create_dir(options)
 
-        entry = index.get(options[:file_path] + '/.gitkeep')
-
-        expect(entry).not_to be_nil
-      end
-
-      it 'creates the dir if it has spaces in between words' do
-        options[:file_path] = 'new dir'
-
-        index.create_dir(options)
         entry = index.get(options[:file_path] + '/.gitkeep')
 
         expect(entry).not_to be_nil
