@@ -25,7 +25,7 @@
   .form-group
     .col-md-9
       %label.label-light
-        #{ _('Variables') }
+        #{ s_('PipelineSchedules|Variables') }
       %ul.js-pipeline-variable-list.pipeline-variable-list
         - @schedule.variables.each do |variable|
           = render 'variable_row', id: variable.id, key: variable.key, value: variable.value

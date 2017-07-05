@@ -619,6 +619,12 @@ msgstr ""
 msgid "PipelineSchedules|Inactive"
 msgstr ""
 
+msgid "PipelineSchedules|Input variable key"
+msgstr ""
+
+msgid "PipelineSchedules|Input variable value"
+msgstr ""
+
 msgid "PipelineSchedules|Next Run"
 msgstr ""
 
@@ -628,10 +634,16 @@ msgstr ""
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr ""
+
 msgid "PipelineSchedules|Take ownership"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
+msgstr ""
+
+msgid "PipelineSchedules|Variables"
 msgstr ""
 
 msgid "PipelineSheduleIntervalPattern|Custom"
