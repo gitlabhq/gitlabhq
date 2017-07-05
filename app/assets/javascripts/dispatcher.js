@@ -60,6 +60,7 @@ import ShortcutsBlob from './shortcuts_blob';
 import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
+import PerformanceBar from './performance_bar';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -540,6 +541,10 @@ import AuditLogs from './audit_logs';
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
         new Shortcuts();
+      }
+
+      if (document.querySelector('#peek')) {
+        new PerformanceBar({ container: '#peek' });
       }
     };
 
