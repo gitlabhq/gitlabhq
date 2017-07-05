@@ -712,10 +712,10 @@ msgstr "Elektu horzonon"
 msgid "Select target branch"
 msgstr "Elektu celan branĉon"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 "Kreu pasvorton por via konto por ebligi al vi eltiri kaj alpuŝi per "
-"%{protocol}"
+"%{protocol}."
 
 msgid "Set up CI"
 msgstr "Agordi SI"

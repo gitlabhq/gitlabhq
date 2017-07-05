@@ -711,10 +711,10 @@ msgstr "Изберете часова зона"
 msgid "Select target branch"
 msgstr "Изберете целеви клон"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 "Задайте парола на профила си, за да можете да изтегляте и изпращате промени "
-"чрез %{protocol}"
+"чрез %{protocol}."
 
 msgid "Set up CI"
 msgstr "Настройка на НИ"

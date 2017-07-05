@@ -693,7 +693,7 @@ msgstr "選擇時區"
 msgid "Select target branch"
 msgstr "選擇目標分支"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "為賬號添加壹個用於推送或拉取的 %{protocol} 密碼。"
 
 msgid "Set up CI"
