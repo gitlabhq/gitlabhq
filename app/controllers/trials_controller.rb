@@ -1,5 +1,5 @@
 class TrialsController < ApplicationController
-  before_filter :check_presence_of_license
+  before_action :check_presence_of_license
 
   def new
   end

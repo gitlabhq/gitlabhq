@@ -265,6 +265,12 @@ class License < ActiveRecord::Base
     restricted_attr(:trial)
   end
 
+  def remaining_days
+    return if expired?
+
+    (expires_at - Date.today).to_i
+  end
+
   private
 
   def restricted_attr(name, default = nil)
