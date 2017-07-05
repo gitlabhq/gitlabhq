@@ -18,11 +18,11 @@
     = custom_icon("configure_server", size: 50)
   .blank-state-body{ class: state_body_class }
     %h3.blank-state-title
-      Configure your server
+      Configure GitLab
     %p.blank-state-text
-      Make adjustments to how your GitLab server is setup.
+      Make adjustments to how your GitLab instance is set up.
     = link_to admin_root_path, class: "btn btn-new" do
-      Configure server
+      Configure
 
 - if current_user.can_create_group?
   .blank-state.clearfix
