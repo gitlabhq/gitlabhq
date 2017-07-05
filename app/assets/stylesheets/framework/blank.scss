@@ -1,6 +1,28 @@
+.blank-state-parent-container {
+  display: flex;
+
+  .section-container {
+    display: flex;
+    flex: 1;
+    padding: 10px;
+  }
+
+  .section-body {
+    width: 100%;
+    height: 100%;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-default;
+
+    &.section-ee-trial {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
 .blank-state-welcome {
   text-align: center;
-  border-bottom: 1px solid $border-color;
 
   .blank-state-text {
     margin-bottom: 0;
@@ -10,6 +32,10 @@
 .blank-state {
   padding-top: 20px;
   padding-bottom: 20px;
+}
+
+.blank-state.ee-trial {
+  padding: 20px;
   text-align: center;
 }
 
@@ -20,20 +46,18 @@
 
 .blank-state-icon {
   padding-bottom: 20px;
-  color: $gray-darkest;
   font-size: 56px;
 
-  path,
-  polygon {
-    fill: currentColor;
+  svg {
+    display: block;
+    margin: auto;
   }
 }
 
 .blank-state-title {
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   font-size: 18px;
-  font-weight: normal;
 }
 
 .blank-state-text {
@@ -48,4 +72,25 @@
 
 .blank-state-welcome-title {
   font-size: 24px;
+}
+
+@media (max-width: $screen-md-min) {
+  .blank-state-parent-container {
+    &,
+    .section-container {
+      display: block;
+    }
+  }
+
+  .blank-state {
+    text-align: center;
+  }
+
+  .blank-state-icon {
+    padding-bottom: 0;
+  }
+
+  .blank-state-body {
+    margin-top: 15px;
+  }
 }
