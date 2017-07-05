@@ -77,7 +77,7 @@
 @media (max-width: $screen-md-min) {
   .blank-state-parent-container {
     &,
-    .col-md-6 {
+    .section-container {
       display: block;
     }
   }

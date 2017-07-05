@@ -14,7 +14,7 @@
 .start-trial-body {
   .ee-features {
     border: 1px solid $border-color;
-    border-radius: 5px;
+    border-radius: $border-radius-default;
     padding: 20px 40px;
   }
 }
@@ -52,8 +52,6 @@
 @media (max-width: $screen-md-min) {
   .start-trial-body {
     .feature-item-description {
-      margin-top: 15px;
-
       h4,
       p {
         text-align: center;
