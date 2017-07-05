@@ -1069,6 +1069,12 @@ msgid "Withdraw Access Request"
 msgstr ""
 
 msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr ""
+
+msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
 "Removed project CANNOT be restored!\n"
 "Are you ABSOLUTELY sure?"
