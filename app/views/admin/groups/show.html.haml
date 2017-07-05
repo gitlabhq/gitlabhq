@@ -122,8 +122,7 @@
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
             = button_tag 'Add users to group', class: "btn btn-create"
-
-    = render 'shared/members/requests', membership_source: @group, requesters: @requesters
+      = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
 
     .panel.panel-default
       .panel-heading
@@ -132,7 +131,7 @@
         %span.badge= @group.members.size
         .pull-right
           = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
-      %ul.well-list.group-users-list.content-list
+      %ul.well-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .panel-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'
