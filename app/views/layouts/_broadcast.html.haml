@@ -1,4 +1,4 @@
-- if license_message.present?
+- if license_message.present? && !current_license.trial?
   .broadcast-message
     = icon('bullhorn')
     = license_message

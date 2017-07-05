@@ -266,7 +266,7 @@ class License < ActiveRecord::Base
   end
 
   def remaining_days
-    return if expired?
+    return 0 if expired?
 
     (expires_at - Date.today).to_i
   end

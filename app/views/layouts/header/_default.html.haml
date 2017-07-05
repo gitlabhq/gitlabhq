@@ -2,8 +2,8 @@
   .navbar-border
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
-    - if trial_license_message.present?
-      %p.text-center= trial_license_message
+    - if current_license&.trial? && license_message.present?
+      %p.text-center= license_message
     .header-content
       .dropdown.global-dropdown
         %button.global-dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }

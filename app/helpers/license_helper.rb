@@ -12,29 +12,8 @@ module LicenseHelper
     HistoricalData.max_historical_user_count
   end
 
-  def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.admin?))
+  def license_message(signed_in: signed_in?, is_admin: (current_user&.admin?))
     yes_license_message(signed_in, is_admin) if current_license
-  end
-
-  def trial_license_message
-    return unless signed_in? && current_license&.trial?
-    return if current_license.remaining_days > 7
-
-    buy_now_link = link_to('Buy now!', "#{Gitlab::SUBSCRIPTIONS_URL}/plans", target: '_blank')
-    message =
-      if current_license.expired?
-        if current_user.admin?
-          "Your GitLab Enterprise Edition trial license expired. #{buy_now_link}".html_safe
-        else
-          "Your GitLab Enterprise Edition trial license expired. Please contact your administrator."
-        end
-      elsif current_user.admin?
-        remaining_days = (current_license.expires_at - Date.today).to_i
-
-        "Your GitLab Enterprise Edition trial license will expire in #{pluralize(remaining_days, 'day')}. #{buy_now_link}".html_safe
-      end
-
-    message
   end
 
   private
@@ -46,15 +25,19 @@ module LicenseHelper
   end
 
   def yes_license_message(signed_in, is_admin)
-    return if current_license.trial?
     return unless signed_in
     return unless (is_admin && current_license.notify_admins?) || current_license.notify_users?
 
-    message = []
+    is_trial = current_license.trial?
+    message = ["Your Enterprise Edition #{'trial ' if is_trial}license"]
 
-    message << 'The GitLab Enterprise Edition license'
-    message << (current_license.expired? ? 'expired' : 'will expire')
-    message << "on #{current_license.expires_at}."
+    if current_license.expired?
+      message << "expired on #{current_license.expires_at}."
+    else
+      message << "will expire in #{pluralize(current_license.remaining_days, 'day')}."
+    end
+
+    message << link_to('Buy now!', "#{Gitlab::SUBSCRIPTIONS_URL}/plans", target: '_blank') if is_trial
 
     if current_license.expired? && current_license.will_block_changes?
       message << 'Pushing code and creation of issues and merge requests'
@@ -78,7 +61,7 @@ module LicenseHelper
       message << 'service.'
     end
 
-    message.join(' ')
+    message.join(' ').html_safe
   end
 
   extend self
