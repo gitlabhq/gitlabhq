@@ -267,7 +267,8 @@ describe Projects::PipelineSchedulesController do
           end
 
           it 'returns an error that variables are duplciated' do
-            go
+            put :update, namespace_id: project.namespace.to_param,
+              project_id: project, id: pipeline_schedule, schedule: schedule
 
             expect(assigns(:schedule).errors['variables.key']).not_to be_empty
           end
@@ -337,21 +338,6 @@ describe Projects::PipelineSchedulesController do
 
             it 'delete the existsed variable' do
               expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(-1)
-            end
-          end
-
-          context 'when deletes and creates the same keys' do
-            let(:schedule) do
-              basic_param.merge({
-                variables_attributes: [{ id: pipeline_schedule_variable.id, key: pipeline_schedule_variable.key, _destroy: true },
-                                       { key: pipeline_schedule_variable.key, value: 'new_value' }]
-              })
-            end
-
-            it 'returns an error that variables are duplciated' do
-              go
-
-              expect(assigns(:schedule).errors['variables.key']).not_to be_empty
             end
           end
         end
