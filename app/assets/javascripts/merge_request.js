@@ -22,12 +22,12 @@ import CloseReopenReportToggle from './close_reopen_report_toggle';
           return _this.showAllCommits();
         };
       })(this));
-      
+
       this.initTabs();
       this.initMRBtnListeners();
       this.initCommitMessageListeners();
       this.initCloseReopenReport();
-      
+
       if ($("a.btn-close").length) {
         this.taskList = new gl.TaskList({
           dataType: 'merge_request',

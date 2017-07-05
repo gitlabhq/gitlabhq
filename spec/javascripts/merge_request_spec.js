@@ -31,11 +31,11 @@ import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 
     describe('class constructor', () => {
       it('calls .initCloseReopenReport', () => {
-        spyOn(MergeRequest, 'initCloseReopenReport');
+        spyOn(MergeRequest.prototype, 'initCloseReopenReport');
 
-        new MergeRequest(); // eslint-disable-line no-new
+        const mergeRequest = new MergeRequest();
 
-        expect(MergeRequest.initCloseReopenReport).toHaveBeenCalled();
+        expect(mergeRequest.initCloseReopenReport).toHaveBeenCalled();
       });
     });
 
@@ -46,11 +46,13 @@ import CloseReopenReportToggle from '~/close_reopen_report_toggle';
         const dropdownList = {};
         const button = {};
 
+        const mergeRequest = new MergeRequest();
+
         spyOn(CloseReopenReportToggle.prototype, 'initDroplab');
         spyOn(document, 'querySelector').and.returnValue(container);
         container.querySelector.and.returnValues(dropdownTrigger, dropdownList, button);
 
-        MergeRequest.initCloseReopenReport();
+        mergeRequest.initCloseReopenReport();
 
         expect(document.querySelector).toHaveBeenCalledWith('.js-issuable-close-dropdown');
         expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-toggle');

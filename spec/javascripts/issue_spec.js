@@ -4,7 +4,7 @@ import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import '~/lib/utils/text_utility';
 
 describe('Issue', function() {
-  let $boxClosed, $boxOpen, $btnClose, $btnReopen;
+  let $boxClosed, $boxOpen, $btn;
 
   preloadFixtures('issues/closed-issue.html.raw');
   preloadFixtures('issues/issue-with-task-list.html.raw');
@@ -20,9 +20,7 @@ describe('Issue', function() {
   function expectIssueState(isIssueOpen) {
     expectVisibility($boxClosed, !isIssueOpen);
     expectVisibility($boxOpen, isIssueOpen);
-
-    expectVisibility($btnClose, isIssueOpen);
-    expectVisibility($btnReopen, !isIssueOpen);
+    expect($btn).toHaveText(isIssueOpen ? 'Close issue' : 'Reopen issue');
   }
 
   function expectNewBranchButtonState(isPending, canCreate) {
@@ -57,7 +55,7 @@ describe('Issue', function() {
     }
   }
 
-  function findElements() {
+  function findElements(isIssueInitiallyOpen) {
     $boxClosed = $('div.status-box-closed');
     expect($boxClosed).toExist();
     expect($boxClosed).toHaveText('Closed');
@@ -66,13 +64,9 @@ describe('Issue', function() {
     expect($boxOpen).toExist();
     expect($boxOpen).toHaveText('Open');
 
-    $btnClose = $('.btn-close.btn-grouped');
-    expect($btnClose).toExist();
-    expect($btnClose).toHaveText('Close issue');
-
-    $btnReopen = $('.btn-reopen.btn-grouped');
-    expect($btnReopen).toExist();
-    expect($btnReopen).toHaveText('Reopen issue');
+    $btn = $('.js-issuable-close-button');
+    expect($btn).toExist();
+    expect($btn).toHaveText(isIssueInitiallyOpen ? 'Close issue' : 'Reopen issue');
   }
 
   describe('task lists', function() {
@@ -99,7 +93,6 @@ describe('Issue', function() {
       function ajaxSpy(req) {
         if (req.url === this.$triggeredButton.attr('href')) {
           expect(req.type).toBe('PUT');
-          expect(this.$triggeredButton).toHaveProp('disabled', true);
           expectNewBranchButtonState(true, false);
           return this.issueStateDeferred;
         } else if (req.url === Issue.createMrDropdownWrap.dataset.canCreatePath) {
@@ -119,10 +112,11 @@ describe('Issue', function() {
           loadFixtures('issues/closed-issue.html.raw');
         }
 
-        findElements();
+        findElements(isIssueInitiallyOpen);
         this.issue = new Issue();
         expectIssueState(isIssueInitiallyOpen);
-        this.$triggeredButton = isIssueInitiallyOpen ? $btnClose : $btnReopen;
+
+        this.$triggeredButton = $btn;
 
         this.$projectIssuesCounter = $('.issue_counter');
         this.$projectIssuesCounter.text('1,001');
@@ -143,7 +137,7 @@ describe('Issue', function() {
         });
 
         expectIssueState(!isIssueInitiallyOpen);
-        expect(this.$triggeredButton).toHaveProp('disabled', false);
+        expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
         expect(this.$projectIssuesCounter.text()).toBe(isIssueInitiallyOpen ? '1,000' : '1,002');
         expectNewBranchButtonState(false, !isIssueInitiallyOpen);
       });
@@ -158,7 +152,7 @@ describe('Issue', function() {
         });
 
         expectIssueState(isIssueInitiallyOpen);
-        expect(this.$triggeredButton).toHaveProp('disabled', false);
+        expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
         expectErrorMessage();
         expect(this.$projectIssuesCounter.text()).toBe('1,001');
         expectNewBranchButtonState(false, isIssueInitiallyOpen);
@@ -172,7 +166,7 @@ describe('Issue', function() {
         });
 
         expectIssueState(isIssueInitiallyOpen);
-        expect(this.$triggeredButton).toHaveProp('disabled', true);
+        expect(this.$triggeredButton.get(0).getAttribute('disabled')).toBeNull();
         expectErrorMessage();
         expect(this.$projectIssuesCounter.text()).toBe('1,001');
         expectNewBranchButtonState(false, isIssueInitiallyOpen);

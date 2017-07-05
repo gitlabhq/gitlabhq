@@ -43,9 +43,6 @@ class Issue {
 
   initIssueBtnEventListeners() {
     const issueFailMessage = 'Unable to update this issue at this time.';
-    const isClosedBadge = $('div.status-box-closed');
-    const isOpenBadge = $('div.status-box-open');
-    const projectIssuesCounter = $('.issue_counter');
 
     return $(document).on('click', 'a.btn-close, a.btn-reopen', (e) => {
       var $button, shouldSubmit, url;
@@ -66,6 +63,10 @@ class Issue {
       })
       .fail(() => new Flash(issueFailMessage))
       .done((data) => {
+        const isClosedBadge = $('div.status-box-closed');
+        const isOpenBadge = $('div.status-box-open');
+        const projectIssuesCounter = $('.issue_counter');
+
         if ('id' in data) {
           $(document).trigger('issuable:change');
 
@@ -91,7 +92,8 @@ class Issue {
         } else {
           new Flash(issueFailMessage);
         }
-
+      })
+      .then(() => {
         this.disableCloseReopenButton($button, false);
       });
     });
