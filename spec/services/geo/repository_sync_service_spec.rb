@@ -59,40 +59,72 @@ describe Geo::RepositorySyncService, services: true do
           expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
         end
 
-        it 'sets last_repository_successful_sync_at when repository sync succeed' do
-          subject.execute
+        context 'when repository sync succeed' do
+          let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
 
-          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+          before do
+            subject.execute
+          end
 
-          expect(registry.last_repository_successful_sync_at).not_to be_nil
+          it 'sets last_repository_synced_at' do
+            expect(registry.last_repository_synced_at).not_to be_nil
+          end
+
+          it 'sets last_repository_successful_sync_at' do
+            expect(registry.last_repository_successful_sync_at).not_to be_nil
+          end
         end
 
-        it 'resets last_repository_successful_sync_at when repository sync fail' do
-          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.git/) { raise Gitlab::Shell::Error }
+        context 'when repository sync fail' do
+          let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
 
-          subject.execute
+          before do
+            allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.git/) { raise Gitlab::Shell::Error }
 
-          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+            subject.execute
+          end
 
-          expect(registry.last_repository_successful_sync_at).to be_nil
+          it 'sets last_repository_synced_at' do
+            expect(registry.last_repository_synced_at).not_to be_nil
+          end
+
+          it 'resets last_repository_successful_sync_at' do
+            expect(registry.last_repository_successful_sync_at).to be_nil
+          end
         end
 
-        it 'sets last_wiki_successful_sync_at when wiki sync succeed' do
-          subject.execute
+        context 'when wiki sync succeed' do
+          let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
 
-          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+          before do
+            subject.execute
+          end
 
-          expect(registry.last_wiki_successful_sync_at).not_to be_nil
+          it 'sets last_wiki_synced_at' do
+            expect(registry.last_wiki_synced_at).not_to be_nil
+          end
+
+          it 'sets last_wiki_successful_sync_at' do
+            expect(registry.last_wiki_successful_sync_at).not_to be_nil
+          end
         end
 
-        it 'resets last_wiki_successful_sync_at when wiki sync fail' do
-          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.wiki.git/) { raise Gitlab::Shell::Error }
+        context 'when wiki sync fail' do
+          let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
 
-          subject.execute
+          before do
+            allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.wiki.git/) { raise Gitlab::Shell::Error }
 
-          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+            subject.execute
+          end
 
-          expect(registry.last_wiki_successful_sync_at).to be_nil
+          it 'sets last_wiki_synced_at' do
+            expect(registry.last_wiki_synced_at).not_to be_nil
+          end
+
+          it 'resets last_wiki_successful_sync_at' do
+            expect(registry.last_wiki_successful_sync_at).to be_nil
+          end
         end
       end
     end
@@ -122,7 +154,7 @@ describe Geo::RepositorySyncService, services: true do
           expect { subject.execute }.not_to change(Geo::ProjectRegistry, :count)
         end
 
-        it 'does not update last_repository_successful_sync_at' do
+        it 'does not update last repository sync times' do
           subject.execute
 
           registry.reload
@@ -131,7 +163,7 @@ describe Geo::RepositorySyncService, services: true do
           expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(last_repository_synced_at)
         end
 
-        it 'does not update last_wiki_successful_sync_at' do
+        it 'does not update last wiki sync times' do
           subject.execute
 
           registry.reload
@@ -159,19 +191,24 @@ describe Geo::RepositorySyncService, services: true do
       end
 
       context 'tracking database' do
-        it 'sets last_repository_successful_sync_at' do
+        before do
           subject.execute
-
           registry.reload
+        end
 
+        it 'updates last_repository_synced_at' do
+          expect(registry.last_repository_synced_at).to be_within(1.minute).of(DateTime.now)
+        end
+
+        it 'sets last_repository_successful_sync_at' do
           expect(registry.last_repository_successful_sync_at).not_to be_nil
         end
 
+        it 'updates last_wiki_synced_at' do
+          expect(registry.last_wiki_synced_at).to be_within(1.minute).of(DateTime.now)
+        end
+
         it 'sets last_wiki_successful_sync_at' do
-          subject.execute
-
-          registry.reload
-
           expect(registry.last_wiki_successful_sync_at).not_to be_nil
         end
       end
@@ -211,29 +248,22 @@ describe Geo::RepositorySyncService, services: true do
       end
 
       context 'tracking database' do
-        it 'updates last_repository_successful_sync_at' do
+        before do
           subject.execute
-
           registry.reload
+        end
 
+        it 'updates last repository sync times' do
           expect(registry.last_repository_synced_at).to be_within(1.minute).of(DateTime.now)
           expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(DateTime.now)
         end
 
-        it 'does not update last_wiki_successful_sync_at' do
-          subject.execute
-
-          registry.reload
-
+        it 'does not update last wiki sync times' do
           expect(registry.last_wiki_synced_at).to be_within(1.minute).of(last_wiki_synced_at)
           expect(registry.last_wiki_successful_sync_at).to be_within(1.minute).of(last_wiki_synced_at)
         end
 
         it 'resets resync_repository' do
-          subject.execute
-
-          registry.reload
-
           expect(registry.resync_repository).to be false
         end
       end
@@ -271,29 +301,22 @@ describe Geo::RepositorySyncService, services: true do
       end
 
       context 'tracking database' do
-        it 'updates last_wiki_successful_sync_at' do
+        before do
           subject.execute
-
           registry.reload
+        end
 
+        it 'updates last wiki sync times' do
           expect(registry.last_wiki_synced_at).to be_within(1.minute).of(DateTime.now)
           expect(registry.last_wiki_successful_sync_at).to be_within(1.minute).of(DateTime.now)
         end
 
-        it 'does not update last_repository_successful_sync_at' do
-          subject.execute
-
-          registry.reload
-
+        it 'does not update last repository sync times' do
           expect(registry.last_repository_synced_at).to be_within(1.minute).of(last_repository_synced_at)
           expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(last_repository_synced_at)
         end
 
         it 'resets resync_wiki' do
-          subject.execute
-
-          registry.reload
-
           expect(registry.resync_wiki).to be false
         end
       end

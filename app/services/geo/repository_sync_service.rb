@@ -33,8 +33,7 @@ module Geo
     def sync_project_repository
       return unless sync_repository?
 
-      started_at, finished_at = fetch_project_repository
-      update_registry(:repository, started_at, finished_at)
+      fetch_project_repository
       expire_repository_caches
     end
 
@@ -47,8 +46,7 @@ module Geo
     def sync_wiki_repository
       return unless sync_wiki?
 
-      started_at, finished_at = fetch_wiki_repository
-      update_registry(:wiki, started_at, finished_at)
+      fetch_wiki_repository
     end
 
     def sync_wiki?
@@ -58,17 +56,14 @@ module Geo
     end
 
     def fetch_project_repository
-      return unless sync_repository?
-
       log('Fetching project repository')
-      started_at  = DateTime.now
-      finished_at = nil
+      update_registry(:repository, started_at: DateTime.now)
 
       begin
         project.ensure_repository
         project.repository.fetch_geo_mirror(ssh_url_to_repo)
 
-        finished_at = DateTime.now
+        update_registry(:repository, finished_at: DateTime.now)
       rescue Gitlab::Shell::Error => e
         Rails.logger.error("#{self.class.name}: Error syncing repository for project #{project.path_with_namespace}: #{e}")
       rescue Gitlab::Git::Repository::NoRepository => e
@@ -76,27 +71,20 @@ module Geo
         log('Expiring caches')
         project.repository.after_create
       end
-
-      [started_at, finished_at]
     end
 
     def fetch_wiki_repository
-      return unless sync_wiki?
-
       log('Fetching wiki repository')
-      started_at  = DateTime.now
-      finished_at = nil
+      update_registry(:wiki, started_at: DateTime.now)
 
       begin
         project.wiki.ensure_repository
         project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
 
-        finished_at = DateTime.now
+        update_registry(:wiki, finished_at: DateTime.now)
       rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error, ProjectWiki::CouldNotCreateWikiError => e
         Rails.logger.error("#{self.class.name}: Error syncing wiki repository for project #{project.path_with_namespace}: #{e}")
       end
-
-      [started_at, finished_at]
     end
 
     def expire_repository_caches
@@ -122,9 +110,14 @@ module Geo
       Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
     end
 
-    def update_registry(type, started_at, finished_at)
+    def update_registry(type, started_at: nil, finished_at: nil)
+      return unless started_at || finished_at
+
       log("Updating #{type} sync information")
-      registry.public_send("last_#{type}_synced_at=", started_at)
+
+      if started_at
+        registry.public_send("last_#{type}_synced_at=", started_at)
+      end
 
       if finished_at
         registry.public_send("last_#{type}_successful_sync_at=", finished_at)

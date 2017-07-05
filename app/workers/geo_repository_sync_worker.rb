@@ -30,6 +30,7 @@ class GeoRepositorySyncWorker
         try_obtain_lease do |lease|
           Geo::RepositorySyncService.new(project_id).execute
         end
+
       rescue ActiveRecord::RecordNotFound
         logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
         next
