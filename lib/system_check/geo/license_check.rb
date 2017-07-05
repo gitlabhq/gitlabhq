@@ -9,7 +9,7 @@ module SystemCheck
 
       def show_error
         try_fixing_it(
-          'Upload a new license that includes GitLab Geo feature'
+          'Upload a new license that includes the GitLab Geo feature'
         )
 
         for_more_information('https://about.gitlab.com/features/gitlab-geo/')

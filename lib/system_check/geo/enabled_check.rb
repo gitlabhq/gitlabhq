@@ -9,7 +9,7 @@ module SystemCheck
 
       def show_error
         try_fixing_it(
-          'Follow Geo Setup instructions to configure primary and secondary nodes'
+          'Follow Geo setup instructions to configure primary and secondary nodes'
         )
 
         for_more_information('doc/gitlab-geo/README.md')
