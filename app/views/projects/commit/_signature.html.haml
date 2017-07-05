@@ -1,2 +1,5 @@
 - if signature
-  = commit_gpg_signature_badge(signature)
+  - if signature.valid_signature?
+    = render partial: 'projects/commit/valid_signature_badge', locals: { signature: signature }
+  - else
+    = render partial: 'projects/commit/invalid_signature_badge', locals: { signature: signature }

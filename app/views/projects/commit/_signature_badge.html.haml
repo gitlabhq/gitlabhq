@@ -1,0 +1,17 @@
+- css_classes = %w(btn btn-xs gpg-badge) + css_classes
+
+- title = capture do
+  .gpg-badge-popover-title
+    = title
+
+- content = capture do
+  .clearfix
+    = content
+
+  GPG key ID:
+  = signature.gpg_key_primary_keyid
+
+  = link_to('Learn about signing commits', help_page_path('workflow/gpg_signed_commits/index.md'), class: 'gpg-badge-popover-help-link')
+
+%button{ class: css_classes, data: { toggle: 'popover', html: 'true', placement: 'auto bottom', title: title, content: content } }
+  = label
