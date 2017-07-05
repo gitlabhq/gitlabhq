@@ -1,8 +1,10 @@
+- force_mobile_view = local_assigns.fetch(:force_mobile_view, false)
+
 - if requesters.any?
-  .panel.panel-default.prepend-top-default
+  .panel.panel-default.prepend-top-default{ class: ('panel-mobile' if force_mobile_view ) }
     .panel-heading
       Users requesting access to
       %strong= membership_source.name
       %span.badge= requesters.size
-    %ul.content-list
-      = render partial: 'shared/members/member', collection: requesters, as: :member
+    %ul.content-list.members-list
+      = render partial: 'shared/members/member', collection: requesters, as: :member, locals: { force_mobile_view: force_mobile_view }
