@@ -50,14 +50,13 @@ your migration:
 BackgroundMigrationWorker.perform_async('BackgroundMigrationClassName', [arg1, arg2, ...])
 ```
 
-Usually it's better to schedule jobs in bulk, for this you can use
+Usually it's better to enqueue jobs in bulk, for this you can use
 `BackgroundMigrationWorker.perform_bulk`:
 
 ```ruby
 BackgroundMigrationWorker.perform_bulk(
-  ['BackgroundMigrationClassName', [1]],
-  ['BackgroundMigrationClassName', [2]],
-  ...
+  [['BackgroundMigrationClassName', [1]],
+   ['BackgroundMigrationClassName', [2]]]
 )
 ```
 
@@ -67,6 +66,16 @@ consuming migrations it's best to schedule a background job using an
 `after_create` hook so this doesn't affect response timings. The same applies to
 updates. Removals in turn can be handled by simply defining foreign keys with
 cascading deletes.
+
+If you would like to schedule jobs in bulk with a delay, you can use
+`BackgroundMigrationWorker.perform_bulk_in`:
+
+```ruby
+jobs = [['BackgroundMigrationClassName', [1]],
+        ['BackgroundMigrationClassName', [2]]]
+
+BackgroundMigrationWorker.perform_bulk_in(5.minutes, jobs)
+```
 
 ## Cleaning Up
 
