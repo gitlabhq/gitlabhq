@@ -1493,30 +1493,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#ci_config_file_for_pipeline' do
-    let(:project) { create(:empty_project) }
-
-    subject { project.ci_config_file_for_pipeline }
-
-    it 'returns the path from project' do
-      allow(project).to receive(:ci_config_file) { 'custom/path' }
-
-      is_expected.to eq('custom/path')
-    end
-
-    it 'returns default when custom path is nil' do
-      allow(project).to receive(:ci_config_file) { nil }
-
-      is_expected.to eq('.gitlab-ci.yml')
-    end
-
-    it 'returns default when custom path is empty' do
-      allow(project).to receive(:ci_config_file) { '' }
-
-      is_expected.to eq('.gitlab-ci.yml')
-    end
-  end
-
   describe '#ci_config_file=' do
     let(:project) { create(:empty_project) }
 

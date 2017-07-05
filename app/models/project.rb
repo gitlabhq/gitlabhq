@@ -526,14 +526,6 @@ class Project < ActiveRecord::Base
     import_data&.destroy
   end
 
-  def ci_config_file_for_pipeline
-    if ci_config_file.blank?
-      '.gitlab-ci.yml'
-    else
-      ci_config_file
-    end
-  end
-
   def ci_config_file=(value)
     # Strip all leading slashes so that //foo -> foo
     super(value&.sub(%r{\A/+}, '')&.delete("\0"))

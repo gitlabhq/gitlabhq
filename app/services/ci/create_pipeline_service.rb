@@ -33,7 +33,7 @@ module Ci
 
       unless pipeline.config_processor
         unless pipeline.ci_yaml_file
-          return error("Missing #{project.ci_config_file_for_pipeline} file")
+          return error("Missing #{pipeline.ci_yaml_file_path} file")
         end
         return error(pipeline.yaml_errors, save: save_on_errors)
       end
