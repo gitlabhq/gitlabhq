@@ -466,14 +466,21 @@ describe Group, models: true do
       it_behaves_like 'ref is protected'
     end
 
-    context 'when group has a child' do
-      let!(:group_child) { create(:group, :access_requestable, parent: group) }
+    context 'when group has children' do
+      let!(:group_child) { create(:group, parent: group) }
       let!(:variable_child) { create(:ci_group_variable, group: group_child) }
-
-      subject { group_child.secret_variables_for('ref', project) }
+      let!(:group_child_3) { create(:group, parent: group_child_2) }
+      let!(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
+      let!(:group_child_2) { create(:group, parent: group_child) }
+      let!(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
 
       it 'returns all variables belong to the group and parent groups' do
-        is_expected.to contain_exactly(secret_variable, protected_variable, variable_child)
+        expected_array1 = [protected_variable, secret_variable]
+        expected_array2 = [variable_child, variable_child_2, variable_child_3]
+        got_array = group_child_3.secret_variables_for('ref', project).to_a
+
+        expect(got_array.shift(2)).to contain_exactly(*expected_array1)
+        expect(got_array).to eq(expected_array2)
       end
     end
   end

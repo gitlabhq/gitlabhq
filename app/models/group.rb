@@ -251,7 +251,15 @@ class Group < Namespace
 
   def secret_variables_for(ref, project)
     list_of_ids = ([self] + ancestors).map { |l| l.id }
-    variables = Ci::GroupVariable.where("group_id IN (#{list_of_ids.join(", ")})")
+
+    order = list_of_ids.map.with_index do |id, index|
+      "WHEN #{id} THEN #{index}"
+    end.join("\n")
+
+    variables = Ci::GroupVariable
+      .where("group_id IN (#{list_of_ids.join(", ")})")
+      .order("CASE group_id #{order} END DESC")
+
     project.protected_for?(ref) ? variables : variables.unprotected
   end
 
