@@ -1463,7 +1463,7 @@ describe API::Issues do
   end
 
   describe "GET /projects/:id/issues/:issue_iid/user_agent_detail" do
-    let(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
+    let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
 
     it 'exposes known attributes' do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", admin)
