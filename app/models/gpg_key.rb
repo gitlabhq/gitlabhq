@@ -47,7 +47,7 @@ class GpgKey < ActiveRecord::Base
         email,
         email == user.email
       ]
-    end
+    end.to_h
   end
 
   def verified?

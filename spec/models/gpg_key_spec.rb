@@ -58,10 +58,10 @@ describe GpgKey do
       user = create :user, email: 'bette.cartwright@example.com'
       gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
 
-      expect(gpg_key.emails_with_verified_status).to match_array [
-        ['bette.cartwright@example.com', true],
-        ['bette.cartwright@example.net', false]
-      ]
+      expect(gpg_key.emails_with_verified_status).to eq(
+        'bette.cartwright@example.com' => true,
+        'bette.cartwright@example.net' => false
+      )
     end
   end
 
