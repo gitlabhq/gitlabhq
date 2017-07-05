@@ -51,6 +51,14 @@ class Service < ActiveRecord::Base
     active
   end
 
+  def show_active_box?
+    true
+  end
+
+  def editable?
+    true
+  end
+
   def template?
     template
   end
