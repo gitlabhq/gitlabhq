@@ -67,7 +67,7 @@ describe Gitlab::GitalyClient::Ref do
     it 'translates known mismatches on sort param values' do
       expect_any_instance_of(Gitaly::Ref::Stub)
         .to receive(:find_local_branches)
-        .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
+        .with(gitaly_request_with_params(sort_by: :NAME))
         .and_return([])
 
       client.local_branches(sort_by: 'name_asc')
