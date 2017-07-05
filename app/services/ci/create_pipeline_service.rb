@@ -27,7 +27,7 @@ module Ci
         return error('Reference not found')
       end
 
-      unless triggering_user_allowed_for_ref?(trigger_request, ref)
+      unless triggering_user_allowed_for_ref?(trigger_request)
         return error("Insufficient permissions for protected #{ref}")
       end
 
@@ -74,12 +74,24 @@ module Ci
       pipeline.tap(&:process!)
     end
 
-    def triggering_user_allowed_for_ref?(trigger_request, ref)
+    def triggering_user_allowed_for_ref?(trigger_request)
       triggering_user = current_user || trigger_request.trigger.owner
 
-      (triggering_user &&
-        Ci::Pipeline.allowed_to_create?(triggering_user, project, ref)) ||
+      (triggering_user && allowed_to_create?(triggering_user)) ||
         !project.protected_for?(ref)
+    end
+
+    def allowed_to_create?(triggering_user)
+      access = Gitlab::UserAccess.new(triggering_user, project: project)
+
+      Ability.allowed?(triggering_user, :create_pipeline, project) &&
+        if branch?
+          access.can_push_or_merge_to_branch?(ref)
+        elsif tag?
+          access.can_create_tag?(ref)
+        else
+          false
+        end
     end
 
     def update_merge_requests_head_pipeline
@@ -145,7 +157,7 @@ module Ci
     end
 
     def ref
-      Gitlab::Git.ref_name(origin_ref)
+      @ref ||= Gitlab::Git.ref_name(origin_ref)
     end
 
     def valid_sha?

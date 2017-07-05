@@ -36,10 +36,6 @@ module Ci
       update_attribute(:active, false)
     end
 
-    def runnable_by_owner?
-      Ci::Pipeline.allowed_to_create?(owner, project, ref)
-    end
-
     def set_next_run_at
       self.next_run_at = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
     end

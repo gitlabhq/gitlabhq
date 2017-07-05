@@ -164,20 +164,6 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
-    def self.allowed_to_create?(user, project, ref)
-      repo = project.repository
-      access = Gitlab::UserAccess.new(user, project: project)
-
-      Ability.allowed?(user, :create_pipeline, project) &&
-        if repo.ref_exists?("#{Gitlab::Git::BRANCH_REF_PREFIX}#{ref}")
-          access.can_push_or_merge_to_branch?(ref)
-        elsif repo.ref_exists?("#{Gitlab::Git::TAG_REF_PREFIX}#{ref}")
-          access.can_create_tag?(ref)
-        else
-          false
-        end
-    end
-
     def self.internal_sources
       sources.reject { |source| source == "external" }.values
     end
