@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.5 (2017-07-05)
+
+- Remove "Remove from board" button from backlog and closed list. !12430
+- Do not delete protected branches when deleting all merged branches. !12624
+- Set default for Remove source branch to false.
+- Prevent accidental deletion of protected MR source branch by repeating checks before actual deletion.
+- Expires full_path cache after a repository is renamed/transferred.
+
 ## 9.3.4 (2017-07-03)
 
 - No changes.
