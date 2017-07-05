@@ -17,6 +17,10 @@ module MergeRequests
         return success(squash_sha: merge_request.diff_head_sha)
       end
 
+      unless project.feature_available?(:merge_request_squash)
+        return error('License does not allow squashing')
+      end
+
       if merge_request.squash_in_progress?
         return error('Squash task canceled: another squash is already in progress.')
       end

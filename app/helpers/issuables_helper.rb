@@ -165,19 +165,12 @@ module IssuablesHelper
     }
 
     state_title = titles[state] || state.to_s.humanize
-
-    count = cached_issuables_count_for_state(issuable_type, state)
+    count = issuables_count_for_state(issuable_type, state)
 
     html = content_tag(:span, state_title)
     html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
 
     html.html_safe
-  end
-
-  def cached_issuables_count_for_state(issuable_type, state)
-    Rails.cache.fetch(issuables_state_counter_cache_key(issuable_type, state), expires_in: 2.minutes) do
-      issuables_count_for_state(issuable_type, state)
-    end
   end
 
   def cached_assigned_issuables_count(assignee, issuable_type, state)
@@ -248,6 +241,18 @@ module IssuablesHelper
     }
   end
 
+  def issuables_count_for_state(issuable_type, state, finder: nil)
+    finder ||= public_send("#{issuable_type}_finder")
+    cache_key = finder.state_counter_cache_key(state)
+
+    @counts ||= {}
+    @counts[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
+      finder.count_by_state
+    end
+
+    @counts[cache_key][state]
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -264,24 +269,6 @@ module IssuablesHelper
     else
       issuable.open? ? :opened : :closed
     end
-  end
-
-  def issuables_count_for_state(issuable_type, state)
-    @counts ||= {}
-    @counts[issuable_type] ||= public_send("#{issuable_type}_finder").count_by_state
-    @counts[issuable_type][state]
-  end
-
-  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
-  private_constant :IRRELEVANT_PARAMS_FOR_CACHE_KEY
-
-  def issuables_state_counter_cache_key(issuable_type, state)
-    opts = params.with_indifferent_access
-    opts[:state] = state
-    opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
-    opts.delete_if { |_, value| value.blank? }
-
-    hexdigest(['issuables_count', issuable_type, opts.sort].flatten.join('-'))
   end
 
   def issuable_templates(issuable)

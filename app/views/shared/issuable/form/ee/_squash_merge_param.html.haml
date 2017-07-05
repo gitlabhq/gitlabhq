@@ -1,3 +1,7 @@
+- issuable = local_assigns.fetch(:issuable)
+
+- return unless issuable.project.feature_available?(:merge_request_squash)
+
 .form-group
   .col-sm-10.col-sm-offset-2
     .checkbox

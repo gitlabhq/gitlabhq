@@ -1,6 +1,8 @@
 class GlobalMilestone
   include Milestoneish
 
+  include ::EE::GlobalMilestone
+
   EPOCH = DateTime.parse('1970-01-01')
 
   attr_accessor :title, :milestones

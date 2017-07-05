@@ -8,18 +8,25 @@ describe JenkinsService do
 
   let(:project) { create(:project) }
 
+  let(:jenkins_url) { 'http://jenkins.example.com/' }
+  let(:jenkins_hook_url) { jenkins_url + 'project/my_project' }
+  let(:jenkins_username) { 'u$er name%2520' }
+  let(:jenkins_password) { 'pas$ word' }
+
   let(:jenkins_params) do
     {
       active: true,
       project: project,
       properties: {
-        password: 'pas$ word',
-        username: 'u$er name%2520',
-        jenkins_url: 'http://jenkins.example.com/',
+        password: jenkins_password,
+        username: jenkins_username,
+        jenkins_url: jenkins_url,
         project_name: 'my_project'
       }
     }
   end
+
+  let(:jenkins_authorization) { "Basic " + ::Base64.strict_encode64(jenkins_username + ':' + jenkins_password) }
 
   describe 'username validation' do
     before do
@@ -121,7 +128,7 @@ describe JenkinsService do
       project = create(:project, name: 'project')
       push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       jenkins_service = described_class.create(jenkins_params)
-      stub_request(:post, jenkins_service.hook_url)
+      stub_request(:post, jenkins_hook_url).with(headers: { 'Authorization' => jenkins_authorization })
 
       result = jenkins_service.test(push_sample_data)
 
@@ -135,13 +142,13 @@ describe JenkinsService do
       project = create(:project, name: 'project')
       push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       jenkins_service = described_class.create(jenkins_params)
-      stub_request(:post, jenkins_service.hook_url)
+      stub_request(:post, jenkins_hook_url)
 
       jenkins_service.execute(push_sample_data)
 
       expect(
-        a_request(:post, jenkins_service.hook_url)
-          .with(headers: { 'X-Gitlab-Event' => 'Push Hook' })
+        a_request(:post, jenkins_hook_url)
+          .with(headers: { 'X-Gitlab-Event' => 'Push Hook', 'Authorization' => jenkins_authorization })
       ).to have_been_made.once
     end
 
@@ -150,12 +157,13 @@ describe JenkinsService do
       project = create(:project, name: 'project')
       push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       jenkins_service = described_class.create(jenkins_params)
-      stub_request(:post, jenkins_service.hook_url)
+      stub_request(:post, jenkins_hook_url)
 
       jenkins_service.execute(push_sample_data)
 
       expect(
-        a_request(:post, 'http://u%24er%20name%252520:pas%24%20word@jenkins.example.com/project/my_project')
+        a_request(:post, 'http://jenkins.example.com/project/my_project')
+          .with(headers: { 'Authorization' => jenkins_authorization })
       ).to have_been_made.once
     end
   end

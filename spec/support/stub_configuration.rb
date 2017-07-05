@@ -9,6 +9,16 @@ module StubConfiguration
       .to receive_messages(messages)
   end
 
+  def stub_application_setting_on_object(object, messages)
+    add_predicates(messages)
+
+    allow(Gitlab::CurrentSettings.current_application_settings)
+      .to receive_messages(messages)
+    messages.each do |setting, value|
+      allow(object).to receive_message_chain(:current_application_settings, setting) { value }
+    end
+  end
+
   def stub_config_setting(messages)
     allow(Gitlab.config.gitlab).to receive_messages(messages)
   end

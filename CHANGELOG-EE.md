@@ -1,5 +1,27 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.4 (2017-07-03)
+
+- No changes.
+
+## 9.3.3 (2017-06-30)
+
+- Add metrics to both remote and non remote mirroring. !2118
+- Forces import worker with mirror to insert mirror in front of queue. !2231
+- Fix locked and stale SSH keys file from 9.3.0 upgrade. !2240
+- Fix crash in LDAP sync when user was removed. !2289
+- allow rebase for unapproved merge requests.
+- Geo - Fix path_with_namespace for instances of Geo::DeletedProject.
+
+## 9.3.2 (2017-06-27)
+
+- Fix GitLab check: Problem with Elastic Search. !2278
+
+## 9.3.1 (2017-06-26)
+
+- Geo: fix removal of repositories from disk on secondary nodes. !2210
+- Fix Geo middleware to work properly with multiple requests.
+
 ## 9.3.0 (2017-06-22)
 
 - Per user/group access levels for Protected Tags. !1629

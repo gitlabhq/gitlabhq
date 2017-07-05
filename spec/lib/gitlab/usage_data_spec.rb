@@ -37,7 +37,8 @@ describe Gitlab::UsageData do
       expect(count_data.keys).to match_array(%i(
         boards
         ci_builds
-        ci_pipelines
+        ci_internal_pipelines
+        ci_external_pipelines
         ci_runners
         ci_triggers
         ci_pipeline_schedules
@@ -45,6 +46,7 @@ describe Gitlab::UsageData do
         deployments
         environments
         geo_nodes
+        in_review_folder
         groups
         issues
         keys

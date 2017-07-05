@@ -132,7 +132,7 @@ module API
       expose :printing_merge_request_link_enabled
 
       # EE only
-      expose :approvals_before_merge
+      expose :approvals_before_merge, if: ->(project, _) { project.feature_available?(:merge_request_approvers) }
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end
@@ -313,7 +313,7 @@ module API
       expose :upvotes, :downvotes
       expose :due_date
       expose :confidential
-      expose :weight
+      expose :weight, if: ->(issue, _) { issue.supports_weight? }
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
@@ -363,7 +363,8 @@ module API
       expose :approvals_before_merge
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
-      expose :squash
+
+      expose :squash, if: -> (mr, _) { mr.project.feature_available?(:merge_request_squash) }
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
@@ -509,11 +510,19 @@ module API
     end
 
     class Namespace < Grape::Entity
-      expose :id, :name, :path, :kind, :full_path
+      expose :id, :name, :path, :kind, :full_path, :parent_id
+
+      expose :members_count_with_descendants, if: -> (namespace, opts) { expose_members_count_with_descendants?(namespace, opts) } do |namespace, _|
+        namespace.users_with_descendants.count
+      end
+
+      def expose_members_count_with_descendants?(namespace, opts)
+        namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
+      end
 
       # EE-only
       expose :shared_runners_minutes_limit, if: lambda { |_, options| options[:current_user]&.admin? }
-      expose :plan, if: lambda { |_, options| options[:current_user]&.admin? }
+      expose :plan, if: -> (namespace, opts) { Ability.allowed?(opts[:current_user], :admin_namespace, namespace) }
     end
 
     class MemberAccess < Grape::Entity
@@ -610,7 +619,8 @@ module API
       expose :id
       expose :name
       expose :project, using: Entities::BasicProjectDetails
-      expose :milestone
+      expose :milestone,
+             if: -> (board, _) { board.project.feature_available?(:issue_board_milestone) }
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end

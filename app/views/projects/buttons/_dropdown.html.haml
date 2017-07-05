@@ -16,7 +16,7 @@
 
       - if merge_project
         %li
-          = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project) do
+          = link_to namespace_project_new_merge_request_path(merge_project.namespace, merge_project) do
             = icon('tasks fw')
             #{ _('New merge request') }
 

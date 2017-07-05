@@ -33,6 +33,7 @@ describe 'Comments on personal snippets', :js, feature: true do
         expect(page).to have_selector('.note-emoji-button')
       end
 
+      find('body').click # close dropdown
       open_more_actions_dropdown(snippet_notes[1])
 
       page.within("#notes-list li#note_#{snippet_notes[1].id}") do

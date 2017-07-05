@@ -34,7 +34,7 @@ RSpec.configure do |config|
   end
 
   def setup_database_cleaner
-    if Rails.configuration.respond_to?(:geo_database)
+    if Gitlab::Geo.secondary_role_enabled?
       DatabaseCleaner[:active_record, { connection: Geo::BaseRegistry }]
     end
 

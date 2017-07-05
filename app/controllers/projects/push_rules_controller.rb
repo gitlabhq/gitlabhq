@@ -3,6 +3,7 @@ class Projects::PushRulesController < Projects::ApplicationController
   
   # Authorize
   before_action :authorize_admin_project!
+  before_action :check_push_rules_available!
 
   respond_to :html
 

@@ -52,7 +52,7 @@ class ExpirePipelineCacheWorker
   end
 
   def new_merge_request_pipelines_path(project)
-    Gitlab::Routing.url_helpers.new_namespace_project_merge_request_path(
+    Gitlab::Routing.url_helpers.namespace_project_new_merge_request_path(
       project.namespace,
       project,
       format: :json)

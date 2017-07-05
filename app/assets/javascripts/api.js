@@ -172,8 +172,7 @@ const Api = {
         active: true,
       }),
       dataType: 'json',
-    })
-      .done(groups => callback(groups));
+    }).then(groups => callback(groups));
   },
 
   buildUrl(url) {

@@ -228,6 +228,12 @@
       padding-top: 10px;
     }
 
+    &:not(.issue-boards-sidebar):not([data-signed-in]) {
+      .issuable-sidebar-header {
+        display: none;
+      }
+    }
+
     .assign-yourself .btn-link {
       padding-left: 0;
     }
@@ -247,6 +253,10 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+    }
+
+    .title .gutter-toggle {
+      margin-top: 0;
     }
 
     .assignee .avatar {
@@ -586,7 +596,38 @@
     .issue-info-container {
       -webkit-flex: 1;
       flex: 1;
+      display: flex;
       padding-right: $gl-padding;
+
+      .issue-main-info {
+        flex: 1 auto;
+        margin-right: 10px;
+      }
+
+      .issuable-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex: 1 0 auto;
+
+        .controls {
+          margin-bottom: 2px;
+          line-height: 20px;
+          padding: 0;
+        }
+
+        .issue-updated-at {
+          line-height: 20px;
+        }
+      }
+
+      @media(max-width: $screen-xs-max) {
+        .issuable-meta {
+          .controls li {
+            margin-right: 0;
+          }
+        }
+      }
     }
 
     .issue-check {
@@ -596,6 +637,31 @@
 
       .selected_issue {
         vertical-align: text-top;
+      }
+    }
+
+    .issuable-milestone,
+    .issuable-info,
+    .task-status,
+    .issuable-updated-at {
+      font-weight: normal;
+      color: $gl-text-color-secondary;
+
+      a {
+        color: $gl-text-color;
+
+        .fa {
+          color: $gl-text-color-secondary;
+        }
+      }
+    }
+
+    @media(max-width: $screen-md-max) {
+      .task-status,
+      .issuable-due-date,
+      .issuable-weight,
+      .project-ref-path {
+        display: none;
       }
     }
   }

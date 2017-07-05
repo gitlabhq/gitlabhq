@@ -151,7 +151,7 @@ feature 'Environments page', :feature, :js do
           find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(action.name.humanize)
 
-          expect { find('.js-manual-action-link').click }
+          expect { find('.js-manual-action-link').trigger('click') }
             .not_to change { Ci::Pipeline.count }
         end
 

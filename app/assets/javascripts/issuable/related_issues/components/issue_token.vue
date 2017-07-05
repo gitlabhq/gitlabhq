@@ -119,11 +119,10 @@ export default {
     </component>
     <button
       v-if="canRemove"
-      v-tooltip
       ref="removeButton"
       type="button"
       class="js-issue-token-remove-button issue-token-remove-button"
-      :title="removeButtonLabel"
+      :aria-label="removeButtonLabel"
       @click="onRemoveRequest">
       <i
         class="fa fa-times"

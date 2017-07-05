@@ -50,6 +50,8 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is efficient for everyone.
 
+Looking for something to work on? Look for the label [Accepting Merge Requests](#i-want-to-contribute).
+
 GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
 edition. Throughout this guide you will see references to CE and EE for

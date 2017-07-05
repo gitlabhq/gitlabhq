@@ -23,5 +23,14 @@ module EE
       # and doesn't actually show up in the participants list.
       user.support_bot? || super
     end
+
+    # override
+    def weight
+      super if supports_weight?
+    end
+
+    def supports_weight?
+      project&.feature_available?(:issue_weights)
+    end
   end
 end

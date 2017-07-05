@@ -16,13 +16,13 @@ describe MergeRequest, models: true do
       let(:project) { create(:project, merge_requests_rebase_enabled: true) }
 
       it 'returns false when the project feature is unavailable' do
-        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).and_return(false)
+        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).at_least(:once).and_return(false)
 
         is_expected.to be_falsy
       end
 
       it 'returns true when the project feature is available' do
-        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).and_return(true)
+        expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).at_least(:once).and_return(true)
 
         is_expected.to be_truthy
       end
@@ -88,6 +88,65 @@ describe MergeRequest, models: true do
 
       expect(File).not_to have_received(:exist?)
       expect(subject.squash_in_progress?).to be_falsey
+    end
+  end
+
+  describe '#squash?' do
+    let(:merge_request) { build(:merge_request, squash: squash) }
+    subject { merge_request.squash? }
+
+    context 'unlicensed' do
+      before do
+        stub_licensed_features(merge_request_squash: false)
+      end
+
+      context 'disabled in database' do
+        let(:squash) { false }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'enabled in database' do
+        let(:squash) { true }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'licensed' do
+      context 'disabled in database' do
+        let(:squash) { false }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'licensed' do
+        let(:squash) { true }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
+  describe '#approvals_before_merge' do
+    [
+      { license: true,  database: 5,  expected: 5 },
+      { license: true,  database: 0,  expected: 0 },
+      { license: false, database: 5,  expected: 0 },
+      { license: false, database: 0,  expected: 0 }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:merge_request) { build(:merge_request, approvals_before_merge: spec[:database]) }
+
+        subject { merge_request.approvals_before_merge }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
     end
   end
 end

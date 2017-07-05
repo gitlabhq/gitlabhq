@@ -162,6 +162,10 @@ class ProjectWiki
     wiki
   end
 
+  def ensure_repository
+    create_repo! unless repository_exists?
+  end
+
   def hook_attrs
     {
       web_url: web_url,

@@ -25,7 +25,7 @@ module EE
       belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
       has_one :mirror_data, dependent: :delete, autosave: true, class_name: 'ProjectMirrorData'
-      has_one :push_rule, dependent: :destroy
+      has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }, dependent: :destroy
       has_one :index_status, dependent: :destroy
       has_one :jenkins_service, dependent: :destroy
       has_one :jenkins_deprecated_service, dependent: :destroy
@@ -84,11 +84,33 @@ module EE
       mirror? && self.mirror_last_update_at
     end
 
-    def updating_mirror?
-      return false unless mirror? && !empty_repo?
-      return true if import_in_progress?
+    def mirror_waiting_duration
+      return unless mirror?
 
-      self.mirror_data.next_execution_timestamp < Time.now
+      (mirror_data.last_update_started_at.to_i -
+        mirror_data.last_update_scheduled_at.to_i).seconds
+    end
+
+    def mirror_update_duration
+      return unless mirror?
+
+      (mirror_last_update_at.to_i -
+        mirror_data.last_update_started_at.to_i).seconds
+    end
+
+    def mirror_with_content?
+      mirror? && !empty_repo?
+    end
+
+    def scheduled_mirror?
+      return false unless mirror_with_content?
+      return true if import_scheduled?
+
+      self.mirror_data.next_execution_timestamp <= Time.now
+    end
+
+    def updating_mirror?
+      mirror_with_content? && import_started?
     end
 
     def mirror_last_update_status
@@ -186,6 +208,7 @@ module EE
         super
       elsif mirror?
         ::Gitlab::Mirror.increment_metric(:mirrors_scheduled, 'Mirrors scheduled count')
+        Rails.logger.info("Mirror update for #{full_path} was scheduled.")
 
         RepositoryUpdateMirrorWorker.perform_async(self.id)
       end
@@ -226,6 +249,17 @@ module EE
     def reference_issue_tracker?
       default_issues_tracker? || jira_tracker_active?
     end
+
+    def approvals_before_merge
+      return 0 unless feature_available?(:merge_request_approvers)
+
+      super
+    end
+
+    def reset_approvals_on_push
+      super && feature_available?(:merge_request_approvers)
+    end
+    alias_method :reset_approvals_on_push?, :reset_approvals_on_push
 
     def approver_ids=(value)
       value.split(",").map(&:strip).each do |user_id|
@@ -278,7 +312,7 @@ module EE
     end
 
     def remove_mirror_repository_reference
-      repository.remove_remote(Repository::MIRROR_REMOTE)
+      repository.remove_remote(::Repository::MIRROR_REMOTE)
     end
 
     def import_url_availability
@@ -335,14 +369,32 @@ module EE
       super unless mirror?
     end
 
+    def merge_requests_rebase_enabled
+      super && feature_available?(:merge_request_rebase)
+    end
+    alias_method :merge_requests_rebase_enabled?, :merge_requests_rebase_enabled
+
+    def merge_requests_ff_only_enabled
+      super && feature_available?(:fast_forward_merge)
+    end
+    alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
+
     private
 
     def licensed_feature_available?(feature)
+      @licensed_feature_available ||= Hash.new do |h, feature|
+        h[feature] = load_licensed_feature_available(feature)
+      end
+
+      @licensed_feature_available[feature]
+    end
+
+    def load_licensed_feature_available(feature)
       globally_available = License.feature_available?(feature)
 
       if current_application_settings.should_check_namespace_plan?
         globally_available &&
-          (public? && namespace.public? || namespace.feature_available?(feature))
+          (public? && namespace.public? || namespace.feature_available_in_plan?(feature))
       else
         globally_available
       end

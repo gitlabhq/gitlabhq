@@ -1,15 +1,21 @@
-.page-with-sidebar{ class: page_gutter_class }
-  - if defined?(nav) && nav
-    .layout-nav
-      .container-fluid
-        = render "layouts/nav/#{nav}"
-  - if content_for?(:sub_nav)
-    = yield :sub_nav
-  .content-wrapper{ class: layout_nav_class }
+.page-with-sidebar{ class: "#{('page-with-new-sidebar' if defined?(@new_sidebar) && @new_sidebar)} #{page_gutter_class}" }
+  - if show_new_nav?
+    - if defined?(nav) && nav
+      = render "layouts/nav/#{nav}"
+  - else
+    - if defined?(nav) && nav
+      .layout-nav
+        .container-fluid
+          = render "layouts/nav/#{nav}"
+    - if content_for?(:sub_nav)
+      = yield :sub_nav
+  .content-wrapper{ class: "#{(layout_nav_class unless show_new_nav?)}" }
     .alert-wrapper
       = render "layouts/broadcast"
       = render "layouts/flash"
       = yield :flash_message
+    - if show_new_nav?
+      = render "layouts/nav/breadcrumbs"
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
         = yield

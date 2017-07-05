@@ -10,32 +10,33 @@
         %input.form-control{ type: "text",
           id: "board-new-name",
           "v-model" => "board.name" }
-      .dropdown.board-inner-milestone-dropdown{ ":class" => "{ open: milestoneDropdownOpen }",
-        "v-if" => "currentPage === 'new'" }
-        %label.label-light{ for: "board-milestone" }
-          Board milestone
-        %button.dropdown-menu-toggle.wide{ type: "button",
-          "@click.stop.prevent" => "loadMilestones($event)" }
-          {{ milestoneToggleText }}
-          = icon("chevron-down")
-        .dropdown-menu.dropdown-menu-selectable{ "v-if" => "milestoneDropdownOpen",
-          ref: "milestoneDropdown" }
-          .dropdown-content
-            %ul
-              %li{ "v-for" => "milestone in extraMilestones" }
-                %a{ href: "#",
-                  ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
-                  "@click.stop.prevent" => "selectMilestone(milestone)" }
-                  {{ milestone.title }}
-              %li.divider
-              %li{ "v-for" => "milestone in milestones" }
-                %a{ href: "#",
-                  ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
-                  "@click.stop.prevent" => "selectMilestone(milestone)" }
-                  {{ milestone.title }}
-          = dropdown_loading
-        %span
-          Only show issues scheduled for the selected milestone
+      - if @project.feature_available?(:issue_board_milestone, current_user)
+        .dropdown.board-inner-milestone-dropdown{ ":class" => "{ open: milestoneDropdownOpen }",
+          "v-if" => "currentPage === 'new'" }
+          %label.label-light{ for: "board-milestone" }
+            Board milestone
+          %button.dropdown-menu-toggle.wide{ type: "button",
+            "@click.stop.prevent" => "loadMilestones($event)" }
+            {{ milestoneToggleText }}
+            = icon("chevron-down")
+          .dropdown-menu.dropdown-menu-selectable{ "v-if" => "milestoneDropdownOpen",
+            ref: "milestoneDropdown" }
+            .dropdown-content
+              %ul
+                %li{ "v-for" => "milestone in extraMilestones" }
+                  %a{ href: "#",
+                    ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
+                    "@click.stop.prevent" => "selectMilestone(milestone)" }
+                    {{ milestone.title }}
+                %li.divider
+                %li{ "v-for" => "milestone in milestones" }
+                  %a{ href: "#",
+                    ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
+                    "@click.stop.prevent" => "selectMilestone(milestone)" }
+                    {{ milestone.title }}
+            = dropdown_loading
+          %span
+            Only show issues scheduled for the selected milestone
       %board-milestone-select{ "v-if" => "currentPage == 'milestone'",
         ":milestone-path" => "milestonePath",
         ":select-milestone" => "selectMilestone",

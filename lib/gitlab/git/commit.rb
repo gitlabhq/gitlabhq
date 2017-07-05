@@ -104,9 +104,63 @@ module Gitlab
           []
         end
 
-        # Delegate Repository#find_commits
+        # Returns commits collection
+        #
+        # Ex.
+        #   Commit.find_all(
+        #     repo,
+        #     ref: 'master',
+        #     max_count: 10,
+        #     skip: 5,
+        #     order: :date
+        #   )
+        #
+        #   +options+ is a Hash of optional arguments to git
+        #     :ref is the ref from which to begin (SHA1 or name)
+        #     :max_count is the maximum number of commits to fetch
+        #     :skip is the number of commits to skip
+        #     :order is the commits order and allowed value is :none (default), :date,
+        #        :topo, or any combination of them (in an array). Commit ordering types
+        #        are documented here:
+        #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
+        #
         def find_all(repo, options = {})
-          repo.find_commits(options)
+          actual_options = options.dup
+
+          allowed_options = [:ref, :max_count, :skip, :order]
+
+          actual_options.keep_if do |key|
+            allowed_options.include?(key)
+          end
+
+          default_options = { skip: 0 }
+          actual_options = default_options.merge(actual_options)
+
+          rugged = repo.rugged
+          walker = Rugged::Walker.new(rugged)
+
+          if actual_options[:ref]
+            walker.push(rugged.rev_parse_oid(actual_options[:ref]))
+          else
+            rugged.references.each("refs/heads/*") do |ref|
+              walker.push(ref.target_id)
+            end
+          end
+
+          walker.sorting(rugged_sort_type(actual_options[:order]))
+
+          commits = []
+          offset = actual_options[:skip]
+          limit = actual_options[:max_count]
+          walker.each(offset: offset, limit: limit) do |commit|
+            commits.push(decorate(commit))
+          end
+
+          walker.reset
+
+          commits
+        rescue Rugged::OdbError
+          []
         end
 
         def decorate(commit, ref = nil)
@@ -130,6 +184,20 @@ module Gitlab
 
           diff.find_similar!(break_rewrites: break_rewrites)
           diff
+        end
+
+        # Returns the `Rugged` sorting type constant for one or more given
+        # sort types. Valid keys are `:none`, `:topo`, and `:date`, or an array
+        # containing more than one of them. `:date` uses a combination of date and
+        # topological sorting to closer mimic git's native ordering.
+        def rugged_sort_type(sort_type)
+          @rugged_sort_types ||= {
+            none: Rugged::SORT_NONE,
+            topo: Rugged::SORT_TOPO,
+            date: Rugged::SORT_DATE | Rugged::SORT_TOPO
+          }
+
+          @rugged_sort_types.fetch(sort_type, Rugged::SORT_NONE)
         end
       end
 
@@ -175,8 +243,8 @@ module Gitlab
       # Shows the diff between the commit's parent and the commit.
       #
       # Cuts out the header and stats from #to_patch and returns only the diff.
-      def to_diff(options = {})
-        diff_from_parent(options).patch
+      def to_diff
+        diff_from_parent.patch
       end
 
       # Returns a diff object for the changes from this commit's first parent.

@@ -165,6 +165,14 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
     end
 
     context 'push rules checks' do
+      shared_examples 'check ignored when push rule unlicensed' do
+        before do
+          stub_licensed_features(push_rules: false)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
       let(:project) { create(:project, :public, push_rule: push_rule) }
 
       before do
@@ -183,6 +191,8 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
           project.add_master(user)
         end
 
+        it_behaves_like 'check ignored when push rule unlicensed'
+
         it 'returns an error if the rule denies tag deletion' do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You cannot delete a tag')
         end
@@ -199,6 +209,8 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       context 'commit message rules' do
         let(:push_rule) { create(:push_rule, :commit_message) }
 
+        it_behaves_like 'check ignored when push rule unlicensed'
+
         it 'returns an error if the rule fails' do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
         end
@@ -211,6 +223,8 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
           allow_any_instance_of(Commit).to receive(:committer_email).and_return('mike@valid.com')
           allow_any_instance_of(Commit).to receive(:author_email).and_return('mike@valid.com')
         end
+
+        it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'returns an error if the rule fails for the committer' do
           allow_any_instance_of(Commit).to receive(:committer_email).and_return('ana@invalid.com')
@@ -233,6 +247,8 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
           allow_any_instance_of(Commit).to receive(:author_email).and_return('some@mail.com')
         end
 
+        it_behaves_like 'check ignored when push rule unlicensed'
+
         it 'returns an error if the commit author is not a GitLab member' do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Author 'some@mail.com' is not a member of team")
         end
@@ -243,6 +259,8 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         context 'file name regex check' do
           let(:push_rule) { create(:push_rule, file_name_regex: 'READ*') }
 
+          it_behaves_like 'check ignored when push rule unlicensed'
+
           it "returns an error if a new or renamed filed doesn't match the file name regex" do
             expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File name README was blacklisted by the pattern READ*.")
           end
@@ -250,6 +268,8 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
 
         context 'blacklisted files check' do
           let(:push_rule) { create(:push_rule, prevent_secrets: true) }
+
+          it_behaves_like 'check ignored when push rule unlicensed'
 
           it "returns true if there is no blacklisted files" do
             new_rev = nil
@@ -304,6 +324,8 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         before do
           allow_any_instance_of(Blob).to receive(:size).and_return(2.megabytes)
         end
+
+        it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'returns an error if file exceeds the maximum file size' do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File \"README\" is larger than the allowed size of 1 MB")

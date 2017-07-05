@@ -1,5 +1,0 @@
----
-title: Revert the feature that would include the current user's username in the HTTP
-  clone URL
-merge_request: 11792
-author:

@@ -1,6 +1,21 @@
 # Kerberos integration
 
-GitLab can be configured to allow your users to sign with their Kerberos credentials.
+>**Note:**
+Available in [GitLab Enterprise Edition Starter][ee].
+
+GitLab can integrate with [Kerberos][kerb] as an authentication mechanism.
+
+## Overview
+
+[Kerberos][kerb] is a secure method for authenticating a request for a service in a
+computer network. Kerberos was developed in the Athena Project at the
+[Massachusetts Institute of Technology (MIT)][mit]. The name is taken from Greek
+mythology; Kerberos was a three-headed dog who guarded the gates of Hades.
+
+## Use-cases
+
+- GitLab can be configured to allow your users to sign with their Kerberos credentials.
+- You can use Kerberos to [prevent][why-kerb] anyone from intercepting or eavesdropping on the transmitted password.
 
 ## Configuration
 
@@ -227,3 +242,7 @@ to a larger value in [the NGINX configuration][nginx].
 [restart gitlab]: ../administration/restart_gitlab.md#installations-from-source
 [reconfigure gitlab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [nginx]: http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers
+[kerb]: https://web.mit.edu/kerberos/
+[mit]: http://web.mit.edu/
+[why-kerb]: http://web.mit.edu/sipb/doc/working/guide/guide/node20.html
+[ee]: https://about.gitlab.com/gitlab-ee/

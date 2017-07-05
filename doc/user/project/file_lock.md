@@ -1,19 +1,25 @@
-# File Lock
+# File Locking
 
->**Note:**
-This feature was [introduced][ee-440] in GitLab EE 8.9.
+>**Notes:**
+- [Introduced][ee-440] in [GitLab Enterprise Edition Premium][ee] 8.9.
+- This feature needs to have a license with the "File Lock" option enabled. If
+  you are using Enterprise Edition Premium but you don't see the "Lock" button,
+  ask your GitLab administrator.
 
----
+File Locking helps you avoid merge conflicts and better manage your binary files.
+Lock any file or directory, make your changes, and then unlock it so another
+member of the team can edit it.
 
->**Note:**
-This feature needs to have a license with the "File Lock" option enabled. If
-you are using Enterprise Edition but you don't see the "Lock" button,
-ask your GitLab administrator. Check GitLab's [pricing page] for more information.
+## Overview
 
-GitLab gives you the ability to lock any file or directory in the repository tree
-reserving you the right to make changes to that file or directory. **Locking only
-works for the default branch you have set in the project's settings** (usually
-`master`).
+Working with multiple people on the same file can be a risk. Conflicts
+when merging a non-text file are hard to overcome and will require a lot
+of manual work to resolve. With GitLab Enterprise Edition Premium, File
+Locking helps you avoid merge conflicts and better manage your binary
+files by preventing everyone, except you, from modifying a specific file
+or entire directory.
+
+## Use-cases
 
 The file locking feature is useful in situations when:
 
@@ -21,6 +27,7 @@ The file locking feature is useful in situations when:
   conflicts.
 - Your repository contains binary files in which situation there is no easy
   way to tell the diff between yours and your colleagues' changes.
+- Prevent design assets from being overwritten.
 
 Locked directories are locked recursively, which means that everything that
 lies under them is also locked.
@@ -59,6 +66,10 @@ is locked.
 
 ## Locking a file or a directory
 
+>**Note:**
+Locking only works for the default branch you have set in the project's settings
+(usually `master`).
+
 To lock a file, navigate to the repository tree under the **Repository > Files** tab,
 pick the file you want to lock and hit the "Lock" button.
 
@@ -92,5 +103,5 @@ locks and [remove the ones you have permission for](#permissions-on-file-locking
 ![Locked Files](img/file_lock_list.png)
 
 [ee-440]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/440 "File Lock"
-[pricing page]: https://about.gitlab.com/pricing
+[ee]: https://about.gitlab.com/gitlab-ee/
 [push access]: ../../user/permissions.md

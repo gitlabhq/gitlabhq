@@ -3,6 +3,8 @@ class KubernetesService < DeploymentService
   include Gitlab::Kubernetes
   include ReactiveCaching
 
+  prepend EE::KubernetesService
+
   self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
 
   # Namespace defaults to the project path, but can be overridden in case that
@@ -122,21 +124,13 @@ class KubernetesService < DeploymentService
     end
   end
 
-  def rollout_status(environment)
-    with_reactive_cache do |data|
-      specs = filter_by_label(data[:deployments], app: environment.slug)
-
-      ::Gitlab::Kubernetes::RolloutStatus.from_specs(*specs)
-    end
-  end
-
   # Caches resources in the namespace so other calls don't need to block on
   # network access
   def calculate_reactive_cache
     return unless active? && project && !project.pending_delete?
 
     # We may want to cache extra things in the future
-    { pods: read_pods, deployments: read_deployments }
+    { pods: read_pods }
   end
 
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
@@ -168,15 +162,6 @@ class KubernetesService < DeploymentService
     kubeclient = build_kubeclient!
 
     kubeclient.get_pods(namespace: actual_namespace).as_json
-  rescue KubeException => err
-    raise err unless err.error_code == 404
-    []
-  end
-
-  def read_deployments
-    kubeclient = build_kubeclient!(api_path: 'apis/extensions', api_version: 'v1beta1')
-
-    kubeclient.get_deployments(namespace: actual_namespace).as_json
   rescue KubeException => err
     raise err unless err.error_code == 404
     []

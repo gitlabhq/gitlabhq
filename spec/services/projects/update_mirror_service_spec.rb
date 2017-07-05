@@ -63,6 +63,31 @@ describe Projects::UpdateMirrorService do
         expect(project.repository.find_branch('markdown').dereferenced_target)
           .not_to eq(project.repository.find_branch('master').dereferenced_target)
       end
+
+      describe 'when project is empty' do
+        let(:project) { create(:project_empty_repo, :mirror, import_url: Project::UNKNOWN_IMPORT_URL) }
+
+        it 'does not add a default master branch' do
+          repository = project.repository
+
+          allow(project).to receive(:fetch_mirror) { create_file(repository) }
+          expect(CreateBranchService).not_to receive(:create_master_branch)
+
+          described_class.new(project, project.owner).execute
+
+          expect(repository.branch_names).not_to include('master')
+        end
+      end
+
+      def create_file(repository)
+        repository.create_file(
+          project.owner,
+          '/newfile.txt',
+          'hello',
+          message: 'Add newfile.txt',
+          branch_name: 'newbranch'
+        )
+      end
     end
 
     describe "when the mirror user doesn't have access" do

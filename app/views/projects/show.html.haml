@@ -24,7 +24,7 @@
       %li
         = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
           #{n_('Commit', 'Commits', @project.statistics.commit_count)} (#{number_with_delimiter(@project.statistics.commit_count)})
-      %l
+      %li
         = link_to namespace_project_branches_path(@project.namespace, @project) do
           #{n_('Branch', 'Branches', @repository.branch_count)} (#{number_with_delimiter(@repository.branch_count)})
       %li
@@ -76,7 +76,7 @@
             = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml', commit_message: 'Set up auto deploy', branch_name: 'auto-deploy', context: 'autodeploy') do
               #{ _('Set up auto deploy') }
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   - if @project.archived?
     .text-warning.center.prepend-top-20
       %p

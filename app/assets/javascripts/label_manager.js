@@ -21,6 +21,7 @@
     }
 
     bindEvents() {
+      this.prioritizedLabels.find('.btn-action').on('mousedown', this, this.onButtonActionClick);
       return this.togglePriorityButton.on('click', this, this.onTogglePriorityClick);
     }
 
@@ -34,6 +35,11 @@
       $tooltip.tooltip('destroy');
       _this.toggleLabelPriority($label, action);
       _this.toggleEmptyState($label, $btn, action);
+    }
+
+    onButtonActionClick(e) {
+      e.stopPropagation();
+      $(e.currentTarget).tooltip('hide');
     }
 
     toggleEmptyState($label, $btn, action) {

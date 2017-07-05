@@ -164,24 +164,39 @@ describe API::CommitStatuses do
 
       context 'with all optional parameters' do
         context 'when creating a commit status' do
-          it 'creates commit status' do
+          subject do
             post api(post_url, developer), {
               state: 'success',
               context: 'coverage',
-              ref: 'develop',
+              ref: 'master',
               description: 'test',
               coverage: 80.0,
               target_url: 'http://gitlab.com/status'
             }
+          end
+
+          it 'creates commit status' do
+            subject
 
             expect(response).to have_http_status(201)
             expect(json_response['sha']).to eq(commit.id)
             expect(json_response['status']).to eq('success')
             expect(json_response['name']).to eq('coverage')
-            expect(json_response['ref']).to eq('develop')
+            expect(json_response['ref']).to eq('master')
             expect(json_response['coverage']).to eq(80.0)
             expect(json_response['description']).to eq('test')
             expect(json_response['target_url']).to eq('http://gitlab.com/status')
+          end
+
+          context 'when merge request exists for given branch' do
+            let!(:merge_request) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'develop') }
+
+            it 'sets head pipeline' do
+              subject
+
+              expect(response).to have_http_status(201)
+              expect(merge_request.reload.head_pipeline).not_to be_nil
+            end
           end
         end
 
@@ -190,7 +205,7 @@ describe API::CommitStatuses do
             post api(post_url, developer), {
               state: 'running',
               context: 'coverage',
-              ref: 'develop',
+              ref: 'master',
               description: 'coverage test',
               coverage: 0.0,
               target_url: 'http://gitlab.com/status'
@@ -199,7 +214,7 @@ describe API::CommitStatuses do
             post api(post_url, developer), {
               state: 'success',
               name: 'coverage',
-              ref: 'develop',
+              ref: 'master',
               description: 'new description',
               coverage: 90.0
             }
@@ -210,7 +225,7 @@ describe API::CommitStatuses do
             expect(json_response['sha']).to eq(commit.id)
             expect(json_response['status']).to eq('success')
             expect(json_response['name']).to eq('coverage')
-            expect(json_response['ref']).to eq('develop')
+            expect(json_response['ref']).to eq('master')
             expect(json_response['coverage']).to eq(90.0)
             expect(json_response['description']).to eq('new description')
             expect(json_response['target_url']).to eq('http://gitlab.com/status')

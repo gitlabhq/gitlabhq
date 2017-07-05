@@ -1,29 +1,50 @@
 class License < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
+  AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
+  BURNDOWN_CHARTS_FEATURE = 'BurndownCharts'.freeze
+  CONTRIBUTION_ANALYTICS_FEATURE = 'ContributionAnalytics'.freeze
   DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
+  ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
+  EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
+  FAST_FORWARD_MERGE_FEATURE = 'GitLab_FastForwardMerge'.freeze
   FILE_LOCK_FEATURE = 'GitLab_FileLocks'.freeze
   GEO_FEATURE = 'GitLab_Geo'.freeze
-  AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
-  SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
-  OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
-  ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
-  RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
-  EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
+  ISSUABLE_DEFAULT_TEMPLATES_FEATURE = 'GitLab_IssuableDefaultTemplates'.freeze
+  ISSUE_BOARDS_FOCUS_MODE_FEATURE = 'IssueBoardsFocusMode'.freeze
+  ISSUE_BOARD_MILESTONE_FEATURE = 'IssueBoardMilestone'.freeze
+  ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
+  MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
+  MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
+  OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
+  PUSH_RULES_FEATURE = 'GitLab_PushRules'.freeze
+  RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
+  SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
 
   FEATURE_CODES = {
-    geo: GEO_FEATURE,
     auditor_user: AUDITOR_USER_FEATURE,
-    service_desk: SERVICE_DESK_FEATURE,
-    object_storage: OBJECT_STORAGE_FEATURE,
     elastic_search: ELASTIC_SEARCH_FEATURE,
+    geo: GEO_FEATURE,
+    object_storage: OBJECT_STORAGE_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
+    service_desk: SERVICE_DESK_FEATURE,
+
     # Features that make sense to Namespace:
+    burndown_charts: BURNDOWN_CHARTS_FEATURE,
+    contribution_analytics: CONTRIBUTION_ANALYTICS_FEATURE,
     deploy_board: DEPLOY_BOARD_FEATURE,
-    file_lock: FILE_LOCK_FEATURE,
     export_issues: EXPORT_ISSUES_FEATURE,
-    merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE
+    fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
+    file_lock: FILE_LOCK_FEATURE,
+    issuable_default_templates: ISSUABLE_DEFAULT_TEMPLATES_FEATURE,
+    issue_board_focus_mode: ISSUE_BOARDS_FOCUS_MODE_FEATURE,
+    issue_board_milestone: ISSUE_BOARD_MILESTONE_FEATURE,
+    issue_weights: ISSUE_WEIGHTS_FEATURE,
+    merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
+    merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
+    merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE,
+    push_rules: PUSH_RULES_FEATURE
   }.freeze
 
   STARTER_PLAN = 'starter'.freeze
@@ -32,20 +53,30 @@ class License < ActiveRecord::Base
   EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
   EES_FEATURES = [
+    { BURNDOWN_CHARTS_FEATURE => 1 },
+    { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
     { ELASTIC_SEARCH_FEATURE => 1 },
-    { RELATED_ISSUES_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
-    { MERGE_REQUEST_REBASE_FEATURE => 1 }
+    { FAST_FORWARD_MERGE_FEATURE => 1 },
+    { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
+    { ISSUE_BOARDS_FOCUS_MODE_FEATURE => 1 },
+    { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
+    { ISSUE_WEIGHTS_FEATURE => 1 },
+    { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
+    { MERGE_REQUEST_REBASE_FEATURE => 1 },
+    { MERGE_REQUEST_SQUASH_FEATURE => 1 },
+    { PUSH_RULES_FEATURE => 1 },
+    { RELATED_ISSUES_FEATURE => 1 }
   ].freeze
 
   EEP_FEATURES = [
     *EES_FEATURES,
+    { AUDITOR_USER_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
-    { AUDITOR_USER_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 },
-    { OBJECT_STORAGE_FEATURE => 1 }
+    { OBJECT_STORAGE_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 }
   ].freeze
 
   EEU_FEATURES = [
@@ -60,16 +91,24 @@ class License < ActiveRecord::Base
   # Early adopters should not earn new features as they're
   # introduced.
   EARLY_ADOPTER_FEATURES = [
-    # TODO: Add EES features
-    # https://gitlab.com/gitlab-org/gitlab-ee/issues/2335)
+    { AUDITOR_USER_FEATURE => 1 },
+    { BURNDOWN_CHARTS_FEATURE => 1 },
+    { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
+    { EXPORT_ISSUES_FEATURE => 1 },
+    { FAST_FORWARD_MERGE_FEATURE => 1 },
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
-    { AUDITOR_USER_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 },
+    { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
+    { ISSUE_BOARDS_FOCUS_MODE_FEATURE => 1 },
+    { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
+    { ISSUE_WEIGHTS_FEATURE => 1 },
+    { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
+    { MERGE_REQUEST_REBASE_FEATURE => 1 },
+    { MERGE_REQUEST_SQUASH_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
-    { EXPORT_ISSUES_FEATURE => 1 },
-    { MERGE_REQUEST_REBASE_FEATURE => 1 }
+    { PUSH_RULES_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 }
   ].freeze
 
   FEATURES_BY_PLAN = {

@@ -1,3 +1,5 @@
+require_dependency 'declarative_policy'
+
 module API
   # Projects API
   class Projects < Grape::API
@@ -408,7 +410,7 @@ module API
         use :pagination
       end
       get ':id/users' do
-        users = user_project.team.users
+        users = DeclarativePolicy.subject_scope { user_project.team.users }
         users = users.search(params[:search]) if params[:search].present?
 
         present paginate(users), with: Entities::UserBasic

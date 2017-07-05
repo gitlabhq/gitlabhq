@@ -2061,4 +2061,40 @@ describe MergeRequest, models: true do
       it { expect(subject.has_codeclimate_data?).to be_falsey }
     end
   end
+
+  describe '#fetch_ref' do
+    it 'sets "ref_fetched" flag to true' do
+      subject.update!(ref_fetched: nil)
+
+      subject.fetch_ref
+
+      expect(subject.reload.ref_fetched).to be_truthy
+    end
+  end
+
+  describe '#ref_fetched?' do
+    it 'does not perform git operation when value is cached' do
+      subject.ref_fetched = true
+
+      expect_any_instance_of(Repository).not_to receive(:ref_exists?)
+      expect(subject.ref_fetched?).to be_truthy
+    end
+
+    it 'caches the value when ref exists but value is not cached' do
+      subject.update!(ref_fetched: nil)
+      allow_any_instance_of(Repository).to receive(:ref_exists?)
+        .and_return(true)
+
+      expect(subject.ref_fetched?).to be_truthy
+      expect(subject.reload.ref_fetched).to be_truthy
+    end
+
+    it 'returns false when ref does not exist' do
+      subject.update!(ref_fetched: nil)
+      allow_any_instance_of(Repository).to receive(:ref_exists?)
+        .and_return(false)
+
+      expect(subject.ref_fetched?).to be_falsey
+    end
+  end
 end

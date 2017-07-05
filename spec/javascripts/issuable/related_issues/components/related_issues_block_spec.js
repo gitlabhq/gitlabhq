@@ -64,6 +64,10 @@ describe('RelatedIssuesBlock', () => {
     it('should show loading icon', () => {
       expect(vm.$refs.loadingIcon).toBeDefined();
     });
+
+    it('should show `...` badge count', () => {
+      expect(vm.badgeLabel).toBe('...');
+    });
   });
 
   describe('with canAddRelatedIssues=true', () => {

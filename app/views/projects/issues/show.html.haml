@@ -72,6 +72,11 @@
       .js-related-issues-root{ data: { endpoint: namespace_project_issue_links_path(@project.namespace, @project, @issue),
         can_add_related_issues: "#{can?(current_user, :update_issue, @issue)}",
         help_path: help_page_path('user/project/issues/related_issues') } }
+        .related-issues-block
+          .panel-slim.panel-default
+            .panel-heading.panel-empty-heading
+              %h3.panel-title
+                Related issues
 
     #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, @issue) } }
       // This element is filled in using JavaScript.

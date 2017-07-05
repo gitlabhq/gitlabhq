@@ -5,7 +5,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include SharedUser
 
   step 'I should see group "Owned"' do
-    expect(page).to have_content '@owned'
+    expect(page).to have_content 'Owned'
   end
 
   step 'I am a signed out user' do

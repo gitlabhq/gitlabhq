@@ -16,7 +16,7 @@
       %strong #{project.name_with_namespace} &middot;
     - if issuable.is_a?(Issue)
       = confidential_icon(issuable)
-    = link_to_gfm issuable.title, issuable_url_args, title: issuable.title
+    = link_to issuable.title, issuable_url_args, title: issuable.title
   .issuable-detail
     = link_to [project.namespace.becomes(Namespace), project, issuable] do
       %span.issuable-number= issuable.to_reference

@@ -119,7 +119,7 @@ export default {
           .catch((res) => {
             this.isSubmitting = false;
             // eslint-disable-next-line no-new
-            new Flash(res.data.message || 'An error occurred while submitting related issues.');
+            new Flash(res.data.message || 'We can\'t find an issue that matches what you are looking for.');
           });
       }
     },

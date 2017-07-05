@@ -2,16 +2,28 @@
 
 >[Introduced][ee-51] in GitLab Enterprise Edition 8.2.
 
+Repository Mirroring is a way to mirror repositories from external sources.
+It can be used to mirror all branches, tags, and commits that you have
+in your repository.
+
+Your mirror at GitLab will be updated automatically. You can
+also manually trigger an update at most once every 5 minutes.
+
+## Overview
+
+Repository mirroring is very useful when, for some reason, you must use a
+project from another source.
+
 There are two kinds of repository mirroring features supported by GitLab:
 **push** and **pull**. The **push** method mirrors the repository in GitLab
 to another location, whereas the **pull** method mirrors an external repository
 in one in GitLab.
 
-By default mirror repositories are updated every hour, and all new branches, tags, and
-commits will be visible in the project's activity feed.
-
+Once the mirror repository is updated, all new branches,
+tags, and commits will be visible in the project's activity feed.
 Users with at least [developer access][perms] to the project can also force an
-immediate update with a click of a button.
+immediate update with the click of a button. This button will not be available if
+the mirror is already being updated or 5 minutes still haven't passed since its last update.
 
 A few things/limitations to consider:
 
@@ -24,6 +36,17 @@ A few things/limitations to consider:
   use a clone/push combination.
 - The Git LFS objects will not be synced. You'll need to push/pull them
   manually.
+
+## Use-cases
+
+- You migrated to GitLab but still need to keep you project in another source.
+  In that case, you can simply set it up to mirror to GitLab (pull) and all the
+  essential history of commits, tags and branches will be available in your
+  GitLab instance.
+- You have old projects in another source that you don't use actively anymore,
+  but don't want to remove for archiving purposes. In that case, you can create
+  a push mirror so that your active GitLab repository can push its changes to the
+  old location.
 
 ## Pulling from a remote repository
 
@@ -59,6 +82,18 @@ become diverged from upstream, and GitLab will no longer automatically update
 this branch to prevent any changes from being lost.
 
 ![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch.png)
+
+## How it works
+
+Once you activate the pull mirroring feature, the mirror will be inserted into a queue.
+A scheduler will start every minute and schedule a fixed amount of mirrors for update, based
+on the configured maximum capacity.
+
+If the mirror successfully updates it will be enqueued once again with a small backoff
+period.
+
+If the mirror fails (eg: branch diverged from upstream), the project's
+backoff period will be penalized each time it fails up to a maximum amount of time.
 
 ## Pushing to a remote repository
 

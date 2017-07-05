@@ -96,6 +96,16 @@ describe MergeRequests::SquashService do
       include_examples 'the squash succeeds'
     end
 
+    context 'squashing is unlicensed' do
+      before do
+        stub_licensed_features(merge_request_squash: false)
+      end
+
+      subject { service.execute(merge_request_with_only_new_files) }
+
+      it { is_expected.to match(status: :error, message: a_string_including('License')) }
+    end
+
     stages = {
       'add worktree for squash' => 'worktree',
       'configure sparse checkout' => 'config',

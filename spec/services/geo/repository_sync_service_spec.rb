@@ -16,7 +16,7 @@ describe Geo::RepositorySyncService, services: true do
   end
 
   describe '#execute' do
-    context 'when repository is empty' do
+    context 'when project has never been synced' do
       let(:project) { create(:project_empty_repo) }
 
       it 'fetches project repositories' do
@@ -55,11 +55,11 @@ describe Geo::RepositorySyncService, services: true do
       end
 
       context 'tracking database' do
-        it 'tracks repository sync' do
+        it 'creates a new registry' do
           expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
         end
 
-        it 'stores last_repository_successful_sync_at when succeed' do
+        it 'sets last_repository_successful_sync_at when repository sync succeed' do
           subject.execute
 
           registry = Geo::ProjectRegistry.find_by(project_id: project.id)
@@ -67,8 +67,8 @@ describe Geo::RepositorySyncService, services: true do
           expect(registry.last_repository_successful_sync_at).not_to be_nil
         end
 
-        it 'reset last_repository_successful_sync_at when fail' do
-          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { raise Gitlab::Shell::Error }
+        it 'resets last_repository_successful_sync_at when repository sync fail' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.git/) { raise Gitlab::Shell::Error }
 
           subject.execute
 
@@ -76,11 +76,75 @@ describe Geo::RepositorySyncService, services: true do
 
           expect(registry.last_repository_successful_sync_at).to be_nil
         end
+
+        it 'sets last_wiki_successful_sync_at when wiki sync succeed' do
+          subject.execute
+
+          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+
+          expect(registry.last_wiki_successful_sync_at).not_to be_nil
+        end
+
+        it 'resets last_wiki_successful_sync_at when wiki sync fail' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.wiki.git/) { raise Gitlab::Shell::Error }
+
+          subject.execute
+
+          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+
+          expect(registry.last_wiki_successful_sync_at).to be_nil
+        end
       end
     end
 
-    context 'when repository exists and is not empty' do
+    context 'when project has been synced' do
       let(:project) { create(:project) }
+      let(:last_repository_synced_at) { 5.days.ago }
+      let(:last_wiki_synced_at) { 4.days.ago }
+
+      let!(:registry) do
+        create(:geo_project_registry, :synced,
+          project: project,
+          last_repository_synced_at: last_repository_synced_at,
+          last_repository_successful_sync_at: last_repository_synced_at,
+          last_wiki_synced_at: last_wiki_synced_at,
+          last_wiki_successful_sync_at: last_wiki_synced_at)
+      end
+
+      it 'does not fetch project repositories' do
+        expect_any_instance_of(Repository).not_to receive(:fetch_geo_mirror)
+
+        subject.execute
+      end
+
+      context 'tracking database' do
+        it 'does not create a new registry' do
+          expect { subject.execute }.not_to change(Geo::ProjectRegistry, :count)
+        end
+
+        it 'does not update last_repository_successful_sync_at' do
+          subject.execute
+
+          registry.reload
+
+          expect(registry.last_repository_synced_at).to be_within(1.minute).of(last_repository_synced_at)
+          expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(last_repository_synced_at)
+        end
+
+        it 'does not update last_wiki_successful_sync_at' do
+          subject.execute
+
+          registry.reload
+
+          expect(registry.last_wiki_synced_at).to be_within(1.minute).of(last_wiki_synced_at)
+          expect(registry.last_wiki_successful_sync_at).to be_within(1.minute).of(last_wiki_synced_at)
+        end
+      end
+    end
+
+    context 'when last attempt to sync project repositories failed' do
+      let(:project) { create(:project) }
+      let!(:registry) { create(:geo_project_registry, :sync_failed, project: project) }
 
       it 'fetches project repositories' do
         fetch_count = 0
@@ -95,135 +159,143 @@ describe Geo::RepositorySyncService, services: true do
       end
 
       context 'tracking database' do
-        it 'tracks repository sync' do
-          expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
-        end
-
-        it 'stores last_repository_successful_sync_at when succeed' do
+        it 'sets last_repository_successful_sync_at' do
           subject.execute
 
-          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+          registry.reload
 
           expect(registry.last_repository_successful_sync_at).not_to be_nil
         end
 
-        it 'reset last_repository_successful_sync_at when fail' do
-          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { raise Gitlab::Shell::Error }
-
+        it 'sets last_wiki_successful_sync_at' do
           subject.execute
 
-          registry = Geo::ProjectRegistry.find_by(project_id: project.id)
+          registry.reload
 
-          expect(registry.last_repository_successful_sync_at).to be_nil
+          expect(registry.last_wiki_successful_sync_at).not_to be_nil
         end
       end
     end
 
-    context 'when repository was synced successfully' do
+    context 'when project repository is dirty' do
+      let(:project) { create(:project) }
+      let(:last_wiki_synced_at) { 4.days.ago }
+
+      let!(:registry) do
+        create(:geo_project_registry, :synced, :repository_dirty,
+          project: project,
+          last_wiki_synced_at: last_wiki_synced_at,
+          last_wiki_successful_sync_at: last_wiki_synced_at)
+      end
+
+      it 'fetches project repository' do
+        expect_any_instance_of(Repository).to receive(:fetch_geo_mirror).once
+
+        subject.execute
+      end
+
+      context 'exceptions' do
+        it 'rescues when Gitlab::Shell::Error is raised' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.git/) { raise Gitlab::Shell::Error }
+
+          expect { subject.execute }.not_to raise_error
+        end
+
+        it 'rescues exception and fires after_create hook when Gitlab::Git::Repository::NoRepository is raised' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.git/) { raise Gitlab::Git::Repository::NoRepository }
+
+          expect_any_instance_of(Repository).to receive(:after_create)
+
+          expect { subject.execute }.not_to raise_error
+        end
+      end
+
+      context 'tracking database' do
+        it 'updates last_repository_successful_sync_at' do
+          subject.execute
+
+          registry.reload
+
+          expect(registry.last_repository_synced_at).to be_within(1.minute).of(DateTime.now)
+          expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(DateTime.now)
+        end
+
+        it 'does not update last_wiki_successful_sync_at' do
+          subject.execute
+
+          registry.reload
+
+          expect(registry.last_wiki_synced_at).to be_within(1.minute).of(last_wiki_synced_at)
+          expect(registry.last_wiki_successful_sync_at).to be_within(1.minute).of(last_wiki_synced_at)
+        end
+
+        it 'resets resync_repository' do
+          subject.execute
+
+          registry.reload
+
+          expect(registry.resync_repository).to be false
+        end
+      end
+    end
+
+    context 'when project wiki is dirty' do
       let(:project) { create(:project) }
       let(:last_repository_synced_at) { 5.days.ago }
 
       let!(:registry) do
-        Geo::ProjectRegistry.create(
+        create(:geo_project_registry, :synced, :wiki_dirty,
           project: project,
           last_repository_synced_at: last_repository_synced_at,
-          last_repository_successful_sync_at: last_repository_synced_at
-        )
+          last_repository_successful_sync_at: last_repository_synced_at)
       end
 
-      it 'fetches project repositories' do
-        fetch_count = 0
-
-        allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) do
-          fetch_count += 1
-        end
+      it 'fetches wiki repository' do
+        expect_any_instance_of(Repository).to receive(:fetch_geo_mirror).once
 
         subject.execute
+      end
 
-        expect(fetch_count).to eq 2
+      context 'exceptions' do
+        it 'rescues exception when Gitlab::Shell::Error is raised' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.wiki\.git/) { raise Gitlab::Shell::Error }
+
+          expect { subject.execute }.not_to raise_error
+        end
+
+        it 'rescues exception when Gitlab::Git::Repository::NoRepository is raised' do
+          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror).with(/#{project.path_with_namespace}\.wiki\.git/) { raise Gitlab::Git::Repository::NoRepository }
+
+          expect { subject.execute }.not_to raise_error
+        end
       end
 
       context 'tracking database' do
-        it 'does not create a new registry' do
-          expect { subject.execute }.not_to change(Geo::ProjectRegistry, :count)
-        end
-
-        it 'updates registry when succeed' do
+        it 'updates last_wiki_successful_sync_at' do
           subject.execute
 
           registry.reload
 
-          expect(registry.last_repository_synced_at).to be_within(1.minute).of(Time.now)
-          expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(Time.now)
+          expect(registry.last_wiki_synced_at).to be_within(1.minute).of(DateTime.now)
+          expect(registry.last_wiki_successful_sync_at).to be_within(1.minute).of(DateTime.now)
         end
 
-        it 'does not update registry last_repository_successful_sync_at when fail' do
-          allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { raise Gitlab::Shell::Error }
-
+        it 'does not update last_repository_successful_sync_at' do
           subject.execute
 
           registry.reload
 
-          expect(registry.last_repository_synced_at).to be_within(1.minute).of(Time.now)
+          expect(registry.last_repository_synced_at).to be_within(1.minute).of(last_repository_synced_at)
           expect(registry.last_repository_successful_sync_at).to be_within(1.minute).of(last_repository_synced_at)
         end
-      end
-    end
 
-    context 'when last attempt to sync the repository failed' do
-      let(:project) { create(:project) }
-
-      let!(:registry) do
-        Geo::ProjectRegistry.create(
-          project: project,
-          last_repository_synced_at: DateTime.now,
-          last_repository_successful_sync_at: nil
-        )
-      end
-
-      it 'fetches project repositories' do
-        fetch_count = 0
-
-        allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) do
-          fetch_count += 1
-        end
-
-        subject.execute
-
-        expect(fetch_count).to eq 2
-      end
-
-      context 'tracking database' do
-        it 'does not create a new registry' do
-          expect { subject.execute }.not_to change(Geo::ProjectRegistry, :count)
-        end
-
-        it 'updates last_repository_successful_sync_at' do
+        it 'resets resync_wiki' do
           subject.execute
 
-          expect(registry.reload.last_repository_successful_sync_at).not_to be_nil
+          registry.reload
+
+          expect(registry.resync_wiki).to be false
         end
-      end
-    end
-
-    context 'when Gitlab::Shell::Error is raised' do
-      let(:project) { create(:empty_project) }
-
-      it 'rescues exception' do
-        expect(subject).to receive(:fetch_project_repository).and_raise(Gitlab::Shell::Error)
-
-        expect { subject.execute }.not_to raise_error
-      end
-    end
-
-    context 'when Gitlab::Git::Repository::NoRepository is raised' do
-      let(:project) { create(:empty_project) }
-
-      it 'rescues exception and fires after_create hook' do
-        expect(subject).to receive(:fetch_project_repository).and_raise(Gitlab::Git::Repository::NoRepository)
-        expect_any_instance_of(Repository).to receive(:after_create)
-
-        expect { subject.execute }.not_to raise_error
       end
     end
   end

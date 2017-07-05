@@ -49,9 +49,10 @@
             %li
               %a{ "href" => "#", "@click.stop.prevent" => "showPage('edit')" }
                 Edit board name
-            %li
-              %a{ "href" => "#", "@click.stop.prevent" => "showPage('milestone')" }
-                Edit board milestone
+            - if @project.feature_available?(:issue_board_milestone, current_user)
+              %li
+                %a{ "href" => "#", "@click.stop.prevent" => "showPage('milestone')" }
+                  Edit board milestone
             %li{ "v-if" => "showDelete" }
               %a.text-danger{ "href" => "#", "@click.stop.prevent" => "showPage('delete')" }
                 Delete board

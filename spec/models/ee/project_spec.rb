@@ -11,6 +11,22 @@ describe Project, models: true do
     it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:namespace) }
   end
 
+  describe '#push_rule' do
+    let(:project) { create(:project, push_rule: create(:push_rule)) }
+
+    subject(:push_rule) { project.push_rule(true) }
+
+    it { is_expected.not_to be_nil }
+
+    context 'push rules unlicensed' do
+      before do
+        stub_licensed_features(push_rules: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#feature_available?' do
     let(:namespace) { build_stubbed(:namespace) }
     let(:project) { build_stubbed(:project, namespace: namespace) }
@@ -22,7 +38,7 @@ describe Project, models: true do
       before do
         stub_application_setting('check_namespace_plan?' => check_namespace_plan)
         allow(Gitlab).to receive(:com?) { true }
-        expect(License).to receive(:feature_available?).with(feature) { allowed_on_global_license }
+        stub_licensed_features(feature => allowed_on_global_license)
         allow(namespace).to receive(:plan) { plan_license }
       end
 
@@ -99,6 +115,13 @@ describe Project, models: true do
       end
     end
 
+    it 'only loads licensed availability once' do
+      expect(project).to receive(:load_licensed_feature_available)
+                             .once.and_call_original
+
+      2.times { project.feature_available?(:service_desk) }
+    end
+
     context 'when feature symbol is not included on Namespace features code' do
       let(:feature) { :issues }
 
@@ -107,6 +130,27 @@ describe Project, models: true do
 
         subject
       end
+    end
+  end
+
+  describe '#mirror_waiting_duration' do
+    it 'returns in seconds the time spent in the queue' do
+      project = create(:empty_project, :mirror, :import_scheduled)
+      mirror_data = project.mirror_data
+
+      mirror_data.update_attributes(last_update_started_at: mirror_data.last_update_scheduled_at + 5.minutes)
+
+      expect(project.mirror_waiting_duration).to eq(300)
+    end
+  end
+
+  describe '#mirror_update_duration' do
+    it 'returns in seconds the time spent updating' do
+      project = create(:empty_project, :mirror, :import_started)
+
+      project.update_attributes(mirror_last_update_at: project.mirror_data.last_update_started_at + 5.minutes)
+
+      expect(project.mirror_update_duration).to eq(300)
     end
   end
 
@@ -264,6 +308,106 @@ describe Project, models: true do
 
     it 'uses project full path as service desk address key' do
       expect(project.service_desk_address).to eq("test+#{project.full_path}@mail.com")
+    end
+  end
+
+  describe '#approvals_before_merge' do
+    [
+      { license: true,  database: 5,  expected: 5 },
+      { license: true,  database: 0,  expected: 0 },
+      { license: false, database: 5,  expected: 0 },
+      { license: false, database: 0,  expected: 0 }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:project) { build(:project, approvals_before_merge: spec[:database]) }
+
+        subject { project.approvals_before_merge }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
+    end
+  end
+
+  describe "#reset_approvals_on_push?" do
+    [
+      { license: true,  database: true,  expected: true },
+      { license: true,  database: false, expected: false },
+      { license: false, database: true,  expected: false },
+      { license: false, database: false, expected: false }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:project) { build(:project, reset_approvals_on_push: spec[:database]) }
+
+        subject { project.reset_approvals_on_push? }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
+    end
+  end
+
+  describe '#approvals_before_merge' do
+    [
+      { license: true,  database: 5,  expected: 5 },
+      { license: true,  database: 0,  expected: 0 },
+      { license: false, database: 5,  expected: 0 },
+      { license: false, database: 0,  expected: 0 }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:project) { build(:project, approvals_before_merge: spec[:database]) }
+
+        subject { project.approvals_before_merge }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
+    end
+  end
+
+  describe '#merge_method' do
+    [
+      { ff: true,  rebase: true,  ff_licensed: true,  rebase_licensed: true,  method: :ff },
+      { ff: true,  rebase: true,  ff_licensed: true,  rebase_licensed: false, method: :ff },
+      { ff: true,  rebase: true,  ff_licensed: false, rebase_licensed: true,  method: :rebase_merge },
+      { ff: true,  rebase: true,  ff_licensed: false, rebase_licensed: false, method: :merge },
+      { ff: true,  rebase: false, ff_licensed: true,  rebase_licensed: true,  method: :ff },
+      { ff: true,  rebase: false, ff_licensed: true,  rebase_licensed: false, method: :ff },
+      { ff: true,  rebase: false, ff_licensed: false, rebase_licensed: true,  method: :merge },
+      { ff: true,  rebase: false, ff_licensed: false, rebase_licensed: false, method: :merge },
+      { ff: false, rebase: true,  ff_licensed: true,  rebase_licensed: true,  method: :rebase_merge },
+      { ff: false, rebase: true,  ff_licensed: true,  rebase_licensed: false, method: :merge },
+      { ff: false, rebase: true,  ff_licensed: false, rebase_licensed: true,  method: :rebase_merge },
+      { ff: false, rebase: true,  ff_licensed: false, rebase_licensed: false, method: :merge },
+      { ff: false, rebase: false, ff_licensed: true,  rebase_licensed: true,  method: :merge },
+      { ff: false, rebase: false, ff_licensed: true,  rebase_licensed: false, method: :merge },
+      { ff: false, rebase: false, ff_licensed: false, rebase_licensed: true,  method: :merge },
+      { ff: false, rebase: false, ff_licensed: false, rebase_licensed: false, method: :merge }
+    ].each do |spec|
+      context spec.inspect do
+        let(:project) { build(:empty_project, merge_requests_rebase_enabled: spec[:rebase], merge_requests_ff_only_enabled: spec[:ff]) }
+        let(:spec) { spec }
+
+        subject { project.merge_method }
+
+        before do
+          stub_licensed_features(merge_request_rebase: spec[:rebase_licensed], fast_forward_merge: spec[:ff_licensed])
+        end
+
+        it { is_expected.to eq(spec[:method]) }
+      end
     end
   end
 end

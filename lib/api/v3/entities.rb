@@ -116,7 +116,7 @@ module API
         expose :repository_storage, if: lambda { |_project, options| options[:current_user].try(:admin?) }
         expose :request_access_enabled
         expose :only_allow_merge_if_all_discussions_are_resolved
-        expose :approvals_before_merge
+        expose :approvals_before_merge, if: ->(project, _) { project.feature_available?(:merge_request_approvers) }
 
         expose :statistics, using: '::API::V3::Entities::ProjectStatistics', if: :statistics
       end
@@ -160,7 +160,8 @@ module API
         expose :approvals_before_merge
         expose :should_remove_source_branch?, as: :should_remove_source_branch
         expose :force_remove_source_branch?, as: :force_remove_source_branch
-        expose :squash
+
+        expose :squash, if: ->(mr, _) { mr.project.feature_available?(:merge_request_squash) }
 
         expose :web_url do |merge_request, options|
           Gitlab::UrlBuilder.build(merge_request)

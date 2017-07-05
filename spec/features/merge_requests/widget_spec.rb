@@ -12,7 +12,7 @@ describe 'Merge request', :feature, :js do
 
   context 'new merge request' do
     before do
-      visit new_namespace_project_merge_request_path(
+      visit namespace_project_new_merge_request_path(
         project.namespace,
         project,
         merge_request: {

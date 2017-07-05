@@ -28,6 +28,12 @@ module EE
         remove_tracking_entries!
         log_info("Project \"#{project.name}\" was removed")
       end
+
+      def remove_tracking_entries!
+        return unless ::Gitlab::Geo.secondary?
+
+        ::Geo::ProjectRegistry.where(project_id: project.id).delete_all
+      end
     end
   end
 end

@@ -74,6 +74,8 @@ module MilestonesHelper
     project = @target_project || @project
     if project
       namespace_project_milestones_path(project.namespace, project, :json)
+    elsif @group
+      group_milestones_path(@group, :json)
     else
       dashboard_milestones_path(:json)
     end
@@ -131,6 +133,21 @@ module MilestonesHelper
 
       content_tag(:div, message.html_safe, id: "data-warning", class: "settings-message prepend-top-20")
     end
+  end
+
+  def can_generate_chart?(burndown)
+    return unless @project.feature_available?(:burndown_charts, current_user) &&
+        @project.feature_available?(:issue_weights, current_user)
+
+    burndown&.valid? && !burndown&.empty?
+  end
+
+  def show_burndown_placeholder?(warning)
+    return false if cookies['hide_burndown_message'].present?
+    return false unless @project.feature_available?(:burndown_charts, current_user) &&
+        @project.feature_available?(:issue_weights, current_user)
+
+    warning.nil? && can?(current_user, :admin_milestone, @project)
   end
 
   def milestone_merge_request_tab_path(milestone)

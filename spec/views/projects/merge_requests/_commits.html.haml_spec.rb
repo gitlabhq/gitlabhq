@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/merge_requests/show/_commits.html.haml' do
+describe 'projects/merge_requests/_commits.html.haml' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }

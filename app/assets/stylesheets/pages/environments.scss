@@ -290,23 +290,6 @@
   }
 }
 
-.prometheus-graph {
-  text {
-    fill: $gl-text-color;
-    stroke-width: 0;
-  }
-
-  .label-axis-text,
-  .text-metric-usage {
-    fill: $black;
-    font-weight: 500;
-  }
-
-  .legend-axis-text {
-    fill: $black;
-  }
-}
-
 .x-axis path,
 .y-axis path,
 .label-x-axis-line,
@@ -355,6 +338,7 @@
 
 .text-metric {
   font-weight: 600;
+  font-size: 14px;
 }
 
 .selected-metric-line {
@@ -364,20 +348,15 @@
 
 .deployment-line {
   stroke: $black;
-  stroke-width: 2;
+  stroke-width: 1;
 }
 
 .deploy-info-text {
   dominant-baseline: text-before-edge;
 }
 
-.text-metric-bold {
-  font-weight: 600;
-}
-
 .prometheus-state {
   margin-top: 10px;
-  display: none;
 
   .state-button-section {
     margin-top: 10px;
@@ -390,5 +369,61 @@
   .terminal-button,
   .stop-env-link {
     width: 38px;
+  }
+}
+
+.prometheus-panel {
+  margin-top: 20px;
+}
+
+.prometheus-svg-container {
+  position: relative;
+  height: 0;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100%;
+
+  .text-metric-bold {
+    font-weight: 600;
+  }
+}
+
+.prometheus-svg-container > svg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+
+  text {
+    fill: $gl-text-color;
+    stroke-width: 0;
+  }
+
+  .label-axis-text,
+  .text-metric-usage {
+    fill: $black;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .legend-axis-text {
+    fill: $black;
+  }
+
+  .tick > text {
+    font-size: 14px;
+  }
+
+  @media (max-width: $screen-sm-max) {
+    .label-axis-text,
+    .text-metric-usage,
+    .legend-axis-text {
+      font-size: 8px;
+    }
+
+    .tick > text {
+      font-size: 8px;
+    }
   }
 }

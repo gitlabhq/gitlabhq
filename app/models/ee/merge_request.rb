@@ -1,5 +1,7 @@
 module EE
   module MergeRequest
+    include ::Approvable
+
     def ff_merge_possible?
       project.repository.is_ancestor?(target_branch_sha, diff_head_sha)
     end
@@ -44,6 +46,15 @@ module EE
         FileUtils.rm_rf(squash_dir_path)
         true
       end
+    end
+
+    def squash
+      super && project.feature_available?(:merge_request_squash)
+    end
+    alias_method :squash?, :squash
+
+    def supports_weight?
+      false
     end
   end
 end

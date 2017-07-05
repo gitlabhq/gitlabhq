@@ -70,8 +70,14 @@ export default {
     hasRelatedIssues() {
       return this.relatedIssues.length > 0;
     },
-    relatedIssueCount() {
-      return this.relatedIssues.length;
+    shouldShowTokenBody() {
+      return this.hasRelatedIssues || this.isFetching;
+    },
+    hasBody() {
+      return this.isFormVisible || this.shouldShowTokenBody;
+    },
+    badgeLabel() {
+      return this.isFetching && this.relatedIssues.length === 0 ? '...' : this.relatedIssues.length;
     },
     hasHelpPath() {
       return this.helpPath.length > 0;
@@ -92,46 +98,36 @@ export default {
       class="panel-slim panel-default">
       <div
         class="panel-heading"
-        :class="{ 'panel-empty-heading': !this.hasRelatedIssues }">
-        <h3 class="panel-title related-issues-panel-title">
-          <div>
-            Related issues
-            <a
-              v-if="hasHelpPath"
-              :href="helpPath">
+        :class="{ 'panel-empty-heading': !this.hasBody }">
+        <h3 class="panel-title">
+          Related issues
+          <a
+            v-if="hasHelpPath"
+            :href="helpPath">
+            <i
+              class="related-issues-header-help-icon fa fa-question-circle"
+              aria-label="Read more about related issues">
+            </i>
+          </a>
+          <div class="js-related-issues-header-issue-count related-issues-header-issue-count issue-count-badge">
+            <span
+              class="issue-count-badge-count"
+              :class="{ 'has-btn': this.canAddRelatedIssues }">
+              {{ badgeLabel }}
+            </span>
+            <button
+              v-if="canAddRelatedIssues"
+              ref="issueCountBadgeAddButton"
+              type="button"
+              class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-small btn-default"
+              aria-label="Add an issue"
+              data-placement="top"
+              @click="toggleAddRelatedIssuesForm">
               <i
-                class="related-issues-header-help-icon fa fa-question-circle"
-                aria-label="Read more about related issues">
+                class="fa fa-plus"
+                aria-hidden="true">
               </i>
-            </a>
-            <div class="js-related-issues-header-issue-count related-issues-header-issue-count issue-count-badge">
-              <span
-                class="issue-count-badge-count"
-                :class="{ 'has-btn': this.canAddRelatedIssues }">
-                {{ relatedIssueCount }}
-              </span>
-              <button
-                v-if="canAddRelatedIssues"
-                v-tooltip
-                ref="issueCountBadgeAddButton"
-                type="button"
-                class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-small btn-default"
-                title="Add an issue"
-                aria-label="Add an issue"
-                data-placement="top"
-                @click="toggleAddRelatedIssuesForm">
-                <i
-                  class="fa fa-plus"
-                  aria-hidden="true">
-                </i>
-              </button>
-            </div>
-          </div>
-          <div>
-            <loadingIcon
-              ref="loadingIcon"
-              v-if="isFetching"
-              label="Fetching related issues" />
+            </button>
           </div>
         </h3>
       </div>
@@ -145,12 +141,20 @@ export default {
           :is-submitting="isSubmitting"
           :input-value="inputValue"
           :pending-references="pendingReferences"
-          add-button-label="Add related issues"
           :auto-complete-sources="autoCompleteSources" />
       </div>
       <div
-        v-if="hasRelatedIssues"
-        class="related-issues-token-body panel-body">
+        class="related-issues-token-body panel-body"
+        :class="{
+            'collapsed': !shouldShowTokenBody
+        }">
+        <div
+          v-if="isFetching"
+          class="related-issues-loading-icon">
+          <loadingIcon
+            ref="loadingIcon"
+            label="Fetching related issues" />
+        </div>
         <ul
           class="related-issues-token-list">
           <li

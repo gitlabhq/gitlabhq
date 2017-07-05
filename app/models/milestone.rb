@@ -15,6 +15,8 @@ class Milestone < ActiveRecord::Base
   include Elastic::MilestonesSearch
   include Milestoneish
 
+  include ::EE::Milestone
+
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
 

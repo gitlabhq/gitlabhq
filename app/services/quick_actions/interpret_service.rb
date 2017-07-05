@@ -470,7 +470,7 @@ module QuickActions
     end
     params Issue::WEIGHT_RANGE.to_s.squeeze('.').tr('.', '-')
     condition do
-      issuable.respond_to?(:weight) &&
+      issuable.supports_weight? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
     parse_params do |weight|
@@ -484,7 +484,7 @@ module QuickActions
     explanation 'Clears weight.'
     condition do
       issuable.persisted? &&
-        issuable.respond_to?(:weight) &&
+        issuable.supports_weight? &&
         issuable.weight? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end

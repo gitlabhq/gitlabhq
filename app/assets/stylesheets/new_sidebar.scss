@@ -1,0 +1,157 @@
+@import "framework/variables";
+@import 'framework/tw_bootstrap_variables';
+@import "bootstrap/variables";
+
+$new-sidebar-width: 220px;
+
+.page-with-new-sidebar {
+  @media (min-width: $screen-sm-min) {
+    padding-left: $new-sidebar-width;
+  }
+
+  // Override position: absolute
+  .right-sidebar {
+    position: fixed;
+    height: 100%;
+  }
+}
+
+.context-header {
+  background-color: $gray-normal;
+  border-bottom: 1px solid $border-color;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+
+  .avatar-container {
+    flex: 0 0 40px;
+  }
+
+  &:hover {
+    background-color: $border-color;
+  }
+}
+
+.settings-avatar {
+  background-color: $white-light;
+
+  i {
+    font-size: 20px;
+    width: 100%;
+    color: $gl-text-color-secondary;
+    text-align: center;
+    align-self: center;
+  }
+}
+
+.nav-sidebar {
+  position: fixed;
+  z-index: 400;
+  width: $new-sidebar-width;
+  transition: width $sidebar-transition-duration;
+  top: 50px;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  background-color: $gray-light;
+  border-right: 1px solid $border-color;
+
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    white-space: nowrap;
+
+    a {
+      display: block;
+      padding: 12px 14px;
+    }
+  }
+
+  a {
+    color: $gl-text-color;
+    text-decoration: none;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    width: 0;
+  }
+}
+
+.sidebar-sub-level-items {
+  display: none;
+
+  > li {
+    a {
+      padding: 12px 24px;
+      color: $gl-text-color-light;
+
+      &:hover {
+        color: $gl-text-color;
+        background-color: $border-color;
+      }
+    }
+
+    &.active {
+      > a {
+        color: $purple-650;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.sidebar-top-level-items {
+  > li {
+    .badge {
+      float: right;
+      background-color: $border-color;
+      color: $gl-text-color;
+    }
+
+    &.active {
+      > a {
+        background-color: $purple-600;
+        color: $white-light;
+        font-weight: 600;
+      }
+
+      .badge {
+        background-color: $purple-700;
+        color: $white-light;
+      }
+
+      .sidebar-sub-level-items {
+        background-color: $gray-normal;
+        border-left: 6px solid $purple-600;
+        display: block;
+      }
+    }
+
+    &:not(.active) > a:hover {
+      background-color: $border-color;
+
+      .badge {
+        transition: background-color 100ms linear;
+        background-color: $gray-normal;
+      }
+    }
+  }
+}
+
+
+// Make issue boards full-height now that sub-nav is gone
+
+.boards-list {
+  height: calc(100vh - 50px);
+
+  @media (min-width: $screen-sm-min) {
+    height: 475px; // Needed for PhantomJS
+    // scss-lint:disable DuplicateProperty
+    height: calc(100vh - 120px);
+    // scss-lint:enable DuplicateProperty
+  }
+}

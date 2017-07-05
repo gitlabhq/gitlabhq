@@ -85,22 +85,7 @@
               Closed:
               = milestone.issues_visible_to_user(current_user).closed.count
 
-    - total_weight = milestone.issues_visible_to_user(current_user).sum(:weight)
-    .block.weight
-      .sidebar-collapsed-icon
-        = icon('balance-scale')
-        %span
-          - unless total_weight.zero?
-            = total_weight
-          - else
-            None
-      .title.hide-collapsed
-        Total issue weight
-      .value.hide-collapsed
-        - unless total_weight.zero?
-          %strong.bold= total_weight
-        - else
-          .no-value None
+    = render 'shared/milestones/weight', milestone: milestone
 
     .block.merge-requests
       .sidebar-collapsed-icon

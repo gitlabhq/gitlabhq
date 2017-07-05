@@ -97,7 +97,7 @@ module Gitlab
         row.values_at(*keys).map { |value| connection.quote(value) }
       end
 
-      connection.execute <<-EOF.strip_heredoc
+      connection.execute <<-EOF
         INSERT INTO #{table} (#{columns.join(', ')})
         VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
       EOF

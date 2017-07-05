@@ -232,7 +232,7 @@ module API
           render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
         end
 
-        if params[:squash]
+        if params[:squash] && merge_request.project.feature_available?(:merge_request_squash)
           merge_request.update(squash: params[:squash])
         end
 

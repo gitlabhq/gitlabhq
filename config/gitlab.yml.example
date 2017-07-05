@@ -732,7 +732,7 @@ test:
   geo_primary_role:
     enabled: true
   geo_secondary_role:
-    enabled: true
+    enabled: false
 
 staging:
   <<: *base

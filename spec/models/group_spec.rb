@@ -385,6 +385,25 @@ describe Group, models: true do
     end
   end
 
+  describe '#users_with_descendants', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+
+    it 'returns member users on every nest level without duplication' do
+      group.add_developer(user_a)
+      nested_group.add_developer(user_b)
+      deep_nested_group.add_developer(user_a)
+
+      expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(deep_nested_group.users_with_descendants).to contain_exactly(user_a)
+    end
+  end
+
   describe '#user_ids_for_project_authorizations' do
     it 'returns the user IDs for which to refresh authorizations' do
       master = create(:user)

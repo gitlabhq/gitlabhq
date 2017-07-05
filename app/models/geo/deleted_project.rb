@@ -1,6 +1,5 @@
 class Geo::DeletedProject < ::Project
   after_initialize :readonly!
-  attr_reader :full_path
 
   def initialize(id:, name:, full_path:, repository_storage:)
     repository_storage ||= current_application_settings.pick_repository_storage
@@ -9,7 +8,8 @@ class Geo::DeletedProject < ::Project
     @full_path = full_path
   end
 
-  def repository
-    @repository ||= Repository.new(full_path, self)
+  def full_path
+    @full_path
   end
+  alias_method :path_with_namespace, :full_path
 end

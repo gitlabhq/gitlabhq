@@ -6,7 +6,7 @@ feature 'Project milestone', :feature do
   let(:milestone) { create(:milestone, project: project) }
 
   before do
-    gitlab_sign_in(user)
+    login_as(user)
   end
 
   context 'when project has enabled issues' do
@@ -63,32 +63,6 @@ feature 'Project milestone', :feature do
       expect(page).not_to have_content('Assign some issues to this milestone.')
     end
   end
-
-  # EE-only
-  context 'milestone summary' do
-    it 'shows the total weight when sum is greater than zero' do
-      create(:issue, project: project, milestone: milestone, weight: 3)
-      create(:issue, project: project, milestone: milestone, weight: 1)
-
-      visit milestone_path
-
-      within '.milestone-sidebar' do
-        expect(page).to have_content 'Total issue weight 4'
-      end
-    end
-
-    it 'hides the total weight when sum is equal to zero' do
-      create(:issue, project: project, milestone: milestone, weight: nil)
-      create(:issue, project: project, milestone: milestone, weight: nil)
-
-      visit milestone_path
-
-      within '.milestone-sidebar' do
-        expect(page).to have_content 'Total issue weight None'
-      end
-    end
-  end
-  # EE-only
 
   def milestone_path
     namespace_project_milestone_path(project.namespace, project, milestone)

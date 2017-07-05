@@ -725,14 +725,38 @@ describe QuickActions::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'weight command' do
-      let(:content) { '/weight 5'}
-      let(:issuable) { issue }
+    context 'issuable weights licensed' do
+      before do
+        stub_licensed_features(issue_weights: true)
+      end
+
+      it_behaves_like 'weight command' do
+        let(:content) { '/weight 5'}
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'clear weight command' do
+        let(:content) { '/clear_weight' }
+        let(:issuable) { issue }
+      end
     end
 
-    it_behaves_like 'clear weight command' do
-      let(:content) { '/clear_weight' }
-      let(:issuable) { issue }
+    context 'issuable weights unlicensed' do
+      before do
+        stub_licensed_features(issue_weights: false)
+      end
+
+      it 'does not recognise /weight X' do
+        _, updates = service.execute('/weight 5', issue)
+
+        expect(updates).to be_empty
+      end
+
+      it 'does not recognise /clear_weight' do
+        _, updates = service.execute('/clear_weight', issue)
+
+        expect(updates).to be_empty
+      end
     end
 
     context 'when current_user cannot :admin_issue' do

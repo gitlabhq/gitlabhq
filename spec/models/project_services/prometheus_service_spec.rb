@@ -71,7 +71,7 @@ describe PrometheusService, models: true, caching: true do
   end
 
   describe '#deployment_metrics' do
-    let(:deployment) { build_stubbed(:deployment)}
+    let(:deployment) { build_stubbed(:deployment) }
     let(:deployment_query) { Gitlab::Prometheus::Queries::DeploymentQuery }
 
     around do |example|
@@ -80,13 +80,16 @@ describe PrometheusService, models: true, caching: true do
 
     context 'with valid data' do
       subject { service.deployment_metrics(deployment) }
+      let(:fake_deployment_time) { 10 }
 
       before do
         stub_reactive_cache(service, prometheus_data, deployment_query, deployment.id)
       end
 
       it 'returns reactive data' do
-        is_expected.to eq(prometheus_metrics_data.merge(deployment_time: deployment.created_at.to_i))
+        expect(deployment).to receive(:created_at).and_return(fake_deployment_time)
+
+        expect(subject).to eq(prometheus_metrics_data.merge(deployment_time: fake_deployment_time))
       end
     end
   end

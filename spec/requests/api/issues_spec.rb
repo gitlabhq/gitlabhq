@@ -1248,6 +1248,20 @@ describe API::Issues do
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq('weight does not have a valid value')
     end
+
+    context 'issuable weights unlicensed' do
+      before do
+        stub_licensed_features(issue_weights: false)
+      end
+
+      it 'ignores the update' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 5
+
+        expect(response).to have_http_status(200)
+        expect(json_response['weight']).to be_nil
+        expect(issue.reload.read_attribute(:weight)).to be_nil
+      end
+    end
   end
 
   describe "DELETE /projects/:id/issues/:issue_iid" do

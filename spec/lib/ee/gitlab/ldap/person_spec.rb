@@ -10,14 +10,22 @@ describe Gitlab::LDAP::Person do
   end
 
   describe '.find_by_email' do
-    it 'tries finding for each configured email attribute' do
-      adapter = ldap_adapter
+    let(:adapter) { ldap_adapter }
 
+    it 'tries finding for each configured email attribute' do
       expect(adapter).to receive(:user).with('mail', 'jane@gitlab.com')
       expect(adapter).to receive(:user).with('email', 'jane@gitlab.com')
       expect(adapter).to receive(:user).with('userPrincipalName', 'jane@gitlab.com')
 
       described_class.find_by_email('jane@gitlab.com', adapter)
+    end
+
+    it 'returns nil when no user was found' do
+      allow(adapter).to receive(:user)
+
+      found_user = described_class.find_by_email('jane@gitlab.com', adapter)
+
+      expect(found_user).to eq(nil)
     end
   end
 

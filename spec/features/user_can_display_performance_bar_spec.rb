@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'User can display performacne bar', :js do
+describe 'User can display performance bar', :js do
   shared_examples 'performance bar is disabled' do
     it 'does not show the performance bar by default' do
       expect(page).not_to have_css('#peek')
@@ -27,8 +27,8 @@ describe 'User can display performacne bar', :js do
         find('body').native.send_keys('pb')
       end
 
-      it 'does not show the performance bar by default' do
-        expect(page).not_to have_css('#peek')
+      it 'shows the performance bar' do
+        expect(page).to have_css('#peek')
       end
     end
   end

@@ -7,7 +7,7 @@ class IssueEntity < IssuableEntity
   expose :due_date
   expose :moved_to_id
   expose :project_id
-  expose :weight
+  expose :weight, if: ->(issue, _) { issue.supports_weight? }
   expose :milestone, using: API::Entities::Milestone
   expose :labels, using: LabelEntity
 

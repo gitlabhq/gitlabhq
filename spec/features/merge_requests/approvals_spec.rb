@@ -40,7 +40,7 @@ feature 'Merge request approvals', js: true, feature: true do
       project.add_developer(other_user)
 
       gitlab_sign_in(user)
-      visit new_namespace_project_merge_request_path(forked_project.namespace, forked_project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+      visit namespace_project_new_merge_request_path(forked_project.namespace, forked_project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
       find('#s2id_merge_request_approver_ids .select2-input').click
     end
@@ -73,7 +73,7 @@ feature 'Merge request approvals', js: true, feature: true do
         group = create :group
         group.add_developer(other_user)
 
-        visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+        visit namespace_project_new_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
         find('#s2id_merge_request_approver_group_ids .select2-input').click
 
         wait_for_requests
@@ -95,7 +95,7 @@ feature 'Merge request approvals', js: true, feature: true do
         create :approver_group, group: group, target: project
         create :approver, user: approver, target: project
 
-        visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+        visit namespace_project_new_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
         within('.approver-list li.approver-group') do
           click_on "Remove"
@@ -278,7 +278,7 @@ feature 'Merge request approvals', js: true, feature: true do
       project.add_developer(user)
       gitlab_sign_in(user)
 
-      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+      visit namespace_project_new_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
       click_button 'Submit merge request'
     end

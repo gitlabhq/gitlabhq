@@ -48,7 +48,8 @@ module API
 
         yield if block_given?
 
-        forbidden!('Project has been deleted!') unless job.project
+        project = job.project
+        forbidden!('Project has been deleted!') if project.nil? || project.pending_delete?
         forbidden!('Job has been erased!') if job.erased?
       end
 

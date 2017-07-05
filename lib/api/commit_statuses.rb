@@ -108,6 +108,9 @@ module API
             render_api_error!('invalid state', 400)
           end
 
+          MergeRequest.where(source_project: @project, source_branch: ref)
+            .update_all(head_pipeline_id: pipeline) if pipeline.latest?
+
           present status, with: Entities::CommitStatus
         rescue StateMachines::InvalidTransition => e
           render_api_error!(e.message, 400)

@@ -49,7 +49,7 @@ describe RepositoryUpdateMirrorWorker do
     end
 
     context 'threshold_reached?' do
-      let(:mirror) { create(:project, :mirror) }
+      let(:mirror) { create(:project, :mirror, :import_scheduled) }
 
       before do
         expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)

@@ -18,7 +18,8 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   initSquashBeforeMerge(data) {
     this.squashBeforeMergeHelpPath = this.squashBeforeMergeHelpPath
       || data.squash_before_merge_help_path;
-    this.enableSquashBeforeMerge = true;
+    this.enableSquashBeforeMerge = this.enableSquashBeforeMerge
+      || data.enable_squash_before_merge;
   }
 
   initRebase(data) {

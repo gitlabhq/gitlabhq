@@ -142,7 +142,7 @@ module Gitlab
       end
 
       def push_rule_check
-        return unless @newrev && @oldrev
+        return unless @newrev && @oldrev && project.feature_available?(:push_rules)
 
         push_rule = project.push_rule
 

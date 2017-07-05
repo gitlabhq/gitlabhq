@@ -5,6 +5,17 @@ describe Gitlab::LDAP::Access, lib: true do
   let(:access) { Gitlab::LDAP::Access.new user }
   let(:user) { create(:omniauth_user) }
 
+  describe '.allowed?' do
+    it 'updates the users `last_credential_check_at' do
+      allow(access).to receive(:update_user)
+      expect(access).to receive(:allowed?) { true }
+      expect(described_class).to receive(:open).and_yield(access)
+
+      expect { described_class.allowed?(user) }
+        .to change { user.last_credential_check_at }
+    end
+  end
+
   describe '#find_ldap_user' do
     it 'finds a user by dn first' do
       expect(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
@@ -36,6 +47,12 @@ describe Gitlab::LDAP::Access, lib: true do
         expect(access).to receive(:block_user).with(user, 'does not exist anymore')
 
         access.allowed?
+      end
+
+      context 'when looking for a user by email' do
+        let(:user) { create(:omniauth_user, external_email: true) }
+
+        it { is_expected.to be_falsey }
       end
     end
 

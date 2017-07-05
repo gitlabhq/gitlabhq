@@ -3,6 +3,26 @@
 This is a continuation of the main [LDAP documentation](ldap.md), detailing LDAP
 features specific to GitLab Enterprise Edition.
 
+## Overview
+
+[LDAP](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol)
+stands for **Lightweight Directory Access Protocol**, which
+is a standard application protocol for
+accessing and maintaining distributed directory information services
+over an Internet Protocol (IP) network.
+
+GitLab integrates with LDAP to support **user authentication**. This integration
+works with most LDAP-compliant directory servers, including Microsoft Active
+Directory, Apple Open Directory, Open LDAP, and 389 Server.
+**GitLab Enterprise Edition** includes enhanced integration, including group
+membership syncing.
+
+## Use-cases
+
+- User Sync: Once a day, GitLab will update users against LDAP
+- Group Sync: Once an hour, GitLab will update group membership 
+based on LDAP group members
+
 ## User Sync
 
 Once per day, GitLab will run a worker to check and update GitLab
