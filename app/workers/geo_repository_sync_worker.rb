@@ -4,7 +4,6 @@ class GeoRepositorySyncWorker
 
   RUN_TIME = 5.minutes.to_i
   BATCH_SIZE = 100
-  LAST_SYNC_INTERVAL = 24.hours
 
   def perform
     return unless Gitlab::Geo.secondary_role_enabled?
