@@ -255,7 +255,6 @@ describe API::Snippets do
   end
 
   describe 'DELETE /snippets/:id' do
-    let!(:public_snippet) { create(:personal_snippet, :public, author: user) }
     it 'deletes snippet' do
       expect do
         delete api("/snippets/#{public_snippet.id}", user)
@@ -269,6 +268,27 @@ describe API::Snippets do
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
+    end
+  end
+
+  describe "GET /snippets/:id/user_agent_detail" do
+    let(:admin) { create(:admin) }
+    let(:snippet) { create(:personal_snippet, :public, author: user) }
+    let!(:user_agent_detail) { create(:user_agent_detail, subject: snippet) }
+
+    it 'exposes known attributes' do
+      get api("/snippets/#{snippet.id}/user_agent_detail", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
+      expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
+      expect(json_response['submitted']).to be false
+    end
+
+    it "returns unautorized for non-admin users" do
+      get api("/snippets/#{snippet.id}/user_agent_detail", user)
+
+      expect(response).to have_http_status(403)
     end
   end
 end
