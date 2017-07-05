@@ -87,7 +87,7 @@ describe "Runners" do
 
     before do
       stub_application_setting(shared_runners_text: shared_runners_text)
-      project = FactoryGirl.create :empty_project, shared_runners_enabled: false
+      project = FactoryGirl.create :empty_project, shared_runners_enabled: true
       project.team << [user, :master]
       visit runners_path(project)
     end
