@@ -1209,6 +1209,8 @@ describe Project, models: true do
 
       expect(project).to receive(:expire_caches_before_rename)
 
+      expect(project).to receive(:expires_full_path_cache)
+
       project.rename_repo
     end
 
@@ -1312,11 +1314,24 @@ describe Project, models: true do
     end
 
     context 'using a forked repository' do
-      it 'does nothing' do
-        expect(project).to receive(:forked?).and_return(true)
+      before do
+        allow(project).to receive(:forked?).and_return(true)
+      end
+
+      it 'does not create the repository if the force flag is false' do
         expect(shell).not_to receive(:add_repository)
 
         project.create_repository
+      end
+
+      it 'creates the repository if the force flag is true' do
+        expect(shell).to receive(:add_repository).
+          with(project.repository_storage_path, project.path_with_namespace).
+          and_return(true)
+
+        expect(project.repository).to receive(:after_create)
+
+        expect(project.create_repository(force: true)).to eq(true)
       end
     end
   end

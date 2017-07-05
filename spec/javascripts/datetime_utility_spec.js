@@ -16,6 +16,10 @@ import '~/lib/utils/datetime_utility';
         const date = new Date();
         date.setFullYear(date.getFullYear() + 1);
 
+        // Add a day to prevent a transient error. If date is even 1 second
+        // short of a full year, timeFor will return '11 months remaining'
+        date.setDate(date.getDate() + 1);
+
         expect(
           gl.utils.timeFor(date),
         ).toBe('1 year remaining');
