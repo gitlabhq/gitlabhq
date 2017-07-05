@@ -107,7 +107,7 @@ shared_examples "protected branches > access control > EE" do
 
         wait_for_requests
         click_on users.last.name
-        find(".js-allowed-to-#{git_operation}").click # close
+        find(".js-allowed-to-#{git_operation}").trigger(:click) # close
       end
       wait_for_requests
 
