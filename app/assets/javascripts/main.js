@@ -168,6 +168,7 @@ import './zen_mode';
 import './admin_email_select';
 import './application_settings';
 import './approvals';
+import './ee_trial_banner';
 import './ldap_groups_select';
 import './path_locks';
 import './weight_select';

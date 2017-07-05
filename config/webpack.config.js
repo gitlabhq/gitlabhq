@@ -36,6 +36,7 @@ var config = {
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     deploy_keys:          './deploy_keys/index.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
+    ee_trial_banner:      './ee_trial_banner',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
