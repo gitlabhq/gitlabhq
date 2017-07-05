@@ -75,18 +75,6 @@ describe Projects::PipelineSchedulesController do
         attributes_for(:ci_pipeline_schedule)
       end
 
-      context 'when variables_attributes is empty' do
-        let(:schedule) { basic_param }
-
-        it 'creates a new schedule' do
-          expect { go }
-            .to change { Ci::PipelineSchedule.count }.by(1)
-            .and change { Ci::PipelineScheduleVariable.count }.by(0)
-
-          expect(response).to have_http_status(:found)
-        end
-      end
-
       context 'when variables_attributes has one variable' do
         let(:schedule) do
           basic_param.merge({
@@ -104,57 +92,6 @@ describe Projects::PipelineSchedulesController do
           Ci::PipelineScheduleVariable.last.tap do |v|
             expect(v.key).to eq("AAA")
             expect(v.value).to eq("AAA123")
-          end
-        end
-
-        context 'when the same key has already been persisted' do
-          it 'returns an error that the key of variable is invaild' do
-            go
-
-            pipeline_schedule_variable = build(:ci_pipeline_schedule_variable, key: 'AAA', pipeline_schedule: assigns(:schedule))
-            expect(pipeline_schedule_variable).to be_invalid
-          end
-        end
-      end
-
-      context 'when variables_attributes has one variable and key is empty' do
-        let(:schedule) do
-          basic_param.merge({
-            variables_attributes: [{ key: '', value: 'AAA123' }]
-          })
-        end
-
-        it 'returns an error that the key of variable is invaild' do
-          expect { go }
-            .to change { Ci::PipelineSchedule.count }.by(0)
-            .and change { Ci::PipelineScheduleVariable.count }.by(0)
-
-          expect(assigns(:schedule).errors['variables.key']).not_to be_empty
-        end
-      end
-
-      context 'when variables_attributes has two variables and unique' do
-        let(:schedule) do
-          basic_param.merge({
-            variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'BBB', value: 'BBB123' }]
-          })
-        end
-
-        it 'creates a new schedule' do
-          expect { go }
-            .to change { Ci::PipelineSchedule.count }.by(1)
-            .and change { Ci::PipelineScheduleVariable.count }.by(2)
-
-          expect(response).to have_http_status(:found)
-
-          Ci::PipelineScheduleVariable.first.tap do |v|
-            expect(v.key).to eq("AAA")
-            expect(v.value).to eq("AAA123")
-          end
-
-          Ci::PipelineScheduleVariable.last.tap do |v|
-            expect(v.key).to eq("BBB")
-            expect(v.value).to eq("BBB123")
           end
         end
       end
@@ -210,19 +147,6 @@ describe Projects::PipelineSchedulesController do
           { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'patch-x', active: true }
         end
 
-        context 'when params do not include variables' do
-          let(:schedule) { basic_param }
-
-          it 'updates only scheduled pipeline attributes' do
-            go
-
-            pipeline_schedule.reload
-            expect(response).to have_http_status(:found)
-            expect(pipeline_schedule).to have_attributes(basic_param)
-            expect(pipeline_schedule.variables).to be_empty
-          end
-        end
-
         context 'when params include one variable' do
           let(:schedule) do
             basic_param.merge({
@@ -237,25 +161,6 @@ describe Projects::PipelineSchedulesController do
             expect(response).to have_http_status(:found)
             expect(pipeline_schedule.variables.last.key).to eq('AAA')
             expect(pipeline_schedule.variables.last.value).to eq('AAA123')
-          end
-        end
-
-        context 'when params include two unique variables' do
-          let(:schedule) do
-            basic_param.merge({
-              variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'BBB', value: 'BBB123' }]
-            })
-          end
-
-          it 'inserts two new variables to the pipeline schedule' do
-            expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(2)
-
-            pipeline_schedule.reload
-            expect(response).to have_http_status(:found)
-            expect(pipeline_schedule.variables.first.key).to eq('AAA')
-            expect(pipeline_schedule.variables.first.value).to eq('AAA123')
-            expect(pipeline_schedule.variables.last.key).to eq('BBB')
-            expect(pipeline_schedule.variables.last.value).to eq('BBB123')
           end
         end
 
@@ -282,19 +187,6 @@ describe Projects::PipelineSchedulesController do
         let!(:pipeline_schedule_variable) do
           create(:ci_pipeline_schedule_variable,
             key: 'CCC', pipeline_schedule: pipeline_schedule)
-        end
-
-        context 'when params do not include variables' do
-          let(:schedule) { basic_param }
-
-          it 'updates only scheduled pipeline attributes' do
-            go
-
-            pipeline_schedule.reload
-            expect(response).to have_http_status(:found)
-            expect(pipeline_schedule).to have_attributes(basic_param)
-            expect(pipeline_schedule.variables.last.key).to eq('CCC')
-          end
         end
 
         context 'when params include one variable' do
