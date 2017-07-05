@@ -1,6 +1,7 @@
 module QuickActions
   class InterpretService < BaseService
     include Gitlab::QuickActions::Dsl
+    prepend EE::QuickActions::InterpretService
 
     attr_reader :issuable
 
@@ -143,32 +144,6 @@ module QuickActions
           issuable.assignees.pluck(:id) - users.map(&:id)
         else
           []
-        end
-    end
-
-    desc do
-      "Change assignee#{'(s)' if issuable.allows_multiple_assignees?}"
-    end
-    explanation do |users|
-      users = issuable.allows_multiple_assignees? ? users : users.take(1)
-      "Change #{'assignee'.pluralize(users.size)} to #{users.map(&:to_reference).to_sentence}."
-    end
-    params do
-      issuable.allows_multiple_assignees? ? '@user1 @user2' : '@user'
-    end
-    condition do
-      issuable.persisted? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
-    end
-    parse_params do |assignee_param|
-      extract_users(assignee_param)
-    end
-    command :reassign do |users|
-      @updates[:assignee_ids] =
-        if issuable.allows_multiple_assignees?
-          users.map(&:id)
-        else
-          [users.last.id]
         end
     end
 
@@ -469,34 +444,6 @@ module QuickActions
     end
     command :target_branch do |branch_name|
       @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
-    end
-
-    desc 'Set weight'
-    explanation do |weight|
-      "Sets weight to #{weight}." if weight
-    end
-    params Issue::WEIGHT_RANGE.to_s.squeeze('.').tr('.', '-')
-    condition do
-      issuable.supports_weight? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
-    end
-    parse_params do |weight|
-      weight.to_i if Issue.weight_filter_options.include?(weight.to_i)
-    end
-    command :weight do |weight|
-      @updates[:weight] = weight if weight
-    end
-
-    desc 'Clear weight'
-    explanation 'Clears weight.'
-    condition do
-      issuable.persisted? &&
-        issuable.supports_weight? &&
-        issuable.weight? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
-    end
-    command :clear_weight do
-      @updates[:weight] = nil
     end
 
     desc 'Move issue from one column of the board to another'
