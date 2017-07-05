@@ -11,6 +11,22 @@ describe Project, models: true do
     it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:namespace) }
   end
 
+  describe '#push_rule' do
+    let(:project) { create(:project, push_rule: create(:push_rule)) }
+
+    subject(:push_rule) { project.push_rule(true) }
+
+    it { is_expected.not_to be_nil }
+
+    context 'push rules unlicensed' do
+      before do
+        stub_licensed_features(push_rules: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#feature_available?' do
     let(:namespace) { build_stubbed(:namespace) }
     let(:project) { build_stubbed(:project, namespace: namespace) }
@@ -295,6 +311,7 @@ describe Project, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe '#secret_variables_for' do
     let(:project) { create(:empty_project) }
 
@@ -457,6 +474,72 @@ describe Project, models: true do
              partially_matched_variable,
              perfectly_matched_variable])
         end
+      end
+    end
+  end
+
+  describe '#approvals_before_merge' do
+    [
+      { license: true,  database: 5,  expected: 5 },
+      { license: true,  database: 0,  expected: 0 },
+      { license: false, database: 5,  expected: 0 },
+      { license: false, database: 0,  expected: 0 }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:project) { build(:project, approvals_before_merge: spec[:database]) }
+
+        subject { project.approvals_before_merge }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
+    end
+  end
+
+  describe "#reset_approvals_on_push?" do
+    [
+      { license: true,  database: true,  expected: true },
+      { license: true,  database: false, expected: false },
+      { license: false, database: true,  expected: false },
+      { license: false, database: false, expected: false }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:project) { build(:project, reset_approvals_on_push: spec[:database]) }
+
+        subject { project.reset_approvals_on_push? }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
+    end
+  end
+
+  describe '#approvals_before_merge' do
+    [
+      { license: true,  database: 5,  expected: 5 },
+      { license: true,  database: 0,  expected: 0 },
+      { license: false, database: 5,  expected: 0 },
+      { license: false, database: 0,  expected: 0 }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:project) { build(:project, approvals_before_merge: spec[:database]) }
+
+        subject { project.approvals_before_merge }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
       end
     end
   end

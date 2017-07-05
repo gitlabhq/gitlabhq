@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.4 (2017-07-03)
+
+- No changes.
+
 ## 9.3.3 (2017-06-30)
 
 - Add metrics to both remote and non remote mirroring. !2118

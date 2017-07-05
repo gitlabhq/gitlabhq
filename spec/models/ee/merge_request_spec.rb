@@ -127,4 +127,26 @@ describe MergeRequest, models: true do
       end
     end
   end
+
+  describe '#approvals_before_merge' do
+    [
+      { license: true,  database: 5,  expected: 5 },
+      { license: true,  database: 0,  expected: 0 },
+      { license: false, database: 5,  expected: 0 },
+      { license: false, database: 0,  expected: 0 }
+    ].each do |spec|
+      context spec.inspect do
+        let(:spec) { spec }
+        let(:merge_request) { build(:merge_request, approvals_before_merge: spec[:database]) }
+
+        subject { merge_request.approvals_before_merge }
+
+        before do
+          stub_licensed_features(merge_request_approvers: spec[:license])
+        end
+
+        it { is_expected.to eq(spec[:expected]) }
+      end
+    end
+  end
 end

@@ -1,4 +1,5 @@
 class Admin::PushRulesController < Admin::ApplicationController
+  before_action :check_push_rules_available!
   before_action :push_rule
 
   respond_to :html
@@ -17,6 +18,10 @@ class Admin::PushRulesController < Admin::ApplicationController
   end
 
   private
+
+  def check_push_rules_available!
+    render_404 unless License.feature_available?(:push_rules)
+  end
 
   def push_rule_params
     params.require(:push_rule).permit(:deny_delete_tag, :delete_branch_regex,

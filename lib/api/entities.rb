@@ -132,7 +132,7 @@ module API
       expose :printing_merge_request_link_enabled
 
       # EE only
-      expose :approvals_before_merge
+      expose :approvals_before_merge, if: ->(project, _) { project.feature_available?(:merge_request_approvers) }
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end
@@ -619,7 +619,8 @@ module API
       expose :id
       expose :name
       expose :project, using: Entities::BasicProjectDetails
-      expose :milestone
+      expose :milestone,
+             if: -> (board, _) { board.project.feature_available?(:issue_board_milestone) }
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end

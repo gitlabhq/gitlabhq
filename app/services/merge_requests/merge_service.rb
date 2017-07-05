@@ -44,6 +44,7 @@ module MergeRequests
       @merge_request = merge_request
 
       return true if project.merge_requests_ff_only_enabled
+      return true unless project.feature_available?(:push_rules)
 
       push_rule = merge_request.project.push_rule
       return true unless push_rule

@@ -25,7 +25,7 @@ module EE
       belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
       has_one :mirror_data, dependent: :delete, autosave: true, class_name: 'ProjectMirrorData'
-      has_one :push_rule, dependent: :destroy
+      has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }, dependent: :destroy
       has_one :index_status, dependent: :destroy
       has_one :jenkins_service, dependent: :destroy
       has_one :jenkins_deprecated_service, dependent: :destroy
@@ -295,6 +295,17 @@ module EE
     def reference_issue_tracker?
       default_issues_tracker? || jira_tracker_active?
     end
+
+    def approvals_before_merge
+      return 0 unless feature_available?(:merge_request_approvers)
+
+      super
+    end
+
+    def reset_approvals_on_push
+      super && feature_available?(:merge_request_approvers)
+    end
+    alias_method :reset_approvals_on_push?, :reset_approvals_on_push
 
     def approver_ids=(value)
       value.split(",").map(&:strip).each do |user_id|

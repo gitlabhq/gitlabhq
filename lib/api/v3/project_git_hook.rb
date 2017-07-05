@@ -3,6 +3,7 @@ module API
     class ProjectGitHook < Grape::API
       before { authenticate! }
       before { authorize_admin_project }
+      before { check_project_feature_available!(:push_rules) }
 
       DEPRECATION_MESSAGE = 'This endpoint is deprecated, replaced with push_rules, and will be removed in GitLab 9.0.'.freeze
 

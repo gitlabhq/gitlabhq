@@ -5,7 +5,6 @@ class MergeRequest < ActiveRecord::Base
   include Referable
   include Sortable
   include Elastic::MergeRequestsSearch
-  include Approvable
   include IgnorableColumn
 
   ignore_column :position

@@ -242,6 +242,16 @@ describe MergeRequests::MergeService, services: true do
   end
 
   describe '#hooks_validation_pass?' do
+    shared_examples 'hook validations are skipped when push rules unlicensed' do
+      subject { service.hooks_validation_pass?(merge_request) }
+
+      before do
+        stub_licensed_features(push_rules: false)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
     let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
 
     it 'returns true when valid' do
@@ -253,6 +263,8 @@ describe MergeRequests::MergeService, services: true do
         allow(project).to receive(:push_rule) { build(:push_rule, commit_message_regex: 'unmatched pattern .*') }
       end
 
+      it_behaves_like 'hook validations are skipped when push rules unlicensed'
+
       it 'returns false and saves error when invalid' do
         expect(service.hooks_validation_pass?(merge_request)).to be_falsey
         expect(merge_request.merge_error).not_to be_empty
@@ -263,6 +275,8 @@ describe MergeRequests::MergeService, services: true do
       before do
         allow(project).to receive(:push_rule) { build(:push_rule, author_email_regex: '.*@unmatchedemaildomain.com') }
       end
+
+      it_behaves_like 'hook validations are skipped when push rules unlicensed'
 
       it 'returns false and saves error when invalid' do
         expect(service.hooks_validation_pass?(merge_request)).to be_falsey
