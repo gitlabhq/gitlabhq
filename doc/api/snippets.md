@@ -234,3 +234,27 @@ Example response:
     }
 ]
 ```
+
+## Get user agent details
+
+```
+GET /snippets/:id/user_agent_detail
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | Integer | yes      | The ID of a snippet                  |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets/1/user_agent_detail
+```
+
+Example response:
+
+```json
+{
+  "user_agent": "AppleWebKit/537.36",
+  "ip_address": "127.0.0.1",
+  "submitted": false,
+}
+```
