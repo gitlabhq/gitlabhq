@@ -29,7 +29,4 @@
                 %span
                   Pages
 
-          = nav_link(controller: :audit_events) do
-            = link_to project_audit_events_path(@project), title: "Audit Events" do
-              %span
-                Audit Events
+          = render 'projects/settings/ee/nav'
