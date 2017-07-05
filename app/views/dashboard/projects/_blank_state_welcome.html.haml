@@ -2,8 +2,7 @@
 
 - if current_user.can_create_group?
   .blank-state.clearfix
-    .col-md-3
-    .col-md-1.blank-state-icon
+    .col-md-1.col-md-offset-3.blank-state-icon
       = custom_icon("add_new_group", size: 50)
     .col-md-5.blank-state-body
       %h3.blank-state-title
@@ -12,11 +11,9 @@
         Groups are the best way to manage projects and members.
       = link_to new_group_path, class: "btn btn-new" do
         New group
-    .col-md-3
 
 .blank-state.clearfix
-  .col-md-3
-  .col-md-1.blank-state-icon
+  .col-md-1.col-md-offset-3.blank-state-icon
     = custom_icon("add_new_project", size: 50)
   .col-md-5.blank-state-body
     %h3.blank-state-title
@@ -33,12 +30,10 @@
     - if current_user.can_create_project?
       = link_to new_project_path, class: "btn btn-new" do
         New project
-  .col-md-3
 
 - if publicish_project_count > 0
   .blank-state.clearfix
-    .col-md-3
-    .col-md-1.blank-state-icon
+    .col-md-1.col-md-offset-3.blank-state-icon
       = custom_icon("globe", size: 50)
     .col-md-5.blank-state-body
       %h3.blank-state-title
@@ -51,4 +46,3 @@
         everyone to have read-only access.
       = link_to trending_explore_projects_path, class: "btn btn-new" do
         Browse projects
-    .col-md-3
