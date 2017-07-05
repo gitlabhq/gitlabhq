@@ -14,6 +14,10 @@ describe API::Helpers do
   let(:request) { Rack::Request.new(env) }
   let(:header) { }
 
+  before do
+    allow_any_instance_of(self.class).to receive(:options).and_return({})
+  end
+
   def set_env(user_or_token, identifier)
     clear_env
     clear_param
@@ -167,7 +171,6 @@ describe API::Helpers do
       it "returns nil for a token without the appropriate scope" do
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        allow_access_with_scope('write_user')
 
         expect(current_user).to be_nil
       end

@@ -390,6 +390,14 @@ describe API::Users do
         expect(json_response['identities'].first['provider']).to eq('github')
       end
     end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { '/users' }
+      let(:api_call) { method(:api) }
+
+      include_examples 'does not allow the "read_user" scope'
+    end
   end
 
   describe "GET /users/sign_up" do
@@ -887,6 +895,13 @@ describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/public')
         expect(json_response['id']).to eq(user.id)
       end
+
+      context "scopes" do
+        let(:path) { "/user" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
     end
 
     context 'with admin' do
@@ -956,6 +971,13 @@ describe API::Users do
         expect(json_response).to be_an Array
         expect(json_response.first["title"]).to eq(key.title)
       end
+
+      context "scopes" do
+        let(:path) { "/user/keys" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
     end
   end
 
@@ -988,6 +1010,13 @@ describe API::Users do
       get api("/users/keys/ASDF", admin)
 
       expect(response).to have_http_status(404)
+    end
+
+    context "scopes" do
+      let(:path) { "/user/keys/#{key.id}" }
+      let(:api_call) { method(:api) }
+
+      include_examples 'allows the "read_user" scope'
     end
   end
 
@@ -1078,6 +1107,13 @@ describe API::Users do
         expect(json_response).to be_an Array
         expect(json_response.first["email"]).to eq(email.email)
       end
+
+      context "scopes" do
+        let(:path) { "/user/emails" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
     end
   end
 
@@ -1109,6 +1145,13 @@ describe API::Users do
       get api("/users/emails/ASDF", admin)
 
       expect(response).to have_http_status(404)
+    end
+
+    context "scopes" do
+      let(:path) { "/user/emails/#{email.id}" }
+      let(:api_call) { method(:api) }
+
+      include_examples 'allows the "read_user" scope'
     end
   end
 
