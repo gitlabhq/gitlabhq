@@ -10,19 +10,19 @@
 
       - if can_create_issue
         %li
-          = link_to new_namespace_project_issue_path(@project.namespace, @project) do
+          = link_to new_project_issue_path(@project) do
             = icon('exclamation-circle fw')
             #{ _('New issue') }
 
       - if merge_project
         %li
-          = link_to namespace_project_new_merge_request_path(merge_project.namespace, merge_project) do
+          = link_to project_new_merge_request_path(merge_project) do
             = icon('tasks fw')
             #{ _('New merge request') }
 
       - if can_create_snippet
         %li
-          = link_to new_namespace_project_snippet_path(@project.namespace, @project) do
+          = link_to new_project_snippet_path(@project) do
             = icon('file-text-o fw')
             #{ _('New snippet') }
 
@@ -31,28 +31,28 @@
 
       - if can?(current_user, :push_code, @project)
         %li
-          = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
+          = link_to project_new_blob_path(@project, @project.default_branch || 'master') do
             = icon('file fw')
             #{ _('New file') }
         %li
-          = link_to new_namespace_project_branch_path(@project.namespace, @project) do
+          = link_to new_project_branch_path(@project) do
             = icon('code-fork fw')
             #{ _('New branch') }
         %li
-          = link_to new_namespace_project_tag_path(@project.namespace, @project) do
+          = link_to new_project_tag_path(@project) do
             = icon('tags fw')
             #{ _('New tag') }
       - elsif current_user && current_user.already_forked?(@project)
         %li
-          = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
+          = link_to project_new_blob_path(@project, @project.default_branch || 'master') do
             = icon('file fw')
             #{ _('New file') }
       - elsif can?(current_user, :fork_project, @project)
         %li
-          - continue_params = { to:         namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master'),
+          - continue_params = { to:         project_new_blob_path(@project, @project.default_branch || 'master'),
                                 notice:     edit_in_new_fork_notice,
                                 notice_now: edit_in_new_fork_notice_now }
-          - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+          - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
                                                                                   continue:       continue_params)
           = link_to fork_path, method: :post do
             = icon('file fw')

@@ -10,7 +10,7 @@ describe 'Cherry-pick Commits' do
   before do
     sign_in(user)
     project.team << [user, :master]
-    visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
+    visit project_commit_path(project, master_pickable_commit.id)
   end
 
   context "I cherry-pick a commit" do
@@ -43,7 +43,7 @@ describe 'Cherry-pick Commits' do
         uncheck 'create_merge_request'
         click_button 'Cherry-pick'
       end
-      visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
+      visit project_commit_path(project, master_pickable_commit.id)
       find("a[href='#modal-cherry-pick-commit']").click
       page.within('#modal-cherry-pick-commit') do
         uncheck 'create_merge_request'

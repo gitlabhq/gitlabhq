@@ -25,7 +25,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   step 'I should see merge request "Merge Request On Forked Project"' do
     expect(@project.merge_requests.size).to be >= 1
     @merge_request = @project.merge_requests.last
-    expect(current_path).to eq namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    expect(current_path).to eq project_merge_request_path(@project, @merge_request)
     expect(@merge_request.title).to eq "Merge Request On Forked Project"
     expect(@merge_request.source_project).to eq @forked_project
     expect(@merge_request.source_branch).to eq "fix"
@@ -77,7 +77,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content "An Edited Forked Merge Request"
     expect(@project.merge_requests.size).to be >= 1
     @merge_request = @project.merge_requests.last
-    expect(current_path).to eq namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    expect(current_path).to eq project_merge_request_path(@project, @merge_request)
     expect(@merge_request.source_project).to eq @forked_project
     expect(@merge_request.source_branch).to eq "fix"
     expect(@merge_request.target_branch).to eq "master"
@@ -97,7 +97,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I see the edit page prefilled for "Merge Request On Forked Project"' do
-    expect(current_path).to eq edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    expect(current_path).to eq edit_project_merge_request_path(@project, @merge_request)
     expect(page).to have_content "Edit merge request #{@merge_request.to_reference}"
     expect(find("#merge_request_title").value).to eq "Merge Request On Forked Project"
   end

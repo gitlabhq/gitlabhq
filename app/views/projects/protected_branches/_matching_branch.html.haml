@@ -6,5 +6,5 @@
       %span.label.label-info.prepend-left-5 default
   %td
     - commit = @project.commit(matching_branch.name)
-    = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit-sha')
+    = link_to(commit.short_id, project_commit_path(@project, commit.id), class: 'commit-sha')
     = time_ago_with_tooltip(commit.committed_date)

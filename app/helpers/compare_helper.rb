@@ -9,8 +9,7 @@ module CompareHelper
   end
 
   def create_mr_path(from = params[:from], to = params[:to], project = @project)
-    namespace_project_new_merge_request_path(
-      project.namespace,
+    project_new_merge_request_path(
       project,
       merge_request: {
         source_branch: to,

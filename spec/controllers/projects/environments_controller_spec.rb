@@ -184,7 +184,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              namespace_project_job_url(project.namespace, project, action) })
+              project_job_url(project, action) })
       end
     end
 
@@ -198,7 +198,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              namespace_project_environment_url(project.namespace, project, environment) })
+              project_environment_url(project, environment) })
       end
     end
   end

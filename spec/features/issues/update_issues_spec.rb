@@ -12,7 +12,7 @@ feature 'Multiple issue updating from issues#index', :js do
 
   context 'status' do
     it 'sets to closed' do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
       click_button 'Edit Issues'
       find('#check-all-issues').click
@@ -25,7 +25,7 @@ feature 'Multiple issue updating from issues#index', :js do
 
     it 'sets to open' do
       create_closed
-      visit namespace_project_issues_path(project.namespace, project, state: 'closed')
+      visit project_issues_path(project, state: 'closed')
 
       click_button 'Edit Issues'
       find('#check-all-issues').click
@@ -39,7 +39,7 @@ feature 'Multiple issue updating from issues#index', :js do
 
   context 'assignee' do
     it 'updates to current user' do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
       click_button 'Edit Issues'
       find('#check-all-issues').click
@@ -55,7 +55,7 @@ feature 'Multiple issue updating from issues#index', :js do
 
     it 'updates to unassigned' do
       create_assigned
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
       click_button 'Edit Issues'
       find('#check-all-issues').click
@@ -71,7 +71,7 @@ feature 'Multiple issue updating from issues#index', :js do
     let!(:milestone) { create(:milestone, project: project) }
 
     it 'updates milestone' do
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
       click_button 'Edit Issues'
       find('#check-all-issues').click
@@ -85,7 +85,7 @@ feature 'Multiple issue updating from issues#index', :js do
 
     it 'sets to no milestone' do
       create_with_milestone
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
 
       expect(first('.issue')).to have_content milestone.title
 

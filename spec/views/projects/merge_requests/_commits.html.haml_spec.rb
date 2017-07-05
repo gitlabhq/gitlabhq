@@ -25,10 +25,7 @@ describe 'projects/merge_requests/_commits.html.haml' do
     render
 
     commit = source_project.commit(merge_request.source_branch)
-    href = namespace_project_commit_path(
-      source_project.namespace,
-      source_project,
-      commit)
+    href = project_commit_path(source_project, commit)
 
     expect(rendered).to have_link(Commit.truncate_sha(commit.sha), href: href)
   end

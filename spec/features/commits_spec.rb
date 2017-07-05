@@ -66,7 +66,7 @@ describe 'Commits' do
           end
 
           before do
-            visit namespace_project_commits_path(project.namespace, project, :master)
+            visit project_commits_path(project, :master)
           end
 
           it 'shows correct build status from default branch' do
@@ -192,7 +192,7 @@ describe 'Commits' do
     before do
       project.team << [user, :master]
       sign_in(user)
-      visit namespace_project_commits_path(project.namespace, project, branch_name)
+      visit project_commits_path(project, branch_name)
     end
 
     it 'includes the committed_date for each commit' do

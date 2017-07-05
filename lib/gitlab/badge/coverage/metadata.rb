@@ -16,13 +16,11 @@ module Gitlab
         end
 
         def image_url
-          coverage_namespace_project_badges_url(@project.namespace,
-                                                @project, @ref,
-                                                format: :svg)
+          coverage_project_badges_url(@project, @ref, format: :svg)
         end
 
         def link_url
-          namespace_project_commits_url(@project.namespace, @project, id: @ref)
+          project_commits_url(@project, @ref)
         end
       end
     end

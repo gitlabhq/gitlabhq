@@ -12,7 +12,7 @@
   .form-group
     .col-sm-12= f.label :content, class: 'control-label-full-width'
     .col-sm-12
-      = render layout: 'projects/md_preview', locals: { url: namespace_project_wiki_preview_markdown_path(@project.namespace, @project, @page.slug) } do
+      = render layout: 'projects/md_preview', locals: { url: project_wiki_preview_markdown_path(@project, @page.slug) } do
         = render 'projects/zen', f: f, attr: :content, classes: 'note-textarea', placeholder: 'Write your content or drag files here...'
         = render 'shared/notes/hints'
 
@@ -36,8 +36,8 @@
     - if @page && @page.persisted?
       = f.submit 'Save changes', class: "btn-save btn"
       .pull-right
-        = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, @page), class: "btn btn-cancel btn-grouped"
+        = link_to "Cancel", project_wiki_path(@project, @page), class: "btn btn-cancel btn-grouped"
     - else
       = f.submit 'Create page', class: "btn-create btn"
       .pull-right
-        = link_to "Cancel", namespace_project_wiki_path(@project.namespace, @project, :home), class: "btn btn-cancel"
+        = link_to "Cancel", project_wiki_path(@project, :home), class: "btn btn-cancel"

@@ -51,7 +51,7 @@ feature 'Admin disables Git access protocol', feature: true do
   end
 
   def visit_project
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   def disable_http_protocol
