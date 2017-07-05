@@ -22,6 +22,8 @@ the hardware requirements.
   Cluster using our official Helm Chart Repository.
 - Testing only! [DigitalOcean and Docker Machine](digitaloceandocker.md) -
   Quickly test any version of GitLab on DigitalOcean using Docker Machine.
+- [GitLab Pivotal Tile](pivotal/index.md) - Install and configure GitLab
+  Enterprise Edition Premium on Pivotal Cloud Foundry.
 
 ## Database
 
