@@ -41,13 +41,13 @@ class GlobalMilestone
   def self.group_milestones_states_count(group)
     return STATE_COUNT_HASH unless group
 
-    relation = MilestonesFinder.new(groups: group, params: { state: 'all' }).execute
-    grouped_by_state = relation.reorder(nil).group(:state).count
+    relation = MilestonesFinder.new(groups: group, params: { state: 'all' }, order: nil).execute
+    grouped_by_state = relation.group(:state).count
 
     {
       opened: grouped_by_state['active'] || 0,
       closed: grouped_by_state['closed'] || 0,
-      all: relation.count
+      all: grouped_by_state.values.sum
     }
   end
 
@@ -55,8 +55,8 @@ class GlobalMilestone
   def self.legacy_group_milestone_states_count(projects)
     return STATE_COUNT_HASH unless projects
 
-    relation = MilestonesFinder.new(projects: projects, params: { state: 'all' }).execute
-    project_milestones_by_state_and_title = relation.reorder(nil).group(:state, :title).count
+    relation = MilestonesFinder.new(projects: projects, params: { state: 'all' }, order: nil).execute
+    project_milestones_by_state_and_title = relation.group(:state, :title).count
 
     opened = count_by_state(project_milestones_by_state_and_title, 'active')
     closed = count_by_state(project_milestones_by_state_and_title, 'closed')

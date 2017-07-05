@@ -64,13 +64,11 @@ module Issues
       title = @old_issue.milestone&.title
       return unless title
 
-      milestone_id = @new_project.milestones.find_by(title: title).try(:id)
-
-      if milestone_id.nil? && @new_project.group && can?(current_user, :read_group, @new_project.group)
-        milestone_id = @new_project.group.milestones.find_by(title: title).try(:id)
+      if @new_project.group && can?(current_user, :read_group, @new_project.group)
+        group_id = @new_project.group.id
       end
 
-      milestone_id
+      Milestone.for_projects_and_groups(@new_project.id, group_id).find_by_title(title).try(:id)
     end
 
     def rewrite_notes

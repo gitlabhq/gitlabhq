@@ -149,4 +149,12 @@ module MilestonesHelper
       labels_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
     end
   end
+
+  def group_milestone_route(milestone, params = {})
+    if milestone.is_legacy_group_milestone?
+      group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: params)
+    else
+      group_milestone_path(@group, milestone.iid, milestone: params)
+    end
+  end
 end

@@ -19,9 +19,10 @@ class Projects::MilestonesController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         @project_namespace = @project.namespace.becomes(Namespace)
-        # Shows only projects milestones on list
-        # although  we need to show them in the dropdown.
-        @milestones = @milestones.where(group: nil).includes(:project)
+        # We need to show group milestones in the JSON response
+        # so that people can filter by and assign group milestones,
+        # but we don't need to show them on the project milestones page itself.
+        @milestones = @milestones.for_projects
         @milestones = @milestones.page(params[:page])
       end
       format.json do

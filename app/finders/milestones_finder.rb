@@ -6,12 +6,13 @@
 # params: Search params
 
 class MilestonesFinder
-  attr_reader :projects, :groups, :params
+  attr_reader :projects, :groups, :params, :order
 
-  def initialize(projects: nil, groups: nil, params: {})
+  def initialize(projects: nil, groups: nil, params: {}, order: "due_date ASC")
     @projects = Array(projects)
     @groups = Array(groups)
     @params = params
+    @order = order
   end
 
   def execute
@@ -20,10 +21,7 @@ class MilestonesFinder
     project_ids = projects&.map(&:id)
     group_ids = groups&.map(&:id)
 
-    conditions << table[:group_id].in(group_ids) if group_ids
-    conditions << table[:project_id].in(project_ids) if project_ids
-
-    milestones = Milestone.where(conditions.reduce(:or)).reorder("due_date ASC")
+    milestones = Milestone.for_projects_and_groups(project_ids, group_ids).reorder(order)
     Milestone.filter_by_state(milestones, params[:state])
   end
 end

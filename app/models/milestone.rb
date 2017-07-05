@@ -7,12 +7,12 @@ class Milestone < ActiveRecord::Base
   Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
   Started = MilestoneStruct.new('Started', '#started', -3)
 
+  include CacheMarkdownField
   include InternalId
   include Sortable
   include Referable
-  include Milestoneish
   include StripAttribute
-  include CacheMarkdownField
+  include Milestoneish
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -29,6 +29,17 @@ class Milestone < ActiveRecord::Base
   scope :of_groups, ->(ids) { where(group_id: ids) }
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
+  scope :for_projects, -> { where(group: nil).includes(:project) }
+
+  scope :for_projects_and_groups, -> (projects_ids, groups_ids) do
+    projects_ids, groups_ids = Array(projects_ids), Array(groups_ids)
+
+    conditions = []
+    conditions << arel_table[:project_id].in(projects_ids) if projects_ids.any?
+    conditions << arel_table[:group_id].in(groups_ids) if groups_ids.any?
+
+    where(conditions.reduce(:or))
+  end
 
   validates :group, presence: true, unless: :project
   validates :project, presence: true, unless: :group
@@ -166,10 +177,6 @@ class Milestone < ActiveRecord::Base
     self.title
   end
 
-  def title=(value)
-    write_attribute(:title, sanitize_title(value)) if value.present?
-  end
-
   def milestoneish_ids
     id
   end
@@ -180,6 +187,10 @@ class Milestone < ActiveRecord::Base
 
   def author_id
     nil
+  end
+
+  def title=(value)
+    write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
   def safe_title
@@ -203,13 +214,13 @@ class Milestone < ActiveRecord::Base
   # Milestone titles must be unique across project milestones and group milestones
   def uniqueness_of_title
     if project
-      title_exists = project.milestones.find_by_title(title)
-      title_exists ||= project.group.milestones.find_by_title(title) if project.group
+      relation = Milestone.for_projects_and_groups(project_id, project.group&.id)
     elsif group
-      title_exists = group.milestones.find_by_title(title)
-      title_exists ||= Milestone.where(project: group.projects).find_by_title(title)
+      projects_ids = group.projects.map(&:id)
+      relation = Milestone.for_projects_and_groups(projects_ids, group.id)
     end
 
+    title_exists = relation.find_by_title(title)
     errors.add(:title, "already being used for another group or project milestone.") if title_exists
   end
 

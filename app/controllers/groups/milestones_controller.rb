@@ -26,7 +26,7 @@ class Groups::MilestonesController < Groups::ApplicationController
     @milestone = Milestones::CreateService.new(group, current_user, milestone_params).execute
 
     if @milestone.persisted?
-      redirect_to milestone_path(title)
+      redirect_to milestone_path
     else
       render "new"
     end
@@ -40,16 +40,21 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def update
-    milestones = @milestone.milestones if @milestone.is_legacy_group_milestone?
     # Keep this compatible with legacy group milestones where we have to update
-    # all projects milestones at once.
-    milestones ||= Array(@milestone)
-
-    milestones.each do |milestone|
-      Milestones::UpdateService.new(milestone.parent, current_user, milestone_params).execute(milestone)
+    # all projects milestones states at once.
+    if @milestone.is_legacy_group_milestone?
+      update_params = milestone_params.select{ |key| key == "state_event" }
+      milestones = @milestone.milestones
+    else
+      update_params = milestone_params
+      milestones = [@milestone]
     end
 
-    redirect_to milestone_path(@milestone.title)
+    milestones.each do |milestone|
+      Milestones::UpdateService.new(milestone.parent, current_user, update_params).execute(milestone)
+    end
+
+    redirect_to milestone_path
   end
 
   private
@@ -62,20 +67,24 @@ class Groups::MilestonesController < Groups::ApplicationController
     params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
   end
 
-  def milestone_path(title)
-    group_milestone_path(group, title.to_slug.to_s, title: title)
+  def milestone_path
+    if @milestone.is_legacy_group_milestone?
+      group_milestone_path(group, @milestone.title.to_slug.to_s, title: @milestone.title)
+    else
+      group_milestone_path(group, @milestone.iid)
+    end
   end
 
   def milestones
     milestones = MilestonesFinder.new(groups: group, params: params).execute
-    legacy_milestones = GroupMilestone.build_collection(group, group_projects, params) || []
+    legacy_milestones = GroupMilestone.build_collection(group, group_projects, params)
 
     milestones + legacy_milestones
   end
 
   def milestone
     @milestone =
-      group.milestones.find_by_title(params[:title]) || GroupMilestone.build(group, group_projects, params[:title])
+      group.milestones.find_by_iid(params[:id]) || GroupMilestone.build(group, group_projects, params[:title])
 
     render_404 unless @milestone
   end

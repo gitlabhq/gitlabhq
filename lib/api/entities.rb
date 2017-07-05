@@ -254,7 +254,7 @@ module API
 
     class ProjectEntity < Grape::Entity
       expose :id, :iid
-      expose(:project_id) { |entity| entity.project.id }
+      expose(:project_id) { |entity| entity.project_id }
       expose :title, :description
       expose :state, :created_at, :updated_at
     end
@@ -268,8 +268,8 @@ module API
 
     class Milestone < Grape::Entity
       expose :id, :iid
-      expose(:project_id) { |entity| entity&.project&.id }
-      expose(:group_id) { |entity| entity&.group&.id }
+      expose(:project_id) { |entity| entity.project_id }
+      expose(:group_id) { |entity| entity.group_id }
       expose :title, :description
       expose :state, :created_at, :updated_at
       expose :due_date

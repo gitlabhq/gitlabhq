@@ -435,8 +435,9 @@ class IssuableFinder
 
     if items_projects
       items_group = project? ? project.group : Group.find_by_id(items_projects.group_ids)
+      items_group = nil unless Ability.allowed?(current_user, :read_group, items_group)
 
-      milestones = MilestonesFinder.new(projects: items_projects, groups: items_group, params: { state: 'all' }).execute
+      milestones = MilestonesFinder.new(projects: items_projects, groups: items_group, params: { state: 'all' }, order: nil).execute
       items.where(milestone: milestones)
     end
   end

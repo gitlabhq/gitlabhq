@@ -39,6 +39,7 @@ describe Projects::MilestonesController do
 
       it "queries only projects milestones" do
         milestones = assigns(:milestones)
+
         expect(milestones.count).to eq(1)
         expect(milestones.where(project_id: nil)).to be_empty
       end

@@ -55,7 +55,8 @@ describe Groups::MilestonesController do
            milestone: milestone_params
 
       milestone = Milestone.find_by_title(title)
-      expect(response).to redirect_to(group_milestone_path(group, title.to_slug.to_s, title: title))
+
+      expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
       expect(milestone.group_id).to eq(group.id)
       expect(milestone.due_date).to eq(milestone_params[:due_date])
       expect(milestone.start_date).to eq(milestone_params[:start_date])
@@ -69,14 +70,40 @@ describe Groups::MilestonesController do
       milestone_params[:title] = "title changed"
 
       put :update,
-           id: milestone.title.to_slug.to_s,
+           id: milestone.iid,
            group_id: group.to_param,
            milestone: milestone_params,
            title: milestone.title
 
       milestone.reload
-      expect(response).to redirect_to(group_milestone_path(group, milestone.title.to_slug.to_s, title: milestone.title))
+      expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
       expect(milestone.title).to eq("title changed")
+    end
+
+    context "legacy group milestones" do
+      let!(:milestone1) { create(:milestone, project: project, title: 'legacy milestone', description: "old description") }
+      let!(:milestone2) { create(:milestone, project: project2, title: 'legacy milestone', description: "old description") }
+
+      it "updates only group milestones state" do
+        milestone_params[:title] = "title changed"
+        milestone_params[:description] = "description changed"
+        milestone_params[:state_event] = "close"
+
+        put :update,
+             id: milestone1.title.to_slug.to_s,
+             group_id: group.to_param,
+             milestone: milestone_params,
+             title: milestone1.title
+
+        expect(response).to redirect_to(group_milestone_path(group, milestone1.title.to_slug.to_s, title: milestone1.title))
+
+        [milestone1, milestone2].each do |milestone|
+          milestone.reload
+          expect(milestone.title).to eq("legacy milestone")
+          expect(milestone.description).to eq("old description")
+          expect(milestone.state).to eq("closed")
+        end
+      end
     end
   end
 

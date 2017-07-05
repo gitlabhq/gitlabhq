@@ -42,7 +42,7 @@ describe Milestone, models: true do
       end
 
       it "accepts the same title in another project" do
-        project = build(:empty_project)
+        project = create(:empty_project)
         new_milestone = Milestone.new(project: project, title: milestone.title)
 
         expect(new_milestone).to be_valid
