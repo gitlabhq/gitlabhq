@@ -1,0 +1,5 @@
+---
+title: Prevent accidental deletion of protected MR source branch by repeating checks
+  before actual deletion
+merge_request:
+author:

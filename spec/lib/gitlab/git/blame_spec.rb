@@ -20,6 +20,7 @@ describe Gitlab::Git::Blame, seed_helper: true do
       expect(data.size).to eq(95)
       expect(data.first[:commit]).to be_kind_of(Gitlab::Git::Commit)
       expect(data.first[:line]).to eq("# Contribute to GitLab")
+      expect(data.first[:line]).to be_utf8
     end
   end
 
@@ -40,6 +41,7 @@ describe Gitlab::Git::Blame, seed_helper: true do
       expect(data.size).to eq(1)
       expect(data.first[:commit]).to be_kind_of(Gitlab::Git::Commit)
       expect(data.first[:line]).to eq("Ä ü")
+      expect(data.first[:line]).to be_utf8
     end
   end
 
@@ -61,6 +63,7 @@ describe Gitlab::Git::Blame, seed_helper: true do
       expect(data.size).to eq(1)
       expect(data.first[:commit]).to be_kind_of(Gitlab::Git::Commit)
       expect(data.first[:line]).to eq(" ")
+      expect(data.first[:line]).to be_utf8
     end
   end
 end

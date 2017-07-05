@@ -104,7 +104,7 @@
         }
         this.data = query.result[0].values;
         this.unitOfDisplay = query.unit || 'N/A';
-        this.yAxisLabel = this.columnData.y_axis || 'Values';
+        this.yAxisLabel = this.columnData.y_label || 'Values';
         this.legendTitle = query.legend || 'Average';
         this.graphWidth = this.$refs.baseSvg.clientWidth -
                      this.margin.left - this.margin.right;
