@@ -267,8 +267,7 @@ describe Projects::PipelineSchedulesController do
           end
 
           it 'returns an error that variables are duplciated' do
-            put :update, namespace_id: project.namespace.to_param,
-              project_id: project, id: pipeline_schedule, schedule: schedule
+            go
 
             expect(assigns(:schedule).errors['variables.key']).not_to be_empty
           end
