@@ -22,7 +22,7 @@ describe Projects::DestroyService, services: true do
     let!(:geo_node) { create(:geo_node, :primary, :current) }
 
     it 'logs an event to the Geo event log' do
-      # Run sidekiq immediatly to check that renamed repository will be removed
+      # Run Sidekiq immediately to check that renamed repository will be removed
       Sidekiq::Testing.inline! do
         expect { subject.execute }.to change(Geo::RepositoryDeletedEvent, :count).by(1)
       end
