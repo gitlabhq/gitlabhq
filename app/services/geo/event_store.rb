@@ -31,11 +31,7 @@ module Geo
     def create
       return unless Gitlab::Geo.primary?
 
-      Geo::EventLog.transaction do
-        event_log = Geo::EventLog.new
-        event_log.public_send("#{self.class.event_type}=", build_event)
-        event_log.save!
-      end
+      Geo::EventLog.create!("#{self.class.event_type}" => build_event)
     rescue ActiveRecord::RecordInvalid, NoMethodError
       log("#{self.event_type.to_s.humanize} could not be created")
     end
