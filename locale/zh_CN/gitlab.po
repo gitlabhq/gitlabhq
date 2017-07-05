@@ -722,7 +722,7 @@ msgstr "选择时区"
 msgid "Select target branch"
 msgstr "选择目标分支"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "为账号创建一个用于推送或拉取的 %{protocol} 密码。"
 
 msgid "Set up CI"

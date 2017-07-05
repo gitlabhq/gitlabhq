@@ -695,7 +695,7 @@ msgstr "選擇時區"
 msgid "Select target branch"
 msgstr "選擇目標分支 (branch) "
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "請先設定密碼，才能使用 %{protocol} 來上傳 (push) 或下載 (pull) 。"
 
 msgid "Set up CI"

@@ -749,10 +749,10 @@ msgstr "Seleziona una timezone"
 msgid "Select target branch"
 msgstr "Seleziona una branch di destinazione"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 "Imposta una password sul tuo account per eseguire pull o push tramite "
-"%{protocol}"
+"%{protocol}."
 
 msgid "Set up CI"
 msgstr "Configura CI"
