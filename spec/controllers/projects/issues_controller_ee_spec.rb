@@ -41,7 +41,7 @@ describe Projects::IssuesController do
 
         request_csv
 
-        expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
+        expect(response).to redirect_to(project_issues_path(project))
         expect(response.flash[:notice]).to match(/\AYour CSV export has started/i)
       end
 
@@ -71,7 +71,7 @@ describe Projects::IssuesController do
 
         request_csv
 
-        expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
+        expect(response).to redirect_to(project_issues_path(project))
         expect(response.flash[:notice]).to match(/\AYour CSV export has started/i)
       end
     end

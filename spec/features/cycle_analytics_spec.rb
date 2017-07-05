@@ -16,7 +16,7 @@ feature 'Cycle Analytics', feature: true, js: true do
 
         gitlab_sign_in(user)
 
-        visit namespace_project_cycle_analytics_path(project.namespace, project)
+        visit project_cycle_analytics_path(project)
         wait_for_requests
       end
 
@@ -39,7 +39,7 @@ feature 'Cycle Analytics', feature: true, js: true do
         deploy_master
 
         gitlab_sign_in(user)
-        visit namespace_project_cycle_analytics_path(project.namespace, project)
+        visit project_cycle_analytics_path(project)
       end
 
       it 'shows data on each stage' do
@@ -71,7 +71,7 @@ feature 'Cycle Analytics', feature: true, js: true do
 
         project.team << [user, :master]
         gitlab_sign_in(user)
-        visit namespace_project_cycle_analytics_path(project.namespace, project)
+        visit project_cycle_analytics_path(project)
         wait_for_requests
       end
 
@@ -94,7 +94,7 @@ feature 'Cycle Analytics', feature: true, js: true do
       deploy_master
 
       gitlab_sign_in(guest)
-      visit namespace_project_cycle_analytics_path(project.namespace, project)
+      visit project_cycle_analytics_path(project)
       wait_for_requests
     end
 

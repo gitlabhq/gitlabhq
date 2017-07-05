@@ -6,10 +6,10 @@
 
 = render "projects/pipelines/head"
 
-#pipelines-list-vue{ data: { endpoint: namespace_project_pipelines_path(@project.namespace, @project, format: :json),
+#pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json),
   "css-class" => container_class,
   "help-page-path" => help_page_path('ci/quick_start/README'),
-  "new-pipeline-path" => new_namespace_project_pipeline_path(@project.namespace, @project),
+  "new-pipeline-path" => new_project_pipeline_path(@project),
   "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
   "all-path" =>  project_pipelines_path(@project),
   "pending-path" => project_pipelines_path(@project, scope: :pending),

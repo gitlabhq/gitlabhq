@@ -37,13 +37,13 @@ feature 'Import/Export - project export integration test', feature: true, js: tr
     end
 
     scenario 'exports a project successfully' do
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
 
       expect(page).to have_content('Export project')
 
       click_link 'Export project'
 
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
 
       expect(page).to have_content('Download export')
 

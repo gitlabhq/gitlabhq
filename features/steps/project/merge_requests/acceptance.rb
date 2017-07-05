@@ -1,6 +1,5 @@
 class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
   include LoginHelpers
-  include GitlabRoutingHelper
   include WaitForRequests
 
   step 'I am on the Merge Request detail page' do

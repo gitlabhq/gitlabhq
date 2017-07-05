@@ -11,7 +11,7 @@
       = link_to 'More information', '#'
 
   .col-lg-9
-    .panel.panel-default.js-panel-monitored-metrics{ data: { "active-metrics" => "#{namespace_project_prometheus_active_metrics_path(@project.namespace, @project, :json)}" } }
+    .panel.panel-default.js-panel-monitored-metrics{ data: { "active-metrics" => "#{project_prometheus_active_metrics_path(@project, :json)}" } }
       .panel-heading
         %h3.panel-title
           Monitored

@@ -22,11 +22,11 @@
             - if @project.feature_available?(:variable_environment_scope)
               %td.variable-environment-scope= variable.environment_scope
             %td.variable-menu
-              = link_to namespace_project_variable_path(@project.namespace, @project, variable), class: "btn btn-transparent btn-variable-edit" do
+              = link_to project_variable_path(@project, variable), class: "btn btn-transparent btn-variable-edit" do
                 %span.sr-only
                   Update
                 = icon("pencil")
-              = link_to namespace_project_variable_path(@project.namespace, @project, variable), class: "btn btn-transparent btn-variable-delete", method: :delete, data: { confirm: "Are you sure?" } do
+              = link_to project_variable_path(@project, variable), class: "btn btn-transparent btn-variable-delete", method: :delete, data: { confirm: "Are you sure?" } do
                 %span.sr-only
                   Remove
                 = icon("trash")

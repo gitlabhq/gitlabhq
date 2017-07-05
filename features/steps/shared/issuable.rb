@@ -52,23 +52,23 @@ module SharedIssuable
 
   step 'I visit issue page "Enterprise issue"' do
     issue = Issue.find_by(title: 'Enterprise issue')
-    visit namespace_project_issue_path(issue.project.namespace, issue.project, issue)
+    visit project_issue_path(issue.project, issue)
   end
 
   step 'I visit merge request page "Enterprise fix"' do
     mr = MergeRequest.find_by(title: 'Enterprise fix')
-    visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+    visit project_merge_request_path(mr.target_project, mr)
     wait_for_requests
   end
 
   step 'I visit issue page "Community issue"' do
     issue = Issue.find_by(title: 'Community issue')
-    visit namespace_project_issue_path(issue.project.namespace, issue.project, issue)
+    visit project_issue_path(issue.project, issue)
   end
 
   step 'I visit issue page "Community fix"' do
     mr = MergeRequest.find_by(title: 'Community fix')
-    visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+    visit project_merge_request_path(mr.target_project, mr)
   end
 
   step 'I should not see any related merge requests' do

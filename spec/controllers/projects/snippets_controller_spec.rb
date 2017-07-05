@@ -148,7 +148,7 @@ describe Projects::SnippetsController do
                            { spam_log_id: spam_logs.last.id,
                              recaptcha_verification: true })
 
-            expect(response).to redirect_to(Snippet.last)
+            expect(response).to redirect_to(project_snippet_path(project, Snippet.last))
           end
         end
       end
@@ -228,7 +228,7 @@ describe Projects::SnippetsController do
                                      { spam_log_id: spam_logs.last.id,
                                        recaptcha_verification: true })
 
-            expect(response).to redirect_to(snippet)
+            expect(response).to redirect_to(project_snippet_path(project, snippet))
           end
         end
       end
@@ -273,7 +273,7 @@ describe Projects::SnippetsController do
                                      { spam_log_id: spam_logs.last.id,
                                        recaptcha_verification: true })
 
-            expect(response).to redirect_to(snippet)
+            expect(response).to redirect_to(project_snippet_path(project, snippet))
           end
         end
       end

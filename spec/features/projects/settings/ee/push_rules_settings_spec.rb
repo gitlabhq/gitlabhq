@@ -17,7 +17,7 @@ describe 'Project settings > [EE] repository', feature: true do
 
     context 'push rules licensed' do
       before do
-        visit namespace_project_settings_repository_path(project.namespace, project)
+        visit project_settings_repository_path(project)
 
         fill_in input_id, with: commit_message
         click_button 'Save Push Rules'
@@ -36,7 +36,7 @@ describe 'Project settings > [EE] repository', feature: true do
       before do
         stub_licensed_features(push_rules: false)
 
-        visit namespace_project_settings_repository_path(project.namespace, project)
+        visit project_settings_repository_path(project)
       end
 
       it 'hides push rule settings' do
@@ -51,7 +51,7 @@ describe 'Project settings > [EE] repository', feature: true do
     before do
       project.team << [user2, :master]
 
-      visit namespace_project_settings_repository_path(project.namespace, project)
+      visit project_settings_repository_path(project)
     end
 
     it 'sets mirror user' do

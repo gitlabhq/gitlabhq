@@ -5,7 +5,7 @@
       .event-last-push-text
         %span You pushed to
         %strong
-          = link_to event.ref_name, namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), class: 'ref-name'
+          = link_to event.ref_name, project_commits_path(event.project, event.ref_name), class: 'ref-name'
 
         - if event.project != @project
           %span at

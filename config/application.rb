@@ -171,5 +171,25 @@ module Gitlab
     config.generators do |g|
       g.factory_girl false
     end
+
+    config.after_initialize do
+      Rails.application.reload_routes!
+
+      project_url_helpers = Module.new do
+        Gitlab::Application.routes.named_routes.helper_names.each do |name|
+          next unless name.include?('namespace_project')
+
+          define_method(name.sub('namespace_project', 'project')) do |project, *args|
+            send(name, project&.namespace, project, *args)
+          end
+        end
+      end
+
+      Gitlab::Routing.url_helpers.include project_url_helpers
+      Gitlab::Routing.url_helpers.extend project_url_helpers
+
+      GitlabRoutingHelper.include project_url_helpers
+      GitlabRoutingHelper.extend project_url_helpers
+    end
   end
 end

@@ -7,7 +7,7 @@ module Projects
         @create_access_level = @protected_tag.create_access_levels.find(params[:id])
         @create_access_level.destroy
 
-        redirect_to namespace_project_protected_tag_path(@project.namespace, @project, @protected_tag),
+        redirect_to project_protected_tag_path(@project, @protected_tag),
                     status: 302,
                     notice: "Successfully deleted. #{@create_access_level.humanize} will not be able to create this protected tag."
       end

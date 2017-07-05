@@ -281,7 +281,7 @@ module EE
     # No need to have a Kerberos Web url. Kerberos URL will be used only to
     # clone
     def kerberos_url_to_repo
-      "#{::Gitlab.config.build_gitlab_kerberos_url + ::Gitlab::Application.routes.url_helpers.namespace_project_path(self.namespace, self)}.git"
+      "#{::Gitlab.config.build_gitlab_kerberos_url + ::Gitlab::Routing.url_helpers.project_path(self)}.git"
     end
 
     def group_ldap_synced?

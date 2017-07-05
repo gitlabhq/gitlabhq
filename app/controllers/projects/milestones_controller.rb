@@ -55,8 +55,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     @milestone = Milestones::CreateService.new(project, current_user, milestone_params).execute
 
     if @milestone.save
-      redirect_to namespace_project_milestone_path(@project.namespace,
-                                                   @project, @milestone)
+      redirect_to project_milestone_path(@project, @milestone)
     else
       render "new"
     end
@@ -69,8 +68,7 @@ class Projects::MilestonesController < Projects::ApplicationController
       format.js
       format.html do
         if @milestone.valid?
-          redirect_to namespace_project_milestone_path(@project.namespace,
-                                                   @project, @milestone)
+          redirect_to project_milestone_path(@project, @milestone)
         else
           render :edit
         end

@@ -15,7 +15,7 @@ describe 'Branches', feature: true do
 
     describe 'Initial branches page' do
       it 'shows all the branches' do
-        visit namespace_project_branches_path(project.namespace, project)
+        visit project_branches_path(project)
 
         repository.branches_sorted_by(:name).first(20).each do |branch|
           expect(page).to have_content("#{branch.name}")
@@ -24,7 +24,7 @@ describe 'Branches', feature: true do
       end
 
       it 'sorts the branches by name' do
-        visit namespace_project_branches_path(project.namespace, project)
+        visit project_branches_path(project)
 
         click_button "Name" # Open sorting dropdown
         click_link "Name"
@@ -36,7 +36,7 @@ describe 'Branches', feature: true do
       end
 
       it 'sorts the branches by last updated' do
-        visit namespace_project_branches_path(project.namespace, project)
+        visit project_branches_path(project)
 
         click_button "Name" # Open sorting dropdown
         click_link "Last updated"
@@ -48,7 +48,7 @@ describe 'Branches', feature: true do
       end
 
       it 'sorts the branches by oldest updated' do
-        visit namespace_project_branches_path(project.namespace, project)
+        visit project_branches_path(project)
 
         click_button "Name" # Open sorting dropdown
         click_link "Oldest updated"
@@ -60,17 +60,17 @@ describe 'Branches', feature: true do
       end
 
       it 'avoids a N+1 query in branches index' do
-        control_count = ActiveRecord::QueryRecorder.new { visit namespace_project_branches_path(project.namespace, project) }.count
+        control_count = ActiveRecord::QueryRecorder.new { visit project_branches_path(project) }.count
 
         %w(one two three four five).each { |ref| repository.add_branch(user, ref, 'master') }
 
-        expect { visit namespace_project_branches_path(project.namespace, project) }.not_to exceed_query_limit(control_count)
+        expect { visit project_branches_path(project) }.not_to exceed_query_limit(control_count)
       end
     end
 
     describe 'Find branches' do
       it 'shows filtered branches', js: true do
-        visit namespace_project_branches_path(project.namespace, project)
+        visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
         find('#branch-search').native.send_keys(:enter)
@@ -82,7 +82,7 @@ describe 'Branches', feature: true do
 
     describe 'Delete unprotected branch' do
       it 'removes branch after confirmation', js: true do
-        visit namespace_project_branches_path(project.namespace, project)
+        visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
 
@@ -100,7 +100,7 @@ describe 'Branches', feature: true do
     describe 'Delete protected branch' do
       before do
         project.add_user(user, :master)
-        visit namespace_project_protected_branches_path(project.namespace, project)
+        visit project_protected_branches_path(project)
         set_protected_branch_name('fix')
         set_allowed_to('merge')
         set_allowed_to('push')
@@ -112,7 +112,7 @@ describe 'Branches', feature: true do
       end
 
       it 'does not allow devleoper to removes protected branch', js: true do
-        visit namespace_project_branches_path(project.namespace, project)
+        visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
         find('#branch-search').native.send_keys(:enter)
@@ -130,7 +130,7 @@ describe 'Branches', feature: true do
 
     describe 'Delete protected branch' do
       before do
-        visit namespace_project_protected_branches_path(project.namespace, project)
+        visit project_protected_branches_path(project)
         set_protected_branch_name('fix')
         set_allowed_to('merge')
         set_allowed_to('push')
@@ -141,7 +141,7 @@ describe 'Branches', feature: true do
       end
 
       it 'removes branch after modal confirmation', js: true do
-        visit namespace_project_branches_path(project.namespace, project)
+        visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
         find('#branch-search').native.send_keys(:enter)
@@ -164,7 +164,7 @@ describe 'Branches', feature: true do
 
   context 'logged out' do
     before do
-      visit namespace_project_branches_path(project.namespace, project)
+      visit project_branches_path(project)
     end
 
     it 'does not show merge request button' do

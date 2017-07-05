@@ -45,7 +45,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     expect(link).not_to match %r(https?://)
     expect(link).to eq urls
-      .namespace_project_milestone_path(project.namespace, project, milestone)
+      .project_milestone_path(project, milestone)
   end
 
   context 'Integer-based references' do
@@ -53,7 +53,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).to eq urls
-        .namespace_project_milestone_url(project.namespace, project, milestone)
+        .project_milestone_url(project, milestone)
     end
 
     it 'links with adjacent text' do
@@ -76,7 +76,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).to eq urls
-        .namespace_project_milestone_url(project.namespace, project, milestone)
+        .project_milestone_url(project, milestone)
       expect(doc.text).to eq 'See gfm'
     end
 
@@ -100,7 +100,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).to eq urls
-        .namespace_project_milestone_url(project.namespace, project, milestone)
+        .project_milestone_url(project, milestone)
       expect(doc.text).to eq 'See gfm references'
     end
 
@@ -123,7 +123,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).to eq urls
-        .namespace_project_milestone_url(project.namespace, project, milestone)
+        .project_milestone_url(project, milestone)
     end
 
     it 'links with adjacent text' do
@@ -157,9 +157,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
-        .namespace_project_milestone_url(another_project.namespace,
-                                        another_project,
-                                        milestone)
+        .project_milestone_url(another_project, milestone)
     end
 
     it 'link has valid text' do
@@ -196,9 +194,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
-        .namespace_project_milestone_url(another_project.namespace,
-                                        another_project,
-                                        milestone)
+        .project_milestone_url(another_project, milestone)
     end
 
     it 'link has valid text' do
@@ -235,9 +231,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
-        .namespace_project_milestone_url(another_project.namespace,
-                                        another_project,
-                                        milestone)
+        .project_milestone_url(another_project, milestone)
     end
 
     it 'link has valid text' do
@@ -274,9 +268,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     it 'points to referenced project milestone page' do
       expect(result.css('a').first.attr('href')).to eq urls
-        .namespace_project_milestone_url(another_project.namespace,
-                                        another_project,
-                                        milestone)
+        .project_milestone_url(another_project, milestone)
     end
 
     it 'contains cross project content' do

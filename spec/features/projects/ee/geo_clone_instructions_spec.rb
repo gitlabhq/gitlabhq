@@ -40,7 +40,7 @@ feature 'Geo clone instructions', feature: true, js: true do
   end
 
   def visit_project
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   def select_protocol(protocol)

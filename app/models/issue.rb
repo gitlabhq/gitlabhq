@@ -328,11 +328,7 @@ class Issue < ActiveRecord::Base
   end
 
   def expire_etag_cache
-    key = Gitlab::Routing.url_helpers.realtime_changes_namespace_project_issue_path(
-      project.namespace,
-      project,
-      self
-    )
+    key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
     Gitlab::EtagCaching::Store.new.touch(key)
   end
 end

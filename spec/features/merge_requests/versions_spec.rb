@@ -9,7 +9,7 @@ feature 'Merge Request versions', js: true, feature: true do
 
   before do
     gitlab_sign_in :admin
-    visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit diffs_project_merge_request_path(project, merge_request)
   end
 
   it 'show the latest version of the diff' do
@@ -96,8 +96,7 @@ feature 'Merge Request versions', js: true, feature: true do
     end
 
     it 'has a path with comparison context' do
-      expect(page).to have_current_path diffs_namespace_project_merge_request_path(
-        project.namespace,
+      expect(page).to have_current_path diffs_project_merge_request_path(
         project,
         merge_request.iid,
         diff_id: merge_request_diff3.id,
