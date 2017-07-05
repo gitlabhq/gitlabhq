@@ -4,6 +4,7 @@ class GeoRepositorySyncWorker
 
   RUN_TIME = 5.minutes.to_i
   BATCH_SIZE = 100
+  BACKOFF_DELAY = 5.minutes
 
   def perform
     return unless Gitlab::Geo.secondary_role_enabled?
@@ -17,23 +18,10 @@ class GeoRepositorySyncWorker
     logger.info "Started Geo repository syncing for #{project_ids.length} project(s)"
 
     project_ids.each do |project_id|
-      begin
-        break if over_time?(start_time)
-        break unless node_enabled?
+      break if over_time?(start_time)
+      break unless node_enabled?
 
-        # We try to obtain a lease here for the entire sync process because we
-        # want to sync the repositories continuously at a controlled rate
-        # instead of hammering the primary node. Initially, we are syncing
-        # one repo at a time. If we don't obtain the lease here, every 5
-        # minutes all of 100 projects will be synced.
-        try_obtain_lease do |lease|
-          Geo::RepositorySyncService.new(project_id).execute
-        end
-
-      rescue ActiveRecord::RecordNotFound
-        logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
-        next
-      end
+      Geo::ProjectSyncWorker.perform_in(BACKOFF_DELAY, project_id, Time.now)
     end
 
     logger.info "Finished Geo repository syncing for #{project_ids.length} project(s)"
@@ -75,25 +63,5 @@ class GeoRepositorySyncWorker
     end
 
     @current_node_enabled ||= Gitlab::Geo.current_node_enabled?
-  end
-
-  def try_obtain_lease
-    lease = Gitlab::ExclusiveLease.new(lease_key, timeout: lease_timeout).try_obtain
-
-    return unless lease
-
-    begin
-      yield lease
-    ensure
-      Gitlab::ExclusiveLease.cancel(lease_key, lease)
-    end
-  end
-
-  def lease_key
-    Geo::RepositorySyncService::LEASE_KEY_PREFIX
-  end
-
-  def lease_timeout
-    Geo::RepositorySyncService::LEASE_TIMEOUT
   end
 end
