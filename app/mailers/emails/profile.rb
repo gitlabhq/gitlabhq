@@ -14,7 +14,7 @@ module Emails
     end
 
     def new_ssh_key_email(key_id)
-      @key = Key.find_by_id(key_id)
+      @key = Key.find_by(id: key_id)
 
       return unless @key
 
@@ -24,7 +24,7 @@ module Emails
     end
 
     def new_gpg_key_email(gpg_key_id)
-      @gpg_key = GpgKey.find_by_id(gpg_key_id)
+      @gpg_key = GpgKey.find_by(id: gpg_key_id)
 
       return unless @gpg_key
 
