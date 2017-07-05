@@ -15,7 +15,7 @@
       - else
         (tag was removed from repository)
 
-  = render partial: 'projects/protected_tags/update_protected_tag', locals: { protected_tag: protected_tag }
+  = render partial: 'projects/protected_tags/ee/fallback_update_protected_tag', locals: { protected_tag: protected_tag }
 
   - if can_admin_project
     %td

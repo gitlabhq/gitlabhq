@@ -15,7 +15,7 @@
       - else
         (branch was removed from repository)
 
-  = render partial: 'projects/protected_branches/update_protected_branch', locals: { protected_branch: protected_branch }
+  = render partial: 'projects/protected_branches/ee/fallback_update_protected_branch', locals: { protected_branch: protected_branch }
 
   - if can_admin_project
     %td

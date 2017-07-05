@@ -120,6 +120,30 @@ feature 'Projected Tags', feature: true, js: true do
       end
 
       include_examples "protected tags > access control > CE"
+
+      describe 'with existing access levels' do
+        let(:protected_tag) { create(:protected_tag, project: project) }
+
+        it 'shows users that can push to the branch' do
+          protected_tag.create_access_levels.new(user: create(:user, name: 'Jane'))
+            .save!(validate: false)
+
+          visit namespace_project_settings_repository_path(project.namespace, project)
+
+          expect(page).to have_content("The following user can also create tags: "\
+                                       "Jane")
+        end
+
+        it 'shows groups that can create to the branch' do
+          protected_tag.create_access_levels.new(group: create(:group, name: 'Team Awesome'))
+            .save!(validate: false)
+
+          visit namespace_project_settings_repository_path(project.namespace, project)
+
+          expect(page).to have_content("Members of this group can also create tags: "\
+                                       "Team Awesome")
+        end
+      end
     end
   end
 end
