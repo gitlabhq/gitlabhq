@@ -328,6 +328,38 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#submodule_url_for' do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+    let(:ref) { 'master' }
+
+    def submodule_url(path)
+      repository.submodule_url_for(ref, path)
+    end
+
+    it { expect(submodule_url('six')).to eq('git://github.com/randx/six.git') }
+    it { expect(submodule_url('nested/six')).to eq('git://github.com/randx/six.git') }
+    it { expect(submodule_url('deeper/nested/six')).to eq('git://github.com/randx/six.git') }
+    it { expect(submodule_url('invalid/path')).to eq(nil) }
+
+    context 'uncommitted submodule dir' do
+      let(:ref) { 'fix-existing-submodule-dir' }
+
+      it { expect(submodule_url('submodule-existing-dir')).to eq(nil) }
+    end
+
+    context 'tags' do
+      let(:ref) { 'v1.2.1' }
+
+      it { expect(submodule_url('six')).to eq('git://github.com/randx/six.git') }
+    end
+
+    context 'no submodules at commit' do
+      let(:ref) { '6d39438' }
+
+      it { expect(submodule_url('six')).to eq(nil) }
+    end
+  end
+
   context '#submodules' do
     let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 

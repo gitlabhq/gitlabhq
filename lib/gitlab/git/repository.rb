@@ -554,11 +554,14 @@ module Gitlab
       #   # => git@localhost:rack.git
       #
       def submodule_url_for(ref, path)
-        if submodules(ref).any?
-          submodule = submodules(ref)[path]
-
-          if submodule
-            submodule['url']
+        Gitlab::GitalyClient.migrate(:submodule_url_for) do |is_enabled|
+          if is_enabled
+            gitaly_submodule_url_for(ref, path)
+          else
+            if submodules(ref).any?
+              submodule = submodules(ref)[path]
+              submodule['url'] if submodule
+            end
           end
         end
       end
@@ -913,6 +916,18 @@ module Gitlab
 
         parser = GitmodulesParser.new(content)
         fill_submodule_ids(commit, parser.parse)
+      end
+
+      def gitaly_submodule_url_for(ref, path)
+        # We don't care about the contents so 1 byte is enough. Can't request 0 bytes, 0 means unlimited.
+        commit_object = gitaly_commit_client.tree_entry(ref, path, 1)
+
+        return unless commit_object && commit_object.type == :COMMIT
+
+        gitmodules = gitaly_commit_client.tree_entry(ref, '.gitmodules', Blob::MAX_DATA_DISPLAY_SIZE)
+        found_module = GitmodulesParser.new(gitmodules.data).parse[path]
+
+        found_module && found_module['url']
       end
 
       def alternate_object_directories
