@@ -17,7 +17,6 @@
   .panel-right>
     %ul#tabs{"v-if" => "isMini", ":style" => "{height: 41 + scrollWidth + 'px'}", "v-cloak" => "1"}
       %li{ is: "repo-tab", "v-for" => "tab in openedFiles", ":key" => "tab.id", ":tab" => "tab", ":class" => "{'active' : tab.active}" }
-    #view-toggler
     #ide{ data: { url: repo_url } }
     #binary-viewer{ "v-if" => "binary" }
       %img{"v-if" => "binaryTypes.png", ":src" => "pngBlobWithDataURI"}
