@@ -237,6 +237,28 @@ describe API::CommitStatuses do
         end
       end
 
+      context 'when retrying a commit status' do
+        before do
+          post api(post_url, developer),
+            { state: 'failed', name: 'test', ref: 'master' }
+
+          post api(post_url, developer),
+            { state: 'success', name: 'test', ref: 'master' }
+        end
+
+        it 'correctly posts a new commit status' do
+          expect(response).to have_http_status(201)
+          expect(json_response['sha']).to eq(commit.id)
+          expect(json_response['status']).to eq('success')
+        end
+
+        it 'retries a commit status' do
+          expect(CommitStatus.count).to eq 2
+          expect(CommitStatus.first).to be_retried
+          expect(CommitStatus.last.pipeline).to be_success
+        end
+      end
+
       context 'when status is invalid' do
         before do
           post api(post_url, developer), state: 'invalid'
