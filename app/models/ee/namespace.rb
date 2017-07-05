@@ -38,8 +38,11 @@ module EE
         all_projects.each do |project|
           old_path_with_namespace = File.join(full_path_was, project.path)
 
-          ::Geo::RepositoryRenamedEventStore.new(project,
-            old_path: project.path, old_path_with_namespace: old_path_with_namespace).create
+          ::Geo::RepositoryRenamedEventStore.new(
+            project,
+            old_path: project.path,
+            old_path_with_namespace: old_path_with_namespace
+          ).create
         end
       end
 
