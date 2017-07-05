@@ -132,6 +132,6 @@ describe Ci::PipelineSchedule, models: true do
       pipeline_schedule.reload
     end
 
-    it { is_expected.to eq(pipeline_schedule_variables.map(&:to_runner_variable)) }
+    it { is_expected.to contain_exactly(*pipeline_schedule_variables.map(&:to_runner_variable)) }
   end
 end
