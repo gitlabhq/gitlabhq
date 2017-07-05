@@ -13,7 +13,6 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include FeatureGate
   include CreatedAtFilterable
-  include AfterCommitQueue
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -156,10 +155,10 @@ class User < ActiveRecord::Base
   before_validation :set_public_email, if: :public_email_changed?
 
   after_update :update_emails_with_primary_email, if: :email_changed?
-  after_update :update_invalid_gpg_signatures, if: :email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
   after_save :ensure_namespace_correct
+  after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
   after_initialize :set_projects_limit
   after_destroy :post_destroy_hook
 
@@ -516,7 +515,7 @@ class User < ActiveRecord::Base
   end
 
   def update_invalid_gpg_signatures
-    run_after_commit { gpg_keys.each(&:update_invalid_gpg_signatures) }
+    gpg_keys.each(&:update_invalid_gpg_signatures)
   end
 
   # Returns the groups a user has access to

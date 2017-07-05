@@ -1,6 +1,4 @@
 class GpgKey < ActiveRecord::Base
-  include AfterCommitQueue
-
   KEY_PREFIX = '-----BEGIN PGP PUBLIC KEY BLOCK-----'.freeze
 
   belongs_to :user
@@ -31,8 +29,8 @@ class GpgKey < ActiveRecord::Base
     unless: -> { errors.has_key?(:key) }
 
   before_validation :extract_fingerprint, :extract_primary_keyid
-  after_create :update_invalid_gpg_signatures_after_create
-  after_create :notify_user
+  after_commit :update_invalid_gpg_signatures, on: :create
+  after_commit :notify_user, on: :create
 
   def key=(value)
     value.strip! unless value.blank?
@@ -75,10 +73,6 @@ class GpgKey < ActiveRecord::Base
   end
 
   def notify_user
-    run_after_commit { NotificationService.new.new_gpg_key(self) }
-  end
-
-  def update_invalid_gpg_signatures_after_create
-    run_after_commit { update_invalid_gpg_signatures }
+    NotificationService.new.new_gpg_key(self)
   end
 end
