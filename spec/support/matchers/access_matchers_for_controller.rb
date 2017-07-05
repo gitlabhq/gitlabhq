@@ -65,7 +65,7 @@ module AccessMatchersForController
   end
 
   matcher :be_allowed_for do |role|
-    match do |action, &block|
+    match do |action|
       user = emulate_user(role, @membership)
       update_owner(@objects, user)
       action.call
