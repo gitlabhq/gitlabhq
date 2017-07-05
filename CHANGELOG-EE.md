@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.5 (2017-07-05)
+
+- Make admin mirror application setting Gitlab.com exclusive. !2307
+- Make Geo::RepositorySyncService force create a repo.
+
 ## 9.3.4 (2017-07-03)
 
 - No changes.
