@@ -56,7 +56,6 @@ import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
-import OAuthRememberMe from './oauth_remember_me';
 
 (function() {
   var Dispatcher;
@@ -128,7 +127,6 @@ import OAuthRememberMe from './oauth_remember_me';
         case 'sessions:new':
           new UsernameValidator();
           new ActiveTabMemoizer();
-          new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':
