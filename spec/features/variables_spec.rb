@@ -24,7 +24,7 @@ describe 'Project variables', js: true do
     fill_in('variable_value', with: 'key value')
     click_button('Add new variable')
 
-    expect(page).to have_content('Variables were successfully updated.')
+    expect(page).to have_content('Variable was successfully created.')
     page.within('.variables-table') do
       expect(page).to have_content('key')
       expect(page).to have_content('No')
@@ -36,7 +36,7 @@ describe 'Project variables', js: true do
     fill_in('variable_value', with: '')
     click_button('Add new variable')
 
-    expect(page).to have_content('Variables were successfully updated.')
+    expect(page).to have_content('Variable was successfully created.')
     page.within('.variables-table') do
       expect(page).to have_content('new_key')
     end
@@ -48,7 +48,7 @@ describe 'Project variables', js: true do
     check('Protected')
     click_button('Add new variable')
 
-    expect(page).to have_content('Variables were successfully updated.')
+    expect(page).to have_content('Variable was successfully created.')
     page.within('.variables-table') do
       expect(page).to have_content('key')
       expect(page).to have_content('Yes')
