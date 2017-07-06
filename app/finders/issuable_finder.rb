@@ -142,19 +142,6 @@ class IssuableFinder
     milestones? && params[:milestone_title] == Milestone::None.title
   end
 
-  def milestones
-    return @milestones if defined?(@milestones)
-
-    @milestones =
-      if milestones?
-        scope = Milestone.where(project_id: projects)
-
-        scope.where(title: params[:milestone_title])
-      else
-        Milestone.none
-      end
-  end
-
   def labels?
     params[:label_name].present?
   end
@@ -330,7 +317,7 @@ class IssuableFinder
       elsif filter_by_started_milestone?
         items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
       else
-        items = filter_by_project_and_group_milestones(items)
+        items = items.with_milestone(params[:milestone_title])
       end
     end
 
@@ -426,23 +413,5 @@ class IssuableFinder
     opts.delete_if { |_, value| value.blank? }
 
     ['issuables_count', klass.to_ability_name, opts.sort]
-  end
-
-  def filter_by_project_and_group_milestones(items)
-    items = items.with_milestone(params[:milestone_title])
-
-    items_projects = projects(items)
-
-    if items_projects
-      items_group = project? ? project.group : Group.find_by_id(items_projects.group_ids)
-      items_group = nil unless Ability.allowed?(current_user, :read_group, items_group)
-      project_ids = items_projects.try(:id) || items_projects.map(&:id)
-
-      params =
-        { state: 'all', order: nil, project_ids: project_ids, group_ids: items_group&.id }
-
-      milestones = MilestonesFinder.new(params).execute
-      items.where(milestone: milestones)
-    end
   end
 end

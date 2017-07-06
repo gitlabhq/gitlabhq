@@ -17,6 +17,8 @@ class MilestonesFinder
   end
 
   def execute
+    return Milestone.none if project_ids.empty? && group_ids.empty?
+
     items = Milestone.all
     items = by_groups_and_projects(items)
     items = by_title(items)

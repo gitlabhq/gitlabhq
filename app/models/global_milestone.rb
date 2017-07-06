@@ -44,7 +44,8 @@ class GlobalMilestone
   def self.group_milestones_states_count(group)
     return STATE_COUNT_HASH unless group
 
-    params = { group_ids: group.id, state: 'all', order: nil }
+    params = { group_ids: [group.id], state: 'all', order: nil }
+
     relation = MilestonesFinder.new(params).execute
     grouped_by_state = relation.group(:state).count
 
@@ -60,6 +61,7 @@ class GlobalMilestone
     return STATE_COUNT_HASH unless projects
 
     params = { project_ids: projects.map(&:id), state: 'all', order: nil }
+
     relation = MilestonesFinder.new(params).execute
     project_milestones_by_state_and_title = relation.group(:state, :title).count
 

@@ -31,12 +31,10 @@ class Milestone < ActiveRecord::Base
   scope :closed, -> { with_state(:closed) }
   scope :for_projects, -> { where(group: nil).includes(:project) }
 
-  scope :for_projects_and_groups, -> (projects_ids, groups_ids) do
-    projects_ids, groups_ids = Array(projects_ids), Array(groups_ids)
-
+  scope :for_projects_and_groups, -> (project_ids, group_ids) do
     conditions = []
-    conditions << arel_table[:project_id].in(projects_ids) if projects_ids.any?
-    conditions << arel_table[:group_id].in(groups_ids) if groups_ids.any?
+    conditions << arel_table[:project_id].in(project_ids) if project_ids.compact.any?
+    conditions << arel_table[:group_id].in(group_ids) if group_ids.compact.any?
 
     where(conditions.reduce(:or))
   end
@@ -214,10 +212,10 @@ class Milestone < ActiveRecord::Base
   # Milestone titles must be unique across project milestones and group milestones
   def uniqueness_of_title
     if project
-      relation = Milestone.for_projects_and_groups(project_id, project.group&.id)
+      relation = Milestone.for_projects_and_groups([project_id], [project.group&.id])
     elsif group
-      projects_ids = group.projects.map(&:id)
-      relation = Milestone.for_projects_and_groups(projects_ids, group.id)
+      project_ids = group.projects.map(&:id)
+      relation = Milestone.for_projects_and_groups(project_ids, [group.id])
     end
 
     title_exists = relation.find_by_title(title)
