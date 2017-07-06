@@ -50,16 +50,18 @@ module Geo
 
       log("Updating #{type} sync information")
 
-      if started_at
-        registry.public_send("last_#{type}_synced_at=", started_at)
+      attrs = {}.tap do |attrs|
+        if started_at
+          attrs["last_#{type}_synced_at"] = started_at
+        end
+
+        if finished_at
+          attrs["last_#{type}_successful_sync_at"] = finished_at
+          attrs["resync_#{type}"] = false
+        end
       end
 
-      if finished_at
-        registry.public_send("last_#{type}_successful_sync_at=", finished_at)
-        registry.public_send("resync_#{type}=", false)
-      end
-
-      registry.save!
+      registry.update!(attrs)
     end
 
     def lease_key
