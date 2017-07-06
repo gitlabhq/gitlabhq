@@ -7,7 +7,7 @@ feature 'Projects > Wiki > User creates wiki page', :js do
     project.team << [user, :master]
     sign_in(user)
 
-    visit project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   context 'in the user namespace' do
