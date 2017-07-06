@@ -46,6 +46,7 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
+<<<<<<< HEAD
       geo_node_type =
         if Gitlab::Geo.current_node
           Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
@@ -53,6 +54,8 @@ namespace :gitlab do
           'Undefined'.color(:red)
         end
 
+=======
+>>>>>>> ce/master
       omniauth_providers = Gitlab.config.omniauth.providers.map { |provider| provider['name'] }
 
       puts ""

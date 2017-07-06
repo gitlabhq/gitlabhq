@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 - if environment.deployment_service_ready? && can?(current_user, :admin_environment, @project)
+=======
+- if environment.has_terminals? && can?(current_user, :admin_environment, @project)
+>>>>>>> ce/master
   = link_to terminal_project_environment_path(@project, environment), class: 'btn terminal-button' do
     = icon('terminal')

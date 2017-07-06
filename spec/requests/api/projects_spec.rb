@@ -347,7 +347,8 @@ describe API::Projects do
         wiki_enabled: false,
         only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
-        only_allow_merge_if_all_discussions_are_resolved: false
+        only_allow_merge_if_all_discussions_are_resolved: false,
+        ci_config_path: 'a/custom/path'
       })
 
       post api('/projects', user), project
@@ -472,6 +473,26 @@ describe API::Projects do
 
         expect(json_response['visibility']).to eq('public')
       end
+    end
+  end
+
+  describe 'GET /users/:user_id/projects/' do
+    let!(:public_project) { create(:empty_project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
+
+    it 'returns error when user not found' do
+      get api('/users/9999/projects/')
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns projects filtered by user' do
+      get api("/users/#{user4.id}/projects/", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
     end
   end
 
@@ -702,6 +723,7 @@ describe API::Projects do
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
         expect(json_response['public_jobs']).to be_present
+        expect(json_response['ci_config_path']).to be_nil
         expect(json_response['shared_with_groups']).to be_an Array
         expect(json_response['shared_with_groups'].length).to eq(1)
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)

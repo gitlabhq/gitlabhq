@@ -51,7 +51,10 @@ describe Project, models: true do
     it { is_expected.to have_one(:project_feature) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
+<<<<<<< HEAD
     it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData') }
+=======
+>>>>>>> ce/master
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
@@ -63,7 +66,10 @@ describe Project, models: true do
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
+<<<<<<< HEAD
     it { is_expected.to have_many(:path_locks) }
+=======
+>>>>>>> ce/master
     it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
     it { is_expected.to have_many(:users_star_projects) }
     it { is_expected.to have_many(:environments) }
@@ -77,8 +83,11 @@ describe Project, models: true do
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
+<<<<<<< HEAD
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
+=======
+>>>>>>> ce/master
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -150,6 +159,10 @@ describe Project, models: true do
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
 
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
+
+    it { is_expected.to validate_length_of(:ci_config_path).is_at_most(255) }
+    it { is_expected.to allow_value('').for(:ci_config_path) }
+    it { is_expected.not_to allow_value('test/../foo').for(:ci_config_path) }
 
     it { is_expected.to validate_presence_of(:creator) }
 
@@ -1015,6 +1028,7 @@ describe Project, models: true do
       let(:project) { create(:empty_project) }
 
       it { is_expected.to eq nil }
+<<<<<<< HEAD
     end
   end
 
@@ -1045,6 +1059,8 @@ describe Project, models: true do
     it "returns false" do
       project.namespace.update(share_with_group_lock: true)
       expect(project.allowed_to_share_with_group?).to be_falsey
+=======
+>>>>>>> ce/master
     end
   end
 
@@ -1765,6 +1781,28 @@ describe Project, models: true do
         expect(project).to receive(:container_repositories)
         expect(project).not_to have_container_registry_tags
       end
+    end
+  end
+
+  describe '#ci_config_path=' do
+    let(:project) { create(:empty_project) }
+
+    it 'sets nil' do
+      project.update!(ci_config_path: nil)
+
+      expect(project.ci_config_path).to be_nil
+    end
+
+    it 'sets a string' do
+      project.update!(ci_config_path: 'foo/.gitlab_ci.yml')
+
+      expect(project.ci_config_path).to eq('foo/.gitlab_ci.yml')
+    end
+
+    it 'sets a string but removes all leading slashes and null characters' do
+      project.update!(ci_config_path: "///f\0oo/\0/.gitlab_ci.yml")
+
+      expect(project.ci_config_path).to eq('foo//.gitlab_ci.yml')
     end
   end
 

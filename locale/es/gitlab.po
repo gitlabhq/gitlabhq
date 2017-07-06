@@ -719,8 +719,8 @@ msgstr "Selecciona una zona horaria"
 msgid "Select target branch"
 msgstr "Selecciona una rama de destino"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
-msgstr "Establezca una contraseña en su cuenta para actualizar o enviar a través de %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
+msgstr "Establezca una contraseña en su cuenta para actualizar o enviar a través de %{protocol}."
 
 msgid "Set up CI"
 msgstr "Configurar CI"

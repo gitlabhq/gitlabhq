@@ -109,13 +109,13 @@
     </text>
     <rect
       class="rect-axis-text"
-      :x="xPosition + 50"
+      :x="xPosition + 60"
       :y="graphHeight - 80"
-      width="50"
+      width="35"
       height="50">
     </rect>
     <text
-      class="label-axis-text"
+      class="label-axis-text x-label-text"
       :x="xPosition + 60"
       :y="yPosition"
       dy=".35em">
@@ -131,13 +131,13 @@
     <text
       class="text-metric-title"
       x="50"
-      :y="graphHeight - 40">
+      :y="graphHeight - 25">
       {{legendTitle}}
     </text>
     <text
       class="text-metric-usage"
       x="50"
-      :y="graphHeight - 25">
+      :y="graphHeight - 10">
       {{metricUsage}}
     </text>
   </g>

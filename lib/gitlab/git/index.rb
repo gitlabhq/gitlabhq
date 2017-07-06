@@ -110,10 +110,6 @@ module Gitlab
           if segment == '..'
             raise IndexError, 'Path cannot include directory traversal'
           end
-
-          unless segment =~ Gitlab::Regex.file_name_regex
-            raise IndexError, "Path #{Gitlab::Regex.file_name_regex_message}"
-          end
         end
 
         pathname.to_s

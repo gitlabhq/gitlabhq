@@ -9,8 +9,13 @@ feature 'Edit Merge Request', feature: true do
     before do
       project.team << [user, :master]
 
+<<<<<<< HEAD
       visit_edit_mr_page
     end
+=======
+    visit edit_project_merge_request_path(project, merge_request)
+  end
+>>>>>>> ce/master
 
     it 'has class js-quick-submit in form' do
       expect(page).to have_selector('.js-quick-submit')

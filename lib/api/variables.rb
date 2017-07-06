@@ -50,10 +50,13 @@ module API
       post ':id/variables' do
         variable_params = declared_params(include_missing: false)
 
+<<<<<<< HEAD
         # EE
         variable_params.delete(:environment_scope) unless
             user_project.feature_available?(:variable_environment_scope)
 
+=======
+>>>>>>> ce/master
         variable = user_project.variables.create(variable_params)
 
         if variable.valid?
@@ -81,10 +84,13 @@ module API
 
         variable_params = declared_params(include_missing: false).except(:key)
 
+<<<<<<< HEAD
         # EE
         variable_params.delete(:environment_scope) unless
             user_project.feature_available?(:variable_environment_scope)
 
+=======
+>>>>>>> ce/master
         if variable.update(variable_params)
           present variable, with: Entities::Variable
         else

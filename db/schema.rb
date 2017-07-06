@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20170627211700) do
+=======
+ActiveRecord::Schema.define(version: 20170703102400) do
+>>>>>>> ce/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1166,6 +1170,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
 
   add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
   add_index "pages_domains", ["project_id"], name: "index_pages_domains_on_project_id", using: :btree
+<<<<<<< HEAD
 
   create_table "path_locks", force: :cascade do |t|
     t.string "path", null: false
@@ -1178,6 +1183,8 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_index "path_locks", ["path"], name: "index_path_locks_on_path", using: :btree
   add_index "path_locks", ["project_id"], name: "index_path_locks_on_project_id", using: :btree
   add_index "path_locks", ["user_id"], name: "index_path_locks_on_user_id", using: :btree
+=======
+>>>>>>> ce/master
 
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -1322,6 +1329,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
     t.string "import_jid"
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
+    t.string "ci_config_path"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1814,8 +1822,11 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
+<<<<<<< HEAD
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
+=======
+>>>>>>> ce/master
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
@@ -1827,11 +1838,14 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_pipelines", "projects", name: "fk_86635dbd80", on_delete: :cascade
   add_foreign_key "ci_runner_projects", "projects", name: "fk_4478a6f1e4", on_delete: :cascade
+<<<<<<< HEAD
   add_foreign_key "ci_sources_pipelines", "ci_builds", column: "source_job_id", name: "fk_3f0c88d7dc", on_delete: :cascade
   add_foreign_key "ci_sources_pipelines", "ci_pipelines", column: "pipeline_id", name: "fk_b8c0fac459", on_delete: :cascade
   add_foreign_key "ci_sources_pipelines", "ci_pipelines", column: "source_pipeline_id", name: "fk_3a3e3cb83a", on_delete: :cascade
   add_foreign_key "ci_sources_pipelines", "projects", column: "source_project_id", name: "fk_8868d0f3e4", on_delete: :cascade
   add_foreign_key "ci_sources_pipelines", "projects", name: "fk_83b4346e48", on_delete: :cascade
+=======
+>>>>>>> ce/master
   add_foreign_key "ci_stages", "ci_pipelines", column: "pipeline_id", name: "fk_fb57e6cc56", on_delete: :cascade
   add_foreign_key "ci_stages", "projects", name: "fk_2360681d1d", on_delete: :cascade
   add_foreign_key "ci_trigger_requests", "ci_triggers", column: "trigger_id", name: "fk_b8ec8b7245", on_delete: :cascade
@@ -1844,10 +1858,13 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", name: "fk_0434b48643", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
+<<<<<<< HEAD
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
+=======
+>>>>>>> ce/master
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
@@ -1868,18 +1885,25 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "milestones", "projects", name: "fk_9bd0a0c791", on_delete: :cascade
+<<<<<<< HEAD
   add_foreign_key "namespace_statistics", "namespaces", on_delete: :cascade
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "path_locks", "projects", name: "fk_5265c98f24", on_delete: :cascade
   add_foreign_key "path_locks", "users"
+=======
+  add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
+  add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
+  add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
+>>>>>>> ce/master
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
+<<<<<<< HEAD
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id"
@@ -1888,14 +1912,23 @@ ActiveRecord::Schema.define(version: 20170627211700) do
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "users"
+=======
+  add_foreign_key "project_statistics", "projects", on_delete: :cascade
+  add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
+  add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
+>>>>>>> ce/master
   add_foreign_key "protected_branches", "projects", name: "fk_7a9c6d93e7", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_tag_create_access_levels", "protected_tags"
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
+<<<<<<< HEAD
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
+=======
+  add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
+>>>>>>> ce/master
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade

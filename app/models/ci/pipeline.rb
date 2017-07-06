@@ -337,10 +337,24 @@ module Ci
       end
     end
 
+    def ci_yaml_file_path
+      if project.ci_config_path.blank?
+        '.gitlab-ci.yml'
+      else
+        project.ci_config_path
+      end
+    end
+
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file = project.repository.gitlab_ci_yml_for(sha) rescue nil
+      @ci_yaml_file = begin
+        project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
+      rescue Rugged::ReferenceError, GRPC::NotFound, GRPC::Internal
+        self.yaml_errors =
+          "Failed to load CI/CD config file at #{ci_yaml_file_path}"
+        nil
+      end
     end
 
     def has_yaml_errors?
@@ -389,7 +403,11 @@ module Ci
     def predefined_variables
       [
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
+<<<<<<< HEAD
         { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
+=======
+        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true }
+>>>>>>> ce/master
       ]
     end
 

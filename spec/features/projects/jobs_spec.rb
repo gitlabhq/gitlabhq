@@ -117,6 +117,13 @@ feature 'Jobs', :feature do
 
       before do
         visit project_job_path(project, job)
+<<<<<<< HEAD
+=======
+      end
+
+      it 'shows status name', :js do
+        expect(page).to have_css('.ci-status.ci-success', text: 'passed')
+>>>>>>> ce/master
       end
 
       it 'shows commit`s data' do

@@ -32,8 +32,13 @@ class ExpirePipelineCacheWorker
     Gitlab::Routing.url_helpers.project_pipelines_path(project, format: :json)
   end
 
+<<<<<<< HEAD
   def project_pipeline_path(pipeline)
     Gitlab::Routing.url_helpers.project_pipeline_path(pipeline.project, pipeline, format: :json)
+=======
+  def project_pipeline_path(project, pipeline)
+    Gitlab::Routing.url_helpers.project_pipeline_path(project, pipeline, format: :json)
+>>>>>>> ce/master
   end
 
   def commit_pipelines_path(project, commit)

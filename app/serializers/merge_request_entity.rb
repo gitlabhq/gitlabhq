@@ -180,6 +180,7 @@ class MergeRequestEntity < IssuableEntity
 
   expose :commit_change_content_path do |merge_request|
     commit_change_content_project_merge_request_path(merge_request.project, merge_request)
+<<<<<<< HEAD
   end
 
   # EE-specific
@@ -195,6 +196,8 @@ class MergeRequestEntity < IssuableEntity
                                       merge_request.base_codeclimate_artifact,
                                       path: 'codeclimate.json')
     end
+=======
+>>>>>>> ce/master
   end
 
   private

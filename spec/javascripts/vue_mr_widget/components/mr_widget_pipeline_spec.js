@@ -77,28 +77,6 @@ describe('MRWidgetPipeline', () => {
       el = vm.$el;
     });
 
-    afterEach(() => {
-      vm.$destroy();
-    });
-
-    describe('without a pipeline', () => {
-      beforeEach(() => {
-        vm.mr = { pipeline: null };
-      });
-
-      it('should render message with spinner', (done) => {
-        Vue.nextTick()
-          .then(() => {
-            expect(el.querySelector('.pipeline-id')).toBe(null);
-            expect(el.innerText.trim()).toBe('Waiting for pipeline...');
-            expect(el.querySelectorAll('i.fa.fa-spinner.fa-spin').length).toBe(1);
-            done();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-    });
-
     it('should render template elements correctly', () => {
       // TODO: Break this into separate specs
       expect(el.classList.contains('mr-widget-heading')).toBeTruthy();
@@ -117,47 +95,39 @@ describe('MRWidgetPipeline', () => {
     it('should list single stage', (done) => {
       pipeline.details.stages.splice(0, 1);
 
-      Vue.nextTick()
-        .then(() => {
-          expect(el.querySelectorAll('.stage-container button').length).toEqual(1);
-          expect(el.innerText).toContain('with stage');
-        })
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick(() => {
+        expect(el.querySelectorAll('.stage-container button').length).toEqual(1);
+        expect(el.innerText).toContain('with stage');
+        done();
+      });
     });
 
     it('should not have stages when there is no stage', (done) => {
       vm.mr.pipeline.details.stages = [];
 
-      Vue.nextTick()
-        .then(() => {
-          expect(el.querySelectorAll('.stage-container button').length).toEqual(0);
-        })
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick(() => {
+        expect(el.querySelectorAll('.stage-container button').length).toEqual(0);
+        done();
+      });
     });
 
     it('should not have coverage text when pipeline has no coverage info', (done) => {
       vm.mr.pipeline.coverage = null;
 
-      Vue.nextTick()
-        .then(() => {
-          expect(el.querySelector('.js-mr-coverage')).toEqual(null);
-        })
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick(() => {
+        expect(el.querySelector('.js-mr-coverage')).toEqual(null);
+        done();
+      });
     });
 
     it('should show CI error when there is a CI error', (done) => {
       vm.mr.ciStatus = null;
 
-      Vue.nextTick()
-        .then(() => {
-          expect(el.querySelectorAll('.js-ci-error').length).toEqual(1);
-          expect(el.innerText).toContain('Could not connect to the CI server');
-        })
-        .then(done)
-        .catch(done.fail);
+      Vue.nextTick(() => {
+        expect(el.querySelectorAll('.js-ci-error').length).toEqual(1);
+        expect(el.innerText).toContain('Could not connect to the CI server');
+        done();
+      });
     });
 
     it('should set triggered to an empty array', () => {

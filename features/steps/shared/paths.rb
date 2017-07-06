@@ -274,10 +274,13 @@ module SharedPaths
 
   step 'I visit project hooks page' do
     visit project_settings_integrations_path(@project)
+<<<<<<< HEAD
   end
 
   step 'I visit group hooks page' do
     visit group_hooks_path(@group)
+=======
+>>>>>>> ce/master
   end
 
   step 'I visit project deploy keys page' do
@@ -509,10 +512,6 @@ module SharedPaths
 
   step 'I visit snippets page' do
     visit explore_snippets_path
-  end
-
-  step 'I visit new snippet page' do
-    visit new_snippet_path
   end
 
   def root_ref

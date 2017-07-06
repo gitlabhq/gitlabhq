@@ -119,6 +119,7 @@ class User < ActiveRecord::Base
   has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :notification_settings,    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+<<<<<<< HEAD
   has_many :path_locks,               dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
   has_many :approvals,                dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
@@ -127,6 +128,8 @@ class User < ActiveRecord::Base
   # Protected Branch Access
   has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel # rubocop:disable Cop/ActiveRecordDependent
   has_many :protected_branch_push_access_levels, dependent: :destroy, class_name: ProtectedBranch::PushAccessLevel # rubocop:disable Cop/ActiveRecordDependent
+=======
+>>>>>>> ce/master
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :issue_assignees

@@ -26,14 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     mounted() {
       this.mediator.initBuildClass();
     },
-    updated() {
-      // Wait for flash message to be appended
-      Vue.nextTick(() => {
-        if (this.mediator.build) {
-          this.mediator.build.verifyTopPosition();
-        }
-      });
-    },
     render(createElement) {
       return createElement('job-header', {
         props: {

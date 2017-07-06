@@ -7,10 +7,11 @@
     = markdown @service.help
 
 .service-settings
-  .form-group
-    = form.label :active, "Active", class: "control-label"
-    .col-sm-10
-      = form.check_box :active
+  - if @service.show_active_box?
+    .form-group
+      = form.label :active, "Active", class: "control-label"
+      .col-sm-10
+        = form.check_box :active
 
   - if @service.supported_events.present?
     .form-group

@@ -73,12 +73,15 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   def conflict_resolution_path
     if conflicts.can_be_resolved_in_ui? && conflicts.can_be_resolved_by?(current_user)
       conflicts_project_merge_request_path(project, merge_request)
+<<<<<<< HEAD
     end
   end
 
   def rebase_path
     if !rebase_in_progress? && should_be_rebased? && user_can_push_to_source_branch?
       rebase_project_merge_request_path(project, merge_request)
+=======
+>>>>>>> ce/master
     end
   end
 
@@ -91,12 +94,15 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   def source_branch_path
     if source_branch_exists?
       project_branch_path(source_project, source_branch)
+<<<<<<< HEAD
     end
   end
 
   def approvals_path
     if requires_approve?
       approvals_project_merge_request_path(project, merge_request)
+=======
+>>>>>>> ce/master
     end
   end
 

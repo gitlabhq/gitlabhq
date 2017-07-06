@@ -118,6 +118,7 @@ describe "Private Project Access", feature: true  do
 
   describe "GET /:project_path/settings/repository" do
     subject { project_settings_repository_path(project) }
+<<<<<<< HEAD
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -132,6 +133,8 @@ describe "Private Project Access", feature: true  do
 
   describe "GET /:project_path/settings/repository" do
     subject { project_settings_repository_path(project) }
+=======
+>>>>>>> ce/master
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }

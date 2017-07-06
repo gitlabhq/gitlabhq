@@ -265,7 +265,7 @@ gem 'base32',             '~> 0.3.0'
 gem "gitlab-license", "~> 1.0"
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.4.0'
+gem 'sentry-raven', '~> 2.5.3'
 
 gem 'premailer-rails', '~> 1.9.7'
 
@@ -295,6 +295,7 @@ group :metrics do
 
   # Prometheus
   gem 'prometheus-client-mmap', '~>0.7.0.beta5'
+  gem 'raindrops', '~> 0.18'
 end
 
 group :development do

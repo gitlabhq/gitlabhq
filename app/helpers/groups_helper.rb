@@ -64,6 +64,11 @@ module GroupsHelper
     IssuesFinder.new(current_user, group_id: group.id).execute
   end
 
+  def remove_group_message(group)
+    _("You are going to remove %{group_name}.\nRemoved groups CANNOT be restored!\nAre you ABSOLUTELY sure?") %
+      { group_name: group.name }
+  end
+
   private
 
   def group_title_link(group, hidable: false)

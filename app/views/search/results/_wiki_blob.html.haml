@@ -4,7 +4,11 @@
 .blob-result
   .file-holder
     .js-file-title.file-title
+<<<<<<< HEAD
       = link_to project_wiki_path(project, wiki_blob.basename) do
+=======
+      = link_to project_wiki_path(@project, wiki_blob.basename) do
+>>>>>>> ce/master
         %i.fa.fa-file
         %strong
           - if @project
