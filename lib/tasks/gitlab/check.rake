@@ -549,7 +549,10 @@ namespace :gitlab do
       checks = [
         SystemCheck::Geo::LicenseCheck,
         SystemCheck::Geo::EnabledCheck,
-        SystemCheck::Geo::HttpConnectionCheck
+        SystemCheck::Geo::GeoDatabaseConfiguredCheck,
+        SystemCheck::Geo::DatabaseReplicationCheck,
+        SystemCheck::Geo::HttpConnectionCheck,
+        SystemCheck::Geo::ClocksSynchronizationCheck
       ]
 
       SystemCheck.run('Geo', checks)
