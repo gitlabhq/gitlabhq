@@ -58,7 +58,7 @@ RSpec.describe Geo::WikiSyncService, services: true do
         expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)
       end
 
-      it 'does not create a new registry if one exist' do
+      it 'does not create a new registry if one exists' do
         create(:geo_project_registry, project: project)
 
         expect { subject.execute }.not_to change(Geo::ProjectRegistry, :count)
