@@ -5,7 +5,6 @@ module Gitlab
         raise NotImplementedError.new('Geo is only compatible with PostgreSQL') unless Gitlab::Database.postgresql?
 
         return '' unless Gitlab::Geo.secondary?
-        return 'The Geo secondary role is disabled.' unless Gitlab::Geo.secondary_role_enabled?
         return 'The Geo database configuration file is missing.' unless Gitlab::Geo.geo_database_configured?
         return 'The Geo node has a database that is not configured for streaming replication with the primary node.' unless self.database_secondary?
 
