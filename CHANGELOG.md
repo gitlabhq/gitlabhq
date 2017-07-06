@@ -12,7 +12,7 @@ entry.
 
 ## 9.3.4 (2017-07-03)
 
-- No changes.
+- Update gitlab-shell to 5.1.1 !12615
 
 ## 9.3.3 (2017-06-30)
 
