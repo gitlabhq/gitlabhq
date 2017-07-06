@@ -1,7 +1,7 @@
 shared_examples "protected branches > access control > CE" do
   ProtectedBranch::PushAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can push to" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
 
@@ -21,7 +21,7 @@ shared_examples "protected branches > access control > CE" do
     end
 
     it "allows updating protected branches so that #{access_type_name} can push to them" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
 
@@ -46,7 +46,7 @@ shared_examples "protected branches > access control > CE" do
 
   ProtectedBranch::MergeAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can merge to" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
 
@@ -66,7 +66,7 @@ shared_examples "protected branches > access control > CE" do
     end
 
     it "allows updating protected branches so that #{access_type_name} can merge to them" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
 

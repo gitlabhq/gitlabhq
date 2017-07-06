@@ -18,7 +18,7 @@ class Projects::HookLogsController < Projects::ApplicationController
 
     set_hook_execution_notice(status, message)
 
-    redirect_to edit_namespace_project_hook_path(@project.namespace, @project, @hook)
+    redirect_to edit_project_hook_path(@project, @hook)
   end
 
   private

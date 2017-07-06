@@ -11,6 +11,6 @@
 
     .nav-controls{ class: ("visible-xs" if show_new_nav?) }
       - if can?(current_user, :create_project_snippet, @project)
-        = link_to "New snippet", new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "New snippet"
+        = link_to "New snippet", new_project_snippet_path(@project), class: "btn btn-new", title: "New snippet"
 
 = render 'snippets/snippets'

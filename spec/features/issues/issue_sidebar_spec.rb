@@ -166,7 +166,7 @@ feature 'Issue Sidebar', feature: true do
   end
 
   def visit_issue(project, issue)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
   def open_issue_sidebar

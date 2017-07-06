@@ -276,7 +276,7 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
 
     context "with a cross-project URL" do
       it do
-        message = "Closes #{urls.namespace_project_issue_url(issue2.project.namespace, issue2.project, issue2)}"
+        message = "Closes #{urls.project_issue_url(issue2.project, issue2)}"
         expect(subject.closed_by_message(message)).to eq([issue2])
       end
     end
@@ -292,7 +292,7 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
 
     context "with an invalid URL" do
       it do
-        message = "Closes https://google.com#{urls.namespace_project_issue_path(issue2.project.namespace, issue2.project, issue2)}"
+        message = "Closes https://google.com#{urls.project_issue_path(issue2.project, issue2)}"
         expect(subject.closed_by_message(message)).to eq([])
       end
     end
@@ -347,14 +347,14 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
       end
 
       it "fetches cross-project URL references" do
-        message = "Closes #{urls.namespace_project_issue_url(issue2.project.namespace, issue2.project, issue2)} and #{reference}"
+        message = "Closes #{urls.project_issue_url(issue2.project, issue2)} and #{reference}"
 
         expect(subject.closed_by_message(message))
             .to match_array([issue, issue2])
       end
 
       it "ignores invalid cross-project URL references" do
-        message = "Closes https://google.com#{urls.namespace_project_issue_path(issue2.project.namespace, issue2.project, issue2)} and #{reference}"
+        message = "Closes https://google.com#{urls.project_issue_path(issue2.project, issue2)} and #{reference}"
 
         expect(subject.closed_by_message(message))
             .to match_array([issue])

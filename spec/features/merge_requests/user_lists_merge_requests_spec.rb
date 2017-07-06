@@ -37,7 +37,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
   it 'filters on no assignee' do
     visit_merge_requests(project, assignee_id: IssuableFinder::NONE)
 
-    expect(current_path).to eq(namespace_project_merge_requests_path(project.namespace, project))
+    expect(current_path).to eq(project_merge_requests_path(project))
     expect(page).to have_content 'merge_lfs'
     expect(page).not_to have_content 'fix'
     expect(page).not_to have_content 'markdown'
@@ -136,7 +136,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
       end
 
       it 'sorts by recently due milestone' do
-        visit namespace_project_merge_requests_path(project.namespace, project,
+        visit project_merge_requests_path(project,
           label_name: [label.name, label2.name],
           assignee_id: user.id,
           sort: sort_value_milestone_soon)

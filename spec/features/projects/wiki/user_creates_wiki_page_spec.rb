@@ -1,20 +1,23 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
+feature 'Projects > Wiki > User creates wiki page', :js do
   let(:user) { create(:user) }
 
   background do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_path(project.namespace, project)
-    find('.shortcuts-wiki').trigger('click')
+    visit project_path(project)
   end
 
   context 'in the user namespace' do
     let(:project) { create(:project, namespace: user.namespace) }
 
     context 'when wiki is empty' do
+      before do
+        find('.shortcuts-wiki').trigger('click')
+      end
+
       scenario 'commit message field has value "Create home"' do
         expect(page).to have_field('wiki[message]', with: 'Create home')
       end
@@ -67,10 +70,11 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
     context 'when wiki is not empty' do
       before do
         WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
+        find('.shortcuts-wiki').trigger('click')
       end
 
       context 'via the "new wiki page" page' do
-        scenario 'when the wiki page has a single word name', js: true do
+        scenario 'when the wiki page has a single word name' do
           click_link 'New page'
 
           page.within '#modal-new-wiki' do
@@ -91,7 +95,7 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
           expect(page).to have_content('My awesome wiki!')
         end
 
-        scenario 'when the wiki page has spaces in the name', js: true do
+        scenario 'when the wiki page has spaces in the name' do
           click_link 'New page'
 
           page.within '#modal-new-wiki' do
@@ -112,7 +116,7 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
           expect(page).to have_content('My awesome wiki!')
         end
 
-        scenario 'when the wiki page has hyphens in the name', js: true do
+        scenario 'when the wiki page has hyphens in the name' do
           click_link 'New page'
 
           page.within '#modal-new-wiki' do
@@ -134,7 +138,7 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
         end
       end
 
-      scenario 'content has autocomplete', :js do
+      scenario 'content has autocomplete' do
         click_link 'New page'
 
         page.within '#modal-new-wiki' do
@@ -156,6 +160,10 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
     let(:project) { create(:project, namespace: create(:group, :public)) }
 
     context 'when wiki is empty' do
+      before do
+        find('.shortcuts-wiki').trigger('click')
+      end
+
       scenario 'commit message field has value "Create home"' do
         expect(page).to have_field('wiki[message]', with: 'Create home')
       end
@@ -175,9 +183,10 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
     context 'when wiki is not empty' do
       before do
         WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
+        find('.shortcuts-wiki').trigger('click')
       end
 
-      scenario 'via the "new wiki page" page', js: true do
+      scenario 'via the "new wiki page" page' do
         click_link 'New page'
 
         page.within '#modal-new-wiki' do

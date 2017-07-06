@@ -38,7 +38,7 @@ class Projects::JobsController < Projects::ApplicationController
       build.cancel if can?(current_user, :update_build, build)
     end
 
-    redirect_to namespace_project_jobs_path(project.namespace, project)
+    redirect_to project_jobs_path(project)
   end
 
   def show
@@ -108,7 +108,7 @@ class Projects::JobsController < Projects::ApplicationController
 
   def erase
     if @build.erase(erased_by: current_user)
-      redirect_to namespace_project_job_path(project.namespace, project, @build),
+      redirect_to project_job_path(project, @build),
                 notice: "Build has been successfully erased!"
     else
       respond_422
@@ -137,6 +137,6 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def build_path(build)
-    namespace_project_job_path(build.project.namespace, build.project, build)
+    project_job_path(build.project, build)
   end
 end

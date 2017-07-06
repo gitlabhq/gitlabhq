@@ -52,7 +52,7 @@ module Gitlab
             ]
           end
         rescue RuntimeError => ex
-          Rails.logger("unexpected error #{ex} when checking #{ok_metric}")
+          Rails.logger.error("unexpected error #{ex} when checking #{ok_metric}")
           [metric(ok_metric, 0, **labels)]
         end
 

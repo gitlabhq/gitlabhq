@@ -22,7 +22,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     gitlab_sign_in(user)
 
-    visit namespace_project_board_path(project.namespace, project, board)
+    visit project_board_path(project, board)
     wait_for_requests
   end
 
@@ -83,7 +83,7 @@ describe 'Issue Boards', feature: true, js: true do
     create(:issue, project: project)
     create(:issue, :closed, project: project)
 
-    visit namespace_project_board_path(project.namespace, project, board)
+    visit project_board_path(project, board)
     wait_for_requests
 
     click_card(find('.board:nth-child(1)').first('.card'))

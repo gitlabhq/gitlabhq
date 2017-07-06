@@ -11,8 +11,7 @@ feature 'Work In Progress help message', feature: true do
 
   context 'with WIP commits' do
     it 'shows a specific WIP hint' do
-      visit namespace_project_new_merge_request_path(
-        project.namespace,
+      visit project_new_merge_request_path(
         project,
         merge_request: {
           source_project_id: project.id,
@@ -32,8 +31,7 @@ feature 'Work In Progress help message', feature: true do
 
   context 'without WIP commits' do
     it 'shows the regular WIP message' do
-      visit namespace_project_new_merge_request_path(
-        project.namespace,
+      visit project_new_merge_request_path(
         project,
         merge_request: {
           source_project_id: project.id,

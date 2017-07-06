@@ -60,13 +60,13 @@ class UsersFinder
   end
 
   def by_external_identity(users)
-    return users unless current_user.admin? && params[:extern_uid] && params[:provider]
+    return users unless current_user&.admin? && params[:extern_uid] && params[:provider]
 
     users.joins(:identities).merge(Identity.with_extern_uid(params[:provider], params[:extern_uid]))
   end
 
   def by_external(users)
-    return users = users.where.not(external: true) unless current_user.admin?
+    return users = users.where.not(external: true) unless current_user&.admin?
     return users unless params[:external]
 
     users.external

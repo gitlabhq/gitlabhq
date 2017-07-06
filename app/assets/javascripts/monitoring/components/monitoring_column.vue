@@ -35,7 +35,7 @@
 
     data() {
       return {
-        graphHeight: 500,
+        graphHeight: 450,
         graphWidth: 600,
         graphHeightOffset: 120,
         xScale: {},
@@ -88,7 +88,9 @@
       },
 
       paddingBottomRootSvg() {
-        return (Math.ceil(this.graphHeight * 100) / this.graphWidth) || 0;
+        return {
+          paddingBottom: `${(Math.ceil(this.graphHeight * 100) / this.graphWidth) || 0}%`,
+        };
       },
     },
 
@@ -104,7 +106,7 @@
         }
         this.data = query.result[0].values;
         this.unitOfDisplay = query.unit || 'N/A';
-        this.yAxisLabel = this.columnData.y_axis || 'Values';
+        this.yAxisLabel = this.columnData.y_label || 'Values';
         this.legendTitle = query.legend || 'Average';
         this.graphWidth = this.$refs.baseSvg.clientWidth -
                      this.margin.left - this.margin.right;
@@ -157,12 +159,12 @@
 
         const xAxis = d3.svg.axis()
           .scale(axisXScale)
-          .ticks(measurements.ticks)
+          .ticks(measurements.xTicks)
           .orient('bottom');
 
         const yAxis = d3.svg.axis()
           .scale(this.yScale)
-          .ticks(measurements.ticks)
+          .ticks(measurements.yTicks)
           .orient('left');
 
         d3.select(this.$refs.baseSvg).select('.x-axis').call(xAxis);
@@ -170,8 +172,12 @@
         const width = this.graphWidth;
         d3.select(this.$refs.baseSvg).select('.y-axis').call(yAxis)
           .selectAll('.tick')
-          .each(function createTickLines() {
-            d3.select(this).select('line').attr('x2', width);
+          .each(function createTickLines(d, i) {
+            if (i > 0) {
+              d3.select(this).select('line')
+                .attr('x2', width)
+                .attr('class', 'axis-tick');
+            } // Avoid adding the class to the first tick, to prevent coloring
           }); // This will select all of the ticks once they're rendered
 
         this.xScale = d3.time.scale()
@@ -198,7 +204,7 @@
     watch: {
       updateAspectRatio() {
         if (this.updateAspectRatio) {
-          this.graphHeight = 500;
+          this.graphHeight = 450;
           this.graphWidth = 600;
           this.measurements = measurements.large;
           this.draw();
@@ -216,14 +222,14 @@
   <div 
     :class="classType">
     <h5 
-      class="text-center">
+      class="text-center graph-title">
         {{columnData.title}}
     </h5>
-    <div 
-      class="prometheus-svg-container">
+    <div
+      class="prometheus-svg-container"
+      :style="paddingBottomRootSvg">
       <svg 
         :viewBox="outterViewBox"
-        :style="{ 'padding-bottom': paddingBottomRootSvg }"
         ref="baseSvg">
         <g
           class="x-axis"

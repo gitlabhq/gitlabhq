@@ -6,10 +6,7 @@ class BuildActionEntity < Grape::Entity
   end
 
   expose :path do |build|
-    play_namespace_project_job_path(
-      build.project.namespace,
-      build.project,
-      build)
+    play_project_job_path(build.project, build)
   end
 
   expose :playable?, as: :playable

@@ -3,8 +3,12 @@ require 'spec_helper'
 describe Ci::Variable, models: true do
   subject { build(:ci_variable) }
 
-  it { is_expected.to include_module(HasVariable) }
-  it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id) }
+  let(:secret_value) { 'secret' }
+
+  describe 'validations' do
+    it { is_expected.to include_module(HasVariable) }
+    it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope) }
+  end
 
   describe '.unprotected' do
     subject { described_class.unprotected }

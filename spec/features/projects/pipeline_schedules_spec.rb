@@ -135,15 +135,15 @@ feature 'Pipeline Schedules', :feature do
   end
 
   def visit_new_pipeline_schedule
-    visit new_namespace_project_pipeline_schedule_path(project.namespace, project, pipeline_schedule)
+    visit new_project_pipeline_schedule_path(project, pipeline_schedule)
   end
 
   def edit_pipeline_schedule
-    visit edit_namespace_project_pipeline_schedule_path(project.namespace, project, pipeline_schedule)
+    visit edit_project_pipeline_schedule_path(project, pipeline_schedule)
   end
 
   def visit_pipelines_schedules
-    visit namespace_project_pipeline_schedules_path(project.namespace, project, scope: scope)
+    visit project_pipeline_schedules_path(project, scope: scope)
   end
 
   def select_timezone

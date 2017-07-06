@@ -482,7 +482,7 @@ describe ProjectsController do
         it 'redirects to the canonical path (testing non-show action)' do
           get :refs, namespace_id: 'foo', id: 'bar'
 
-          expect(response).to redirect_to(refs_namespace_project_path(namespace_id: public_project.namespace, id: public_project))
+          expect(response).to redirect_to(refs_project_path(public_project))
           expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
         end
       end

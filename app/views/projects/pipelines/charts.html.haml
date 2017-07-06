@@ -1,6 +1,6 @@
 - @no_container = true
 - @breadcrumb_title = "Charts"
-- page_title "Charts", "Pipelines"
+- page_title _("Charts"), _("Pipelines")
 - if show_new_nav?
   - breadcrumbs_extra_links("Pipelines", project_pipelines_path(@project))
 - content_for :page_specific_javascripts do
@@ -11,7 +11,7 @@
 %div{ class: container_class }
   .sub-header-block
     .oneline
-      A collection of graphs for Continuous Integration
+      = _("A collection of graphs regarding Continuous Integration")
 
   #charts.ci-charts
     .row

@@ -22,7 +22,8 @@
     = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope
 
     .nav-controls{ class: ("visible-xs" if show_new_nav?) }
-      = link_to _('New schedule'), new_namespace_project_pipeline_schedule_path(@project.namespace, @project), class: 'btn btn-create'
+      = link_to new_project_pipeline_schedule_path(@project), class: 'btn btn-create' do
+        %span= _('New schedule')
 
   - if @schedules.present?
     %ul.content-list

@@ -14,7 +14,8 @@
     .nav-controls
       = render 'shared/milestones_sort_dropdown'
       - if can?(current_user, :admin_milestone, @project)
-        = link_to "New milestone", new_namespace_project_milestone_path(@project.namespace, @project), class: "btn btn-new #{("visible-xs hidden-sm hidden-md hidden-lg" if show_new_nav?)}", title: 'New milestone'
+        = link_to new_project_milestone_path(@project), class: 'btn btn-new', title: 'New milestone' do
+          New milestone
 
   .milestones
     %ul.content-list

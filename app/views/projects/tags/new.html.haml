@@ -39,7 +39,7 @@
       .help-block Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page.
   .form-actions
     = button_tag 'Create tag', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', namespace_project_tags_path(@project.namespace, @project), class: 'btn btn-cancel'
+    = link_to 'Cancel', project_tags_path(@project), class: 'btn btn-cancel'
 
 :javascript
   window.gl = window.gl || { };
