@@ -529,6 +529,17 @@ describe API::MergeRequests do
              approvals_before_merge: approvals_before_merge
       end
 
+      context 'when the target project has disable_overriding_approvers_per_merge_request set to true' do
+        before do
+          project.update_attributes(disable_overriding_approvers_per_merge_request: true)
+          create_merge_request(1)
+        end
+
+        it 'does not update approvals_before_merge' do
+          expect(json_response['approvals_before_merge']).to eq(nil)
+        end
+      end
+
       context 'when the target project has approvals_before_merge set to zero' do
         before do
           project.update_attributes(approvals_before_merge: 0)
