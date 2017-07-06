@@ -143,7 +143,6 @@ import './render_math';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
-import './signin_tabs_memoizer';
 import './smart_interval';
 import './snippets_list';
 import './star';
