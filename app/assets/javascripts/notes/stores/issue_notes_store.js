@@ -6,17 +6,24 @@ const findNoteObjectById = (notes, id) => notes.filter(n => n.id === id)[0];
 
 const state = {
   notes: [],
+  targetNoteHash: null,
 };
 
 const getters = {
   notes(storeState) {
     return storeState.notes;
   },
+  targetNoteHash(storeState) {
+    return storeState.targetNoteHash;
+  },
 };
 
 const mutations = {
   setInitialNotes(storeState, notes) {
     storeState.notes = notes;
+  },
+  setTargetNoteHash(storeState, hash) {
+    storeState.targetNoteHash = hash;
   },
   toggleDiscussion(storeState, { discussionId }) {
     const discussion = findNoteObjectById(storeState.notes, discussionId);

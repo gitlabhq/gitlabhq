@@ -43,6 +43,19 @@ export default {
     componentData(note) {
       return note.individual_note ? note.notes[0] : note;
     },
+    checkLocationHash() {
+      const hash = gl.utils.getLocationHash();
+      const $el = $(`#${hash}`);
+
+      if (hash && $el) {
+        const isInViewport = gl.utils.isInViewport($el[0]);
+        this.$store.commit('setTargetNoteHash', hash);
+
+        if (!isInViewport) {
+          gl.utils.scrollToElement($el);
+        }
+      }
+    },
   },
   mounted() {
     const { discussionsPath, notesPath, lastFetchedAt } = this.$el.parentNode.dataset;
@@ -50,6 +63,11 @@ export default {
     this.$store.dispatch('fetchNotes', discussionsPath)
       .then(() => {
         this.isLoading = false;
+
+        // Scroll to note if we have hash fragment in the page URL
+        Vue.nextTick(() => {
+          this.checkLocationHash();
+        });
       })
       .catch(() => {
         new Flash('Something went wrong while fetching issue comments. Please try again.'); // eslint-disable-line

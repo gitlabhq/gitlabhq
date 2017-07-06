@@ -1,4 +1,5 @@
 <script>
+import { mapGetters } from 'vuex';
 import iconsMap from './issue_note_icons';
 import IssueNoteHeader from './issue_note_header.vue';
 
@@ -17,11 +18,25 @@ export default {
   components: {
     IssueNoteHeader,
   },
+  computed: {
+    ...mapGetters([
+      'targetNoteHash',
+    ]),
+    noteAnchorId() {
+      return `note_${this.note.id}`;
+    },
+    isTargetNote() {
+      return this.targetNoteHash === this.noteAnchorId;
+    },
+  },
 };
 </script>
 
 <template>
-  <li class="note system-note timeline-entry">
+  <li
+    :id="noteAnchorId"
+    :class="{ target: isTargetNote }"
+    class="note system-note timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <span v-html="svg"></span>

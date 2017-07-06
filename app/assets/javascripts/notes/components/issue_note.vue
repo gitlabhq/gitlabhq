@@ -1,6 +1,7 @@
 <script>
 /* global Flash */
 
+import { mapGetters } from 'vuex';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import IssueNoteHeader from './issue_note_header.vue';
 import IssueNoteActions from './issue_note_actions.vue';
@@ -26,6 +27,9 @@ export default {
     IssueNoteBody,
   },
   computed: {
+    ...mapGetters([
+      'targetNoteHash',
+    ]),
     author() {
       return this.note.author;
     },
@@ -33,10 +37,14 @@ export default {
       return {
         'is-editing': this.isEditing,
         'disabled-content': this.isDeleting,
+        target: this.targetNoteHash === this.noteAnchorId,
       };
     },
     canReportAsAbuse() {
       return this.note.report_abuse_path && this.author.id !== window.gon.current_user_id;
+    },
+    noteAnchorId() {
+      return `note_${this.note.id}`;
     },
   },
   methods: {
@@ -98,6 +106,7 @@ export default {
 <template>
   <li
     class="note timeline-entry"
+    :id="noteAnchorId"
     :class="classNameBindings">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
@@ -115,6 +124,7 @@ export default {
             :noteId="note.id"
             actionText="commented" />
           <issue-note-actions
+            :authorId="author.id"
             :accessLevel="note.human_access"
             :canAward="note.emoji_awardable"
             :canEdit="note.current_user.can_edit"

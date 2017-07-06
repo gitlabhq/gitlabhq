@@ -56,6 +56,9 @@ export default {
       this.isExpanded = !this.isExpanded;
       this.toggleHandler();
     },
+    updateTargetNoteHash() {
+      this.$store.commit('setTargetNoteHash', this.noteTimestampLink);
+    },
   },
 };
 </script>
@@ -79,7 +82,9 @@ export default {
           v-if="actionTextHtml"
           v-html="actionTextHtml"
           class="system-note-message"></span>
-        <a :href="noteTimestampLink">
+        <a
+          :href="noteTimestampLink"
+          @click="updateTargetNoteHash">
           <time-ago-tooltip
             :time="createdAt"
             tooltipPlacement="bottom" />

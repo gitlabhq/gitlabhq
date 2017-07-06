@@ -162,10 +162,11 @@
 
     gl.utils.scrollToElement = function($el) {
       var top = $el.offset().top;
-      gl.mrTabsHeight = gl.mrTabsHeight || $('.merge-request-tabs').height();
+      var mrTabsHeight = $('.merge-request-tabs').height() || 0;
+      var headerHeight = $('.navbar-gitlab').height() || 0;
 
       return $('body, html').animate({
-        scrollTop: top - (gl.mrTabsHeight)
+        scrollTop: top - mrTabsHeight - headerHeight
       }, 200);
     };
 
