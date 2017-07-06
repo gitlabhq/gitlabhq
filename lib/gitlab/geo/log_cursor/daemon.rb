@@ -82,7 +82,7 @@ module Gitlab
         end
 
         def handle_repository_update(updated_event)
-          registry = ::Geo::ProjectRegistry.find_or_initialize_by(project_id: project_id)
+          registry = ::Geo::ProjectRegistry.find_or_initialize_by(project_id: updated_event.project_id)
 
           case updated_event.source
           when 'repository'
