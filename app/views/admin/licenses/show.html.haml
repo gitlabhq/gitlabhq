@@ -38,7 +38,7 @@
           - if @license.will_expire?
             %strong= time_ago_with_tooltip(@license.expires_at)
             - if @license.trial?
-              %span= "(Free trial will expire in #{pluralize(@license.remaining_days, 'day')})"
+              %span Free trial will expire in #{pluralize(@license.remaining_days, 'day')}
           - else
             %strong Never
 
