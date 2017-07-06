@@ -13,7 +13,7 @@ of your [jobs](pipelines.md#jobs) on a chart called [pipeline graph](pipelines.m
 When you set up [GitLab CI/CD](README.md) across multiple projects, you can visualize
 the entire pipeline, including all multi-project stages.
 
-![Multi-project pipeline graph](img/multi-project_pipeline_graph.png)
+![Multi-project pipeline graph](img/multi_project_pipeline_graph.png)
 
 Multi-Project Pipeline Graphs are useful for larger projects, especially those
 adopting a [microservices architecture](https://about.gitlab.com/2016/08/16/trends-in-version-control-land-microservices/),
