@@ -28,7 +28,7 @@ module Ci
       end
 
       unless triggering_user_allowed_for_ref?(trigger_request)
-        return error("Insufficient permissions for protected #{ref}")
+        return error("Insufficient permissions for protected ref '#{ref}'")
       end
 
       unless commit
@@ -77,8 +77,11 @@ module Ci
     def triggering_user_allowed_for_ref?(trigger_request)
       triggering_user = current_user || trigger_request.trigger.owner
 
-      (triggering_user && allowed_to_create?(triggering_user)) ||
+      if triggering_user
+        allowed_to_create?(triggering_user)
+      else # legacy triggers don't have a corresponding user
         !project.protected_for?(ref)
+      end
     end
 
     def allowed_to_create?(triggering_user)
