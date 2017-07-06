@@ -6,7 +6,7 @@ class AddGroupMilestoneIdIndexes < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    add_concurrent_foreign_key :milestones, :namespaces, column: :group_id
+    add_concurrent_foreign_key :milestones, :namespaces, column: :group_id, on_delete: :cascade
 
     add_concurrent_index :milestones, :group_id
   end

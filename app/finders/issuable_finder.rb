@@ -439,7 +439,7 @@ class IssuableFinder
       project_ids = items_projects.try(:id) || items_projects.map(&:id)
 
       params =
-        { state: 'all', order: nil, project_ids: project_ids, group_ids: items_group.id }
+        { state: 'all', order: nil, project_ids: project_ids, group_ids: items_group&.id }
 
       milestones = MilestonesFinder.new(params).execute
       items.where(milestone: milestones)

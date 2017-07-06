@@ -92,7 +92,7 @@ class IssuableBaseService < BaseService
     params[:milestone_id] = '' if milestone_id == IssuableFinder::NONE
 
     milestone =
-      Milestone.for_projects_and_groups(project.id, project.group&.id).find(milestone_id)
+      Milestone.for_projects_and_groups(project.id, project.group&.id).find_by_id(milestone_id)
 
     params[:milestone_id] = '' unless milestone
   end
