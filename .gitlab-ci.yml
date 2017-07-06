@@ -357,7 +357,6 @@ db:migrate:reset-mysql:
   <<: *dedicated-runner
   variables:
     SETUP_DB: "false"
-  <<: *only-canonical-masters
   script:
     - git fetch origin v8.14.10
     - git checkout -f FETCH_HEAD
