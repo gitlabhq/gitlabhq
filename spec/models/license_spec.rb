@@ -389,9 +389,9 @@ describe License do
 
       context 'with add-ons' do
         it 'returns all available add-ons' do
-          license = build_license_with_add_ons({ License::DEPLOY_BOARD_FEATURE => 1, License::FILE_LOCK_FEATURE => 2 })
+          license = build_license_with_add_ons({ License::DEPLOY_BOARD_FEATURE => 1, License::FILE_LOCKS_FEATURE => 2 })
 
-          expect(license.add_ons.keys).to include(License::DEPLOY_BOARD_FEATURE, License::FILE_LOCK_FEATURE)
+          expect(license.add_ons.keys).to include(License::DEPLOY_BOARD_FEATURE, License::FILE_LOCKS_FEATURE)
         end
 
         it 'can return details about a single add-on' do

@@ -109,7 +109,7 @@ module TreeHelper
   end
 
   def lock_file_link(project = @project, path = @path, html_options: {})
-    return unless project.feature_available?(:file_lock) && current_user
+    return unless project.feature_available?(:file_locks) && current_user
     return if path.blank?
 
     path_lock = project.find_path_lock(path, downstream: true)
@@ -169,7 +169,7 @@ module TreeHelper
   end
 
   def render_lock_icon(path)
-    return unless @project.feature_available?(:file_lock)
+    return unless @project.feature_available?(:file_locks)
     return unless @project.root_ref?(@ref)
 
     if file_lock = @project.find_path_lock(path, exact_match: true)
