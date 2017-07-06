@@ -59,7 +59,7 @@ module Geo
         registry.public_send("resync_#{type}=", false)
       end
 
-      registry.save
+      registry.save!
     end
 
     def lease_key
