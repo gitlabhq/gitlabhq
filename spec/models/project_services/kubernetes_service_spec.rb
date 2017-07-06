@@ -202,10 +202,19 @@ describe KubernetesService, models: true, caching: true do
 
   describe '#predefined_variables' do
     let(:kubeconfig) do
-      File.read(expand_fixture_path('config/kubeconfig.yml'))
-        .gsub('TOKEN', 'token')
-        .gsub('PEM', 'CA PEM DATA')
-        .gsub('NAMESPACE', namespace)
+      config =
+        YAML.load(File.read(expand_fixture_path('config/kubeconfig.yml')))
+
+      config.dig('users', 0, 'user')['token'] =
+        'token'
+
+      config.dig('clusters', 0, 'cluster')['certificate-authority-data'] =
+        Base64.encode64('CA PEM DATA')
+
+      config.dig('contexts', 0, 'context')['namespace'] =
+        namespace
+
+      YAML.dump(config)
     end
 
     before do
