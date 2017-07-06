@@ -125,6 +125,8 @@ class MergeRequest < ActiveRecord::Base
   scope :unassigned, -> { where("assignee_id IS NULL") }
   scope :assigned_to, ->(u) { where(assignee_id: u.id)}
 
+  scope :inc_namespace_with_associations, -> { includes(target_project: [:namespace, :route]) }
+
   participant :assignee
 
   after_save :keep_around_commit
