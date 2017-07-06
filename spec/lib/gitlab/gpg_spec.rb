@@ -2,16 +2,15 @@ require 'rails_helper'
 
 describe Gitlab::Gpg do
   describe '.fingerprints_from_key' do
-    it 'returns the fingerprint' do
-      expect(
-        described_class.fingerprints_from_key(GpgHelpers::User1.public_key)
-      ).to eq [GpgHelpers::User1.fingerprint]
+    before do
+      # make sure that each method is using the temporary keychain
+      expect(described_class).to receive(:using_tmp_keychain).and_call_original
     end
 
-    it 'returns an empty array when the key is invalid' do
-      expect(
-        described_class.fingerprints_from_key('bogus')
-      ).to eq []
+    it 'returns CurrentKeyChain.fingerprints_from_key' do
+      expect(Gitlab::Gpg::CurrentKeyChain).to receive(:fingerprints_from_key).with(GpgHelpers::User1.public_key)
+
+      described_class.fingerprints_from_key(GpgHelpers::User1.public_key)
     end
   end
 
@@ -63,6 +62,20 @@ describe Gitlab::Gpg::CurrentKeyChain do
         email: GpgHelpers::User1.emails.first,
         fingerprint: GpgHelpers::User1.fingerprint
       )
+    end
+  end
+
+  describe '.fingerprints_from_key' do
+    it 'returns the fingerprint' do
+      expect(
+        described_class.fingerprints_from_key(GpgHelpers::User1.public_key)
+      ).to eq [GpgHelpers::User1.fingerprint]
+    end
+
+    it 'returns an empty array when the key is invalid' do
+      expect(
+        described_class.fingerprints_from_key('bogus')
+      ).to eq []
     end
   end
 end

@@ -8,10 +8,8 @@ module Gitlab
       def add(key)
         GPGME::Key.import(key)
       end
-    end
 
-    def fingerprints_from_key(key)
-      using_tmp_keychain do
+      def fingerprints_from_key(key)
         import = GPGME::Key.import(key)
 
         return [] if import.imported == 0
@@ -20,13 +18,15 @@ module Gitlab
       end
     end
 
+    def fingerprints_from_key(key)
+      using_tmp_keychain do
+        CurrentKeyChain.fingerprints_from_key(key)
+      end
+    end
+
     def primary_keyids_from_key(key)
       using_tmp_keychain do
-        import = GPGME::Key.import(key)
-
-        return [] if import.imported == 0
-
-        fingerprints = import.imports.map(&:fingerprint)
+        fingerprints = CurrentKeyChain.fingerprints_from_key(key)
 
         GPGME::Key.find(:public, fingerprints).map { |raw_key| raw_key.primary_subkey.keyid }
       end
@@ -34,11 +34,7 @@ module Gitlab
 
     def emails_from_key(key)
       using_tmp_keychain do
-        import = GPGME::Key.import(key)
-
-        return [] if import.imported == 0
-
-        fingerprints = import.imports.map(&:fingerprint)
+        fingerprints = CurrentKeyChain.fingerprints_from_key(key)
 
         GPGME::Key.find(:public, fingerprints).flat_map { |raw_key| raw_key.uids.map(&:email) }
       end
