@@ -30,7 +30,7 @@ describe Gitlab::Geo::LogCursor::Daemon, lib: true do
         allow(subject).to receive(:exit?).and_return(false, true)
       end
 
-      it 'creates a new project registry if does not exists' do
+      it 'creates a new project registry if it does not exist' do
         expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
       end
 
