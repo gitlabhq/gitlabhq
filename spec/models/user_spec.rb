@@ -451,6 +451,40 @@ describe User, models: true do
     end
   end
 
+  describe '#ensure_user_rights_and_limits' do
+    describe 'with external user' do
+      let(:user) { create(:user, external: true) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: false)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        stub_config_setting(default_can_create_group: true)
+
+        expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
+          .and change { user.projects_limit }.to(current_application_settings.default_projects_limit)
+      end
+    end
+
+    describe 'without external user' do
+      let(:user) { create(:user, external: false) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: true)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        expect { user.update_attributes(external: true) }.to change { user.can_create_group }.to(false)
+          .and change { user.projects_limit }.to(0)
+      end
+    end
+  end
+
   describe 'rss token' do
     it 'ensures an rss token on read' do
       user = create(:user, rss_token: nil)
@@ -720,42 +754,49 @@ describe User, models: true do
   end
 
   describe '.search' do
-    let(:user) { create(:user) }
+    let!(:user) { create(:user, name: 'user', username: 'usern', email: 'email@gmail.com') }
+    let!(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@gmail.com') }
 
-    it 'returns users with a matching name' do
-      expect(described_class.search(user.name)).to eq([user])
+    describe 'name matching' do
+      it 'returns users with a matching name with exact match first' do
+        expect(described_class.search(user.name)).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching name' do
+        expect(described_class.search(user.name[0..2])).to eq([user2, user])
+      end
+
+      it 'returns users with a matching name regardless of the casing' do
+        expect(described_class.search(user2.name.upcase)).to eq([user2])
+      end
     end
 
-    it 'returns users with a partially matching name' do
-      expect(described_class.search(user.name[0..2])).to eq([user])
+    describe 'email matching' do
+      it 'returns users with a matching Email' do
+        expect(described_class.search(user.email)).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching Email' do
+        expect(described_class.search(user.email[0..2])).to eq([user2, user])
+      end
+
+      it 'returns users with a matching Email regardless of the casing' do
+        expect(described_class.search(user2.email.upcase)).to eq([user2])
+      end
     end
 
-    it 'returns users with a matching name regardless of the casing' do
-      expect(described_class.search(user.name.upcase)).to eq([user])
-    end
+    describe 'username matching' do
+      it 'returns users with a matching username' do
+        expect(described_class.search(user.username)).to eq([user, user2])
+      end
 
-    it 'returns users with a matching Email' do
-      expect(described_class.search(user.email)).to eq([user])
-    end
+      it 'returns users with a partially matching username' do
+        expect(described_class.search(user.username[0..2])).to eq([user2, user])
+      end
 
-    it 'returns users with a partially matching Email' do
-      expect(described_class.search(user.email[0..2])).to eq([user])
-    end
-
-    it 'returns users with a matching Email regardless of the casing' do
-      expect(described_class.search(user.email.upcase)).to eq([user])
-    end
-
-    it 'returns users with a matching username' do
-      expect(described_class.search(user.username)).to eq([user])
-    end
-
-    it 'returns users with a partially matching username' do
-      expect(described_class.search(user.username[0..2])).to eq([user])
-    end
-
-    it 'returns users with a matching username regardless of the casing' do
-      expect(described_class.search(user.username.upcase)).to eq([user])
+      it 'returns users with a matching username regardless of the casing' do
+        expect(described_class.search(user2.username.upcase)).to eq([user2])
+      end
     end
   end
 
@@ -878,8 +919,8 @@ describe User, models: true do
 
   describe '.find_by_username!' do
     it 'raises RecordNotFound' do
-      expect { described_class.find_by_username!('JohnDoe') }.
-        to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.find_by_username!('JohnDoe') }
+        .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'is case-insensitive' do
@@ -1523,8 +1564,8 @@ describe User, models: true do
     end
 
     it 'returns the projects when using an ActiveRecord relation' do
-      projects = user.
-        projects_with_reporter_access_limited_to(Project.select(:id))
+      projects = user
+        .projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end
@@ -1696,6 +1737,20 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
+    end
+  end
+
+  describe '#full_private_access?' do
+    it 'returns false for regular user' do
+      user = build(:user)
+
+      expect(user.full_private_access?).to be_falsy
+    end
+
+    it 'returns true for admin user' do
+      user = build(:user, :admin)
+
+      expect(user.full_private_access?).to be_truthy
     end
   end
 

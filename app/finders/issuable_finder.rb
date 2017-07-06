@@ -20,6 +20,7 @@
 #
 class IssuableFinder
   NONE = '0'.freeze
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
 
   attr_accessor :current_user, :params
 
@@ -41,6 +42,7 @@ class IssuableFinder
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
+    items = by_created_at(items)
 
     # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
     items = by_project(items)
@@ -61,7 +63,7 @@ class IssuableFinder
   # grouping and counting within that query.
   #
   def count_by_state
-    count_params = params.merge(state: nil, sort: nil)
+    count_params = params.merge(state: nil, sort: nil, for_counting: true)
     labels_count = label_names.any? ? label_names.count : 1
     finder = self.class.new(current_user, count_params)
     counts = Hash.new(0)
@@ -83,6 +85,10 @@ class IssuableFinder
 
   def find_by!(*params)
     execute.find_by!(*params)
+  end
+
+  def state_counter_cache_key(state)
+    Digest::SHA1.hexdigest(state_counter_cache_key_components(state).flatten.join('-'))
   end
 
   def group
@@ -402,7 +408,28 @@ class IssuableFinder
     params[:non_archived].present? ? items.non_archived : items
   end
 
+  def by_created_at(items)
+    if params[:created_after].present?
+      items = items.where(items.klass.arel_table[:created_at].gteq(params[:created_after]))
+    end
+
+    if params[:created_before].present?
+      items = items.where(items.klass.arel_table[:created_at].lteq(params[:created_before]))
+    end
+
+    items
+  end
+
   def current_user_related?
     params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
+  end
+
+  def state_counter_cache_key_components(state)
+    opts = params.with_indifferent_access
+    opts[:state] = state
+    opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
+    opts.delete_if { |_, value| value.blank? }
+
+    ['issuables_count', klass.to_ability_name, opts.sort]
   end
 end

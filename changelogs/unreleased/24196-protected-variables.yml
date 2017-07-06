@@ -1,5 +1,0 @@
----
-title: Add protected variables which would only be passed to protected branches or
-  protected tags
-merge_request: 11688
-author:

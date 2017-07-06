@@ -5,7 +5,7 @@ describe "Admin::AbuseReports", feature: true, js: true  do
 
   context 'as an admin' do
     before do
-      login_as :admin
+      gitlab_sign_in :admin
     end
 
     describe 'if a user has been reported for abuse' do

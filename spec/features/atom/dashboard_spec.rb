@@ -35,8 +35,8 @@ describe "Dashboard Feed", feature: true  do
       end
 
       it "has issue comment event" do
-        expect(body).
-          to have_content("#{user.name} commented on issue ##{issue.iid}")
+        expect(body)
+          .to have_content("#{user.name} commented on issue ##{issue.iid}")
       end
     end
   end

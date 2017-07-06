@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'User uploads avatar to profile', feature: true do
   scenario 'they see their new avatar' do
     user = create(:user)
-    login_as(user)
+    gitlab_sign_in(user)
 
     visit profile_path
     attach_file(

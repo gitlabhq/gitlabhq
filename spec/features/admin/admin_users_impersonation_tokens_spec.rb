@@ -13,7 +13,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
   end
 
   before do
-    login_as(admin)
+    gitlab_sign_in(admin)
   end
 
   describe "token creation" do

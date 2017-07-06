@@ -4,7 +4,7 @@ feature 'Abuse reports', feature: true do
   let(:another_user) { create(:user) }
 
   before do
-    login_as :user
+    gitlab_sign_in :user
   end
 
   scenario 'Report abuse' do
@@ -12,7 +12,7 @@ feature 'Abuse reports', feature: true do
 
     click_link 'Report abuse'
 
-    fill_in 'abuse_report_message', with: 'This user send spam'
+    fill_in 'abuse_report_message', with: 'This user sends spam'
     click_button 'Send report'
 
     expect(page).to have_content 'Thank you for your report'

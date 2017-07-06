@@ -12,6 +12,14 @@
 
   &.readme-holder {
     margin: $gl-padding 0;
+
+    &.limited-width-container .file-content {
+      max-width: $limited-layout-width-sm;
+      margin-left: auto;
+      margin-right: auto;
+      padding-top: 64px;
+      padding-bottom: 64px;
+    }
   }
 
   table {
@@ -63,6 +71,7 @@
     background-color: $gray-light;
     text-align: right;
     padding: 8px $gl-padding;
+    border-bottom: 1px solid $border-color;
 
     @media (max-width: $screen-xs-max) {
       text-align: left;
@@ -122,7 +131,7 @@
     }
 
     /**
-     *  Annotate file
+     *  Blame file
      */
     &.blame {
       table {

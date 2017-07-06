@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'New/edit issue', :feature, :js do
-  include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
   include FormHelper
 
@@ -16,12 +15,12 @@ describe 'New/edit issue', :feature, :js do
   before do
     project.team << [user, :master]
     project.team << [user2, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'new issue' do
     before do
-      visit new_namespace_project_issue_path(project.namespace, project)
+      visit new_project_issue_path(project)
     end
 
     describe 'shorten users API pagination limit (CE)' do
@@ -31,15 +30,15 @@ describe 'New/edit issue', :feature, :js do
         # the original method, resulting in infinite recurison when called.
         # This is likely a bug with helper modules included into dynamically generated view classes.
         # To work around this, we have to hold on to and call to the original implementation manually.
-        original_issue_dropdown_options = FormHelper.instance_method(:issue_dropdown_options)
-        allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
+        original_issue_dropdown_options = FormHelper.instance_method(:issue_assignees_dropdown_options)
+        allow_any_instance_of(FormHelper).to receive(:issue_assignees_dropdown_options).and_wrap_original do |original, *args|
           options = original_issue_dropdown_options.bind(original.receiver).call(*args)
           options[:data][:per_page] = 2
 
           options
         end
 
-        visit new_namespace_project_issue_path(project.namespace, project)
+        visit new_project_issue_path(project)
 
         click_button 'Unassigned'
 
@@ -210,11 +209,18 @@ describe 'New/edit issue', :feature, :js do
 
       expect(find('.js-assignee-search')).to have_content(user2.name)
     end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
+    end
   end
 
   context 'edit issue' do
     before do
-      visit edit_namespace_project_issue_path(project.namespace, project, issue)
+      visit edit_project_issue_path(project, issue)
     end
 
     it 'allows user to update issue' do
@@ -258,6 +264,13 @@ describe 'New/edit issue', :feature, :js do
         end
       end
     end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
+    end
   end
 
   describe 'sub-group project' do
@@ -268,7 +281,7 @@ describe 'New/edit issue', :feature, :js do
     before do
       sub_group_project.add_master(user)
 
-      visit new_namespace_project_issue_path(sub_group_project.namespace, sub_group_project)
+      visit new_project_issue_path(sub_group_project)
     end
 
     it 'creates new label from dropdown' do

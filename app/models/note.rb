@@ -32,7 +32,7 @@ class Note < ActiveRecord::Base
   # Banzai::ObjectRenderer
   attr_accessor :user_visible_reference_count
 
-  # Attribute used to store the attributes that have ben changed by slash commands.
+  # Attribute used to store the attributes that have ben changed by quick actions.
   attr_accessor :commands_changes
 
   default_value_for :system, false
@@ -137,9 +137,9 @@ class Note < ActiveRecord::Base
     end
 
     def count_for_collection(ids, type)
-      user.select('noteable_id', 'COUNT(*) as count').
-        group(:noteable_id).
-        where(noteable_type: type, noteable_id: ids)
+      user.select('noteable_id', 'COUNT(*) as count')
+        .group(:noteable_id)
+        .where(noteable_type: type, noteable_id: ids)
     end
   end
 
@@ -330,8 +330,7 @@ class Note < ActiveRecord::Base
   def expire_etag_cache
     return unless for_issue?
 
-    key = Gitlab::Routing.url_helpers.namespace_project_noteable_notes_path(
-      noteable.project.namespace,
+    key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
       noteable.project,
       target_type: noteable_type.underscore,
       target_id: noteable.id

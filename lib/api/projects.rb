@@ -1,3 +1,5 @@
+require_dependency 'declarative_policy'
+
 module API
   # Projects API
   class Projects < Grape::API
@@ -8,6 +10,7 @@ module API
     helpers do
       params :optional_params_ce do
         optional :description, type: String, desc: 'The description of the project'
+        optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
         optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
         optional :merge_requests_enabled, type: Boolean, desc: 'Flag indication if merge requests are enabled'
         optional :wiki_enabled, type: Boolean, desc: 'Flag indication if the wiki is enabled'
@@ -23,6 +26,7 @@ module API
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
         optional :tag_list, type: Array[String], desc: 'The list of tags for a project'
         optional :avatar, type: File, desc: 'Avatar image for project'
+        optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
       end
 
       params :optional_params do
@@ -218,6 +222,7 @@ module API
             :only_allow_merge_if_all_discussions_are_resolved,
             :only_allow_merge_if_pipeline_succeeds,
             :path,
+            :printing_merge_request_link_enabled,
             :public_builds,
             :request_access_enabled,
             :shared_runners_enabled,
@@ -394,7 +399,7 @@ module API
         use :pagination
       end
       get ':id/users' do
-        users = user_project.team.users
+        users = DeclarativePolicy.subject_scope { user_project.team.users }
         users = users.search(params[:search]) if params[:search].present?
 
         present paginate(users), with: Entities::UserBasic

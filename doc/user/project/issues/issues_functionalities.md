@@ -68,7 +68,7 @@ This feature is available only in [GitLab Enterprise Edition](https://about.gitl
 - Spend: add the time spent on the implementation of that issue
 
 > **Note:**
-both estimate and spend times are set via [GitLab Slash Commands](../slash_commands.md).
+both estimate and spend times are set via [GitLab Quick Actions](../quick_actions.md).
 
 Learn more on the [Time Tracking documentation](https://docs.gitlab.com/ee/workflow/time_tracking.html).
 
@@ -147,7 +147,7 @@ or in the issue thread.
 
 #### 15. Award emoji
 
-- Award an emoji to that issue. 
+- Award an emoji to that issue.
 
 > **Tip:**
 Posting "+1" as comments in threads spam all

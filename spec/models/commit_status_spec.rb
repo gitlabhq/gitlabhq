@@ -284,6 +284,41 @@ describe CommitStatus, :models do
     end
   end
 
+  describe '.status' do
+    context 'when there are multiple statuses present' do
+      before do
+        create_status(status: 'running')
+        create_status(status: 'success')
+        create_status(allow_failure: true, status: 'failed')
+      end
+
+      it 'returns a correct compound status' do
+        expect(described_class.all.status).to eq 'running'
+      end
+    end
+
+    context 'when there are only allowed to fail commit statuses present' do
+      before do
+        create_status(allow_failure: true, status: 'failed')
+      end
+
+      it 'returns status that indicates success' do
+        expect(described_class.all.status).to eq 'success'
+      end
+    end
+
+    context 'when using a scope to select latest statuses' do
+      before do
+        create_status(name: 'test', retried: true, status: 'failed')
+        create_status(allow_failure: true, name: 'test', status: 'failed')
+      end
+
+      it 'returns status according to the scope' do
+        expect(described_class.latest.status).to eq 'success'
+      end
+    end
+  end
+
   describe '#before_sha' do
     subject { commit_status.before_sha }
 

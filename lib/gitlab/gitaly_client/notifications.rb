@@ -1,17 +1,19 @@
 module Gitlab
   module GitalyClient
     class Notifications
-      attr_accessor :stub
-
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
-        @stub = GitalyClient.stub(:notifications, repository.storage)
+        @storage = repository.storage
       end
 
       def post_receive
-        request = Gitaly::PostReceiveRequest.new(repository: @gitaly_repo)
-        @stub.post_receive(request)
+        GitalyClient.call(
+          @storage,
+          :notifications,
+          :post_receive,
+          Gitaly::PostReceiveRequest.new(repository: @gitaly_repo)
+        )
       end
     end
   end

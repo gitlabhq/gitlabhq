@@ -1,7 +1,17 @@
+/* eslint-disable jasmine/no-global-setup */
 import $ from 'jquery';
 import _ from 'underscore';
 import 'jasmine-jquery';
 import '~/commons';
+
+import Vue from 'vue';
+import VueResource from 'vue-resource';
+
+const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
+Vue.config.devtools = !isHeadlessChrome;
+Vue.config.productionTip = false;
+
+Vue.use(VueResource);
 
 // enable test fixtures
 jasmine.getFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
@@ -16,6 +26,45 @@ window.gl = window.gl || {};
 window.gl.TEST_HOST = 'http://test.host';
 window.gon = window.gon || {};
 
+let hasUnhandledPromiseRejections = false;
+
+window.addEventListener('unhandledrejection', (event) => {
+  hasUnhandledPromiseRejections = true;
+  console.error('Unhandled promise rejection:');
+  console.error(event.reason.stack || event.reason);
+});
+
+const checkUnhandledPromiseRejections = (done) => {
+  expect(hasUnhandledPromiseRejections).toBe(false);
+  done();
+};
+
+// HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
+// because it appears to lock up the thread that communicates to Karma's socket
+// This async beforeEach gets called on every spec and releases the JS thread long
+// enough for the socket to continue to communicate.
+// The downside is that it creates a minor performance penalty in the time it takes
+// to run our unit tests.
+beforeEach(done => done());
+
+beforeAll(() => {
+  const origError = console.error;
+  spyOn(console, 'error').and.callFake((message) => {
+    if (/^\[Vue warn\]/.test(message)) {
+      fail(message);
+    } else {
+      origError(message);
+    }
+  });
+});
+
+const builtinVueHttpInterceptors = Vue.http.interceptors.slice();
+
+beforeEach(() => {
+  // restore interceptors so we have no remaining ones from previous tests
+  Vue.http.interceptors = builtinVueHttpInterceptors.slice();
+});
+
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
 testsContext.keys().forEach(function (path) {
@@ -29,6 +78,10 @@ testsContext.keys().forEach(function (path) {
       });
     });
   }
+});
+
+it('has no unhandled Promise rejections', (done) => {
+  setTimeout(checkUnhandledPromiseRejections(done), 1000);
 });
 
 // if we're generating coverage reports, make sure to include all files so

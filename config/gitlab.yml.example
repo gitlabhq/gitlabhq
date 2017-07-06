@@ -454,6 +454,10 @@ production: &base
     # introduced in 9.0). Eventually Gitaly use will become mandatory and
     # this option will disappear.
     enabled: true
+    # Default Gitaly authentication token. Can be overriden per storage. Can
+    # be left blank when Gitaly is running locally on a Unix socket, which
+    # is the normal way to deploy Gitaly.
+    token:
 
   #
   # 4. Advanced settings
@@ -469,6 +473,7 @@ production: &base
       default:
         path: /home/git/repositories/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
+        # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
 
   ## Backup settings
   backup:
@@ -538,6 +543,10 @@ production: &base
     #   enabled: true
     #   host: localhost
     #   port: 3808
+  prometheus:
+    # Time between sampling of unicorn socket metrics, in seconds
+    # unicorn_sampler_interval: 10
+
 
   #
   # 5. Extra customization
@@ -594,6 +603,7 @@ test:
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
   gitaly:
     enabled: true
+    token: secret
   backup:
     path: tmp/tests/backups
   gitlab_shell:

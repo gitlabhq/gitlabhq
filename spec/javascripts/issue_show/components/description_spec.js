@@ -95,5 +95,33 @@ describe('Description component', () => {
         done();
       });
     });
+
+    it('clears task status text when no tasks are present', (done) => {
+      vm.taskStatus = '0 of 0';
+
+      setTimeout(() => {
+        expect(
+          document.querySelector('.issuable-meta #task_status').textContent.trim(),
+        ).toBe('');
+
+        done();
+      });
+    });
+  });
+
+  it('applies syntax highlighting and math when description changed', (done) => {
+    spyOn(vm, 'renderGFM').and.callThrough();
+    spyOn($.prototype, 'renderGFM').and.callThrough();
+    vm.descriptionHtml = 'changed';
+
+    Vue.nextTick(() => {
+      setTimeout(() => {
+        expect(vm.$refs['gfm-content']).toBeDefined();
+        expect(vm.renderGFM).toHaveBeenCalled();
+        expect($.prototype.renderGFM).toHaveBeenCalled();
+
+        done();
+      });
+    });
   });
 });

@@ -14,8 +14,8 @@ describe ExtractsPath, lib: true do
     repo = double(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0',
                               'release/app', 'release/app/v1.0.0'])
     allow(project).to receive(:repository).and_return(repo)
-    allow(project).to receive(:path_with_namespace).
-      and_return('gitlab/gitlab-ci')
+    allow(project).to receive(:path_with_namespace)
+      .and_return('gitlab/gitlab-ci')
     allow(request).to receive(:format=)
   end
 

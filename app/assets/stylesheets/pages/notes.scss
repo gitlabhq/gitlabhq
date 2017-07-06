@@ -14,16 +14,6 @@ ul.notes {
   margin: 0;
   padding: 0;
 
-  .timeline-content {
-    margin-left: 55px;
-
-    &.timeline-content-form {
-      @include notes-media('max', $screen-sm-max) {
-        margin-left: 0;
-      }
-    }
-  }
-
   .note-created-ago,
   .note-updated-at {
     white-space: nowrap;
@@ -46,15 +36,47 @@ ul.notes {
     }
   }
 
-  > li {
-    padding: $gl-padding $gl-btn-padding;
+  > li { // .timeline-entry
+    padding: 0;
     display: block;
     position: relative;
-    border-bottom: 1px solid $white-normal;
+    border-bottom: 0;
 
-    &:last-child {
-      // Override `.timeline > li:last-child { border-bottom: none; }`
+    @include notes-media('min', $screen-sm-min) {
+      padding-left: $note-icon-gutter-width;
+    }
+
+    .timeline-entry-inner {
+      padding: $gl-padding $gl-btn-padding;
       border-bottom: 1px solid $white-normal;
+    }
+
+    &:target,
+    &.target {
+      border-bottom: 1px solid $white-normal;
+
+      &:not(:first-child) {
+        border-top: 1px solid $white-normal;
+        margin-top: -1px;
+      }
+
+      .timeline-entry-inner {
+        border-bottom: 0;
+      }
+    }
+
+    .timeline-icon {
+      @include notes-media('min', $screen-sm-min) {
+        margin-left: -$note-icon-gutter-width;
+      }
+    }
+
+    .timeline-content {
+      margin-left: $note-icon-gutter-width;
+
+      @include notes-media('min', $screen-sm-min) {
+        margin-left: 0;
+      }
     }
 
     &.being-posted {
@@ -73,7 +95,7 @@ ul.notes {
     }
 
     &.note-discussion {
-      &.timeline-entry {
+      .timeline-entry-inner {
         padding: $gl-padding 10px;
       }
     }
@@ -152,12 +174,7 @@ ul.notes {
 
   .system-note {
     font-size: 14px;
-    padding-left: 0;
     clear: both;
-
-    @include notes-media('min', $screen-sm-min) {
-      margin-left: 65px;
-    }
 
     .note-header-info {
       padding-bottom: 0;
@@ -192,13 +209,16 @@ ul.notes {
     .timeline-icon {
       float: left;
 
+      @include notes-media('min', $screen-sm-min) {
+        margin-left: 0;
+        width: auto;
+      }
+
       svg {
         width: 16px;
         height: 16px;
         fill: $gray-darkest;
-        position: absolute;
-        left: 0;
-        top: 2px;
+        margin-top: 2px;
       }
     }
 
@@ -250,7 +270,7 @@ ul.notes {
           &::after {
             content: '';
             width: 100%;
-            height: 67px;
+            height: 70px;
             position: absolute;
             left: 0;
             bottom: 0;
@@ -453,7 +473,7 @@ ul.notes {
 }
 
 .more-actions {
-  display: inline;
+  display: inline-block;
 
   .tooltip {
     white-space: nowrap;
@@ -508,11 +528,6 @@ ul.notes {
 .note-action-button {
   display: inline;
   line-height: 20px;
-
-  @include notes-media('min', $screen-sm-min) {
-    margin-left: 10px;
-    line-height: 24px;
-  }
 
   .fa {
     color: $gray-darkest;
@@ -613,8 +628,14 @@ ul.notes {
  * Line note button on the side of diffs
  */
 
+.line_holder .is-over:not(.no-comment-btn) {
+  .add-diff-note {
+    opacity: 1;
+  }
+}
+
 .add-diff-note {
-  display: none;
+  opacity: 0;
   margin-top: -2px;
   border-radius: 50%;
   background: $white-light;
@@ -627,13 +648,11 @@ ul.notes {
   width: 23px;
   height: 23px;
   border: 1px solid $blue-500;
-  transition: transform .1s ease-in-out;
 
   &:hover {
     background: $blue-500;
     border-color: $blue-600;
     color: $white-light;
-    transform: scale(1.15);
   }
 
   &:active {
@@ -644,15 +663,12 @@ ul.notes {
 .discussion-body,
 .diff-file {
   .notes .note {
-    padding-left: $gl-padding;
-    padding-right: $gl-padding;
+    border-bottom: 1px solid $white-normal;
 
-    &.system-note {
-      padding-left: 0;
-
-      @media (min-width: $screen-sm-min) {
-        margin-left: 70px;
-      }
+    .timeline-entry-inner {
+      padding-left: $gl-padding;
+      padding-right: $gl-padding;
+      border-bottom: none;
     }
   }
 }

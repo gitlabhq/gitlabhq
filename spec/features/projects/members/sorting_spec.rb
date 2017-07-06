@@ -8,7 +8,7 @@ feature 'Projects > Members > Sorting', feature: true do
   background do
     create(:project_member, :developer, user: developer, project: project, created_at: 3.days.ago)
 
-    login_as(master)
+    gitlab_sign_in(master)
   end
 
   scenario 'sorts alphabetically by default' do
@@ -84,7 +84,7 @@ feature 'Projects > Members > Sorting', feature: true do
   end
 
   def visit_members_list(sort:)
-    visit namespace_project_project_members_path(project.namespace.to_param, project, sort: sort)
+    visit project_project_members_path(project, sort: sort)
   end
 
   def first_member

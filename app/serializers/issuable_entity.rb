@@ -5,7 +5,6 @@ class IssuableEntity < Grape::Entity
   expose :description
   expose :lock_version
   expose :milestone_id
-  expose :position
   expose :state
   expose :title
   expose :updated_by_id

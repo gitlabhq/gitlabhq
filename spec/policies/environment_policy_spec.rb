@@ -8,8 +8,8 @@ describe EnvironmentPolicy do
     create(:environment, :with_review_app, project: project)
   end
 
-  let(:policies) do
-    described_class.abilities(user, environment).to_set
+  let(:policy) do
+    described_class.new(user, environment)
   end
 
   describe '#rules' do
@@ -17,7 +17,7 @@ describe EnvironmentPolicy do
       let(:project) { create(:project, :private) }
 
       it 'does not include ability to stop environment' do
-        expect(policies).not_to include :stop_environment
+        expect(policy).to be_disallowed :stop_environment
       end
     end
 
@@ -25,7 +25,7 @@ describe EnvironmentPolicy do
       let(:project) { create(:project, :public) }
 
       it 'does not include ability to stop environment' do
-        expect(policies).not_to include :stop_environment
+        expect(policy).to be_disallowed :stop_environment
       end
     end
 
@@ -38,7 +38,7 @@ describe EnvironmentPolicy do
 
       context 'when team member has ability to stop environment' do
         it 'does includes ability to stop environment' do
-          expect(policies).to include :stop_environment
+          expect(policy).to be_allowed :stop_environment
         end
       end
 
@@ -49,7 +49,7 @@ describe EnvironmentPolicy do
         end
 
         it 'does not include ability to stop environment' do
-          expect(policies).not_to include :stop_environment
+          expect(policy).to be_disallowed :stop_environment
         end
       end
     end

@@ -10,11 +10,11 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(100.kilobytes)
     allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(10.kilobytes)
 
-    login_as :admin
+    gitlab_sign_in :admin
 
     # Ensure that undiffable.md is in .gitattributes
     project.repository.copy_gitattributes(branch)
-    visit namespace_project_commit_path(project.namespace, project, project.commit(branch))
+    visit project_commit_path(project, project.commit(branch))
     execute_script('window.ajaxUris = []; $(document).ajaxSend(function(event, xhr, settings) { ajaxUris.push(settings.url) });')
   end
 
@@ -38,7 +38,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     expect(large_diff).not_to have_selector('.code')
     expect(large_diff).to have_selector('.nothing-here-block')
 
-    visit namespace_project_commit_path(project.namespace, project, project.commit(branch), anchor: "#{large_diff[:id]}_0_1")
+    visit project_commit_path(project, project.commit(branch), anchor: "#{large_diff[:id]}_0_1")
     execute_script('window.location.reload()')
 
     wait_for_requests
@@ -52,7 +52,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     expect(large_diff).not_to have_selector('.code')
     expect(large_diff).to have_selector('.nothing-here-block')
 
-    visit namespace_project_commit_path(project.namespace, project, project.commit(branch), anchor: large_diff[:id])
+    visit project_commit_path(project, project.commit(branch), anchor: large_diff[:id])
     execute_script('window.location.reload()')
 
     wait_for_requests
@@ -129,7 +129,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
         before do
           large_diff.find('.diff-line-num', match: :prefer_exact).hover
-          large_diff.find('.add-diff-note').click
+          large_diff.find('.add-diff-note', match: :prefer_exact).click
           large_diff.find('.note-textarea').send_keys comment_text
           large_diff.find_button('Comment').click
           wait_for_requests

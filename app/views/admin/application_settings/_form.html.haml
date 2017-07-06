@@ -22,7 +22,9 @@
     .form-group
       = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
       .col-sm-10
-        - restricted_level_checkboxes('restricted-visibility-help').each do |level|
+        - checkbox_name = 'application_setting[restricted_visibility_levels][]'
+        = hidden_field_tag(checkbox_name)
+        - restricted_level_checkboxes('restricted-visibility-help', checkbox_name).each do |level|
           .checkbox
             = level
         %span.help-block#restricted-visibility-help
@@ -325,6 +327,10 @@
           = f.label :prometheus_metrics_enabled do
             = f.check_box :prometheus_metrics_enabled
             Enable Prometheus Metrics
+            - unless Gitlab::Metrics.metrics_folder_present?
+              .help-block
+                %strong.cred WARNING:
+                Environment variable `prometheus_multiproc_dir` does not exist or is not pointing to a valid directory.
 
   %fieldset
     %legend Background Jobs

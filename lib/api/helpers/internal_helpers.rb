@@ -10,6 +10,10 @@ module API
         set_project unless defined?(@project)
         @project
       end
+      
+      def redirected_path
+        @redirected_path
+      end
 
       def ssh_authentication_abilities
         [
@@ -38,8 +42,9 @@ module API
       def set_project
         if params[:gl_repository]
           @project, @wiki = Gitlab::GlRepository.parse(params[:gl_repository])
+          @redirected_path = nil
         else
-          @project, @wiki = Gitlab::RepoPath.parse(params[:project])
+          @project, @wiki, @redirected_path = Gitlab::RepoPath.parse(params[:project])
         end
       end
 

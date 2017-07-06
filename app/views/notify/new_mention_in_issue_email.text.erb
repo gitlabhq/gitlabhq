@@ -1,6 +1,6 @@
 You have been mentioned in an issue.
 
-Issue <%= @issue.iid %>: <%= url_for(namespace_project_issue_url(@issue.project.namespace, @issue.project, @issue)) %>
+Issue <%= @issue.iid %>: <%= url_for(project_issue_url(@issue.project, @issue)) %>
 Author:    <%= @issue.author_name %>
 Assignee:  <%= @issue.assignee_list %>
 

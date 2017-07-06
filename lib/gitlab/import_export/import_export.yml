@@ -26,7 +26,8 @@ project_tree:
     - notes:
       - :author
       - :events
-    - :merge_request_diff
+    - merge_request_diff:
+      - :merge_request_diff_files
     - :events
     - :timelogs
     - label_links:
@@ -92,10 +93,13 @@ excluded_attributes:
     - :expired_at
   merge_request_diff:
     - :st_diffs
+  merge_request_diff_files:
+    - :diff
   issues:
     - :milestone_id
   merge_requests:
     - :milestone_id
+    - :ref_fetched
   award_emoji:
     - :awardable_id
   statuses:
@@ -113,6 +117,8 @@ methods:
     - :type
   merge_request_diff:
     - :utf8_st_diffs
+  merge_request_diff_files:
+    - :utf8_diff
   merge_requests:
     - :diff_head_sha
   project:

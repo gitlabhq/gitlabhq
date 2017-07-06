@@ -608,8 +608,8 @@ describe Ci::Pipeline, models: true do
 
       it 'returns the latest pipeline for the same ref and different sha' do
         expect(pipelines.map(&:sha)).to contain_exactly('A', 'B', 'C')
-        expect(pipelines.map(&:status)).
-          to contain_exactly('success', 'failed', 'skipped')
+        expect(pipelines.map(&:status))
+          .to contain_exactly('success', 'failed', 'skipped')
       end
     end
 
@@ -618,8 +618,8 @@ describe Ci::Pipeline, models: true do
 
       it 'returns the latest pipeline for ref and different sha' do
         expect(pipelines.map(&:sha)).to contain_exactly('A', 'B')
-        expect(pipelines.map(&:status)).
-          to contain_exactly('success', 'failed')
+        expect(pipelines.map(&:status))
+          .to contain_exactly('success', 'failed')
       end
     end
   end
@@ -654,8 +654,8 @@ describe Ci::Pipeline, models: true do
     end
 
     it 'returns the latest successful pipeline' do
-      expect(described_class.latest_successful_for('ref')).
-        to eq(latest_successful_pipeline)
+      expect(described_class.latest_successful_for('ref'))
+        .to eq(latest_successful_pipeline)
     end
   end
 
@@ -670,6 +670,12 @@ describe Ci::Pipeline, models: true do
 
       expect(described_class.latest_successful_for_refs(refs)).to eq({ 'ref1' => latest_successful_pipeline1, 'ref2' => latest_successful_pipeline2 })
     end
+  end
+
+  describe '.internal_sources' do
+    subject { described_class.internal_sources }
+
+    it { is_expected.to be_an(Array) }
   end
 
   describe '#status' do
@@ -739,6 +745,39 @@ describe Ci::Pipeline, models: true do
       # Since the pipeline already run, so it should not be pending anymore
 
       it { is_expected.to eq('running') }
+    end
+  end
+
+  describe '#ci_yaml_file_path' do
+    subject { pipeline.ci_yaml_file_path }
+
+    it 'returns the path from project' do
+      allow(pipeline.project).to receive(:ci_config_path) { 'custom/path' }
+
+      is_expected.to eq('custom/path')
+    end
+
+    it 'returns default when custom path is nil' do
+      allow(pipeline.project).to receive(:ci_config_path) { nil }
+
+      is_expected.to eq('.gitlab-ci.yml')
+    end
+
+    it 'returns default when custom path is empty' do
+      allow(pipeline.project).to receive(:ci_config_path) { '' }
+
+      is_expected.to eq('.gitlab-ci.yml')
+    end
+  end
+
+  describe '#ci_yaml_file' do
+    it 'reports error if the file is not found' do
+      allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+
+      pipeline.ci_yaml_file
+
+      expect(pipeline.yaml_errors)
+        .to eq('Failed to load CI/CD config file at custom')
     end
   end
 
@@ -1201,8 +1240,8 @@ describe Ci::Pipeline, models: true do
     before do
       project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
 
-      pipeline.user.global_notification_setting.
-        update(level: 'custom', failed_pipeline: true, success_pipeline: true)
+      pipeline.user.global_notification_setting
+        .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
 
       reset_delivered_emails!
 

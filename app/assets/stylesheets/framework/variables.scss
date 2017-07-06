@@ -74,6 +74,12 @@ $red-700: #a62d19;
 $red-800: #8b2615;
 $red-900: #711e11;
 
+$purple-600: #6e49cb;
+$purple-650: #5c35ae;
+$purple-700: #4a2192;
+$purple-800: #2c0a5c;
+$purple-900: #380d75;
+
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
 
@@ -99,6 +105,7 @@ $well-light-text-color: #5b6169;
  */
 $gl-font-size: 14px;
 $gl-text-color: rgba(0, 0, 0, .85);
+$gl-text-color-light: rgba(0, 0, 0, .7);
 $gl-text-color-secondary: rgba(0, 0, 0, .55);
 $gl-text-color-disabled: rgba(0, 0, 0, .35);
 $gl-text-color-inverted: rgba(255, 255, 255, 1.0);
@@ -161,6 +168,7 @@ $progress-color: #c0392b;
 $header-height: 50px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
+$limited-layout-width-sm: 790px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: $red-500;
 $border-radius-default: 3px;
@@ -282,6 +290,7 @@ $dropdown-toggle-active-border-color: darken($border-color, 14%);
 /*
 * Filtered Search
 */
+$filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
 $dropdown-hover-color: $blue-400;
 
 /*
@@ -322,6 +331,7 @@ $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
 $note-line2-border: #ddd;
+$note-icon-gutter-width: 55px;
 
 
 /*

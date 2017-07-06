@@ -30,8 +30,8 @@ module Ci
     scope :assignable_for, ->(project) do
       # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
       #        Without that, placeholders would miss one and couldn't match.
-      where(locked: false).
-        where.not("id IN (#{project.runners.select(:id).to_sql})").specific
+      where(locked: false)
+        .where.not("id IN (#{project.runners.select(:id).to_sql})").specific
     end
 
     validate :tag_constraints

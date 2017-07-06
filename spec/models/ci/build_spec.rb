@@ -451,42 +451,6 @@ describe Ci::Build, :models do
       end
     end
 
-    describe '#environment_url' do
-      subject { job.environment_url }
-
-      context 'when yaml environment uses $CI_COMMIT_REF_NAME' do
-        let(:job) do
-          create(:ci_build,
-                 ref: 'master',
-                 options: { environment: { url: 'http://review/$CI_COMMIT_REF_NAME' } })
-        end
-
-        it { is_expected.to eq('http://review/master') }
-      end
-
-      context 'when yaml environment uses yaml_variables containing symbol keys' do
-        let(:job) do
-          create(:ci_build,
-                 yaml_variables: [{ key: :APP_HOST, value: 'host' }],
-                 options: { environment: { url: 'http://review/$APP_HOST' } })
-        end
-
-        it { is_expected.to eq('http://review/host') }
-      end
-
-      context 'when yaml environment does not have url' do
-        let(:job) { create(:ci_build, environment: 'staging') }
-
-        let!(:environment) do
-          create(:environment, project: job.project, name: job.environment)
-        end
-
-        it 'returns the external_url from persisted environment' do
-          is_expected.to eq(environment.external_url)
-        end
-      end
-    end
-
     describe '#starts_environment?' do
       subject { build.starts_environment? }
 
@@ -899,8 +863,8 @@ describe Ci::Build, :models do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        allow(@merge_request).to receive(:commits_sha).
-          and_return([pipeline.sha, pipeline2.sha])
+        allow(@merge_request).to receive(:commits_sha)
+          .and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
 
@@ -1034,13 +998,17 @@ describe Ci::Build, :models do
 
   describe '#ref_slug' do
     {
-      'master'    => 'master',
-      '1-foo'     => '1-foo',
-      'fix/1-foo' => 'fix-1-foo',
-      'fix-1-foo' => 'fix-1-foo',
-      'a' * 63    => 'a' * 63,
-      'a' * 64    => 'a' * 63,
-      'FOO'       => 'foo'
+      'master'                => 'master',
+      '1-foo'                 => '1-foo',
+      'fix/1-foo'             => 'fix-1-foo',
+      'fix-1-foo'             => 'fix-1-foo',
+      'a' * 63                => 'a' * 63,
+      'a' * 64                => 'a' * 63,
+      'FOO'                   => 'foo',
+      '-' + 'a' * 61 + '-'    => 'a' * 61,
+      '-' + 'a' * 62 + '-'    => 'a' * 62,
+      '-' + 'a' * 63 + '-'    => 'a' * 62,
+      'a' * 62 + ' '          => 'a' * 62
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
@@ -1215,6 +1183,7 @@ describe Ci::Build, :models do
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
         { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
         { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false }
@@ -1292,10 +1261,20 @@ describe Ci::Build, :models do
 
         context 'when the URL was set from the job' do
           before do
-            build.update(options: { environment: { url: 'http://host/$CI_JOB_NAME' } })
+            build.update(options: { environment: { url: url } })
           end
 
           it_behaves_like 'containing environment variables'
+
+          context 'when variables are used in the URL, it does not expand' do
+            let(:url) { 'http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG' }
+
+            it_behaves_like 'containing environment variables'
+
+            it 'puts $CI_ENVIRONMENT_URL in the last so all other variables are available to be used when runners are trying to expand it' do
+              expect(subject.last).to eq(environment_variables.last)
+            end
+          end
         end
 
         context 'when the URL was not set from the job, but environment' do
@@ -1493,6 +1472,16 @@ describe Ci::Build, :models do
       end
 
       it { is_expected.to include(deployment_variable) }
+    end
+
+    context 'when project has custom CI config path' do
+      let(:ci_config_path) { { key: 'CI_CONFIG_PATH', value: 'custom', public: true } }
+
+      before do
+        project.update(ci_config_path: 'custom')
+      end
+
+      it { is_expected.to include(ci_config_path) }
     end
 
     context 'returns variables in valid order' do

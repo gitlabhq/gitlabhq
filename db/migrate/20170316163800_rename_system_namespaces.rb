@@ -159,9 +159,9 @@ class RenameSystemNamespaces < ActiveRecord::Migration
   end
 
   def system_namespace
-    @system_namespace ||= Namespace.where(parent_id: nil).
-                            where(arel_table[:path].matches(system_namespace_path)).
-                            first
+    @system_namespace ||= Namespace.where(parent_id: nil)
+                            .where(arel_table[:path].matches(system_namespace_path))
+                            .first
   end
 
   def system_namespace_path
@@ -209,8 +209,8 @@ class RenameSystemNamespaces < ActiveRecord::Migration
   end
 
   def repo_paths_for_namespace(namespace)
-    projects_for_namespace(namespace).distinct.
-      select(:repository_storage).map(&:repository_storage_path)
+    projects_for_namespace(namespace).distinct
+      .select(:repository_storage).map(&:repository_storage_path)
   end
 
   def uploads_dir

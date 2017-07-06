@@ -55,6 +55,7 @@ import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import initSettingsPanels from './settings_panels';
+import initExperimentalFlags from './experimental_flags';
 
 (function() {
   var Dispatcher;
@@ -79,7 +80,18 @@ import initSettingsPanels from './settings_panels';
       path = page.split(':');
       shortcut_handler = null;
 
-      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
+      $('.js-gfm-input').each((i, el) => {
+        const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+        const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+        gfm.setup($(el), {
+          emojis: true,
+          members: enableGFM,
+          issues: enableGFM,
+          milestones: enableGFM,
+          mergeRequests: enableGFM,
+          labels: enableGFM,
+        });
+      });
 
       function initBlob() {
         new LineHighlighter();
@@ -109,6 +121,9 @@ import initSettingsPanels from './settings_panels';
       }
 
       switch (page) {
+        case 'profiles:preferences:show':
+          initExperimentalFlags();
+          break;
         case 'sessions:new':
           new UsernameValidator();
           new ActiveTabMemoizer();
@@ -176,7 +191,7 @@ import initSettingsPanels from './settings_panels';
         case 'groups:milestones:update':
           new ZenMode();
           new gl.DueDateSelectors();
-          new gl.GLForm($('.milestone-form'));
+          new gl.GLForm($('.milestone-form'), true);
           break;
         case 'projects:compare:show':
           new gl.Diff();
@@ -188,18 +203,18 @@ import initSettingsPanels from './settings_panels';
         case 'projects:issues:new':
         case 'projects:issues:edit':
           shortcut_handler = new ShortcutsNavigation();
-          new gl.GLForm($('.issue-form'));
+          new gl.GLForm($('.issue-form'), true);
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
           new gl.IssuableTemplateSelectors();
           break;
-        case 'projects:merge_requests:new':
-        case 'projects:merge_requests:new_diffs':
+        case 'projects:merge_requests:creations:new':
+        case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
-          new gl.GLForm($('.merge-request-form'));
+          new gl.GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -208,30 +223,28 @@ import initSettingsPanels from './settings_panels';
           break;
         case 'projects:tags:new':
           new ZenMode();
-          new gl.GLForm($('.tag-form'));
+          new gl.GLForm($('.tag-form'), true);
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
         case 'projects:snippets:update':
+          new gl.GLForm($('.snippet-form'), true);
+          break;
         case 'snippets:new':
         case 'snippets:edit':
         case 'snippets:create':
         case 'snippets:update':
-          new gl.GLForm($('.snippet-form'));
+          new gl.GLForm($('.snippet-form'), false);
           break;
         case 'projects:releases:edit':
           new ZenMode();
-          new gl.GLForm($('.release-form'));
+          new gl.GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
-          new ZenMode();
-          break;
-        case "projects:merge_requests:diffs":
-          new gl.Diff();
           new ZenMode();
           break;
         case 'dashboard:activity':
@@ -302,7 +315,7 @@ import initSettingsPanels from './settings_panels';
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:members:show':
+        case 'projects:settings:members:show':
           new gl.MemberExpirationDate('.js-access-expiration-date-groups');
           new GroupsSelect();
           new gl.MemberExpirationDate();
@@ -369,7 +382,7 @@ import initSettingsPanels from './settings_panels';
         case 'search:show':
           new Search();
           break;
-        case 'projects:repository:show':
+        case 'projects:settings:repository:show':
           // Initialize Protected Branch Settings
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
@@ -379,7 +392,7 @@ import initSettingsPanels from './settings_panels';
           // Initialize expandable settings panels
           initSettingsPanels();
           break;
-        case 'projects:ci_cd:show':
+        case 'projects:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
         case 'ci:lints:create':
@@ -471,7 +484,7 @@ import initSettingsPanels from './settings_panels';
               new gl.Wikis();
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
-              new gl.GLForm($('.wiki-form'));
+              new gl.GLForm($('.wiki-form'), true);
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();

@@ -1,3 +1,5 @@
+require 'base64'
+
 require 'gitaly'
 
 module Gitlab
@@ -46,6 +48,26 @@ module Gitlab
       end
 
       address
+    end
+
+    # All Gitaly RPC call sites should use GitalyClient.call. This method
+    # makes sure that per-request authentication headers are set.
+    def self.call(storage, service, rpc, request)
+      metadata = request_metadata(storage)
+      metadata = yield(metadata) if block_given?
+      stub(service, storage).send(rpc, request, metadata)
+    end
+  
+    def self.request_metadata(storage)
+      encoded_token = Base64.strict_encode64(token(storage).to_s)
+      { metadata: { 'authorization' => "Bearer #{encoded_token}" } }
+    end
+
+    def self.token(storage)
+      params = Gitlab.config.repositories.storages[storage]
+      raise "storage not found: #{storage.inspect}" if params.nil?
+
+      params['gitaly_token'].presence || Gitlab.config.gitaly['token']
     end
 
     def self.enabled?

@@ -9,7 +9,7 @@ describe 'Navigation bar counter', feature: true, caching: true do
   before do
     issue.assignees = [user]
     merge_request.update(assignee: user)
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   it 'reflects dashboard issues count' do

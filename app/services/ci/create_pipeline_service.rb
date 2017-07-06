@@ -33,7 +33,7 @@ module Ci
 
       unless pipeline.config_processor
         unless pipeline.ci_yaml_file
-          return error('Missing .gitlab-ci.yml file')
+          return error("Missing #{pipeline.ci_yaml_file_path} file")
         end
         return error(pipeline.yaml_errors, save: save_on_errors)
       end
@@ -67,8 +67,8 @@ module Ci
     def update_merge_requests_head_pipeline
       return unless pipeline.latest?
 
-      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref).
-        update_all(head_pipeline_id: @pipeline.id)
+      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref)
+        .update_all(head_pipeline_id: @pipeline.id)
     end
 
     def skip_ci?

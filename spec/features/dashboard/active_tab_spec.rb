@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Active Tab', js: true, feature: true do
   before do
-    login_as :user
+    gitlab_sign_in :user
   end
 
   shared_examples 'page has active tab' do |title|

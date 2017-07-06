@@ -67,8 +67,8 @@ describe Projects::ServicesController do
         put :test, namespace_id: project.namespace.id, project_id: project.id, id: service.id, service: service_params
 
         expect(response.status).to eq(200)
-        expect(JSON.parse(response.body)).
-          to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test')
+        expect(JSON.parse(response.body))
+          .to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test')
       end
     end
   end
@@ -79,7 +79,7 @@ describe Projects::ServicesController do
         put :update,
           namespace_id: project.namespace.id, project_id: project.id, id: service.id, service: { active: true }
 
-        expect(response).to redirect_to(namespace_project_settings_integrations_path(project.namespace, project))
+        expect(response).to redirect_to(project_settings_integrations_path(project))
         expect(flash[:notice]).to eq 'HipChat activated.'
       end
     end

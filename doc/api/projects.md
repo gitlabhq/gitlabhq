@@ -261,6 +261,7 @@ Parameters:
   ],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
+  "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
   "statistics": {
     "commit_count": 37,
@@ -335,7 +336,7 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `visibility` | String | no | See [project visibility level](#project-visibility-level) |
+| `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
@@ -344,6 +345,8 @@ Parameters:
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
+| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
+| `ci_config_path` | string | no | The path to CI config file |
 
 ### Create project for user
 
@@ -379,6 +382,8 @@ Parameters:
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
+| `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
+| `ci_config_path` | string | no | The path to CI config file |
 
 ### Edit project
 
@@ -413,6 +418,7 @@ Parameters:
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
+| `ci_config_path` | string | no | The path to CI config file |
 
 ### Fork project
 

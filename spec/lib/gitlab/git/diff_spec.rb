@@ -90,7 +90,7 @@ EOT
         let(:diff) { described_class.new(@rugged_diff) }
 
         it 'initializes the diff' do
-          expect(diff.to_hash).to eq(@raw_diff_hash.merge(too_large: nil))
+          expect(diff.to_hash).to eq(@raw_diff_hash)
         end
 
         it 'does not prune the diff' do
@@ -100,8 +100,8 @@ EOT
 
       context 'using a diff that is too large' do
         it 'prunes the diff' do
-          expect_any_instance_of(String).to receive(:bytesize).
-            and_return(1024 * 1024 * 1024)
+          expect_any_instance_of(String).to receive(:bytesize)
+            .and_return(1024 * 1024 * 1024)
 
           diff = described_class.new(@rugged_diff)
 
@@ -130,8 +130,8 @@ EOT
 
       context 'using a large binary diff' do
         it 'does not prune the diff' do
-          expect_any_instance_of(Rugged::Diff::Delta).to receive(:binary?).
-            and_return(true)
+          expect_any_instance_of(Rugged::Diff::Delta).to receive(:binary?)
+            .and_return(true)
 
           diff = described_class.new(@rugged_diff)
 
@@ -173,6 +173,14 @@ EOT
         it 'prunes the diff' do
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
+        end
+      end
+
+      context 'when the patch passed is not UTF-8-encoded' do
+        let(:raw_patch) { @raw_diff_hash[:diff].encode(Encoding::ASCII_8BIT) }
+
+        it 'encodes diff patch to UTF-8' do
+          expect(diff.diff).to be_utf8
         end
       end
     end

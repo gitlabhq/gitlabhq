@@ -6,11 +6,11 @@ describe 'Project variables', js: true do
   let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
     project.team << [user, :master]
     project.variables << variable
 
-    visit namespace_project_settings_ci_cd_path(project.namespace, project)
+    visit project_settings_ci_cd_path(project)
   end
 
   it 'shows list of variables' do

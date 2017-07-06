@@ -18,26 +18,26 @@ describe Issues::CloseService, services: true do
     let(:service) { described_class.new(project, user) }
 
     it 'checks if the user is authorized to update the issue' do
-      expect(service).to receive(:can?).with(user, :update_issue, issue).
-        and_call_original
+      expect(service).to receive(:can?).with(user, :update_issue, issue)
+        .and_call_original
 
       service.execute(issue)
     end
 
     it 'does not close the issue when the user is not authorized to do so' do
-      allow(service).to receive(:can?).with(user, :update_issue, issue).
-        and_return(false)
+      allow(service).to receive(:can?).with(user, :update_issue, issue)
+        .and_return(false)
 
       expect(service).not_to receive(:close_issue)
       expect(service.execute(issue)).to eq(issue)
     end
 
     it 'closes the issue when the user is authorized to do so' do
-      allow(service).to receive(:can?).with(user, :update_issue, issue).
-        and_return(true)
+      allow(service).to receive(:can?).with(user, :update_issue, issue)
+        .and_return(true)
 
-      expect(service).to receive(:close_issue).
-        with(issue, commit: nil, notifications: true, system_note: true)
+      expect(service).to receive(:close_issue)
+        .with(issue, commit: nil, notifications: true, system_note: true)
 
       service.execute(issue)
     end

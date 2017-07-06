@@ -16,11 +16,11 @@ module Gitlab
       alias_method :renamed_file?, :renamed_file
 
       attr_accessor :expanded
+      attr_writer :too_large
 
       alias_method :expanded?, :expanded
 
-      # We need this accessor because of `to_hash` and `init_from_hash`
-      attr_accessor :too_large
+      SERIALIZE_KEYS = %i(diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large).freeze
 
       class << self
         # The maximum size of a diff to display.
@@ -231,16 +231,10 @@ module Gitlab
         end
       end
 
-      def serialize_keys
-        @serialize_keys ||= %i(diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large)
-      end
-
       def to_hash
         hash = {}
 
-        keys = serialize_keys
-
-        keys.each do |key|
+        SERIALIZE_KEYS.each do |key|
           hash[key] = send(key)
         end
 
@@ -266,6 +260,9 @@ module Gitlab
           @too_large
         end
       end
+
+      # This is used by `to_hash` and `init_from_hash`.
+      alias_method :too_large, :too_large?
 
       def too_large!
         @diff = ''
@@ -315,13 +312,13 @@ module Gitlab
       def init_from_hash(hash)
         raw_diff = hash.symbolize_keys
 
-        serialize_keys.each do |key|
+        SERIALIZE_KEYS.each do |key|
           send(:"#{key}=", raw_diff[key.to_sym])
         end
       end
 
       def init_from_gitaly(diff)
-        @diff = diff.patch if diff.respond_to?(:patch)
+        @diff = encode!(diff.patch) if diff.respond_to?(:patch)
         @new_path = encode!(diff.to_path.dup)
         @old_path = encode!(diff.from_path.dup)
         @a_mode = diff.old_mode.to_s(8)

@@ -41,16 +41,16 @@ module Labels
     end
 
     def group_labels_applied_to_issues
-      Label.joins(:issues).
-        where(
+      Label.joins(:issues)
+        .where(
           issues: { project_id: project.id },
           labels: { type: 'GroupLabel', group_id: old_group.id }
         )
     end
 
     def group_labels_applied_to_merge_requests
-      Label.joins(:merge_requests).
-        where(
+      Label.joins(:merge_requests)
+        .where(
           merge_requests: { target_project_id: project.id },
           labels: { type: 'GroupLabel', group_id: old_group.id }
         )
@@ -64,15 +64,15 @@ module Labels
     end
 
     def update_label_links(labels, old_label_id:, new_label_id:)
-      LabelLink.joins(:label).
-        merge(labels).
-        where(label_id: old_label_id).
-        update_all(label_id: new_label_id)
+      LabelLink.joins(:label)
+        .merge(labels)
+        .where(label_id: old_label_id)
+        .update_all(label_id: new_label_id)
     end
 
     def update_label_priorities(old_label_id:, new_label_id:)
-      LabelPriority.where(project_id: project.id, label_id: old_label_id).
-        update_all(label_id: new_label_id)
+      LabelPriority.where(project_id: project.id, label_id: old_label_id)
+        .update_all(label_id: new_label_id)
     end
   end
 end

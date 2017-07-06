@@ -6,10 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 54
-RSpec/BeforeAfterAll:
-  Enabled: false
-
 # Offense count: 233
 RSpec/EmptyLineAfterFinalLet:
   Enabled: false
@@ -22,12 +18,6 @@ RSpec/EmptyLineAfterSubject:
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: implicit, each, example
 RSpec/HookArgument:
-  Enabled: false
-
-# Offense count: 12
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: is_expected, should
-RSpec/ImplicitExpect:
   Enabled: false
 
 # Offense count: 11
@@ -86,13 +76,6 @@ Security/YAMLLoad:
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: percent_q, bare_percent
 Style/BarePercentLiterals:
-  Enabled: false
-
-# Offense count: 1403
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: leading, trailing
-Style/DotPosition:
   Enabled: false
 
 # Offense count: 5

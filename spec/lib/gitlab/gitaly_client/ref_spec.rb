@@ -6,23 +6,12 @@ describe Gitlab::GitalyClient::Ref do
   let(:relative_path) { project.path_with_namespace + '.git' }
   let(:client) { described_class.new(project.repository) }
 
-  before do
-    allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
-  end
-
-  after do
-    # When we say `expect_any_instance_of(Gitaly::Ref::Stub)` a double is created,
-    # and because GitalyClient shares stubs these will get passed from example to
-    # example, which will cause an error, so we clean the stubs after each example.
-    Gitlab::GitalyClient.clear_stubs!
-  end
-
   describe '#branch_names' do
     it 'sends a find_all_branch_names message' do
-      expect_any_instance_of(Gitaly::Ref::Stub).
-        to receive(:find_all_branch_names).
-          with(gitaly_request_with_path(storage_name, relative_path)).
-          and_return([])
+      expect_any_instance_of(Gitaly::Ref::Stub)
+        .to receive(:find_all_branch_names)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return([])
 
       client.branch_names
     end
@@ -30,10 +19,10 @@ describe Gitlab::GitalyClient::Ref do
 
   describe '#tag_names' do
     it 'sends a find_all_tag_names message' do
-      expect_any_instance_of(Gitaly::Ref::Stub).
-        to receive(:find_all_tag_names).
-          with(gitaly_request_with_path(storage_name, relative_path)).
-          and_return([])
+      expect_any_instance_of(Gitaly::Ref::Stub)
+        .to receive(:find_all_tag_names)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return([])
 
       client.tag_names
     end
@@ -41,10 +30,10 @@ describe Gitlab::GitalyClient::Ref do
 
   describe '#default_branch_name' do
     it 'sends a find_default_branch_name message' do
-      expect_any_instance_of(Gitaly::Ref::Stub).
-        to receive(:find_default_branch_name).
-          with(gitaly_request_with_path(storage_name, relative_path)).
-        and_return(double(name: 'foo'))
+      expect_any_instance_of(Gitaly::Ref::Stub)
+        .to receive(:find_default_branch_name)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(name: 'foo'))
 
       client.default_branch_name
     end
@@ -52,25 +41,43 @@ describe Gitlab::GitalyClient::Ref do
 
   describe '#local_branches' do
     it 'sends a find_local_branches message' do
-      expect_any_instance_of(Gitaly::Ref::Stub).
-        to receive(:find_local_branches).
-          with(gitaly_request_with_path(storage_name, relative_path)).
-          and_return([])
+      expect_any_instance_of(Gitaly::Ref::Stub)
+        .to receive(:find_local_branches)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return([])
 
       client.local_branches
     end
 
     it 'parses and sends the sort parameter' do
-      expect_any_instance_of(Gitaly::Ref::Stub).
-        to receive(:find_local_branches).
-          with(gitaly_request_with_params(sort_by: :UPDATED_DESC)).
-          and_return([])
+      expect_any_instance_of(Gitaly::Ref::Stub)
+        .to receive(:find_local_branches)
+        .with(gitaly_request_with_params(sort_by: :UPDATED_DESC), kind_of(Hash))
+        .and_return([])
 
       client.local_branches(sort_by: 'updated_desc')
+    end
+
+    it 'translates known mismatches on sort param values' do
+      expect_any_instance_of(Gitaly::Ref::Stub)
+        .to receive(:find_local_branches)
+        .with(gitaly_request_with_params(sort_by: :NAME), kind_of(Hash))
+        .and_return([])
+
+      client.local_branches(sort_by: 'name_asc')
     end
 
     it 'raises an argument error if an invalid sort_by parameter is passed' do
       expect { client.local_branches(sort_by: 'invalid_sort') }.to raise_error(ArgumentError)
     end
+  end
+
+  describe '#find_ref_name', seed_helper: true do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+    let(:client) { described_class.new(repository) }
+    subject { client.find_ref_name(SeedRepo::Commit::ID, 'refs/heads/master') }
+
+    it { is_expected.to be_utf8 }
+    it { is_expected.to eq('refs/heads/master') }
   end
 end

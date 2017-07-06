@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   include CaseSensitivity
   include TokenAuthenticatable
   include IgnorableColumn
+  include FeatureGate
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -53,7 +54,7 @@ class User < ActiveRecord::Base
     lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
     return unless lease.try_obtain
 
-    save(validate: false)
+    Users::UpdateService.new(self).execute(validate: false)
   end
 
   attr_accessor :force_random_password
@@ -139,21 +140,21 @@ class User < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  validate :namespace_uniq, if: ->(user) { user.username_changed? }
+  validate :namespace_uniq, if: :username_changed?
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
-  validate :unique_email, if: ->(user) { user.email_changed? }
-  validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
-  validate :owns_public_email, if: ->(user) { user.public_email_changed? }
+  validate :unique_email, if: :email_changed?
+  validate :owns_notification_email, if: :notification_email_changed?
+  validate :owns_public_email, if: :public_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :sanitize_attrs
-  before_validation :set_notification_email, if: ->(user) { user.email_changed? }
-  before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
+  before_validation :set_notification_email, if: :email_changed?
+  before_validation :set_public_email, if: :public_email_changed?
 
-  after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
+  after_update :update_emails_with_primary_email, if: :email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
-  before_save :ensure_external_user_rights
+  before_save :ensure_user_rights_and_limits, if: :external_changed?
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
   after_destroy :post_destroy_hook
@@ -223,13 +224,13 @@ class User < ActiveRecord::Base
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
 
   def self.with_two_factor
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
-      where("u2f.id IS NOT NULL OR otp_required_for_login = ?", true).distinct(arel_table[:id])
+    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
+      .where("u2f.id IS NOT NULL OR otp_required_for_login = ?", true).distinct(arel_table[:id])
   end
 
   def self.without_two_factor
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
-      where("u2f.id IS NULL AND otp_required_for_login = ?", false)
+    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
+      .where("u2f.id IS NULL AND otp_required_for_login = ?", false)
   end
 
   #
@@ -299,11 +300,20 @@ class User < ActiveRecord::Base
       table   = arel_table
       pattern = "%#{query}%"
 
+      order = <<~SQL
+        CASE
+          WHEN users.name = %{query} THEN 0
+          WHEN users.username = %{query} THEN 1
+          WHEN users.email = %{query} THEN 2
+          ELSE 3
+        END
+      SQL
+
       where(
-        table[:name].matches(pattern).
-          or(table[:email].matches(pattern)).
-          or(table[:username].matches(pattern))
-      )
+        table[:name].matches(pattern)
+          .or(table[:email].matches(pattern))
+          .or(table[:username].matches(pattern))
+      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, id: :desc)
     end
 
     # searches user by given pattern
@@ -317,10 +327,10 @@ class User < ActiveRecord::Base
       matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].matches(pattern))
 
       where(
-        table[:name].matches(pattern).
-          or(table[:email].matches(pattern)).
-          or(table[:username].matches(pattern)).
-          or(table[:id].in(matched_by_emails_user_ids))
+        table[:name].matches(pattern)
+          .or(table[:email].matches(pattern))
+          .or(table[:username].matches(pattern))
+          .or(table[:id].in(matched_by_emails_user_ids))
       )
     end
 
@@ -494,17 +504,15 @@ class User < ActiveRecord::Base
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
-      primary_email_record.destroy
-      emails.create(email: email_was)
-
-      update_secondary_emails!
+      Emails::DestroyService.new(self, email: email).execute
+      Emails::CreateService.new(self, email: email_was).execute
     end
   end
 
   # Returns the groups a user has access to
   def authorized_groups
-    union = Gitlab::SQL::Union.
-      new([groups.select(:id), authorized_projects.select(:namespace_id)])
+    union = Gitlab::SQL::Union
+      .new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
@@ -533,8 +541,8 @@ class User < ActiveRecord::Base
     projects = super()
 
     if min_access_level
-      projects = projects.
-        where('project_authorizations.access_level >= ?', min_access_level)
+      projects = projects
+        .where('project_authorizations.access_level >= ?', min_access_level)
     end
 
     projects
@@ -572,7 +580,13 @@ class User < ActiveRecord::Base
   end
 
   def require_password?
-    password_automatically_set? && !ldap_user?
+    password_automatically_set? && !ldap_user? && current_application_settings.signin_enabled?
+  end
+
+  def require_personal_access_token?
+    return false if current_application_settings.signin_enabled? || ldap_user?
+
+    PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
   end
 
   def can_change_username?
@@ -619,9 +633,9 @@ class User < ActiveRecord::Base
       next unless project
 
       if project.repository.branch_exists?(event.branch_name)
-        merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
-          where(source_project_id: project.id,
-                source_branch: event.branch_name)
+        merge_requests = MergeRequest.where("created_at >= ?", event.created_at)
+          .where(source_project_id: project.id,
+                 source_branch: event.branch_name)
         merge_requests.empty?
       end
     end
@@ -832,8 +846,8 @@ class User < ActiveRecord::Base
 
   def toggle_star(project)
     UsersStarProject.transaction do
-      user_star_project = users_star_projects.
-          where(project: project, user: self).lock(true).first
+      user_star_project = users_star_projects
+          .where(project: project, user: self).lock(true).first
 
       if user_star_project
         user_star_project.destroy
@@ -869,11 +883,11 @@ class User < ActiveRecord::Base
   # ms on a database with a similar size to GitLab.com's database. On the other
   # hand, using a subquery means we can get the exact same data in about 40 ms.
   def contributed_projects
-    events = Event.select(:project_id).
-      contributions.where(author_id: self).
-      where("created_at > ?", Time.now - 1.year).
-      uniq.
-      reorder(nil)
+    events = Event.select(:project_id)
+      .contributions.where(author_id: self)
+      .where("created_at > ?", Time.now - 1.year)
+      .uniq
+      .reorder(nil)
 
     Project.where(id: events)
   end
@@ -884,9 +898,9 @@ class User < ActiveRecord::Base
 
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
-      runner_ids = Ci::RunnerProject.
-        where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})").
-        select(:runner_id)
+      runner_ids = Ci::RunnerProject
+        .where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})")
+        .select(:runner_id)
       Ci::Runner.specific.where(id: runner_ids)
     end
   end
@@ -965,7 +979,7 @@ class User < ActiveRecord::Base
     if attempts_exceeded?
       lock_access! unless access_locked?
     else
-      save(validate: false)
+      Users::UpdateService.new(self).execute(validate: false)
     end
   end
 
@@ -982,6 +996,12 @@ class User < ActiveRecord::Base
     return unless %w(admin regular).include?(new_level)
 
     self.admin = (new_level == 'admin')
+  end
+
+  # Does the user have access to all private groups & projects?
+  # Overridden in EE to also check auditor?
+  def full_private_access?
+    admin?
   end
 
   def update_two_factor_requirement
@@ -1033,11 +1053,14 @@ class User < ActiveRecord::Base
     super
   end
 
-  def ensure_external_user_rights
-    return unless external?
-
-    self.can_create_group   = false
-    self.projects_limit     = 0
+  def ensure_user_rights_and_limits
+    if external?
+      self.can_create_group = false
+      self.projects_limit   = 0
+    else
+      self.can_create_group = gitlab_config.default_can_create_group
+      self.projects_limit = current_application_settings.default_projects_limit
+    end
   end
 
   def signup_domain_valid?
@@ -1120,7 +1143,8 @@ class User < ActiveRecord::Base
       email: email,
       &creation_block
     )
-    user.save(validate: false)
+
+    Users::UpdateService.new(user).execute(validate: false)
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)

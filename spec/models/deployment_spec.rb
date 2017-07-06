@@ -30,7 +30,7 @@ describe Deployment, models: true do
   end
 
   describe '#includes_commit?' do
-    let(:project)     { create(:project, :repository) }
+    let(:project) { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }
     let(:deployment) do
       create(:deployment, environment: environment, sha: project.commit.id)
@@ -87,6 +87,36 @@ describe Deployment, models: true do
       end
 
       it { is_expected.to eq(simple_metrics) }
+    end
+  end
+
+  describe '#additional_metrics' do
+    let(:project) { create(:project) }
+    let(:deployment) { create(:deployment, project: project) }
+
+    subject { deployment.additional_metrics }
+
+    context 'metrics are disabled' do
+      it { is_expected.to eq({}) }
+    end
+
+    context 'metrics are enabled' do
+      let(:simple_metrics) do
+        {
+          success: true,
+          metrics: {},
+          last_update: 42
+        }
+      end
+
+      let(:prometheus_service) { double('prometheus_service') }
+
+      before do
+        allow(project).to receive(:prometheus_service).and_return(prometheus_service)
+        allow(prometheus_service).to receive(:additional_deployment_metrics).and_return(simple_metrics)
+      end
+
+      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }
     end
   end
 

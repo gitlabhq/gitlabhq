@@ -164,6 +164,11 @@ Style/DefWithParentheses:
 Style/Documentation:
   Enabled: false
 
+# Multi-line method chaining should be done with leading dots.
+Style/DotPosition:
+  Enabled: true
+  EnforcedStyle: leading
+
 # This cop checks for uses of double negation (!!) to convert something
 # to a boolean value. As this is both cryptic and usually redundant, it
 # should be avoided.
@@ -960,6 +965,10 @@ RSpec/AnyInstance:
 RSpec/BeEql:
   Enabled: true
 
+# We don't enforce this as we use this technique in a few places.
+RSpec/BeforeAfterAll:
+  Enabled: false
+
 # Check that the first argument to the top level describe is the tested class or
 # module.
 RSpec/DescribeClass:
@@ -1018,6 +1027,12 @@ RSpec/FilePath:
 # Checks if there are focused specs.
 RSpec/Focus:
   Enabled: true
+
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: is_expected, should
+RSpec/ImplicitExpect:
+  Enabled: true
+  EnforcedStyle: is_expected
 
 # Checks for the usage of instance variables.
 RSpec/InstanceVariable:

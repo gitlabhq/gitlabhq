@@ -374,8 +374,8 @@ describe Group, models: true do
       group.add_user(master, GroupMember::MASTER)
       group.add_user(developer, GroupMember::DEVELOPER)
 
-      expect(group.user_ids_for_project_authorizations).
-        to include(master.id, developer.id)
+      expect(group.user_ids_for_project_authorizations)
+        .to include(master.id, developer.id)
     end
   end
 

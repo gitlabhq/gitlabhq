@@ -58,7 +58,17 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
+    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
+      output =
+        if show_new_nav?
+          project_icon(project, alt: project.name, class: 'avatar-tile', width: 16, height: 16)
+        else
+          ""
+        end
+
+      output << simple_sanitize(project.name)
+      output.html_safe
+    end
 
     if current_user
       project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
@@ -80,7 +90,7 @@ module ProjectsHelper
   end
 
   def remove_fork_project_message(project)
-    _("You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?") %
+    _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
       { forked_from_project: @project.forked_from_project.name_with_namespace }
   end
 
@@ -151,14 +161,21 @@ module ProjectsHelper
       disabled: disabled_option
     )
 
-    content_tag(
-      :select,
-      options,
-      name: "project[project_feature_attributes][#{field}]",
-      id: "project_project_feature_attributes_#{field}",
-      class: "pull-right form-control #{repo_children_classes(field)}",
-      data: { field: field }
-    ).html_safe
+    content_tag :div, class: "select-wrapper" do
+      concat(
+        content_tag(
+          :select,
+          options,
+          name: "project[project_feature_attributes][#{field}]",
+          id: "project_project_feature_attributes_#{field}",
+          class: "pull-right form-control select-control #{repo_children_classes(field)} ",
+          data: { field: field }
+        )
+      )
+      concat(
+        icon('chevron-down')
+      )
+    end.html_safe
   end
 
   def link_to_autodeploy_doc
@@ -187,8 +204,25 @@ module ProjectsHelper
   end
 
   def load_pipeline_status(projects)
-    Gitlab::Cache::Ci::ProjectPipelineStatus.
-      load_in_batch_for_projects(projects)
+    Gitlab::Cache::Ci::ProjectPipelineStatus
+      .load_in_batch_for_projects(projects)
+  end
+
+  def show_no_ssh_key_message?
+    cookies[:hide_no_ssh_message].blank? && !current_user.hide_no_ssh_key && current_user.require_ssh_key?
+  end
+
+  def show_no_password_message?
+    cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
+      ( current_user.require_password? || current_user.require_personal_access_token? )
+  end
+
+  def link_to_set_password
+    if current_user.require_password?
+      link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
+    else
+      link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
+    end
   end
 
   private
@@ -313,8 +347,7 @@ module ProjectsHelper
 
   def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
     commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       project.default_branch || 'master',
       file_name:      file_name,
@@ -325,8 +358,7 @@ module ProjectsHelper
   end
 
   def add_koding_stack_path(project)
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       project.default_branch || 'master',
       file_name:      '.koding.yml',
@@ -380,8 +412,7 @@ module ProjectsHelper
 
   def contribution_guide_path(project)
     if project && contribution_guide = project.repository.contribution_guide
-      namespace_project_blob_path(
-        project.namespace,
+      project_blob_path(
         project,
         tree_join(project.default_branch,
                   contribution_guide.name)
@@ -411,7 +442,7 @@ module ProjectsHelper
 
   def project_wiki_path_with_version(proj, page, version, is_newest)
     url_params = is_newest ? {} : { version_id: version }
-    namespace_project_wiki_path(proj.namespace, proj, page, url_params)
+    project_wiki_path(proj, page, url_params)
   end
 
   def project_status_css_class(status)
@@ -436,8 +467,7 @@ module ProjectsHelper
 
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
-      namespace_project_blob_path(
-        project.namespace,
+      project_blob_path(
         project,
         tree_join(project.default_branch, blob.name)
       )

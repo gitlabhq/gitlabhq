@@ -6,13 +6,13 @@ feature 'user browses project', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    login_with(user)
-    visit namespace_project_tree_path(project.namespace, project, project.default_branch)
+    gitlab_sign_in(user)
+    visit project_tree_path(project, project.default_branch)
   end
 
   scenario "can see blame of '.gitignore'" do
     click_link ".gitignore"
-    click_link 'Annotate'
+    click_link 'Blame'
 
     expect(page).to have_content "*.rb"
     expect(page).to have_content "Dmitriy Zaporozhets"

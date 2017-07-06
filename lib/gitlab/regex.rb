@@ -19,14 +19,6 @@ module Gitlab
       "It must start with letter, digit, emoji or '_'."
     end
 
-    def file_name_regex
-      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@\+]*\z/.freeze
-    end
-
-    def file_name_regex_message
-      "can contain only letters, digits, '_', '-', '@', '+' and '.'."
-    end
-
     def container_registry_reference_regex
       Gitlab::PathRegex.git_reference_regex
     end
@@ -43,7 +35,7 @@ module Gitlab
     end
 
     def environment_name_regex_message
-      "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.' and spaces"
+      "can contain only letters, digits, '-', '_', '/', '$', '{', '}', '.', and spaces"
     end
 
     def kubernetes_namespace_regex

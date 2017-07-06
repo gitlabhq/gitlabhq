@@ -28,8 +28,8 @@ module Files
     end
 
     def last_commit
-      @last_commit ||= Gitlab::Git::Commit.
-        last_for_path(@start_project.repository, @start_branch, @file_path)
+      @last_commit ||= Gitlab::Git::Commit
+        .last_for_path(@start_project.repository, @start_branch, @file_path)
     end
 
     def validate!

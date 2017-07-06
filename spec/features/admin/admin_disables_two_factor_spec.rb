@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Admin disables 2FA for a user', feature: true do
   scenario 'successfully', js: true do
-    login_as(:admin)
+    gitlab_sign_in(:admin)
     user = create(:user, :two_factor)
 
     edit_user(user)
@@ -17,7 +17,7 @@ feature 'Admin disables 2FA for a user', feature: true do
   end
 
   scenario 'for a user without 2FA enabled' do
-    login_as(:admin)
+    gitlab_sign_in(:admin)
     user = create(:user)
 
     edit_user(user)

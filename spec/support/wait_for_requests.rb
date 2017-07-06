@@ -53,9 +53,3 @@ module WaitForRequests
     Capybara.current_driver == Capybara.javascript_driver
   end
 end
-
-RSpec.configure do |config|
-  config.after(:each, :js) do
-    block_and_wait_for_requests_complete
-  end
-end

@@ -44,6 +44,7 @@ RSpec.configure do |config|
 
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
+  config.include Devise::Test::IntegrationHelpers, type: :feature
   config.include Warden::Test::Helpers, type: :request
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
@@ -56,7 +57,7 @@ RSpec.configure do |config|
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include ApiHelpers, :api
-  config.include Rails.application.routes.url_helpers, type: :routing
+  config.include Gitlab::Routing.url_helpers, type: :routing
   config.include MigrationsHelpers, :migration
 
   config.infer_spec_type_from_file_location!

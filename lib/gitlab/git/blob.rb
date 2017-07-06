@@ -14,6 +14,51 @@ module Gitlab
 
       class << self
         def find(repository, sha, path)
+          Gitlab::GitalyClient.migrate(:project_raw_show) do |is_enabled|
+            if is_enabled
+              find_by_gitaly(repository, sha, path)
+            else
+              find_by_rugged(repository, sha, path)
+            end
+          end
+        end
+
+        def find_by_gitaly(repository, sha, path)
+          path = path.sub(/\A\/*/, '')
+          path = '/' if path.empty?
+          name = File.basename(path)
+          entry = Gitlab::GitalyClient::Commit.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
+          return unless entry
+
+          case entry.type
+          when :COMMIT
+            new(
+              id: entry.oid,
+              name: name,
+              size: 0,
+              data: '',
+              path: path,
+              commit_id: sha
+            )
+          when :BLOB
+            # EncodingDetector checks the first 1024 * 1024 bytes for NUL byte, libgit2 checks
+            # only the first 8000 (https://github.com/libgit2/libgit2/blob/2ed855a9e8f9af211e7274021c2264e600c0f86b/src/filter.h#L15),
+            # which is what we use below to keep a consistent behavior.
+            detect = CharlockHolmes::EncodingDetector.new(8000).detect(entry.data)
+            new(
+              id: entry.oid,
+              name: name,
+              size: entry.size,
+              data: entry.data.dup,
+              mode: entry.mode.to_s(8),
+              path: path,
+              commit_id: sha,
+              binary: detect && detect[:type] == :binary
+            )
+          end
+        end
+
+        def find_by_rugged(repository, sha, path)
           commit = repository.lookup(sha)
           root_tree = commit.tree
 
@@ -128,6 +173,10 @@ module Gitlab
 
       def name
         encode! @name
+      end
+
+      def path
+        encode! @path
       end
 
       def truncated?

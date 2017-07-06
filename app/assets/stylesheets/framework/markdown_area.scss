@@ -174,3 +174,14 @@
     white-space: nowrap;
   }
 }
+
+@media(max-width: $screen-xs-max) {
+  .atwho-view-ul {
+    width: 350px;
+  }
+
+  .atwho-view ul li {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

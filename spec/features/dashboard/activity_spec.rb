@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Activity', feature: true do
   before do
-    login_as(create :user)
+    gitlab_sign_in(create :user)
     visit activity_dashboard_path
   end
 

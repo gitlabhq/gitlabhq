@@ -24,8 +24,8 @@ describe NewNoteWorker do
     let(:unexistent_note_id) { 999 }
 
     it 'logs NewNoteWorker process skipping' do
-      expect(Rails.logger).to receive(:error).
-        with("NewNoteWorker: couldn't find note with ID=999, skipping job")
+      expect(Rails.logger).to receive(:error)
+        .with("NewNoteWorker: couldn't find note with ID=999, skipping job")
 
       described_class.new.perform(unexistent_note_id)
     end

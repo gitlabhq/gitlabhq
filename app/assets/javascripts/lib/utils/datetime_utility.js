@@ -34,7 +34,7 @@ window.dateFormat = dateFormat;
 
     w.gl.utils.localTimeAgo = function($timeagoEls, setTimeago = true) {
       $timeagoEls.each((i, el) => {
-        el.setAttribute('title', gl.utils.formatDate(el.getAttribute('datetime')));
+        el.setAttribute('title', el.getAttribute('title'));
 
         if (setTimeago) {
           // Recreate with custom template
@@ -112,29 +112,11 @@ window.dateFormat = dateFormat;
       return timefor;
     };
 
-    w.gl.utils.cachedTimeagoElements = [];
     w.gl.utils.renderTimeago = function($els) {
-      if (!$els && !w.gl.utils.cachedTimeagoElements.length) {
-        w.gl.utils.cachedTimeagoElements = [].slice.call(document.querySelectorAll('.js-timeago-render'));
-      } else if ($els) {
-        w.gl.utils.cachedTimeagoElements = w.gl.utils.cachedTimeagoElements.concat($els.toArray());
-      }
+      const timeagoEls = $els || document.querySelectorAll('.js-timeago-render');
 
-      w.gl.utils.cachedTimeagoElements.forEach(gl.utils.updateTimeagoText);
-    };
-
-    w.gl.utils.updateTimeagoText = function(el) {
-      const formattedDate = gl.utils.getTimeago().format(el.getAttribute('datetime'), lang);
-
-      if (el.textContent !== formattedDate) {
-        el.textContent = formattedDate;
-      }
-    };
-
-    w.gl.utils.initTimeagoTimeout = function() {
-      gl.utils.renderTimeago();
-
-      gl.utils.timeagoTimeout = setTimeout(gl.utils.initTimeagoTimeout, 1000);
+      // timeago.js sets timeouts internally for each timeago value to be updated in real time
+      gl.utils.getTimeago().render(timeagoEls, lang);
     };
 
     w.gl.utils.getDayDifference = function(a, b) {

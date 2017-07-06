@@ -70,9 +70,9 @@ class Todo < ActiveRecord::Base
 
       highest_priority = highest_label_priority(params).to_sql
 
-      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
-        order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC')).
-        order('todos.created_at')
+      select("#{table_name}.*, (#{highest_priority}) AS highest_priority")
+        .order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+        .order('todos.created_at')
     end
   end
 

@@ -53,9 +53,21 @@ class Projects::ApplicationController < ApplicationController
     end
   end
 
+  def check_project_feature_available!(feature)
+    render_404 unless project.feature_available?(feature, current_user)
+  end
+
+  def check_issuables_available!
+    render_404 unless project.feature_available?(:issues, current_user) ||
+        project.feature_available?(:merge_requests, current_user)
+  end
+
   def method_missing(method_sym, *arguments, &block)
-    if method_sym.to_s =~ /\Aauthorize_(.*)!\z/
+    case method_sym.to_s
+    when /\Aauthorize_(.*)!\z/
       authorize_action!($1.to_sym)
+    when /\Acheck_(.*)_available!\z/
+      check_project_feature_available!($1.to_sym)
     else
       super
     end
@@ -64,13 +76,13 @@ class Projects::ApplicationController < ApplicationController
   def require_non_empty_project
     # Be sure to return status code 303 to avoid a double DELETE:
     # http://api.rubyonrails.org/classes/ActionController/Redirecting.html
-    redirect_to namespace_project_path(@project.namespace, @project), status: 303 if @project.empty_repo?
+    redirect_to project_path(@project), status: 303 if @project.empty_repo?
   end
 
   def require_branch_head
     unless @repository.branch_exists?(@ref)
       redirect_to(
-        namespace_project_tree_path(@project.namespace, @project, @ref),
+        project_tree_path(@project, @ref),
         notice: "This action is not allowed unless you are on a branch"
       )
     end

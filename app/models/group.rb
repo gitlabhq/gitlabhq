@@ -206,8 +206,8 @@ class Group < Namespace
   end
 
   def refresh_members_authorized_projects
-    UserProjectAccessChangedService.new(user_ids_for_project_authorizations).
-      execute
+    UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
+      .execute
   end
 
   def user_ids_for_project_authorizations
@@ -222,13 +222,19 @@ class Group < Namespace
     User.where(id: members_with_parents.select(:user_id))
   end
 
+  def users_with_descendants
+    members_with_descendants = GroupMember.non_request.where(source_id: descendants.pluck(:id).push(id))
+
+    User.where(id: members_with_descendants.select(:user_id))
+  end
+
   def max_member_access_for_user(user)
     return GroupMember::OWNER if user.admin?
 
-    members_with_parents.
-      where(user_id: user).
-      reorder(access_level: :desc).
-      first&.
+    members_with_parents
+      .where(user_id: user)
+      .reorder(access_level: :desc)
+      .first&.
       access_level || GroupMember::NO_ACCESS
   end
 

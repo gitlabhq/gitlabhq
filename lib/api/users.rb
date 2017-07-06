@@ -1,13 +1,15 @@
 module API
   class Users < Grape::API
     include PaginationParams
+    include APIGuard
 
-    before do
-      allow_access_with_scope :read_user if request.get?
-      authenticate!
-    end
+    allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+      before do
+        authenticate_non_get!
+      end
+
       helpers do
         def find_user(params)
           id = params[:user_id] || params[:id]
@@ -29,6 +31,7 @@ module API
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
+          optional :avatar, type: File, desc: 'Avatar image for user'
           all_or_none_of :extern_uid, :provider
         end
       end
@@ -50,15 +53,22 @@ module API
         use :pagination
       end
       get do
-        unless can?(current_user, :read_users_list)
-          render_api_error!("Not authorized.", 403)
-        end
-
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
         users = UsersFinder.new(current_user, params).execute
 
-        entity = current_user.admin? ? Entities::UserPublic : Entities::UserBasic
+        authorized = can?(current_user, :read_users_list)
+
+        # When `current_user` is not present, require that the `username`
+        # parameter is passed, to prevent an unauthenticated user from accessing
+        # a list of all the users on the GitLab instance. `UsersFinder` performs
+        # an exact match on the `username` parameter, so we are guaranteed to
+        # get either 0 or 1 `users` here.
+        authorized &&= params[:username].present? if current_user.blank?
+
+        forbidden!("Not authorized to access /api/v4/users") unless authorized
+
+        entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         present paginate(users), with: entity
       end
 
@@ -97,18 +107,18 @@ module API
         authenticated_as_admin!
 
         params = declared_params(include_missing: false)
-        user = ::Users::CreateService.new(current_user, params).execute
+        user = ::Users::CreateService.new(current_user, params).execute(skip_authorization: true)
 
         if user.persisted?
           present user, with: Entities::UserPublic
         else
-          conflict!('Email has already been taken') if User.
-              where(email: user.email).
-              count > 0
+          conflict!('Email has already been taken') if User
+              .where(email: user.email)
+              .count > 0
 
-          conflict!('Username has already been taken') if User.
-              where(username: user.username).
-              count > 0
+          conflict!('Username has already been taken') if User
+              .where(username: user.username)
+              .count > 0
 
           render_validation_error!(user)
         end
@@ -132,12 +142,12 @@ module API
         not_found!('User') unless user
 
         conflict!('Email has already been taken') if params[:email] &&
-            User.where(email: params[:email]).
-                where.not(id: user.id).count > 0
+            User.where(email: params[:email])
+                .where.not(id: user.id).count > 0
 
         conflict!('Username has already been taken') if params[:username] &&
-            User.where(username: params[:username]).
-                where.not(id: user.id).count > 0
+            User.where(username: params[:username])
+                .where.not(id: user.id).count > 0
 
         user_params = declared_params(include_missing: false)
         identity_attrs = user_params.slice(:provider, :extern_uid)
@@ -155,7 +165,9 @@ module API
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
-        if user.update_attributes(user_params.except(:extern_uid, :provider))
+        result = ::Users::UpdateService.new(user, user_params.except(:extern_uid, :provider)).execute
+
+        if result[:status] == :success
           present user, with: Entities::UserPublic
         else
           render_validation_error!(user)
@@ -233,9 +245,9 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        email = user.emails.new(declared_params(include_missing: false))
+        email = Emails::CreateService.new(user, declared_params(include_missing: false)).execute
 
-        if email.save
+        if email.errors.blank?
           NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
@@ -273,8 +285,7 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        email.destroy
-        user.update_secondary_emails!
+        Emails::DestroyService.new(user, email: email.email).execute
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -396,6 +407,10 @@ module API
     end
 
     resource :user do
+      before do
+        authenticate!
+      end
+
       desc 'Get the currently authenticated user' do
         success Entities::UserPublic
       end
@@ -486,9 +501,9 @@ module API
         requires :email, type: String, desc: 'The new email'
       end
       post "emails" do
-        email = current_user.emails.new(declared_params)
+        email = Emails::CreateService.new(current_user, declared_params).execute
 
-        if email.save
+        if email.errors.blank?
           NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
@@ -504,8 +519,7 @@ module API
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        email.destroy
-        current_user.update_secondary_emails!
+        Emails::DestroyService.new(current_user, email: email.email).execute
       end
 
       desc 'Get a list of user activities'
@@ -516,9 +530,9 @@ module API
       get "activities" do
         authenticated_as_admin!
 
-        activities = User.
-          where(User.arel_table[:last_activity_on].gteq(params[:from])).
-          reorder(last_activity_on: :asc)
+        activities = User
+          .where(User.arel_table[:last_activity_on].gteq(params[:from]))
+          .reorder(last_activity_on: :asc)
 
         present paginate(activities), with: Entities::UserActivity
       end

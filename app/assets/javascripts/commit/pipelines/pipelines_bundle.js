@@ -1,29 +1,30 @@
-/* eslint-disable no-param-reassign */
-
 import Vue from 'vue';
-import VueResource from 'vue-resource';
-import CommitPipelinesTable from './pipelines_table';
-
-Vue.use(VueResource);
+import commitPipelinesTable from './pipelines_table.vue';
 
 /**
- * Commits View > Pipelines Tab > Pipelines Table.
- *
- * Renders Pipelines table in pipelines tab in the commits show view.
+ * Used in:
+ *  - Commit details View > Pipelines Tab > Pipelines Table.
+ *  - Merge Request details View > Pipelines Tab > Pipelines Table.
+ *  - New Merge Request View > Pipelines Tab > Pipelines Table.
  */
 
-// export for use in merge_request_tabs.js (TODO: remove this hack)
+const CommitPipelinesTable = Vue.extend(commitPipelinesTable);
+
+// export for use in merge_request_tabs.js (TODO: remove this hack when we understand how to load
+// vue.js in merge_request_tabs.js)
 window.gl = window.gl || {};
 window.gl.CommitPipelinesTable = CommitPipelinesTable;
 
-$(() => {
-  gl.commits = gl.commits || {};
-  gl.commits.pipelines = gl.commits.pipelines || {};
-
+document.addEventListener('DOMContentLoaded', () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
 
   if (pipelineTableViewEl && pipelineTableViewEl.dataset.disableInitialization === undefined) {
-    gl.commits.pipelines.PipelinesTableBundle = new CommitPipelinesTable().$mount();
-    pipelineTableViewEl.appendChild(gl.commits.pipelines.PipelinesTableBundle.$el);
+    const table = new CommitPipelinesTable({
+      propsData: {
+        endpoint: pipelineTableViewEl.dataset.endpoint,
+        helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+      },
+    }).$mount();
+    pipelineTableViewEl.appendChild(table.$el);
   }
 });

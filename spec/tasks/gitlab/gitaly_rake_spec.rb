@@ -20,8 +20,8 @@ describe 'gitlab:gitaly namespace rake task' do
 
     context 'when an underlying Git command fail' do
       it 'aborts and display a help message' do
-        expect_any_instance_of(Object).
-          to receive(:checkout_or_clone_version).and_raise 'Git error'
+        expect_any_instance_of(Object)
+          .to receive(:checkout_or_clone_version).and_raise 'Git error'
 
         expect { run_rake_task('gitlab:gitaly:install', clone_path) }.to raise_error 'Git error'
       end
@@ -33,8 +33,8 @@ describe 'gitlab:gitaly namespace rake task' do
       end
 
       it 'calls checkout_or_clone_version with the right arguments' do
-        expect_any_instance_of(Object).
-          to receive(:checkout_or_clone_version).with(version: version, repo: repo, target_dir: clone_path)
+        expect_any_instance_of(Object)
+          .to receive(:checkout_or_clone_version).with(version: version, repo: repo, target_dir: clone_path)
 
         run_rake_task('gitlab:gitaly:install', clone_path)
       end
@@ -89,6 +89,7 @@ describe 'gitlab:gitaly namespace rake task' do
         }
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(config)
+      allow(Rails.env).to receive(:test?).and_return(false)
 
       expected_output = ''
       Timecop.freeze do
@@ -105,8 +106,8 @@ describe 'gitlab:gitaly namespace rake task' do
         TOML
       end
 
-      expect { run_rake_task('gitlab:gitaly:storage_config')}.
-        to output(expected_output).to_stdout
+      expect { run_rake_task('gitlab:gitaly:storage_config')}
+        .to output(expected_output).to_stdout
 
       parsed_output = TOML.parse(expected_output)
       config.each do |name, params|

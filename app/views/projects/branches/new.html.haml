@@ -27,7 +27,7 @@
       .help-block Existing branch name, tag, or commit SHA
   .form-actions
     = button_tag 'Create branch', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', namespace_project_branches_path(@project.namespace, @project), class: 'btn btn-cancel'
+    = link_to 'Cancel', project_branches_path(@project), class: 'btn btn-cancel'
 
 :javascript
   var availableRefs = #{@project.repository.ref_names.to_json};

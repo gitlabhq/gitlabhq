@@ -43,9 +43,12 @@ module API
       expose :external
     end
 
-    class UserWithPrivateDetails < UserPublic
-      expose :private_token
+    class UserWithAdmin < UserPublic
       expose :admin?, as: :is_admin
+    end
+
+    class UserWithPrivateDetails < UserWithAdmin
+      expose :private_token
     end
 
     class Email < Grape::Entity
@@ -109,12 +112,14 @@ module API
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
+      expose :ci_config_path
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links.all, options)
       end
       expose :only_allow_merge_if_pipeline_succeeds
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
+      expose :printing_merge_request_link_enabled
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end
@@ -430,7 +435,7 @@ module API
         target_url    = "namespace_project_#{target_type}_url"
         target_anchor = "note_#{todo.note_id}" if todo.note_id?
 
-        Gitlab::Application.routes.url_helpers.public_send(target_url,
+        Gitlab::Routing.url_helpers.public_send(target_url,
           todo.project.namespace, todo.project, todo.target, anchor: target_anchor)
       end
 
@@ -440,7 +445,15 @@ module API
     end
 
     class Namespace < Grape::Entity
-      expose :id, :name, :path, :kind, :full_path
+      expose :id, :name, :path, :kind, :full_path, :parent_id
+
+      expose :members_count_with_descendants, if: -> (namespace, opts) { expose_members_count_with_descendants?(namespace, opts) } do |namespace, _|
+        namespace.users_with_descendants.count
+      end
+
+      def expose_members_count_with_descendants?(namespace, opts)
+        namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
+      end
     end
 
     class MemberAccess < Grape::Entity
@@ -480,9 +493,9 @@ module API
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
-        field_names = service.fields.
-          select { |field| options[:include_passwords] || field[:type] != 'password' }.
-          map { |field| field[:name] }
+        field_names = service.fields
+          .select { |field| options[:include_passwords] || field[:type] != 'password' }
+          .map { |field| field[:name] }
         service.properties.slice(*field_names)
       end
     end
@@ -819,7 +832,7 @@ module API
       end
 
       class Cache < Grape::Entity
-        expose :key, :untracked, :paths
+        expose :key, :untracked, :paths, :policy
       end
 
       class Credentials < Grape::Entity

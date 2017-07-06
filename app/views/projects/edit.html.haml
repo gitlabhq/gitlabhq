@@ -1,10 +1,12 @@
+- @content_class = "limit-container-width" unless fluid_layout
+
 = render "projects/settings/head"
 .project-edit-container
   .row.prepend-top-default
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
         Project settings
-    .col-lg-9
+    .col-lg-8
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
         %fieldset
@@ -39,69 +41,69 @@
             Sharing &amp; Permissions
           .form_group.prepend-top-20.sharing-and-permissions
             .row.js-visibility-select
-              .col-md-9
+              .col-md-8
                 .label-light
                   = label_tag :project_visibility, 'Project Visibility', class: 'label-light', for: :project_visibility_level
                   = link_to icon('question-circle'), help_page_path("public_access/public_access")
                 %span.help-block
-              .col-md-3.visibility-select-container
+              .col-md-4.visibility-select-container
                 = render('projects/visibility_select', model_method: :visibility_level, form: f, selected_level: @project.visibility_level)
             = f.fields_for :project_feature do |feature_fields|
               %fieldset.features
                 .row
-                  .col-md-9.project-feature
+                  .col-md-8.project-feature
                     = feature_fields.label :repository_access_level, "Repository", class: 'label-light'
                     %span.help-block View and edit files in this project
-                  .col-md-3.js-repo-access-level
+                  .col-md-4.js-repo-access-level
                     = project_feature_access_select(:repository_access_level)
 
                 .row
-                  .col-md-9.project-feature.nested
+                  .col-md-8.project-feature.nested
                     = feature_fields.label :merge_requests_access_level, "Merge requests", class: 'label-light'
                     %span.help-block Submit changes to be merged upstream
-                  .col-md-3
+                  .col-md-4
                     = project_feature_access_select(:merge_requests_access_level)
 
                 .row
-                  .col-md-9.project-feature.nested
+                  .col-md-8.project-feature.nested
                     = feature_fields.label :builds_access_level, "Pipelines", class: 'label-light'
                     %span.help-block Build, test, and deploy your changes
-                  .col-md-3
+                  .col-md-4
                     = project_feature_access_select(:builds_access_level)
 
                 .row
-                  .col-md-9.project-feature
+                  .col-md-8.project-feature
                     = feature_fields.label :snippets_access_level, "Snippets", class: 'label-light'
                     %span.help-block Share code pastes with others out of Git repository
-                  .col-md-3
+                  .col-md-4
                     = project_feature_access_select(:snippets_access_level)
 
                 .row
-                  .col-md-9.project-feature
+                  .col-md-8.project-feature
                     = feature_fields.label :issues_access_level, "Issues", class: 'label-light'
                     %span.help-block Lightweight issue tracking system for this project
-                  .col-md-3
+                  .col-md-4
                     = project_feature_access_select(:issues_access_level)
 
                 .row
-                  .col-md-9.project-feature
+                  .col-md-8.project-feature
                     = feature_fields.label :wiki_access_level, "Wiki", class: 'label-light'
                     %span.help-block Pages for project documentation
-                  .col-md-3
+                  .col-md-4
                     = project_feature_access_select(:wiki_access_level)
           .form-group
             = render 'shared/allow_request_access', form: f
           - if Gitlab.config.lfs.enabled && current_user.admin?
             .row.js-lfs-enabled
-              .col-md-9
+              .col-md-8
                 = f.label :lfs_enabled, 'LFS', class: 'label-light'
                 %span.help-block
                   Git Large File Storage
                   = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
-              .col-md-3
-                = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control project-repo-select', data: { field: 'lfs_enabled' }
-
-
+              .col-md-4
+                .select-wrapper
+                  = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control project-repo-select select-control', data: { field: 'lfs_enabled' }
+                  = icon('chevron-down')
         - if Gitlab.config.registry.enabled
           .form-group.js-container-registry{ style: ("display: none;" if @project.project_feature.send(:repository_access_level) == 0) }
             .checkbox
@@ -132,25 +134,25 @@
             .help-block The maximum file size allowed is 200KB.
             - if @project.avatar?
               %hr
-              = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+              = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
         = f.submit 'Save changes', class: "btn btn-save"
 
   .row.prepend-top-default
   %hr
   .row.prepend-top-default
-    .col-lg-3
+    .col-lg-4
       %h4.prepend-top-0
         Housekeeping
       %p.append-bottom-0
         %p
           Runs a number of housekeeping tasks within the current repository,
           such as compressing file revisions and removing unreachable objects.
-    .col-lg-9
-      = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
+    .col-lg-8
+      = link_to 'Housekeeping', housekeeping_project_path(@project),
           method: :post, class: "btn btn-default"
   %hr
   .row.prepend-top-default
-    .col-lg-3
+    .col-lg-4
       %h4.prepend-top-0
         Export project
       %p.append-bottom-0
@@ -159,15 +161,15 @@
         %p
           Once the exported file is ready, you will receive a notification email with a download link.
 
-    .col-lg-9
+    .col-lg-8
 
       - if @project.export_project_path
-        = link_to 'Download export',  download_export_namespace_project_path(@project.namespace, @project),
+        = link_to 'Download export',  download_export_project_path(@project),
                 rel: 'nofollow', download: '', method: :get, class: "btn btn-default"
-        = link_to 'Generate new export',  generate_new_export_namespace_project_path(@project.namespace, @project),
+        = link_to 'Generate new export',  generate_new_export_project_path(@project),
                 method: :post, class: "btn btn-default"
       - else
-        = link_to 'Export project', export_namespace_project_path(@project.namespace, @project),
+        = link_to 'Export project', export_project_path(@project),
                 method: :post, class: "btn btn-default"
 
       .bs-callout.bs-callout-info
@@ -190,7 +192,7 @@
   - if can? current_user, :archive_project, @project
     %hr
     .row.prepend-top-default
-      .col-lg-3
+      .col-lg-4
         %h4.warning-title.prepend-top-0
           - if @project.archived?
             Unarchive project
@@ -201,25 +203,25 @@
             Unarchiving the project will mark its repository as active. The project can be committed to.
           - else
             Archiving the project will mark its repository as read-only. It is hidden from the dashboard and doesn't show up in searches.
-      .col-lg-9
+      .col-lg-8
         - if @project.archived?
           %p
             %strong Once active this project shows up in the search and on the dashboard.
-          = link_to 'Unarchive project', unarchive_namespace_project_path(@project.namespace, @project),
+          = link_to 'Unarchive project', unarchive_project_path(@project),
               data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
               method: :post, class: "btn btn-success"
         - else
           %p
             %strong Archived projects cannot be committed to!
-          = link_to 'Archive project', archive_namespace_project_path(@project.namespace, @project),
+          = link_to 'Archive project', archive_project_path(@project),
               data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
               method: :post, class: "btn btn-warning"
   %hr
   .row.prepend-top-default
-    .col-lg-3
+    .col-lg-4
       %h4.prepend-top-0.warning-title
         Rename repository
-    .col-lg-9
+    .col-lg-8
       = render 'projects/errors'
       = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
         .form-group.project_name_holder
@@ -244,13 +246,13 @@
   - if can?(current_user, :change_namespace, @project)
     %hr
     .row.prepend-top-default
-      .col-lg-3
+      .col-lg-4
         %h4.prepend-top-0.danger-title
           Transfer project to new group
         %p.append-bottom-0
           Please select the group you want to transfer this project to in the dropdown to the right.
-      .col-lg-9
-        = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_namespace_project_path(@project.namespace, @project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } ) do |f|
+      .col-lg-8
+        = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } ) do |f|
           .form-group
             = label_tag :new_namespace_id, nil, class: 'label-light' do
               %span  Select a new namespace
@@ -265,7 +267,7 @@
   - if @project.forked? && can?(current_user, :remove_fork_project, @project)
     %hr
     .row.prepend-top-default.append-bottom-default
-      .col-lg-3
+      .col-lg-4
         %h4.prepend-top-0.danger-title
           Remove fork relationship
         %p.append-bottom-0
@@ -273,21 +275,21 @@
             This will remove the fork relationship to source project
             = succeed "." do
               = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
-      .col-lg-9
-        = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_namespace_project_path(@project.namespace, @project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
+      .col-lg-8
+        = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
           %p
             %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
           = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
   - if can?(current_user, :remove_project, @project)
     %hr
     .row.prepend-top-default.append-bottom-default
-      .col-lg-3
+      .col-lg-4
         %h4.prepend-top-0.danger-title
           Remove project
         %p.append-bottom-0
           Removing the project will delete its repository and all related resources including issues, merge requests etc.
-      .col-lg-9
-        = form_tag(namespace_project_path(@project.namespace, @project), method: :delete) do
+      .col-lg-8
+        = form_tag(project_path(@project), method: :delete) do
           %p
             %strong Removed projects cannot be restored!
           = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }

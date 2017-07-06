@@ -2,10 +2,10 @@ require 'spec_helper'
 
 feature 'Toggle Whitespace Changes', js: true, feature: true do
   before do
-    login_as :admin
+    gitlab_sign_in :admin
     merge_request = create(:merge_request)
     project = merge_request.source_project
-    visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit diffs_project_merge_request_path(project, merge_request)
   end
 
   it 'has a button to toggle whitespace changes' do

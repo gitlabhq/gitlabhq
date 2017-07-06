@@ -1,0 +1,6 @@
+---
+title: Rename duplicated variables with the same key for projects. Add environment_scope
+  column to variables and add unique constraint to make sure that no variables could
+  be created with the same key within a project
+merge_request: 12363
+author:

@@ -86,8 +86,13 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
       it 'has the correct data for merge request st_diffs' do
         # makes sure we are renaming the custom method +utf8_st_diffs+ into +st_diffs+
+        # one MergeRequestDiff uses the new format, where st_diffs is expected to be nil
 
-        expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(9)
+        expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(8)
+      end
+
+      it 'has the correct data for merge request diff files' do
+        expect(MergeRequestDiffFile.where.not(diff: nil).count).to eq(9)
       end
 
       it 'has the correct time for merge request st_commits' do

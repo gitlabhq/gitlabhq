@@ -37,7 +37,7 @@ describe MergeRequestDiff, models: true do
 
     context 'when the raw diffs are empty' do
       before do
-        mr_diff.update_attributes(st_diffs: '')
+        MergeRequestDiffFile.delete_all(merge_request_diff_id: mr_diff.id)
       end
 
       it 'returns an empty DiffCollection' do
@@ -48,6 +48,7 @@ describe MergeRequestDiff, models: true do
 
     context 'when the raw diffs have invalid content' do
       before do
+        MergeRequestDiffFile.delete_all(merge_request_diff_id: mr_diff.id)
         mr_diff.update_attributes(st_diffs: ["--broken-diff"])
       end
 

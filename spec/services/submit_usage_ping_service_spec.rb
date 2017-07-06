@@ -92,8 +92,8 @@ describe SubmitUsagePingService do
   end
 
   def stub_response(body)
-    stub_request(:post, 'https://version.gitlab.com/usage_data').
-      to_return(
+    stub_request(:post, 'https://version.gitlab.com/usage_data')
+      .to_return(
         headers: { 'Content-Type' => 'application/json' },
         body: body.to_json
       )

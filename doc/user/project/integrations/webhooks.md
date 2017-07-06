@@ -736,7 +736,7 @@ X-Gitlab-Event: Merge Request Hook
 
 ### Wiki Page events
 
-Triggered when a wiki page is created, edited or deleted.
+Triggered when a wiki page is created, updated or deleted.
 
 **Request Header**:
 

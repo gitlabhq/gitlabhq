@@ -20,9 +20,9 @@ describe 'Issue Boards', feature: true, js: true do
 
     project.team << [user, :master]
 
-    login_as(user)
+    gitlab_sign_in(user)
 
-    visit namespace_project_board_path(project.namespace, project, board)
+    visit project_board_path(project, board)
     wait_for_requests
   end
 
@@ -77,6 +77,22 @@ describe 'Issue Boards', feature: true, js: true do
     page.within(find('.board:nth-child(2)')) do
       expect(page).to have_selector('.card', count: 1)
     end
+  end
+
+  it 'does not show remove button for backlog or closed issues' do
+    create(:issue, project: project)
+    create(:issue, :closed, project: project)
+
+    visit project_board_path(project, board)
+    wait_for_requests
+
+    click_card(find('.board:nth-child(1)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
+
+    click_card(find('.board:nth-child(3)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
   end
 
   context 'assignee' do

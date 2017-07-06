@@ -66,8 +66,8 @@ describe Projects::CommitController do
       end
 
       it "does not escape Html" do
-        allow_any_instance_of(Commit).to receive(:"to_#{format}").
-          and_return('HTML entities &<>" ')
+        allow_any_instance_of(Commit).to receive(:"to_#{format}")
+          .and_return('HTML entities &<>" ')
 
         go(id: commit.id, format: format)
 
@@ -169,7 +169,7 @@ describe Projects::CommitController do
             start_branch: 'master',
             id: commit.id)
 
-        expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
+        expect(response).to redirect_to project_commits_path(project, 'master')
         expect(flash[:notice]).to eq('The commit has been successfully reverted.')
       end
     end
@@ -191,7 +191,7 @@ describe Projects::CommitController do
             start_branch: 'master',
             id: commit.id)
 
-        expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, commit.id)
+        expect(response).to redirect_to project_commit_path(project, commit.id)
         expect(flash[:alert]).to match('Sorry, we cannot revert this commit automatically.')
       end
     end
@@ -218,7 +218,7 @@ describe Projects::CommitController do
             start_branch: 'master',
             id: master_pickable_commit.id)
 
-        expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
+        expect(response).to redirect_to project_commits_path(project, 'master')
         expect(flash[:notice]).to eq('The commit has been successfully cherry-picked.')
       end
     end
@@ -240,7 +240,7 @@ describe Projects::CommitController do
             start_branch: 'master',
             id: master_pickable_commit.id)
 
-        expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
+        expect(response).to redirect_to project_commit_path(project, master_pickable_commit.id)
         expect(flash[:alert]).to match('Sorry, we cannot cherry-pick this commit automatically.')
       end
     end

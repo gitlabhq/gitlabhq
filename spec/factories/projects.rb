@@ -118,8 +118,8 @@ FactoryGirl.define do
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
 
-      project.project_feature.
-        update_attributes!(
+      project.project_feature
+        .update_attributes!(
           wiki_access_level: evaluator.wiki_access_level,
           builds_access_level: builds_access_level,
           snippets_access_level: evaluator.snippets_access_level,
@@ -220,7 +220,7 @@ FactoryGirl.define do
         active: true,
         properties: {
           'project_url' => 'http://redmine/projects/project_name_in_redmine',
-          'issues_url' => "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          'issues_url' => 'http://redmine/projects/project_name_in_redmine/issues/:id',
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )

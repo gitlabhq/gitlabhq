@@ -34,7 +34,7 @@ module API
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
         access_checker = access_checker_klass
-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
+          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path)
 
         begin
           access_checker.check(params[:action], params[:changes])
@@ -71,11 +71,16 @@ module API
       end
 
       #
-      # Discover user by ssh key
+      # Discover user by ssh key or user id
       #
       get "/discover" do
-        key = Key.find(params[:key_id])
-        present key.user, with: Entities::UserSafe
+        if params[:key_id]
+          key = Key.find(params[:key_id])
+          user = key.user
+        elsif params[:user_id]
+          user = User.find_by(id: params[:user_id])
+        end
+        present user, with: Entities::UserSafe
       end
 
       get "/check" do
@@ -127,8 +132,11 @@ module API
           return { success: false, message: 'Two-factor authentication is not enabled for this user' }
         end
 
-        codes = user.generate_otp_backup_codes!
-        user.save!
+        codes = nil
+
+        ::Users::UpdateService.new(user).execute! do |user|
+          codes = user.generate_otp_backup_codes!
+        end
 
         { success: true, recovery_codes: codes }
       end

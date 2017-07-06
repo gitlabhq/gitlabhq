@@ -12,12 +12,12 @@ describe 'Issue Boards', feature: true, js: true do
     project.team << [user, :master]
     project.team << [user2, :master]
 
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'no lists' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
       expect(page).to have_selector('.board', count: 3)
     end
@@ -81,7 +81,7 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:issue9) { create(:labeled_issue, project: project, labels: [planning, testing, bug, accepting], relative_position: 1) }
 
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
 
       wait_for_requests
 
@@ -158,7 +158,7 @@ describe 'Issue Boards', feature: true, js: true do
         create(:labeled_issue, project: project, labels: [planning])
       end
 
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
       page.within(find('.board:nth-child(2)')) do
@@ -247,13 +247,13 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'issue moves from closed' do
-        drag(list_from_index: 3, list_to_index: 2)
+        drag(list_from_index: 2, list_to_index: 3)
 
         wait_for_board_cards(2, 8)
-        wait_for_board_cards(3, 3)
-        wait_for_board_cards(4, 0)
+        wait_for_board_cards(3, 1)
+        wait_for_board_cards(4, 2)
 
-        expect(find('.board:nth-child(3)')).to have_content(issue8.title)
+        expect(find('.board:nth-child(4)')).to have_content(issue8.title)
       end
 
       context 'issue card' do
@@ -507,7 +507,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'keyboard shortcuts' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -519,8 +519,8 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'signed out user' do
     before do
-      logout
-      visit namespace_project_board_path(project.namespace, project, board)
+      gitlab_sign_out
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -542,9 +542,9 @@ describe 'Issue Boards', feature: true, js: true do
 
     before do
       project.team << [user_guest, :guest]
-      logout
-      login_as(user_guest)
-      visit namespace_project_board_path(project.namespace, project, board)
+      gitlab_sign_out
+      gitlab_sign_in(user_guest)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 

@@ -6,7 +6,7 @@
   %span.author_name= link_to_author event
   %span.pushed #{event.action_name} #{event.ref_type}
   %strong
-    - commits_link = namespace_project_commits_path(project.namespace, project, event.ref_name)
+    - commits_link = project_commits_path(project, event.ref_name)
     = link_to_if project.repository.branch_exists?(event.ref_name), event.ref_name, commits_link, class: 'ref-name'
 
   = render "events/event_scope", event: event
@@ -31,7 +31,7 @@
             - from = project.default_branch
             - from_label = from
 
-          = link_to namespace_project_compare_path(project.namespace, project, from: from, to: event.commit_to) do
+          = link_to project_compare_path(project, from: from, to: event.commit_to) do
             Compare #{from_label}...#{truncate_sha(event.commit_to)}
 
           - if create_mr

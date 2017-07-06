@@ -6,8 +6,8 @@ describe Mattermost::Command do
   before do
     Mattermost::Session.base_uri('http://mattermost.example.com')
 
-    allow_any_instance_of(Mattermost::Client).to receive(:with_session).
-      and_yield(Mattermost::Session.new(nil))
+    allow_any_instance_of(Mattermost::Client).to receive(:with_session)
+      .and_yield(Mattermost::Session.new(nil))
   end
 
   describe '#create' do
@@ -20,12 +20,12 @@ describe Mattermost::Command do
 
     context 'for valid trigger word' do
       before do
-        stub_request(:post, 'http://mattermost.example.com/api/v3/teams/abc/commands/create').
-          with(body: {
+        stub_request(:post, 'http://mattermost.example.com/api/v3/teams/abc/commands/create')
+          .with(body: {
             team_id: 'abc',
             trigger: 'gitlab'
-          }.to_json).
-          to_return(
+          }.to_json)
+          .to_return(
             status: 200,
             headers: { 'Content-Type' => 'application/json' },
             body: { token: 'token' }.to_json
@@ -39,8 +39,8 @@ describe Mattermost::Command do
 
     context 'for error message' do
       before do
-        stub_request(:post, 'http://mattermost.example.com/api/v3/teams/abc/commands/create').
-          to_return(
+        stub_request(:post, 'http://mattermost.example.com/api/v3/teams/abc/commands/create')
+          .to_return(
             status: 500,
             headers: { 'Content-Type' => 'application/json' },
             body: {

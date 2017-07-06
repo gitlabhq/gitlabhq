@@ -23,7 +23,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   end
 
   before do
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   describe "token creation" do

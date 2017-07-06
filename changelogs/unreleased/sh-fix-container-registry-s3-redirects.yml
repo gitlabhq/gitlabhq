@@ -1,4 +1,0 @@
----
-title: Properly handle container registry redirects to fix metadata stored on a S3 backend
-merge_request:
-author:

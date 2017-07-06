@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'User can display performacne bar', :js do
+describe 'User can display performance bar', :js do
   shared_examples 'performance bar is disabled' do
     it 'does not show the performance bar by default' do
       expect(page).not_to have_css('#peek')
@@ -27,8 +27,8 @@ describe 'User can display performacne bar', :js do
         find('body').native.send_keys('pb')
       end
 
-      it 'does not show the performance bar by default' do
-        expect(page).not_to have_css('#peek')
+      it 'shows the performance bar' do
+        expect(page).to have_css('#peek')
       end
     end
   end
@@ -57,7 +57,7 @@ describe 'User can display performacne bar', :js do
 
   context 'when user is logged-in' do
     before do
-      login_as :user
+      gitlab_sign_in(create(:user))
 
       visit root_path
     end

@@ -11,22 +11,6 @@ There are currently 3 official ways to install GitLab:
 
 Based on your installation, choose a section below that fits your needs.
 
----
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Omnibus Packages](#omnibus-packages)
-- [Installation from source](#installation-from-source)
-- [Installation using Docker](#installation-using-docker)
-- [Upgrading between editions](#upgrading-between-editions)
-    - [Community to Enterprise Edition](#community-to-enterprise-edition)
-    - [Enterprise to Community Edition](#enterprise-to-community-edition)
-- [Miscellaneous](#miscellaneous)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## Omnibus Packages
 
 - The [Omnibus update guide](http://docs.gitlab.com/omnibus/update/README.html)

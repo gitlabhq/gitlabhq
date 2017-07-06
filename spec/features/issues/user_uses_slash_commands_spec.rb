@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'Issues > User uses slash commands', feature: true, js: true do
-  include SlashCommandsHelpers
+feature 'Issues > User uses quick actions', feature: true, js: true do
+  include QuickActionsHelpers
 
-  it_behaves_like 'issuable record that supports slash commands in its description and notes', :issue do
+  it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
     let(:issuable) { create(:issue, project: project) }
   end
 
@@ -13,8 +13,8 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
 
     before do
       project.team << [user, :master]
-      login_with(user)
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      gitlab_sign_in(user)
+      visit project_issue_path(project, issue)
     end
 
     after do
@@ -41,9 +41,9 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
-          visit namespace_project_issue_path(project.namespace, project, issue)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
+          visit project_issue_path(project, issue)
         end
 
         it 'does not create a note, and sets the due date accordingly' do
@@ -81,9 +81,9 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
-          visit namespace_project_issue_path(project.namespace, project, issue)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
+          visit project_issue_path(project, issue)
         end
 
         it 'does not create a note, and sets the due date accordingly' do
@@ -108,7 +108,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
 
       context 'Issue' do
         before do
-          visit namespace_project_issue_path(project.namespace, project, issue)
+          visit project_issue_path(project, issue)
         end
 
         it_behaves_like 'issuable time tracker'
@@ -118,7 +118,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         let(:merge_request) { create(:merge_request, source_project: project) }
 
         before do
-          visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+          visit project_merge_request_path(project, merge_request)
         end
 
         it_behaves_like 'issuable time tracker'
@@ -134,7 +134,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
 
       context 'Issue' do
         before do
-          visit namespace_project_issue_path(project.namespace, project, issue)
+          visit project_issue_path(project, issue)
         end
 
         it_behaves_like 'issuable time tracker'
@@ -144,7 +144,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         let(:merge_request) { create(:merge_request, source_project: project) }
 
         before do
-          visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+          visit project_merge_request_path(project, merge_request)
         end
 
         it_behaves_like 'issuable time tracker'

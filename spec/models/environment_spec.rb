@@ -120,28 +120,17 @@ describe Environment, models: true do
     let(:head_commit)   { project.commit }
     let(:commit)        { project.commit.parent }
 
-    context 'Gitaly find_ref_name feature disabled' do
-      it 'returns deployment id for the environment' do
-        expect(environment.first_deployment_for(commit)).to eq deployment1
-      end
-
-      it 'return nil when no deployment is found' do
-        expect(environment.first_deployment_for(head_commit)).to eq nil
-      end
+    it 'returns deployment id for the environment' do
+      expect(environment.first_deployment_for(commit)).to eq deployment1
     end
 
-    # TODO: Uncomment when feature is reenabled
-    # context 'Gitaly find_ref_name feature enabled' do
-    #   before do
-    #     allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:find_ref_name).and_return(true)
-    #   end
-    #
-    #   it 'calls GitalyClient' do
-    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:find_ref_name)
-    #
-    #     environment.first_deployment_for(commit)
-    #   end
-    # end
+    it 'return nil when no deployment is found' do
+      expect(environment.first_deployment_for(head_commit)).to eq nil
+    end
+
+    it 'returns a UTF-8 ref' do
+      expect(environment.first_deployment_for(commit).ref).to be_utf8
+    end
   end
 
   describe '#environment_type' do
@@ -429,6 +418,99 @@ describe Environment, models: true do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_metrics?' do
+    subject { environment.has_metrics? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:prometheus_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:prometheus_project) }
+
+      before do
+        environment.stop
+      end
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#additional_metrics' do
+    let(:project) { create(:prometheus_project) }
+    subject { environment.additional_metrics }
+
+    context 'when the environment has additional metrics' do
+      before do
+        allow(environment).to receive(:has_additional_metrics?).and_return(true)
+      end
+
+      it 'returns the additional metrics from the deployment service' do
+        expect(project.prometheus_service).to receive(:additional_environment_metrics)
+                                                .with(environment)
+                                                .and_return(:fake_metrics)
+
+        is_expected.to eq(:fake_metrics)
+      end
+    end
+
+    context 'when the environment does not have metrics' do
+      before do
+        allow(environment).to receive(:has_additional_metrics?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_additional_metrics??' do
+    subject { environment.has_additional_metrics? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:prometheus_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:prometheus_project) }
+
+      before do
+        environment.stop
+      end
+
+      it { is_expected.to be_falsy }
     end
   end
 

@@ -5,7 +5,7 @@ feature 'User RSS' do
 
   context 'when signed in' do
     before do
-      login_as(create(:user))
+      gitlab_sign_in(create(:user))
       visit path
     end
 

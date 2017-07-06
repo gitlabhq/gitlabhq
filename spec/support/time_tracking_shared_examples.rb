@@ -54,7 +54,7 @@ shared_examples 'issuable time tracker' do
   it 'shows the help state when icon is clicked' do
     page.within '.time-tracking-component-wrap' do
       find('.help-button').click
-      expect(page).to have_content 'Track time with slash commands'
+      expect(page).to have_content 'Track time with quick actions'
       expect(page).to have_content 'Learn more'
     end
   end
@@ -64,7 +64,7 @@ shared_examples 'issuable time tracker' do
       find('.help-button').click
       find('.close-help-button').click
 
-      expect(page).not_to have_content 'Track time with slash commands'
+      expect(page).not_to have_content 'Track time with quick actions'
       expect(page).not_to have_content 'Learn more'
     end
   end
@@ -78,8 +78,8 @@ shared_examples 'issuable time tracker' do
   end
 end
 
-def submit_time(slash_command)
-  fill_in 'note[note]', with: slash_command
+def submit_time(quick_action)
+  fill_in 'note[note]', with: quick_action
   find('.js-comment-submit-button').trigger('click')
   wait_for_requests
 end

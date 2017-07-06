@@ -93,8 +93,8 @@ describe IssuesHelper do
       award = build_stubbed(:award_emoji, user: build_stubbed(:user, name: 'Jane'))
       awards = Array.new(5, award).push(my_award)
 
-      expect(award_user_list(awards, current_user, limit: 2)).
-        to eq("You, Jane, and 4 more.")
+      expect(award_user_list(awards, current_user, limit: 2))
+        .to eq("You, Jane, and 4 more.")
     end
   end
 
@@ -137,7 +137,7 @@ describe IssuesHelper do
       let(:merge_request) { create(:merge_request) }
 
       it "links just the merge request" do
-        expected_path = namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+        expected_path = project_merge_request_path(merge_request.project, merge_request)
 
         expect(link_to_discussions_to_resolve(merge_request, nil)).to include(expected_path)
       end

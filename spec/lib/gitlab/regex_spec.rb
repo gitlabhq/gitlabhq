@@ -14,10 +14,16 @@ describe Gitlab::Regex, lib: true do
     it { is_expected.not_to match('?gitlab') }
   end
 
-  describe '.file_name_regex' do
-    subject { described_class.file_name_regex }
+  describe '.environment_slug_regex' do
+    subject { described_class.environment_name_regex }
 
-    it { is_expected.to match('foo@bar') }
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('foo-1') }
+    it { is_expected.to match('FOO') }
+    it { is_expected.to match('foo/1') }
+    it { is_expected.to match('foo.1') }
+    it { is_expected.not_to match('9&foo') }
+    it { is_expected.not_to match('foo-^') }
   end
 
   describe '.environment_slug_regex' do

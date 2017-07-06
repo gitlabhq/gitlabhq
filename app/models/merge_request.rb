@@ -4,6 +4,9 @@ class MergeRequest < ActiveRecord::Base
   include Noteable
   include Referable
   include Sortable
+  include IgnorableColumn
+
+  ignore_column :position
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -194,9 +197,17 @@ class MergeRequest < ActiveRecord::Base
     }
   end
 
-  # This method is needed for compatibility with issues to not mess view and other code
+  # These method are needed for compatibility with issues to not mess view and other code
   def assignees
     Array(assignee)
+  end
+
+  def assignee_ids
+    Array(assignee_id)
+  end
+
+  def assignee_ids=(ids)
+    write_attribute(:assignee_id, ids.last)
   end
 
   def assignee_or_author?(user)
@@ -574,8 +585,8 @@ class MergeRequest < ActiveRecord::Base
       messages = [title, description]
       messages.concat(commits.map(&:safe_message)) if merge_request_diff
 
-      Gitlab::ClosingIssueExtractor.new(project, current_user).
-        closed_by_message(messages.join("\n"))
+      Gitlab::ClosingIssueExtractor.new(project, current_user)
+        .closed_by_message(messages.join("\n"))
     else
       []
     end
@@ -768,6 +779,7 @@ class MergeRequest < ActiveRecord::Base
       "refs/heads/#{source_branch}",
       ref_path
     )
+    update_column(:ref_fetched, true)
   end
 
   def ref_path
@@ -775,7 +787,13 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_fetched?
-    project.repository.ref_exists?(ref_path)
+    super ||
+      begin
+        computed_value = project.repository.ref_exists?(ref_path)
+        update_column(:ref_fetched, true) if computed_value
+
+        computed_value
+      end
   end
 
   def ensure_ref_fetched
@@ -889,7 +907,7 @@ class MergeRequest < ActiveRecord::Base
     !has_commits?
   end
 
-  def mergeable_with_slash_command?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
+  def mergeable_with_quick_action?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
     return false unless can_be_merged_by?(current_user)
 
     return true if autocomplete_precheck

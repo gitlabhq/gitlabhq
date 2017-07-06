@@ -108,8 +108,8 @@ describe Gitlab::EtagCaching::Middleware do
 
     context 'when polling is disabled' do
       before do
-        allow(Gitlab::PollingInterval).to receive(:polling_enabled?).
-          and_return(false)
+        allow(Gitlab::PollingInterval).to receive(:polling_enabled?)
+          .and_return(false)
       end
 
       it 'returns status code 429' do

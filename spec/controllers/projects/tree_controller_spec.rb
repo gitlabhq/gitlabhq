@@ -82,8 +82,8 @@ describe Projects::TreeController do
       let(:id) { 'master/README.md' }
       it 'redirects' do
         redirect_url = "/#{project.path_with_namespace}/blob/master/README.md"
-        expect(subject).
-          to redirect_to(redirect_url)
+        expect(subject)
+          .to redirect_to(redirect_url)
       end
     end
   end
@@ -106,8 +106,8 @@ describe Projects::TreeController do
       let(:branch_name) { 'master-test'}
 
       it 'redirects to the new directory' do
-        expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/#{branch_name}/#{path}")
+        expect(subject)
+            .to redirect_to("/#{project.path_with_namespace}/tree/#{branch_name}/#{path}")
         expect(flash[:notice]).to eq('The directory has been successfully created.')
       end
     end
@@ -117,8 +117,8 @@ describe Projects::TreeController do
       let(:branch_name) { 'master'}
 
       it 'does not allow overwriting of existing files' do
-        expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/master")
+        expect(subject)
+            .to redirect_to("/#{project.path_with_namespace}/tree/master")
         expect(flash[:alert]).to eq('A file with this name already exists')
       end
     end

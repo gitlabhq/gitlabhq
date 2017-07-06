@@ -8,8 +8,8 @@ feature 'GFM autocomplete', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    gitlab_sign_in(user)
+    visit project_issue_path(project, issue)
 
     wait_for_requests
   end
@@ -208,7 +208,7 @@ feature 'GFM autocomplete', feature: true, js: true do
       expect(page).not_to have_selector('.atwho-view')
     end
 
-    it 'triggers autocomplete after selecting a slash command' do
+    it 'triggers autocomplete after selecting a quick action' do
       note = find('#note_note')
       page.within '.timeline-content-form' do
         note.native.send_keys('')

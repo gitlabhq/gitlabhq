@@ -222,20 +222,20 @@ describe SnippetsController do
 
       context 'when the snippet is private' do
         it 'creates the snippet' do
-          expect { create_snippet(visibility_level: Snippet::PRIVATE) }.
-            to change { Snippet.count }.by(1)
+          expect { create_snippet(visibility_level: Snippet::PRIVATE) }
+            .to change { Snippet.count }.by(1)
         end
       end
 
       context 'when the snippet is public' do
         it 'rejects the shippet' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
-            not_to change { Snippet.count }
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }
+            .not_to change { Snippet.count }
         end
 
         it 'creates a spam log' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }
+            .to change { SpamLog.count }.by(1)
         end
 
         it 'renders :new with recaptcha disabled' do
@@ -296,8 +296,8 @@ describe SnippetsController do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'updates the snippet' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { snippet.reload.title }.to('Foo')
+          expect { update_snippet(title: 'Foo') }
+            .to change { snippet.reload.title }.to('Foo')
         end
       end
 
@@ -305,13 +305,13 @@ describe SnippetsController do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            not_to change { snippet.reload.title }
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
+            .not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
+            .to change { SpamLog.count }.by(1)
         end
 
         it 'renders :edit with recaptcha disabled' do
@@ -341,7 +341,7 @@ describe SnippetsController do
                                      { spam_log_id: spam_logs.last.id,
                                        recaptcha_verification: true })
 
-            expect(response).to redirect_to(snippet)
+            expect(response).to redirect_to(snippet_path(snippet))
           end
         end
       end
@@ -350,13 +350,13 @@ describe SnippetsController do
         let(:visibility_level) { Snippet::PUBLIC }
 
         it 'rejects the shippet' do
-          expect { update_snippet(title: 'Foo') }.
-            not_to change { snippet.reload.title }
+          expect { update_snippet(title: 'Foo') }
+            .not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { SpamLog.count }.by(1)
+          expect { update_snippet(title: 'Foo') }
+            .to change { SpamLog.count }.by(1)
         end
 
         it 'renders :edit with recaptcha disabled' do

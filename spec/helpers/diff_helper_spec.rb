@@ -148,11 +148,20 @@ describe DiffHelper do
 
     it 'puts comments on added lines' do
       left = Gitlab::Diff::Line.new('\\nonewline', 'old-nonewline', 3, 3, 3)
-      right = Gitlab::Diff::Line.new('new line', 'add', 3, 3, 3)
+      right = Gitlab::Diff::Line.new('new line', 'new', 3, 3, 3)
 
       result = helper.parallel_diff_discussions(left, right, diff_file)
 
       expect(result).to eq([nil, 'comment'])
+    end
+
+    it 'puts comments on unchanged lines' do
+      left = Gitlab::Diff::Line.new('unchanged line', nil, 3, 3, 3)
+      right = Gitlab::Diff::Line.new('unchanged line', nil, 3, 3, 3)
+
+      result = helper.parallel_diff_discussions(left, right, diff_file)
+
+      expect(result).to eq(['comment', nil])
     end
   end
 

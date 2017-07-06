@@ -10,8 +10,8 @@ module NotesHelper
     Ability.can_edit_note?(current_user, note)
   end
 
-  def note_supports_slash_commands?(note)
-    Notes::SlashCommandsService.supported?(note, current_user)
+  def note_supports_quick_actions?(note)
+    Notes::QuickActionsService.supported?(note, current_user)
   end
 
   def noteable_json(noteable)
@@ -47,6 +47,18 @@ module NotesHelper
     data
   end
 
+  def add_diff_note_button(line_code, position, line_type)
+    return if @diff_notes_disabled
+
+    button_tag '',
+      class: 'add-diff-note js-add-diff-note-button',
+      type: 'submit', name: 'button',
+      data: diff_view_line_data(line_code, position, line_type),
+      title: 'Add a comment to this line' do
+      icon('comment-o')
+    end
+  end
+
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
@@ -69,11 +81,11 @@ module NotesHelper
 
       path_params = version_params.merge(anchor: discussion.line_code)
 
-      diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, path_params)
+      diffs_project_merge_request_path(discussion.project, discussion.noteable, path_params)
     elsif discussion.for_commit?
       anchor = discussion.line_code if discussion.diff_discussion?
 
-      namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor)
+      project_commit_path(discussion.project, discussion.noteable, anchor: anchor)
     end
   end
 
@@ -81,12 +93,7 @@ module NotesHelper
     if @snippet.is_a?(PersonalSnippet)
       snippet_notes_path(@snippet)
     else
-      namespace_project_noteable_notes_path(
-        namespace_id: @project.namespace,
-        project_id: @project,
-        target_id: @noteable.id,
-        target_type: @noteable.class.name.underscore
-      )
+      project_noteable_notes_path(@project, target_id: @noteable.id, target_type: @noteable.class.name.underscore)
     end
   end
 
@@ -94,7 +101,7 @@ module NotesHelper
     if note.noteable.is_a?(PersonalSnippet)
       snippet_note_path(note.noteable, note)
     else
-      namespace_project_note_path(project.namespace, project, note)
+      project_note_path(project, note)
     end
   end
 

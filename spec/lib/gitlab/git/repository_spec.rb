@@ -26,31 +26,25 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    context 'with gitaly enabled' do
-      before do
-        stub_gitaly
-      end
+    it 'returns UTF-8' do
+      expect(repository.root_ref).to be_utf8
+    end
 
-      after do
-        Gitlab::GitalyClient.clear_stubs!
-      end
+    it 'gets the branch name from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+      repository.root_ref
+    end
 
-      it 'gets the branch name from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
-        repository.root_ref
-      end
+    it 'wraps GRPC not found' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+        .and_raise(GRPC::NotFound)
+      expect { repository.root_ref }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
 
-      it 'wraps GRPC not found' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
-          and_raise(GRPC::NotFound)
-        expect { repository.root_ref }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-
-      it 'wraps GRPC exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
-          and_raise(GRPC::Unknown)
-        expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
-      end
+    it 'wraps GRPC exceptions' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+        .and_raise(GRPC::Unknown)
+      expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
     end
   end
 
@@ -123,34 +117,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it 'has SeedRepo::Repo::BRANCHES.size elements' do
       expect(subject.size).to eq(SeedRepo::Repo::BRANCHES.size)
     end
+
+    it 'returns UTF-8' do
+      expect(subject.first).to be_utf8
+    end
+
     it { is_expected.to include("master") }
     it { is_expected.not_to include("branch-from-space") }
 
-    context 'with gitaly enabled' do
-      before do
-        stub_gitaly
-      end
+    it 'gets the branch names from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+      subject
+    end
 
-      after do
-        Gitlab::GitalyClient.clear_stubs!
-      end
+    it 'wraps GRPC not found' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+        .and_raise(GRPC::NotFound)
+      expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
 
-      it 'gets the branch names from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
-        subject
-      end
-
-      it 'wraps GRPC not found' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
-          and_raise(GRPC::NotFound)
-        expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-
-      it 'wraps GRPC other exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
-          and_raise(GRPC::Unknown)
-        expect { subject }.to raise_error(Gitlab::Git::CommandError)
-      end
+    it 'wraps GRPC other exceptions' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+        .and_raise(GRPC::Unknown)
+      expect { subject }.to raise_error(Gitlab::Git::CommandError)
     end
   end
 
@@ -158,8 +147,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.tag_names }
 
     it { is_expected.to be_kind_of Array }
+
     it 'has SeedRepo::Repo::TAGS.size elements' do
       expect(subject.size).to eq(SeedRepo::Repo::TAGS.size)
+    end
+
+    it 'returns UTF-8' do
+      expect(subject.first).to be_utf8
     end
 
     describe '#last' do
@@ -169,31 +163,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to include("v1.0.0") }
     it { is_expected.not_to include("v5.0.0") }
 
-    context 'with gitaly enabled' do
-      before do
-        stub_gitaly
-      end
+    it 'gets the tag names from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+      subject
+    end
 
-      after do
-        Gitlab::GitalyClient.clear_stubs!
-      end
+    it 'wraps GRPC not found' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+        .and_raise(GRPC::NotFound)
+      expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
 
-      it 'gets the tag names from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
-        subject
-      end
-
-      it 'wraps GRPC not found' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names).
-          and_raise(GRPC::NotFound)
-        expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-
-      it 'wraps GRPC exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names).
-          and_raise(GRPC::Unknown)
-        expect { subject }.to raise_error(Gitlab::Git::CommandError)
-      end
+    it 'wraps GRPC exceptions' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+        .and_raise(GRPC::Unknown)
+      expect { subject }.to raise_error(Gitlab::Git::CommandError)
     end
   end
 
@@ -344,11 +328,43 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#submodule_url_for' do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+    let(:ref) { 'master' }
+
+    def submodule_url(path)
+      repository.submodule_url_for(ref, path)
+    end
+
+    it { expect(submodule_url('six')).to eq('git://github.com/randx/six.git') }
+    it { expect(submodule_url('nested/six')).to eq('git://github.com/randx/six.git') }
+    it { expect(submodule_url('deeper/nested/six')).to eq('git://github.com/randx/six.git') }
+    it { expect(submodule_url('invalid/path')).to eq(nil) }
+
+    context 'uncommitted submodule dir' do
+      let(:ref) { 'fix-existing-submodule-dir' }
+
+      it { expect(submodule_url('submodule-existing-dir')).to eq(nil) }
+    end
+
+    context 'tags' do
+      let(:ref) { 'v1.2.1' }
+
+      it { expect(submodule_url('six')).to eq('git://github.com/randx/six.git') }
+    end
+
+    context 'no submodules at commit' do
+      let(:ref) { '6d39438' }
+
+      it { expect(submodule_url('six')).to eq(nil) }
+    end
+  end
+
   context '#submodules' do
     let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
     context 'where repo has submodules' do
-      let(:submodules) { repository.submodules('master') }
+      let(:submodules) { repository.send(:submodules, 'master') }
       let(:submodule) { submodules.first }
 
       it { expect(submodules).to be_kind_of Hash }
@@ -358,7 +374,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(submodule).to eq([
           "six", {
             "id" => "409f37c4f05865e4fb208c771485f211a22c4c2d",
-            "path" => "six",
+            "name" => "six",
             "url" => "git://github.com/randx/six.git"
           }
         ])
@@ -366,14 +382,14 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       it 'should handle nested submodules correctly' do
         nested = submodules['nested/six']
-        expect(nested['path']).to eq('nested/six')
+        expect(nested['name']).to eq('nested/six')
         expect(nested['url']).to eq('git://github.com/randx/six.git')
         expect(nested['id']).to eq('24fb71c79fcabc63dfd8832b12ee3bf2bf06b196')
       end
 
       it 'should handle deeply nested submodules correctly' do
         nested = submodules['deeper/nested/six']
-        expect(nested['path']).to eq('deeper/nested/six')
+        expect(nested['name']).to eq('deeper/nested/six')
         expect(nested['url']).to eq('git://github.com/randx/six.git')
         expect(nested['id']).to eq('24fb71c79fcabc63dfd8832b12ee3bf2bf06b196')
       end
@@ -383,17 +399,17 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it 'should not have an entry for an uncommited submodule dir' do
-        submodules = repository.submodules('fix-existing-submodule-dir')
+        submodules = repository.send(:submodules, 'fix-existing-submodule-dir')
         expect(submodules).not_to have_key('submodule-existing-dir')
       end
 
       it 'should handle tags correctly' do
-        submodules = repository.submodules('v1.2.1')
+        submodules = repository.send(:submodules, 'v1.2.1')
 
         expect(submodules.first).to eq([
           "six", {
             "id" => "409f37c4f05865e4fb208c771485f211a22c4c2d",
-            "path" => "six",
+            "name" => "six",
             "url" => "git://github.com/randx/six.git"
           }
         ])
@@ -414,7 +430,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context 'where repo doesn\'t have submodules' do
-      let(:submodules) { repository.submodules('6d39438') }
+      let(:submodules) { repository.send(:submodules, '6d39438') }
       it 'should return an empty hash' do
         expect(submodules).to be_empty
       end
@@ -472,8 +488,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it "should move the tip of the master branch to the correct commit" do
-        new_tip = @normal_repo.rugged.references["refs/heads/master"].
-          target.oid
+        new_tip = @normal_repo.rugged.references["refs/heads/master"]
+          .target.oid
 
         expect(new_tip).to eq(reset_commit)
       end
@@ -1101,35 +1117,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#find_commits' do
-    it 'should return a return a collection of commits' do
-      commits = repository.find_commits
-
-      expect(commits).not_to be_empty
-      expect(commits).to all( be_a_kind_of(Gitlab::Git::Commit) )
-    end
-
-    context 'while applying a sort order based on the `order` option' do
-      it "allows ordering topologically (no parents shown before their children)" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_TOPO)
-
-        repository.find_commits(order: :topo)
-      end
-
-      it "allows ordering by date" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE | Rugged::SORT_TOPO)
-
-        repository.find_commits(order: :date)
-      end
-
-      it "applies no sorting by default" do
-        expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_NONE)
-
-        repository.find_commits
-      end
-    end
-  end
-
   describe '#branches with deleted branch' do
     before(:each) do
       ref = double()
@@ -1296,32 +1283,31 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(@repo.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
     end
 
-    context 'with gitaly enabled' do
-      before do
-        stub_gitaly
+    it 'returns a Branch with UTF-8 fields' do
+      branches = @repo.local_branches.to_a
+      expect(branches.size).to be > 0
+      branches.each do |branch|
+        expect(branch.name).to be_utf8
+        expect(branch.target).to be_utf8 unless branch.target.nil?
       end
+    end
 
-      after do
-        Gitlab::GitalyClient.clear_stubs!
-      end
+    it 'gets the branches from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
+        .and_return([])
+      @repo.local_branches
+    end
 
-      it 'gets the branches from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
-          and_return([])
-        @repo.local_branches
-      end
+    it 'wraps GRPC not found' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
+        .and_raise(GRPC::NotFound)
+      expect { @repo.local_branches }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
 
-      it 'wraps GRPC not found' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
-          and_raise(GRPC::NotFound)
-        expect { @repo.local_branches }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-
-      it 'wraps GRPC exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches).
-          and_raise(GRPC::Unknown)
-        expect { @repo.local_branches }.to raise_error(Gitlab::Git::CommandError)
-      end
+    it 'wraps GRPC exceptions' do
+      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
+        .and_raise(GRPC::Unknown)
+      expect { @repo.local_branches }.to raise_error(Gitlab::Git::CommandError)
     end
   end
 
@@ -1399,12 +1385,5 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     sha = Rugged::Commit.create(repo, options)
     repo.lookup(sha)
-  end
-
-  def stub_gitaly
-    allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(true)
-
-    stub = double(:stub)
-    allow(Gitaly::Ref::Stub).to receive(:new).and_return(stub)
   end
 end

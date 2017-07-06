@@ -29,6 +29,10 @@
   &:first-of-type {
     margin-top: 10px;
   }
+
+  &.expanded {
+    overflow: visible;
+  }
 }
 
 .settings-header {
@@ -120,5 +124,68 @@
 
   .btn-clipboard {
     margin-left: 5px;
+  }
+}
+
+.prometheus-metrics-monitoring {
+  .panel {
+    .panel-toggle {
+      width: 14px;
+    }
+
+    .badge {
+      font-size: inherit;
+    }
+
+    .panel-heading .badge-count {
+      color: $white-light;
+      background: $common-gray-dark;
+    }
+
+    .panel-body {
+      padding: 0;
+    }
+
+    .flash-container {
+      margin-bottom: 0;
+      cursor: default;
+
+      .flash-notice {
+        border-radius: 0;
+      }
+    }
+  }
+
+  .loading-metrics,
+  .empty-metrics {
+    padding: 30px 10px;
+
+    p,
+    .btn {
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+  }
+
+  .loading-metrics .metrics-load-spinner {
+    color: $loading-color;
+  }
+
+  .metrics-list {
+    margin-bottom: 0;
+
+    li {
+      padding: $gl-padding;
+
+      .badge {
+        margin-left: 5px;
+        background: $badge-bg;
+      }
+    }
+
+    /* Ensure we don't add border if there's only single li */
+    li + li {
+      border-top: 1px solid $border-color;
+    }
   }
 }

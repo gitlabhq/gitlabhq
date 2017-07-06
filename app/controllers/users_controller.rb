@@ -106,11 +106,11 @@ class UsersController < ApplicationController
 
   def load_events
     # Get user activity feed for projects common for both users
-    @events = user.recent_events.
-      merge(projects_for_current_user).
-      references(:project).
-      with_associations.
-      limit_recent(20, params[:offset])
+    @events = user.recent_events
+      .merge(projects_for_current_user)
+      .references(:project)
+      .with_associations
+      .limit_recent(20, params[:offset])
   end
 
   def load_projects

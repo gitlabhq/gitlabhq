@@ -60,8 +60,8 @@ describe Gitlab::TaskHelpers do
 
   describe '#clone_repo' do
     it 'clones the repo in the target dir' do
-      expect(subject).
-        to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{clone_path}])
+      expect(subject)
+        .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} clone -- #{repo} #{clone_path}])
 
       subject.clone_repo(repo, clone_path)
     end
@@ -69,10 +69,10 @@ describe Gitlab::TaskHelpers do
 
   describe '#checkout_version' do
     it 'clones the repo in the target dir' do
-      expect(subject).
-        to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} fetch --quiet])
-      expect(subject).
-        to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} checkout --quiet #{tag}])
+      expect(subject)
+        .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} fetch --quiet])
+      expect(subject)
+        .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} checkout --quiet #{tag}])
 
       subject.checkout_version(tag, clone_path)
     end
@@ -80,8 +80,8 @@ describe Gitlab::TaskHelpers do
 
   describe '#reset_to_version' do
     it 'resets --hard to the given version' do
-      expect(subject).
-        to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} reset --hard #{tag}])
+      expect(subject)
+        .to receive(:run_command!).with(%W[#{Gitlab.config.git.bin_path} -C #{clone_path} reset --hard #{tag}])
 
       subject.reset_to_version(tag, clone_path)
     end

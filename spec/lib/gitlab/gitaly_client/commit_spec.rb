@@ -16,7 +16,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: commit.id
         )
 
-        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request)
+        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
 
         described_class.new(repository).diff_from_parent(commit)
       end
@@ -31,7 +31,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: initial_commit.id
         )
 
-        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request)
+        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
 
         described_class.new(repository).diff_from_parent(initial_commit)
       end
@@ -61,7 +61,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: commit.id
         )
 
-        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_delta).with(request).and_return([])
+        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return([])
 
         described_class.new(repository).commit_deltas(commit)
       end
@@ -76,7 +76,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: initial_commit.id
         )
 
-        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_delta).with(request).and_return([])
+        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return([])
 
         described_class.new(repository).commit_deltas(initial_commit)
       end

@@ -19,7 +19,7 @@ class NotificationSetting < ActiveRecord::Base
   # pending delete).
   #
   scope :for_projects, -> do
-    includes(:project).references(:projects).where(source_type: 'Project').where.not(projects: { id: nil })
+    includes(:project).references(:projects).where(source_type: 'Project').where.not(projects: { id: nil, pending_delete: true })
   end
 
   EMAIL_EVENTS = [

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard Help', feature: true do
   before do
-    login_as(:user)
+    gitlab_sign_in(:user)
   end
 
   it 'renders correctly markdown' do

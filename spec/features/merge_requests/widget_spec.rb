@@ -7,13 +7,12 @@ describe 'Merge request', :feature, :js do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   context 'new merge request' do
     before do
-      visit new_namespace_project_merge_request_path(
-        project.namespace,
+      visit project_new_merge_request_path(
         project,
         merge_request: {
           source_project_id: project.id,
@@ -44,7 +43,7 @@ describe 'Merge request', :feature, :js do
     end
 
     before do
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'shows environments link' do
@@ -71,7 +70,7 @@ describe 'Merge request', :feature, :js do
                        type: 'CiService',
                        category: 'ci')
 
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'has danger button while waiting for external CI status' do
@@ -92,7 +91,7 @@ describe 'Merge request', :feature, :js do
                                       head_pipeline_of: merge_request)
       create(:ci_build, :pending, pipeline: pipeline)
 
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'has danger button when not succeeded' do
@@ -112,9 +111,7 @@ describe 'Merge request', :feature, :js do
         status: :manual,
         head_pipeline_of: merge_request)
 
-      visit namespace_project_merge_request_path(project.namespace,
-                                                 project,
-                                                 merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'shows information about blocked pipeline' do
@@ -136,7 +133,7 @@ describe 'Merge request', :feature, :js do
                                       head_pipeline_of: merge_request)
       create(:ci_build, :pending, pipeline: pipeline)
 
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'has info button when MWBS button' do
@@ -154,7 +151,7 @@ describe 'Merge request', :feature, :js do
         merge_error: 'Something went wrong'
       )
 
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'shows information about the merge error' do
@@ -175,7 +172,7 @@ describe 'Merge request', :feature, :js do
         merge_error: 'Something went wrong'
       )
 
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'shows information about the merge error' do
@@ -191,7 +188,7 @@ describe 'Merge request', :feature, :js do
   context 'merge error' do
     before do
       allow_any_instance_of(Repository).to receive(:merge).and_return(false)
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'updates the MR widget' do
@@ -209,10 +206,10 @@ describe 'Merge request', :feature, :js do
 
     before do
       project.team << [user2, :master]
-      logout
-      login_as user2
+      gitlab_sign_out
+      gitlab_sign_in user2
       merge_request.update(target_project: fork_project)
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'user can merge into the source project' do

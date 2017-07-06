@@ -119,6 +119,13 @@ def instrument_classes(instrumentation)
 end
 # rubocop:enable Metrics/AbcSize
 
+Gitlab::Metrics::UnicornSampler.initialize_instance(Settings.prometheus.unicorn_sampler_interval).start
+
+Gitlab::Application.configure do |config|
+  # 0 should be Sentry to catch errors in this middleware
+  config.middleware.insert(1, Gitlab::Metrics::ConnectionRackMiddleware)
+end
+
 if Gitlab::Metrics.enabled?
   require 'pathname'
   require 'influxdb'
@@ -154,8 +161,8 @@ if Gitlab::Metrics.enabled?
       ActiveRecord::Querying.public_instance_methods(false).map(&:to_s)
     )
 
-    Gitlab::Metrics::Instrumentation.
-      instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
+    Gitlab::Metrics::Instrumentation
+      .instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
         # Instrumenting the ApplicationSetting class can lead to an infinite
         # loop. Since the data is cached any way we don't really need to
         # instrument it.
@@ -175,7 +182,7 @@ if Gitlab::Metrics.enabled?
 
   GC::Profiler.enable
 
-  Gitlab::Metrics::Sampler.new.start
+  Gitlab::Metrics::InfluxSampler.initialize_instance.start
 
   module TrackNewRedisConnections
     def connect(*args)

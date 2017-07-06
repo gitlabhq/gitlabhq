@@ -351,7 +351,8 @@ describe API::Runner do
           let(:expected_cache) do
             [{ 'key' => 'cache_key',
                'untracked' => false,
-               'paths' => ['vendor/*'] }]
+               'paths' => ['vendor/*'],
+               'policy' => 'pull-push' }]
           end
 
           it 'picks a job' do
@@ -414,8 +415,8 @@ describe API::Runner do
 
           context 'when concurrently updating a job' do
             before do
-              expect_any_instance_of(Ci::Build).to receive(:run!).
-                  and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+              expect_any_instance_of(Ci::Build).to receive(:run!)
+                  .and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
             end
 
             it 'returns a conflict' do

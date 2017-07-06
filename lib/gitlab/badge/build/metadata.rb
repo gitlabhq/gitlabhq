@@ -15,12 +15,11 @@ module Gitlab
         end
 
         def image_url
-          build_namespace_project_badges_url(@project.namespace,
-                                             @project, @ref, format: :svg)
+          build_project_badges_url(@project, @ref, format: :svg)
         end
 
         def link_url
-          namespace_project_commits_url(@project.namespace, @project, id: @ref)
+          project_commits_url(@project, id: @ref)
         end
       end
     end

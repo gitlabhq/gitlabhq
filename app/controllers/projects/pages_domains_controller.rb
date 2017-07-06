@@ -16,7 +16,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     @domain = @project.pages_domains.create(pages_domain_params)
 
     if @domain.valid?
-      redirect_to namespace_project_pages_path(@project.namespace, @project)
+      redirect_to project_pages_path(@project)
     else
       render 'new'
     end
@@ -27,7 +27,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to namespace_project_pages_path(@project.namespace, @project),
+        redirect_to project_pages_path(@project),
                     status: 302,
                     notice: 'Domain was removed'
       end

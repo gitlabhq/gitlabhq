@@ -50,8 +50,8 @@ module Gitlab
             ref: pipeline.ref
           }
 
-          new(pipeline.project, pipeline_info: pipeline_info).
-            store_in_cache_if_needed
+          new(pipeline.project, pipeline_info: pipeline_info)
+            .store_in_cache_if_needed
         end
 
         def initialize(project, pipeline_info: {}, loaded_from_cache: nil)

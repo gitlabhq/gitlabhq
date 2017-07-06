@@ -26,8 +26,8 @@ module API
         delete ":id/repository/branches/:branch", requirements: { branch: /.+/ } do
           authorize_push_project
 
-          result = DeleteBranchService.new(user_project, current_user).
-                   execute(params[:branch])
+          result = DeleteBranchService.new(user_project, current_user)
+                   .execute(params[:branch])
 
           if result[:status] == :success
             status(200)
@@ -55,8 +55,8 @@ module API
         end
         post ":id/repository/branches" do
           authorize_push_project
-          result = CreateBranchService.new(user_project, current_user).
-            execute(params[:branch_name], params[:ref])
+          result = CreateBranchService.new(user_project, current_user)
+            .execute(params[:branch_name], params[:ref])
 
           if result[:status] == :success
             present result[:branch],

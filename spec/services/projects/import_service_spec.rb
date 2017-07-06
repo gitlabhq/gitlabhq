@@ -111,11 +111,11 @@ describe Projects::ImportService, services: true do
       end
 
       it 'flushes various caches' do
-        allow_any_instance_of(Repository).to receive(:fetch_remote).
-          and_return(true)
+        allow_any_instance_of(Repository).to receive(:fetch_remote)
+          .and_return(true)
 
-        allow_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).
-          and_return(true)
+        allow_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute)
+          .and_return(true)
 
         expect_any_instance_of(Repository).to receive(:expire_content_cache)
 

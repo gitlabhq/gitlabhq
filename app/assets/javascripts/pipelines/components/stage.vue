@@ -16,7 +16,7 @@
 /* global Flash */
 import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import tooltipMixin from '../../vue_shared/mixins/tooltip';
+import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   props: {
@@ -32,15 +32,14 @@ export default {
     },
   },
 
-  mixins: [
-    tooltipMixin,
-  ],
+  directives: {
+    tooltip,
+  },
 
   data() {
     return {
       isLoading: false,
       dropdownContent: '',
-      endpoint: this.stage.dropdown_path,
     };
   },
 
@@ -73,7 +72,7 @@ export default {
     },
 
     fetchJobs() {
-      this.$http.get(this.endpoint)
+      this.$http.get(this.stage.dropdown_path)
         .then((response) => {
           this.dropdownContent = response.json().html;
           this.isLoading = false;
@@ -132,7 +131,7 @@ export default {
 <template>
   <div class="dropdown">
     <button
-      ref="tooltip"
+      v-tooltip
       :class="triggerButtonClass"
       @click="onClickStage"
       class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"

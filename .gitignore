@@ -21,6 +21,7 @@ eslint-report.html
 /.yarn-cache
 /.byebug_history
 /Vagrantfile
+/app/assets/javascripts/locale/**/app.js
 /backups/*
 /config/aws.yml
 /config/database.yml
@@ -59,3 +60,4 @@ eslint-report.html
 /.gitlab_workhorse_secret
 /webpack-report/
 /locale/**/LC_MESSAGES
+/.rspec

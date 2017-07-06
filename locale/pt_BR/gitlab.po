@@ -250,6 +250,9 @@ msgstr "Precisa visualizar os dados? Solicite acesso ao administrador."
 msgid "We don't have enough data to show this stage."
 msgstr "Não temos dados suficientes para mostrar esta fase."
 
+msgid "You have reached your project limit"
+msgstr ""
+
 msgid "You need permission."
 msgstr "Você precisa de permissão."
 

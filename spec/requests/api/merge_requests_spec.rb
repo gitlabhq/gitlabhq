@@ -334,14 +334,13 @@ describe API::MergeRequests do
              target_branch: 'master',
              author: user,
              labels: 'label, label2',
-             milestone_id: milestone.id,
-             remove_source_branch: true
+             milestone_id: milestone.id
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(%w(label label2))
         expect(json_response['milestone']['id']).to eq(milestone.id)
-        expect(json_response['force_remove_source_branch']).to be_truthy
+        expect(json_response['force_remove_source_branch']).to be_falsy
       end
 
       it "returns 422 when source_branch equals target_branch" do
@@ -402,6 +401,27 @@ describe API::MergeRequests do
                  author: user
           end.to change { MergeRequest.count }.by(0)
           expect(response).to have_http_status(409)
+        end
+      end
+
+      context 'accepts remove_source_branch parameter' do
+        let(:params) do
+          { title: 'Test merge_request',
+            source_branch: 'markdown',
+            target_branch: 'master',
+            author: user }
+        end
+
+        it 'sets force_remove_source_branch to false' do
+          post api("/projects/#{project.id}/merge_requests", user), params.merge(remove_source_branch: false)
+
+          expect(json_response['force_remove_source_branch']).to be_falsy
+        end
+
+        it 'sets force_remove_source_branch to true' do
+          post api("/projects/#{project.id}/merge_requests", user), params.merge(remove_source_branch: true)
+
+          expect(json_response['force_remove_source_branch']).to be_truthy
         end
       end
     end
@@ -540,8 +560,8 @@ describe API::MergeRequests do
     end
 
     it "returns 406 if branch can't be merged" do
-      allow_any_instance_of(MergeRequest).
-        to receive(:can_be_merged?).and_return(false)
+      allow_any_instance_of(MergeRequest)
+        .to receive(:can_be_merged?).and_return(false)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 

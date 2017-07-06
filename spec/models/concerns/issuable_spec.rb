@@ -69,8 +69,8 @@ describe Issuable do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
     it 'returns notes with a matching title' do
-      expect(issuable_class.search(searchable_issue.title)).
-        to eq([searchable_issue])
+      expect(issuable_class.search(searchable_issue.title))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching title' do
@@ -78,8 +78,8 @@ describe Issuable do
     end
 
     it 'returns notes with a matching title regardless of the casing' do
-      expect(issuable_class.search(searchable_issue.title.upcase)).
-        to eq([searchable_issue])
+      expect(issuable_class.search(searchable_issue.title.upcase))
+        .to eq([searchable_issue])
     end
   end
 
@@ -89,8 +89,8 @@ describe Issuable do
     end
 
     it 'returns notes with a matching title' do
-      expect(issuable_class.full_search(searchable_issue.title)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.title))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching title' do
@@ -98,23 +98,23 @@ describe Issuable do
     end
 
     it 'returns notes with a matching title regardless of the casing' do
-      expect(issuable_class.full_search(searchable_issue.title.upcase)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.title.upcase))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a matching description' do
-      expect(issuable_class.full_search(searchable_issue.description)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.description))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching description' do
-      expect(issuable_class.full_search(searchable_issue.description)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.description))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a matching description regardless of the casing' do
-      expect(issuable_class.full_search(searchable_issue.description.upcase)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.description.upcase))
+        .to eq([searchable_issue])
     end
   end
 

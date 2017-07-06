@@ -5,8 +5,8 @@ module Gitlab
     #
     # steal_class - The name of the class for which to steal jobs.
     def self.steal(steal_class)
-      queue = Sidekiq::Queue.
-        new(BackgroundMigrationWorker.sidekiq_options['queue'])
+      queue = Sidekiq::Queue
+        .new(BackgroundMigrationWorker.sidekiq_options['queue'])
 
       queue.each do |job|
         migration_class, migration_args = job.args

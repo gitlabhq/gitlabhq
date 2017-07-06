@@ -92,22 +92,24 @@
 @mixin maintain-sidebar-dimensions {
   display: block;
   width: $gutter-width;
-  padding: 10px 20px;
+  padding: 10px 0;
 }
 
 .issues-bulk-update.right-sidebar {
   @include maintain-sidebar-dimensions;
-  transition: right $sidebar-transition-duration;
-  right: -$gutter-width;
+  width: 0;
+  padding: 0;
+  transition: width $sidebar-transition-duration;
 
   &.right-sidebar-expanded {
     @include maintain-sidebar-dimensions;
-    right: 0;
+    width: $gutter-width;
   }
 
   &.right-sidebar-collapsed {
     @include maintain-sidebar-dimensions;
-    right: -$gutter-width;
+    width: 0;
+    padding: 0;
 
     .block {
       padding: 16px 0;
@@ -118,5 +120,6 @@
 
   .issuable-sidebar {
     padding: 0 3px;
+    width: calc(100% + 35px);
   }
 }

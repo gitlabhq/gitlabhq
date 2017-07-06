@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Project Activity RSS' do
   let(:project) { create(:empty_project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:path) { activity_namespace_project_path(project.namespace, project) }
+  let(:path) { activity_project_path(project) }
 
   before do
     create(:issue, project: project)
@@ -12,7 +12,7 @@ feature 'Project Activity RSS' do
     before do
       user = create(:user)
       project.team << [user, :developer]
-      login_as(user)
+      gitlab_sign_in(user)
       visit path
     end
 

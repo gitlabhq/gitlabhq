@@ -10,10 +10,18 @@ module Gitlab
   # ExclusiveLease.
   #
   class ExclusiveLease
-    LUA_CANCEL_SCRIPT = <<-EOS.freeze
+    LUA_CANCEL_SCRIPT = <<~EOS.freeze
       local key, uuid = KEYS[1], ARGV[1]
       if redis.call("get", key) == uuid then
         redis.call("del", key)
+      end
+    EOS
+
+    LUA_RENEW_SCRIPT = <<~EOS.freeze
+      local key, uuid, ttl = KEYS[1], ARGV[1], ARGV[2]
+      if redis.call("get", key) == uuid then
+        redis.call("expire", key, ttl)
+        return uuid
       end
     EOS
 
@@ -39,6 +47,15 @@ module Gitlab
       # Performing a single SET is atomic
       Gitlab::Redis.with do |redis|
         redis.set(@redis_key, @uuid, nx: true, ex: @timeout) && @uuid
+      end
+    end
+
+    # Try to renew an existing lease. Return lease UUID on success,
+    # false if the lease is taken by a different UUID or inexistent.
+    def renew
+      Gitlab::Redis.with do |redis|
+        result = redis.eval(LUA_RENEW_SCRIPT, keys: [@redis_key], argv: [@uuid, @timeout])
+        result == @uuid
       end
     end
 

@@ -3,11 +3,12 @@ require 'spec_helper'
 describe Gitlab::GitAccess, lib: true do
   let(:pull_access_check) { access.check('git-upload-pack', '_any') }
   let(:push_access_check) { access.check('git-receive-pack', '_any') }
-  let(:access) { Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: authentication_abilities) }
+  let(:access) { Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
   let(:protocol) { 'ssh' }
+  let(:redirected_path) { nil }
   let(:authentication_abilities) do
     [
       :read_project,
@@ -158,6 +159,46 @@ describe Gitlab::GitAccess, lib: true do
       it 'blocks any command with "not found"' do
         expect { pull_access_check }.to raise_not_found('The project you were looking for could not be found.')
         expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.')
+      end
+    end
+  end
+
+  describe '#check_project_moved!' do
+    before do
+      project.team << [user, :master]
+    end
+
+    context 'when a redirect was not followed to find the project' do
+      context 'pull code' do
+        it { expect { pull_access_check }.not_to raise_error }
+      end
+
+      context 'push code' do
+        it { expect { push_access_check }.not_to raise_error }
+      end
+    end
+
+    context 'when a redirect was followed to find the project' do
+      let(:redirected_path) { 'some/other-path' }
+
+      context 'pull code' do
+        it { expect { pull_access_check }.to raise_not_found(/Project '#{redirected_path}' was moved to '#{project.full_path}'/) }
+        it { expect { pull_access_check }.to raise_not_found(/git remote set-url origin #{project.ssh_url_to_repo}/) }
+
+        context 'http protocol' do
+          let(:protocol) { 'http' }
+          it { expect { pull_access_check }.to raise_not_found(/git remote set-url origin #{project.http_url_to_repo}/) }
+        end
+      end
+
+      context 'push code' do
+        it { expect { push_access_check }.to raise_not_found(/Project '#{redirected_path}' was moved to '#{project.full_path}'/) }
+        it { expect { push_access_check }.to raise_not_found(/git remote set-url origin #{project.ssh_url_to_repo}/) }
+
+        context 'http protocol' do
+          let(:protocol) { 'http' }
+          it { expect { push_access_check }.to raise_not_found(/git remote set-url origin #{project.http_url_to_repo}/) }
+        end
       end
     end
   end

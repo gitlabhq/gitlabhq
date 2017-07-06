@@ -70,7 +70,7 @@ import './ajax_loading_spinner';
 import './api';
 import './aside';
 import './autosave';
-import AwardsHandler from './awards_handler';
+import loadAwardsHandler from './awards_handler';
 import './breakpoints';
 import './broadcast_message';
 import './build';
@@ -299,9 +299,10 @@ $(function () {
   // Commit show suppressed diff
   });
   $('.navbar-toggle').on('click', function () {
-    $('.header-content .title').toggle();
+    $('.header-content .title, .header-content .navbar-sub-nav').toggle();
     $('.header-content .header-logo').toggle();
     $('.header-content .navbar-collapse').toggle();
+    $('.js-navbar-toggle-left, .js-navbar-toggle-right, .title-container').toggle();
     return $('.navbar-toggle').toggleClass('active');
   });
   // Show/hide comments on diff
@@ -354,10 +355,10 @@ $(function () {
   $window.off('resize.app').on('resize.app', function () {
     return fitSidebarForSize();
   });
-  gl.awardsHandler = new AwardsHandler();
+  loadAwardsHandler();
   new Aside();
 
-  gl.utils.initTimeagoTimeout();
+  gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
 });

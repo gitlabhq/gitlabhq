@@ -35,7 +35,7 @@ describe Projects::IssuesController do
       it "returns 301 if request path doesn't match project path" do
         get :index, namespace_id: project.namespace, project_id: project.path.upcase
 
-        expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
+        expect(response).to redirect_to(project_issues_path(project))
       end
 
       it "returns 404 when issues are disabled" do
@@ -328,8 +328,8 @@ describe Projects::IssuesController do
             it 'redirect to issue page' do
               update_verified_issue
 
-              expect(response).
-                to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+              expect(response)
+                .to redirect_to(project_issue_path(project, issue))
             end
 
             it 'accepts an issue after recaptcha is verified' do
@@ -343,8 +343,8 @@ describe Projects::IssuesController do
             it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
               spam_log = create(:spam_log)
 
-              expect { update_issue(spam_log_id: spam_log.id, recaptcha_verification: true) }.
-                not_to change { SpamLog.last.recaptcha_verified }
+              expect { update_issue(spam_log_id: spam_log.id, recaptcha_verification: true) }
+                .not_to change { SpamLog.last.recaptcha_verified }
             end
           end
         end
@@ -685,8 +685,8 @@ describe Projects::IssuesController do
           it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
             spam_log = create(:spam_log)
 
-            expect { post_new_issue({}, { spam_log_id: spam_log.id, recaptcha_verification: true } ) }.
-              not_to change { SpamLog.last.recaptcha_verified }
+            expect { post_new_issue({}, { spam_log_id: spam_log.id, recaptcha_verification: true } ) }
+              .not_to change { SpamLog.last.recaptcha_verified }
           end
         end
       end
@@ -702,7 +702,7 @@ describe Projects::IssuesController do
       end
     end
 
-    context 'when description has slash commands' do
+    context 'when description has quick actions' do
       before do
         sign_in(user)
       end

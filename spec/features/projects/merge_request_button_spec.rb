@@ -18,15 +18,14 @@ feature 'Merge Request button', feature: true do
 
     context 'logged in as developer' do
       before do
-        login_as(user)
+        gitlab_sign_in(user)
         project.team << [user, :developer]
       end
 
       it 'shows Create merge request button' do
-        href = new_namespace_project_merge_request_path(project.namespace,
-                                                        project,
-                                                        merge_request: { source_branch: 'feature',
-                                                                         target_branch: 'master' })
+        href = project_new_merge_request_path(project,
+                                              merge_request: { source_branch: 'feature',
+                                                               target_branch: 'master' })
 
         visit url
 
@@ -52,7 +51,7 @@ feature 'Merge Request button', feature: true do
 
     context 'logged in as non-member' do
       before do
-        login_as(user)
+        gitlab_sign_in(user)
       end
 
       it 'does not show Create merge request button' do
@@ -67,10 +66,9 @@ feature 'Merge Request button', feature: true do
         let(:user) { forked_project.owner }
 
         it 'shows Create merge request button' do
-          href = new_namespace_project_merge_request_path(forked_project.namespace,
-                                                          forked_project,
-                                                          merge_request: { source_branch: 'feature',
-                                                                           target_branch: 'master' })
+          href = project_new_merge_request_path(forked_project,
+                                                merge_request: { source_branch: 'feature',
+                                                                 target_branch: 'master' })
 
           visit fork_url
 
@@ -85,24 +83,24 @@ feature 'Merge Request button', feature: true do
   context 'on branches page' do
     it_behaves_like 'Merge request button only shown when allowed' do
       let(:label) { 'Merge request' }
-      let(:url) { namespace_project_branches_path(project.namespace, project, search: 'feature') }
-      let(:fork_url) { namespace_project_branches_path(forked_project.namespace, forked_project, search: 'feature') }
+      let(:url) { project_branches_path(project, search: 'feature') }
+      let(:fork_url) { project_branches_path(forked_project, search: 'feature') }
     end
   end
 
   context 'on compare page' do
     it_behaves_like 'Merge request button only shown when allowed' do
       let(:label) { 'Create merge request' }
-      let(:url) { namespace_project_compare_path(project.namespace, project, from: 'master', to: 'feature') }
-      let(:fork_url) { namespace_project_compare_path(forked_project.namespace, forked_project, from: 'master', to: 'feature') }
+      let(:url) { project_compare_path(project, from: 'master', to: 'feature') }
+      let(:fork_url) { project_compare_path(forked_project, from: 'master', to: 'feature') }
     end
   end
 
   context 'on commits page' do
     it_behaves_like 'Merge request button only shown when allowed' do
       let(:label) { 'Create merge request' }
-      let(:url) { namespace_project_commits_path(project.namespace, project, 'feature') }
-      let(:fork_url) { namespace_project_commits_path(forked_project.namespace, forked_project, 'feature') }
+      let(:url) { project_commits_path(project, 'feature') }
+      let(:fork_url) { project_commits_path(forked_project, 'feature') }
     end
   end
 end

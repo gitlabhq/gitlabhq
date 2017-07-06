@@ -287,6 +287,10 @@ window.DropzoneInput = (function() {
       $uploadingErrorMessage.html(message);
     };
 
+    closeAlertMessage = function() {
+      return form.find('.div-dropzone-alert').alert('close');
+    };
+
     form.find('.markdown-selector').click(function(e) {
       e.preventDefault();
       $(this).closest('.gfm-form').find('.div-dropzone').click();

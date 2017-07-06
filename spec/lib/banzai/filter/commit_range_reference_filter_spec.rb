@@ -28,15 +28,15 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
     it 'links to a valid two-dot reference' do
       doc = reference_filter("See #{reference2}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_compare_url(project.namespace, project, range2.to_param)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.project_compare_url(project, range2.to_param)
     end
 
     it 'links to a valid three-dot reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_compare_url(project.namespace, project, range.to_param)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.project_compare_url(project, range.to_param)
     end
 
     it 'links to a valid short ID' do
@@ -94,7 +94,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
-      expect(link).to eq urls.namespace_project_compare_url(project.namespace, project, from: commit1.id, to: commit2.id, only_path: true)
+      expect(link).to eq urls.project_compare_url(project, from: commit1.id, to: commit2.id, only_path: true)
     end
   end
 
@@ -105,15 +105,15 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.project_compare_url(project2, range.to_param)
     end
 
     it 'link has valid text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.css('a').first.text).
-        to eql("#{project2.path_with_namespace}@#{commit1.short_id}...#{commit2.short_id}")
+      expect(doc.css('a').first.text)
+        .to eql("#{project2.path_with_namespace}@#{commit1.short_id}...#{commit2.short_id}")
     end
 
     it 'has valid text' do
@@ -140,15 +140,15 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.project_compare_url(project2, range.to_param)
     end
 
     it 'link has valid text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.css('a').first.text).
-        to eql("#{project2.path}@#{commit1.short_id}...#{commit2.short_id}")
+      expect(doc.css('a').first.text)
+        .to eql("#{project2.path}@#{commit1.short_id}...#{commit2.short_id}")
     end
 
     it 'has valid text' do
@@ -175,15 +175,15 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.project_compare_url(project2, range.to_param)
     end
 
     it 'link has valid text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.css('a').first.text).
-        to eql("#{project2.path}@#{commit1.short_id}...#{commit2.short_id}")
+      expect(doc.css('a').first.text)
+        .to eql("#{project2.path}@#{commit1.short_id}...#{commit2.short_id}")
     end
 
     it 'has valid text' do
@@ -205,7 +205,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
     let(:namespace) { create(:namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:range)  { CommitRange.new("#{commit1.id}...master", project) }
-    let(:reference) { urls.namespace_project_compare_url(project2.namespace, project2, from: commit1.id, to: 'master') }
+    let(:reference) { urls.project_compare_url(project2, from: commit1.id, to: 'master') }
 
     before do
       range.project = project2
@@ -214,8 +214,8 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq reference
+      expect(doc.css('a').first.attr('href'))
+        .to eq reference
     end
 
     it 'links with adjacent text' do

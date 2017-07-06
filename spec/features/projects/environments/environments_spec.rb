@@ -7,7 +7,7 @@ feature 'Environments page', :feature, :js do
 
   background do
     project.team << [user, role]
-    login_as(user)
+    gitlab_sign_in(user)
   end
 
   given!(:environment) { }
@@ -29,7 +29,7 @@ feature 'Environments page', :feature, :js do
 
       describe 'in available tab page' do
         it 'should show one environment' do
-          visit namespace_project_environments_path(project.namespace, project, scope: 'available')
+          visit project_environments_path(project, scope: 'available')
           expect(page).to have_css('.environments-container')
           expect(page.all('.environment-name').length).to eq(1)
         end
@@ -37,7 +37,7 @@ feature 'Environments page', :feature, :js do
 
       describe 'in stopped tab page' do
         it 'should show no environments' do
-          visit namespace_project_environments_path(project.namespace, project, scope: 'stopped')
+          visit project_environments_path(project, scope: 'stopped')
           expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
@@ -49,7 +49,7 @@ feature 'Environments page', :feature, :js do
 
       describe 'in available tab page' do
         it 'should show no environments' do
-          visit namespace_project_environments_path(project.namespace, project, scope: 'available')
+          visit project_environments_path(project, scope: 'available')
           expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
@@ -57,7 +57,7 @@ feature 'Environments page', :feature, :js do
 
       describe 'in stopped tab page' do
         it 'should show one environment' do
-          visit namespace_project_environments_path(project.namespace, project, scope: 'stopped')
+          visit project_environments_path(project, scope: 'stopped')
           expect(page).to have_css('.environments-container')
           expect(page.all('.environment-name').length).to eq(1)
         end
@@ -151,7 +151,7 @@ feature 'Environments page', :feature, :js do
           find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(action.name.humanize)
 
-          expect { find('.js-manual-action-link').click }
+          expect { find('.js-manual-action-link').trigger('click') }
             .not_to change { Ci::Pipeline.count }
         end
 
@@ -277,10 +277,10 @@ feature 'Environments page', :feature, :js do
   end
 
   def have_terminal_button
-    have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
+    have_link(nil, href: terminal_project_environment_path(project, environment))
   end
 
   def visit_environments(project)
-    visit namespace_project_environments_path(project.namespace, project)
+    visit project_environments_path(project)
   end
 end

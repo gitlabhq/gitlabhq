@@ -10,9 +10,9 @@ module Gitlab
       class << self
         def find_by_uid_and_provider(uid, provider)
           # LDAP distinguished name is case-insensitive
-          identity = ::Identity.
-            where(provider: provider).
-            iwhere(extern_uid: uid).last
+          identity = ::Identity
+            .where(provider: provider)
+            .iwhere(extern_uid: uid).last
           identity && identity.user
         end
       end

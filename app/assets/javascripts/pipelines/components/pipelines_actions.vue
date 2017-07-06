@@ -4,6 +4,7 @@
   import playIconSvg from 'icons/_icon_play.svg';
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
     props: {
@@ -11,10 +12,9 @@
         type: Array,
         required: true,
       },
-      service: {
-        type: Object,
-        required: true,
-      },
+    },
+    directives: {
+      tooltip,
     },
     components: {
       loadingIcon,
@@ -29,19 +29,9 @@
       onClickAction(endpoint) {
         this.isLoading = true;
 
-        $(this.$refs.tooltip).tooltip('destroy');
-
-        this.service.postAction(endpoint)
-        .then(() => {
-          this.isLoading = false;
-          eventHub.$emit('refreshPipelines');
-        })
-        .catch(() => {
-          this.isLoading = false;
-          // eslint-disable-next-line no-new
-          new Flash('An error occured while making the request.');
-        });
+        eventHub.$emit('postAction', endpoint);
       },
+
       isActionDisabled(action) {
         if (action.playable === undefined) {
           return false;
@@ -55,13 +45,13 @@
 <template>
   <div class="btn-group">
     <button
+      v-tooltip
       type="button"
-      class="dropdown-new btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
+      class="dropdown-new btn btn-default js-pipeline-dropdown-manual-actions"
       title="Manual job"
       data-toggle="dropdown"
       data-placement="top"
       aria-label="Manual job"
-      ref="tooltip"
       :disabled="isLoading">
       <span v-html="playIconSvg"></span>
       <i

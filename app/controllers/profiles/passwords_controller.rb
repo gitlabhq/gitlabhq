@@ -15,17 +15,17 @@ class Profiles::PasswordsController < Profiles::ApplicationController
       return
     end
 
-    new_password = user_params[:password]
-    new_password_confirmation = user_params[:password_confirmation]
-
-    result = @user.update_attributes(
-      password: new_password,
-      password_confirmation: new_password_confirmation,
+    password_attributes = {
+      password: user_params[:password],
+      password_confirmation: user_params[:password_confirmation],
       password_automatically_set: false
-    )
+    }
 
-    if result
-      @user.update_attributes(password_expires_at: nil)
+    result = Users::UpdateService.new(@user, password_attributes).execute
+
+    if result[:status] == :success
+      Users::UpdateService.new(@user, password_expires_at: nil).execute
+
       redirect_to root_path, notice: 'Password successfully changed'
     else
       render :new
@@ -46,7 +46,9 @@ class Profiles::PasswordsController < Profiles::ApplicationController
       return
     end
 
-    if @user.update_attributes(password_attributes)
+    result = Users::UpdateService.new(@user, password_attributes).execute
+
+    if result[:status] == :success
       flash[:notice] = "Password was successfully updated. Please login with it"
       redirect_to new_user_session_path
     else

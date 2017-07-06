@@ -11,21 +11,12 @@ var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeMod
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
-var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
+var IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
 var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
-
-// optional dependency `node-zopfli` is unavailable on CentOS 6
-var ZOPFLI_AVAILABLE;
-try {
-  require.resolve('node-zopfli');
-  ZOPFLI_AVAILABLE = true;
-} catch(err) {
-  ZOPFLI_AVAILABLE = false;
-}
 
 var config = {
   // because sqljs requires fs.
@@ -64,6 +55,7 @@ var config = {
     pipelines:            './pipelines/pipelines_bundle.js',
     pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
+    prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
     sidebar:              './sidebar/sidebar_bundle.js',
@@ -79,6 +71,7 @@ var config = {
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
     peek:                 './peek.js',
+    webpack_runtime:      './webpack.js',
   },
 
   output: {
@@ -171,6 +164,7 @@ var config = {
         'issue_show',
         'job_details',
         'merge_conflicts',
+        'monitoring',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
@@ -197,7 +191,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'locale', 'common', 'runtime'],
+      names: ['main', 'locale', 'common', 'webpack_runtime'],
     }),
   ],
 
@@ -233,12 +227,12 @@ if (IS_PRODUCTION) {
 
   // zopfli requires a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
-    config.plugins.push(
-      new CompressionPlugin({
-        asset: '[path].gz[query]',
-        algorithm: ZOPFLI_AVAILABLE ? 'zopfli' : 'gzip',
-      })
-    );
+    // gracefully fall back to gzip if `node-zopfli` is unavailable (e.g. in CentOS 6)
+    try {
+      config.plugins.push(new CompressionPlugin({ algorithm: 'zopfli' }));
+    } catch(err) {
+      config.plugins.push(new CompressionPlugin({ algorithm: 'gzip' }));
+    }
   }
 }
 
@@ -249,13 +243,16 @@ if (IS_DEV_SERVER) {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
+    hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD
   };
-  config.output.publicPath = '//' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT + config.output.publicPath;
   config.plugins.push(
     // watch node_modules for changes if we encounter a missing module compile error
     new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
   );
+  if (DEV_SERVER_LIVERELOAD) {
+    config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  }
 }
 
 if (WEBPACK_REPORT) {

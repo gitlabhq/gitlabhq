@@ -1,5 +1,5 @@
 <script>
-import tooltipMixin from '../mixins/tooltip';
+import tooltip from '../directives/tooltip';
 import timeagoMixin from '../mixins/timeago';
 import '../../lib/utils/datetime_utility';
 
@@ -28,19 +28,21 @@ export default {
   },
 
   mixins: [
-    tooltipMixin,
     timeagoMixin,
   ],
+
+  directives: {
+    tooltip,
+  },
 };
 </script>
 <template>
   <time
+    v-tooltip
     :class="cssClass"
-    class="js-vue-timeago"
     :title="tooltipTitle(time)"
     :data-placement="tooltipPlacement"
-    data-container="body"
-    ref="tooltip">
+    data-container="body">
     {{timeFormated(time)}}
   </time>
 </template>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-06-07 12:29-0500\n"
+"PO-Revision-Date: 2017-06-21 12:09-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -17,8 +17,24 @@ msgstr ""
 "Last-Translator: Bob Van Landuyt <bob@gitlab.com>\n"
 "X-Generator: Poedit 2.0.2\n"
 
+msgid "%d additional commit has been omitted to prevent performance issues."
+msgid_plural "%d additional commits have been omitted to prevent performance issues."
+msgstr[0] "%d cambio adicional ha sido omitido para evitar problemas de rendimiento."
+msgstr[1] "%d cambios adicionales han sido omitidos para evitar problemas de rendimiento."
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d cambio"
+msgstr[1] "%d cambios"
+
+msgid "%{commit_author_link} committed %{commit_timeago}"
+msgstr "%{commit_author_link} cambió %{commit_timeago}"
+
 msgid "About auto deploy"
 msgstr "Acerca del auto despliegue"
+
+msgid "Active"
+msgstr "Activo"
 
 msgid "Activity"
 msgstr "Actividad"
@@ -39,7 +55,13 @@ msgid "Add new directory"
 msgstr "Agregar nuevo directorio"
 
 msgid "Archived project! Repository is read-only"
-msgstr "¡Proyecto archivado! El repositorio es de sólo lectura"
+msgstr "¡Proyecto archivado! El repositorio es de solo lectura"
+
+msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr "¿Estás seguro que deseas eliminar esta programación del pipeline?"
+
+msgid "Attach a file by drag &amp; drop or %{upload_link}"
+msgstr "Adjunte un archivo arrastrando &amp; soltando o %{upload_link}"
 
 msgid "Branch"
 msgid_plural "Branches"
@@ -49,8 +71,26 @@ msgstr[1] "Ramas"
 msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
 msgstr "La rama <strong>%{branch_name}</strong> fue creada. Para configurar el auto despliegue, escoge una plantilla Yaml para GitLab CI y envía tus cambios. %{link_to_autodeploy_doc}"
 
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr "Buscar ramas"
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr "Cambiar rama"
+
 msgid "Branches"
 msgstr "Ramas"
+
+msgid "Browse Directory"
+msgstr "Examinar directorio"
+
+msgid "Browse File"
+msgstr "Examinar archivo"
+
+msgid "Browse Files"
+msgstr "Examinar archivos"
+
+msgid "Browse files"
+msgstr "Examinar archivos"
 
 msgid "ByAuthor|by"
 msgstr "por"
@@ -58,11 +98,32 @@ msgstr "por"
 msgid "CI configuration"
 msgstr "Configuración de CI"
 
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "ChangeTypeActionLabel|Pick into branch"
+msgstr "Escoger en la rama"
+
+msgid "ChangeTypeActionLabel|Revert in branch"
+msgstr "Revertir en la rama"
+
+msgid "ChangeTypeAction|Cherry-pick"
+msgstr "Cherry-pick"
+
+msgid "ChangeTypeAction|Revert"
+msgstr "Revertir"
+
 msgid "Changelog"
 msgstr "Changelog"
 
 msgid "Charts"
 msgstr "Gráficos"
+
+msgid "Cherry-pick this commit"
+msgstr "Escoger este cambio"
+
+msgid "Cherry-pick this merge request"
+msgstr "Escoger esta solicitud de fusión"
 
 msgid "CiStatusLabel|canceled"
 msgstr "cancelado"
@@ -71,7 +132,7 @@ msgid "CiStatusLabel|created"
 msgstr "creado"
 
 msgid "CiStatusLabel|failed"
-msgstr "fallado"
+msgstr "fallido"
 
 msgid "CiStatusLabel|manual action"
 msgstr "acción manual"
@@ -123,14 +184,26 @@ msgid_plural "Commits"
 msgstr[0] "Cambio"
 msgstr[1] "Cambios"
 
+msgid "Commit message"
+msgstr "Mensaje del cambio"
+
+msgid "CommitBoxTitle|Commit"
+msgstr "Cambio"
+
 msgid "CommitMessage|Add %{file_name}"
 msgstr "Agregar %{file_name}"
 
 msgid "Commits"
 msgstr "Cambios"
 
+msgid "Commits feed"
+msgstr "Feed de cambios"
+
 msgid "Commits|History"
 msgstr "Historial"
+
+msgid "Committed by"
+msgstr "Enviado por"
 
 msgid "Compare"
 msgstr "Comparar"
@@ -159,8 +232,20 @@ msgstr "Crear repositorio vacío"
 msgid "Create merge request"
 msgstr "Crear solicitud de fusión"
 
+msgid "Create new..."
+msgstr "Crear nuevo..."
+
 msgid "CreateNewFork|Fork"
 msgstr "Bifurcar"
+
+msgid "CreateTag|Tag"
+msgstr "Etiqueta"
+
+msgid "Cron Timezone"
+msgstr "Zona horaria del Cron"
+
+msgid "Cron syntax"
+msgstr "Sintaxis de Cron"
 
 msgid "Custom notification events"
 msgstr "Eventos de notificaciones personalizadas"
@@ -195,16 +280,28 @@ msgstr "Puesta en escena"
 msgid "CycleAnalyticsStage|Test"
 msgstr "Pruebas"
 
+msgid "Define a custom pattern with cron syntax"
+msgstr "Definir un patrón personalizado con la sintaxis de cron"
+
+msgid "Delete"
+msgstr "Eliminar"
+
 msgid "Deploy"
 msgid_plural "Deploys"
 msgstr[0] "Despliegue"
 msgstr[1] "Despliegues"
+
+msgid "Description"
+msgstr "Descripción"
 
 msgid "Directory name"
 msgstr "Nombre del directorio"
 
 msgid "Don't show again"
 msgstr "No mostrar de nuevo"
+
+msgid "Download"
+msgstr "Descargar"
 
 msgid "Download tar"
 msgstr "Descargar tar"
@@ -221,11 +318,41 @@ msgstr "Descargar zip"
 msgid "DownloadArtifacts|Download"
 msgstr "Descargar"
 
+msgid "DownloadCommit|Email Patches"
+msgstr "Parches por correo electrónico"
+
+msgid "DownloadCommit|Plain Diff"
+msgstr "Diferencias en texto plano"
+
 msgid "DownloadSource|Download"
 msgstr "Descargar"
 
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Edit Pipeline Schedule %{id}"
+msgstr "Editar Programación del Pipeline %{id}"
+
+msgid "Every day (at 4:00am)"
+msgstr "Todos los días (a las 4:00 am)"
+
+msgid "Every month (on the 1st at 4:00am)"
+msgstr "Todos los meses (el día 1 a las 4:00 am)"
+
+msgid "Every week (Sundays at 4:00am)"
+msgstr "Todas las semanas (domingos a las 4:00 am)"
+
+msgid "Failed to change the owner"
+msgstr "Error al cambiar el propietario"
+
+msgid "Failed to remove the pipeline schedule"
+msgstr "Error al eliminar la programación del pipeline"
+
 msgid "Files"
 msgstr "Archivos"
+
+msgid "Filter by commit message"
+msgstr "Filtrar por mensaje del cambio"
 
 msgid "Find by path"
 msgstr "Buscar por ruta"
@@ -239,11 +366,13 @@ msgstr "Primer"
 msgid "FirstPushedBy|pushed by"
 msgstr "enviado por"
 
+msgid "Fork"
+msgid_plural "Forks"
+msgstr[0] "Bifurcación"
+msgstr[1] "Bifurcaciones"
+
 msgid "ForkedFromProjectPath|Forked from"
 msgstr "Bifurcado de"
-
-msgid "Forks"
-msgstr "Bifurcaciones"
 
 msgid "From issue creation until deploy to production"
 msgstr "Desde la creación de la incidencia hasta el despliegue a producción"
@@ -266,6 +395,9 @@ msgstr "Servicio de limpieza iniciado con éxito"
 msgid "Import repository"
 msgstr "Importar repositorio"
 
+msgid "Interval Pattern"
+msgstr "Patrón de intervalo"
+
 msgid "Introducing Cycle Analytics"
 msgstr "Introducción a Cycle Analytics"
 
@@ -280,11 +412,20 @@ msgid_plural "Last %d days"
 msgstr[0] "Último %d día"
 msgstr[1] "Últimos %d días"
 
+msgid "Last Pipeline"
+msgstr "Último Pipeline"
+
 msgid "Last Update"
 msgstr "Última actualización"
 
 msgid "Last commit"
 msgstr "Último cambio"
+
+msgid "Learn more in the"
+msgstr "Más información en la"
+
+msgid "Learn more in the|pipeline schedules documentation"
+msgstr "documentación sobre la programación de pipelines"
 
 msgid "Leave group"
 msgstr "Abandonar grupo"
@@ -308,6 +449,9 @@ msgid_plural "New Issues"
 msgstr[0] "Nueva incidencia"
 msgstr[1] "Nuevas incidencias"
 
+msgid "New Pipeline Schedule"
+msgstr "Nueva Programación del Pipeline"
+
 msgid "New branch"
 msgstr "Nueva rama"
 
@@ -323,6 +467,9 @@ msgstr "Nueva incidencia"
 msgid "New merge request"
 msgstr "Nueva solicitud de fusión"
 
+msgid "New schedule"
+msgstr "Nueva programación"
+
 msgid "New snippet"
 msgstr "Nuevo fragmento de código"
 
@@ -331,6 +478,9 @@ msgstr "Nueva etiqueta"
 
 msgid "No repository"
 msgstr "No hay repositorio"
+
+msgid "No schedules"
+msgstr "No hay programaciones"
 
 msgid "Not available"
 msgstr "No disponible"
@@ -392,11 +542,65 @@ msgstr "Participación"
 msgid "NotificationLevel|Watch"
 msgstr "Vigilancia"
 
+msgid "OfSearchInADropdown|Filter"
+msgstr "Filtrar"
+
 msgid "OpenedNDaysAgo|Opened"
 msgstr "Abierto"
 
+msgid "Options"
+msgstr "Opciones"
+
+msgid "Owner"
+msgstr "Propietario"
+
+msgid "Pipeline"
+msgstr "Pipeline"
+
 msgid "Pipeline Health"
 msgstr "Estado del Pipeline"
+
+msgid "Pipeline Schedule"
+msgstr "Programación del Pipeline"
+
+msgid "Pipeline Schedules"
+msgstr "Programaciones de los Pipelines"
+
+msgid "PipelineSchedules|Activated"
+msgstr "Activado"
+
+msgid "PipelineSchedules|Active"
+msgstr "Activos"
+
+msgid "PipelineSchedules|All"
+msgstr "Todos"
+
+msgid "PipelineSchedules|Inactive"
+msgstr "Inactivos"
+
+msgid "PipelineSchedules|Next Run"
+msgstr "Próxima Ejecución"
+
+msgid "PipelineSchedules|None"
+msgstr "Ninguno"
+
+msgid "PipelineSchedules|Provide a short description for this pipeline"
+msgstr "Proporcione una breve descripción para este pipeline"
+
+msgid "PipelineSchedules|Take ownership"
+msgstr "Tomar posesión"
+
+msgid "PipelineSchedules|Target"
+msgstr "Destino"
+
+msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr "Personalizado"
+
+msgid "Pipeline|with stage"
+msgstr "con etapa"
+
+msgid "Pipeline|with stages"
+msgstr "con etapas"
 
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "Proyecto ‘%{project_name}’ en cola para eliminación."
@@ -453,7 +657,7 @@ msgid "Read more"
 msgstr "Leer más"
 
 msgid "Readme"
-msgstr "Readme"
+msgstr "Léeme"
 
 msgid "RefSwitcher|Branches"
 msgstr "Ramas"
@@ -488,14 +692,35 @@ msgstr "Eliminar proyecto"
 msgid "Request Access"
 msgstr "Solicitar acceso"
 
+msgid "Revert this commit"
+msgstr "Revertir este cambio"
+
+msgid "Revert this merge request"
+msgstr "Revertir esta solicitud de fusión"
+
+msgid "Save pipeline schedule"
+msgstr "Guardar programación del pipeline"
+
+msgid "Schedule a new pipeline"
+msgstr "Programar un nuevo pipeline"
+
+msgid "Scheduling Pipelines"
+msgstr "Programación de Pipelines"
+
 msgid "Search branches and tags"
 msgstr "Buscar ramas y etiquetas"
 
 msgid "Select Archive Format"
 msgstr "Seleccionar formato de archivo"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
-msgstr "Establezca una contraseña en su cuenta para actualizar o enviar a través de% {protocol}"
+msgid "Select a timezone"
+msgstr "Selecciona una zona horaria"
+
+msgid "Select target branch"
+msgstr "Selecciona una rama de destino"
+
+msgid "Set a password on your account to pull or push via %{protocol}."
+msgstr "Establezca una contraseña en su cuenta para actualizar o enviar a través de %{protocol}."
 
 msgid "Set up CI"
 msgstr "Configurar CI"
@@ -520,6 +745,9 @@ msgstr "Código fuente"
 msgid "StarProject|Star"
 msgstr "Destacar"
 
+msgid "Start a %{new_merge_request} with these changes"
+msgstr "Iniciar una %{new_merge_request} con estos cambios"
+
 msgid "Switch branch/tag"
 msgstr "Cambiar rama/etiqueta"
 
@@ -530,6 +758,9 @@ msgstr[1] "Etiquetas"
 
 msgid "Tags"
 msgstr "Etiquetas"
+
+msgid "Target Branch"
+msgstr "Rama de destino"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "La etapa de desarrollo muestra el tiempo desde el primer cambio hasta la creación de la solicitud de fusión. Los datos serán automáticamente incorporados aquí una vez creada tu primera solicitud de fusión."
@@ -545,6 +776,9 @@ msgstr "La etapa de incidencia muestra el tiempo que toma desde la creación de 
 
 msgid "The phase of the development lifecycle."
 msgstr "La etapa del ciclo de vida de desarrollo."
+
+msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
+msgstr "La programación de pipelines ejecuta pipelines en el futuro, repetidamente, para ramas o etiquetas específicas. Los pipelines programados heredarán acceso limitado al proyecto basado en su usuario asociado."
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
 msgstr "La etapa de planificación muestra el tiempo desde el paso anterior hasta el envío de tu primera confirmación. Este tiempo se añadirá automáticamente una vez que usted envíe el primer cambio."
@@ -652,16 +886,16 @@ msgid "Timeago|a day ago"
 msgstr "hace un día"
 
 msgid "Timeago|a month ago"
-msgstr "hace 1 mes"
+msgstr "hace un mes"
 
 msgid "Timeago|a week ago"
-msgstr "hace 1 semana"
+msgstr "hace una semana"
 
 msgid "Timeago|a while"
 msgstr "hace un momento"
 
 msgid "Timeago|a year ago"
-msgstr "hace 1 año"
+msgstr "hace un año"
 
 msgid "Timeago|about %s hours ago"
 msgstr "hace alrededor de %s horas"
@@ -742,8 +976,14 @@ msgstr "Subir nuevo archivo"
 msgid "Upload file"
 msgstr "Subir archivo"
 
+msgid "UploadLink|click to upload"
+msgstr "Hacer clic para subir"
+
 msgid "Use your global notification setting"
 msgstr "Utiliza tu configuración de notificación global"
+
+msgid "View open merge request"
+msgstr "Ver solicitud de fusión abierta"
 
 msgid "VisibilityLevel|Internal"
 msgstr "Interno"
@@ -772,14 +1012,17 @@ msgstr ""
 "¡El proyecto eliminado NO puede ser restaurado!\n"
 "¿Estás TOTALMENTE seguro?"
 
-msgid "You are going to remove the fork relationship to source project %{forked_from_project}.  Are you ABSOLUTELY sure?"
+msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
 msgstr "Vas a eliminar el enlace de la bifurcación con el proyecto original %{forked_from_project}. ¿Estás TOTALMENTE seguro?"
 
 msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
 msgstr "Vas a transferir %{project_name_with_namespace} a otro propietario. ¿Estás TOTALMENTE seguro?"
 
 msgid "You can only add files when you are on a branch"
-msgstr "Sólo puede agregar archivos cuando estas en una rama"
+msgstr "Solo puedes agregar archivos cuando estás en una rama"
+
+msgid "You have reached your project limit"
+msgstr "Has alcanzado el límite de tu proyecto"
 
 msgid "You must sign in to star a project"
 msgstr "Debes iniciar sesión para destacar un proyecto"
@@ -797,10 +1040,10 @@ msgid "You will only receive notifications for threads you have participated in"
 msgstr "Solo recibirás notificaciones de los temas en los que has participado"
 
 msgid "You will receive notifications for any activity"
-msgstr "Recibirás notificaciones para cualquier actividad"
+msgstr "Recibirás notificaciones por cualquier actividad"
 
 msgid "You will receive notifications only for comments in which you were @mentioned"
-msgstr "Recibirás notificaciones sólo para los comentarios en los que se te mencionó"
+msgstr "Recibirás notificaciones solo para los comentarios en los que se te mencionó"
 
 msgid "You won't be able to pull or push project code via %{protocol} until you %{set_password_link} on your account"
 msgstr "No podrás actualizar o enviar código al proyecto a través de %{protocol} hasta que %{set_password_link} en tu cuenta"
@@ -811,13 +1054,18 @@ msgstr "No podrás actualizar o enviar código al proyecto a través de SSH hast
 msgid "Your name"
 msgstr "Tu nombre"
 
-msgid "committed"
-msgstr "cambió"
-
 msgid "day"
 msgid_plural "days"
 msgstr[0] "día"
 msgstr[1] "días"
 
+msgid "new merge request"
+msgstr "nueva solicitud de fusión"
+
 msgid "notification emails"
 msgstr "correos electrónicos de notificación"
+
+msgid "parent"
+msgid_plural "parents"
+msgstr[0] "padre"
+msgstr[1] "padres"

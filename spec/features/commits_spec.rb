@@ -4,10 +4,11 @@ describe 'Commits' do
   include CiStatusHelper
 
   let(:project) { create(:project, :repository) }
+  let(:user) { create(:user) }
 
   describe 'CI' do
     before do
-      login_as :user
+      sign_in(user)
       stub_ci_pipeline_to_return_yaml_file
     end
 
@@ -27,7 +28,7 @@ describe 'Commits' do
       let!(:status) { create(:generic_commit_status, pipeline: pipeline) }
 
       before do
-        project.team << [@user, :reporter]
+        project.team << [user, :reporter]
       end
 
       describe 'Commit builds' do
@@ -52,7 +53,7 @@ describe 'Commits' do
 
       context 'when logged as developer' do
         before do
-          project.team << [@user, :developer]
+          project.team << [user, :developer]
         end
 
         describe 'Project commits' do
@@ -65,7 +66,7 @@ describe 'Commits' do
           end
 
           before do
-            visit namespace_project_commits_path(project.namespace, project, :master)
+            visit project_commits_path(project, :master)
           end
 
           it 'shows correct build status from default branch' do
@@ -146,7 +147,7 @@ describe 'Commits' do
 
       context "when logged as reporter" do
         before do
-          project.team << [@user, :reporter]
+          project.team << [user, :reporter]
           build.update_attributes(artifacts_file: artifacts_file)
           visit ci_status_path(pipeline)
         end
@@ -187,12 +188,11 @@ describe 'Commits' do
 
   context 'viewing commits for a branch' do
     let(:branch_name) { 'master' }
-    let(:user) { create(:user) }
 
     before do
       project.team << [user, :master]
-      login_with(user)
-      visit namespace_project_commits_path(project.namespace, project, branch_name)
+      sign_in(user)
+      visit project_commits_path(project, branch_name)
     end
 
     it 'includes the committed_date for each commit' do

@@ -2,13 +2,13 @@ require 'spec_helper'
 
 feature 'Project Commits RSS' do
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:path) { namespace_project_commits_path(project.namespace, project, :master) }
+  let(:path) { project_commits_path(project, :master) }
 
   context 'when signed in' do
     before do
       user = create(:user)
       project.team << [user, :developer]
-      login_as(user)
+      gitlab_sign_in(user)
       visit path
     end
 

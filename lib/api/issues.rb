@@ -27,6 +27,8 @@ module API
         optional :milestone, type: String, desc: 'Return issues for a specific milestone'
         optional :iids, type: Array[Integer], desc: 'The IID array of issues'
         optional :search, type: String, desc: 'Search issues for text present in the title or description'
+        optional :created_after, type: DateTime, desc: 'Return issues created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return issues created before the specified time'
         use :pagination
       end
 

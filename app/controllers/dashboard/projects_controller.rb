@@ -22,8 +22,8 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def starred
-    @projects = load_projects(params.merge(starred: true)).
-      includes(:forked_from_project, :tags).page(params[:page])
+    @projects = load_projects(params.merge(starred: true))
+      .includes(:forked_from_project, :tags).page(params[:page])
 
     @groups = []
 
@@ -45,8 +45,8 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def load_projects(finder_params)
-    ProjectsFinder.new(params: finder_params, current_user: current_user).
-      execute.includes(:route, namespace: :route)
+    ProjectsFinder.new(params: finder_params, current_user: current_user)
+      .execute.includes(:route, namespace: :route)
   end
 
   def load_events

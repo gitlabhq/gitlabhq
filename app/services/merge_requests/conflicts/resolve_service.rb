@@ -27,10 +27,10 @@ module MergeRequests
             tree: merge_index.write_tree(rugged)
           }
 
-          conflicts_for_resolution.
-            project.
-            repository.
-            resolve_conflicts(current_user, merge_request.source_branch, commit_params)
+          conflicts_for_resolution
+            .project
+            .repository
+            .resolve_conflicts(current_user, merge_request.source_branch, commit_params)
         end
       end
 

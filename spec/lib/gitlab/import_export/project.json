@@ -2821,9 +2821,11 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           }
         ],
-        "utf8_st_diffs": [
+        "merge_request_diff_files": [
           {
-            "diff": "Binary files a/.DS_Store and /dev/null differ\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 0,
+            "utf8_diff": "Binary files a/.DS_Store and /dev/null differ\n",
             "new_path": ".DS_Store",
             "old_path": ".DS_Store",
             "a_mode": "100644",
@@ -2834,7 +2836,9 @@
             "too_large": false
           },
           {
-            "diff": "--- a/.gitignore\n+++ b/.gitignore\n@@ -17,3 +17,4 @@ rerun.txt\n pickle-email-*.html\n .project\n config/initializers/secret_token.rb\n+.DS_Store\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 1,
+            "utf8_diff": "--- a/.gitignore\n+++ b/.gitignore\n@@ -17,3 +17,4 @@ rerun.txt\n pickle-email-*.html\n .project\n config/initializers/secret_token.rb\n+.DS_Store\n",
             "new_path": ".gitignore",
             "old_path": ".gitignore",
             "a_mode": "100644",
@@ -2845,7 +2849,9 @@
             "too_large": false
           },
           {
-            "diff": "--- a/.gitmodules\n+++ b/.gitmodules\n@@ -1,3 +1,9 @@\n [submodule \"six\"]\n \tpath = six\n \turl = git://github.com/randx/six.git\n+[submodule \"gitlab-shell\"]\n+\tpath = gitlab-shell\n+\turl = https://github.com/gitlabhq/gitlab-shell.git\n+[submodule \"gitlab-grack\"]\n+\tpath = gitlab-grack\n+\turl = https://gitlab.com/gitlab-org/gitlab-grack.git\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 2,
+            "utf8_diff": "--- a/.gitmodules\n+++ b/.gitmodules\n@@ -1,3 +1,9 @@\n [submodule \"six\"]\n \tpath = six\n \turl = git://github.com/randx/six.git\n+[submodule \"gitlab-shell\"]\n+\tpath = gitlab-shell\n+\turl = https://github.com/gitlabhq/gitlab-shell.git\n+[submodule \"gitlab-grack\"]\n+\tpath = gitlab-grack\n+\turl = https://gitlab.com/gitlab-org/gitlab-grack.git\n",
             "new_path": ".gitmodules",
             "old_path": ".gitmodules",
             "a_mode": "100644",
@@ -2856,7 +2862,9 @@
             "too_large": false
           },
           {
-            "diff": "Binary files a/files/.DS_Store and /dev/null differ\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 3,
+            "utf8_diff": "Binary files a/files/.DS_Store and /dev/null differ\n",
             "new_path": "files/.DS_Store",
             "old_path": "files/.DS_Store",
             "a_mode": "100644",
@@ -2867,7 +2875,9 @@
             "too_large": false
           },
           {
-            "diff": "--- /dev/null\n+++ b/files/ruby/feature.rb\n@@ -0,0 +1,4 @@\n+# This file was changed in feature branch\n+# We put different code here to make merge conflict\n+class Conflict\n+end\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 4,
+            "utf8_diff": "--- /dev/null\n+++ b/files/ruby/feature.rb\n@@ -0,0 +1,4 @@\n+# This file was changed in feature branch\n+# We put different code here to make merge conflict\n+class Conflict\n+end\n",
             "new_path": "files/ruby/feature.rb",
             "old_path": "files/ruby/feature.rb",
             "a_mode": "0",
@@ -2878,7 +2888,9 @@
             "too_large": false
           },
           {
-            "diff": "--- a/files/ruby/popen.rb\n+++ b/files/ruby/popen.rb\n@@ -6,12 +6,18 @@ module Popen\n \n   def popen(cmd, path=nil)\n     unless cmd.is_a?(Array)\n-      raise \"System commands must be given as an array of strings\"\n+      raise RuntimeError, \"System commands must be given as an array of strings\"\n     end\n \n     path ||= Dir.pwd\n-    vars = { \"PWD\" =\u003e path }\n-    options = { chdir: path }\n+\n+    vars = {\n+      \"PWD\" =\u003e path\n+    }\n+\n+    options = {\n+      chdir: path\n+    }\n \n     unless File.directory?(path)\n       FileUtils.mkdir_p(path)\n@@ -19,6 +25,7 @@ module Popen\n \n     @cmd_output = \"\"\n     @cmd_status = 0\n+\n     Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|\n       @cmd_output \u003c\u003c stdout.read\n       @cmd_output \u003c\u003c stderr.read\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 5,
+            "utf8_diff": "--- a/files/ruby/popen.rb\n+++ b/files/ruby/popen.rb\n@@ -6,12 +6,18 @@ module Popen\n \n   def popen(cmd, path=nil)\n     unless cmd.is_a?(Array)\n-      raise \"System commands must be given as an array of strings\"\n+      raise RuntimeError, \"System commands must be given as an array of strings\"\n     end\n \n     path ||= Dir.pwd\n-    vars = { \"PWD\" =\u003e path }\n-    options = { chdir: path }\n+\n+    vars = {\n+      \"PWD\" =\u003e path\n+    }\n+\n+    options = {\n+      chdir: path\n+    }\n \n     unless File.directory?(path)\n       FileUtils.mkdir_p(path)\n@@ -19,6 +25,7 @@ module Popen\n \n     @cmd_output = \"\"\n     @cmd_status = 0\n+\n     Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|\n       @cmd_output \u003c\u003c stdout.read\n       @cmd_output \u003c\u003c stderr.read\n",
             "new_path": "files/ruby/popen.rb",
             "old_path": "files/ruby/popen.rb",
             "a_mode": "100644",
@@ -2889,7 +2901,9 @@
             "too_large": false
           },
           {
-            "diff": "--- a/files/ruby/regex.rb\n+++ b/files/ruby/regex.rb\n@@ -19,14 +19,12 @@ module Gitlab\n     end\n \n     def archive_formats_regex\n-      #|zip|tar|    tar.gz    |         tar.bz2         |\n-      /(zip|tar|tar\\.gz|tgz|gz|tar\\.bz2|tbz|tbz2|tb2|bz2)/\n+      /(zip|tar|7z|tar\\.gz|tgz|gz|tar\\.bz2|tbz|tbz2|tb2|bz2)/\n     end\n \n     def git_reference_regex\n       # Valid git ref regex, see:\n       # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html\n-\n       %r{\n         (?!\n            (?# doesn't begins with)\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 6,
+            "utf8_diff": "--- a/files/ruby/regex.rb\n+++ b/files/ruby/regex.rb\n@@ -19,14 +19,12 @@ module Gitlab\n     end\n \n     def archive_formats_regex\n-      #|zip|tar|    tar.gz    |         tar.bz2         |\n-      /(zip|tar|tar\\.gz|tgz|gz|tar\\.bz2|tbz|tbz2|tb2|bz2)/\n+      /(zip|tar|7z|tar\\.gz|tgz|gz|tar\\.bz2|tbz|tbz2|tb2|bz2)/\n     end\n \n     def git_reference_regex\n       # Valid git ref regex, see:\n       # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html\n-\n       %r{\n         (?!\n            (?# doesn't begins with)\n",
             "new_path": "files/ruby/regex.rb",
             "old_path": "files/ruby/regex.rb",
             "a_mode": "100644",
@@ -2900,7 +2914,9 @@
             "too_large": false
           },
           {
-            "diff": "--- /dev/null\n+++ b/gitlab-grack\n@@ -0,0 +1 @@\n+Subproject commit 645f6c4c82fd3f5e06f67134450a570b795e55a6\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 7,
+            "utf8_diff": "--- /dev/null\n+++ b/gitlab-grack\n@@ -0,0 +1 @@\n+Subproject commit 645f6c4c82fd3f5e06f67134450a570b795e55a6\n",
             "new_path": "gitlab-grack",
             "old_path": "gitlab-grack",
             "a_mode": "0",
@@ -2911,7 +2927,9 @@
             "too_large": false
           },
           {
-            "diff": "--- /dev/null\n+++ b/gitlab-shell\n@@ -0,0 +1 @@\n+Subproject commit 79bceae69cb5750d6567b223597999bfa91cb3b9\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 8,
+            "utf8_diff": "--- /dev/null\n+++ b/gitlab-shell\n@@ -0,0 +1 @@\n+Subproject commit 79bceae69cb5750d6567b223597999bfa91cb3b9\n",
             "new_path": "gitlab-shell",
             "old_path": "gitlab-shell",
             "a_mode": "0",

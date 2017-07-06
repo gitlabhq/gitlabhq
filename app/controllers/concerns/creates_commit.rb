@@ -78,8 +78,7 @@ module CreatesCommit
   end
 
   def new_merge_request_path
-    new_namespace_project_merge_request_path(
-      @project_to_commit_into.namespace,
+    project_new_merge_request_path(
       @project_to_commit_into,
       merge_request: {
         source_project_id: @project_to_commit_into.id,
@@ -91,14 +90,14 @@ module CreatesCommit
   end
 
   def existing_merge_request_path
-    namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    project_merge_request_path(@project, @merge_request)
   end
 
   def merge_request_exists?
     return @merge_request if defined?(@merge_request)
 
-    @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.
-      find_by(source_project_id: @project_to_commit_into, source_branch: @branch_name, target_branch: @start_branch)
+    @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
+      .find_by(source_project_id: @project_to_commit_into, source_branch: @branch_name, target_branch: @start_branch)
   end
 
   def different_project?

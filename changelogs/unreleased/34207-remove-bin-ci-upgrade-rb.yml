@@ -1,0 +1,4 @@
+---
+title: Remove bin/ci/upgrade.rb as not working all
+merge_request: 12414
+author: Takuya Noguchi

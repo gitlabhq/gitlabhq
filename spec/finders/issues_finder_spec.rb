@@ -7,9 +7,9 @@ describe IssuesFinder do
   set(:project2) { create(:empty_project) }
   set(:milestone) { create(:milestone, project: project1) }
   set(:label) { create(:label, project: project2) }
-  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab') }
+  set(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab', created_at: 1.week.ago) }
   set(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab') }
-  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki') }
+  set(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2, title: 'tanuki', description: 'tanuki', created_at: 1.week.from_now) }
 
   describe '#execute' do
     set(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
@@ -215,6 +215,24 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by created_at' do
+        context 'through created_after' do
+          let(:params) { { created_after: issue3.created_at } }
+
+          it 'returns issues created on or after the given date' do
+            expect(issues).to contain_exactly(issue3)
+          end
+        end
+
+        context 'through created_before' do
+          let(:params) { { created_before: issue1.created_at + 1.second } }
+
+          it 'returns issues created on or before the given date' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+      end
+
       context 'when the user is unauthorized' do
         let(:search_user) { nil }
 
@@ -277,22 +295,121 @@ describe IssuesFinder do
     end
   end
 
-  describe '.not_restricted_by_confidentiality' do
-    let(:authorized_user) { create(:user) }
-    let(:project) { create(:empty_project, namespace: authorized_user.namespace) }
-    let!(:public_issue) { create(:issue, project: project) }
-    let!(:confidential_issue) { create(:issue, project: project, confidential: true) }
+  describe '#with_confidentiality_access_check' do
+    let(:guest) { create(:user) }
+    set(:authorized_user) { create(:user) }
+    set(:project) { create(:empty_project, namespace: authorized_user.namespace) }
+    set(:public_issue) { create(:issue, project: project) }
+    set(:confidential_issue) { create(:issue, project: project, confidential: true) }
 
-    it 'returns non confidential issues for nil user' do
-      expect(described_class.send(:not_restricted_by_confidentiality, nil)).to include(public_issue)
+    context 'when no project filter is given' do
+      let(:params) { {} }
+
+      context 'for an anonymous user' do
+        subject { described_class.new(nil, params).with_confidentiality_access_check }
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+      end
+
+      context 'for a user without project membership' do
+        subject { described_class.new(user, params).with_confidentiality_access_check }
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+      end
+
+      context 'for a guest user' do
+        subject { described_class.new(guest, params).with_confidentiality_access_check }
+
+        before do
+          project.add_guest(guest)
+        end
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+      end
+
+      context 'for a project member with access to view confidential issues' do
+        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
+
+        it 'returns all issues' do
+          expect(subject).to include(public_issue, confidential_issue)
+        end
+      end
     end
 
-    it 'returns non confidential issues for user not authorized for the issues projects' do
-      expect(described_class.send(:not_restricted_by_confidentiality, user)).to include(public_issue)
-    end
+    context 'when searching within a specific project' do
+      let(:params) { { project_id: project.id } }
 
-    it 'returns all issues for user authorized for the issues projects' do
-      expect(described_class.send(:not_restricted_by_confidentiality, authorized_user)).to include(public_issue, confidential_issue)
+      context 'for an anonymous user' do
+        subject { described_class.new(nil, params).with_confidentiality_access_check }
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+
+        it 'does not filter by confidentiality' do
+          expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
+      end
+
+      context 'for a user without project membership' do
+        subject { described_class.new(user, params).with_confidentiality_access_check }
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+
+        it 'filters by confidentiality' do
+          expect(Issue).to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
+      end
+
+      context 'for a guest user' do
+        subject { described_class.new(guest, params).with_confidentiality_access_check }
+
+        before do
+          project.add_guest(guest)
+        end
+
+        it 'returns only public issues' do
+          expect(subject).to include(public_issue)
+          expect(subject).not_to include(confidential_issue)
+        end
+
+        it 'filters by confidentiality' do
+          expect(Issue).to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
+      end
+
+      context 'for a project member with access to view confidential issues' do
+        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
+
+        it 'returns all issues' do
+          expect(subject).to include(public_issue, confidential_issue)
+        end
+
+        it 'does not filter by confidentiality' do
+          expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
+
+          subject
+        end
+      end
     end
   end
 end

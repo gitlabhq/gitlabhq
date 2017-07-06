@@ -47,8 +47,8 @@ export default class GroupsStore {
 
     // Map groups to an object
     groups.map((group) => {
-      mappedGroups[group.id] = group;
-      mappedGroups[group.id].subGroups = {};
+      mappedGroups[`id${group.id}`] = group;
+      mappedGroups[`id${group.id}`].subGroups = {};
       return group;
     });
 
@@ -56,26 +56,27 @@ export default class GroupsStore {
       const currentGroup = mappedGroups[key];
       if (currentGroup.parentId) {
         // If the group is not at the root level, add it to its parent array of subGroups.
-        const findParentGroup = mappedGroups[currentGroup.parentId];
+        const findParentGroup = mappedGroups[`id${currentGroup.parentId}`];
         if (findParentGroup) {
-          mappedGroups[currentGroup.parentId].subGroups[currentGroup.id] = currentGroup;
-          mappedGroups[currentGroup.parentId].isOpen = true; // Expand group if it has subgroups
+          mappedGroups[`id${currentGroup.parentId}`].subGroups[`id${currentGroup.id}`] = currentGroup;
+          mappedGroups[`id${currentGroup.parentId}`].isOpen = true; // Expand group if it has subgroups
         } else if (parentGroup && parentGroup.id === currentGroup.parentId) {
-          tree[currentGroup.id] = currentGroup;
+          tree[`id${currentGroup.id}`] = currentGroup;
         } else {
-          // Means the groups hast no direct parent.
-          // Save for later processing, we will add them to its corresponding base group
+          // No parent found. We save it for later processing
           orphans.push(currentGroup);
+
+          // Add to tree to preserve original order
+          tree[`id${currentGroup.id}`] = currentGroup;
         }
       } else {
-        // If the group is at the root level, add it to first level elements array.
-        tree[currentGroup.id] = currentGroup;
+        // If the group is at the top level, add it to first level elements array.
+        tree[`id${currentGroup.id}`] = currentGroup;
       }
 
       return key;
     });
 
-    // Hopefully this array will be empty for most cases
     if (orphans.length) {
       orphans.map((orphan) => {
         let found = false;
@@ -83,11 +84,23 @@ export default class GroupsStore {
 
         Object.keys(tree).map((key) => {
           const group = tree[key];
-          if (currentOrphan.fullPath.lastIndexOf(group.fullPath) === 0) {
+
+          if (
+           group &&
+           currentOrphan.fullPath.lastIndexOf(group.fullPath) === 0 &&
+           // Make sure the currently selected orphan is not the same as the group
+           // we are checking here otherwise it will end up in an infinite loop
+           currentOrphan.id !== group.id
+           ) {
             group.subGroups[currentOrphan.id] = currentOrphan;
             group.isOpen = true;
             currentOrphan.isOrphan = true;
             found = true;
+
+            // Delete if group was put at the top level. If not the group will be displayed twice.
+            if (tree[`id${currentOrphan.id}`]) {
+              delete tree[`id${currentOrphan.id}`];
+            }
           }
 
           return key;
@@ -95,7 +108,8 @@ export default class GroupsStore {
 
         if (!found) {
           currentOrphan.isOrphan = true;
-          tree[currentOrphan.id] = currentOrphan;
+
+          tree[`id${currentOrphan.id}`] = currentOrphan;
         }
 
         return orphan;
@@ -140,7 +154,7 @@ export default class GroupsStore {
 
   // eslint-disable-next-line class-methods-use-this
   removeGroup(group, collection) {
-    Vue.delete(collection, group.id);
+    Vue.delete(collection, `id${group.id}`);
   }
 
   // eslint-disable-next-line class-methods-use-this

@@ -6,9 +6,9 @@ feature 'New directory creation', feature: true, js: true do
   given(:project) { create(:project) }
 
   background do
-    login_as(user)
+    gitlab_sign_in(user)
     project.team << [user, role]
-    visit namespace_project_tree_path(project.namespace, project, 'master')
+    visit project_tree_path(project, 'master')
     open_new_directory_modal
     fill_in 'dir_name', with: 'new_directory'
   end
@@ -51,7 +51,7 @@ feature 'New directory creation', feature: true, js: true do
       expect(page).to have_content 'New Merge Request'
       expect(page).to have_content "From #{new_branch_name} into master"
       expect(page).to have_content 'Add new directory'
-      expect(current_path).to eq(new_namespace_project_merge_request_path(project.namespace, project))
+      expect(current_path).to eq(project_new_merge_request_path(project))
     end
   end
 end

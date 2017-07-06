@@ -1,5 +1,4 @@
 module Users
-  # Service for building a new user.
   class BuildService < BaseService
     def initialize(current_user, params = {})
       @current_user = current_user

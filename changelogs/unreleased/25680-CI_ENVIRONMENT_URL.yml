@@ -1,4 +1,0 @@
----
-title: Add $CI_ENVIRONMENT_URL to predefined variables for pipelines
-merge_request: 11695
-author:

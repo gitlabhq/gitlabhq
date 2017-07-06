@@ -7,8 +7,8 @@ class UpdateUserActivityWorker
     ids = pairs.keys
     conditions = 'WHEN id = ? THEN ? ' * ids.length
 
-    User.where(id: ids).
-      update_all([
+    User.where(id: ids)
+      .update_all([
         "last_activity_on = CASE #{conditions} ELSE last_activity_on END",
         *pairs.to_a.flatten
       ])

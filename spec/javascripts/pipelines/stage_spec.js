@@ -83,4 +83,47 @@ describe('Pipelines stage component', () => {
       }, 0);
     });
   });
+
+  describe('update endpoint correctly', () => {
+    const updatedInterceptor = (request, next) => {
+      if (request.url === 'bar') {
+        next(request.respondWith(JSON.stringify({ html: 'this is the updated content' }), {
+          status: 200,
+        }));
+      }
+      next();
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(updatedInterceptor);
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(
+        Vue.http.interceptors, updatedInterceptor,
+      );
+    });
+
+    it('should update the stage to request the new endpoint provided', (done) => {
+      component.stage = {
+        status: {
+          group: 'running',
+          icon: 'running',
+          title: 'running',
+        },
+        dropdown_path: 'bar',
+      };
+
+      Vue.nextTick(() => {
+        component.$el.querySelector('button').click();
+
+        setTimeout(() => {
+          expect(
+            component.$el.querySelector('.js-builds-dropdown-container ul').textContent.trim(),
+            ).toEqual('this is the updated content');
+          done();
+        });
+      });
+    });
+  });
 });

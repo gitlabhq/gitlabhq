@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.8'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
-gem 'bootsnap', '~> 1.0.0'
+gem 'bootsnap', '~> 1.1'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
@@ -86,7 +86,7 @@ gem 'kaminari', '~> 0.17.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 1.0'
+gem 'carrierwave', '~> 1.1'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -123,6 +123,7 @@ gem 'asciidoctor', '~> 1.5.2'
 gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.8'
+gem 'bootstrap_form', '~> 2.7.0'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -158,7 +159,7 @@ gem 'rufus-scheduler', '~> 3.4'
 gem 'httparty', '~> 0.13.3'
 
 # Colored output to console
-gem 'rainbow', '~> 2.1.0'
+gem 'rainbow', '~> 2.2'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -254,12 +255,13 @@ gem 'net-ssh', '~> 3.0.1'
 gem 'base32', '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.4.0'
+gem 'sentry-raven', '~> 2.5.3'
 
-gem 'premailer-rails', '~> 1.9.0'
+gem 'premailer-rails', '~> 1.9.7'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
+gem 'rails-i18n', '~> 4.0.9'
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
@@ -283,6 +285,7 @@ group :metrics do
 
   # Prometheus
   gem 'prometheus-client-mmap', '~>0.7.0.beta5'
+  gem 'raindrops', '~> 0.18'
 end
 
 group :development do
@@ -353,7 +356,7 @@ group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
-  gem 'webmock', '~> 1.24.0'
+  gem 'webmock', '~> 2.3.2'
   gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
@@ -373,7 +376,7 @@ gem 'ruby-prof', '~> 0.16.2'
 gem 'oauth2', '~> 1.4'
 
 # Soft deletion
-gem 'paranoia', '~> 2.2'
+gem 'paranoia', '~> 2.3.1'
 
 # Health check
 gem 'health_check', '~> 2.6.0'
@@ -383,7 +386,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.8.0'
+gem 'gitaly', '~> 0.9.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

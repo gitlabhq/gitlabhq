@@ -25,10 +25,10 @@ describe 'Visual tokens', js: true, feature: true do
   before do
     project.add_user(user, :master)
     project.add_user(user_rock, :master)
-    login_as(user)
+    gitlab_sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'editing author token' do

@@ -14,6 +14,7 @@ describe('Deploy keys key', () => {
       propsData: {
         deployKey,
         store,
+        endpoint: 'https://test.host/dummy/endpoint',
       },
     }).$mount();
   };

@@ -33,8 +33,8 @@ describe Issue, models: true do
     let!(:issue4) { create(:issue, project: project, relative_position: 200) }
 
     it 'returns ordered list' do
-      expect(project.issues.order_by_position_and_priority).
-        to match [issue3, issue4, issue1, issue2]
+      expect(project.issues.order_by_position_and_priority)
+        .to match [issue3, issue4, issue1, issue2]
     end
   end
 
@@ -43,16 +43,16 @@ describe Issue, models: true do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignees).and_return([])
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => '' })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => '' })
     end
 
     it 'includes the assignee name' do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignees).and_return([double(name: 'Douwe')])
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 
@@ -299,8 +299,8 @@ describe Issue, models: true do
     let(:user) { build(:admin) }
 
     before do
-      allow(subject.project.repository).to receive(:branch_names).
-                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
+      allow(subject.project.repository).to receive(:branch_names)
+                                            .and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
 
       # Without this stub, the `create(:merge_request)` above fails because it can't find
       # the source branch. This seems like a reasonable compromise, in comparison with
@@ -322,8 +322,8 @@ describe Issue, models: true do
     end
 
     it 'excludes stable branches from the related branches' do
-      allow(subject.project.repository).to receive(:branch_names).
-        and_return(["#{subject.iid}-0-stable"])
+      allow(subject.project.repository).to receive(:branch_names)
+        .and_return(["#{subject.iid}-0-stable"])
 
       expect(subject.related_branches(user)).to eq []
     end

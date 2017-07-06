@@ -26,29 +26,29 @@ module Labels
     private
 
     def label_ids_for_merge(new_label)
-      LabelsFinder.
-        new(current_user, title: new_label.title, group_id: project.group.id).
-        execute(skip_authorization: true).
-        where.not(id: new_label).
-        select(:id)  # Can't use pluck() to avoid object-creation because of the batching
+      LabelsFinder
+        .new(current_user, title: new_label.title, group_id: project.group.id)
+        .execute(skip_authorization: true)
+        .where.not(id: new_label)
+        .select(:id)  # Can't use pluck() to avoid object-creation because of the batching
     end
 
     def update_issuables(new_label, label_ids)
-      LabelLink.
-        where(label: label_ids).
-        update_all(label_id: new_label)
+      LabelLink
+        .where(label: label_ids)
+        .update_all(label_id: new_label)
     end
 
     def update_issue_board_lists(new_label, label_ids)
-      List.
-        where(label: label_ids).
-        update_all(label_id: new_label)
+      List
+        .where(label: label_ids)
+        .update_all(label_id: new_label)
     end
 
     def update_priorities(new_label, label_ids)
-      LabelPriority.
-        where(label: label_ids).
-        update_all(label_id: new_label)
+      LabelPriority
+        .where(label: label_ids)
+        .update_all(label_id: new_label)
     end
 
     def update_project_labels(label_ids)

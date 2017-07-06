@@ -14,7 +14,7 @@ describe 'Comments on personal snippets', :js, feature: true do
   let!(:other_note) { create(:note_on_personal_snippet) }
 
   before do
-    login_as user
+    gitlab_sign_in user
     visit snippet_path(snippet)
   end
 
@@ -33,6 +33,7 @@ describe 'Comments on personal snippets', :js, feature: true do
         expect(page).to have_selector('.note-emoji-button')
       end
 
+      find('body').click # close dropdown
       open_more_actions_dropdown(snippet_notes[1])
 
       page.within("#notes-list li#note_#{snippet_notes[1].id}") do
@@ -46,8 +47,8 @@ describe 'Comments on personal snippets', :js, feature: true do
   context 'when submitting a note' do
     it 'shows a valid form' do
       is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
-      expect(find('.js-main-target-form .js-comment-button').value).
-        to eq('Comment')
+      expect(find('.js-main-target-form .js-comment-button').value)
+        .to eq('Comment')
 
       page.within('.js-main-target-form') do
         expect(page).not_to have_link('Cancel')
@@ -69,6 +70,22 @@ describe 'Comments on personal snippets', :js, feature: true do
       click_button 'Comment'
 
       expect(find('div#notes')).to have_content('This is awesome!')
+    end
+
+    it 'should not have autocomplete' do
+      wait_for_requests
+      request_count_before = page.driver.network_traffic.count
+
+      find('#note_note').native.send_keys('')
+      fill_in 'note[note]', with: '@'
+
+      wait_for_requests
+      request_count_after = page.driver.network_traffic.count
+
+      # This selector probably won't be in place even if autocomplete was enabled
+      # but we want to make sure
+      expect(page).not_to have_selector('.atwho-view')
+      expect(request_count_before).to eq(request_count_after)
     end
   end
 

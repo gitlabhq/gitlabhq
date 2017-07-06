@@ -167,15 +167,15 @@ environment which has had a successful deployment.
 ## Determining the performance impact of a merge
 
 > [Introduced][ce-10408] in GitLab 9.2.
+> GitLab 9.3 added the [numeric comparison](https://gitlab.com/gitlab-org/gitlab-ce/issues/27439) of the 30 minute averages.
 
 Developers can view the performance impact of their changes within the merge
-request workflow. When a source branch has been deployed to an environment, a
-sparkline will appear showing the average memory consumption of the app. The dot
+request workflow. When a source branch has been deployed to an environment, a sparkline and numeric comparison of the average memory consumption will appear. On the sparkline, a dot
 indicates when the current changes were deployed, with up to 30 minutes of
-performance data displayed before and after. The sparkline will be updated after
+performance data displayed before and after. The comparison shows the difference between the 30 minute average before and after the deployment. This information is updated after
 each commit has been deployed.
 
-Once merged and the target branch has been redeployed, the sparkline will switch
+Once merged and the target branch has been redeployed, the metrics will switch
 to show the new environments this revision has been deployed to.
 
 Performance data will be available for the duration it is persisted on the

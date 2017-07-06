@@ -100,8 +100,8 @@ describe ProjectTeam, models: true do
           group_access: Gitlab::Access::GUEST
         )
 
-        expect(project.team.members).
-          to contain_exactly(group_member.user, project.owner)
+        expect(project.team.members)
+          .to contain_exactly(group_member.user, project.owner)
       end
 
       it 'returns invited members of a group of a specified level' do

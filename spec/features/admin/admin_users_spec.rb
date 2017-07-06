@@ -5,7 +5,7 @@ describe "Admin::Users", feature: true do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
 
-  let!(:current_user) { login_as :admin }
+  let!(:current_user) { gitlab_sign_in :admin }
 
   describe "GET /admin/users" do
     before do
@@ -78,10 +78,10 @@ describe "Admin::Users", feature: true do
     it "applies defaults to user" do
       click_button "Create user"
       user = User.find_by(username: 'bang')
-      expect(user.projects_limit).
-        to eq(Gitlab.config.gitlab.default_projects_limit)
-      expect(user.can_create_group).
-        to eq(Gitlab.config.gitlab.default_can_create_group)
+      expect(user.projects_limit)
+        .to eq(Gitlab.config.gitlab.default_projects_limit)
+      expect(user.can_create_group)
+        .to eq(Gitlab.config.gitlab.default_can_create_group)
     end
 
     it "creates user with valid data" do

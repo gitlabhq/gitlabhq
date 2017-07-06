@@ -71,6 +71,7 @@ module Gitlab
 
         @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
         set_st_diff_commits if @relation_name == :merge_request_diff
+        set_diff if @relation_name == :merge_request_diff_files
       end
 
       def update_user_references
@@ -200,6 +201,10 @@ module Gitlab
 
         HashUtil.deep_symbolize_array!(@relation_hash['st_diffs'])
         HashUtil.deep_symbolize_array_with_date!(@relation_hash['st_commits'])
+      end
+
+      def set_diff
+        @relation_hash['diff'] = @relation_hash.delete('utf8_diff')
       end
 
       def existing_or_new_object
