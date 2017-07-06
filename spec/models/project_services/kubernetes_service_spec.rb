@@ -221,7 +221,7 @@ describe KubernetesService, models: true, caching: true do
           { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
           { key: 'KUBE_TOKEN', value: 'token', public: false },
           { key: 'KUBE_NAMESPACE', value: namespace, public: true },
-          { key: 'KUBECONFIG_FILE', value: kubeconfig, public: false, file: true },
+          { key: 'KUBECONFIG', value: kubeconfig, public: false, file: true },
           { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
           { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
         )

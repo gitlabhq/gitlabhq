@@ -102,7 +102,7 @@ class KubernetesService < DeploymentService
       { key: 'KUBE_URL', value: api_url, public: true },
       { key: 'KUBE_TOKEN', value: token, public: false },
       { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true },
-      { key: 'KUBECONFIG_FILE', value: config, public: false, file: true }
+      { key: 'KUBECONFIG', value: config, public: false, file: true }
     ]
 
     if ca_pem.present?

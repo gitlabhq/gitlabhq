@@ -55,7 +55,7 @@ GitLab CI build environment:
 - `KUBE_CA_PEM_FILE` - only present if a custom CA bundle was specified. Path
   to a file containing PEM data.
 - `KUBE_CA_PEM` (deprecated)- only if a custom CA bundle was specified. Raw PEM data.
-- `KUBECONFIG_FILE` - Path to a file containing kubeconfig for this deployment. CA bundle would be embedded if specified.
+- `KUBECONFIG` - Path to a file containing kubeconfig for this deployment. CA bundle would be embedded if specified.
 
 ## Web terminals
 
