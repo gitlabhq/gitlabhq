@@ -169,19 +169,30 @@ describe 'Multiple Issue Boards', feature: true, js: true do
       project.team << [user, :master]
 
       login_as(user)
-
-      visit project_boards_path(project)
-      wait_for_requests
     end
 
     it 'hides the link to create a new board' do
+      visit project_boards_path(project)
+      wait_for_requests
+
       click_button board.name
 
       page.within('.dropdown-menu') do
         expect(page).to have_content('Edit board name')
         expect(page).not_to have_content('Create new board')
-        expect(page).to have_content('Delete board')
+        expect(page).not_to have_content('Delete board')
       end
+    end
+
+    it 'shows a mention that boards are hidden when multiple boards are created' do
+      create(:board, project: project)
+
+      visit project_boards_path(project)
+      wait_for_requests
+
+      click_button board.name
+
+      expect(page).to have_content('Some of your boards are hidden, activate a license to see them again.')
     end
   end
 end
