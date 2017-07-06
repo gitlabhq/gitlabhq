@@ -19,10 +19,11 @@
         ":data-name" => "assignee.name",
         ":data-username" => "assignee.username" }
       .dropdown
-        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: "button", ref: "assigneeDropdown", data: { toggle: "dropdown", field_name: "issue[assignee_ids][]", first_user: (current_user.username if current_user), current_user: "true", project_id: @project.id, null_user: "true", multi_select: "true", dropdown: { header: 'Assignee(s)'} },
+        - dropdown_options = issue_assignees_dropdown_options
+        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: 'button', ref: 'assigneeDropdown', data: { toggle: 'dropdown', field_name: 'issue[assignee_ids][]', first_user: current_user&.username, current_user: 'true', project_id: @project.id, null_user: 'true', multi_select: 'true', 'dropdown-header': dropdown_options[:data][:'dropdown-header'], 'max-select': dropdown_options[:data][:'max-select'] },
           ":data-issuable-id" => "issue.id",
-          ":data-issue-update" => "'#{namespace_project_issues_path(@project.namespace, @project)}/' + issue.id + '.json'" }
-          Select assignee(s)
+          ":data-issue-update" => "'#{project_issues_path(@project)}/' + issue.id + '.json'" }
+          = dropdown_options[:title]
           = icon("chevron-down")
         .dropdown-menu.dropdown-select.dropdown-menu-user.dropdown-menu-selectable.dropdown-menu-author
           = dropdown_title("Assign to")

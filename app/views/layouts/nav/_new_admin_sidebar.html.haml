@@ -90,11 +90,26 @@
           Abuse Reports
           %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
 
+    = nav_link(controller: :licenses) do
+      = link_to admin_license_path, title: 'License' do
+        %span
+          License
+
     - if akismet_enabled?
       = nav_link(controller: :spam_logs) do
         = link_to admin_spam_logs_path, title: "Spam Logs" do
           %span
             Spam Logs
+
+    = nav_link(controller: :push_rules) do
+      = link_to admin_push_rule_path, title: 'Push Rules' do
+        %span
+          Push Rules
+
+    = nav_link(controller: :geo_nodes) do
+      = link_to admin_geo_nodes_path, title: 'Geo Nodes' do
+        %span
+          Geo Nodes
 
     = nav_link(controller: :deploy_keys) do
       = link_to admin_deploy_keys_path, title: 'Deploy Keys' do

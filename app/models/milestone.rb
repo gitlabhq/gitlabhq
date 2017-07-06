@@ -25,7 +25,7 @@ class Milestone < ActiveRecord::Base
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
-  has_many :events, as: :target, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }

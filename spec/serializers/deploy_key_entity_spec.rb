@@ -29,7 +29,7 @@ describe DeployKeyEntity do
           {
             id: project.id,
             name: project.name,
-            full_path: namespace_project_path(project.namespace, project),
+            full_path: project_path(project),
             full_name: project.full_name
           }
         ]

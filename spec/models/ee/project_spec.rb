@@ -27,6 +27,34 @@ describe Project, models: true do
     end
   end
 
+  describe "#execute_hooks" do
+    context "group hooks" do
+      let(:group) { create(:group) }
+      let(:project) { create(:empty_project, namespace: group) }
+      let(:group_hook) { create(:group_hook, group: group, push_events: true) }
+
+      it 'executes the hook when the feature is enabled' do
+        stub_licensed_features(group_webhooks: true)
+
+        fake_service = double
+        expect(WebHookService).to receive(:new)
+                                    .with(group_hook, { some: 'info' }, 'push_hooks') { fake_service }
+        expect(fake_service).to receive(:async_execute)
+
+        project.execute_hooks(some: 'info')
+      end
+
+      it 'does not execute the hook when the feature is disabled' do
+        stub_licensed_features(group_webhooks: false)
+
+        expect(WebHookService).not_to receive(:new)
+                                        .with(group_hook, { some: 'info' }, 'push_hooks')
+
+        project.execute_hooks(some: 'info')
+      end
+    end
+  end
+
   describe '#feature_available?' do
     let(:namespace) { build_stubbed(:namespace) }
     let(:project) { build_stubbed(:project, namespace: namespace) }
@@ -311,6 +339,172 @@ describe Project, models: true do
     end
   end
 
+  describe '#secret_variables_for' do
+    let(:project) { create(:empty_project) }
+
+    let!(:secret_variable) do
+      create(:ci_variable, value: 'secret', project: project)
+    end
+
+    let!(:protected_variable) do
+      create(:ci_variable, :protected, value: 'protected', project: project)
+    end
+
+    subject { project.secret_variables_for(ref: 'ref') }
+
+    before do
+      stub_application_setting(
+        default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    end
+
+    context 'when environment is specified' do
+      let(:environment) { create(:environment, name: 'review/name') }
+
+      subject do
+        project.secret_variables_for(ref: 'ref', environment: environment)
+      end
+
+      shared_examples 'matching environment scope' do
+        context 'when variable environment scope is available' do
+          before do
+            stub_licensed_features(variable_environment_scope: true)
+          end
+
+          it 'contains the secret variable' do
+            is_expected.to contain_exactly(secret_variable)
+          end
+        end
+
+        context 'when variable environment scope is unavailable' do
+          before do
+            stub_licensed_features(variable_environment_scope: false)
+          end
+
+          it 'does not contain the secret variable' do
+            is_expected.not_to contain_exactly(secret_variable)
+          end
+        end
+      end
+
+      shared_examples 'not matching environment scope' do
+        context 'when variable environment scope is available' do
+          before do
+            stub_licensed_features(variable_environment_scope: true)
+          end
+
+          it 'does not contain the secret variable' do
+            is_expected.not_to contain_exactly(secret_variable)
+          end
+        end
+
+        context 'when variable environment scope is unavailable' do
+          before do
+            stub_licensed_features(variable_environment_scope: false)
+          end
+
+          it 'does not contain the secret variable' do
+            is_expected.not_to contain_exactly(secret_variable)
+          end
+        end
+      end
+
+      context 'when environment scope is exactly matched' do
+        before do
+          secret_variable.update(environment_scope: 'review/name')
+        end
+
+        it_behaves_like 'matching environment scope'
+      end
+
+      context 'when environment scope is matched by wildcard' do
+        before do
+          secret_variable.update(environment_scope: 'review/*')
+        end
+
+        it_behaves_like 'matching environment scope'
+      end
+
+      context 'when environment scope does not match' do
+        before do
+          secret_variable.update(environment_scope: 'review/*/special')
+        end
+
+        it_behaves_like 'not matching environment scope'
+      end
+
+      context 'when environment scope has _' do
+        before do
+          stub_licensed_features(variable_environment_scope: true)
+        end
+
+        it 'does not treat it as wildcard' do
+          secret_variable.update(environment_scope: '*_*')
+
+          is_expected.not_to contain_exactly(secret_variable)
+        end
+
+        it 'matches literally for _' do
+          secret_variable.update(environment_scope: 'foo_bar/*')
+          environment.update(name: 'foo_bar/test')
+
+          is_expected.to contain_exactly(secret_variable)
+        end
+      end
+
+      # The environment name and scope cannot have % at the moment,
+      # but we're considering relaxing it and we should also make sure
+      # it doesn't break in case some data sneaked in somehow as we're
+      # not checking this integrity in database level.
+      context 'when environment scope has %' do
+        before do
+          stub_licensed_features(variable_environment_scope: true)
+        end
+
+        it 'does not treat it as wildcard' do
+          secret_variable.update_attribute(:environment_scope, '*%*')
+
+          is_expected.not_to contain_exactly(secret_variable)
+        end
+
+        it 'matches literally for _' do
+          secret_variable.update(environment_scope: 'foo%bar/*')
+          environment.update_attribute(:name, 'foo%bar/test')
+
+          is_expected.to contain_exactly(secret_variable)
+        end
+      end
+
+      context 'when variables with the same name have different environment scopes' do
+        let!(:partially_matched_variable) do
+          create(:ci_variable,
+                 key: secret_variable.key,
+                 value: 'partial',
+                 environment_scope: 'review/*',
+                 project: project)
+        end
+
+        let!(:perfectly_matched_variable) do
+          create(:ci_variable,
+                 key: secret_variable.key,
+                 value: 'prefect',
+                 environment_scope: 'review/name',
+                 project: project)
+        end
+
+        before do
+          stub_licensed_features(variable_environment_scope: true)
+        end
+
+        it 'puts variables matching environment scope more in the end' do
+          is_expected.to eq(
+            [secret_variable,
+             partially_matched_variable,
+             perfectly_matched_variable])
+        end
+      end
+    end
+  end
+
   describe '#approvals_before_merge' do
     [
       { license: true,  database: 5,  expected: 5 },
@@ -407,6 +601,39 @@ describe Project, models: true do
         end
 
         it { is_expected.to eq(spec[:method]) }
+      end
+    end
+  end
+
+  describe '#rename_repo' do
+    context 'when running on a primary node' do
+      let!(:geo_node) { create(:geo_node, :primary, :current) }
+      let(:project) { create(:project, :repository) }
+      let(:gitlab_shell) { Gitlab::Shell.new }
+
+      before do
+        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+      end
+
+      it 'logs the Geo::RepositoryRenamedEvent' do
+        stub_container_registry_config(enabled: false)
+
+        allow(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+          .and_return(true)
+
+        allow(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+          .and_return(true)
+
+        expect(Geo::RepositoryRenamedEventStore).to receive(:new)
+          .with(instance_of(Project), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
+          .and_call_original
+
+        expect { project.rename_repo }.to change(Geo::RepositoryRenamedEvent, :count).by(1)
       end
     end
   end

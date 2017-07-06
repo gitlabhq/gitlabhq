@@ -3,7 +3,7 @@ require_relative '../model_helpers'
 module RuboCop
   module Cop
     # Cop that prevents the use of `serialize` in ActiveRecord models.
-    class ActiverecordSerialize < RuboCop::Cop::Cop
+    class ActiveRecordSerialize < RuboCop::Cop::Cop
       include ModelHelpers
 
       MSG = 'Do not store serialized data in the database, use separate columns and/or tables instead'.freeze

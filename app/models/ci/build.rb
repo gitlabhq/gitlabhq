@@ -22,8 +22,8 @@ module Ci
       )
     end
 
-    serialize :options # rubocop:disable Cop/ActiverecordSerialize
-    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiverecordSerialize
+    serialize :options # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
     delegate :name, to: :project, prefix: true
 
@@ -187,6 +187,12 @@ module Ci
 
     # Variables whose value does not depend on environment
     def simple_variables
+      variables(environment: nil)
+    end
+
+    # All variables, including those dependent on environment, which could
+    # contain unexpanded variables.
+    def variables(environment: persisted_environment)
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
@@ -195,15 +201,11 @@ module Ci
       variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
-      variables += project.secret_variables_for(ref).map(&:to_runner_variable)
+      variables += secret_variables(environment: environment)
       variables += trigger_request.user_variables if trigger_request
-      variables
-    end
+      variables += persisted_environment_variables if environment
 
-    # All variables, including those dependent on environment, which could
-    # contain unexpanded variables.
-    def variables
-      simple_variables.concat(persisted_environment_variables)
+      variables
     end
 
     def merge_request
@@ -379,6 +381,11 @@ module Ci
         { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
         { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
       ]
+    end
+
+    def secret_variables(environment: persisted_environment)
+      project.secret_variables_for(ref: ref, environment: environment)
+        .map(&:to_runner_variable)
     end
 
     def steps

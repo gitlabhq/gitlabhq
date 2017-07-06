@@ -19,7 +19,7 @@ feature 'Milestones sorting', :feature, :js do
   end
 
   scenario 'visit project milestones and sort by due_date_asc' do
-    visit namespace_project_milestones_path(project.namespace, project)
+    visit project_milestones_path(project)
 
     expect(page).to have_button('Due soon')
 

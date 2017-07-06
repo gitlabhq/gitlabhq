@@ -15,22 +15,24 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_many :approvals, dependent: :destroy
-  has_many :approvers, as: :target, dependent: :destroy
-  has_many :approver_groups, as: :target, dependent: :destroy
-  has_many :merge_request_diffs, dependent: :destroy
+  has_many :approvals, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :approvers, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :approver_groups, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :merge_request_diffs
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }
 
   belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
 
-  has_many :events, as: :target, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+  has_many :merge_requests_closing_issues,
+    class_name: 'MergeRequestsClosingIssues',
+    dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   belongs_to :assignee, class_name: "User"
 
-  serialize :merge_params, Hash # rubocop:disable Cop/ActiverecordSerialize
+  serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
@@ -207,9 +209,17 @@ class MergeRequest < ActiveRecord::Base
     }
   end
 
-  # This method is needed for compatibility with issues to not mess view and other code
+  # These method are needed for compatibility with issues to not mess view and other code
   def assignees
     Array(assignee)
+  end
+
+  def assignee_ids
+    Array(assignee_id)
+  end
+
+  def assignee_ids=(ids)
+    write_attribute(:assignee_id, ids.last)
   end
 
   def assignee_or_author?(user)

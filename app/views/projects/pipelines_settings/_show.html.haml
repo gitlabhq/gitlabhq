@@ -3,7 +3,7 @@
     %h4.prepend-top-0
       Pipelines
   .col-lg-8
-    = form_for @project, url: namespace_project_pipelines_settings_path(@project.namespace.becomes(Namespace), @project) do |f|
+    = form_for @project, url: project_pipelines_settings_path(@project) do |f|
       %fieldset.builds-feature
         - unless @repository.gitlab_ci_yml
           .form-group

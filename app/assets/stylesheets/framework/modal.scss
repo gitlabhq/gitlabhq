@@ -21,3 +21,9 @@ body.modal-open {
     width: 860px;
   }
 }
+
+@media (min-width: $screen-lg-min) {
+  .modal-full {
+    width: 98%;
+  }
+}

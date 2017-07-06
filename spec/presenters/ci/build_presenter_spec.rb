@@ -85,7 +85,7 @@ describe Ci::BuildPresenter do
 
   describe 'quack like a Ci::Build permission-wise' do
     context 'user is not allowed' do
-      let(:project) { build_stubbed(:empty_project, public_builds: false) }
+      let(:project) { create(:empty_project, public_builds: false) }
 
       it 'returns false' do
         expect(presenter.can?(nil, :read_build)).to be_falsy
@@ -93,7 +93,7 @@ describe Ci::BuildPresenter do
     end
 
     context 'user is allowed' do
-      let(:project) { build_stubbed(:empty_project, :public) }
+      let(:project) { create(:empty_project, :public) }
 
       it 'returns true' do
         expect(presenter.can?(nil, :read_build)).to be_truthy

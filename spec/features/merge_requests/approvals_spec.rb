@@ -13,7 +13,7 @@ feature 'Merge request approvals', js: true, feature: true do
       project.add_developer(author)
 
       gitlab_sign_in(user)
-      visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit edit_project_merge_request_path(project, merge_request)
 
       find('#s2id_merge_request_approver_ids .select2-input').click
     end
@@ -40,7 +40,7 @@ feature 'Merge request approvals', js: true, feature: true do
       project.add_developer(other_user)
 
       gitlab_sign_in(user)
-      visit namespace_project_new_merge_request_path(forked_project.namespace, forked_project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+      visit project_new_merge_request_path(forked_project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
       find('#s2id_merge_request_approver_ids .select2-input').click
     end
@@ -73,7 +73,7 @@ feature 'Merge request approvals', js: true, feature: true do
         group = create :group
         group.add_developer(other_user)
 
-        visit namespace_project_new_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+        visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
         find('#s2id_merge_request_approver_group_ids .select2-input').click
 
         wait_for_requests
@@ -95,7 +95,7 @@ feature 'Merge request approvals', js: true, feature: true do
         create :approver_group, group: group, target: project
         create :approver, user: approver, target: project
 
-        visit namespace_project_new_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+        visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
         within('.approver-list li.approver-group') do
           click_on "Remove"
@@ -128,7 +128,7 @@ feature 'Merge request approvals', js: true, feature: true do
         group.add_developer(other_user)
         group.add_developer(user)
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_project_merge_request_path(project, merge_request)
         find('#s2id_merge_request_approver_group_ids .select2-input').click
 
         wait_for_requests
@@ -150,7 +150,7 @@ feature 'Merge request approvals', js: true, feature: true do
         create :approver_group, group: group, target: project
         create :approver, user: approver, target: project
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_project_merge_request_path(project, merge_request)
 
         within('.approver-list li.approver-group') do
           click_on "Remove"
@@ -168,7 +168,7 @@ feature 'Merge request approvals', js: true, feature: true do
       it 'allows changing approvals number' do
         create_list :approver, 3, target: project
 
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
 
         # project setting in the beginning on the show MR page
         find('.approvals-components')
@@ -211,7 +211,7 @@ feature 'Merge request approvals', js: true, feature: true do
     context 'when group is assigned to a project', js: true do
       before do
         create :approver_group, group: group, target: project
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
       end
 
       it 'I am able to approve' do
@@ -230,7 +230,7 @@ feature 'Merge request approvals', js: true, feature: true do
     context 'when group is assigned to a merge request', js: true do
       before do
         create :approver_group, group: group, target: merge_request
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
       end
 
       it 'I am able to approve' do
@@ -252,7 +252,7 @@ feature 'Merge request approvals', js: true, feature: true do
         create :approver_group, group: group, target: merge_request
         pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
         merge_request.update(head_pipeline: pipeline)
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
       end
 
       it 'I am unable to set Merge when pipeline succeeds' do
@@ -278,7 +278,7 @@ feature 'Merge request approvals', js: true, feature: true do
       project.add_developer(user)
       gitlab_sign_in(user)
 
-      visit namespace_project_new_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
       click_button 'Submit merge request'
     end

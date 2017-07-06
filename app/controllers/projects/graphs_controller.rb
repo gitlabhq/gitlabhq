@@ -29,7 +29,7 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def ci
-    redirect_to charts_namespace_project_pipelines_path(@project.namespace, @project)
+    redirect_to charts_project_pipelines_path(@project)
   end
 
   private

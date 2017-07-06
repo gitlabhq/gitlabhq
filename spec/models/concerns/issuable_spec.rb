@@ -155,7 +155,7 @@ describe Issuable do
   end
 
   describe "#sort" do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { create(:empty_project) }
 
     context "by weight" do
       let!(:issue)  { create(:issue, project: project) }

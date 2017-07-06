@@ -64,7 +64,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     @environment = project.environments.create(environment_params)
 
     if @environment.persisted?
-      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+      redirect_to project_environment_path(project, @environment)
     else
       render :new
     end
@@ -72,7 +72,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def update
     if @environment.update(environment_params)
-      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+      redirect_to project_environment_path(project, @environment)
     else
       render :edit
     end
@@ -87,7 +87,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       if stop_action
         polymorphic_url([project.namespace.becomes(Namespace), project, stop_action])
       else
-        namespace_project_environment_url(project.namespace, project, @environment)
+        project_environment_url(project, @environment)
       end
 
     respond_to do |format|

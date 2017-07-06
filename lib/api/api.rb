@@ -2,6 +2,8 @@ module API
   class API < Grape::API
     include APIGuard
 
+    allow_access_with_scope :api
+
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
@@ -48,7 +50,6 @@ module API
       mount ::API::V3::Variables
     end
 
-    before { allow_access_with_scope :api }
     before { header['X-Frame-Options'] = 'SAMEORIGIN' }
     before { Gitlab::I18n.locale = current_user&.preferred_language }
 

@@ -14,7 +14,7 @@
         = icon("refresh")
         Update Now
     - else
-      = link_to update_now_namespace_project_mirror_path(@project.namespace, @project), method: :post, class: 'btn' do
+      = link_to update_now_project_mirror_path(@project), method: :post, class: 'btn' do
         = icon("refresh")
         Update Now
     - if @project.mirror_last_update_success?

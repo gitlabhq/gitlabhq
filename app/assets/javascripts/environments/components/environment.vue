@@ -33,7 +33,6 @@ export default {
       state: store.state,
       visibility: 'available',
       isLoading: false,
-      isLoadingFolderContent: false,
       cssContainerClass: environmentsData.cssClass,
       endpoint: environmentsData.environmentsDataEndpoint,
       canCreateDeployment: environmentsData.canCreateDeployment,
@@ -97,9 +96,6 @@ export default {
       errorCallback: this.errorCallback,
       notificationCallback: (isMakingRequest) => {
         this.isMakingRequest = isMakingRequest;
-
-        // We need to verify if any folder is open to also fecth it
-        this.openFolders = this.store.getOpenFolders();
       },
     });
 
@@ -118,11 +114,13 @@ export default {
 
     eventHub.$on('toggleFolder', this.toggleFolder);
     eventHub.$on('postAction', this.postAction);
+    eventHub.$on('toggleDeployBoard', this.toggleDeployBoard);
   },
 
   beforeDestroy() {
     eventHub.$off('toggleFolder');
     eventHub.$off('postAction');
+    eventHub.$off('toggleDeployBoard');
   },
 
   methods: {
@@ -134,14 +132,18 @@ export default {
      * @return {Object}
      */
     toggleDeployBoard(model) {
-      return this.store.toggleDeployBoard(model.id);
+      this.store.toggleDeployBoard(model.id);
+
+      if (!model.isDeployboardVisible) {
+        this.fetchDeployBoard(model, true);
+      }
     },
 
     toggleFolder(folder, folderUrl) {
       this.store.toggleFolder(folder);
 
       if (!folder.isOpen) {
-        this.fetchChildEnvironments(folder, folderUrl);
+        this.fetchChildEnvironments(folder, folderUrl, true);
       }
     },
 
@@ -169,19 +171,17 @@ export default {
         .catch(this.errorCallback);
     },
 
-    fetchChildEnvironments(folder, folderUrl) {
-      this.isLoadingFolderContent = true;
+    fetchChildEnvironments(folder, folderUrl, showLoader = false) {
+      this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
 
       this.service.getFolderContent(folderUrl)
         .then(resp => resp.json())
-        .then((response) => {
-          this.store.setfolderContent(folder, response.environments);
-          this.isLoadingFolderContent = false;
-        })
+        .then(response => this.store.setfolderContent(folder, response.environments))
+        .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
         .catch(() => {
-          this.isLoadingFolderContent = false;
           // eslint-disable-next-line no-new
           new Flash('An error occurred while fetching the environments.');
+          this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false);
         });
     },
 
@@ -198,15 +198,20 @@ export default {
     successCallback(resp) {
       this.saveData(resp);
 
-      // If folders are open while polling we need to open them again
-      if (this.openFolders.length) {
-        this.openFolders.map((folder) => {
+      // We need to verify if any folder is open to also update it
+      const openFolders = this.store.getOpenFolders();
+      if (openFolders.length) {
+        openFolders.forEach((folder) => {
           // TODO - Move this to the backend
           const folderUrl = `${window.location.pathname}/folders/${folder.folderName}`;
 
-          this.store.updateFolder(folder, 'isOpen', true);
           return this.fetchChildEnvironments(folder, folderUrl);
         });
+      }
+
+      const openDeployBoards = this.store.getOpenDeployBoards();
+      if (openDeployBoards.length) {
+        openDeployBoards.forEach(env => this.fetchDeployBoard(env));
       }
     },
 
@@ -214,6 +219,23 @@ export default {
       this.isLoading = false;
       // eslint-disable-next-line no-new
       new Flash('An error occurred while fetching the environments.');
+    },
+
+    fetchDeployBoard(environment, showLoader = false) {
+      this.store.updateEnvironmentProp(environment, 'isLoadingDeployBoard', showLoader);
+
+      this.service.getDeployBoard(environment.rollout_status_path)
+        .then(resp => resp.json())
+        .then((data) => {
+          this.store.storeDeployBoard(environment.id, data);
+          this.store.updateEnvironmentProp(environment, 'isLoadingDeployBoard', false);
+        })
+        .catch(() => {
+          this.store.updateEnvironmentProp(environment, 'isLoadingDeployBoard', false);
+          this.store.updateEnvironmentProp(environment, 'hasErrorDeployBoard', true);
+          // eslint-disable-next-line no-new
+          new Flash('An error occurred while fetching the deploy board.');
+        });
     },
   },
 };
@@ -289,10 +311,7 @@ export default {
           :environments="state.environments"
           :can-create-deployment="canCreateDeploymentParsed"
           :can-read-environment="canReadEnvironmentParsed"
-          :toggleDeployBoard="toggleDeployBoard"
-          :store="store"
-          :service="service"
-          :is-loading-folder-content="isLoadingFolderContent" />
+          />
       </div>
 
       <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

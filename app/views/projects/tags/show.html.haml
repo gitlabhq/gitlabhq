@@ -19,17 +19,17 @@
 
     .nav-controls.controls-flex
       - if can?(current_user, :push_code, @project)
-        = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn controls-item has-tooltip', title: 'Edit release notes' do
+        = link_to edit_project_tag_release_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: 'Edit release notes' do
           = icon("pencil")
-      = link_to namespace_project_tree_path(@project.namespace, @project, @tag.name), class: 'btn controls-item has-tooltip', title: 'Browse files' do
+      = link_to project_tree_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: 'Browse files' do
         = icon('files-o')
-      = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn controls-item has-tooltip', title: 'Browse commits' do
+      = link_to project_commits_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: 'Browse commits' do
         = icon('history')
       .btn-container.controls-item
         = render 'projects/buttons/download', project: @project, ref: @tag.name
       - if can?(current_user, :admin_project, @project)
         .btn-container.controls-item-full
-          = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: "btn btn-remove remove-row has-tooltip #{protected_tag?(@project, @tag) ? 'disabled' : ''}", title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{@tag.name}' tag cannot be undone. Are you sure?" } do
+          = link_to project_tag_path(@project, @tag.name), class: "btn btn-remove remove-row has-tooltip #{protected_tag?(@project, @tag) ? 'disabled' : ''}", title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{@tag.name}' tag cannot be undone. Are you sure?" } do
             %i.fa.fa-trash-o
 
     - if @tag.message.present?

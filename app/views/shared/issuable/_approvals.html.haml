@@ -41,7 +41,7 @@
                       = icon("sign-out")
                       Remove
                   - else
-                    = link_to namespace_project_merge_request_approver_path(@project.namespace, @project, issuable, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                    = link_to project_merge_request_approver_path(@project, issuable, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
                       = icon("sign-out")
                       Remove
           - issuable.overall_approver_groups.each do |approver_group|
@@ -55,7 +55,7 @@
                       = icon("sign-out")
                       Remove
                   - else
-                    = link_to namespace_project_merge_request_approver_group_path(@project.namespace, @project, issuable, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove group' do
+                    = link_to project_merge_request_approver_group_path(@project, issuable, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove group' do
                       = icon("sign-out")
                       Remove
 

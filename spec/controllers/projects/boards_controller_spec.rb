@@ -247,7 +247,7 @@ describe Projects::BoardsController do
       it 'redirects to the issue boards page' do
         remove_board board: board
 
-        expect(response).to redirect_to(namespace_project_boards_path(project.namespace, project))
+        expect(response).to redirect_to(project_boards_path(project))
       end
 
       it 'removes board from project' do

@@ -210,6 +210,10 @@ describe MergeRequests::MergeService, services: true do
       end
 
       context 'when squashing' do
+        before do
+          merge_request.update!(source_branch: 'master', target_branch: 'feature')
+        end
+
         it 'logs and saves error if there is an error when squashing' do
           error_message = 'Failed to squash. Should be done manually'
 

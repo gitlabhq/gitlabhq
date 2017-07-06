@@ -36,7 +36,7 @@ class Projects::PathLocksController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to namespace_project_locks_path(@project.namespace, @project), status: 302
+        redirect_to project_locks_path(@project), status: 302
       end
       format.js
     end

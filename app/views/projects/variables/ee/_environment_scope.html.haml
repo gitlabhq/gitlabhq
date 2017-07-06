@@ -1,0 +1,8 @@
+- if @project.feature_available?(:variable_environment_scope)
+  .form-group
+    = f.label :environment_scope, "Environment scope", class: "label-light"
+    = f.text_field :environment_scope, class: "form-control", placeholder: "*"
+    .help-block
+      This variable will be passed only to jobs with a matching environment name.
+      <code>*</code> is a wildcard that matches all environments (existing or not).
+      = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'limiting-environment-scopes-of-secret-variables'), target: '_blank'

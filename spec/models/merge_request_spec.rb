@@ -10,8 +10,8 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to belong_to(:assignee) }
-    it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
-    it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
+    it { is_expected.to have_many(:merge_request_diffs) }
+    it { is_expected.to have_many(:approver_groups).dependent(:delete_all) }
   end
 
   describe 'modules' do
@@ -103,6 +103,22 @@ describe MergeRequest, models: true do
 
       expect(subject.card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+    end
+  end
+
+  describe '#assignee_ids' do
+    it 'returns an array of the assigned user id' do
+      subject.assignee_id = 123
+
+      expect(subject.assignee_ids).to eq([123])
+    end
+  end
+
+  describe '#assignee_ids=' do
+    it 'sets assignee_id to the last id in the array' do
+      subject.assignee_ids = [123, 456]
+
+      expect(subject.assignee_id).to eq(456)
     end
   end
 

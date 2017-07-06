@@ -10,6 +10,7 @@ class License < ActiveRecord::Base
   FAST_FORWARD_MERGE_FEATURE = 'GitLab_FastForwardMerge'.freeze
   FILE_LOCK_FEATURE = 'GitLab_FileLocks'.freeze
   GEO_FEATURE = 'GitLab_Geo'.freeze
+  GROUP_WEBHOOKS_FEATURE = 'GroupWebhooks'.freeze
   ISSUABLE_DEFAULT_TEMPLATES_FEATURE = 'GitLab_IssuableDefaultTemplates'.freeze
   ISSUE_BOARDS_FOCUS_MODE_FEATURE = 'IssueBoardsFocusMode'.freeze
   ISSUE_BOARD_MILESTONE_FEATURE = 'IssueBoardMilestone'.freeze
@@ -17,10 +18,12 @@ class License < ActiveRecord::Base
   MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
   MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
+  MULTIPLE_ISSUE_ASSIGNEES_FEATURE = 'GitLab_MultipleIssueAssignees'.freeze
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   PUSH_RULES_FEATURE = 'GitLab_PushRules'.freeze
   RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
+  VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'VariableEnvironmentScope'.freeze
 
   FEATURE_CODES = {
     auditor_user: AUDITOR_USER_FEATURE,
@@ -29,6 +32,7 @@ class License < ActiveRecord::Base
     object_storage: OBJECT_STORAGE_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
     service_desk: SERVICE_DESK_FEATURE,
+    variable_environment_scope: VARIABLE_ENVIRONMENT_SCOPE_FEATURE,
 
     # Features that make sense to Namespace:
     burndown_charts: BURNDOWN_CHARTS_FEATURE,
@@ -37,6 +41,7 @@ class License < ActiveRecord::Base
     export_issues: EXPORT_ISSUES_FEATURE,
     fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
     file_lock: FILE_LOCK_FEATURE,
+    group_webhooks: GROUP_WEBHOOKS_FEATURE,
     issuable_default_templates: ISSUABLE_DEFAULT_TEMPLATES_FEATURE,
     issue_board_focus_mode: ISSUE_BOARDS_FOCUS_MODE_FEATURE,
     issue_board_milestone: ISSUE_BOARD_MILESTONE_FEATURE,
@@ -44,6 +49,7 @@ class License < ActiveRecord::Base
     merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
     merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
     merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE,
+    multiple_issue_assignees: MULTIPLE_ISSUE_ASSIGNEES_FEATURE,
     push_rules: PUSH_RULES_FEATURE
   }.freeze
 
@@ -58,6 +64,7 @@ class License < ActiveRecord::Base
     { ELASTIC_SEARCH_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
     { FAST_FORWARD_MERGE_FEATURE => 1 },
+    { GROUP_WEBHOOKS_FEATURE => 1 },
     { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
     { ISSUE_BOARDS_FOCUS_MODE_FEATURE => 1 },
     { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
@@ -65,6 +72,7 @@ class License < ActiveRecord::Base
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },
+    { MULTIPLE_ISSUE_ASSIGNEES_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
     { RELATED_ISSUES_FEATURE => 1 }
   ].freeze
@@ -76,7 +84,8 @@ class License < ActiveRecord::Base
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 }
+    { SERVICE_DESK_FEATURE => 1 },
+    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 }
   ].freeze
 
   EEU_FEATURES = [
@@ -99,6 +108,7 @@ class License < ActiveRecord::Base
     { FAST_FORWARD_MERGE_FEATURE => 1 },
     { FILE_LOCK_FEATURE => 1 },
     { GEO_FEATURE => 1 },
+    { GROUP_WEBHOOKS_FEATURE => 1 },
     { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
     { ISSUE_BOARDS_FOCUS_MODE_FEATURE => 1 },
     { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
@@ -106,6 +116,7 @@ class License < ActiveRecord::Base
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },
+    { MULTIPLE_ISSUE_ASSIGNEES_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 }

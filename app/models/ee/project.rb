@@ -24,17 +24,17 @@ module EE
 
       belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
-      has_one :mirror_data, dependent: :delete, autosave: true, class_name: 'ProjectMirrorData'
-      has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }, dependent: :destroy
-      has_one :index_status, dependent: :destroy
-      has_one :jenkins_service, dependent: :destroy
-      has_one :jenkins_deprecated_service, dependent: :destroy
+      has_one :mirror_data, autosave: true, class_name: 'ProjectMirrorData'
+      has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }
+      has_one :index_status
+      has_one :jenkins_service
+      has_one :jenkins_deprecated_service
 
-      has_many :approvers, as: :target, dependent: :destroy
-      has_many :approver_groups, as: :target, dependent: :destroy
-      has_many :audit_events, as: :entity, dependent: :destroy
-      has_many :remote_mirrors, inverse_of: :project, dependent: :destroy
-      has_many :path_locks, dependent: :destroy
+      has_many :approvers, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :approver_groups, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :audit_events, as: :entity, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :remote_mirrors, inverse_of: :project
+      has_many :path_locks
 
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
@@ -214,6 +214,56 @@ module EE
       end
     end
 
+    def secret_variables_for(ref:, environment: nil)
+      return super.where(environment_scope: '*') unless
+        environment && feature_available?(:variable_environment_scope)
+
+      query = super
+
+      where = <<~SQL
+        environment_scope IN (:wildcard, :environment_name) OR
+          :environment_name LIKE
+            #{::Gitlab::SQL::Glob.to_like('environment_scope')}
+      SQL
+
+      order = <<~SQL
+        CASE environment_scope
+          WHEN %{wildcard} THEN 0
+          WHEN %{environment_name} THEN 2
+          ELSE 1
+        END
+      SQL
+
+      values = {
+        wildcard: '*',
+        environment_name: environment.name
+      }
+
+      quoted_values =
+        values.transform_values(&self.class.connection.method(:quote))
+
+      # The query is trying to find variables with scopes matching the
+      # current environment name. Suppose the environment name is
+      # 'review/app', and we have variables with environment scopes like:
+      # * variable A: review
+      # * variable B: review/app
+      # * variable C: review/*
+      # * variable D: *
+      # And the query should find variable B, C, and D, because it would
+      # try to convert the scope into a LIKE pattern for each variable:
+      # * A: review
+      # * B: review/app
+      # * C: review/%
+      # * D: %
+      # Note that we'll match % and _ literally therefore we'll escape them.
+      # In this case, B, C, and D would match. We also want to prioritize
+      # the exact matched name, and put * last, and everything else in the
+      # middle. So the order should be: D < C < B
+      query
+        .where(where, values)
+        .order(order % quoted_values) # `order` cannot escape for us!
+    end
+
     def cache_has_external_issue_tracker
       super unless ::Gitlab::Geo.secondary?
     end
@@ -225,7 +275,7 @@ module EE
     def execute_hooks(data, hooks_scope = :push_hooks)
       super
 
-      if group
+      if group && feature_available?(:group_webhooks)
         group.hooks.send(hooks_scope).each do |hook|
           hook.async_execute(data, hooks_scope.to_s)
         end
@@ -235,7 +285,7 @@ module EE
     # No need to have a Kerberos Web url. Kerberos URL will be used only to
     # clone
     def kerberos_url_to_repo
-      "#{::Gitlab.config.build_gitlab_kerberos_url + ::Gitlab::Application.routes.url_helpers.namespace_project_path(self.namespace, self)}.git"
+      "#{::Gitlab.config.build_gitlab_kerberos_url + ::Gitlab::Routing.url_helpers.project_path(self)}.git"
     end
 
     def group_ldap_synced?
@@ -379,6 +429,21 @@ module EE
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
+    def rename_repo
+      raise NotImplementedError unless defined?(super)
+
+      super
+
+      path_was = previous_changes['path'].first
+      old_path_with_namespace = File.join(namespace.full_path, path_was)
+
+      ::Geo::RepositoryRenamedEventStore.new(
+        self,
+        old_path: path_was,
+        old_path_with_namespace: old_path_with_namespace
+      ).create
+    end
+
     private
 
     def licensed_feature_available?(feature)
@@ -402,6 +467,10 @@ module EE
 
     def destroy_mirror_data
       mirror_data.destroy
+    end
+
+    def validate_board_limit(board)
+      # Board limits are disabled in EE, so this method is just a no-op.
     end
   end
 end

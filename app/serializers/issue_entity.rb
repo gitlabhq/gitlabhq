@@ -12,6 +12,6 @@ class IssueEntity < IssuableEntity
   expose :labels, using: LabelEntity
 
   expose :web_url do |issue|
-    namespace_project_issue_path(issue.project.namespace, issue.project, issue)
+    project_issue_path(issue.project, issue)
   end
 end
