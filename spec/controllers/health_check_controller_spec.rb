@@ -46,8 +46,6 @@ describe HealthCheckController do
     end
 
     context 'when services are up and accessed from whitelisted ips' do
-      let(:ip) { '127.0.0.1' }
-
       before do
         allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
       end

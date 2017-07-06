@@ -4,6 +4,7 @@ describe HealthController do
   include StubENV
 
   let(:json_response) { JSON.parse(response.body) }
+  let(:token) { current_application_settings.health_check_access_token }
   let(:whitelisted_ip) { '127.0.0.1' }
   let(:not_whitelisted_ip) { '127.0.0.2' }
 
@@ -13,13 +14,11 @@ describe HealthController do
   end
 
   describe '#readiness' do
-    context 'accessed from whitelisted ip' do
-      before do
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
-      end
+    shared_context 'endpoint responding with readiness data' do
+      subject { get :readiness }
 
-      it 'returns proper response' do
-        get :readiness
+      it 'responds with readiness checks data' do
+        subject
 
         expect(json_response['db_check']['status']).to eq('ok')
         expect(json_response['redis_check']['status']).to eq('ok')
@@ -28,27 +27,49 @@ describe HealthController do
       end
     end
 
-    context 'accessed from not whitelisted ip' do
-      before do
-        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(not_whitelisted_ip)
-      end
-
-      it 'returns proper response' do
-        get :readiness
-
-        expect(response.status).to eq(404)
-      end
-    end
-  end
-
-  describe '#liveness' do
     context 'accessed from whitelisted ip' do
       before do
         allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
       end
 
-      it 'returns proper response' do
-        get :liveness
+      it_behaves_like 'endpoint responding with readiness data'
+    end
+
+    context 'accessed from not whitelisted ip' do
+      before do
+        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(not_whitelisted_ip)
+      end
+
+      it 'responds with resource not found' do
+        get :readiness
+
+        expect(response.status).to eq(404)
+      end
+
+      context 'accessed with valid token' do
+        context 'token passed in request header' do
+          before do
+            request.headers['TOKEN'] = token
+          end
+
+          it_behaves_like 'endpoint responding with readiness data'
+        end
+      end
+
+      context 'token passed as URL param' do
+        it_behaves_like 'endpoint responding with readiness data' do
+          subject { get :readiness, token: token }
+        end
+      end
+    end
+  end
+
+  describe '#liveness' do
+    shared_context 'endpoint responding with liveness data' do
+      subject { get :liveness }
+
+      it 'responds with liveness checks data' do
+        subject
 
         expect(json_response['db_check']['status']).to eq('ok')
         expect(json_response['redis_check']['status']).to eq('ok')
@@ -56,15 +77,39 @@ describe HealthController do
       end
     end
 
+    context 'accessed from whitelisted ip' do
+      before do
+        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
+      end
+
+      it_behaves_like 'endpoint responding with liveness data'
+    end
+
     context 'accessed from not whitelisted ip' do
       before do
         allow(Gitlab::RequestContext).to receive(:client_ip).and_return(not_whitelisted_ip)
       end
 
-      it 'returns proper response' do
+      it 'responds with resource not found' do
         get :liveness
 
         expect(response.status).to eq(404)
+      end
+
+      context 'accessed with valid token' do
+        context 'token passed in request header' do
+          before do
+            request.headers['TOKEN'] = token
+          end
+
+          it_behaves_like 'endpoint responding with liveness data'
+        end
+
+        context 'token passed as URL param' do
+          it_behaves_like 'endpoint responding with liveness data' do
+            subject { get :liveness, token: token }
+          end
+        end
       end
     end
   end

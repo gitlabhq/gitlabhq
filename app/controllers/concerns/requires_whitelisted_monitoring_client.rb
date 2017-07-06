@@ -1,13 +1,13 @@
 module RequiresWhitelistedMonitoringClient
   extend ActiveSupport::Concern
   included do
-    before_action :validate_ip_whitelisted_or_token_is_valid!
+    before_action :validate_ip_whitelisted_or_valid_token!
   end
 
   private
 
-  def validate_ip_whitelisted_or_token_is_valid!
-    render_404 unless client_ip_whitelisted? || token_valid?
+  def validate_ip_whitelisted_or_valid_token!
+    render_404 unless client_ip_whitelisted? || valid_token?
   end
 
   def client_ip_whitelisted?
@@ -18,7 +18,7 @@ module RequiresWhitelistedMonitoringClient
     @ip_whitelist ||= Settings.monitoring.ip_whitelist.map(&IPAddr.method(:new))
   end
 
-  def token_valid?
+  def valid_token?
     token = params[:token].presence || request.headers['TOKEN']
     token.present? &&
       ActiveSupport::SecurityUtils.variable_size_secure_compare(
