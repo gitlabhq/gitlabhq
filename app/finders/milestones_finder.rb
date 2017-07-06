@@ -1,27 +1,53 @@
-# Searchs for group milestones and project milestones.
+# Search for milestones
 #
-# Parameters
-# projects: array of projects or single project
-# groups: array of groups or single group
-# params: Search params
+# params - Hash
+#   project_ids: Array of project ids or single project id.
+#   group_ids: Array of group ids or single group id.
+#   order - Orders by field default due date asc.
+#   title - filter by title.
+#   state - filters by state.
 
 class MilestonesFinder
-  attr_reader :projects, :groups, :params, :order
+  attr_reader :params, :project_ids, :group_ids
 
-  def initialize(projects: nil, groups: nil, params: {}, order: "due_date ASC")
-    @projects = Array(projects)
-    @groups = Array(groups)
+  def initialize(params = {})
+    @project_ids = Array(params[:project_ids])
+    @group_ids = Array(params[:group_ids])
     @params = params
-    @order = order
   end
 
   def execute
-    conditions = []
-    table = Milestone.arel_table
-    project_ids = projects&.map(&:id)
-    group_ids = groups&.map(&:id)
+    items = Milestone.all
+    items = by_groups_and_projects(items)
+    items = by_title(items)
+    items = by_state(items)
 
-    milestones = Milestone.for_projects_and_groups(project_ids, group_ids).reorder(order)
-    Milestone.filter_by_state(milestones, params[:state])
+    order(items)
+  end
+
+  private
+
+  def by_groups_and_projects(items)
+    items.for_projects_and_groups(project_ids, group_ids)
+  end
+
+  def by_title(items)
+    if params[:title]
+      items.where(title: params[:title])
+    else
+      items
+    end
+  end
+
+  def by_state(items)
+    Milestone.filter_by_state(items, params[:state])
+  end
+
+  def order(items)
+    if params.has_key?(:order)
+      items.reorder(params[:order])
+    else
+      items.reorder('due_date ASC')
+    end
   end
 end

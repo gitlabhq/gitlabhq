@@ -68,7 +68,11 @@ module Issues
         group_id = @new_project.group.id
       end
 
-      Milestone.for_projects_and_groups(@new_project.id, group_id).find_by_title(title).try(:id)
+      params =
+        { title: title, project_ids: @new_project.id, group_ids: group_id }
+
+      milestones = MilestonesFinder.new(params).execute
+      milestones.first.try(:id)
     end
 
     def rewrite_notes

@@ -12,7 +12,10 @@ class GlobalMilestone
   end
 
   def self.build_collection(projects, params)
-    child_milestones = MilestonesFinder.new(projects: projects, params: params).execute
+    params =
+      { project_ids: projects.map(&:id), state: params[:state] }
+
+    child_milestones = MilestonesFinder.new(params).execute
 
     milestones = child_milestones.select(:id, :title).group_by(&:title).map do |title, grouped|
       milestones_relation = Milestone.where(id: grouped.map(&:id))
@@ -41,7 +44,8 @@ class GlobalMilestone
   def self.group_milestones_states_count(group)
     return STATE_COUNT_HASH unless group
 
-    relation = MilestonesFinder.new(groups: group, params: { state: 'all' }, order: nil).execute
+    params = { group_ids: group.id, state: 'all', order: nil }
+    relation = MilestonesFinder.new(params).execute
     grouped_by_state = relation.group(:state).count
 
     {
@@ -55,7 +59,8 @@ class GlobalMilestone
   def self.legacy_group_milestone_states_count(projects)
     return STATE_COUNT_HASH unless projects
 
-    relation = MilestonesFinder.new(projects: projects, params: { state: 'all' }, order: nil).execute
+    params = { project_ids: projects.map(&:id), state: 'all', order: nil }
+    relation = MilestonesFinder.new(params).execute
     project_milestones_by_state_and_title = relation.group(:state, :title).count
 
     opened = count_by_state(project_milestones_by_state_and_title, 'active')

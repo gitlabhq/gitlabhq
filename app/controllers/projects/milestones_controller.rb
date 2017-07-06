@@ -89,7 +89,9 @@ class Projects::MilestonesController < Projects::ApplicationController
         group = @project.group
       end
 
-      MilestonesFinder.new(projects: @project, groups: group, params: params).execute
+      search_params = params.merge(project_ids: @project.id, group_ids: group.id)
+
+      MilestonesFinder.new(search_params).execute
     end
   end
 

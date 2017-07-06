@@ -22,7 +22,6 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def create
-    title = milestone_params[:title]
     @milestone = Milestones::CreateService.new(group, current_user, milestone_params).execute
 
     if @milestone.persisted?
@@ -76,7 +75,9 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestones
-    milestones = MilestonesFinder.new(groups: group, params: params).execute
+    search_params = params.merge(group_ids: group.id)
+
+    milestones = MilestonesFinder.new(search_params).execute
     legacy_milestones = GroupMilestone.build_collection(group, group_projects, params)
 
     milestones + legacy_milestones

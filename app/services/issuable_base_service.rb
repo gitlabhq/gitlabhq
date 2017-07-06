@@ -89,8 +89,6 @@ class IssuableBaseService < BaseService
     milestone_id = params[:milestone_id]
     return unless milestone_id
 
-    table = Milestone.arel_table
-
     params[:milestone_id] = '' if milestone_id == IssuableFinder::NONE
 
     milestone =

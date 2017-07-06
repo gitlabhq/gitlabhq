@@ -82,6 +82,10 @@ module Milestoneish
     false
   end
 
+  def is_dashboard_milestone?
+    false
+  end
+
   private
 
   def count_issues_by_state(user)
