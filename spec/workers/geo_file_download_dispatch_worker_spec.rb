@@ -16,7 +16,7 @@ describe GeoFileDownloadDispatchWorker do
     it 'does not schedule anything when secondary role is disabled' do
       create(:lfs_object, :with_file)
 
-      allow(Gitlab::Geo).to receive(:secondary_role_enabled?) { false }
+      allow(Gitlab::Geo).to receive(:geo_database_configured?) { false }
 
       expect(GeoFileDownloadWorker).not_to receive(:perform_async)
 
