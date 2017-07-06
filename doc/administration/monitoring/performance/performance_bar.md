@@ -1,9 +1,5 @@
 # Performance Bar
 
->**Note:**
-Available since GitLab 9.4. For installations from source you'll have to
-configure it yourself.
-
 A Performance Bar can be displayed, to dig into the performance of a page. When
 activated, it looks as follows:
 
@@ -21,38 +17,44 @@ It allows you to:
 - profile the code used to generate the page, line by line
 ![Line profiling using the Performance Bar](img/performance_bar_line_profiling.png)
 
-## Enable the Performance Bar
+## Enable the Performance Bar via the Admin panel
 
-By default, the Performance Bar is disabled. You can enable it for a group
-and/or users. Note that it's possible to enable it for a group and for
-individual users at the same time.
+GitLab Performance Bar is disabled by default. To enable it for a given group,
+navigate to the Admin area in **Settings > Profiling - Performance Bar**
+(`/admin/application_settings`).
 
-1. Edit `/etc/gitlab/gitlab.rb`
-1. Find the following line, and set it to the group's **full path** that should
-be allowed to use the Performance Bar:
+The only required setting you need to set is the full path of the group that
+will be allowed to display the Performance Bar.
+Make sure _Enable the Performance Bar_ is checked and hit
+**Save** to save the changes.
 
-    ```ruby
-    gitlab_rails['performance_bar_allowed_group'] = 'your-org/your-performance-group'
-    ```
+---
 
-1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
-   take effect
-1. The Performance Bar can then be enabled via the
-   [Features API](../../../api/features.md#set-or-create-a-feature) (see below).
+![GitLab Performance Bar Admin Settings](img/performance_bar_configuration_settings.png)
 
-### Enable for the `performance_team` feature group
+---
 
-The `performance_team` feature group maps to the group specified by the
-`performance_bar_allowed_group` setting you've set in the previous step.
+## Enable the Performance Bar via the API
+
+Under the hood, the Performance Bar activation is done via the `performance_bar`
+[Feature Flag](../../../development/features_flags.md).
+
+That means you can also enable or disable it via the
+[Features API](../../../api/features.md#set-or-create-a-feature).
+
+### For the `performance_team` feature group
+
+The `performance_team` feature group maps to the group specified in your [Admin
+area](#enable-the-performance-bar-via-the-admin-panel).
 
 ```
 curl --data "feature_group=performance_team" --data "value=true" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/performance_bar
 ```
 
-### Enable for specific users
+### For specific users
 
-It's possible to enable the Performance Bar for specific users in addition to a
-group, or even instead of a group:
+It's also possible to enable the Performance Bar for specific users in addition
+to a group, or even instead of a group:
 
 ```
 curl --data "user=my_username" --data "value=true" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/performance_bar

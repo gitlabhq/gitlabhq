@@ -10,7 +10,7 @@ describe Gitlab::PerformanceBar do
       actor = double('actor')
 
       expect(Feature).to receive(:enabled?)
-        .with(:gitlab_performance_bar, actor).and_return(false)
+        .with(:performance_bar, actor).and_return(false)
 
       expect(described_class.enabled?(actor)).to be_falsy
     end
@@ -19,7 +19,7 @@ describe Gitlab::PerformanceBar do
       actor = double('actor')
 
       expect(Feature).to receive(:enabled?)
-        .with(:gitlab_performance_bar, actor).and_return(true)
+        .with(:performance_bar, actor).and_return(true)
 
       expect(described_class.enabled?(actor)).to be_truthy
     end

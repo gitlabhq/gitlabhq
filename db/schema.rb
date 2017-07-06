@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170703102400) do
+ActiveRecord::Schema.define(version: 20170706151212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 20170703102400) do
     t.boolean "prometheus_metrics_enabled", default: false, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
+    t.integer "performance_bar_allowed_group_id"
   end
 
   create_table "audit_events", force: :cascade do |t|
