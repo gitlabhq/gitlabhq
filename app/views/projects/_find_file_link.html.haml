@@ -1,3 +1,3 @@
-= link_to namespace_project_find_file_path(@project.namespace, @project, @ref), class: 'btn shortcuts-find-file', rel: 'nofollow' do
+= link_to project_find_file_path(@project, @ref), class: 'btn shortcuts-find-file', rel: 'nofollow' do
   = icon('search')
   %span= _('Find file')

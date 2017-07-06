@@ -385,6 +385,7 @@ a.deploy-project-label {
 }
 
 .breadcrumb.repo-breadcrumb {
+  flex: 1;
   padding: 0;
   background: transparent;
   border: none;
@@ -490,11 +491,12 @@ a.deploy-project-label {
 .project-stats {
   font-size: 0;
   text-align: center;
+  max-width: 100%;
+  border-bottom: 1px solid $border-color;
 
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
-    border-bottom: 1px solid $border-color;
   }
 
   .nav > li {

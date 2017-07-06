@@ -50,6 +50,10 @@ module Gitlab
       Gitlab.config.geo_secondary_role['enabled']
     end
 
+    def self.geo_database_configured?
+      Rails.configuration.respond_to?(:geo_database)
+    end
+
     def self.license_allows?
       ::License.feature_available?(:geo)
     end
@@ -83,18 +87,30 @@ module Gitlab
     end
 
     def self.configure_primary_jobs!
-      PRIMARY_JOBS.each { |job| self.send(job).try(:enable!) }
+      self.enable_all_cron_jobs!
       SECONDARY_JOBS.each { |job| self.send(job).try(:disable!) }
     end
 
     def self.configure_secondary_jobs!
-      PRIMARY_JOBS.each { |job| self.send(job).try(:disable!) }
+      self.disable_all_cron_jobs!
       SECONDARY_JOBS.each { |job| self.send(job).try(:enable!) }
     end
 
-    def self.disable_all_jobs!
+    def self.disable_all_geo_jobs!
       PRIMARY_JOBS.each { |job| self.send(job).try(:disable!) }
       SECONDARY_JOBS.each { |job| self.send(job).try(:disable!) }
+    end
+
+    def self.disable_all_cron_jobs!
+      self.cron_jobs.select(&:enabled?).each { |job| job.disable! }
+    end
+
+    def self.enable_all_cron_jobs!
+      self.cron_jobs.reject(&:enabled?).each { |job| job.enable! }
+    end
+
+    def self.cron_jobs
+      Sidekiq::Cron::Job.all
     end
 
     def self.configure_cron_jobs!
@@ -103,7 +119,8 @@ module Gitlab
       elsif self.secondary_role_enabled?
         self.configure_secondary_jobs!
       else
-        self.disable_all_jobs!
+        self.enable_all_cron_jobs!
+        self.disable_all_geo_jobs!
       end
     end
 

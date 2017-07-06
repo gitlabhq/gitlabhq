@@ -45,7 +45,8 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def show
-    if @project.feature_available?(:burndown_charts, current_user)
+    if @project.feature_available?(:burndown_charts, current_user) &&
+        @project.feature_available?(:issue_weights, current_user)
       @burndown = Burndown.new(@milestone)
     end
   end
@@ -54,8 +55,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     @milestone = Milestones::CreateService.new(project, current_user, milestone_params).execute
 
     if @milestone.save
-      redirect_to namespace_project_milestone_path(@project.namespace,
-                                                   @project, @milestone)
+      redirect_to project_milestone_path(@project, @milestone)
     else
       render "new"
     end
@@ -68,8 +68,7 @@ class Projects::MilestonesController < Projects::ApplicationController
       format.js
       format.html do
         if @milestone.valid?
-          redirect_to namespace_project_milestone_path(@project.namespace,
-                                                   @project, @milestone)
+          redirect_to project_milestone_path(@project, @milestone)
         else
           render :edit
         end

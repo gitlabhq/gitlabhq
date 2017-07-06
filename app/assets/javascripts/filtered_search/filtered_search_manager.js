@@ -3,6 +3,7 @@ import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
 import RecentSearchesService from './services/recent_searches_service';
 import eventHub from './event_hub';
+import { addClassIfElementExists } from '../lib/utils/dom_utils';
 
 class FilteredSearchManager {
   constructor(page) {
@@ -13,6 +14,10 @@ class FilteredSearchManager {
     this.clearSearchButton = this.container.querySelector('.clear-search');
     this.tokensContainer = this.container.querySelector('.tokens-container');
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
+
+    gl.FilteredSearchTokenKeysIssuesEE.init({
+      multipleAssignees: this.filteredSearchInput.dataset.multipleAssignees,
+    });
 
     if (this.page === 'issues' || this.page === 'boards') {
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysIssuesEE;
@@ -231,11 +236,7 @@ class FilteredSearchManager {
   }
 
   addInputContainerFocus() {
-    const inputContainer = this.filteredSearchInput.closest('.filtered-search-box');
-
-    if (inputContainer) {
-      inputContainer.classList.add('focus');
-    }
+    addClassIfElementExists(this.filteredSearchInput.closest('.filtered-search-box'), 'focus');
   }
 
   removeInputContainerFocus(e) {

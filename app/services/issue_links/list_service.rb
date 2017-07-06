@@ -13,7 +13,7 @@ module IssueLinks
           title: referenced_issue.title,
           state: referenced_issue.state,
           reference: referenced_issue.to_reference(@project),
-          path: namespace_project_issue_path(referenced_issue.project.namespace, referenced_issue.project, referenced_issue.iid),
+          path: project_issue_path(referenced_issue.project, referenced_issue.iid),
           destroy_relation_path: destroy_relation_path(referenced_issue)
         }
       end
@@ -29,10 +29,7 @@ module IssueLinks
       # Make sure the user can admin both the current issue AND the
       # referenced issue projects in order to return the removal link.
       if can_destroy_issue_link_on_current_project? && can_destroy_issue_link?(issue.project)
-        namespace_project_issue_link_path(@project.namespace,
-                                          @issue.project,
-                                          @issue.iid,
-                                          issue.issue_link_id)
+        project_issue_link_path(@project, @issue.iid, issue.issue_link_id)
       end
     end
 

@@ -1,4 +1,4 @@
-%tr.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
+%tr.js-protected-branch-edit-form{ data: { url: project_protected_branch_path(@project, protected_branch) } }
   %td
     %span.ref-name= protected_branch.name
 
@@ -7,10 +7,10 @@
   %td
     - if protected_branch.wildcard?
       - matching_branches = protected_branch.matching(repository.branches)
-      = link_to pluralize(matching_branches.count, "matching branch"), namespace_project_protected_branch_path(@project.namespace, @project, protected_branch)
+      = link_to pluralize(matching_branches.count, "matching branch"), project_protected_branch_path(@project, protected_branch)
     - else
       - if commit = protected_branch.commit
-        = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit-sha')
+        = link_to(commit.short_id, project_commit_path(@project, commit.id), class: 'commit-sha')
         = time_ago_with_tooltip(commit.committed_date)
       - else
         (branch was removed from repository)

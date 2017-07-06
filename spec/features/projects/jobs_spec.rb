@@ -5,7 +5,6 @@ feature 'Jobs', :feature do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project) }
-  let(:namespace) { project.namespace }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
@@ -153,7 +152,7 @@ feature 'Jobs', :feature do
         let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
 
         before do
-          visit namespace_project_job_path(namespace, project, job)
+          visit project_job_path(project, job)
         end
 
         it 'shows New issue button' do
@@ -162,10 +161,10 @@ feature 'Jobs', :feature do
 
         it 'links to issues/new with the title and description filled in' do
           button_title = "Build Failed ##{job.id}"
-          job_path = namespace_project_job_path(namespace, project, job)
+          job_path = project_job_path(project, job)
           options = { issue: { title: button_title, description: job_path } }
 
-          href = new_namespace_project_issue_path(namespace, project, options)
+          href = new_project_issue_path(project, options)
 
           page.within('.header-action-buttons') do
             expect(find('.js-new-issue')['href']).to include(href)
@@ -478,7 +477,7 @@ feature 'Jobs', :feature do
             .to receive(:paths)
             .and_return([existing_file])
 
-          visit namespace_project_job_path(namespace, project, job)
+          visit project_job_path(project, job)
 
           find('.js-raw-link-controller').click
         end
@@ -496,7 +495,7 @@ feature 'Jobs', :feature do
             .to receive(:paths)
             .and_return([])
 
-          visit namespace_project_job_path(namespace, project, job)
+          visit project_job_path(project, job)
         end
 
         it 'sends the right headers' do

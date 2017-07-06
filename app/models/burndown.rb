@@ -1,4 +1,6 @@
 class Burndown
+  Issue = Struct.new(:closed_at, :weight, :state)
+
   attr_reader :start_date, :due_date, :end_date, :issues_count, :issues_weight, :accurate, :legacy_data
   alias_method :accurate?, :accurate
   alias_method :empty?, :legacy_data
@@ -68,8 +70,10 @@ class Burndown
 
   def milestone_closed_issues
     @milestone_closed_issues ||=
-      @milestone.issues.select("closed_at, weight, state")
+      @milestone.issues
         .where("state IN ('reopened', 'closed')")
         .order("closed_at ASC")
+        .pluck("closed_at, weight, state")
+        .map {|attrs| ::Burndown::Issue.new(*attrs) }
   end
 end

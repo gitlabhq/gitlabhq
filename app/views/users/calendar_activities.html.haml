@@ -12,7 +12,7 @@
         - if event.push?
           #{event.action_name} #{event.ref_type}
           %strong
-            - commits_path = namespace_project_commits_path(event.project.namespace, event.project, event.ref_name)
+            - commits_path = project_commits_path(event.project, event.ref_name)
             = link_to_if event.project.repository.branch_exists?(event.ref_name), event.ref_name, commits_path
         - else
           = event_action_name(event)

@@ -6,7 +6,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
-  include ::EE::Projects::IssuesController
+  prepend ::EE::Projects::IssuesController
 
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
@@ -241,6 +241,10 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :awardable, :issue
   alias_method :spammable, :issue
 
+  def spammable_path
+    project_issue_path(@project, @issue)
+  end
+
   def authorize_update_issue!
     return render_404 unless can?(current_user, :update_issue, @issue)
   end
@@ -270,10 +274,22 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
-    params.require(:issue).permit(
-      :title, :assignee_id, :position, :description, :confidential, :weight,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
-    )
+    params.require(:issue).permit(*issue_params_attributes)
+  end
+
+  def issue_params_attributes
+    %i[
+      title
+      assignee_id
+      position
+      description
+      confidential
+      milestone_id
+      due_date
+      state_event
+      task_num
+      lock_version
+    ] + [{ label_ids: [], assignee_ids: [] }]
   end
 
   def authenticate_user!

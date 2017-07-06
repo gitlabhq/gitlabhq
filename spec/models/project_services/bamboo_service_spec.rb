@@ -217,13 +217,13 @@ describe BambooService, models: true, caching: true do
   end
 
   def stub_request(status: 200, body: nil)
-    bamboo_full_url = 'http://mic:password@gitlab.com/bamboo/rest/api/latest/result?label=123&os_authType=basic'
+    bamboo_full_url = 'http://gitlab.com/bamboo/rest/api/latest/result?label=123&os_authType=basic'
 
     WebMock.stub_request(:get, bamboo_full_url).to_return(
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body
-    )
+    ).with(basic_auth: %w(mic password))
   end
 
   def bamboo_response(result_key: 42, build_state: 'success', size: 1)

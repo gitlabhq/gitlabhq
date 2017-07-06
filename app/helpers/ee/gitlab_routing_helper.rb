@@ -4,7 +4,7 @@ module EE
     include ApplicationSettingsHelper
 
     def geo_primary_web_url(project)
-      File.join(::Gitlab::Geo.primary_node.url, ::Gitlab::Routing.url_helpers.namespace_project_path(project.namespace, project))
+      File.join(::Gitlab::Geo.primary_node.url, ::Gitlab::Routing.url_helpers.project_path(project))
     end
 
     def geo_primary_ssh_url_to_repo(project)

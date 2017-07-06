@@ -6,7 +6,7 @@
 
   .nav-text
     %h2.wiki-page-title
-      = link_to @page.title.capitalize, namespace_project_wiki_path(@project.namespace, @project, @page)
+      = link_to @page.title.capitalize, project_wiki_path(@project, @page)
       %span.light
         &middot;
         History

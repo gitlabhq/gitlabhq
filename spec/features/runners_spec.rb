@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe "Runners" do
-  include GitlabRoutingHelper
-
   let(:user) { create(:user) }
 
   before do

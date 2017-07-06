@@ -15,7 +15,7 @@ end
 end
 
 # EE-only
-%w(license).each do |f|
+%w(test_license).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
@@ -36,6 +36,7 @@ Spinach.hooks.before_run do
   TestEnv.disable_pre_receive
 
   include FactoryGirl::Syntax::Methods
+  include GitlabRoutingHelper
 end
 
 Spinach.hooks.after_scenario do |scenario_data, step_definitions|

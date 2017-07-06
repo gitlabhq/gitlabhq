@@ -4,8 +4,8 @@ module Routable
   extend ActiveSupport::Concern
 
   included do
-    has_one :route, as: :source, autosave: true, dependent: :destroy
-    has_many :redirect_routes, as: :source, autosave: true, dependent: :destroy
+    has_one :route, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :redirect_routes, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     validates_associated :route
     validates :route, presence: true
@@ -103,8 +103,12 @@ module Routable
   def full_path
     return uncached_full_path unless RequestStore.active?
 
-    key = "routable/full_path/#{self.class.name}/#{self.id}"
-    RequestStore[key] ||= uncached_full_path
+    RequestStore[full_path_key] ||= uncached_full_path
+  end
+
+  def expires_full_path_cache
+    RequestStore.delete(full_path_key) if RequestStore.active?
+    @full_path = nil
   end
 
   def build_full_path
@@ -133,6 +137,10 @@ module Routable
 
   def full_path_changed?
     path_changed? || parent_changed?
+  end
+
+  def full_path_key
+    @full_path_key ||= "routable/full_path/#{self.class.name}/#{self.id}"
   end
 
   def build_full_name

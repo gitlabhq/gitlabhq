@@ -9,6 +9,10 @@ module EE
 
         user
       end
+
+      def check_project_feature_available!(feature)
+        not_found! unless user_project.feature_available?(feature)
+      end
     end
   end
 end

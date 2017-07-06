@@ -1,4 +1,0 @@
----
-title: Fix locked and stale SSH keys file from 9.3.0 upgrade
-merge_request: 2240
-author:

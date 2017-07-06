@@ -17,9 +17,9 @@ describe 'Issue Boards', feature: true, js: true do
 
   before do
     Timecop.freeze
+    stub_licensed_features(multiple_issue_assignees: false)
 
     project.team << [user, :master]
-    project.team.add_developer(user2)
 
     sign_in(user)
 
@@ -80,6 +80,22 @@ describe 'Issue Boards', feature: true, js: true do
     end
   end
 
+  it 'does not show remove button for backlog or closed issues' do
+    create(:issue, project: project)
+    create(:issue, :closed, project: project)
+
+    visit project_board_path(project, board)
+    wait_for_requests
+
+    click_card(find('.board:nth-child(1)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
+
+    click_card(find('.board:nth-child(3)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
+  end
+
   context 'assignee' do
     it 'updates the issues assignee' do
       click_card(card)
@@ -101,26 +117,6 @@ describe 'Issue Boards', feature: true, js: true do
       expect(card).to have_selector('.avatar')
     end
 
-    it 'adds multiple assignees' do
-      click_card(card)
-
-      page.within('.assignee') do
-        click_link 'Edit'
-
-        wait_for_requests
-
-        page.within('.dropdown-menu-user') do
-          click_link user.name
-          click_link user2.name
-        end
-
-        expect(page).to have_content(user.name)
-        expect(page).to have_content(user2.name)
-      end
-
-      expect(card.all('.avatar').length).to eq(2)
-    end
-
     it 'removes the assignee' do
       card_two = find('.board:nth-child(2)').find('.card:nth-child(2)')
       click_card(card_two)
@@ -133,8 +129,6 @@ describe 'Issue Boards', feature: true, js: true do
         page.within('.dropdown-menu-user') do
           click_link 'Unassigned'
         end
-
-        find('.dropdown-menu-toggle').click
 
         wait_for_requests
 

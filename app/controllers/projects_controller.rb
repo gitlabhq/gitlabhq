@@ -93,12 +93,12 @@ class ProjectsController < Projects::ApplicationController
   def show
     # If we're importing while we do have a repository, we're simply updating the mirror.
     if @project.import_in_progress? && !@project.updating_mirror?
-      redirect_to namespace_project_import_path(@project.namespace, @project)
+      redirect_to project_import_path(@project)
       return
     end
 
     if @project.pending_delete?
-      flash[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
+      flash.now[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
     end
 
     respond_to do |format|

@@ -27,7 +27,7 @@
             .scroll-container
               %ul.tokens-container.list-unstyled
                 %li.input-token
-                  %input.form-control.filtered-search{ id: "filtered-search-#{type.to_s}", placeholder: 'Search or filter results...', data: { 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => namespace_project_path(@project.namespace, @project) } }
+                  %input.form-control.filtered-search{ search_filter_input_options(type) }
               = icon('filter')
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }
@@ -127,7 +127,7 @@
                   = dropdown_loading
               #js-add-issues-btn.prepend-left-10
           - elsif type != :boards_modal
-            = render 'shared/sort_dropdown', type: local_assigns[:type]
+            = render 'shared/sort_dropdown'
 
 - unless type === :boards_modal
   :javascript

@@ -31,7 +31,7 @@ class Snippet < ActiveRecord::Base
   belongs_to :author, class_name: 'User'
   belongs_to :project
 
-  has_many :notes, as: :noteable, dependent: :destroy
+  has_many :notes, as: :noteable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 

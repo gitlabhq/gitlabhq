@@ -40,14 +40,14 @@ class Admin::ProjectsController < Admin::ApplicationController
     ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
 
     @project.reload
-    redirect_to admin_namespace_project_path(@project.namespace, @project)
+    redirect_to admin_project_path(@project)
   end
 
   def repository_check
     RepositoryCheck::SingleRepositoryWorker.perform_async(@project.id)
 
     redirect_to(
-      admin_namespace_project_path(@project.namespace, @project),
+      admin_project_path(@project),
       notice: 'Repository check was triggered.'
     )
   end

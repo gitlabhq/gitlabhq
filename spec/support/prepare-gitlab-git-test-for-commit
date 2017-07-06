@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+abort unless [
+  system('spec/support/generate-seed-repo-rb', out: 'spec/support/seed_repo.rb'),
+  system('spec/support/unpack-gitlab-git-test')
+].all?
+
+exit if ARGV.first != '--check-for-changes'
+
+git_status = IO.popen(%w[git status --porcelain], &:read)
+abort unless $?.success?
+
+puts git_status
+
+if git_status.lines.grep(%r{^.. spec/support/gitlab-git-test.git}).any?
+  abort "error: detected changes in gitlab-git-test.git"
+end

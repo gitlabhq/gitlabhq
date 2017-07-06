@@ -1,8 +1,5 @@
-import emojiMap from 'emojis/digests.json';
-import emojiAliases from 'emojis/aliases.json';
-import { glEmojiTag } from '~/behaviors/gl_emoji';
-import glRegexp from '~/lib/utils/regexp';
-import AjaxCache from '~/lib/utils/ajax_cache';
+import glRegexp from './lib/utils/regexp';
+import AjaxCache from './lib/utils/ajax_cache';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
@@ -375,7 +372,12 @@ class GfmAutoComplete {
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
-      this.loadData($input, at, Object.keys(emojiMap).concat(Object.keys(emojiAliases)));
+      import(/* webpackChunkName: 'emoji' */ './emoji')
+        .then(({ validEmojiNames, glEmojiTag }) => {
+          this.loadData($input, at, validEmojiNames);
+          GfmAutoComplete.glEmojiTag = glEmojiTag;
+        })
+        .catch(() => { this.isLoadingData[at] = false; });
     } else {
       AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
         .then((data) => {
@@ -396,6 +398,13 @@ class GfmAutoComplete {
 
   clearCache() {
     this.cachedData = {};
+  }
+
+  destroy() {
+    this.input.each((i, input) => {
+      const $input = $(input);
+      $input.atwho('destroy');
+    });
   }
 
   static isLoading(data) {
@@ -423,12 +432,14 @@ GfmAutoComplete.atTypeMap = {
 };
 
 // Emoji
+GfmAutoComplete.glEmojiTag = null;
 GfmAutoComplete.Emoji = {
   templateFunction(name) {
-    return `<li>
-      ${name} ${glEmojiTag(name)}
-    </li>
-    `;
+    // glEmojiTag helper is loaded on-demand in fetchData()
+    if (GfmAutoComplete.glEmojiTag) {
+      return `<li>${name} ${GfmAutoComplete.glEmojiTag(name)}</li>`;
+    }
+    return `<li>${name}</li>`;
   },
 };
 // Team Members

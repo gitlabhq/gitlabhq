@@ -19,7 +19,7 @@ module EE
     }.freeze
 
     prepended do
-      has_one :namespace_statistics, dependent: :destroy
+      has_one :namespace_statistics
 
       scope :with_plan, -> { where.not(plan: [nil, '']) }
 
@@ -29,15 +29,43 @@ module EE
       validates :plan, inclusion: { in: EE_PLANS.keys }, allow_blank: true
     end
 
+    def move_dir
+      raise NotImplementedError unless defined?(super)
+
+      succeeded = super
+
+      if succeeded
+        all_projects.each do |project|
+          old_path_with_namespace = File.join(full_path_was, project.path)
+
+          ::Geo::RepositoryRenamedEventStore.new(
+            project,
+            old_path: project.path,
+            old_path_with_namespace: old_path_with_namespace
+          ).create
+        end
+      end
+
+      succeeded
+    end
+
     # Checks features (i.e. https://about.gitlab.com/products/) availabily
     # for a given Namespace plan. This method should consider ancestor groups
     # being licensed.
     def feature_available?(feature)
-      @features_available ||= Hash.new do |h, feature|
+      @feature_available ||= Hash.new do |h, feature|
+        h[feature] = load_feature_available(feature)
+      end
+
+      @feature_available[feature]
+    end
+
+    def feature_available_in_plan?(feature)
+      @features_available_in_plan ||= Hash.new do |h, feature|
         h[feature] = plans.any? { |plan| License.plan_includes_feature?(EE_PLANS[plan], feature) }
       end
 
-      @features_available[feature]
+      @features_available_in_plan[feature]
     end
 
     def actual_shared_runners_minutes_limit
@@ -56,6 +84,16 @@ module EE
     end
 
     private
+
+    def load_feature_available(feature)
+      globally_available = License.feature_available?(feature)
+
+      if current_application_settings.should_check_namespace_plan?
+        globally_available && feature_available_in_plan?(feature)
+      else
+        globally_available
+      end
+    end
 
     def plans
       @ancestors_plans ||=

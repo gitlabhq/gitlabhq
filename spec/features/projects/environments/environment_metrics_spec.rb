@@ -27,7 +27,7 @@ feature 'Environment > Metrics', :feature do
     scenario 'shows metrics' do
       click_link('See metrics')
 
-      expect(page).to have_css('svg.prometheus-graph')
+      expect(page).to have_css('div#prometheus-graphs')
     end
   end
 

@@ -136,7 +136,8 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
       end
 
       it 'sorts by recently due milestone' do
-        visit project_merge_requests_path(project, label_name: [label.name, label2.name],
+        visit project_merge_requests_path(project,
+          label_name: [label.name, label2.name],
           assignee_id: user.id,
           sort: sort_value_milestone_soon)
 

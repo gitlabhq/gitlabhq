@@ -146,7 +146,7 @@ describe 'Issues', feature: true do
 
       visit project_issues_path(project)
 
-      page.within(first('.issue-info')) do
+      page.within(first('.issuable-info')) do
         expect(page).to have_selector('.fa-balance-scale')
         expect(page).to have_content(2)
       end
@@ -366,7 +366,8 @@ describe 'Issues', feature: true do
       end
 
       it 'sorts with a filter applied' do
-        visit project_issues_path(project, sort: sort_value_oldest_created,
+        visit project_issues_path(project,
+                                            sort: sort_value_oldest_created,
                                             assignee_id: user2.id)
 
         expect(first_issue).to include('bar')

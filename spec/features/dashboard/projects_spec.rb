@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Projects', feature: true do
+feature 'Dashboard Projects' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, name: "awesome stuff") }
+  let(:project) { create(:project, name: 'awesome stuff') }
   let(:project2) { create(:project, :public, name: 'Community project') }
 
   before do
@@ -21,13 +21,33 @@ RSpec.describe 'Dashboard Projects', feature: true do
     expect(page).to have_content('awesome stuff')
   end
 
-  it 'shows the last_activity_at attribute as the update date' do
-    now = Time.now
-    project.update_column(:last_activity_at, now)
-
+  it 'shows "New project" button' do
     visit dashboard_projects_path
 
-    expect(page).to have_xpath("//time[@datetime='#{now.getutc.iso8601}']")
+    page.within '#content-body' do
+      expect(page).to have_link('New project')
+    end
+  end
+
+  context 'when last_repository_updated_at, last_activity_at and update_at are present' do
+    it 'shows the last_repository_updated_at attribute as the update date' do
+      project.update_attributes!(last_repository_updated_at: Time.now, last_activity_at: 1.hour.ago)
+
+      visit dashboard_projects_path
+
+      expect(page).to have_xpath("//time[@datetime='#{project.last_repository_updated_at.getutc.iso8601}']")
+    end
+  end
+
+  context 'when last_repository_updated_at and last_activity_at are missing' do
+    it 'shows the updated_at attribute as the update date' do
+      project.update_attributes!(last_repository_updated_at: nil, last_activity_at: nil)
+      project.touch
+
+      visit dashboard_projects_path
+
+      expect(page).to have_xpath("//time[@datetime='#{project.updated_at.getutc.iso8601}']")
+    end
   end
 
   context 'when on Starred projects tab' do
@@ -41,8 +61,8 @@ RSpec.describe 'Dashboard Projects', feature: true do
     end
   end
 
-  describe "with a pipeline", redis: true do
-    let!(:pipeline) {  create(:ci_pipeline, project: project, sha: project.commit.sha) }
+  describe 'with a pipeline', redis: true do
+    let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha) }
 
     before do
       # Since the cache isn't updated when a new pipeline is created

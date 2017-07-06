@@ -74,7 +74,8 @@ var config = {
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
-    peek:                 './peek.js',
+    performance_bar:      './performance_bar.js',
+    webpack_runtime:      './webpack.js',
   },
 
   output: {
@@ -168,6 +169,7 @@ var config = {
         'issue_show',
         'job_details',
         'merge_conflicts',
+        'monitoring',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
@@ -196,7 +198,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'locale', 'common', 'runtime'],
+      names: ['main', 'locale', 'common', 'webpack_runtime'],
     }),
   ],
 
@@ -251,7 +253,6 @@ if (IS_DEV_SERVER) {
     hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD
   };
-  config.output.publicPath = '//' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT + config.output.publicPath;
   config.plugins.push(
     // watch node_modules for changes if we encounter a missing module compile error
     new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))

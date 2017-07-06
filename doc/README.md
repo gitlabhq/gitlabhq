@@ -3,7 +3,7 @@
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
 
-We offer four different products for you and your organization:
+We offer four different products for you and your company:
 
 - **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
 self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
@@ -15,6 +15,10 @@ self-hosted, fully featured solution of GitLab, available under distinct [subscr
 plus premium features available in each version: **Enterprise Edition Starter**
 (**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
 **EES** is also available in **EEP**.
+
+**Note:** _We are unifying the documentation for CE and EE. To check if certain feature is
+available in CE or EE, look for a note right below the page title containing the GitLab
+version which introduced that feature._
 
 ----
 
@@ -162,7 +166,7 @@ have access to GitLab administration tools and settings.
 - **(EES/EEP)** [Limit project size](user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
 - **(EEP)** [Auditor users](administration/auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
 - **(EEP)** [GitLab GEO](gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
-- **(EEP)** [Pivotal Tile](https://about.gitlab.com/2015/11/03/pivotal-cloud-foundry-tile-for-gitlab-ee/): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry. See also: [Pivotal documentation](https://docs.pivotal.io/partners/gitlab/index.html).
+- **(EEP)** [Pivotal Tile](install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
 - **(EES/EEP)** [Database load balancing](administration/database_load_balancing.md): Distribute database queries among multiple database servers.
 - **(EES/EEP)** [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database.
 - **(EES/EEP)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)

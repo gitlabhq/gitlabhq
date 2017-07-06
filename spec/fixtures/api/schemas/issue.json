@@ -40,23 +40,11 @@
         "additionalProperties": false
       }
     },
-    "assignees": {
-      "type": "array",
-      "items": {
-        "type": ["object", "null"],
-        "required": [
-          "id",
-          "name",
-          "username",
-          "avatar_url"
-        ],
-        "properties": {
-          "id": { "type": "integer" },
-          "name": { "type": "string" },
-          "username": { "type": "string" },
-          "avatar_url": { "type": "uri" }
-        }
-      }
+    "assignee": {
+      "id": { "type": "integer" },
+      "name": { "type": "string" },
+      "username": { "type": "string" },
+      "avatar_url": { "type": "uri" }
     },
     "assignees": {
       "type": "array",

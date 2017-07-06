@@ -3,13 +3,16 @@ import './smart_interval';
 
 const healthyClass = 'geo-node-healthy';
 const unhealthyClass = 'geo-node-unhealthy';
+const unknownClass = 'geo-node-unknown';
 const healthyIcon = 'fa-check';
-const unhealthyIcon = 'fa-close';
+const unhealthyIcon = 'fa-times';
+const unknownIcon = 'fa-times';
 
 class GeoNodeStatus {
   constructor(el) {
     this.$el = $(el);
     this.$icon = $('.js-geo-node-icon', this.$el);
+    this.$loadingIcon = $('.js-geo-node-loading', this.$el);
     this.$healthStatus = $('.js-health-status', this.$el);
     this.$status = $('.js-geo-node-status', this.$el);
     this.$repositoriesSynced = $('.js-repositories-synced', this.$status);
@@ -48,6 +51,9 @@ class GeoNodeStatus {
   }
 
   setStatusIcon(healthy) {
+    this.$loadingIcon.hide();
+    this.$icon.removeClass(`${unknownClass} ${unknownIcon}`);
+
     if (healthy) {
       this.$icon.removeClass(`${unhealthyClass} ${unhealthyIcon}`)
                 .addClass(`${healthyClass} ${healthyIcon}`)

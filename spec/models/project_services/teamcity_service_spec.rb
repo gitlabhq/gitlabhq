@@ -205,10 +205,12 @@ describe TeamcityService, models: true, caching: true do
   end
 
   def stub_request(status: 200, body: nil, build_status: 'success')
-    teamcity_full_url = 'http://mic:password@gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,number:123'
+    teamcity_full_url = 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,number:123'
+    auth = %w(mic password)
+
     body ||= %Q({"build":{"status":"#{build_status}","id":"666"}})
 
-    WebMock.stub_request(:get, teamcity_full_url).to_return(
+    WebMock.stub_request(:get, teamcity_full_url).with(basic_auth: auth).to_return(
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body

@@ -279,5 +279,9 @@
 
 .label-link {
   display: inline-block;
-  vertical-align: text-top;
+  vertical-align: top;
+
+  .label {
+    vertical-align: inherit;
+  }
 }

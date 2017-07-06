@@ -33,6 +33,8 @@ describe('Store', () => {
       hasDeployBoard: true,
       isDeployBoardVisible: true,
       deployBoardData: {},
+      isLoadingDeployBoard: false,
+      hasErrorDeployBoard: false,
     };
 
     store.storeEnvironments(serverData);
@@ -60,8 +62,10 @@ describe('Store', () => {
       const environment = {
         name: 'foo',
         size: 1,
-        id: 1,
-        rollout_status_path: 'url',
+        latest: {
+          id: 1,
+          rollout_status_path: 'url',
+        },
       };
 
       store.storeEnvironments([environment]);
@@ -74,7 +78,9 @@ describe('Store', () => {
       const environment = {
         name: 'bar',
         size: 3,
-        id: 2,
+        latest: {
+          id: 2,
+        },
       };
 
       store.storeEnvironments([environment]);
@@ -119,6 +125,16 @@ describe('Store', () => {
       store.toggleFolder(store.state.environments[1]);
       expect(store.state.environments[1].isOpen).toEqual(false);
     });
+
+    it('should keep folder open when environments are updated', () => {
+      store.storeEnvironments(serverData);
+
+      store.toggleFolder(store.state.environments[1]);
+      expect(store.state.environments[1].isOpen).toEqual(true);
+
+      store.storeEnvironments(serverData);
+      expect(store.state.environments[1].isOpen).toEqual(true);
+    });
   });
 
   describe('setfolderContent', () => {
@@ -129,6 +145,17 @@ describe('Store', () => {
 
       expect(store.state.environments[1].children.length).toEqual(serverData.length);
       expect(store.state.environments[1].children[0].isChildren).toEqual(true);
+    });
+
+    it('should keep folder content when environments are updated', () => {
+      store.storeEnvironments(serverData);
+
+      store.setfolderContent(store.state.environments[1], serverData);
+
+      expect(store.state.environments[1].children.length).toEqual(serverData.length);
+      // poll
+      store.storeEnvironments(serverData);
+      expect(store.state.environments[1].children.length).toEqual(serverData.length);
     });
   });
 
@@ -162,7 +189,10 @@ describe('Store', () => {
       const environment = {
         name: 'foo',
         size: 1,
-        id: 1,
+        latest: {
+          id: 1,
+        },
+        rollout_status_path: 'path',
       };
 
       store.storeEnvironments([environment]);
@@ -170,11 +200,28 @@ describe('Store', () => {
 
     it('should toggle deploy board property for given environment id', () => {
       store.toggleDeployBoard(1);
-      expect(store.state.environments[0].isDeployBoardVisible).toEqual(true);
+
+      expect(store.state.environments[0].isDeployBoardVisible).toEqual(false);
     });
 
     it('should store deploy board data for given environment id', () => {
       store.storeDeployBoard(1, deployBoardMockData);
+      expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
+    });
+
+    it('should keep deploy board data when updating environments', () => {
+      store.storeDeployBoard(1, deployBoardMockData);
+      expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
+
+      const environment = {
+        name: 'foo',
+        size: 1,
+        latest: {
+          id: 1,
+        },
+        rollout_status_path: 'path',
+      };
+      store.storeEnvironments([environment]);
       expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
     });
   });
@@ -185,6 +232,24 @@ describe('Store', () => {
 
       store.toggleFolder(store.state.environments[1]);
       expect(store.getOpenFolders()[0]).toEqual(store.state.environments[1]);
+    });
+  });
+
+  describe('getOpenDeployBoards', () => {
+    it('should return open deploy boards', () => {
+      const environment = {
+        name: 'foo',
+        size: 1,
+        latest: {
+          id: 1,
+        },
+        rollout_status_path: 'path',
+      };
+
+      store.storeEnvironments([environment]);
+
+      expect(store.getOpenDeployBoards().length).toEqual(1);
+      expect(store.getOpenDeployBoards()[0].id).toEqual(environment.latest.id);
     });
   });
 });

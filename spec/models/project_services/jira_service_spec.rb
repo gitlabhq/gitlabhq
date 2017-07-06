@@ -64,12 +64,12 @@ describe JiraService, models: true do
     end
   end
 
-  describe '#reference_pattern' do
+  describe '.reference_pattern' do
     it_behaves_like 'allows project key on reference pattern'
 
     it 'does not allow # on the code' do
-      expect(subject.reference_pattern.match('#123')).to be_nil
-      expect(subject.reference_pattern.match('1#23#12')).to be_nil
+      expect(described_class.reference_pattern.match('#123')).to be_nil
+      expect(described_class.reference_pattern.match('1#23#12')).to be_nil
     end
   end
 
@@ -106,15 +106,15 @@ describe JiraService, models: true do
 
       @jira_service.save
 
-      project_issues_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123'
-      @transitions_url   = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
-      @comment_url       = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/comment'
-      @remote_link_url   = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/remotelink'
+      project_issues_url = 'http://jira.example.com/rest/api/2/issue/JIRA-123'
+      @transitions_url   = 'http://jira.example.com/rest/api/2/issue/JIRA-123/transitions'
+      @comment_url       = 'http://jira.example.com/rest/api/2/issue/JIRA-123/comment'
+      @remote_link_url   = 'http://jira.example.com/rest/api/2/issue/JIRA-123/remotelink'
 
-      WebMock.stub_request(:get, project_issues_url)
-      WebMock.stub_request(:post, @transitions_url)
-      WebMock.stub_request(:post, @comment_url)
-      WebMock.stub_request(:post, @remote_link_url)
+      WebMock.stub_request(:get, project_issues_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
+      WebMock.stub_request(:post, @transitions_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
+      WebMock.stub_request(:post, @comment_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
+      WebMock.stub_request(:post, @remote_link_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
     end
 
     it "calls JIRA API" do
@@ -202,9 +202,9 @@ describe JiraService, models: true do
     end
 
     def test_settings(api_url)
-      project_url = "http://jira_username:jira_password@#{api_url}/rest/api/2/project/GitLabProject"
+      project_url = "http://#{api_url}/rest/api/2/project/GitLabProject"
 
-      WebMock.stub_request(:get, project_url)
+      WebMock.stub_request(:get, project_url).with(basic_auth: %w(jira_username jira_password))
 
       jira_service.test_settings
     end

@@ -16,7 +16,7 @@ describe Projects::VariablesController do
                       variable: { key: "one", value: "two" }
 
         expect(flash[:notice]).to include 'Variables were successfully updated.'
-        expect(response).to redirect_to(namespace_project_settings_ci_cd_path(project.namespace, project))
+        expect(response).to redirect_to(project_settings_ci_cd_path(project))
       end
     end
 
@@ -44,7 +44,7 @@ describe Projects::VariablesController do
                       id: variable.id, variable: { key: variable.key, value: 'two' }
 
         expect(flash[:notice]).to include 'Variable was successfully updated.'
-        expect(response).to redirect_to(namespace_project_variables_path(project.namespace, project))
+        expect(response).to redirect_to(project_variables_path(project))
       end
 
       it 'renders the action #show if the variable key is invalid' do

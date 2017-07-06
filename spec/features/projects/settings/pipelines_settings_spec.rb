@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature "Pipelines settings", feature: true do
-  include GitlabRoutingHelper
-
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:role) { :developer }

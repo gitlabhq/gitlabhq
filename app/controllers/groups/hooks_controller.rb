@@ -2,6 +2,7 @@ class Groups::HooksController < Groups::ApplicationController
   # Authorize
   before_action :group
   before_action :authorize_admin_group!
+  before_action :check_group_webhooks_available!
 
   respond_to :html
 

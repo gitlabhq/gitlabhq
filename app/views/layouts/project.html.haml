@@ -1,13 +1,17 @@
 - page_title       @project.name_with_namespace
 - page_description @project.description    unless page_description
 - header_title     project_title(@project) unless header_title
-- nav              "project"
+- if show_new_nav?
+  - nav            "new_project_sidebar"
+  - @new_sidebar    = true
+- else
+  - nav            "project"
 
 - content_for :project_javascripts do
   - project = @target_project || @project
   - if current_user
     :javascript
-      window.uploads_path = "#{namespace_project_uploads_path project.namespace,project}";
+      window.uploads_path = "#{project_uploads_path(project)}";
       window.preview_markdown_path = "#{preview_markdown_path(project)}";
 
 - content_for :header_content do

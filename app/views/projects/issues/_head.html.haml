@@ -5,30 +5,30 @@
       %ul{ class: (container_class) }
         - if project_nav_tab?(:issues) && !current_controller?(:merge_requests)
           = nav_link(controller: :issues) do
-            = link_to namespace_project_issues_path(@project.namespace, @project), title: 'Issues' do
+            = link_to project_issues_path(@project), title: 'Issues' do
               %span
                 List
 
           = nav_link(controller: :boards) do
             -# EE should use plural "Boards"
-            = link_to namespace_project_boards_path(@project.namespace, @project), title: 'Boards' do
+            = link_to project_boards_path(@project), title: 'Boards' do
               %span
                 Boards
 
         - if project_nav_tab?(:merge_requests) && current_controller?(:merge_requests)
           = nav_link(controller: :merge_requests) do
-            = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests' do
+            = link_to project_merge_requests_path(@project), title: 'Merge Requests' do
               %span
                 Merge Requests
 
         - if project_nav_tab? :labels
           = nav_link(controller: :labels) do
-            = link_to namespace_project_labels_path(@project.namespace, @project), title: 'Labels' do
+            = link_to project_labels_path(@project), title: 'Labels' do
               %span
                 Labels
 
         - if project_nav_tab? :milestones
           = nav_link(controller: :milestones) do
-            = link_to namespace_project_milestones_path(@project.namespace, @project), title: 'Milestones' do
+            = link_to project_milestones_path(@project), title: 'Milestones' do
               %span
                 Milestones

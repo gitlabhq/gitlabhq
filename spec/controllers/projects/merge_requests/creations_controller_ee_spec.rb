@@ -44,7 +44,7 @@ describe Projects::MergeRequests::CreationsController do
 
         it 'creates the merge request' do
           expect(created_merge_request).to be_valid
-          expect(response).to redirect_to(namespace_project_merge_request_path(id: created_merge_request.iid, project_id: project.to_param))
+          expect(response).to redirect_to(project_merge_request_path(project, created_merge_request))
         end
       end
 
@@ -59,7 +59,7 @@ describe Projects::MergeRequests::CreationsController do
 
         it 'creates the merge request' do
           expect(created_merge_request).to be_valid
-          expect(response).to redirect_to(namespace_project_merge_request_path(id: created_merge_request.iid, project_id: project.to_param))
+          expect(response).to redirect_to(project_merge_request_path(project, created_merge_request))
         end
       end
 
@@ -74,7 +74,7 @@ describe Projects::MergeRequests::CreationsController do
 
         it 'creates the merge request' do
           expect(created_merge_request).to be_valid
-          expect(response).to redirect_to(namespace_project_merge_request_path(id: created_merge_request.iid, project_id: project.to_param))
+          expect(response).to redirect_to(project_merge_request_path(project, created_merge_request))
         end
       end
 
@@ -93,7 +93,7 @@ describe Projects::MergeRequests::CreationsController do
 
         it 'creates the merge request' do
           expect(created_merge_request).to be_valid
-          expect(response).to redirect_to(namespace_project_merge_request_path(id: created_merge_request.iid, project_id: project.to_param))
+          expect(response).to redirect_to(project_merge_request_path(project, created_merge_request))
         end
       end
     end

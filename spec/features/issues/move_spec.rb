@@ -100,8 +100,4 @@ feature 'issue move to another project' do
   def issue_path(issue)
     project_issue_path(issue.project, issue)
   end
-
-  def project_path(project)
-    project_path(new_project)
-  end
 end

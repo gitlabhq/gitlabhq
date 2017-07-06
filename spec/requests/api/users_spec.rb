@@ -13,9 +13,40 @@ describe API::Users do
 
   describe 'GET /users' do
     context "when unauthenticated" do
-      it "returns authentication error" do
+      it "returns authorization error when the `username` parameter is not passed" do
         get api("/users")
-        expect(response).to have_http_status(401)
+
+        expect(response).to have_http_status(403)
+      end
+
+      it "returns the user when a valid `username` parameter is passed" do
+        user = create(:user)
+
+        get api("/users"), username: user.username
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['id']).to eq(user.id)
+        expect(json_response[0]['username']).to eq(user.username)
+      end
+
+      it "returns authorization error when the `username` parameter refers to an inaccessible user" do
+        user = create(:user)
+
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+
+        get api("/users"), username: user.username
+
+        expect(response).to have_http_status(403)
+      end
+
+      it "returns an empty response when an invalid `username` parameter is passed" do
+        get api("/users"), username: 'invalid'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(0)
       end
     end
 
@@ -150,6 +181,7 @@ describe API::Users do
   describe "GET /users/:id" do
     it "returns a user by id" do
       get api("/users/#{user.id}", user)
+
       expect(response).to have_http_status(200)
       expect(json_response['username']).to eq(user.username)
     end
@@ -160,9 +192,22 @@ describe API::Users do
       expect(json_response['is_admin']).to be_nil
     end
 
-    it "returns a 401 if unauthenticated" do
-      get api("/users/9998")
-      expect(response).to have_http_status(401)
+    context 'for an anonymous user' do
+      it "returns a user by id" do
+        get api("/users/#{user.id}")
+
+        expect(response).to have_http_status(200)
+        expect(json_response['username']).to eq(user.username)
+      end
+
+      it "returns a 404 if the target user is present but inaccessible" do
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(nil, :read_user, user).and_return(false)
+
+        get api("/users/#{user.id}")
+
+        expect(response).to have_http_status(404)
+      end
     end
 
     it "returns a 404 error if user id not found" do
@@ -356,6 +401,14 @@ describe API::Users do
         expect(json_response['identities'].first['extern_uid']).to eq('67890')
         expect(json_response['identities'].first['provider']).to eq('github')
       end
+    end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { '/users' }
+      let(:api_call) { method(:api) }
+
+      include_examples 'does not allow the "read_user" scope'
     end
   end
 
@@ -873,6 +926,13 @@ describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/public')
         expect(json_response['id']).to eq(user.id)
       end
+
+      context "scopes" do
+        let(:path) { "/user" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
     end
 
     context 'with admin' do
@@ -942,6 +1002,13 @@ describe API::Users do
         expect(json_response).to be_an Array
         expect(json_response.first["title"]).to eq(key.title)
       end
+
+      context "scopes" do
+        let(:path) { "/user/keys" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
     end
   end
 
@@ -974,6 +1041,13 @@ describe API::Users do
       get api("/users/keys/ASDF", admin)
 
       expect(response).to have_http_status(404)
+    end
+
+    context "scopes" do
+      let(:path) { "/user/keys/#{key.id}" }
+      let(:api_call) { method(:api) }
+
+      include_examples 'allows the "read_user" scope'
     end
   end
 
@@ -1064,6 +1138,13 @@ describe API::Users do
         expect(json_response).to be_an Array
         expect(json_response.first["email"]).to eq(email.email)
       end
+
+      context "scopes" do
+        let(:path) { "/user/emails" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
     end
   end
 
@@ -1095,6 +1176,13 @@ describe API::Users do
       get api("/users/emails/ASDF", admin)
 
       expect(response).to have_http_status(404)
+    end
+
+    context "scopes" do
+      let(:path) { "/user/emails/#{email.id}" }
+      let(:api_call) { method(:api) }
+
+      include_examples 'allows the "read_user" scope'
     end
   end
 

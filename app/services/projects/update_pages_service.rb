@@ -95,11 +95,12 @@ module Projects
       end
 
       # Requires UnZip at least 6.00 Info-ZIP.
+      # -qq be (very) quiet
       # -n  never overwrite existing files
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
       build.artifacts_file.use_file do |artifacts_path|
-        unless system(*%W(unzip -n #{artifacts_path} #{site_path} -d #{temp_path}))
+        unless system(*%W(unzip -qq -n #{artifacts_path} #{site_path} -d #{temp_path}))
           raise 'pages failed to extract'
         end
       end

@@ -1,4 +1,6 @@
 class IssuableBaseService < BaseService
+  prepend ::EE::IssuableBaseService
+
   private
 
   def create_milestone_note(issuable)

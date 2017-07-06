@@ -39,6 +39,17 @@
       runnerId() {
         return `#${this.job.runner.id}`;
       },
+      renderBlock() {
+        return this.job.merge_request ||
+          this.job.duration ||
+          this.job.finished_data ||
+          this.job.erased_at ||
+          this.job.queued ||
+          this.job.runner ||
+          this.job.coverage ||
+          this.job.tags.length ||
+          this.job.cancel_path;
+      },
     },
   };
 </script>
@@ -63,7 +74,7 @@
           Retry
         </a>
       </div>
-      <div class="block">
+      <div :class="{block : renderBlock }">
         <p
           class="build-detail-row js-job-mr"
           v-if="job.merge_request">

@@ -33,7 +33,7 @@ class ProjectWiki
   end
 
   def web_url
-    Gitlab::Routing.url_helpers.namespace_project_wiki_url(@project.namespace, @project, :home)
+    Gitlab::Routing.url_helpers.project_wiki_url(@project, :home)
   end
 
   def url_to_repo

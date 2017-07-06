@@ -111,11 +111,12 @@ module Gitlab
     config.assets.precompile << "katex.css"
     config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
-    config.assets.precompile << "peek.css"
+    config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
     config.assets.precompile << "new_nav.css"
+    config.assets.precompile << "new_sidebar.css"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
@@ -169,6 +170,26 @@ module Gitlab
 
     config.generators do |g|
       g.factory_girl false
+    end
+
+    config.after_initialize do
+      Rails.application.reload_routes!
+
+      project_url_helpers = Module.new do
+        Gitlab::Application.routes.named_routes.helper_names.each do |name|
+          next unless name.include?('namespace_project')
+
+          define_method(name.sub('namespace_project', 'project')) do |project, *args|
+            send(name, project&.namespace, project, *args)
+          end
+        end
+      end
+
+      Gitlab::Routing.url_helpers.include project_url_helpers
+      Gitlab::Routing.url_helpers.extend project_url_helpers
+
+      GitlabRoutingHelper.include project_url_helpers
+      GitlabRoutingHelper.extend project_url_helpers
     end
   end
 end

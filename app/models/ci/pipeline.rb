@@ -24,7 +24,7 @@ module Ci
     has_many :stages
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
-    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
+    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
@@ -151,6 +151,7 @@ module Ci
         where(id: max_id)
       end
     end
+    scope :internal, -> { where(source: internal_sources) }
 
     def self.latest_status(ref = nil)
       latest(ref).status
@@ -172,6 +173,10 @@ module Ci
 
     def self.total_duration
       where.not(duration: nil).sum(:duration)
+    end
+
+    def self.internal_sources
+      sources.reject { |source| source == "external" }.values
     end
 
     def stages_count

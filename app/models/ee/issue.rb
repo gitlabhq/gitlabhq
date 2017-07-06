@@ -6,6 +6,11 @@ module EE
     end
 
     # override
+    def allows_multiple_assignees?
+      project.feature_available?(:multiple_issue_assignees)
+    end
+
+    # override
     def subscribed_without_subscriptions?(user, *)
       # TODO: this really shouldn't be necessary, because the support
       # bot should be a participant (which is what the superclass
@@ -22,6 +27,15 @@ module EE
       # seems, though, since it isn't permitted to :receive_notifications,
       # and doesn't actually show up in the participants list.
       user.support_bot? || super
+    end
+
+    # override
+    def weight
+      super if supports_weight?
+    end
+
+    def supports_weight?
+      project&.feature_available?(:issue_weights)
     end
   end
 end

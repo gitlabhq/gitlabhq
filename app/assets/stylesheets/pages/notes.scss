@@ -473,7 +473,7 @@ ul.notes {
 }
 
 .more-actions {
-  display: inline;
+  display: inline-block;
 
   .tooltip {
     white-space: nowrap;
@@ -628,8 +628,14 @@ ul.notes {
  * Line note button on the side of diffs
  */
 
+.line_holder .is-over:not(.no-comment-btn) {
+  .add-diff-note {
+    opacity: 1;
+  }
+}
+
 .add-diff-note {
-  display: none;
+  opacity: 0;
   margin-top: -2px;
   border-radius: 50%;
   background: $white-light;
@@ -642,13 +648,11 @@ ul.notes {
   width: 23px;
   height: 23px;
   border: 1px solid $blue-500;
-  transition: transform .1s ease-in-out;
 
   &:hover {
     background: $blue-500;
     border-color: $blue-600;
     color: $white-light;
-    transform: scale(1.15);
   }
 
   &:active {

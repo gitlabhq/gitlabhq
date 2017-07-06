@@ -167,7 +167,9 @@ feature 'Create New Merge Request', feature: true, js: true do
     end
 
     it 'shows pipelines for a new merge request' do
-      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'fix' })
+      visit project_new_merge_request_path(
+        project,
+        merge_request: { target_branch: 'master', source_branch: 'fix' })
 
       page.within('.merge-request') do
         click_link 'Pipelines'

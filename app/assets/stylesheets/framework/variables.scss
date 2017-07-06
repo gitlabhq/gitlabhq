@@ -74,6 +74,8 @@ $red-700: #a62d19;
 $red-800: #8b2615;
 $red-900: #711e11;
 
+$purple-600: #6e49cb;
+$purple-650: #5c35ae;
 $purple-700: #4a2192;
 $purple-800: #2c0a5c;
 $purple-900: #380d75;
@@ -103,6 +105,7 @@ $well-light-text-color: #5b6169;
  */
 $gl-font-size: 14px;
 $gl-text-color: rgba(0, 0, 0, .85);
+$gl-text-color-light: rgba(0, 0, 0, .7);
 $gl-text-color-secondary: rgba(0, 0, 0, .55);
 $gl-text-color-disabled: rgba(0, 0, 0, .35);
 $gl-text-color-inverted: rgba(255, 255, 255, 1.0);
@@ -611,3 +614,15 @@ Convdev Index
 $color-high-score: $green-400;
 $color-average-score: $orange-400;
 $color-low-score: $red-400;
+
+/*
+Performance Bar
+*/
+$perf-bar-text: #999;
+$perf-bar-production: #222;
+$perf-bar-staging: #291430;
+$perf-bar-development: #4c1210;
+$perf-bar-bucket-bg: #111;
+$perf-bar-bucket-color: #ccc;
+$perf-bar-bucket-box-shadow-from: rgba($white-light, .2);
+$perf-bar-bucket-box-shadow-to: rgba($black, .25);

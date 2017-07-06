@@ -782,42 +782,49 @@ describe User, models: true do
   end
 
   describe '.search' do
-    let(:user) { create(:user) }
+    let!(:user) { create(:user, name: 'user', username: 'usern', email: 'email@gmail.com') }
+    let!(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@gmail.com') }
 
-    it 'returns users with a matching name' do
-      expect(described_class.search(user.name)).to eq([user])
+    describe 'name matching' do
+      it 'returns users with a matching name with exact match first' do
+        expect(described_class.search(user.name)).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching name' do
+        expect(described_class.search(user.name[0..2])).to eq([user2, user])
+      end
+
+      it 'returns users with a matching name regardless of the casing' do
+        expect(described_class.search(user2.name.upcase)).to eq([user2])
+      end
     end
 
-    it 'returns users with a partially matching name' do
-      expect(described_class.search(user.name[0..2])).to eq([user])
+    describe 'email matching' do
+      it 'returns users with a matching Email' do
+        expect(described_class.search(user.email)).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching Email' do
+        expect(described_class.search(user.email[0..2])).to eq([user2, user])
+      end
+
+      it 'returns users with a matching Email regardless of the casing' do
+        expect(described_class.search(user2.email.upcase)).to eq([user2])
+      end
     end
 
-    it 'returns users with a matching name regardless of the casing' do
-      expect(described_class.search(user.name.upcase)).to eq([user])
-    end
+    describe 'username matching' do
+      it 'returns users with a matching username' do
+        expect(described_class.search(user.username)).to eq([user, user2])
+      end
 
-    it 'returns users with a matching Email' do
-      expect(described_class.search(user.email)).to eq([user])
-    end
+      it 'returns users with a partially matching username' do
+        expect(described_class.search(user.username[0..2])).to eq([user2, user])
+      end
 
-    it 'returns users with a partially matching Email' do
-      expect(described_class.search(user.email[0..2])).to eq([user])
-    end
-
-    it 'returns users with a matching Email regardless of the casing' do
-      expect(described_class.search(user.email.upcase)).to eq([user])
-    end
-
-    it 'returns users with a matching username' do
-      expect(described_class.search(user.username)).to eq([user])
-    end
-
-    it 'returns users with a partially matching username' do
-      expect(described_class.search(user.username[0..2])).to eq([user])
-    end
-
-    it 'returns users with a matching username regardless of the casing' do
-      expect(described_class.search(user.username.upcase)).to eq([user])
+      it 'returns users with a matching username regardless of the casing' do
+        expect(described_class.search(user2.username.upcase)).to eq([user2])
+      end
     end
   end
 

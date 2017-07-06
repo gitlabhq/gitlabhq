@@ -132,7 +132,7 @@ module API
       expose :printing_merge_request_link_enabled
 
       # EE only
-      expose :approvals_before_merge
+      expose :approvals_before_merge, if: ->(project, _) { project.feature_available?(:merge_request_approvers) }
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end
@@ -313,7 +313,7 @@ module API
       expose :upvotes, :downvotes
       expose :due_date
       expose :confidential
-      expose :weight
+      expose :weight, if: ->(issue, _) { issue.supports_weight? }
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
@@ -500,7 +500,7 @@ module API
         target_url    = "namespace_project_#{target_type}_url"
         target_anchor = "note_#{todo.note_id}" if todo.note_id?
 
-        Gitlab::Application.routes.url_helpers.public_send(target_url,
+        Gitlab::Routing.url_helpers.public_send(target_url,
           todo.project.namespace, todo.project, todo.target, anchor: target_anchor)
       end
 
@@ -510,11 +510,19 @@ module API
     end
 
     class Namespace < Grape::Entity
-      expose :id, :name, :path, :kind, :full_path
+      expose :id, :name, :path, :kind, :full_path, :parent_id
+
+      expose :members_count_with_descendants, if: -> (namespace, opts) { expose_members_count_with_descendants?(namespace, opts) } do |namespace, _|
+        namespace.users_with_descendants.count
+      end
+
+      def expose_members_count_with_descendants?(namespace, opts)
+        namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
+      end
 
       # EE-only
       expose :shared_runners_minutes_limit, if: lambda { |_, options| options[:current_user]&.admin? }
-      expose :plan, if: lambda { |_, options| options[:current_user]&.admin? }
+      expose :plan, if: -> (namespace, opts) { Ability.allowed?(opts[:current_user], :admin_namespace, namespace) }
     end
 
     class MemberAccess < Grape::Entity
@@ -611,7 +619,8 @@ module API
       expose :id
       expose :name
       expose :project, using: Entities::BasicProjectDetails
-      expose :milestone
+      expose :milestone,
+             if: -> (board, _) { board.project.feature_available?(:issue_board_milestone) }
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end
@@ -773,6 +782,11 @@ module API
     class Variable < Grape::Entity
       expose :key, :value
       expose :protected?, as: :protected
+
+      # EE
+      expose :environment_scope, if: ->(variable, options) {
+        variable.project.feature_available?(:variable_environment_scope)
+      }
     end
 
     class Pipeline < PipelineBasic

@@ -2,7 +2,7 @@
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
-  serialize :properties, JSON # rubocop:disable Cop/ActiverecordSerialize
+  serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   default_value_for :active, false
   default_value_for :push_events, true
@@ -49,6 +49,14 @@ class Service < ActiveRecord::Base
 
   def activated?
     active
+  end
+
+  def show_active_box?
+    true
+  end
+
+  def editable?
+    true
   end
 
   def template?
@@ -237,13 +245,20 @@ class Service < ActiveRecord::Base
       prometheus
       pushover
       redmine
-      slack_slash_commands
       slack
       teamcity
       microsoft_teams
     ]
     if Rails.env.development?
       service_names += %w[mock_ci mock_deployment mock_monitoring]
+    end
+
+    if show_gitlab_slack_application?
+      service_names.push('gitlab_slack_application')
+    end
+
+    unless Gitlab.com?
+      service_names.push('slack_slash_commands')
     end
 
     service_names.sort_by(&:downcase)
@@ -254,6 +269,10 @@ class Service < ActiveRecord::Base
     service.template = false
     service.project_id = project_id
     service
+  end
+
+  def self.show_gitlab_slack_application?
+    (Gitlab.com? && current_application_settings.slack_app_enabled) || Rails.env.development?
   end
 
   private

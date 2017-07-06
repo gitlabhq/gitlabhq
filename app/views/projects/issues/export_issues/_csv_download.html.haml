@@ -12,11 +12,11 @@
       .modal-header
         = icon('check', { class: 'export-checkmark' })
         %strong
-          #{pluralize(cached_issuables_count_for_state(:issues, params[:state]), 'issue')} selected
+          #{pluralize(issuables_count_for_state(:issues, params[:state]), 'issue')} selected
       .modal-body
         %div
           The CSV export will be created in the background. Once finished, it will be sent to
           %strong= @current_user.notification_email
           in an attachment.
       .modal-footer
-        = link_to 'Export issues', export_csv_namespace_project_issues_path(@project.namespace, @project, request.query_parameters), method: :post, class: 'btn btn-success pull-left', title: 'Export issues'
+        = link_to 'Export issues', export_csv_project_issues_path(@project, request.query_parameters), method: :post, class: 'btn btn-success pull-left', title: 'Export issues'

@@ -1,4 +1,4 @@
-require 'declarative_policy'
+require_dependency 'declarative_policy'
 
 module API
   # Projects API

@@ -1,8 +1,7 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
     target_project = event.project.default_merge_request_target
-    namespace_project_new_merge_request_path(
-      event.project.namespace,
+    project_new_merge_request_path(
       event.project,
       new_mr_from_push_event(event, target_project)
     )
@@ -48,8 +47,8 @@ module MergeRequestsHelper
   end
 
   def mr_change_branches_path(merge_request)
-    namespace_project_new_merge_request_path(
-      @project.namespace, @project,
+    project_new_merge_request_path(
+      @project,
       merge_request: {
         source_project_id: merge_request.source_project_id,
         target_project_id: merge_request.target_project_id,
@@ -121,9 +120,7 @@ module MergeRequestsHelper
   end
 
   def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)
-    diffs_namespace_project_merge_request_path(
-      project.namespace, project, merge_request,
-      diff_id: merge_request_diff.id, start_sha: start_sha)
+    diffs_project_merge_request_path(project, merge_request, diff_id: merge_request_diff.id, start_sha: start_sha)
   end
 
   def version_index(merge_request_diff)

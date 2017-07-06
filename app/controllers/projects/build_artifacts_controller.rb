@@ -7,23 +7,23 @@ class Projects::BuildArtifactsController < Projects::ApplicationController
   before_action :validate_artifacts!
 
   def download
-    redirect_to download_namespace_project_job_artifacts_path(project.namespace, project, job)
+    redirect_to download_project_job_artifacts_path(project, job)
   end
 
   def browse
-    redirect_to browse_namespace_project_job_artifacts_path(project.namespace, project, job, path: params[:path])
+    redirect_to browse_project_job_artifacts_path(project, job, path: params[:path])
   end
 
   def file
-    redirect_to file_namespace_project_job_artifacts_path(project.namespace, project, job, path: params[:path])
+    redirect_to file_project_job_artifacts_path(project, job, path: params[:path])
   end
 
   def raw
-    redirect_to raw_namespace_project_job_artifacts_path(project.namespace, project, job, path: params[:path])
+    redirect_to raw_project_job_artifacts_path(project, job, path: params[:path])
   end
 
   def latest_succeeded
-    redirect_to latest_succeeded_namespace_project_artifacts_path(project.namespace, project, job, ref_name_and_path: params[:ref_name_and_path], job: params[:job])
+    redirect_to latest_succeeded_project_artifacts_path(project, job, ref_name_and_path: params[:ref_name_and_path], job: params[:job])
   end
 
   private
