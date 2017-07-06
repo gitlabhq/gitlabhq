@@ -104,6 +104,52 @@ describe Projects::MergeRequestsController do
       it_behaves_like 'update invalid issuable', MergeRequest
     end
 
+    context 'overriding approvers per MR' do
+      before do
+        project.update_attributes(approvals_before_merge: 1)
+      end
+
+      context 'enabled' do
+        before do
+          project.update_attributes(disable_overriding_approvers_per_merge_request: false)
+        end
+
+        it 'updates approvals' do
+          update_merge_request(approvals_before_merge: 2)
+
+          expect(merge_request.reload.approvals_before_merge).to eq(2)
+        end
+      end
+
+      context 'disabled' do
+        let(:new_approver) { create(:user) }
+        let(:new_approver_group) { create(:approver_group) }
+
+        before do
+          project.team << [new_approver, :developer]
+          project.update_attributes(disable_overriding_approvers_per_merge_request: true)
+        end
+
+        it 'does not update approvals_before_merge' do
+          update_merge_request(approvals_before_merge: 2)
+
+          expect(merge_request.reload.approvals_before_merge).to eq(nil)
+        end
+
+        it 'does not update approver_ids' do
+          update_merge_request(approver_ids: [new_approver].map(&:id).join(','))
+
+          expect(merge_request.reload.approver_ids).to be_empty
+        end
+
+        it 'does not update approver_group_ids' do
+          update_merge_request(approver_group_ids: [new_approver_group].map(&:id).join(','))
+
+          expect(merge_request.reload.approver_group_ids).to be_empty
+        end
+      end
+    end
+
     context 'the approvals_before_merge param' do
       before do
         project.update_attributes(approvals_before_merge: 2)
