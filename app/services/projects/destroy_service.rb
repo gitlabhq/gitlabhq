@@ -25,27 +25,15 @@ module Projects
 
       Projects::UnlinkForkService.new(project, current_user).execute
 
-      Project.transaction do
-        unless remove_legacy_registry_tags
-          raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
-        end
-
-        unless remove_repository(repo_path)
-          raise_error('Failed to remove project repository. Please try again or contact administrator.')
-        end
-
-        unless remove_repository(wiki_path)
-          raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
-        end
-
-        project.team.truncate
-        project.destroy!
-      end
+      attempt_destroy_transaction(project, repo_path, wiki_path)
 
       system_hook_service.execute_hooks_for(project, :destroy)
 
       log_info("Project \"#{project.full_path}\" was removed")
       true
+    rescue Projects::DestroyService::DestroyError => error
+      Rails.logger.error("Deletion failed on #{project.full_path} with the following message: #{error.message}")
+      false
     end
 
     private
@@ -69,6 +57,28 @@ module Projects
       else
         false
       end
+    end
+
+    def attempt_destroy_transaction(project, repo_path, wiki_path)
+      Project.transaction do
+        unless remove_legacy_registry_tags
+          raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
+        end
+
+        unless remove_repository(repo_path)
+          raise_error('Failed to remove project repository. Please try again or contact administrator.')
+        end
+
+        unless remove_repository(wiki_path)
+          raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
+        end
+
+        project.team.truncate
+        project.destroy!
+      end
+    rescue Exception => error # rubocop:disable Lint/RescueException
+      project.update_attributes(delete_error: error.message, pending_delete: false)
+      raise
     end
 
     ##
