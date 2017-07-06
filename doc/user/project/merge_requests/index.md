@@ -26,7 +26,7 @@ With GitLab merge requests, you can:
 
 With [GitLab Enterprise Edition][ee], you can also:
 
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/pipelines.md#multi-project-pipelines-graphs) (available only in GitLab Enterprise Edition Premium)
+- View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi-project_pipeline_graphs.md) (available only in GitLab Enterprise Edition Premium)
 - Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests) (available in GitLab Enterprise Edition Starter)
 - [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Enterprise Edition Starter)

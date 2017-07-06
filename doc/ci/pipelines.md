@@ -186,22 +186,12 @@ by name. The order of severity is:
 
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
-### Multi-project pipelines graphs
+### Multi-Project Pipelines Graphs
 
-> [Introduced][ee-2121] in [GitLab Enterprise Edition Premium][eep] 9.3.
+With [Multi-Project Pipeline Graphs](multi-project_pipeline_graphs.md),
+you can visualize cross-project pipelines.
 
-Using the [`CI_JOB_TOKEN` when triggering pipelines][triggers], GitLab
-recognizes the source of the job token, and thus internally ties these pipelines
-together which makes it easy to start visualizing their relationships.
-
-Those relationships are displayed in the pipeline graph by showing inbound and
-outbound connections for upstream and downstream pipeline dependencies.
-
-![Multi-projects pipelines graphs](img/multi_project_pipelines_graph.png)
-
-This is useful for larger projects, especially those adopting a micro-services
-architecture, that often have a set of interdependent components which form the
-complete product.
+It is available only in [GitLab Enterprise Edition Premium][eep].
 
 ## How the pipeline duration is calculated
 
