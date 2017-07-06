@@ -72,7 +72,7 @@
               = reply_email
               %span.light.pull-right
                 = boolean_to_icon Gitlab::IncomingEmail.enabled?
-<<<<<<< HEAD
+
             - elastic = "Elasticsearch"
             %p{ "aria-label" => "#{elastic}: status " + (current_application_settings.elasticsearch_search? ? "on" : "off") }
               = elastic
@@ -83,8 +83,7 @@
               = geo
               %span.light.pull-right
                 = boolean_to_icon Gitlab::Geo.enabled?
-=======
->>>>>>> ce/master
+
             - container_reg = "Container Registry"
             %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
               = container_reg
@@ -126,7 +125,7 @@
               GitLab API
               %span.pull-right
                 = API::API::version
-<<<<<<< HEAD
+
             - if Gitlab::Geo.enabled?
               %p
                 Geo
@@ -135,8 +134,7 @@
                     = Gitlab::Geo.current_node.primary ? 'Primary node' : 'Secondary node'
                   - else
                     Undefined
-=======
->>>>>>> ce/master
+
             %p
               Git
               %span.pull-right

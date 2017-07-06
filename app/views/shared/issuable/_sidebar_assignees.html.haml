@@ -49,12 +49,8 @@
     - data = { field_name: "#{issuable.to_ability_name}[assignee_ids][]" }
     - data[:multi_select] = true
     - data['dropdown-title'] = title
-<<<<<<< HEAD
-    - data['dropdown-header'] = 'Assignee'
-=======
     - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
     - data['max-select'] = dropdown_options[:data][:'max-select']
->>>>>>> ce/master
     - options[:data].merge!(data)
 
   = dropdown_tag(title, options: options)
