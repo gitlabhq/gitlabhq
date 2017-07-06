@@ -5,14 +5,14 @@
         = custom_icon('icon_fork')
         %span= s_('GoToYourFork|Fork')
     - elsif !current_user.can_create_project?
-      = link_to new_namespace_project_fork_path(@project.namespace, @project), title: _('You have reached your project limit'), class: 'btn has-tooltip disabled' do
+      = link_to new_project_fork_path(@project), title: _('You have reached your project limit'), class: 'btn has-tooltip disabled' do
         = custom_icon('icon_fork')
         %span= s_('CreateNewFork|Fork')
     - else
-      = link_to new_namespace_project_fork_path(@project.namespace, @project), class: 'btn' do
+      = link_to new_project_fork_path(@project), class: 'btn' do
         = custom_icon('icon_fork')
         %span= s_('CreateNewFork|Fork')
     .count-with-arrow
       %span.arrow
-      = link_to namespace_project_forks_path(@project.namespace, @project), title: n_('Fork', 'Forks', @project.forks_count), class: 'count' do
+      = link_to project_forks_path(@project), title: n_('Fork', 'Forks', @project.forks_count), class: 'count' do
         = @project.forks_count

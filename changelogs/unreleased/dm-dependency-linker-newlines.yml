@@ -1,5 +1,0 @@
----
-title: Fix diff of requirements.txt file by not matching newlines as part of package
-  names
-merge_request:
-author:

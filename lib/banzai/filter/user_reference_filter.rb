@@ -107,7 +107,7 @@ module Banzai
         if author && !project.team.member?(author)
           link_content
         else
-          url = urls.namespace_project_url(project.namespace, project,
+          url = urls.project_url(project,
                                            only_path: context[:only_path])
 
           data = data_attribute(project: project.id, author: author.try(:id))

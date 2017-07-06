@@ -87,14 +87,14 @@
       </rect>
       <text
         class="text-metric text-metric-bold"
-        x="8"
+        x="16"
         y="35"
         transform="translate(-5, 20)">
         {{formatTime}}
       </text>
       <text
-        class="text-metric-date"
-        x="8"
+        class="text-metric"
+        x="16"
         y="15"
         transform="translate(-5, 20)">
         {{formatDate}}

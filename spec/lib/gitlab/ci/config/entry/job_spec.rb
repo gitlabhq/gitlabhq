@@ -109,7 +109,7 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       it 'overrides global config' do
         expect(entry[:image].value).to eq(name: 'some_image')
-        expect(entry[:cache].value).to eq(key: 'test')
+        expect(entry[:cache].value).to eq(key: 'test', policy: 'pull-push')
       end
     end
 
@@ -123,7 +123,7 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       it 'uses config from global entry' do
         expect(entry[:image].value).to eq 'specified'
-        expect(entry[:cache].value).to eq(key: 'test')
+        expect(entry[:cache].value).to eq(key: 'test', policy: 'pull-push')
       end
     end
   end

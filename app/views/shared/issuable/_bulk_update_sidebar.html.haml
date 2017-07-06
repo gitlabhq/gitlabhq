@@ -31,7 +31,7 @@
         .title
           Milestone
         .filter-item
-          = dropdown_tag("Select milestone", options: { title: "Assign milestone", toggle_class: "js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true, default_label: "Milestone" } })
+          = dropdown_tag("Select milestone", options: { title: "Assign milestone", toggle_class: "js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: project_milestones_path(@project, :json), use_id: true, default_label: "Milestone" } })
       .block
         .title
           Labels

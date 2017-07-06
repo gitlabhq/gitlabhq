@@ -68,7 +68,7 @@ feature 'Resolve an open discussion in a merge request by creating an issue', fe
       project.team << [user, :reporter]
       sign_in user
       visit new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid,
-                                             discussion_to_resolve: discussion.id)
+                                            discussion_to_resolve: discussion.id)
     end
 
     it 'Shows a notice to ask someone else to resolve the discussions' do

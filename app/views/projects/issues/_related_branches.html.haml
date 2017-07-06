@@ -11,4 +11,4 @@
             = render_pipeline_status(pipeline)
         %span.related-branch-info
           %strong
-            = link_to branch, namespace_project_compare_path(@project.namespace, @project, from: @project.default_branch, to: branch), class: "ref-name"
+            = link_to branch, project_compare_path(@project, from: @project.default_branch, to: branch), class: "ref-name"

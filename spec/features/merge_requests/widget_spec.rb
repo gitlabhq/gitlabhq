@@ -12,7 +12,9 @@ describe 'Merge request', :feature, :js do
 
   context 'new merge request' do
     before do
-      visit project_new_merge_request_path(project, merge_request: {
+      visit project_new_merge_request_path(
+        project,
+        merge_request: {
           source_project_id: project.id,
           target_project_id: project.id,
           source_branch: 'feature',

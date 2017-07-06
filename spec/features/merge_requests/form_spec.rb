@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe 'New/edit merge request', feature: true, js: true do
-  include GitlabRoutingHelper
-
   let!(:project)   { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:fork_project) { create(:project, forked_from_project: project) }
   let!(:user)      { create(:user)}
@@ -23,7 +21,9 @@ describe 'New/edit merge request', feature: true, js: true do
 
     context 'new merge request' do
       before do
-        visit project_new_merge_request_path(project, merge_request: {
+        visit project_new_merge_request_path(
+          project,
+          merge_request: {
             source_project_id: project.id,
             target_project_id: project.id,
             source_branch: 'fix',
@@ -179,7 +179,9 @@ describe 'New/edit merge request', feature: true, js: true do
 
     context 'new merge request' do
       before do
-        visit project_new_merge_request_path(fork_project, merge_request: {
+        visit project_new_merge_request_path(
+          fork_project,
+          merge_request: {
             source_project_id: fork_project.id,
             target_project_id: project.id,
             source_branch: 'fix',

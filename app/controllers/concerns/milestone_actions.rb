@@ -45,7 +45,7 @@ module MilestoneActions
 
   def milestone_redirect_path
     if @project
-      namespace_project_milestone_path(@project.namespace, @project, @milestone)
+      project_milestone_path(@project, @milestone)
     elsif @group
       group_milestone_path(@group, @milestone.safe_title, title: @milestone.title)
     else

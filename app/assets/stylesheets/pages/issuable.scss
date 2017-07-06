@@ -200,7 +200,6 @@
   right: 0;
   transition: width .3s;
   background: $gray-light;
-  padding: 0 20px;
   z-index: 200;
   overflow: hidden;
 
@@ -222,6 +221,10 @@
         margin-top: 10px;
         display: block;
       }
+    }
+
+    .issuable-sidebar {
+      padding: 0 20px;
     }
 
     .issuable-sidebar-header {
@@ -597,7 +600,38 @@
     .issue-info-container {
       -webkit-flex: 1;
       flex: 1;
+      display: flex;
       padding-right: $gl-padding;
+
+      .issue-main-info {
+        flex: 1 auto;
+        margin-right: 10px;
+      }
+
+      .issuable-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex: 1 0 auto;
+
+        .controls {
+          margin-bottom: 2px;
+          line-height: 20px;
+          padding: 0;
+        }
+
+        .issue-updated-at {
+          line-height: 20px;
+        }
+      }
+
+      @media(max-width: $screen-xs-max) {
+        .issuable-meta {
+          .controls li {
+            margin-right: 0;
+          }
+        }
+      }
     }
 
     .issue-check {
@@ -607,6 +641,30 @@
 
       .selected_issue {
         vertical-align: text-top;
+      }
+    }
+
+    .issuable-milestone,
+    .issuable-info,
+    .task-status,
+    .issuable-updated-at {
+      font-weight: normal;
+      color: $gl-text-color-secondary;
+
+      a {
+        color: $gl-text-color;
+
+        .fa {
+          color: $gl-text-color-secondary;
+        }
+      }
+    }
+
+    @media(max-width: $screen-md-max) {
+      .task-status,
+      .issuable-due-date,
+      .project-ref-path {
+        display: none;
       }
     }
   }

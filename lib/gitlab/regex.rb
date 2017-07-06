@@ -19,14 +19,6 @@ module Gitlab
       "It must start with letter, digit, emoji or '_'."
     end
 
-    def file_name_regex
-      @file_name_regex ||= /\A[[[:alnum:]]_\-\.\@\+]*\z/.freeze
-    end
-
-    def file_name_regex_message
-      "can contain only letters, digits, '_', '-', '@', '+' and '.'."
-    end
-
     def container_registry_reference_regex
       Gitlab::PathRegex.git_reference_regex
     end
@@ -38,8 +30,12 @@ module Gitlab
       @container_repository_regex ||= %r{\A[a-z0-9]+(?:[-._/][a-z0-9]+)*\Z}
     end
 
+    def environment_name_regex_chars
+      'a-zA-Z0-9_/\\$\\{\\}\\. -'
+    end
+
     def environment_name_regex
-      @environment_name_regex ||= /\A[a-zA-Z0-9_\\\/\${}. -]+\z/.freeze
+      @environment_name_regex ||= /\A[#{environment_name_regex_chars}]+\z/.freeze
     end
 
     def environment_name_regex_message

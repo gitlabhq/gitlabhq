@@ -16,6 +16,19 @@ feature 'Admin updates settings', feature: true do
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  scenario 'Uncheck all restricted visibility levels' do
+    find('#application_setting_visibility_level_0').set(false)
+    find('#application_setting_visibility_level_10').set(false)
+    find('#application_setting_visibility_level_20').set(false)
+
+    click_button 'Save'
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(find('#application_setting_visibility_level_0')).not_to be_checked
+    expect(find('#application_setting_visibility_level_10')).not_to be_checked
+    expect(find('#application_setting_visibility_level_20')).not_to be_checked
+  end
+
   scenario 'Change application settings' do
     uncheck 'Gravatar enabled'
     fill_in 'Home page URL', with: 'https://about.gitlab.com/'

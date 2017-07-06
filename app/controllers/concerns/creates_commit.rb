@@ -78,8 +78,7 @@ module CreatesCommit
   end
 
   def new_merge_request_path
-    namespace_project_new_merge_request_path(
-      @project_to_commit_into.namespace,
+    project_new_merge_request_path(
       @project_to_commit_into,
       merge_request: {
         source_project_id: @project_to_commit_into.id,
@@ -91,7 +90,7 @@ module CreatesCommit
   end
 
   def existing_merge_request_path
-    namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    project_merge_request_path(@project, @merge_request)
   end
 
   def merge_request_exists?

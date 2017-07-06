@@ -79,6 +79,22 @@ describe 'Issue Boards', feature: true, js: true do
     end
   end
 
+  it 'does not show remove button for backlog or closed issues' do
+    create(:issue, project: project)
+    create(:issue, :closed, project: project)
+
+    visit project_board_path(project, board)
+    wait_for_requests
+
+    click_card(find('.board:nth-child(1)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
+
+    click_card(find('.board:nth-child(3)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
+  end
+
   context 'assignee' do
     it 'updates the issues assignee' do
       click_card(card)

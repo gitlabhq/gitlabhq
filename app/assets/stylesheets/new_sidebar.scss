@@ -49,6 +49,7 @@ $new-sidebar-width: 220px;
   position: fixed;
   z-index: 400;
   width: $new-sidebar-width;
+  transition: width $sidebar-transition-duration;
   top: 50px;
   bottom: 0;
   left: 0;
@@ -62,6 +63,8 @@ $new-sidebar-width: 220px;
   }
 
   li {
+    white-space: nowrap;
+
     a {
       display: block;
       padding: 12px 14px;
@@ -71,6 +74,10 @@ $new-sidebar-width: 220px;
   a {
     color: $gl-text-color;
     text-decoration: none;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    width: 0;
   }
 }
 

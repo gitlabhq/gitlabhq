@@ -18,4 +18,11 @@ FactoryGirl.define do
       visibility_level Snippet::PRIVATE
     end
   end
+
+  factory :project_snippet, parent: :snippet, class: :ProjectSnippet do
+    project factory: :empty_project
+  end
+
+  factory :personal_snippet, parent: :snippet, class: :PersonalSnippet do
+  end
 end

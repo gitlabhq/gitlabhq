@@ -1,13 +1,15 @@
 module API
   class Users < Grape::API
     include PaginationParams
+    include APIGuard
 
-    before do
-      allow_access_with_scope :read_user if request.get?
-      authenticate!
-    end
+    allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+      before do
+        authenticate_non_get!
+      end
+
       helpers do
         def find_user(params)
           id = params[:user_id] || params[:id]
@@ -51,15 +53,22 @@ module API
         use :pagination
       end
       get do
-        unless can?(current_user, :read_users_list)
-          render_api_error!("Not authorized.", 403)
-        end
-
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
         users = UsersFinder.new(current_user, params).execute
 
-        entity = current_user.admin? ? Entities::UserWithAdmin : Entities::UserBasic
+        authorized = can?(current_user, :read_users_list)
+
+        # When `current_user` is not present, require that the `username`
+        # parameter is passed, to prevent an unauthenticated user from accessing
+        # a list of all the users on the GitLab instance. `UsersFinder` performs
+        # an exact match on the `username` parameter, so we are guaranteed to
+        # get either 0 or 1 `users` here.
+        authorized &&= params[:username].present? if current_user.blank?
+
+        forbidden!("Not authorized to access /api/v4/users") unless authorized
+
+        entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         present paginate(users), with: entity
       end
 
@@ -398,6 +407,10 @@ module API
     end
 
     resource :user do
+      before do
+        authenticate!
+      end
+
       desc 'Get the currently authenticated user' do
         success Entities::UserPublic
       end

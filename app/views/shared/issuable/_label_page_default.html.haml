@@ -20,7 +20,7 @@
             %a.dropdown-toggle-page{ href: "#" }
               Create new label
         %li
-          = link_to namespace_project_labels_path(@project.namespace, @project), :"data-is-link" => true do
+          = link_to project_labels_path(@project), :"data-is-link" => true do
             - if show_create && @project && can?(current_user, :admin_label, @project)
               Manage labels
             - else

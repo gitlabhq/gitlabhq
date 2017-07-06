@@ -23,8 +23,9 @@ feature 'Merge Request button', feature: true do
       end
 
       it 'shows Create merge request button' do
-        href = project_new_merge_request_path(project, merge_request: { source_branch: 'feature',
-                                                                         target_branch: 'master' })
+        href = project_new_merge_request_path(project,
+                                              merge_request: { source_branch: 'feature',
+                                                               target_branch: 'master' })
 
         visit url
 
@@ -65,8 +66,9 @@ feature 'Merge Request button', feature: true do
         let(:user) { forked_project.owner }
 
         it 'shows Create merge request button' do
-          href = project_new_merge_request_path(forked_project, merge_request: { source_branch: 'feature',
-                                                                           target_branch: 'master' })
+          href = project_new_merge_request_path(forked_project,
+                                                merge_request: { source_branch: 'feature',
+                                                                 target_branch: 'master' })
 
           visit fork_url
 

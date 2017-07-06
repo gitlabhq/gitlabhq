@@ -11,10 +11,7 @@ class DeploymentEntity < Grape::Entity
     end
 
     expose :ref_path do |deployment|
-      namespace_project_tree_path(
-        deployment.project.namespace,
-        deployment.project,
-        id: deployment.ref)
+      project_tree_path(deployment.project, id: deployment.ref)
     end
   end
 

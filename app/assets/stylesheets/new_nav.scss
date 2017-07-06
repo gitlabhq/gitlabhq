@@ -11,20 +11,19 @@ header.navbar-gitlab-new {
     padding-left: 0;
 
     .title-container {
+      align-items: stretch;
       padding-top: 0;
       overflow: visible;
     }
 
     .title {
-      display: block;
-      height: 100%;
+      display: flex;
       padding-right: 0;
       color: currentColor;
 
       > a {
         display: flex;
         align-items: center;
-        height: 100%;
         padding-top: 3px;
         padding-right: $gl-padding;
         padding-left: $gl-padding;
@@ -263,5 +262,129 @@ header.navbar-gitlab-new {
         color: $white-light;
       }
     }
+  }
+}
+
+.breadcrumbs {
+  display: flex;
+  min-height: 60px;
+  padding-top: $gl-padding-top;
+  padding-bottom: $gl-padding-top;
+  color: $gl-text-color;
+  border-bottom: 1px solid $border-color;
+
+  .dropdown-toggle-caret {
+    position: relative;
+    top: -1px;
+    padding: 0 5px;
+    color: rgba($black, .65);
+    font-size: 10px;
+    line-height: 1;
+    background: none;
+    border: 0;
+
+    &:focus {
+      outline: 0;
+    }
+  }
+}
+
+.breadcrumbs-container {
+  display: flex;
+  width: 100%;
+  position: relative;
+
+  .dropdown-menu-projects {
+    margin-top: -$gl-padding;
+    margin-left: $gl-padding;
+  }
+}
+
+.breadcrumbs-links {
+  flex: 1;
+  align-self: center;
+  color: $black-transparent;
+
+  a {
+    color: rgba($black, .65);
+
+    &:not(:first-child),
+    &.group-path {
+      margin-left: 4px;
+    }
+
+    &:not(:last-of-type),
+    &.group-path {
+      margin-right: 3px;
+    }
+  }
+
+  .title {
+    white-space: nowrap;
+
+    > a {
+      &:last-of-type {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .avatar-tile {
+    margin-right: 5px;
+    border: 1px solid $border-color;
+    border-radius: 50%;
+    vertical-align: sub;
+
+    &.identicon {
+      float: left;
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      font-size: 10px;
+    }
+  }
+
+  .text-expander {
+    margin-left: 4px;
+    margin-right: 4px;
+
+    > i {
+      position: relative;
+      top: 1px;
+    }
+  }
+}
+
+.breadcrumbs-extra {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.breadcrumbs-sub-title {
+  margin: 2px 0 0;
+  font-size: 16px;
+  font-weight: normal;
+
+  ul {
+    margin: 0;
+  }
+
+  li {
+    display: inline-block;
+
+    &:not(:last-child) {
+      &::after {
+        content: "/";
+        margin: 0 2px 0 5px;
+      }
+    }
+
+    &:last-child a {
+      font-weight: 600;
+    }
+  }
+
+  a {
+    color: $gl-text-color;
   }
 }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Multiple issue updating from issues#index', feature: true do
+feature 'Multiple issue updating from issues#index', :js do
   let!(:project)   { create(:project) }
   let!(:issue)     { create(:issue, project: project) }
   let!(:user)      { create(:user)}
@@ -10,7 +10,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
     sign_in(user)
   end
 
-  context 'status', js: true do
+  context 'status' do
     it 'sets to closed' do
       visit project_issues_path(project)
 
@@ -37,7 +37,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
     end
   end
 
-  context 'assignee', js: true do
+  context 'assignee' do
     it 'updates to current user' do
       visit project_issues_path(project)
 
@@ -67,8 +67,8 @@ feature 'Multiple issue updating from issues#index', feature: true do
     end
   end
 
-  context 'milestone', js: true do
-    let(:milestone)  { create(:milestone, project: project) }
+  context 'milestone' do
+    let!(:milestone) { create(:milestone, project: project) }
 
     it 'updates milestone' do
       visit project_issues_path(project)
