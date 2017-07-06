@@ -349,10 +349,6 @@ Settings.pages['external_https']  ||= false unless Settings.pages['external_http
 # Geo
 #
 Settings.gitlab['geo_status_timeout'] ||= 10
-Settings['geo_primary_role'] ||= Settingslogic.new({})
-Settings.geo_primary_role['enabled'] = false if Settings.geo_primary_role['enabled'].nil?
-Settings['geo_secondary_role'] ||= Settingslogic.new({})
-Settings.geo_secondary_role['enabled'] = false if Settings.geo_secondary_role['enabled'].nil?
 
 #
 # Git LFS
