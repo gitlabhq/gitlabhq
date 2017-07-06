@@ -1,4 +1,4 @@
-- display_issuable_type = issuable.model_name.human.downcase
+- display_issuable_type = issuable_display_type(issuable)
 - button_action = issuable.closed? ? 'reopen' : 'close'
 - display_button_action = button_action.capitalize
 - button_responsive_class = 'hidden-xs hidden-sm'

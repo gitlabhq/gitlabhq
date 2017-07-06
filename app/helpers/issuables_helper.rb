@@ -254,34 +254,48 @@ module IssuablesHelper
   end
 
   def close_reopen_issuable_url(issuable, should_inverse = false)
-    is_closed = issuable.closed?
-    is_closed = !is_closed if should_inverse
-
-    is_closed ? reopen_issuable_url(issuable) : close_issuable_url(issuable)
+    issuable.closed? ^ should_inverse ? reopen_issuable_url(issuable) : close_issuable_url(issuable)
   end
 
   def issuable_url(issuable, *options)
     case issuable
-    when Issue then issue_url(issuable, *options)
-    when MergeRequest then merge_request_url(issuable, *options)
-    else raise 'unknown issuable type'
+    when Issue
+      issue_url(issuable, *options)
+    when MergeRequest
+      merge_request_url(issuable, *options)
+    else
+      raise TypeError.new('unknown issuable type')
     end
   end
 
   def issuable_button_visibility(issuable, closed)
     case issuable
-    when Issue then issue_button_visibility(issuable, closed)
-    when MergeRequest then merge_request_button_visibility(issuable, closed)
-    else raise 'unknown issuable type'
+    when Issue
+      issue_button_visibility(issuable, closed)
+    when MergeRequest
+      merge_request_button_visibility(issuable, closed)
+    else
+      raise TypeError.new('unknown issuable type')
     end
   end
 
   def issuable_close_reopen_button_method(issuable)
     case issuable
-    when Issue then ''
-    when MergeRequest then 'put'
-    else raise 'unknown issuable type'
+    when Issue
+      ''
+    when MergeRequest
+      'put'
+    else
+      raise TypeError.new('unknown issuable type')
     end
+  end
+
+  def issuable_author_is_current_user(issuable)
+    issuable.author == current_user
+  end
+
+  def issuable_display_type(issuable)
+    issuable.model_name.human.downcase
   end
 
   private
@@ -342,10 +356,10 @@ module IssuablesHelper
   end
 
   def close_reopen_params(issuable, action)
-    params = {}
-    params[issuable.model_name.to_s.underscore] = {}
-    params[issuable.model_name.to_s.underscore][:state_event] = action
-    params[:format] = :json if issuable.is_a?(Issue)
-    params
+    {
+      issuable.model_name.to_s.underscore => { state_event: action }
+    }.tap do |params|
+      params[:format] = :json if issuable.is_a?(Issue)
+    end
   end
 end
