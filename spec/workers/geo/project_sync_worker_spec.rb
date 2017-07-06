@@ -103,5 +103,25 @@ RSpec.describe Geo::ProjectSyncWorker do
         expect(wiki_sync_service).to have_received(:execute)
       end
     end
+
+    context 'when project repository was synced after the time the job was scheduled in' do
+      it 'does not perform Geo::RepositorySyncService for the given project' do
+        create(:geo_project_registry, :synced, :repository_dirty, project: project, last_repository_synced_at: Time.now)
+
+        subject.perform(project.id, Time.now - 5.minutes)
+
+        expect(repository_sync_service).not_to have_received(:execute)
+      end
+    end
+
+    context 'when wiki repository was synced after the time the job was scheduled in' do
+      it 'does not perform Geo::RepositorySyncService for the given project' do
+        create(:geo_project_registry, :synced, :wiki_dirty, project: project, last_wiki_synced_at: Time.now)
+
+        subject.perform(project.id, Time.now - 5.minutes)
+
+        expect(wiki_sync_service).not_to have_received(:execute)
+      end
+    end
   end
 end

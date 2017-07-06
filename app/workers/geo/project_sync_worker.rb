@@ -14,24 +14,22 @@ module Geo
       project  = Project.find(project_id)
       registry = Geo::ProjectRegistry.find_or_initialize_by(project_id: project_id)
 
-      Geo::RepositorySyncService.new(project).execute if sync_repository?(registry)
-      Geo::WikiSyncService.new(project).execute if sync_wiki?(registry)
+      Geo::RepositorySyncService.new(project).execute if sync_repository?(registry, scheduled_time)
+      Geo::WikiSyncService.new(project).execute if sync_wiki?(registry, scheduled_time)
     rescue ActiveRecord::RecordNotFound
       logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
     end
 
     private
 
-    def sync_repository?(registry)
-      registry.resync_repository? ||
-        registry.last_repository_successful_sync_at.nil? ||
-        registry.last_repository_synced_at.nil?
+    def sync_repository?(registry, scheduled_time)
+      !registry.repository_synced_since?(scheduled_time) &&
+        (registry.resync_repository? || registry.last_repository_successful_sync_at.nil?)
     end
 
-    def sync_wiki?(registry)
-      registry.resync_wiki? ||
-        registry.last_wiki_successful_sync_at.nil? ||
-        registry.last_wiki_synced_at.nil?
+    def sync_wiki?(registry, scheduled_time)
+      !registry.wiki_synced_since?(scheduled_time) &&
+        (registry.resync_wiki? || registry.last_wiki_successful_sync_at.nil?)
     end
   end
 end
