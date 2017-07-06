@@ -4,13 +4,13 @@
 import 'vendor/jquery.waitforimages';
 import '~/lib/utils/text_utility';
 import './flash';
-import './task_list';
+import TaskList from './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 
 class Issue {
   constructor() {
     if ($('a.btn-close').length) {
-      this.taskList = new gl.TaskList({
+      this.taskList = new TaskList({
         dataType: 'issue',
         fieldName: 'description',
         selector: '.detail-page-description',

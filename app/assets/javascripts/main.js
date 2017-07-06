@@ -151,7 +151,6 @@ import './star';
 import './subscription';
 import './subscription_select';
 import './syntax_highlight';
-import './task_list';
 import './user';
 
 // eslint-disable-next-line global-require, import/no-commonjs
