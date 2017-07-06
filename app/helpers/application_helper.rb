@@ -299,6 +299,6 @@ module ApplicationHelper
   end
 
   def show_new_nav?
-    cookies["new_nav"] == "true"
+    cookies["new_nav.#{current_user&.username}"] == "true"
   end
 end

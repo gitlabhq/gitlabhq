@@ -32,17 +32,19 @@ export default class GroupName {
   }
 
   createToggle() {
+    const newNav = Cookies.get(`new_nav.${gon.current_username}`) === 'true';
+
     this.toggle = document.createElement('button');
     this.toggle.setAttribute('type', 'button');
     this.toggle.className = 'text-expander group-name-toggle';
     this.toggle.setAttribute('aria-label', 'Toggle full path');
-    if (Cookies.get('new_nav') === 'true') {
+    if (newNav) {
       this.toggle.innerHTML = '<i class="fa fa-ellipsis-h" aria-hidden="true"></i>';
     } else {
       this.toggle.innerHTML = '...';
     }
     this.toggle.addEventListener('click', this.toggleGroups.bind(this));
-    if (Cookies.get('new_nav') === 'true') {
+    if (newNav) {
       this.title.insertBefore(this.toggle, this.groupTitle);
     } else {
       this.titleContainer.insertBefore(this.toggle, this.title);

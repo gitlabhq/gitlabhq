@@ -26,11 +26,11 @@
   .col-lg-8.syntax-theme
     = label_tag do
       .preview= image_tag "old_nav.png"
-      %input.js-experiment-feature-toggle{ type: "radio", value: "false", name: "new_nav", checked: !show_new_nav? }
+      %input.js-experiment-feature-toggle{ type: "radio", value: "false", name: "new_nav.#{current_user.username}", checked: !show_new_nav? }
       Old
     = label_tag do
       .preview= image_tag "new_nav.png"
-      %input.js-experiment-feature-toggle{ type: "radio", value: "true", name: "new_nav", checked: show_new_nav? }
+      %input.js-experiment-feature-toggle{ type: "radio", value: "true", name: "new_nav.#{current_user.username}", checked: show_new_nav? }
       New
   .col-sm-12
     %hr
