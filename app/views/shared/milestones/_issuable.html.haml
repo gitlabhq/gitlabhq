@@ -6,9 +6,8 @@
 - base_url_args = [namespace, project]
 - issuable_type_args = base_url_args + [issuable_type]
 - issuable_url_args = base_url_args + [issuable]
-- can_update = can?(current_user, :"update_#{issuable.to_ability_name}", issuable)
 
-%li{ id: dom_id(issuable, 'sortable'),  class: "issuable-row #{'is-disabled' unless can_update}", 'data-iid' => issuable.iid, 'data-id' => issuable.id, 'data-url' => polymorphic_path(issuable_url_args) }
+%li.issuable-row
   %span
     - if show_project_name
       %strong #{project.name} &middot;
