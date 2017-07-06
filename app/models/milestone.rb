@@ -185,10 +185,6 @@ class Milestone < ActiveRecord::Base
     nil
   end
 
-  def for_display
-    self
-  end
-
   def title=(value)
     write_attribute(:title, sanitize_title(value)) if value.present?
   end

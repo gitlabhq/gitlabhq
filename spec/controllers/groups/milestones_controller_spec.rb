@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Groups::MilestonesController do
   let(:group) { create(:group) }
-  let(:project) { create(:empty_project, group: group) }
-  let(:project2) { create(:empty_project, group: group) }
+  let!(:project) { create(:empty_project, group: group) }
+  let!(:project2) { create(:empty_project, group: group) }
   let(:user)    { create(:user) }
   let(:title) { '肯定不是中文的问题' }
   let(:milestone) do
@@ -38,11 +38,21 @@ describe Groups::MilestonesController do
       expect(response).to have_http_status(200)
     end
 
-    it 'shows group milestones JSON' do
-      get :index, group_id: group.to_param, format: :json
+    context 'as JSON' do
+      let!(:milestone) { create(:milestone, group: group) }
+      let!(:legacy_milestone1) { create(:milestone, project: project, title: 'legacy') }
+      let!(:legacy_milestone2) { create(:milestone, project: project2, title: 'legacy') }
 
-      expect(response).to have_http_status(200)
-      expect(response.content_type).to eq 'application/json'
+      it 'shows only legacy milestones' do
+        get :index, group_id: group.to_param, format: :json
+
+        milestones = JSON.parse(response.body)
+
+        expect(milestones.count).to eq(1)
+        expect(milestones.first["title"]).to eq("legacy")
+        expect(response).to have_http_status(200)
+        expect(response.content_type).to eq 'application/json'
+      end
     end
   end
 
@@ -96,8 +106,7 @@ describe Groups::MilestonesController do
       put :update,
            id: milestone.iid,
            group_id: group.to_param,
-           milestone: milestone_params,
-           title: milestone.title
+           milestone: milestone_params
 
       milestone.reload
       expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
@@ -119,7 +128,7 @@ describe Groups::MilestonesController do
              milestone: milestone_params,
              title: milestone1.title
 
-        expect(response).to redirect_to(group_milestone_path(group, milestone1.title.to_slug.to_s, title: milestone1.title))
+        expect(response).to redirect_to(group_milestone_path(group, milestone1.safe_title, title: milestone1.title))
 
         [milestone1, milestone2].each do |milestone|
           milestone.reload

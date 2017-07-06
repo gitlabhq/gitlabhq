@@ -2,8 +2,6 @@
   .row
     = form_errors(@milestone)
 
-    = hidden_field_tag :title, @milestone&.title
-
     .col-md-6
       .form-group
         = f.label :title, "Title", class: "control-label"
