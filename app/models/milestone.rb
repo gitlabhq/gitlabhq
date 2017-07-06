@@ -161,14 +161,12 @@ class Milestone < ActiveRecord::Base
   #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
   def to_reference(from_project = nil, format: :iid, full: false)
+    return if is_group_milestone?
+
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    if project
-      "#{project.to_reference(from_project, full: full)}#{reference}"
-    elsif group
-      "#{group.to_reference}#{reference}"
-    end
+    "#{project.to_reference(from_project, full: full)}#{reference}"
   end
 
   def reference_link_text(from_project = nil)
@@ -185,6 +183,10 @@ class Milestone < ActiveRecord::Base
 
   def author_id
     nil
+  end
+
+  def for_display
+    self
   end
 
   def title=(value)

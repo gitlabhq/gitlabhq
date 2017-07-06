@@ -255,7 +255,7 @@ module API
 
     class ProjectEntity < Grape::Entity
       expose :id, :iid
-      expose(:project_id) { |entity| entity.try(:project_id) }
+      expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
       expose :state, :created_at, :updated_at
     end

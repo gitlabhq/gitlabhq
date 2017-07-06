@@ -31,7 +31,7 @@ describe Groups::MilestonesController do
     project.team << [user, :master]
   end
 
-  describe "#index" do
+  describe '#index' do
     it 'shows group milestones page' do
       get :index, group_id: group.to_param
 
@@ -43,6 +43,30 @@ describe Groups::MilestonesController do
 
       expect(response).to have_http_status(200)
       expect(response.content_type).to eq 'application/json'
+    end
+  end
+
+  describe '#show' do
+    let(:milestone1) { create(:milestone, project: project, title: 'legacy') }
+    let(:milestone2) { create(:milestone, project: project, title: 'legacy') }
+    let(:group_milestone) { create(:milestone, group: group) }
+
+    context 'when there is a title parameter' do
+      it 'searchs for a legacy group milestone' do
+        expect(GlobalMilestone).to receive(:build)
+        expect(Milestone).not_to receive(:find_by_iid)
+
+        get :show, group_id: group.to_param, id: title, title: milestone1.safe_title
+      end
+    end
+
+    context 'when there is not a title parameter' do
+      it 'searchs for a group milestone' do
+        expect(GlobalMilestone).not_to receive(:build)
+        expect(Milestone).to receive(:find_by_iid)
+
+        get :show, group_id: group.to_param, id: group_milestone.id
+      end
     end
   end
 

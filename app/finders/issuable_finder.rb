@@ -147,9 +147,17 @@ class IssuableFinder
 
     @milestones =
       if milestones?
-        scope = Milestone.where(project_id: projects)
+        if project?
+          group_id = project.group&.id
+          project_id = project.id
+        end
 
-        scope.where(title: params[:milestone_title])
+        group_id = group.id if group
+
+        search_params =
+          { title: params[:milestone_title], project_ids: project_id, group_ids: group_id }
+
+        MilestonesFinder.new(search_params).execute
       else
         Milestone.none
       end

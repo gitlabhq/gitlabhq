@@ -12,7 +12,7 @@ class Groups::MilestonesController < Groups::ApplicationController
         @milestones = Kaminari.paginate_array(milestones).page(params[:page])
       end
       format.json do
-        render json: milestones.map { |m| m.for_display.slice(:title, :name) }
+        render json: legacy_milestones.map { |m| m.for_display.slice(:title, :name) }
       end
     end
   end
@@ -42,7 +42,7 @@ class Groups::MilestonesController < Groups::ApplicationController
     # Keep this compatible with legacy group milestones where we have to update
     # all projects milestones states at once.
     if @milestone.is_legacy_group_milestone?
-      update_params = milestone_params.select{ |key| key == "state_event" }
+      update_params = milestone_params.select { |key| key == "state_event" }
       milestones = @milestone.milestones
     else
       update_params = milestone_params
@@ -68,7 +68,7 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   def milestone_path
     if @milestone.is_legacy_group_milestone?
-      group_milestone_path(group, @milestone.title.to_slug.to_s, title: @milestone.title)
+      group_milestone_path(group, @milestone.safe_title, title: @milestone.title)
     else
       group_milestone_path(group, @milestone.iid)
     end
@@ -78,14 +78,21 @@ class Groups::MilestonesController < Groups::ApplicationController
     search_params = params.merge(group_ids: group.id)
 
     milestones = MilestonesFinder.new(search_params).execute
-    legacy_milestones = GroupMilestone.build_collection(group, group_projects, params)
 
     milestones + legacy_milestones
   end
 
+  def legacy_milestones
+    @legacy_milestones ||= GroupMilestone.build_collection(group, group_projects, params)
+  end
+
   def milestone
     @milestone =
-      group.milestones.find_by_iid(params[:id]) || GroupMilestone.build(group, group_projects, params[:title])
+      if params[:title]
+        GroupMilestone.build(group, group_projects, params[:title])
+      else
+        group.milestones.find_by_iid(params[:id])
+      end
 
     render_404 unless @milestone
   end

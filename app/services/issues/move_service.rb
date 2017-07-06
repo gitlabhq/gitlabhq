@@ -72,7 +72,7 @@ module Issues
         { title: title, project_ids: @new_project.id, group_ids: group_id }
 
       milestones = MilestonesFinder.new(params).execute
-      milestones.first.try(:id)
+      milestones.first&.id
     end
 
     def rewrite_notes
