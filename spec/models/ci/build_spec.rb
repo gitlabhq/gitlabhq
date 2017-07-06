@@ -1496,9 +1496,10 @@ describe Ci::Build, :models do
         allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
         allow(build).to receive(:yaml_variables) { [build_yaml_var] }
 
-        allow(project).to receive(:secret_variables_for).with(build.ref) do
-          [create(:ci_variable, key: 'secret', value: 'value')]
-        end
+        allow(project).to receive(:secret_variables_for)
+          .with(ref: 'master', environment: nil) do
+            [create(:ci_variable, key: 'secret', value: 'value')]
+          end
       end
 
       it do
