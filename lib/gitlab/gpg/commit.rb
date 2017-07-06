@@ -22,7 +22,6 @@ module Gitlab
         using_keychain do |gpg_key|
           if gpg_key
             Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
-            @verified_signature = nil
           end
 
           create_cached_signature!(gpg_key)
@@ -50,6 +49,7 @@ module Gitlab
 
           if gpg_key
             Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
+            @verified_signature = nil
           end
 
           yield gpg_key
@@ -58,7 +58,7 @@ module Gitlab
 
       def verified_signature
         @verified_signature ||= GPGME::Crypto.new.verify(@signature_text, signed_text: @signed_text) do |verified_signature|
-          return verified_signature
+          break verified_signature
         end
       end
 
