@@ -293,7 +293,7 @@ describe License do
         end
 
         it "returns false" do
-          expect(described_class.block_changes?).to eq(false)
+          expect(described_class.block_changes?).to be_falsey
         end
       end
 

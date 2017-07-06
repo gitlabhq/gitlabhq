@@ -12,19 +12,8 @@ module LicenseHelper
     HistoricalData.max_historical_user_count
   end
 
-  def license_message(signed_in: signed_in?, is_admin: (current_user&.admin?))
-    yes_license_message(signed_in, is_admin) if current_license
-  end
-
-  private
-
-  def current_license
-    return @current_license if defined?(@current_license)
-
-    @current_license = License.current
-  end
-
-  def yes_license_message(signed_in, is_admin)
+  def license_message(signed_in: signed_in?, is_admin: current_user&.admin?)
+    return unless current_license
     return unless signed_in
     return unless (is_admin && current_license.notify_admins?) || current_license.notify_users?
 
@@ -37,7 +26,7 @@ module LicenseHelper
       message << "will expire in #{pluralize(current_license.remaining_days, 'day')}."
     end
 
-    message << link_to('Buy now!', "#{Gitlab::SUBSCRIPTIONS_URL}/plans", target: '_blank') if is_trial
+    message << link_to('Buy now!', Gitlab::SUBSCRIPTIONS_PLANS_URL, target: '_blank') if is_trial
 
     if current_license.expired? && current_license.will_block_changes?
       message << 'Pushing code and creation of issues and merge requests'
@@ -62,6 +51,12 @@ module LicenseHelper
     end
 
     message.join(' ').html_safe
+  end
+
+  def current_license
+    return @current_license if defined?(@current_license)
+
+    @current_license = License.current
   end
 
   extend self

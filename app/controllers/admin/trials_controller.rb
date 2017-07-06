@@ -10,9 +10,13 @@ class Admin::TrialsController < Admin::ApplicationController
     if save_license
       redirect_to admin_license_url, notice: 'Your trial license was successfully activated'
     else
-      flash.now[:alert] = "An error occurred while generating the trial license, please try again a few minutes.<br>
-                           If the error persist please try by creating the license from
-                           <a href='https://about.gitlab.com/free-trial/' target='_blank'>this page</a>.".html_safe
+      message = <<~MSG
+        An error occurred while generating the trial license, please try again a few minutes.<br>
+        If the error persist please try by creating the license from
+        <a href="https://about.gitlab.com/free-trial/" target="_blank">this page</a>.
+      MSG
+
+      flash.now[:alert] = message.html_safe
       render :new
     end
   end
@@ -24,7 +28,7 @@ class Admin::TrialsController < Admin::ApplicationController
   def save_license
     result = HTTParty.post("#{Gitlab::SUBSCRIPTIONS_URL}/trials", body: params)
 
-    if false
+    if result.ok?
       @license.data = result['license_key']
       @license.save
     else

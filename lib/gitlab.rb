@@ -4,6 +4,7 @@ module Gitlab
   SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}
   COM_URL = 'https://gitlab.com'.freeze
   SUBSCRIPTIONS_URL = 'https://customers.gitlab.com'.freeze
+  SUBSCRIPTIONS_PLANS_URL = "#{SUBSCRIPTIONS_URL}/plans".freeze
 
   def self.com?
     # Check `gl_subdomain?` as well to keep parity with gitlab.com

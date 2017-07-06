@@ -35,7 +35,7 @@
               Expired:
             - else
               Expires:
-          - if @license.will_expire?
+          - if @license.will_expire? && @license.active?
             %strong= time_ago_with_tooltip(@license.expires_at)
             - if @license.trial?
               %span Free trial will expire in #{pluralize(@license.remaining_days, 'day')}

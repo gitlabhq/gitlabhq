@@ -157,7 +157,7 @@ class License < ActiveRecord::Base
     end
 
     def block_changes?
-      !!current&.block_changes?
+      current&.block_changes?
     end
 
     def load_license

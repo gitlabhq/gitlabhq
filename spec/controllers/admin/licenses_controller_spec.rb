@@ -16,7 +16,7 @@ describe Admin::LicensesController do
     end
   end
 
-  describe 'GET #show' do
+  describe 'GET show' do
     context 'with an existent license' do
       it 'renders the license details' do
         allow(License).to receive(:current).and_return(create(:license))
