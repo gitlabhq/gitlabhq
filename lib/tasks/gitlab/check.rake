@@ -551,7 +551,8 @@ namespace :gitlab do
         SystemCheck::Geo::EnabledCheck,
         SystemCheck::Geo::GeoDatabaseConfiguredCheck,
         SystemCheck::Geo::DatabaseReplicationCheck,
-        SystemCheck::Geo::HttpConnectionCheck
+        SystemCheck::Geo::HttpConnectionCheck,
+        SystemCheck::Geo::ClocksSynchronizationCheck
       ]
 
       SystemCheck.run('Geo', checks)
