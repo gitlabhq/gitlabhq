@@ -13,7 +13,7 @@ class Projects::VariablesController < Projects::ApplicationController
 
   def update
     if @variable.update(project_params)
-      redirect_to namespace_project_variables_path(project.namespace, project),
+      redirect_to project_variables_path(project),
                   notice: 'Variable was successfully updated.'
     else
       render "show"
@@ -24,7 +24,7 @@ class Projects::VariablesController < Projects::ApplicationController
     new_variable = project.variables.create(project_params)
 
     if new_variable.persisted?
-      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
+      redirect_to project_settings_ci_cd_path(project),
                   notice: 'Variables were successfully updated.'
     else
       @variable = new_variable.present(current_user: current_user)

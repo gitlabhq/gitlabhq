@@ -15,11 +15,11 @@ module Ci
     end
 
     def edit_path
-      namespace_project_variable_path(project.namespace, project, variable)
+      project_variable_path(project, variable)
     end
 
     def delete_path
-      namespace_project_variable_path(project.namespace, project, variable)
+      project_variable_path(project, variable)
     end
   end
 end
