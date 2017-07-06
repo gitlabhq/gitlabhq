@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Geo::ProjectSyncWorker do
-  subject { described_class.new }
-
   describe '#perform' do
     let(:project) { create(:empty_project) }
     let(:repository_sync_service) { spy }
