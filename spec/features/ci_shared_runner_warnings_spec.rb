@@ -88,11 +88,11 @@ feature 'CI shared runner limits', feature: true do
   end
 
   def visit_project_home
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   def visit_project_pipelines
-    visit namespace_project_pipelines_path(project.namespace, project)
+    visit project_pipelines_path(project)
   end
 
   def expect_quota_exceeded_alert(message = nil)

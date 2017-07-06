@@ -16,7 +16,7 @@ describe 'Project settings > [EE] repository', feature: true do
     let(:input_id) { 'push_rule_commit_message_regex' }
 
     before do
-      visit namespace_project_settings_repository_path(project.namespace, project)
+      visit project_settings_repository_path(project)
 
       fill_in input_id, with: commit_message
       click_button 'Save Push Rules'
@@ -37,7 +37,7 @@ describe 'Project settings > [EE] repository', feature: true do
     before do
       project.team << [user2, :master]
 
-      visit namespace_project_settings_repository_path(project.namespace, project)
+      visit project_settings_repository_path(project)
     end
 
     it 'sets mirror user' do

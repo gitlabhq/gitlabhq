@@ -8,7 +8,7 @@ feature 'Projects > Members > Group member cannot leave group project', feature:
   background do
     group.add_developer(user)
     sign_in(user)
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   scenario 'user does not see a "Leave project" link' do

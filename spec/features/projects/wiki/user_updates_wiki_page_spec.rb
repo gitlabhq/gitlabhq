@@ -8,7 +8,7 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
     WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
     sign_in(user)
 
-    visit namespace_project_wikis_path(project.namespace, project)
+    visit project_wikis_path(project)
   end
 
   context 'in the user namespace' do

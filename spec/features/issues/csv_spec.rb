@@ -13,7 +13,7 @@ describe 'Issues csv', feature: true do
   end
 
   def request_csv(params = {})
-    visit namespace_project_issues_path(project.namespace, project, params)
+    visit project_issues_path(project, params)
     click_on 'Export as CSV'
     click_on 'Export issues'
   end

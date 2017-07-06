@@ -28,7 +28,7 @@ feature 'Issue filtering by Labels', feature: true, js: true do
     project.team << [user, :master]
     sign_in(user)
 
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
   end
 
   context 'filter by label bug' do

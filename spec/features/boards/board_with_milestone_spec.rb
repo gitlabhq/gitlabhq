@@ -15,7 +15,7 @@ describe 'Board with milestone', :feature, :js do
 
   context 'new board' do
     before do
-      visit namespace_project_boards_path(project.namespace, project)
+      visit project_boards_path(project)
     end
 
     it 'creates board with milestone' do
@@ -35,7 +35,7 @@ describe 'Board with milestone', :feature, :js do
     let!(:board) { create(:board, project: project, milestone: milestone) }
 
     before do
-      visit namespace_project_boards_path(project.namespace, project)
+      visit project_boards_path(project)
     end
 
     it 'defaults milestone filter' do
@@ -100,7 +100,7 @@ describe 'Board with milestone', :feature, :js do
     let!(:list) { create(:list, board: board, label: label, position: 0) }
 
     before do
-      visit namespace_project_boards_path(project.namespace, project)
+      visit project_boards_path(project)
     end
 
     it 'removes issues milestone when removing from the board' do
@@ -122,7 +122,7 @@ describe 'Board with milestone', :feature, :js do
     let!(:issue) { create(:issue, project: project) }
 
     before do
-      visit namespace_project_boards_path(project.namespace, project)
+      visit project_boards_path(project)
     end
 
     it 'creates new issue with boards milestone' do

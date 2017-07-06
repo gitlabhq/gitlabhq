@@ -7,7 +7,7 @@ feature 'Projects > Members > Member leaves project', feature: true do
   background do
     project.team << [user, :developer]
     sign_in(user)
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   scenario 'user leaves project' do

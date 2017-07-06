@@ -29,7 +29,7 @@ feature 'Issue prioritization', feature: true do
       issue_1.labels << label_5
 
       sign_in user
-      visit namespace_project_issues_path(project.namespace, project, sort: 'label_priority')
+      visit project_issues_path(project, sort: 'label_priority')
 
       # Ensure we are indicating that issues are sorted by priority
       expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
@@ -68,7 +68,7 @@ feature 'Issue prioritization', feature: true do
       issue_6.labels << label_5 # 8 - No priority
 
       sign_in user
-      visit namespace_project_issues_path(project.namespace, project, sort: 'label_priority')
+      visit project_issues_path(project, sort: 'label_priority')
 
       expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
 

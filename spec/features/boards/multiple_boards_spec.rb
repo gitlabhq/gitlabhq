@@ -13,7 +13,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
       sign_in(user)
 
-      visit namespace_project_boards_path(project.namespace, project)
+      visit project_boards_path(project)
       wait_for_requests
     end
 
@@ -144,7 +144,7 @@ describe 'Multiple Issue Boards', feature: true, js: true do
 
   context 'unauthorized user' do
     before do
-      visit namespace_project_boards_path(project.namespace, project)
+      visit project_boards_path(project)
       wait_for_requests
     end
 

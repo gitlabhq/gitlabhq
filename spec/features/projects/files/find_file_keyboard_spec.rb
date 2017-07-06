@@ -8,7 +8,7 @@ feature 'Find file keyboard shortcuts', feature: true, js: true do
     project.team << [user, :master]
     sign_in user
 
-    visit namespace_project_find_file_path(project.namespace, project, project.repository.root_ref)
+    visit project_find_file_path(project, project.repository.root_ref)
 
     wait_for_requests
   end

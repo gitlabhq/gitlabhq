@@ -8,7 +8,7 @@ feature 'Project edit', feature: true, js: true do
     project.team << [user, :master]
     sign_in(user)
 
-    visit edit_namespace_project_path(project.namespace, project)
+    visit edit_project_path(project)
   end
 
   it 'does not have visibility radio buttons' do

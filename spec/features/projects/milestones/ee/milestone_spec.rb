@@ -10,7 +10,7 @@ describe 'Milestones on EE', feature: true do
   end
 
   def visit_milestone
-    visit namespace_project_milestone_path(project.namespace, project, milestone)
+    visit project_milestone_path(project, milestone)
   end
 
   context 'burndown charts' do
@@ -79,7 +79,7 @@ describe 'Milestones on EE', feature: true do
         let(:milestone_without_dates) { create(:milestone, project: project) }
 
         it 'shows a mention to fill in dates' do
-          visit namespace_project_milestone_path(project.namespace, project, milestone_without_dates)
+          visit project_milestone_path(project, milestone_without_dates)
 
           within('#content-body') do
             expect(page).to have_link('Add start and due date')

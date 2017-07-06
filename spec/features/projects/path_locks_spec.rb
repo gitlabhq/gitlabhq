@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Path Locks', feature: true, js: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
-  let(:project_tree_path) { namespace_project_tree_path(project.namespace, project, project.repository.root_ref) }
+  let(:project_tree_path) { project_tree_path(project, project.repository.root_ref) }
 
   before do
     allow(project).to receive(:feature_available?).with(:file_lock) { true }

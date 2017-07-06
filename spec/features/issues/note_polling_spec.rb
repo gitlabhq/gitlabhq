@@ -8,7 +8,7 @@ feature 'Issue notes polling', :feature, :js do
 
   describe 'creates' do
     before do
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
     end
 
     it 'displays the new comment' do
@@ -28,7 +28,7 @@ feature 'Issue notes polling', :feature, :js do
 
       before do
         sign_in(user)
-        visit namespace_project_issue_path(project.namespace, project, issue)
+        visit project_issue_path(project, issue)
       end
 
       it 'has .original-note-content to compare against' do
@@ -94,7 +94,7 @@ feature 'Issue notes polling', :feature, :js do
 
       before do
         sign_in(user2)
-        visit namespace_project_issue_path(project.namespace, project, issue)
+        visit project_issue_path(project, issue)
       end
 
       it 'has .original-note-content to compare against' do
@@ -115,7 +115,7 @@ feature 'Issue notes polling', :feature, :js do
 
       before do
         sign_in(user)
-        visit namespace_project_issue_path(project.namespace, project, issue)
+        visit project_issue_path(project, issue)
       end
 
       it 'has .original-note-content to compare against' do

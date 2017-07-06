@@ -85,6 +85,6 @@ feature 'Project members list', feature: true do
   end
 
   def visit_members_page
-    visit namespace_project_settings_members_path(project.namespace, project)
+    visit project_settings_members_path(project)
   end
 end

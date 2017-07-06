@@ -6,7 +6,7 @@ feature 'User uses soft wrap whilst editing file', feature: true, js: true do
     project = create(:project)
     project.team << [user, :master]
     sign_in user
-    visit namespace_project_new_blob_path(project.namespace, project, 'master', file_name: 'test_file-name')
+    visit project_new_blob_path(project, 'master', file_name: 'test_file-name')
     editor = find('.file-editor.code')
     editor.click
     editor.send_keys 'Touch water with paw then recoil in horror chase dog then

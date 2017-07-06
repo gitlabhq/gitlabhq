@@ -9,7 +9,7 @@ feature 'Merge Request versions', js: true, feature: true do
 
   before do
     sign_in(create(:admin))
-    visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit diffs_project_merge_request_path(project, merge_request)
   end
 
   it 'show the latest version of the diff' do
@@ -96,13 +96,8 @@ feature 'Merge Request versions', js: true, feature: true do
     end
 
     it 'has a path with comparison context' do
-      expect(page).to have_current_path diffs_namespace_project_merge_request_path(
-        project.namespace,
-        project,
-        merge_request.iid,
-        diff_id: merge_request_diff3.id,
-        start_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
-      )
+      expect(page).to have_current_path diffs_project_merge_request_path(project, merge_request.iid, diff_id: merge_request_diff3.id,
+        start_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
     end
 
     it 'should have correct value in the compare dropdown' do

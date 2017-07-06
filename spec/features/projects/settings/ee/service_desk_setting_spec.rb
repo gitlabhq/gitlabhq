@@ -12,7 +12,7 @@ describe 'Service Desk Setting', js: true, feature: true do
     allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
 
-    visit edit_namespace_project_path(project.namespace, project)
+    visit edit_project_path(project)
   end
 
   it 'shows activation checkbox' do

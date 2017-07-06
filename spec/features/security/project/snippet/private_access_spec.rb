@@ -8,7 +8,7 @@ describe "Private Project Snippets Access", feature: true  do
   let(:private_snippet)  { create(:project_snippet, :private, project: project, author: project.owner) }
 
   describe "GET /:project_path/snippets" do
-    subject { namespace_project_snippets_path(project.namespace, project) }
+    subject { project_snippets_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:auditor) }
@@ -23,7 +23,7 @@ describe "Private Project Snippets Access", feature: true  do
   end
 
   describe "GET /:project_path/snippets/new" do
-    subject { new_namespace_project_snippet_path(project.namespace, project) }
+    subject { new_project_snippet_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_denied_for(:auditor) }
@@ -38,7 +38,7 @@ describe "Private Project Snippets Access", feature: true  do
   end
 
   describe "GET /:project_path/snippets/:id for a private snippet" do
-    subject { namespace_project_snippet_path(project.namespace, project, private_snippet) }
+    subject { project_snippet_path(project, private_snippet) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:auditor) }
@@ -53,7 +53,7 @@ describe "Private Project Snippets Access", feature: true  do
   end
 
   describe "GET /:project_path/snippets/:id/raw for a private snippet" do
-    subject { raw_namespace_project_snippet_path(project.namespace, project, private_snippet) }
+    subject { raw_project_snippet_path(project, private_snippet) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:auditor) }

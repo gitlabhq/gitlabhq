@@ -7,7 +7,7 @@ feature 'User wants to create a file', feature: true do
   background do
     project.team << [user, :master]
     sign_in user
-    visit namespace_project_new_blob_path(project.namespace, project, project.default_branch)
+    visit project_new_blob_path(project, project.default_branch)
   end
 
   def submit_new_file(options)

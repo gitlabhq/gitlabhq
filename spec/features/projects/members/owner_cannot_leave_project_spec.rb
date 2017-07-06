@@ -5,7 +5,7 @@ feature 'Projects > Members > Owner cannot leave project', feature: true do
 
   background do
     sign_in(project.owner)
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   scenario 'user does not see a "Leave project" link' do

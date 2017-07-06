@@ -9,7 +9,7 @@ describe 'Discussion Comments Issue', :feature, :js do
     project.add_master(user)
     sign_in(user)
 
-    visit namespace_project_snippet_path(project.namespace, project, snippet)
+    visit project_snippet_path(project, snippet)
   end
 
   it_behaves_like 'discussion comments', 'snippet'

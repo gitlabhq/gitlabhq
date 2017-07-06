@@ -7,7 +7,7 @@ feature 'Projects > Wiki > User creates wiki page', js: true, feature: true do
     project.team << [user, :master]
     sign_in(user)
 
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
     find('.shortcuts-wiki').trigger('click')
   end
 

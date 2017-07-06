@@ -11,7 +11,7 @@ feature 'Projects > Members > Group requester cannot request access to project',
     sign_in(user)
     visit group_path(group)
     perform_enqueued_jobs { click_link 'Request Access' }
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   scenario 'group requester does not see the request access / withdraw access request button' do

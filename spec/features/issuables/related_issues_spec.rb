@@ -28,7 +28,7 @@ describe 'Related issues', feature: true, js: true do
 
         context 'visiting issue_a' do
           before do
-            visit namespace_project_issue_path(project.namespace, project, issue_a)
+            visit project_issue_path(project, issue_a)
             wait_for_requests
           end
 
@@ -43,7 +43,7 @@ describe 'Related issues', feature: true, js: true do
 
         context 'visiting issue_b which was targeted by issue_a' do
           before do
-            visit namespace_project_issue_path(project.namespace, project, issue_b)
+            visit project_issue_path(project, issue_b)
             wait_for_requests
           end
 
@@ -67,7 +67,7 @@ describe 'Related issues', feature: true, js: true do
       let!(:issue_link_c) { create :issue_link, source: issue_a, target: issue_c }
 
       before do
-        visit namespace_project_issue_path(project.namespace, project, issue_a)
+        visit project_issue_path(project, issue_a)
         wait_for_requests
       end
 
@@ -83,7 +83,7 @@ describe 'Related issues', feature: true, js: true do
 
       context 'without existing related issues' do
         before do
-          visit namespace_project_issue_path(project.namespace, project, issue_a)
+          visit project_issue_path(project, issue_a)
           wait_for_requests
         end
 
@@ -132,7 +132,7 @@ describe 'Related issues', feature: true, js: true do
         let!(:issue_link_c) { create :issue_link, source: issue_a, target: issue_c }
 
         before do
-          visit namespace_project_issue_path(project.namespace, project, issue_a)
+          visit project_issue_path(project, issue_a)
           wait_for_requests
         end
 

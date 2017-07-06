@@ -13,7 +13,7 @@ describe 'Milestone show', feature: true do
   end
 
   def visit_milestone
-    visit namespace_project_milestone_path(project.namespace, project, milestone)
+    visit project_milestone_path(project, milestone)
   end
 
   it 'avoids N+1 database queries' do

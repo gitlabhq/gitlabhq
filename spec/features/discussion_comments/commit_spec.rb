@@ -11,7 +11,7 @@ describe 'Discussion Comments Merge Request', :feature, :js do
     project.add_master(user)
     sign_in(user)
 
-    visit namespace_project_commit_path(project.namespace, project, sample_commit.id)
+    visit project_commit_path(project, sample_commit.id)
   end
 
   it_behaves_like 'discussion comments', 'commit'

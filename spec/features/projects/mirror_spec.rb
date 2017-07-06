@@ -24,7 +24,7 @@ feature 'Project mirror', feature: true do
           expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
           Timecop.freeze(timestamp) do
-            visit namespace_project_mirror_path(project.namespace, project)
+            visit project_mirror_path(project)
           end
 
           Sidekiq::Testing.fake! { click_link('Update Now') }
@@ -38,7 +38,7 @@ feature 'Project mirror', feature: true do
           expect_any_instance_of(EE::Project).not_to receive(:force_import_job!)
 
           Timecop.freeze(timestamp) do
-            visit namespace_project_mirror_path(project.namespace, project)
+            visit project_mirror_path(project)
           end
 
           expect(page).to have_content('Update Now')
