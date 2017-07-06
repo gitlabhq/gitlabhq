@@ -1,6 +1,14 @@
 module EE
   module MergeRequest
+    extend ActiveSupport::Concern
+
     include ::Approvable
+
+    included do
+      has_many :approvals, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+      has_many :approvers, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+      has_many :approver_groups, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+    end
 
     def ff_merge_possible?
       project.repository.is_ancestor?(target_branch_sha, diff_head_sha)
