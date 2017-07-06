@@ -105,6 +105,10 @@ module Issuable
     def locking_enabled?
       title_changed? || description_changed?
     end
+
+    def allows_multiple_assignees?
+      false
+    end
   end
 
   module ClassMethods
