@@ -159,12 +159,12 @@
 
         const xAxis = d3.svg.axis()
           .scale(axisXScale)
-          .ticks(measurements.ticks)
+          .ticks(measurements.xTicks)
           .orient('bottom');
 
         const yAxis = d3.svg.axis()
           .scale(this.yScale)
-          .ticks(measurements.ticks)
+          .ticks(measurements.yTicks)
           .orient('left');
 
         d3.select(this.$refs.baseSvg).select('.x-axis').call(xAxis);
@@ -172,8 +172,12 @@
         const width = this.graphWidth;
         d3.select(this.$refs.baseSvg).select('.y-axis').call(yAxis)
           .selectAll('.tick')
-          .each(function createTickLines() {
-            d3.select(this).select('line').attr('x2', width);
+          .each(function createTickLines(d, i) {
+            if (i > 0) {
+              d3.select(this).select('line')
+                .attr('x2', width)
+                .attr('class', 'axis-tick');
+            } // Avoid adding the class to the first tick, to prevent coloring
           }); // This will select all of the ticks once they're rendered
 
         this.xScale = d3.time.scale()
