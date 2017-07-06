@@ -12,8 +12,8 @@ class MergeRequestDiff < ActiveRecord::Base
   belongs_to :merge_request
   has_many :merge_request_diff_files, -> { order(:merge_request_diff_id, :relative_order) }
 
-  serialize :st_commits # rubocop:disable Cop/ActiverecordSerialize
-  serialize :st_diffs # rubocop:disable Cop/ActiverecordSerialize
+  serialize :st_commits # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :st_diffs # rubocop:disable Cop/ActiveRecordSerialize
 
   state_machine :state, initial: :empty do
     state :collected

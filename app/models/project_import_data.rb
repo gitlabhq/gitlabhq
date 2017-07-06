@@ -10,7 +10,7 @@ class ProjectImportData < ActiveRecord::Base
                  insecure_mode: true,
                  algorithm: 'aes-256-cbc'
 
-  serialize :data, JSON # rubocop:disable Cop/ActiverecordSerialize
+  serialize :data, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   validates :project, presence: true
 

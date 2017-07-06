@@ -42,7 +42,7 @@ describe ForkedProjectLink, "add link on fork" do
 
   describe '#forked?' do
     let(:project_to) { create(:project, forked_project_link: forked_project_link) }
-    let(:forked_project_link) { build(:forked_project_link) }
+    let(:forked_project_link) { create(:forked_project_link) }
 
     before do
       forked_project_link.forked_from_project = project_from
@@ -59,9 +59,9 @@ describe ForkedProjectLink, "add link on fork" do
     end
 
     it "project_to.destroy destroys fork_link" do
-      expect(forked_project_link).to receive(:destroy)
-
       project_to.destroy
+
+      expect(ForkedProjectLink.exists?(id: forked_project_link.id)).to eq(false)
     end
   end
 
