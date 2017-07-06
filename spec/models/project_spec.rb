@@ -51,10 +51,6 @@ describe Project, models: true do
     it { is_expected.to have_one(:project_feature) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
-<<<<<<< HEAD
-    it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData') }
-=======
->>>>>>> ce/master
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
@@ -66,10 +62,6 @@ describe Project, models: true do
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
-<<<<<<< HEAD
-    it { is_expected.to have_many(:path_locks) }
-=======
->>>>>>> ce/master
     it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
     it { is_expected.to have_many(:users_star_projects) }
     it { is_expected.to have_many(:environments) }
@@ -83,11 +75,6 @@ describe Project, models: true do
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
-<<<<<<< HEAD
-    it { is_expected.to have_many(:sourced_pipelines) }
-    it { is_expected.to have_many(:source_pipelines) }
-=======
->>>>>>> ce/master
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -1028,39 +1015,6 @@ describe Project, models: true do
       let(:project) { create(:empty_project) }
 
       it { is_expected.to eq nil }
-<<<<<<< HEAD
-    end
-  end
-
-  describe '#execute_hooks' do
-    it "triggers project and group hooks" do
-      group = create :group, name: 'gitlab'
-      project = create(:project, name: 'gitlabhq', namespace: group)
-      project_hook = create(:project_hook, push_events: true, project: project)
-      group_hook = create(:group_hook, push_events: true, group: group)
-
-      stub_request(:post, project_hook.url)
-      stub_request(:post, group_hook.url)
-
-      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
-      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
-
-      project.execute_hooks({}, :push_hooks)
-    end
-  end
-
-  describe '#allowed_to_share_with_group?' do
-    let(:project) { create(:project) }
-
-    it "returns true" do
-      expect(project.allowed_to_share_with_group?).to be_truthy
-    end
-
-    it "returns false" do
-      project.namespace.update(share_with_group_lock: true)
-      expect(project.allowed_to_share_with_group?).to be_falsey
-=======
->>>>>>> ce/master
     end
   end
 

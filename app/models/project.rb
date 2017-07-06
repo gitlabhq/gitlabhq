@@ -186,13 +186,7 @@ class Project < ActiveRecord::Base
   has_many :environments
   has_many :deployments
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
-<<<<<<< HEAD
 
-  has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_project_id
-=======
->>>>>>> ce/master
-
-  has_many :source_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :project_id
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
