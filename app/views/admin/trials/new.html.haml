@@ -3,7 +3,7 @@
 
 %main{ :role => "main" }
   .actions
-    = form_tag trials_path, method: :post do
+    = form_tag admin_trials_path, method: :post do
       .form-group
         = label_tag :first_name
         = text_field_tag :first_name, params[:first_name], class: "form-control", required: true

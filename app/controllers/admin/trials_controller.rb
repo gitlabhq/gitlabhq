@@ -1,4 +1,4 @@
-class TrialsController < ApplicationController
+class Admin::TrialsController < Admin::ApplicationController
   before_action :check_presence_of_license
 
   def new
@@ -8,14 +8,14 @@ class TrialsController < ApplicationController
     build_license
 
     if save_license
-      redirect_to admin_license_url
+      redirect_to admin_license_url, notice: 'Your trial license was successfully activated'
     else
-      flash.now[:alert] = 'An error occurred while generating the trial license, please try again a few minutes'
+      flash.now[:alert] = "An error occurred while generating the trial license, please try again a few minutes.<br>
+                           If the error persist please try by creating the license from
+                           <a href='https://about.gitlab.com/free-trial/' target='_blank'>this page</a>.".html_safe
       render :new
     end
   end
-
-  private
 
   def build_license
     @license = License.new
@@ -24,7 +24,7 @@ class TrialsController < ApplicationController
   def save_license
     result = HTTParty.post("#{Gitlab::SUBSCRIPTIONS_URL}/trials", body: params)
 
-    if result.ok?
+    if false
       @license.data = result['license_key']
       @license.save
     else
@@ -37,7 +37,7 @@ class TrialsController < ApplicationController
 
   def check_presence_of_license
     if License.current&.active?
-      redirect_to admin_license_url
+      redirect_to admin_license_url, alert: 'You already have an active license key installed on this server.'
     end
   end
 end

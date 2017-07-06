@@ -82,9 +82,6 @@ Rails.application.routes.draw do
   # Notification settings
   resources :notification_settings, only: [:create, :update]
 
-  # Trial licenses
-  resources :trials, only: [:new, :create]
-
   draw :import
   draw :uploads
   draw :explore
