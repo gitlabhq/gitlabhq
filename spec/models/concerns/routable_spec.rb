@@ -142,6 +142,19 @@ describe Group, 'Routable' do
     end
   end
 
+  describe '#expires_full_path_cache' do
+    context 'with RequestStore active', :request_store do
+      it 'expires the full_path cache' do
+        expect(group.full_path).to eq('foo')
+
+        group.route.update(path: 'bar', name: 'bar')
+        group.expires_full_path_cache
+
+        expect(group.full_path).to eq('bar')
+      end
+    end
+  end
+
   describe '#full_name' do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }

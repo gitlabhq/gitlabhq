@@ -1458,6 +1458,8 @@ describe Project, models: true do
 
       expect(project).to receive(:expire_caches_before_rename)
 
+      expect(project).to receive(:expires_full_path_cache)
+
       project.rename_repo
     end
 
@@ -1586,7 +1588,7 @@ describe Project, models: true do
         .with(project.repository_storage_path, project.path_with_namespace)
         .and_return(true)
 
-      expect(project).to receive(:create_repository)
+      expect(project).to receive(:create_repository).with(force: true)
 
       project.ensure_repository
     end
@@ -1596,6 +1598,19 @@ describe Project, models: true do
         .and_return(true)
 
       expect(project).not_to receive(:create_repository)
+
+      project.ensure_repository
+    end
+
+    it 'creates the repository if it is a fork' do
+      expect(project).to receive(:forked?).and_return(true)
+
+      allow(project).to receive(:repository_exists?)
+        .and_return(false)
+
+      expect(shell).to receive(:add_repository)
+        .with(project.repository_storage_path, project.path_with_namespace)
+        .and_return(true)
 
       project.ensure_repository
     end

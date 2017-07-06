@@ -977,6 +977,7 @@ class Project < ActiveRecord::Base
       begin
         gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
+        expires_full_path_cache
 
         @old_path_with_namespace = old_path_with_namespace
 
@@ -1087,21 +1088,21 @@ class Project < ActiveRecord::Base
     merge_requests.where(source_project_id: self.id)
   end
 
-  def create_repository
+  def create_repository(force: false)
     # Forked import is handled asynchronously
-    unless forked?
-      if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
-        repository.after_create
-        true
-      else
-        errors.add(:base, 'Failed to create repository via gitlab-shell')
-        false
-      end
+    return if forked? && !force
+
+    if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
+      repository.after_create
+      true
+    else
+      errors.add(:base, 'Failed to create repository via gitlab-shell')
+      false
     end
   end
 
   def ensure_repository
-    create_repository unless repository_exists?
+    create_repository(force: true) unless repository_exists?
   end
 
   def repository_exists?
