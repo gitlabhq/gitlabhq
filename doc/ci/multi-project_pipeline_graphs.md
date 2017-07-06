@@ -1,13 +1,23 @@
 # Multi-Project Pipeline Graphs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/2121) in [GitLab Enterprise Edition Premium 9.3](https://about.gitlab.com/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/2121) in
+[GitLab Enterprise Edition Premium 9.3](https://about.gitlab.com/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
 
 ## Overview
 
-When you set up [GitLab CI/CD](README.md) accross multiple projects, you can visualize
+GitLab CI/CD is a powerful continuous integration tool built-in GitLab.
+GitLab CI works not only per project, but also across projects. When you
+configure GitLab CI for your project, you can visualize the stages
+of your [jobs](pipelines.md#jobs) in a chart called [pipeline graph](pipelines.md#pipeline-graphs).
+
+When you set up [GitLab CI/CD](README.md) across multiple projects, you can visualize
 the entire pipeline, including all multi-project stages.
 
 ![Multi-project pipeline graph](img/multi-project_pipeline_graph.png)
+
+Multi-Project Pipeline Graphs are useful for larger projects, especially those
+adopting a micro-services architecture, that often have a set of interdependent
+components which form the complete product.
 
 ## Use cases
 
@@ -28,9 +38,3 @@ together which makes it easy to start visualizing their relationships.
 
 Those relationships are displayed in the pipeline graph by showing inbound and
 outbound connections for upstream and downstream pipeline dependencies.
-
-![Multi-projects pipelines graphs](img/multi_project_pipelines_graph.png)
-
-This is useful for larger projects, especially those adopting a micro-services
-architecture, that often have a set of interdependent components which form the
-complete product.
