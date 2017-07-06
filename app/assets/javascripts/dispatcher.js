@@ -60,13 +60,10 @@ import ShortcutsBlob from './shortcuts_blob';
 import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
-<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from './approvers_select';
 import AuditLogs from './audit_logs';
-=======
->>>>>>> ce/master
 
 (function() {
   var Dispatcher;
