@@ -61,6 +61,10 @@
    */
   .blank-state-icon.col-md-offset-3 {
     margin-left: 30%;
+
+    @media (max-width: $screen-md-min) {
+      margin-left: auto;
+    }
   }
 }
 
