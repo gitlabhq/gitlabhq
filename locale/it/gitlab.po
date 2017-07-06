@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 21:59-0500\n"
+"POT-Creation-Date: 2017-06-19 15:50-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,6 +14,21 @@ msgstr ""
 "Language: it\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "%d additional commit has been omitted to prevent performance issues."
+msgid_plural ""
+"%d additional commits have been omitted to prevent performance issues."
+msgstr[0] ""
+"%d commit aggiuntivo è stato omesso per evitare degradi di prestazioni negli "
+"issues."
+msgstr[1] ""
+"%d commit aggiuntivi sono stati omessi per evitare degradi di prestazioni "
+"negli issues."
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d commit"
+msgstr[1] "%d commit"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} ha committato %{commit_timeago}"
@@ -68,8 +83,23 @@ msgstr ""
 "rilascio automatico scegli un template CI di Gitlab e committa le tue "
 "modifiche %{link_to_autodeploy_doc}"
 
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr "Cerca branches"
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr "Cambia branch"
+
 msgid "Branches"
 msgstr "Branches"
+
+msgid "Browse Directory"
+msgstr "Naviga direttori"
+
+msgid "Browse File"
+msgstr "Esplora File"
+
+msgid "Browse Files"
+msgstr "Esplora Files"
 
 msgid "Browse files"
 msgstr "Guarda i files"
@@ -177,6 +207,9 @@ msgstr "Aggiungi %{file_name}"
 
 msgid "Commits"
 msgstr "Commits"
+
+msgid "Commits feed"
+msgstr "Feed dei Commits"
 
 msgid "Commits|History"
 msgstr "Cronologia"
@@ -339,6 +372,9 @@ msgstr "Impossibile rimuovere la pipeline pianificata"
 
 msgid "Files"
 msgstr "Files"
+
+msgid "Filter by commit message"
+msgstr "Filtra per messaggio di commit"
 
 msgid "Find by path"
 msgstr "Trova in percorso"
@@ -713,10 +749,10 @@ msgstr "Seleziona una timezone"
 msgid "Select target branch"
 msgstr "Seleziona una branch di destinazione"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 "Imposta una password sul tuo account per eseguire pull o push tramite "
-"%{protocol}"
+"%{protocol}."
 
 msgid "Set up CI"
 msgstr "Configura CI"
@@ -1033,8 +1069,14 @@ msgstr "Carica un nuovo file"
 msgid "Upload file"
 msgstr "Carica file"
 
+msgid "UploadLink|click to upload"
+msgstr "clicca per caricare"
+
 msgid "Use your global notification setting"
 msgstr "Usa le tue impostazioni globali "
+
+msgid "View open merge request"
+msgstr "Mostra la richieste di merge aperte"
 
 msgid "VisibilityLevel|Internal"
 msgstr "Interno"

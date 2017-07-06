@@ -7,7 +7,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def index
     sort = params[:sort].presence || sort_value_name
-    redirect_to namespace_project_settings_members_path(@project.namespace, @project, sort: sort)
+    redirect_to project_settings_members_path(@project, sort: sort)
   end
 
   def update
@@ -19,7 +19,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def resend_invite
-    redirect_path = namespace_project_settings_members_path(@project.namespace, @project)
+    redirect_path = project_settings_members_path(@project)
 
     @project_member = @project.project_members.find(params[:id])
 
@@ -42,7 +42,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       return render_404
     end
 
-    redirect_to(namespace_project_settings_members_path(project.namespace, project),
+    redirect_to(project_settings_members_path(project),
                 notice: notice)
   end
 

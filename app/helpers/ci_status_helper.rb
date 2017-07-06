@@ -8,7 +8,7 @@
 module CiStatusHelper
   def ci_status_path(pipeline)
     project = pipeline.project
-    namespace_project_pipeline_path(project.namespace, project, pipeline)
+    project_pipeline_path(project, pipeline)
   end
 
   def ci_label_for_status(status)
@@ -99,10 +99,7 @@ module CiStatusHelper
 
   def render_project_pipeline_status(pipeline_status, tooltip_placement: 'auto left')
     project = pipeline_status.project
-    path = pipelines_namespace_project_commit_path(
-      project.namespace,
-      project,
-      pipeline_status.sha)
+    path = pipelines_project_commit_path(project, pipeline_status.sha)
 
     render_status_with_link(
       'commit',
@@ -113,10 +110,7 @@ module CiStatusHelper
 
   def render_commit_status(commit, ref: nil, tooltip_placement: 'auto left')
     project = commit.project
-    path = pipelines_namespace_project_commit_path(
-      project.namespace,
-      project,
-      commit)
+    path = pipelines_project_commit_path(project, commit)
 
     render_status_with_link(
       'commit',
@@ -127,7 +121,7 @@ module CiStatusHelper
 
   def render_pipeline_status(pipeline, tooltip_placement: 'auto left')
     project = pipeline.project
-    path = namespace_project_pipeline_path(project.namespace, project, pipeline)
+    path = project_pipeline_path(project, pipeline)
     render_status_with_link('pipeline', pipeline.status, path, tooltip_placement: tooltip_placement)
   end
 

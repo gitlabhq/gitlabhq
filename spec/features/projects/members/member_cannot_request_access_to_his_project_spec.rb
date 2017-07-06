@@ -7,7 +7,7 @@ feature 'Projects > Members > Member cannot request access to his project', feat
   background do
     project.team << [member, :developer]
     gitlab_sign_in(member)
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   scenario 'member does not see the request access button' do

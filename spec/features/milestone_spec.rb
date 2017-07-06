@@ -6,13 +6,14 @@ feature 'Milestone', feature: true do
   let(:user)   { create(:user) }
 
   before do
+    create(:group_member, group: group, user: user)
     project.team << [user, :master]
     gitlab_sign_in(user)
   end
 
   feature 'Create a milestone' do
     scenario 'shows an informative message for a new milestone' do
-      visit new_namespace_project_milestone_path(project.namespace, project)
+      visit new_project_milestone_path(project)
 
       page.within '.milestone-form' do
         fill_in "milestone_title", with: '8.7'
@@ -32,7 +33,7 @@ feature 'Milestone', feature: true do
       milestone = create(:milestone, project: project, title: 8.7)
 
       create(:issue, title: "Bugfix1", project: project, milestone: milestone, state: "closed")
-      visit namespace_project_milestone_path(project.namespace, project, milestone)
+      visit project_milestone_path(project, milestone)
 
       expect(find('.alert-success')).to have_content('All issues for this milestone are closed. You may close this milestone now.')
     end
@@ -42,7 +43,7 @@ feature 'Milestone', feature: true do
     scenario 'displays validation message when there is a project milestone with same title' do
       milestone = create(:milestone, project: project, title: 8.7)
 
-      visit new_namespace_project_milestone_path(project.namespace, project)
+      visit new_project_milestone_path(project)
       page.within '.milestone-form' do
         fill_in "milestone_title", with: milestone.title
       end
@@ -54,7 +55,8 @@ feature 'Milestone', feature: true do
     scenario 'displays validation message when there is a group milestone with same title' do
       milestone = create(:milestone, project_id: nil, group: project.group, title: 8.7)
 
-      visit new_namespace_project_milestone_path(project.namespace, project)
+      visit new_group_milestone_path(project.group)
+
       page.within '.milestone-form' do
         fill_in "milestone_title", with: milestone.title
       end

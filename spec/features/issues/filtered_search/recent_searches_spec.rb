@@ -22,7 +22,7 @@ describe 'Recent searches', js: true, feature: true do
   end
 
   it 'searching adds to recent searches' do
-    visit namespace_project_issues_path(project_1.namespace, project_1)
+    visit project_issues_path(project_1)
 
     input_filtered_search('foo', submit: true)
     input_filtered_search('bar', submit: true)
@@ -35,8 +35,8 @@ describe 'Recent searches', js: true, feature: true do
   end
 
   it 'visiting URL with search params adds to recent searches' do
-    visit namespace_project_issues_path(project_1.namespace, project_1, label_name: 'foo', search: 'bar')
-    visit namespace_project_issues_path(project_1.namespace, project_1, label_name: 'qux', search: 'garply')
+    visit project_issues_path(project_1, label_name: 'foo', search: 'bar')
+    visit project_issues_path(project_1, label_name: 'qux', search: 'garply')
 
     items = all('.filtered-search-history-dropdown-item', visible: false)
 
@@ -48,7 +48,7 @@ describe 'Recent searches', js: true, feature: true do
   it 'saved recent searches are restored last on the list' do
     set_recent_searches(project_1_local_storage_key, '["saved1", "saved2"]')
 
-    visit namespace_project_issues_path(project_1.namespace, project_1, search: 'foo')
+    visit project_issues_path(project_1, search: 'foo')
 
     items = all('.filtered-search-history-dropdown-item', visible: false)
 
@@ -59,12 +59,12 @@ describe 'Recent searches', js: true, feature: true do
   end
 
   it 'searches are scoped to projects' do
-    visit namespace_project_issues_path(project_1.namespace, project_1)
+    visit project_issues_path(project_1)
 
     input_filtered_search('foo', submit: true)
     input_filtered_search('bar', submit: true)
 
-    visit namespace_project_issues_path(project_2.namespace, project_2)
+    visit project_issues_path(project_2)
 
     input_filtered_search('more', submit: true)
     input_filtered_search('things', submit: true)
@@ -78,7 +78,7 @@ describe 'Recent searches', js: true, feature: true do
 
   it 'clicking item fills search input' do
     set_recent_searches(project_1_local_storage_key, '["foo", "bar"]')
-    visit namespace_project_issues_path(project_1.namespace, project_1)
+    visit project_issues_path(project_1)
 
     all('.filtered-search-history-dropdown-item', visible: false)[0].trigger('click')
     wait_for_filtered_search('foo')
@@ -88,7 +88,7 @@ describe 'Recent searches', js: true, feature: true do
 
   it 'clear recent searches button, clears recent searches' do
     set_recent_searches(project_1_local_storage_key, '["foo"]')
-    visit namespace_project_issues_path(project_1.namespace, project_1)
+    visit project_issues_path(project_1)
 
     items_before = all('.filtered-search-history-dropdown-item', visible: false)
 
@@ -102,7 +102,7 @@ describe 'Recent searches', js: true, feature: true do
 
   it 'shows flash error when failed to parse saved history' do
     set_recent_searches(project_1_local_storage_key, 'fail')
-    visit namespace_project_issues_path(project_1.namespace, project_1)
+    visit project_issues_path(project_1)
 
     expect(find('.flash-alert')).to have_text('An error occured while parsing recent searches')
   end

@@ -142,6 +142,19 @@ class IssuableFinder
     milestones? && params[:milestone_title] == Milestone::None.title
   end
 
+  def milestones
+    return @milestones if defined?(@milestones)
+
+    @milestones =
+      if milestones?
+        scope = Milestone.where(project_id: projects)
+
+        scope.where(title: params[:milestone_title])
+      else
+        Milestone.none
+      end
+  end
+
   def labels?
     params[:label_name].present?
   end

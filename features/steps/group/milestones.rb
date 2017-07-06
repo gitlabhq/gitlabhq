@@ -39,7 +39,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     expect(page).to have_content('Milestone GL-113')
     expect(page).to have_content('Issues 3 Open: 3 Closed: 0')
     issue = Milestone.find_by(name: 'GL-113').issues.first
-    expect(page).to have_link(issue.title, href: namespace_project_issue_path(issue.project.namespace, issue.project, issue))
+    expect(page).to have_link(issue.title, href: project_issue_path(issue.project, issue))
   end
 
   step 'I fill milestone name' do

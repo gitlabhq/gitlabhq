@@ -9,7 +9,7 @@ feature 'User uploads file to note', feature: true do
 
   before do
     gitlab_sign_in(user)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
   context 'before uploading' do

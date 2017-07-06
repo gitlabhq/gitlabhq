@@ -4,7 +4,7 @@ feature 'Diff file viewer', :js, feature: true do
   let(:project) { create(:project, :public, :repository) }
 
   def visit_commit(sha, anchor: nil)
-    visit namespace_project_commit_path(project.namespace, project, sha, anchor: anchor)
+    visit project_commit_path(project, sha, anchor: anchor)
 
     wait_for_requests
   end

@@ -13,13 +13,13 @@ class ApplicationSetting < ActiveRecord::Base
                             [\r\n]          # any number of newline characters
                           }x
 
-  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiverecordSerialize
-  serialize :import_sources # rubocop:disable Cop/ActiverecordSerialize
-  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiverecordSerialize
-  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiverecordSerialize
-  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiverecordSerialize
-  serialize :repository_storages # rubocop:disable Cop/ActiverecordSerialize
-  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text

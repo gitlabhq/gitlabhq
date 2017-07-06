@@ -18,12 +18,12 @@
         = scheme.name
   .col-sm-12
     %hr
-  .col-lg-3.profile-settings-sidebar#new-navigation
+  .col-lg-4.profile-settings-sidebar#new-navigation
     %h4.prepend-top-0
       New Navigation
     %p
       This setting allows you to turn on or off the new upcoming navigation concept.
-  .col-lg-9.syntax-theme
+  .col-lg-8.syntax-theme
     = label_tag do
       .preview= image_tag "old_nav.png"
       %input.js-experiment-feature-toggle{ type: "radio", value: "false", name: "new_nav", checked: !show_new_nav? }

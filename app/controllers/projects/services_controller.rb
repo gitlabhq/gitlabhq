@@ -15,7 +15,7 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def update
     if @service.save(context: :manual_change)
-      redirect_to(namespace_project_settings_integrations_path(@project.namespace, @project), notice: success_message)
+      redirect_to(project_settings_integrations_path(@project), notice: success_message)
     else
       render 'edit'
     end

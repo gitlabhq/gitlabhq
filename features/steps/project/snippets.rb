@@ -91,7 +91,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I visit snippet page "Snippet one"' do
-    visit namespace_project_snippet_path(project.namespace, project, project_snippet)
+    visit project_snippet_path(project, project_snippet)
   end
 
   def project_snippet
