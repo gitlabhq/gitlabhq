@@ -47,6 +47,7 @@
 .blank-state-icon {
   padding-bottom: 20px;
   font-size: 56px;
+  margin-left: 30%; /* this is slight increase over 25% of col-md-offset-3 */
 
   svg {
     display: block;
