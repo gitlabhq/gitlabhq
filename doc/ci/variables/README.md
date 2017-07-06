@@ -445,14 +445,9 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
-<<<<<<< HEAD
-[envs]: ../environments.md
-[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
-=======
 [eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
 [envs]: ../environments.md
->>>>>>> ce/master
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
 [runner]: https://docs.gitlab.com/runner/

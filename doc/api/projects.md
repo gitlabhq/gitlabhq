@@ -509,12 +509,9 @@ Parameters:
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
-<<<<<<< HEAD
+| `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `ci_config_path` | string | no | The path to CI config file |
->>>>>>> ce/master
 
 ### Create project for user
 
@@ -550,12 +547,9 @@ Parameters:
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
-<<<<<<< HEAD
+| `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `ci_config_path` | string | no | The path to CI config file |
->>>>>>> ce/master
 
 ### Edit project
 
@@ -590,12 +584,9 @@ Parameters:
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
-<<<<<<< HEAD
+| `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
-=======
-| `ci_config_path` | string | no | The path to CI config file |
->>>>>>> ce/master
 
 ### Fork project
 
