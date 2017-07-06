@@ -90,6 +90,10 @@ describe GroupsHelper do
     let(:deep_nested_group) { create(:group, parent: nested_group) }
     let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
 
+    before do
+      allow(helper).to receive(:current_user).and_return(nil)
+    end
+
     it 'outputs the groups in the correct order' do
       expect(helper.group_title(very_deep_nested_group)).to match(/>#{group.name}<\/a>.*>#{nested_group.name}<\/a>.*>#{deep_nested_group.name}<\/a>/)
     end
