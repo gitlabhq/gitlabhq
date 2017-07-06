@@ -149,6 +149,8 @@ git_data_dirs({
   { 'default' => { 'path' => '/mnt/gitlab/default', 'gitaly_address' => 'tcp://gitlab.internal:9999' } },
   { 'storage1' => { 'path' => '/mnt/gitlab/storage1', 'gitaly_address' => 'tcp://gitlab.internal:9999' } },
 })
+
+gitlab_rails['gitaly_token'] = 'abc123secret'
 ```
 
 Source installations:
@@ -164,6 +166,9 @@ gitlab:
       storage1:
         path: /mnt/gitlab/storage1/repositories
         gitaly_address: tcp://gitlab.internal:9999
+
+  gitaly:
+    token: 'abc123secret'
 ```
 
 Now reconfigure (Omnibus) or restart (source). When you tail the
