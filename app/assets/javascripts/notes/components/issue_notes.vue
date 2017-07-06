@@ -3,6 +3,7 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { mapGetters } from 'vuex';
 import storeOptions from '../stores/issue_notes_store';
 import IssueNote from './issue_note.vue';
 import IssueDiscussion from './issue_discussion.vue';
@@ -25,6 +26,11 @@ export default {
     IssueDiscussion,
     IssueSystemNote,
     IssueCommentForm,
+  },
+  computed: {
+    ...mapGetters([
+      'notes',
+    ])
   },
   methods: {
     component(note) {
@@ -82,7 +88,7 @@ export default {
       id="notes-list"
       class="notes main-notes-list timeline">
       <component
-        v-for="note in $store.getters.notes"
+        v-for="note in notes"
         :is="component(note)"
         :note="componentData(note)"
         :key="note.id" />
