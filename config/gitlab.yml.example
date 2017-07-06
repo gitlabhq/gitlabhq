@@ -730,10 +730,6 @@ test:
                   login_url: '/cas/login',
                   service_validate_url: '/cas/p3/serviceValidate',
                   logout_url: '/cas/logout'} }
-      - { name: 'authentiq',
-          app_id: 'YOUR_CLIENT_ID',
-          app_secret: 'YOUR_CLIENT_SECRET',
-          args: { scope: 'aq:name email~rs address aq:push' } }
       - { name: 'github',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET',
