@@ -65,3 +65,41 @@
     }
   }
 }
+
+/* EE Trial Banner Styles */
+
+/* Main Nav Overrides */
+.navbar-gitlab.has-trial-banner {
+  top: 52px;
+}
+
+/* Secondary Nav Overrides - Old Nav */
+.page-with-sidebar.has-trial-banner {
+  margin-top: 102px;
+}
+
+/* Sidebar Nav Overrides - New Nav */
+.page-with-sidebar.has-trial-banner .nav-sidebar {
+  top: 102px;
+}
+
+/* Trial Banner */
+.gitlab-ee-trial-banner.alert {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: $white-light;
+  text-align: center;
+  z-index: 400;
+
+  p a {
+    color: $gl-link-color;
+    text-decoration: none;
+    font-weight: bold;
+
+    &:hover {
+      color: $gl-link-hover-color;
+      text-decoration: underline;
+    }
+  }
+}
