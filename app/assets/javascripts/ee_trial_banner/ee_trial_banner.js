@@ -73,13 +73,8 @@ export default class EETrialBanner {
   }
 
   toggleBanner(state) {
-    if (state) {
-      this.$trialBanner.removeClass('hidden');
-      this.$navbar.addClass('has-trial-banner');
-    } else {
-      this.$trialBanner.addClass('hidden');
-      this.$navbar.removeClass('has-trial-banner');
-    }
+    this.$trialBanner.toggleClass('hidden', !state);
+    this.$navbar.toggleClass('has-trial-banner', state);
   }
 
   handleTrialBannerDismiss() {
