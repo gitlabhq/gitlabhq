@@ -7,7 +7,7 @@ const LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>';
 const ERROR_HTML = '<div class="nothing-here-block"><i class="fa fa-warning"></i> Could not load diff</div>';
 const COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <a class="click-to-expand">Click to expand it.</a></div>';
 
-class SingleFileDiff {
+export default class SingleFileDiff {
   constructor(file) {
     this.file = file;
     this.toggleDiff = this.toggleDiff.bind(this);
@@ -81,13 +81,3 @@ class SingleFileDiff {
     })(this));
   }
 }
-
-$.fn.singleFileDiff = function() {
-  return this.each(function() {
-    if (!$.data(this, 'singleFileDiff')) {
-      return $.data(this, 'singleFileDiff', new window.SingleFileDiff(this));
-    }
-  });
-};
-
-window.SingleFileDiff = SingleFileDiff;

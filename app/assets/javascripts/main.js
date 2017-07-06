@@ -144,7 +144,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './signin_tabs_memoizer';
-import './single_file_diff';
 import './smart_interval';
 import './snippets_list';
 import './star';
