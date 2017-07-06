@@ -160,7 +160,7 @@ Secret variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-## Protected secret variables
+### Protected secret variables
 
 >**Notes:**
 This feature requires GitLab 9.3 or higher.
@@ -426,10 +426,11 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
-[runner]: https://docs.gitlab.com/runner/
-[triggered]: ../triggers/README.md
-[triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
+[envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
+[runner]: https://docs.gitlab.com/runner/
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
-[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
+[triggered]: ../triggers/README.md
+[triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger

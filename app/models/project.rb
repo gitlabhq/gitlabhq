@@ -1326,7 +1326,8 @@ class Project < ActiveRecord::Base
     variables
   end
 
-  def secret_variables_for(ref)
+  def secret_variables_for(ref:, environment: nil)
+    # EE would use the environment
     if protected_for?(ref)
       variables
     else
