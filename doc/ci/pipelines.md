@@ -188,7 +188,7 @@ by name. The order of severity is:
 
 ### Multi-Project Pipelines Graphs
 
-With [Multi-Project Pipeline Graphs](multi-project_pipeline_graphs.md),
+With [Multi-Project Pipeline Graphs](multi_project_pipeline_graphs.md),
 you can visualize cross-project pipelines.
 
 It is available only in [GitLab Enterprise Edition Premium][eep].
@@ -234,7 +234,7 @@ respective link in the [Pipelines settings] page.
 [manual]: yaml/README.md#manual
 [env-manual]: environments.md#manually-deploying-to-environments
 [stages]: yaml/README.md#stages
-[runners]: runners/README.html
+[runners]: runners/README.md
 [pipelines settings]: ../user/project/pipelines/settings.md
 [triggers]: triggers/README.md#ci-job-token
 [ce-5742]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5742
