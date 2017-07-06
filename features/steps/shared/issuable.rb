@@ -58,10 +58,7 @@ module SharedIssuable
   step 'I visit merge request page "Enterprise fix"' do
     mr = MergeRequest.find_by(title: 'Enterprise fix')
     visit project_merge_request_path(mr.target_project, mr)
-<<<<<<< HEAD
     wait_for_requests
-=======
->>>>>>> ce/master
   end
 
   step 'I visit issue page "Community issue"' do
