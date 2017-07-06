@@ -1,7 +1,7 @@
 .blank-state.clearfix
-  .blank-state-icon.col-md-1.col-md-offset-4
+  .col-md-1.col-md-offset-3.blank-state-icon
     = custom_icon("add_new_user", size: 50)
-  .blank-state-body.col-md-3
+  .col-md-5.blank-state-body
     %h3.blank-state-title
       Add user
     %p.blank-state-text
@@ -10,9 +10,9 @@
       New user
 
 .blank-state.clearfix
-  .blank-state-icon.col-md-1.col-md-offset-4
+  .col-md-1.col-md-offset-3.blank-state-icon
     = custom_icon("configure_server", size: 50)
-  .blank-state-body.col-md-3
+  .col-md-5.blank-state-body
     %h3.blank-state-title
       Configure GitLab
     %p.blank-state-text
@@ -22,9 +22,9 @@
 
 - if current_user.can_create_group?
   .blank-state.clearfix
-    .blank-state-icon.col-md-1.col-md-offset-4
+    .col-md-1.col-md-offset-3.blank-state-icon
       = custom_icon("add_new_group", size: 50)
-    .blank-state-body.col-md-3
+    .col-md-5.blank-state-body
       %h3.blank-state-title
         Create a group
       %p.blank-state-text
