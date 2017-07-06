@@ -38,10 +38,10 @@ With [GitLab Enterprise Edition][ee], you can also:
 A. Consider you are a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
-1. You gather feedback from the member of your team
-1. Work on the implementation optimizing code with [Code Quality reports](#code-quality-reports)
-1. Build and test your changes with GitLab CI/CD
-1. Request the approval from your manager
+1. You gather feedback from your team
+1. You work on the implementation optimizing code with [Code Quality reports](#code-quality-reports)
+1. You build and test your changes with GitLab CI/CD
+1. You request the approval from your manager
 1. Your manager pushes a commit with his final review and set the merge request to [merge when pipeline succeeds](#merge-when-pipeline-succeeds)
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#manual-actions) for GitLab CI/CD
 1. Your implementations were successfully shipped to your customer
