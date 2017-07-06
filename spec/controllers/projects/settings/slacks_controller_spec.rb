@@ -11,8 +11,7 @@ describe Projects::Settings::SlacksController do
 
   describe 'GET show' do
     def redirect_url(project)
-      edit_namespace_project_service_path(
-        project.namespace,
+      edit_project_service_path(
         project,
         project.build_gitlab_slack_application_service
       )

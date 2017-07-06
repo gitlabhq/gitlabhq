@@ -24,8 +24,7 @@ module Projects
       private
 
       def redirect_to_service_page
-        redirect_to edit_namespace_project_service_path(
-          project.namespace,
+        redirect_to edit_project_service_path(
           project,
           project.gitlab_slack_application_service || project.build_gitlab_slack_application_service
         )

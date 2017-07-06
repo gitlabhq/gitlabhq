@@ -75,7 +75,7 @@ module AuthHelper
   end
 
   def slack_redirect_uri(project)
-    slack_auth_namespace_project_settings_slack_url(project.namespace, project)
+    slack_auth_project_settings_slack_url(project)
   end
 
   extend self

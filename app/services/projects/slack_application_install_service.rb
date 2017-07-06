@@ -55,7 +55,7 @@ module Projects
       HTTParty.get(SLACK_EXCHANGE_TOKEN_URL, query: {
         client_id: current_application_settings.slack_app_id,
         client_secret: current_application_settings.slack_app_secret,
-        redirect_uri: slack_auth_namespace_project_settings_slack_url(project.namespace, project),
+        redirect_uri: slack_auth_project_settings_slack_url(project),
         code: params[:code]
       })
     end
