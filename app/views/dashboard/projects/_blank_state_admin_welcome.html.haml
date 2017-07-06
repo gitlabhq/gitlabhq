@@ -2,7 +2,7 @@
 - state_icon_class = current_license&.trial? ? 'col-md-1' : 'col-md-2'
 - state_body_class = current_license&.trial? ? 'col-md-5' : 'col-md-8'
 
-.blank-state.clearfix
+.row.blank-state.clearfix
   .blank-state-icon{ class: "#{state_icon_class} #{state_offset_class}" }
     = custom_icon("add_new_user", size: 50)
   .blank-state-body{ class: state_body_class }
@@ -13,7 +13,7 @@
     = link_to new_admin_user_path, class: "btn btn-new" do
       New user
 
-.blank-state.clearfix
+.row.blank-state.clearfix
   .blank-state-icon{ class: "#{state_icon_class} #{state_offset_class}" }
     = custom_icon("configure_server", size: 50)
   .blank-state-body{ class: state_body_class }
@@ -25,7 +25,7 @@
       Configure
 
 - if current_user.can_create_group?
-  .blank-state.clearfix
+  .row.blank-state.clearfix
     .blank-state-icon{ class: "#{state_icon_class} #{state_offset_class}" }
       = custom_icon("add_new_group", size: 50)
     .blank-state-body{ class: state_body_class }
