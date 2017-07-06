@@ -30,11 +30,7 @@ module FormHelper
         null_user: true,
         current_user: true,
         project_id: @project.id,
-<<<<<<< HEAD
-        field_name: 'issue[assignee_ids][]',
-=======
         field_name: "issue[assignee_ids][]",
->>>>>>> upstream/master
         default_label: 'Unassigned',
         'max-select': 1,
         'dropdown-header': 'Assignee',

@@ -469,25 +469,6 @@ describe QuickActions::InterpretService, services: true do
           _, updates = service.execute(content, merge_request)
 
           expect(updates).to eq(assignee_ids: [])
-<<<<<<< HEAD
-        end
-      end
-    end
-
-    context 'reassign command' do
-      let(:content) { '/reassign' }
-
-      context 'Issue' do
-        it 'reassigns user if content contains /reassign @user' do
-          user = create(:user)
-
-          issue.update(assignee_ids: [developer.id])
-
-          _, updates = service.execute("/reassign @#{user.username}", issue)
-
-          expect(updates).to eq(assignee_ids: [user.id])
-=======
->>>>>>> upstream/master
         end
       end
     end
