@@ -143,6 +143,10 @@ describe Project, models: true do
 
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
 
+    it { is_expected.to validate_length_of(:ci_config_path).is_at_most(255) }
+    it { is_expected.to allow_value('').for(:ci_config_path) }
+    it { is_expected.not_to allow_value('test/../foo').for(:ci_config_path) }
+
     it { is_expected.to validate_presence_of(:creator) }
 
     it { is_expected.to validate_presence_of(:namespace) }
@@ -1501,6 +1505,28 @@ describe Project, models: true do
         expect(project).to receive(:container_repositories)
         expect(project).not_to have_container_registry_tags
       end
+    end
+  end
+
+  describe '#ci_config_path=' do
+    let(:project) { create(:empty_project) }
+
+    it 'sets nil' do
+      project.update!(ci_config_path: nil)
+
+      expect(project.ci_config_path).to be_nil
+    end
+
+    it 'sets a string' do
+      project.update!(ci_config_path: 'foo/.gitlab_ci.yml')
+
+      expect(project.ci_config_path).to eq('foo/.gitlab_ci.yml')
+    end
+
+    it 'sets a string but removes all leading slashes and null characters' do
+      project.update!(ci_config_path: "///f\0oo/\0/.gitlab_ci.yml")
+
+      expect(project.ci_config_path).to eq('foo//.gitlab_ci.yml')
     end
   end
 

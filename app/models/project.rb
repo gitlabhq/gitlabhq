@@ -186,6 +186,11 @@ class Project < ActiveRecord::Base
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
+  validates :ci_config_path,
+    format: { without: /\.{2}/,
+              message: 'cannot include directory traversal.' },
+    length: { maximum: 255 },
+    allow_blank: true
   validates :name,
     presence: true,
     length: { maximum: 255 },
@@ -519,6 +524,11 @@ class Project < ActiveRecord::Base
     end
 
     import_data&.destroy
+  end
+
+  def ci_config_path=(value)
+    # Strip all leading slashes so that //foo -> foo
+    super(value&.sub(%r{\A/+}, '')&.delete("\0"))
   end
 
   def import_url=(value)
@@ -1015,7 +1025,8 @@ class Project < ActiveRecord::Base
       namespace: namespace.name,
       visibility_level: visibility_level,
       path_with_namespace: path_with_namespace,
-      default_branch: default_branch
+      default_branch: default_branch,
+      ci_config_path: ci_config_path
     }
 
     # Backward compatibility

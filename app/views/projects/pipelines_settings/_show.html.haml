@@ -47,6 +47,14 @@
 
         %hr
         .form-group
+          = f.label :ci_config_path, 'Custom CI config path', class: 'label-light'
+          = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
+          %p.help-block
+            The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>
+            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
+
+        %hr
+        .form-group
           .checkbox
             = f.label :public_builds do
               = f.check_box :public_builds
