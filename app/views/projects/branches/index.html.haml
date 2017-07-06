@@ -2,6 +2,9 @@
 - page_title "Branches"
 = render "projects/commits/head"
 
+- if show_new_nav?
+  - breadcrumbs_extra_links("Repository", project_files_path(@project))
+
 %div{ class: container_class }
   .top-area.adjust
     .nav-text

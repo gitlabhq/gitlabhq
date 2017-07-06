@@ -1,10 +1,10 @@
 - @no_container = true
 - @content_class = "issue-boards-content"
+- @breadcrumb_title = "Board"
 - page_title "Boards"
 
 - if show_new_nav?
-  - content_for :sub_title_before do
-    %li= link_to "Issues", namespace_project_issues_path(@project.namespace, @project)
+  - breadcrumbs_extra_links("Issues", namespace_project_issues_path(@project.namespace, @project))
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'

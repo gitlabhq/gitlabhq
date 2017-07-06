@@ -1,6 +1,9 @@
 - @no_container = true
 - @breadcrumb_title = "Activity"
 
+- if show_new_nav?
+  - breadcrumbs_extra_links("Project", project_path(@project))
+
 - page_title "Activity"
 = render "projects/head"
 

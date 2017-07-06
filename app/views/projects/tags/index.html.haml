@@ -3,6 +3,9 @@
 - page_title "Tags"
 = render "projects/commits/head"
 
+- if show_new_nav?
+  - breadcrumbs_extra_links("Repository", project_files_path(@project))
+
 .flex-list{ class: container_class }
   .top-area.adjust
     .nav-text.row-main-content
