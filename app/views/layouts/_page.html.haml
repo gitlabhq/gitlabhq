@@ -1,4 +1,4 @@
-.page-with-sidebar{ class: "#{('page-with-new-sidebar' if defined?(@new_sidebar) && @new_sidebar)} #{page_gutter_class}" }
+.page-with-sidebar.js-page-with-sidebar{ class: "#{('page-with-new-sidebar' if defined?(@new_sidebar) && @new_sidebar)} #{page_gutter_class}" }
   - if show_new_nav?
     - if defined?(nav) && nav
       = render "layouts/nav/#{nav}"
