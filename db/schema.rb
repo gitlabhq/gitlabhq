@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170703102400) do
+ActiveRecord::Schema.define(version: 20170706121518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1337,7 +1337,7 @@ ActiveRecord::Schema.define(version: 20170703102400) do
     t.integer "repository_size_limit", limit: 8
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.integer "auto_cancel_pending_pipelines", default: 1, null: false
-    t.boolean "service_desk_enabled"
+    t.boolean "service_desk_enabled", default: true
     t.string "import_jid"
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
