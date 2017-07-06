@@ -45,6 +45,12 @@ describe UsersFinder do
 
         expect(users).to contain_exactly(user, user1, user2, omniauth_user)
       end
+
+      it 'filters by created_at' do
+        users = described_class.new(user, created_after: 2.days.ago, created_before: Time.now + 2.days).execute
+
+        expect(users.count).to eq(4)
+      end
     end
 
     context 'with an admin user' do
