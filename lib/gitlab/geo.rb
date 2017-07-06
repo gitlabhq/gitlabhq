@@ -113,9 +113,9 @@ module Gitlab
     end
 
     def self.configure_cron_jobs!
-      if self.primary_role_enabled?
+      if self.primary?
         self.configure_primary_jobs!
-      elsif self.secondary_role_enabled?
+      elsif self.secondary?
         self.configure_secondary_jobs!
       else
         self.enable_all_cron_jobs!
