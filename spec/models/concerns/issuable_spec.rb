@@ -156,7 +156,6 @@ describe Issuable do
 
   describe "#sort" do
     let(:project) { create(:empty_project) }
-<<<<<<< HEAD
 
     context "by weight" do
       let!(:issue)  { create(:issue, project: project) }
@@ -174,8 +173,6 @@ describe Issuable do
         expect(issues).to match_array([issue2, issue3, issue4, issue])
       end
     end
-=======
->>>>>>> ce/master
 
     context "by milestone due date" do
       # Correct order is:

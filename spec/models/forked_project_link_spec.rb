@@ -33,17 +33,10 @@ describe ForkedProjectLink, "add link on fork" do
     expect(project_to.forked_from_project).to eq(project_from)
   end
 
-<<<<<<< HEAD
-describe '#forked?' do
-  let(:forked_project_link) { create(:forked_project_link) }
-  let(:project_from) { create(:project, :repository) }
-  let(:project_to) { create(:project, forked_project_link: forked_project_link) }
-=======
   context 'project_to is pending_delete' do
     before do
       project_to.update!(pending_delete: true)
     end
->>>>>>> ce/master
 
     it { expect(project_from.forks.count).to eq(0) }
   end
@@ -56,12 +49,6 @@ describe '#forked?' do
     it { expect(project_to.forked_from_project).to be_nil }
   end
 
-<<<<<<< HEAD
-  it "project_to.destroy destroys fork_link" do
-    project_to.destroy
-
-    expect(ForkedProjectLink.exists?(id: forked_project_link.id)).to eq(false)
-=======
   describe '#forked?' do
     let(:project_to) { create(:project, forked_project_link: forked_project_link) }
     let(:forked_project_link) { create(:forked_project_link) }
@@ -94,6 +81,5 @@ describe '#forked?' do
     allow(service).to receive(:gitlab_shell).and_return(shell)
 
     service.execute
->>>>>>> ce/master
   end
 end

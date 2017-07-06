@@ -19,11 +19,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'no lists' do
     before do
-<<<<<<< HEAD
       visit project_boards_path(project)
-=======
-      visit project_board_path(project, board)
->>>>>>> ce/master
       wait_for_requests
       expect(page).to have_selector('.board', count: 3)
     end
@@ -87,11 +83,7 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:issue9) { create(:labeled_issue, project: project, labels: [planning, testing, bug, accepting], relative_position: 1) }
 
     before do
-<<<<<<< HEAD
       visit project_boards_path(project)
-=======
-      visit project_board_path(project, board)
->>>>>>> ce/master
 
       wait_for_requests
 
@@ -168,11 +160,7 @@ describe 'Issue Boards', feature: true, js: true do
         create(:labeled_issue, project: project, labels: [planning])
       end
 
-<<<<<<< HEAD
       visit project_boards_path(project)
-=======
-      visit project_board_path(project, board)
->>>>>>> ce/master
       wait_for_requests
 
       page.within(find('.board:nth-child(2)')) do
@@ -537,11 +525,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'keyboard shortcuts' do
     before do
-<<<<<<< HEAD
       visit project_boards_path(project)
-=======
-      visit project_board_path(project, board)
->>>>>>> ce/master
       wait_for_requests
     end
 
@@ -554,11 +538,7 @@ describe 'Issue Boards', feature: true, js: true do
   context 'signed out user' do
     before do
       gitlab_sign_out
-<<<<<<< HEAD
       visit project_boards_path(project)
-=======
-      visit project_board_path(project, board)
->>>>>>> ce/master
       wait_for_requests
     end
 
@@ -582,11 +562,7 @@ describe 'Issue Boards', feature: true, js: true do
       project.team << [user_guest, :guest]
       gitlab_sign_out
       gitlab_sign_in(user_guest)
-<<<<<<< HEAD
       visit project_boards_path(project)
-=======
-      visit project_board_path(project, board)
->>>>>>> ce/master
       wait_for_requests
     end
 

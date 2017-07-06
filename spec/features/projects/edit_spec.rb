@@ -9,7 +9,6 @@ feature 'Project edit', feature: true, js: true do
     gitlab_sign_in(user)
 
     visit edit_project_path(project)
-<<<<<<< HEAD
   end
 
   it 'does not have visibility radio buttons' do
@@ -25,8 +24,6 @@ feature 'Project edit', feature: true, js: true do
     wait_for_requests
 
     expect(find('#project_request_access_enabled')).to be_checked
-=======
->>>>>>> ce/master
   end
 
   context 'feature visibility' do

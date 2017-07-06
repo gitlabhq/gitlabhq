@@ -330,7 +330,6 @@ describe Notify do
               is_expected.to have_body_text(status)
               is_expected.to have_html_escaped_body_text(current_user.name)
               is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-<<<<<<< HEAD
             end
           end
         end
@@ -377,8 +376,6 @@ describe Notify do
           context 'when merge request has no assignee' do
             before do
               merge_request.update(assignee: nil)
-=======
->>>>>>> ce/master
             end
 
             it 'does not show the assignee' do
