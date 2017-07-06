@@ -284,22 +284,24 @@
   }
 }
 
-.gpg-badge {
+.gpg-status-box {
   &.valid {
     color: $brand-success;
+    border: 1px solid $brand-success;
   }
 
   &.invalid {
     color: $gray;
+    border: 1px solid $gray;
   }
 }
 
-.gpg-badge-popover-title {
+.gpg-popover-title {
   display: inline;
   font-weight: normal;
 }
 
-.gpg-badge-popover-icon {
+.gpg-popover-icon {
   float: left;
   font-size: 35px;
   line-height: 35px;
@@ -315,12 +317,12 @@
   }
 }
 
-.gpg-badge-popover-user-link {
+.gpg-popover-user-link {
   text-decoration: none;
   color: $gl-text-color;
 }
 
-.gpg-badge-popover-avatar {
+.gpg-popover-avatar {
   float: left;
   margin-bottom: $gl-padding;
 
@@ -329,11 +331,11 @@
   }
 }
 
-.gpg-badge-popover-username {
+.gpg-popover-username {
   font-weight: bold;
 }
 
-.commit .gpg-badge-popover-help-link {
+.commit .gpg-popover-help-link {
   display: block;
   color: $link-color;
 }
