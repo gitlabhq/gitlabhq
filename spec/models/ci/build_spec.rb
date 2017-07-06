@@ -143,32 +143,6 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#downloadable_single_artifacts_file?' do
-    let(:build) { create(:ci_build, :artifacts, artifacts_file_store: store) }
-
-    subject { build.downloadable_single_artifacts_file? }
-
-    before do
-      expect_any_instance_of(Ci::Build).to receive(:artifacts_metadata?).and_call_original
-    end
-
-    context 'artifacts are stored locally' do
-      let(:store) { ObjectStoreUploader::LOCAL_STORE }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'artifacts are stored remotely' do
-      let(:store) { ObjectStoreUploader::REMOTE_STORE }
-
-      before do
-        stub_artifacts_object_storage
-      end
-
-      it { is_expected.to be_falsey }
-    end
-  end
-
   describe '#artifacts_expired?' do
     subject { build.artifacts_expired? }
 
