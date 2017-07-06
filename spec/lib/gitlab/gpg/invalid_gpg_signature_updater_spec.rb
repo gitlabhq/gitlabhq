@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
     end
 
     before do
-      allow(Gitlab::Git::Commit).to receive(:find).with(kind_of(Repository), commit_sha).and_return(raw_commit)
+      allow_any_instance_of(GpgSignature).to receive(:commit).and_return(commit)
     end
 
     context 'gpg signature did not have an associated gpg key' do
