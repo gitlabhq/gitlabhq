@@ -51,6 +51,7 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import Todos from './todos';
 import TreeView from './tree';
 import UsagePing from './usage_ping';
 import UsernameValidator from './username_validator';
@@ -166,7 +167,7 @@ import OAuthRememberMe from './oauth_remember_me';
           new UsersSelect();
           break;
         case 'dashboard:todos:index':
-          new gl.Todos();
+          new Todos();
           break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
