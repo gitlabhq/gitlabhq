@@ -399,7 +399,6 @@ describe QuickActions::InterpretService, services: true do
       let(:content) { "/assign @#{developer.username}" }
 
       context 'Issue' do
-<<<<<<< HEAD
         it 'fetches assignees and populates them if content contains /assign' do
           user = create(:user)
           issue.assignees << user
@@ -407,24 +406,14 @@ describe QuickActions::InterpretService, services: true do
           _, updates = service.execute(content, issue)
 
           expect(updates[:assignee_ids]).to match_array([developer.id, user.id])
-=======
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, issue)
-
-          expect(updates[:assignee_ids]).to match_array([developer.id])
->>>>>>> ce/master
         end
       end
 
       context 'Merge Request' do
-<<<<<<< HEAD
         it 'fetches assignee and populates assignee_id if content contains /assign' do
           user = create(:user)
           merge_request.update(assignee: user)
 
-=======
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
->>>>>>> ce/master
           _, updates = service.execute(content, merge_request)
 
           expect(updates).to eq(assignee_ids: [developer.id])

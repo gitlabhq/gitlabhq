@@ -92,21 +92,11 @@ module QuickActions
 
     desc 'Assign'
     explanation do |users|
-<<<<<<< HEAD
-      ## EE-specific
-      users = issuable.is_a?(Issue) ? users : users.take(1)
-      "Assigns #{users.map(&:to_reference).to_sentence}."
-    end
-    params do
-      ## EE-specific
-      issuable.is_a?(Issue) ? '@user1 @user2' : '@user'
-=======
       users = issuable.allows_multiple_assignees? ? users : users.take(1)
       "Assigns #{users.map(&:to_reference).to_sentence}."
     end
     params do
       issuable.allows_multiple_assignees? ? '@user1 @user2' : '@user'
->>>>>>> ce/master
     end
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
@@ -117,11 +107,6 @@ module QuickActions
     command :assign do |users|
       next if users.empty?
 
-<<<<<<< HEAD
-      if issuable.is_a?(Issue)
-        # EE specific. In CE we should replace one assignee with another
-        @updates[:assignee_ids] = issuable.assignees.pluck(:id) + users.map(&:id)
-=======
       @updates[:assignee_ids] =
         if issuable.allows_multiple_assignees?
           issuable.assignees.pluck(:id) + users.map(&:id)
@@ -133,53 +118,21 @@ module QuickActions
     desc do
       if issuable.allows_multiple_assignees?
         'Remove all or specific assignee(s)'
->>>>>>> ce/master
       else
         'Remove assignee'
       end
     end
-<<<<<<< HEAD
-
-    desc do
-      if issuable.is_a?(Issue)
-        'Remove all or specific assignee(s)'
-      else
-        'Remove assignee'
-      end
-    end
-    explanation do
-      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}"
-    end
-    params do
-      issuable.is_a?(Issue) ? '@user1 @user2' : ''
-=======
     explanation do
       "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}."
     end
     params do
       issuable.allows_multiple_assignees? ? '@user1 @user2' : ''
->>>>>>> ce/master
     end
     condition do
       issuable.persisted? &&
         issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-<<<<<<< HEAD
-    command :unassign do |unassign_param = nil|
-      users = extract_users(unassign_param)
-
-      if issuable.is_a?(Issue)
-        @updates[:assignee_ids] =
-          if users.any?
-            issuable.assignees.pluck(:id) - users.map(&:id)
-          else
-            []
-          end
-      else
-        @updates[:assignee_id] = nil
-      end
-=======
     parse_params do |unassign_param|
       # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
       extract_users(unassign_param) if issuable.allows_multiple_assignees?
@@ -217,7 +170,6 @@ module QuickActions
         else
           [users.last.id]
         end
->>>>>>> ce/master
     end
 
     desc 'Change assignee(s)'
