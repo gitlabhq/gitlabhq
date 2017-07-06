@@ -157,10 +157,7 @@ class License < ActiveRecord::Base
     end
 
     def block_changes?
-      return false if current.nil?
-      return false if current.trial?
-
-      current.block_changes?
+      !!current&.block_changes?
     end
 
     def load_license
@@ -226,8 +223,6 @@ class License < ActiveRecord::Base
   # keep `add_ons`, therefore this method needs to be backward-compatible in that sense.
   # See https://gitlab.com/gitlab-org/gitlab-ee/issues/2019
   def add_ons
-    return {} if trial? && expired?
-
     explicit_add_ons = restricted_attr(:add_ons, {})
     plan_features = self.class.features_for_plan(plan)
 
@@ -235,6 +230,8 @@ class License < ActiveRecord::Base
   end
 
   def feature_available?(code)
+    return false if trial? && expired?
+
     feature = FEATURE_CODES.fetch(code)
     add_ons[feature].to_i > 0
   end
@@ -263,6 +260,10 @@ class License < ActiveRecord::Base
 
   def trial?
     restricted_attr(:trial)
+  end
+
+  def active?
+    !expired?
   end
 
   def remaining_days

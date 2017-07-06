@@ -36,9 +36,7 @@ class TrialsController < ApplicationController
   end
 
   def check_presence_of_license
-    current_license = License.current
-
-    if current_license && !current_license.expired?
+    if License.current&.active?
       redirect_to admin_license_url
     end
   end
