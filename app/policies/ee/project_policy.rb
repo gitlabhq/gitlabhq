@@ -59,7 +59,9 @@ module EE
         enable :read_environment
         enable :read_deployment
         enable :read_pages
+      end
 
+      rule { auditor & ~guest }.policy do
         prevent :create_project
         prevent :create_issue
         prevent :create_note
