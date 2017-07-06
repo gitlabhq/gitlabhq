@@ -20,10 +20,6 @@ module Gitlab
         return cached_signature if cached_signature.present?
 
         using_keychain do |gpg_key|
-          if gpg_key
-            Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
-          end
-
           create_cached_signature!(gpg_key)
         end
       end
