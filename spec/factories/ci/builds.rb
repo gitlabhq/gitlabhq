@@ -207,7 +207,8 @@ FactoryGirl.define do
             cache: {
                 key: 'cache_key',
                 untracked: false,
-                paths: ['vendor/*']
+                paths: ['vendor/*'],
+                policy: 'pull-push'
             }
         }
       end
