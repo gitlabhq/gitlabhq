@@ -237,6 +237,8 @@ Example response:
 
 ## Get user agent details
 
+Available only for admins.
+
 ```
 GET /snippets/:id/user_agent_detail
 ```
@@ -255,6 +257,6 @@ Example response:
 {
   "user_agent": "AppleWebKit/537.36",
   "ip_address": "127.0.0.1",
-  "submitted": false,
+  "submitted": false
 }
 ```
