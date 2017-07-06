@@ -12,8 +12,10 @@ can show the Code Climate report right in the merge request widget area.
 
 ## Use cases
 
+For instance, consider the following workflow:
+
 1. Your backend team member starts a new implementation for making certain feature in your app faster
-1. With Code Quality reports, they analise how their implementation is impacting the code quality
+1. With Code Quality reports, they analize how their implementation is impacting the code quality
 1. The metrics show that their code degrade the quality in 10 points
 1. You ask a co-worker to help them with this modification
 1. They both work on the changes until Code Quality report displays no degradations, only improvements

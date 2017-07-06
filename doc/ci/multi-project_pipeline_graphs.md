@@ -8,7 +8,7 @@
 GitLab CI/CD is a powerful continuous integration tool built-in GitLab.
 GitLab CI works not only per project, but also across projects. When you
 configure GitLab CI for your project, you can visualize the stages
-of your [jobs](pipelines.md#jobs) in a chart called [pipeline graph](pipelines.md#pipeline-graphs).
+of your [jobs](pipelines.md#jobs) on a chart called [pipeline graph](pipelines.md#pipeline-graphs).
 
 When you set up [GitLab CI/CD](README.md) across multiple projects, you can visualize
 the entire pipeline, including all multi-project stages.
@@ -16,7 +16,7 @@ the entire pipeline, including all multi-project stages.
 ![Multi-project pipeline graph](img/multi-project_pipeline_graph.png)
 
 Multi-Project Pipeline Graphs are useful for larger projects, especially those
-adopting a [micro-services architecture](https://about.gitlab.com/2016/08/16/trends-in-version-control-land-microservices/),
+adopting a [microservices architecture](https://about.gitlab.com/2016/08/16/trends-in-version-control-land-microservices/),
 that often have a set of interdependent components which form the complete product.
 
 ## Use cases
