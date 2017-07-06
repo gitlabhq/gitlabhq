@@ -21,13 +21,13 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def create
-    new_variable = project.variables.create(project_params)
+    @variable = project.variables.create(project_params)
+      .present(current_user: current_user)
 
-    if new_variable.persisted?
+    if @variable.persisted?
       redirect_to project_settings_ci_cd_path(project),
-                  notice: 'Variables were successfully updated.'
+                  notice: 'Variable was successfully created.'
     else
-      @variable = new_variable.present(current_user: current_user)
       render "show"
     end
   end
@@ -40,7 +40,7 @@ class Projects::VariablesController < Projects::ApplicationController
     else
       redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
                   status: 302,
-                  notice: 'Failed to remove the variable'
+                  notice: 'Failed to remove the variable.'
     end
   end
 

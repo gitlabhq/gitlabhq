@@ -14,7 +14,7 @@ describe Groups::VariablesController do
       it 'shows a success flash message' do
         post :create, group_id: group, variable: { key: "one", value: "two" }
 
-        expect(flash[:notice]).to include 'Variables were successfully updated.'
+        expect(flash[:notice]).to include 'Variable was successfully created.'
         expect(response).to redirect_to(group_settings_ci_cd_path(group))
       end
     end

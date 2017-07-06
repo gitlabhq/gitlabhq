@@ -15,7 +15,7 @@ describe Projects::VariablesController do
         post :create, namespace_id: project.namespace.to_param, project_id: project,
                       variable: { key: "one", value: "two" }
 
-        expect(flash[:notice]).to include 'Variables were successfully updated.'
+        expect(flash[:notice]).to include 'Variable was successfully created.'
         expect(response).to redirect_to(project_settings_ci_cd_path(project))
       end
     end

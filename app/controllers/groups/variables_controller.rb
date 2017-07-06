@@ -20,13 +20,13 @@ module Groups
     end
 
     def create
-      new_variable = group.variables.create(group_params)
+      @variable = group.variables.create(group_params)
+        .present(current_user: current_user)
 
-      if new_variable.persisted?
+      if @variable.persisted?
         redirect_to group_settings_ci_cd_path(group),
-                    notice: 'Variables were successfully updated.'
+                    notice: 'Variable was successfully created.'
       else
-        @variable = new_variable.present(current_user: current_user)
         render "show"
       end
     end
@@ -39,7 +39,7 @@ module Groups
       else
         redirect_to group_settings_ci_cd_path(group),
                     status: 302,
-                    notice: 'Failed to remove the variable'
+                    notice: 'Failed to remove the variable.'
       end
     end
 
