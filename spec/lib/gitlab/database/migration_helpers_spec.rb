@@ -262,7 +262,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
   describe '#update_column_in_batches' do
     context 'when running outside of a transaction' do
       before do
-        expect(model).to receive(:transaction_open?).twice.and_return(false)
+        expect(model).to receive(:transaction_open?)
+          .at_least(:once).and_return(false)
 
         create_list(:empty_project, 5)
       end
@@ -336,10 +337,39 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           first_id = Project.first.id
           scope = ->(table, query) { query.where(table[:id].eq(first_id)) }
 
-          model.walk_table_in_batches(:projects, scope: scope) do
+          expect { |b| model.walk_table_in_batches(:projects, of: 1, scope: scope, &b) }
+            .to yield_control.exactly(:once)
+        end
+      end
+    end
+
+    context 'when running inside the transaction' do
+      it 'raises RuntimeError' do
+        expect(model).to receive(:transaction_open?).and_return(true)
+
+        expect { model.walk_table_in_batches(:projects, of: 2) }
+          .to raise_error(RuntimeError)
+      end
+    end
+  end
+
+  describe '#execute_in_batches' do
+    context 'when running outside of a transaction' do
+      before do
+        expect(model).to receive(:transaction_open?)
+          .at_least(:once).and_return(false)
+
+        create_list(:empty_project, 6)
+      end
+
+      context 'when a scope is provided' do
+        it 'limits the scope of the statement provided inside the block' do
+          first_id = Project.first.id
+          scope = ->(table, query) { query.where(table[:id].eq(first_id)) }
+
+          model.execute_in_batches(:projects, scope: scope) do |table|
             Arel::UpdateManager.new(ActiveRecord::Base)
-              .table(Arel::Table.new(:projects))
-              .set([[Arel::Table.new(:projects)[:archived], true]])
+              .table(table).set([[table[:archived], true]])
           end
 
           expect(Project.where(archived: true).count).to eq(1)
@@ -351,9 +381,8 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       it 'raises RuntimeError' do
         expect(model).to receive(:transaction_open?).and_return(true)
 
-        expect do
-          model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
-        end.to raise_error(RuntimeError)
+        expect { model.execute_in_batches(:projects)}
+          .to raise_error(RuntimeError)
       end
     end
   end

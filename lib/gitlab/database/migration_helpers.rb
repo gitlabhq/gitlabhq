@@ -248,7 +248,7 @@ module Gitlab
         # rows for GitLab.com.
         batch_size = max_size if batch_size > max_size
 
-        walk_table_in_batches(table, of: batch_size, scope: scope) do
+        execute_in_batches(table, of: batch_size, scope: scope) do
           Arel::UpdateManager.new(ActiveRecord::Base)
             .table(table_arel)
             .set([[table_arel[column], value]])
@@ -281,23 +281,32 @@ module Gitlab
           stop_id = exec_query(stop_arel.to_sql)
             .to_hash.first.to_h['id'].to_i
 
-          action = yield(batch, start_id, stop_id)
+          yield batch, start_id, stop_id
 
-          if action.is_a?(Arel::TreeManager)
-            exec_arel = action.where(table[:id].gteq(start_id))
-            exec_arel = exec_arel.where(table[:id].lt(stop_id)) if stop_id.nonzero?
-            exec_arel = scope.call(table, exec_arel) if scope
+          stop_id.zero? ? break : start_id = stop_id
+        end
+      end
 
-            execute(exec_arel.to_sql)
-          end
+      def execute_in_batches(table, of: 1000, scope: nil)
+        if transaction_open?
+          raise <<-MSG
+            execute_in_batches helper can not be run inside a transaction.
+            You can disable transactions by calling `disable_ddl_transaction!`
+            method in the body of your migration class.
+          MSG
+        end
 
-          if stop_id.zero?
-            # there are no more rows left to update
-            break
-          else
-            # next loop
-            start_id = stop_id
-          end
+       # raise 'This method requires a block!' unless block_given?
+
+        table_arel = Arel::Table.new(table)
+
+        walk_table_in_batches(table, of: of, scope: scope) do |_batch, start_id, stop_id|
+          exec_arel = yield table_arel
+          exec_arel = exec_arel.where(table_arel[:id].gteq(start_id))
+          exec_arel = exec_arel.where(table_arel[:id].lt(stop_id)) if stop_id.nonzero?
+          exec_arel = scope.call(table_arel, exec_arel) if scope
+
+          execute(exec_arel.to_sql)
         end
       end
 
