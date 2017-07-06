@@ -17,7 +17,7 @@ describe 'Projects > Wiki > User views Git access wiki page', :feature do
   end
 
   scenario 'Visit Wiki Page Current Commit' do
-    visit namespace_project_wiki_path(project.namespace, project, wiki_page)
+    visit project_wiki_path(project, wiki_page)
 
     click_link 'Clone repository'
     expect(page).to have_text("Clone repository #{project.wiki.path_with_namespace}")

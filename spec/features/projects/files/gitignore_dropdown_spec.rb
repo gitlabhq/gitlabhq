@@ -6,7 +6,7 @@ feature 'User wants to add a .gitignore file', feature: true do
     project = create(:project)
     project.team << [user, :master]
     sign_in user
-    visit namespace_project_new_blob_path(project.namespace, project, 'master', file_name: '.gitignore')
+    visit project_new_blob_path(project, 'master', file_name: '.gitignore')
   end
 
   scenario 'user can see .gitignore dropdown' do

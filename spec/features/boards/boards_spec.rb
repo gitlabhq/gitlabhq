@@ -17,7 +17,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'no lists' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
       expect(page).to have_selector('.board', count: 3)
     end
@@ -81,7 +81,7 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:issue9) { create(:labeled_issue, project: project, labels: [planning, testing, bug, accepting], relative_position: 1) }
 
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
 
       wait_for_requests
 
@@ -158,7 +158,7 @@ describe 'Issue Boards', feature: true, js: true do
         create(:labeled_issue, project: project, labels: [planning])
       end
 
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
       page.within(find('.board:nth-child(2)')) do
@@ -507,7 +507,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'keyboard shortcuts' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -520,7 +520,7 @@ describe 'Issue Boards', feature: true, js: true do
   context 'signed out user' do
     before do
       sign_out(:user)
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -544,7 +544,7 @@ describe 'Issue Boards', feature: true, js: true do
       project.team << [user_guest, :guest]
       sign_out(:user)
       sign_in(user_guest)
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 

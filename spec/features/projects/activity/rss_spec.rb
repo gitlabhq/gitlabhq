@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Project Activity RSS' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:path) { activity_namespace_project_path(project.namespace, project) }
+  let(:path) { activity_project_path(project) }
 
   before do
     create(:issue, project: project)

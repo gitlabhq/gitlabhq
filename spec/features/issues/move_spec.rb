@@ -98,10 +98,10 @@ feature 'issue move to another project' do
   end
 
   def issue_path(issue)
-    namespace_project_issue_path(issue.project.namespace, issue.project, issue)
+    project_issue_path(issue.project, issue)
   end
 
   def project_path(project)
-    namespace_project_path(new_project.namespace, new_project)
+    project_path(new_project)
   end
 end

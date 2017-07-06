@@ -22,7 +22,7 @@ describe 'Issue Boards', :feature, :js do
     let!(:issue4) { create(:labeled_issue, project: project, labels: [label]) }
 
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
       expect(page).to have_selector('.board', count: 3)
@@ -47,7 +47,7 @@ describe 'Issue Boards', :feature, :js do
 
   context 'ordering in list' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
       expect(page).to have_selector('.board', count: 3)
@@ -110,7 +110,7 @@ describe 'Issue Boards', :feature, :js do
     let!(:issue6) { create(:labeled_issue, project: project, title: 'testing 3', labels: [label2], relative_position: 1.0) }
 
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
       expect(page).to have_selector('.board', count: 4)

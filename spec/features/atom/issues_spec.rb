@@ -16,7 +16,7 @@ describe 'Issues Feed', feature: true  do
     context 'when authenticated' do
       it 'renders atom feed' do
         sign_in user
-        visit namespace_project_issues_path(project.namespace, project, :atom)
+        visit project_issues_path(project, :atom)
 
         expect(response_headers['Content-Type'])
           .to have_content('application/atom+xml')
@@ -30,8 +30,7 @@ describe 'Issues Feed', feature: true  do
 
     context 'when authenticated via private token' do
       it 'renders atom feed' do
-        visit namespace_project_issues_path(project.namespace, project, :atom,
-                                            private_token: user.private_token)
+        visit project_issues_path(project, :atom, private_token: user.private_token)
 
         expect(response_headers['Content-Type'])
           .to have_content('application/atom+xml')
@@ -45,8 +44,7 @@ describe 'Issues Feed', feature: true  do
 
     context 'when authenticated via RSS token' do
       it 'renders atom feed' do
-        visit namespace_project_issues_path(project.namespace, project, :atom,
-                                            rss_token: user.rss_token)
+        visit project_issues_path(project, :atom, rss_token: user.rss_token)
 
         expect(response_headers['Content-Type'])
           .to have_content('application/atom+xml')
@@ -59,8 +57,7 @@ describe 'Issues Feed', feature: true  do
     end
 
     it "renders atom feed with url parameters for project issues" do
-      visit namespace_project_issues_path(project.namespace, project,
-                                          :atom, rss_token: user.rss_token, state: 'opened', assignee_id: user.id)
+      visit project_issues_path(project, :atom, rss_token: user.rss_token, state: 'opened', assignee_id: user.id)
 
       link = find('link[type="application/atom+xml"]')
       params = CGI.parse(URI.parse(link[:href]).query)

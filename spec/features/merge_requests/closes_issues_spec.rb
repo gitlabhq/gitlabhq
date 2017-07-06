@@ -22,7 +22,7 @@ feature 'Merge Request closing issues message', feature: true, js: true do
 
     sign_in user
 
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit project_merge_request_path(project, merge_request)
     wait_for_requests
   end
 

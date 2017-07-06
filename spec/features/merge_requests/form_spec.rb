@@ -23,10 +23,7 @@ describe 'New/edit merge request', feature: true, js: true do
 
     context 'new merge request' do
       before do
-        visit namespace_project_new_merge_request_path(
-          project.namespace,
-          project,
-          merge_request: {
+        visit project_new_merge_request_path(project, merge_request: {
             source_project_id: project.id,
             target_project_id: project.id,
             source_branch: 'fix',
@@ -114,7 +111,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                  target_branch: 'master'
                               )
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_project_merge_request_path(project, merge_request)
       end
 
       it 'updates merge request' do
@@ -182,10 +179,7 @@ describe 'New/edit merge request', feature: true, js: true do
 
     context 'new merge request' do
       before do
-        visit namespace_project_new_merge_request_path(
-          fork_project.namespace,
-          fork_project,
-          merge_request: {
+        visit project_new_merge_request_path(fork_project, merge_request: {
             source_project_id: fork_project.id,
             target_project_id: project.id,
             source_branch: 'fix',
@@ -251,7 +245,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                  target_branch: 'master'
                               )
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_project_merge_request_path(project, merge_request)
       end
 
       it 'should update merge request' do

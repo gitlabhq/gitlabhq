@@ -17,7 +17,7 @@ feature 'project commit pipelines', js: true do
     end
 
     scenario 'user views commit pipelines page' do
-      visit pipelines_namespace_project_commit_path(project.namespace, project, project.commit.sha)
+      visit pipelines_project_commit_path(project, project.commit.sha)
 
       page.within('.table-holder') do
         expect(page).to have_content project.pipelines[0].status # pipeline status

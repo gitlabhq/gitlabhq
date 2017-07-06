@@ -43,6 +43,6 @@ feature 'Admin uses repository checks', feature: true do
   end
 
   def visit_admin_project_page(project)
-    visit admin_namespace_project_path(project.namespace, project)
+    visit admin_project_path(project)
   end
 end

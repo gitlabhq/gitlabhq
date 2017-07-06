@@ -17,7 +17,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
     before do
       project.team << [user, :master]
       sign_in(user)
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     after do
@@ -53,7 +53,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
           project.team << [guest, :guest]
           sign_out(:user)
           sign_in(guest)
-          visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+          visit project_merge_request_path(project, merge_request)
         end
 
         it 'does not change the WIP prefix' do
@@ -99,7 +99,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
           project.team << [guest, :guest]
           sign_out(:user)
           sign_in(guest)
-          visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+          visit project_merge_request_path(project, merge_request)
         end
 
         it 'does not merge the MR' do
@@ -131,7 +131,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
       end
 
       it 'changes target_branch in new merge_request' do
-        visit namespace_project_new_merge_request_path(another_project.namespace, another_project, new_url_opts)
+        visit project_new_merge_request_path(another_project, new_url_opts)
 
         fill_in "merge_request_title", with: 'My brand new feature'
         fill_in "merge_request_description", with: "le feature \n/target_branch fix\nFeature description:"
@@ -145,7 +145,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
       it 'does not change target branch when merge request is edited' do
         new_merge_request = create(:merge_request, source_project: another_project)
 
-        visit edit_namespace_project_merge_request_path(another_project.namespace, another_project, new_merge_request)
+        visit edit_project_merge_request_path(another_project, new_merge_request)
         fill_in "merge_request_description", with: "Want to update target branch\n/target_branch fix\n"
         click_button "Save changes"
 
@@ -183,7 +183,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
           project.team << [guest, :guest]
           sign_out(:user)
           sign_in(guest)
-          visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+          visit project_merge_request_path(project, merge_request)
         end
 
         it 'does not change target branch' do

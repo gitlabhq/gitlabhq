@@ -32,8 +32,6 @@ feature 'Environment > Metrics', :feature do
   end
 
   def visit_environment(environment)
-    visit namespace_project_environment_path(environment.project.namespace,
-                                             environment.project,
-                                             environment)
+    visit project_environment_path(environment.project, environment)
   end
 end

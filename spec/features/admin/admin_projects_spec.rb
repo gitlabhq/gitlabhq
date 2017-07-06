@@ -44,7 +44,7 @@ describe "Admin::Projects", feature: true  do
     end
 
     it do
-      expect(current_path).to eq admin_namespace_project_path(project.namespace, project)
+      expect(current_path).to eq admin_project_path(project)
     end
 
     it "has project info" do
@@ -64,7 +64,7 @@ describe "Admin::Projects", feature: true  do
     end
 
     it 'transfers project to group web', js: true do
-      visit admin_namespace_project_path(project.namespace, project)
+      visit admin_project_path(project)
 
       click_button 'Search for Namespace'
       click_link 'group: web'
@@ -81,7 +81,7 @@ describe "Admin::Projects", feature: true  do
     end
 
     it 'adds admin a to a project as developer', js: true do
-      visit namespace_project_project_members_path(project.namespace, project)
+      visit project_project_members_path(project)
 
       page.within '.users-project-form' do
         select2(current_user.id, from: '#user_ids', multiple: true)
@@ -104,7 +104,7 @@ describe "Admin::Projects", feature: true  do
     end
 
     it 'removes admin from the project' do
-      visit namespace_project_project_members_path(project.namespace, project)
+      visit project_project_members_path(project)
 
       page.within '.content-list' do
         expect(page).to have_content(current_user.name)

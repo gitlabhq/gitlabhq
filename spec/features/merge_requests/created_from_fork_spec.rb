@@ -64,7 +64,6 @@ feature 'Merge request created from fork' do
   end
 
   def visit_merge_request(mr)
-    visit namespace_project_merge_request_path(project.namespace,
-                                               project, mr)
+    visit project_merge_request_path(project, mr)
   end
 end

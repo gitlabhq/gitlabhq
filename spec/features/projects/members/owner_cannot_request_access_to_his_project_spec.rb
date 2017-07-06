@@ -5,7 +5,7 @@ feature 'Projects > Members > Owner cannot request access to his project', featu
 
   background do
     sign_in(project.owner)
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   scenario 'owner does not see the request access button' do

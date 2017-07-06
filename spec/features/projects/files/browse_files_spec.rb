@@ -7,7 +7,7 @@ feature 'user browses project', feature: true, js: true do
   before do
     project.team << [user, :master]
     sign_in(user)
-    visit namespace_project_tree_path(project.namespace, project, project.default_branch)
+    visit project_tree_path(project, project.default_branch)
   end
 
   scenario "can see blame of '.gitignore'" do

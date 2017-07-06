@@ -494,6 +494,6 @@ feature 'Diff notes resolve', feature: true, js: true do
 
   def visit_merge_request(mr = nil)
     mr = mr || merge_request
-    visit namespace_project_merge_request_path(mr.project.namespace, mr.project, mr)
+    visit project_merge_request_path(mr.project, mr)
   end
 end
