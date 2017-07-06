@@ -31,29 +31,6 @@ export default {
       required: false,
       default: false,
     },
-
-    isLoadingFolderContent: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    toggleDeployBoard: {
-      type: Function,
-      required: false,
-      default: () => {},
-    },
-
-    store: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-
-    service: {
-      type: Object,
-      required: true,
-    },
   },
 
   methods: {
@@ -90,23 +67,20 @@ export default {
         :model="model"
         :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
-        :toggleDeployBoard="toggleDeployBoard"
         />
 
       <div v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">
         <div class="deploy-board-container">
           <deploy-board
-            :store="store"
-            :service="service"
-            :environmentID="model.id"
-            :deployBoardData="model.deployBoardData"
-            :endpoint="model.rollout_status_path"
+            :deploy-board-data="model.deployBoardData"
+            :is-loading="model.isLoadingDeployBoard"
+            :has-error="model.hasErrorDeployBoard"
             />
         </div>
       </div>
 
       <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
-        <div v-if="isLoadingFolderContent">
+        <div v-if="model.isLoadingFolderContent">
           <loading-icon size="2" />
         </div>
 

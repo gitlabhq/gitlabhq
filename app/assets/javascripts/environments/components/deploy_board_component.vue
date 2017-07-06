@@ -1,147 +1,73 @@
 <script>
-/* eslint-disable no-new, no-undef */
-/* global Flash */
-/**
- * Renders a deploy board.
- *
- * A deploy board is composed by:
- * - Information area with percentage of completion.
- * - Instances with status.
- * - Button Actions.
- * [Mockup](https://gitlab.com/gitlab-org/gitlab-ce/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
- *
- * The data of each deploy board needs to be fetched when we render the component.
- *
- * The endpoint response can sometimes be 204, in those cases we need to retry the request.
- * This should be done using backoff pooling and we should make no more than 3 request
- * for each deploy board.
- * After the third request we need to show a message saying we can't fetch the data.
- * Please refer to this [comment](https://gitlab.com/gitlab-org/gitlab-ee/issues/1589#note_23630610)
- * for more information
- */
-import Visibility from 'visibilityjs';
-import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
-import instanceComponent from './deploy_board_instance_component.vue';
-import Poll from '../../lib/utils/poll';
-import '../../flash';
+  /**
+   * Renders a deploy board.
+   *
+   * A deploy board is composed by:
+   * - Information area with percentage of completion.
+   * - Instances with status.
+   * - Button Actions.
+   * [Mockup](https://gitlab.com/gitlab-org/gitlab-ce/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
+   */
+  import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
+  import instanceComponent from './deploy_board_instance_component.vue';
+  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
-export default {
-
-  components: {
-    instanceComponent,
-  },
-
-  props: {
-    store: {
-      type: Object,
-      required: true,
+  export default {
+    components: {
+      instanceComponent,
+      loadingIcon,
     },
-
-    service: {
-      type: Object,
-      required: true,
+    props: {
+      deployBoardData: {
+        type: Object,
+        required: true,
+      },
+      isLoading: {
+        type: Boolean,
+        required: true,
+      },
+      hasError: {
+        type: Boolean,
+        required: true,
+      },
     },
-
-    deployBoardData: {
-      type: Object,
-      required: true,
+    data() {
+      return {
+        deployBoardSvg,
+      };
     },
+    computed: {
+      canRenderDeployBoard() {
+        return !this.isLoading && !this.hasError && this.deployBoardData.valid;
+      },
+      canRenderEmptyState() {
+        return !this.isLoading && !this.hasError && !this.deployBoardData.valid;
+      },
+      canRenderErrorState() {
+        return !this.isLoading && this.hasError;
+      },
+      instanceTitle() {
+        let title;
 
-    environmentID: {
-      type: Number,
-      required: true,
+        if (this.deployBoardData.instances.length === 1) {
+          title = 'Instance';
+        } else {
+          title = 'Instances';
+        }
+
+        return title;
+      },
+      projectName() {
+        return '<projectname>';
+      },
     },
-
-    endpoint: {
-      type: String,
-      required: true,
-    },
-  },
-
-  data() {
-    return {
-      isLoading: false,
-      hasError: false,
-      deployBoardSvg,
-    };
-  },
-
-  created() {
-    const poll = new Poll({
-      resource: this.service,
-      method: 'getDeployBoard',
-      data: this.endpoint,
-      successCallback: this.successCallback,
-      errorCallback: this.errorCallback,
-    });
-
-    if (!Visibility.hidden()) {
-      this.isLoading = true;
-      poll.makeRequest();
-    }
-
-    Visibility.change(() => {
-      if (!Visibility.hidden()) {
-        poll.restart();
-      } else {
-        poll.stop();
-      }
-    });
-  },
-
-  methods: {
-    successCallback(response) {
-      const data = response.json();
-
-      this.store.storeDeployBoard(this.environmentID, data);
-      this.isLoading = false;
-    },
-
-    errorCallback() {
-      this.isLoading = false;
-      // eslint-disable-next-line no-new
-      new Flash('An error occurred while fetching the deploy board.');
-    },
-  },
-
-  computed: {
-    canRenderDeployBoard() {
-      return !this.isLoading && !this.hasError && this.deployBoardData.valid;
-    },
-
-    canRenderEmptyState() {
-      return !this.isLoading && !this.hasError && !this.deployBoardData.valid;
-    },
-
-    canRenderErrorState() {
-      return !this.isLoading && this.hasError;
-    },
-
-    instanceTitle() {
-      let title;
-
-      if (this.deployBoardData.instances.length === 1) {
-        title = 'Instance';
-      } else {
-        title = 'Instances';
-      }
-
-      return title;
-    },
-
-    projectName() {
-      return '<projectname>';
-    },
-  },
-};
+  };
 </script>
 <template>
   <div class="js-deploy-board deploy-board">
 
     <div v-if="isLoading">
-      <i
-        class="fa fa-spinner fa-spin"
-        aria-hidden="true" />
+      <loading-icon />
     </div>
 
     <div v-if="canRenderDeployBoard">
@@ -161,7 +87,8 @@ export default {
             <instance-component
               :status="instance.status"
               :tooltip-text="instance.tooltip"
-              :stable="instance.stable" />
+              :stable="instance.stable"
+              />
           </template>
         </div>
       </section>
