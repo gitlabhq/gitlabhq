@@ -71,7 +71,7 @@ module Geo
     end
 
     def primary_ssh_path_prefix
-      Gitlab::Geo.primary_node.clone_url_prefix
+      @primary_ssh_path_prefix ||= Gitlab::Geo.primary_node.clone_url_prefix
     end
 
     def log(message)
