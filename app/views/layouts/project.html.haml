@@ -11,7 +11,7 @@
   - project = @target_project || @project
   - if current_user
     :javascript
-      window.uploads_path = "#{namespace_project_uploads_path project.namespace,project}";
+      window.uploads_path = "#{project_uploads_path(project)}";
       window.preview_markdown_path = "#{preview_markdown_path(project)}";
 
 - content_for :header_content do

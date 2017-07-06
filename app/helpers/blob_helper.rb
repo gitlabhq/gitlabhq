@@ -9,7 +9,7 @@ module BlobHelper
   end
 
   def edit_path(project = @project, ref = @ref, path = @path, options = {})
-    namespace_project_edit_blob_path(project.namespace, project,
+    project_edit_blob_path(project,
                                      tree_join(ref, path),
                                      options[:link_opts])
   end
@@ -33,7 +33,7 @@ module BlobHelper
         notice: edit_in_new_fork_notice,
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
+      fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
 
       button_tag 'Edit',
         class: "#{common_classes} js-edit-blob-link-fork-toggler",
@@ -62,7 +62,7 @@ module BlobHelper
         notice: edit_in_new_fork_notice + " Try to #{action} this file again.",
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
+      fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
 
       button_tag label,
         class: "#{common_classes} js-edit-blob-link-fork-toggler",
@@ -120,15 +120,15 @@ module BlobHelper
 
   def blob_raw_url
     if @build && @entry
-      raw_namespace_project_job_artifacts_path(@project.namespace, @project, @build, path: @entry.path)
+      raw_project_job_artifacts_path(@project, @build, path: @entry.path)
     elsif @snippet
       if @snippet.project_id
-        raw_namespace_project_snippet_path(@project.namespace, @project, @snippet)
+        raw_project_snippet_path(@project, @snippet)
       else
         raw_snippet_path(@snippet)
       end
     elsif @blob
-      namespace_project_raw_path(@project.namespace, @project, @id)
+      project_raw_path(@project, @id)
     end
   end
 
@@ -279,12 +279,12 @@ module BlobHelper
     options = []
 
     if can?(current_user, :create_issue, project)
-      options << link_to("submit an issue", new_namespace_project_issue_path(project.namespace, project))
+      options << link_to("submit an issue", new_project_issue_path(project))
     end
 
     merge_project = can?(current_user, :create_merge_request, project) ? project : (current_user && current_user.fork_of(project))
     if merge_project
-      options << link_to("create a merge request", namespace_project_new_merge_request_path(project.namespace, project))
+      options << link_to("create a merge request", project_new_merge_request_path(project))
     end
 
     options

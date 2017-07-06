@@ -348,7 +348,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
     before do
       gitlab_sign_in user
 
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
     end
 
     context 'cannot bulk assign labels' do
@@ -410,7 +410,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
   end
 
   def enable_bulk_update
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
     click_button 'Edit Issues'
   end
 

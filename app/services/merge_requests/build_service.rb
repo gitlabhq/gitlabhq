@@ -1,5 +1,7 @@
 module MergeRequests
   class BuildService < MergeRequests::BaseService
+    prepend EE::MergeRequests::BuildService
+
     def execute
       self.merge_request = MergeRequest.new(params)
       merge_request.compare_commits = []
@@ -105,42 +107,60 @@ module MergeRequests
     #   more than one commit in the MR
     #
     def assign_title_and_description
-      if match = source_branch.match(/\A(\d+)-/)
-        iid = match[1]
-      end
+      assign_title_and_description_from_single_commit
 
+      assign_title_from_issue
+
+      merge_request.title ||= source_branch.titleize.humanize
+
+      merge_request.title = wip_title if compare_commits.empty?
+
+      append_closes_description
+    end
+
+    def assign_title_and_description_from_single_commit
       commits = compare_commits
-      if commits && commits.count == 1
-        commit = commits.first
-        merge_request.title = commit.title
-        merge_request.description ||= commit.description.try(:strip)
-      elsif iid && issue = target_project.get_issue(iid, current_user)
-        case issue
-        when Issue
-          merge_request.title = "Resolve \"#{issue.title}\""
-        when ExternalIssue
-          merge_request.title = "Resolve #{issue.title}"
-        end
+
+      return unless commits && commits.count == 1
+
+      commit = commits.first
+      merge_request.title ||= commit.title
+      merge_request.description ||= commit.description.try(:strip)
+    end
+
+    def assign_title_from_issue
+      return unless issue
+
+      case issue
+      when Issue
+        merge_request.title ||= "Resolve \"#{issue.title}\""
+      when ExternalIssue
+        merge_request.title ||= "Resolve #{issue.title}"
+      end
+    end
+
+    def append_closes_description
+      return unless issue_iid
+
+      closes_issue = "Closes ##{issue_iid}"
+
+      if description.present?
+        merge_request.description += closes_issue.prepend("\n\n")
       else
-        merge_request.title = source_branch.titleize.humanize
+        merge_request.description = closes_issue
       end
+    end
 
-      # Set MR description based on project template
-      if merge_request.target_project.merge_requests_template.present?
-        merge_request.description = merge_request.target_project.merge_requests_template
-      end
+    def issue_iid
+      return @issue_iid if defined?(@issue_iid)
 
-      if iid
-        closes_issue = "Closes ##{iid}"
+      @issue_iid = source_branch[/\A(\d+)-/, 1]
+    end
 
-        if description.present?
-          merge_request.description += closes_issue.prepend("\n\n")
-        else
-          merge_request.description = closes_issue
-        end
-      end
+    def issue
+      return @issue if defined?(@issue)
 
-      merge_request.title = wip_title if commits.empty?
+      @issue = target_project.get_issue(issue_iid, current_user)
     end
   end
 end

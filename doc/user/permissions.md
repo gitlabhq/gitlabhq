@@ -91,7 +91,7 @@ group.
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 
-## External Users
+## External users
 
 In cases where it is desired that a user has access only to some internal or
 private projects, there is the option of creating **External Users**. This
@@ -114,6 +114,15 @@ will find the option to flag the user as external.
 
 By default new users are not set as external users. This behavior can be changed
 by an administrator under **Admin > Application Settings**.
+
+## Auditor users
+
+>[Introduced][ee-998] in [GitLab Enterprise Edition Premium][eep] 8.17.
+
+Auditor users are given read-only access to all projects, groups, and other
+resources on the GitLab instance.
+
+[Read more about Auditor users.](../administration/auditor_users.md)
 
 ## Project features
 
@@ -181,3 +190,5 @@ users:
 [^5]: Only if user is a member of the project.
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md
+[ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998
+[eep]: https://about.gitlab.com/gitlab-ee/

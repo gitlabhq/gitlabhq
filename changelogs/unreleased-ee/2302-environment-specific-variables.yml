@@ -1,0 +1,4 @@
+---
+title: Add environment scope to secret variables to specify environments
+merge_request: 2112
+author:

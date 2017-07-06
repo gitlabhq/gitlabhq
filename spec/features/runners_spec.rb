@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe "Runners" do
-  include GitlabRoutingHelper
-
   let(:user) { create(:user) }
 
   before do
@@ -124,7 +122,7 @@ describe "Runners" do
     end
 
     scenario 'user checks default configuration' do
-      visit namespace_project_runner_path(project.namespace, project, runner)
+      visit project_runner_path(project, runner)
 
       expect(page).to have_content 'Can run untagged jobs Yes'
     end

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Project settings > Merge Requests', feature: true, js: true do
-  include GitlabRoutingHelper
-
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
 

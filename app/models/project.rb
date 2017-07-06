@@ -676,7 +676,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    Gitlab::Routing.url_helpers.namespace_project_url(self.namespace, self)
+    Gitlab::Routing.url_helpers.project_url(self)
   end
 
   def new_issue_address(author)
@@ -852,7 +852,7 @@ class Project < ActiveRecord::Base
   def avatar_url(**args)
     # We use avatar_path instead of overriding avatar_url because of carrierwave.
     # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args) || (Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self) if avatar_in_git)
+    avatar_path(args) || (Gitlab::Routing.url_helpers.project_avatar_url(self) if avatar_in_git)
   end
 
   # For compatibility with old code
@@ -1316,7 +1316,8 @@ class Project < ActiveRecord::Base
     variables
   end
 
-  def secret_variables_for(ref)
+  def secret_variables_for(ref:, environment: nil)
+    # EE would use the environment
     if protected_for?(ref)
       variables
     else

@@ -6,7 +6,7 @@ feature 'Browse artifact', :js, feature: true do
   let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
   def browse_path(path)
-    browse_namespace_project_job_artifacts_path(project.namespace, project, job, path)
+    browse_project_job_artifacts_path(project, job, path)
   end
 
   context 'when visiting old URL' do

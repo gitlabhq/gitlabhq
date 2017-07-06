@@ -7,6 +7,7 @@
   .form-group
     = f.label :value, "Value", class: "label-light"
     = f.text_area :value, class: "form-control", placeholder: "PROJECT_VARIABLE"
+  = render 'projects/variables/ee/environment_scope', f: f
   .form-group
     .checkbox
       = f.label :protected do

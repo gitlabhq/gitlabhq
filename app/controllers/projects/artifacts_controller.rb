@@ -46,7 +46,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def keep
     build.keep_artifacts!
-    redirect_to namespace_project_job_path(project.namespace, project, build)
+    redirect_to project_job_path(project, build)
   end
 
   def latest_succeeded

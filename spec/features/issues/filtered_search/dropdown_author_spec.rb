@@ -34,7 +34,7 @@ describe 'Dropdown author', js: true, feature: true do
     gitlab_sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do

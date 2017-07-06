@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Project', feature: true do
   describe 'description' do
     let(:project) { create(:project, :repository) }
-    let(:path)    { namespace_project_path(project.namespace, project) }
+    let(:path)    { project_path(project) }
 
     before do
       gitlab_sign_in(:admin)
@@ -41,7 +41,7 @@ feature 'Project', feature: true do
     before do
       gitlab_sign_in user
       create(:forked_project_link, forked_to_project: project)
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
     end
 
     it 'removes fork' do
@@ -62,7 +62,7 @@ feature 'Project', feature: true do
     before do
       gitlab_sign_in(user)
       project.team << [user, :master]
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
     end
 
     it 'removes a project' do
@@ -81,7 +81,7 @@ feature 'Project', feature: true do
     before do
       gitlab_sign_in(user)
       project.add_user(user, Gitlab::Access::MASTER)
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
     end
 
     it 'clicks toggle and shows dropdown', js: true do
@@ -101,7 +101,7 @@ feature 'Project', feature: true do
         gitlab_sign_in(user)
         project.add_user(user, Gitlab::Access::MASTER)
         project2.add_user(user, Gitlab::Access::MASTER)
-        visit namespace_project_issue_path(project.namespace, project, issue)
+        visit project_issue_path(project, issue)
       end
 
       it 'clicks toggle and shows dropdown' do
@@ -124,7 +124,7 @@ feature 'Project', feature: true do
     before do
       project.team << [user, :master]
       gitlab_sign_in user
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
     end
 
     it 'has working links to files' do

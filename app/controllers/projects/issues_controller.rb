@@ -241,6 +241,10 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :awardable, :issue
   alias_method :spammable, :issue
 
+  def spammable_path
+    project_issue_path(@project, @issue)
+  end
+
   def authorize_update_issue!
     return render_404 unless can?(current_user, :update_issue, @issue)
   end

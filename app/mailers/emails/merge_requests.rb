@@ -22,7 +22,7 @@ module Emails
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @label_names = label_names
-      @labels_url = namespace_project_labels_url(@project.namespace, @project)
+      @labels_url = project_labels_url(@project)
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id))
     end
 
@@ -80,7 +80,7 @@ module Emails
     def setup_merge_request_mail(merge_request_id, recipient_id)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
-      @target_url = namespace_project_merge_request_url(@project.namespace, @project, @merge_request)
+      @target_url = project_merge_request_url(@project, @merge_request)
 
       @sent_notification = SentNotification.record(@merge_request, recipient_id, reply_key)
     end

@@ -1,8 +1,30 @@
-# CSV Export
+# Export Issues to CSV
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1126) in [GitLab Enterprise Edition Starter](https://about.gitlab.com/products/) 9.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1126) in [GitLab Enterprise Edition Starter 9.0](https://about.gitlab.com/2017/03/22/gitlab-9-0-released/#export-issues-ees-eep).
 
 Issues can be exported as CSV from GitLab and are sent to your default notification email as an attachment.
+
+## Overview
+
+**Export Issues to CSV** enables you and your team to export all the data collected from issues into
+a **[comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values)** (CSV) file,
+which stores tabular data in plain text.
+
+> _CSVs are a handy way of getting data from one program to another where one program cannot read the other ones normal output._ [Ref](https://www.quora.com/What-is-a-CSV-file-and-its-uses)
+
+CSV files can be used with any plotter or spreadsheet-based program, such as Microsoft Excel,
+Open Office Calc, or Google Spreadsheets.
+
+## Use cases
+
+Among numerous use cases for exporting issues for CSV, we can name a few:
+
+- Make a snapshot of issues for offline analysis or to communicate with other teams who may not be in GitLab
+- Create diagrams, graphs, and charts from the CSV data
+- Present the data in any other format for auditing or sharing reasons
+- Import the issues elsewhere
+- Long-term issues' data analysis with multiple snapshots created along the time
+- Use the long-term data to gather relevant feedback given in the issues, and improve your product based on real metrics
 
 ## Choosing which issues to include
 

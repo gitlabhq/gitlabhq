@@ -997,7 +997,7 @@ describe Project, models: true do
           allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
         end
 
-        it { should eq "#{geo_url}#{avatar_path}" }
+        it { is_expected.to eq "#{geo_url}#{avatar_path}" }
       end
     end
 
@@ -1008,13 +1008,13 @@ describe Project, models: true do
 
       let(:avatar_path) { "/#{project.full_path}/avatar" }
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'when git repo is empty' do
       let(:project) { create(:empty_project) }
 
-      it { should eq nil }
+      it { is_expected.to eq nil }
     end
   end
 
@@ -2341,7 +2341,12 @@ describe Project, models: true do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.secret_variables_for('ref') }
+    subject { project.secret_variables_for(ref: 'ref') }
+
+    before do
+      stub_application_setting(
+        default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    end
 
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
@@ -2350,11 +2355,6 @@ describe Project, models: true do
     end
 
     context 'when the ref is not protected' do
-      before do
-        stub_application_setting(
-          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-      end
-
       it 'contains only the secret variables' do
         is_expected.to contain_exactly(secret_variable)
       end

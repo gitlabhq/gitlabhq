@@ -53,7 +53,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I visit the forks page of the "Shop" project' do
     @project = Project.where(name: 'Shop').last
-    visit namespace_project_forks_path(@project.namespace, @project)
+    visit project_forks_path(@project)
   end
 
   step 'I should see my fork on the list' do

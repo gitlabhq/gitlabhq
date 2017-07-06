@@ -68,7 +68,7 @@ feature 'Dashboard Projects' do
     it 'shows that the last pipeline passed' do
       visit dashboard_projects_path
 
-      expect(page).to have_xpath("//a[@href='#{pipelines_namespace_project_commit_path(project.namespace, project, project.commit)}']")
+      expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit)}']")
     end
   end
 

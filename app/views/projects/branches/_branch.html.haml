@@ -6,7 +6,7 @@
 - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
 %li{ class: "js-branch-#{branch.name}" }
   %div
-    = link_to namespace_project_tree_path(@project.namespace, @project, branch.name), class: 'item-title str-truncated ref-name' do
+    = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated ref-name' do
       = icon('code-fork')
       = branch.name
     &nbsp;
@@ -31,7 +31,7 @@
           Merge request
 
       - if branch.name != @repository.root_ref
-        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: "btn btn-default #{'prepend-left-10' unless merge_project}", method: :post, title: "Compare" do
+        = link_to project_compare_index_path(@project, from: @repository.root_ref, to: branch.name), class: "btn btn-default #{'prepend-left-10' unless merge_project}", method: :post, title: "Compare" do
           Compare
 
       = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name]
@@ -48,7 +48,7 @@
               title: "Delete protected branch",
               data: { toggle: "modal",
                 target: "#modal-delete-branch",
-                delete_path: namespace_project_branch_path(@project.namespace, @project, branch.name),
+                delete_path: project_branch_path(@project, branch.name),
                 branch_name: branch.name } }
               = icon("trash-o")
           - else
@@ -57,7 +57,7 @@
               title: "Only a project master or owner can delete a protected branch" }
               = icon("trash-o")
         - else
-          = link_to namespace_project_branch_path(@project.namespace, @project, branch.name),
+          = link_to project_branch_path(@project, branch.name),
             class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
             title: "Delete branch",
             method: :delete,

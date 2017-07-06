@@ -134,10 +134,7 @@ describe Projects::ArtifactsController do
     context 'found the job and redirect' do
       shared_examples 'redirect to the job' do
         it 'redirects' do
-          path = browse_namespace_project_job_artifacts_path(
-            project.namespace,
-            project,
-            job)
+          path = browse_project_job_artifacts_path(project, job)
 
           expect(response).to redirect_to(path)
         end
@@ -174,11 +171,7 @@ describe Projects::ArtifactsController do
         end
 
         it 'redirects' do
-          path = file_namespace_project_job_artifacts_path(
-            project.namespace,
-            project,
-            job,
-            'README.md')
+          path = file_project_job_artifacts_path(project, job, 'README.md')
 
           expect(response).to redirect_to(path)
         end

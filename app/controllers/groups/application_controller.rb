@@ -1,5 +1,6 @@
 class Groups::ApplicationController < ApplicationController
   include RoutableActions
+  prepend EE::Groups::ApplicationController
 
   layout 'group'
 
@@ -34,7 +35,7 @@ class Groups::ApplicationController < ApplicationController
 
   def build_canonical_path(group)
     params[:group_id] = group.to_param
-    
+
     url_for(params)
   end
 end

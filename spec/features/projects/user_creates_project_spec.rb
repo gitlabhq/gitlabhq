@@ -18,7 +18,7 @@ feature 'User creates a project', js: true do
 
     project = Project.last
 
-    expect(current_path).to eq(namespace_project_path(project.namespace, project))
+    expect(current_path).to eq(project_path(project))
     expect(page).to have_content('Empty')
     expect(page).to have_content('git init')
     expect(page).to have_content('git remote')

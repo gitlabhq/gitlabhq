@@ -137,7 +137,7 @@ describe IssuesHelper do
       let(:merge_request) { create(:merge_request) }
 
       it "links just the merge request" do
-        expected_path = namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+        expected_path = project_merge_request_path(merge_request.project, merge_request)
 
         expect(link_to_discussions_to_resolve(merge_request, nil)).to include(expected_path)
       end

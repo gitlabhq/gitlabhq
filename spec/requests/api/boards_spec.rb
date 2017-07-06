@@ -57,6 +57,24 @@ describe API::Boards do
         expect(response).to match_response_schema('public_api/v4/boards')
       end
     end
+
+    context 'with the issue_board_milestone-feature available' do
+      it 'returns the milestone when the `issue_board_milestone`-feature is enabled' do
+        stub_licensed_features(issue_board_milestone: true)
+
+        get api(base_url, user)
+
+        expect(json_response.first["milestone"]).not_to be_nil
+      end
+
+      it 'hides the milestone when the `issue_board_milestone`-feature is disabled' do
+        stub_licensed_features(issue_board_milestone: false)
+
+        get api(base_url, user)
+
+        expect(json_response.first["milestone"]).to be_nil
+      end
+    end
   end
 
   describe "GET /projects/:id/boards/:board_id/lists" do

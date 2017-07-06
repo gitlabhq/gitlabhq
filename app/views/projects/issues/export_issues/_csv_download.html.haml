@@ -19,4 +19,4 @@
           %strong= @current_user.notification_email
           in an attachment.
       .modal-footer
-        = link_to 'Export issues', export_csv_namespace_project_issues_path(@project.namespace, @project, request.query_parameters), method: :post, class: 'btn btn-success pull-left', title: 'Export issues'
+        = link_to 'Export issues', export_csv_project_issues_path(@project, request.query_parameters), method: :post, class: 'btn btn-success pull-left', title: 'Export issues'
