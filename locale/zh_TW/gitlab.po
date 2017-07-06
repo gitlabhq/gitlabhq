@@ -21,11 +21,11 @@ msgstr ""
 msgid "%d additional commit has been omitted to prevent performance issues."
 msgid_plural ""
 "%d additional commits have been omitted to prevent performance issues."
-msgstr[0] "為提高頁面加載速度及性能，已省略了 %d 次送交 (commit)。"
+msgstr[0] "因效能考量，不顯示 %d 個更動 (commit)。"
 
 msgid "%d commit"
 msgid_plural "%d commits"
-msgstr[0] "%d 次送交 (commit)"
+msgstr[0] "%d 個更動 (commit)"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} 在 %{commit_timeago} 送交"
@@ -76,7 +76,7 @@ msgstr ""
 "Yaml 模板，然後記得要送交 (commit) 您的編輯內容。%{link_to_autodeploy_doc}\n"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
-msgstr "搜索分支 (branches)"
+msgstr "搜尋分支 (branches)"
 
 msgid "BranchSwitcherTitle|Switch branch"
 msgstr "切換分支 (branch)"
@@ -200,7 +200,7 @@ msgid "Commits"
 msgstr "更動記錄 (commit) "
 
 msgid "Commits feed"
-msgstr "送交動態"
+msgstr "更動摘要 (commit feed)"
 
 msgid "Commits|History"
 msgstr "過去更動 (commit) "
@@ -360,7 +360,7 @@ msgid "Files"
 msgstr "檔案"
 
 msgid "Filter by commit message"
-msgstr "按送交消息過濾"
+msgstr "以更動說明篩選"
 
 msgid "Find by path"
 msgstr "以路徑搜尋"
@@ -1022,7 +1022,7 @@ msgid "Use your global notification setting"
 msgstr "使用全域通知設定"
 
 msgid "View open merge request"
-msgstr "查看開啟的合並請求  (merge request)"
+msgstr "查看此分支的合併請求 (merge request)"
 
 msgid "VisibilityLevel|Internal"
 msgstr "內部"
