@@ -91,12 +91,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def show
-<<<<<<< HEAD
     # If we're importing while we do have a repository, we're simply updating the mirror.
     if @project.import_in_progress? && !@project.updating_mirror?
-=======
-    if @project.import_in_progress?
->>>>>>> ce/master
       redirect_to project_import_path(@project)
       return
     end

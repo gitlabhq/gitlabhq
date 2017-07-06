@@ -17,7 +17,6 @@ class BasePolicy < DeclarativePolicy::Base
   condition(:restricted_public_level, scope: :global) do
     current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
   end
-<<<<<<< HEAD
 
   # EE Extensions
   with_scope :user
@@ -28,6 +27,4 @@ class BasePolicy < DeclarativePolicy::Base
 
   with_scope :global
   condition(:license_block) { License.block_changes? }
-=======
->>>>>>> ce/master
 end
