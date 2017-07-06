@@ -28,7 +28,14 @@ class ProjectsFinder < UnionFinder
   end
 
   def execute
-    collection = init_collection
+    user = params.delete(:user)
+    collection =
+      if user
+        PersonalProjectsFinder.new(user).execute(current_user)
+      else
+        init_collection
+      end
+
     collection = by_ids(collection)
     collection = by_personal(collection)
     collection = by_starred(collection)

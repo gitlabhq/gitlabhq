@@ -476,6 +476,26 @@ describe API::Projects do
     end
   end
 
+  describe 'GET /users/:user_id/projects/' do
+    let!(:public_project) { create(:empty_project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
+
+    it 'returns error when user not found' do
+      get api('/users/9999/projects/')
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns projects filtered by user' do
+      get api("/users/#{user4.id}/projects/", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+    end
+  end
+
   describe 'POST /projects/user/:id' do
     before do
       expect(project).to be_persisted
