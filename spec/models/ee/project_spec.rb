@@ -639,4 +639,37 @@ describe Project, models: true do
       end
     end
   end
+
+  describe '#rename_repo' do
+    context 'when running on a primary node' do
+      let!(:geo_node) { create(:geo_node, :primary, :current) }
+      let(:project) { create(:project, :repository) }
+      let(:gitlab_shell) { Gitlab::Shell.new }
+
+      before do
+        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+      end
+
+      it 'logs the Geo::RepositoryRenamedEvent' do
+        stub_container_registry_config(enabled: false)
+
+        allow(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+          .and_return(true)
+
+        allow(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+          .and_return(true)
+
+        expect(Geo::RepositoryRenamedEventStore).to receive(:new)
+          .with(instance_of(Project), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
+          .and_call_original
+
+        expect { project.rename_repo }.to change(Geo::RepositoryRenamedEvent, :count).by(1)
+      end
+    end
+  end
 end

@@ -109,10 +109,13 @@ module Issuable
     def allows_multiple_assignees?
       false
     end
+<<<<<<< HEAD
 
     def has_multiple_assignees?
       assignees.count > 1
     end
+=======
+>>>>>>> upstream/master
   end
 
   module ClassMethods

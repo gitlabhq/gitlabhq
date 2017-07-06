@@ -1,6 +1,7 @@
 module QuickActions
   class InterpretService < BaseService
     include Gitlab::QuickActions::Dsl
+    prepend EE::QuickActions::InterpretService
 
     attr_reader :issuable
 
@@ -136,6 +137,7 @@ module QuickActions
     parse_params do |unassign_param|
       # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
       extract_users(unassign_param) if issuable.allows_multiple_assignees?
+<<<<<<< HEAD
     end
     command :unassign do |users = nil|
       @updates[:assignee_ids] =
@@ -170,21 +172,16 @@ module QuickActions
         else
           [users.last.id]
         end
+=======
+>>>>>>> upstream/master
     end
-
-    desc 'Change assignee(s)'
-    explanation do
-      'Change assignee(s)'
-    end
-    params '@user1 @user2'
-    condition do
-      issuable.is_a?(Issue) &&
-        issuable.persisted? &&
-        issuable.assignees.any? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
-    end
-    command :reassign do |unassign_param|
-      @updates[:assignee_ids] = extract_users(unassign_param).map(&:id)
+    command :unassign do |users = nil|
+      @updates[:assignee_ids] =
+        if users&.any?
+          issuable.assignees.pluck(:id) - users.map(&:id)
+        else
+          []
+        end
     end
 
     desc 'Set milestone'
@@ -484,34 +481,6 @@ module QuickActions
     end
     command :target_branch do |branch_name|
       @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
-    end
-
-    desc 'Set weight'
-    explanation do |weight|
-      "Sets weight to #{weight}." if weight
-    end
-    params Issue::WEIGHT_RANGE.to_s.squeeze('.').tr('.', '-')
-    condition do
-      issuable.supports_weight? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
-    end
-    parse_params do |weight|
-      weight.to_i if Issue.weight_filter_options.include?(weight.to_i)
-    end
-    command :weight do |weight|
-      @updates[:weight] = weight if weight
-    end
-
-    desc 'Clear weight'
-    explanation 'Clears weight.'
-    condition do
-      issuable.persisted? &&
-        issuable.supports_weight? &&
-        issuable.weight? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
-    end
-    command :clear_weight do
-      @updates[:weight] = nil
     end
 
     desc 'Move issue from one column of the board to another'

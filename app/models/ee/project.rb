@@ -429,6 +429,21 @@ module EE
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
+    def rename_repo
+      raise NotImplementedError unless defined?(super)
+
+      super
+
+      path_was = previous_changes['path'].first
+      old_path_with_namespace = File.join(namespace.full_path, path_was)
+
+      ::Geo::RepositoryRenamedEventStore.new(
+        self,
+        old_path: path_was,
+        old_path_with_namespace: old_path_with_namespace
+      ).create
+    end
+
     private
 
     def licensed_feature_available?(feature)

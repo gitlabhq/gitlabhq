@@ -144,6 +144,10 @@ ActiveRecord::Schema.define(version: 20170703102400) do
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
+    t.boolean "slack_app_enabled", default: false
+    t.string "slack_app_id"
+    t.string "slack_app_secret"
+    t.string "slack_app_verification_token"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -584,6 +588,7 @@ ActiveRecord::Schema.define(version: 20170703102400) do
     t.datetime "created_at", null: false
     t.integer "repository_updated_event_id", limit: 8
     t.integer "repository_deleted_event_id", limit: 8
+    t.integer "repository_renamed_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
@@ -620,6 +625,20 @@ ActiveRecord::Schema.define(version: 20170703102400) do
   end
 
   add_index "geo_repository_deleted_events", ["project_id"], name: "index_geo_repository_deleted_events_on_project_id", using: :btree
+
+  create_table "geo_repository_renamed_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
+    t.text "old_path_with_namespace", null: false
+    t.text "new_path_with_namespace", null: false
+    t.text "old_wiki_path_with_namespace", null: false
+    t.text "new_wiki_path_with_namespace", null: false
+    t.text "old_path", null: false
+    t.text "new_path", null: false
+  end
+
+  add_index "geo_repository_renamed_events", ["project_id"], name: "index_geo_repository_renamed_events_on_project_id", using: :btree
 
   create_table "geo_repository_updated_events", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -1513,6 +1532,19 @@ ActiveRecord::Schema.define(version: 20170703102400) do
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
   add_index "services", ["template"], name: "index_services_on_template", using: :btree
 
+  create_table "slack_integrations", force: :cascade do |t|
+    t.integer "service_id", null: false
+    t.string "team_id", null: false
+    t.string "team_name", null: false
+    t.string "alias", null: false
+    t.string "user_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "slack_integrations", ["team_id", "alias"], name: "index_slack_integrations_on_team_id_and_alias", unique: true, using: :btree
+  add_index "slack_integrations", ["service_id"], name: "index_slack_integrations_on_service_id", using: :btree
+  
   create_table "snippets", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -1846,7 +1878,9 @@ ActiveRecord::Schema.define(version: 20170703102400) do
   add_foreign_key "events", "projects", name: "fk_0434b48643", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
+  add_foreign_key "geo_event_log", "geo_repository_renamed_events", column: "repository_renamed_event_id", name: "fk_86c84214ec", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
+  add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
@@ -1899,6 +1933,7 @@ ActiveRecord::Schema.define(version: 20170703102400) do
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
+  add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade

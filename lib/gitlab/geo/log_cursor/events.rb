@@ -28,10 +28,16 @@ module Gitlab
 
         # @return [Integer] id of last replicated event
         def self.last_processed
-          last = ::Geo::EventLogState.last_processed.try(:id)
+          last = ::Geo::EventLogState.last_processed&.id
           return last if last
 
-          ::Geo::EventLog.any? ? ::Geo::EventLog.last.id : -1
+          if ::Geo::EventLog.any?
+            event_id = ::Geo::EventLog.last.id
+            save_processed(event_id)
+            event_id
+          else
+            -1
+          end
         end
 
         # private methods

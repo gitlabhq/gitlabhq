@@ -29,6 +29,26 @@ module EE
       validates :plan, inclusion: { in: EE_PLANS.keys }, allow_blank: true
     end
 
+    def move_dir
+      raise NotImplementedError unless defined?(super)
+
+      succeeded = super
+
+      if succeeded
+        all_projects.each do |project|
+          old_path_with_namespace = File.join(full_path_was, project.path)
+
+          ::Geo::RepositoryRenamedEventStore.new(
+            project,
+            old_path: project.path,
+            old_path_with_namespace: old_path_with_namespace
+          ).create
+        end
+      end
+
+      succeeded
+    end
+
     # Checks features (i.e. https://about.gitlab.com/products/) availabily
     # for a given Namespace plan. This method should consider ancestor groups
     # being licensed.

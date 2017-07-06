@@ -7,7 +7,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 9.3.4 (2017-07-03)
 
-- No changes.
+- Update gitlab-shell to 5.1.1 to fix Post Recieve errors
 
 ## 9.3.3 (2017-06-30)
 

@@ -183,7 +183,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :mirror_max_delay,
       :mirror_max_capacity,
       :mirror_capacity_threshold,
-      :authorized_keys_enabled
+      :authorized_keys_enabled,
+      :slack_app_enabled,
+      :slack_app_id,
+      :slack_app_secret,
+      :slack_app_verification_token
     ]
   end
 end
