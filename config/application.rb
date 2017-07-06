@@ -166,8 +166,9 @@ module Gitlab
     config.after_initialize do
       Rails.application.reload_routes!
 
+      named_routes_set = Gitlab::Application.routes.named_routes
       project_url_helpers = Module.new do
-        Gitlab::Application.routes.named_routes.helper_names.each do |name|
+        named_routes_set.helper_names.each do |name|
           next unless name.include?('namespace_project')
 
           define_method(name.sub('namespace_project', 'project')) do |project, *args|
@@ -175,6 +176,9 @@ module Gitlab
           end
         end
       end
+
+      named_routes_set.url_helpers_module.include project_url_helpers
+      named_routes_set.url_helpers_module.extend project_url_helpers
 
       Gitlab::Routing.url_helpers.include project_url_helpers
       Gitlab::Routing.url_helpers.extend project_url_helpers
