@@ -8,9 +8,9 @@ module Ci
 
     def form_path
       if variable.persisted?
-        namespace_project_variable_path(project.namespace, project, variable)
+        project_variable_path(project, variable)
       else
-        namespace_project_variables_path(project.namespace, project)
+        project_variables_path(project)
       end
     end
 

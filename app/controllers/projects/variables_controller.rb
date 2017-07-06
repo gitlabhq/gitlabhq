@@ -5,7 +5,7 @@ class Projects::VariablesController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to project_settings_ci_cd_path(@project)
   end
 
   def show
@@ -34,11 +34,11 @@ class Projects::VariablesController < Projects::ApplicationController
 
   def destroy
     if variable.destroy
-      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
+      redirect_to project_settings_ci_cd_path(project),
                   status: 302,
                   notice: 'Variable was successfully removed.'
     else
-      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project),
+      redirect_to project_settings_ci_cd_path(project),
                   status: 302,
                   notice: 'Failed to remove the variable.'
     end

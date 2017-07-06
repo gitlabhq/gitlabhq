@@ -38,26 +38,26 @@ describe Ci::VariablePresenter do
     context 'when variable is persisted' do
       subject { described_class.new(variable).form_path }
 
-      it { is_expected.to eq(namespace_project_variable_path(project.namespace, project, variable)) }
+      it { is_expected.to eq(project_variable_path(project, variable)) }
     end
 
     context 'when variable is not persisted' do
       let(:variable) { build(:ci_variable, project: project) }
       subject { described_class.new(variable).form_path }
 
-      it { is_expected.to eq(namespace_project_variables_path(project.namespace, project)) }
+      it { is_expected.to eq(project_variables_path(project)) }
     end
   end
 
   describe '#edit_path' do
     subject { described_class.new(variable).edit_path }
 
-    it { is_expected.to eq(namespace_project_variable_path(project.namespace, project, variable)) }
+    it { is_expected.to eq(project_variable_path(project, variable)) }
   end
 
   describe '#delete_path' do
     subject { described_class.new(variable).delete_path }
 
-    it { is_expected.to eq(namespace_project_variable_path(project.namespace, project, variable)) }
+    it { is_expected.to eq(project_variable_path(project, variable)) }
   end
 end
