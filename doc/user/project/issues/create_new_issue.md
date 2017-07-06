@@ -41,7 +41,7 @@ It opens a new issue for that project labeled after its respective list.
 
 Enable [Service Desk](../service_desk.md) to your project and offer email support.
 By doing so, when your customer sends a new email, a new issue can be created in
-the appropriate project.
+the appropriate project and followed up from there.
 
 _Service Desk is available only for [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
 and [GitLab.com Silver](https://about.gitlab.com/gitlab-com/) subscribers._
