@@ -47,8 +47,8 @@ class Note < ActiveRecord::Base
   belongs_to :updated_by, class_name: "User"
   belongs_to :last_edited_by, class_name: 'User'
 
-  has_many :todos, dependent: :destroy
-  has_many :events, as: :target, dependent: :destroy
+  has_many :todos, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
 
   delegate :gfm_reference, :local_reference, to: :noteable
