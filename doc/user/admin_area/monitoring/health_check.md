@@ -5,7 +5,8 @@
   - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and will
     be deprecated in GitLab 9.1. Read more in the [old behavior](#old-behavior)
     section.
-  - [Access token](#access-token) has been deprecated in GitLab 9.4 in favor of [IP Whitelist](#ip-whitelist)
+  - [Access token](#access-token) has been deprecated in GitLab 9.4
+    in favor of [IP Whitelist](#ip-whitelist)
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the
@@ -84,8 +85,8 @@ the database connection, the state of the database migrations, and the ability t
 and access the cache. This endpoint can be provided to uptime monitoring services like
 [Pingdom][pingdom], [Nagios][nagios-health], and [NewRelic][newrelic-health].
 
-Once you have the [access token](#access-token) or your client IP is [whitelisted](#ip-whitelist), health information can be
-retrieved as plain text, JSON, or XML using the `health_check` endpoint:
+Once you have the [access token](#access-token) or your client IP is [whitelisted](#ip-whitelist),
+health information can be retrieved as plain text, JSON, or XML using the `health_check` endpoint:
 
 - `https://gitlab.example.com/health_check?token=ACCESS_TOKEN`
 - `https://gitlab.example.com/health_check.json?token=ACCESS_TOKEN`
