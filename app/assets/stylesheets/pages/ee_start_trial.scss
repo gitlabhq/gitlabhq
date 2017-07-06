@@ -1,0 +1,105 @@
+.trial-form-container {
+  .start-trial-header,
+  .start-trial-body {
+    margin-top: 30px;
+  }
+
+  .start-trial-header {
+    .trial-description {
+      color: $gl-gray-light;
+    }
+  }
+}
+
+.start-trial-body {
+  .ee-features {
+    border: 1px solid $border-color;
+    border-radius: $border-radius-default;
+    padding: 20px 40px;
+  }
+}
+
+.start-trial-body {
+  .trial-form {
+    label {
+      font-weight: normal;
+    }
+  }
+}
+
+.start-trial-body {
+  .feature-list li {
+    margin-top: 35px;
+
+    svg {
+      display: block;
+      margin: auto;
+    }
+
+    .feature-item-description {
+
+      h4 {
+        margin-top: 0;
+      }
+
+      p {
+        color: $gl-gray-light;
+      }
+    }
+  }
+}
+
+@media (max-width: $screen-md-min) {
+  .start-trial-body {
+    .feature-item-description {
+      margin-top: 15px;
+
+      h4,
+      p {
+        text-align: center;
+      }
+    }
+
+    .trial-form {
+      margin-top: 25px;
+    }
+  }
+}
+
+/* EE Trial Banner Styles */
+
+/* Main Nav Overrides */
+.navbar-gitlab.has-trial-banner {
+  top: 52px;
+}
+
+/* Secondary Nav Overrides - Old Nav */
+.page-with-sidebar.has-trial-banner {
+  margin-top: 102px;
+}
+
+/* Sidebar Nav Overrides - New Nav */
+.page-with-sidebar.has-trial-banner .nav-sidebar {
+  top: 102px;
+}
+
+/* Trial Banner */
+.gitlab-ee-trial-banner.alert {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: $white-light;
+  text-align: center;
+  z-index: 400;
+
+  p a {
+    color: $gl-link-color;
+    text-decoration: none;
+    font-weight: bold;
+
+    &:hover {
+      color: $gl-link-hover-color;
+      text-decoration: underline;
+    }
+  }
+}
