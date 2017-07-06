@@ -31,18 +31,10 @@ describe Gitlab::PerformanceBar do
       described_class.allowed_user?(user)
     end
 
-    it 'caches the allowed user IDs in Redis', :redis do
+    it 'caches the allowed user IDs in cache', :caching do
       expect do
         expect(described_class.allowed_user?(user)).to be_truthy
       end.not_to exceed_query_limit(0)
-    end
-
-    it 'caches the allowed user IDs for 10 minutes', :redis do
-      ttl_cached_user_ids = Gitlab::Redis.with do |redis|
-        redis.ttl(described_class.cache_key)
-      end
-
-      expect(ttl_cached_user_ids).to be <= 10.minutes
     end
   end
 
