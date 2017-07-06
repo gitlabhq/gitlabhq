@@ -6,6 +6,8 @@ module Ci
     include AfterCommitQueue
     include Presentable
 
+    prepend ::EE::Ci::Pipeline
+
     belongs_to :project
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
@@ -403,11 +405,7 @@ module Ci
     def predefined_variables
       [
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
-<<<<<<< HEAD
-        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
-=======
         { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true }
->>>>>>> ce/master
       ]
     end
 
