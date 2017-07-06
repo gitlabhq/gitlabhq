@@ -189,47 +189,77 @@ describe Projects::PipelineSchedulesController do
             key: 'CCC', pipeline_schedule: pipeline_schedule)
         end
 
-        context 'when params include one variable' do
-          context 'when adds a new variable' do
-            let(:schedule) do
-              basic_param.merge({
-                variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
-              })
-            end
-
-            it 'adds the new variable' do
-              expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(1)
-
-              pipeline_schedule.reload
-              expect(pipeline_schedule.variables.last.key).to eq('AAA')
-            end
+        context 'when adds a new variable' do
+          let(:schedule) do
+            basic_param.merge({
+              variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
+            })
           end
 
-          context 'when updates a variable' do
-            let(:schedule) do
-              basic_param.merge({
-                variables_attributes: [{ id: pipeline_schedule_variable.id, value: 'new_value' }]
-              })
-            end
+          it 'adds the new variable' do
+            expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(1)
 
-            it 'updates the variable' do
-              expect { go }.not_to change { Ci::PipelineScheduleVariable.count }
+            pipeline_schedule.reload
+            expect(pipeline_schedule.variables.last.key).to eq('AAA')
+          end
+        end
 
-              pipeline_schedule_variable.reload
-              expect(pipeline_schedule_variable.value).to eq('new_value')
-            end
+        context 'when adds a new duplicated variable' do
+          let(:schedule) do
+            basic_param.merge({
+              variables_attributes: [{ key: 'CCC', value: 'AAA123' }]
+            })
           end
 
-          context 'when deletes a variable' do
-            let(:schedule) do
-              basic_param.merge({
-                variables_attributes: [{ id: pipeline_schedule_variable.id, _destroy: true }]
-              })
-            end
+          it 'returns an error' do
+            expect { go }.not_to change { Ci::PipelineScheduleVariable.count }
 
-            it 'delete the existsed variable' do
-              expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(-1)
-            end
+            pipeline_schedule.reload
+            expect(assigns(:schedule).errors['variables']).not_to be_empty
+          end
+        end
+
+        context 'when updates a variable' do
+          let(:schedule) do
+            basic_param.merge({
+              variables_attributes: [{ id: pipeline_schedule_variable.id, value: 'new_value' }]
+            })
+          end
+
+          it 'updates the variable' do
+            expect { go }.not_to change { Ci::PipelineScheduleVariable.count }
+
+            pipeline_schedule_variable.reload
+            expect(pipeline_schedule_variable.value).to eq('new_value')
+          end
+        end
+
+        context 'when deletes a variable' do
+          let(:schedule) do
+            basic_param.merge({
+              variables_attributes: [{ id: pipeline_schedule_variable.id, _destroy: true }]
+            })
+          end
+
+          it 'delete the existsed variable' do
+            expect { go }.to change { Ci::PipelineScheduleVariable.count }.by(-1)
+          end
+        end
+
+        context 'when deletes and creates a same key simultaneously' do
+          let(:schedule) do
+            basic_param.merge({
+              variables_attributes: [{ id: pipeline_schedule_variable.id, _destroy: true },
+                                     { key: 'CCC', value: 'CCC123' }]
+            })
+          end
+
+          it 'updates the variable' do
+            expect { go }.not_to change { Ci::PipelineScheduleVariable.count }
+
+            pipeline_schedule.reload
+            expect(pipeline_schedule.variables.last.key).to eq('CCC')
+            expect(pipeline_schedule.variables.last.value).to eq('CCC123')
           end
         end
       end
