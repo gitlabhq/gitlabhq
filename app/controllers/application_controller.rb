@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
-  include Peek::Rblineprof::CustomControllerHelpers
+  include WithPerformanceBar
 
   before_action :authenticate_user_from_private_token!
   before_action :authenticate_user_from_rss_token!
@@ -65,21 +65,6 @@ class ApplicationController < ActionController::Base
       not_found
     else
       authenticate_user!
-    end
-  end
-
-  def peek_enabled?
-    return false unless Gitlab::PerformanceBar.enabled?
-    return false unless current_user
-
-    if RequestStore.active?
-      if RequestStore.store.key?(:peek_enabled)
-        RequestStore.store[:peek_enabled]
-      else
-        RequestStore.store[:peek_enabled] = cookies[:perf_bar_enabled].present?
-      end
-    else
-      cookies[:perf_bar_enabled].present?
     end
   end
 

@@ -38,17 +38,17 @@ describe 'User can display performance bar', :js do
       visit root_path
     end
 
-    context 'when the gitlab_performance_bar feature is disabled' do
+    context 'when the performance_bar feature is disabled' do
       before do
-        Feature.disable('gitlab_performance_bar')
+        Feature.disable(:performance_bar)
       end
 
       it_behaves_like 'performance bar is disabled'
     end
 
-    context 'when the gitlab_performance_bar feature is enabled' do
+    context 'when the performance_bar feature is enabled' do
       before do
-        Feature.enable('gitlab_performance_bar')
+        Feature.enable(:performance_bar)
       end
 
       it_behaves_like 'performance bar is disabled'
@@ -62,17 +62,17 @@ describe 'User can display performance bar', :js do
       visit root_path
     end
 
-    context 'when the gitlab_performance_bar feature is disabled' do
+    context 'when the performance_bar feature is disabled' do
       before do
-        Feature.disable('gitlab_performance_bar')
+        Feature.disable(:performance_bar)
       end
 
       it_behaves_like 'performance bar is disabled'
     end
 
-    context 'when the gitlab_performance_bar feature is enabled' do
+    context 'when the performance_bar feature is enabled' do
       before do
-        Feature.enable('gitlab_performance_bar')
+        Feature.enable(:performance_bar)
       end
 
       it_behaves_like 'performance bar is enabled'

@@ -359,6 +359,22 @@
                 Environment variable `prometheus_multiproc_dir` does not exist or is not pointing to a valid directory.
 
   %fieldset
+    %legend Profiling - Performance Bar
+    %p
+      Enable the Performance Bar for a given group.
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/performance_bar')
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :performance_bar_enabled do
+            = f.check_box :performance_bar_enabled
+            Enable the Performance Bar
+    .form-group
+      = f.label :performance_bar_allowed_group_id, 'Allowed group', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :performance_bar_allowed_group_id, class: 'form-control', placeholder: 'my-org/my-group', value: @application_setting.performance_bar_allowed_group&.full_path
+
+  %fieldset
     %legend Background Jobs
     %p
       These settings require a restart to take effect.

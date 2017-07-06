@@ -57,5 +57,13 @@ class Feature
         Flipper.new(adapter)
       end
     end
+
+    def register_feature_groups
+      Flipper.register(:performance_team) do |actor|
+        user = actor.thing
+
+        user&.is_a?(User) && Gitlab::PerformanceBar.allowed_user?(user)
+      end
+    end
   end
 end
