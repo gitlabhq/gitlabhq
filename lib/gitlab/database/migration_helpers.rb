@@ -221,17 +221,19 @@ module Gitlab
       # make things _more_ complex).
       #
       # rubocop: disable Metrics/AbcSize
-      def update_column_in_batches(table, column, value)
+      def update_column_in_batches(table, column, value, &scope)
         if transaction_open?
-          raise 'update_column_in_batches can not be run inside a transaction, ' \
-            'you can disable transactions by calling disable_ddl_transaction! ' \
-            'in the body of your migration class'
+          raise <<-MSG
+            update_column_in_batches helper can not be run inside a transaction.
+            You can disable transactions by calling `disable_ddl_transaction!`
+            method in the body of your migration class.
+          MSG
         end
 
-        table = Arel::Table.new(table)
+        table_arel = Arel::Table.new(table)
 
-        count_arel = table.project(Arel.star.count.as('count'))
-        count_arel = yield table, count_arel if block_given?
+        count_arel = table_arel.project(Arel.star.count.as('count'))
+        count_arel = yield table_arel, count_arel if block_given?
 
         total = exec_query(count_arel.to_sql).to_hash.first['count'].to_i
 
@@ -246,37 +248,56 @@ module Gitlab
         # rows for GitLab.com.
         batch_size = max_size if batch_size > max_size
 
-        start_arel = table.project(table[:id]).order(table[:id].asc).take(1)
-        start_arel = yield table, start_arel if block_given?
-        start_id = exec_query(start_arel.to_sql).to_hash.first['id'].to_i
+        walk_table_in_batches(table, of: batch_size, scope: scope) do
+          Arel::UpdateManager.new(ActiveRecord::Base)
+            .table(table_arel)
+            .set([[table_arel[column], value]])
+        end
+      end
 
-        loop do
+      def walk_table_in_batches(table, of: 1000, scope: nil)
+        if transaction_open?
+          raise <<-MSG
+            walk_table_in_batches helper can not be run inside a transaction.
+            You can disable transactions by calling `disable_ddl_transaction!`
+            method in the body of your migration class.
+          MSG
+        end
+
+        table = Arel::Table.new(table)
+
+        start_arel = table.project(table[:id]).order(table[:id].asc).take(1)
+        start_arel = scope.call(table, start_arel) if scope
+        start_id = exec_query(start_arel.to_sql).to_hash.first.to_h['id'].to_i
+
+        1.step do |batch|
           stop_arel = table.project(table[:id])
             .where(table[:id].gteq(start_id))
             .order(table[:id].asc)
             .take(1)
-            .skip(batch_size)
+            .skip(of)
 
-          stop_arel = yield table, stop_arel if block_given?
-          stop_row = exec_query(stop_arel.to_sql).to_hash.first
+          stop_arel = scope.call(table, stop_arel) if scope
+          stop_id = exec_query(stop_arel.to_sql)
+            .to_hash.first.to_h['id'].to_i
 
-          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
-            .table(table)
-            .set([[table[column], value]])
-            .where(table[:id].gteq(start_id))
+          action = yield(batch, start_id, stop_id)
 
-          if stop_row
-            stop_id = stop_row['id'].to_i
-            start_id = stop_id
-            update_arel = update_arel.where(table[:id].lt(stop_id))
+          if action.is_a?(Arel::TreeManager)
+            exec_arel = action.where(table[:id].gteq(start_id))
+            exec_arel = exec_arel.where(table[:id].lt(stop_id)) if stop_id.nonzero?
+            exec_arel = scope.call(table, exec_arel) if scope
+
+            execute(exec_arel.to_sql)
           end
 
-          update_arel = yield table, update_arel if block_given?
-
-          execute(update_arel.to_sql)
-
-          # There are no more rows left to update.
-          break unless stop_row
+          if stop_id.zero?
+            # there are no more rows left to update
+            break
+          else
+            # next loop
+            start_id = stop_id
+          end
         end
       end
 
