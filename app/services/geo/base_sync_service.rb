@@ -21,6 +21,10 @@ module Geo
       end
     end
 
+    def lease_key
+      @lease_key ||= "#{LEASE_KEY_PREFIX}:#{type}:#{project.id}"
+    end
+
     private
 
     def registry
@@ -62,10 +66,6 @@ module Geo
       end
 
       registry.update!(attrs)
-    end
-
-    def lease_key
-      @lease_key ||= "#{LEASE_KEY_PREFIX}:#{type}:#{project.id}"
     end
 
     def type

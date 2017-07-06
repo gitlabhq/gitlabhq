@@ -8,7 +8,7 @@ RSpec.describe Geo::WikiSyncService, services: true do
 
   before do
     allow(Gitlab::ExclusiveLease).to receive(:new)
-      .with(subject.__send__(:lease_key), anything)
+      .with(subject.lease_key, anything)
       .and_return(lease)
 
     allow_any_instance_of(Repository).to receive(:fetch_geo_mirror)
