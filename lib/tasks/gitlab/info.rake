@@ -53,8 +53,7 @@ namespace :gitlab do
           'Undefined'.color(:red)
         end
 
-      omniauth_providers = Gitlab.config.omniauth.providers
-      omniauth_providers.map! { |provider| provider['name'] }
+      omniauth_providers = Gitlab.config.omniauth.providers.map { |provider| provider['name'] }
 
       puts ""
       puts "GitLab information".color(:yellow)
