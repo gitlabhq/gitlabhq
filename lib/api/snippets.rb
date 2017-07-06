@@ -150,9 +150,8 @@ module API
       get ":id/user_agent_detail" do
         authenticated_as_admin!
 
-        snippet = Snippet.find_by(id: params[:id])
+        snippet = Snippet.find_by!(id: params[:id])
 
-        return not_found!('Snippet') unless snippet
         return not_found!('UserAgentDetail') unless snippet.user_agent_detail
 
         present snippet.user_agent_detail, with: Entities::UserAgentDetail

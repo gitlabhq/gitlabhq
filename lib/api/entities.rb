@@ -879,7 +879,7 @@ module API
     class UserAgentDetail < Grape::Entity
       expose :user_agent
       expose :ip_address
-      expose :submitted
+      expose :submitted, as: :akismet_submitted
     end
   end
 end

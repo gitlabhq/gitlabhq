@@ -283,7 +283,7 @@ describe API::Snippets do
       expect(response).to have_http_status(200)
       expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
       expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
-      expect(json_response['submitted']).to be false
+      expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
     end
 
     it "returns unautorized for non-admin users" do

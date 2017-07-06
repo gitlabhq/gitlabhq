@@ -257,6 +257,6 @@ Example response:
 {
   "user_agent": "AppleWebKit/537.36",
   "ip_address": "127.0.0.1",
-  "submitted": false
+  "akismet_submitted": false
 }
 ```
