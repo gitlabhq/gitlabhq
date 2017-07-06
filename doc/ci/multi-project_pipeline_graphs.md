@@ -16,8 +16,8 @@ the entire pipeline, including all multi-project stages.
 ![Multi-project pipeline graph](img/multi-project_pipeline_graph.png)
 
 Multi-Project Pipeline Graphs are useful for larger projects, especially those
-adopting a micro-services architecture, that often have a set of interdependent
-components which form the complete product.
+adopting a [micro-services architecture](https://about.gitlab.com/2016/08/16/trends-in-version-control-land-microservices/),
+that often have a set of interdependent components which form the complete product.
 
 ## Use cases
 
