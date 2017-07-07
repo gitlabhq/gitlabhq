@@ -114,7 +114,7 @@ Manage files and branches from the UI (user interface):
   - [Auto Deploy](ci/autodeploy/index.md): Configure GitLab CI for the deployment of your application.
   - [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
   - **(EEP)** [Deploy Boards](user/project/deploy_boards.md): View of the current health and status of each CI environment running on Kubernetes, displaying the status of the pods in the deployment.
-  - **(EEP)** [Canary Deployments](user/project/deploy_boards.md#canary-deployments): A popular CI strategy, where a small portion of the fleet is updated to the new version first.
+  - **(EEP)** [Canary Deployments](user/project/canary_deployments.md): A popular CI strategy, where a small portion of the fleet is updated to the new version first.
 - [GitLab Cycle Analytics](user/project/cycle_analytics.md): Cycle Analytics measures the time it takes to go from an [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have.
 - [GitLab Container Registry](user/project/container_registry.md): Learn how to use GitLab's built-in Container Registry.
 
