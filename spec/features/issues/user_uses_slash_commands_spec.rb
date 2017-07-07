@@ -41,7 +41,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          sign_out(:user)
+          gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
         end
@@ -81,7 +81,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          sign_out(:user)
+          gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
         end
