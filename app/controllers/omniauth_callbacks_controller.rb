@@ -35,8 +35,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         prompt_for_two_factor(@user)
       else
         log_audit_event(@user, with: :ldap)
-        flash[:notice] = 'LDAP sync in progress. This could take a few minutes. '\
-                         'Refresh the page to see the changes.'
+        # The counter only gets incremented in `sign_in_and_redirect`
+        show_ldap_sync_flash if @user.sign_in_count == 0
         sign_in_and_redirect(@user)
       end
     else
@@ -167,5 +167,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def remember_me?
     request_params = request.env['omniauth.params']
     (request_params['remember_me'] == '1') if request_params.present?
+  end
+
+  def show_ldap_sync_flash
+    flash[:notice] = 'LDAP sync in progress. This could take a few minutes. '\
+                     'Refresh the page to see the changes.'
   end
 end

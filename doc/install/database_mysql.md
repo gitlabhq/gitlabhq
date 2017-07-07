@@ -43,7 +43,7 @@ mysql> SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda, innodb_
 mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_general_ci`;
 
 # Grant the GitLab user necessary permissions on the database
-mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES, REFERENCES ON `gitlabhq_production`.* TO 'git'@'localhost';
+mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES, REFERENCES, TRIGGER ON `gitlabhq_production`.* TO 'git'@'localhost';
 
 # Quit the database session
 mysql> \q

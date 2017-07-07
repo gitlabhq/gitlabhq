@@ -353,7 +353,8 @@ describe API::Runner do
           let(:expected_cache) do
             [{ 'key' => 'cache_key',
                'untracked' => false,
-               'paths' => ['vendor/*'] }]
+               'paths' => ['vendor/*'],
+               'policy' => 'pull-push' }]
           end
 
           it 'picks a job' do

@@ -135,7 +135,7 @@ feature 'Group', feature: true do
     expect(page).not_to have_content('secret-group')
   end
 
-  describe 'group edit' do
+  describe 'group edit', js: true do
     let(:group) { create(:group) }
     let(:path)  { edit_group_path(group) }
     let(:new_name) { 'new-name' }
@@ -157,8 +157,8 @@ feature 'Group', feature: true do
     end
 
     it 'removes group' do
-      click_link 'Remove group'
-
+      expect { remove_with_confirm('Remove group', group.path) }.to change {Group.count}.by(-1)
+      expect(group.members.all.count).to be_zero
       expect(page).to have_content "scheduled for deletion"
     end
   end
@@ -211,5 +211,11 @@ feature 'Group', feature: true do
 
       expect(page).to have_content(nested_group.name)
     end
+  end
+
+  def remove_with_confirm(button_text, confirm_with)
+    click_button button_text
+    fill_in 'confirm_name_input', with: confirm_with
+    click_button 'Confirm'
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Fix issues with non-UTF8 filenames by always fixing the encoding of tree and
+  blob paths
+merge_request:
+author:

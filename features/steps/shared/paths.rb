@@ -511,10 +511,6 @@ module SharedPaths
     visit explore_snippets_path
   end
 
-  step 'I visit new snippet page' do
-    visit new_snippet_path
-  end
-
   def root_ref
     @project.repository.root_ref
   end

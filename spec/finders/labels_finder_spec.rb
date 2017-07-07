@@ -49,12 +49,12 @@ describe LabelsFinder do
     end
 
     context 'filtering by group_id' do
-      it 'returns labels available for any project within the group' do
+      it 'returns labels available for any non-archived project within the group' do
         group_1.add_developer(user)
-
+        project_1.archive!
         finder = described_class.new(user, group_id: group_1.id)
 
-        expect(finder.execute).to eq [group_label_2, project_label_1, group_label_1, project_label_5]
+        expect(finder.execute).to eq [group_label_2, group_label_1, project_label_5]
       end
     end
 

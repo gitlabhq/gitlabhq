@@ -1,0 +1,4 @@
+---
+title: Omit trailing / leading hyphens in CI_COMMIT_REF_SLUG variable to make it usable as a hostname
+merge_request: 11218
+author: Stefan Hanreich
