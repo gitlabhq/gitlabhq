@@ -237,6 +237,10 @@ Example response:
 
 ## Get user agent details
 
+> **Notes:**
+> [Introduced][ce-29508] in GitLab 9.4.
+
+
 Available only for admins.
 
 ```
@@ -260,3 +264,4 @@ Example response:
   "akismet_submitted": false
 }
 ```
+[ce-[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508
