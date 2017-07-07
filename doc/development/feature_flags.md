@@ -15,8 +15,7 @@ Starting from GitLab 9.4 we support feature groups via
 
 Feature groups must be defined statically in `lib/feature.rb` (in the
 `.register_feature_groups` method), but their implementation can obviously be
-dynamic (querying the DB etc.). You can see how the `performance_team` feature
-group for a concrete example.
+dynamic (querying the DB etc.).
 
 Once defined in `lib/feature.rb`, you will be able to activate a
 feature for a given feature group via the [`feature_group` param of the features API](../api/features.md#set-or-create-a-feature)
