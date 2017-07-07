@@ -113,6 +113,20 @@ describe API::Features do
               { 'key' => 'actors', 'value' => ["User:#{user.id}"] }
             ])
         end
+
+        it 'creates an enabled feature for the given user and feature group when passed user=username and feature_group=perf_team' do
+          post api("/features/#{feature_name}", admin), value: 'true', user: user.username, feature_group: 'perf_team'
+
+          expect(response).to have_http_status(201)
+          expect(json_response).to eq(
+            'name' => 'my_feature',
+            'state' => 'conditional',
+            'gates' => [
+              { 'key' => 'boolean', 'value' => false },
+              { 'key' => 'groups', 'value' => ['perf_team'] },
+              { 'key' => 'actors', 'value' => ["User:#{user.id}"] }
+            ])
+        end
       end
 
       it 'creates a feature with the given percentage if passed an integer' do
