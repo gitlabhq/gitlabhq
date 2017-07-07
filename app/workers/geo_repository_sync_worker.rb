@@ -55,7 +55,7 @@ class GeoRepositorySyncWorker
   end
 
   def projects_remain?
-    @pending_projects.size
+    @pending_projects.size > 0
   end
 
   def over_time?
