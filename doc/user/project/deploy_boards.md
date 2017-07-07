@@ -1,6 +1,6 @@
 # Deploy Boards
 
-> [Introduced][ce-1589] in [GitLab Enterprise Edition Premium][ee] 9.0.
+> [Introduced][ee-1589] in [GitLab Enterprise Edition Premium][ee] 9.0.
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment] running on [Kubernetes], displaying the status
@@ -33,6 +33,27 @@ The squares represent pods in your Kubernetes cluster that are associated with
 the given environment. Hovering above each square you can see the state of a
 deploy rolling out. The percentage is the percent of the pods that are updated
 to the latest release. The squares with dots represent canary deployment pods.
+
+## Use cases
+
+Since the Deploy Board is a visual representation of the Kubernetes pods for a
+specific environment, there are lot of uses cases. To name a few:
+
+- You want to promote what's running in staging, to production. You go to the
+  environments list, verify that what's running in staging is what you think is
+  running, then click on the [manual action] to deploy to production.
+- You trigger a deploy, and you've got lots of containers to upgrade so you know
+  it'll take a while (you've also throttled your deploy to only take down X
+  containers at a time). But you need to tell someone when it's deployed, so you
+  go to the environments list, look at the production environment to see what
+  the progress is in real-time as each pod is rolled.
+- You get a report that something is weird in production, so you look at the
+  production environment to see what is running, and if a deploy is ongoing or
+  stuck or failed.
+- You've got an MR that looks good, but you want to run it on staging because
+  staging is set up in some way closer to production. You go to the environment
+  list, find the [review app][review apps] you're interested in, and click the
+  manual action to deploy it to staging.
 
 ## Requirements
 
@@ -106,7 +127,7 @@ can easily notice them.
 - [Environments and deployments][environment]
 - [Kubernetes deploy example][kube-deploy]
 
-[ce-1589]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1589 "Deploy Boards intial issue"
+[ee-1589]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1589 "Deploy Boards initial issue"
 [ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition landing page"
 [kube-deploy]: https://gitlab.com/gitlab-examples/kubernetes-deploy "Kubernetes deploy example project"
 [kubernetes]: https://kubernetes.io "Kubernetes website"
@@ -118,3 +139,4 @@ can easily notice them.
 [variables]: ../../ci/variables/README.md "GitLab CI variables"
 [autodeploy]: ../../ci/autodeploy/index.md "GitLab Autodeploy"
 [kube-image]: https://gitlab.com/gitlab-examples/kubernetes-deploy/container_registry "Kubernetes deploy Container Registry"
+[manual action]: ../../ci/yaml/README.md#manual-actions
