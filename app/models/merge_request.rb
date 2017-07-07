@@ -5,6 +5,7 @@ class MergeRequest < ActiveRecord::Base
   include Referable
   include Sortable
   include IgnorableColumn
+  include CreatedAtFilterable
 
   ignore_column :position
 
