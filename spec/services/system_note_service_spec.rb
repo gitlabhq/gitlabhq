@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SystemNoteService, services: true do
-  include Gitlab::Routing.url_helpers
+  include Gitlab::Routing
 
   let(:project)  { create(:empty_project) }
   let(:author)   { create(:user) }
