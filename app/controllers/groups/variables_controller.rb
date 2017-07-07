@@ -11,7 +11,7 @@ module Groups
     end
 
     def update
-      if variable.update(group_params)
+      if variable.update(variable_params)
         redirect_to group_variables_path(group),
                     notice: 'Variable was successfully updated.'
       else
@@ -20,7 +20,7 @@ module Groups
     end
 
     def create
-      @variable = group.variables.create(group_params)
+      @variable = group.variables.create(variable_params)
         .present(current_user: current_user)
 
       if @variable.persisted?
@@ -45,16 +45,20 @@ module Groups
 
     private
 
-    def authorize_admin_build!
-      return render_404 unless can?(current_user, :admin_build, group)
+    def variable_params
+      params.require(:variable).permit(*variable_params_attributes)
     end
 
-    def group_params
-      params.require(:variable).permit([:key, :value, :protected])
+    def variable_params_attributes
+      %i[key value protected]
     end
 
     def variable
       @variable ||= group.variables.find(params[:id]).present(current_user: current_user)
+    end
+
+    def authorize_admin_build!
+      return render_404 unless can?(current_user, :admin_build, group)
     end
   end
 end
