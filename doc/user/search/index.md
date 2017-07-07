@@ -103,12 +103,16 @@ and **Labels**, select multiple issues to add to a list of your choice:
 
 ![search and select issues to add to board](img/search_issues_board.png)
 
+## Global code search
+
+Leverage Elasticsearch for faster, more advanced code search across your entire
+GitLab instance.
+
+[Learn how to use the global code search.](global_code_search.md)
+
 ## Advanced search syntax
 
-> Available in [GitLab Enterprise Edition Premium][ee].
-
-If the [Elasticsearch integration](../../integration/elasticsearch.md) is
-enabled, then some advanced search functionality is available.
+Use advanced queries for more targeted search results.
 
 [Learn how to use the advanced search syntax.](advanced_search_syntax.md)
 
