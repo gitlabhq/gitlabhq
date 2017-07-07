@@ -16,6 +16,17 @@ const getters = {
   targetNoteHash(storeState) {
     return storeState.targetNoteHash;
   },
+  notesById(storeState) {
+    const notesById = {};
+
+    storeState.notes.forEach((note) => {
+      note.notes.forEach((n) => {
+        notesById[n.id] = n;
+      });
+    });
+
+    return notesById;
+  },
 };
 
 const mutations = {
@@ -131,14 +142,7 @@ const actions = {
       .then(res => res.json())
       .then((res) => {
         if (res.notes.length) {
-          const notesById = {};
-
-          // Simple lookup object to check whether we have a discussion id already in our store
-          context.state.notes.forEach((note) => {
-            note.notes.forEach((n) => {
-              notesById[n.id] = true;
-            });
-          });
+          const { notesById } = context.getters;
 
           res.notes.forEach((note) => {
             if (notesById[note.id]) {
