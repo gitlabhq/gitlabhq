@@ -2,6 +2,8 @@ class AddGroupIdToMilestones < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
+    return if column_exists? :milestones, :group_id
+
     change_column_null :milestones, :project_id, true
 
     add_column :milestones, :group_id, :integer
