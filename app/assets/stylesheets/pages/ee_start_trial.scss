@@ -104,8 +104,14 @@
   }
 
   @media (max-width: $screen-xs-max) {
-    p {
-      font-size: 90%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 5px;
     }
   }
 }
