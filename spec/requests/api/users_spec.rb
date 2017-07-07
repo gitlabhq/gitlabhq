@@ -165,7 +165,7 @@ describe API::Users do
       end
 
       it "returns a user created before a specific date" do
-        user = create(:user, created_at: Date.new(2000,1,1))
+        user = create(:user, created_at: Date.new(2000, 1, 1))
 
         get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
 
@@ -175,7 +175,7 @@ describe API::Users do
       end
 
       it "returns no users created before a specific date" do
-        create(:user, created_at: Date.new(2001,1,1))
+        create(:user, created_at: Date.new(2001, 1, 1))
 
         get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
 
@@ -184,7 +184,7 @@ describe API::Users do
       end
 
       it "returns users created before and after a specific date" do
-        user = create(:user, created_at: Date.new(2001,1,1))
+        user = create(:user, created_at: Date.new(2001, 1, 1))
 
         get api("/users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060", admin)
 

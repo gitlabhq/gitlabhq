@@ -63,7 +63,7 @@ module API
       get do
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
-        unless current_user.admin?
+        unless current_user&.admin?
           params.except!(:created_after, :created_before)
         end
 
