@@ -238,7 +238,6 @@ gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sass-rails', '~> 5.0.6'
-gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable', '~> 2.3.8'
