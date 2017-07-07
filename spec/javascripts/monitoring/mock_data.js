@@ -2481,6 +2481,7 @@ export const singleRowMetrics = [
     'queries': [
       {
         'query_range': 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100',
+        'label': 'Container CPU',
         'result': [
           {
             'metric': {

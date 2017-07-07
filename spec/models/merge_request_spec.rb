@@ -928,14 +928,14 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
-  describe '#commits_sha' do
+  describe '#commit_shas' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_sha)
+      allow(subject.merge_request_diff).to receive(:commit_shas)
         .and_return(['sha1'])
     end
 
     it 'delegates to merge request diff' do
-      expect(subject.commits_sha).to eq ['sha1']
+      expect(subject.commit_shas).to eq ['sha1']
     end
   end
 
@@ -960,7 +960,7 @@ describe MergeRequest, models: true do
   describe '#all_pipelines' do
     shared_examples 'returning pipelines with proper ordering' do
       let!(:all_pipelines) do
-        subject.all_commits_sha.map do |sha|
+        subject.all_commit_shas.map do |sha|
           create(:ci_empty_pipeline,
                  project: subject.source_project,
                  sha: sha,
@@ -1002,16 +1002,16 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#all_commits_sha' do
+  describe '#all_commit_shas' do
     context 'when merge request is persisted' do
-      let(:all_commits_sha) do
+      let(:all_commit_shas) do
         subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
       end
 
       shared_examples 'returning all SHA' do
         it 'returns all SHA from all merge_request_diffs' do
           expect(subject.merge_request_diffs.size).to eq(2)
-          expect(subject.all_commits_sha).to eq(all_commits_sha)
+          expect(subject.all_commit_shas).to eq(all_commit_shas)
         end
       end
 
@@ -1042,7 +1042,7 @@ describe MergeRequest, models: true do
         end
 
         it 'returns commits from compare commits temporary data' do
-          expect(subject.all_commits_sha).to eq [commit, commit]
+          expect(subject.all_commit_shas).to eq [commit, commit]
         end
       end
 
@@ -1050,7 +1050,7 @@ describe MergeRequest, models: true do
         subject { build(:merge_request) }
 
         it 'returns array with diff head sha element only' do
-          expect(subject.all_commits_sha).to eq [subject.diff_head_sha]
+          expect(subject.all_commit_shas).to eq [subject.diff_head_sha]
         end
       end
     end
