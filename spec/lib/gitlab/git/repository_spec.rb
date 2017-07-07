@@ -3,6 +3,20 @@ require "spec_helper"
 describe Gitlab::Git::Repository, seed_helper: true do
   include Gitlab::EncodingHelper
 
+  shared_examples 'wrapping gRPC errors' do |gitaly_client_class, gitaly_client_method|
+    it 'wraps gRPC not found error' do
+      expect_any_instance_of(gitaly_client_class).to receive(gitaly_client_method)
+        .and_raise(GRPC::NotFound)
+      expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
+
+    it 'wraps gRPC unknown error' do
+      expect_any_instance_of(gitaly_client_class).to receive(gitaly_client_method)
+        .and_raise(GRPC::Unknown)
+      expect { subject }.to raise_error(Gitlab::Git::CommandError)
+    end
+  end
+
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
 
   describe "Respond to" do
@@ -35,16 +49,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
       repository.root_ref
     end
 
-    it 'wraps GRPC not found' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
-        .and_raise(GRPC::NotFound)
-      expect { repository.root_ref }.to raise_error(Gitlab::Git::Repository::NoRepository)
-    end
-
-    it 'wraps GRPC exceptions' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
-        .and_raise(GRPC::Unknown)
-      expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :default_branch_name do
+      subject { repository.root_ref }
     end
   end
 
@@ -130,17 +136,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       subject
     end
 
-    it 'wraps GRPC not found' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
-        .and_raise(GRPC::NotFound)
-      expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
-    end
-
-    it 'wraps GRPC other exceptions' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
-        .and_raise(GRPC::Unknown)
-      expect { subject }.to raise_error(Gitlab::Git::CommandError)
-    end
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :branch_names
   end
 
   describe '#tag_names' do
@@ -168,17 +164,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       subject
     end
 
-    it 'wraps GRPC not found' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
-        .and_raise(GRPC::NotFound)
-      expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
-    end
-
-    it 'wraps GRPC exceptions' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
-        .and_raise(GRPC::Unknown)
-      expect { subject }.to raise_error(Gitlab::Git::CommandError)
-    end
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :tag_names
   end
 
   shared_examples 'archive check' do |extenstion|
@@ -438,8 +424,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#commit_count' do
-    it { expect(repository.commit_count("master")).to eq(25) }
-    it { expect(repository.commit_count("feature")).to eq(9) }
+    shared_examples 'counting commits' do
+      it { expect(repository.commit_count("master")).to eq(25) }
+      it { expect(repository.commit_count("feature")).to eq(9) }
+    end
+
+    context 'when Gitaly commit_count feature is enabled' do
+      it_behaves_like 'counting commits'
+      it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Commit, :commit_count do
+        subject { repository.commit_count('master') }
+      end
+    end
+
+    context 'when Gitaly commit_count feature is disabled', skip_gitaly_mock: true  do
+      it_behaves_like 'counting commits'
+    end
   end
 
   describe "#reset" do
@@ -1298,16 +1297,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
       @repo.local_branches
     end
 
-    it 'wraps GRPC not found' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
-        .and_raise(GRPC::NotFound)
-      expect { @repo.local_branches }.to raise_error(Gitlab::Git::Repository::NoRepository)
-    end
-
-    it 'wraps GRPC exceptions' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
-        .and_raise(GRPC::Unknown)
-      expect { @repo.local_branches }.to raise_error(Gitlab::Git::CommandError)
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :local_branches do
+      subject { @repo.local_branches }
     end
   end
 
