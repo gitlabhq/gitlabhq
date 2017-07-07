@@ -1,1 +1,1 @@
-Git Hooks have been renamed to [Push Rules](../push_rules/push_rules.md)
+This document was moved to [another location](../push_rules/push_rules.md)
