@@ -73,4 +73,8 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   def authorize_update_pipeline_schedule!
     return access_denied! unless can?(current_user, :update_pipeline_schedule, schedule)
   end
+
+  def authorize_admin_pipeline_schedule!
+    return access_denied! unless can?(current_user, :admin_pipeline_schedule, schedule)
+  end
 end
