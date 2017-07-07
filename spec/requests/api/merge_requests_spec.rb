@@ -978,7 +978,7 @@ describe API::MergeRequests do
 
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals", user)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['approvals_required']).to eq 2
       expect(json_response['approvals_left']).to eq 1
       expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
@@ -1008,15 +1008,50 @@ describe API::MergeRequests do
       before do
         project.team << [approver, :developer]
         project.team << [create(:user), :developer]
-
-        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", approver)
       end
 
-      it 'approves the merge request' do
-        expect(response.status).to eq(201)
-        expect(json_response['approvals_left']).to eq(1)
-        expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
-        expect(json_response['user_has_approved']).to be true
+      def approve(extra_params = {})
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", approver), extra_params
+      end
+
+      context 'when the sha param is not set' do
+        before do
+          approve
+        end
+
+        it 'approves the merge request' do
+          expect(response).to have_http_status(201)
+          expect(json_response['approvals_left']).to eq(1)
+          expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+          expect(json_response['user_has_approved']).to be true
+        end
+      end
+
+      context 'when the sha param is correct' do
+        before do
+          approve(sha: merge_request.diff_head_sha)
+        end
+
+        it 'approves the merge request' do
+          expect(response).to have_http_status(201)
+          expect(json_response['approvals_left']).to eq(1)
+          expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+          expect(json_response['user_has_approved']).to be true
+        end
+      end
+
+      context 'when the sha param is incorrect' do
+        before do
+          approve(sha: merge_request.diff_head_sha.reverse)
+        end
+
+        it 'returns a 409' do
+          expect(response).to have_http_status(409)
+        end
+
+        it 'does not approve the merge request' do
+          expect(merge_request.reload.approvals_left).to eq(2)
+        end
       end
     end
   end
@@ -1041,7 +1076,7 @@ describe API::MergeRequests do
       end
 
       it 'unapproves the merge request' do
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         expect(json_response['approvals_left']).to eq(1)
         usernames = json_response['approved_by'].map { |u| u['user']['username'] }
         expect(usernames).not_to include(unapprover.username)

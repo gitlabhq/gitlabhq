@@ -609,6 +609,12 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 |---------------------|---------|----------|---------------------|
 | `id`                | integer | yes      | The ID of a project |
 | `merge_request_iid` | integer | yes      | The IID of MR       |
+| `sha`               | string  | no       | The HEAD of the MR  |
+
+The `sha` parameter works in the same way as
+when [accepting a merge request](#accept-mr): if it is passed, then it must
+match the current HEAD of the merge request for the approval to be added. If it
+does not match, the response code will be `409`.
 
 ```json
 {
