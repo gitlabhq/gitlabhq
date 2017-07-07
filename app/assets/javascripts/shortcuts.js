@@ -62,7 +62,7 @@ import findAndFollowLink from './shortcuts_dashboard_navigation';
       if (Cookies.get(performanceBarCookieName) === 'true') {
         Cookies.remove(performanceBarCookieName, { path: '/' });
       } else {
-        Cookies.set(performanceBarCookieName, true, { path: '/' });
+        Cookies.set(performanceBarCookieName, 'true', { path: '/' });
       }
       gl.utils.refreshCurrentPage();
     };
