@@ -30,20 +30,20 @@ and you follow this workflow:
 - Your company set the goal for the quarter to deliver 10 new features for your app
 in the upcoming major release
 - You create a milestone, and remind your team to assign that milestone to every new issue
-and merge request part of the launch of your app
+and merge request that's part of the launch of your app
 - Every week, you open the milestone, visualize the progress, identify the gaps,
 and help your team to get their work done
-- Every month, you check in with your supervisor, and shows the progress of that milestone
+- Every month, you check in with your supervisor, and show the progress of that milestone
 from the Burndown Chart
 - By the end of the quarter, your team successfully delivered 100% of that milestone, as
 it was taken care of closely throughout the whole quarter
 
 ## How it works
 
-A Burndown Chart is available for every project milestone that has a set **start
-date** and a set **due date**.
+A Burndown Chart is available for every project milestone that has been attributed a **start
+date** and a **due date**.
 
-Find your project's **Burndown Chart** under **Project** > **Issues** > **Milestones**,
+Find your project's **Burndown Chart** under **Project > Issues > Milestones**,
 and select a milestone from your current ones.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
