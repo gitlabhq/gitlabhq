@@ -32,6 +32,48 @@ describe Geo::ProjectRegistry, models: true do
     end
   end
 
+  describe '#resync_repository?' do
+    it 'returns true when resync_repository is true' do
+      subject.resync_repository = true
+
+      expect(subject.resync_repository).to be true
+    end
+
+    it 'returns true when last_repository_successful_sync_at is nil' do
+      subject.last_repository_successful_sync_at = nil
+
+      expect(subject.resync_repository).to be true
+    end
+
+    it 'returns false when resync_repository is false and last_repository_successful_sync_at is present' do
+      subject.resync_repository = false
+      subject.last_repository_successful_sync_at = Time.now
+
+      expect(subject.resync_repository).to be false
+    end
+  end
+
+  describe '#resync_wiki?' do
+    it 'returns true when resync_wiki is true' do
+      subject.resync_wiki = true
+
+      expect(subject.resync_wiki).to be true
+    end
+
+    it 'returns true when last_wiki_successful_sync_at is nil' do
+      subject.last_wiki_successful_sync_at = nil
+
+      expect(subject.resync_wiki).to be true
+    end
+
+    it 'returns false when resync_wiki is false and last_wiki_successful_sync_at is present' do
+      subject.resync_wiki = false
+      subject.last_wiki_successful_sync_at = Time.now
+
+      expect(subject.resync_wiki).to be false
+    end
+  end
+
   describe '#repository_synced_since?' do
     it 'returns false when last_repository_synced_at is nil' do
       subject.last_repository_synced_at = nil

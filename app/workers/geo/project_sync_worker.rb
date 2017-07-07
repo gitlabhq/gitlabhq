@@ -25,12 +25,12 @@ module Geo
 
     def sync_repository?(registry, scheduled_time)
       !registry.repository_synced_since?(scheduled_time) &&
-        (registry.resync_repository? || registry.last_repository_successful_sync_at.nil?)
+        registry.resync_repository?
     end
 
     def sync_wiki?(registry, scheduled_time)
       !registry.wiki_synced_since?(scheduled_time) &&
-        (registry.resync_wiki? || registry.last_wiki_successful_sync_at.nil?)
+        registry.resync_wiki?
     end
   end
 end
