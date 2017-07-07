@@ -167,7 +167,7 @@
         .panel-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
-    = render 'shared/members/requests', membership_source: @project, requesters: @requesters
+    = render 'shared/members/requests', membership_source: @project, requesters: @requesters, force_mobile_view: true
 
     .panel.panel-default
       .panel-heading
