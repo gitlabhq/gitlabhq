@@ -29,6 +29,7 @@ class UsersFinder
     users = by_active(users)
     users = by_external_identity(users)
     users = by_external(users)
+    users = by_created_at(users)
 
     users
   end
@@ -70,5 +71,17 @@ class UsersFinder
     return users unless params[:external]
 
     users.external
+  end
+
+  def by_created_at(users)
+    if params[:created_after].present?
+      users = users.where(users.klass.arel_table[:created_at].gteq(params[:created_after]))
+    end
+
+    if params[:created_before].present?
+      users = users.where(users.klass.arel_table[:created_at].lteq(params[:created_before]))
+    end
+
+    users
   end
 end

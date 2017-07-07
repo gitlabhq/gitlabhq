@@ -47,7 +47,9 @@ describe UsersFinder do
       end
 
       it 'filters by created_at' do
-        users = described_class.new(user, created_after: 2.days.ago, created_before: Time.now + 2.days).execute
+        users = described_class.new(user,
+                                    created_after: 2.days.ago,
+                                    created_before: Time.now + 2.days).execute
 
         expect(users.count).to eq(4)
       end
