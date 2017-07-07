@@ -9,14 +9,27 @@ Use advanced queries for more targeted search results.
 
 ## Overview
 
-The Advanced Syntax Search is a subset of the [Advanced Global Search](advanced_global_search.md),
-which you can use to have more specific search results.
+The Advanced Syntax Search is a subset of the
+[Advanced Global Search](advanced_global_search.md), which you can use if you
+want to have more specific search results.
 
 ## Use cases
 
+Let's say for example that the product you develop relies on the code of another
+product that's hosted under some other group.
 
+Since under your GitLab instance there are hosted hundreds of different projects,
+you need the search results to be as efficient as possible. You have a feeling
+of what you want to find (e.g., a function name), but at the same you're also
+not so sure.
+
+In that case, using the regular expressions in your query will yield much better
+results.
 
 ## Using the Advanced Syntax Search
+
+The Advanced Syntax Search supports queries of ranges, wildcards, regular
+expressions, fuzziness and much more.
 
 Full details can be found in the [Elasticsearch documentation][elastic], but
 here's a quick guide:
@@ -29,6 +42,7 @@ here's a quick guide:
 * To group terms together, use parentheses: `bug | (display +sound)`
 * To match a partial word, use `*`: `bug find_by_*`
 * To find a term containing one of these symbols, use `\`: `argument \-last`
+* To limit the results based on the time  "created_at:[2012-01-01 TO 2012-12-31]" and other sweet stuff
 
 [ee]: https://about.gitlab.com/gitlab-ee/
 [elastic]: https://www.elastic.co/guide/en/elasticsearch/reference/5.3/query-dsl-simple-query-string-query.html#_simple_query_string_syntax
