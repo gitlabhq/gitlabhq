@@ -50,9 +50,8 @@ Shortcuts to GitLab's most visited docs:
 - [Fork a project](gitlab-basics/fork-project.md)
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
-- [Groups](workflow/groups.md): Organize your projects in groups.
-  - [Create a group](gitlab-basics/create-group.md)
-  - [GitLab Subgroups](user/group/subgroups/index.md)
+- [Groups](user/group/index.md): Organize your projects in groups.
+  - [Subgroups](user/group/subgroups/index.md): nest groups in subgroups.
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
