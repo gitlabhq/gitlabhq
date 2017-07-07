@@ -99,9 +99,7 @@ class GeoRepositorySyncWorker
       project_id = @pending_projects.shift
       job_id = Geo::ProjectSyncWorker.perform_in(BACKOFF_DELAY, project_id, Time.now)
 
-      if job_id
-        @scheduled_jobs << { id: project_id, job_id: job_id }
-      end
+      @scheduled_jobs << { id: project_id, job_id: job_id } if job_id
     end
   end
 
