@@ -1462,6 +1462,25 @@ describe API::Issues do
     end
   end
 
+  describe "GET /projects/:id/issues/:issue_iid/user_agent_detail" do
+    let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
+
+    it 'exposes known attributes' do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
+      expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
+      expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
+    end
+
+    it "returns unautorized for non-admin users" do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
+
+      expect(response).to have_http_status(403)
+    end
+  end
+
   def expect_paginated_array_response(size: nil)
     expect(response).to have_http_status(200)
     expect(response).to include_pagination_headers
