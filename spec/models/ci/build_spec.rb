@@ -863,7 +863,7 @@ describe Ci::Build, :models do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        allow(@merge_request).to receive(:commits_sha)
+        allow(@merge_request).to receive(:commit_shas)
           .and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
@@ -1496,9 +1496,10 @@ describe Ci::Build, :models do
         allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
         allow(build).to receive(:yaml_variables) { [build_yaml_var] }
 
-        allow(project).to receive(:secret_variables_for).with(build.ref) do
-          [create(:ci_variable, key: 'secret', value: 'value')]
-        end
+        allow(project).to receive(:secret_variables_for)
+          .with(ref: 'master', environment: nil) do
+            [create(:ci_variable, key: 'secret', value: 'value')]
+          end
       end
 
       it do

@@ -27,6 +27,7 @@ project_tree:
       - :author
       - :events
     - merge_request_diff:
+      - :merge_request_diff_commits
       - :merge_request_diff_files
     - :events
     - :timelogs
