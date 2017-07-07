@@ -54,15 +54,13 @@ module Geo
 
       log("Updating #{type} sync information")
 
-      attrs = {}.tap do |attrs|
-        if started_at
-          attrs["last_#{type}_synced_at"] = started_at
-        end
+      attrs = {}
 
-        if finished_at
-          attrs["last_#{type}_successful_sync_at"] = finished_at
-          attrs["resync_#{type}"] = false
-        end
+      attrs["last_#{type}_synced_at"] = started_at if started_at
+
+      if finished_at
+        attrs["last_#{type}_successful_sync_at"] = finished_at
+        attrs["resync_#{type}"] = false
       end
 
       registry.update!(attrs)
