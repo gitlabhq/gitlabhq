@@ -175,8 +175,17 @@ module Gitlab
         return if @data == '' # don't mess with submodule blobs
         return @data if @loaded_all_data
 
+        Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
+          @data = begin
+            if is_enabled
+              Gitlab::GitalyClient::Blob.new(repository).get_blob(oid: id, limit: -1).data
+            else
+              repository.lookup(id).content
+            end
+          end
+        end
+
         @loaded_all_data = true
-        @data = repository.lookup(id).content
         @loaded_size = @data.bytesize
         @binary = nil
       end
