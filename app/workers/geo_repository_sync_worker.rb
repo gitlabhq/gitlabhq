@@ -119,13 +119,15 @@ class GeoRepositorySyncWorker
   end
 
   def try_obtain_lease
-    uuid = Gitlab::ExclusiveLease.new(LEASE_KEY, timeout: LEASE_TIMEOUT).try_obtain
+    lease = Gitlab::ExclusiveLease.new(LEASE_KEY, timeout: LEASE_TIMEOUT).try_obtain
 
-    return unless uuid
+    return unless lease
 
-    yield
-
-    release_lease(uuid)
+    begin
+      yield lease
+    ensure
+      Gitlab::ExclusiveLease.cancel(LEASE_KEY, lease)
+    end
   end
 
   def release_lease(uuid)
