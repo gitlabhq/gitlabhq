@@ -22,6 +22,7 @@ class Group < Namespace
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :labels, class_name: 'GroupLabel'
+  has_many :variables, class_name: 'Ci::GroupVariable'
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
@@ -246,6 +247,14 @@ class Group < Namespace
       display_name: name[0..max_length],
       type: public? ? 'O' : 'I' # Open vs Invite-only
     }
+  end
+
+  def secret_variables_for(ref, project)
+    list_of_ids = [self] + ancestors
+    variables = Ci::GroupVariable.where(group: list_of_ids)
+    variables = variables.unprotected unless project.protected_for?(ref)
+    variables = variables.group_by(&:group_id)
+    list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
   protected
