@@ -12,7 +12,7 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def update
-    if @variable.update(project_params)
+    if variable.update(variable_params)
       redirect_to project_variables_path(project),
                   notice: 'Variable was successfully updated.'
     else
@@ -21,7 +21,7 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def create
-    @variable = project.variables.create(project_params)
+    @variable = project.variables.create(variable_params)
       .present(current_user: current_user)
 
     if @variable.persisted?
@@ -46,8 +46,12 @@ class Projects::VariablesController < Projects::ApplicationController
 
   private
 
-  def project_params
-    params.require(:variable).permit([:id, :key, :value, :protected, :_destroy])
+  def variable_params
+    params.require(:variable).permit(*variable_params_attributes)
+  end
+
+  def variable_params_attributes
+    %i[id key value protected _destroy]
   end
 
   def variable
