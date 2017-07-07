@@ -5,11 +5,10 @@ describe Projects::ProjectMembersController do
   let(:project) { create(:empty_project, :public, :access_requestable) }
 
   describe 'GET index' do
-    it 'should have the settings/members address with a 302 status code' do
+    it 'should have the project_members address with a 200 status code' do
       get :index, namespace_id: project.namespace, project_id: project
 
-      expect(response).to have_http_status(302)
-      expect(response.location).to include project_settings_members_path(project)
+      expect(response).to have_http_status(200)
     end
   end
 
@@ -50,7 +49,7 @@ describe Projects::ProjectMembersController do
                       access_level: Gitlab::Access::GUEST
 
         expect(response).to set_flash.to 'Users were successfully added.'
-        expect(response).to redirect_to(project_settings_members_path(project))
+        expect(response).to redirect_to(project_project_members_path(project))
       end
 
       it 'adds no user to members' do
@@ -62,7 +61,7 @@ describe Projects::ProjectMembersController do
                       access_level: Gitlab::Access::GUEST
 
         expect(response).to set_flash.to 'Message'
-        expect(response).to redirect_to(project_settings_members_path(project))
+        expect(response).to redirect_to(project_project_members_path(project))
       end
     end
   end
@@ -111,7 +110,7 @@ describe Projects::ProjectMembersController do
                            id: member
 
           expect(response).to redirect_to(
-            project_settings_members_path(project)
+            project_project_members_path(project)
           )
           expect(project.members).not_to include member
         end
@@ -253,7 +252,7 @@ describe Projects::ProjectMembersController do
                                         id: member
 
           expect(response).to redirect_to(
-            project_settings_members_path(project)
+            project_project_members_path(project)
           )
           expect(project.members).to include member
         end
@@ -290,7 +289,7 @@ describe Projects::ProjectMembersController do
         expect(project.team_members).to include member
         expect(response).to set_flash.to 'Successfully imported'
         expect(response).to redirect_to(
-          project_settings_members_path(project)
+          project_project_members_path(project)
         )
       end
     end

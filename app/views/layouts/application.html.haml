@@ -3,7 +3,6 @@
   = render "layouts/head"
   %body{ class: @body_class, data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}" } }
     = render "layouts/init_auto_complete" if @gfm_form
-    = render 'peek/bar'
     - if show_new_nav?
       = render "layouts/header/new"
     - else
@@ -11,3 +10,5 @@
     = render 'layouts/page', sidebar: sidebar, nav: nav
 
     = yield :scripts_body
+
+    = render 'peek/bar'

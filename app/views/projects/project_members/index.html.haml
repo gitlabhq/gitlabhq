@@ -1,6 +1,8 @@
+- page_title "Members"
+
 .row.prepend-top-default
-  .col-lg-4.settings-sidebar
-    %h4.prepend-top-0
+  .col-lg-12
+    %h4
       Project members
     - if can?(current_user, :admin_project_member, @project)
       %p
@@ -13,7 +15,6 @@
         %i Masters
         or
         %i Owners
-  .col-lg-8
     .light
       - if can?(current_user, :admin_project_member, @project)
         %ul.nav-links.project-member-tabs{ role: 'tablist' }

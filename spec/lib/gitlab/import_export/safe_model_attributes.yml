@@ -82,6 +82,7 @@ Milestone:
 - id
 - title
 - project_id
+- group_id
 - description
 - due_date
 - start_date
@@ -172,6 +173,17 @@ MergeRequestDiff:
 - real_size
 - head_commit_sha
 - start_commit_sha
+MergeRequestDiffCommit:
+- merge_request_diff_id
+- relative_order
+- sha
+- authored_date
+- committed_date
+- author_name
+- author_email
+- committer_name
+- committer_email
+- message
 MergeRequestDiffFile:
 - merge_request_diff_id
 - relative_order

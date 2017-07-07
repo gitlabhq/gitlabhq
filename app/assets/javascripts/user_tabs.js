@@ -60,7 +60,7 @@ content on the Users#show page.
    </div>
 */
 
-class UserTabs {
+export default class UserTabs {
   constructor ({ defaultAction, action, parentEl }) {
     this.loaded = {};
     this.defaultAction = defaultAction || 'activity';
@@ -171,6 +171,3 @@ class UserTabs {
     return this.$parentEl.find('.nav-links .active a').data('action');
   }
 }
-
-window.gl = window.gl || {};
-window.gl.UserTabs = UserTabs;

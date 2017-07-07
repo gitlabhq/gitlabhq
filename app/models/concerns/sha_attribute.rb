@@ -3,6 +3,8 @@ module ShaAttribute
 
   module ClassMethods
     def sha_attribute(name)
+      return unless table_exists?
+
       column = columns.find { |c| c.name == name.to_s }
 
       # In case the table doesn't exist we won't be able to find the column,

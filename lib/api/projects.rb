@@ -77,9 +77,17 @@ module API
         projects = projects.with_issues_enabled if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
 
+        if current_user
+          projects = projects.includes(:route, :taggings, namespace: :route)
+          project_members = current_user.project_members
+          group_members = current_user.group_members
+        end
+
         options = options.reverse_merge(
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           statistics: params[:statistics],
+          project_members: project_members,
+          group_members: group_members,
           current_user: current_user
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
