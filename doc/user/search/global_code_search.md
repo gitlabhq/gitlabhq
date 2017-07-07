@@ -34,6 +34,11 @@ searching in:
 
 ## Searching globally
 
+Just use the search as before and GitLab will show you matching code from each
+project you have access to.
+
+![Global code search](img/global_code_search.png)
+
 You can also use the [advanced search syntax](advanced_search_syntax.md) which
 provides some useful queries.
 

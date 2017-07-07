@@ -1,4 +1,4 @@
-# Advanced search syntax
+# Advanced syntax search
 
 >**Notes:**
 - Introduced in [GitLab Enterprise Starter][ee] 9.2
@@ -9,13 +9,13 @@ Use advanced queries for more targeted search results.
 
 ## Overview
 
-The advanced search syntax is a subset of the [global code search](global_code_search.md)
+The advanced syntax search is a subset of the [global code search](global_code_search.md)
 which you can use to have more specific search results.
 
 ## Use cases
 
 
-## Using the advanced search syntax
+## Using the advanced syntax search
 
 Full details can be found in the [Elasticsearch documentation][elastic], but
 here's a quick guide:

@@ -110,10 +110,10 @@ GitLab instance.
 
 [Learn how to use the global code search.](global_code_search.md)
 
-## Advanced search syntax
+## Advanced syntax search
 
 Use advanced queries for more targeted search results.
 
-[Learn how to use the advanced search syntax.](advanced_search_syntax.md)
+[Learn how to use the advanced syntax search.](advanced_search_syntax.md)
 
 [ee]: https://about.gitlab.com/gitlab-ee/

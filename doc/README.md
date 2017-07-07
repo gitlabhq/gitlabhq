@@ -55,7 +55,7 @@ Shortcuts to GitLab's most visited docs:
   - [GitLab Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
   - **(EES/EEP)** [Global code search](user/search/global_code_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
-  - **(EES/EEP)** [Advanced search syntax](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.
+  - **(EES/EEP)** [Advanced syntax search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
