@@ -85,26 +85,23 @@ const mutations = {
     storeState.notes.push(noteData);
   },
   toggleAward(storeState, data) {
-    const { awardName, note, action } = data;
+    const { awardName, note } = data;
     const { id, name, username } = window.gl.currentUserData;
+    let index = -1;
 
-    if (action === 'add') {
+    note.award_emoji.forEach((a, i) => {
+      if (a.name === awardName && a.user.id === id) {
+        index = i;
+      }
+    });
+
+    if (index > -1) { // if I am awarded, remove my award
+      note.award_emoji.splice(index, 1);
+    } else {
       note.award_emoji.push({
         name: awardName,
         user: { id, name, username },
       });
-    } else if (action === 'remove') {
-      let index = -1;
-
-      note.award_emoji.forEach((a, i) => {
-        if (a.name === awardName && a.user.id === id) {
-          index = i;
-        }
-      });
-
-      if (index > -1) {
-        note.award_emoji.splice(index, 1);
-      }
     }
   },
 };
@@ -189,14 +186,14 @@ const actions = {
       });
   },
   toggleAward(context, data) {
-    const { endpoint, awardName, action, noteId } = data;
+    const { endpoint, awardName, noteId } = data;
     const note = context.getters.notesById[noteId];
 
     return service
       .toggleAward(endpoint, { name: awardName })
       .then(res => res.json())
       .then(() => {
-        context.commit('toggleAward', { awardName, note, action });
+        context.commit('toggleAward', { awardName, note });
       });
   },
 };

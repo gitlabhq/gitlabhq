@@ -139,10 +139,9 @@ export default {
 
       return title;
     },
-    handleAward(awardName, isAwarded) {
+    handleAward(awardName) {
       const data = {
         endpoint: this.toggleAwardPath,
-        action: isAwarded ? 'remove' : 'add',
         noteId: this.noteId,
         awardName,
       };
@@ -166,7 +165,7 @@ export default {
         v-for="(awardList, awardName) in groupedAwards"
         :class="getAwardClassBindings(awardList, awardName)"
         :title="awardTitle(awardList)"
-        @click="handleAward(awardName, amIAwarded(awardList))"
+        @click="handleAward(awardName)"
         class="btn award-control has-tooltip"
         data-placement="bottom"
         type="button">
