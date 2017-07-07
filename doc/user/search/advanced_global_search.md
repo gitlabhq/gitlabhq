@@ -1,4 +1,4 @@
-# Global code search
+# Advanced Global Search
 
 >
 - [Introduced][ee-109] in GitLab [Enterprise Edition Starter][ee] 8.4.
@@ -10,9 +10,9 @@ GitLab instance.
 
 ## Overview
 
-Global code search in GitLab is a powerful search service that saves developers
-time. Instead of creating duplicate code and wasting time, they can now search
-for code within other teams that will help their own project.
+The Advanced Global Search in GitLab is a powerful search service that saves
+you time. Instead of creating duplicate code and wasting time, you can
+now search for code within other teams that can help your own project.
 
 GitLab leverages the search capabilities of Elasticsearch and enables it when
 searching in:
@@ -21,7 +21,7 @@ searching in:
 - Issues
 - Merge requests
 - Milestones
-- Notes
+- Notes (comments)
 - Projects
 - Repositories
 - Snippets
@@ -37,9 +37,9 @@ searching in:
 Just use the search as before and GitLab will show you matching code from each
 project you have access to.
 
-![Global code search](img/global_code_search.png)
+![Advanced Global Search](img/advanced_global_search.png)
 
-You can also use the [advanced search syntax](advanced_search_syntax.md) which
+You can also use the [Advanced Syntax Search](advanced_search_syntax.md) which
 provides some useful queries.
 
 [ee-1305]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1305
