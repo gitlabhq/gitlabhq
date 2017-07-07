@@ -3,7 +3,7 @@ class GeoRepositorySyncWorker
   include CronjobQueue
 
   LEASE_KEY = 'geo_repository_sync_worker'.freeze
-  LEASE_TIMEOUT = 8.hours.freeze
+  LEASE_TIMEOUT = 10.minutes
   BATCH_SIZE = 1000
   BACKOFF_DELAY = 5.minutes
   MAX_CAPACITY = 25
@@ -40,6 +40,7 @@ class GeoRepositorySyncWorker
         schedule_jobs
 
         break if last_batch
+        break unless renew_lease!
 
         sleep(1)
       end
@@ -117,15 +118,26 @@ class GeoRepositorySyncWorker
   end
 
   def try_obtain_lease
-    lease = Gitlab::ExclusiveLease.new(LEASE_KEY, timeout: LEASE_TIMEOUT).try_obtain
+    lease = exclusive_lease.try_obtain
 
-    return unless lease
+    unless lease
+      logger.info "Cannot obtain an exclusive lease. There must be another worker already in execution."
+      return
+    end
 
     begin
       yield lease
     ensure
-      Gitlab::ExclusiveLease.cancel(LEASE_KEY, lease)
+      release_lease(lease)
     end
+  end
+
+  def exclusive_lease
+    @lease ||= Gitlab::ExclusiveLease.new(LEASE_KEY, timeout: LEASE_TIMEOUT)
+  end
+
+  def renew_lease!
+    exclusive_lease.renew
   end
 
   def release_lease(uuid)
