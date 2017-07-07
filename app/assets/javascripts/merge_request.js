@@ -4,7 +4,7 @@
 import 'vendor/jquery.waitforimages';
 import './task_list';
 import './merge_request_tabs';
-import initCloseReopenReport from './helpers/issuables_helper';
+import IssuablesHelper from './helpers/issuables_helper';
 
 (function() {
   this.MergeRequest = (function() {
@@ -26,7 +26,7 @@ import initCloseReopenReport from './helpers/issuables_helper';
       this.initTabs();
       this.initMRBtnListeners();
       this.initCommitMessageListeners();
-      this.closeReopenReportToggle = initCloseReopenReport();
+      this.closeReopenReportToggle = IssuablesHelper.initCloseReopenReport();
 
       if ($("a.btn-close").length) {
         this.taskList = new gl.TaskList({

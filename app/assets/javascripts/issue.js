@@ -6,7 +6,7 @@ import '~/lib/utils/text_utility';
 import './flash';
 import './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
-import initCloseReopenReport from './helpers/issuables_helper';
+import IssuablesHelper from './helpers/issuables_helper';
 
 class Issue {
   constructor() {
@@ -98,10 +98,10 @@ class Issue {
   }
 
   initCloseReopenReport() {
-    this.closeReopenReportToggle = initCloseReopenReport();
+    this.closeReopenReportToggle = IssuablesHelper.initCloseReopenReport();
 
-    this.closeButtons = this.closeButtons.not('.issuable-close-button');
-    this.reopenButtons = this.reopenButtons.not('.issuable-close-button');
+    if (this.closeButtons) this.closeButtons = this.closeButtons.not('.issuable-close-button');
+    if (this.reopenButtons) this.reopenButtons = this.reopenButtons.not('.issuable-close-button');
   }
 
   disableCloseReopenButton($button, shouldDisable) {

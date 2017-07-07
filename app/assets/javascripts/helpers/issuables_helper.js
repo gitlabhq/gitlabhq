@@ -1,6 +1,6 @@
 import CloseReopenReportToggle from '../close_reopen_report_toggle';
 
-export default function initCloseReopenReport() {
+function initCloseReopenReport() {
   const container = document.querySelector('.js-issuable-close-dropdown');
 
   if (!container) return undefined;
@@ -19,3 +19,9 @@ export default function initCloseReopenReport() {
 
   return closeReopenReportToggle;
 }
+
+const IssuablesHelper = {
+  initCloseReopenReport,
+};
+
+export default IssuablesHelper;
