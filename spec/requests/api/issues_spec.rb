@@ -772,7 +772,7 @@ describe API::Issues do
       end
     end
 
-    context 'CE restrictions' do
+    context 'single assignee restrictions' do
       it 'creates a new project issue with no more than one assignee' do
         post api("/projects/#{project.id}/issues", user),
           title: 'new issue', assignee_ids: [user2.id, guest.id]
@@ -1123,7 +1123,7 @@ describe API::Issues do
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
 
-    context 'CE restrictions' do
+    context 'single assignee restrictions' do
       it 'updates an issue with several assignees but only one has been applied' do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           assignee_ids: [user2.id, guest.id]
