@@ -20,7 +20,7 @@ module EE
                                              conditions: -> { where(user_id: nil, group_id: nil) } }
       validates :group, :user,
                absence: true,
-               unless: :ref_permissions_for_users_required_and_available
+               unless: :protected_refs_for_users_required_and_available
 
       scope :by_user, -> (user) { where(user: user ) }
       scope :by_group, -> (group) { where(group: group ) }
@@ -63,8 +63,8 @@ module EE
     #
     # If it applies to a user/group we can only skip validation `nil`-validation
     # if the feature is available
-    def ref_permissions_for_users_required_and_available
-      type != :role && project.feature_available?(:ref_permissions_for_users)
+    def protected_refs_for_users_required_and_available
+      type != :role && project.feature_available?(:protected_refs_for_users)
     end
   end
 end

@@ -108,7 +108,7 @@ feature 'Projected Tags', feature: true, js: true do
   describe "access control" do
     describe 'with ref permissions for users enabled' do
       before do
-        stub_licensed_features(ref_permissions_for_users: true)
+        stub_licensed_features(protected_refs_for_users: true)
       end
 
       include_examples "protected tags > access control > EE"
@@ -116,7 +116,7 @@ feature 'Projected Tags', feature: true, js: true do
 
     describe 'with ref permissions for users disabled' do
       before do
-        stub_licensed_features(ref_permissions_for_users: false)
+        stub_licensed_features(protected_refs_for_users: false)
       end
 
       include_examples "protected tags > access control > CE"

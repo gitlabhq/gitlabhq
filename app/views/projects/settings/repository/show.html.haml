@@ -9,7 +9,7 @@
 = render "projects/push_rules/index"
 = render "projects/mirrors/show"
 
-- if @project.feature_available?(:ref_permissions_for_users, current_user)
+- if @project.feature_available?(:protected_refs_for_users, current_user)
   = render "projects/protected_branches/ee/index"
   = render "projects/protected_tags/ee/index"
 - else

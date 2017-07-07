@@ -16,9 +16,9 @@ describe EE::ProtectedRefAccess do
         expect(included_in_class.included_modules).to include(described_class)
       end
 
-      context 'with the `ref_permissions_for_users` feature disabled' do
+      context 'with the `protected_refs_for_users` feature disabled' do
         before do
-          stub_licensed_features(ref_permissions_for_users: false)
+          stub_licensed_features(protected_refs_for_users: false)
         end
 
         it "allows creating an #{included_in_class} with a group" do
@@ -36,9 +36,9 @@ describe EE::ProtectedRefAccess do
         end
       end
 
-      context 'with the `ref_permissions_for_users` feature enabled' do
+      context 'with the `protected_refs_for_users` feature enabled' do
         before do
-          stub_licensed_features(ref_permissions_for_users: true)
+          stub_licensed_features(protected_refs_for_users: true)
         end
 
         it "allows creating an #{included_in_class} with a group" do
