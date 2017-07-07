@@ -863,7 +863,7 @@ describe Ci::Build, :models do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        allow(@merge_request).to receive(:commits_sha)
+        allow(@merge_request).to receive(:commit_shas)
           .and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
@@ -1333,6 +1333,59 @@ describe Ci::Build, :models do
         create(:ci_variable,
                :protected,
                protected_variable.slice(:key, :value).merge(project: project))
+      end
+
+      context 'when the branch is protected' do
+        before do
+          create(:protected_branch, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the tag is protected' do
+        before do
+          create(:protected_tag, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the ref is not protected' do
+        it { is_expected.not_to include(protected_variable) }
+      end
+    end
+
+    context 'when group secret variable is defined' do
+      let(:secret_variable) do
+        { key: 'SECRET_KEY', value: 'secret_value', public: false }
+      end
+
+      let(:group) { create(:group, :access_requestable) }
+
+      before do
+        build.project.update(group: group)
+
+        create(:ci_group_variable,
+               secret_variable.slice(:key, :value).merge(group: group))
+      end
+
+      it { is_expected.to include(secret_variable) }
+    end
+
+    context 'when group protected variable is defined' do
+      let(:protected_variable) do
+        { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
+      end
+
+      let(:group) { create(:group, :access_requestable) }
+
+      before do
+        build.project.update(group: group)
+
+        create(:ci_group_variable,
+               :protected,
+               protected_variable.slice(:key, :value).merge(group: group))
       end
 
       context 'when the branch is protected' do

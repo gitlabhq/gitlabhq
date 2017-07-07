@@ -45,6 +45,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def show
+    @project_namespace = @project.namespace.becomes(Namespace)
   end
 
   def create

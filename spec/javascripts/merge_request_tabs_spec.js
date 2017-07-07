@@ -6,7 +6,6 @@ import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
 import '~/diff';
-import '~/single_file_diff';
 import '~/files_comment_button';
 import '~/notes';
 import 'vendor/jquery.scrollTo';

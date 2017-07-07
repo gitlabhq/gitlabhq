@@ -69,7 +69,7 @@ module TestEnv
     # Setup GitLab shell for test instance
     setup_gitlab_shell
 
-    setup_gitaly if Gitlab::GitalyClient.enabled?
+    setup_gitaly
 
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo

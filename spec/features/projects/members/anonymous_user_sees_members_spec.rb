@@ -11,10 +11,10 @@ feature 'Projects > Members > Anonymous user sees members', feature: true do
   end
 
   scenario "anonymous user visits the project's members page and sees the list of members" do
-    visit project_settings_members_path(project)
+    visit project_project_members_path(project)
 
     expect(current_path).to eq(
-      project_settings_members_path(project))
+      project_project_members_path(project))
     expect(page).to have_content(user.name)
   end
 end
