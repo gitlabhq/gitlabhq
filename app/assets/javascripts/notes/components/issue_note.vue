@@ -125,6 +125,7 @@ export default {
             actionText="commented" />
           <issue-note-actions
             :authorId="author.id"
+            :noteId="note.id"
             :accessLevel="note.human_access"
             :canAward="note.emoji_awardable"
             :canEdit="note.current_user.can_edit"

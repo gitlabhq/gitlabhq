@@ -1,10 +1,19 @@
 <script>
+import Vue from 'vue';
 import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
 import emojiSmile from 'icons/_emoji_smile.svg';
 import emojiSmiley from 'icons/_emoji_smiley.svg';
 
 export default {
   props: {
+    authorId: {
+      type: Number,
+      required: true,
+    },
+    noteId: {
+      type: Number,
+      required: true,
+    },
     accessLevel: {
       type: String,
       required: false,
@@ -49,6 +58,9 @@ export default {
     canAddAwardEmoji() {
       return window.gon.current_user_id;
     },
+    isAuthoredByMe() {
+      return this.authorId === window.gon.current_user_id;
+    },
   },
 };
 </script>
@@ -62,7 +74,8 @@ export default {
     </span>
     <a
       v-if="canAddAwardEmoji"
-      class="note-action-button note-emoji-button js-add-award js-note-emoji js-user-authored has-tooltip"
+      :class="{ 'js-user-authored': isAuthoredByMe }"
+      class="note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip"
       data-position="right"
       href="#"
       title="Add reaction">
