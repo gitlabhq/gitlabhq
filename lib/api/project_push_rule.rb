@@ -42,7 +42,7 @@ module API
         if user_project.push_rule
           error!("Project push rule exists", 422)
         else
-          push_rule = user_project.create_push_rule(declared_params)
+          push_rule = user_project.create_push_rule(declared_params(include_missing: false))
           present push_rule, with: Entities::ProjectPushRule
         end
       end

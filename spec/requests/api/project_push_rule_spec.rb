@@ -59,6 +59,16 @@ describe API::ProjectPushRule, 'ProjectPushRule', api: true  do
       end
     end
 
+    it 'adds push rule to project with no file size' do
+      post api("/projects/#{project.id}/push_rule", user),
+        commit_message_regex: 'JIRA\-\d+'
+
+      expect(response).to have_http_status(201)
+      expect(json_response['project_id']).to eq(project.id)
+      expect(json_response['commit_message_regex']).to eq('JIRA\-\d+')
+      expect(json_response['max_file_size']).to eq(0)
+    end
+
     it 'returns 400 if no parameter is given' do
       post api("/projects/#{project.id}/push_rule", user)
 
