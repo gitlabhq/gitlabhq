@@ -12,11 +12,6 @@
     - if can?(current_user, :admin_milestones, @group)
       = link_to "New milestone", new_group_milestone_path(@group), class: "btn btn-new"
 
-.row-content-block
-  Only milestones from
-  %strong= @group.name
-  group are listed here.
-
 .milestones
   %ul.content-list
     - if @milestones.blank?

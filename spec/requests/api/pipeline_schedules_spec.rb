@@ -279,6 +279,8 @@ describe API::PipelineSchedules do
     end
 
     context 'authenticated user with invalid permissions' do
+      let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: master) }
+
       it 'does not delete pipeline_schedule' do
         delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer)
 
