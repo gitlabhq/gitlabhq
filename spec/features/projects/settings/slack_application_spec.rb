@@ -26,7 +26,7 @@ feature 'Slack application', feature: true do
     fill_in 'slack_integration_alias', with: 'alias-edited'
     click_button 'Save changes'
 
-    expect(page).to have_content('The project alias is updated successfully')
+    expect(page).to have_content('The project alias was updated successfully')
 
     within '.js-integration-settings-form' do
       expect(page).to have_content('alias-edited')
