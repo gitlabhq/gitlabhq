@@ -1,7 +1,7 @@
 - public_project_count = ProjectsFinder.new(current_user: current_user).execute.count
 
 - if current_user.can_create_group?
-  .blank-state.clearfix
+  .row.blank-state.clearfix
     .col-md-1.col-md-offset-3.blank-state-icon
       = custom_icon("add_new_group", size: 50)
     .col-md-5.blank-state-body
@@ -12,7 +12,7 @@
       = link_to new_group_path, class: "btn btn-new" do
         New group
 
-.blank-state.clearfix
+.row.blank-state.clearfix
   .col-md-1.col-md-offset-3.blank-state-icon
     = custom_icon("add_new_project", size: 50)
   .col-md-5.blank-state-body
@@ -32,7 +32,7 @@
         New project
 
 - if public_project_count > 0
-  .blank-state.clearfix
+  .row.blank-state.clearfix
     .col-md-1.col-md-offset-3.blank-state-icon
       = custom_icon("globe", size: 50)
     .col-md-5.blank-state-body
