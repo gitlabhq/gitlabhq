@@ -12,7 +12,9 @@ feature "Creating trial license", feature: true do
         { 'license_key' => license_data }
       end
 
-      before { License.destroy_all }
+      before do
+        License.destroy_all
+      end
 
       it 'allows the creation of the trial license' do
         stub_request(:post, "#{Gitlab::SUBSCRIPTIONS_URL}/trials")
@@ -54,6 +56,5 @@ feature "Creating trial license", feature: true do
         expect(page).to have_content('You have already used a free trial')
       end
     end
-
   end
 end

@@ -57,5 +57,4 @@ class Admin::TrialsController < Admin::ApplicationController
                    'You already have an active license key installed on this server.'
                  end
   end
-
 end

@@ -9,11 +9,13 @@ describe Admin::TrialsController do
 
   describe 'POST #create' do
     context 'without an active license' do
-      before { expect_any_instance_of(License).to receive(:active?).and_return(false) }
+      before do
+        expect_any_instance_of(License).to receive(:active?).and_return(false)
+      end
 
       context 'with a successful response from subscription endpoint' do
         it 'redirects to the license detail page' do
-          allow_any_instance_of(Admin::TrialsController).to receive(:save_license).and_return(true)
+          allow_any_instance_of(described_class).to receive(:save_license).and_return(true)
 
           post :create
 
@@ -24,7 +26,7 @@ describe Admin::TrialsController do
 
       context 'with a failing response from subscription endpoint' do
         it 'shows an error message' do
-          allow_any_instance_of(Admin::TrialsController).to receive(:save_license).and_return(false)
+          allow_any_instance_of(described_class).to receive(:save_license).and_return(false)
 
           post :create
 
@@ -35,7 +37,9 @@ describe Admin::TrialsController do
     end
 
     context 'with an active license' do
-      before { expect_any_instance_of(License).to receive(:active?).and_return(true) }
+      before do
+        expect_any_instance_of(License).to receive(:active?).and_return(true)
+      end
 
       it 'does not allow creating a trial license' do
         post :create

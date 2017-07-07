@@ -20,11 +20,11 @@ module LicenseHelper
     is_trial = current_license.trial?
     message = ["Your Enterprise Edition #{'trial ' if is_trial}license"]
 
-    if current_license.expired?
-      message << "expired on #{current_license.expires_at}."
-    else
-      message << "will expire in #{pluralize(current_license.remaining_days, 'day')}."
-    end
+    message << if current_license.expired?
+                 "expired on #{current_license.expires_at}."
+               else
+                 "will expire in #{pluralize(current_license.remaining_days, 'day')}."
+               end
 
     message << link_to('Buy now!', Gitlab::SUBSCRIPTIONS_PLANS_URL, target: '_blank') if is_trial
 
