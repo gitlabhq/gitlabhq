@@ -30,7 +30,7 @@ describe ShaAttribute do
       end
     end
 
-    context' when the table does not exist' do
+    context 'when the table does not exist' do
       before do
         allow(model).to receive(:table_exists?).and_return(false)
       end
