@@ -6,7 +6,7 @@ import '~/lib/utils/text_utility';
 import './flash';
 import './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
-import CloseReopenReportToggle from './close_reopen_report_toggle';
+import initCloseReopenReport from './helpers/issuables_helper';
 
 class Issue {
   constructor() {
@@ -29,12 +29,10 @@ class Issue {
     Issue.initMergeRequests();
     Issue.initRelatedBranches();
 
-    this.initCloseReopenReport();
+    this.closeButtons = $('a.btn-close');
+    this.reopenButtons = $('a.btn-reopen');
 
-    if (!this.closeReopenReportToggle) {
-      this.closeButtons = $('a.btn-close');
-      this.reopenButtons = $('a.btn-reopen');
-    }
+    this.initCloseReopenReport();
 
     if (Issue.createMrDropdownWrap) {
       this.createMergeRequestDropdown = new CreateMergeRequestDropdown(Issue.createMrDropdownWrap);
@@ -100,21 +98,10 @@ class Issue {
   }
 
   initCloseReopenReport() {
-    const container = document.querySelector('.js-issuable-close-dropdown');
+    this.closeReopenReportToggle = initCloseReopenReport();
 
-    if (!container) return;
-
-    const dropdownTrigger = container.querySelector('.js-issuable-close-toggle');
-    const dropdownList = container.querySelector('.js-issuable-close-menu');
-    const button = container.querySelector('.js-issuable-close-button');
-
-    this.closeReopenReportToggle = new CloseReopenReportToggle({
-      dropdownTrigger,
-      dropdownList,
-      button,
-    });
-
-    this.closeReopenReportToggle.initDroplab();
+    this.closeButtons = this.closeButtons.not('.issuable-close-button');
+    this.reopenButtons = this.reopenButtons.not('.issuable-close-button');
   }
 
   disableCloseReopenButton($button, shouldDisable) {
@@ -126,12 +113,9 @@ class Issue {
   }
 
   toggleCloseReopenButton(isClosed) {
-    if (this.closeReopenReportToggle) {
-      this.closeReopenReportToggle.updateButton(isClosed);
-    } else {
-      this.closeButtons.toggleClass('hidden', isClosed);
-      this.reopenButtons.toggleClass('hidden', !isClosed);
-    }
+    if (this.closeReopenReportToggle) this.closeReopenReportToggle.updateButton(isClosed);
+    this.closeButtons.toggleClass('hidden', isClosed);
+    this.reopenButtons.toggleClass('hidden', !isClosed);
   }
 
   static submitNoteForm(form) {

@@ -21,10 +21,9 @@
       %button.btn.btn-transparent
         = icon('check', class: 'icon')
         .description
-          %strong
+          %strong.title
             Close
             = display_issuable_type
-          %p
 
     %li.reopen-item{ class: "#{issuable_button_visibility(issuable, false) || 'droplab-item-selected'}",
                      data: { text: "Reopen #{display_issuable_type}", url: reopen_issuable_url(issuable),
@@ -32,10 +31,9 @@
       %button.btn.btn-transparent
         = icon('check', class: 'icon')
         .description
-          %strong
+          %strong.title
             Reopen
             = display_issuable_type
-          %p
 
       %li.divider.droplab-item-ignore
 
@@ -44,8 +42,8 @@
         %button.btn.btn-transparent
           = icon('check', class: 'icon')
           .description
-            %strong Report abuse
-            %p
+            %strong.title Report abuse
+            %p.text
               Report
               = display_issuable_type.pluralize
               that are abusive, inappropriate or spam.

@@ -805,8 +805,22 @@
   @include transition(border-color, color);
 }
 
-.issuable-close-dropdown .dropdown-menu {
-  min-width: 270px;
-  left: auto;
-  right: 0;
+.issuable-close-dropdown {
+  .dropdown-menu {
+    min-width: 270px;
+    left: auto;
+    right: 0;
+  }
+
+  .description {
+    margin-bottom: 10px;
+
+    .text {
+      margin: 0;
+    }
+  }
+
+  .dropdown-toggle > .icon {
+    margin: 0 3px;
+  }
 }

@@ -70,6 +70,7 @@
 
   .input-token {
     max-width: 200px;
+    padding: 0;
 
     &:hover,
     &:focus {
@@ -83,7 +84,6 @@
     flex: 1;
     -webkit-flex: 1;
     max-width: inherit;
-    padding: 0;
   }
 }
 
@@ -165,6 +165,12 @@
 
 .droplab-dropdown li.filtered-search-token {
   padding: 0;
+  
+  &:hover,
+  &:focus {
+    background-color: inherit;
+    color: inherit;
+  }
 }
 
 .filtered-search-term {

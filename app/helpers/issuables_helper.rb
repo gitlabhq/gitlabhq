@@ -263,8 +263,6 @@ module IssuablesHelper
       issue_url(issuable, *options)
     when MergeRequest
       merge_request_url(issuable, *options)
-    else
-      raise TypeError.new('unknown issuable type')
     end
   end
 
@@ -274,8 +272,6 @@ module IssuablesHelper
       issue_button_visibility(issuable, closed)
     when MergeRequest
       merge_request_button_visibility(issuable, closed)
-    else
-      raise TypeError.new('unknown issuable type')
     end
   end
 
@@ -285,8 +281,6 @@ module IssuablesHelper
       ''
     when MergeRequest
       'put'
-    else
-      raise TypeError.new('unknown issuable type')
     end
   end
 
@@ -323,8 +317,6 @@ module IssuablesHelper
         issue_template_names
       when MergeRequest
         merge_request_template_names
-      else
-        raise 'Unknown issuable type!'
       end
   end
 
