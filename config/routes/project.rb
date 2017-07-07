@@ -438,7 +438,7 @@ constraints(ProjectUrlConstrainer.new) do
         resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
 
-        resource :slack, only: [:destroy] do
+        resource :slack, only: [:destroy, :edit, :update] do
           get :slack_auth
         end
 
