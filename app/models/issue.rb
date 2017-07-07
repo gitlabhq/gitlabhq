@@ -51,8 +51,6 @@ class Issue < ActiveRecord::Base
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
 
-  scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
-
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   after_save :expire_etag_cache
