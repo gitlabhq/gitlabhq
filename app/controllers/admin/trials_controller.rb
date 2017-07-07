@@ -40,8 +40,22 @@ class Admin::TrialsController < Admin::ApplicationController
   end
 
   def check_presence_of_license
-    if License.current&.active?
-      redirect_to admin_license_url, alert: 'You already have an active license key installed on this server.'
+    if error_message.present?
+      redirect_to admin_license_url, alert: error_message.html_safe
     end
   end
+
+  private
+
+  def error_message
+    @message ||= if License.trial.present?
+                   <<~MSG
+                     You have already used a free trial, if you want to extend it please contact us at
+                     <a href="mailto:sales@gitlab.com">sales@gitlab.com</a>
+                   MSG
+                 elsif License.current&.active?
+                   'You already have an active license key installed on this server.'
+                 end
+  end
+
 end

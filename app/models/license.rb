@@ -166,6 +166,10 @@ class License < ActiveRecord::Base
       return unless license && license.valid?
       license
     end
+
+    def trial
+      all.detect { |license| license.trial? }
+    end
   end
 
   def data_filename
