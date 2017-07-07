@@ -6,6 +6,7 @@ class MergeRequest < ActiveRecord::Base
   include Sortable
   include Elastic::MergeRequestsSearch
   include IgnorableColumn
+  include CreatedAtFilterable
 
   ignore_column :position
 
