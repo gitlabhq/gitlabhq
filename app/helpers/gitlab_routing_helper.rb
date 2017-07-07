@@ -97,7 +97,7 @@ module GitlabRoutingHelper
 
   ## Members
   def project_members_url(project, *args)
-    project_project_members_url(project)
+    project_project_members_url(project, *args)
   end
 
   def project_member_path(project_member, *args)
