@@ -15,6 +15,8 @@
 #     skip_ldap: boolean
 #
 class UsersFinder
+  include Gitlab::Database::CreatedAtFilter
+
   attr_accessor :current_user, :params
 
   def initialize(current_user, params = {})

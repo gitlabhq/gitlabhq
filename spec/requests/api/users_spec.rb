@@ -164,7 +164,7 @@ describe API::Users do
         expect(response).to have_http_status(400)
       end
 
-      it "returns an user created before a specific date" do
+      it "returns a user created before a specific date" do
         user = create(:user, created_at: Date.new(2000,1,1))
 
         get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)

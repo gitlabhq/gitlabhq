@@ -19,6 +19,8 @@
 #     iids: integer[]
 #
 class IssuableFinder
+  include Gitlab::Database::CreatedAtFilter
+  
   NONE = '0'.freeze
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
 
@@ -436,18 +438,6 @@ class IssuableFinder
 
   def by_non_archived(items)
     params[:non_archived].present? ? items.non_archived : items
-  end
-
-  def by_created_at(items)
-    if params[:created_after].present?
-      items = items.where(items.klass.arel_table[:created_at].gteq(params[:created_after]))
-    end
-
-    if params[:created_before].present?
-      items = items.where(items.klass.arel_table[:created_at].lteq(params[:created_before]))
-    end
-
-    items
   end
 
   def current_user_related?
