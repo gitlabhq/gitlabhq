@@ -180,6 +180,7 @@ have access to GitLab administration tools and settings.
 
 ### Admin tools
 
+- [Gitaly](administration/gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service
 - [Raketasks](raketasks/README.md): Backups, maintenance, automatic webhook setup and the importing of projects.
     - [Backup and restore](raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Reply by email](administration/reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.

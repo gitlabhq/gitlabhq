@@ -1,47 +1,44 @@
-//= require peek/views/performance_bar
-//= require peek/views/rblineprof
-
-header.navbar-gitlab.with-peek {
-  top: 35px;
-}
+@import "framework/variables";
+@import "peek/views/performance_bar";
+@import "peek/views/rblineprof";
 
 #peek {
   height: 35px;
-  background: #000;
+  background: $black;
   line-height: 35px;
-  color: #999;
+  color: $perf-bar-text;
 
   &.disabled {
     display: none;
   }
 
   &.production {
-    background-color: #222;
+    background-color: $perf-bar-production;
   }
 
   &.staging {
-    background-color: #291430;
+    background-color: $perf-bar-staging;
   }
 
   &.development {
-    background-color: #4c1210;
+    background-color: $perf-bar-development;
   }
 
   .wrapper {
-    width: 800px;
+    width: 1000px;
     margin: 0 auto;
   }
 
   // UI Elements
   .bucket {
-    background: #111;
+    background: $perf-bar-bucket-bg;
     display: inline-block;
     padding: 4px 6px;
     font-family: Consolas, "Liberation Mono", Courier, monospace;
     line-height: 1;
-    color: #ccc;
+    color: $perf-bar-bucket-color;
     border-radius: 3px;
-    box-shadow: 0 1px 0 rgba(255,255,255,.2), inset 0 1px 2px rgba(0,0,0,.25);
+    box-shadow: 0 1px 0 $perf-bar-bucket-box-shadow-from, inset 0 1px 2px $perf-bar-bucket-box-shadow-to;
 
     .hidden {
       display: none;
@@ -53,12 +50,14 @@ header.navbar-gitlab.with-peek {
   }
 
   strong {
-    color: #fff;
+    color: $white-light;
   }
 
   table {
+    color: $black;
+
     strong {
-      color: #000;
+      color: $black;
     }
   }
 
@@ -90,5 +89,15 @@ header.navbar-gitlab.with-peek {
 }
 
 #modal-peek-pg-queries-content {
-  color: #000;
+  color: $black;
+}
+
+.peek-rblineprof-file {
+  pre.duration {
+    width: 280px;
+  }
+
+  .data {
+    overflow: visible;
+  }
 }

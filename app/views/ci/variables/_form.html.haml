@@ -1,12 +1,12 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @variable] do |f|
+= form_for @variable, as: :variable, url: @variable.form_path do |f|
   = form_errors(@variable)
 
   .form-group
     = f.label :key, "Key", class: "label-light"
-    = f.text_field :key, class: "form-control", placeholder: "PROJECT_VARIABLE", required: true
+    = f.text_field :key, class: "form-control", placeholder: @variable.placeholder, required: true
   .form-group
     = f.label :value, "Value", class: "label-light"
-    = f.text_area :value, class: "form-control", placeholder: "PROJECT_VARIABLE"
+    = f.text_area :value, class: "form-control", placeholder: @variable.placeholder
   .form-group
     .checkbox
       = f.label :protected do

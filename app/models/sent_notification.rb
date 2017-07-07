@@ -1,5 +1,5 @@
 class SentNotification < ActiveRecord::Base
-  serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiverecordSerialize
+  serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations

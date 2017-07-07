@@ -27,10 +27,11 @@
                   %td.shortcut
                     .key f
                   %td Focus Filter
-                %tr
-                  %td.shortcut
-                    .key p b
-                  %td Show/hide the Performance Bar
+                - if performance_bar_enabled?
+                  %tr
+                    %td.shortcut
+                      .key p b
+                    %td Show/hide the Performance Bar
                 %tr
                   %td.shortcut
                     .key ?

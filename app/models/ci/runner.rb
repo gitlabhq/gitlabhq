@@ -8,7 +8,7 @@ module Ci
     FORM_EDITABLE = %i[description tag_list active run_untagged locked].freeze
 
     has_many :builds
-    has_many :runner_projects, dependent: :destroy
+    has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'

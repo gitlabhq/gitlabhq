@@ -21,7 +21,7 @@ import CommentTypeToggle from './comment_type_toggle';
 import loadAwardsHandler from './awards_handler';
 import './autosave';
 import './dropzone_input';
-import './task_list';
+import TaskList from './task_list';
 
 window.autosize = autosize;
 window.Dropzone = Dropzone;
@@ -71,7 +71,7 @@ export default class Notes {
     this.addBinding();
     this.setPollingInterval();
     this.setupMainTargetNoteForm();
-    this.taskList = new gl.TaskList({
+    this.taskList = new TaskList({
       dataType: 'note',
       fieldName: 'note',
       selector: '.notes'

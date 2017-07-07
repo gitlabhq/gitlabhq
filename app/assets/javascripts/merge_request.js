@@ -2,7 +2,7 @@
 /* global MergeRequestTabs */
 
 import 'vendor/jquery.waitforimages';
-import './task_list';
+import TaskList from './task_list';
 import './merge_request_tabs';
 
 (function() {
@@ -25,7 +25,7 @@ import './merge_request_tabs';
       this.initMRBtnListeners();
       this.initCommitMessageListeners();
       if ($("a.btn-close").length) {
-        this.taskList = new gl.TaskList({
+        this.taskList = new TaskList({
           dataType: 'merge_request',
           fieldName: 'description',
           selector: '.detail-page-description',
