@@ -17,6 +17,12 @@ module MergeRequests
         merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
       end
 
+      unless project.can_override_approvers?
+        params.delete(:approvals_before_merge)
+        params.delete(:approver_ids)
+        params.delete(:approver_group_ids)
+      end
+
       old_approvers = merge_request.overall_approvers.to_a
 
       handle_wip_event(merge_request)

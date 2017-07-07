@@ -1357,6 +1357,7 @@ ActiveRecord::Schema.define(version: 20170706121518) do
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
     t.string "ci_config_path"
+    t.boolean "disable_overriding_approvers_per_merge_request"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1559,7 +1560,7 @@ ActiveRecord::Schema.define(version: 20170706121518) do
 
   add_index "slack_integrations", ["team_id", "alias"], name: "index_slack_integrations_on_team_id_and_alias", unique: true, using: :btree
   add_index "slack_integrations", ["service_id"], name: "index_slack_integrations_on_service_id", using: :btree
-  
+
   create_table "snippets", force: :cascade do |t|
     t.string "title"
     t.text "content"
