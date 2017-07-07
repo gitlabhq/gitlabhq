@@ -50,9 +50,24 @@ module AccessMatchersForController
     "be #{type} for #{role}. Expected: #{expected.join(',')} Got: #{result}"
   end
 
+  def update_owner(objects, user)
+    return unless objects
+
+    objects.each do |object|
+      if object.respond_to?(:owner)
+        object.update_attribute(:owner, user)
+      elsif object.respond_to?(:user)
+        object.update_attribute(:user, user)
+      else
+        raise ArgumentError, "cannot own this object #{object}"
+      end
+    end
+  end
+
   matcher :be_allowed_for do |role|
     match do |action|
-      emulate_user(role, @membership)
+      user = emulate_user(role, @membership)
+      update_owner(@objects, user)
       action.call
 
       EXPECTED_STATUS_CODE_ALLOWED.include?(response.status)
@@ -62,13 +77,18 @@ module AccessMatchersForController
       @membership = membership
     end
 
+    chain :own do |*objects|
+      @objects = objects
+    end
+
     description { description_for(role, 'allowed', EXPECTED_STATUS_CODE_ALLOWED, response.status) }
     supports_block_expectations
   end
 
   matcher :be_denied_for do |role|
     match do |action|
-      emulate_user(role, @membership)
+      user = emulate_user(role, @membership)
+      update_owner(@objects, user)
       action.call
 
       EXPECTED_STATUS_CODE_DENIED.include?(response.status)
@@ -76,6 +96,10 @@ module AccessMatchersForController
 
     chain :of do |membership|
       @membership = membership
+    end
+
+    chain :own do |*objects|
+      @objects = objects
     end
 
     description { description_for(role, 'denied', EXPECTED_STATUS_CODE_DENIED, response.status) }
