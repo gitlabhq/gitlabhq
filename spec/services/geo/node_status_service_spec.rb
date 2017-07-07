@@ -11,11 +11,11 @@ describe Geo::NodeStatusService, services: true do
   end
 
   describe '#call' do
-    it 'strips tags from a 401 response' do
+    it 'parses a 401 response' do
       request = double(success?: false,
                        code: 401,
                        message: 'Unauthorized',
-                       parsed_response: { 'message' => '<html><h1>Test</h1></html>' } )
+                       parsed_response: { 'message' => 'Test' } )
       allow(described_class).to receive(:get).and_return(request)
 
       status = subject.call(secondary)
