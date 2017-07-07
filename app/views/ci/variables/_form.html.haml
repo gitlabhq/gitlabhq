@@ -7,7 +7,7 @@
   .form-group
     = f.label :value, "Value", class: "label-light"
     = f.text_area :value, class: "form-control", placeholder: @variable.placeholder
-  - if @variable.is_a?(Ci::VariablePresenter)
+  - if @variable.respond_to?(:environment_scope)
     = render 'projects/variables/ee/environment_scope', f: f
   .form-group
     .checkbox
