@@ -1,7 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, object-shorthand, no-unused-vars, no-shadow, one-var, one-var-declaration-per-line, comma-dangle, max-len */
 
-window.SubscriptionSelect = (function() {
-  function SubscriptionSelect() {
+class SubscriptionSelect {
+  constructor() {
     $('.js-subscription-event').each(function(i, el) {
       var fieldName;
       fieldName = $(el).data("field-name");
@@ -28,6 +28,6 @@ window.SubscriptionSelect = (function() {
       });
     });
   }
+}
 
-  return SubscriptionSelect;
-})();
+window.SubscriptionSelect = SubscriptionSelect;

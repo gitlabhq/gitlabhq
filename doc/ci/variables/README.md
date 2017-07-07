@@ -9,8 +9,9 @@ and a list of **user-defined variables**.
 The variables can be overwritten and they take precedence over each other in
 this order:
 
-1. [Trigger variables][triggers] (take precedence over all)
-1. [Secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
+1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables) (take precedence over all)
+1. Project-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
+1. Group-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
@@ -142,23 +143,28 @@ script:
 
 >**Notes:**
 - This feature requires GitLab Runner 0.4.0 or higher.
+- Group-level secret variables added in GitLab 9.4.
 - Be aware that secret variables are not masked, and their values can be shown
   in the job logs if explicitly asked to do so. If your project is public or
   internal, you can set the pipelines private from your project's Pipelines
   settings. Follow the discussion in issue [#13784][ce-13784] for masking the
   secret variables.
 
-GitLab CI allows you to define per-project **secret variables** that are set in
-the build environment. The secret variables are stored out of the repository
-(`.gitlab-ci.yml`) and are securely passed to GitLab Runner making them
-available in the build environment. It's the recommended method to use for
-storing things like passwords, secret keys and credentials.
+GitLab CI allows you to define per-project or per-group **secret variables**
+that are set in the build environment. The secret variables are stored out of
+the repository (`.gitlab-ci.yml`) and are securely passed to GitLab Runner
+making them available in the build environment. It's the recommended method to
+use for storing things like passwords, secret keys and credentials.
 
-Secret variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called
-**Secret variables**.
+Project-level secret variables can be added by going to your project's
+**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
 
-Once you set them, they will be available for all subsequent pipelines.
+Likewise, group-level secret variables can be added by going to your group's
+**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+Any variables of [subgroups] will be inherited recursively.
+
+Once you set them, they will be available for all subsequent pipelines. You can also
+[protect your variables](#protected-secret-variables).
 
 ### Protected secret variables
 
@@ -434,3 +440,4 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[subgroups]: ../../user/group/subgroups/index.md

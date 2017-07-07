@@ -31,6 +31,11 @@ Feature: Project Active Tab
     Then the active main tab should be Wiki
     And no other main tabs should be active
 
+  Scenario: On Project Members
+    Given I visit my project's members page
+    Then the active main tab should be Members
+    And no other main tabs should be active
+
   # Sub Tabs: Home
 
   Scenario: On Project Home/Show
@@ -60,12 +65,6 @@ Feature: Project Active Tab
     Given I visit my project's settings page
     And I click the "Repository" tab
     Then the active sub tab should be Repository
-    And no other sub tabs should be active
-    And the active main tab should be Settings
-
-  Scenario: On Project Members
-    Given I visit my project's members page
-    Then the active sub tab should be Members
     And no other sub tabs should be active
     And the active main tab should be Settings
 

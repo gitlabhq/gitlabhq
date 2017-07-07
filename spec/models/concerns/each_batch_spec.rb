@@ -20,6 +20,12 @@ describe EachBatch do
       end
     end
 
+    it 'yields a batch index as the second argument' do
+      model.each_batch do |_, index|
+        expect(index).to eq(1)
+      end
+    end
+
     it 'accepts a custom batch size' do
       amount = 0
 

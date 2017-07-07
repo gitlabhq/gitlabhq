@@ -255,7 +255,7 @@ module API
 
     class ProjectEntity < Grape::Entity
       expose :id, :iid
-      expose(:project_id) { |entity| entity.project.id }
+      expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
       expose :state, :created_at, :updated_at
     end
@@ -267,7 +267,12 @@ module API
       expose :deleted_file?, as: :deleted_file
     end
 
-    class Milestone < ProjectEntity
+    class Milestone < Grape::Entity
+      expose :id, :iid
+      expose(:project_id) { |entity| entity&.project_id }
+      expose(:group_id) { |entity| entity&.group_id }
+      expose :title, :description
+      expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
     end
@@ -882,6 +887,12 @@ module API
         expose :credentials, using: Credentials
         expose :dependencies, using: Dependency
       end
+    end
+
+    class UserAgentDetail < Grape::Entity
+      expose :user_agent
+      expose :ip_address
+      expose :submitted, as: :akismet_submitted
     end
   end
 end
