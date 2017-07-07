@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       isExpanded: true,
-    }
+    };
   },
   computed: {
     toggleChevronClass() {

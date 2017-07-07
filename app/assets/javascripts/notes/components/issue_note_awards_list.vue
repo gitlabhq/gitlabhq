@@ -1,4 +1,6 @@
 <script>
+/* global Flash */
+
 import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
 import emojiSmile from 'icons/_emoji_smile.svg';
 import emojiSmiley from 'icons/_emoji_smiley.svg';
@@ -10,7 +12,15 @@ export default {
       type: Array,
       required: true,
     },
+    toggleAwardPath: {
+      type: String,
+      required: true,
+    },
     noteAuthorId: {
+      type: Number,
+      required: true,
+    },
+    noteId: {
       type: Number,
       required: true,
     },
@@ -129,6 +139,22 @@ export default {
 
       return title;
     },
+    handleAward(awardName, isAwarded) {
+      const data = {
+        endpoint: this.toggleAwardPath,
+        action: isAwarded ? 'remove' : 'add',
+        noteId: this.noteId,
+        awardName,
+      };
+
+      this.$store.dispatch('toggleAward', data)
+        .then(() => {
+          $(this.$el).find('.award-control').tooltip('fixTitle');
+        })
+        .catch(() => {
+          new Flash('Something went wrong on our end.'); // eslint-disable-line
+        });
+    },
   },
 };
 </script>
@@ -138,9 +164,10 @@ export default {
     <div class="awards js-awards-block">
       <button
         v-for="(awardList, awardName) in groupedAwards"
-        class="btn award-control has-tooltip"
         :class="getAwardClassBindings(awardList, awardName)"
         :title="awardTitle(awardList)"
+        @click="handleAward(awardName, amIAwarded(awardList))"
+        class="btn award-control has-tooltip"
         data-placement="bottom"
         type="button">
         <span v-html="getAwardHTML(awardName)"></span>

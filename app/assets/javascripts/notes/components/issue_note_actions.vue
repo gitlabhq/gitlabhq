@@ -1,5 +1,4 @@
 <script>
-import Vue from 'vue';
 import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
 import emojiSmile from 'icons/_emoji_smile.svg';
 import emojiSmiley from 'icons/_emoji_smiley.svg';

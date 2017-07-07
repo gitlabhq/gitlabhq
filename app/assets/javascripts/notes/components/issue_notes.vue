@@ -3,7 +3,6 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { mapGetters } from 'vuex';
 import storeOptions from '../stores/issue_notes_store';
 import IssueNote from './issue_note.vue';
 import IssueDiscussion from './issue_discussion.vue';
@@ -28,9 +27,9 @@ export default {
     IssueCommentForm,
   },
   computed: {
-    ...mapGetters([
+    ...Vuex.mapGetters([
       'notes',
-    ])
+    ]),
   },
   methods: {
     component(note) {

@@ -64,7 +64,9 @@ export default {
       actionText="Edited" />
     <issue-note-awards-list
       v-if="note.award_emoji.length"
+      :noteId="note.id"
+      :noteAuthorId="note.author.id"
       :awards="note.award_emoji"
-      :noteAuthorId="note.author.id" />
+      :toggleAwardPath="note.toggle_award_path" />
   </div>
 </template>

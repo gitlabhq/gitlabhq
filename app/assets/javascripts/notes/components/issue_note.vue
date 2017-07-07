@@ -82,7 +82,7 @@ export default {
       this.$store.dispatch('updateNote', data)
         .then(() => {
           this.isEditing = false;
-          $(this.$refs['noteBody'].$el).renderGFM();
+          $(this.$refs.noteBody.$el).renderGFM();
         })
         .catch(() => {
           new Flash('Something went wrong while editing your comment. Please try again.'); // eslint-disable-line

@@ -28,4 +28,7 @@ export default {
 
     return Vue.http.get(endpoint, options);
   },
+  toggleAward(endpoint, data) {
+    return Vue.http.post(endpoint, data, { emulateJSON: true });
+  },
 };
