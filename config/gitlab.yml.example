@@ -657,7 +657,10 @@ test:
             client_id: 'YOUR_AUTH0_CLIENT_ID',
             client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
             namespace: 'YOUR_AUTH0_DOMAIN' } }
-
+      - { name: 'authentiq',
+          app_id: 'YOUR_CLIENT_ID',
+          app_secret: 'YOUR_CLIENT_SECRET',
+          args: { scope: 'aq:name email~rs address aq:push' } }
   ldap:
     enabled: false
     servers:

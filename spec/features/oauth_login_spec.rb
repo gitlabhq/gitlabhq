@@ -13,7 +13,7 @@ feature 'OAuth Login', js: true do
   end
 
   providers = [:github, :twitter, :bitbucket, :gitlab, :google_oauth2,
-               :facebook, :cas3, :auth0]
+               :facebook, :cas3, :auth0, :authentiq]
 
   before(:all) do
     # The OmniAuth `full_host` parameter doesn't get set correctly (it gets set to something like `http://localhost`

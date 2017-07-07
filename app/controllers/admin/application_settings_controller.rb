@@ -126,6 +126,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :performance_bar_allowed_group_id,
+      :performance_bar_enabled,
       :recaptcha_enabled,
       :recaptcha_private_key,
       :recaptcha_site_key,

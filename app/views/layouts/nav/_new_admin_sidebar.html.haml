@@ -4,7 +4,7 @@
       = icon('wrench')
     .project-title Admin Area
   %ul.sidebar-top-level-items
-    = nav_link(controller: %w(dashboard admin projects users groups builds runners cohorts), html_options: {class: 'home'}) do
+    = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts), html_options: {class: 'home'}) do
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
         %span
           Overview
@@ -26,7 +26,7 @@
           = link_to admin_groups_path, title: 'Groups' do
             %span
               Groups
-        = nav_link path: 'builds#index' do
+        = nav_link path: 'jobs#index' do
           = link_to admin_jobs_path, title: 'Jobs' do
             %span
               Jobs

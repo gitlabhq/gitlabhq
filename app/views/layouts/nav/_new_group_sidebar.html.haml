@@ -1,5 +1,5 @@
 .nav-sidebar
-  = link_to group_path(@group), title: 'Group', class: 'context-header' do
+  = link_to group_path(@group), title: @group.name, class: 'context-header' do
     .avatar-container.s40.group-avatar
       = image_tag group_icon(@group), class: "avatar s40 avatar-tile"
     .group-title

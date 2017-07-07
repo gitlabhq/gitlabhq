@@ -362,6 +362,7 @@ db:migrate:reset-mysql:
     - git fetch origin v8.14.10
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
+    - cp config/gitlab.yml.example config/gitlab.yml
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_COMMIT_SHA
     - bundle install $BUNDLE_INSTALL_FLAGS
