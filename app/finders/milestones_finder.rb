@@ -49,7 +49,8 @@ class MilestonesFinder
     if params.has_key?(:order)
       items.reorder(params[:order])
     else
-      items.reorder('due_date ASC')
+      order_statement = Gitlab::Database.nulls_last_order('due_date', 'ASC')
+      items.reorder(order_statement)
     end
   end
 end
