@@ -26,5 +26,18 @@ feature "License Admin", feature: true do
         end
       end
     end
+
+    context 'with an expired trial license' do
+      let!(:license) { create(:license, trial: true, expired: true) }
+
+      it 'does not mention blocking of changes' do
+        visit admin_license_path
+
+        page.within '.gitlab-ee-trial-banner' do
+          expect(page).to have_content('Your Enterprise Edition trial license expired on')
+          expect(page).not_to have_content('Pushing code and creation of issues and merge requests has been disabled')
+        end
+      end
+    end
   end
 end
