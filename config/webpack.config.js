@@ -257,6 +257,7 @@ if (IS_DEV_SERVER) {
   config.devServer = {
     host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
+    disableHostCheck: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,
