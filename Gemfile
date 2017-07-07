@@ -395,6 +395,9 @@ gem 'health_check', '~> 2.6.0'
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
+# NTP client
+gem 'net-ntp'
+
 # Gitaly GRPC client
 gem 'gitaly', '~> 0.9.0'
 
