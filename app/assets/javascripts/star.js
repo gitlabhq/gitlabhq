@@ -1,8 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-unused-vars, one-var, no-var, one-var-declaration-per-line, prefer-arrow-callback, no-new, max-len */
 /* global Flash */
 
-window.Star = (function() {
-  function Star() {
+export default class Star {
+  constructor() {
     $('.project-home-panel .toggle-star').on('ajax:success', function(e, data, status, xhr) {
       var $starIcon, $starSpan, $this, toggleStar;
       $this = $(this);
@@ -23,6 +23,4 @@ window.Star = (function() {
       new Flash('Star toggle failed. Try again later.', 'alert');
     });
   }
-
-  return Star;
-})();
+}
