@@ -1,7 +1,7 @@
 - @no_container = true
 - page_title "#{params[:from]}...#{params[:to]}"
 - if show_new_nav?
-  - breadcrumbs_extra_links("Repository", project_files_path(@project))
+  - breadcrumbs_extra_links("Repository", project_tree_path(@project))
 = render "projects/commits/head"
 
 %div{ class: container_class }

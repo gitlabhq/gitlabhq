@@ -5,7 +5,7 @@
   = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
 - if show_new_nav?
-  - breadcrumbs_extra_links("Repository", project_files_path(@project))
+  - breadcrumbs_extra_links("Repository", project_tree_path(@project))
 
 = content_for :sub_nav do
   = render "head"

@@ -3,7 +3,7 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('network')
 - if show_new_nav?
-  - breadcrumbs_extra_links("Repository", project_files_path(@project))
+  - breadcrumbs_extra_links("Repository", project_tree_path(@project))
 = render "projects/commits/head"
 = render "head"
 %div{ class: container_class }

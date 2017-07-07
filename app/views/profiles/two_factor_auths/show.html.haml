@@ -1,11 +1,10 @@
 - page_title 'Two-Factor Authentication', 'Account'
-- header_title "Two-Factor Authentication", profile_two_factor_auth_path
+- if show_new_nav?
+  - breadcrumbs_extra_links("Account", profile_path)
+- else
+  - header_title "Two-Factor Authentication", profile_two_factor_auth_path
 - @breadcrumb_title = "Two-Factor Authentication"
 - @content_class = "limit-container-width" unless fluid_layout
-
-- if show_new_nav?
-  - content_for :header_title_before do
-    = link_to "User Settings", profile_path
 
 = render 'profiles/head'
 
