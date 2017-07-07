@@ -3,6 +3,7 @@ class MigrateStageIdReferenceInBackground < ActiveRecord::Migration
 
   DOWNTIME = false
   BATCH_SIZE = 10000
+  RANGE_SIZE = 1000
   MIGRATION = 'MigrateBuildStageIdReference'.freeze
 
   disable_ddl_transaction!
@@ -17,10 +18,12 @@ class MigrateStageIdReferenceInBackground < ActiveRecord::Migration
   #
   def up
     Build.all.each_batch(of: BATCH_SIZE) do |relation, index|
-      range = relation.pluck('MIN(id)', 'MAX(id)').first
-      schedule = index * 2.minutes
+      relation.each_batch(of: RANGE_SIZE) do |relation|
+        range = relation.pluck('MIN(id)', 'MAX(id)').first
 
-      BackgroundMigrationWorker.perform_in(schedule, MIGRATION, range)
+        BackgroundMigrationWorker
+          .perform_in(index * 2.minutes, MIGRATION, range)
+      end
     end
   end
 

@@ -2,7 +2,7 @@ module Gitlab
   module BackgroundMigration
     class MigrateBuildStageIdReference
       def perform(start_id, stop_id)
-        scope = if stop_id.nonzero?
+        scope = if stop_id.to_i.nonzero?
                   "ci_builds.id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}"
                 else
                   "ci_builds.id >= #{start_id.to_i}"
