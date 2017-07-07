@@ -1,9 +1,4 @@
-- if current_user.admin? && license_message.present?
-  .alert.alert-dismissible.gitlab-ee-trial-banner.hidden.js-gitlab-ee-trial-banner{ role: 'alert', 'data-license-expiry' => current_license.expires_at }
-    %button.close{ type: 'button', 'data-dismiss' => 'alert', 'aria-label' => 'Dismiss banner' }
-      = icon('times', 'aria-hidden' => 'true')
-    %p
-      = license_message
+= render "layouts/header/ee_trial_banner"
 %header.navbar.navbar-gitlab.js-navbar-gitlab{ class: nav_header_class }
   .navbar-border
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
