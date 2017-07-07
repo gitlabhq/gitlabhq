@@ -34,7 +34,7 @@ module Gitlab
 
       write_csv do |csv|
         ActiveRecord::Base.transaction do
-          User.with_two_factor.in_batches do |relation|
+          User.with_two_factor.in_batches do |relation| # rubocop: disable Cop/InBatches
             rows = relation.pluck(:id, :encrypted_otp_secret, :encrypted_otp_secret_iv, :encrypted_otp_secret_salt)
             rows.each do |row|
               user = %i[id ciphertext iv salt].zip(row).to_h
