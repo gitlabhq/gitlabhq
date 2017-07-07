@@ -47,9 +47,9 @@ describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
       Timecop.freeze do
         migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_migration(2.minutes, 1, 3)
-        expect(described_class::MIGRATION).to be_scheduled_migration(4.minutes, 3, 5)
-        expect(described_class::MIGRATION).to be_scheduled_migration(6.minutes, 5, 0)
+        expect(described_class::MIGRATION).to be_scheduled_migration(2.minutes, 1, 2)
+        expect(described_class::MIGRATION).to be_scheduled_migration(4.minutes, 3, 4)
+        expect(described_class::MIGRATION).to be_scheduled_migration(6.minutes, 5, 6)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end

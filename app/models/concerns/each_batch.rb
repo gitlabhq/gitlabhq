@@ -35,7 +35,7 @@ module EachBatch
       start_id = start[primary_key]
       arel_table = self.arel_table
 
-      loop do
+      1.step do |index|
         stop = except(:select)
           .select(primary_key)
           .where(arel_table[primary_key].gteq(start_id))
@@ -54,7 +54,7 @@ module EachBatch
 
         # Any ORDER BYs are useless for this relation and can lead to less
         # efficient UPDATE queries, hence we get rid of it.
-        yield relation.except(:order)
+        yield relation.except(:order), index
 
         break unless stop
       end
