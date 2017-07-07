@@ -52,29 +52,9 @@
   svg {
     display: block;
     margin: auto;
-  }
-}
 
-.section-welcome {
-  /**
-   * This is slight increase over 25% of col-md-offset-3 for
-   * admin welcome page
-   */
-  &.section-admin-welcome .blank-state-icon.col-md-offset-3 {
-    margin-left: 30%;
-
-    @media (max-width: $screen-md-min) {
-      margin-left: auto;
-    }
-  }
-
-  /**
-   * This is slight increase over 8.33% of col-md-1 for
-   * admin/standard user welcome page on smaller desktops
-   */
-  .blank-state-icon.col-md-1 {
     @media (min-width: $screen-sm-max) {
-      width: 10%;
+      width: 130%;
     }
   }
 }
