@@ -46,8 +46,6 @@ export default {
   },
   methods: {
     changePage(e) {
-      e.preventDefault();
-
       if (e.target.parentElement.classList.contains('disabled')) return;
 
       const text = e.target.innerText;
@@ -134,7 +132,7 @@ export default {
           active: item.active,
           disabled: item.disabled
         }">
-        <a @click="changePage($event)">{{item.title}}</a>
+        <a @click.prevent="changePage($event)">{{item.title}}</a>
       </li>
     </ul>
   </div>
