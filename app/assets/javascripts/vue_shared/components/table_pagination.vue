@@ -46,6 +46,10 @@ export default {
   },
   methods: {
     changePage(e) {
+      e.preventDefault();
+
+      if (e.target.parentElement.classList.contains('disabled')) return;
+
       const text = e.target.innerText;
       const { totalPages, nextPage, previousPage } = this.pageInfo;
 

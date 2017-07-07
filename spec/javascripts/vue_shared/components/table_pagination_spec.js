@@ -105,21 +105,48 @@ describe('Pagination component', () => {
     expect(changeChanges.one).toEqual(1);
   });
 
-  it('should do nothing', () => {
+  it('should not call change callback if clicked link is disabled', () => {
+    const spy = jasmine.createSpy('spy');
+
     component = new PaginationComponent({
       propsData: {
         pageInfo: {
-          totalPages: 10,
           nextPage: 2,
-          previousPage: '',
+          page: 1,
+          perPage: 20,
+          previousPage: NaN,
+          total: 84,
+          totalPages: 5,
         },
-        change,
+        change: spy,
       },
     }).$mount();
 
-    component.changePage({ target: { innerText: '...' } });
+    component.$el.querySelector('a').click();
 
-    expect(changeChanges.one).toEqual(1);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should call change callback when link is clicked', () => {
+    const spy = jasmine.createSpy('spy');
+
+    component = new PaginationComponent({
+      propsData: {
+        pageInfo: {
+          nextPage: 3,
+          page: 2,
+          perPage: 20,
+          previousPage: 1,
+          total: 84,
+          totalPages: 5,
+        },
+        change: spy,
+      },
+    }).$mount();
+
+    component.$el.querySelector('a').click();
+
+    expect(spy).toHaveBeenCalled();
   });
 });
 
