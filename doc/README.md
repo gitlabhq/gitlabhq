@@ -193,6 +193,7 @@ have access to GitLab administration tools and settings.
 - [Operations](administration/operations.md): Keeping GitLab up and running.
 - [Polling](administration/polling.md): Configure how often the GitLab UI polls for updates.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
+- [Performance Bar](administration/monitoring/performance/performance_bar.md): Get performance information for the current page.
 
 ### Customization
 

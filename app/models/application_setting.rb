@@ -247,6 +247,7 @@ class ApplicationSetting < ActiveRecord::Base
       koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
+      performance_bar_allowed_group_id: nil,
       plantuml_enabled: false,
       plantuml_url: nil,
       recaptcha_enabled: false,
@@ -381,6 +382,48 @@ class ApplicationSetting < ActiveRecord::Base
 
   def restricted_visibility_levels=(levels)
     super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
+  end
+
+  def performance_bar_allowed_group_id=(group_full_path)
+    group_full_path = nil if group_full_path.blank?
+
+    if group_full_path.nil?
+      if group_full_path != performance_bar_allowed_group_id
+        super(group_full_path)
+        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+      end
+      return
+    end
+
+    group = Group.find_by_full_path(group_full_path)
+
+    if group
+      if group.id != performance_bar_allowed_group_id
+        super(group.id)
+        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+      end
+    else
+      super(nil)
+      Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+    end
+  end
+
+  def performance_bar_allowed_group
+    Group.find_by_id(performance_bar_allowed_group_id)
+  end
+
+  # Return true if the Performance Bar is enabled for a given group
+  def performance_bar_enabled
+    performance_bar_allowed_group_id.present?
+  end
+
+  # - If `enable` is true, we early return since the actual attribute that holds
+  #   the enabling/disabling is `performance_bar_allowed_group_id`
+  # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
+  def performance_bar_enabled=(enable)
+    return if enable
+
+    self.performance_bar_allowed_group_id = nil
   end
 
   # Choose one of the available repository storage options. Currently all have

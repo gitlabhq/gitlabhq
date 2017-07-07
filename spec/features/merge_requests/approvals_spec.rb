@@ -178,7 +178,6 @@ feature 'Merge request approvals', js: true, feature: true do
 
         # project setting in the beginning on the edit MR page
         expect(find('#merge_request_approvals_before_merge').value).to eq('1')
-        expect(find('#merge_request_approvals_before_merge ~ .help-block')).to have_content('1 user')
 
         fill_in 'merge_request_approvals_before_merge', with: '3'
 
@@ -192,7 +191,6 @@ feature 'Merge request approvals', js: true, feature: true do
 
         # new MR setting on the edit MR page
         expect(find('#merge_request_approvals_before_merge').value).to eq('3')
-        expect(find('#merge_request_approvals_before_merge ~ .help-block')).to have_content('1 user')
       end
     end
   end

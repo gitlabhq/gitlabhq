@@ -2741,13 +2741,12 @@
       "merge_request_diff": {
         "id": 27,
         "state": "collected",
-        "st_commits": [
+        "merge_request_diff_commits": [
           {
-            "id": "bb5206fee213d983da88c47f9cf4cc6caf9c66dc",
+            "merge_request_diff_id": 27,
+            "relative_order": 0,
+            "sha": "bb5206fee213d983da88c47f9cf4cc6caf9c66dc",
             "message": "Feature conflcit added\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "5937ac0a7beb003549fc5fd26fc247adbce4a52e"
-            ],
             "authored_date": "2014-08-06T08:35:52.000+02:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2756,11 +2755,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "5937ac0a7beb003549fc5fd26fc247adbce4a52e",
+            "merge_request_diff_id": 27,
+            "relative_order": 1,
+            "sha": "5937ac0a7beb003549fc5fd26fc247adbce4a52e",
             "message": "Add submodule from gitlab.com\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "570e7b2abdd848b95f2f578043fc23bd6f6fd24d"
-            ],
             "authored_date": "2014-02-27T10:01:38.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2769,11 +2767,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
+            "merge_request_diff_id": 27,
+            "relative_order": 2,
+            "sha": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
             "message": "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
-            ],
             "authored_date": "2014-02-27T09:57:31.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2782,11 +2779,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+            "merge_request_diff_id": 27,
+            "relative_order": 3,
+            "sha": "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
             "message": "More submodules\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "d14d6c0abdd253381df51a723d58691b2ee1ab08"
-            ],
             "authored_date": "2014-02-27T09:54:21.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2795,11 +2791,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "d14d6c0abdd253381df51a723d58691b2ee1ab08",
+            "merge_request_diff_id": 27,
+            "relative_order": 4,
+            "sha": "d14d6c0abdd253381df51a723d58691b2ee1ab08",
             "message": "Remove ds_store files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "c1acaa58bbcbc3eafe538cb8274ba387047b69f8"
-            ],
             "authored_date": "2014-02-27T09:49:50.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2808,11 +2803,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
+            "merge_request_diff_id": 27,
+            "relative_order": 5,
+            "sha": "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
             "message": "Ignore DS files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "ae73cb07c9eeaf35924a10f713b364d32b2dd34f"
-            ],
             "authored_date": "2014-02-27T09:48:32.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",

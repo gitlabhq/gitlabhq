@@ -43,7 +43,8 @@ class GeoNodeStatus {
       if (status.health === 'Healthy') {
         this.$health.html('');
       } else {
-        this.$health.html(`<code class="geo-health">${status.health}</code>`);
+        const strippedData = $('<div>').html(`${status.health}`).text();
+        this.$health.html(`<code class="geo-health">${strippedData}</code>`);
       }
 
       this.$status.show();

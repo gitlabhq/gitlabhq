@@ -138,7 +138,7 @@ class Commit
 
     safe_message.split("\n", 2)[1].try(:chomp)
   end
-  
+
   def description?
     description.present?
   end

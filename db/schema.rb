@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170706121518) do
+ActiveRecord::Schema.define(version: 20170706151212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,6 +148,7 @@ ActiveRecord::Schema.define(version: 20170706121518) do
     t.string "slack_app_id"
     t.string "slack_app_secret"
     t.string "slack_app_verification_token"
+    t.integer "performance_bar_allowed_group_id"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -884,6 +885,21 @@ ActiveRecord::Schema.define(version: 20170706121518) do
   add_index "members", ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
 
+  create_table "merge_request_diff_commits", id: false, force: :cascade do |t|
+    t.datetime "authored_date"
+    t.datetime "committed_date"
+    t.integer "merge_request_diff_id", null: false
+    t.integer "relative_order", null: false
+    t.binary "sha", null: false
+    t.text "author_name"
+    t.text "author_email"
+    t.text "committer_name"
+    t.text "committer_email"
+    t.text "message"
+  end
+
+  add_index "merge_request_diff_commits", ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_commits_on_mr_diff_id_and_order", unique: true, using: :btree
+
   create_table "merge_request_diff_files", id: false, force: :cascade do |t|
     t.integer "merge_request_diff_id", null: false
     t.integer "relative_order", null: false
@@ -1342,6 +1358,7 @@ ActiveRecord::Schema.define(version: 20170706121518) do
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
     t.string "ci_config_path"
+    t.boolean "disable_overriding_approvers_per_merge_request"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1544,7 +1561,7 @@ ActiveRecord::Schema.define(version: 20170706121518) do
 
   add_index "slack_integrations", ["team_id", "alias"], name: "index_slack_integrations_on_team_id_and_alias", unique: true, using: :btree
   add_index "slack_integrations", ["service_id"], name: "index_slack_integrations_on_service_id", using: :btree
-  
+
   create_table "snippets", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -1895,6 +1912,7 @@ ActiveRecord::Schema.define(version: 20170706121518) do
   add_foreign_key "labels", "projects", name: "fk_7de4989a69", on_delete: :cascade
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
+  add_foreign_key "merge_request_diff_commits", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diffs", "merge_requests", name: "fk_8483f3258f", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade

@@ -180,7 +180,7 @@ namespace :gitlab do
         relation = relation.includes(:index_status).where('index_statuses.id IS NULL').references(:index_statuses)
       end
 
-      relation.all.in_batches(of: batch_size, start: ENV['ID_FROM'], finish: ENV['ID_TO']) do |relation|
+      relation.all.in_batches(of: batch_size, start: ENV['ID_FROM'], finish: ENV['ID_TO']) do |relation| # rubocop: disable Cop/InBatches
         ids = relation.reorder(:id).pluck(:id)
         yield ids[0], ids[-1]
       end

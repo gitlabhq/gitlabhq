@@ -84,7 +84,8 @@ module ButtonHelper
         html: true,
         placement: placement,
         container: 'body',
-        title: _('Add an SSH key to your profile to pull or push via SSH.')
+        title: _('Add an SSH key to your profile to pull or push via SSH.'),
+        primary_url: (geo_primary_ssh_url_to_repo(project) if Gitlab::Geo.secondary?)
       }
   end
 

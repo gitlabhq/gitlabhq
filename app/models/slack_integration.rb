@@ -4,7 +4,8 @@ class SlackIntegration < ActiveRecord::Base
   validates :team_id, presence: true
   validates :team_name, presence: true
   validates :alias, presence: true,
-                    uniqueness: { scope: :team_id, message: 'This alias has already been taken' }
+                    uniqueness: { scope: :team_id, message: 'This alias has already been taken' },
+                    length: 2..80
   validates :user_id, presence: true
   validates :service, presence: true
 

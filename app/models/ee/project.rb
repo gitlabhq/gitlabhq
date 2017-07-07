@@ -165,6 +165,10 @@ module EE
       repository.fetch_upstream(self.import_url)
     end
 
+    def can_override_approvers?
+      !disable_overriding_approvers_per_merge_request?
+    end
+
     def shared_runners_available?
       super && !namespace.shared_runners_minutes_used?
     end

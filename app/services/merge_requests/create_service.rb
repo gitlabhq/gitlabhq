@@ -9,6 +9,12 @@ module MergeRequests
 
       params[:target_project_id] ||= source_project.id
 
+      unless @project.can_override_approvers?
+        params.delete(:approvals_before_merge)
+        params.delete(:approver_ids)
+        params.delete(:approver_group_ids)
+      end
+
       merge_request = MergeRequest.new
       merge_request.source_project = source_project
       merge_request.source_branch = params[:source_branch]

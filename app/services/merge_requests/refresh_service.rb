@@ -69,7 +69,7 @@ module MergeRequests
         if merge_request.source_branch == @branch_name || force_push?
           merge_request.reload_diff(current_user)
         else
-          mr_commit_ids = merge_request.commits_sha
+          mr_commit_ids = merge_request.commit_shas
           push_commit_ids = @commits.map(&:id)
           matches = mr_commit_ids & push_commit_ids
           merge_request.reload_diff(current_user) if matches.any?
@@ -145,7 +145,7 @@ module MergeRequests
       return unless @commits.present?
 
       merge_requests_for_source_branch.each do |merge_request|
-        mr_commit_ids = Set.new(merge_request.commits_sha)
+        mr_commit_ids = Set.new(merge_request.commit_shas)
 
         new_commits, existing_commits = @commits.partition do |commit|
           mr_commit_ids.include?(commit.id)
@@ -161,7 +161,7 @@ module MergeRequests
       return unless @commits.present?
 
       merge_requests_for_source_branch.each do |merge_request|
-        commit_shas = merge_request.commits_sha
+        commit_shas = merge_request.commit_shas
 
         wip_commit = @commits.detect do |commit|
           commit.work_in_progress? && commit_shas.include?(commit.sha)
