@@ -27,9 +27,9 @@ class Projects::BlobController < Projects::ApplicationController
 
   def create
     create_commit(Files::CreateService, success_notice: "The file has been successfully created.",
-                                        success_path: -> { namespace_project_blob_path(@project.namespace, @project, File.join(@branch_name, @file_path)) },
+                                        success_path: -> { project_blob_path(@project, File.join(@branch_name, @file_path)) },
                                         failure_view: :new,
-                                        failure_path: namespace_project_new_blob_path(@project.namespace, @project, @ref))
+                                        failure_path: project_new_blob_path(@project, @ref))
   end
 
   def show
@@ -63,7 +63,7 @@ class Projects::BlobController < Projects::ApplicationController
     @path = params[:file_path] if params[:file_path].present?
     create_commit(Files::UpdateService, success_path: -> { after_edit_path },
                                         failure_view: :edit,
-                                        failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
+                                        failure_path: project_blob_path(@project, @id))
 
   rescue Files::UpdateService::FileChangedError
     @conflict = true
@@ -83,9 +83,9 @@ class Projects::BlobController < Projects::ApplicationController
 
   def destroy
     create_commit(Files::DeleteService, success_notice: "The file has been successfully deleted.",
-                                        success_path: -> { namespace_project_tree_path(@project.namespace, @project, @branch_name) },
+                                        success_path: -> { project_tree_path(@project, @branch_name) },
                                         failure_view: :show,
-                                        failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
+                                        failure_path: project_blob_path(@project, @id))
   end
 
   def diff
@@ -118,7 +118,7 @@ class Projects::BlobController < Projects::ApplicationController
     else
       if tree = @repository.tree(@commit.id, @path)
         if tree.entries.any?
-          return redirect_to namespace_project_tree_path(@project.namespace, @project, File.join(@ref, @path))
+          return redirect_to project_tree_path(@project, File.join(@ref, @path))
         end
       end
 
@@ -143,10 +143,10 @@ class Projects::BlobController < Projects::ApplicationController
   def after_edit_path
     from_merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.find_by(iid: params[:from_merge_request_iid])
     if from_merge_request && @branch_name == @ref
-      diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
+      diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request) +
         "##{hexdigest(@path)}"
     else
-      namespace_project_blob_path(@project.namespace, @project, File.join(@branch_name, @path))
+      project_blob_path(@project, File.join(@branch_name, @path))
     end
   end
 

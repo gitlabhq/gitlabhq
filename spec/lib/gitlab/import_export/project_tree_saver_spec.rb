@@ -87,6 +87,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['merge_requests'].first['merge_request_diff']['merge_request_diff_files']).not_to be_empty
       end
 
+      it 'has merge request diff commits' do
+        expect(saved_project_json['merge_requests'].first['merge_request_diff']['merge_request_diff_commits']).not_to be_empty
+      end
+
       it 'has merge requests comments' do
         expect(saved_project_json['merge_requests'].first['notes']).not_to be_empty
       end

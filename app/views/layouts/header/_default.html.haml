@@ -95,4 +95,4 @@
 - if @project && !@project.empty_repo?
   - if ref = @ref || @project.repository.root_ref
     :javascript
-      var findFileURL = "#{namespace_project_find_file_path(@project.namespace, @project, ref)}";
+      var findFileURL = "#{project_find_file_path(@project, ref)}";

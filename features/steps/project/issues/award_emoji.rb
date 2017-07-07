@@ -5,7 +5,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I visit "Bugfix" issue page' do
-    visit namespace_project_issue_path(@project.namespace, @project, @issue)
+    visit project_issue_path(@project, @issue)
   end
 
   step 'I click the thumbsup award Emoji' do

@@ -52,7 +52,7 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
 
       flash[:notice] = 'All merge conflicts were resolved. The merge request can now be merged.'
 
-      render json: { redirect_to: namespace_project_merge_request_url(@project.namespace, @project, @merge_request, resolved_conflicts: true) }
+      render json: { redirect_to: project_merge_request_url(@project, @merge_request, resolved_conflicts: true) }
     rescue Gitlab::Conflict::ResolutionError => e
       render status: :bad_request, json: { message: e.message }
     end

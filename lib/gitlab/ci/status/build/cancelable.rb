@@ -12,9 +12,7 @@ module Gitlab
           end
 
           def action_path
-            cancel_namespace_project_job_path(subject.project.namespace,
-                                                subject.project,
-                                                subject)
+            cancel_project_job_path(subject.project, subject)
           end
 
           def action_method

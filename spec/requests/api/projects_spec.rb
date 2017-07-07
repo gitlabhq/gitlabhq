@@ -52,6 +52,24 @@ describe API::Projects do
       end
     end
 
+    shared_examples_for 'projects response without N + 1 queries' do
+      it 'avoids N + 1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api('/projects', current_user)
+        end.count
+
+        if defined?(additional_project)
+          additional_project
+        else
+          create(:empty_project, :public)
+        end
+
+        expect do
+          get api('/projects', current_user)
+        end.not_to exceed_query_limit(control_count + 8)
+      end
+    end
+
     let!(:public_project) { create(:empty_project, :public, name: 'public_project') }
     before do
       project
@@ -62,9 +80,13 @@ describe API::Projects do
 
     context 'when unauthenticated' do
       it_behaves_like 'projects response' do
-        let(:filter) { {} }
+        let(:filter) { { search: project.name } }
+        let(:current_user) { user }
+        let(:projects) { [project] }
+      end
+
+      it_behaves_like 'projects response without N + 1 queries' do
         let(:current_user) { nil }
-        let(:projects) { [public_project] }
       end
     end
 
@@ -73,6 +95,21 @@ describe API::Projects do
         let(:filter) { {} }
         let(:current_user) { user }
         let(:projects) { [public_project, project, project2, project3] }
+      end
+
+      it_behaves_like 'projects response without N + 1 queries' do
+        let(:current_user) { user }
+      end
+
+      context 'when some projects are in a group' do
+        before do
+          create(:empty_project, :public, group: create(:group))
+        end
+
+        it_behaves_like 'projects response without N + 1 queries' do
+          let(:current_user) { user }
+          let(:additional_project) { create(:empty_project, :public, group: create(:group)) }
+        end
       end
 
       it 'includes the project labels as the tag_list' do
@@ -347,7 +384,8 @@ describe API::Projects do
         wiki_enabled: false,
         only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
-        only_allow_merge_if_all_discussions_are_resolved: false
+        only_allow_merge_if_all_discussions_are_resolved: false,
+        ci_config_path: 'a/custom/path'
       })
 
       post api('/projects', user), project
@@ -472,6 +510,26 @@ describe API::Projects do
 
         expect(json_response['visibility']).to eq('public')
       end
+    end
+  end
+
+  describe 'GET /users/:user_id/projects/' do
+    let!(:public_project) { create(:empty_project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
+
+    it 'returns error when user not found' do
+      get api('/users/9999/projects/')
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns projects filtered by user' do
+      get api("/users/#{user4.id}/projects/", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
     end
   end
 
@@ -653,6 +711,7 @@ describe API::Projects do
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
         expect(json_response['public_jobs']).to be_present
+        expect(json_response['ci_config_path']).to be_nil
         expect(json_response['shared_with_groups']).to be_an Array
         expect(json_response['shared_with_groups'].length).to eq(1)
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)

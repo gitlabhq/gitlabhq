@@ -8,7 +8,7 @@ feature 'Project edit', feature: true, js: true do
     project.team << [user, :master]
     gitlab_sign_in(user)
 
-    visit edit_namespace_project_path(project.namespace, project)
+    visit edit_project_path(project)
   end
 
   context 'feature visibility' do

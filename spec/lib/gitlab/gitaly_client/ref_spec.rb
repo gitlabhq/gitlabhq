@@ -77,7 +77,7 @@ describe Gitlab::GitalyClient::Ref do
     let(:client) { described_class.new(repository) }
     subject { client.find_ref_name(SeedRepo::Commit::ID, 'refs/heads/master') }
 
-    it { should be_utf8 }
-    it { should eq('refs/heads/master') }
+    it { is_expected.to be_utf8 }
+    it { is_expected.to eq('refs/heads/master') }
   end
 end

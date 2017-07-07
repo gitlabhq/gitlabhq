@@ -92,7 +92,7 @@ class ProjectsController < Projects::ApplicationController
 
   def show
     if @project.import_in_progress?
-      redirect_to namespace_project_import_path(@project.namespace, @project)
+      redirect_to project_import_path(@project)
       return
     end
 

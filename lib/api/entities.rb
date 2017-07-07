@@ -112,6 +112,7 @@ module API
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
+      expose :ci_config_path
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links.all, options)
       end
@@ -434,7 +435,7 @@ module API
         target_url    = "namespace_project_#{target_type}_url"
         target_anchor = "note_#{todo.note_id}" if todo.note_id?
 
-        Gitlab::Application.routes.url_helpers.public_send(target_url,
+        Gitlab::Routing.url_helpers.public_send(target_url,
           todo.project.namespace, todo.project, todo.target, anchor: target_anchor)
       end
 
@@ -502,12 +503,20 @@ module API
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
-          project.project_members.find_by(user_id: options[:current_user].id)
+          if options.key?(:project_members)
+            (options[:project_members] || []).find { |member| member.source_id == project.id }
+          else
+            project.project_members.find_by(user_id: options[:current_user].id)
+          end
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
-            project.group.group_members.find_by(user_id: options[:current_user].id)
+            if options.key?(:group_members)
+              (options[:group_members] || []).find { |member| member.source_id == project.namespace_id }
+            else
+              project.group.group_members.find_by(user_id: options[:current_user].id)
+            end
           end
         end
       end
@@ -831,7 +840,7 @@ module API
       end
 
       class Cache < Grape::Entity
-        expose :key, :untracked, :paths
+        expose :key, :untracked, :paths, :policy
       end
 
       class Credentials < Grape::Entity

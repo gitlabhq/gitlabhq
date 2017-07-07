@@ -30,7 +30,7 @@
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print",       media: "print"
   = stylesheet_link_tag "test",        media: "all" if Rails.env.test?
-  = stylesheet_link_tag 'peek' if peek_enabled?
+  = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
   - if show_new_nav?
     = stylesheet_link_tag "new_nav", media: "all"
@@ -44,7 +44,7 @@
   = webpack_bundle_tag "main"
   = webpack_bundle_tag "raven" if current_application_settings.clientside_sentry_enabled
   = webpack_bundle_tag "test" if Rails.env.test?
-  = webpack_bundle_tag 'peek' if peek_enabled?
+  = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts

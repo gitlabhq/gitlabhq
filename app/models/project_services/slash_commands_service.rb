@@ -5,7 +5,7 @@ class SlashCommandsService < Service
 
   prop_accessor :token
 
-  has_many :chat_names, foreign_key: :service_id, dependent: :destroy
+  has_many :chat_names, foreign_key: :service_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   def valid_token?(token)
     self.respond_to?(:token) &&

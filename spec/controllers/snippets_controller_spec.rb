@@ -341,7 +341,7 @@ describe SnippetsController do
                                      { spam_log_id: spam_logs.last.id,
                                        recaptcha_verification: true })
 
-            expect(response).to redirect_to(snippet)
+            expect(response).to redirect_to(snippet_path(snippet))
           end
         end
       end

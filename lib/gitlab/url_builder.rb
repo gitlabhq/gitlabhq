@@ -23,9 +23,9 @@ module Gitlab
       when WikiPage
         wiki_page_url
       when ProjectSnippet
-        project_snippet_url(object)
+        project_snippet_url(object.project, object)
       when Snippet
-        personal_snippet_url(object)
+        snippet_url(object)
       else
         raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end
@@ -65,13 +65,13 @@ module Gitlab
         if snippet.is_a?(PersonalSnippet)
           snippet_url(snippet, anchor: dom_id(object))
         else
-          project_snippet_url(snippet, anchor: dom_id(object))
+          project_snippet_url(snippet.project, snippet, anchor: dom_id(object))
         end
       end
     end
 
     def wiki_page_url
-      namespace_project_wiki_url(object.wiki.project.namespace, object.wiki.project, object.slug)
+      project_wiki_url(object.wiki.project, object.slug)
     end
   end
 end

@@ -172,6 +172,17 @@ MergeRequestDiff:
 - real_size
 - head_commit_sha
 - start_commit_sha
+MergeRequestDiffCommit:
+- merge_request_diff_id
+- relative_order
+- sha
+- authored_date
+- committed_date
+- author_name
+- author_email
+- committer_name
+- committer_email
+- message
 MergeRequestDiffFile:
 - merge_request_diff_id
 - relative_order
@@ -383,6 +394,7 @@ Project:
 - printing_merge_request_link_enabled
 - build_allow_git_fetch
 - last_repository_updated_at
+- ci_config_path
 Author:
 - name
 ProjectFeature:

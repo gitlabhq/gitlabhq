@@ -863,7 +863,7 @@ describe Ci::Build, :models do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        allow(@merge_request).to receive(:commits_sha)
+        allow(@merge_request).to receive(:commit_shas)
           .and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
@@ -1183,6 +1183,7 @@ describe Ci::Build, :models do
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
         { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
         { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false }
@@ -1490,6 +1491,16 @@ describe Ci::Build, :models do
       it { is_expected.to include(deployment_variable) }
     end
 
+    context 'when project has custom CI config path' do
+      let(:ci_config_path) { { key: 'CI_CONFIG_PATH', value: 'custom', public: true } }
+
+      before do
+        project.update(ci_config_path: 'custom')
+      end
+
+      it { is_expected.to include(ci_config_path) }
+    end
+
     context 'returns variables in valid order' do
       let(:build_pre_var) { { key: 'build', value: 'value' } }
       let(:project_pre_var) { { key: 'project', value: 'value' } }
@@ -1502,9 +1513,10 @@ describe Ci::Build, :models do
         allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
         allow(build).to receive(:yaml_variables) { [build_yaml_var] }
 
-        allow(project).to receive(:secret_variables_for).with(build.ref) do
-          [create(:ci_variable, key: 'secret', value: 'value')]
-        end
+        allow(project).to receive(:secret_variables_for)
+          .with(ref: 'master', environment: nil) do
+            [create(:ci_variable, key: 'secret', value: 'value')]
+          end
       end
 
       it do

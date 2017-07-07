@@ -10,7 +10,7 @@ describe 'Reportable note on issue', :feature, :js do
     project.add_master(user)
     gitlab_sign_in(user)
 
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
   it_behaves_like 'reportable note'

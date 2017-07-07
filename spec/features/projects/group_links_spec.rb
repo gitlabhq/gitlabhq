@@ -14,7 +14,7 @@ feature 'Project group links', :feature, :js do
 
   context 'setting an expiration date for a group link' do
     before do
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
 
       click_on 'share-with-group-tab'
 
@@ -43,7 +43,7 @@ feature 'Project group links', :feature, :js do
     end
 
     it 'does not show ancestors', :nested_groups do
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
 
       click_on 'share-with-group-tab'
       click_link 'Search for a group'
@@ -61,7 +61,7 @@ feature 'Project group links', :feature, :js do
       group.add_owner(master)
       group_two.add_owner(master)
 
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
       execute_script 'GroupsSelect.PER_PAGE = 1;'
       open_select2 '#link_group_id'
     end
