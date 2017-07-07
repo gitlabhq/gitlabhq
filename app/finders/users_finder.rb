@@ -15,6 +15,8 @@
 #     skip_ldap: boolean
 #
 class UsersFinder
+  include CreatedAtFilter
+
   attr_accessor :current_user, :params
 
   def initialize(current_user, params = {})
@@ -30,6 +32,7 @@ class UsersFinder
     users = by_active(users)
     users = by_external_identity(users)
     users = by_external(users)
+    users = by_created_at(users)
     users = by_non_ldap(users)
 
     users
