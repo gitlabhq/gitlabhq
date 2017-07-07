@@ -61,8 +61,6 @@ class Issue < ActiveRecord::Base
   scope :order_weight_desc, -> { reorder('weight IS NOT NULL, weight DESC') }
   scope :order_weight_asc, -> { reorder('weight ASC') }
 
-  scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
-
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   after_save :expire_etag_cache
