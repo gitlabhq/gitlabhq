@@ -39,10 +39,6 @@ module StubConfiguration
     allow(Gitlab.config.omniauth).to receive_messages(messages)
   end
 
-  def stub_performance_bar_setting(messages)
-    allow(Gitlab.config.performance_bar).to receive_messages(messages)
-  end
-
   private
 
   # Modifies stubbed messages to also stub possible predicate versions

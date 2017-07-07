@@ -234,20 +234,27 @@ describe ApplicationSetting, models: true do
   end
 
   describe 'performance bar settings' do
-    before do
-      Flipper.unregister_groups
-      Flipper.register(:performance_team)
-    end
-
-    after do
-      Flipper.unregister_groups
-    end
-
     describe 'performance_bar_allowed_group_id=' do
-      it 'does not persist an invalid group path' do
-        setting.performance_bar_allowed_group_id = 'foo'
+      context 'with a blank path' do
+        before do
+          setting.performance_bar_allowed_group_id = create(:group).full_path
+        end
 
-        expect(setting.performance_bar_allowed_group_id).to be_nil
+        it 'persists nil for a "" path and clears allowed user IDs cache' do
+          expect(Gitlab::PerformanceBar).to receive(:expire_allowed_user_ids_cache)
+
+          setting.performance_bar_allowed_group_id = ''
+
+          expect(setting.performance_bar_allowed_group_id).to be_nil
+        end
+      end
+
+      context 'with an invalid path' do
+        it 'does not persist an invalid group path' do
+          setting.performance_bar_allowed_group_id = 'foo'
+
+          expect(setting.performance_bar_allowed_group_id).to be_nil
+        end
       end
 
       context 'with a path to an existing group' do
@@ -262,14 +269,28 @@ describe ApplicationSetting, models: true do
         end
 
         context 'when the given path is the same' do
-          before do
-            setting.performance_bar_allowed_group_id = group.full_path
+          context 'with a blank path' do
+            before do
+              setting.performance_bar_allowed_group_id = nil
+            end
+
+            it 'clears the cached allowed user IDs' do
+              expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
+
+              setting.performance_bar_allowed_group_id = ''
+            end
           end
 
-          it 'clears the cached allowed user IDs' do
-            expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
+          context 'with a valid path' do
+            before do
+              setting.performance_bar_allowed_group_id = group.full_path
+            end
 
-            setting.performance_bar_allowed_group_id = group.full_path
+            it 'clears the cached allowed user IDs' do
+              expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
+
+              setting.performance_bar_allowed_group_id = group.full_path
+            end
           end
         end
       end
@@ -295,83 +316,71 @@ describe ApplicationSetting, models: true do
       end
     end
 
-    describe 'performance_bar_enabled?' do
-      context 'with the Performance Bar is enabled globally' do
+    describe 'performance_bar_enabled' do
+      context 'with the Performance Bar is enabled' do
+        let(:group) { create(:group) }
+
         before do
-          Feature.enable(:performance_bar)
+          setting.performance_bar_allowed_group_id = group.full_path
         end
 
         it 'returns true' do
-          expect(setting).to be_performance_bar_enabled
-        end
-      end
-
-      context 'with the Performance Bar is enabled for the performance_team group' do
-        before do
-          Feature.enable_group(:performance_bar, :performance_team)
-        end
-
-        it 'returns true' do
-          expect(setting).to be_performance_bar_enabled
-        end
-      end
-
-      context 'with the Performance Bar is enabled for a specific user' do
-        before do
-          Feature.enable(:performance_team, create(:user))
-        end
-
-        it 'returns false' do
-          expect(setting).not_to be_performance_bar_enabled
+          expect(setting.performance_bar_enabled).to be_truthy
         end
       end
     end
 
     describe 'performance_bar_enabled=' do
       context 'when the performance bar is enabled' do
+        let(:group) { create(:group) }
+
         before do
-          Feature.enable(:performance_bar)
+          setting.performance_bar_allowed_group_id = group.full_path
         end
 
         context 'when passing true' do
           it 'does not clear allowed user IDs cache' do
             expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
+
             setting.performance_bar_enabled = true
 
-            expect(setting).to be_performance_bar_enabled
+            expect(setting.performance_bar_allowed_group_id).to eq(group.id)
+            expect(setting.performance_bar_enabled).to be_truthy
           end
         end
 
         context 'when passing false' do
           it 'disables the performance bar and clears allowed user IDs cache' do
             expect(Gitlab::PerformanceBar).to receive(:expire_allowed_user_ids_cache)
+
             setting.performance_bar_enabled = false
 
-            expect(setting).not_to be_performance_bar_enabled
+            expect(setting.performance_bar_allowed_group_id).to be_nil
+            expect(setting.performance_bar_enabled).to be_falsey
           end
         end
       end
 
       context 'when the performance bar is disabled' do
-        before do
-          Feature.disable(:performance_bar)
-        end
-
         context 'when passing true' do
-          it 'enables the performance bar and clears allowed user IDs cache' do
-            expect(Gitlab::PerformanceBar).to receive(:expire_allowed_user_ids_cache)
+          it 'does nothing and does not clear allowed user IDs cache' do
+            expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
+
             setting.performance_bar_enabled = true
 
-            expect(setting).to be_performance_bar_enabled
+            expect(setting.performance_bar_allowed_group_id).to be_nil
+            expect(setting.performance_bar_enabled).to be_falsey
           end
         end
 
         context 'when passing false' do
-          it 'does not clear allowed user IDs cache' do
+          it 'does nothing and does not clear allowed user IDs cache' do
             expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
+
             setting.performance_bar_enabled = false
 
-            expect(setting).not_to be_performance_bar_enabled
+            expect(setting.performance_bar_allowed_group_id).to be_nil
+            expect(setting.performance_bar_enabled).to be_falsey
           end
         end
       end

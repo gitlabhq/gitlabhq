@@ -381,39 +381,45 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def performance_bar_allowed_group_id=(group_full_path)
-    group = Group.find_by_full_path(group_full_path)
-    return unless group && group.id != performance_bar_allowed_group_id
+    group_full_path = nil if group_full_path.blank?
 
-    super(group.id)
-    Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+    if group_full_path.nil?
+      if group_full_path != performance_bar_allowed_group_id
+        super(group_full_path)
+        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+      end
+      return
+    end
+
+    group = Group.find_by_full_path(group_full_path)
+
+    if group
+      if group.id != performance_bar_allowed_group_id
+        super(group.id)
+        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+      end
+    else
+      super(nil)
+      Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+    end
   end
 
   def performance_bar_allowed_group
     Group.find_by_id(performance_bar_allowed_group_id)
   end
 
-  # Return true is the Performance Bar is available globally or for the
-  # `performance_team` feature group
-  def performance_bar_enabled?
-    feature = Feature.get(:performance_bar)
-
-    feature.on? || feature.groups_value.include?('performance_team')
+  # Return true if the Performance Bar is enabled for a given group
+  def performance_bar_enabled
+    performance_bar_allowed_group_id.present?
   end
 
-  # - If `enable` is true, enable the `performance_bar` feature for the
-  # `performance_team` feature group
-  # - If `enable` is false, disable the `performance_bar` feature globally
+  # - If `enable` is true, we early return since the actual attribute that holds
+  #   the enabling/disabling is `performance_bar_allowed_group_id`
+  # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
   def performance_bar_enabled=(enable)
-    feature = Feature.get(:performance_bar)
-    performance_bar_on = performance_bar_enabled?
+    return if enable
 
-    if enable && !performance_bar_on
-      feature.enable_group(:performance_team)
-      Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-    elsif !enable && performance_bar_on
-      feature.disable
-      Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-    end
+    self.performance_bar_allowed_group_id = nil
   end
 
   # Choose one of the available repository storage options. Currently all have
