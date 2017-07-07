@@ -51,6 +51,8 @@ module API
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
+        optional :created_after, type: DateTime, desc: 'Return users created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         all_or_none_of :extern_uid, :provider
 
         # EE
@@ -60,6 +62,10 @@ module API
       end
       get do
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
+
+        unless current_user.admin?
+          params.except!(:created_after, :created_before)
+        end
 
         users = UsersFinder.new(current_user, params).execute
 
