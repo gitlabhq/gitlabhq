@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170627211700) do
+ActiveRecord::Schema.define(version: 20170703102400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1341,6 +1341,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
     t.string "import_jid"
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
+    t.string "ci_config_path"
     t.boolean "disable_overriding_approvers_per_merge_request"
   end
 
@@ -1544,7 +1545,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
 
   add_index "slack_integrations", ["team_id", "alias"], name: "index_slack_integrations_on_team_id_and_alias", unique: true, using: :btree
   add_index "slack_integrations", ["service_id"], name: "index_slack_integrations_on_service_id", using: :btree
-  
+
   create_table "snippets", force: :cascade do |t|
     t.string "title"
     t.text "content"

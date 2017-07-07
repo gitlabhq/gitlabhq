@@ -11,7 +11,6 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:merge_request_diffs) }
-    it { is_expected.to have_many(:approver_groups).dependent(:delete_all) }
   end
 
   describe 'modules' do

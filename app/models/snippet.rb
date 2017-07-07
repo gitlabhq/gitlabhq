@@ -38,9 +38,7 @@ class Snippet < ActiveRecord::Base
   validates :author, presence: true
   validates :title, presence: true, length: { maximum: 255 }
   validates :file_name,
-    length: { maximum: 255 },
-    format: { with: Gitlab::Regex.file_name_regex,
-              message: Gitlab::Regex.file_name_regex_message }
+    length: { maximum: 255 }
 
   validates :content, presence: true
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }

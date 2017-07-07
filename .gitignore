@@ -61,3 +61,4 @@ eslint-report.html
 /.gitlab_workhorse_secret
 /webpack-report/
 /locale/**/LC_MESSAGES
+/.rspec

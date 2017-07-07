@@ -752,6 +752,39 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#ci_yaml_file_path' do
+    subject { pipeline.ci_yaml_file_path }
+
+    it 'returns the path from project' do
+      allow(pipeline.project).to receive(:ci_config_path) { 'custom/path' }
+
+      is_expected.to eq('custom/path')
+    end
+
+    it 'returns default when custom path is nil' do
+      allow(pipeline.project).to receive(:ci_config_path) { nil }
+
+      is_expected.to eq('.gitlab-ci.yml')
+    end
+
+    it 'returns default when custom path is empty' do
+      allow(pipeline.project).to receive(:ci_config_path) { '' }
+
+      is_expected.to eq('.gitlab-ci.yml')
+    end
+  end
+
+  describe '#ci_yaml_file' do
+    it 'reports error if the file is not found' do
+      allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+
+      pipeline.ci_yaml_file
+
+      expect(pipeline.yaml_errors)
+        .to eq('Failed to load CI/CD config file at custom')
+    end
+  end
+
   describe '#detailed_status' do
     subject { pipeline.detailed_status(user) }
 

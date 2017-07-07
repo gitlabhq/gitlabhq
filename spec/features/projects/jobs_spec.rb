@@ -119,6 +119,10 @@ feature 'Jobs', :feature do
         visit project_job_path(project, job)
       end
 
+      it 'shows status name', :js do
+        expect(page).to have_css('.ci-status.ci-success', text: 'passed')
+      end
+
       it 'shows commit`s data' do
         expect(page.status_code).to eq(200)
         expect(page).to have_content pipeline.sha[0..7]

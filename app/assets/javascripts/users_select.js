@@ -206,8 +206,6 @@ function UsersSelect(currentUser, els) {
       return $dropdown.glDropdown({
         showMenuAbove: showMenuAbove,
         data: function(term, callback) {
-          var isAuthorFilter;
-          isAuthorFilter = $('.js-author-search');
           return _this.users(term, options, function(users) {
             // GitLabDropdownFilter returns this.instance
             // GitLabDropdownRemote returns this.options.instance

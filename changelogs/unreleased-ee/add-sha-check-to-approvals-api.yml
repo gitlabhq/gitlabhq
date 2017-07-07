@@ -1,0 +1,4 @@
+---
+title: Add optional sha param when approving a merge request through the API
+merge_request:
+author:

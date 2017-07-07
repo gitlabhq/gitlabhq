@@ -45,7 +45,7 @@ class Projects::PathLocksController < Projects::ApplicationController
   private
 
   def check_license
-    unless @project.feature_available?(:file_lock)
+    unless @project.feature_available?(:file_locks)
       flash[:alert] = 'You need a different license to enable FileLocks feature'
       redirect_to admin_license_path
     end

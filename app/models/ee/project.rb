@@ -36,6 +36,10 @@ module EE
       has_many :remote_mirrors, inverse_of: :project
       has_many :path_locks
 
+      has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
+
+      has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
+
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
       scope :mirrors_to_sync, -> do

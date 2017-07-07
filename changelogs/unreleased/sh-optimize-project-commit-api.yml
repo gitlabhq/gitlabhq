@@ -1,0 +1,4 @@
+---
+title: Optimize creation of commit API by using Repository#commit instead of Repository#commits
+merge_request:
+author:

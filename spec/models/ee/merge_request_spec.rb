@@ -5,6 +5,12 @@ describe MergeRequest, models: true do
 
   subject(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
+  describe 'associations' do
+    it { is_expected.to have_many(:approvals).dependent(:delete_all) }
+    it { is_expected.to have_many(:approvers).dependent(:delete_all) }
+    it { is_expected.to have_many(:approver_groups).dependent(:delete_all) }
+  end
+
   describe '#should_be_rebased?' do
     subject { merge_request.should_be_rebased? }
 
