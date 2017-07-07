@@ -5,8 +5,8 @@
     %colgroup
       %col
       %col
-      %col.hidden-xs
-      %col{ width: "120" }
+      %col
+      %col
     %thead
       %tr
         %th Team name
@@ -18,9 +18,11 @@
         = slack_integration.team_name
       %td
         = slack_integration.alias
-      %td.light
+      %td
         = time_ago_in_words slack_integration.created_at
         ago
-      %td.light
-        - project = @service.project
-        = link_to 'Remove', namespace_project_settings_slack_path(project.namespace, project), method: :delete, class: 'btn btn-danger', data: { confirm: 'Are you sure?' }
+      %td
+        .controls
+          - project = @service.project
+          = link_to 'Edit', edit_project_settings_slack_path(project), class: 'btn btn-sm'
+          = link_to 'Remove', project_settings_slack_path(project), method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: 'Are you sure?' }
