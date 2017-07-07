@@ -13,7 +13,7 @@ describe ShaAttribute do
   end
 
   describe '#sha_attribute' do
-    context' when the table exists' do
+    context 'when the table exists' do
       before do
         allow(model).to receive(:table_exists?).and_return(true)
       end
