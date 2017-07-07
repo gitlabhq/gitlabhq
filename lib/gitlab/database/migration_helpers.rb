@@ -296,7 +296,7 @@ module Gitlab
           MSG
         end
 
-       # raise 'This method requires a block!' unless block_given?
+        raise ArgumentError, 'This method requires a block!' unless block_given?
 
         table_arel = Arel::Table.new(table)
 

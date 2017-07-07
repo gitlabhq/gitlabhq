@@ -7,19 +7,18 @@ class MigrateStageIdReferenceInBackground < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Build < ActiveRecord::Base
-    self.table_name = 'ci_builds'
-  end
-
+  ##
+  # It will take around 3 days to process 20M ci_builds.
+  #
   def up
-    index = 1
+    opts = { scope: ->(table, query) { query.where(table[:stage_id].eq(nil)) },
+             of: BATCH_SIZE }
 
-    Build.where(stage_id: nil).in_batches(of: BATCH_SIZE) do |relation|
-      jobs = relation.pluck(:id).map { |id| [MIGRATION, [id]] }
+    walk_table_in_batches(:ci_builds, **opts) do |index, start_id, stop_id|
       schedule = index * 2.minutes
-      index += 1
 
-      BackgroundMigrationWorker.perform_bulk_in(schedule, jobs)
+      BackgroundMigrationWorker
+        .perform_in(schedule, MIGRATION, [start_id, stop_id])
     end
   end
 
