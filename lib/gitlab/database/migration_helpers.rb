@@ -255,6 +255,25 @@ module Gitlab
         end
       end
 
+      ##
+      # Iterates a table and executes a block for given range.
+      #
+      # Yields batch index, start and stop ids.
+      #
+      # Optional `scope` keyword argument is a closure that is meant to limit
+      # the scope the statement is going to be applied onto.
+      #
+      # Arel statement this helper will execute must be defined inside the
+      # block.
+      #
+      # Example:
+      #
+      # scope = ->(table, query) { query.where(table[:id].gt(100) }
+      #
+      # walk_table_in_batches(:table, of: 10, scope: scope) do |index, start, stop|
+      #   # do something here
+      # end
+      #
       def walk_table_in_batches(table, of: 1000, scope: nil)
         if transaction_open?
           raise <<-MSG
@@ -287,6 +306,25 @@ module Gitlab
         end
       end
 
+      ##
+      # Executes an SQL statement in batches, created by Arel manager.
+      #
+      # Optional `scope` keyword argument is a closure that is meant to limit
+      # the scope the statement is going to be applied onto.
+      #
+      # Arel statement this helper will execute must be defined inside the
+      # block.
+      #
+      # Example:
+      #
+      # scope = ->(table, query) { query.where(table[:id].gt(100) }
+      #
+      # execute_in_batches(:table, of: 10000, scope: scope) do |table|
+      #   Arel::UpdateManager.new(ActiveRecord::Base)
+      #     .table(table)
+      #     .set([[table[:field], 101]])
+      # end
+      #
       def execute_in_batches(table, of: 1000, scope: nil)
         if transaction_open?
           raise <<-MSG
