@@ -3,7 +3,7 @@
 = render "projects/pipelines/head"
 
 - if show_new_nav?
-  - breadcrumbs_extra_links("Pipelines", project_pipelines_path(@project))
+  - add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
 
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_vue')

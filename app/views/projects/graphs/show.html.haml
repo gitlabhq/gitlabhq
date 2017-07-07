@@ -6,7 +6,7 @@
   = page_specific_javascript_bundle_tag('graphs')
 
 - if show_new_nav?
-  - breadcrumbs_extra_links("Repository", project_tree_path(@project))
+  - add_to_breadcrumbs("Repository", project_tree_path(@project))
 
 = render 'projects/commits/head'
 

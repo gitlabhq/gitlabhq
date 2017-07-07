@@ -3,7 +3,7 @@
 = render "projects/pipelines/head"
 
 - if show_new_nav?
-  - breadcrumbs_extra_links("Pipelines", project_pipelines_path(@project))
+  - add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
 
 %div{ class: container_class }
   .top-area

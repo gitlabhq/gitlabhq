@@ -2,7 +2,7 @@
 - @breadcrumb_title = "Charts"
 - page_title _("Charts"), _("Pipelines")
 - if show_new_nav?
-  - breadcrumbs_extra_links("Pipelines", project_pipelines_path(@project))
+  - add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_d3')
   = page_specific_javascript_bundle_tag('graphs')

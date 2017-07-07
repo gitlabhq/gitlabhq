@@ -1,5 +1,5 @@
 module BreadcrumbsHelper
-  def breadcrumbs_extra_links(text, link)
+  def add_to_breadcrumbs(text, link)
     @breadcrumbs_extra_links ||= []
     @breadcrumbs_extra_links.push({
       text: text,

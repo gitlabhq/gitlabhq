@@ -3,7 +3,7 @@
 - page_title _("New Pipeline Schedule")
 
 - if show_new_nav?
-  - breadcrumbs_extra_links("Pipelines", project_pipelines_path(@project))
+  - add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
 
 %h3.page-title
   = _("Schedule a new pipeline")

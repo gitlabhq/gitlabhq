@@ -1,6 +1,6 @@
 - page_title 'Two-Factor Authentication', 'Account'
 - if show_new_nav?
-  - breadcrumbs_extra_links("Account", profile_account_path)
+  - add_to_breadcrumbs("Account", profile_account_path)
 - else
   - header_title "Two-Factor Authentication", profile_two_factor_auth_path
 - @breadcrumb_title = "Two-Factor Authentication"

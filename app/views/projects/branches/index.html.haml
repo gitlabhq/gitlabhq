@@ -3,7 +3,7 @@
 = render "projects/commits/head"
 
 - if show_new_nav?
-  - breadcrumbs_extra_links("Repository", project_tree_path(@project))
+  - add_to_breadcrumbs("Repository", project_tree_path(@project))
 
 %div{ class: container_class }
   .top-area.adjust
