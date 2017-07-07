@@ -26,7 +26,7 @@ describe 'Project variables EE', js: true do
     fill_in('variable_environment_scope', with: 'review/*')
     click_button('Add new variable')
 
-    expect(page).to have_content('Variables were successfully updated.')
+    expect(page).to have_content('Variable was successfully created.')
     page.within('.variables-table') do
       expect(page).to have_content('key')
       expect(page).to have_content('review/*')
