@@ -15,7 +15,7 @@ end
 end
 
 # EE-only
-%w(license).each do |f|
+%w(test_license).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 

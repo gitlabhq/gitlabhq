@@ -6,6 +6,11 @@ module EE
     end
 
     # override
+    def allows_multiple_assignees?
+      project.feature_available?(:multiple_issue_assignees)
+    end
+
+    # override
     def subscribed_without_subscriptions?(user, *)
       # TODO: this really shouldn't be necessary, because the support
       # bot should be a participant (which is what the superclass

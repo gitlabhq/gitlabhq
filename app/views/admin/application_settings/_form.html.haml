@@ -22,7 +22,9 @@
     .form-group
       = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
       .col-sm-10
-        - restricted_level_checkboxes('restricted-visibility-help').each do |level|
+        - checkbox_name = 'application_setting[restricted_visibility_levels][]'
+        = hidden_field_tag(checkbox_name)
+        - restricted_level_checkboxes('restricted-visibility-help', checkbox_name).each do |level|
           .checkbox
             = level
         %span.help-block#restricted-visibility-help
@@ -702,6 +704,29 @@
             if you have configured your OpenSSH server to use the
             AuthorizedKeysCommand. Click on the help icon for more details.
             = link_to icon('question-circle'), help_page_path('administration/operations/speed_up_ssh', anchor: 'the-solution')
+  - if Gitlab.com? || Rails.env.development?
+    %fieldset
+      %legend Slack application
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = f.label :slack_app_enabled do
+              = f.check_box :slack_app_enabled
+              Enable Slack application
+            .help-block
+              This option is only available on GitLab.com
+      .form-group
+        = f.label :slack_app_id, 'APP_ID', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.text_field :slack_app_id, class: 'form-control'
+      .form-group
+        = f.label :slack_app_secret, 'APP_SECRET', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.text_field :slack_app_secret, class: 'form-control'
+      .form-group
+        = f.label :slack_app_verification_token, 'Verification token', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.text_field :slack_app_verification_token, class: 'form-control'
 
   - if Gitlab::Geo.license_allows?
     %fieldset

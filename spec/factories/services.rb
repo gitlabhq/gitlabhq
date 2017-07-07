@@ -47,4 +47,9 @@ FactoryGirl.define do
     type 'HipchatService'
     token 'test_token'
   end
+
+  factory :gitlab_slack_application_service do
+    project factory: :empty_project
+    type 'GitlabSlackApplicationService'
+  end
 end

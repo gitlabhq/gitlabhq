@@ -292,7 +292,7 @@ describe ApplicationHelper do
       let(:alternate_url) { 'http://company.example.com/getting-help' }
 
       before do
-        allow(current_application_settings).to receive(:help_page_support_url) { alternate_url }
+        stub_application_setting(help_page_support_url: alternate_url)
       end
 
       it 'returns the alternate support url' do

@@ -29,8 +29,8 @@ module Gitlab
         provide_metric(name) || registry.summary(name, docstring, base_labels)
       end
 
-      def gauge(name, docstring, base_labels = {})
-        provide_metric(name) || registry.gauge(name, docstring, base_labels)
+      def gauge(name, docstring, base_labels = {}, multiprocess_mode = :all)
+        provide_metric(name) || registry.gauge(name, docstring, base_labels, multiprocess_mode)
       end
 
       def histogram(name, docstring, base_labels = {}, buckets = ::Prometheus::Client::Histogram::DEFAULT_BUCKETS)

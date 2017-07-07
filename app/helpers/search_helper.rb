@@ -1,4 +1,6 @@
 module SearchHelper
+  prepend EE::SearchHelper
+
   def search_autocomplete_opts(term)
     return unless current_user
 
@@ -132,6 +134,18 @@ module SearchHelper
 
     options = exist_opts.merge(options)
     search_path(options)
+  end
+
+  def search_filter_input_options(type)
+    {
+      id: "filtered-search-#{type}",
+      placeholder: 'Search or filter results...',
+      data: {
+        'project-id' => @project.id,
+        'username-params' => @users.to_json(only: [:id, :username]),
+        'base-endpoint' => project_path(@project)
+      }
+    }
   end
 
   # Sanitize a HTML field for search display. Most tags are stripped out and the

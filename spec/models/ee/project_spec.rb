@@ -9,6 +9,11 @@ describe Project, models: true do
     it { is_expected.to delegate_method(:actual_shared_runners_minutes_limit).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_limit_enabled?).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:namespace) }
+
+    it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData') }
+    it { is_expected.to have_many(:path_locks) }
+    it { is_expected.to have_many(:sourced_pipelines) }
+    it { is_expected.to have_many(:source_pipelines) }
   end
 
   describe '#push_rule' do
@@ -52,6 +57,36 @@ describe Project, models: true do
 
         project.execute_hooks(some: 'info')
       end
+    end
+  end
+
+  describe '#execute_hooks' do
+    it "triggers project and group hooks" do
+      group = create :group, name: 'gitlab'
+      project = create(:project, name: 'gitlabhq', namespace: group)
+      project_hook = create(:project_hook, push_events: true, project: project)
+      group_hook = create(:group_hook, push_events: true, group: group)
+
+      stub_request(:post, project_hook.url)
+      stub_request(:post, group_hook.url)
+
+      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
+
+      project.execute_hooks({}, :push_hooks)
+    end
+  end
+
+  describe '#allowed_to_share_with_group?' do
+    let(:project) { create(:project) }
+
+    it "returns true" do
+      expect(project.allowed_to_share_with_group?).to be_truthy
+    end
+
+    it "returns false" do
+      project.namespace.update(share_with_group_lock: true)
+      expect(project.allowed_to_share_with_group?).to be_falsey
     end
   end
 
@@ -601,6 +636,39 @@ describe Project, models: true do
         end
 
         it { is_expected.to eq(spec[:method]) }
+      end
+    end
+  end
+
+  describe '#rename_repo' do
+    context 'when running on a primary node' do
+      let!(:geo_node) { create(:geo_node, :primary, :current) }
+      let(:project) { create(:project, :repository) }
+      let(:gitlab_shell) { Gitlab::Shell.new }
+
+      before do
+        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+      end
+
+      it 'logs the Geo::RepositoryRenamedEvent' do
+        stub_container_registry_config(enabled: false)
+
+        allow(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+          .and_return(true)
+
+        allow(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+          .and_return(true)
+
+        expect(Geo::RepositoryRenamedEventStore).to receive(:new)
+          .with(instance_of(Project), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
+          .and_call_original
+
+        expect { project.rename_repo }.to change(Geo::RepositoryRenamedEvent, :count).by(1)
       end
     end
   end

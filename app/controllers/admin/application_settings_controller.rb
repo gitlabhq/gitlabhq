@@ -72,6 +72,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:disabled_oauth_sign_in_sources] =
       AuthHelper.button_based_providers.map(&:to_s) -
       Array(enabled_oauth_sign_in_sources)
+
+    params[:application_setting][:restricted_visibility_levels]&.delete("")
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
@@ -183,7 +185,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :mirror_max_delay,
       :mirror_max_capacity,
       :mirror_capacity_threshold,
-      :authorized_keys_enabled
+      :authorized_keys_enabled,
+      :slack_app_enabled,
+      :slack_app_id,
+      :slack_app_secret,
+      :slack_app_verification_token
     ]
   end
 end

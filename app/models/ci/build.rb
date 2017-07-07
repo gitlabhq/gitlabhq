@@ -180,9 +180,12 @@ module Ci
     #   * Lowercased
     #   * Anything not matching [a-z0-9-] is replaced with a -
     #   * Maximum length is 63 bytes
+    #   * First/Last Character is not a hyphen
     def ref_slug
-      slugified = ref.to_s.downcase
-      slugified.gsub(/[^a-z0-9]/, '-')[0..62]
+      ref.to_s
+          .downcase
+          .gsub(/[^a-z0-9]/, '-')[0..62]
+          .gsub(/(\A-+|-+\z)/, '')
     end
 
     # Variables whose value does not depend on environment
@@ -219,7 +222,7 @@ module Ci
             .reorder(iid: :desc)
 
           merge_requests.find do |merge_request|
-            merge_request.commits_sha.include?(pipeline.sha)
+            merge_request.commit_shas.include?(pipeline.sha)
           end
         end
     end
@@ -296,10 +299,6 @@ module Ci
 
     def browsable_artifacts?
       artifacts_metadata?
-    end
-
-    def downloadable_single_artifacts_file?
-      artifacts_metadata? && artifacts_file.file_storage?
     end
 
     def artifacts_metadata?

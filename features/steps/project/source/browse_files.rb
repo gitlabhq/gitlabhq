@@ -92,10 +92,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     fill_in :branch_name, with: 'new_branch_name', visible: true
   end
 
-  step 'I fill the new file name with an illegal name' do
-    fill_in :file_name, with: 'Spaces Not Allowed'
-  end
-
   step 'I fill the new file name with a new directory' do
     fill_in :file_name, with: new_file_name_with_directory
   end

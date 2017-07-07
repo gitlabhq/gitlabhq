@@ -144,6 +144,10 @@ ActiveRecord::Schema.define(version: 20170706151212) do
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
+    t.boolean "slack_app_enabled", default: false
+    t.string "slack_app_id"
+    t.string "slack_app_secret"
+    t.string "slack_app_verification_token"
     t.integer "performance_bar_allowed_group_id"
   end
 
@@ -585,6 +589,7 @@ ActiveRecord::Schema.define(version: 20170706151212) do
     t.datetime "created_at", null: false
     t.integer "repository_updated_event_id", limit: 8
     t.integer "repository_deleted_event_id", limit: 8
+    t.integer "repository_renamed_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
@@ -621,6 +626,20 @@ ActiveRecord::Schema.define(version: 20170706151212) do
   end
 
   add_index "geo_repository_deleted_events", ["project_id"], name: "index_geo_repository_deleted_events_on_project_id", using: :btree
+
+  create_table "geo_repository_renamed_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
+    t.text "old_path_with_namespace", null: false
+    t.text "new_path_with_namespace", null: false
+    t.text "old_wiki_path_with_namespace", null: false
+    t.text "new_wiki_path_with_namespace", null: false
+    t.text "old_path", null: false
+    t.text "new_path", null: false
+  end
+
+  add_index "geo_repository_renamed_events", ["project_id"], name: "index_geo_repository_renamed_events_on_project_id", using: :btree
 
   create_table "geo_repository_updated_events", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -865,6 +884,21 @@ ActiveRecord::Schema.define(version: 20170706151212) do
   add_index "members", ["requested_at"], name: "index_members_on_requested_at", using: :btree
   add_index "members", ["source_id", "source_type"], name: "index_members_on_source_id_and_source_type", using: :btree
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
+
+  create_table "merge_request_diff_commits", id: false, force: :cascade do |t|
+    t.datetime "authored_date"
+    t.datetime "committed_date"
+    t.integer "merge_request_diff_id", null: false
+    t.integer "relative_order", null: false
+    t.binary "sha", null: false
+    t.text "author_name"
+    t.text "author_email"
+    t.text "committer_name"
+    t.text "committer_email"
+    t.text "message"
+  end
+
+  add_index "merge_request_diff_commits", ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_commits_on_mr_diff_id_and_order", unique: true, using: :btree
 
   create_table "merge_request_diff_files", id: false, force: :cascade do |t|
     t.integer "merge_request_diff_id", null: false
@@ -1319,10 +1353,11 @@ ActiveRecord::Schema.define(version: 20170706151212) do
     t.integer "repository_size_limit", limit: 8
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.integer "auto_cancel_pending_pipelines", default: 1, null: false
-    t.boolean "service_desk_enabled"
+    t.boolean "service_desk_enabled", default: true
     t.string "import_jid"
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
+    t.string "ci_config_path"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1512,6 +1547,19 @@ ActiveRecord::Schema.define(version: 20170706151212) do
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
   add_index "services", ["template"], name: "index_services_on_template", using: :btree
+
+  create_table "slack_integrations", force: :cascade do |t|
+    t.integer "service_id", null: false
+    t.string "team_id", null: false
+    t.string "team_name", null: false
+    t.string "alias", null: false
+    t.string "user_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "slack_integrations", ["team_id", "alias"], name: "index_slack_integrations_on_team_id_and_alias", unique: true, using: :btree
+  add_index "slack_integrations", ["service_id"], name: "index_slack_integrations_on_service_id", using: :btree
 
   create_table "snippets", force: :cascade do |t|
     t.string "title"
@@ -1846,7 +1894,9 @@ ActiveRecord::Schema.define(version: 20170706151212) do
   add_foreign_key "events", "projects", name: "fk_0434b48643", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
+  add_foreign_key "geo_event_log", "geo_repository_renamed_events", column: "repository_renamed_event_id", name: "fk_86c84214ec", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
+  add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
@@ -1861,6 +1911,7 @@ ActiveRecord::Schema.define(version: 20170706151212) do
   add_foreign_key "labels", "projects", name: "fk_7de4989a69", on_delete: :cascade
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
+  add_foreign_key "merge_request_diff_commits", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diffs", "merge_requests", name: "fk_8483f3258f", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
@@ -1899,6 +1950,7 @@ ActiveRecord::Schema.define(version: 20170706151212) do
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
+  add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade

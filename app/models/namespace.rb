@@ -144,6 +144,7 @@ class Namespace < ActiveRecord::Base
     # So we basically we mute exceptions in next actions
     begin
       send_update_instructions
+      true
     rescue
       # Returning false does not rollback after_* transaction but gives
       # us information about failing some of tasks

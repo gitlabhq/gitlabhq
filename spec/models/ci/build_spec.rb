@@ -143,32 +143,6 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#downloadable_single_artifacts_file?' do
-    let(:build) { create(:ci_build, :artifacts, artifacts_file_store: store) }
-
-    subject { build.downloadable_single_artifacts_file? }
-
-    before do
-      expect_any_instance_of(Ci::Build).to receive(:artifacts_metadata?).and_call_original
-    end
-
-    context 'artifacts are stored locally' do
-      let(:store) { ObjectStoreUploader::LOCAL_STORE }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'artifacts are stored remotely' do
-      let(:store) { ObjectStoreUploader::REMOTE_STORE }
-
-      before do
-        stub_artifacts_object_storage
-      end
-
-      it { is_expected.to be_falsey }
-    end
-  end
-
   describe '#artifacts_expired?' do
     subject { build.artifacts_expired? }
 
@@ -908,7 +882,7 @@ describe Ci::Build, :models do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        allow(@merge_request).to receive(:commits_sha)
+        allow(@merge_request).to receive(:commit_shas)
           .and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
@@ -1043,13 +1017,17 @@ describe Ci::Build, :models do
 
   describe '#ref_slug' do
     {
-      'master'    => 'master',
-      '1-foo'     => '1-foo',
-      'fix/1-foo' => 'fix-1-foo',
-      'fix-1-foo' => 'fix-1-foo',
-      'a' * 63    => 'a' * 63,
-      'a' * 64    => 'a' * 63,
-      'FOO'       => 'foo'
+      'master'                => 'master',
+      '1-foo'                 => '1-foo',
+      'fix/1-foo'             => 'fix-1-foo',
+      'fix-1-foo'             => 'fix-1-foo',
+      'a' * 63                => 'a' * 63,
+      'a' * 64                => 'a' * 63,
+      'FOO'                   => 'foo',
+      '-' + 'a' * 61 + '-'    => 'a' * 61,
+      '-' + 'a' * 62 + '-'    => 'a' * 62,
+      '-' + 'a' * 63 + '-'    => 'a' * 62,
+      'a' * 62 + ' '          => 'a' * 62
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
@@ -1224,6 +1202,7 @@ describe Ci::Build, :models do
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
         { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
         { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false }
@@ -1512,6 +1491,16 @@ describe Ci::Build, :models do
       end
 
       it { is_expected.to include(deployment_variable) }
+    end
+
+    context 'when project has custom CI config path' do
+      let(:ci_config_path) { { key: 'CI_CONFIG_PATH', value: 'custom', public: true } }
+
+      before do
+        project.update(ci_config_path: 'custom')
+      end
+
+      it { is_expected.to include(ci_config_path) }
     end
 
     context 'returns variables in valid order' do

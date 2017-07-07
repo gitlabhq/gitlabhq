@@ -180,7 +180,7 @@ EOT
         let(:raw_patch) { @raw_diff_hash[:diff].encode(Encoding::ASCII_8BIT) }
 
         it 'encodes diff patch to UTF-8' do
-          expect(diff.diff.encoding).to eq(Encoding::UTF_8)
+          expect(diff.diff).to be_utf8
         end
       end
     end

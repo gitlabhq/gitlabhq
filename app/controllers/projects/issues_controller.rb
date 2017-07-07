@@ -230,7 +230,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue
     return @issue if defined?(@issue)
     # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    @noteable = @issue ||= @project.issues.find_by!(iid: params[:id])
 
     return render_404 unless can?(current_user, :read_issue, @issue)
 

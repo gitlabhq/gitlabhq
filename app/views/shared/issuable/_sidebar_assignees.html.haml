@@ -37,18 +37,20 @@
   - issuable.assignees.each do |assignee|
     = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }
 
-  - options = { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_ids][]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } }
-
+  - options = { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: current_user&.username, current_user: true, project_id: @project&.id, author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_ids][]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } }
   - title = 'Select assignee'
 
   - if issuable.is_a?(Issue)
     - unless issuable.assignees.any?
       = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil
+    - dropdown_options = issue_assignees_dropdown_options
+    - title = dropdown_options[:title]
     - options[:toggle_class] += ' js-multiselect js-save-user-data'
     - data = { field_name: "#{issuable.to_ability_name}[assignee_ids][]" }
     - data[:multi_select] = true
     - data['dropdown-title'] = title
-    - data['dropdown-header'] = 'Assignee'
+    - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
+    - data['max-select'] = dropdown_options[:data][:'max-select'] if dropdown_options[:data][:'max-select']
     - options[:data].merge!(data)
 
   = dropdown_tag(title, options: options)

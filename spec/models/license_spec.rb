@@ -212,9 +212,19 @@ describe License do
     end
 
     describe '.features_for_plan' do
-      it 'returns features for given plan' do
+      it 'returns features for starter plan' do
+        expect(described_class.features_for_plan('starter'))
+          .to include({ 'GitLab_MultipleIssueAssignees' => 1 })
+      end
+
+      it 'returns features for premium plan' do
         expect(described_class.features_for_plan('premium'))
-          .to include({ 'GitLab_DeployBoard' => 1, 'GitLab_FileLocks' => 1 })
+          .to include({ 'GitLab_MultipleIssueAssignees' => 1, 'GitLab_DeployBoard' => 1, 'GitLab_FileLocks' => 1 })
+      end
+
+      it 'returns features for early adopter plan' do
+        expect(described_class.features_for_plan('premium'))
+          .to include({ 'GitLab_DeployBoard' => 1, 'GitLab_FileLocks' => 1 } )
       end
 
       it 'returns empty Hash if no features for given plan' do
@@ -389,9 +399,9 @@ describe License do
 
       context 'with add-ons' do
         it 'returns all available add-ons' do
-          license = build_license_with_add_ons({ License::DEPLOY_BOARD_FEATURE => 1, License::FILE_LOCK_FEATURE => 2 })
+          license = build_license_with_add_ons({ License::DEPLOY_BOARD_FEATURE => 1, License::FILE_LOCKS_FEATURE => 2 })
 
-          expect(license.add_ons.keys).to include(License::DEPLOY_BOARD_FEATURE, License::FILE_LOCK_FEATURE)
+          expect(license.add_ons.keys).to include(License::DEPLOY_BOARD_FEATURE, License::FILE_LOCKS_FEATURE)
         end
 
         it 'can return details about a single add-on' do

@@ -35,7 +35,7 @@ describe TreeHelper do
     before do
       allow(helper).to receive(:can?).and_return(true)
       allow(helper).to receive(:current_user).and_return(user)
-      allow(project).to receive(:feature_available?).with(:file_lock) { true }
+      allow(project).to receive(:feature_available?).with(:file_locks) { true }
 
       project.reload
     end

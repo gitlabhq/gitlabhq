@@ -131,16 +131,6 @@ Feature: Project Source Browse Files
     Then I can see the new text file
 
   @javascript
-  Scenario: If I enter an illegal file name I see an error message
-    Given I click on "New file" link in repo
-    And I fill the new file name with an illegal name
-    And I edit code
-    And I fill the commit message
-    And I click on "Commit changes"
-    Then I am on the new file page
-    And I see "Path can contain only..."
-
-  @javascript
   Scenario: I can create file with a directory name
     Given I click on "New file" link in repo
     And I fill the new file name with a new directory

@@ -1,38 +1,91 @@
 # Push Rules
 
-Sometimes you need additional control over pushes to your repository.
-GitLab already offers [protected branches][protected-branches].
-But there are cases when you need some specific rules like preventing git tag removal or enforcing a special format for commit messages.
-GitLab Enterprise Edition offers a user-friendly interface for such cases.
+> Available in [GitLab Enterprise Edition Starter][ee].
 
-Push Rules are defined per project so you can have different rules applied to different projects depending on your needs.
-Push Rules settings can be found at Project settings -> Push Rules page.
+Gain additional control over pushes to your repository.
 
-## How to use
+## Overview
+
+GitLab already offers [protected branches][protected-branches], but there are
+cases when you need some specific rules like preventing git tag removal or
+enforcing a special format for commit messages.
+
+Push rules are essentially [pre-receive Git hooks][hooks] that are easy to
+enable in a user-friendly interface. They are defined globally if you are an
+admin or per project so you can have different rules applied to different
+projects depending on your needs.
+
+## Use cases
+
+Every push rule could have its own use case, but let's consider some examples.
+
+### Commit messages with a specific reference
 
 Let's assume you have the following requirements for your workflow:
 
-* every commit should reference a JIRA issue. For example: `Refactored css. Fixes JIRA-123.`
-* users should not be able to remove git tags with `git push`
+- every commit should reference a JIRA issue, for example: `Refactored css. Fixes JIRA-123.`
+- users should not be able to remove git tags with `git push`
 
-All you need to do is write simple regular expression that requires mention of a JIRA issue in a commit message.
-It can be something like this `/JIRA\-\d+/`.
-Just paste regular expression into the commit message textfield (without start and ending slash) and save changes.
-See the screenshot below:
+All you need to do is write a simple regular expression that requires the mention
+of a JIRA issue in the commit message, like `JIRA\-\d+`.
 
-![screenshot](push_rules.png)
+Now when a user tries to push a commit with a message `Bugfix`, their push will
+be declined. Only pushing commits with messages like `Bugfix according to JIRA-123`
+will be accepted.
 
-Now when a user tries to push a commit like `Bugfix` - their push will be declined.
-Only pushing commits with messages like `Bugfix according to JIRA-123` will be accepted.
+### Restrict branch names
 
+Let's assume there's a strictly policy for branch names in your company, and
+you want the branches to start with a certain name because you have different
+GitLab CI jobs (`feature`, `hotfix`, `docker`, `android`, etc.) that rely on the
+branch name.
+
+Your developers however, don't always remember that policy, so they push
+various branches and CI pipelines do not work as expected. By restricting the
+branch names globally in Push Rules, you can now sleep without the anxiety
+of your developers' mistakes. Every branch that doesn't match your push rule
+will get rejected.
+
+## Enabling push rules
+
+>**Note:**
+GitLab administrators can set push rules globally under
+**Admin area > Push Rules** that all new projects will inherit. You can later
+override them in a project's settings.
+
+1. Navigate to your project's **Settings > Repository** and expand **Push Rules**
+1. Set the rule you want
+1. Click **Save Push Rules** for the changes to take effect
+
+The following options are available.
+
+| Push rule | GitLab version | Description |
+| --------- | :------------: | ----------- |
+| Removal of tags with `git push` | 7.10 | Forbid users to remove git tags with `git push`. Tags will still be able to be deleted through the web UI. |
+| Check whether author is a GitLab user | 7.10 | Restrict commits by author (email) to existing GitLab users. |
+| Prevent committing secrets to Git | 8.12 | GitLab will reject any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
+| Restrict by commit message | 7.10 | Only commit messages that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any commit message. |
+| Restrict by branch name | 9.3 | Only branch names that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any branch name. |
+| Restrict by commit author's email | 7.10 | Only commit author's email that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any email. |
+| Prohibited file names | 7.10 | Any committed filenames that match this Ruby regular expression are not allowed to be pushed. Leave empty to allow any filenames. |
+| Maximum file size | 7.12 | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. |
+
+>**Tip:**
+You can check your regular expressions at <http://rubular.com>.
 
 ## Prevent pushing secrets to the repository
 
-You can turn on a predefined blacklist of files which won't be allowed to be pushed to a repository.
+> [Introduced][ee-385] in [GitLab Enterprise Edition Starter][ee] 8.12.
 
-By selecting the checkbox *Prevent committing secrets to Git*, GitLab prevents pushes to the repository when a file matches a regular expression as read from `lib/gitlab/checks/files_blacklist.yml` (make sure you are at the right branch as your GitLab version when viewing this file).
+You can turn on a predefined blacklist of files which won't be allowed to be
+pushed to a repository.
 
-Below is the list of what will be rejected by these regular expressions :
+By selecting the checkbox *Prevent committing secrets to Git*, GitLab prevents
+pushes to the repository when a file matches a regular expression as read from
+[`files_blacklist.yml`][list] (make sure you are at the right branch
+as your GitLab version when viewing this file).
+
+Below is an example list of what will be rejected by these regular expressions:
 
 ```shell
 #####################
@@ -89,7 +142,10 @@ private.key
 #####################
 pry.history
 bash_history
-
 ```
 
-[protected-branches]: https://docs.gitlab.com/ee/user/project/protected_branches.html "Protected Branches documentation"
+[protected-branches]: ../user/project/protected_branches.md
+[ee-385]: https://gitlab.com/gitlab-org/gitlab-ee/issues/385
+[list]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/checks/files_blacklist.yml
+[hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
+[ee]: https://about.gitlab.com/gitlab-ee/

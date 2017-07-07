@@ -36,6 +36,10 @@ module EE
       has_many :remote_mirrors, inverse_of: :project
       has_many :path_locks
 
+      has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
+
+      has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
+
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
       scope :mirrors_to_sync, -> do
@@ -424,6 +428,21 @@ module EE
       super && feature_available?(:fast_forward_merge)
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
+
+    def rename_repo
+      raise NotImplementedError unless defined?(super)
+
+      super
+
+      path_was = previous_changes['path'].first
+      old_path_with_namespace = File.join(namespace.full_path, path_was)
+
+      ::Geo::RepositoryRenamedEventStore.new(
+        self,
+        old_path: path_was,
+        old_path_with_namespace: old_path_with_namespace
+      ).create
+    end
 
     private
 

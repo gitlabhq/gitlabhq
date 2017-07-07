@@ -92,7 +92,10 @@ merge_requests:
 - head_pipeline
 merge_request_diff:
 - merge_request
+- merge_request_diff_commits
 - merge_request_diff_files
+merge_request_diff_commits:
+- merge_request_diff
 merge_request_diff_files:
 - merge_request_diff
 pipelines:
@@ -190,6 +193,7 @@ project:
 - pipelines_email_service
 - mattermost_slash_commands_service
 - slack_slash_commands_service
+- gitlab_slack_application_service
 - irker_service
 - pivotaltracker_service
 - prometheus_service
