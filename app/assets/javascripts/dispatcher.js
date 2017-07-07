@@ -322,7 +322,7 @@ import PerformanceBar from './performance_bar';
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:settings:members:show':
+        case 'projects:project_members:index':
           new gl.MemberExpirationDate('.js-access-expiration-date-groups');
           new GroupsSelect();
           new gl.MemberExpirationDate();

@@ -24,6 +24,14 @@
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
   .form-group
     .col-md-9
+      %label.label-light
+        #{ s_('PipelineSchedules|Variables') }
+    %ul.js-pipeline-variable-list.pipeline-variable-list
+      - @schedule.variables.each do |variable|
+        = render 'variable_row', id: variable.id, key: variable.key, value: variable.value
+      = render 'variable_row'
+  .form-group
+    .col-md-9
       = f.label  :active, s_('PipelineSchedules|Activated'), class: 'label-light'
       %div
         = f.check_box :active, required: false, value: @schedule.active?

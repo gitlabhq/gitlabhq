@@ -431,22 +431,6 @@ describe QuickActions::InterpretService, services: true do
       end
     end
 
-    context 'reassign command' do
-      let(:content) { '/reassign' }
-
-      context 'Issue' do
-        it 'reassigns user if content contains /reassign @user' do
-          user = create(:user)
-
-          issue.update(assignee_ids: [developer.id])
-
-          _, updates = service.execute("/reassign @#{user.username}", issue)
-
-          expect(updates).to eq(assignee_ids: [user.id])
-        end
-      end
-    end
-
     it_behaves_like 'milestone command' do
       let(:content) { "/milestone %#{milestone.title}" }
       let(:issuable) { issue }

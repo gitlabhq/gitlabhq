@@ -56,6 +56,15 @@ module Gitlab
         entry
       end
 
+      def commit_count(ref)
+        request = Gitaly::CountCommitsRequest.new(
+          repository: @gitaly_repo,
+          revision: ref
+        )
+
+        GitalyClient.call(@repository.storage, :commit_service, :count_commits, request).count
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})

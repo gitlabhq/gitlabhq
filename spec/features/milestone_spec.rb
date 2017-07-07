@@ -1,10 +1,12 @@
 require 'rails_helper'
 
 feature 'Milestone', feature: true do
-  let(:project) { create(:empty_project, :public) }
+  let(:group) { create(:group, :public) }
+  let(:project) { create(:empty_project, :public, namespace: group) }
   let(:user)   { create(:user) }
 
   before do
+    create(:group_member, group: group, user: user)
     project.team << [user, :master]
     gitlab_sign_in(user)
   end
@@ -37,8 +39,8 @@ feature 'Milestone', feature: true do
     end
   end
 
-  feature 'Open a milestone with an existing title' do
-    scenario 'displays validation message' do
+  feature 'Open a project milestone with an existing title' do
+    scenario 'displays validation message when there is a project milestone with same title' do
       milestone = create(:milestone, project: project, title: 8.7)
 
       visit new_project_milestone_path(project)
@@ -47,7 +49,20 @@ feature 'Milestone', feature: true do
       end
       find('input[name="commit"]').click
 
-      expect(find('.alert-danger')).to have_content('Title has already been taken')
+      expect(find('.alert-danger')).to have_content('already being used for another group or project milestone.')
+    end
+
+    scenario 'displays validation message when there is a group milestone with same title' do
+      milestone = create(:milestone, project_id: nil, group: project.group, title: 8.7)
+
+      visit new_group_milestone_path(project.group)
+
+      page.within '.milestone-form' do
+        fill_in "milestone_title", with: milestone.title
+      end
+      find('input[name="commit"]').click
+
+      expect(find('.alert-danger')).to have_content('already being used for another group or project milestone.')
     end
   end
 end
