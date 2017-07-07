@@ -301,10 +301,6 @@ module Ci
       artifacts_metadata?
     end
 
-    def downloadable_single_artifacts_file?
-      artifacts_metadata? && artifacts_file.file_storage?
-    end
-
     def artifacts_metadata?
       artifacts? && artifacts_metadata.exists?
     end

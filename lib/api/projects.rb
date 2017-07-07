@@ -71,6 +71,7 @@ module API
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
       end
 
+<<<<<<< HEAD
       params :create_params do
         optional :namespace_id, type: Integer, desc: 'Namespace ID for the new project. Default to the user namespace.'
         optional :import_url, type: String, desc: 'URL from which the project is imported'
@@ -91,6 +92,32 @@ module API
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
         present paginate(projects), options
+=======
+        def present_projects(options = {})
+          projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+          projects = reorder_projects(projects)
+          projects = projects.with_statistics if params[:statistics]
+          projects = projects.with_issues_enabled if params[:with_issues_enabled]
+          projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+
+          if current_user
+            projects = projects.includes(:route, :taggings, namespace: :route)
+            project_members = current_user.project_members
+            group_members = current_user.group_members
+          end
+
+          options = options.reverse_merge(
+            with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+            statistics: params[:statistics],
+            project_members: project_members,
+            group_members: group_members,
+            current_user: current_user
+          )
+          options[:with] = Entities::BasicProjectDetails if params[:simple]
+
+          present paginate(projects), options
+        end
+>>>>>>> upstream/master
       end
     end
 

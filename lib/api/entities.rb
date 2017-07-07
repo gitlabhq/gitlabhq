@@ -573,12 +573,20 @@ module API
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
-          project.project_members.find_by(user_id: options[:current_user].id)
+          if options.key?(:project_members)
+            (options[:project_members] || []).find { |member| member.source_id == project.id }
+          else
+            project.project_members.find_by(user_id: options[:current_user].id)
+          end
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
-            project.group.group_members.find_by(user_id: options[:current_user].id)
+            if options.key?(:group_members)
+              (options[:group_members] || []).find { |member| member.source_id == project.namespace_id }
+            else
+              project.group.group_members.find_by(user_id: options[:current_user].id)
+            end
           end
         end
       end
