@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170627211700) do
+ActiveRecord::Schema.define(version: 20170703102400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1341,6 +1341,7 @@ ActiveRecord::Schema.define(version: 20170627211700) do
     t.string "import_jid"
     t.integer "cached_markdown_version"
     t.datetime "last_repository_updated_at"
+    t.string "ci_config_path"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

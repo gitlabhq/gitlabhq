@@ -337,8 +337,7 @@
 }
 
 .text-metric {
-  font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .selected-metric-line {
@@ -382,10 +381,6 @@
   width: 100%;
   padding: 0;
   padding-bottom: 100%;
-
-  .text-metric-bold {
-    font-weight: 600;
-  }
 }
 
 .prometheus-svg-container > svg {
@@ -400,11 +395,15 @@
     stroke-width: 0;
   }
 
+  .text-metric-bold {
+    font-weight: 600;
+  }
+
   .label-axis-text,
   .text-metric-usage {
     fill: $black;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .legend-axis-text {
@@ -412,7 +411,20 @@
   }
 
   .tick > text {
-    font-size: 14px;
+    font-size: 12px;
+  }
+
+  .text-metric-title {
+    font-size: 12px;
+  }
+
+  .y-label-text,
+  .x-label-text {
+    fill: $gray-darkest;
+  }
+
+  .axis-tick {
+    stroke: $gray-darker;
   }
 
   @media (max-width: $screen-sm-max) {
@@ -425,5 +437,11 @@
     .tick > text {
       font-size: 8px;
     }
+  }
+}
+
+.prometheus-row {
+  h5 {
+    font-size: 16px;
   }
 }

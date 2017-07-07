@@ -92,7 +92,7 @@
 @mixin maintain-sidebar-dimensions {
   display: block;
   width: $gutter-width;
-  padding: 10px 20px;
+  padding: 10px 0;
 }
 
 .issues-bulk-update.right-sidebar {

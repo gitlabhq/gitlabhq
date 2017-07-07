@@ -188,9 +188,6 @@ class Project < ActiveRecord::Base
   has_many :deployments
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
 
-  has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_project_id
-
-  has_many :source_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :project_id
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
@@ -206,6 +203,11 @@ class Project < ActiveRecord::Base
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
+  validates :ci_config_path,
+    format: { without: /\.{2}/,
+              message: 'cannot include directory traversal.' },
+    length: { maximum: 255 },
+    allow_blank: true
   validates :name,
     presence: true,
     length: { maximum: 255 },
@@ -536,6 +538,11 @@ class Project < ActiveRecord::Base
     import_data&.destroy
   end
 
+  def ci_config_path=(value)
+    # Strip all leading slashes so that //foo -> foo
+    super(value&.sub(%r{\A/+}, '')&.delete("\0"))
+  end
+
   def import_url=(value)
     return super(value) unless Gitlab::UrlSanitizer.valid?(value)
 
@@ -830,7 +837,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
+    @ci_service ||= ci_services.find_by(active: true)
   end
 
   def deployment_services
@@ -838,7 +845,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_service
-    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
+    @deployment_service ||= deployment_services.find_by(active: true)
   end
 
   def monitoring_services
@@ -846,7 +853,7 @@ class Project < ActiveRecord::Base
   end
 
   def monitoring_service
-    @monitoring_service ||= monitoring_services.reorder(nil).find_by(active: true)
+    @monitoring_service ||= monitoring_services.find_by(active: true)
   end
 
   def jira_tracker?
@@ -1030,7 +1037,8 @@ class Project < ActiveRecord::Base
       namespace: namespace.name,
       visibility_level: visibility_level,
       path_with_namespace: path_with_namespace,
-      default_branch: default_branch
+      default_branch: default_branch,
+      ci_config_path: ci_config_path
     }
 
     # Backward compatibility
