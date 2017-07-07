@@ -27,6 +27,12 @@ module API
           render_api_error!(errors, 400)
         end
 
+        def check_sha_param!(params, merge_request)
+          if params[:sha] && merge_request.diff_head_sha != params[:sha]
+            render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
+          end
+        end
+
         def issue_entity(project)
           if project.has_external_issue_tracker?
             Entities::ExternalIssue
@@ -228,9 +234,7 @@ module API
 
         render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds)
 
-        if params[:sha] && merge_request.diff_head_sha != params[:sha]
-          render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
-        end
+        check_sha_param!(params, merge_request)
 
         if params[:squash] && merge_request.project.feature_available?(:merge_request_squash)
           merge_request.update(squash: params[:squash])
@@ -275,6 +279,9 @@ module API
       # Examples:
       #   GET /projects/:id/merge_requests/:merge_request_iid/approvals
       #
+      desc "List a merge request's approvals" do
+        success Entities::MergeRequestApprovals
+      end
       get ':id/merge_requests/:merge_request_iid/approvals' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -289,10 +296,18 @@ module API
       # Examples:
       #   POST /projects/:id/merge_requests/:merge_request_iid/approve
       #
+      desc 'Approve a merge request' do
+        success Entities::MergeRequestApprovals
+      end
+      params do
+        optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
+      end
       post ':id/merge_requests/:merge_request_iid/approve' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         unauthorized! unless merge_request.can_approve?(current_user)
+
+        check_sha_param!(params, merge_request)
 
         ::MergeRequests::ApprovalService
           .new(user_project, current_user)
@@ -301,6 +316,9 @@ module API
         present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
       end
 
+      desc 'Remove an approval from a merge request' do
+        success Entities::MergeRequestApprovals
+      end
       post ':id/merge_requests/:merge_request_iid/unapprove' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
