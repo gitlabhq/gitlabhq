@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 20170724184243) do
     t.boolean "prometheus_metrics_enabled", default: false, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
+    t.integer "performance_bar_allowed_group_id"
   end
 
   create_table "audit_events", force: :cascade do |t|

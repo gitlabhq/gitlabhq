@@ -1,0 +1,4 @@
+---
+title: "#20628 Enable implicit grant in GitLab as OAuth Provider"
+merge_request: 12384
+author: Mateusz Pytel

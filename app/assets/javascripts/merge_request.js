@@ -4,6 +4,7 @@
 import 'vendor/jquery.waitforimages';
 import TaskList from './task_list';
 import './merge_request_tabs';
+import IssuablesHelper from './helpers/issuables_helper';
 
 (function() {
   this.MergeRequest = (function() {
@@ -21,9 +22,12 @@ import './merge_request_tabs';
           return _this.showAllCommits();
         };
       })(this));
+
       this.initTabs();
       this.initMRBtnListeners();
       this.initCommitMessageListeners();
+      this.closeReopenReportToggle = IssuablesHelper.initCloseReopenReport();
+
       if ($("a.btn-close").length) {
         this.taskList = new TaskList({
           dataType: 'merge_request',
@@ -64,11 +68,15 @@ import './merge_request_tabs';
         if (shouldSubmit && $this.data('submitted')) {
           return;
         }
+
+        if (this.closeReopenReportToggle) this.closeReopenReportToggle.setDisable();
+
         if (shouldSubmit) {
           if ($this.hasClass('btn-comment-and-close') || $this.hasClass('btn-comment-and-reopen')) {
             e.preventDefault();
             e.stopImmediatePropagation();
-            return _this.submitNoteForm($this.closest('form'), $this);
+
+            _this.submitNoteForm($this.closest('form'), $this);
           }
         }
       });

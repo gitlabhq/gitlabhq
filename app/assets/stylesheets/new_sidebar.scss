@@ -31,6 +31,12 @@ $new-sidebar-width: 220px;
   &:hover {
     background-color: $border-color;
   }
+
+  .project-title,
+  .group-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .settings-avatar {
