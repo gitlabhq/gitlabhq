@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
   include TokenAuthenticatable
   include IgnorableColumn
   include FeatureGate
+  include CreatedAtFilterable
 
   prepend EE::GeoAwareAvatar
   prepend EE::User
