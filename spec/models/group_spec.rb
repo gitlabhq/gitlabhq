@@ -466,13 +466,13 @@ describe Group, models: true do
       it_behaves_like 'ref is protected'
     end
 
-    context 'when group has children' do
-      let!(:group_child) { create(:group, parent: group) }
-      let!(:variable_child) { create(:ci_group_variable, group: group_child) }
-      let!(:group_child_3) { create(:group, parent: group_child_2) }
-      let!(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
-      let!(:group_child_2) { create(:group, parent: group_child) }
-      let!(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
+    context 'when group has children', :postgresql do
+      let(:group_child)      { create(:group, parent: group) }
+      let(:group_child_2)    { create(:group, parent: group_child) }
+      let(:group_child_3)    { create(:group, parent: group_child_2) }
+      let(:variable_child)   { create(:ci_group_variable, group: group_child) }
+      let(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
+      let(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
 
       it 'returns all variables belong to the group and parent groups' do
         expected_array1 = [protected_variable, secret_variable]
