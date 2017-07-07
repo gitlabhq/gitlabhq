@@ -5,6 +5,7 @@ describe Ci::PipelineSchedule, models: true do
   it { is_expected.to belong_to(:owner) }
 
   it { is_expected.to have_many(:pipelines) }
+  it { is_expected.to have_many(:variables) }
 
   it { is_expected.to respond_to(:ref) }
   it { is_expected.to respond_to(:cron) }
@@ -116,5 +117,21 @@ describe Ci::PipelineSchedule, models: true do
         end
       end
     end
+  end
+
+  describe '#job_variables' do
+    let!(:pipeline_schedule) { create(:ci_pipeline_schedule) }
+
+    let!(:pipeline_schedule_variables) do
+      create_list(:ci_pipeline_schedule_variable, 2, pipeline_schedule: pipeline_schedule)
+    end
+
+    subject { pipeline_schedule.job_variables }
+
+    before do
+      pipeline_schedule.reload
+    end
+
+    it { is_expected.to contain_exactly(*pipeline_schedule_variables.map(&:to_runner_variable)) }
   end
 end

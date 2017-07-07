@@ -1446,6 +1446,23 @@ describe Ci::Build, :models do
       it { is_expected.to include(predefined_trigger_variable) }
     end
 
+    context 'when a job was triggered by a pipeline schedule' do
+      let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+
+      let!(:pipeline_schedule_variable) do
+        create(:ci_pipeline_schedule_variable,
+          key: 'SCHEDULE_VARIABLE_KEY',
+          pipeline_schedule: pipeline_schedule)
+      end
+
+      before do
+        pipeline_schedule.pipelines << pipeline
+        pipeline_schedule.reload
+      end
+
+      it { is_expected.to include(pipeline_schedule_variable.to_runner_variable) }
+    end
+
     context 'when yaml_variables are undefined' do
       before do
         build.yaml_variables = nil
