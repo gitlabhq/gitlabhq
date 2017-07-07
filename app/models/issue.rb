@@ -10,6 +10,7 @@ class Issue < ActiveRecord::Base
   include FasterCacheKeys
   include RelativePositioning
   include IgnorableColumn
+  include CreatedAtFilterable
 
   ignore_column :position
 

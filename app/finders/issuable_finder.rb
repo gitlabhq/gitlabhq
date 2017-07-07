@@ -19,7 +19,7 @@
 #     iids: integer[]
 #
 class IssuableFinder
-  include Gitlab::Database::CreatedAtFilter
+  include CreatedAtFilter
   
   NONE = '0'.freeze
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
@@ -34,6 +34,7 @@ class IssuableFinder
   def execute
     items = init_collection
     items = by_scope(items)
+    items = by_created_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_search(items)
@@ -44,7 +45,6 @@ class IssuableFinder
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
-    items = by_created_at(items)
 
     # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
     items = by_project(items)

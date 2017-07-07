@@ -14,7 +14,7 @@
 #     external: boolean
 #
 class UsersFinder
-  include Gitlab::Database::CreatedAtFilter
+  include CreatedAtFilter
 
   attr_accessor :current_user, :params
 
