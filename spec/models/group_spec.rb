@@ -506,15 +506,21 @@ describe Group, models: true do
       end
     end
 
-    context 'when group has children' do
-      let!(:variable) { create(:ci_group_variable, group: group) }
-      let!(:group_child) { create(:group, parent: group) }
-      let!(:variable_child) { create(:ci_group_variable, group: group_child) }
-
-      subject { group_child.secret_variables_for('ref', project) }
+    context 'when group has children', :postgresql do
+      let(:group_child)      { create(:group, parent: group) }
+      let(:group_child_2)    { create(:group, parent: group_child) }
+      let(:group_child_3)    { create(:group, parent: group_child_2) }
+      let(:variable_child)   { create(:ci_group_variable, group: group_child) }
+      let(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
+      let(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
 
       it 'returns all variables belong to the group and parent groups' do
-        is_expected.to eq([variable, variable_child])
+        expected_array1 = [protected_variable, secret_variable]
+        expected_array2 = [variable_child, variable_child_2, variable_child_3]
+        got_array = group_child_3.secret_variables_for('ref', project).to_a
+
+        expect(got_array.shift(2)).to contain_exactly(*expected_array1)
+        expect(got_array).to eq(expected_array2)
       end
     end
   end
