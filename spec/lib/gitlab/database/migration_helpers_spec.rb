@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe Gitlab::Database::MigrationHelpers, lib: true do
   let(:model) do
-    ActiveRecord::Migration.new.extend(described_class)
+    ActiveRecord::Migration.new.extend(
+      Gitlab::Database::MigrationHelpers
+    )
   end
 
   before do
@@ -262,8 +264,7 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
   describe '#update_column_in_batches' do
     context 'when running outside of a transaction' do
       before do
-        expect(model).to receive(:transaction_open?)
-          .at_least(:once).and_return(false)
+        expect(model).to receive(:transaction_open?).and_return(false)
 
         create_list(:empty_project, 5)
       end
@@ -308,81 +309,6 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
         expect do
           model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
         end.to raise_error(RuntimeError)
-      end
-    end
-  end
-
-  describe '#walk_table_in_batches' do
-    context 'when running outside of a transaction' do
-      before do
-        expect(model).to receive(:transaction_open?).and_return(false)
-
-        create_list(:empty_project, 6)
-      end
-
-      it 'yields for each batch' do
-        expect { |b| model.walk_table_in_batches(:projects, of: 2, &b) }
-          .to yield_control.exactly(3).times
-      end
-
-      it 'yields successive ranges' do
-        expect { |b| model.walk_table_in_batches(:projects, of: 2, &b) }
-          .to yield_successive_args([1, Integer, Integer],
-                                    [2, Integer, Integer],
-                                    [3, Integer, 0])
-      end
-
-      context 'when a scope is provided' do
-        it 'limits the scope of the statement provided inside the block' do
-          first_id = Project.first.id
-          scope = ->(table, query) { query.where(table[:id].eq(first_id)) }
-
-          expect { |b| model.walk_table_in_batches(:projects, of: 1, scope: scope, &b) }
-            .to yield_control.exactly(:once)
-        end
-      end
-    end
-
-    context 'when running inside the transaction' do
-      it 'raises RuntimeError' do
-        expect(model).to receive(:transaction_open?).and_return(true)
-
-        expect { model.walk_table_in_batches(:projects, of: 2) }
-          .to raise_error(RuntimeError)
-      end
-    end
-  end
-
-  describe '#execute_in_batches' do
-    context 'when running outside of a transaction' do
-      before do
-        expect(model).to receive(:transaction_open?)
-          .at_least(:once).and_return(false)
-
-        create_list(:empty_project, 6)
-      end
-
-      context 'when a scope is provided' do
-        it 'limits the scope of the statement provided inside the block' do
-          first_id = Project.first.id
-          scope = ->(table, query) { query.where(table[:id].eq(first_id)) }
-
-          model.execute_in_batches(:projects, scope: scope) do |table|
-            Arel::UpdateManager.new(ActiveRecord::Base)
-              .table(table).set([[table[:archived], true]])
-          end
-
-          expect(Project.where(archived: true).count).to eq(1)
-        end
-      end
-    end
-
-    context 'when running inside the transaction' do
-      it 'raises RuntimeError' do
-        expect(model).to receive(:transaction_open?).and_return(true)
-
-        expect { model.execute_in_batches(:projects)}
-          .to raise_error(RuntimeError)
       end
     end
   end

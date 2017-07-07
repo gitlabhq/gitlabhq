@@ -221,19 +221,17 @@ module Gitlab
       # make things _more_ complex).
       #
       # rubocop: disable Metrics/AbcSize
-      def update_column_in_batches(table, column, value, &scope)
+      def update_column_in_batches(table, column, value)
         if transaction_open?
-          raise <<-MSG
-            update_column_in_batches helper can not be run inside a transaction.
-            You can disable transactions by calling `disable_ddl_transaction!`
-            method in the body of your migration class.
-          MSG
+          raise 'update_column_in_batches can not be run inside a transaction, ' \
+            'you can disable transactions by calling disable_ddl_transaction! ' \
+            'in the body of your migration class'
         end
 
-        table_arel = Arel::Table.new(table)
+        table = Arel::Table.new(table)
 
-        count_arel = table_arel.project(Arel.star.count.as('count'))
-        count_arel = yield table_arel, count_arel if block_given?
+        count_arel = table.project(Arel.star.count.as('count'))
+        count_arel = yield table, count_arel if block_given?
 
         total = exec_query(count_arel.to_sql).to_hash.first['count'].to_i
 
@@ -248,103 +246,37 @@ module Gitlab
         # rows for GitLab.com.
         batch_size = max_size if batch_size > max_size
 
-        execute_in_batches(table, of: batch_size, scope: scope) do
-          Arel::UpdateManager.new(ActiveRecord::Base)
-            .table(table_arel)
-            .set([[table_arel[column], value]])
-        end
-      end
-
-      ##
-      # Iterates a table and executes a block for given range.
-      #
-      # Yields batch index, start and stop ids.
-      #
-      # Optional `scope` keyword argument is a closure that is meant to limit
-      # the scope the statement is going to be applied onto.
-      #
-      # Arel statement this helper will execute must be defined inside the
-      # block.
-      #
-      # Example:
-      #
-      # scope = ->(table, query) { query.where(table[:id].gt(100) }
-      #
-      # walk_table_in_batches(:table, of: 10, scope: scope) do |index, start, stop|
-      #   # do something here
-      # end
-      #
-      def walk_table_in_batches(table, of: 1000, scope: nil)
-        if transaction_open?
-          raise <<-MSG
-            walk_table_in_batches helper can not be run inside a transaction.
-            You can disable transactions by calling `disable_ddl_transaction!`
-            method in the body of your migration class.
-          MSG
-        end
-
-        table = Arel::Table.new(table)
-
         start_arel = table.project(table[:id]).order(table[:id].asc).take(1)
-        start_arel = scope.call(table, start_arel) if scope
-        start_id = exec_query(start_arel.to_sql).to_hash.first.to_h['id'].to_i
+        start_arel = yield table, start_arel if block_given?
+        start_id = exec_query(start_arel.to_sql).to_hash.first['id'].to_i
 
-        1.step do |batch|
+        loop do
           stop_arel = table.project(table[:id])
             .where(table[:id].gteq(start_id))
             .order(table[:id].asc)
             .take(1)
-            .skip(of)
+            .skip(batch_size)
 
-          stop_arel = scope.call(table, stop_arel) if scope
-          stop_id = exec_query(stop_arel.to_sql)
-            .to_hash.first.to_h['id'].to_i
+          stop_arel = yield table, stop_arel if block_given?
+          stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          yield batch, start_id, stop_id
+          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
+            .table(table)
+            .set([[table[column], value]])
+            .where(table[:id].gteq(start_id))
 
-          stop_id.zero? ? break : start_id = stop_id
-        end
-      end
+          if stop_row
+            stop_id = stop_row['id'].to_i
+            start_id = stop_id
+            update_arel = update_arel.where(table[:id].lt(stop_id))
+          end
 
-      ##
-      # Executes an SQL statement in batches, created by Arel manager.
-      #
-      # Optional `scope` keyword argument is a closure that is meant to limit
-      # the scope the statement is going to be applied onto.
-      #
-      # Arel statement this helper will execute must be defined inside the
-      # block.
-      #
-      # Example:
-      #
-      # scope = ->(table, query) { query.where(table[:id].gt(100) }
-      #
-      # execute_in_batches(:table, of: 10000, scope: scope) do |table|
-      #   Arel::UpdateManager.new(ActiveRecord::Base)
-      #     .table(table)
-      #     .set([[table[:field], 101]])
-      # end
-      #
-      def execute_in_batches(table, of: 1000, scope: nil)
-        if transaction_open?
-          raise <<-MSG
-            execute_in_batches helper can not be run inside a transaction.
-            You can disable transactions by calling `disable_ddl_transaction!`
-            method in the body of your migration class.
-          MSG
-        end
+          update_arel = yield table, update_arel if block_given?
 
-        raise ArgumentError, 'This method requires a block!' unless block_given?
+          execute(update_arel.to_sql)
 
-        table_arel = Arel::Table.new(table)
-
-        walk_table_in_batches(table, of: of, scope: scope) do |_batch, start_id, stop_id|
-          exec_arel = yield table_arel
-          exec_arel = exec_arel.where(table_arel[:id].gteq(start_id))
-          exec_arel = exec_arel.where(table_arel[:id].lt(stop_id)) if stop_id.nonzero?
-          exec_arel = scope.call(table_arel, exec_arel) if scope
-
-          execute(exec_arel.to_sql)
+          # There are no more rows left to update.
+          break unless stop_row
         end
       end
 
