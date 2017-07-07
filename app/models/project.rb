@@ -536,6 +536,11 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
+    remove_import_data
+  end
+
+  # This method is overriden in EE::Project model
+  def remove_import_data
     import_data&.destroy
   end
 
