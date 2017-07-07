@@ -1,6 +1,6 @@
 module Gitlab
   class UrlBuilder
-    include Gitlab::Routing.url_helpers
+    GitlabRoutingHelper.require_gitlab_routing(self)
     include GitlabRoutingHelper
     include ActionView::RecordIdentifier
 

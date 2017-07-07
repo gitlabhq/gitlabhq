@@ -4,7 +4,7 @@ module Gitlab
       # Base abstract class fore core status
       #
       class Core
-        include Gitlab::Routing
+        GitlabRoutingHelper.require_gitlab_routing(self)
         include Gitlab::Allowable
 
         attr_reader :subject, :user

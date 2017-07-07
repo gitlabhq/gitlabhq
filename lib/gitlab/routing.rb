@@ -2,10 +2,6 @@ module Gitlab
   module Routing
     extend ActiveSupport::Concern
 
-    included do
-      include Gitlab::Routing.url_helpers
-    end
-
     # Returns the URL helpers Module.
     #
     # This method caches the output as Rails' "url_helpers" method creates an

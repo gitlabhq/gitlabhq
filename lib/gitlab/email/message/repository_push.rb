@@ -4,7 +4,7 @@ module Gitlab
       class RepositoryPush
         attr_reader :author_id, :ref, :action
 
-        include Gitlab::Routing.url_helpers
+        GitlabRoutingHelper.require_gitlab_routing(self)
         include DiffHelper
 
         delegate :namespace, :name_with_namespace, to: :project, prefix: :project

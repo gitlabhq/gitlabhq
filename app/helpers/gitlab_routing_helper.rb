@@ -2,6 +2,16 @@
 module GitlabRoutingHelper
   extend ActiveSupport::Concern
 
+  def self.require_gitlab_routing(mod = nil)
+    @require_gitlab_routing ||= []
+
+    if mod
+      @require_gitlab_routing << mod
+    else
+      @require_gitlab_routing
+    end
+  end
+
   # Project
   def project_tree_path(project, ref = nil, *args)
     namespace_project_tree_path(project.namespace, project, ref || @ref || project.repository.root_ref, *args) # rubocop:disable Cop/ProjectPathHelper

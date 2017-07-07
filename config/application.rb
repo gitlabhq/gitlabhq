@@ -185,6 +185,10 @@ module Gitlab
 
       GitlabRoutingHelper.include project_url_helpers
       GitlabRoutingHelper.extend project_url_helpers
+
+      GitlabRoutingHelper.require_gitlab_routing.each do |mod|
+        mod.include Gitlab::Routing.url_helpers
+      end
     end
   end
 end

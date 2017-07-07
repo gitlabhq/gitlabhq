@@ -6,7 +6,7 @@ module Gitlab
       module Base
         extend ActiveSupport::Concern
 
-        include Gitlab::Routing
+        GitlabRoutingHelper.require_gitlab_routing(self)
         include Gitlab::Allowable
 
         attr_reader :subject

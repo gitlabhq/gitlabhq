@@ -1,5 +1,5 @@
 class JiraService < IssueTrackerService
-  include Gitlab::Routing.url_helpers
+  GitlabRoutingHelper.require_gitlab_routing(self)
 
   validates :url, url: true, presence: true, if: :activated?
   validates :api_url, url: true, allow_blank: true

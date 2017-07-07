@@ -1,7 +1,7 @@
 module Gitlab
   module Conflict
     class File
-      include Gitlab::Routing.url_helpers
+      GitlabRoutingHelper.require_gitlab_routing(self)
       include IconsHelper
 
       MissingResolution = Class.new(ResolutionError)

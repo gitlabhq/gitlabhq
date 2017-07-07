@@ -2,7 +2,7 @@ module RequestAwareEntity
   extend ActiveSupport::Concern
 
   included do
-    include Gitlab::Routing
+    GitlabRoutingHelper.require_gitlab_routing(self)
     include GitlabRoutingHelper
     include Gitlab::Allowable
   end

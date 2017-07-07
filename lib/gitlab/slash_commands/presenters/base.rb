@@ -2,7 +2,7 @@ module Gitlab
   module SlashCommands
     module Presenters
       class Base
-        include Gitlab::Routing.url_helpers
+        GitlabRoutingHelper.require_gitlab_routing(self)
 
         def initialize(resource = nil)
           @resource = resource
