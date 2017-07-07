@@ -19,6 +19,8 @@
 #     iids: integer[]
 #
 class IssuableFinder
+  include CreatedAtFilter
+  
   NONE = '0'.freeze
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
 
@@ -32,6 +34,7 @@ class IssuableFinder
   def execute
     items = init_collection
     items = by_scope(items)
+    items = by_created_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_search(items)
@@ -42,7 +45,6 @@ class IssuableFinder
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
-    items = by_created_at(items)
 
     # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
     items = by_project(items)
@@ -409,18 +411,6 @@ class IssuableFinder
 
   def by_non_archived(items)
     params[:non_archived].present? ? items.non_archived : items
-  end
-
-  def by_created_at(items)
-    if params[:created_after].present?
-      items = items.where(items.klass.arel_table[:created_at].gteq(params[:created_after]))
-    end
-
-    if params[:created_before].present?
-      items = items.where(items.klass.arel_table[:created_at].lteq(params[:created_before]))
-    end
-
-    items
   end
 
   def current_user_related?

@@ -163,6 +163,35 @@ describe API::Users do
 
         expect(response).to have_http_status(400)
       end
+
+      it "returns a user created before a specific date" do
+        user = create(:user, created_at: Date.new(2000, 1, 1))
+
+        get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['username']).to eq(user.username)
+      end
+
+      it "returns no users created before a specific date" do
+        create(:user, created_at: Date.new(2001, 1, 1))
+
+        get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.size).to eq(0)
+      end
+
+      it "returns users created before and after a specific date" do
+        user = create(:user, created_at: Date.new(2001, 1, 1))
+
+        get api("/users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['username']).to eq(user.username)
+      end
     end
   end
 
