@@ -51,8 +51,7 @@ describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
         expect(described_class::MIGRATION).to be_scheduled_migration(2.minutes, 1, 2)
         expect(described_class::MIGRATION).to be_scheduled_migration(2.minutes, 3, 3)
         expect(described_class::MIGRATION).to be_scheduled_migration(4.minutes, 4, 5)
-        expect(described_class::MIGRATION).to be_scheduled_migration(4.minutes, 6, 6)
-        expect(BackgroundMigrationWorker.jobs.size).to eq 4
+        expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end
   end
