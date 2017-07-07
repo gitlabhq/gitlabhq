@@ -1,0 +1,70 @@
+# Huang Tao <htve@outlook.com>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-15 21:59-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-07-06 11:10-0400\n"
+"Last-Translator: Huang Tao <htve@outlook.com>\n"
+"Language-Team: Chinese (China)\n"
+"Language: zh-CN\n"
+"X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "%d 条流水线"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "相关持续集成的图像集合"
+
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "最近30次提交花费的时间（分钟）"
+
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr "在帐户上创建个人访问令牌，以通过％{protocol}来拉取或推送。"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "创建个人访问令牌"
+
+msgid "Jobs for last month"
+msgstr "上个月的作业"
+
+msgid "Jobs for last week"
+msgstr "上个星期的作业"
+
+msgid "Jobs for last year"
+msgstr "去年的作业"
+
+msgid "PipelineCharts|Failed:"
+msgstr "失败："
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "总体统计"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "成功率："
+
+msgid "PipelineCharts|Successful:"
+msgstr "成功："
+
+msgid "PipelineCharts|Total:"
+msgstr "总计："
+
+msgid "Pipelines"
+msgstr "流水线"
+
+msgid "Pipelines charts"
+msgstr "流水线图表"
+
+msgid "Pipeline|all"
+msgstr "所有"
+
+msgid "Pipeline|success"
+msgstr "成功"
+
