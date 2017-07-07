@@ -52,10 +52,12 @@
   svg {
     display: block;
     margin: auto;
+  }
+}
 
-    @media (min-width: $screen-sm-max) {
-      width: 130%;
-    }
+@media (min-width: $screen-sm-max) {
+  .section-welcome .blank-state-icon svg {
+    width: 130%;
   }
 }
 
