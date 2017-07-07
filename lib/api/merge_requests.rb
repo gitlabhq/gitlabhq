@@ -41,7 +41,9 @@ module API
           args[:milestone_title] = args.delete(:milestone)
           args[:label_name] = args.delete(:labels)
 
-          merge_requests = MergeRequestsFinder.new(current_user, args).execute.inc_notes_with_associations
+          merge_requests = MergeRequestsFinder.new(current_user, args).execute
+                             .inc_notes_with_associations
+                             .preload(:target_project, :author, :assignee, :milestone, :merge_request_diff)
 
           merge_requests.reorder(args[:order_by] => args[:sort])
         end

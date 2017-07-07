@@ -14,7 +14,7 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :merge_request_diffs
   has_one :merge_request_diff,
-    -> { order('merge_request_diffs.id DESC') }
+    -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
 
   belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
 
