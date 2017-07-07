@@ -52,7 +52,7 @@ describe 'Issuables Close/Reopen/Report toggle', :feature do
 
     context 'when user has permission to update', :js do
       before do
-        visit namespace_project_issue_path(project.namespace, project, issuable)
+        visit project_issue_path(project, issuable)
       end
 
       it_behaves_like 'an issuable close/reopen/report toggle'
@@ -65,7 +65,7 @@ describe 'Issuables Close/Reopen/Report toggle', :feature do
       before do
         cant_project.add_guest(user)
 
-        visit namespace_project_issue_path(cant_project.namespace, cant_project, cant_issuable)
+        visit project_issue_path(cant_project, cant_issuable)
       end
 
       it 'only shows the `Report abuse` and `New issue` buttons' do
@@ -89,7 +89,7 @@ describe 'Issuables Close/Reopen/Report toggle', :feature do
 
     context 'when user has permission to update', :js do
       before do
-        visit namespace_project_merge_request_path(project.namespace, project, issuable)
+        visit project_merge_request_path(project, issuable)
       end
 
       it_behaves_like 'an issuable close/reopen/report toggle'
@@ -102,7 +102,7 @@ describe 'Issuables Close/Reopen/Report toggle', :feature do
       before do
         cant_project.add_reporter(user)
 
-        visit namespace_project_merge_request_path(cant_project.namespace, cant_project, cant_issuable)
+        visit project_merge_request_path(cant_project, cant_issuable)
       end
 
       it 'only shows a `Report abuse` button' do
