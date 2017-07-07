@@ -26,6 +26,8 @@ describe Boards::CreateService, services: true do
       end
 
       it 'does not create a new board' do
+        expect(service).to receive(:can_create_board?) { false }
+
         expect { service.execute }.not_to change(project.boards, :count)
       end
     end
