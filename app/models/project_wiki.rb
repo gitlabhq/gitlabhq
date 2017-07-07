@@ -70,6 +70,10 @@ class ProjectWiki
     !!repository.exists?
   end
 
+  def has_home_page?
+    !!find_page('home')
+  end
+
   # Returns an Array of Gitlab WikiPage instances or an
   # empty Array if this Wiki has no pages.
   def pages
