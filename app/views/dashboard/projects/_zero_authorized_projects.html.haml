@@ -1,6 +1,6 @@
 .row.blank-state-parent-container
   .col-md-6.section-container
-    .section-body.section-welcome{ class: "#{ 'section-admin-welcome' if current_user.admin? }" }
+    .container.section-body.section-welcome{ class: "#{ 'section-admin-welcome' if current_user.admin? }" }
       .blank-state.blank-state-welcome
         %h2.blank-state-welcome-title
           Welcome to GitLab
@@ -12,5 +12,5 @@
         = render "blank_state_welcome"
   - if !current_license&.trial? && current_user.admin?
     .col-md-6.section-container
-      .section-body.section-ee-trial
+      .container.section-body.section-ee-trial
         = render "blank_state_ee_trial"
