@@ -16,7 +16,11 @@ describe API::MergeRequests do
   let!(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
+  let!(:label2) { create(:label, title: 'a-test', color: '#FFFFFF', project: project) }
   let!(:label_link) { create(:label_link, label: label, target: merge_request) }
+  let!(:label_link2) { create(:label_link, label: label2, target: merge_request) }
+  let!(:downvote) { create(:award_emoji, :downvote, awardable: merge_request) }
+  let!(:upvote) { create(:award_emoji, :upvote, awardable: merge_request) }
 
   before do
     project.team << [user, :reporter]
@@ -44,6 +48,9 @@ describe API::MergeRequests do
         expect(json_response.last['sha']).to eq(merge_request.diff_head_sha)
         expect(json_response.last['merge_commit_sha']).to be_nil
         expect(json_response.last['merge_commit_sha']).to eq(merge_request.merge_commit_sha)
+        expect(json_response.last['downvotes']).to eq(1)
+        expect(json_response.last['upvotes']).to eq(1)
+        expect(json_response.last['labels']).to eq([label2.title, label.title])
         expect(json_response.first['title']).to eq(merge_request_merged.title)
         expect(json_response.first['sha']).to eq(merge_request_merged.diff_head_sha)
         expect(json_response.first['merge_commit_sha']).not_to be_nil
@@ -145,7 +152,7 @@ describe API::MergeRequests do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
-        expect(json_response.first['labels']).to eq([label.title])
+        expect(json_response.first['labels']).to eq([label2.title, label.title])
       end
 
       it 'returns an array of labeled merge requests where all labels match' do
@@ -236,8 +243,8 @@ describe API::MergeRequests do
       expect(json_response['author']).to be_a Hash
       expect(json_response['target_branch']).to eq(merge_request.target_branch)
       expect(json_response['source_branch']).to eq(merge_request.source_branch)
-      expect(json_response['upvotes']).to eq(0)
-      expect(json_response['downvotes']).to eq(0)
+      expect(json_response['upvotes']).to eq(1)
+      expect(json_response['downvotes']).to eq(1)
       expect(json_response['source_project_id']).to eq(merge_request.source_project.id)
       expect(json_response['target_project_id']).to eq(merge_request.target_project.id)
       expect(json_response['work_in_progress']).to be_falsy
