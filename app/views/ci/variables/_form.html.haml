@@ -6,12 +6,8 @@
     = f.text_field :key, class: "form-control", placeholder: @variable.placeholder, required: true
   .form-group
     = f.label :value, "Value", class: "label-light"
-<<<<<<< HEAD:app/views/projects/variables/_form.html.haml
-    = f.text_area :value, class: "form-control", placeholder: "PROJECT_VARIABLE"
-  = render 'projects/variables/ee/environment_scope', f: f
-=======
     = f.text_area :value, class: "form-control", placeholder: @variable.placeholder
->>>>>>> master-ce:app/views/ci/variables/_form.html.haml
+  = render 'projects/variables/ee/environment_scope', f: f
   .form-group
     .checkbox
       = f.label :protected do
