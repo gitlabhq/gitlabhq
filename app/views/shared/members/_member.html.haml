@@ -53,13 +53,21 @@
     .controls.member-controls
       = render 'shared/members/ee/ldap_tag', can_override: can_override_member, visible: false
       - if show_controls && member.source == current_resource
+<<<<<<< HEAD
+=======
+
+>>>>>>> master-ce
         - if member.invite? && can?(current_user, action_member_permission(:admin, member), member.source)
           = link_to icon('paper-plane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
                     class: 'btn btn-default prepend-left-10 hidden-xs',
                     title: 'Resend invite'
 
+<<<<<<< HEAD
         - if user != current_user && (can_admin_member || can_override_member)
+=======
+        - if user != current_user && can_admin_member
+>>>>>>> master-ce
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
             = f.hidden_field :access_level
             .member-form-control.dropdown.append-right-5
@@ -117,7 +125,10 @@
                 Delete
               - unless force_mobile_view
                 = icon('trash', class: 'hidden-xs')
+<<<<<<< HEAD
         = render 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :edit, can_override: can_override_member
+=======
+>>>>>>> master-ce
       - else
         %span.member-access-text= member.human_access
 

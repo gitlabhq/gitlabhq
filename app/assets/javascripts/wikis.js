@@ -1,10 +1,9 @@
-/* eslint-disable no-param-reassign */
 /* global Breakpoints */
 
 import 'vendor/jquery.nicescroll';
 import './breakpoints';
 
-class Wikis {
+export default class Wikis {
   constructor() {
     this.bp = Breakpoints.get();
     this.sidebarEl = document.querySelector('.js-wiki-sidebar');
@@ -63,6 +62,3 @@ class Wikis {
     }
   }
 }
-
-window.gl = window.gl || {};
-window.gl.Wikis = Wikis;

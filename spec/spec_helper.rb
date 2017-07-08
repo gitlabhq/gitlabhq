@@ -57,7 +57,7 @@ RSpec.configure do |config|
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include ApiHelpers, :api
-  config.include Gitlab::Routing.url_helpers, type: :routing
+  config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
   config.include EE::LicenseHelpers
   config.include Rails.application.routes.url_helpers, type: :routing

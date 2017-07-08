@@ -22,12 +22,12 @@ Feature: Group Milestones
     Then I should see group milestone with descriptions and expiry date
     And I should see group milestone with all issues and MRs assigned to that milestone
 
-  Scenario: Create multiple milestones with one form
+  Scenario: Create group milestones
     Given I visit group "Owned" milestones page
     And I click new milestone button
     And I fill milestone name
     When I press create mileston button
-    Then milestone in each project should be created
+    Then group milestone should be created
 
   Scenario: I should see Issues listed with labels
     Given Group has projects with milestones

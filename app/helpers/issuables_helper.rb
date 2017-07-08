@@ -253,6 +253,53 @@ module IssuablesHelper
     @counts[cache_key][state]
   end
 
+  def close_issuable_url(issuable)
+    issuable_url(issuable, close_reopen_params(issuable, :close))
+  end
+
+  def reopen_issuable_url(issuable)
+    issuable_url(issuable, close_reopen_params(issuable, :reopen))
+  end
+
+  def close_reopen_issuable_url(issuable, should_inverse = false)
+    issuable.closed? ^ should_inverse ? reopen_issuable_url(issuable) : close_issuable_url(issuable)
+  end
+
+  def issuable_url(issuable, *options)
+    case issuable
+    when Issue
+      issue_url(issuable, *options)
+    when MergeRequest
+      merge_request_url(issuable, *options)
+    end
+  end
+
+  def issuable_button_visibility(issuable, closed)
+    case issuable
+    when Issue
+      issue_button_visibility(issuable, closed)
+    when MergeRequest
+      merge_request_button_visibility(issuable, closed)
+    end
+  end
+
+  def issuable_close_reopen_button_method(issuable)
+    case issuable
+    when Issue
+      ''
+    when MergeRequest
+      'put'
+    end
+  end
+
+  def issuable_author_is_current_user(issuable)
+    issuable.author == current_user
+  end
+
+  def issuable_display_type(issuable)
+    issuable.model_name.human.downcase
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -278,8 +325,6 @@ module IssuablesHelper
         issue_template_names
       when MergeRequest
         merge_request_template_names
-      else
-        raise 'Unknown issuable type!'
       end
   end
 
@@ -308,5 +353,13 @@ module IssuablesHelper
       placement: (is_collapsed ? 'left' : nil),
       container: (is_collapsed ? 'body' : nil)
     }
+  end
+
+  def close_reopen_params(issuable, action)
+    {
+      issuable.model_name.to_s.underscore => { state_event: action }
+    }.tap do |params|
+      params[:format] = :json if issuable.is_a?(Issue)
+    end
   end
 end

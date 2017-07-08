@@ -192,6 +192,7 @@ describe API::Users do
         expect(json_response.size).to eq(1)
         expect(json_response.first['username']).to eq(user.username)
       end
+<<<<<<< HEAD
     end
 
     context "when authenticated and ldap is enabled" do
@@ -204,6 +205,8 @@ describe API::Users do
         username = user.username
         expect(json_response.first["username"]).to eq username
       end
+=======
+>>>>>>> master-ce
     end
   end
 

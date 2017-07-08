@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this, comma-dangle, arrow-parens, no-param-reassign */
 
 import Cookies from 'js-cookie';
+import UserTabs from './user_tabs';
 
 class User {
   constructor({ action }) {
@@ -17,7 +18,7 @@ class User {
   }
 
   initTabs() {
-    return new window.gl.UserTabs({
+    return new UserTabs({
       parentEl: '.user-profile',
       action: this.action
     });

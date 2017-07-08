@@ -19,8 +19,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def merge_request_params
-    params.require(:merge_request)
-      .permit(merge_request_params_attributes)
+    params.require(:merge_request).permit(merge_request_params_attributes)
   end
 
   def merge_request_params_attributes

@@ -45,6 +45,7 @@ label:
 - merge_requests
 - priorities
 milestone:
+- group
 - project
 - issues
 - labels
@@ -141,8 +142,11 @@ pipeline_schedules:
 - owner
 - pipelines
 - last_pipeline
+- variables
 pipeline_schedule:
 - pipelines
+pipeline_schedule_variables:
+- pipeline_schedule
 deploy_keys:
 - user
 - deploy_keys_projects

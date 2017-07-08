@@ -85,7 +85,7 @@ module SearchHelper
         { category: "Current Project", label: "Merge Requests", url: project_merge_requests_path(@project) },
         { category: "Current Project", label: "Milestones",     url: project_milestones_path(@project) },
         { category: "Current Project", label: "Snippets",       url: project_snippets_path(@project) },
-        { category: "Current Project", label: "Members",        url: project_settings_members_path(@project) },
+        { category: "Current Project", label: "Members",        url: project_project_members_path(@project) },
         { category: "Current Project", label: "Wiki",           url: project_wikis_path(@project) }
       ]
     else

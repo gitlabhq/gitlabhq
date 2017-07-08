@@ -247,6 +247,22 @@ module API
 
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
+
+      desc 'Get the user agent details for an issue' do
+        success Entities::UserAgentDetail
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+      end
+      get ":id/issues/:issue_iid/user_agent_detail" do
+        authenticated_as_admin!
+
+        issue = find_project_issue(params[:issue_iid])
+
+        return not_found!('UserAgentDetail') unless issue.user_agent_detail
+
+        present issue.user_agent_detail, with: Entities::UserAgentDetail
+      end
     end
   end
 end

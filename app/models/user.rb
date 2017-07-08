@@ -13,9 +13,12 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include FeatureGate
   include CreatedAtFilterable
+<<<<<<< HEAD
 
   prepend EE::GeoAwareAvatar
   prepend EE::User
+=======
+>>>>>>> master-ce
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 

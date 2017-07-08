@@ -2,6 +2,7 @@
 
 import './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
+import SingleFileDiff from './single_file_diff';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;
@@ -10,7 +11,11 @@ class Diff {
   constructor() {
     const $diffFile = $('.files .diff-file');
 
-    $diffFile.singleFileDiff();
+    $diffFile.each((index, file) => {
+      if (!$.data(file, 'singleFileDiff')) {
+        $.data(file, 'singleFileDiff', new SingleFileDiff(file));
+      }
+    });
 
     FilesCommentButton.init($diffFile);
 

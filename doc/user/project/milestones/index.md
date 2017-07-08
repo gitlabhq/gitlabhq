@@ -51,14 +51,11 @@ The start/due dates are required if you intend to use [Burndown charts](#burndow
 >**Note:**
 You need [Master permissions](../../permissions.md) in order to create a milestone.
 
-You can create a milestone for several projects in the same group simultaneously.
-On the group's **Issues ➔ Milestones** page, you will be able to see the status
-of that milestone across all of the selected projects. To create a new milestone
-for selected projects in the group, click the **New milestone** button. The
-form is the same as when creating a milestone for a specific project with the
-addition of the selection of the projects you want to inherit this milestone.
+You can create a milestone for a group that will be shared across group projects.
+On the group's **Issues ➔ Milestones** page, you will be able to see the state
+of that milestone and the issues/merge requests count that it shares across the group projects. To create a new milestone click the **New milestone** button. The form is the same as when creating a milestone for a specific project which you can find in the previous item.
 
-![Creating a group milestone](img/milestone_group_create.png)
+In addition to that you will be able to filter issues or merge requests by group milestones in all projects that belongs to the milestone group.
 
 ## Special milestone filters
 

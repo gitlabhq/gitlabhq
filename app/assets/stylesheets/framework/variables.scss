@@ -159,6 +159,7 @@ $code_line_height: 1.6;
  * Padding
  */
 $gl-padding: 16px;
+$gl-col-padding: 15px;
 $gl-btn-padding: 10px;
 $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
@@ -275,7 +276,7 @@ $diff-view-modes-border: #c1c1c1;
 /*
  * Fonts
  */
-$monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
+$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
 $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 /*
@@ -454,6 +455,7 @@ $logs-p-color: #333;
 /*
 * Forms
 */
+$input-height: 34px;
 $input-danger-bg: #f2dede;
 $input-danger-border: $red-400;
 $input-group-addon-bg: #f7f8fa;
@@ -584,6 +586,12 @@ Pipeline Graph
 $stage-hover-bg: #eaf3fc;
 $stage-hover-border: #d1e7fc;
 $action-icon-color: #d6d6d6;
+
+/*
+Pipeline Schedules
+*/
+$pipeline-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
+
 
 /*
 Filtered Search

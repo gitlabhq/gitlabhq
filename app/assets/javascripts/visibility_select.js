@@ -1,4 +1,4 @@
-class VisibilitySelect {
+export default class VisibilitySelect {
   constructor(container) {
     if (!container) throw new Error('VisibilitySelect requires a container element as argument 1');
     this.container = container;
@@ -19,6 +19,3 @@ class VisibilitySelect {
     this.helpBlock.textContent = this.select.querySelector('option:checked').dataset.description;
   }
 }
-
-window.gl = window.gl || {};
-window.gl.VisibilitySelect = VisibilitySelect;

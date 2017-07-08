@@ -267,15 +267,15 @@ module ProjectsHelper
 
   def tab_ability_map
     {
-      environments: :read_environment,
-      milestones:   :read_milestone,
-      snippets:     :read_project_snippet,
-      settings:     :admin_project,
-      builds:       :read_build,
-      labels:       :read_label,
-      issues:       :read_issue,
-      team:         :read_project_member,
-      wiki:         :read_wiki
+      environments:     :read_environment,
+      milestones:       :read_milestone,
+      snippets:         :read_project_snippet,
+      settings:         :admin_project,
+      builds:           :read_build,
+      labels:           :read_label,
+      issues:           :read_issue,
+      project_members:  :read_project_member,
+      wiki:             :read_wiki
     }
   end
 

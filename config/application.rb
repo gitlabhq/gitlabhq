@@ -29,7 +29,10 @@ module Gitlab
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
                                      #{config.root}/app/services/concerns
+<<<<<<< HEAD
                                      #{config.root}/app/uploaders/concerns
+=======
+>>>>>>> master-ce
                                      #{config.root}/app/finders/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
@@ -176,9 +179,10 @@ module Gitlab
     config.after_initialize do
       Rails.application.reload_routes!
 
-      named_routes_set = Gitlab::Application.routes.named_routes
       project_url_helpers = Module.new do
-        named_routes_set.helper_names.each do |name|
+        extend ActiveSupport::Concern
+
+        Gitlab::Application.routes.named_routes.helper_names.each do |name|
           next unless name.include?('namespace_project')
 
           define_method(name.sub('namespace_project', 'project')) do |project, *args|
@@ -187,14 +191,7 @@ module Gitlab
         end
       end
 
-      named_routes_set.url_helpers_module.include project_url_helpers
-      named_routes_set.url_helpers_module.extend project_url_helpers
-
-      Gitlab::Routing.url_helpers.include project_url_helpers
-      Gitlab::Routing.url_helpers.extend project_url_helpers
-
-      GitlabRoutingHelper.include project_url_helpers
-      GitlabRoutingHelper.extend project_url_helpers
+      Gitlab::Routing.add_helpers(project_url_helpers)
     end
   end
 end

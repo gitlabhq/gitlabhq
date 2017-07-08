@@ -1011,7 +1011,7 @@ describe MergeRequest, models: true do
       shared_examples 'returning all SHA' do
         it 'returns all SHA from all merge_request_diffs' do
           expect(subject.merge_request_diffs.size).to eq(2)
-          expect(subject.all_commit_shas).to eq(all_commit_shas)
+          expect(subject.all_commit_shas).to match_array(all_commit_shas)
         end
       end
 
