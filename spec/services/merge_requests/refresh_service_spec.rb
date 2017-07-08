@@ -122,21 +122,12 @@ describe MergeRequests::RefreshService, services: true do
           expect(@fork_merge_request.notes.last.note).to include('merged')
           expect(@build_failed_todo).to be_done
           expect(@fork_build_failed_todo).to be_done
+          # EE-only
+          expect(@merge_request.approvals).not_to be_empty
+          expect(@fork_merge_request.approvals).not_to be_empty
         end
       end
 
-<<<<<<< HEAD
-      it 'updates the merge state' do
-        expect(@merge_request.notes.last.note).to include('merged')
-        expect(@merge_request).to be_merged
-        expect(@fork_merge_request).to be_merged
-        expect(@fork_merge_request.notes.last.note).to include('merged')
-        expect(@build_failed_todo).to be_done
-        expect(@fork_build_failed_todo).to be_done
-        # EE-only
-        expect(@merge_request.approvals).not_to be_empty
-        expect(@fork_merge_request.approvals).not_to be_empty
-=======
       context 'when an MR to be closed was empty already' do
         let!(:empty_fork_merge_request) do
           create(:merge_request,
@@ -167,7 +158,6 @@ describe MergeRequests::RefreshService, services: true do
           expect(empty_fork_merge_request.merge_request_diff.state).to eq('empty')
           expect(empty_fork_merge_request.notes).to be_empty
         end
->>>>>>> master-ce
       end
     end
 
