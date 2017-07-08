@@ -2,6 +2,10 @@
 module GitlabRoutingHelper
   extend ActiveSupport::Concern
 
+  included do
+    Gitlab::Routing.includes_helpers(self)
+  end
+
   # Project
   def project_tree_path(project, ref = nil, *args)
     namespace_project_tree_path(project.namespace, project, ref || @ref || project.repository.root_ref, *args) # rubocop:disable Cop/ProjectPathHelper
