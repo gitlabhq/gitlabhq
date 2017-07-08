@@ -2,44 +2,73 @@ class GeoRepositorySyncWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  RUN_TIME = 5.minutes.to_i
-  BATCH_SIZE = 100
-  LAST_SYNC_INTERVAL = 24.hours
+  LEASE_KEY = 'geo_repository_sync_worker'.freeze
+  LEASE_TIMEOUT = 10.minutes
+  BATCH_SIZE = 1000
+  BACKOFF_DELAY = 5.minutes
+  MAX_CAPACITY = 25
+  RUN_TIME = 60.minutes.to_i
+
+  def initialize
+    @pending_projects = []
+    @scheduled_jobs = []
+  end
 
   def perform
     return unless Gitlab::Geo.secondary_role_enabled?
     return unless Gitlab::Geo.primary_node.present?
 
-    start_time = Time.now
-    project_ids_not_synced = find_project_ids_not_synced
-    project_ids_updated_recently = find_project_ids_updated_recently
-    project_ids = interleave(project_ids_not_synced, project_ids_updated_recently)
+    logger.info "Started Geo repository sync scheduler"
 
-    logger.info "Started Geo repository syncing for #{project_ids.length} project(s)"
+    @start_time = Time.now
 
-    project_ids.each do |project_id|
-      begin
-        break if over_time?(start_time)
+    # Prevent multiple Sidekiq workers from attempting to schedule projects synchronization
+    try_obtain_lease do
+      loop do
         break unless node_enabled?
 
-        # We try to obtain a lease here for the entire sync process because we
-        # want to sync the repositories continuously at a controlled rate
-        # instead of hammering the primary node. Initially, we are syncing
-        # one repo at a time. If we don't obtain the lease here, every 5
-        # minutes all of 100 projects will be synced.
-        try_obtain_lease do |lease|
-          Geo::RepositorySyncService.new(project_id).execute
-        end
-      rescue ActiveRecord::RecordNotFound
-        logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
-        next
-      end
-    end
+        update_jobs_in_progress
+        load_pending_projects if reload_queue?
 
-    logger.info "Finished Geo repository syncing for #{project_ids.length} project(s)"
+        # If we are still under the limit after refreshing our DB, we can end
+        # after scheduling the remaining transfers.
+        last_batch = reload_queue?
+
+        break if over_time?
+        break unless projects_remain?
+
+        schedule_jobs
+
+        break if last_batch
+        break unless renew_lease!
+
+        sleep(1)
+      end
+
+      logger.info "Finished Geo repository sync scheduler"
+    end
   end
 
   private
+
+  def reload_queue?
+    @pending_projects.size < MAX_CAPACITY
+  end
+
+  def projects_remain?
+    @pending_projects.size > 0
+  end
+
+  def over_time?
+    Time.now - @start_time >= RUN_TIME
+  end
+
+  def load_pending_projects
+    project_ids_not_synced = find_project_ids_not_synced
+    project_ids_updated_recently = find_project_ids_updated_recently
+
+    @pending_projects = interleave(project_ids_not_synced, project_ids_updated_recently)
+  end
 
   def find_project_ids_not_synced
     Project.where.not(id: Geo::ProjectRegistry.synced.pluck(:project_id))
@@ -63,8 +92,56 @@ class GeoRepositorySyncWorker
     end.flatten(1).uniq.compact.take(BATCH_SIZE)
   end
 
-  def over_time?(start_time)
-    Time.now - start_time >= RUN_TIME
+  def schedule_jobs
+    num_to_schedule = [MAX_CAPACITY - scheduled_job_ids.size, @pending_projects.size].min
+    return unless projects_remain?
+
+    num_to_schedule.times do
+      project_id = @pending_projects.shift
+      job_id = Geo::ProjectSyncWorker.perform_in(BACKOFF_DELAY, project_id, Time.now)
+
+      @scheduled_jobs << { id: project_id, job_id: job_id } if job_id
+    end
+  end
+
+  def scheduled_job_ids
+    @scheduled_jobs.map { |data| data[:job_id] }
+  end
+
+  def update_jobs_in_progress
+    status = Gitlab::SidekiqStatus.job_status(scheduled_job_ids)
+
+    # SidekiqStatus returns an array of booleans: true if the job has completed, false otherwise.
+    # For each entry, first use `zip` to make { job_id: 123, id: 10 } -> [ { job_id: 123, id: 10 }, bool ]
+    # Next, filter out the jobs that have completed.
+    @scheduled_jobs = @scheduled_jobs.zip(status).map { |(job, completed)| job if completed }.compact
+  end
+
+  def try_obtain_lease
+    lease = exclusive_lease.try_obtain
+
+    unless lease
+      logger.info "Cannot obtain an exclusive lease. There must be another worker already in execution."
+      return
+    end
+
+    begin
+      yield lease
+    ensure
+      release_lease(lease)
+    end
+  end
+
+  def exclusive_lease
+    @lease ||= Gitlab::ExclusiveLease.new(LEASE_KEY, timeout: LEASE_TIMEOUT)
+  end
+
+  def renew_lease!
+    exclusive_lease.renew
+  end
+
+  def release_lease(uuid)
+    Gitlab::ExclusiveLease.cancel(LEASE_KEY, uuid)
   end
 
   def node_enabled?
@@ -75,25 +152,5 @@ class GeoRepositorySyncWorker
     end
 
     @current_node_enabled ||= Gitlab::Geo.current_node_enabled?
-  end
-
-  def try_obtain_lease
-    lease = Gitlab::ExclusiveLease.new(lease_key, timeout: lease_timeout).try_obtain
-
-    return unless lease
-
-    begin
-      yield lease
-    ensure
-      Gitlab::ExclusiveLease.cancel(lease_key, lease)
-    end
-  end
-
-  def lease_key
-    Geo::RepositorySyncService::LEASE_KEY_PREFIX
-  end
-
-  def lease_timeout
-    Geo::RepositorySyncService::LEASE_TIMEOUT
   end
 end

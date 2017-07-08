@@ -13,90 +13,51 @@ describe GeoRepositorySyncWorker do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
     end
 
-    it 'performs Geo::RepositorySyncService for each project' do
-      expect(Geo::RepositorySyncService).to receive(:new).twice.and_return(spy)
+    it 'performs Geo::ProjectSyncWorker for each project' do
+      expect(Geo::ProjectSyncWorker).to receive(:perform_in).twice.and_return(spy)
 
       subject.perform
     end
 
-    it 'performs Geo::RepositorySyncService for projects where last attempt to sync failed' do
-      Geo::ProjectRegistry.create(
-        project: project_1,
-        last_repository_synced_at: DateTime.now,
-        last_repository_successful_sync_at: nil
-      )
+    it 'performs Geo::ProjectSyncWorker for projects where last attempt to sync failed' do
+      create(:geo_project_registry, :sync_failed, project: project_1)
+      create(:geo_project_registry, :synced, project: project_2)
 
-      Geo::ProjectRegistry.create(
-        project: project_2,
-        last_repository_synced_at: DateTime.now,
-        last_repository_successful_sync_at: DateTime.now,
-        resync_repository: false,
-        resync_wiki: false
-      )
-
-      expect(Geo::RepositorySyncService).to receive(:new).once.and_return(spy)
+      expect(Geo::ProjectSyncWorker).to receive(:perform_in).once.and_return(spy)
 
       subject.perform
     end
 
-    it 'performs Geo::RepositorySyncService for synced projects updated recently' do
-      Geo::ProjectRegistry.create(
-        project: project_1,
-        last_repository_synced_at: 2.days.ago,
-        last_repository_successful_sync_at: 2.days.ago,
-        resync_repository: true,
-        resync_wiki: false
-      )
+    it 'performs Geo::ProjectSyncWorker for synced projects updated recently' do
+      create(:geo_project_registry, :synced, :repository_dirty, project: project_1)
+      create(:geo_project_registry, :synced, project: project_2)
+      create(:geo_project_registry, :synced, :wiki_dirty)
 
-      Geo::ProjectRegistry.create(
-        project: project_2,
-        last_repository_synced_at: 10.minutes.ago,
-        last_repository_successful_sync_at: 10.minutes.ago,
-        resync_repository: false,
-        resync_wiki: false
-      )
-
-      Geo::ProjectRegistry.create(
-        project: create(:empty_project),
-        last_repository_synced_at: 5.minutes.ago,
-        last_repository_successful_sync_at: 5.minutes.ago,
-        resync_repository: false,
-        resync_wiki: true
-      )
-
-      expect(Geo::RepositorySyncService).to receive(:new).twice.and_return(spy)
+      expect(Geo::ProjectSyncWorker).to receive(:perform_in).twice.and_return(spy)
 
       subject.perform
     end
 
-    it 'does not perform Geo::RepositorySyncService when secondary role is disabled' do
+    it 'does not perform Geo::ProjectSyncWorker when secondary role is disabled' do
       allow(Gitlab::Geo).to receive(:secondary_role_enabled?) { false }
 
-      expect(Geo::RepositorySyncService).not_to receive(:new)
+      expect(Geo::ProjectSyncWorker).not_to receive(:perform_in)
 
       subject.perform
     end
 
-    it 'does not perform Geo::RepositorySyncService when primary node does not exists' do
+    it 'does not perform Geo::ProjectSyncWorker when primary node does not exists' do
       allow(Gitlab::Geo).to receive(:primary_node) { nil }
 
-      expect(Geo::RepositorySyncService).not_to receive(:new)
+      expect(Geo::ProjectSyncWorker).not_to receive(:perform_in)
 
       subject.perform
     end
 
-    it 'does not perform Geo::RepositorySyncService when node is disabled' do
+    it 'does not perform Geo::ProjectSyncWorker when node is disabled' do
       allow_any_instance_of(GeoNode).to receive(:enabled?) { false }
 
-      expect(Geo::RepositorySyncService).not_to receive(:new)
-
-      subject.perform
-    end
-
-    it 'does not perform Geo::RepositorySyncService when can not obtain a lease' do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { false }
-
-      expect(Geo::RepositorySyncService).not_to receive(:new)
+      expect(Geo::ProjectSyncWorker).not_to receive(:perform_in)
 
       subject.perform
     end
