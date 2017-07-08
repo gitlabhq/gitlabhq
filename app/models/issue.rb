@@ -58,11 +58,9 @@ class Issue < ActiveRecord::Base
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
-<<<<<<< HEAD
+
   scope :order_weight_desc, -> { reorder('weight IS NOT NULL, weight DESC') }
   scope :order_weight_asc, -> { reorder('weight ASC') }
-=======
->>>>>>> master-ce
 
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
