@@ -29,10 +29,7 @@ module Gitlab
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
                                      #{config.root}/app/services/concerns
-<<<<<<< HEAD
                                      #{config.root}/app/uploaders/concerns
-=======
->>>>>>> master-ce
                                      #{config.root}/app/finders/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
