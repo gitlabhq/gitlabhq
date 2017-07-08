@@ -2,6 +2,7 @@
 /* global Flash */
 
 import Cookies from 'js-cookie';
+import issueNotesEventHub from './notes/event_hub';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -234,12 +235,23 @@ class AwardsHandler {
   }
 
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
+    if (this.isInIssuePage()) {
+      const id = votesBlock[0].id.replace('note_', '');
+
+      $('.emoji-menu').removeClass('is-visible');
+      $('.js-add-award.is-active').removeClass('is-active');
+
+      return issueNotesEventHub.$emit('toggleAward', { awardName: emoji, noteId: id });
+    }
+
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
     const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+
     this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
       this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
       return typeof callback === 'function' ? callback() : undefined;
     });
+
     $('.emoji-menu').removeClass('is-visible');
     $('.js-add-award.is-active').removeClass('is-active');
   }
@@ -267,7 +279,18 @@ class AwardsHandler {
     }
   }
 
+  isInIssuePage() {
+    const page = gl.utils.getPagePath(1);
+    const action = gl.utils.getPagePath(2);
+
+    return page === 'issues' && action === 'show';
+  }
+
   getVotesBlock() {
+    if (this.isInIssuePage()) {
+      return $('.js-add-award.is-active').closest('.note.timeline-entry');
+    }
+
     const currentBlock = $('.js-awards-block.current');
     let resultantVotesBlock = currentBlock;
     if (currentBlock.length === 0) {

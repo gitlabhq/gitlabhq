@@ -4,6 +4,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import storeOptions from '../stores/issue_notes_store';
+import eventHub from '../event_hub';
 import IssueNote from './issue_note.vue';
 import IssueDiscussion from './issue_discussion.vue';
 import IssueSystemNote from './issue_system_note.vue';
@@ -29,6 +30,7 @@ export default {
   computed: {
     ...Vuex.mapGetters([
       'notes',
+      'notesById',
     ]),
   },
   methods: {
@@ -87,6 +89,13 @@ export default {
           new Flash('Something went wrong while fetching latest comments.'); // eslint-disable-line
         });
     }, 6000);
+
+    eventHub.$on('toggleAward', (data) => {
+      const { awardName, noteId } = data;
+      const endpoint = this.notesById[noteId].toggle_award_path;
+
+      this.$store.dispatch('toggleAward', { endpoint, awardName, noteId });
+    });
   },
 };
 </script>

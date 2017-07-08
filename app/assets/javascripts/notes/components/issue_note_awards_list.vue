@@ -73,6 +73,9 @@ export default {
 
       return orderedAwards;
     },
+    isAuthoredByMe() {
+      return this.noteAuthorId === window.gon.current_user_id;
+    },
   },
   methods: {
     getAwardHTML(name) {
@@ -178,10 +181,11 @@ export default {
         v-if="canAward"
         class="award-menu-holder">
         <button
-          aria-label="Add reaction"
-          class="award-control btn has-tooltip"
-          data-placement="bottom"
+          :class="{ 'js-user-authored': isAuthoredByMe }"
+          class="award-control btn has-tooltip js-add-award"
           title="Add reaction"
+          aria-label="Add reaction"
+          data-placement="bottom"
           type="button">
           <span
             v-html="emojiSmiling"
