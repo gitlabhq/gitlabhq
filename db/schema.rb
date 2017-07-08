@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20170706151212) do
-=======
 ActiveRecord::Schema.define(version: 20170707184244) do
->>>>>>> master-ce
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,7 +144,6 @@ ActiveRecord::Schema.define(version: 20170707184244) do
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
-<<<<<<< HEAD
     t.boolean "slack_app_enabled", default: false
     t.string "slack_app_id"
     t.string "slack_app_secret"
@@ -182,9 +177,6 @@ ActiveRecord::Schema.define(version: 20170707184244) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.integer "performance_bar_allowed_group_id"
->>>>>>> master-ce
   end
 
   add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree
