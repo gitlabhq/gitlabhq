@@ -253,7 +253,7 @@ class AwardsHandler {
     });
 
     $('.emoji-menu').removeClass('is-visible');
-    $('.js-add-award.is-active').removeClass('is-active');
+    return $('.js-add-award.is-active').removeClass('is-active');
   }
 
   addAwardToEmojiBar(votesBlock, emoji, checkForMutuality) {

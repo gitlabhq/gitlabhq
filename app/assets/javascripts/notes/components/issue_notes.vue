@@ -44,6 +44,48 @@ export default {
     componentData(note) {
       return note.individual_note ? note.notes[0] : note;
     },
+    fetchNotes() {
+      const { discussionsPath } = this.$el.parentNode.dataset;
+
+      this.$store.dispatch('fetchNotes', discussionsPath)
+        .then(() => {
+          this.isLoading = false;
+
+          // Scroll to note if we have hash fragment in the page URL
+          Vue.nextTick(() => {
+            this.checkLocationHash();
+          });
+        })
+        .catch(() => {
+          new Flash('Something went wrong while fetching issue comments. Please try again.'); // eslint-disable-line
+        });
+    },
+    initPolling() {
+      const { notesPath, lastFetchedAt } = this.$el.parentNode.dataset;
+      const options = {
+        endpoint: `${notesPath}?full_data=1`,
+        lastFetchedAt,
+      };
+
+      // FIXME: @fatihacet Implement real polling mechanism
+      setInterval(() => {
+        this.$store.dispatch('poll', options)
+          .then((res) => {
+            options.lastFetchedAt = res.last_fetched_at;
+          })
+          .catch(() => {
+            new Flash('Something went wrong while fetching latest comments.'); // eslint-disable-line
+          });
+      }, 15000);
+    },
+    bindEventHubListeners() {
+      eventHub.$on('toggleAward', (data) => {
+        const { awardName, noteId } = data;
+        const endpoint = this.notesById[noteId].toggle_award_path;
+
+        this.$store.dispatch('toggleAward', { endpoint, awardName, noteId });
+      });
+    },
     checkLocationHash() {
       const hash = gl.utils.getLocationHash();
       const $el = $(`#${hash}`);
@@ -59,43 +101,9 @@ export default {
     },
   },
   mounted() {
-    const { discussionsPath, notesPath, lastFetchedAt } = this.$el.parentNode.dataset;
-
-    this.$store.dispatch('fetchNotes', discussionsPath)
-      .then(() => {
-        this.isLoading = false;
-
-        // Scroll to note if we have hash fragment in the page URL
-        Vue.nextTick(() => {
-          this.checkLocationHash();
-        });
-      })
-      .catch(() => {
-        new Flash('Something went wrong while fetching issue comments. Please try again.'); // eslint-disable-line
-      });
-
-    const options = {
-      endpoint: `${notesPath}?full_data=1`,
-      lastFetchedAt,
-    };
-
-    // FIXME: @fatihacet Implement real polling mechanism
-    setInterval(() => {
-      this.$store.dispatch('poll', options)
-        .then((res) => {
-          options.lastFetchedAt = res.last_fetched_at;
-        })
-        .catch(() => {
-          new Flash('Something went wrong while fetching latest comments.'); // eslint-disable-line
-        });
-    }, 6000);
-
-    eventHub.$on('toggleAward', (data) => {
-      const { awardName, noteId } = data;
-      const endpoint = this.notesById[noteId].toggle_award_path;
-
-      this.$store.dispatch('toggleAward', { endpoint, awardName, noteId });
-    });
+    this.fetchNotes();
+    this.initPolling();
+    this.bindEventHubListeners();
   },
 };
 </script>
