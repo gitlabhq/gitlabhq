@@ -1,10 +1,7 @@
 class Projects::VariablesController < Projects::ApplicationController
-<<<<<<< HEAD
   prepend ::EE::Projects::VariablesController
 
-=======
   before_action :variable, only: [:show, :update, :destroy]
->>>>>>> master-ce
   before_action :authorize_admin_build!
 
   layout 'project_settings'
