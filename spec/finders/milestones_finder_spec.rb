@@ -6,7 +6,7 @@ describe MilestonesFinder do
   let(:project_2) { create(:empty_project, namespace: group) }
   let!(:milestone_1) { create(:milestone, group: group, title: 'one test', due_date: Date.today) }
   let!(:milestone_2) { create(:milestone, group: group) }
-  let!(:milestone_3) { create(:milestone, project: project_1, state: 'active', due_date: Date.tomorrow) }
+  let!(:milestone_3) { create(:milestone, project: project_1, state: 'active', due_date: Date.today + 7) }
   let!(:milestone_4) { create(:milestone, project: project_2, state: 'active') }
 
   it 'it returns milestones for projects' do
