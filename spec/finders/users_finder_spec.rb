@@ -46,7 +46,6 @@ describe UsersFinder do
         expect(users).to contain_exactly(user, user1, user2, omniauth_user)
       end
 
-<<<<<<< HEAD
       context 'with LDAP users' do
         let!(:ldap_user) { create(:omniauth_user, provider: 'ldap') }
 
@@ -63,8 +62,6 @@ describe UsersFinder do
         end
       end
 
-=======
->>>>>>> master-ce
       it 'filters by created_at' do
         filtered_user_before = create(:user, created_at: 3.days.ago)
         filtered_user_after = create(:user, created_at: Time.now + 3.days)
