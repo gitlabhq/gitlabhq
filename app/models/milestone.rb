@@ -21,12 +21,9 @@ class Milestone < ActiveRecord::Base
   cache_markdown_field :description
 
   belongs_to :project
-<<<<<<< HEAD
-  has_many :boards
-=======
   belongs_to :group
 
->>>>>>> master-ce
+  has_many :boards
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
