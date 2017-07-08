@@ -10,11 +10,9 @@ class Admin::TrialsController < Admin::ApplicationController
     if save_license
       redirect_to admin_license_url, notice: 'Your trial license was successfully activated'
     else
-      message = <<~MSG
-        An error occurred while generating the trial license, please try again a few minutes.<br>
-        If the error persist please try by creating the license from
-        <a href="https://about.gitlab.com/free-trial/" target="_blank">this page</a>.
-      MSG
+      message = 'An error occurred while generating the trial license, please try again a few minutes.<br>'\
+        'If the error persist please try by creating the license from '\
+        '<a href="https://about.gitlab.com/free-trial/" target="_blank">this page</a>.'
 
       flash.now[:alert] = message.html_safe
       render :new
@@ -41,7 +39,7 @@ class Admin::TrialsController < Admin::ApplicationController
 
   def check_presence_of_license
     if error_message.present?
-      redirect_to admin_license_url, alert: error_message.html_safe
+      redirect_to admin_license_url, alert: error_message
     end
   end
 
@@ -49,10 +47,8 @@ class Admin::TrialsController < Admin::ApplicationController
 
   def error_message
     @message ||= if License.trial.present?
-                   <<~MSG
-                     You have already used a free trial, if you want to extend it please contact us at
-                     <a href="mailto:sales@gitlab.com">sales@gitlab.com</a>
-                   MSG
+                   'You have already used a free trial, if you want to extend it please contact us at '\
+                   '<a href="mailto:sales@gitlab.com">sales@gitlab.com</a>.'.html_safe
                  elsif License.current&.active?
                    'You already have an active license key installed on this server.'
                  end

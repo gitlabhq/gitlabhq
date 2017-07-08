@@ -1,4 +1,4 @@
-- if current_user&.admin? && license_message.present?
+- if current_license&.trial? && license_message.present?
   .alert.alert-dismissible.gitlab-ee-trial-banner.hidden.js-gitlab-ee-trial-banner{ role: 'alert', 'data-license-expiry' => current_license.expires_at }
     %button.close{ type: 'button', 'data-dismiss' => 'alert', 'aria-label' => 'Dismiss banner' }
       = icon('times', 'aria-hidden' => 'true')

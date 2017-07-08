@@ -301,7 +301,7 @@ describe License do
         let!(:license) { create(:license, trial: true) }
 
         it 'returns false' do
-          expect(described_class.block_changes?).to eq(false)
+          expect(described_class.block_changes?).to be_falsey
         end
       end
 

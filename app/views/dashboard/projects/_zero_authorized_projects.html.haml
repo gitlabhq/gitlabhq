@@ -10,7 +10,7 @@
         = render "blank_state_admin_welcome"
       - else
         = render "blank_state_welcome"
-  - if !current_license&.trial? && current_user.admin?
+  - if !current_license && current_user.admin?
     .col-md-6.section-container
       .container.section-body.section-ee-trial
         = render "blank_state_ee_trial"
