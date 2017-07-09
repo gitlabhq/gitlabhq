@@ -26,7 +26,7 @@
       margin-bottom: 5px;
     }
 
-    & > .form-group {
+    > .form-group {
       padding-left: 0;
     }
 
@@ -83,7 +83,7 @@
       border: 1px solid $border-color;
     }
 
-    & + .select2 a {
+    + .select2 a {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
