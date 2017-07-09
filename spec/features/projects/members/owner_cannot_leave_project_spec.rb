@@ -4,7 +4,7 @@ feature 'Projects > Members > Owner cannot leave project', feature: true do
   let(:project) { create(:project) }
 
   background do
-    gitlab_sign_in(project.owner)
+    sign_in(project.owner)
     visit project_path(project)
   end
 

@@ -20,7 +20,7 @@ feature 'Merge Request closing issues message', feature: true, js: true do
   before do
     project.team << [user, :master]
 
-    gitlab_sign_in user
+    sign_in user
 
     visit project_merge_request_path(project, merge_request)
     wait_for_requests

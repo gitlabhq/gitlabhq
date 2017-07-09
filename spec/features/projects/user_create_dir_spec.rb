@@ -6,7 +6,7 @@ feature 'New directory creation', feature: true, js: true do
   given(:project) { create(:project) }
 
   background do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, role]
     visit project_tree_path(project, 'master')
     open_new_directory_modal

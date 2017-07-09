@@ -571,8 +571,6 @@ describe 'Issues', feature: true do
 
         expect(current_path).to eq new_user_session_path
 
-        # NOTE: This is specifically testing the redirect after login, so we
-        # need the full login flow
         gitlab_sign_in(create(:user))
 
         expect(current_path).to eq new_project_issue_path(project)

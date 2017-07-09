@@ -6,7 +6,7 @@ feature 'Visibility settings', feature: true, js: true do
 
   context 'as owner' do
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
       visit edit_project_path(project)
     end
 
@@ -32,7 +32,7 @@ feature 'Visibility settings', feature: true, js: true do
 
     before do
       project.team << [master_user, :master]
-      gitlab_sign_in(master_user)
+      sign_in(master_user)
       visit edit_project_path(project)
     end
 

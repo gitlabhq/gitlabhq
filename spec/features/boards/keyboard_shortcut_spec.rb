@@ -6,7 +6,7 @@ describe 'Issue Boards shortcut', feature: true, js: true do
   before do
     create(:board, project: project)
 
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
 
     visit project_path(project)
   end

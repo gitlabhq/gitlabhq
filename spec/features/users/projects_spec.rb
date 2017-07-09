@@ -8,7 +8,7 @@ describe 'Projects tab on a user profile', :feature, :js do
   before do
     allow(Project).to receive(:default_per_page).and_return(1)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit user_path(user)
 

@@ -7,7 +7,7 @@ feature 'User wants to add a Dockerfile file', feature: true do
     project = create(:project)
     project.team << [user, :master]
 
-    gitlab_sign_in user
+    sign_in user
 
     visit project_new_blob_path(project, 'master', file_name: 'Dockerfile')
   end

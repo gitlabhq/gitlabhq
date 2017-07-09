@@ -4,7 +4,7 @@ feature 'Profile > Account', feature: true do
   given(:user) { create(:user, username: 'foo') }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'Change username' do

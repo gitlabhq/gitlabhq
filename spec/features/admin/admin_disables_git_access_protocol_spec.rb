@@ -8,7 +8,7 @@ feature 'Admin disables Git access protocol', feature: true do
 
   background do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    gitlab_sign_in(admin)
+    sign_in(admin)
   end
 
   context 'with HTTP disabled' do

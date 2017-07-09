@@ -6,7 +6,7 @@ feature 'User wants to create a file', feature: true do
 
   background do
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
     visit project_new_blob_path(project, project.default_branch)
   end
 

@@ -33,7 +33,7 @@ feature 'Import/Export - project export integration test', feature: true, js: tr
 
   context 'admin user' do
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     scenario 'exports a project successfully' do

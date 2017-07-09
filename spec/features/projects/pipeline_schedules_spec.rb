@@ -11,7 +11,7 @@ feature 'Pipeline Schedules', :feature, js: true do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'GET /projects/pipeline_schedules' do

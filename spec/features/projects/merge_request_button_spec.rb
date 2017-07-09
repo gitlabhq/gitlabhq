@@ -18,7 +18,7 @@ feature 'Merge Request button', feature: true do
 
     context 'logged in as developer' do
       before do
-        gitlab_sign_in(user)
+        sign_in(user)
         project.team << [user, :developer]
       end
 
@@ -51,7 +51,7 @@ feature 'Merge Request button', feature: true do
 
     context 'logged in as non-member' do
       before do
-        gitlab_sign_in(user)
+        sign_in(user)
       end
 
       it 'does not show Create merge request button' do

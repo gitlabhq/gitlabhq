@@ -7,7 +7,7 @@ feature 'Merge Requests List' do
   background do
     project.team << [user, :developer]
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   scenario 'user does not see create new list button' do

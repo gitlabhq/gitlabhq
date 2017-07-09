@@ -8,7 +8,7 @@ feature 'Edit Merge Request', feature: true do
   before do
     project.team << [user, :master]
 
-    gitlab_sign_in user
+    sign_in user
 
     visit edit_project_merge_request_path(project, merge_request)
   end

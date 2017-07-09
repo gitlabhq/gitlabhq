@@ -68,7 +68,7 @@ feature 'Contributions Calendar', :feature, :js do
   end
 
   before do
-    gitlab_sign_in user
+    sign_in user
   end
 
   describe 'calendar day selection' do

@@ -6,7 +6,7 @@ feature 'Projects > Members > Member cannot request access to his project', feat
 
   background do
     project.team << [member, :developer]
-    gitlab_sign_in(member)
+    sign_in(member)
     visit project_path(project)
   end
 

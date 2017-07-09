@@ -6,7 +6,7 @@ feature 'Project', feature: true do
     let(:path)    { project_path(project) }
 
     before do
-      gitlab_sign_in(:admin)
+      sign_in(create(:admin))
     end
 
     it 'parses Markdown' do
@@ -39,7 +39,7 @@ feature 'Project', feature: true do
     let(:project) { create(:empty_project, namespace: user.namespace) }
 
     before do
-      gitlab_sign_in user
+      sign_in user
       create(:forked_project_link, forked_to_project: project)
       visit edit_project_path(project)
     end
@@ -60,7 +60,7 @@ feature 'Project', feature: true do
     let(:project) { create(:empty_project, namespace: user.namespace, name: 'project1') }
 
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
       project.team << [user, :master]
       visit edit_project_path(project)
     end
@@ -79,7 +79,7 @@ feature 'Project', feature: true do
     let(:project) { create(:empty_project, namespace: user.namespace) }
 
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
       project.add_user(user, Gitlab::Access::MASTER)
       visit project_path(project)
     end
@@ -98,7 +98,7 @@ feature 'Project', feature: true do
 
     context 'on issues page', js: true do
       before do
-        gitlab_sign_in(user)
+        sign_in(user)
         project.add_user(user, Gitlab::Access::MASTER)
         project2.add_user(user, Gitlab::Access::MASTER)
         visit project_issue_path(project, issue)
@@ -123,7 +123,7 @@ feature 'Project', feature: true do
 
     before do
       project.team << [user, :master]
-      gitlab_sign_in user
+      sign_in user
       visit project_path(project)
     end
 

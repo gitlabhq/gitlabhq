@@ -5,7 +5,7 @@ feature "Admin Health Check", feature: true do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe '#show' do

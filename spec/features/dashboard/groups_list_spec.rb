@@ -10,7 +10,7 @@ describe 'Dashboard Groups page', js: true, feature: true do
     group.add_owner(user)
     nested_group.add_owner(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
     visit dashboard_groups_path
 
     expect(page).to have_content(group.full_name)
@@ -23,7 +23,7 @@ describe 'Dashboard Groups page', js: true, feature: true do
       group.add_owner(user)
       nested_group.add_owner(user)
 
-      gitlab_sign_in(user)
+      sign_in(user)
 
       visit dashboard_groups_path
     end
@@ -58,7 +58,7 @@ describe 'Dashboard Groups page', js: true, feature: true do
       group.add_owner(user)
       subgroup.add_owner(user)
 
-      gitlab_sign_in(user)
+      sign_in(user)
 
       visit dashboard_groups_path
     end
@@ -98,7 +98,7 @@ describe 'Dashboard Groups page', js: true, feature: true do
 
       allow(Kaminari.config).to receive(:default_per_page).and_return(1)
 
-      gitlab_sign_in(user)
+      sign_in(user)
       visit dashboard_groups_path
     end
 
