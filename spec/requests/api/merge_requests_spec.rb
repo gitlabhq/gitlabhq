@@ -36,6 +36,18 @@ describe API::MergeRequests do
     end
 
     context "when authenticated" do
+      it 'avoids N+1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/projects/#{project.id}/merge_requests", user)
+        end.count
+
+        create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
+
+        expect do
+          get api("/projects/#{project.id}/merge_requests", user)
+        end.not_to exceed_query_limit(control_count)
+      end
+
       it "returns an array of all merge_requests" do
         get api("/projects/#{project.id}/merge_requests", user)
 
