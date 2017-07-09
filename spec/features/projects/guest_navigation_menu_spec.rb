@@ -7,7 +7,7 @@ describe 'Guest navigation menu' do
   before do
     project.team << [guest, :guest]
 
-    gitlab_sign_in(guest)
+    sign_in(guest)
   end
 
   it 'shows allowed tabs only' do

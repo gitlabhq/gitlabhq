@@ -7,7 +7,7 @@ feature 'project owner creates a license file', feature: true, js: true do
     project.repository.delete_file(project_master, 'LICENSE',
       message: 'Remove LICENSE', branch_name: 'master')
     project.team << [project_master, :master]
-    gitlab_sign_in(project_master)
+    sign_in(project_master)
     visit project_path(project)
   end
 

@@ -8,7 +8,7 @@ feature 'Projects > Members > Sorting', feature: true do
   background do
     create(:project_member, :developer, user: developer, project: project, created_at: 3.days.ago)
 
-    gitlab_sign_in(master)
+    sign_in(master)
   end
 
   scenario 'sorts alphabetically by default' do

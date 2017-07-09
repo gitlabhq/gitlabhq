@@ -23,7 +23,7 @@ describe 'Dropdown assignee', :feature, :js do
     project.team << [user, :master]
     project.team << [user_john, :master]
     project.team << [user_jacob, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
     create(:issue, project: project)
 
     visit project_issues_path(project)

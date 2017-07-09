@@ -7,7 +7,7 @@ describe 'Merge request', :feature, :js do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'new merge request' do
@@ -19,8 +19,7 @@ describe 'Merge request', :feature, :js do
           target_project_id: project.id,
           source_branch: 'feature',
           target_branch: 'master'
-        }
-      )
+        })
     end
 
     it 'shows widget status after creating new merge request' do
@@ -229,8 +228,8 @@ describe 'Merge request', :feature, :js do
 
     before do
       project.team << [user2, :master]
-      gitlab_sign_out
-      gitlab_sign_in user2
+      sign_out(:user)
+      sign_in(user2)
       merge_request.update(target_project: fork_project)
       visit project_merge_request_path(project, merge_request)
     end

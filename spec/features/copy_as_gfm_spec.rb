@@ -6,7 +6,7 @@ describe 'Copy as GFM', feature: true, js: true do
   include ActionView::Helpers::JavaScriptHelper
 
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe 'Copying rendered GFM' do

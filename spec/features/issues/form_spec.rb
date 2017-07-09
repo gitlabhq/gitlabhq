@@ -17,7 +17,7 @@ describe 'New/edit issue', :feature, :js do
 
     project.team << [user, :master]
     project.team << [user2, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'new issue' do

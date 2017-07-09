@@ -6,7 +6,7 @@ feature 'CI shared runner limits', feature: true do
   let(:group) { create(:group) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when project member' do

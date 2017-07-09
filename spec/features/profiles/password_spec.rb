@@ -4,7 +4,7 @@ describe 'Profile > Password', feature: true do
   let(:user) { create(:user, password_automatically_set: true) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
     visit edit_profile_password_path
   end
 

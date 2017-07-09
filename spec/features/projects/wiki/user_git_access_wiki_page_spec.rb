@@ -13,7 +13,7 @@ describe 'Projects > Wiki > User views Git access wiki page', :feature do
   end
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   scenario 'Visit Wiki Page Current Commit' do

@@ -14,7 +14,7 @@ feature 'Editing file blob', feature: true, js: true do
 
     before do
       project.team << [user, role]
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     def edit_and_commit
@@ -92,7 +92,7 @@ feature 'Editing file blob', feature: true, js: true do
         project.team << [user, :developer]
         project.repository.add_branch(user, protected_branch, 'master')
         create(:protected_branch, project: project, name: protected_branch)
-        gitlab_sign_in(user)
+        sign_in(user)
       end
 
       context 'on some branch' do
@@ -122,7 +122,7 @@ feature 'Editing file blob', feature: true, js: true do
 
       before do
         project.team << [user, :master]
-        gitlab_sign_in(user)
+        sign_in(user)
         visit project_edit_blob_path(project, tree_join(branch, file_path))
       end
 

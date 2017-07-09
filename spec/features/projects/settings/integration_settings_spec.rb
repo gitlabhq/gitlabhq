@@ -7,7 +7,7 @@ feature 'Integration settings', feature: true do
   let(:integrations_path) { project_settings_integrations_path(project) }
 
   background do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, role]
   end
 

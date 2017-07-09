@@ -27,7 +27,7 @@ feature 'Issue notes polling', :feature, :js do
       let!(:existing_note) { create(:note, noteable: issue, project: project, author: user, note: note_text) }
 
       before do
-        gitlab_sign_in(user)
+        sign_in(user)
         visit project_issue_path(project, issue)
       end
 
@@ -93,7 +93,7 @@ feature 'Issue notes polling', :feature, :js do
       let!(:existing_note) { create(:note, noteable: issue, project: project, author: user1, note: note_text) }
 
       before do
-        gitlab_sign_in(user2)
+        sign_in(user2)
         visit project_issue_path(project, issue)
       end
 
@@ -114,7 +114,7 @@ feature 'Issue notes polling', :feature, :js do
       let!(:system_note) { create(:system_note, noteable: issue, project: project, author: user, note: note_text) }
 
       before do
-        gitlab_sign_in(user)
+        sign_in(user)
         visit project_issue_path(project, issue)
       end
 

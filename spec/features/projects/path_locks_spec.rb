@@ -9,7 +9,7 @@ feature 'Path Locks', feature: true, js: true do
     allow(project).to receive(:feature_available?).with(:file_locks) { true }
 
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit tree_path
   end

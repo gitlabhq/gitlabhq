@@ -48,7 +48,7 @@ feature 'Squashing merge requests', js: true, feature: true do
     allow_any_instance_of(MergeRequest).to receive(:force_remove_source_branch?).and_return(false)
     project.team << [user, :master]
 
-    gitlab_sign_in user
+    sign_in user
   end
 
   context 'when the MR has only one commit' do

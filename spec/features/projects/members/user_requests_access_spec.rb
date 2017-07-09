@@ -6,7 +6,7 @@ feature 'Projects > Members > User requests access', feature: true do
   let(:master) { project.owner }
 
   background do
-    gitlab_sign_in(user)
+    sign_in(user)
     visit project_path(project)
   end
 

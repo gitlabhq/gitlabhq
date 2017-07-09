@@ -10,7 +10,7 @@ feature 'Pages', feature: true do
 
     project.team << [user, role]
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   shared_examples 'no pages deployed' do

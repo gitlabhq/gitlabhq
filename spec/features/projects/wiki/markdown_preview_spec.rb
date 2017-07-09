@@ -16,7 +16,7 @@ feature 'Projects > Wiki > User previews markdown changes', feature: true, js: t
     project.team << [user, :master]
     WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit project_path(project)
     find('.shortcuts-wiki').trigger('click')

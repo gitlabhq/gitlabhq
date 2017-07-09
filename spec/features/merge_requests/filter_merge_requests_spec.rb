@@ -14,7 +14,7 @@ describe 'Filter merge requests', feature: true do
   before do
     project.team << [user, :master]
     group.add_developer(user)
-    gitlab_sign_in(user)
+    sign_in(user)
     create(:merge_request, source_project: project, target_project: project)
 
     visit project_merge_requests_path(project)

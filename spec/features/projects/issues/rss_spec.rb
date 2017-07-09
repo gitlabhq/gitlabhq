@@ -9,10 +9,11 @@ feature 'Project Issues RSS' do
   end
 
   context 'when signed in' do
+    let(:user) { create(:user) }
+
     before do
-      user = create(:user)
       project.team << [user, :developer]
-      gitlab_sign_in(user)
+      sign_in(user)
       visit path
     end
 

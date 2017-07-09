@@ -7,7 +7,7 @@ feature 'Project mirror', feature: true do
   describe 'On a project', js: true do
     before do
       project.team << [user, :master]
-      gitlab_sign_in user
+      sign_in user
     end
 
     context 'with Update now button' do
