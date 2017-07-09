@@ -1,4 +1,6 @@
 module LoginHelpers
+  include DeviseHelpers
+
   # Internal: Log in as a specific user or a new user of a specific role
   #
   # user_or_role - User object, or a role to create (e.g., :admin, :user)
@@ -106,7 +108,7 @@ module LoginHelpers
   end
 
   def stub_omniauth_saml_config(messages)
-    Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
+    set_devise_mapping(context: Rails.application)
     Rails.application.routes.disable_clear_and_finalize = true
     Rails.application.routes.draw do
       post '/users/auth/saml' => 'omniauth_callbacks#saml'
