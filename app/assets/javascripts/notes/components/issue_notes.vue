@@ -83,7 +83,10 @@ export default {
         const { awardName, noteId } = data;
         const endpoint = this.notesById[noteId].toggle_award_path;
 
-        this.$store.dispatch('toggleAward', { endpoint, awardName, noteId });
+        this.$store.dispatch('toggleAward', { endpoint, awardName, noteId })
+          .catch(() => {
+            new Flash('Something went wrong on our end.'); // eslint-disable-line
+          });
       });
     },
     checkLocationHash() {
