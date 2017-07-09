@@ -186,7 +186,7 @@ const actions = {
       });
   },
   toggleAward(context, data) {
-    const { endpoint, awardName, noteId } = data;
+    const { endpoint, awardName, noteId, skipMutalityCheck } = data;
     const note = context.getters.notesById[noteId];
 
     return service
@@ -194,6 +194,24 @@ const actions = {
       .then(res => res.json())
       .then(() => {
         context.commit('toggleAward', { awardName, note });
+
+        if (!skipMutalityCheck && (awardName === 'thumbsup' || awardName === 'thumbsdown')) {
+          const counterAward = awardName === 'thumbsup' ? 'thumbsdown' : 'thumbsup';
+          const note = context.getters.notesById[noteId];
+          let amIAwarded = false;
+
+          note.award_emoji.forEach((a) => {
+            if (a.name === counterAward && a.user.id === window.gon.current_user_id) {
+              amIAwarded = true;
+            }
+          });
+
+          if (amIAwarded) {
+            data.awardName = counterAward;
+            data.skipMutalityCheck = true;
+            context.dispatch('toggleAward', data);
+          }
+        }
       });
   },
 };
