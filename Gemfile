@@ -251,7 +251,6 @@ gem 'jquery-rails', '~> 4.1.0'
 gem 'request_store', '~> 1.3'
 gem 'select2-rails', '~> 3.5.9'
 gem 'virtus', '~> 1.0.1'
-gem 'net-ssh', '~> 3.0.1'
 gem 'base32', '~> 0.3.0'
 
 # Sentry integration
