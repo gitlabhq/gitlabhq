@@ -3,6 +3,8 @@ module Banzai
     # HTML filter that replaces external issue tracker references with links.
     # References are ignored if the project doesn't use an external issue
     # tracker.
+    #
+    # This filter does not support cross-project references.
     class ExternalIssueReferenceFilter < ReferenceFilter
       self.reference_type = :external_issue
 
@@ -87,7 +89,7 @@ module Banzai
       end
 
       def issue_reference_pattern
-        external_issues_cached(:issue_reference_pattern)
+        external_issues_cached(:external_issue_reference_pattern)
       end
 
       private

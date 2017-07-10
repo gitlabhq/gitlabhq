@@ -677,8 +677,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def issue_reference_pattern
-    issues_tracker.reference_pattern
+  def external_issue_reference_pattern
+    external_issue_tracker.class.reference_pattern
   end
 
   def default_issues_tracker?
