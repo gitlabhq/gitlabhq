@@ -317,4 +317,42 @@ describe Gitlab::Workhorse, lib: true do
       end
     end
   end
+
+  describe '.send_git_blob' do
+    include FakeBlobHelpers
+
+    let(:blob) { fake_blob }
+
+    subject { described_class.send_git_blob(repository, blob) }
+
+    context 'when Gitaly project_raw_show feature is enabled' do
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-blob')
+        expect(params).to eq({
+          'GitalyServer' => {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          },
+          'GetBlobRequest' => {
+            repository: repository.gitaly_repository.to_h,
+            oid: blob.id,
+            limit: -1
+          }
+        }.deep_stringify_keys)
+      end
+    end
+
+    context 'when Gitaly project_raw_show feature is disabled', skip_gitaly_mock: true do
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-blob')
+        expect(params).to eq('RepoPath' => repository.path_to_repo, 'BlobId' => blob.id)
+      end
+    end
+  end
 end
