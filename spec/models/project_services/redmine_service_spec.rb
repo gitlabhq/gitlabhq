@@ -27,11 +27,11 @@ describe RedmineService, models: true do
     end
   end
 
-  describe '#reference_pattern' do
+  describe '.reference_pattern' do
     it_behaves_like 'allows project key on reference pattern'
 
     it 'does allow # on the reference' do
-      expect(subject.reference_pattern.match('#123')[:issue]).to eq('123')
+      expect(described_class.reference_pattern.match('#123')[:issue]).to eq('123')
     end
   end
 end

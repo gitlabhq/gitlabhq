@@ -86,12 +86,12 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
 
       it 'queries the collection on the first call' do
         expect_any_instance_of(Project).to receive(:default_issues_tracker?).once.and_call_original
-        expect_any_instance_of(Project).to receive(:issue_reference_pattern).once.and_call_original
+        expect_any_instance_of(Project).to receive(:external_issue_reference_pattern).once.and_call_original
 
         not_cached = reference_filter.call("look for #{reference}", { project: project })
 
         expect_any_instance_of(Project).not_to receive(:default_issues_tracker?)
-        expect_any_instance_of(Project).not_to receive(:issue_reference_pattern)
+        expect_any_instance_of(Project).not_to receive(:external_issue_reference_pattern)
 
         cached = reference_filter.call("look for #{reference}", { project: project })
 
