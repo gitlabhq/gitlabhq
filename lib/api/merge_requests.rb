@@ -44,6 +44,7 @@ module API
           args[:label_name] = args.delete(:labels)
 
           merge_requests = MergeRequestsFinder.new(current_user, args).execute
+          merge_requests = paginate(merge_requests)
                              .preload(:notes, :target_project, :author, :assignee, :milestone, :merge_request_diff, :labels)
 
           merge_requests.reorder(args[:order_by] => args[:sort])
@@ -85,7 +86,7 @@ module API
         merge_requests = find_merge_requests(project_id: user_project.id)
         issuable_metadata = issuable_meta_data(merge_requests, 'MergeRequest')
 
-        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project, issuable_metadata: issuable_metadata
+        present merge_requests, with: Entities::MergeRequestBasic, current_user: current_user, project: user_project, issuable_metadata: issuable_metadata
       end
 
       desc 'Create a merge request' do
