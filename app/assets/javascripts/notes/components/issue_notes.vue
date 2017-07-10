@@ -94,12 +94,8 @@ export default {
       const $el = $(`#${hash}`);
 
       if (hash && $el) {
-        const isInViewport = gl.utils.isInViewport($el[0]);
         this.$store.commit('setTargetNoteHash', hash);
-
-        if (!isInViewport) {
-          gl.utils.scrollToElement($el);
-        }
+        this.$store.dispatch('scrollToNoteIfNeeded', $el);
       }
     },
   },

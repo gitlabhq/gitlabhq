@@ -214,6 +214,13 @@ const actions = {
         }
       });
   },
+  scrollToNoteIfNeeded(context, el) {
+    const isInViewport = gl.utils.isInViewport(el[0]);
+
+    if (!isInViewport) {
+      gl.utils.scrollToElement(el);
+    }
+  },
 };
 
 export default {
