@@ -55,7 +55,7 @@ describe 'Edit Project Settings', feature: true do
         project.save!
         allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(JiraService.new)
 
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
 
         expect(page).not_to have_selector('.shortcuts-issues')
       end

@@ -269,10 +269,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def module_enabled
-    render_404 unless @project.feature_available?(:issues, current_user)
-  end
-
   def issue_params
     params.require(:issue).permit(*issue_params_attributes)
   end
