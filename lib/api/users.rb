@@ -3,14 +3,11 @@ module API
     include PaginationParams
     include APIGuard
 
-<<<<<<< HEAD
+    allow_access_with_scope :read_user, if: -> (request) { request.get? }
+
     before do
-      allow_access_with_scope :read_user if request.get?
       authenticate!
     end
-=======
-    allow_access_with_scope :read_user, if: -> (request) { request.get? }
->>>>>>> 9876895... Merge branch '33580-fix-api-scoping' into 'master'
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       helpers do
