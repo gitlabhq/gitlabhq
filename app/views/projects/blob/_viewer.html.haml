@@ -11,4 +11,10 @@
   - else
     - viewer.prepare!
 
-    = render 'projects/tree/tree_content'
+    -# In the rare case where the first kilobyte of the file looks like text,
+    -# but the file turns out to actually be binary after loading all data,
+    -# we fall back on the binary Download viewer.
+    - viewer = BlobViewer::Download.new(viewer.blob) if viewer.binary_detected_after_load?
+
+    = render viewer.partial_path, viewer: viewer
+

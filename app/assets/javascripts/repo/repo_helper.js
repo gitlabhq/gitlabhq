@@ -61,6 +61,13 @@ let RepoHelper = {
     return newList;
   },
 
+  resetBinaryTypes() {
+    let s = '';
+    for(s in Store.binaryTypes) {
+      Store.binaryTypes[s] = false;
+    }
+  },
+
   setActiveFile(file) {
     Store.openedFiles = Store.openedFiles.map((openedFile) => {
       openedFile.active = file.url === openedFile.url;
@@ -73,6 +80,7 @@ let RepoHelper = {
       Store.blobRaw = file.base64;
       console.log('binary', file)
     } else {
+      console.log('f', file)
       Store.blobRaw = file.plain;
     }
     if(!file.loading){
@@ -150,10 +158,8 @@ let RepoHelper = {
     // may be tree or file.
   getContent(file) {
     const loadingData = this.setLoading(true);
-    console.log('loading data', loadingData)
     Service.getContent()
     .then((response) => {
-      console.log('loadddd')
       let data = response.data;
       this.setLoading(false, loadingData);
       Store.isTree = this.isTree(data);
@@ -185,7 +191,6 @@ let RepoHelper = {
         let newDirectory = this.dataToListOfFiles(data);
         Store.files = this.insertNewFilesIntoParentDir(file, Store.files, newDirectory);
         Store.prevURL = this.blobURLtoParent(Service.url);
-        console.log('Store.prevURL',Store.prevURL);
       }
     })
     .catch((response)=> {

@@ -120,3 +120,9 @@ of the body element here, we negate cascading side effects but allow momentum sc
 .page-with-sidebar {
   -webkit-overflow-scrolling: auto;
 }
+.truncate {
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

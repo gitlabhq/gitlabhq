@@ -10,14 +10,15 @@ let RepoStore = {
   blobRaw: '',
   blobRendered: '',
   openedFiles: [],
-  activeFile: '',
+  activeFile: {},
   files: [],
   binary: false,
   binaryMimeType: '',
   //scroll bar space for windows
   scrollWidth: 0,
   binaryTypes: {
-    png: false
+    png: false,
+    markdown: false
   },
   loading: {
     tree: false,

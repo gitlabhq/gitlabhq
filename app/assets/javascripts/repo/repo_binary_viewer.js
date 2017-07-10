@@ -18,9 +18,27 @@ export default class RepoBinaryViewer {
         }
       },
 
+      methods: {
+        supportedNonBinaryFileType(fileExt) {
+          switch(fileExt) {
+            case 'md':
+              this.binaryTypes.markdown = true;
+              return true;
+              break;
+            default:
+              return false;
+          }
+        }
+      },
+
       watch: {
         blobRaw() {
           if(!this.binary) return;
+          let supported = supportedNonBinaryFileType();
+          if(supported) {
+
+            return;
+          }
           switch(this.binaryMimeType) {
             case 'image/png':
               this.binaryTypes.png = true;

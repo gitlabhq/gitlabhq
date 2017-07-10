@@ -2,18 +2,16 @@
   display: none;
 }
 
-.ellipsis {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 300px;
-}
-
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s
 }
+
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
   opacity: 0
+}
+
+.commit-message {
+  @include truncate(250px);
 }
 
 .tree-content-holder {
@@ -98,15 +96,66 @@ header {
 
   tr {
     -webkit-animation: fadein 0.5s;
+    &.repo-file-options td {
+      padding: 0;
+      border-top: none;
+      background: $gray-light;
+      width: 190px;
+      display: inline-block;
+      border-top: none;
+
+      &:hover {
+        .title {
+          width: 105px;
+        }
+
+        ul {
+          display: inline-block;  
+        }
+        
+      }
+
+      .title {
+        display: inline-block;
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: $gray-darkest;
+        width: 185px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        padding: 2px 16px;
+      }
+      ul {
+        display: none;
+        float: right;
+        margin: 0 10px 0 0;
+        padding: 1px 0;
+
+        li {
+          display: inline-block;
+          padding: 0px 2px;
+          border-bottom: none;
+        }
+      }
+    }
+    .fa {
+      margin-right: 5px;
+    }
   }
 
   a {
     color: $almost-black;
+    display: inline-block;
+    vertical-align: middle;
   }
 
   ul {
     list-style-type: none;
     padding: 0;
+
     li {
       border-bottom: 1px solid $border-gray-normal;
       padding: 10px 20px;
