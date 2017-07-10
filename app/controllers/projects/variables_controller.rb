@@ -1,6 +1,7 @@
 class Projects::VariablesController < Projects::ApplicationController
   prepend ::EE::Projects::VariablesController
 
+  before_action :variable, only: [:show, :update, :destroy]
   before_action :authorize_admin_build!
 
   layout 'project_settings'
@@ -10,37 +11,39 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def show
-    @variable = @project.variables.find(params[:id])
   end
 
   def update
-    @variable = @project.variables.find(params[:id])
-
-    if @variable.update_attributes(variable_params)
-      redirect_to project_variables_path(project), notice: 'Variable was successfully updated.'
+    if variable.update(variable_params)
+      redirect_to project_variables_path(project),
+                  notice: 'Variable was successfully updated.'
     else
-      render action: "show"
+      render "show"
     end
   end
 
   def create
-    @variable = @project.variables.new(variable_params)
+    @variable = project.variables.create(variable_params)
+      .present(current_user: current_user)
 
-    if @variable.save
-      flash[:notice] = 'Variables were successfully updated.'
-      redirect_to project_settings_ci_cd_path(project)
+    if @variable.persisted?
+      redirect_to project_settings_ci_cd_path(project),
+                  notice: 'Variable was successfully created.'
     else
       render "show"
     end
   end
 
   def destroy
-    @key = @project.variables.find(params[:id])
-    @key.destroy
-
-    redirect_to project_settings_ci_cd_path(project),
-                status: 302,
-                notice: 'Variable was successfully removed.'
+    if variable.destroy
+      redirect_to project_settings_ci_cd_path(project),
+                  status: 302,
+                  notice: 'Variable was successfully removed.'
+    else
+      redirect_to project_settings_ci_cd_path(project),
+                  status: 302,
+                  notice: 'Failed to remove the variable.'
+    end
   end
 
   private
@@ -51,5 +54,9 @@ class Projects::VariablesController < Projects::ApplicationController
 
   def variable_params_attributes
     %i[id key value protected _destroy]
+  end
+
+  def variable
+    @variable ||= project.variables.find(params[:id]).present(current_user: current_user)
   end
 end

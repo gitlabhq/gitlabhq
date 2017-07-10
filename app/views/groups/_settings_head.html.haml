@@ -13,4 +13,9 @@
             %span
               Projects
 
+        = nav_link(controller: :ci_cd) do
+          = link_to group_settings_ci_cd_path(@group), title: 'Pipelines' do
+            %span
+              Pipelines
+
         = render 'groups/ee/settings_nav'

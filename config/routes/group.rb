@@ -53,6 +53,14 @@ scope(path: 'groups/*group_id',
   resources :labels, except: [:show] do
     post :toggle_subscription, on: :member
   end
+
+  scope path: '-' do
+    namespace :settings do
+      resource :ci_cd, only: [:show], controller: 'ci_cd'
+    end
+
+    resources :variables, only: [:index, :show, :update, :create, :destroy]
+  end
 end
 
 scope(path: 'groups/*id',
