@@ -461,49 +461,47 @@ describe Group, models: true do
   describe '#secret_variables_for' do
     let(:project) { create(:empty_project, group: group) }
 
-    context 'when protected and unprotected variables has existsed' do
-      let!(:secret_variable) do
-        create(:ci_group_variable, value: 'secret', group: group)
+    let!(:secret_variable) do
+      create(:ci_group_variable, value: 'secret', group: group)
+    end
+
+    let!(:protected_variable) do
+      create(:ci_group_variable, :protected, value: 'protected', group: group)
+    end
+
+    subject { group.secret_variables_for('ref', project) }
+
+    shared_examples 'ref is protected' do
+      it 'contains all the variables' do
+        is_expected.to contain_exactly(secret_variable, protected_variable)
+      end
+    end
+
+    context 'when the ref is not protected' do
+      before do
+        stub_application_setting(
+          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
       end
 
-      let!(:protected_variable) do
-        create(:ci_group_variable, :protected, value: 'protected', group: group)
+      it 'contains only the secret variables' do
+        is_expected.to contain_exactly(secret_variable)
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        create(:protected_branch, name: 'ref', project: project)
       end
 
-      subject { group.secret_variables_for('ref', project) }
+      it_behaves_like 'ref is protected'
+    end
 
-      shared_examples 'ref is protected' do
-        it 'contains all the variables' do
-          is_expected.to contain_exactly(secret_variable, protected_variable)
-        end
+    context 'when the ref is a protected tag' do
+      before do
+        create(:protected_tag, name: 'ref', project: project)
       end
 
-      context 'when the ref is not protected' do
-        before do
-          stub_application_setting(
-            default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-        end
-
-        it 'contains only the secret variables' do
-          is_expected.to contain_exactly(secret_variable)
-        end
-      end
-
-      context 'when the ref is a protected branch' do
-        before do
-          create(:protected_branch, name: 'ref', project: project)
-        end
-
-        it_behaves_like 'ref is protected'
-      end
-
-      context 'when the ref is a protected tag' do
-        before do
-          create(:protected_tag, name: 'ref', project: project)
-        end
-
-        it_behaves_like 'ref is protected'
-      end
+      it_behaves_like 'ref is protected'
     end
 
     context 'when group has children', :postgresql do
