@@ -1,0 +1,3 @@
+development: unix:/path/to/old/redis.cache.sock
+test: unix:/path/to/old/redis.cache.sock
+production: unix:/path/to/old/redis.cache.sock

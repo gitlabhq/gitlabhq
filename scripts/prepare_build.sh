@@ -12,9 +12,6 @@ fi
 # gems could not be found under some circumstance. No idea why, hours wasted.
 retry gem install knapsack fog-aws mime-types
 
-cp config/resque.yml.example config/resque.yml
-sed -i 's/localhost/redis/g' config/resque.yml
-
 cp config/gitlab.yml.example config/gitlab.yml
 
 # Determine the database by looking at the job name.
@@ -47,6 +44,15 @@ else # Assume it's mysql
     sed -i 's/password:.*/password:/g' config/database_geo.yml
     sed -i 's/# host:.*/host: mysql/g' config/database_geo.yml
 fi
+
+cp config/redis.cache.yml.example config/redis.cache.yml
+sed -i 's/localhost/redis/g' config/redis.cache.yml
+
+cp config/redis.queues.yml.example config/redis.queues.yml
+sed -i 's/localhost/redis/g' config/redis.queues.yml
+
+cp config/redis.shared_state.yml.example config/redis.shared_state.yml
+sed -i 's/localhost/redis/g' config/redis.shared_state.yml
 
 if [ "$SETUP_DB" != "false" ]; then
     bundle exec rake db:drop db:create db:schema:load db:migrate

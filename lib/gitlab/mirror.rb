@@ -28,18 +28,18 @@ module Gitlab
       end
 
       def available_capacity
-        current_capacity = Gitlab::Redis.with { |redis| redis.scard(PULL_CAPACITY_KEY) }
+        current_capacity = Gitlab::Redis::SharedState.with { |redis| redis.scard(PULL_CAPACITY_KEY) }
 
         max_capacity - current_capacity.to_i
       end
 
       def increment_capacity(project_id)
-        Gitlab::Redis.with { |redis| redis.sadd(PULL_CAPACITY_KEY, project_id) }
+        Gitlab::Redis::SharedState.with { |redis| redis.sadd(PULL_CAPACITY_KEY, project_id) }
       end
 
       # We do not want negative capacity
       def decrement_capacity(project_id)
-        Gitlab::Redis.with { |redis| redis.srem(PULL_CAPACITY_KEY, project_id) }
+        Gitlab::Redis::SharedState.with { |redis| redis.srem(PULL_CAPACITY_KEY, project_id) }
       end
 
       def max_delay

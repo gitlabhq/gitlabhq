@@ -19,14 +19,14 @@ describe Gitlab::CurrentSettings do
         expect(current_application_settings).to be_a(ApplicationSetting)
       end
 
-      it 'falls back to DB if Redis returns an empty value' do
+      it 'falls back to DB if Caching returns an empty value' do
         expect(ApplicationSetting).to receive(:cached).and_return(nil)
         expect(ApplicationSetting).to receive(:last).and_call_original
 
         expect(current_application_settings).to be_a(ApplicationSetting)
       end
 
-      it 'falls back to DB if Redis fails' do
+      it 'falls back to DB if Caching fails' do
         expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
         expect(ApplicationSetting).to receive(:last).and_call_original
 
