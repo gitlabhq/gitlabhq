@@ -19,7 +19,7 @@ class Projects::ReleasesController < Projects::ApplicationController
       release.destroy
     end
 
-    redirect_to namespace_project_tag_path(@project.namespace, @project, @tag.name)
+    redirect_to project_tag_path(@project, @tag.name)
   end
 
   private

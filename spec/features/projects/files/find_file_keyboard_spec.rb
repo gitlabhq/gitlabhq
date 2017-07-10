@@ -6,9 +6,9 @@ feature 'Find file keyboard shortcuts', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
 
-    visit namespace_project_find_file_path(project.namespace, project, project.repository.root_ref)
+    visit project_find_file_path(project, project.repository.root_ref)
 
     wait_for_requests
   end

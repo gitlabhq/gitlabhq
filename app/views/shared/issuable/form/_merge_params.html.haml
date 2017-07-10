@@ -11,8 +11,7 @@
   .col-sm-10.col-sm-offset-2
     - if issuable.can_remove_source_branch?(current_user)
       .checkbox
-        - initial_checkbox_value = issuable.merge_params.key?('force_remove_source_branch') ? issuable.force_remove_source_branch? : true
         = label_tag 'merge_request[force_remove_source_branch]' do
           = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
-          = check_box_tag 'merge_request[force_remove_source_branch]', '1', initial_checkbox_value
+          = check_box_tag 'merge_request[force_remove_source_branch]', '1', issuable.force_remove_source_branch?
           Remove source branch when merge request is accepted.

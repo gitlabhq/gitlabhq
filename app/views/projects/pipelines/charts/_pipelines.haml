@@ -1,29 +1,29 @@
-%h4 Pipelines charts
+%h4= _("Pipelines charts")
 %p
   &nbsp;
   %span.cgreen
     = icon("circle")
-    success
+    = s_("Pipeline|success")
   &nbsp;
   %span.cgray
     = icon("circle")
-    all
+    = s_("Pipeline|all")
 
 .prepend-top-default
   %p.light
-    Jobs for last week
+    = _("Jobs for last week")
     (#{date_from_to(Date.today - 7.days, Date.today)})
   %canvas#weekChart{ height: 200 }
 
 .prepend-top-default
   %p.light
-    Jobs for last month
+    = _("Jobs for last month")
     (#{date_from_to(Date.today - 30.days, Date.today)})
   %canvas#monthChart{ height: 200 }
 
 .prepend-top-default
   %p.light
-    Jobs for last year
+    = _("Jobs for last year")
   %canvas#yearChart.padded{ height: 250 }
 
 - [:week, :month, :year].each do |scope|

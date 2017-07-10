@@ -7,8 +7,8 @@ feature 'Projects > Members > Group member cannot leave group project', feature:
 
   background do
     group.add_developer(user)
-    gitlab_sign_in(user)
-    visit namespace_project_path(project.namespace, project)
+    sign_in(user)
+    visit project_path(project)
   end
 
   scenario 'user does not see a "Leave project" link' do

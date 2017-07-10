@@ -7,14 +7,14 @@ feature 'Repository settings', feature: true do
 
   background do
     project.team << [user, role]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'for developer' do
     given(:role) { :developer }
 
     scenario 'is not allowed to view' do
-      visit namespace_project_settings_repository_path(project.namespace, project)
+      visit project_settings_repository_path(project)
 
       expect(page.status_code).to eq(404)
     end
@@ -32,7 +32,7 @@ feature 'Repository settings', feature: true do
         project.deploy_keys << private_deploy_key
         project.deploy_keys << public_deploy_key
 
-        visit namespace_project_settings_repository_path(project.namespace, project)
+        visit project_settings_repository_path(project)
 
         expect(page.status_code).to eq(200)
         expect(page).to have_content('private_deploy_key')
@@ -40,7 +40,7 @@ feature 'Repository settings', feature: true do
       end
 
       scenario 'add a new deploy key' do
-        visit namespace_project_settings_repository_path(project.namespace, project)
+        visit project_settings_repository_path(project)
 
         fill_in 'deploy_key_title', with: 'new_deploy_key'
         fill_in 'deploy_key_key', with: new_ssh_key
@@ -53,7 +53,7 @@ feature 'Repository settings', feature: true do
 
       scenario 'edit an existing deploy key' do
         project.deploy_keys << private_deploy_key
-        visit namespace_project_settings_repository_path(project.namespace, project)
+        visit project_settings_repository_path(project)
 
         find('li', text: private_deploy_key.title).click_link('Edit')
 
@@ -70,7 +70,7 @@ feature 'Repository settings', feature: true do
         project2.team << [user, role]
         project2.deploy_keys << private_deploy_key
 
-        visit namespace_project_settings_repository_path(project.namespace, project)
+        visit project_settings_repository_path(project)
 
         find('li', text: private_deploy_key.title).click_link('Edit')
 
@@ -84,7 +84,7 @@ feature 'Repository settings', feature: true do
 
       scenario 'remove an existing deploy key' do
         project.deploy_keys << private_deploy_key
-        visit namespace_project_settings_repository_path(project.namespace, project)
+        visit project_settings_repository_path(project)
 
         find('li', text: private_deploy_key.title).click_button('Remove')
 

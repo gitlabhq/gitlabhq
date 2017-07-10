@@ -7,12 +7,12 @@ describe 'Edit Project Settings', feature: true do
   let(:project) { create(:empty_project, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'Project settings section', js: true do
     it 'shows errors for invalid project name' do
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
       fill_in 'project_name_edit', with: 'foo&bar'
       click_button 'Save changes'
       expect(page).to have_field 'project_name_edit', with: 'foo&bar'
@@ -21,7 +21,7 @@ describe 'Edit Project Settings', feature: true do
     end
 
     it 'shows a successful notice when the project is updated' do
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
       fill_in 'project_name_edit', with: 'hello world'
       click_button 'Save changes'
       expect(page).to have_content "Project 'hello world' was successfully updated."
@@ -75,7 +75,7 @@ describe 'Edit Project Settings', feature: true do
       end
 
       specify 'the project is accessible via a redirect from the old path' do
-        old_path = namespace_project_path(project.namespace, project)
+        old_path = project_path(project)
         rename_project(project, path: 'bar')
         new_path = namespace_project_path(project.namespace, 'bar')
         visit old_path
@@ -85,7 +85,7 @@ describe 'Edit Project Settings', feature: true do
 
       context 'and a new project is added with the same path' do
         it 'overrides the redirect' do
-          old_path = namespace_project_path(project.namespace, project)
+          old_path = project_path(project)
           rename_project(project, path: 'bar')
           new_project = create(:empty_project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
           visit old_path
@@ -122,7 +122,7 @@ describe 'Edit Project Settings', feature: true do
     end
 
     specify 'the project is accessible via a redirect from the old path' do
-      old_path = namespace_project_path(project.namespace, project)
+      old_path = project_path(project)
       transfer_project(project, group)
       new_path = namespace_project_path(group, project)
       visit old_path
@@ -132,7 +132,7 @@ describe 'Edit Project Settings', feature: true do
 
     context 'and a new project is added with the same path' do
       it 'overrides the redirect' do
-        old_path = namespace_project_path(project.namespace, project)
+        old_path = project_path(project)
         transfer_project(project, group)
         new_project = create(:empty_project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
         visit old_path
@@ -144,7 +144,7 @@ describe 'Edit Project Settings', feature: true do
 end
 
 def rename_project(project, name: nil, path: nil)
-  visit edit_namespace_project_path(project.namespace, project)
+  visit edit_project_path(project)
   fill_in('project_name', with: name) if name
   fill_in('Path', with: path) if path
   click_button('Rename project')
@@ -153,7 +153,7 @@ def rename_project(project, name: nil, path: nil)
 end
 
 def transfer_project(project, namespace)
-  visit edit_namespace_project_path(project.namespace, project)
+  visit edit_project_path(project)
   select2(namespace.id, from: '#new_namespace_id')
   click_button('Transfer project')
   confirm_transfer_modal

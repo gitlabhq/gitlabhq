@@ -28,7 +28,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
     end
 
     before do
-      gitlab_sign_in user
+      sign_in user
       visit_merge_request(merge_request)
     end
 
@@ -121,7 +121,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
     end
 
     before do
-      gitlab_sign_in user
+      sign_in user
       visit_merge_request(merge_request)
     end
 
@@ -155,6 +155,6 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
   end
 
   def visit_merge_request(merge_request)
-    visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+    visit project_merge_request_path(merge_request.project, merge_request)
   end
 end

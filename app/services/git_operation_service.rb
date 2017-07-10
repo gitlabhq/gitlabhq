@@ -120,7 +120,7 @@ class GitOperationService
   def with_hooks(ref, newrev, oldrev)
     GitHooksService.new.execute(
       user,
-      repository.path_to_repo,
+      repository.project,
       oldrev,
       newrev,
       ref) do |service|

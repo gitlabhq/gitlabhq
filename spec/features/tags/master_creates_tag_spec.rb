@@ -6,12 +6,12 @@ feature 'Master creates tag', feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'from tag list' do
     before do
-      visit namespace_project_tags_path(project.namespace, project)
+      visit project_tags_path(project)
     end
 
     scenario 'with an invalid name displays an error' do
@@ -36,7 +36,7 @@ feature 'Master creates tag', feature: true do
       create_tag_in_form(tag: 'v3.0', ref: 'master', message: "Awesome tag message\n\n- hello\n- world")
 
       expect(current_path).to eq(
-        namespace_project_tag_path(project.namespace, project, 'v3.0'))
+        project_tag_path(project, 'v3.0'))
       expect(page).to have_content 'v3.0'
       page.within 'pre.wrap' do
         expect(page).to have_content "Awesome tag message\n\n- hello\n- world"
@@ -47,7 +47,7 @@ feature 'Master creates tag', feature: true do
       create_tag_in_form(tag: 'v4.0', ref: 'master', desc: "Awesome release notes\n\n- hello\n- world")
 
       expect(current_path).to eq(
-        namespace_project_tag_path(project.namespace, project, 'v4.0'))
+        project_tag_path(project, 'v4.0'))
       expect(page).to have_content 'v4.0'
       page.within '.description' do
         expect(page).to have_content 'Awesome release notes'
@@ -72,7 +72,7 @@ feature 'Master creates tag', feature: true do
 
   context 'from new tag page' do
     before do
-      visit new_namespace_project_tag_path(project.namespace, project)
+      visit new_project_tag_path(project)
     end
 
     it 'description has autocomplete', :js do

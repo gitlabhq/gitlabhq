@@ -70,6 +70,22 @@ module Milestoneish
     due_date && due_date.past?
   end
 
+  def is_group_milestone?
+    false
+  end
+
+  def is_project_milestone?
+    false
+  end
+
+  def is_legacy_group_milestone?
+    false
+  end
+
+  def is_dashboard_milestone?
+    false
+  end
+
   private
 
   def count_issues_by_state(user)

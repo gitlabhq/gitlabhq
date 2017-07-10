@@ -9,8 +9,8 @@ describe 'Create notes on issues', :js, :feature do
 
     before do
       project.team << [user, :developer]
-      gitlab_sign_in(user)
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      sign_in(user)
+      visit project_issue_path(project, issue)
 
       fill_in 'note[note]', with: note_text
       click_button 'Comment'

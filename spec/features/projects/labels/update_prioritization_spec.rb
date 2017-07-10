@@ -14,11 +14,11 @@ feature 'Prioritize labels', feature: true do
     before do
       project.team << [user, :developer]
 
-      gitlab_sign_in user
+      sign_in user
     end
 
     scenario 'user can prioritize a group label', js: true do
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content('Star labels to start sorting by priority')
 
@@ -37,7 +37,7 @@ feature 'Prioritize labels', feature: true do
     scenario 'user can unprioritize a group label', js: true do
       create(:label_priority, project: project, label: feature, priority: 1)
 
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       page.within('.prioritized-labels') do
         expect(page).to have_content('feature')
@@ -53,7 +53,7 @@ feature 'Prioritize labels', feature: true do
     end
 
     scenario 'user can prioritize a project label', js: true do
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content('Star labels to start sorting by priority')
 
@@ -72,7 +72,7 @@ feature 'Prioritize labels', feature: true do
     scenario 'user can unprioritize a project label', js: true do
       create(:label_priority, project: project, label: bug, priority: 1)
 
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       page.within('.prioritized-labels') do
         expect(page).to have_content('bug')
@@ -92,7 +92,7 @@ feature 'Prioritize labels', feature: true do
       create(:label_priority, project: project, label: bug, priority: 1)
       create(:label_priority, project: project, label: feature, priority: 2)
 
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content 'bug'
       expect(page).to have_content 'feature'
@@ -120,9 +120,9 @@ feature 'Prioritize labels', feature: true do
     it 'does not prioritize labels' do
       guest = create(:user)
 
-      gitlab_sign_in guest
+      sign_in guest
 
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content 'bug'
       expect(page).to have_content 'wontfix'
@@ -133,7 +133,7 @@ feature 'Prioritize labels', feature: true do
 
   context 'as a non signed in user' do
     it 'does not prioritize labels' do
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content 'bug'
       expect(page).to have_content 'wontfix'

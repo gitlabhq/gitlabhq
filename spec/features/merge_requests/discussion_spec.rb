@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Merge Request Discussions', feature: true do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe "Diff discussions" do
@@ -27,13 +27,13 @@ feature 'Merge Request Discussions', feature: true do
     let(:outdated_diff_refs) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e").diff_refs }
 
     before(:each) do
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     context 'active discussions' do
       it 'shows a link to the diff' do
         within(".discussion[data-discussion-id='#{active_discussion.id}']") do
-          path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, anchor: active_discussion.line_code)
+          path = diffs_project_merge_request_path(project, merge_request, anchor: active_discussion.line_code)
           expect(page).to have_link('the diff', href: path)
         end
       end
@@ -42,7 +42,7 @@ feature 'Merge Request Discussions', feature: true do
     context 'outdated discussions' do
       it 'shows a link to the outdated diff' do
         within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
-          path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, diff_id: old_merge_request_diff.id, anchor: outdated_discussion.line_code)
+          path = diffs_project_merge_request_path(project, merge_request, diff_id: old_merge_request_diff.id, anchor: outdated_discussion.line_code)
           expect(page).to have_link('an old version of the diff', href: path)
         end
       end
@@ -72,7 +72,7 @@ feature 'Merge Request Discussions', feature: true do
     end
 
     before(:each) do
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     context 'a regular commit comment' do

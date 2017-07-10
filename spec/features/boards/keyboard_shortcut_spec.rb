@@ -6,9 +6,9 @@ describe 'Issue Boards shortcut', feature: true, js: true do
   before do
     create(:board, project: project)
 
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
 
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   it 'takes user to issue board index' do

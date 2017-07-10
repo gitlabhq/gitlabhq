@@ -2,6 +2,32 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.5 (2017-07-05)
+
+- Remove "Remove from board" button from backlog and closed list. !12430
+- Do not delete protected branches when deleting all merged branches. !12624
+- Set default for Remove source branch to false.
+- Prevent accidental deletion of protected MR source branch by repeating checks before actual deletion.
+- Expires full_path cache after a repository is renamed/transferred.
+
+## 9.3.4 (2017-07-03)
+
+- Update gitlab-shell to 5.1.1 !12615
+
+## 9.3.3 (2017-06-30)
+
+- Fix head pipeline stored in merge request for external pipelines. !12478
+- Bring back branches badge to main project page. !12548
+- Fix diff of requirements.txt file by not matching newlines as part of package names.
+- Perform housekeeping only when an import of a fresh project is completed.
+- Fixed issue boards closed list not showing all closed issues.
+- Fixed multi-line markdown tooltip buttons in issue edit form.
+
+## 9.3.2 (2017-06-27)
+
+- API: Fix optional arugments for POST :id/variables. !12474
+- Bump premailer-rails gem to 1.9.7 and its dependencies to prevent network retrieval of assets.
+
 ## 9.3.1 (2017-06-26)
 
 - Fix reversed breadcrumb order for nested groups. !12322

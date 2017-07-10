@@ -8,7 +8,7 @@
 
     - if can?(current_user, :update_container_image, @project)
       .controls.hidden-xs.pull-right
-        = link_to namespace_project_container_registry_path(@project.namespace, @project, image),
+        = link_to project_container_registry_path(@project, image),
                   class: 'btn btn-remove has-tooltip',
                   title: 'Remove repository',
                   data: { confirm: 'Are you sure?' },
@@ -30,4 +30,3 @@
           = render partial: 'tag', collection: image.tags
     - else
       .nothing-here-block No tags in Container Registry for this container image.
-

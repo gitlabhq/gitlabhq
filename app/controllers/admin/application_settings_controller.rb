@@ -71,6 +71,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:disabled_oauth_sign_in_sources] =
       AuthHelper.button_based_providers.map(&:to_s) -
       Array(enabled_oauth_sign_in_sources)
+
+    params[:application_setting][:restricted_visibility_levels]&.delete("")
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
@@ -124,6 +126,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :performance_bar_allowed_group_id,
+      :performance_bar_enabled,
       :recaptcha_enabled,
       :recaptcha_private_key,
       :recaptcha_site_key,

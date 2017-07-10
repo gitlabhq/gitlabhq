@@ -8,17 +8,17 @@ feature 'Projects > Members > Master manages access requests', feature: true do
   background do
     project.request_access(user)
     project.team << [master, :master]
-    gitlab_sign_in(master)
+    sign_in(master)
   end
 
   scenario 'master can see access requests' do
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit project_project_members_path(project)
 
     expect_visible_access_request(project, user)
   end
 
   scenario 'master can grant access' do
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit project_project_members_path(project)
 
     expect_visible_access_request(project, user)
 
@@ -29,7 +29,7 @@ feature 'Projects > Members > Master manages access requests', feature: true do
   end
 
   scenario 'master can deny access' do
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit project_project_members_path(project)
 
     expect_visible_access_request(project, user)
 

@@ -6,7 +6,6 @@ import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
 import '~/diff';
-import '~/single_file_diff';
 import '~/files_comment_button';
 import '~/notes';
 import 'vendor/jquery.scrollTo';
@@ -23,8 +22,8 @@ import 'vendor/jquery.scrollTo';
       $.extend(stubLocation, defaults, stubs || {});
     };
 
-    const inlineChangesTabJsonFixture = 'merge_requests/inline_changes_tab_with_comments.json';
-    const parallelChangesTabJsonFixture = 'merge_requests/parallel_changes_tab_with_comments.json';
+    const inlineChangesTabJsonFixture = 'merge_request_diffs/inline_changes_tab_with_comments.json';
+    const parallelChangesTabJsonFixture = 'merge_request_diffs/parallel_changes_tab_with_comments.json';
     preloadFixtures(
       'merge_requests/merge_request_with_task_list.html.raw',
       'merge_requests/diff_comment.html.raw',
@@ -52,12 +51,8 @@ import 'vendor/jquery.scrollTo';
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
         this.subject = this.class.activateTab;
       });
-      it('shows the first tab when action is show', function () {
+      it('shows the notes tab when action is show', function () {
         this.subject('show');
-        expect($('#notes')).toHaveClass('active');
-      });
-      it('shows the notes tab when action is notes', function () {
-        this.subject('notes');
         expect($('#notes')).toHaveClass('active');
       });
       it('shows the commits tab when action is commits', function () {
@@ -161,7 +156,7 @@ import 'vendor/jquery.scrollTo';
         setLocation({
           pathname: '/foo/bar/merge_requests/1/commits'
         });
-        expect(this.subject('notes')).toBe('/foo/bar/merge_requests/1');
+        expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
         expect(this.subject('diffs')).toBe('/foo/bar/merge_requests/1/diffs');
       });
 
@@ -170,7 +165,7 @@ import 'vendor/jquery.scrollTo';
           pathname: '/foo/bar/merge_requests/1/diffs'
         });
 
-        expect(this.subject('notes')).toBe('/foo/bar/merge_requests/1');
+        expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
         expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
       });
 
@@ -178,7 +173,7 @@ import 'vendor/jquery.scrollTo';
         setLocation({
           pathname: '/foo/bar/merge_requests/1/diffs.html'
         });
-        expect(this.subject('notes')).toBe('/foo/bar/merge_requests/1');
+        expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
         expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
       });
 

@@ -42,9 +42,6 @@ describe('Issuable output', () => {
     }).$mount();
   });
 
-  afterEach(() => {
-  });
-
   it('should render a title/description/edited and update title/description/edited on update', (done) => {
     vm.poll.options.successCallback({
       json() {

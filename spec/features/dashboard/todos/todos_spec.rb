@@ -317,23 +317,6 @@ feature 'Dashboard Todos' do
     end
   end
 
-  context 'User has a Todo in a project pending deletion' do
-    before do
-      deleted_project = create(:project, :public, pending_delete: true)
-      create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author)
-      create(:todo, :mentioned, user: user, project: deleted_project, target: issue, author: author, state: :done)
-      sign_in(user)
-      visit dashboard_todos_path
-    end
-
-    it 'shows "All done" message' do
-      within('.todos-count') { expect(page).to have_content '0' }
-      expect(page).to have_content 'To do 0'
-      expect(page).to have_content 'Done 0'
-      expect(page).to have_selector('.todos-all-done', count: 1)
-    end
-  end
-
   context 'User has a Build Failed todo' do
     let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: author) }
 
@@ -347,7 +330,7 @@ feature 'Dashboard Todos' do
     end
 
     it 'links to the pipelines for the merge request' do
-      href = pipelines_namespace_project_merge_request_path(project.namespace, project, todo.target)
+      href = pipelines_project_merge_request_path(project, todo.target)
 
       expect(page).to have_link "merge request #{todo.target.to_reference(full: true)}", href
     end

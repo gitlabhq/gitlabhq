@@ -9,11 +9,11 @@ describe 'Milestone show', feature: true do
 
   before do
     project.add_user(user, :developer) 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   def visit_milestone
-    visit namespace_project_milestone_path(project.namespace, project, milestone)
+    visit project_milestone_path(project, milestone)
   end
 
   it 'avoids N+1 database queries' do

@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
-  include Peek::Rblineprof::CustomControllerHelpers
+  include WithPerformanceBar
 
   before_action :authenticate_user_from_private_token!
   before_action :authenticate_user_from_rss_token!
@@ -68,21 +68,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def peek_enabled?
-    return false unless Gitlab::PerformanceBar.enabled?
-    return false unless current_user
-
-    if RequestStore.active?
-      if RequestStore.store.key?(:peek_enabled)
-        RequestStore.store[:peek_enabled]
-      else
-        RequestStore.store[:peek_enabled] = cookies[:perf_bar_enabled].present?
-      end
-    else
-      cookies[:perf_bar_enabled].present?
-    end
-  end
-
   protected
 
   # This filter handles both private tokens and personal access tokens
@@ -110,6 +95,8 @@ class ApplicationController < ActionController::Base
   end
 
   def log_exception(exception)
+    Raven.capture_exception(exception) if sentry_enabled?
+
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"

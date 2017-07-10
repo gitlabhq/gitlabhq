@@ -17,7 +17,7 @@ module Banzai
 
       def url_for_object(mr, project)
         h = Gitlab::Routing.url_helpers
-        h.namespace_project_merge_request_url(project.namespace, project, mr,
+        h.project_merge_request_url(project, mr,
                                             only_path: context[:only_path])
       end
 

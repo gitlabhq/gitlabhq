@@ -24,9 +24,9 @@ feature 'Setup Jira service', :feature, :js do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_settings_integrations_path(project.namespace, project)
+    visit project_settings_integrations_path(project)
   end
 
   describe 'user sets and activates Jira Service' do
@@ -42,7 +42,7 @@ feature 'Setup Jira service', :feature, :js do
         wait_for_requests
 
         expect(page).to have_content('JIRA activated.')
-        expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
+        expect(current_path).to eq(project_settings_integrations_path(project))
       end
     end
 
@@ -76,7 +76,7 @@ feature 'Setup Jira service', :feature, :js do
         wait_for_requests
 
         expect(page).to have_content('JIRA activated.')
-        expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
+        expect(current_path).to eq(project_settings_integrations_path(project))
       end
     end
   end
@@ -89,7 +89,7 @@ feature 'Setup Jira service', :feature, :js do
         click_button('Save changes')
 
         expect(page).to have_content('JIRA settings saved, but not activated.')
-        expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
+        expect(current_path).to eq(project_settings_integrations_path(project))
       end
     end
   end

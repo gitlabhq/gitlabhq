@@ -74,9 +74,10 @@ module API
         optional :active, type: Boolean, desc: 'The activation of pipeline schedule'
       end
       put ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authorize! :update_pipeline_schedule, user_project
+        authorize! :read_pipeline_schedule, user_project
 
         not_found!('PipelineSchedule') unless pipeline_schedule
+        authorize! :update_pipeline_schedule, pipeline_schedule
 
         if pipeline_schedule.update(declared_params(include_missing: false))
           present pipeline_schedule, with: Entities::PipelineScheduleDetails
@@ -92,9 +93,10 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
-        authorize! :update_pipeline_schedule, user_project
+        authorize! :read_pipeline_schedule, user_project
 
         not_found!('PipelineSchedule') unless pipeline_schedule
+        authorize! :update_pipeline_schedule, pipeline_schedule
 
         if pipeline_schedule.own!(current_user)
           present pipeline_schedule, with: Entities::PipelineScheduleDetails
@@ -110,9 +112,10 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authorize! :admin_pipeline_schedule, user_project
+        authorize! :read_pipeline_schedule, user_project
 
         not_found!('PipelineSchedule') unless pipeline_schedule
+        authorize! :admin_pipeline_schedule, pipeline_schedule
 
         status :accepted
         present pipeline_schedule.destroy, with: Entities::PipelineScheduleDetails

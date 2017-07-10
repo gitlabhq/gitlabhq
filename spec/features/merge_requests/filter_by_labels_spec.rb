@@ -26,9 +26,9 @@ feature 'Issue filtering by Labels', feature: true, js: true do
     mr3.labels << feature
 
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
   end
 
   context 'filter by label bug' do

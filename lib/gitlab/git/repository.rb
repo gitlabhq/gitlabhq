@@ -113,9 +113,7 @@ module Gitlab
       def local_branches(sort_by: nil)
         gitaly_migrate(:local_branches) do |is_enabled|
           if is_enabled
-            gitaly_ref_client.local_branches(sort_by: sort_by).map do |gitaly_branch|
-              Gitlab::Git::Branch.new(self, gitaly_branch.name, gitaly_branch)
-            end
+            gitaly_ref_client.local_branches(sort_by: sort_by)
           else
             branches(filter: :local, sort_by: sort_by)
           end
@@ -549,41 +547,38 @@ module Gitlab
         rugged.rev_parse(oid_or_ref_name)
       end
 
-      # Return hash with submodules info for this repository
+      # Returns url for submodule
       #
       # Ex.
-      #   {
-      #     "current_path/rack"  => {
-      #       "name" => "original_path/rack",
-      #       "id" => "c67be4624545b4263184c4a0e8f887efd0a66320",
-      #       "url" => "git://github.com/chneukirchen/rack.git"
-      #     },
-      #     "encoding" => {
-      #       "id" => ....
-      #     }
-      #   }
+      #   @repository.submodule_url_for('master', 'rack')
+      #   # => git@localhost:rack.git
       #
-      def submodules(ref)
-        commit = rev_parse_target(ref)
-        return {} unless commit
-
-        begin
-          content = blob_content(commit, ".gitmodules")
-        rescue InvalidBlobName
-          return {}
+      def submodule_url_for(ref, path)
+        Gitlab::GitalyClient.migrate(:submodule_url_for) do |is_enabled|
+          if is_enabled
+            gitaly_submodule_url_for(ref, path)
+          else
+            if submodules(ref).any?
+              submodule = submodules(ref)[path]
+              submodule['url'] if submodule
+            end
+          end
         end
-
-        parser = GitmodulesParser.new(content)
-        fill_submodule_ids(commit, parser.parse)
       end
 
       # Return total commits count accessible from passed ref
       def commit_count(ref)
-        walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
-        oid = rugged.rev_parse_oid(ref)
-        walker.push(oid)
-        walker.count
+        gitaly_migrate(:commit_count) do |is_enabled|
+          if is_enabled
+            gitaly_commit_client.commit_count(ref)
+          else
+            walker = Rugged::Walker.new(rugged)
+            walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
+            oid = rugged.rev_parse_oid(ref)
+            walker.push(oid)
+            walker.count
+          end
+        end
       end
 
       # Sets HEAD to the commit specified by +ref+; +ref+ can be a branch or
@@ -911,6 +906,35 @@ module Gitlab
       end
 
       private
+
+      # We are trying to deprecate this method because it does a lot of work
+      # but it seems to be used only to look up submodule URL's.
+      # https://gitlab.com/gitlab-org/gitaly/issues/329
+      def submodules(ref)
+        commit = rev_parse_target(ref)
+        return {} unless commit
+
+        begin
+          content = blob_content(commit, ".gitmodules")
+        rescue InvalidBlobName
+          return {}
+        end
+
+        parser = GitmodulesParser.new(content)
+        fill_submodule_ids(commit, parser.parse)
+      end
+
+      def gitaly_submodule_url_for(ref, path)
+        # We don't care about the contents so 1 byte is enough. Can't request 0 bytes, 0 means unlimited.
+        commit_object = gitaly_commit_client.tree_entry(ref, path, 1)
+
+        return unless commit_object && commit_object.type == :COMMIT
+
+        gitmodules = gitaly_commit_client.tree_entry(ref, '.gitmodules', Blob::MAX_DATA_DISPLAY_SIZE)
+        found_module = GitmodulesParser.new(gitmodules.data).parse[path]
+
+        found_module && found_module['url']
+      end
 
       def alternate_object_directories
         Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).compact

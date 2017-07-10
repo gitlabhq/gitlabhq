@@ -605,22 +605,6 @@ class Repository
     end
   end
 
-  # Returns url for submodule
-  #
-  # Ex.
-  #   @repository.submodule_url_for('master', 'rack')
-  #   # => git@localhost:rack.git
-  #
-  def submodule_url_for(ref, path)
-    if submodules(ref).any?
-      submodule = submodules(ref)[path]
-
-      if submodule
-        submodule['url']
-      end
-    end
-  end
-
   def last_commit_for_path(sha, path)
     sha = last_commit_id_for_path(sha, path)
     commit(sha)
@@ -947,7 +931,7 @@ class Repository
 
   def is_ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
-    
+
     Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
       if is_enabled
         raw_repository.is_ancestor?(ancestor_id, descendant_id)
@@ -1094,8 +1078,8 @@ class Repository
     blob_data_at(sha, '.gitlab/route-map.yml')
   end
 
-  def gitlab_ci_yml_for(sha)
-    blob_data_at(sha, '.gitlab-ci.yml')
+  def gitlab_ci_yml_for(sha, path = '.gitlab-ci.yml')
+    blob_data_at(sha, path)
   end
 
   private

@@ -4,9 +4,10 @@ module Gitlab
       GL_PROTOCOL = 'web'.freeze
       attr_reader :name, :repo_path, :path
 
-      def initialize(name, repo_path)
+      def initialize(name, project)
         @name = name
-        @repo_path = repo_path
+        @project = project
+        @repo_path = project.repository.path
         @path = File.join(repo_path.strip, 'hooks', name)
       end
 
@@ -38,7 +39,8 @@ module Gitlab
         vars = {
           'GL_ID' => gl_id,
           'PWD' => repo_path,
-          'GL_PROTOCOL' => GL_PROTOCOL
+          'GL_PROTOCOL' => GL_PROTOCOL,
+          'GL_REPOSITORY' => Gitlab::GlRepository.gl_repository(@project, false)
         }
 
         options = {

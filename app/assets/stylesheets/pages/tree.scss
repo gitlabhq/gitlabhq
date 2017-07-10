@@ -1,4 +1,5 @@
 .tree-holder {
+
   .nav-block {
     margin: 10px 0;
 
@@ -13,6 +14,11 @@
         text-align: right;
 
         .btn-group {
+          margin-left: 10px;
+        }
+
+        .control {
+          float: left;
           margin-left: 10px;
         }
       }
@@ -70,7 +76,8 @@
   }
 
   .file-finder {
-    width: 50%;
+    max-width: 500px;
+    width: 100%;
 
     .file-finder-input {
       width: 95%;

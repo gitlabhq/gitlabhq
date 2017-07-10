@@ -12,6 +12,8 @@ class Feature
   end
 
   class << self
+    delegate :group, to: :flipper
+
     def all
       flipper.features.to_a
     end
@@ -27,16 +29,24 @@ class Feature
       all.map(&:name).include?(feature.name)
     end
 
-    def enabled?(key)
-      get(key).enabled?
+    def enabled?(key, thing = nil)
+      get(key).enabled?(thing)
     end
 
-    def enable(key)
-      get(key).enable
+    def enable(key, thing = true)
+      get(key).enable(thing)
     end
 
-    def disable(key)
-      get(key).disable
+    def disable(key, thing = false)
+      get(key).disable(thing)
+    end
+
+    def enable_group(key, group)
+      get(key).enable_group(group)
+    end
+
+    def disable_group(key, group)
+      get(key).disable_group(group)
     end
 
     def flipper
@@ -46,6 +56,12 @@ class Feature
 
         Flipper.new(adapter)
       end
+    end
+
+    # This method is called from config/initializers/flipper.rb and can be used
+    # to register Flipper groups.
+    # See https://docs.gitlab.com/ee/development/feature_flags.html#feature-groups
+    def register_feature_groups
     end
   end
 end

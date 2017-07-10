@@ -1,12 +1,24 @@
-# GitLab Community Edition
+# GitLab Documentation
 
-[GitLab](https://about.gitlab.com/) is a Git-based fully featured platform
-for software development.
+Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
+platform for software development!
 
-**GitLab Community Edition (CE)** is an opensource product, self-hosted, free to use.
-All [GitLab products](https://about.gitlab.com/products/) contain the features
-available in GitLab CE. Premium features are available in
-[GitLab Enterprise Edition (EE)](https://about.gitlab.com/gitlab-ee/).
+We offer four different products for you and your company:
+
+- **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
+self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
+- **GitLab Enterprise Edition (EE)** is an [opencore product](https://gitlab.com/gitlab-org/gitlab-ee/),
+self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)** and **GitLab Enterprise Edition Premium (EEP)**.
+- **GitLab.com**: SaaS GitLab solution, with [free and paid subscriptions](https://about.gitlab.com/gitlab-com/). GitLab.com is hosted by GitLab, Inc., and administrated by GitLab (users don't have access to admin settings).
+
+**GitLab EE** contains all features available in **GitLab CE**,
+plus premium features available in each version: **Enterprise Edition Starter**
+(**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
+**EES** is also available in **EEP**.
+
+**Note:** _We are unifying the documentation for CE and EE. To check if certain feature is
+available in CE or EE, look for a note right below the page title containing the GitLab
+version which introduced that feature._
 
 ----
 
@@ -125,7 +137,7 @@ have access to GitLab administration tools and settings.
 - [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
 
-### GitLab admins' superpowers
+### Features
 
 - [Container Registry](administration/container_registry.md): Configure Docker Registry with GitLab.
 - [Custom Git hooks](administration/custom_hooks.md): Custom Git hooks (on the filesystem) for when webhooks aren't enough.
@@ -155,6 +167,7 @@ have access to GitLab administration tools and settings.
 - [Operations](administration/operations.md): Keeping GitLab up and running.
 - [Polling](administration/polling.md): Configure how often the GitLab UI polls for updates.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
+- [Performance Bar](administration/monitoring/performance/performance_bar.md): Get performance information for the current page.
 
 ### Customization
 
@@ -167,6 +180,7 @@ have access to GitLab administration tools and settings.
 
 ### Admin tools
 
+- [Gitaly](administration/gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service
 - [Raketasks](raketasks/README.md): Backups, maintenance, automatic webhook setup and the importing of projects.
     - [Backup and restore](raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Reply by email](administration/reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.

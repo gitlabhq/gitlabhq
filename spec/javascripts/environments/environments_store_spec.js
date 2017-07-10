@@ -86,6 +86,16 @@ describe('Store', () => {
       store.toggleFolder(store.state.environments[1]);
       expect(store.state.environments[1].isOpen).toEqual(false);
     });
+
+    it('should keep folder open when environments are updated', () => {
+      store.storeEnvironments(serverData);
+
+      store.toggleFolder(store.state.environments[1]);
+      expect(store.state.environments[1].isOpen).toEqual(true);
+
+      store.storeEnvironments(serverData);
+      expect(store.state.environments[1].isOpen).toEqual(true);
+    });
   });
 
   describe('setfolderContent', () => {
@@ -96,6 +106,17 @@ describe('Store', () => {
 
       expect(store.state.environments[1].children.length).toEqual(serverData.length);
       expect(store.state.environments[1].children[0].isChildren).toEqual(true);
+    });
+
+    it('should keep folder content when environments are updated', () => {
+      store.storeEnvironments(serverData);
+
+      store.setfolderContent(store.state.environments[1], serverData);
+
+      expect(store.state.environments[1].children.length).toEqual(serverData.length);
+      // poll
+      store.storeEnvironments(serverData);
+      expect(store.state.environments[1].children.length).toEqual(serverData.length);
     });
   });
 

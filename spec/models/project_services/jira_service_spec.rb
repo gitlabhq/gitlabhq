@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe JiraService, models: true do
-  include Gitlab::Routing.url_helpers
+  include Gitlab::Routing
 
   describe "Associations" do
     it { is_expected.to belong_to :project }
@@ -64,12 +64,12 @@ describe JiraService, models: true do
     end
   end
 
-  describe '#reference_pattern' do
+  describe '.reference_pattern' do
     it_behaves_like 'allows project key on reference pattern'
 
     it 'does not allow # on the code' do
-      expect(subject.reference_pattern.match('#123')).to be_nil
-      expect(subject.reference_pattern.match('1#23#12')).to be_nil
+      expect(described_class.reference_pattern.match('#123')).to be_nil
+      expect(described_class.reference_pattern.match('1#23#12')).to be_nil
     end
   end
 

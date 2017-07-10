@@ -70,7 +70,7 @@ import './ajax_loading_spinner';
 import './api';
 import './aside';
 import './autosave';
-import AwardsHandler from './awards_handler';
+import loadAwardsHandler from './awards_handler';
 import './breakpoints';
 import './broadcast_message';
 import './build';
@@ -143,26 +143,13 @@ import './render_math';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
-import './signin_tabs_memoizer';
-import './single_file_diff';
 import './smart_interval';
 import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
 import './syntax_highlight';
-import './task_list';
-import './todos';
-import './tree';
-import './usage_ping';
 import './user';
-import './user_tabs';
-import './username_validator';
-import './users_select';
-import './version_check_image';
-import './visibility_select';
-import './wikis';
-import './zen_mode';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
@@ -355,10 +342,10 @@ $(function () {
   $window.off('resize.app').on('resize.app', function () {
     return fitSidebarForSize();
   });
-  gl.awardsHandler = new AwardsHandler();
+  loadAwardsHandler();
   new Aside();
 
-  gl.utils.initTimeagoTimeout();
+  gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
 });

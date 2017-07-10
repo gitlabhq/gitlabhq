@@ -27,7 +27,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
 
         expect(doc.css('a').first.text).to eq commit.short_id
         expect(doc.css('a').first.attr('href'))
-          .to eq urls.namespace_project_commit_url(project.namespace, project, reference)
+          .to eq urls.project_commit_url(project, reference)
       end
     end
 
@@ -90,7 +90,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
-      expect(link).to eq urls.namespace_project_commit_url(project.namespace, project, reference, only_path: true)
+      expect(link).to eq urls.project_commit_url(project, reference, only_path: true)
     end
   end
 
@@ -175,13 +175,13 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
     let(:namespace) { create(:namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
-    let(:reference) { urls.namespace_project_commit_url(project2.namespace, project2, commit.id) }
+    let(:reference) { urls.project_commit_url(project2, commit.id) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_commit_url(project2.namespace, project2, commit.id)
+        .to eq urls.project_commit_url(project2, commit.id)
     end
 
     it 'links with adjacent text' do

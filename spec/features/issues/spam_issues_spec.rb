@@ -18,14 +18,14 @@ describe 'New issue', feature: true, js: true do
     )
 
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when identified as a spam' do
     before do
       WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: "true", status: 200)
 
-      visit new_namespace_project_issue_path(project.namespace, project)
+      visit new_project_issue_path(project)
     end
 
     it 'creates an issue after solving reCaptcha' do
@@ -50,7 +50,7 @@ describe 'New issue', feature: true, js: true do
     before do
       WebMock.stub_request(:any, /.*akismet.com.*/).to_return(body: 'false', status: 200)
 
-      visit new_namespace_project_issue_path(project.namespace, project)
+      visit new_project_issue_path(project)
     end
 
     it 'creates an issue' do

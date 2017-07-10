@@ -112,6 +112,7 @@ module API
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
+      expose :ci_config_path
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links.all, options)
       end
@@ -254,7 +255,7 @@ module API
 
     class ProjectEntity < Grape::Entity
       expose :id, :iid
-      expose(:project_id) { |entity| entity.project.id }
+      expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
       expose :state, :created_at, :updated_at
     end
@@ -266,7 +267,12 @@ module API
       expose :deleted_file?, as: :deleted_file
     end
 
-    class Milestone < ProjectEntity
+    class Milestone < Grape::Entity
+      expose :id, :iid
+      expose(:project_id) { |entity| entity&.project_id }
+      expose(:group_id) { |entity| entity&.group_id }
+      expose :title, :description
+      expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
     end
@@ -310,10 +316,26 @@ module API
 
     class MergeRequestBasic < ProjectEntity
       expose :target_branch, :source_branch
-      expose :upvotes, :downvotes
+      expose :upvotes do |merge_request, options|
+        if options[:issuable_metadata]
+          options[:issuable_metadata][merge_request.id].upvotes
+        else
+          merge_request.upvotes
+        end
+      end
+      expose :downvotes do |merge_request, options|
+        if options[:issuable_metadata]
+          options[:issuable_metadata][merge_request.id].downvotes
+        else
+          merge_request.downvotes
+        end
+      end
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
-      expose :label_names, as: :labels
+      expose :labels do |merge_request, options|
+        # Avoids an N+1 query since labels are preloaded
+        merge_request.labels.map(&:title).sort
+      end
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_pipeline_succeeds
@@ -434,7 +456,7 @@ module API
         target_url    = "namespace_project_#{target_type}_url"
         target_anchor = "note_#{todo.note_id}" if todo.note_id?
 
-        Gitlab::Application.routes.url_helpers.public_send(target_url,
+        Gitlab::Routing.url_helpers.public_send(target_url,
           todo.project.namespace, todo.project, todo.target, anchor: target_anchor)
       end
 
@@ -444,7 +466,15 @@ module API
     end
 
     class Namespace < Grape::Entity
-      expose :id, :name, :path, :kind, :full_path
+      expose :id, :name, :path, :kind, :full_path, :parent_id
+
+      expose :members_count_with_descendants, if: -> (namespace, opts) { expose_members_count_with_descendants?(namespace, opts) } do |namespace, _|
+        namespace.users_with_descendants.count
+      end
+
+      def expose_members_count_with_descendants?(namespace, opts)
+        namespace.kind == 'group' && Ability.allowed?(opts[:current_user], :admin_group, namespace)
+      end
     end
 
     class MemberAccess < Grape::Entity
@@ -494,12 +524,20 @@ module API
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
-          project.project_members.find_by(user_id: options[:current_user].id)
+          if options.key?(:project_members)
+            (options[:project_members] || []).find { |member| member.source_id == project.id }
+          else
+            project.project_members.find_by(user_id: options[:current_user].id)
+          end
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
-            project.group.group_members.find_by(user_id: options[:current_user].id)
+            if options.key?(:group_members)
+              (options[:group_members] || []).find { |member| member.source_id == project.namespace_id }
+            else
+              project.group.group_members.find_by(user_id: options[:current_user].id)
+            end
           end
         end
       end
@@ -823,7 +861,7 @@ module API
       end
 
       class Cache < Grape::Entity
-        expose :key, :untracked, :paths
+        expose :key, :untracked, :paths, :policy
       end
 
       class Credentials < Grape::Entity
@@ -865,6 +903,12 @@ module API
         expose :credentials, using: Credentials
         expose :dependencies, using: Dependency
       end
+    end
+
+    class UserAgentDetail < Grape::Entity
+      expose :user_agent
+      expose :ip_address
+      expose :submitted, as: :akismet_submitted
     end
   end
 end

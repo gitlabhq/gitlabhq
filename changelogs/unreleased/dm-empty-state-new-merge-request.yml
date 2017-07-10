@@ -1,0 +1,5 @@
+---
+title: Fix 'New merge request' button for users who don't have push access to canonical
+  project
+merge_request:
+author:

@@ -12,7 +12,7 @@ feature 'Blob shortcuts', feature: true do
     end
 
     def visit_blob(fragment = nil)
-      visit namespace_project_blob_path(project.namespace, project, tree_join('master', path), anchor: fragment)
+      visit project_blob_path(project, tree_join('master', path), anchor: fragment)
     end
 
     describe 'pressing "y"' do
@@ -21,7 +21,7 @@ feature 'Blob shortcuts', feature: true do
 
         find('body').native.send_key('y')
 
-        expect(page).to have_current_path(get_absolute_url(namespace_project_blob_path(project.namespace, project, tree_join(sha, path))), url: true)
+        expect(page).to have_current_path(get_absolute_url(project_blob_path(project, tree_join(sha, path))), url: true)
       end
 
       it 'maintains fragment hash when redirecting' do
@@ -30,7 +30,7 @@ feature 'Blob shortcuts', feature: true do
 
         find('body').native.send_key('y')
 
-        expect(page).to have_current_path(get_absolute_url(namespace_project_blob_path(project.namespace, project, tree_join(sha, path), anchor: fragment)), url: true)
+        expect(page).to have_current_path(get_absolute_url(project_blob_path(project, tree_join(sha, path), anchor: fragment)), url: true)
       end
     end
   end

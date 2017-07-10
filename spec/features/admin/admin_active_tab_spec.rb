@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe 'admin active tab' do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   shared_examples 'page has active tab' do |title|
