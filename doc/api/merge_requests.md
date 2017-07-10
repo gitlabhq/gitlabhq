@@ -25,6 +25,7 @@ Parameters:
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 | `milestone`  | string  | no | Return merge requests for a specific milestone |
+| `simple` | boolean | no | Returns the `iid`, URL, title, description, and basic state of merge request |
 | `labels`  | string  | no | Return merge requests matching a comma separated list of labels |
 | `created_after` | datetime | no | Return merge requests created after the given time (inclusive) |
 | `created_before` | datetime | no | Return merge requests created before the given time (inclusive) |
