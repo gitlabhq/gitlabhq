@@ -10,7 +10,7 @@ describe 'Board with milestone', :feature, :js do
   before do
     project.team << [user, :master]
 
-    login_as(user)
+    sign_in(user)
   end
 
   context 'with the feature enabled' do

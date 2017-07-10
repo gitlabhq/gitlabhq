@@ -8,7 +8,7 @@ feature 'Groups > Members > Manage access requests', feature: true do
   background do
     group.request_access(user)
     group.add_owner(owner)
-    gitlab_sign_in(owner)
+    sign_in(owner)
   end
 
   scenario 'owner can see access requests' do

@@ -7,7 +7,7 @@ feature 'User Snippets', feature: true do
   let!(:private_snippet) { create(:personal_snippet, :private, author: author, title: "This is a private snippet") }
 
   background do
-    gitlab_sign_in author
+    sign_in author
     visit dashboard_snippets_path
   end
 

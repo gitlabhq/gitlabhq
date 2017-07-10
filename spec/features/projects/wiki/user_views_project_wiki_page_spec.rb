@@ -15,7 +15,7 @@ feature 'Projects > Wiki > User views the wiki page', feature: true do
 
   background do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
     WikiPages::UpdateService.new(
       project,
       user,

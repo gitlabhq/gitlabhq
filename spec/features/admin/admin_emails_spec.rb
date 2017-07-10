@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 describe "Admin::Emails", feature: true, js: true do
-  let!(:current_user) { gitlab_sign_in :admin }
+  let!(:current_user) { create(:admin) }
   let!(:group) { create(:group) }
   let!(:project) { create(:project, namespace: group) }
 
   describe "GET /admin/email" do
     before do
+      sign_in(current_user)
       visit admin_email_path
     end
 

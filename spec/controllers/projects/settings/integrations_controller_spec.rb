@@ -17,4 +17,27 @@ describe Projects::Settings::IntegrationsController do
       expect(response).to render_template(:show)
     end
   end
+
+  context 'Sets correct services list' do
+    it 'enables SlackSlashCommandsService and disables GitlabSlackApplication' do
+      get :show, namespace_id: project.namespace, project_id: project
+
+      services = assigns(:services).map(&:type)
+
+      expect(services).to include('SlackSlashCommandsService')
+      expect(services).not_to include('GitlabSlackApplicationService')
+    end
+
+    it 'enables GitlabSlackApplication and disables SlackSlashCommandsService' do
+      stub_application_setting(slack_app_enabled: true)
+      allow(::Gitlab).to receive(:com?).and_return(true)
+
+      get :show, namespace_id: project.namespace, project_id: project
+
+      services = assigns(:services).map(&:type)
+
+      expect(services).to include('GitlabSlackApplicationService')
+      expect(services).not_to include('SlackSlashCommandsService')
+    end
+  end
 end

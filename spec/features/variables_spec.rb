@@ -6,7 +6,7 @@ describe 'Project variables', js: true do
   let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, :master]
     project.variables << variable
 

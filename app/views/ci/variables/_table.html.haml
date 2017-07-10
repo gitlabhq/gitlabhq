@@ -9,7 +9,7 @@
       %th Key
       %th Value
       %th Protected
-      - if @project.feature_available?(:variable_environment_scope)
+      - if @variable.respond_to?(:environment_scope) && @project.feature_available?(:variable_environment_scope)
         %th Environment scope
       %th
     %tbody
@@ -19,7 +19,7 @@
             %td.variable-key= variable.key
             %td.variable-value{ "data-value" => variable.value }******
             %td.variable-protected= Gitlab::Utils.boolean_to_yes_no(variable.protected)
-            - if @project.feature_available?(:variable_environment_scope)
+            - if @variable.respond_to?(:environment_scope) && @project.feature_available?(:variable_environment_scope)
               %td.variable-environment-scope= variable.environment_scope
             %td.variable-menu
               = link_to variable.edit_path, class: "btn btn-transparent btn-variable-edit" do

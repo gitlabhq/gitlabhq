@@ -7,7 +7,7 @@ describe 'Discussion Comments Issue', :feature, :js do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit project_issue_path(project, issue)
   end

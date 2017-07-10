@@ -50,7 +50,7 @@ describe 'View on environment', js: true do
         let(:merge_request) { create(:merge_request, :simple, source_project: project, source_branch: branch_name) }
 
         before do
-          gitlab_sign_in(user)
+          sign_in(user)
 
           visit diffs_project_merge_request_path(project, merge_request)
 
@@ -66,7 +66,7 @@ describe 'View on environment', js: true do
 
       context 'when visiting a comparison for the branch' do
         before do
-          gitlab_sign_in(user)
+          sign_in(user)
 
           visit project_compare_path(project, from: 'master', to: branch_name)
 
@@ -80,7 +80,7 @@ describe 'View on environment', js: true do
 
       context 'when visiting a comparison for the commit' do
         before do
-          gitlab_sign_in(user)
+          sign_in(user)
 
           visit project_compare_path(project, from: 'master', to: sha)
 
@@ -94,7 +94,7 @@ describe 'View on environment', js: true do
 
       context 'when visiting a blob on the branch' do
         before do
-          gitlab_sign_in(user)
+          sign_in(user)
 
           visit project_blob_path(project, File.join(branch_name, file_path))
 
@@ -108,7 +108,7 @@ describe 'View on environment', js: true do
 
       context 'when visiting a blob on the commit' do
         before do
-          gitlab_sign_in(user)
+          sign_in(user)
 
           visit project_blob_path(project, File.join(sha, file_path))
 
@@ -122,7 +122,7 @@ describe 'View on environment', js: true do
 
       context 'when visiting the commit' do
         before do
-          gitlab_sign_in(user)
+          sign_in(user)
 
           visit project_commit_path(project, sha)
 

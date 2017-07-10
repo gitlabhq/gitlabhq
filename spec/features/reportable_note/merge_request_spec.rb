@@ -7,7 +7,7 @@ describe 'Reportable note on merge request', :feature, :js do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit project_merge_request_path(project, merge_request)
   end

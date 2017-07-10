@@ -11,7 +11,7 @@ feature 'Merge requests > User sees system notes' do
     before do
       user = create(:user)
       private_project.add_developer(user)
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     it 'shows the system note' do

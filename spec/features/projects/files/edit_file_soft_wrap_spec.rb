@@ -5,7 +5,7 @@ feature 'User uses soft wrap whilst editing file', feature: true, js: true do
     user = create(:user)
     project = create(:project)
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
     visit project_new_blob_path(project, 'master', file_name: 'test_file-name')
     editor = find('.file-editor.code')
     editor.click

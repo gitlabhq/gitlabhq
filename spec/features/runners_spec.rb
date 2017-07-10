@@ -4,7 +4,7 @@ describe "Runners" do
   let(:user) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe "specific runners" do

@@ -9,7 +9,7 @@ feature 'Resolve an open discussion in a merge request by creating an issue', fe
   describe 'As a user with access to the project' do
     before do
       project.team << [user, :master]
-      gitlab_sign_in user
+      sign_in user
       visit project_merge_request_path(project, merge_request)
     end
 
@@ -66,7 +66,7 @@ feature 'Resolve an open discussion in a merge request by creating an issue', fe
   describe 'as a reporter' do
     before do
       project.team << [user, :reporter]
-      gitlab_sign_in user
+      sign_in user
       visit new_project_issue_path(project,
                                              merge_request_to_resolve_discussions_of: merge_request.iid,
                                              discussion_to_resolve: discussion.id)

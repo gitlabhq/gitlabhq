@@ -10,7 +10,7 @@ describe 'Target branch', feature: true, js: true do
   end
 
   before do
-    gitlab_sign_in user
+    sign_in user
     project.team << [user, :master]
   end
 

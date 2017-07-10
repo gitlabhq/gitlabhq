@@ -13,7 +13,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
     before do
       project.team << [user, :master]
 
-      gitlab_sign_in user
+      sign_in user
     end
 
     context 'sidebar' do
@@ -346,7 +346,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
   context 'as a guest' do
     before do
-      gitlab_sign_in user
+      sign_in user
 
       visit project_issues_path(project)
     end

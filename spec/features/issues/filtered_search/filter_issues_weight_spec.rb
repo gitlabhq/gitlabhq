@@ -18,7 +18,7 @@ describe 'Filter issues weight', js: true, feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
     label = create(:label, project: project, title: 'urgent')
     milestone = create(:milestone, title: 'version1', project: project)

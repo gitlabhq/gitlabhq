@@ -7,7 +7,7 @@ feature 'Triggers', feature: true, js: true do
   let(:guest_user) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
 
     @project = create(:empty_project)
     @project.team << [user, :master]
