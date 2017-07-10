@@ -272,18 +272,18 @@ describe 'Commits' do
       sign_in(user)
       visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
 
+      click_on 'Unverified', match: :first
+      within '.popover' do
+        expect(page).to have_content 'This commit was signed with an unverified signature.'
+        expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
+      end
+
       click_on 'Verified'
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature.'
         expect(page).to have_content 'nannie.bernhard'
         expect(page).to have_content 'Nannie Bernhard'
-        expect(page).to have_content "GPG key ID: #{GpgHelpers::User1.primary_keyid}"
-      end
-
-      click_on 'Unverified', match: :first
-      within '.popover' do
-        expect(page).to have_content 'This commit was signed with an unverified signature.'
-        expect(page).to have_content "GPG key ID: #{GpgHelpers::User2.primary_keyid}"
+        expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
       end
     end
   end

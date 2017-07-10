@@ -1,18 +1,18 @@
 - title = capture do
   %i{ class: 'fa fa-check-circle gpg-popover-icon valid', 'aria-hidden' => 'true' }
-  This commit was signed with a verified signature.
+  %div
+    This commit was signed with a <strong>verified</strong> signature.
 
 - content = capture do
   - gpg_key = signature.gpg_key
 
   = link_to user_path(gpg_key.user), class: 'gpg-popover-user-link' do
-    .gpg-popover-avatar
+    %div
       = user_avatar_without_link(user: signature.gpg_key.user, size: 32)
 
-    .gpg-popover-username
-      = gpg_key.user.username
-
-    %div= gpg_key.user.name
+    %div
+      %strong= gpg_key.user.username
+      %div= gpg_key.user.name
 
 - locals = { signature: signature, title: title, content: content, label: 'Verified', css_classes: ['valid'] }
 

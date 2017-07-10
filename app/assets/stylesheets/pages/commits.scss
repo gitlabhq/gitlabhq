@@ -296,16 +296,16 @@
   }
 }
 
-.gpg-popover-title {
-  display: inline;
+.gpg-popover-status {
+  display: flex;
+  align-items: center;
   font-weight: normal;
+  line-height: 1.5;
 }
 
 .gpg-popover-icon {
-  float: left;
   font-size: 35px;
-  line-height: 35px;
-  width: 32px;
+  // same margin as .s32.avatar
   margin-right: $btn-side-margin;
 
   &.valid {
@@ -318,21 +318,11 @@
 }
 
 .gpg-popover-user-link {
+  display: flex;
+  align-items: center;
+  margin-bottom: $gl-padding / 2;
   text-decoration: none;
   color: $gl-text-color;
-}
-
-.gpg-popover-avatar {
-  float: left;
-  margin-bottom: $gl-padding;
-
-  .avatar {
-    margin-left: 0;
-  }
-}
-
-.gpg-popover-username {
-  font-weight: bold;
 }
 
 .commit .gpg-popover-help-link {
