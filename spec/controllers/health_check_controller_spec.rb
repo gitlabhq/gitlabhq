@@ -36,7 +36,7 @@ describe HealthCheckController do
           expect(response.content_type).to eq 'text/plain'
         end
 
-        it 'supports successful plaintest response' do
+        it 'supports passing the token in query params' do
           get :index, token: token
 
           expect(response).to be_success
@@ -50,7 +50,7 @@ describe HealthCheckController do
         allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
       end
 
-      it 'supports successful plaintest response' do
+      it 'supports successful plaintext response' do
         get :index
 
         expect(response).to be_success
@@ -97,7 +97,7 @@ describe HealthCheckController do
         allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
       end
 
-      it 'supports failure plaintest response' do
+      it 'supports failure plaintext response' do
         get :index
 
         expect(response).to have_http_status(500)

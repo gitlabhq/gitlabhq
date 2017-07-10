@@ -15,7 +15,9 @@ describe HealthController do
 
   describe '#readiness' do
     shared_context 'endpoint responding with readiness data' do
-      subject { get :readiness }
+      let(:request_params) { {} }
+
+      subject { get :readiness, request_params }
 
       it 'responds with readiness checks data' do
         subject
@@ -58,7 +60,7 @@ describe HealthController do
 
       context 'token passed as URL param' do
         it_behaves_like 'endpoint responding with readiness data' do
-          subject { get :readiness, token: token }
+          let(:request_params) { { token: token } }
         end
       end
     end

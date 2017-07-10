@@ -16,8 +16,8 @@ traffic until the system is ready or restart the container as needed.
 
 ## IP Whitelist
 
-To access monitoring resources client IP needs to be included in the whitelist.
-To add or remove hosts or ip ranges from the list you can edit `gitlab.yml`.
+To access monitoring resources the client IP needs to be included in the whitelist.
+To add or remove hosts or IP ranges from the list you can edit `gitlab.rb` or `gitlab.yml`.
 
 Example whitelist configuration:
 ```yaml
