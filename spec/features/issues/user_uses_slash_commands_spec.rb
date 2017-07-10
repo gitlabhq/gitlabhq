@@ -127,6 +127,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
 
     describe 'toggling the WIP prefix from the title from note' do
       let(:issue) { create(:issue, project: project) }
+<<<<<<< HEAD
 
       it 'does not recognize the command nor create a note' do
         write_note("/wip")
@@ -203,6 +204,8 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
 
           expect(page).to have_content '/clear_weight'
           expect(page).not_to have_content 'Commands applied'
+=======
+>>>>>>> 9-4-stable
 
           issue.reload
 

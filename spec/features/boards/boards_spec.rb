@@ -538,7 +538,11 @@ describe 'Issue Boards', feature: true, js: true do
   context 'signed out user' do
     before do
       sign_out(:user)
+<<<<<<< HEAD
       visit project_boards_path(project)
+=======
+      visit project_board_path(project, board)
+>>>>>>> 9-4-stable
       wait_for_requests
     end
 
@@ -562,7 +566,11 @@ describe 'Issue Boards', feature: true, js: true do
       project.team << [user_guest, :guest]
       sign_out(:user)
       sign_in(user_guest)
+<<<<<<< HEAD
       visit project_boards_path(project)
+=======
+      visit project_board_path(project, board)
+>>>>>>> 9-4-stable
       wait_for_requests
     end
 
