@@ -8,11 +8,7 @@ describe 'Milestone show', feature: true do
   let(:issue_params) { { project: project, assignees: [user], author: user, milestone: milestone, labels: labels } }
 
   before do
-<<<<<<< HEAD
-    project.add_user(user, :developer)
-=======
     project.add_user(user, :developer) 
->>>>>>> 9-4-stable
     sign_in(user)
   end
 
