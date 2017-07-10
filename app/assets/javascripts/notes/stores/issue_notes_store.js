@@ -197,10 +197,10 @@ const actions = {
 
         if (!skipMutalityCheck && (awardName === 'thumbsup' || awardName === 'thumbsdown')) {
           const counterAward = awardName === 'thumbsup' ? 'thumbsdown' : 'thumbsup';
-          const note = context.getters.notesById[noteId];
+          const targetNote = context.getters.notesById[noteId];
           let amIAwarded = false;
 
-          note.award_emoji.forEach((a) => {
+          targetNote.award_emoji.forEach((a) => {
             if (a.name === counterAward && a.user.id === window.gon.current_user_id) {
               amIAwarded = true;
             }

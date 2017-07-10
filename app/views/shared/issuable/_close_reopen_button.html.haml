@@ -4,9 +4,9 @@
 
 - if can_update && is_current_user
   = link_to "Close #{display_issuable_type}", close_issuable_url(issuable), method: button_method,
-            class: "hidden-xs hidden-sm btn btn-grouped btn-close #{issuable_button_visibility(issuable, true)}", title: "Close #{display_issuable_type}"
+            class: "hidden-xs hidden-sm btn btn-grouped btn-close js-btn-issue-action #{issuable_button_visibility(issuable, true)}", title: "Close #{display_issuable_type}"
   = link_to "Reopen #{display_issuable_type}", reopen_issuable_url(issuable), method: button_method,
-            class: "hidden-xs hidden-sm btn btn-grouped btn-reopen #{issuable_button_visibility(issuable, false)}", title: "Reopen #{display_issuable_type}"
+            class: "hidden-xs hidden-sm btn btn-grouped btn-reopen js-btn-issue-action #{issuable_button_visibility(issuable, false)}", title: "Reopen #{display_issuable_type}"
 - elsif can_update && !is_current_user
   = render 'shared/issuable/close_reopen_report_toggle', issuable: issuable
 - else

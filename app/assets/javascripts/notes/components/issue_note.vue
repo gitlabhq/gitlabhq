@@ -6,6 +6,7 @@ import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_
 import IssueNoteHeader from './issue_note_header.vue';
 import IssueNoteActions from './issue_note_actions.vue';
 import IssueNoteBody from './issue_note_body.vue';
+import eventHub from '../event_hub';
 
 export default {
   props: {
@@ -37,6 +38,7 @@ export default {
       return {
         'is-editing': this.isEditing,
         'disabled-content': this.isDeleting,
+        'js-my-note': this.author.id === window.gon.current_user_id,
         target: this.targetNoteHash === this.noteAnchorId,
       };
     },
@@ -99,6 +101,14 @@ export default {
 
       this.isEditing = false;
     },
+  },
+  created() {
+    eventHub.$on('EnterEditMode', ({ noteId }) => {
+      if (noteId === this.note.id) {
+        this.isEditing = true;
+        this.$store.dispatch('scrollToNoteIfNeeded', $(this.$el));
+      }
+    });
   },
 };
 </script>

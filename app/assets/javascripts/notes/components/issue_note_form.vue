@@ -1,5 +1,6 @@
 <script>
 import MarkdownField from '../../vue_shared/components/markdown/field.vue';
+import eventHub from '../event_hub';
 
 export default {
   props: {
@@ -39,6 +40,18 @@ export default {
         note: this.note,
       });
     },
+    editMyLastNote() {
+      if (this.note === '') {
+        const discussion = $(this.$el).closest('.discussion-notes');
+        const myLastNoteId = discussion.find('.js-my-note').last().attr('id');
+
+        if (myLastNoteId) {
+          eventHub.$emit('EnterEditMode', {
+            noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
+          });
+        }
+      }
+    },
   },
   computed: {
     isDirty() {
@@ -75,6 +88,7 @@ export default {
           slot="textarea"
           placeholder="Write a comment or drag your files here..."
           @keydown.meta.enter="handleUpdate"
+          @keydown.up="editMyLastNote"
           @keydown.esc="cancelHandler(true)">
         </textarea>
       </markdown-field>

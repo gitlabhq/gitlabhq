@@ -4,6 +4,7 @@
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import MarkdownField from '../../vue_shared/components/markdown/field.vue';
 import IssueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
+import eventHub from '../event_hub';
 
 export default {
   props: {},
@@ -101,6 +102,17 @@ export default {
     handleError() {
       new Flash('Something went wrong while adding your comment. Please try again.'); // eslint-disable-line
     },
+    editMyLastNote() {
+      if (this.note === '') {
+        const myLastNoteId = $('.js-my-note').last().attr('id');
+
+        if (myLastNoteId) {
+          eventHub.$emit('EnterEditMode', {
+            noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
+          });
+        }
+      }
+    },
   },
   mounted() {
     const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
@@ -143,6 +155,7 @@ export default {
               ref="textarea"
               slot="textarea"
               placeholder="Write a comment or drag your files here..."
+              @keydown.up="editMyLastNote"
               @keydown.meta.enter="handleSave()">
             </textarea>
           </markdown-field>
