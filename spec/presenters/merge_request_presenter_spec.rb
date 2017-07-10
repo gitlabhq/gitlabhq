@@ -363,4 +363,17 @@ describe MergeRequestPresenter do
       end
     end
   end
+
+  describe '#source_branch_with_namespace_link' do
+    subject do
+      described_class.new(resource, current_user: user).source_branch_with_namespace_link
+    end
+
+    it 'returns link' do
+      allow(resource).to receive(:source_branch_exists?) { true }
+
+      is_expected
+        .to eq("<a href=\"/#{resource.source_project.full_path}/tree/#{resource.source_branch}\">#{resource.source_branch}</a>")
+    end
+  end
 end

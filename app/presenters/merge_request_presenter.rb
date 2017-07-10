@@ -94,7 +94,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
     if source_branch_exists?
       namespace = link_to(namespace, project_path(source_project))
-      branch = link_to(branch, project_commits_path(source_project, source_branch))
+      branch = link_to(branch, project_tree_path(source_project, source_branch))
     end
 
     if for_fork?
