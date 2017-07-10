@@ -795,10 +795,12 @@ class Project < ActiveRecord::Base
     update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
-  def find_or_initialize_services
+  def find_or_initialize_services(exceptions: [])
     services_templates = Service.where(template: true)
 
-    Service.available_services_names.map do |service_name|
+    available_services_names = Service.available_services_names - exceptions
+
+    available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
       if service
