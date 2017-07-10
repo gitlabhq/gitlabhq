@@ -86,7 +86,7 @@ module Gitlab
       end
 
       def self.redis_connection
-        ::Redis::Namespace.new(NAMESPACE, redis: ::Redis.new(url: Gitlab::Redis.url))
+        ::Redis::Namespace.new(NAMESPACE, redis: ::Redis.new(url: Gitlab::Redis::SharedState.url))
       end
 
       def self.redis

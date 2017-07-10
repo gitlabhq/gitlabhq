@@ -8,3 +8,4 @@ app/controllers/projects/protected_branches/push_access_levels_controller.rb
 app/controllers/projects/protected_tags/create_access_levels_controller.rb
 app/policies/project_policy.rb
 app/models/concerns/relative_positioning.rb
+lib/gitlab/redis/*.rb

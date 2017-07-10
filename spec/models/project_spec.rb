@@ -1080,7 +1080,7 @@ describe Project, models: true do
     end
   end
 
-  describe '.cached_count', caching: true do
+  describe '.cached_count', :use_clean_rails_memory_store_caching do
     let(:group)     { create(:group, :public) }
     let!(:project1) { create(:empty_project, :public, group: group) }
     let!(:project2) { create(:empty_project, :public, group: group) }

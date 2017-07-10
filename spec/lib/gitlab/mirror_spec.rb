@@ -60,7 +60,7 @@ describe Gitlab::Mirror do
     end
 
     after do
-      Gitlab::Redis.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
+      Gitlab::Redis::SharedState.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
     end
   end
 
@@ -86,7 +86,7 @@ describe Gitlab::Mirror do
     end
 
     after do
-      Gitlab::Redis.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
+      Gitlab::Redis::SharedState.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
     end
   end
 
@@ -101,7 +101,7 @@ describe Gitlab::Mirror do
       it 'returns available capacity' do
         current_capacity = 10
 
-        Gitlab::Redis.with do |redis|
+        Gitlab::Redis::SharedState.with do |redis|
           (1..10).to_a.each do |id|
             redis.sadd(Gitlab::Mirror::PULL_CAPACITY_KEY, id)
           end
@@ -112,7 +112,7 @@ describe Gitlab::Mirror do
     end
 
     after do
-      Gitlab::Redis.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
+      Gitlab::Redis::SharedState.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
     end
   end
 
@@ -124,7 +124,7 @@ describe Gitlab::Mirror do
     end
 
     after do
-      Gitlab::Redis.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
+      Gitlab::Redis::SharedState.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
     end
   end
 
@@ -148,7 +148,7 @@ describe Gitlab::Mirror do
     end
 
     after do
-      Gitlab::Redis.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
+      Gitlab::Redis::SharedState.with { |redis| redis.del(Gitlab::Mirror::PULL_CAPACITY_KEY) }
     end
   end
 

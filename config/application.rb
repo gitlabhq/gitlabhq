@@ -8,7 +8,9 @@ require 'elasticsearch/rails/instrumentation'
 
 module Gitlab
   class Application < Rails::Application
-    require_dependency Rails.root.join('lib/gitlab/redis')
+    require_dependency Rails.root.join('lib/gitlab/redis/cache')
+    require_dependency Rails.root.join('lib/gitlab/redis/queues')
+    require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/request_context')
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -148,15 +150,15 @@ module Gitlab
       end
     end
 
-    # Use Redis caching across all environments
-    redis_config_hash = Gitlab::Redis.params
-    redis_config_hash[:namespace] = Gitlab::Redis::CACHE_NAMESPACE
-    redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
+    # Use caching across all environments
+    caching_config_hash = Gitlab::Redis::Cache.params
+    caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
+    caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     if Sidekiq.server? # threaded context
-      redis_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
-      redis_config_hash[:pool_timeout] = 1
+      caching_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
+      caching_config_hash[:pool_timeout] = 1
     end
-    config.cache_store = :redis_store, redis_config_hash
+    config.cache_store = :redis_store, caching_config_hash
 
     config.active_record.raise_in_transactional_callbacks = true
 

@@ -19,7 +19,9 @@ describe HealthController do
       it 'returns proper response' do
         get :readiness
         expect(json_response['db_check']['status']).to eq('ok')
-        expect(json_response['redis_check']['status']).to eq('ok')
+        expect(json_response['cache_check']['status']).to eq('ok')
+        expect(json_response['queues_check']['status']).to eq('ok')
+        expect(json_response['shared_state_check']['status']).to eq('ok')
         expect(json_response['fs_shards_check']['status']).to eq('ok')
         expect(json_response['fs_shards_check']['labels']['shard']).to eq('default')
       end
@@ -42,7 +44,9 @@ describe HealthController do
       it 'returns proper response' do
         get :liveness
         expect(json_response['db_check']['status']).to eq('ok')
-        expect(json_response['redis_check']['status']).to eq('ok')
+        expect(json_response['cache_check']['status']).to eq('ok')
+        expect(json_response['queues_check']['status']).to eq('ok')
+        expect(json_response['shared_state_check']['status']).to eq('ok')
         expect(json_response['fs_shards_check']['status']).to eq('ok')
       end
     end

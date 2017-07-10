@@ -4,7 +4,10 @@ class HealthController < ActionController::Base
 
   CHECKS = [
     Gitlab::HealthChecks::DbCheck,
-    Gitlab::HealthChecks::RedisCheck,
+    Gitlab::HealthChecks::Redis::RedisCheck,
+    Gitlab::HealthChecks::Redis::CacheCheck,
+    Gitlab::HealthChecks::Redis::QueuesCheck,
+    Gitlab::HealthChecks::Redis::SharedStateCheck,
     Gitlab::HealthChecks::FsShardsCheck
   ].freeze
 

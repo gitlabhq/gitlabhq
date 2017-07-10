@@ -113,7 +113,7 @@ describe EventCreateService, services: true do
     end
   end
 
-  describe '#push', :redis do
+  describe '#push', :clean_gitlab_redis_shared_state do
     let(:project) { create(:empty_project) }
     let(:user) { create(:user) }
 

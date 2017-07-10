@@ -8,7 +8,7 @@ describe Users::RefreshAuthorizedProjectsService do
   let(:user) { project.namespace.owner }
   let(:service) { described_class.new(user) }
 
-  describe '#execute', :redis do
+  describe '#execute', :clean_gitlab_redis_shared_state do
     it 'refreshes the authorizations using a lease' do
       expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
         .and_return('foo')

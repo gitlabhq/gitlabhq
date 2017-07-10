@@ -276,7 +276,7 @@ describe Gitlab::Workhorse, lib: true do
       end
 
       it 'set and notify' do
-        expect_any_instance_of(Redis).to receive(:publish)
+        expect_any_instance_of(::Redis).to receive(:publish)
           .with(described_class::NOTIFICATION_CHANNEL, "test-key=test-value")
 
         subject
@@ -310,7 +310,7 @@ describe Gitlab::Workhorse, lib: true do
         end
 
         it 'does not notify' do
-          expect_any_instance_of(Redis).not_to receive(:publish)
+          expect_any_instance_of(::Redis).not_to receive(:publish)
 
           subject
         end
