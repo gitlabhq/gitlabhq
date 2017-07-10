@@ -1,11 +1,14 @@
 require 'spec_helper'
 
-describe 'shared/issuable/_approvals.html.haml' do
+describe 'shared/issuable/_approvals.html.haml', :view do
+  let(:user) { create(:user) }
   let(:project) { build(:empty_project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:form) { double('form') }
 
   before do
+    allow(view).to receive(:can?).and_return(true)
+    allow(view).to receive(:current_user).and_return(user)
     allow(form).to receive(:label)
     allow(form).to receive(:number_field)
     allow(merge_request).to receive(:requires_approve?).and_return(true)
@@ -22,7 +25,6 @@ describe 'shared/issuable/_approvals.html.haml' do
 
     context 'can override approvers' do
       before do
-        allow(project).to receive(:can_override_approvers?).and_return(true)
         render 'shared/issuable/approvals', form: form, issuable: merge_request
       end
 
@@ -41,7 +43,7 @@ describe 'shared/issuable/_approvals.html.haml' do
 
     context 'can not override approvers' do
       before do
-        allow(project).to receive(:can_override_approvers?).and_return(false)
+        allow(view).to receive(:can?).with(user, :update_approvers, merge_request).and_return(false)
         render 'shared/issuable/approvals', form: form, issuable: merge_request
       end
 
@@ -86,7 +88,7 @@ describe 'shared/issuable/_approvals.html.haml' do
 
     context 'can not override approvers' do
       it 'hides remove button' do
-        allow(project).to receive(:can_override_approvers?).and_return(false)
+        allow(view).to receive(:can?).with(user, :update_approvers, merge_request).and_return(false)
 
         render 'shared/issuable/approvals', form: form, issuable: merge_request
 

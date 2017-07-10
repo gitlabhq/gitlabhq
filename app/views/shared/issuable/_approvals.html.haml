@@ -4,13 +4,13 @@
 - return unless issuable.is_a?(MergeRequest)
 - return unless issuable.requires_approve?
 
-- can_override_approvers = issuable.target_project.can_override_approvers?
+- can_update_approvers = can?(current_user, :update_approvers, issuable)
 
 .form-group
   = form.label :approver_ids, class: 'control-label' do
     Approvers
   .col-sm-10
-    - if can_override_approvers
+    - if can_update_approvers
       = users_select_tag("merge_request[approver_ids]", multiple: true, class: 'input-large', email_user: true, skip_users: issuable.all_approvers_including_groups, project: issuable.target_project)
       .help-block
         This merge request must be approved by these users.
@@ -34,7 +34,7 @@
           - issuable.overall_approvers.each do |approver|
             %li{ id: dom_id(approver.user), class: item_classes + ['approver'] }
               = link_to approver.user.name, approver.user
-              - if can_override_approvers
+              - if can_update_approvers
                 .pull-right
                   - if unsaved_approvers
                     = link_to "#", data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
@@ -48,7 +48,7 @@
             %li{ id: dom_id(approver_group.group), class: item_classes + ['approver-group'] }
               Group:
               = link_to approver_group.group.name, approver_group.group
-              - if can_override_approvers
+              - if can_update_approvers
                 .pull-right
                   - if unsaved_approvers
                     = link_to "#", data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}"}, class: "btn-xs btn btn-remove", title: 'Remove group' do
@@ -63,9 +63,9 @@
       .form-group
         = form.label :approvals_before_merge, class: 'label-light' do
           Approvals required
-        = form.number_field :approvals_before_merge, class: 'form-control', value: issuable.approvals_required, readonly: !can_override_approvers
+        = form.number_field :approvals_before_merge, class: 'form-control', value: issuable.approvals_required, readonly: !can_update_approvers
 
-    - if can_override_approvers
+    - if can_update_approvers
       .help-block.suggested-approvers
         - if @suggested_approvers.any?
           Suggested approvers:
