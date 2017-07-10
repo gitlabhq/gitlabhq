@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Note, models: true do
+describe Note do
   include RepoHelpers
 
   describe 'associations' do

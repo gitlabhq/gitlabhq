@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserPolicy, models: true do
+describe UserPolicy do
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
 

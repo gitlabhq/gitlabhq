@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ReferenceExtractor, lib: true do
+describe Gitlab::ReferenceExtractor do
   let(:project) { create(:empty_project) }
 
   before do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Config, lib: true do
+describe Gitlab::LDAP::Config do
   include LdapHelpers
 
   let(:config) { Gitlab::LDAP::Config.new('ldapmain') }

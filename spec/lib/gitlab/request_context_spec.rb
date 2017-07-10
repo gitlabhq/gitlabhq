@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::RequestContext, lib: true do
+describe Gitlab::RequestContext do
   describe '#client_ip' do
     subject { Gitlab::RequestContext.client_ip }
     let(:app) { -> (env) {} }

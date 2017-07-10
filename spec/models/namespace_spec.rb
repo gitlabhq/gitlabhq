@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Namespace, models: true do
+describe Namespace do
   let!(:namespace) { create(:namespace) }
 
   describe 'associations' do
@@ -151,7 +151,7 @@ describe Namespace, models: true do
     end
   end
 
-  describe '#move_dir', repository: true do
+  describe '#move_dir' do
     before do
       @namespace = create :namespace
       @project = create(:project_empty_repo, namespace: @namespace)
@@ -230,7 +230,7 @@ describe Namespace, models: true do
     end
   end
 
-  describe '#rm_dir', 'callback', repository: true do
+  describe '#rm_dir', 'callback' do
     let!(:project) { create(:project_empty_repo, namespace: namespace) }
     let(:repository_storage_path) { Gitlab.config.repositories.storages.default['path'] }
     let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }

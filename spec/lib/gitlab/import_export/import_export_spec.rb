@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport, services: true do
+describe Gitlab::ImportExport do
   describe 'export filename' do
     let(:group) { create(:group, :nested) }
     let(:project) { create(:empty_project, :public, path: 'project-path', namespace: group) }

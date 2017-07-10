@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::PipelineSchedule, models: true do
+describe Ci::PipelineSchedule do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:owner) }
 

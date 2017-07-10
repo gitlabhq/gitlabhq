@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git, lib: true do
+describe Gitlab::Git do
   let(:committer_email) { 'user@example.org' }
   let(:committer_name) { 'John Doe' }
 

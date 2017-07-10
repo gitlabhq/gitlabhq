@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NotificationService, services: true do
+describe NotificationService do
   include EmailHelpers
 
   let(:notification) { NotificationService.new }

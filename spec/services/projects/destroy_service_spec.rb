@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::DestroyService, services: true do
+describe Projects::DestroyService do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let!(:path) { project.repository.path_to_repo }

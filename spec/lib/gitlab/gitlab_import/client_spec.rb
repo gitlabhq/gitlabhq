@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitlabImport::Client, lib: true do
+describe Gitlab::GitlabImport::Client do
   include ImportSpecHelper
 
   let(:token) { '123456' }

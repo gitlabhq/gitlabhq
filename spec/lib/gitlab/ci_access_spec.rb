@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::CiAccess, lib: true do
+describe Gitlab::CiAccess do
   let(:access) { Gitlab::CiAccess.new }
 
   describe '#can_do_action?' do

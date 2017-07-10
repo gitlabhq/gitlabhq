@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ParticipantsService, services: true do
+describe Projects::ParticipantsService do
   describe '#groups' do
     describe 'avatar_url' do
       let(:project) { create(:empty_project, :public) }

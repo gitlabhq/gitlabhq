@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::RevList, lib: true do
+describe Gitlab::Git::RevList do
   let(:project) { create(:project, :repository) }
 
   before do

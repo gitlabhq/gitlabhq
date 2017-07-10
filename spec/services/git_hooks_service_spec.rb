@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitHooksService, services: true do
+describe GitHooksService do
   include RepoHelpers
 
   let(:user)    { create(:user) }

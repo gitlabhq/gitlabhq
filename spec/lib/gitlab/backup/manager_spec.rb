@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Backup::Manager, lib: true do
+describe Backup::Manager do
   include StubENV
 
   let(:progress) { StringIO.new }

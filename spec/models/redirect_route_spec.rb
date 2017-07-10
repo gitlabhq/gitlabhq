@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RedirectRoute, models: true do
+describe RedirectRoute do
   let(:group) { create(:group) }
   let!(:redirect_route) { group.redirect_routes.create(path: 'gitlabb') }
 

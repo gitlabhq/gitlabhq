@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Members::DestroyService, services: true do
+describe Members::DestroyService do
   let(:user) { create(:user) }
   let(:member_user) { create(:user) }
   let(:project) { create(:empty_project, :public) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Labels::UpdateService, services: true do
+describe Labels::UpdateService do
   describe '#execute' do
     let(:project) { create(:project) }
 

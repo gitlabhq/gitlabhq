@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DeleteMergedBranchesService, services: true do
+describe DeleteMergedBranchesService do
   subject(:service) { described_class.new(project, project.owner) }
 
   let(:project) { create(:project, :repository) }

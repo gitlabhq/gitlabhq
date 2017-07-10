@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
+describe Banzai::Filter::MilestoneReferenceFilter do
   include FilterSpecHelper
 
   let(:project)   { create(:empty_project, :public) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe WebHookService, services: true do
+describe WebHookService do
   let(:project) { create(:empty_project) }
   let(:project_hook) { create(:project_hook) }
   let(:headers) do

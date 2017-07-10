@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GlobalPolicy, models: true do
+describe GlobalPolicy do
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
 

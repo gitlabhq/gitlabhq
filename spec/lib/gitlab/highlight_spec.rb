@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Highlight, lib: true do
+describe Gitlab::Highlight do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

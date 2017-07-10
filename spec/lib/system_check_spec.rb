@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-describe SystemCheck, lib: true do
+describe SystemCheck do
   class SimpleCheck < SystemCheck::BaseCheck
     def check?
       true

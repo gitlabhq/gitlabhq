@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JiraService, models: true do
+describe JiraService do
   include Gitlab::Routing
 
   describe "Associations" do

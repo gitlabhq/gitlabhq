@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BuildkiteService, :use_clean_rails_memory_store_caching, models: true do
+describe BuildkiteService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   let(:project) { create(:empty_project) }

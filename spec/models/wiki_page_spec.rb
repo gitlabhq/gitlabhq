@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe WikiPage, models: true do
+describe WikiPage do
   let(:project) { create(:empty_project) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }

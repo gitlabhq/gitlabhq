@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ExtractsPath, lib: true do
+describe ExtractsPath do
   include ExtractsPath
   include RepoHelpers
   include Gitlab::Routing

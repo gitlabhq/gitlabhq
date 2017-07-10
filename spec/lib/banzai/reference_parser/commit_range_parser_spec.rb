@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::CommitRangeParser, lib: true do
+describe Banzai::ReferenceParser::CommitRangeParser do
   include ReferenceParserHelpers
 
   let(:project) { create(:empty_project, :public) }

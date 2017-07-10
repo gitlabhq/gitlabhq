@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UpdateReleaseService, services: true do
+describe UpdateReleaseService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:tag_name) { project.repository.tag_names.first }

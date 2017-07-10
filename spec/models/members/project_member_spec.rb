@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectMember, models: true do
+describe ProjectMember do
   describe 'associations' do
     it { is_expected.to belong_to(:project).with_foreign_key(:source_id) }
   end

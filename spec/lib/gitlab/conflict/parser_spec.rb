@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Conflict::Parser, lib: true do
+describe Gitlab::Conflict::Parser do
   let(:parser) { Gitlab::Conflict::Parser.new }
 
   describe '#parse' do

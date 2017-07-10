@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Groups::DestroyService, services: true do
+describe Groups::DestroyService do
   include DatabaseConnectionHelpers
 
   let!(:user)         { create(:user) }

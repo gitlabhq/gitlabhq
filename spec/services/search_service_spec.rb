@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SearchService, services: true do
+describe SearchService do
   let(:user) { create(:user) }
 
   let(:accessible_group) { create(:group, :private) }

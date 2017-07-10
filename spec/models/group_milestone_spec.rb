@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupMilestone, models: true do
+describe GroupMilestone do
   let(:group) { create(:group) }
   let(:project) { create(:empty_project, group: group) }
   let(:project_milestone) do

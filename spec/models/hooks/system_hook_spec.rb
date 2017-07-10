@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe SystemHook, models: true do
+describe SystemHook do
   context 'default attributes' do
     let(:system_hook) { build(:system_hook) }
 

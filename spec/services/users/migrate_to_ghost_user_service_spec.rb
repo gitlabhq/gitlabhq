@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Users::MigrateToGhostUserService, services: true do
+describe Users::MigrateToGhostUserService do
   let!(:user)      { create(:user) }
   let!(:project)   { create(:project) }
   let(:service)    { described_class.new(user) }
