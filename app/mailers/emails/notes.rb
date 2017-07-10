@@ -4,7 +4,7 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @commit = @note.noteable
-      @target_url = namespace_project_commit_url(*note_target_url_options)
+      @target_url = project_commit_url(*note_target_url_options)
       mail_answer_thread(@commit, note_thread_options(recipient_id))
     end
 
@@ -12,7 +12,7 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @issue = @note.noteable
-      @target_url = namespace_project_issue_url(*note_target_url_options)
+      @target_url = project_issue_url(*note_target_url_options)
       mail_answer_thread(@issue, note_thread_options(recipient_id))
     end
 
@@ -20,7 +20,7 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @merge_request = @note.noteable
-      @target_url = namespace_project_merge_request_url(*note_target_url_options)
+      @target_url = project_merge_request_url(*note_target_url_options)
       mail_answer_thread(@merge_request, note_thread_options(recipient_id))
     end
 
@@ -28,7 +28,7 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @snippet = @note.noteable
-      @target_url = namespace_project_snippet_url(*note_target_url_options)
+      @target_url = project_snippet_url(*note_target_url_options)
       mail_answer_thread(@snippet, note_thread_options(recipient_id))
     end
 
@@ -43,7 +43,7 @@ module Emails
     private
 
     def note_target_url_options
-      [@project.namespace, @project, @note.noteable, anchor: "note_#{@note.id}"]
+      [@project, @note.noteable, anchor: "note_#{@note.id}"]
     end
 
     def note_thread_options(recipient_id)

@@ -7,7 +7,7 @@ module BranchesHelper
 
     options = exist_opts.merge(options)
 
-    namespace_project_branches_path(@project.namespace, @project, @id, options)
+    project_branches_path(@project, @id, options)
   end
 
   def can_push_branch?(project, branch_name)

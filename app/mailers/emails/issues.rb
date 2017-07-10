@@ -31,7 +31,7 @@ module Emails
       setup_issue_mail(issue_id, recipient_id)
 
       @label_names = label_names
-      @labels_url = namespace_project_labels_url(@project.namespace, @project)
+      @labels_url = project_labels_url(@project)
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
     end
 
@@ -56,7 +56,7 @@ module Emails
     def setup_issue_mail(issue_id, recipient_id)
       @issue = Issue.find(issue_id)
       @project = @issue.project
-      @target_url = namespace_project_issue_url(@project.namespace, @project, @issue)
+      @target_url = project_issue_url(@project, @issue)
 
       @sent_notification = SentNotification.record(@issue, recipient_id, reply_key)
     end

@@ -49,7 +49,6 @@ module QA
       autoload :Entry, 'qa/page/main/entry'
       autoload :Menu, 'qa/page/main/menu'
       autoload :Groups, 'qa/page/main/groups'
-      autoload :Projects, 'qa/page/main/projects'
     end
 
     module Project

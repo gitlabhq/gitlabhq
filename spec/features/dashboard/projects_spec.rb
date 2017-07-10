@@ -1,18 +1,32 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Projects', feature: true do
+feature 'Dashboard Projects' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, name: "awesome stuff") }
+  let(:project) { create(:project, name: 'awesome stuff') }
   let(:project2) { create(:project, :public, name: 'Community project') }
 
   before do
     project.team << [user, :developer]
-    gitlab_sign_in(user)
+    sign_in(user)
+  end
+
+  it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token" do
+    before do
+      visit dashboard_projects_path
+    end
   end
 
   it 'shows the project the user in a member of in the list' do
     visit dashboard_projects_path
     expect(page).to have_content('awesome stuff')
+  end
+
+  it 'shows "New project" button' do
+    visit dashboard_projects_path
+
+    page.within '#content-body' do
+      expect(page).to have_link('New project')
+    end
   end
 
   context 'when last_repository_updated_at, last_activity_at and update_at are present' do
@@ -47,8 +61,8 @@ RSpec.describe 'Dashboard Projects', feature: true do
     end
   end
 
-  describe "with a pipeline", redis: true do
-    let!(:pipeline) {  create(:ci_pipeline, project: project, sha: project.commit.sha) }
+  describe 'with a pipeline', redis: true do
+    let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha) }
 
     before do
       # Since the cache isn't updated when a new pipeline is created
@@ -60,9 +74,7 @@ RSpec.describe 'Dashboard Projects', feature: true do
     it 'shows that the last pipeline passed' do
       visit dashboard_projects_path
 
-      expect(page).to have_xpath("//a[@href='#{pipelines_namespace_project_commit_path(project.namespace, project, project.commit)}']")
+      expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit)}']")
     end
   end
-
-  it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
 end

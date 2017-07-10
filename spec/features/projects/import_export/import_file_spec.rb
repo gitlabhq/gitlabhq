@@ -53,7 +53,6 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
       select2(namespace.id, from: '#project_namespace_id')
       fill_in :project_path, with: project.name, visible: true
       click_link 'GitLab export'
-
       attach_file('file', file)
       click_on 'Import project'
 

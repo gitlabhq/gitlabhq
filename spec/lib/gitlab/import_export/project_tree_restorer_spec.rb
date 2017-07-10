@@ -95,6 +95,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(MergeRequestDiffFile.where.not(diff: nil).count).to eq(9)
       end
 
+      it 'has the correct data for merge request diff commits in serialised and table formats' do
+        expect(MergeRequestDiff.where.not(st_commits: nil).count).to eq(7)
+        expect(MergeRequestDiffCommit.count).to eq(6)
+      end
+
       it 'has the correct time for merge request st_commits' do
         st_commits = MergeRequestDiff.where.not(st_commits: nil).first.st_commits
 

@@ -29,12 +29,6 @@ export default {
       required: false,
       default: false,
     },
-
-    isLoadingFolderContent: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
 
   methods: {
@@ -74,7 +68,7 @@ export default {
         />
 
       <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
-        <div v-if="isLoadingFolderContent">
+        <div v-if="model.isLoadingFolderContent">
           <loading-icon size="2" />
         </div>
 

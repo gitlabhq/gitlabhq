@@ -1,10 +1,10 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
+  before_action :schedule, except: [:index, :new, :create]
+
   before_action :authorize_read_pipeline_schedule!
   before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
-  before_action :authorize_update_pipeline_schedule!, only: [:edit, :take_ownership, :update]
+  before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
-
-  before_action :schedule, only: [:edit, :update, :destroy, :take_ownership]
 
   def index
     @scope = params[:scope]
@@ -34,7 +34,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def update
     if schedule.update(schedule_params)
-      redirect_to namespace_project_pipeline_schedules_path(@project.namespace.becomes(Namespace), @project)
+      redirect_to project_pipeline_schedules_path(@project)
     else
       render :edit
     end
@@ -53,7 +53,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
       redirect_to pipeline_schedules_path(@project), status: 302
     else
       redirect_to pipeline_schedules_path(@project),
-                  status: 302,
+                  status: :forbidden,
                   alert: _("Failed to remove the pipeline schedule")
     end
   end
@@ -66,6 +66,15 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def schedule_params
     params.require(:schedule)
-      .permit(:description, :cron, :cron_timezone, :ref, :active)
+      .permit(:description, :cron, :cron_timezone, :ref, :active,
+        variables_attributes: [:id, :key, :value, :_destroy] )
+  end
+
+  def authorize_update_pipeline_schedule!
+    return access_denied! unless can?(current_user, :update_pipeline_schedule, schedule)
+  end
+
+  def authorize_admin_pipeline_schedule!
+    return access_denied! unless can?(current_user, :admin_pipeline_schedule, schedule)
   end
 end

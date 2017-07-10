@@ -1,0 +1,48 @@
+- public_project_count = ProjectsFinder.new(current_user: current_user).execute.count
+
+- if current_user.can_create_group?
+  .row.blank-state.clearfix
+    .col-md-1.col-md-offset-3.blank-state-icon
+      = custom_icon("add_new_group", size: 50)
+    .col-md-5.blank-state-body
+      %h3.blank-state-title
+        Create a group for several dependent projects.
+      %p.blank-state-text
+        Groups are the best way to manage projects and members.
+      = link_to new_group_path, class: "btn btn-new" do
+        New group
+
+.row.blank-state.clearfix
+  .col-md-1.col-md-offset-3.blank-state-icon
+    = custom_icon("add_new_project", size: 50)
+  .col-md-5.blank-state-body
+    %h3.blank-state-title
+      Create a project
+    %p.blank-state-text
+      - if current_user.can_create_project?
+        You don't have access to any projects right now.
+        You can create up to
+        %strong= number_with_delimiter(current_user.projects_limit)
+        = succeed "." do
+          = "project".pluralize(current_user.projects_limit)
+      - else
+        If you are added to a project, it will be displayed here.
+    - if current_user.can_create_project?
+      = link_to new_project_path, class: "btn btn-new" do
+        New project
+
+- if public_project_count > 0
+  .row.blank-state.clearfix
+    .col-md-1.col-md-offset-3.blank-state-icon
+      = custom_icon("globe", size: 50)
+    .col-md-5.blank-state-body
+      %h3.blank-state-title
+        Explore public projects
+      %p.blank-state-text
+        There are
+        = number_with_delimiter(public_project_count)
+        public projects on this server.
+        Public projects are an easy way to allow
+        everyone to have read-only access.
+      = link_to trending_explore_projects_path, class: "btn btn-new" do
+        Browse projects

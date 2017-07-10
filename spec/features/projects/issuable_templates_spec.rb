@@ -6,7 +6,7 @@ feature 'issuable templates', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
   end
 
   context 'user creates an issue using templates' do
@@ -28,7 +28,7 @@ feature 'issuable templates', feature: true, js: true do
         longtemplate_content,
         message: 'added issue template',
         branch_name: 'master')
-      visit edit_namespace_project_issue_path project.namespace, project, issue
+      visit edit_project_issue_path project, issue
       fill_in :'issue[title]', with: 'test issue title'
     end
 
@@ -81,7 +81,7 @@ feature 'issuable templates', feature: true, js: true do
         template_content,
         message: 'added issue template',
         branch_name: 'master')
-      visit edit_namespace_project_issue_path project.namespace, project, issue
+      visit edit_project_issue_path project, issue
       fill_in :'issue[title]', with: 'test issue title'
       fill_in :'issue[description]', with: prior_description
     end
@@ -105,7 +105,7 @@ feature 'issuable templates', feature: true, js: true do
         template_content,
         message: 'added merge request template',
         branch_name: 'master')
-      visit edit_namespace_project_merge_request_path project.namespace, project, merge_request
+      visit edit_project_merge_request_path project, merge_request
       fill_in :'merge_request[title]', with: 'test merge request title'
     end
 
@@ -124,18 +124,21 @@ feature 'issuable templates', feature: true, js: true do
     let(:merge_request) { create(:merge_request, :with_diffs, source_project: fork_project, target_project: project) }
 
     background do
-      gitlab_sign_out
+      sign_out(:user)
+
       project.team << [fork_user, :developer]
       fork_project.team << [fork_user, :master]
       create(:forked_project_link, forked_to_project: fork_project, forked_from_project: project)
-      gitlab_sign_in fork_user
+
+      sign_in(fork_user)
+
       project.repository.create_file(
         fork_user,
         '.gitlab/merge_request_templates/feature-proposal.md',
         template_content,
         message: 'added merge request template',
         branch_name: 'master')
-      visit edit_namespace_project_merge_request_path project.namespace, project, merge_request
+      visit edit_project_merge_request_path project, merge_request
       fill_in :'merge_request[title]', with: 'test merge request title'
     end
 

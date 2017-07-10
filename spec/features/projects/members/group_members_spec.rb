@@ -13,13 +13,13 @@ feature 'Projects members', feature: true do
   background do
     project.team << [developer, :developer]
     group.add_owner(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'with a group invitee' do
     before do
       group_invitee
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
     end
 
     scenario 'does not appear in the project members page' do
@@ -33,7 +33,7 @@ feature 'Projects members', feature: true do
     before do
       group_invitee
       project_invitee
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
     end
 
     scenario 'shows the project invitee, the project developer, and the group owner' do
@@ -54,7 +54,7 @@ feature 'Projects members', feature: true do
   context 'with a group requester' do
     before do
       group.request_access(group_requester)
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
     end
 
     scenario 'does not appear in the project members page' do
@@ -68,7 +68,7 @@ feature 'Projects members', feature: true do
     before do
       group.request_access(group_requester)
       project.request_access(project_requester)
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
     end
 
     scenario 'shows the project requester, the project developer, and the group owner' do

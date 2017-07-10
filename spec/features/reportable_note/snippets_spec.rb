@@ -6,7 +6,7 @@ describe 'Reportable note on snippets', :feature, :js do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'on project snippet' do
@@ -14,7 +14,7 @@ describe 'Reportable note on snippets', :feature, :js do
     let!(:note) { create(:note_on_project_snippet, noteable: snippet, project: project) }
 
     before do
-      visit namespace_project_snippet_path(project.namespace, project, snippet)
+      visit project_snippet_path(project, snippet)
     end
 
     it_behaves_like 'reportable note'

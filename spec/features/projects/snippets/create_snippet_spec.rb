@@ -17,9 +17,9 @@ feature 'Create Snippet', :js, feature: true do
   context 'when a user is authenticated' do
     before do
       project.team << [user, :master]
-      gitlab_sign_in(user)
+      sign_in(user)
 
-      visit namespace_project_snippets_path(project.namespace, project)
+      visit project_snippets_path(project)
 
       click_on('New snippet')
     end
@@ -77,7 +77,7 @@ feature 'Create Snippet', :js, feature: true do
     it 'shows a public snippet on the index page but not the New snippet button' do
       snippet = create(:project_snippet, :public, project: project)
 
-      visit namespace_project_snippets_path(project.namespace, project)
+      visit project_snippets_path(project)
 
       expect(page).to have_content(snippet.title)
       expect(page).not_to have_content('New snippet')

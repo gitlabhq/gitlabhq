@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'CI Lint', js: true do
   before do
-    gitlab_sign_in :user
+    sign_in(create(:user))
   end
 
   describe 'YAML parsing' do

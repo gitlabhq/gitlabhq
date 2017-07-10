@@ -3,23 +3,27 @@ class MigrateStageIdReferenceInBackground < ActiveRecord::Migration
 
   DOWNTIME = false
   BATCH_SIZE = 10000
+  RANGE_SIZE = 1000
   MIGRATION = 'MigrateBuildStageIdReference'.freeze
 
   disable_ddl_transaction!
 
   class Build < ActiveRecord::Base
     self.table_name = 'ci_builds'
+    include ::EachBatch
   end
 
+  ##
+  # It will take around 3 days to process 20M ci_builds.
+  #
   def up
-    index = 1
+    Build.where(stage_id: nil).each_batch(of: BATCH_SIZE) do |relation, index|
+      relation.each_batch(of: RANGE_SIZE) do |relation|
+        range = relation.pluck('MIN(id)', 'MAX(id)').first
 
-    Build.where(stage_id: nil).in_batches(of: BATCH_SIZE) do |relation|
-      jobs = relation.pluck(:id).map { |id| [MIGRATION, [id]] }
-      schedule = index * 2.minutes
-      index += 1
-
-      BackgroundMigrationWorker.perform_bulk_in(schedule, jobs)
+        BackgroundMigrationWorker
+          .perform_in(index * 2.minutes, MIGRATION, range)
+      end
     end
   end
 

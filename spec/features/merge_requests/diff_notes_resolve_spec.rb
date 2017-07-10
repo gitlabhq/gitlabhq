@@ -19,7 +19,7 @@ feature 'Diff notes resolve', feature: true, js: true do
   context 'no discussions' do
     before do
       project.team << [user, :master]
-      gitlab_sign_in user
+      sign_in user
       note.destroy
       visit_merge_request
     end
@@ -33,7 +33,7 @@ feature 'Diff notes resolve', feature: true, js: true do
   context 'as authorized user' do
     before do
       project.team << [user, :master]
-      gitlab_sign_in user
+      sign_in user
       visit_merge_request
     end
 
@@ -402,7 +402,7 @@ feature 'Diff notes resolve', feature: true, js: true do
 
     before do
       project.team << [guest, :guest]
-      gitlab_sign_in guest
+      sign_in guest
     end
 
     context 'someone elses merge request' do
@@ -494,6 +494,6 @@ feature 'Diff notes resolve', feature: true, js: true do
 
   def visit_merge_request(mr = nil)
     mr = mr || merge_request
-    visit namespace_project_merge_request_path(mr.project.namespace, mr.project, mr)
+    visit project_merge_request_path(mr.project, mr)
   end
 end

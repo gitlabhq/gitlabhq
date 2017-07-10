@@ -7,34 +7,34 @@ feature 'Merge Requests List' do
   background do
     project.team << [user, :developer]
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   scenario 'user does not see create new list button' do
     create(:merge_request, source_project: project)
 
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
 
     expect(page).not_to have_selector('.js-new-board-list')
   end
 
   it 'should show an empty state' do
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
 
     expect(page).to have_selector('.empty-state')
   end
 
   it 'empty state should have a create merge request button' do
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
 
-    expect(page).to have_link 'New merge request', href: namespace_project_new_merge_request_path(project.namespace, project)
+    expect(page).to have_link 'New merge request', href: project_new_merge_request_path(project)
   end
 
   context 'if there are merge requests' do
     before do
       create(:merge_request, assignee: user, source_project: project)
 
-      visit namespace_project_merge_requests_path(project.namespace, project)
+      visit project_merge_requests_path(project)
     end
 
     it 'should not show an empty state' do

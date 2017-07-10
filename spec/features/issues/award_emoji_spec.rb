@@ -12,14 +12,14 @@ describe 'Awards Emoji', feature: true do
   context 'authorized user' do
     before do
       project.team << [user, :master]
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     describe 'visiting an issue with a legacy award emoji that is not valid anymore' do
       before do
         # The `heart_tip` emoji is not valid anymore so we need to skip validation
         issue.award_emoji.build(user: user, name: 'heart_tip').save!(validate: false)
-        visit namespace_project_issue_path(project.namespace, project, issue)
+        visit project_issue_path(project, issue)
         wait_for_requests
       end
 
@@ -33,7 +33,7 @@ describe 'Awards Emoji', feature: true do
       let!(:note) { create(:note_on_issue, noteable: issue, project: issue.project, note: "Hello world") }
 
       before do
-        visit namespace_project_issue_path(project.namespace, project, issue)
+        visit project_issue_path(project, issue)
         wait_for_requests
       end
 
@@ -97,7 +97,7 @@ describe 'Awards Emoji', feature: true do
 
   context 'unauthorized user', js: true do
     before do
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
     end
 
     it 'has disabled emoji button' do

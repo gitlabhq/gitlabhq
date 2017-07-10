@@ -30,6 +30,12 @@ describe Projects::TransferService, services: true do
       transfer_project(project, user, group)
     end
 
+    it 'expires full_path cache' do
+      expect(project).to receive(:expires_full_path_cache)
+
+      transfer_project(project, user, group)
+    end
+
     it 'executes system hooks' do
       expect_any_instance_of(Projects::TransferService).to receive(:execute_system_hooks)
 

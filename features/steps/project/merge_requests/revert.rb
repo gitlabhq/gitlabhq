@@ -1,6 +1,5 @@
 class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
   include LoginHelpers
-  include GitlabRoutingHelper
   include WaitForRequests
 
   step 'I click on the revert button' do

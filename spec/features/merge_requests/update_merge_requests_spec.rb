@@ -7,13 +7,13 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'status', js: true do
     describe 'close merge request' do
       before do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it 'closes merge request' do
@@ -26,7 +26,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
     describe 'reopen merge request' do
       before do
         merge_request.close
-        visit namespace_project_merge_requests_path(project.namespace, project, state: 'closed')
+        visit project_merge_requests_path(project, state: 'closed')
       end
 
       it 'reopens merge request' do
@@ -40,7 +40,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
   context 'assignee', js: true do
     describe 'set assignee' do
       before do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it "updates merge request with assignee" do
@@ -56,7 +56,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
       before do
         merge_request.assignee = user
         merge_request.save
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it "removes assignee from the merge request" do
@@ -72,7 +72,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
 
     describe 'set milestone' do
       before do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it "updates merge request with milestone" do
@@ -86,7 +86,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
       before do
         merge_request.milestone = milestone
         merge_request.save
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it "removes milestone from the merge request" do

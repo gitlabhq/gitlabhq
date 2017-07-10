@@ -54,6 +54,13 @@ gitlabURL: http://gitlab.your-domain.com/
 ##
 runnerRegistrationToken: ""
 
+## Set the certsSecretName in order to pass custom certficates for GitLab Runner to use
+## Provide resource name for a Kubernetes Secret Object in the same namespace,
+## this is used to populate the /etc/gitlab-runner/certs directory
+## ref: https://docs.gitlab.com/runner/configuration/tls-self-signed.html#supported-options-for-self-signed-certificates
+##
+#certsSecretName:
+
 ## Configure the maximum number of concurrent jobs
 ## ref: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section
 ##
@@ -134,6 +141,52 @@ runners:
   ##
   privileged: true
 ```
+
+### Providing a custom certificate for accessing GitLab
+
+You can provide a [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
+to the GitLab Runner Helm Chart, which will be used to populate the container's
+`/etc/gitlab-runner/certs` directory.
+
+Each key name in the Secret will be used as a filename in the directory, with the
+file content being the value associated with the key.
+
+More information on how GitLab Runner uses these certificates can be found in the
+[Runner Documentation](https://docs.gitlab.com/runner/configuration/tls-self-signed.html#supported-options-for-self-signed-certificates).
+
+ - The key/file name used should be in the format `<gitlab-hostname>.crt`. For example: `gitlab.your-domain.com.crt`.
+ - Any intermediate certificates need to be concatenated to your server certificate in the same file.
+ - The hostname used should be the one the certificate is registered for.
+
+The GitLab Runner Helm Chart does not create a secret for you. In order to create
+the secret, you can prepare your certificate on you local machine, and then run
+the `kubectl create secret` command from the directory with the certificate
+
+```bash
+kubectl
+  --namespace <NAMESPACE>
+  create secret generic <SECRET_NAME>
+  --from-file=<CERTFICATE_FILENAME>
+```
+
+- `<NAMESPACE>` is the Kubernetes namespace where you want to install the GitLab Runner.
+- `<SECRET_NAME>` is the Kubernetes Secret resource name. For example: `gitlab-domain-cert`
+- `<CERTFICATE_FILENAME>` is the filename for the certificate in your current directory that will be imported into the secret
+
+You then need to provide the secret's name to the GitLab Runner chart.
+
+Add the following to your `values.yaml`
+
+```yaml
+## Set the certsSecretName in order to pass custom certficates for GitLab Runner to use
+## Provide resource name for a Kubernetes Secret Object in the same namespace,
+## this is used to populate the /etc/gitlab-runner/certs directory
+## ref: https://docs.gitlab.com/runner/configuration/tls-self-signed.html#supported-options-for-self-signed-certificates
+##
+certsSecretName: <SECRET NAME>
+```
+
+- `<SECRET_NAME>` is the Kubernetes Secret resource name. For example: `gitlab-domain-cert`
 
 ## Installing GitLab Runner using the Helm Chart
 

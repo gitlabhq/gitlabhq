@@ -14,16 +14,14 @@ class StageEntity < Grape::Entity
   expose :detailed_status, as: :status, with: StatusEntity
 
   expose :path do |stage|
-    namespace_project_pipeline_path(
-      stage.pipeline.project.namespace,
+    project_pipeline_path(
       stage.pipeline.project,
       stage.pipeline,
       anchor: stage.name)
   end
 
   expose :dropdown_path do |stage|
-    stage_namespace_project_pipeline_path(
-      stage.pipeline.project.namespace,
+    stage_project_pipeline_path(
       stage.pipeline.project,
       stage.pipeline,
       stage: stage.name,

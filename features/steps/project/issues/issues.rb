@@ -247,7 +247,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When 'I visit empty project page' do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I see empty project details with ssh clone info' do
@@ -259,12 +259,12 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When "I visit project \"Community\" issues page" do
     project = Project.find_by(name: 'Community')
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   When "I visit empty project's issues page" do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   step 'I leave a comment with code block' do

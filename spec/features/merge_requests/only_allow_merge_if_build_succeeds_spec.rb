@@ -5,7 +5,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
   let(:project)       { merge_request.target_project }
 
   before do
-    gitlab_sign_in merge_request.author
+    sign_in merge_request.author
 
     project.team << [merge_request.author, :master]
   end
@@ -145,6 +145,6 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
   end
 
   def visit_merge_request(merge_request)
-    visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+    visit project_merge_request_path(merge_request.project, merge_request)
   end
 end

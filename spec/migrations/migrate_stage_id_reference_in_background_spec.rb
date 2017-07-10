@@ -8,7 +8,8 @@ describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
   let(:projects) { table(:projects) }
 
   before do
-    stub_const('MigrateStageIdReferenceInBackground::BATCH_SIZE', 2)
+    stub_const("#{described_class.name}::BATCH_SIZE", 3)
+    stub_const("#{described_class.name}::RANGE_SIZE", 2)
 
     projects.create!(id: 123, name: 'gitlab1', path: 'gitlab1')
     projects.create!(id: 345, name: 'gitlab2', path: 'gitlab2')
@@ -34,11 +35,10 @@ describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
       Timecop.freeze do
         migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_migration(2.minutes, 1)
-        expect(described_class::MIGRATION).to be_scheduled_migration(2.minutes, 2)
-        expect(described_class::MIGRATION).to be_scheduled_migration(4.minutes, 3)
-        expect(described_class::MIGRATION).to be_scheduled_migration(4.minutes, 4)
-        expect(BackgroundMigrationWorker.jobs.size).to eq 5
+        expect(described_class::MIGRATION).to be_scheduled_migration(2.minutes, 1, 2)
+        expect(described_class::MIGRATION).to be_scheduled_migration(2.minutes, 3, 3)
+        expect(described_class::MIGRATION).to be_scheduled_migration(4.minutes, 4, 5)
+        expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end
   end

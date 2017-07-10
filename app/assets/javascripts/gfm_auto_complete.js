@@ -1,4 +1,3 @@
-import { validEmojiNames, glEmojiTag } from './emoji';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
 
@@ -31,6 +30,7 @@ class GfmAutoComplete {
     this.input.each((i, input) => {
       const $input = $(input);
       $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
+      $input.on('change.atwho', () => input.dispatchEvent(new Event('input')));
       // This triggers at.js again
       // Needed for quick actions with suffixes (ex: /label ~)
       $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
@@ -373,7 +373,12 @@ class GfmAutoComplete {
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
-      this.loadData($input, at, validEmojiNames);
+      import(/* webpackChunkName: 'emoji' */ './emoji')
+        .then(({ validEmojiNames, glEmojiTag }) => {
+          this.loadData($input, at, validEmojiNames);
+          GfmAutoComplete.glEmojiTag = glEmojiTag;
+        })
+        .catch(() => { this.isLoadingData[at] = false; });
     } else {
       AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
         .then((data) => {
@@ -428,12 +433,14 @@ GfmAutoComplete.atTypeMap = {
 };
 
 // Emoji
+GfmAutoComplete.glEmojiTag = null;
 GfmAutoComplete.Emoji = {
   templateFunction(name) {
-    return `<li>
-      ${name} ${glEmojiTag(name)}
-    </li>
-    `;
+    // glEmojiTag helper is loaded on-demand in fetchData()
+    if (GfmAutoComplete.glEmojiTag) {
+      return `<li>${name} ${GfmAutoComplete.glEmojiTag(name)}</li>`;
+    }
+    return `<li>${name}</li>`;
   },
 };
 // Team Members

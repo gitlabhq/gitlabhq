@@ -21,7 +21,10 @@ module Projects
       end
 
       def define_secret_variables
-        @variable = Ci::Variable.new
+        @variable = Ci::Variable.new(project: project)
+          .present(current_user: current_user)
+        @variables = project.variables.order_key_asc
+          .map { |variable| variable.present(current_user: current_user) }
       end
 
       def define_triggers_variables

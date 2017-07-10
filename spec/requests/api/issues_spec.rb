@@ -772,7 +772,7 @@ describe API::Issues do
       end
     end
 
-    context 'CE restrictions' do
+    context 'single assignee restrictions' do
       it 'creates a new project issue with no more than one assignee' do
         post api("/projects/#{project.id}/issues", user),
           title: 'new issue', assignee_ids: [user2.id, guest.id]
@@ -1123,7 +1123,7 @@ describe API::Issues do
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
 
-    context 'CE restrictions' do
+    context 'single assignee restrictions' do
       it 'updates an issue with several assignees but only one has been applied' do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           assignee_ids: [user2.id, guest.id]
@@ -1459,6 +1459,25 @@ describe API::Issues do
       get api("/projects/#{project.id}/issues/9999/closed_by", user)
 
       expect(response).to have_http_status(404)
+    end
+  end
+
+  describe "GET /projects/:id/issues/:issue_iid/user_agent_detail" do
+    let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
+
+    it 'exposes known attributes' do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
+      expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
+      expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
+    end
+
+    it "returns unautorized for non-admin users" do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
+
+      expect(response).to have_http_status(403)
     end
   end
 

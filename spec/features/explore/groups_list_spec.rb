@@ -10,7 +10,7 @@ describe 'Explore Groups page', :js, :feature do
   before do
     group.add_owner(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit explore_groups_path
   end

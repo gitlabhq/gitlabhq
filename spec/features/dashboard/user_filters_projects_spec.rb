@@ -9,7 +9,7 @@ describe 'Dashboard > User filters projects', :feature do
   before do
     project.team << [user, :master]
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'filtering personal projects' do

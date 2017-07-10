@@ -6,11 +6,11 @@ describe 'Project variables', js: true do
   let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, :master]
     project.variables << variable
 
-    visit namespace_project_settings_ci_cd_path(project.namespace, project)
+    visit project_settings_ci_cd_path(project)
   end
 
   it 'shows list of variables' do
@@ -24,7 +24,7 @@ describe 'Project variables', js: true do
     fill_in('variable_value', with: 'key value')
     click_button('Add new variable')
 
-    expect(page).to have_content('Variables were successfully updated.')
+    expect(page).to have_content('Variable was successfully created.')
     page.within('.variables-table') do
       expect(page).to have_content('key')
       expect(page).to have_content('No')
@@ -36,7 +36,7 @@ describe 'Project variables', js: true do
     fill_in('variable_value', with: '')
     click_button('Add new variable')
 
-    expect(page).to have_content('Variables were successfully updated.')
+    expect(page).to have_content('Variable was successfully created.')
     page.within('.variables-table') do
       expect(page).to have_content('new_key')
     end
@@ -48,7 +48,7 @@ describe 'Project variables', js: true do
     check('Protected')
     click_button('Add new variable')
 
-    expect(page).to have_content('Variables were successfully updated.')
+    expect(page).to have_content('Variable was successfully created.')
     page.within('.variables-table') do
       expect(page).to have_content('key')
       expect(page).to have_content('Yes')
@@ -82,7 +82,7 @@ describe 'Project variables', js: true do
 
   it 'deletes variable' do
     page.within('.variables-table') do
-      find('.btn-variable-delete').click
+      click_on 'Remove'
     end
 
     expect(page).not_to have_selector('variables-table')
@@ -90,7 +90,7 @@ describe 'Project variables', js: true do
 
   it 'edits variable' do
     page.within('.variables-table') do
-      find('.btn-variable-edit').click
+      click_on 'Update'
     end
 
     expect(page).to have_content('Update variable')
@@ -104,7 +104,7 @@ describe 'Project variables', js: true do
 
   it 'edits variable with empty value' do
     page.within('.variables-table') do
-      find('.btn-variable-edit').click
+      click_on 'Update'
     end
 
     expect(page).to have_content('Update variable')
@@ -117,7 +117,7 @@ describe 'Project variables', js: true do
 
   it 'edits variable to be protected' do
     page.within('.variables-table') do
-      find('.btn-variable-edit').click
+      click_on 'Update'
     end
 
     expect(page).to have_content('Update variable')
@@ -132,7 +132,7 @@ describe 'Project variables', js: true do
     project.variables.first.update(protected: true)
 
     page.within('.variables-table') do
-      find('.btn-variable-edit').click
+      click_on 'Update'
     end
 
     expect(page).to have_content('Update variable')

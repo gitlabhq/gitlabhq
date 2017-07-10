@@ -1,4 +1,4 @@
-# Issues documentation
+# Issues
 
 The GitLab Issue Tracker is an advanced and complete tool
 for tracking the evolution of a new idea or the process

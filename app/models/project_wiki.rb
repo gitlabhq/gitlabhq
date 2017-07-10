@@ -31,7 +31,7 @@ class ProjectWiki
   end
 
   def web_url
-    Gitlab::Routing.url_helpers.namespace_project_wiki_url(@project.namespace, @project, :home)
+    Gitlab::Routing.url_helpers.project_wiki_url(@project, :home)
   end
 
   def url_to_repo
@@ -61,6 +61,10 @@ class ProjectWiki
 
   def repository_exists?
     !!repository.exists?
+  end
+
+  def has_home_page?
+    !!find_page('home')
   end
 
   # Returns an Array of Gitlab WikiPage instances or an

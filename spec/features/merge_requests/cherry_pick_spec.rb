@@ -7,7 +7,7 @@ describe 'Cherry-pick Merge Requests', js: true do
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user) }
 
   before do
-    gitlab_sign_in user
+    sign_in user
     project.team << [user, :master]
   end
 
@@ -28,7 +28,7 @@ describe 'Cherry-pick Merge Requests', js: true do
       end
 
       it "doesn't show a Cherry-pick button" do
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
 
         expect(page).not_to have_link "Cherry-pick"
       end
@@ -36,7 +36,7 @@ describe 'Cherry-pick Merge Requests', js: true do
 
     context "With a merge commit" do
       it "shows a Cherry-pick button" do
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
 
         expect(page).to have_link "Cherry-pick"
       end

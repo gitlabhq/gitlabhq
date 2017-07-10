@@ -17,7 +17,7 @@ class Projects::HooksController < Projects::ApplicationController
       @hooks = @project.hooks.select(&:persisted?)
       flash[:alert] = @hook.errors.full_messages.join.html_safe
     end
-    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
+    redirect_to project_settings_integrations_path(@project)
   end
 
   def edit
@@ -26,7 +26,7 @@ class Projects::HooksController < Projects::ApplicationController
   def update
     if hook.update_attributes(hook_params)
       flash[:notice] = 'Hook was successfully updated.'
-      redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
+      redirect_to project_settings_integrations_path(@project)
     else
       render 'edit'
     end
@@ -47,7 +47,7 @@ class Projects::HooksController < Projects::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project), status: 302
+    redirect_to project_settings_integrations_path(@project), status: 302
   end
 
   private

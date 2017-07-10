@@ -80,6 +80,10 @@ module Gitlab
         encode! @name
       end
 
+      def path
+        encode! @path
+      end
+
       def dir?
         type == :tree
       end

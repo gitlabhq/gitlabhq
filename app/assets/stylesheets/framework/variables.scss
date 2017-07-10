@@ -74,11 +74,17 @@ $red-700: #a62d19;
 $red-800: #8b2615;
 $red-900: #711e11;
 
-$purple-600: #6e49cb;
-$purple-650: #5c35ae;
-$purple-700: #4a2192;
-$purple-800: #2c0a5c;
-$purple-900: #380d75;
+$indigo-50: #f7f7ff;
+$indigo-100: #ebebfa;
+$indigo-200: #d1d1f0;
+$indigo-300: #a6a6de;
+$indigo-400: #7c7ccc;
+$indigo-500: #6666c4;
+$indigo-600: #5b5bbd;
+$indigo-700: #4b4ba3;
+$indigo-800: #393982;
+$indigo-900: #292961;
+$indigo-950: #1a1a40;
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
@@ -153,6 +159,7 @@ $code_line_height: 1.6;
  * Padding
  */
 $gl-padding: 16px;
+$gl-col-padding: 15px;
 $gl-btn-padding: 10px;
 $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
@@ -264,7 +271,7 @@ $diff-view-modes-border: #c1c1c1;
 /*
  * Fonts
  */
-$monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
+$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
 $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 /*
@@ -443,6 +450,7 @@ $logs-p-color: #333;
 /*
 * Forms
 */
+$input-height: 34px;
 $input-danger-bg: #f2dede;
 $input-danger-border: $red-400;
 $input-group-addon-bg: #f7f8fa;
@@ -575,6 +583,12 @@ $stage-hover-border: #d1e7fc;
 $action-icon-color: #d6d6d6;
 
 /*
+Pipeline Schedules
+*/
+$pipeline-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
+
+
+/*
 Filtered Search
 */
 $filter-name-resting-color: #f8f8f8;
@@ -594,3 +608,15 @@ Convdev Index
 $color-high-score: $green-400;
 $color-average-score: $orange-400;
 $color-low-score: $red-400;
+
+/*
+Performance Bar
+*/
+$perf-bar-text: #999;
+$perf-bar-production: #222;
+$perf-bar-staging: #291430;
+$perf-bar-development: #4c1210;
+$perf-bar-bucket-bg: #111;
+$perf-bar-bucket-color: #ccc;
+$perf-bar-bucket-box-shadow-from: rgba($white-light, .2);
+$perf-bar-bucket-box-shadow-to: rgba($black, .25);

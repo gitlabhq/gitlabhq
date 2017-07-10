@@ -58,7 +58,17 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
+    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
+      output =
+        if show_new_nav?
+          project_icon(project, alt: project.name, class: 'avatar-tile', width: 16, height: 16)
+        else
+          ""
+        end
+
+      output << simple_sanitize(project.name)
+      output.html_safe
+    end
 
     if current_user
       project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
@@ -257,15 +267,15 @@ module ProjectsHelper
 
   def tab_ability_map
     {
-      environments: :read_environment,
-      milestones:   :read_milestone,
-      snippets:     :read_project_snippet,
-      settings:     :admin_project,
-      builds:       :read_build,
-      labels:       :read_label,
-      issues:       :read_issue,
-      team:         :read_project_member,
-      wiki:         :read_wiki
+      environments:     :read_environment,
+      milestones:       :read_milestone,
+      snippets:         :read_project_snippet,
+      settings:         :admin_project,
+      builds:           :read_build,
+      labels:           :read_label,
+      issues:           :read_issue,
+      project_members:  :read_project_member,
+      wiki:             :read_wiki
     }
   end
 
@@ -337,8 +347,7 @@ module ProjectsHelper
 
   def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
     commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       project.default_branch || 'master',
       file_name:      file_name,
@@ -349,8 +358,7 @@ module ProjectsHelper
   end
 
   def add_koding_stack_path(project)
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       project.default_branch || 'master',
       file_name:      '.koding.yml',
@@ -404,8 +412,7 @@ module ProjectsHelper
 
   def contribution_guide_path(project)
     if project && contribution_guide = project.repository.contribution_guide
-      namespace_project_blob_path(
-        project.namespace,
+      project_blob_path(
         project,
         tree_join(project.default_branch,
                   contribution_guide.name)
@@ -435,7 +442,7 @@ module ProjectsHelper
 
   def project_wiki_path_with_version(proj, page, version, is_newest)
     url_params = is_newest ? {} : { version_id: version }
-    namespace_project_wiki_path(proj.namespace, proj, page, url_params)
+    project_wiki_path(proj, page, url_params)
   end
 
   def project_status_css_class(status)
@@ -460,8 +467,7 @@ module ProjectsHelper
 
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
-      namespace_project_blob_path(
-        project.namespace,
+      project_blob_path(
         project,
         tree_join(project.default_branch, blob.name)
       )
