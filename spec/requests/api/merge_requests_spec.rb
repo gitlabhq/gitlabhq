@@ -904,18 +904,24 @@ describe API::MergeRequests do
 
     it 'handles external issues' do
       jira_project = create(:jira_project, :public, name: 'JIR_EXT1')
-      issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
-      merge_request = create(:merge_request, :simple, author: user, assignee: user, source_project: jira_project)
-      merge_request.update_attribute(:description, "Closes #{issue.to_reference(jira_project)}")
+      ext_issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
+      issue = create(:issue, project: jira_project)
+      description = "Closes #{ext_issue.to_reference(jira_project)}\ncloses #{issue.to_reference}"
+      merge_request = create(:merge_request,
+        :simple, author: user, assignee: user, source_project: jira_project, description: description)
 
       get api("/projects/#{jira_project.id}/merge_requests/#{merge_request.iid}/closes_issues", user)
 
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.length).to eq(1)
+      expect(json_response.length).to eq(2)
+      expect(json_response.second['title']).to eq(ext_issue.title)
+      expect(json_response.second['id']).to eq(ext_issue.id)
+      expect(json_response.second['confidential']).to be_nil
       expect(json_response.first['title']).to eq(issue.title)
       expect(json_response.first['id']).to eq(issue.id)
+      expect(json_response.first['confidential']).not_to be_nil
     end
 
     it 'returns 403 if the user has no access to the merge request' do

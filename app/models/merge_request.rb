@@ -617,7 +617,7 @@ class MergeRequest < ActiveRecord::Base
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
   def cache_merge_request_closes_issues!(current_user)
-    return if project.has_external_issue_tracker?
+    return unless project.issues_enabled?
 
     transaction do
       self.merge_requests_closing_issues.delete_all

@@ -579,15 +579,48 @@ describe Project, models: true do
     end
 
     context 'with external issues tracker' do
+      let!(:internal_issue) { create(:issue, project: project) }
       before do
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
+        allow(project).to receive(:external_issue_tracker).and_return(true)
       end
 
-      it 'returns an ExternalIssue' do
-        issue = project.get_issue('FOO-1234', user)
-        expect(issue).to be_kind_of(ExternalIssue)
-        expect(issue.iid).to eq 'FOO-1234'
-        expect(issue.project).to eq project
+      context 'when internal issues are enabled' do
+        it 'returns interlan issue' do
+          issue = project.get_issue(internal_issue.iid, user)
+
+          expect(issue).to be_kind_of(Issue)
+          expect(issue.iid).to eq(internal_issue.iid)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
+      end
+
+      context 'when internal issues are disabled' do
+        before do
+          project.issues_enabled = false
+          project.save!
+        end
+
+        it 'returns always an External issues' do
+          issue = project.get_issue(internal_issue.iid, user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq(internal_issue.iid.to_s)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
       end
     end
   end
