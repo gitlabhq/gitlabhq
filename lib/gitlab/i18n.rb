@@ -13,6 +13,7 @@ module Gitlab
       'zh_TW' => '繁體中文(臺灣)',
       'bg' => 'български',
       'eo' => 'Esperanto',
+      'uk' => 'Українська',
       'it' => 'Italiano'
     }.freeze
 
