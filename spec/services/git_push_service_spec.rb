@@ -163,7 +163,7 @@ describe GitPushService, services: true do
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
     end
-    
+
     context "Sends System Push data" do
       it "when pushing on a branch" do
         expect(SystemHookPushWorker).to receive(:perform_async).with(@push_data, :push_hooks)
@@ -400,18 +400,6 @@ describe GitPushService, services: true do
       it "doesn't create additional cross-reference notes" do
         expect(SystemNoteService).not_to receive(:cross_reference)
         execute_service(project, commit_author, @oldrev, @newrev, @ref )
-      end
-
-      it "doesn't close issues when external issue tracker is in use" do
-        allow_any_instance_of(Project).to receive(:default_issues_tracker?).
-          and_return(false)
-        external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid, reference_pattern: project.issue_reference_pattern)
-        allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(external_issue_tracker)
-
-        # The push still shouldn't create cross-reference notes.
-        expect do
-          execute_service(project, commit_author, @oldrev, @newrev,  'refs/heads/hurf' )
-        end.not_to change { Note.where(project_id: project.id, system: true).count }
       end
     end
 
