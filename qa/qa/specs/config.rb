@@ -52,6 +52,10 @@ module QA
             .new(app, browser: :chrome, desired_capabilities: capabilities)
         end
 
+        Capybara::Screenshot.register_driver(:chrome) do |driver, path|
+          driver.browser.save_screenshot(path)
+        end
+
         Capybara.configure do |config|
           config.app_host = @address
           config.default_driver = :chrome
