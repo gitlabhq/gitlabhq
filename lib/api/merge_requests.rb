@@ -44,10 +44,9 @@ module API
           args[:label_name] = args.delete(:labels)
 
           merge_requests = MergeRequestsFinder.new(current_user, args).execute
-          merge_requests = paginate(merge_requests)
-                             .preload(:notes, :target_project, :author, :assignee, :milestone, :merge_request_diff, :labels)
-
-          merge_requests.reorder(args[:order_by] => args[:sort])
+          merge_requests = merge_requests.reorder(args[:order_by] => args[:sort])
+          paginate(merge_requests)
+            .preload(:notes, :target_project, :author, :assignee, :milestone, :merge_request_diff, :labels)
         end
 
         params :optional_params_ce do
