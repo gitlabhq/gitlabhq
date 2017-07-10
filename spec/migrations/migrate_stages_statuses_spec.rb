@@ -12,6 +12,7 @@ describe MigrateStagesStatuses, :migration do
 
   before do
     stub_const("#{described_class.name}::BATCH_SIZE", 2)
+    stub_const("#{described_class.name}::RANGE_SIZE", 1)
 
     projects.create!(id: 1, name: 'gitlab1', path: 'gitlab1')
     projects.create!(id: 2, name: 'gitlab2', path: 'gitlab2')
@@ -49,9 +50,10 @@ describe MigrateStagesStatuses, :migration do
       Timecop.freeze do
         migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_migration(5.minutes, 1)
-        expect(described_class::MIGRATION).to be_scheduled_migration(5.minutes, 2)
-        expect(described_class::MIGRATION).to be_scheduled_migration(10.minutes, 3)
+        puts BackgroundMigrationWorker.jobs.inspect
+        expect(described_class::MIGRATION).to be_scheduled_migration(5.minutes, 1, 1)
+        expect(described_class::MIGRATION).to be_scheduled_migration(5.minutes, 2, 2)
+        expect(described_class::MIGRATION).to be_scheduled_migration(10.minutes, 3, 3)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end

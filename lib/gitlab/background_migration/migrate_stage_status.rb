@@ -58,7 +58,7 @@ module Gitlab
         end
       end
 
-      def perform(id)
+      def perform(start_id, stop_id)
         status_sql = Build
           .where('ci_builds.commit_id = ci_stages.pipeline_id')
           .where('ci_builds.stage = ci_stages.name')
@@ -66,7 +66,8 @@ module Gitlab
 
         sql = <<-SQL
           UPDATE ci_stages SET status = (#{status_sql})
-            WHERE ci_stages.id = #{id.to_i}
+            WHERE ci_stages.status IS NULL
+            AND ci_stages.id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}
         SQL
 
         ActiveRecord::Base.connection.execute(sql)

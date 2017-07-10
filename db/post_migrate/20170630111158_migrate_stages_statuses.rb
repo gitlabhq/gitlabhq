@@ -6,21 +6,22 @@ class MigrateStagesStatuses < ActiveRecord::Migration
   disable_ddl_transaction!
 
   BATCH_SIZE = 10000
+  RANGE_SIZE = 1000
   MIGRATION = 'MigrateStageStatus'.freeze
 
   class Stage < ActiveRecord::Base
     self.table_name = 'ci_stages'
+    include ::EachBatch
   end
 
   def up
-    index = 1
+    Stage.where(status: nil).each_batch(of: BATCH_SIZE) do |relation, index|
+      relation.each_batch(of: RANGE_SIZE) do |batch|
+        range = relation.pluck('MIN(id)', 'MAX(id)').first
+        schedule = index * 5.minutes
 
-    Stage.where(status: nil).in_batches(of: BATCH_SIZE) do |relation|
-      jobs = relation.pluck(:id).map { |id| [MIGRATION, [id]] }
-      schedule = index * 5.minutes
-      index += 1
-
-      BackgroundMigrationWorker.perform_bulk_in(schedule, jobs)
+        BackgroundMigrationWorker.perform_in(schedule, MIGRATION, range)
+      end
     end
   end
 
