@@ -179,7 +179,7 @@ class DueDateSelectors {
         }
       });
 
-      calendar.setDate(new Date(y, m-1, d));
+      calendar.setDate(new Date(y, m - 1, d));
 
       $datePicker.data('pikaday', calendar);
     });
