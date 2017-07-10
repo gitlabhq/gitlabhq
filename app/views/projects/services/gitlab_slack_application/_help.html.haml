@@ -13,5 +13,4 @@
     by entering
   %kbd.inline /gitlab help
   - unless @service.template?
-    %p To set up this service press "Add to Slack"
     = render "projects/services/#{@service.to_param}/slack_integration_form"
