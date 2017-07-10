@@ -18,8 +18,8 @@ export default class ProtectedTagAccessDropdown {
     this.$dropdown = $dropdown;
     this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
     this.$protectedTagsContainer = $('.js-protected-tags-container');
-    this.usersPath = this.$protectedTagsContainer.data('users-autocomplete');
-    this.groupsPath = this.$protectedTagsContainer.data('groups-autocomplete');
+    this.usersPath = '/autocomplete/users.json';
+    this.groupsPath = '/autocomplete/project_groups.json';
     this.defaultLabel = this.$dropdown.data('defaultLabel');
 
     this.setSelectedItems([]);
