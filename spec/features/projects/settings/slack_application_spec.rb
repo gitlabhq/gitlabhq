@@ -13,7 +13,7 @@ feature 'Slack application', feature: true do
 
     create(:slack_integration, service: service)
 
-    allow(Service).to receive(:show_gitlab_slack_application?).and_return(true)
+    allow(Gitlab).to receive(:com?).and_return(true)
   end
 
   scenario 'I can edit slack integration' do

@@ -24,7 +24,7 @@ describe Projects::Settings::SlacksController do
         .to receive(:new).with(project, user, anything).and_return(service)
     end
 
-    it 'calls service and redirects with no flash message if result is successful' do
+    it 'calls service and redirects with no alerts if result is successful' do
       stub_service(status: :success)
 
       get :slack_auth, namespace_id: project.namespace, project_id: project
@@ -34,7 +34,7 @@ describe Projects::Settings::SlacksController do
       expect(flash[:alert]).to be_nil
     end
 
-    it 'calls service and redirects with flash message if there is error' do
+    it 'calls service and redirects with the alert if there is error' do
       stub_service(status: :error, message: 'error')
 
       get :slack_auth, namespace_id: project.namespace, project_id: project

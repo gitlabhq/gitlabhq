@@ -246,6 +246,7 @@ class Service < ActiveRecord::Base
       pushover
       redmine
       slack
+      slack_slash_commands
       teamcity
       microsoft_teams
     ]
@@ -253,12 +254,8 @@ class Service < ActiveRecord::Base
       service_names += %w[mock_ci mock_deployment mock_monitoring]
     end
 
-    if show_gitlab_slack_application?
+    if Gitlab.com? || Rails.env.development?
       service_names.push('gitlab_slack_application')
-    end
-
-    unless Gitlab.com?
-      service_names.push('slack_slash_commands')
     end
 
     service_names.sort_by(&:downcase)
@@ -269,10 +266,6 @@ class Service < ActiveRecord::Base
     service.template = false
     service.project_id = project_id
     service
-  end
-
-  def self.show_gitlab_slack_application?
-    (Gitlab.com? && current_application_settings.slack_app_enabled) || Rails.env.development?
   end
 
   private
