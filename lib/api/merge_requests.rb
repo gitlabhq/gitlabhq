@@ -44,9 +44,14 @@ module API
           args[:label_name] = args.delete(:labels)
 
           merge_requests = MergeRequestsFinder.new(current_user, args).execute
-          merge_requests = merge_requests.reorder(args[:order_by] => args[:sort])
-          paginate(merge_requests)
-            .preload(:notes, :target_project, :author, :assignee, :milestone, :merge_request_diff, :labels)
+                             .reorder(args[:order_by] => args[:sort])
+          merge_requests = paginate(merge_requests)
+                             .preload(:target_project)
+
+          return merge_requests if args[:view] == 'simple'
+
+          merge_requests
+            .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
         end
 
         params :optional_params_ce do
@@ -77,15 +82,25 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
+        optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         use :pagination
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
 
         merge_requests = find_merge_requests(project_id: user_project.id)
-        issuable_metadata = issuable_meta_data(merge_requests, 'MergeRequest')
 
-        present merge_requests, with: Entities::MergeRequestBasic, current_user: current_user, project: user_project, issuable_metadata: issuable_metadata
+        options = { with: Entities::MergeRequestBasic,
+                    current_user: current_user,
+                    project: user_project }
+
+        if params[:view] == 'simple'
+          options[:with] = Entities::MergeRequestSimple
+        else
+          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
+        end
+
+        present merge_requests, options
       end
 
       desc 'Create a merge request' do
