@@ -89,7 +89,8 @@ export default {
 
         // This is out of scope for the Notes Vue component.
         // It was the shortest path to update the issue state and relevant places.
-        $('.js-btn-issue-action:visible').trigger('click');
+        const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
+        $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
       }
     },
     discard() {
@@ -215,7 +216,7 @@ export default {
             </div>
             <a
               @click="handleSave(true)"
-              :class="{'btn-reopen': issueState === 'closed', 'btn-close': issueState === 'open'}"
+              :class="{'btn-reopen': !isIssueOpen, 'btn-close': isIssueOpen}"
               class="btn btn-nr btn-comment">
               {{issueActionButtonTitle}}
             </a>

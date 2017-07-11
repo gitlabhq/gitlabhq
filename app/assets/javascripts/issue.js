@@ -42,7 +42,7 @@ class Issue {
   initIssueBtnEventListeners() {
     const issueFailMessage = 'Unable to update this issue at this time.';
 
-    return $(document).on('click', 'a.btn-close, a.btn-reopen', (e) => {
+    return $(document).on('click', '.issuable-actions a.btn-close, .issuable-actions a.btn-reopen', (e) => {
       var $button, shouldSubmit, url;
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -121,7 +121,7 @@ class Issue {
   static submitNoteForm(form) {
     var noteText;
     noteText = form.find("textarea.js-note-text").val();
-    if (noteText.trim().length > 0) {
+    if (noteText && noteText.trim().length > 0) {
       return form.submit();
     }
   }
