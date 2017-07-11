@@ -90,7 +90,13 @@ class IssuableFinder
   end
 
   def state_counter_cache_key
-    Digest::SHA1.hexdigest(state_counter_cache_key_components.flatten.join('-'))
+    cache_key(state_counter_cache_key_components)
+  end
+
+  def clear_caches!
+    state_counter_cache_key_components_permutations.each do |components|
+      Rails.cache.delete(cache_key(components))
+    end
   end
 
   def group
@@ -423,5 +429,13 @@ class IssuableFinder
     opts.delete_if { |_, value| value.blank? }
 
     ['issuables_count', klass.to_ability_name, opts.sort]
+  end
+
+  def state_counter_cache_key_components_permutations
+    [state_counter_cache_key_components]
+  end
+
+  def cache_key(components)
+    Digest::SHA1.hexdigest(components.flatten.join('-'))
   end
 end
