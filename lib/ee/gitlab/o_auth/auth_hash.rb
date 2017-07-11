@@ -6,24 +6,20 @@ module EE
           ::Gitlab::Kerberos::Authentication.kerberos_default_realm
         end
 
-        # For Kerberos, usernames `principal` and `principal@DEFAULT.REALM` are equivalent and
-        # may be used indifferently, but omniauth_kerberos does not normalize them as of version 0.3.0.
-        # Normalize here the uid to always have the canonical Kerberos principal name with realm.
-        def kerberos_normalized_uid
-          @kerberos_normalized_uid ||=
-            begin
-              uid = ::Gitlab::Utils.force_utf8(auth_hash.uid.to_s)
-              uid += '@' + kerberos_default_realm unless uid.include?('@')
-              uid
-            end
-        end
-
         def uid
-          if provider == 'kerberos'
-            kerberos_normalized_uid
-          else
-            super
+          return @ee_uid if defined?(@ee_uid)
+
+          ee_uid = super
+
+          # For Kerberos, usernames `principal` and `principal@DEFAULT.REALM`
+          # are equivalent and may be used indifferently, but omniauth_kerberos
+          # does not normalize them as of version 0.3.0, so add the default
+          # realm ourselves if appropriate
+          if provider == 'kerberos' && ee_uid.present?
+            ee_uid += "@#{kerberos_default_realm}" unless ee_uid.include?('@')
           end
+
+          @ee_uid = ee_uid
         end
       end
     end
