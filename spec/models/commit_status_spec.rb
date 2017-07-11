@@ -419,7 +419,6 @@ describe CommitStatus, :models do
     end
   end
 
-
   describe '#locking_enabled?' do
     before do
       commit_status.lock_version = 100

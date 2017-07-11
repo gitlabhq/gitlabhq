@@ -9,7 +9,7 @@ module HasStatus
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
   ORDERED_STATUSES = %w[failed pending running manual canceled success skipped created].freeze
   STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
-                    failed: 4, canceled: 5, skipped: 6, manual: 7 }
+                    failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
 
   class_methods do
     def enumerated_status!

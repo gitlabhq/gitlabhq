@@ -8,7 +8,7 @@ describe MigrateStagesStatuses, :migration do
   let(:projects) { table(:projects) }
 
   STATUSES = { created: 0, pending: 1, running: 2, success: 3,
-               failed: 4, canceled: 5, skipped: 6, manual: 7 }
+               failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
 
   before do
     stub_const("#{described_class.name}::BATCH_SIZE", 2)
@@ -59,9 +59,8 @@ describe MigrateStagesStatuses, :migration do
     end
   end
 
-
   def create_job(project:, pipeline:, stage:, status:, **opts)
-    stages  = { test: 1, build: 2, deploy: 3}
+    stages = { test: 1, build: 2, deploy: 3 }
 
     jobs.create!(project_id: project, commit_id: pipeline,
                  stage_idx: stages[stage.to_sym], stage: stage,

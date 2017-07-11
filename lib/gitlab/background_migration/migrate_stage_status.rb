@@ -2,7 +2,7 @@ module Gitlab
   module BackgroundMigration
     class MigrateStageStatus
       STATUSES = { created: 0, pending: 1, running: 2, success: 3,
-                   failed: 4, canceled: 5, skipped: 6, manual: 7 }
+                   failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
 
       class Build < ActiveRecord::Base
         self.table_name = 'ci_builds'
