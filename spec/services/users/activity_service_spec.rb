@@ -7,7 +7,7 @@ describe Users::ActivityService, services: true do
 
   subject(:service) { described_class.new(user, 'type') }
 
-  describe '#execute', :redis do
+  describe '#execute', :clean_gitlab_redis_shared_state do
     context 'when last activity is nil' do
       before do
         service.execute

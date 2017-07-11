@@ -527,14 +527,18 @@ describe GitPushService, services: true do
     let(:housekeeping) { Projects::HousekeepingService.new(project) }
 
     before do
-      # Flush any raw Redis data stored by the housekeeping code.
-      Gitlab::Redis.with { |conn| conn.flushall }
+      # Flush any raw key-value data stored by the housekeeping code.
+      Gitlab::Redis::Cache.with { |conn| conn.flushall }
+      Gitlab::Redis::Queues.with { |conn| conn.flushall }
+      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
 
       allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
     end
 
     after do
-      Gitlab::Redis.with { |conn| conn.flushall }
+      Gitlab::Redis::Cache.with { |conn| conn.flushall }
+      Gitlab::Redis::Queues.with { |conn| conn.flushall }
+      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
     end
 
     it 'does not perform housekeeping when not needed' do

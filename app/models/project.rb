@@ -1386,15 +1386,15 @@ class Project < ActiveRecord::Base
   end
 
   def pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.get(pushes_since_gc_redis_key).to_i }
+    Gitlab::Redis::SharedState.with { |redis| redis.get(pushes_since_gc_redis_shared_state_key).to_i }
   end
 
   def increment_pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.incr(pushes_since_gc_redis_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.incr(pushes_since_gc_redis_shared_state_key) }
   end
 
   def reset_pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.del(pushes_since_gc_redis_shared_state_key) }
   end
 
   def route_map_for(commit_sha)
@@ -1457,7 +1457,7 @@ class Project < ActiveRecord::Base
     from && self != from
   end
 
-  def pushes_since_gc_redis_key
+  def pushes_since_gc_redis_shared_state_key
     "projects/#{id}/pushes_since_gc"
   end
 

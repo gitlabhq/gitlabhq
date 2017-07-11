@@ -47,7 +47,7 @@ describe SessionsController do
         end
       end
 
-      context 'when using valid password', :redis do
+      context 'when using valid password', :clean_gitlab_redis_shared_state do
         include UserActivitiesHelpers
 
         let(:user) { create(:user) }

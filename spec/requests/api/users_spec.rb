@@ -1313,7 +1313,7 @@ describe API::Users do
     end
   end
 
-  context "user activities", :redis do
+  context "user activities", :clean_gitlab_redis_shared_state do
     let!(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
     let!(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
 

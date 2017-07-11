@@ -25,7 +25,7 @@ module Gitlab
     def cached_application_settings
       begin
         ::ApplicationSetting.cached
-      rescue ::Redis::BaseError, ::Errno::ENOENT, ::Errno::EADDRNOTAVAIL
+      rescue ::Redis::BaseError, ::Errno::ENOENT
         # In case Redis isn't running or the Redis UNIX socket file is not available
       end
     end

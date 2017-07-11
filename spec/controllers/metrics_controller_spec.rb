@@ -35,6 +35,30 @@ describe MetricsController do
         expect(response.body).to match(/^redis_ping_latency [0-9\.]+$/)
       end
 
+      it 'returns Caching ping metrics' do
+        get :index
+
+        expect(response.body).to match(/^redis_cache_ping_timeout 0$/)
+        expect(response.body).to match(/^redis_cache_ping_success 1$/)
+        expect(response.body).to match(/^redis_cache_ping_latency [0-9\.]+$/)
+      end
+
+      it 'returns Queues ping metrics' do
+        get :index
+
+        expect(response.body).to match(/^redis_queues_ping_timeout 0$/)
+        expect(response.body).to match(/^redis_queues_ping_success 1$/)
+        expect(response.body).to match(/^redis_queues_ping_latency [0-9\.]+$/)
+      end
+
+      it 'returns SharedState ping metrics' do
+        get :index
+
+        expect(response.body).to match(/^redis_shared_state_ping_timeout 0$/)
+        expect(response.body).to match(/^redis_shared_state_ping_success 1$/)
+        expect(response.body).to match(/^redis_shared_state_ping_latency [0-9\.]+$/)
+      end
+
       it 'returns file system check metrics' do
         get :index
 
