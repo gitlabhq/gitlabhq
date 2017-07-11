@@ -317,6 +317,30 @@ describe MergeRequestPresenter do
     end
   end
 
+  describe '#target_branch_commits_path' do
+    subject do
+      described_class.new(resource, current_user: user)
+        .target_branch_commits_path
+    end
+
+    context 'when target branch exists' do
+      it 'returns path' do
+        allow(resource).to receive(:target_branch_exists?) { true }
+
+        is_expected
+          .to eq("/#{resource.target_project.full_path}/commits/#{resource.target_branch}")
+      end
+    end
+
+    context 'when target branch does not exists' do
+      it 'returns nil' do
+        allow(resource).to receive(:target_branch_exists?) { false }
+
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe '#target_branch_tree_path' do
     subject do
       described_class.new(resource, current_user: user)

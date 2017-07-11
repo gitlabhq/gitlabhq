@@ -93,6 +93,10 @@ class MergeRequestEntity < IssuableEntity
 
   # Paths
   #
+  expose :target_branch_commits_path do |merge_request|
+    presenter(merge_request).target_branch_commits_path
+  end
+
   expose :target_branch_tree_path do |merge_request|
     presenter(merge_request).target_branch_tree_path
   end

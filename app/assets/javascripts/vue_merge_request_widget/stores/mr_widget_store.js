@@ -47,7 +47,8 @@ export default class MergeRequestStore {
     this.sourceBranchPath = data.source_branch_path;
     this.sourceBranchLink = data.source_branch_with_namespace_link;
     this.mergeError = data.merge_error;
-    this.targetBranchPath = data.target_branch_tree_path;
+    this.targetBranchPath = data.target_branch_commits_path;
+    this.targetBranchTreePath = data.target_branch_tree_path;
     this.conflictResolutionPath = data.conflict_resolution_path;
     this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
     this.removeWIPPath = data.remove_wip_path;

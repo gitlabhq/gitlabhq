@@ -74,6 +74,7 @@
       },
       "additionalProperties": false
     },
+    "target_branch_commits_path": { "type": "string" },
     "target_branch_tree_path": { "type": "string" },
     "source_branch_path": { "type": "string" },
     "conflict_resolution_path": { "type": ["string", "null"] },

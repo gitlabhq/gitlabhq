@@ -46,8 +46,8 @@ describe MergeRequestEntity do
                                :conflict_resolution_path,
                                :cancel_merge_when_pipeline_succeeds_path,
                                :create_issue_to_resolve_discussions_path,
-                               :source_branch_path, :target_branch_tree_path,
-                               :commits_count)
+                               :source_branch_path, :target_branch_commits_path,
+                               :target_branch_tree_path, :commits_count)
   end
 
   it 'has email_patches_path' do
