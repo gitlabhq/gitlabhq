@@ -30,4 +30,29 @@ describe GlobalPolicy, models: true do
       end
     end
   end
+
+  describe "receive_notifications" do
+    it { is_expected.to be_allowed(:receive_notifications) }
+
+    context "a blocked user" do
+      let(:current_user) { create(:user, state: :blocked) }
+
+      it { is_expected.to be_disallowed(:receive_notifications) }
+    end
+
+    context "an internal user" do
+      let(:current_user) { User.ghost }
+
+      it { is_expected.to be_disallowed(:receive_notifications) }
+    end
+
+    context "a user with globally disabled notification settings" do
+      before do
+        current_user.global_notification_setting.level = :disabled
+        current_user.global_notification_setting.save!
+      end
+
+      it { is_expected.to be_disallowed(:receive_notifications) }
+    end
+  end
 end
