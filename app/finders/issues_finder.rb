@@ -75,7 +75,7 @@ class IssuesFinder < IssuableFinder
     current_user.blank? || for_counting || params[:for_counting]
   end
 
-  def state_counter_cache_key_components(state)
+  def state_counter_cache_key_components
     extra_components = [
       user_can_see_all_confidential_issues?,
       user_cannot_see_confidential_issues?(for_counting: true)
