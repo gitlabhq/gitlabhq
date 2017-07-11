@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ExclusiveLease, type: :redis do
+describe Gitlab::ExclusiveLease, type: :clean_gitlab_redis_shared_state do
   let(:unique_key) { SecureRandom.hex(10) }
 
   describe '#try_obtain' do

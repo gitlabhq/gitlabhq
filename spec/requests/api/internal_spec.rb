@@ -168,7 +168,7 @@ describe API::Internal do
     end
   end
 
-  describe "POST /internal/allowed", :redis do
+  describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
       before do
         project.team << [user, :developer]

@@ -276,14 +276,14 @@ describe Ci::Runner, models: true do
     it 'sets a new last_update value when it is called the first time' do
       last_update = runner.ensure_runner_queue_value
 
-      expect_value_in_redis.to eq(last_update)
+      expect_value_in_queues.to eq(last_update)
     end
 
     it 'does not change if it is not expired and called again' do
       last_update = runner.ensure_runner_queue_value
 
       expect(runner.ensure_runner_queue_value).to eq(last_update)
-      expect_value_in_redis.to eq(last_update)
+      expect_value_in_queues.to eq(last_update)
     end
 
     context 'updates runner queue after changing editable value' do
@@ -294,7 +294,7 @@ describe Ci::Runner, models: true do
       end
 
       it 'sets a new last_update value' do
-        expect_value_in_redis.not_to eq(last_update)
+        expect_value_in_queues.not_to eq(last_update)
       end
     end
 
@@ -306,12 +306,12 @@ describe Ci::Runner, models: true do
       end
 
       it 'has an old last_update value' do
-        expect_value_in_redis.to eq(last_update)
+        expect_value_in_queues.to eq(last_update)
       end
     end
 
-    def expect_value_in_redis
-      Gitlab::Redis.with do |redis|
+    def expect_value_in_queues
+      Gitlab::Redis::Queues.with do |redis|
         runner_queue_key = runner.send(:runner_queue_key)
         expect(redis.get(runner_queue_key))
       end
@@ -330,7 +330,7 @@ describe Ci::Runner, models: true do
       end
 
       it 'cleans up the queue' do
-        Gitlab::Redis.with do |redis|
+        Gitlab::Redis::Queues.with do |redis|
           expect(redis.get(queue_key)).to be_nil
         end
       end

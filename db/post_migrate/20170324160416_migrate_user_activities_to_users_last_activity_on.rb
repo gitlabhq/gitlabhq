@@ -56,7 +56,7 @@ class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration
   end
 
   def activities(from, to, page: 1)
-    Gitlab::Redis.with do |redis|
+    Gitlab::Redis::SharedState.with do |redis|
       redis.zrangebyscore(USER_ACTIVITY_SET_KEY, from.to_i, to.to_i,
         with_scores: true,
         limit: limit(page))
@@ -64,7 +64,7 @@ class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration
   end
 
   def activities_count(from, to)
-    Gitlab::Redis.with do |redis|
+    Gitlab::Redis::SharedState.with do |redis|
       redis.zcount(USER_ACTIVITY_SET_KEY, from.to_i, to.to_i)
     end
   end

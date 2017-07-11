@@ -60,7 +60,7 @@ describe IssuablesHelper do
       end
     end
 
-    describe 'counter caching based on issuable type and params', :caching do
+    describe 'counter caching based on issuable type and params', :use_clean_rails_memory_store_caching do
       let(:params) do
         {
           scope: 'created-by-me',
