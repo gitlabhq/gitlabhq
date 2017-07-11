@@ -8,10 +8,9 @@ if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
     bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
 fi
 
-# Only install fog-aws/mime-types after bundle install! Otherwise oddly some native
+# Only install knapsack after bundle install! Otherwise oddly some native
 # gems could not be found under some circumstance. No idea why, hours wasted.
-# TODO: remove workaround on !10156
-retry gem install fog-aws mime-types
+retry gem install knapsack fog-aws mime-types
 
 cp config/gitlab.yml.example config/gitlab.yml
 
