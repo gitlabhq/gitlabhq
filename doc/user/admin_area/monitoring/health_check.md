@@ -17,34 +17,8 @@ traffic until the system is ready or restart the container as needed.
 ## IP whitelist
 
 To access monitoring resources, the client IP needs to be included in a whitelist.
-You can add single hosts or use IP ranges.
 
-**For Omnibus installations**
-
-1. Open `/etc/gitlab/gitlab.rb` and add or uncomment the following:
-
-    ```ruby
-    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8']
-    ```
-
-1. Save the file and [reconfigure] GitLab for the changes to take effect.
-
----
-
-**For installations from source**
-
-1. Edit `config/gitlab.yml`:
-
-    ```yaml
-    monitoring:
-      ip_whitelist:
-        - 127.0.0.0/8 # by default only local IPs are allowed to access monitoring resources
-    ```
-
-1. Save the file and [restart] GitLab for the changes to take effect.
-
-[reconfigure]: ../../../administration/gitlab_restart.md#omnibus-gitlab-reconfigure
-[restart]: ../../../administration/gitlab_restart.md#installations-from-source
+[Read how to add IPs to a whitelist for the monitoring endpoints.][admin].
 
 ## Using the endpoint
 
@@ -137,3 +111,4 @@ https://gitlab.example.com/-/readiness?token=ACCESS_TOKEN
 [nagios-health]: https://nagios-plugins.org/doc/man/check_http.html
 [newrelic-health]: https://docs.newrelic.com/docs/alerts/alert-policies/downtime-alerts/availability-monitoring
 [kubernetes]: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+[admin]: ../../../administration/monitoring/ip_whitelist.md
