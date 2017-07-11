@@ -20,6 +20,12 @@ class GlobalPolicy < BasePolicy
     prevent :create_group
   end
 
+  desc "User has globally disabled notifications"
+  with_options scope: :user
+  condition(:notifications_disabled) do
+    @user&.global_notification_setting.level.to_s == 'disabled'
+  end
+
   rule { default }.policy do
     enable :log_in
     enable :access_api
@@ -35,6 +41,8 @@ class GlobalPolicy < BasePolicy
     prevent :receive_notifications
     prevent :use_quick_actions
   end
+
+  rule { notifications_disabled }.prevent :receive_notifications
 
   rule { can_create_group }.policy do
     enable :create_group
