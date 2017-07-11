@@ -304,16 +304,30 @@
 }
 
 .gpg-popover-icon {
-  font-size: 35px;
   // same margin as .s32.avatar
   margin-right: $btn-side-margin;
 
   &.valid {
-    color: $brand-success;
+    svg {
+      border: 1px solid $brand-success;
+
+      fill: $brand-success;
+    }
   }
 
   &.invalid {
-    color: $gray;
+    svg {
+      border: 1px solid $gray;
+
+      fill: $gray;
+    }
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    vertical-align: middle;
   }
 }
 
