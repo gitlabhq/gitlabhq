@@ -22,7 +22,7 @@ class IssuableFinder
   include CreatedAtFilter
 
   NONE = '0'.freeze
-  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page state].freeze
 
   attr_accessor :current_user, :params
 
