@@ -74,5 +74,5 @@ begin
       end
     end
   end
-rescue Redis::BaseError, SocketError, Errno::ENOENT, Errno::EAFNOSUPPORT, Errno::ECONNRESET, Errno::ECONNREFUSED
+rescue Redis::BaseError, SocketError, Errno::ENOENT, Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT, Errno::ECONNRESET, Errno::ECONNREFUSED
 end
