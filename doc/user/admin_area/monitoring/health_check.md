@@ -16,48 +16,9 @@ traffic until the system is ready or restart the container as needed.
 
 ## IP Whitelist
 
-To access monitoring resources the client IP needs to be included in the whitelist.
-To add or remove hosts or IP ranges from the list you can edit `gitlab.rb` or `gitlab.yml`.
+To access monitoring resources, the client IP needs to be included in a whitelist.
 
-Example whitelist configuration:
-```yaml
-monitoring:
-  ip_whitelist:
-    - 127.0.0.0/8 # by default only local IPs are allowed to access monitoring resources
-```
-
-## Access Token (Deprecated)
-
-An access token needs to be provided while accessing the probe endpoints. The current
-accepted token can be found under the **Admin area ➔ Monitoring ➔ Health check**
-(`admin/health_check`) page of your GitLab instance.
-
-![access token](img/health_check_token.png)
-
-The access token can be passed as a URL parameter:
-
-```
-https://gitlab.example.com/-/readiness?token=ACCESS_TOKEN
-```
-
-which will then provide a report of system health in JSON format:
-
-```
-{
-  "db_check": {
-    "status": "ok"
-  },
-  "redis_check": {
-    "status": "ok"
-  },
-  "fs_shards_check": {
-    "status": "ok",
-    "labels": {
-      "shard": "default"
-    }
-  }
-}
-```
+[Read how to add IPs to a whitelist for the monitoring endpoints.][admin].
 
 ## Using the Endpoint
 
@@ -120,3 +81,4 @@ uptime monitoring should look for the success message.
 [nagios-health]: https://nagios-plugins.org/doc/man/check_http.html
 [newrelic-health]: https://docs.newrelic.com/docs/alerts/alert-policies/downtime-alerts/availability-monitoring
 [kubernetes]: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+[admin]: ../../../administration/monitoring/ip_whitelist.md
