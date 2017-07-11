@@ -37,12 +37,10 @@ class Projects::BlobController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
-        @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+        assign_ref_vars
+        @last_commit = @repository.last_commit_for_path(@commit.id, tree.path) || @commit
 
-        @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
-
-        render 'show'
+        render 'projects/tree/show'
       end
 
       format.json do

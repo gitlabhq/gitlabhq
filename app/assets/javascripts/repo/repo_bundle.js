@@ -15,7 +15,7 @@ export default class RepoBundle {
     Store.tabs = new Tabs();
     Store.sidebar = new Sidebar(url);
     Store.editor = new Editor();
-    Store.toggler = new ViewToggler();
+    // Store.toggler = new ViewToggler();
     Store.binaryViewer = new BinaryViewer();
     Helper.getContent();
   }

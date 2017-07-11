@@ -78,9 +78,7 @@ let RepoHelper = {
     });
     if(file.binary) {
       Store.blobRaw = file.base64;
-      console.log('binary', file)
     } else {
-      console.log('f', file)
       Store.blobRaw = file.plain;
     }
     if(!file.loading){
@@ -90,7 +88,6 @@ let RepoHelper = {
   },
 
   removeFromOpenedFiles(file) {
-    console.log('file remove', file)
     if(file.type === 'tree') return;
     Store.openedFiles = Store.openedFiles.filter((openedFile) => {
       return openedFile.url !== file.url;
@@ -122,7 +119,6 @@ let RepoHelper = {
     .then((response) => {
       Store.blobRaw = response;
       file.base64 = response
-      console.log('file',file);
     });
   },
 
@@ -163,7 +159,11 @@ let RepoHelper = {
       let data = response.data;
       this.setLoading(false, loadingData);
       Store.isTree = this.isTree(data);
+
       if(!Store.isTree) {
+        if(!file) {
+          file = data;
+        }
         // it's a blob
         Store.binary = data.binary;
         if(data.binary) {
@@ -177,13 +177,17 @@ let RepoHelper = {
           this.addToOpenedFiles(data);
           this.setActiveFile(data);
         } else {
-          const parentURL = this.blobURLtoParent(Service.url);
           Store.blobRaw = data.plain;
-          Store.prevURL = this.blobURLtoParent(parentURL);
           data.url = file.url;
           data.binary = false;
           this.addToOpenedFiles(data);
-          this.setActiveFile(data);  
+          this.setActiveFile(data);
+        }
+        // if the file tree is empty
+        if(Store.files.length === 0) {
+          const parentURL = this.blobURLtoParent(Service.url);
+          Service.url = parentURL;
+          this.getContent();
         }
       } else {
         // it's a tree
@@ -221,30 +225,38 @@ let RepoHelper = {
 
   },
 
+  blobToSimpleBlob(blob) {
+    return {
+      type: 'blob',
+      name: blob.name,
+      url: blob.url,
+      icon: this.toFA(blob.icon),
+      lastCommitMessage: blob.last_commit.message,
+      lastCommitUpdate: blob.last_commit.committed_date,
+      level: 0
+    }
+  },
+
+  treeToSimpleTree(tree) {
+    return {
+      type: 'tree',
+      name: tree.name,
+      url: tree.url,
+      icon: this.toFA(tree.icon),
+      level: 0
+    }
+  },
+
   dataToListOfFiles(data) {
     let a = [];
 
     //push in blobs
     data.blobs.forEach((blob) => {
-      a.push({
-        type: 'blob',
-        name: blob.name,
-        url: blob.url,
-        icon: this.toFA(blob.icon),
-        lastCommitMessage: blob.last_commit.message,
-        lastCommitUpdate: blob.last_commit.committed_date,
-        level: 0
-      })
+      a.push(this.blobToSimpleBlob(blob))
     });
 
     data.trees.forEach((tree) => {
-      a.push({
-        type: 'tree',
-        name: tree.name,
-        url: tree.url,
-        icon: this.toFA(tree.icon),
-        level: 0
-      })
+      a.push(this.treeToSimpleTree(tree));
     });
 
     data.submodules.forEach((submodule) => {
