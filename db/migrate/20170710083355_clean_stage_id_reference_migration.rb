@@ -1,6 +1,6 @@
 require Rails.root.join('db', 'post_migrate', '20170628080858_migrate_stage_id_reference_in_background')
 
-class BuildStageIdRefMigrationCleanup < ActiveRecord::Migration
+class CleanStageIdReferenceMigration < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
