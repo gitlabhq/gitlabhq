@@ -13,6 +13,14 @@ describe Gitlab::CurrentSettings do
         allow_any_instance_of(described_class).to receive(:connect_to_db?).and_return(true)
       end
 
+      # This method returns the ::ApplicationSetting.defaults hash
+      # but with respect of custom attribute accessors of ApplicationSetting model
+      def settings_from_defaults
+        defaults = ::ApplicationSetting.defaults
+        ar_wrapped_defaults = ::ApplicationSetting.new(defaults).attributes
+        ar_wrapped_defaults.slice(*defaults.keys)
+      end
+
       it 'attempts to use cached values first' do
         expect(ApplicationSetting).to receive(:cached)
 
@@ -43,7 +51,7 @@ describe Gitlab::CurrentSettings do
 
         expect(settings).to be_a(ApplicationSetting)
         expect(settings).to be_persisted
-        expect(settings).to have_attributes(ApplicationSetting.defaults)
+        expect(settings).to have_attributes(settings_from_defaults)
       end
 
       context 'with migrations pending' do
