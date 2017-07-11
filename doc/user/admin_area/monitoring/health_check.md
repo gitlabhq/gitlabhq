@@ -6,7 +6,7 @@
     be deprecated in GitLab 9.1. Read more in the [old behavior](#old-behavior)
     section.
   - [Access token](#access-token) has been deprecated in GitLab 9.4
-    in favor of [IP Whitelist](#ip-whitelist)
+    in favor of [IP whitelist](#ip-whitelist)
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the
@@ -14,19 +14,110 @@ database connection, Redis connection, and access to the filesystem. These
 endpoints [can be provided to schedulers like Kubernetes][kubernetes] to hold
 traffic until the system is ready or restart the container as needed.
 
-## IP Whitelist
+## IP whitelist
 
-To access monitoring resources the client IP needs to be included in the whitelist.
-To add or remove hosts or IP ranges from the list you can edit `gitlab.rb` or `gitlab.yml`.
+To access monitoring resources, the client IP needs to be included in a whitelist.
+You can add single hosts or use IP ranges.
 
-Example whitelist configuration:
-```yaml
-monitoring:
-  ip_whitelist:
-    - 127.0.0.0/8 # by default only local IPs are allowed to access monitoring resources
+**For Omnibus installations**
+
+1. Open `/etc/gitlab/gitlab.rb` and add or uncomment the following:
+
+    ```ruby
+    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8']
+    ```
+
+1. Save the file and [reconfigure] GitLab for the changes to take effect.
+
+---
+
+**For installations from source**
+
+1. Edit `config/gitlab.yml`:
+
+    ```yaml
+    monitoring:
+      ip_whitelist:
+        - 127.0.0.0/8 # by default only local IPs are allowed to access monitoring resources
+    ```
+
+1. Save the file and [restart] GitLab for the changes to take effect.
+
+[reconfigure]: ../../../administration/gitlab_restart.md#omnibus-gitlab-reconfigure
+[restart]: ../../../administration/gitlab_restart.md#installations-from-source
+
+## Using the endpoint
+
+With default whitelist settings, the probes can be accessed from localhost:
+
+- `http://localhost/-/readiness`
+- `http://localhost/-/liveness`
+
+which will then provide a report of system health in JSON format.
+
+Readiness example output:
+
+```
+{
+   "queues_check" : {
+      "status" : "ok"
+   },
+   "redis_check" : {
+      "status" : "ok"
+   },
+   "shared_state_check" : {
+      "status" : "ok"
+   },
+   "fs_shards_check" : {
+      "labels" : {
+         "shard" : "default"
+      },
+      "status" : "ok"
+   },
+   "db_check" : {
+      "status" : "ok"
+   },
+   "cache_check" : {
+      "status" : "ok"
+   }
+}
 ```
 
-## Access Token (Deprecated)
+Liveness example output:
+
+```
+{
+   "fs_shards_check" : {
+      "status" : "ok"
+   },
+   "cache_check" : {
+      "status" : "ok"
+   },
+   "db_check" : {
+      "status" : "ok"
+   },
+   "redis_check" : {
+      "status" : "ok"
+   },
+   "queues_check" : {
+      "status" : "ok"
+   },
+   "shared_state_check" : {
+      "status" : "ok"
+   }
+}
+```
+
+## Status
+
+On failure, the endpoint will return a `500` HTTP status code. On success, the endpoint
+will return a valid successful HTTP status code, and a `success` message.
+
+## Access token (Deprecated)
+
+>**Note:**
+Access token has been deprecated in GitLab 9.4
+in favor of [IP whitelist](#ip-whitelist)
 
 An access token needs to be provided while accessing the probe endpoints. The current
 accepted token can be found under the **Admin area ➔ Monitoring ➔ Health check**
@@ -39,80 +130,6 @@ The access token can be passed as a URL parameter:
 ```
 https://gitlab.example.com/-/readiness?token=ACCESS_TOKEN
 ```
-
-which will then provide a report of system health in JSON format:
-
-```
-{
-  "db_check": {
-    "status": "ok"
-  },
-  "redis_check": {
-    "status": "ok"
-  },
-  "fs_shards_check": {
-    "status": "ok",
-    "labels": {
-      "shard": "default"
-    }
-  }
-}
-```
-
-## Using the Endpoint
-
-With default whitelist settings, the probes can be accessed from localhost:
-
-- `http://localhost/-/readiness`
-- `http://localhost/-/liveness`
-
-## Status
-
-On failure, the endpoint will return a `500` HTTP status code. On success, the endpoint
-will return a valid successful HTTP status code, and a `success` message.
-
-## Old behavior
-
->**Notes:**
-  - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
-  - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and will
-    be deprecated in GitLab 9.1. Read more in the [old behavior](#old-behavior)
-    section.
-
-GitLab provides a health check endpoint for uptime monitoring on the `health_check` web
-endpoint. The health check reports on the overall system status based on the status of
-the database connection, the state of the database migrations, and the ability to write
-and access the cache. This endpoint can be provided to uptime monitoring services like
-[Pingdom][pingdom], [Nagios][nagios-health], and [NewRelic][newrelic-health].
-
-Once you have the [access token](#access-token) or your client IP is [whitelisted](#ip-whitelist),
-health information can be retrieved as plain text, JSON, or XML using the `health_check` endpoint:
-
-- `https://gitlab.example.com/health_check?token=ACCESS_TOKEN`
-- `https://gitlab.example.com/health_check.json?token=ACCESS_TOKEN`
-- `https://gitlab.example.com/health_check.xml?token=ACCESS_TOKEN`
-
-You can also ask for the status of specific services:
-
-- `https://gitlab.example.com/health_check/cache.json?token=ACCESS_TOKEN`
-- `https://gitlab.example.com/health_check/database.json?token=ACCESS_TOKEN`
-- `https://gitlab.example.com/health_check/migrations.json?token=ACCESS_TOKEN`
-
-For example, the JSON output of the following health check:
-
-```bash
-curl --header "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
-```
-
-would be like:
-
-```
-{"healthy":true,"message":"success"}
-```
-
-On failure, the endpoint will return a `500` HTTP status code. On success, the endpoint
-will return a valid successful HTTP status code, and a `success` message. Ideally your
-uptime monitoring should look for the success message.
 
 [ce-10416]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10416
 [ce-3888]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3888
