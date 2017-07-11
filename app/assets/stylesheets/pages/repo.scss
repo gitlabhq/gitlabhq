@@ -73,6 +73,11 @@ header {
     overflow: auto;
     margin-top: -5px;
     margin-left: 10px;
+
+    .blob-viewer {
+      padding-top: 20px;
+      padding-left: 20px;
+    }
   }
 }
 
@@ -98,7 +103,7 @@ header {
     vertical-align: top;
     width: 15%;
     border-right: 1px solid $white-normal;
-    height: 75vh;
+    height: 80vh;
     overflow: auto;
   }
 

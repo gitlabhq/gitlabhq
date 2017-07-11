@@ -43,19 +43,20 @@ export default class RepoSidebar {
 
         linkClicked(file) {
           let url = '';
-          if(typeof file === 'string'){
-            // go back
-            url = file;
-          } else {
-            url = file.url;
-          }
-          Service.url = url;
           if(typeof file === 'object') {
             if(file.type === 'tree' && file.opened) {
               Helper.removeChildFilesOfTree(file);
               return;
+            } else {
+              url = file.url;
+              Service.url = url;
+              Helper.getContent(file);  
             }
-            Helper.getContent(file);
+          } else if(typeof file === 'string') {
+            // go back
+            url = file;
+            Service.url = url;
+            Helper.getContent();
           }
         }
       },

@@ -29,12 +29,15 @@ let RepoHelper = {
   },
 
   blobURLtoParent(url) {
+    let joined = '';
     const split = url.split('/');
     split.pop();
     const blobIndex = split.indexOf('blob');
     if(blobIndex > -1) {
       split[blobIndex] = 'tree';
     }
+    joined = split.join('/');
+    console.log(split)
     return split.join('/');
   },
 
@@ -183,7 +186,7 @@ let RepoHelper = {
           this.addToOpenedFiles(data);
           this.setActiveFile(data);
         }
-        
+
         // if the file tree is empty
         if(Store.files.length === 0) {
           const parentURL = this.blobURLtoParent(Service.url);
@@ -199,6 +202,7 @@ let RepoHelper = {
       }
     })
     .catch((response)=> {
+      console.log('response',response)
       this.setLoading(false, loadingData);
       new Flash('Unable to load the file at this time.')
     });
