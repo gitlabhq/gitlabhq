@@ -337,7 +337,7 @@ module Gitlab
           # In the EE repo
           $ git push origin #{ee_branch_prefix}
 
-        ⚠️ Also, don't forget to create a new merge request on gitlab-ce and
+        ⚠️ Also, don't forget to create a new merge request on gitlab-ee and
         cross-link it with the CE merge request.
 
         Once this is done, you can retry this failed build, and it should pass.

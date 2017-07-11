@@ -208,6 +208,7 @@ module TestEnv
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
   def eager_load_driver_server
+    return unless ENV['CI']
     return unless defined?(Capybara)
 
     puts "Starting the Capybara driver server..."

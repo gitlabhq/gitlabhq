@@ -26,11 +26,28 @@ describe Gitlab::CurrentSettings do
         expect(current_application_settings).to be_a(ApplicationSetting)
       end
 
+<<<<<<< HEAD
       it 'falls back to DB if Caching fails' do
-        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
-        expect(ApplicationSetting).to receive(:last).and_call_original
+=======
+      it 'falls back to DB if Redis fails' do
+        db_settings = ApplicationSetting.create!(ApplicationSetting.defaults)
 
-        expect(current_application_settings).to be_a(ApplicationSetting)
+>>>>>>> ce-com/master
+        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
+        expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(Redis::BaseError)
+
+        expect(current_application_settings).to eq(db_settings)
+      end
+
+      it 'creates default ApplicationSettings if none are present' do
+        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
+        expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(Redis::BaseError)
+
+        settings = current_application_settings
+
+        expect(settings).to be_a(ApplicationSetting)
+        expect(settings).to be_persisted
+        expect(settings).to have_attributes(ApplicationSetting.defaults)
       end
 
       context 'with migrations pending' do
