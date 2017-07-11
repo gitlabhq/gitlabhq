@@ -70,7 +70,7 @@ describe API::MergeRequests do
       end
 
       it "returns an array of all merge_requests using simple mode" do
-        get api("/projects/#{project.id}/merge_requests?simple=true", user)
+        get api("/projects/#{project.id}/merge_requests?view=simple", user)
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers

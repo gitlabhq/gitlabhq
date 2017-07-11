@@ -48,7 +48,7 @@ module API
           merge_requests = paginate(merge_requests)
                              .preload(:target_project)
 
-          return merge_requests if params[:simple]
+          return merge_requests if args[:view] == 'simple'
 
           merge_requests
             .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
@@ -82,7 +82,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
-        optional :simple, type: Boolean, default: false, desc: 'Returns the `iid`, URL, title, description, and basic state of merge request'
+        optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         use :pagination
       end
       get ":id/merge_requests" do
@@ -94,7 +94,7 @@ module API
                     current_user: current_user,
                     project: user_project }
 
-        if params[:simple]
+        if params[:view] == 'simple'
           options[:with] = Entities::MergeRequestSimple
         else
           options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
