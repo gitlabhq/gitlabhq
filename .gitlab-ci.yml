@@ -190,6 +190,8 @@ setup-test-env:
   <<: *dedicated-runner
   <<: *except-docs
   stage: prepare
+  variables:
+    NO_KNAPSACK: "1"
   script:
     - node --version
     - yarn install --pure-lockfile --cache-folder .yarn-cache

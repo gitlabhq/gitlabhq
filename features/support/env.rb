@@ -5,7 +5,8 @@ ENV['RAILS_ENV'] = 'test'
 require './config/environment'
 require 'rspec/expectations'
 
-if ENV['CI']
+if ENV['CI'] && !ENV['NO_KNAPSACK']
+  require 'rubygems'
   require 'knapsack'
   Knapsack::Adapters::SpinachAdapter.bind
 end
