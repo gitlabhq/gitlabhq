@@ -292,7 +292,7 @@
 
   &.invalid {
     color: $gray;
-    border: 1px solid $gray;
+    border: 1px solid $common-gray-light;
   }
 }
 
@@ -317,9 +317,9 @@
 
   &.invalid {
     svg {
-      border: 1px solid $gray;
+      border: 1px solid $common-gray-light;
 
-      fill: $gray;
+      fill: $common-gray-light;
     }
   }
 
