@@ -3,22 +3,22 @@ require 'spec_helper'
 describe MetricsController do
   include StubENV
 
-  let(:token) { current_application_settings.health_check_access_token }
   let(:json_response) { JSON.parse(response.body) }
   let(:metrics_multiproc_dir) { Dir.mktmpdir }
+  let(:whitelisted_ip) { '127.0.0.1' }
+  let(:whitelisted_ip_range) { '10.0.0.0/24' }
+  let(:ip_in_whitelisted_range) { '10.0.0.1' }
+  let(:not_whitelisted_ip) { '10.0.1.1' }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     stub_env('prometheus_multiproc_dir', metrics_multiproc_dir)
     allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
+    allow(Settings.monitoring).to receive(:ip_whitelist).and_return([whitelisted_ip, whitelisted_ip_range])
   end
 
   describe '#index' do
-    context 'authorization token provided' do
-      before do
-        request.headers['TOKEN'] = token
-      end
-
+    shared_examples_for 'endpoint providing metrics' do
       it 'returns DB ping metrics' do
         get :index
 
@@ -59,7 +59,27 @@ describe MetricsController do
       end
     end
 
-    context 'without authorization token' do
+    context 'accessed from whitelisted ip' do
+      before do
+        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(whitelisted_ip)
+      end
+
+      it_behaves_like 'endpoint providing metrics'
+    end
+
+    context 'accessed from ip in whitelisted range' do
+      before do
+        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(ip_in_whitelisted_range)
+      end
+
+      it_behaves_like 'endpoint providing metrics'
+    end
+
+    context 'accessed from not whitelisted ip' do
+      before do
+        allow(Gitlab::RequestContext).to receive(:client_ip).and_return(not_whitelisted_ip)
+      end
+
       it 'returns proper response' do
         get :index
 
