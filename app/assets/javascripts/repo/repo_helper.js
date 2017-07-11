@@ -183,6 +183,7 @@ let RepoHelper = {
           this.addToOpenedFiles(data);
           this.setActiveFile(data);
         }
+        
         // if the file tree is empty
         if(Store.files.length === 0) {
           const parentURL = this.blobURLtoParent(Service.url);

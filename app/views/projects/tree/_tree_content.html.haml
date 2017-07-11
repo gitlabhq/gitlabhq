@@ -21,6 +21,7 @@
     #ide{ data: { url: repo_url } }
     #binary-viewer{ "v-if" => "binary" }
       %img{"v-if" => "binaryTypes.png", ":src" => "pngBlobWithDataURI"}
+      %div{"v-if" => "binaryTypes.markdown", "v-html" => "activeFile.html"}
 - if can_edit_tree?
   = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
   = render 'projects/blob/new_dir'

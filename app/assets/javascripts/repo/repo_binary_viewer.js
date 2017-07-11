@@ -19,8 +19,8 @@ export default class RepoBinaryViewer {
       },
 
       methods: {
-        supportedNonBinaryFileType(fileExt) {
-          switch(fileExt) {
+        supportedNonBinaryFileType() {
+          switch(this.activeFile.extension) {
             case 'md':
               this.binaryTypes.markdown = true;
               return true;
@@ -33,12 +33,13 @@ export default class RepoBinaryViewer {
 
       watch: {
         blobRaw() {
-          if(!this.binary) return;
-          let supported = supportedNonBinaryFileType();
+          let supported = this.supportedNonBinaryFileType();
           if(supported) {
-
+            this.binaryTypes.markdown = true;
+            this.binary = true;
             return;
           }
+          if(!this.binary) return;
           switch(this.binaryMimeType) {
             case 'image/png':
               this.binaryTypes.png = true;

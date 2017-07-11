@@ -31,6 +31,7 @@ export default class RepoEditor {
     this.vue = new Vue({
       data: () => Store,
       created () {
+        this.showHide();
         if(this.blobRaw !== ''){
           monacoEditor.setModel(
             monaco.editor.createModel(
@@ -41,29 +42,32 @@ export default class RepoEditor {
         }
       },
 
-      watch: {
-        isTree() {
-          if(!this.openedFiles.length) {
-            self.el.style.display = 'none';
-          } else {
-            self.el.style.display = 'inline-block';
-          }
-        },
-
-        openedFiles() {
+      methods: {
+        showHide() {
           if((!this.openedFiles.length) || this.binary) {
             self.el.style.display = 'none';
           } else {
             self.el.style.display = 'inline-block';
           }
+        }
+      },
+
+      watch: {
+        isTree() {
+          this.showHide();
+        },
+
+        openedFiles() {
+          this.showHide();
+        },
+
+        binary() {
+          this.showHide();
         },
 
         blobRaw() {
-          if(this.binary) {
-            self.el.style.display = 'none';
-          } else {
-            self.el.style.display = 'inline-block'; 
-          }
+          this.showHide();
+
           if(!this.isTree) {
             self.monacoEditor.setModel(
               monaco.editor.createModel(
