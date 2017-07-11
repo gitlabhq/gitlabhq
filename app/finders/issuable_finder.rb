@@ -22,7 +22,7 @@ class IssuableFinder
   include CreatedAtFilter
 
   NONE = '0'.freeze
-  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page state].freeze
 
   SCALAR_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight).freeze
   ARRAY_PARAMS = { label_name: [], iids: [] }.freeze
