@@ -84,6 +84,16 @@ class IssuesFinder < IssuableFinder
     super + extra_components
   end
 
+  def state_counter_cache_key_components_permutations
+    # Ignore the last two, as we'll provide both options for them.
+    components = super.first[0..-3]
+
+    [
+      components + [false, true],
+      components + [true, false]
+    ]
+  end
+
   def by_assignee(items)
     if assignee
       items.assigned_to(assignee)
