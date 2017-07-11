@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.6 (2017-07-12)
+
+- Geo: Fix clone instructions in a secondary node for SSH protocol. !2319
+- Implement progressive elasticsearch indexing for project mirrors. !2393
+
 ## 9.3.5 (2017-07-05)
 
 - Make admin mirror application setting Gitlab.com exclusive. !2307
