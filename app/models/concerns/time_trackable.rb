@@ -4,7 +4,7 @@
 #
 # Used by Issue and MergeRequest.
 #
-
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module TimeTrackable
   extend ActiveSupport::Concern
 

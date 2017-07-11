@@ -2,6 +2,7 @@
 
 require 'rack/oauth2'
 
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module API
   module APIGuard
     extend ActiveSupport::Concern

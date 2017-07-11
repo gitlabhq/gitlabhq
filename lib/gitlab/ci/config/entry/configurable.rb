@@ -13,6 +13,7 @@ module Gitlab
         #   script: ...
         #   artifacts: ...
         #
+        # rubocop:disable Cop/ModuleWithInstanceVariables
         module Configurable
           extend ActiveSupport::Concern
 

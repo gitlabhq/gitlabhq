@@ -5,6 +5,7 @@
 #
 # Used by Issue, Note, MergeRequest, and Commit.
 #
+# # rubocop:disable Cop/ModuleWithInstanceVariables
 module Mentionable
   extend ActiveSupport::Concern
 

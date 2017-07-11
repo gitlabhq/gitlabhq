@@ -16,6 +16,7 @@ module RspecProfilingExt
   end
 
   module Run
+    # rubocop:disable Cop/ModuleWithInstanceVariables
     def example_finished(*args)
       super
     rescue => err

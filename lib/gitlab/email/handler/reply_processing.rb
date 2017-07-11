@@ -12,6 +12,7 @@ module Gitlab
           raise NotImplementedError
         end
 
+        # rubocop:disable Cop/ModuleWithInstanceVariables
         def message
           @message ||= process_message
         end

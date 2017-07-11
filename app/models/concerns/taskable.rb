@@ -6,6 +6,7 @@ require 'task_list/filter'
 # bugs".
 #
 # Used by MergeRequest and Issue
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module Taskable
   COMPLETED    = 'completed'.freeze
   INCOMPLETE   = 'incomplete'.freeze

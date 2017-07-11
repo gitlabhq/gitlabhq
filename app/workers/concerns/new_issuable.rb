@@ -8,12 +8,14 @@ module NewIssuable
     user && issuable
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def set_user(user_id)
     @user = User.find_by(id: user_id)
 
     log_error(User, user_id) unless @user
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def set_issuable(issuable_id)
     @issuable = issuable_class.find_by(id: issuable_id)
 

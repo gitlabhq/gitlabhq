@@ -52,6 +52,7 @@ module Gitlab
       ::ApplicationSetting.create_from_defaults || in_memory_application_settings
     end
 
+    # rubocop:disable Cop/ModuleWithInstanceVariables
     def in_memory_application_settings
       @in_memory_application_settings ||= ::ApplicationSetting.new(::ApplicationSetting.defaults)
     rescue ActiveRecord::StatementInvalid, ActiveRecord::UnknownAttributeError

@@ -72,6 +72,7 @@ module Gitlab
 
     private
 
+    # rubocop:disable Cop/ModuleWithInstanceVariables
     def default_id
       @default_id ||= begin
         id = Gitlab.config.gitlab.default_theme.to_i

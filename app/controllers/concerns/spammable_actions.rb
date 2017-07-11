@@ -17,6 +17,7 @@ module SpammableActions
 
   private
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def ensure_spam_config_loaded!
     return @spam_config_loaded if defined?(@spam_config_loaded)
 

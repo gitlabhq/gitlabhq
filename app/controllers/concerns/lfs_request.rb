@@ -90,6 +90,7 @@ module LfsRequest
     has_authentication_ability?(:build_download_code) && can?(user, :build_download_code, project)
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def storage_project
     @storage_project ||= begin
       result = project
@@ -103,6 +104,7 @@ module LfsRequest
     end
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def objects
     @objects ||= (params[:objects] || []).to_a
   end

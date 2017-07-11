@@ -1,5 +1,6 @@
 # Module providing methods for dealing with separating a tree-ish string and a
 # file path string when combined in a request parameter
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module ExtractsPath
   # Raised when given an invalid file path
   InvalidPathError = Class.new(StandardError)

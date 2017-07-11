@@ -1,5 +1,6 @@
 # Store object full path in separate table for easy lookup and uniq validation
 # Object must have name and path db fields and respond to parent and parent_changed? methods.
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module Routable
   extend ActiveSupport::Concern
 

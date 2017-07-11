@@ -26,6 +26,7 @@ module Gitlab
         load_yaml_file&.map(&:deep_symbolize_keys).freeze
       end
 
+      # rubocop:disable Cop/ModuleWithInstanceVariables
       def load_yaml_file
         @loaded_yaml_file ||= YAML.load_file(Rails.root.join('config/prometheus/additional_metrics.yml'))
       end

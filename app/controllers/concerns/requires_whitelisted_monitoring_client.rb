@@ -17,6 +17,7 @@ module RequiresWhitelistedMonitoringClient
     ip_whitelist.any? { |e| e.include?(Gitlab::RequestContext.client_ip) }
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def ip_whitelist
     @ip_whitelist ||= Settings.monitoring.ip_whitelist.map(&IPAddr.method(:new))
   end

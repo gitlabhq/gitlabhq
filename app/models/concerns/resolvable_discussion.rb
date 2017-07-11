@@ -1,3 +1,4 @@
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module ResolvableDiscussion
   extend ActiveSupport::Concern
 

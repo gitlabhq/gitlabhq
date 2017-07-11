@@ -4,6 +4,7 @@ module SnippetsActions
   def edit
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def raw
     disposition = params[:inline] == 'false' ? 'attachment' : 'inline'
 

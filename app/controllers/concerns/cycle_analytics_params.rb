@@ -1,6 +1,7 @@
 module CycleAnalyticsParams
   extend ActiveSupport::Concern
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def options(params)
     @options ||= { from: start_date(params), current_user: current_user }
   end

@@ -45,6 +45,7 @@ module Gitlab
         klass.prepend(extension)
       end
 
+      # rubocop:disable Cop/ModuleWithInstanceVariables
       def request_cache_key(&block)
         if block_given?
           @request_cache_key = block

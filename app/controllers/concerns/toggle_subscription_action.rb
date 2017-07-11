@@ -11,6 +11,7 @@ module ToggleSubscriptionAction
 
   private
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def subscribable_project
     @project || raise(NotImplementedError)
   end

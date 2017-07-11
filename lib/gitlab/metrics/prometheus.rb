@@ -1,5 +1,6 @@
 require 'prometheus/client'
 
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module Gitlab
   module Metrics
     module Prometheus

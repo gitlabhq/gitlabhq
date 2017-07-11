@@ -7,6 +7,7 @@ module Gitlab
 
       private
 
+      # rubocop:disable Cop/ModuleWithInstanceVariables
       def base_query
         @base_query ||= stage_query
       end

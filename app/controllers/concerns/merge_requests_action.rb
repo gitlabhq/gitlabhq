@@ -1,3 +1,4 @@
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module MergeRequestsAction
   extend ActiveSupport::Concern
   include IssuableCollections

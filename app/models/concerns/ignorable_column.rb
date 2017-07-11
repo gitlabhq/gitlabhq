@@ -17,6 +17,7 @@ module IgnorableColumn
       super.reject { |column| ignored_columns.include?(column.name) }
     end
 
+    # rubocop:disable Cop/ModuleWithInstanceVariables
     def ignored_columns
       @ignored_columns ||= Set.new
     end

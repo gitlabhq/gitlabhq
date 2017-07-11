@@ -1,3 +1,4 @@
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module IssuesAction
   extend ActiveSupport::Concern
   include IssuableCollections

@@ -1,3 +1,4 @@
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module NotesActions
   include RendersNotes
   extend ActiveSupport::Concern

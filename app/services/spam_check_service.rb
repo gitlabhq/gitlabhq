@@ -6,6 +6,7 @@
 # Dependencies:
 # - params with :request
 #
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module SpamCheckService
   def filter_spam_check_params
     @request            = params.delete(:request)

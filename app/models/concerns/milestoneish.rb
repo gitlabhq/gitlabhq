@@ -94,6 +94,7 @@ module Milestoneish
     end
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def memoize_per_user(user, method_name)
     @memoized ||= {}
     @memoized[method_name] ||= {}

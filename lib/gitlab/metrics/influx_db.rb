@@ -1,3 +1,4 @@
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module Gitlab
   module Metrics
     module InfluxDb

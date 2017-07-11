@@ -1,5 +1,6 @@
 require 'rainbow/ext/string'
 
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module Gitlab
   TaskFailedError = Class.new(StandardError)
   TaskAbortedByUserError = Class.new(StandardError)

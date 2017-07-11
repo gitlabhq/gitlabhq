@@ -1,4 +1,5 @@
 module RendersNotes
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def prepare_notes_for_rendering(notes, noteable = nil)
     preload_noteable_for_regular_notes(notes)
     preload_max_access_for_authors(notes, @project)

@@ -1,3 +1,4 @@
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module IssuableCollections
   extend ActiveSupport::Concern
   include SortingHelper

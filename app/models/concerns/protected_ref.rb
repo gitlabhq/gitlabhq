@@ -55,6 +55,7 @@ module ProtectedRef
 
   private
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def ref_matcher
     @ref_matcher ||= ProtectedRefMatcher.new(self)
   end

@@ -1,3 +1,4 @@
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module API
   module Helpers
     module InternalHelpers
@@ -57,6 +58,7 @@ module API
 
       private
 
+      # rubocop:disable Cop/ModuleWithInstanceVariables
       def set_project
         if params[:gl_repository]
           @project, @wiki = Gitlab::GlRepository.parse(params[:gl_repository])

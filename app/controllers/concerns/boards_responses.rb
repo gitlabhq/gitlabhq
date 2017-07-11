@@ -1,3 +1,4 @@
+# rubocop:disable Cop/ModuleWithInstanceVariables
 module BoardsResponses
   def authorize_read_list
     authorize_action_for!(board.parent, :read_list)

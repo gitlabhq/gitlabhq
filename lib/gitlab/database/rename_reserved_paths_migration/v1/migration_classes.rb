@@ -3,6 +3,7 @@ module Gitlab
     module RenameReservedPathsMigration
       module V1
         module MigrationClasses
+          # rubocop:disable Cop/ModuleWithInstanceVariables
           module Routable
             def full_path
               if route && route.path.present?
