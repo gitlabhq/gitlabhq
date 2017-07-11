@@ -93,8 +93,8 @@ class MergeRequestEntity < IssuableEntity
 
   # Paths
   #
-  expose :target_branch_commits_path do |merge_request|
-    presenter(merge_request).target_branch_commits_path
+  expose :target_branch_tree_path do |merge_request|
+    presenter(merge_request).target_branch_tree_path
   end
 
   expose :new_blob_path do |merge_request|

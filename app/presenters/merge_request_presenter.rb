@@ -76,9 +76,9 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-  def target_branch_commits_path
+  def target_branch_tree_path
     if target_branch_exists?
-      project_commits_path(project, target_branch)
+      project_tree_path(project, target_branch)
     end
   end
 

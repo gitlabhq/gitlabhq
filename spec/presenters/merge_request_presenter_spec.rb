@@ -317,10 +317,10 @@ describe MergeRequestPresenter do
     end
   end
 
-  describe '#target_branch_commits_path' do
+  describe '#target_branch_tree_path' do
     subject do
       described_class.new(resource, current_user: user)
-        .target_branch_commits_path
+        .target_branch_tree_path
     end
 
     context 'when target branch exists' do
@@ -328,7 +328,7 @@ describe MergeRequestPresenter do
         allow(resource).to receive(:target_branch_exists?) { true }
 
         is_expected
-          .to eq("/#{resource.target_project.full_path}/commits/#{resource.target_branch}")
+          .to eq("/#{resource.target_project.full_path}/tree/#{resource.target_branch}")
       end
     end
 
