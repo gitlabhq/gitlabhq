@@ -74,9 +74,9 @@
       = nav_link(controller: @project.default_issues_tracker? ? [:issues, :labels, :milestones, :boards] : :issues) do
         = link_to project_issues_path(@project), title: 'Issues', class: 'shortcuts-issues' do
           %span
-            Issues
             - if @project.default_issues_tracker?
               %span.badge.count.issue_counter= number_with_delimiter(IssuesFinder.new(current_user, project_id: @project.id).execute.opened.count)
+            Issues
 
         %ul.sidebar-sub-level-items
           - if project_nav_tab?(:issues) && !current_controller?(:merge_requests)
@@ -112,8 +112,8 @@
       = nav_link(controller: @project.default_issues_tracker? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
         = link_to project_merge_requests_path(@project), title: 'Merge Requests', class: 'shortcuts-merge_requests' do
           %span
-            Merge Requests
             %span.badge.count.merge_counter.js-merge-counter= number_with_delimiter(MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.count)
+            Merge Requests
 
     - if project_nav_tab? :pipelines
       = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts]) do
