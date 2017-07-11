@@ -33,13 +33,16 @@ module Gitlab
         def _raw_config
           return @_raw_config if defined?(@_raw_config)
 
-          begin
-            @_raw_config = ERB.new(File.read(config_file_name)).result.freeze
-          rescue Errno::ENOENT
-            @_raw_config = false
-          end
-
-          @_raw_config
+          @_raw_config =
+            begin
+              if filename = config_file_name
+                ERB.new(File.read(filename)).result.freeze
+              else
+                false
+              end
+            rescue Errno::ENOENT
+              false
+            end
         end
 
         def default_url
@@ -116,7 +119,16 @@ module Gitlab
       end
 
       def fetch_config
-        self.class._raw_config ? YAML.load(self.class._raw_config)[@rails_env] : false
+        return false unless self.class._raw_config
+
+        yaml = YAML.load(self.class._raw_config)
+
+        # If the file has content but it's invalid YAML, `load` returns false
+        if yaml
+          yaml.fetch(@rails_env, false)
+        else
+          false
+        end
       end
     end
   end
