@@ -1,15 +1,15 @@
 class GlobalPolicy < BasePolicy
   desc "User is blocked"
   with_options scope: :user, score: 0
-  condition(:blocked) { @user.blocked? }
+  condition(:blocked) { @user&.blocked? }
 
   desc "User is an internal user"
   with_options scope: :user, score: 0
-  condition(:internal) { @user.internal? }
+  condition(:internal) { @user&.internal? }
 
   desc "User's access has been locked"
   with_options scope: :user, score: 0
-  condition(:access_locked) { @user.access_locked? }
+  condition(:access_locked) { @user&.access_locked? }
 
   rule { anonymous }.policy do
     prevent :log_in
