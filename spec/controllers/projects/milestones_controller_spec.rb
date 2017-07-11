@@ -31,6 +31,40 @@ describe Projects::MilestonesController do
     end
   end
 
+  describe "#index" do
+    context "as html" do
+      before do
+        get :index, namespace_id: project.namespace.id, project_id: project.id
+      end
+
+      it "queries only projects milestones" do
+        milestones = assigns(:milestones)
+
+        expect(milestones.count).to eq(1)
+        expect(milestones.where(project_id: nil)).to be_empty
+      end
+    end
+
+    context "as json" do
+      let!(:group) { create(:group, :public) }
+      let!(:group_milestone) { create(:milestone, group: group) }
+      let!(:group_member) { create(:group_member, group: group, user: user) }
+
+      before do
+        project.update(namespace: group)
+        get :index, namespace_id: project.namespace.id, project_id: project.id, format: :json
+      end
+
+      it "queries projects milestones and groups milestones" do
+        milestones = assigns(:milestones)
+
+        expect(milestones.count).to eq(2)
+        expect(milestones.where(project_id: nil).first).to eq(group_milestone)
+        expect(milestones.where(group_id: nil).first).to eq(milestone)
+      end
+    end
+  end
+
   describe "#destroy" do
     it "removes milestone" do
       expect(issue.milestone_id).to eq(milestone.id)

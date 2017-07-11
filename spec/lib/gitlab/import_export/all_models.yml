@@ -45,6 +45,7 @@ label:
 - merge_requests
 - priorities
 milestone:
+- group
 - project
 - issues
 - labels

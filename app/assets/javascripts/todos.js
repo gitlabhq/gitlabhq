@@ -2,7 +2,7 @@
 
 import UsersSelect from './users_select';
 
-class Todos {
+export default class Todos {
   constructor() {
     this.initFilters();
     this.bindEvents();
@@ -159,6 +159,3 @@ class Todos {
     }
   }
 }
-
-window.gl = window.gl || {};
-gl.Todos = Todos;

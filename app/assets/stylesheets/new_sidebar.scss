@@ -54,6 +54,12 @@ $new-sidebar-width: 220px;
       }
     }
   }
+
+  .project-title,
+  .group-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .settings-avatar {

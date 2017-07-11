@@ -1,0 +1,4 @@
+---
+title: Make loading new merge requests (those created after the 9.4 upgrade) faster
+merge_request:
+author:

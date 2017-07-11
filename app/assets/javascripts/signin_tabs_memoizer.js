@@ -6,7 +6,7 @@ import AccessorUtilities from './lib/utils/accessor';
  * Memorize the last selected tab after reloading a page.
  * Does that setting the current selected tab in the localStorage
  */
-class ActiveTabMemoizer {
+export default class SigninTabsMemoizer {
   constructor({ currentTabKey = 'current_signin_tab', tabSelector = 'ul.nav-tabs' } = {}) {
     this.currentTabKey = currentTabKey;
     this.tabSelector = tabSelector;
@@ -51,5 +51,3 @@ class ActiveTabMemoizer {
     return window.localStorage.getItem(this.currentTabKey);
   }
 }
-
-window.ActiveTabMemoizer = ActiveTabMemoizer;

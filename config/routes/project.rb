@@ -434,7 +434,7 @@ constraints(ProjectUrlConstrainer.new) do
       ## EE-specific
 
       namespace :settings do
-        resource :members, only: [:show]
+        get :members, to: redirect('/%{namespace_id}/%{project_id}/project_members')
         resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
 

@@ -30,6 +30,7 @@ module Issuable
     belongs_to :updated_by, class_name: "User"
     belongs_to :last_edited_by, class_name: 'User'
     belongs_to :milestone
+
     has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do # rubocop:disable Cop/ActiveRecordDependent
       def authors_loaded?
         # We check first if we're loaded to not load unnecessarily.

@@ -54,8 +54,10 @@ module MilestonesHelper
   def milestone_class_for_state(param, check, match_blank_param = false)
     if match_blank_param
       'active' if param.blank? || param == check
+    elsif param == check
+      'active'
     else
-      'active' if param == check
+      check
     end
   end
 
@@ -177,6 +179,16 @@ module MilestonesHelper
       labels_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
     else
       labels_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
+    end
+  end
+
+  def group_milestone_route(milestone, params = {})
+    params = nil if params.empty?
+
+    if milestone.is_legacy_group_milestone?
+      group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: params)
+    else
+      group_milestone_path(@group, milestone.iid, milestone: params)
     end
   end
 end

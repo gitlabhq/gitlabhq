@@ -133,7 +133,7 @@ describe 'Visual tokens', js: true, feature: true do
   describe 'editing milestone token' do
     before do
       input_filtered_search('milestone:%10.0 author:none', submit: false)
-      first('.tokens-container .filtered-search-token').double_click
+      first('.tokens-container .filtered-search-token').click
       first('#js-dropdown-milestone .filter-dropdown .filter-dropdown-item')
     end
 

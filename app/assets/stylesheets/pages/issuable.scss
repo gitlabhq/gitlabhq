@@ -800,6 +800,31 @@
   }
 }
 
+.issuable-close-button,
+.issuable-close-toggle {
+  @include transition(border-color, color);
+}
+
+.issuable-close-dropdown {
+  .dropdown-menu {
+    min-width: 270px;
+    left: auto;
+    right: 0;
+  }
+
+  .description {
+    margin-bottom: 10px;
+
+    .text {
+      margin: 0;
+    }
+  }
+
+  .dropdown-toggle > .icon {
+    margin: 0 3px;
+  }
+}
+
 .add-issuable-form-input-wrapper {
   height: auto;
   padding: $gl-vert-padding $gl-vert-padding 0 $gl-input-padding;

@@ -1,17 +1,13 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-/* global UsernameValidator */
-/* global ActiveTabMemoizer */
 /* global ShortcutsNavigation */
 /* global IssuableIndex */
 /* global ShortcutsIssuable */
-/* global ZenMode */
 /* global Milestone */
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
 /* global NotificationsForm */
-/* global TreeView */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
@@ -25,7 +21,6 @@
 /* global ProjectAvatar */
 /* global CompareAutocomplete */
 /* global ProjectNew */
-/* global Star */
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
@@ -57,6 +52,15 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import SigninTabsMemoizer from './signin_tabs_memoizer';
+import Star from './star';
+import Todos from './todos';
+import TreeView from './tree';
+import UsagePing from './usage_ping';
+import UsernameValidator from './username_validator';
+import VersionCheckImage from './version_check_image';
+import Wikis from './wikis';
+import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
@@ -135,7 +139,7 @@ import AuditLogs from './audit_logs';
           break;
         case 'sessions:new':
           new UsernameValidator();
-          new ActiveTabMemoizer();
+          new SigninTabsMemoizer();
           new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
           break;
         case 'projects:boards:show':
@@ -171,7 +175,7 @@ import AuditLogs from './audit_logs';
           new UsersSelect();
           break;
         case 'dashboard:todos:index':
-          new gl.Todos();
+          new Todos();
           break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
@@ -329,7 +333,7 @@ import AuditLogs from './audit_logs';
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:settings:members:show':
+        case 'projects:project_members:index':
           new gl.MemberExpirationDate('.js-access-expiration-date-groups');
           new GroupsSelect();
           new gl.MemberExpirationDate();
@@ -391,7 +395,7 @@ import AuditLogs from './audit_logs';
           new BlobViewer();
           break;
         case 'help:index':
-          gl.VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
           break;
         case 'search:show':
           new Search();
@@ -455,7 +459,7 @@ import AuditLogs from './audit_logs';
           new Admin();
           switch (path[1]) {
             case 'cohorts':
-              new gl.UsagePing();
+              new UsagePing();
               break;
             case 'groups':
               new UsersSelect();
@@ -511,7 +515,7 @@ import AuditLogs from './audit_logs';
               new NotificationsDropdown();
               break;
             case 'wikis':
-              new gl.Wikis();
+              new Wikis();
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);

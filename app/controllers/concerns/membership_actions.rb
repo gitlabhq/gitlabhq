@@ -79,7 +79,7 @@ module MembershipActions
 
   def members_page_url
     if membershipable.is_a?(Project)
-      project_settings_members_path(membershipable)
+      project_project_members_path(membershipable)
     else
       polymorphic_url([membershipable, :members])
     end

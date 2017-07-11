@@ -6,9 +6,6 @@ describe Milestone, models: true do
       allow(subject).to receive(:set_iid).and_return(false)
     end
 
-    it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_presence_of(:project) }
-
     describe 'start_date' do
       it 'adds an error when start_date is greated then due_date' do
         milestone = build(:milestone, start_date: Date.tomorrow, due_date: Date.yesterday)
@@ -39,17 +36,42 @@ describe Milestone, models: true do
     end
   end
 
-  describe "unique milestone title per project" do
-    it "does not accept the same title in a project twice" do
-      new_milestone = Milestone.new(project: milestone.project, title: milestone.title)
-      expect(new_milestone).not_to be_valid
+  describe "unique milestone title" do
+    context "per project" do
+      it "does not accept the same title in a project twice" do
+        new_milestone = Milestone.new(project: milestone.project, title: milestone.title)
+        expect(new_milestone).not_to be_valid
+      end
+
+      it "accepts the same title in another project" do
+        project = create(:empty_project)
+        new_milestone = Milestone.new(project: project, title: milestone.title)
+
+        expect(new_milestone).to be_valid
+      end
     end
 
-    it "accepts the same title in another project" do
-      project = build(:empty_project)
-      new_milestone = Milestone.new(project: project, title: milestone.title)
+    context "per group" do
+      let(:group) { create(:group) }
+      let(:milestone) { create(:milestone, group: group) }
 
-      expect(new_milestone).to be_valid
+      before do
+        project.update(group: group)
+      end
+
+      it "does not accept the same title in a group twice" do
+        new_milestone = Milestone.new(group: group, title: milestone.title)
+
+        expect(new_milestone).not_to be_valid
+      end
+
+      it "does not accept the same title of a child project milestone" do
+        create(:milestone, project: group.projects.first)
+
+        new_milestone = Milestone.new(group: group, title: milestone.title)
+
+        expect(new_milestone).not_to be_valid
+      end
     end
   end
 

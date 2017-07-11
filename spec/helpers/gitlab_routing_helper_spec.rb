@@ -2,12 +2,6 @@ require 'spec_helper'
 
 describe GitlabRoutingHelper do
   describe 'Project URL helpers' do
-    describe '#project_members_url' do
-      let(:project) { build_stubbed(:empty_project) }
-
-      it { expect(project_members_url(project)).to eq project_project_members_url(project) }
-    end
-
     describe '#project_member_path' do
       let(:project_member) { create(:project_member) }
 

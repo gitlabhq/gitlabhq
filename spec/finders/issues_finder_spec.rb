@@ -75,6 +75,23 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by group milestone' do
+        let!(:group) { create(:group, :public) }
+        let(:group_milestone) { create(:milestone, group: group) }
+        let!(:group_member) { create(:group_member, group: group, user: user) }
+        let(:params) { { milestone_title: group_milestone.title } }
+
+        before do
+          project2.update(namespace: group)
+          issue2.update(milestone: group_milestone)
+          issue3.update(milestone: group_milestone)
+        end
+
+        it 'returns issues assigned to that group milestone' do
+          expect(issues).to contain_exactly(issue2, issue3)
+        end
+      end
+
       context 'filtering by no milestone' do
         let(:params) { { milestone_title: Milestone::None.title } }
 

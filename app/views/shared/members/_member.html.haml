@@ -53,6 +53,7 @@
     .controls.member-controls
       = render 'shared/members/ee/ldap_tag', can_override: can_override_member, visible: false
       - if show_controls && member.source == current_resource
+
         - if member.invite? && can?(current_user, action_member_permission(:admin, member), member.source)
           = link_to icon('paper-plane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
