@@ -780,7 +780,7 @@ GEM
       rack
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
-    sidekiq (5.0.0)
+    sidekiq (5.0.4)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
