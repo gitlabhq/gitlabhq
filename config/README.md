@@ -19,11 +19,7 @@ an ERB file and then loads the resulting YML as its configuration.
 
 This file is called `resque.yml` for historical reasons. We are **NOT**
 using Resque at the moment. It is used to specify Redis configuration
-<<<<<<< HEAD
-values instead when a single database instance of Redis is desired.
-=======
 values when a single database instance of Redis is desired.
->>>>>>> ce-com/master
 
 # Advanced Redis configuration files
 

@@ -26,13 +26,9 @@ describe Gitlab::CurrentSettings do
         expect(current_application_settings).to be_a(ApplicationSetting)
       end
 
-<<<<<<< HEAD
       it 'falls back to DB if Caching fails' do
-=======
-      it 'falls back to DB if Redis fails' do
         db_settings = ApplicationSetting.create!(ApplicationSetting.defaults)
 
->>>>>>> ce-com/master
         expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
         expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(Redis::BaseError)
 

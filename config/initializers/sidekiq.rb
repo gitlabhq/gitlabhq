@@ -78,9 +78,5 @@ begin
       end
     end
   end
-<<<<<<< HEAD
-rescue ::Redis::BaseError, SocketError, Errno::ENOENT, Errno::EAFNOSUPPORT, Errno::ECONNRESET, Errno::ECONNREFUSED
-=======
 rescue Redis::BaseError, SocketError, Errno::ENOENT, Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT, Errno::ECONNRESET, Errno::ECONNREFUSED
->>>>>>> ce-com/master
 end

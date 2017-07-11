@@ -8,14 +8,9 @@ if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
     bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
 fi
 
-# Only install fog-aws/mime-types after bundle install! Otherwise oddly some native
+# Only install knapsack after bundle install! Otherwise oddly some native
 # gems could not be found under some circumstance. No idea why, hours wasted.
-<<<<<<< HEAD
 retry gem install knapsack fog-aws mime-types
-=======
-# TODO: remove workaround on !10156
-retry gem install fog-aws mime-types
->>>>>>> ce-com/master
 
 cp config/gitlab.yml.example config/gitlab.yml
 
@@ -50,12 +45,9 @@ else # Assume it's mysql
     sed -i 's/# host:.*/host: mysql/g' config/database_geo.yml
 fi
 
-<<<<<<< HEAD
-=======
 cp config/resque.yml.example config/resque.yml
 sed -i 's/localhost/redis/g' config/resque.yml
 
->>>>>>> ce-com/master
 cp config/redis.cache.yml.example config/redis.cache.yml
 sed -i 's/localhost/redis/g' config/redis.cache.yml
 

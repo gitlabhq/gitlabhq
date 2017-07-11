@@ -168,7 +168,6 @@ describe API::Internal do
     end
   end
 
-<<<<<<< HEAD
   describe "GET /internal/authorized_keys" do
     context "unsing an existing key's fingerprint" do
       it "finds the key" do
@@ -217,8 +216,6 @@ describe API::Internal do
     end
   end
 
-=======
->>>>>>> ce-com/master
   describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
       before do
