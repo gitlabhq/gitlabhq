@@ -88,6 +88,10 @@ export default {
             new Flash('Something went wrong on our end.'); // eslint-disable-line
           });
       });
+
+      $(document).on('issuable:change', (e, isClosed) => {
+        eventHub.$emit('IssueStateChanged', isClosed);
+      });
     },
     checkLocationHash() {
       const hash = gl.utils.getLocationHash();

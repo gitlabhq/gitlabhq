@@ -66,12 +66,11 @@ class Issue {
         const projectIssuesCounter = $('.issue_counter');
 
         if ('id' in data) {
-          $(document).trigger('issuable:change');
-
           const isClosed = $button.hasClass('btn-close');
           isClosedBadge.toggleClass('hidden', !isClosed);
           isOpenBadge.toggleClass('hidden', isClosed);
 
+          $(document).trigger('issuable:change', isClosed);
           this.toggleCloseReopenButton(isClosed);
 
           let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));

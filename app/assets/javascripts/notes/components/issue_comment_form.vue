@@ -122,6 +122,10 @@ export default {
 
     this.markdownDocsUrl = markdownDocs;
     this.markdownPreviewUrl = markdownPreviewUrl;
+
+    eventHub.$on('IssueStateChanged', (isClosed) => {
+      this.issueState = isClosed ? 'closed' : 'reopened';
+    });
   },
 };
 </script>
