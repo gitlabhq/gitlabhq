@@ -1,12 +1,15 @@
 module Gitlab
   module BackgroundMigration
+    def self.queue
+      BackgroundMigrationWorker.sidekiq_options['queue']
+    end
+
     # Begins stealing jobs from the background migrations queue, blocking the
     # caller until all jobs have been completed.
     #
     # steal_class - The name of the class for which to steal jobs.
     def self.steal(steal_class)
-      queue = Sidekiq::Queue
-        .new(BackgroundMigrationWorker.sidekiq_options['queue'])
+      queue = Sidekiq::Queue.new(self.queue)
 
       queue.each do |job|
         migration_class, migration_args = job.args
