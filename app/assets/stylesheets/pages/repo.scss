@@ -67,6 +67,13 @@ header {
     height: 70vh;
     margin-top: -5px;
   }  
+
+  #binary-viewer {
+    height: 70vh;
+    overflow: auto;
+    margin-top: -5px;
+    margin-left: 10px;
+  }
 }
 
 #view-toggler {
