@@ -54,6 +54,12 @@ project you have access to.
 You can also use the [Advanced Syntax Search](advanced_search_syntax.md) which
 provides some useful queries.
 
+>**Note:**
+Elasticsearch has only data for the default branch. That means that if you go
+to the repository tree and switch the branch from the default to something else,
+then the "Code" tab in the search result page will be served by the regular
+search even if Elasticsearch is enabled.
+
 [ee-1305]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1305
 [aws-elastic]: http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html
 [aws-iam]: http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html
