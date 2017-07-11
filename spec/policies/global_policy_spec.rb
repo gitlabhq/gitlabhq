@@ -2,9 +2,8 @@ require 'spec_helper'
 
 describe GlobalPolicy, models: true do
   let(:current_user) { create(:user) }
-  let(:user) { create(:user) }
 
-  subject { GlobalPolicy.new(current_user, [user]) }
+  subject { GlobalPolicy.new(current_user, :global) }
 
   describe "reading the list of users" do
     context "for a logged in user" do
