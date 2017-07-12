@@ -28,9 +28,15 @@ module Gitlab
       end
 
       def available_capacity
-        current_capacity = Gitlab::Redis::SharedState.with { |redis| redis.scard(PULL_CAPACITY_KEY) }
+        current_capacity = Gitlab::Redis::SharedState.with { |redis| redis.scard(PULL_CAPACITY_KEY) }.to_i
 
-        max_capacity - current_capacity.to_i
+        available = max_capacity - current_capacity
+        if available < 0
+          Rails.logger.info("Mirror available capacity is below 0: #{available}")
+          available = 0
+        end
+
+        available
       end
 
       def increment_capacity(project_id)
