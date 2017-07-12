@@ -587,9 +587,9 @@ pre.light-well {
   }
 
   .project-row {
+    @include basic-list-stats;
     display: flex;
     align-items: center;
-    @include basic-list-stats;
   }
 
   h3 {

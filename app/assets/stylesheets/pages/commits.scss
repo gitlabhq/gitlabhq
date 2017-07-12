@@ -250,8 +250,8 @@
     }
 
     .committed_ago {
-      float: right;
       @extend .cgray;
+      float: right;
     }
   }
 }

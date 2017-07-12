@@ -24,9 +24,9 @@
 
   .col-headers {
     ul {
+      @include clearfix;
       margin: 0;
       padding: 0;
-      @include clearfix;
     }
 
     li {
@@ -189,8 +189,8 @@
     }
 
     li {
-      list-style-type: none;
       @include clearfix;
+      list-style-type: none;
     }
 
     .stage-nav-item {
@@ -281,11 +281,11 @@
   }
 
   .stage-event-item {
+    @include clearfix;
     list-style-type: none;
     padding: 0 0 $gl-padding;
     margin: 0 $gl-padding $gl-padding;
     border-bottom: 1px solid $gray-darker;
-    @include clearfix;
 
     &:last-child {
       border-bottom: none;
@@ -307,9 +307,9 @@
       &.issue-title,
       &.commit-title,
       &.merge-merquest-title {
+        @include text-overflow();
         max-width: 100%;
         display: block;
-        @include text-overflow();
 
         a {
           color: $gl-text-color;

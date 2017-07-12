@@ -137,6 +137,7 @@
 }
 
 .pipeline-variable-row-remove-button {
+  @include transition(color);
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -147,7 +148,6 @@
   background: transparent;
   border: 0;
   color: $gl-text-color-secondary;
-  @include transition(color);
 
   &:hover,
   &:focus {
