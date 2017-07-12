@@ -186,7 +186,6 @@ $new-sidebar-width: 220px;
 
 
 // Make issue boards full-height now that sub-nav is gone
-
 .boards-list {
   height: calc(100vh - 50px);
 
@@ -196,6 +195,11 @@ $new-sidebar-width: 220px;
     height: calc(100vh - 120px);
     // scss-lint:enable DuplicateProperty
   }
+}
+
+// Remove extra top margin on profile page
+.new-nav-profile {
+  margin-top: 0;
 }
 
 
