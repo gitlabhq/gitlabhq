@@ -469,10 +469,10 @@
       word-break: break-all;
     }
   }
-}
 
-.filter-dropdown-item.droplab-item-active .btn {
-  @extend %filter-dropdown-item-btn-hover;
+  &.droplab-item-active .btn {
+    @extend %filter-dropdown-item-btn-hover;
+  }
 }
 
 .filter-dropdown-loading {

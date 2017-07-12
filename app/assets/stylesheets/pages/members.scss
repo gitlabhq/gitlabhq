@@ -49,6 +49,12 @@
       width: auto;
     }
   }
+
+  &.existing-title {
+    @media (min-width: $screen-sm-min) {
+      float: left;
+    }
+  }
 }
 
 .member-form-control {
@@ -62,12 +68,6 @@
 .member-access-text {
   margin-left: auto;
   line-height: 43px;
-}
-
-.member.existing-title {
-  @media (min-width: $screen-sm-min) {
-    float: left;
-  }
 }
 
 .member-search-form {

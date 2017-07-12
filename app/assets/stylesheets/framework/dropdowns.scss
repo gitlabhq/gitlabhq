@@ -727,11 +727,11 @@
 
 .pika-single.animate-picker.is-bound {
   @include set-visible;
-}
 
-.pika-single.animate-picker.is-bound.is-hidden {
-  @include set-invisible;
-  overflow: hidden;
+  &.is-hidden {
+    @include set-invisible;
+    overflow: hidden;
+  }
 }
 
 @mixin dropdown-item-hover {
