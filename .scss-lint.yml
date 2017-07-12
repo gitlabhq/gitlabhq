@@ -93,7 +93,7 @@ linters:
   # The basenames of @imported SCSS partials should not begin with an
   # underscore and should not include the filename extension.
   ImportPath:
-    enabled: false
+    enabled: true
 
   # Avoid using !important in properties. It is usually indicative of a
   # misunderstanding of CSS specificity and can lead to brittle code.
