@@ -29,7 +29,9 @@ On OSX, install [homebrew](https://brew.sh) for all the things:
 2. Install Google Cloud SDK `brew cask install google-cloud-sdk`
 3. Run `gcloud components install kubectl`
 
-Connect to the cluster and open Kubernetes Dashboard ![connect to cluster](img/guide_connect_cluster.png)
+Connect to the cluster and open Kubernetes Dashboard
+
+![connect to cluster](img/guide_connect_cluster.png)
 
 
 ### Copy credentials to GitLab.com
