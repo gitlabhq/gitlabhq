@@ -54,9 +54,8 @@ export default class JobMediator {
   }
 
   successCallback(response) {
-    const data = response.json();
     this.state.isLoading = false;
-    this.store.storeJob(data);
+    return response.json().then(data => this.store.storeJob(data));
   }
 
   errorCallback() {
