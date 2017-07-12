@@ -16,4 +16,10 @@ module BreadcrumbsHelper
       request.path
     end
   end
+
+  def breadcrumb_title(title)
+    return if defined?(@breadcrumb_title)
+
+    @breadcrumb_title = title
+  end
 end

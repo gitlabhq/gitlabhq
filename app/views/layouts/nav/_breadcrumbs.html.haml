@@ -1,4 +1,3 @@
-- breadcrumb_title = @breadcrumb_title || controller.controller_name.humanize
 - breadcrumb_link = breadcrumb_title_link
 - hide_top_links = @hide_top_links || false
 
@@ -18,7 +17,7 @@
           - if @breadcrumbs_extra_links
             - @breadcrumbs_extra_links.each do |extra|
               %li= link_to extra[:text], extra[:link]
-          %li= link_to breadcrumb_title, breadcrumb_link
+          %li= link_to @breadcrumb_title, breadcrumb_link
     - if content_for?(:breadcrumbs_extra)
       .breadcrumbs-extra.hidden-xs= yield :breadcrumbs_extra
     = yield :header_content
