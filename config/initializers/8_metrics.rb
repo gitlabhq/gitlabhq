@@ -123,7 +123,7 @@ Gitlab::Metrics::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_
 
 Gitlab::Application.configure do |config|
   # 0 should be Sentry to catch errors in this middleware
-  config.middleware.insert(1, Gitlab::Metrics::ConnectionRackMiddleware)
+  config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
 end
 
 if Gitlab::Metrics.enabled?
