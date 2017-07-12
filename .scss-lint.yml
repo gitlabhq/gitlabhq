@@ -176,7 +176,7 @@ linters:
 
   # Commas in lists should be followed by a space.
   SpaceAfterComma:
-    enabled: false
+    enabled: true
 
   # Properties should be formatted with a single space separating the colon
   # from the property's value.
