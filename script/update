@@ -21,24 +21,24 @@ db_running()
   fi
 }
 
-
 cd "$(dirname "$0")/.."
 
 previous_head=$(git rev-parse HEAD)
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 stash_created="false"
 
-git checkout -- Gemfile.lock db/schema.rb
+git checkout -- Gemfile.lock db/schema.rb locale/
 
 if ! (clean_working_tree); then
   echo "==> Stashing the following changes (retrieve them with 'git stash pop' if needed)..."
-  git diff --name-status
-  # git stash
+  diff=$(git diff --name-status)
+  echo $diff
+  git stash
   stash_created="true"
 fi
 
-echo "==> Checking out and pulling ${current_branch}..."
-git pull --ff-only origin "$current_branch"
+echo "==> Pulling (fast-forward only) $current_branch..."
+git pull --ff-only origin $current_branch
 
 script/bootstrap
 
@@ -49,8 +49,7 @@ fi
 
 if ! (test -z "$(git diff "$previous_head"...HEAD -- db/schema.rb 2> /dev/null | tail -n1)"); then
   db_running
-  echo "==> Updating db..."
+  echo "==> Running all database migrations to ensure everything is up to date..."
   echo ""
-  # run all database migrations to ensure everything is up to date.
   bin/rake db:migrate db:test:prepare
 fi
