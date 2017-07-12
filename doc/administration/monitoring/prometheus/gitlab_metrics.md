@@ -27,15 +27,15 @@ In this experimental phase, only a few metrics are available:
 | ------ | ---- | ----------- |
 | db_ping_timeout | Gauge | Whether or not the last database ping timed out |
 | db_ping_success | Gauge | Whether or not the last database ping succeeded |
-| db_ping_latency | Gauge | Round trip time of the database ping |
+| db_ping_latency_seconds | Gauge | Round trip time of the database ping |
 | redis_ping_timeout | Gauge | Whether or not the last redis ping timed out |
 | redis_ping_success | Gauge | Whether or not the last redis ping succeeded |
-| redis_ping_latency | Gauge | Round trip time of the redis ping |
-| filesystem_access_latency | gauge | Latency in accessing a specific filesystem |
+| redis_ping_latency_seconds | Gauge | Round trip time of the redis ping |
+| filesystem_access_latency_seconds | gauge | Latency in accessing a specific filesystem |
 | filesystem_accessible | gauge | Whether or not a specific filesystem is accessible |
-| filesystem_write_latency | gauge | Write latency of a specific filesystem |
+| filesystem_write_latency_seconds | gauge | Write latency of a specific filesystem |
 | filesystem_writable | gauge | Whether or not the filesystem is writable |
-| filesystem_read_latency | gauge | Read latency of a specific filesystem |
+| filesystem_read_latency_seconds | gauge | Read latency of a specific filesystem |
 | filesystem_readable | gauge | Whether or not the filesystem is readable |
 | user_sessions_logins | Counter | Counter of how many users have logged in | 
 
