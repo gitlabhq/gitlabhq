@@ -1159,6 +1159,18 @@ describe User, models: true do
     end
   end
 
+  describe '#sanitize_attrs' do
+    let(:user) { build(:user, name: 'test & user', skype: 'test&user') }
+
+    it 'encodes HTML entities in the Skype attribute' do
+      expect { user.sanitize_attrs }.to change { user.skype }.to('test&amp;user')
+    end
+
+    it 'does not encode HTML entities in the name attribute' do
+      expect { user.sanitize_attrs }.not_to change { user.name }
+    end
+  end
+
   describe '#starred?' do
     it 'determines if user starred a project' do
       user = create :user
