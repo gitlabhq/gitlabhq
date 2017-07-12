@@ -244,7 +244,7 @@ linters:
   # Do not use parent selector references (&) when they would otherwise
   # be unnecessary.
   UnnecessaryParentReference:
-    enabled: false
+    enabled: true
 
   # URLs should be valid and not contain protocols or domain names.
   UrlFormat:

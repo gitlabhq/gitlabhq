@@ -96,12 +96,12 @@
   }
 
   &:last-child {
-    & .pipeline-variable-row-remove-button {
+    .pipeline-variable-row-remove-button {
       display: none;
     }
 
     @media (max-width: $screen-sm-max) {
-      & .pipeline-variable-value-input {
+      .pipeline-variable-value-input {
         margin-right: $pipeline-variable-remove-button-width;
       }
     }
