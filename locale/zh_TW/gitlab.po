@@ -1,8 +1,8 @@
 # Huang Tao <htve@outlook.com>, 2017. #zanata
-# Lin Jen-Shin <anonymous@domain.com>, 2017.
 # Hazel Yang <anonymous@domain.com>, 2017.
 # TzeKei Lee <anonymous@domain.com>, 2017.
 # Jerry Ho <a29988122@gmail.com>, 2017.
+# Lin Jen-Shin <godfat@godfat.org>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
@@ -11,8 +11,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-07-11 05:14-0400\n"
-"Last-Translator: Huang Tao <htve@outlook.com>\n"
+"PO-Revision-Date: 2017-07-11 09:10-0400\n"
+"Last-Translator: Lin Jen-Shin <godfat@godfat.org>\n"
 "Language-Team: Chinese (Taiwan) (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: zh-TW\n"
 "X-Generator: Zanata 3.9.6\n"
@@ -643,10 +643,10 @@ msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "自訂"
 
 msgid "Pipelines"
-msgstr "流水線 (Pipelines) "
+msgstr "流水線 (pipeline) "
 
 msgid "Pipelines charts"
-msgstr "流水線 (Pipelines) 圖表"
+msgstr "流水線 (pipeline) 圖表"
 
 msgid "Pipeline|all"
 msgstr "所有"
