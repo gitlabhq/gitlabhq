@@ -22,12 +22,6 @@ describe Gitlab::Metrics::ConnectionRackMiddleware do
         allow(app).to receive(:call).and_return([200, nil, nil])
       end
 
-      it 'increments response count with status label' do
-        expect(described_class).to receive_message_chain(:rack_response_count, :increment).with(include(status: 200, method: 'get'))
-
-        subject.call(env)
-      end
-
       it 'increments requests count' do
         expect(described_class).to receive_message_chain(:rack_request_count, :increment).with(method: 'get')
 
@@ -40,7 +34,7 @@ describe Gitlab::Metrics::ConnectionRackMiddleware do
           Timecop.freeze(execution_time.seconds)
         end
 
-        expect(described_class).to receive_message_chain(:rack_execution_time, :observe).with({}, execution_time)
+        expect(described_class).to receive_message_chain(:rack_execution_time, :observe).with({status: 200, method: 'get'}, execution_time)
 
         subject.call(env)
       end
@@ -48,11 +42,6 @@ describe Gitlab::Metrics::ConnectionRackMiddleware do
 
     context '@app.call throws exception' do
       let(:rack_response_count) { double('rack_response_count') }
-
-      before do
-        allow(app).to receive(:call).and_raise(StandardError)
-        allow(described_class).to receive(:rack_response_count).and_return(rack_response_count)
-      end
 
       it 'increments exceptions count' do
         expect(described_class).to receive_message_chain(:rack_uncaught_errors_count, :increment)
