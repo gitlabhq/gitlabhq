@@ -178,6 +178,10 @@ linters:
   SpaceAfterComma:
     enabled: true
 
+  # Comment literals should be followed by a space.
+  SpaceAfterComment:
+    enabled: false
+
   # Properties should be formatted with a single space separating the colon
   # from the property's value.
   SpaceAfterPropertyColon:
