@@ -147,6 +147,7 @@ export default {
         </div>
         <issue-note-body
           :note="note"
+          :canEdit="note.current_user.can_edit"
           :isEditing="isEditing"
           :formUpdateHandler="formUpdateHandler"
           :formCancelHandler="formCancelHandler"

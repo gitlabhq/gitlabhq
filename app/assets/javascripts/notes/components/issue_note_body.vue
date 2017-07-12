@@ -2,11 +2,16 @@
 import IssueNoteEditedText from './issue_note_edited_text.vue';
 import IssueNoteAwardsList from './issue_note_awards_list.vue';
 import IssueNoteForm from './issue_note_form.vue';
+import TaskList from '../../task_list';
 
 export default {
   props: {
     note: {
       type: Object,
+      required: true,
+    },
+    canEdit: {
+      type: Boolean,
       required: true,
     },
     isEditing: {
@@ -32,6 +37,15 @@ export default {
     renderGFM() {
       $(this.$refs['note-body']).renderGFM();
     },
+    initTaskList() {
+      if (this.canEdit) {
+        new TaskList({
+          dataType: 'note',
+          fieldName: 'note',
+          selector: '.notes'
+        });
+      }
+    },
     handleFormUpdate() {
       this.formUpdateHandler({
         note: this.$refs.noteForm.note,
@@ -40,12 +54,17 @@ export default {
   },
   mounted() {
     this.renderGFM();
+    this.initTaskList();
+  },
+  updated() {
+    this.initTaskList();
   },
 };
 </script>
 
 <template>
   <div
+    :class="{ 'js-task-list-container': canEdit }"
     ref="note-body"
     class="note-body">
     <div
@@ -57,6 +76,11 @@ export default {
       :updateHandler="handleFormUpdate"
       :cancelHandler="formCancelHandler"
       :noteBody="note.note" />
+    <textarea
+      v-if="canEdit"
+      v-model="note.note"
+      :data-update-url="note.path"
+      class="hidden js-task-list-field"></textarea>
     <issue-note-edited-text
       v-if="note.last_edited_by"
       :editedAt="note.last_edited_at"
