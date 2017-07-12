@@ -5,66 +5,298 @@
 
 set -e
 
+install_redis_manually() {
+  REDIS="redis-3.2.9"
+  wget http://download.redis.io/releases/$REDIS.tar.gz
+  tar xzf $REDIS.tar.gz
+  cd $REDIS
+  make
+  mkdir -p /usr/local/share/$REDIS/bin
+  sudo mv src/redis-server /usr/local/share/$REDIS/bin
+  sudo ln -s /usr/local/share/$REDIS/bin/redis-server /usr/local/bin
+}
+
+install_phantomjs_manually() {
+  PHANTOM_JS="phantomjs-2.1.1-linux-x86_64"
+  wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2
+  tar -xvjf $PHANTOM_JS.tar.bz2
+  sudo mv $PHANTOM_JS /usr/local/share
+  sudo ln -s /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
+}
+
+install_nodejs_manually() {
+  NODE_JS="v6.10.2"
+  curl -O https://nodejs.org/dist/$NODE_JS/node-$NODE_JS.tar.gz
+  tar -zxf node-$NODE_JS.tar.gz
+  cd node-$NODE_JS
+  sudo apt-get install build-essential
+  ./configure
+  make -j4 # adjust according to your available CPU capacity
+  sudo make install
+}
+
+install_yarn_manually() {
+  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  sudo apt-get update && sudo apt-get install yarn
+}
+
+brew_installed() {
+  test $(command -v brew)
+}
+
+brew_bundle_installed() {
+  test $(command -v "brew bundle")
+}
+
+rvm_installed() {
+  test $(command -v rvm)
+}
+
+rbenv_installed() {
+  test $(command -v rbenv)
+}
+
+chruby_installed() {
+  [ -n $(command -v chruby) ]
+}
+
+ruby_install_installed() {
+  test $(command -v ruby-install)
+}
+
 cd "$(dirname "$0")/.."
 
-if [ "$(uname -s)" = "Darwin" ]; then
+OS=`uname -s`
+
+UBUNTU_PACKAGES="git postgresql postgresql-contrib libpq-dev redis-server
+  libicu-dev cmake g++ nodejs nodejs-legacy npm libkrb5-dev golang-1.8-go ed pkg-config"
+ARCH_PACKAGES="postgresql redis postgresql-libs icu npm ed cmake openssh git go"
+DEBIAN_PACKAGES="postgresql postgresql-contrib libpq-dev redis-server libicu-dev
+  cmake g++ nodejs npm libkrb5-dev ed pkg-config"
+FEDORA_PACKAGES="postgresql libpqxx-devel postgresql-libs redis libicu-devel
+  nodejs git ed cmake rpm-build gcc-c++ krb5-devel postgresql-server postgresql-contrib"
+CENTOS_PACKAGES="http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/pgdg-redhat95-9.5-2.noarch.rpm
+  https://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+  postgresql95-server postgresql95-devel libicu-devel cmake gcc-c++ redis ed
+  fontconfig freetype libfreetype.so.6 libfontconfig.so.1 libstdc++.so.6 nodejs npm"
+OPEN_SUSE_PACKAGES="libxslt-devel  postgresql postgresql-devel libpqxx-devel
+  redis libicu-devel nodejs git ed cmake
+  rpm-build gcc-c++ krb5-devel postgresql-server postgresql-contrib
+  libxml2-devel libxml2-devel-32bit findutils-locate"
+FREE_BSD_PACKAGES="postgresql93-server postgresql93-contrib postgresql-libpqxx
+  redis go node icu krb5 phantomjs gmake"
+WINDOWS_PACKAGES="git postgresql postgresql-contrib libpq-dev redis-server
+  libicu-dev cmake g++ libkrb5-dev golang ed pkg-config"
+
+PHANTOM_JS_2_1_12_PREBUILT="phantomjs-prebuilt@2.1.12"
+
+if [ "$OS" = "Darwin" ]; then
   if [ -f "Brewfile" ]; then
-    brew tap Homebrew/bundle
-    brew bundle check >/dev/null 2>&1  || {
-      echo "==> Installing Homebrew dependencies..."
-      brew bundle
-    }
+    echo "==> Installing packages on macOS"
+    if brew_installed; then
+      if ! brew_bundle_installed; then
+        brew tap Homebrew/bundle
+      fi
+      brew bundle check >/dev/null 2>&1  || {
+        echo "==> Installing Homebrew dependencies..."
+        brew bundle
+      }
+    else
+      echo "/!\ We recommend using Homebrew to manage dependencies on macOS: https://brew.sh"
+      echo "/!\ Prerequisite dependencies were not installed automatically!"
+      echo "/!\ See https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/prepare.md to install them manually."
+    fi
   fi
+
+elif [ "$OS" = "Linux" ]; then
+  if cat /etc/*release | grep ^NAME | grep Ubuntu; then
+    echo "==> Installing packages $UBUNTU_PACKAGES on Ubuntu"
+    # Add apt-add-repository helper script
+    sudo apt-get install software-properties-common python-software-properties
+    # This PPA contains an up-to-date version of Go
+    sudo add-apt-repository ppa:longsleep/golang-backports
+    sudo apt-get update
+    sudo apt-get install $UBUNTU_PACKAGES
+    sudo npm install PHANTOM_JS_2_1_12_PREBUILT yarn -g
+
+  elif cat /etc/*release | grep ^NAME | grep Arch; then
+      echo "==> Installing packages $ARCH_PACKAGES on Arch"
+      pacman -S $ARCH_PACKAGES
+      npm install $PHANTOM_JS_2_1_12_PREBUILT yarn -g
+
+
+  elif cat /etc/*release | grep ^NAME | grep Debian ; then
+    echo "==> Installing packages $DEBIAN_PACKAGES on Debian"
+    apt-get update
+    sudo apt-get install -y $DEBIAN_PACKAGES
+
+    echo "==> Installing the go package..."
+    if [ ! $(sudo apt-get install golang) ]; then
+      echo "/!\ Please install the go package manually: https://golang.org/doc/install"
+      echo ""
+    fi
+
+    echo "==> Installing PhantomJS manually..."
+    install_phantomjs_manually
+
+    echo "==> Installing Redis manually..."
+    install_redis_manually
+
+  elif cat /etc/*release | grep ^NAME | grep Fedora; then
+    echo "==> Installing packages $FEDORA_PACKAGES on Fedorea"
+    sudo dnf install
+
+    source /etc/os-release
+    if [ "$VERSION_ID" -ge "22" ]; then
+      echo "==> Installing the go package"
+      sudo dnf install go
+    else
+      echo "/!\ Please install the go package manually: https://golang.org/doc/install"
+      echo ""
+    fi
+
+    echo "==> Installing PhantomJS manually..."
+    install_phantomjs_manually
+
+    echo "==> Installing Redis manually..."
+    install_redis_manually
+
+  elif cat /etc/*release | grep ^NAME | grep CentOS; then
+    echo "==> Installing packages $CENTOS_PACKAGES on CentOS"
+    sudo yum install $CENTOS_PACKAGES
+
+    echo "==> Installing the phantomjs NPM package..."
+    sudo npm install PHANTOM_JS_2_1_12_PREBUILT -g
+
+    echo "==> Installing Redis manually..."
+    install_redis_manually
+
+    bundle config build.pg --with-pg-config=/usr/pgsql-9.5/bin/pg_config
+
+    if rvm_installed; then
+      echo "==> Ensuring your user is in the 'rvm' group..."
+      sudo usermod -a -G rvm $(whoami)
+    fi
+
+    echo "/!\ Please install the go package manually: https://golang.org/doc/install"
+    echo ""
+
+  elif [ -f /etc/SUSE-release ]; then
+    echo "==> Installing packages $OPEN_SUSE_PACKAGES on OpenSuse"
+    sudo zypper dup
+    sudo zypper install $OPEN_SUSE_PACKAGES
+
+    echo "==> Installing the phantomjs & yarn NPM packages..."
+    sudo npm install -g phantomjs yarn
+
+    bundle config build.nokogiri "--use-system-libraries" --global
+
+    echo "/!\ Please install the go package manually: https://golang.org/doc/install"
+    echo ""
+
+    echo "/!\ If you're on leap 42.1, please also run the following:"
+    echo "sudo zypper install ld.charlock_holmes \"--with-icu-dir=/usr/local\" --globalnpm4"
+    echo "sudo ln -s /usr/sbin/redis-server /usr/bin/redis-server"
+    echo ""
+
+    echo "/!\ If you're on Tumbleweed, please also run the following:"
+    echo "bundle config build.charlock_holmes \"--with-icu-dir=/usr/local\" --global"
+    echo ""
+
+  elif cat /etc/*release | grep ^NAME | grep FreeBSD; then
+    echo "==> Installing packages $FREE_BSD_PACKAGES on FreeBSD"
+    sudo pkg install $FREE_BSD_PACKAGES
+
+    echo "==> Installing the phantomjs & yarn NPM packages..."
+    sudo npm install -g phantomjs yarn
+
+    bundle config build.nokogiri "--use-system-libraries" --global
+
+    echo "/!\ Please install the go package manually: https://golang.org/doc/install"
+    echo ""
+
+    echo "/!\ If you're on leap 42.1, please also run the following:"
+    echo "sudo zypper install ld.charlock_holmes \"--with-icu-dir=/usr/local\" --globalnpm4"
+    echo "sudo ln -s /usr/sbin/redis-server /usr/bin/redis-server"
+    echo ""
+
+    echo "/!\ If you're on Tumbleweed, please also run the following:"
+    echo "bundle config build.charlock_holmes \"--with-icu-dir=/usr/local\" --global"
+    echo ""
+  fi
+
+elif [ "$OS" = "WindowsNT" ]; then
+  echo "==> Installing packages $WINDOWS_PACKAGES on Windows"
+  # Add apt-add-repository helper script
+  sudo apt-get install software-properties-common python-software-properties
+  # This PPA contains an up-to-date version of Go
+  sudo apt-add-repository -y ppa:ubuntu-lxc/lxd-stable
+  sudo apt-get update
+  sudo apt-get install $WINDOWS_PACKAGES
+  sudo npm install $PHANTOM_JS_2_1_12_PREBUILT -g
+
+  echo "==> Installing NodeJS & Yarn manually..."
+  install_nodejs_manually
+  install_yarn_manually
+
+else
+  echo "OS NOT DETECTED, couldn't install package $PACKAGE"
+  exit 1
 fi
 
+# Ruby bootstrapping
 if [ -f ".ruby-version" ]; then
+
   expected_ruby_version=$(cat .ruby-version)
-  echo "expected_ruby_version: ${expected_ruby_version}"
-  if test $(command -v rbenv >/dev/null 2>&1) && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
-    echo "==> Installing Ruby $expected_ruby_version with rbenv..."
-    rbenv install --skip-existing
-    which bundle >/dev/null 2>&1 || {
-      gem install bundler
-      rbenv rehash
-    }
-  else
-    current_ruby_version=$(ruby --version | cut -f2 -d' ' | sed 's/p[0-9]*//')
-    echo "current_ruby_version: $current_ruby_version"
-    if [ "$current_ruby_version" != "$expected_ruby_version" ]; then
 
-      # Initiate chruby
-      if [ -f /usr/local/share/chruby/chruby.sh ]; then
-        source /usr/local/share/chruby/chruby.sh
-      elif [ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]; then
-        source /usr/local/share/chruby/chruby.sh
-      fi
-
-      if [ test $(command -v chruby >/dev/null 2>&1) ]; then
-        echo "==> Switching to Ruby ${expected_ruby_version} using 'chruby'..."
-        if ! test $(chruby "$expected_ruby_version" 2>&1); then
-          if test $(command -v ruby-install >/dev/null 2>&1); then
-            echo "==> Installing Ruby $expected_ruby_version with 'ruby-install'..."
-            ruby-install ruby "$expected_ruby_version"
-          fi
-          echo $(which chruby)
-          chruby -h
-          chruby "$expected_ruby_version"
-        fi
-      fi
+  if rbenv_installed; then
+    echo "==> You're using rbenv!"
+    if [ -z "$(rbenv version-name 2>/dev/null)" ]; then
+      echo "==> Installing Ruby $expected_ruby_version..."
+      rbenv install --skip-existing
     fi
+  elif rvm_installed; then
+    echo "==> You're using rvm!"
+    echo "==> Installing Ruby $expected_ruby_version..."
+    rvm install $expected_ruby_version
+
+    echo "==> Switching to Ruby $expected_ruby_version..."
+    rvm use $expected_ruby_version
+  elif chruby_installed; then
+    echo "==> You're using chruby!"
+
+    # Initiate chruby
+    if [ -f /usr/local/share/chruby/chruby.sh ]; then
+      source /usr/local/share/chruby/chruby.sh
+    elif [ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]; then
+      source /usr/local/share/chruby/chruby.sh
+    fi
+
+    if ruby_install_installed; then
+      echo "==> Installing Ruby $expected_ruby_version..."
+      ruby-install --no-reinstall --cleanup ruby "$expected_ruby_version"
+    fi
+
+    echo "==> Switching to Ruby $expected_ruby_version..."
+    chruby $expected_ruby_version
+  else
+    echo "/!\ We couldn't detect any Ruby Version Manager!"
+    echo "/!\ We recommend using rbenv but we also support RVM and chruby."
+    exit 1
   fi
 
   which bundle >/dev/null 2>&1 || {
     gem install bundler
   }
 
-  if [ "$(command -v rbenv)" ]; then
+  if rbenv_installed; then
     rbenv rehash
   fi
 fi
 
 if [ -f "Gemfile" ]; then
-  echo "==> Installing gem dependencies..."
+  echo "==> Installing Gems..."
   bundle check >/dev/null 2>&1 || {
     bundle config build.eventmachine --with-cppflags=-I/usr/local/opt/openssl/include
     bundle install --jobs 4 --quiet --without production

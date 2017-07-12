@@ -33,17 +33,13 @@ if [ -n "$1" ]; then
     echo "Sorry, I don't know how to run the '$1' test file."
     echo "I'm running all JavaScript tests with 'bin/rake karma'..."
     bin/rake karma
+  elif [ "$1" = features/* ]; then
+    bin/spinach "$1"
+  elif [ "$1" = spec/* ]; then
+    bin/rspec "$1"
   else
-    if [ "$1" = features/* ]; then
-      bin/spinach "$1"
-    else
-      if [ "$1" = spec/* ]; then
-        bin/rspec "$1"
-      else
-        echo "Sorry, I don't know how to run the '$1' test file."
-        exit 1
-      fi
-    fi
+    echo "Sorry, I don't know how to run the '$1' test file."
+    exit 1
   fi
 else
   bin/rspec
