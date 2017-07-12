@@ -35,6 +35,10 @@ enable [Kubernetes service][kubernetes-service].
 1. Test your deployment configuration using a [Review App][review-app] that was
 created automatically for you.
 
+## Quick start
+
+We made a [simple guide](quick_start_guide.md) about how to use auto deploy feature with GitLab.com project.
+
 ## Using the Kubernetes deploy example project with Nginx
 
 The Autodeploy templates are based on the [kubernetes-deploy][kube-deploy]
