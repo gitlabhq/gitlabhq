@@ -241,7 +241,7 @@ EOT
   end
 
   describe '.filter_diff_options' do
-    let(:options) { { max_size: 100, invalid_opt: true } }
+    let(:options) { { max_files: 100, invalid_opt: true } }
 
     context "without default options" do
       let(:filtered_options) { described_class.filter_diff_options(options) }
@@ -253,7 +253,7 @@ EOT
 
     context "with default options" do
       let(:filtered_options) do
-        default_options = { max_size: 5, bad_opt: 1, ignore_whitespace: true }
+        default_options = { max_files: 5, bad_opt: 1, ignore_whitespace_change: true }
         described_class.filter_diff_options(options, default_options)
       end
 
@@ -263,12 +263,12 @@ EOT
       end
 
       it "should merge with default options" do
-        expect(filtered_options).to have_key(:ignore_whitespace)
+        expect(filtered_options).to have_key(:ignore_whitespace_change)
       end
 
       it "should override default options" do
-        expect(filtered_options).to have_key(:max_size)
-        expect(filtered_options[:max_size]).to eq(100)
+        expect(filtered_options).to have_key(:max_files)
+        expect(filtered_options[:max_files]).to eq(100)
       end
     end
   end
