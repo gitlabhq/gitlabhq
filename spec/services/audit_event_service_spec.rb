@@ -24,9 +24,15 @@ describe AuditEventService, services: true do
       expect(event[:details][:ip_address]).to eq(user.current_sign_in_ip)
     end
 
-    it 'has the entity full path' do
-      event = service.for_member(project_member).security_event
-      expect(event[:details][:entity_path]).to eq(project.full_path)
+    context 'admin audit log licensed' do
+      before do
+        stub_licensed_features(admin_audit_log: true)
+      end
+
+      it 'has the entity full path' do
+        event = service.for_member(project_member).security_event
+        expect(event[:details][:entity_path]).to eq(project.full_path)
+      end
     end
   end
 
@@ -55,19 +61,13 @@ describe AuditEventService, services: true do
       let(:service) { described_class.new(user, project, { action: :destroy }) }
 
       it 'returns false when project is unlicensed' do
-        stub_licensed_features(audit_events: false, admin_audit_log: false)
+        stub_licensed_features(audit_events: false)
 
         expect(service.audit_events_enabled?).to be_falsy
       end
 
       it 'returns true when project is licensed' do
-        stub_licensed_features(audit_events: true, admin_audit_log: false)
-
-        expect(service.audit_events_enabled?).to be_truthy
-      end
-
-      it 'returns true when admin audit log is licensed' do
-        stub_licensed_features(audit_events: false, admin_audit_log: true)
+        stub_licensed_features(audit_events: true)
 
         expect(service.audit_events_enabled?).to be_truthy
       end
@@ -78,19 +78,13 @@ describe AuditEventService, services: true do
       let(:service) { described_class.new(user, group, { action: :destroy }) }
 
       it 'returns false when group is unlicensed' do
-        stub_licensed_features(audit_events: false, admin_audit_log: false)
+        stub_licensed_features(audit_events: false)
 
         expect(service.audit_events_enabled?).to be_falsy
       end
 
       it 'returns true when group is licensed' do
-        stub_licensed_features(audit_events: true, admin_audit_log: false)
-
-        expect(service.audit_events_enabled?).to be_truthy
-      end
-
-      it 'returns true when admin audit log is licensed' do
-        stub_licensed_features(audit_events: false, admin_audit_log: true)
+        stub_licensed_features(audit_events: true)
 
         expect(service.audit_events_enabled?).to be_truthy
       end
@@ -99,14 +93,8 @@ describe AuditEventService, services: true do
     context 'entity is a user' do
       let(:service) { described_class.new(user, user, { action: :destroy }) }
 
-      it 'returns false when admin audit log is unlicensed' do
+      it 'returns true when unlicensed' do
         stub_licensed_features(audit_events: false, admin_audit_log: false)
-
-        expect(service.audit_events_enabled?).to be_falsy
-      end
-
-      it 'returns true when admin audit log is licensed' do
-        stub_licensed_features(audit_events: false, admin_audit_log: true)
 
         expect(service.audit_events_enabled?).to be_truthy
       end
