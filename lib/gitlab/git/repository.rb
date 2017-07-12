@@ -924,7 +924,7 @@ module Gitlab
 
         return unless commit_object && commit_object.type == :COMMIT
 
-        gitmodules = gitaly_commit_client.tree_entry(ref, '.gitmodules', Blob::MAX_DATA_DISPLAY_SIZE)
+        gitmodules = gitaly_commit_client.tree_entry(ref, '.gitmodules', Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
         found_module = GitmodulesParser.new(gitmodules.data).parse[path]
 
         found_module && found_module['url']
