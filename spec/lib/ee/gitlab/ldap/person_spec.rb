@@ -29,29 +29,53 @@ describe Gitlab::LDAP::Person do
     end
   end
 
+  describe '.find_by_kerberos_principal' do
+    let(:adapter) { ldap_adapter }
+    let(:username) { 'foo' }
+    let(:principal) { username + '@' + kerberos_realm }
+    let(:ldap_server) { 'ad.example.com' }
+
+    subject { described_class.find_by_kerberos_principal(principal, adapter) }
+
+    before do
+      stub_ldap_config(uid: 'sAMAccountName', base: 'ou=foo,dc=' + ldap_server.gsub('.', ',dc='))
+    end
+
+    context 'LDAP server is not for kerberos realm' do
+      let(:kerberos_realm) { 'kerberos.example.com' }
+
+      it 'returns nil without searching' do
+        expect(adapter).not_to receive(:user)
+
+        is_expected.to be_nil
+      end
+    end
+
+    context 'LDAP server is for kerberos realm' do
+      let(:kerberos_realm) { ldap_server }
+
+      it 'searches by configured uid attribute' do
+        expect(adapter).to receive(:user).with('sAMAccountName', username).and_return(:fake_user)
+
+        is_expected.to eq(:fake_user)
+      end
+    end
+  end
+
   describe '#kerberos_principal' do
     let(:entry) do
-      ldif = "dn: cn=foo, dc=bar, dc=com\n"
-      ldif += "sAMAccountName: #{sam_account_name}\n" if sam_account_name
+      ldif = "dn: cn=foo, dc=bar, dc=com\nsAMAccountName: myName\n"
       Net::LDAP::Entry.from_single_ldif_string(ldif)
     end
 
     subject { described_class.new(entry, 'ldapmain') }
 
-    context 'when sAMAccountName is not defined (non-AD LDAP server)' do
-      let(:sam_account_name) { nil }
-
-      it 'returns nil' do
-        expect(subject.kerberos_principal).to be_nil
-      end
+    before do
+      stub_ldap_config(uid: 'sAMAccountName')
     end
 
-    context 'when sAMAccountName is defined (AD server)' do
-      let(:sam_account_name) { 'mylogin' }
-
-      it 'returns the principal combining sAMAccountName and DC components of the distinguishedName' do
-        expect(subject.kerberos_principal).to eq('mylogin@BAR.COM')
-      end
+    it 'returns the principal combining the configured UID and DC components of the distinguishedName' do
+      expect(subject.kerberos_principal).to eq('myName@BAR.COM')
     end
   end
 
