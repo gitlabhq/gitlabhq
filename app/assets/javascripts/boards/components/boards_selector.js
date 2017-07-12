@@ -83,12 +83,15 @@ import './board_new_form';
         }
 
         if (this.open && !this.boards.length) {
-          gl.boardService.allBoards().then((resp) => {
-            this.loading = false;
-            this.boards = resp.json();
-          }).catch(() => {
-            this.loading = false;
-          });
+          gl.boardService.allBoards()
+            .then(res => res.json())
+            .then((json) => {
+              this.loading = false;
+              this.boards = json;
+            })
+            .catch(() => {
+              this.loading = false;
+            });
         }
       },
     },

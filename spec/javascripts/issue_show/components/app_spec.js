@@ -3,7 +3,6 @@ import '~/render_math';
 import '~/render_gfm';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
-import Poll from '~/lib/utils/poll';
 import issueShowData from '../mock_data';
 
 function formatText(text) {
@@ -11,15 +10,25 @@ function formatText(text) {
 }
 
 describe('Issuable output', () => {
+  let requestData = issueShowData.initialRequest;
+
   document.body.innerHTML = '<span id="task_status"></span>';
+
+  const interceptor = (request, next) => {
+    next(request.respondWith(JSON.stringify(requestData), {
+      status: 200,
+    }));
+  };
 
   let vm;
 
-  beforeEach(() => {
+  beforeEach((done) => {
     spyOn(eventHub, '$emit');
-    spyOn(Poll.prototype, 'makeRequest');
 
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
+
+    requestData = issueShowData.initialRequest;
+    Vue.http.interceptors.push(interceptor);
 
     vm = new IssuableDescriptionComponent({
       propsData: {
@@ -40,15 +49,17 @@ describe('Issuable output', () => {
         projectPath: '/',
       },
     }).$mount();
+
+    setTimeout(done);
+  });
+
+  afterEach(() => {
+    Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+
+    vm.poll.stop();
   });
 
   it('should render a title/description/edited and update title/description/edited on update', (done) => {
-    vm.poll.options.successCallback({
-      json() {
-        return issueShowData.initialRequest;
-      },
-    });
-
     let editedText;
     Vue.nextTick()
     .then(() => {
@@ -64,13 +75,10 @@ describe('Issuable output', () => {
       expect(editedText.querySelector('time')).toBeTruthy();
     })
     .then(() => {
-      vm.poll.options.successCallback({
-        json() {
-          return issueShowData.secondRequest;
-        },
-      });
+      requestData = issueShowData.secondRequest;
+      vm.poll.makeRequest();
     })
-    .then(Vue.nextTick)
+    .then(() => new Promise(resolve => setTimeout(resolve)))
     .then(() => {
       expect(document.querySelector('title').innerText).toContain('2 (#1)');
       expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
@@ -304,7 +312,7 @@ describe('Issuable output', () => {
 
     it('stops polling when deleting', (done) => {
       spyOn(gl.utils, 'visitUrl');
-      spyOn(vm.poll, 'stop');
+      spyOn(vm.poll, 'stop').and.callThrough();
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {
@@ -347,23 +355,14 @@ describe('Issuable output', () => {
 
   describe('open form', () => {
     it('shows locked warning if form is open & data is different', (done) => {
-      vm.poll.options.successCallback({
-        json() {
-          return issueShowData.initialRequest;
-        },
-      });
-
       Vue.nextTick()
         .then(() => {
           vm.openForm();
 
-          vm.poll.options.successCallback({
-            json() {
-              return issueShowData.secondRequest;
-            },
-          });
+          requestData = issueShowData.secondRequest;
+          vm.poll.makeRequest();
         })
-        .then(Vue.nextTick)
+        .then(() => new Promise(resolve => setTimeout(resolve)))
         .then(() => {
           expect(
             vm.formState.lockedWarningVisible,
