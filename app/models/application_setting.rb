@@ -197,6 +197,9 @@ class ApplicationSetting < ActiveRecord::Base
     Rails.cache.fetch(CACHE_KEY) do
       ApplicationSetting.last
     end
+  rescue
+    # Fall back to an uncached value if there are any problems (e.g. redis down)
+    ApplicationSetting.last
   end
 
   def self.expire

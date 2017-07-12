@@ -45,6 +45,9 @@ else # Assume it's mysql
     sed -i 's/# host:.*/host: mysql/g' config/database_geo.yml
 fi
 
+cp config/resque.yml.example config/resque.yml
+sed -i 's/localhost/redis/g' config/resque.yml
+
 cp config/redis.cache.yml.example config/redis.cache.yml
 sed -i 's/localhost/redis/g' config/redis.cache.yml
 

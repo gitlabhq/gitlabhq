@@ -420,6 +420,12 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 **Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
 
+**Note:** GitLab Shell application startup time can be greatly reduced by disabling RubyGems. This can be done in several manners:
+
+* Export `RUBYOPT=--disable-gems` environment variable for the processes
+* Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommened for system-wide Ruby.
+* Omnibus GitLab [replaces the *shebang* line of the `gitlab-shell/bin/*` scripts](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1707)
+
 ### Install gitlab-workhorse
 
 GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The

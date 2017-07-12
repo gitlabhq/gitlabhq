@@ -10,6 +10,8 @@ module API
     resource :projects, requirements: { id: %r{[^/]+} } do
       include TimeTrackingEndpoints
 
+      helpers ::Gitlab::IssuableMetadata
+
       helpers do
         def handle_merge_request_errors!(errors)
           if errors[:project_access].any?
@@ -48,10 +50,9 @@ module API
           args[:label_name] = args.delete(:labels)
 
           merge_requests = MergeRequestsFinder.new(current_user, args).execute
-                             .inc_notes_with_associations
-                             .preload(:target_project, :author, :assignee, :milestone, :merge_request_diff)
-
-          merge_requests.reorder(args[:order_by] => args[:sort])
+          merge_requests = merge_requests.reorder(args[:order_by] => args[:sort])
+          paginate(merge_requests)
+            .preload(:notes, :target_project, :author, :assignee, :milestone, :merge_request_diff, :labels)
         end
 
         params :optional_params_ce do
@@ -94,8 +95,9 @@ module API
         authorize! :read_merge_request, user_project
 
         merge_requests = find_merge_requests(project_id: user_project.id)
+        issuable_metadata = issuable_meta_data(merge_requests, 'MergeRequest')
 
-        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+        present merge_requests, with: Entities::MergeRequestBasic, current_user: current_user, project: user_project, issuable_metadata: issuable_metadata
       end
 
       desc 'Create a merge request' do

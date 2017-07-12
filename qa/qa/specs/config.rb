@@ -25,27 +25,15 @@ module QA
       def configure_rspec!
         RSpec.configure do |config|
           config.expect_with :rspec do |expectations|
-            # This option will default to `true` in RSpec 4. It makes the `description`
-            # and `failure_message` of custom matchers include text for helper methods
-            # defined using `chain`.
             expectations.include_chain_clauses_in_custom_matcher_descriptions = true
           end
 
           config.mock_with :rspec do |mocks|
-            # Prevents you from mocking or stubbing a method that does not exist on
-            # a real object. This is generally recommended, and will default to
-            # `true` in RSpec 4.
             mocks.verify_partial_doubles = true
           end
 
-          # Run specs in random order to surface order dependencies.
           config.order = :random
           Kernel.srand config.seed
-
-          # config.before(:all) do
-          #   page.current_window.resize_to(1200, 1800)
-          # end
-
           config.formatter = :documentation
           config.color = true
         end
@@ -56,12 +44,16 @@ module QA
           capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
             'chromeOptions' => {
               'binary' => '/usr/bin/google-chrome-stable',
-              'args' => %w[headless no-sandbox disable-gpu]
+              'args' => %w[headless no-sandbox disable-gpu window-size=1280,1024]
             }
           )
 
           Capybara::Selenium::Driver
             .new(app, browser: :chrome, desired_capabilities: capabilities)
+        end
+
+        Capybara::Screenshot.register_driver(:chrome) do |driver, path|
+          driver.browser.save_screenshot(path)
         end
 
         Capybara.configure do |config|
