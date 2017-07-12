@@ -25,6 +25,16 @@ class Profiles::GpgKeysController < Profiles::ApplicationController
     end
   end
 
+  def revoke
+    @gpp_key = current_user.gpg_keys.find(params[:id])
+    @gpp_key.revoke
+
+    respond_to do |format|
+      format.html { redirect_to profile_gpg_keys_url, status: 302 }
+      format.js { head :ok }
+    end
+  end
+
   private
 
   def gpg_key_params

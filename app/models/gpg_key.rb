@@ -58,6 +58,17 @@ class GpgKey < ActiveRecord::Base
     InvalidGpgSignatureUpdateWorker.perform_async(self.id)
   end
 
+  def revoke
+    GpgSignature.where(gpg_key: self, valid_signature: true).find_each do |gpg_signature|
+      gpg_signature.update_attributes!(
+        gpg_key: nil,
+        valid_signature: false
+      )
+    end
+
+    destroy
+  end
+
   private
 
   def extract_fingerprint

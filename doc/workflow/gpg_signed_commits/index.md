@@ -42,6 +42,33 @@ For a signature to be verified two prerequisites need to be met:
 Once you add a key, you cannot edit it, only remove it. In case the paste
 didn't work, you will have to remove the offending key and re-add it.
 
+## Remove a GPG key
+
+1. On the upper right corner, click on your avatar and go to your **Settings**.
+
+1. Navigate to the **GPG keys** tab.
+
+1. Click on the trash icon besides the GPG key you want to delete.
+
+>**Note:**
+Removing a key **does not unverify** already signed commits. Commits that were
+verified by using this key will stay verified. Only unpushed commits will stay
+unverified once you remove this key.
+
+## Revoke a GPG key
+
+1. On the upper right corner, click on your avatar and go to your **Settings**.
+
+1. Navigate to the **GPG keys** tab.
+
+1. Click on **Revoke** besides the GPG key you want to delete.
+
+>**Note:**
+Revoking a key **unverifies** already signed commits. Commits that were
+verified by using this key will change to an unverified state. Future commits
+will also stay unverified once you revoke this key. This action should be used
+in case your key has been compromised.
+
 ## Verifying commits
 
 1. Within a project navigate to the **Commits** tag. Signed commits will show a
