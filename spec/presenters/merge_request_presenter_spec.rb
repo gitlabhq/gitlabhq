@@ -332,7 +332,7 @@ describe MergeRequestPresenter do
       end
     end
 
-    context 'when target branch does not exists' do
+    context 'when target branch does not exist' do
       it 'returns nil' do
         allow(resource).to receive(:target_branch_exists?) { false }
 
@@ -356,7 +356,7 @@ describe MergeRequestPresenter do
       end
     end
 
-    context 'when target branch does not exists' do
+    context 'when target branch does not exist' do
       it 'returns nil' do
         allow(resource).to receive(:target_branch_exists?) { false }
 
@@ -379,7 +379,7 @@ describe MergeRequestPresenter do
       end
     end
 
-    context 'when source branch does not exists' do
+    context 'when source branch does not exist' do
       it 'returns nil' do
         allow(resource).to receive(:source_branch_exists?) { false }
 
