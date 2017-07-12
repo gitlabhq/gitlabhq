@@ -133,7 +133,7 @@ linters:
   # Reports when you use an unknown or disabled CSS property
   # (ignoring vendor-prefixed properties).
   PropertySpelling:
-    enabled: false
+    enabled: true
 
   # Configure which units are allowed for property values.
   PropertyUnits:
