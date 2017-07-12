@@ -202,10 +202,7 @@ export default {
     this.poll = new Poll({
       resource: this.service,
       method: 'getData',
-      successCallback: (res) => {
-        const data = res.json();
-        this.store.updateState(data);
-      },
+      successCallback: res => res.json().then(data => this.store.updateState(data)),
       errorCallback(err) {
         throw new Error(err);
       },
