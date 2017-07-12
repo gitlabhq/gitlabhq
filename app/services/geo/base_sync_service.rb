@@ -1,4 +1,8 @@
 module Geo
+  # The clone_url_prefix is used to build URLs for the Geo synchronization
+  # If this is missing from the primary node we raise this exception
+  EmptyCloneUrlPrefixError = Class.new(StandardError)
+
   class BaseSyncService
     class << self
       attr_accessor :type
@@ -71,7 +75,9 @@ module Geo
     end
 
     def primary_ssh_path_prefix
-      @primary_ssh_path_prefix ||= Gitlab::Geo.primary_node.clone_url_prefix
+      @primary_ssh_path_prefix ||= Gitlab::Geo.primary_node.clone_url_prefix.tap do |prefix|
+        raise EmptyCloneUrlPrefixError, 'Missing clone_url_prefix in the primary node' unless prefix.present?
+      end
     end
 
     def log(message)
