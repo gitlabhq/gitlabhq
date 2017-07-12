@@ -12,6 +12,28 @@ describe ObjectStoreUploader do
 
       uploader.object_store
     end
+
+    context 'when store is null' do
+      before do
+        expect(object).to receive(:artifacts_file_store).twice.and_return(nil)
+      end
+
+      it "returns LOCAL_STORE" do
+        expect(uploader.real_object_store).to be_nil
+        expect(uploader.object_store).to eq(described_class::LOCAL_STORE)
+      end
+    end
+
+    context 'when value is set' do
+      before do
+        expect(object).to receive(:artifacts_file_store).twice.and_return(described_class::REMOTE_STORE)
+      end
+
+      it "returns given value" do
+        expect(uploader.real_object_store).not_to be_nil
+        expect(uploader.object_store).to eq(described_class::REMOTE_STORE)
+      end
+    end
   end
 
   describe '#object_store=' do
@@ -69,6 +91,14 @@ describe ObjectStoreUploader do
 
       it "uploader is of a described_class" do
         expect(uploader).to be_a(described_class)
+      end
+    end
+
+    context 'when store is null' do
+      let(:store) { nil }
+
+      it "sets the store to LOCAL_STORE" do
+        expect(job.artifacts_file_store).to eq(described_class::LOCAL_STORE)
       end
     end
 
