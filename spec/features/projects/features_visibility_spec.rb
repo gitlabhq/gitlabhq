@@ -20,17 +20,23 @@ describe 'Edit Project Settings' do
           visit edit_project_path(project)
 
           select 'Disabled', from: "project_project_feature_attributes_#{tool_name}_access_level"
-          click_button 'Save changes'
+          page.within('.sharing-permissions') do
+            click_button 'Save changes'
+          end
           wait_for_requests
           expect(page).not_to have_selector(".shortcuts-#{shortcut_name}")
 
           select 'Everyone with access', from: "project_project_feature_attributes_#{tool_name}_access_level"
-          click_button 'Save changes'
+          page.within('.sharing-permissions') do
+            click_button 'Save changes'
+          end
           wait_for_requests
           expect(page).to have_selector(".shortcuts-#{shortcut_name}")
 
           select 'Only team members', from: "project_project_feature_attributes_#{tool_name}_access_level"
-          click_button 'Save changes'
+          page.within('.sharing-permissions') do
+            click_button 'Save changes'
+          end
           wait_for_requests
           expect(page).to have_selector(".shortcuts-#{shortcut_name}")
 
