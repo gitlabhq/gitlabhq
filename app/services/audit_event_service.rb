@@ -83,6 +83,8 @@ class AuditEventService
   end
 
   def security_event
+    return unless audit_events_enabled?
+
     SecurityEvent.create(
       author_id: @author.id,
       entity_id: @entity.id,
@@ -90,5 +92,10 @@ class AuditEventService
       details: @details.merge(ip_address: @author.current_sign_in_ip,
                               entity_path: @entity.full_path)
     )
+  end
+
+  def audit_events_enabled?
+    (@entity.respond_to?(:feature_available?) && @entity.feature_available?(:audit_events)) ||
+      License.feature_available?(:admin_audit_log)
   end
 end
