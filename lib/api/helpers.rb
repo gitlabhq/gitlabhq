@@ -25,6 +25,10 @@ module API
       initial_current_user != current_user
     end
 
+    def user_group
+      @group ||= find_group!(params[:id])
+    end
+
     def user_project
       @project ||= find_project!(params[:id])
     end

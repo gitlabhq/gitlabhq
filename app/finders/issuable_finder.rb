@@ -20,7 +20,7 @@
 #
 class IssuableFinder
   include CreatedAtFilter
-  
+
   NONE = '0'.freeze
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
 
