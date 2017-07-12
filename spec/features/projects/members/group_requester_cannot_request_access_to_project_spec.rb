@@ -8,7 +8,7 @@ feature 'Projects > Members > Group requester cannot request access to project',
 
   background do
     group.add_owner(owner)
-    gitlab_sign_in(user)
+    sign_in(user)
     visit group_path(group)
     perform_enqueued_jobs { click_link 'Request Access' }
     visit project_path(project)

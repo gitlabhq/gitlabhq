@@ -143,6 +143,7 @@ import '~/lib/utils/common_utils';
 
       it('should return valid parameter', () => {
         const value = gl.utils.getParameterByName('scope');
+        expect(gl.utils.getParameterByName('p')).toEqual('2');
         expect(value).toBe('all');
       });
 

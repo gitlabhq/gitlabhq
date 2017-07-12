@@ -74,11 +74,17 @@ $red-700: #a62d19;
 $red-800: #8b2615;
 $red-900: #711e11;
 
-$purple-600: #6e49cb;
-$purple-650: #5c35ae;
-$purple-700: #4a2192;
-$purple-800: #2c0a5c;
-$purple-900: #380d75;
+$indigo-50: #f7f7ff;
+$indigo-100: #ebebfa;
+$indigo-200: #d1d1f0;
+$indigo-300: #a6a6de;
+$indigo-400: #7c7ccc;
+$indigo-500: #6666c4;
+$indigo-600: #5b5bbd;
+$indigo-700: #4b4ba3;
+$indigo-800: #393982;
+$indigo-900: #292961;
+$indigo-950: #1a1a40;
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
@@ -170,6 +176,7 @@ $header-height: 50px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $limited-layout-width-sm: 790px;
+$container-text-max-width: 540px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: $red-500;
 $border-radius-default: 3px;
@@ -310,7 +317,7 @@ $badge-color: $gl-text-color-secondary;
 /*
  *  Award emoji
  */
-$award-emoji-menu-shadow: rgba(0,0,0,.175);
+$award-emoji-menu-shadow: rgba(0, 0, 0, .175);
 $award-emoji-positive-add-bg: #fed159;
 $award-emoji-positive-add-lines: #bb9c13;
 
@@ -561,7 +568,7 @@ $kdb-color: #555;
 $kdb-border: #ccc;
 $kdb-border-bottom: #bbb;
 $kdb-shadow: #bbb;
-$body-text-shadow: rgba(255,255,255,0.01);
+$body-text-shadow: rgba(255, 255, 255, 0.01);
 
 /*
 * UI Dev Kit

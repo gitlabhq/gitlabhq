@@ -1,5 +1,6 @@
 - @no_container = true
 - @breadcrumb_title = "Project"
+- @content_class = "limit-container-width" unless fluid_layout
 - flash_message_container = show_new_nav? ? :new_global_flash : :flash_message
 
 = content_for :meta_tags do

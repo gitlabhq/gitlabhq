@@ -6,7 +6,7 @@ feature 'Work In Progress help message', feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'with WIP commits' do
@@ -18,8 +18,7 @@ feature 'Work In Progress help message', feature: true do
           target_project_id: project.id,
           source_branch: 'wip',
           target_branch: 'master'
-        }
-      )
+        })
 
       within_wip_explanation do
         expect(page).to have_text(
@@ -38,8 +37,7 @@ feature 'Work In Progress help message', feature: true do
           target_project_id: project.id,
           source_branch: 'fix',
           target_branch: 'master'
-        }
-      )
+        })
 
       within_wip_explanation do
         expect(page).not_to have_text(

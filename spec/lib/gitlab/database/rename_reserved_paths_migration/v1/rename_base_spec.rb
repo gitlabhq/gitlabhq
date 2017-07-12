@@ -236,7 +236,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
       subject.track_rename('namespace', 'path/to/namespace', 'path/to/renamed')
 
       old_path, new_path = [nil, nil]
-      Gitlab::Redis.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         rename_info = redis.lpop(key)
         old_path, new_path = JSON.parse(rename_info)
       end
@@ -268,7 +268,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
       key = 'rename:FakeRenameReservedPathMigrationV1:project'
       stored_renames = nil
       rename_count = 0
-      Gitlab::Redis.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         stored_renames = redis.lrange(key, 0, 1)
         rename_count = redis.llen(key)
       end

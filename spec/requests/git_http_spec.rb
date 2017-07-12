@@ -406,7 +406,7 @@ describe 'Git HTTP requests', lib: true do
                   end
                 end
 
-                it 'updates the user last activity', :redis do
+                it 'updates the user last activity', :clean_gitlab_redis_shared_state do
                   expect(user_activity(user)).to be_nil
 
                   download(path, env) do |response|

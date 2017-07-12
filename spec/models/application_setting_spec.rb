@@ -155,6 +155,18 @@ describe ApplicationSetting, models: true do
     end
   end
 
+  describe '.current' do
+    context 'redis unavailable' do
+      it 'returns an ApplicationSetting' do
+        allow(Rails.cache).to receive(:fetch).and_call_original
+        allow(ApplicationSetting).to receive(:last).and_return(:last)
+        expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(ArgumentError)
+
+        expect(ApplicationSetting.current).to eq(:last)
+      end
+    end
+  end
+
   context 'restricted signup domains' do
     it 'sets single domain' do
       setting.domain_whitelist_raw = 'example.com'

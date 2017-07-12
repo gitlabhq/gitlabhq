@@ -16,7 +16,7 @@ feature 'Import/Export - Namespace export file cleanup', feature: true, js: true
 
   context 'admin user' do
     before do
-      gitlab_sign_in(:admin)
+      sign_in(create(:admin))
     end
 
     context 'moving the namespace' do

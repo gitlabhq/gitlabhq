@@ -9,7 +9,7 @@ RSpec.describe 'Dashboard Archived Project', feature: true do
     project.team << [user, :master]
     archived_project.team << [user, :master]
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit dashboard_projects_path
   end

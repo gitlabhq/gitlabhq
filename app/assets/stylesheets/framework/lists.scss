@@ -343,6 +343,12 @@ ul.indent-list {
   .group-row {
     padding: 0;
     border: none;
+
+    &:last-of-type {
+      .group-row-contents:not(:hover) {
+        border-bottom: 1px solid transparent;
+      }
+    }
   }
 
   .group-row-contents {

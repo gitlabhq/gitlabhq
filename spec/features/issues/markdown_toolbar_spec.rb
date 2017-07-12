@@ -6,7 +6,7 @@ feature 'Issue markdown toolbar', feature: true, js: true do
   let(:user)   { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit project_issue_path(project, issue)
   end

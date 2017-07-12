@@ -10,7 +10,7 @@ feature 'Labels subscription', feature: true do
   context 'when signed in' do
     before do
       project.team << [user, :developer]
-      gitlab_sign_in user
+      sign_in user
     end
 
     scenario 'users can subscribe/unsubscribe to labels', js: true do

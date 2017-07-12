@@ -7,7 +7,7 @@
 - @no_container = true
 - page_title _("Pipeline Schedules")
 
-- if show_new_nav?
+- if show_new_nav? && can?(current_user, :create_pipeline_schedule, @project)
   - content_for :breadcrumbs_extra do
     = link_to _('New schedule'), new_namespace_project_pipeline_schedule_path(@project.namespace, @project), class: 'btn btn-create'
 
@@ -21,9 +21,10 @@
     - schedule_path_proc = ->(scope) { pipeline_schedules_path(@project, scope: scope) }
     = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope
 
-    .nav-controls{ class: ("visible-xs" if show_new_nav?) }
-      = link_to new_project_pipeline_schedule_path(@project), class: 'btn btn-create' do
-        %span= _('New schedule')
+    - if can?(current_user, :create_pipeline_schedule, @project)
+      .nav-controls{ class: ("visible-xs" if show_new_nav?) }
+        = link_to new_project_pipeline_schedule_path(@project), class: 'btn btn-create' do
+          %span= _('New schedule')
 
   - if @schedules.present?
     %ul.content-list

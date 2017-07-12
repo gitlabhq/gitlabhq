@@ -4,11 +4,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-19 15:50-0500\n"
+"POT-Creation-Date: 2017-06-28 13:32+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-23 04:07-0400\n"
+"PO-Revision-Date: 2017-07-05 08:18-0400\n"
 "Last-Translator: Lyubomir Vasilev <lyubomirv@abv.bg>\n"
 "Language-Team: Bulgarian (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: bg\n"
@@ -28,6 +28,14 @@ msgstr[1] "%d подавания"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} подаде %{commit_timeago}"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 схема"
+msgstr[1] "%d схеми"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "Набор от графики относно непрекъснатата интеграция"
 
 msgid "About auto deploy"
 msgstr "Относно автоматичното внедряване"
@@ -191,6 +199,9 @@ msgid_plural "Commits"
 msgstr[0] "Подаване"
 msgstr[1] "Подавания"
 
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "Времетраене на подаванията в минути за последните 30 подавания"
+
 msgid "Commit message"
 msgstr "Съобщение за подаването"
 
@@ -230,6 +241,13 @@ msgstr "Копиране на идентификатора на подаване
 msgid "Create New Directory"
 msgstr "Създаване на нова папка"
 
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr ""
+"Създайте си личен жетон за достъп в профила си, за да можете да изтегляте и "
+"изпращате промени чрез %{protocol}."
+
 msgid "Create directory"
 msgstr "Създаване на папка"
 
@@ -247,6 +265,9 @@ msgstr "Разклоняване"
 
 msgid "CreateTag|Tag"
 msgstr "Етикет"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "си създадете личен жетон за достъп"
 
 msgid "Cron Timezone"
 msgstr "Часова зона за „Cron“"
@@ -419,6 +440,15 @@ msgstr "Шаблон за интервала"
 msgid "Introducing Cycle Analytics"
 msgstr "Представяме Ви анализа на циклите"
 
+msgid "Jobs for last month"
+msgstr "Задачи за последния месец"
+
+msgid "Jobs for last week"
+msgstr "Задачи за последната седмица"
+
+msgid "Jobs for last year"
+msgstr "Задачи за последната година"
+
 msgid "LFSStatus|Disabled"
 msgstr "Изключено"
 
@@ -584,6 +614,21 @@ msgstr "План за схема"
 msgid "Pipeline Schedules"
 msgstr "Планове за схема"
 
+msgid "PipelineCharts|Failed:"
+msgstr "Неуспешни:"
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "Обща статистика"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "Коефициент на успех:"
+
+msgid "PipelineCharts|Successful:"
+msgstr "Успешни:"
+
+msgid "PipelineCharts|Total:"
+msgstr "Общо:"
+
 msgid "PipelineSchedules|Activated"
 msgstr "Включено"
 
@@ -613,6 +658,18 @@ msgstr "Цел"
 
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "собствен"
+
+msgid "Pipelines"
+msgstr "Схеми"
+
+msgid "Pipelines charts"
+msgstr "Графики за схемите"
+
+msgid "Pipeline|all"
+msgstr "всички"
+
+msgid "Pipeline|success"
+msgstr "успешни"
 
 msgid "Pipeline|with stage"
 msgstr "с етап"

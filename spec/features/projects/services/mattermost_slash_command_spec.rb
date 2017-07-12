@@ -9,7 +9,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
   before do
     stub_mattermost_setting(enabled: mattermost_enabled)
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
     visit edit_project_service_path(project, service)
   end
 

@@ -1,4 +1,4 @@
-Rails.application.config.peek.adapter = :redis, { client: ::Redis.new(Gitlab::Redis.params) }
+Rails.application.config.peek.adapter = :redis, { client: ::Redis.new(Gitlab::Redis::Cache.params) }
 
 Peek.into Peek::Views::Host
 Peek.into Peek::Views::PerformanceBar

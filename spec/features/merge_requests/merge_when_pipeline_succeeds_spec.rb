@@ -28,7 +28,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
     end
 
     before do
-      gitlab_sign_in user
+      sign_in user
       visit_merge_request(merge_request)
     end
 
@@ -121,7 +121,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
     end
 
     before do
-      gitlab_sign_in user
+      sign_in user
       visit_merge_request(merge_request)
     end
 

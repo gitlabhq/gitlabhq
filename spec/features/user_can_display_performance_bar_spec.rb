@@ -61,7 +61,7 @@ describe 'User can display performance bar', :js do
     before do
       user = create(:user)
 
-      gitlab_sign_in(user)
+      sign_in(user)
       group.add_guest(user)
 
       visit root_path

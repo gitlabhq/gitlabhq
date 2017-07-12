@@ -6,7 +6,7 @@ feature 'Projects > Members > Member leaves project', feature: true do
 
   background do
     project.team << [user, :developer]
-    gitlab_sign_in(user)
+    sign_in(user)
     visit project_path(project)
   end
 

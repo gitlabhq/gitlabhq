@@ -6,7 +6,7 @@ feature "Pipelines settings", feature: true do
   let(:role) { :developer }
 
   background do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, role]
     visit project_pipelines_settings_path(project)
   end

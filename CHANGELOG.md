@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.6 (2017-07-12)
+
+- Fix API Scoping. !12300
+- Username and password are no longer stripped from import url on mirror update. !12725
+- Fix issues with non-UTF8 filenames by always fixing the encoding of tree and blob paths.
+- Fixed GFM references not being included when updating issues inline.
+
 ## 9.3.5 (2017-07-05)
 
 - Remove "Remove from board" button from backlog and closed list. !12430

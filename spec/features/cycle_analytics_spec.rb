@@ -14,7 +14,7 @@ feature 'Cycle Analytics', feature: true, js: true do
       before  do
         project.add_master(user)
 
-        gitlab_sign_in(user)
+        sign_in(user)
 
         visit project_cycle_analytics_path(project)
         wait_for_requests
@@ -38,7 +38,7 @@ feature 'Cycle Analytics', feature: true, js: true do
         create_cycle
         deploy_master
 
-        gitlab_sign_in(user)
+        sign_in(user)
         visit project_cycle_analytics_path(project)
       end
 
@@ -70,7 +70,7 @@ feature 'Cycle Analytics', feature: true, js: true do
         user.update_attribute(:preferred_language, 'es')
 
         project.team << [user, :master]
-        gitlab_sign_in(user)
+        sign_in(user)
         visit project_cycle_analytics_path(project)
         wait_for_requests
       end
@@ -93,7 +93,7 @@ feature 'Cycle Analytics', feature: true, js: true do
       create_cycle
       deploy_master
 
-      gitlab_sign_in(guest)
+      sign_in(guest)
       visit project_cycle_analytics_path(project)
       wait_for_requests
     end

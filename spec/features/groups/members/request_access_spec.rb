@@ -8,7 +8,7 @@ feature 'Groups > Members > Request access', feature: true do
 
   background do
     group.add_owner(owner)
-    gitlab_sign_in(user)
+    sign_in(user)
     visit group_path(group)
   end
 

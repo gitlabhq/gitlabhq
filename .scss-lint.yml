@@ -93,7 +93,7 @@ linters:
   # The basenames of @imported SCSS partials should not begin with an
   # underscore and should not include the filename extension.
   ImportPath:
-    enabled: false
+    enabled: true
 
   # Avoid using !important in properties. It is usually indicative of a
   # misunderstanding of CSS specificity and can lead to brittle code.
@@ -133,7 +133,7 @@ linters:
   # Reports when you use an unknown or disabled CSS property
   # (ignoring vendor-prefixed properties).
   PropertySpelling:
-    enabled: false
+    enabled: true
 
   # Configure which units are allowed for property values.
   PropertyUnits:
@@ -176,7 +176,7 @@ linters:
 
   # Commas in lists should be followed by a space.
   SpaceAfterComma:
-    enabled: false
+    enabled: true
 
   # Properties should be formatted with a single space separating the colon
   # from the property's value.

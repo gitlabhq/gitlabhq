@@ -536,6 +536,11 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
+    remove_import_data
+  end
+
+  # This method is overriden in EE::Project model
+  def remove_import_data
     import_data&.destroy
   end
 
@@ -796,10 +801,12 @@ class Project < ActiveRecord::Base
     update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
-  def find_or_initialize_services
+  def find_or_initialize_services(exceptions: [])
     services_templates = Service.where(template: true)
 
-    Service.available_services_names.map do |service_name|
+    available_services_names = Service.available_services_names - exceptions
+
+    available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
       if service
@@ -1379,15 +1386,15 @@ class Project < ActiveRecord::Base
   end
 
   def pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.get(pushes_since_gc_redis_key).to_i }
+    Gitlab::Redis::SharedState.with { |redis| redis.get(pushes_since_gc_redis_shared_state_key).to_i }
   end
 
   def increment_pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.incr(pushes_since_gc_redis_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.incr(pushes_since_gc_redis_shared_state_key) }
   end
 
   def reset_pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.del(pushes_since_gc_redis_shared_state_key) }
   end
 
   def route_map_for(commit_sha)
@@ -1450,7 +1457,7 @@ class Project < ActiveRecord::Base
     from && self != from
   end
 
-  def pushes_since_gc_redis_key
+  def pushes_since_gc_redis_shared_state_key
     "projects/#{id}/pushes_since_gc"
   end
 

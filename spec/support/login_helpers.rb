@@ -15,14 +15,16 @@ module LoginHelpers
   #   user = create(:user)
   #   gitlab_sign_in(user)
   def gitlab_sign_in(user_or_role, **kwargs)
-    @user =
+    user =
       if user_or_role.is_a?(User)
         user_or_role
       else
         create(user_or_role)
       end
 
-    gitlab_sign_in_with(@user, **kwargs)
+    gitlab_sign_in_with(user, **kwargs)
+
+    user
   end
 
   def gitlab_sign_in_via(provider, user, uid)
@@ -35,13 +37,8 @@ module LoginHelpers
   def gitlab_sign_out
     find(".header-user-dropdown-toggle").click
     click_link "Sign out"
-    # check the sign_in button
-    expect(page).to have_button('Sign in')
-  end
 
-  # Logout without JavaScript driver
-  def gitlab_sign_out_direct
-    page.driver.submit :delete, '/users/sign_out', {}
+    expect(page).to have_button('Sign in')
   end
 
   private
@@ -58,8 +55,6 @@ module LoginHelpers
     check 'user_remember_me' if remember
 
     click_button "Sign in"
-
-    Thread.current[:current_user] = user
   end
 
   def login_via(provider, user, uid, remember_me: false)
