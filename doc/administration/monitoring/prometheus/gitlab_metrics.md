@@ -40,7 +40,7 @@ In this experimental phase, only a few metrics are available:
 | redis_ping_timeout                | Gauge     | Whether or not the last redis ping timed out |
 | redis_ping_success                | Gauge     | Whether or not the last redis ping succeeded |
 | redis_ping_latency_seconds        | Gauge     | Round trip time of the redis ping |
-| user_sessions_logins              | Counter   | Counter of how many users have logged in |
+| user_session_logins_total         | Counter   | Counter of how many users have logged in |
 
 [← Back to the main Prometheus page](index.md)
 
