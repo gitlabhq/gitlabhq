@@ -35,8 +35,8 @@
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
-    display: block;
     @include set-visible;
+    display: block;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
@@ -184,6 +184,7 @@
 
 .dropdown-menu,
 .dropdown-menu-nav {
+  @include set-invisible;
   display: block;
   position: absolute;
   width: 100%;
@@ -200,7 +201,6 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
-  @include set-invisible;
 
   @media (max-width: $screen-sm-min) {
     width: 100%;
