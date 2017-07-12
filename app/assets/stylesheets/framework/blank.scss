@@ -1,9 +1,5 @@
 .blank-state-parent-container {
-  display: flex;
-
   .section-container {
-    display: flex;
-    flex: 1;
     padding: 10px;
   }
 
@@ -13,91 +9,62 @@
     padding-bottom: 25px;
     border: 1px solid $border-color;
     border-radius: $border-radius-default;
-
-    &.section-ee-trial {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-}
-
-.blank-state-welcome {
-  text-align: center;
-
-  .blank-state-text {
-    margin-bottom: 0;
   }
 }
 
 .blank-state {
   padding-top: 20px;
   padding-bottom: 20px;
-}
-
-.blank-state.ee-trial {
-  padding: 20px;
   text-align: center;
-}
 
-.blank-state-no-icon {
-  padding-top: 40px;
-  padding-bottom: 40px;
-}
+  &.blank-state-welcome {
+    .blank-state-welcome-title {
+      font-size: 24px;
+    }
 
-.blank-state-icon {
-  padding-bottom: 20px;
-  font-size: 56px;
-
-  svg {
-    display: block;
-    margin: auto;
-  }
-}
-
-@media (min-width: $screen-sm-max) {
-  .section-welcome .blank-state-icon svg {
-    width: 130%;
-  }
-}
-
-.blank-state-title {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-
-.blank-state-text {
-  margin-top: 0;
-  margin-bottom: $gl-padding;
-  font-size: 14px;
-
-  > strong {
-    font-weight: 600;
-  }
-}
-
-.blank-state-welcome-title {
-  font-size: 24px;
-}
-
-@media (max-width: $screen-md-min) {
-  .blank-state-parent-container {
-    &,
-    .section-container {
-      display: block;
+    .blank-state-text {
+      margin-bottom: 0;
     }
   }
 
-  .blank-state {
-    text-align: center;
-  }
-
   .blank-state-icon {
-    padding-bottom: 0;
+    padding-bottom: 20px;
+
+    svg {
+      display: block;
+      margin: auto;
+    }
   }
 
-  .blank-state-body {
-    margin-top: 15px;
+  .blank-state-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .blank-state-text {
+    max-width: $container-text-max-width;
+    margin: 0 auto $gl-padding;
+    font-size: 14px;
+  }
+}
+
+/* EE-specific Styles */
+@media (min-width: $screen-md-min) {
+  .blank-state-parent-container.has-start-trial-container {
+    display: flex;
+  }
+}
+
+.section-ee-trial {
+  .section-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .blank-state {
+      padding: 20px;
+      text-align: center;
+    }
   }
 }
