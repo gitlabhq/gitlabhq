@@ -174,7 +174,8 @@ module API
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
 
-      at_least_one_of(*at_least_one_of_ce)
+      optional(*::ApplicationSettingsHelper.visible_attributes)
+      at_least_one_of(*::ApplicationSettingsHelper.visible_attributes)
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)
