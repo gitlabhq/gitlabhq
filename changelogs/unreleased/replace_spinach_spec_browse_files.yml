@@ -1,0 +1,4 @@
+---
+title: Replace 'browse_files.feature' spinach test with an rspec analog
+merge_request: 12251
+author: @blackst0ne

@@ -353,6 +353,13 @@ module API
       expose :id
     end
 
+    class MergeRequestSimple < ProjectEntity
+      expose :title
+      expose :web_url do |merge_request, options|
+        Gitlab::UrlBuilder.build(merge_request)
+      end
+    end
+
     class MergeRequestBasic < ProjectEntity
       expose :target_branch, :source_branch
       expose :upvotes do |merge_request, options|

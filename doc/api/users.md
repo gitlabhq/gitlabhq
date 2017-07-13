@@ -369,7 +369,7 @@ GET /user
 
 Parameters:
 
-- `sudo` (required) - the ID of a user
+- `sudo` (optional) - the ID of a user to make the call in their place
 
 ```
 GET /user

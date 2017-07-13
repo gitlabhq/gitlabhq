@@ -121,10 +121,11 @@ ul.notes {
       overflow-y: hidden;
 
       .note-text {
-        word-wrap: break-word;
         @include md-typography;
         // Reset ul style types since we're nested inside a ul already
         @include bulleted-list;
+        word-wrap: break-word;
+
         ul.task-list {
           ul:not(.task-list) {
             padding-left: 1.3em;
@@ -250,7 +251,7 @@ ul.notes {
       }
 
       .note-text {
-        & p:first-child {
+        p:first-child {
           display: none;
         }
 
