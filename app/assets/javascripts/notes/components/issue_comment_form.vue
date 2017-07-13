@@ -195,7 +195,7 @@ export default {
               :imgAlt="author.name"
               :imgSize="40" />
           </div>
-          <div class="timeline-content timeline-content-form common-note-form">
+          <div class="js-main-target-form timeline-content timeline-content-form common-note-form">
             <markdown-field
               :markdown-preview-url="markdownPreviewUrl"
               :markdown-docs="markdownDocsUrl"
