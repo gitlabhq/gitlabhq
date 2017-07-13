@@ -7,6 +7,8 @@ describe GeoFileDownloadDispatchWorker do
     allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
     allow_any_instance_of(Gitlab::ExclusiveLease)
       .to receive(:try_obtain).and_return(true)
+    allow_any_instance_of(Gitlab::ExclusiveLease)
+      .to receive(:renew).and_return(true)
     WebMock.stub_request(:get, /primary-geo-node/).to_return(status: 200, body: "", headers: {})
   end
 
@@ -48,8 +50,8 @@ describe GeoFileDownloadDispatchWorker do
     # 1. A total of 8 files in the queue, and we can load a maximimum of 5 and send 2 at a time.
     # 2. We send 2, wait for 1 to finish, and then send again.
     it 'attempts to load a new batch without pending downloads' do
-      stub_const('GeoFileDownloadDispatchWorker::DB_RETRIEVE_BATCH', 5)
-      stub_const('GeoFileDownloadDispatchWorker::MAX_CONCURRENT_DOWNLOADS', 2)
+      stub_const('GeoFileDownloadDispatchWorker::DB_RETRIEVE_BATCH_SIZE', 5)
+      stub_const('GeoFileDownloadDispatchWorker::MAX_CAPACITY', 2)
 
       avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
       create_list(:lfs_object, 2, :with_file)
@@ -65,7 +67,7 @@ describe GeoFileDownloadDispatchWorker do
       # 2. 4 get sent out, 1 remains. This triggers another reload, which loads in the remaining 4.
       # 3. Since the second reload filled the pipe with 4, we need to do a final reload to ensure
       #    zero are left.
-      expect(subject).to receive(:load_pending_downloads).exactly(3).times.and_call_original
+      expect(subject).to receive(:load_pending_resources).exactly(3).times.and_call_original
 
       Sidekiq::Testing.inline! do
         subject.perform
