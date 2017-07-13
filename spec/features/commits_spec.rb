@@ -285,8 +285,8 @@ describe 'Commits' do
       click_on 'Verified'
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature.'
-        expect(page).to have_content 'nannie.bernhard'
         expect(page).to have_content 'Nannie Bernhard'
+        expect(page).to have_content '@nannie.bernhard'
         expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
       end
 
