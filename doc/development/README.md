@@ -56,6 +56,7 @@
 - [Single Table Inheritance](single_table_inheritance.md)
 - [Background Migrations](background_migrations.md)
 - [Storing SHA1 Hashes As Binary](sha1_as_binary.md)
+- [Iterating Tables In Batches](iterating_tables_in_batches.md)
 
 ## i18n
 

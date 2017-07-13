@@ -119,3 +119,35 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet
+
+## Get user agent details
+
+> **Notes:**
+> [Introduced][ce-29508] in GitLab 9.4.
+
+
+Available only for admins.
+
+```
+GET /projects/:id/snippets/:snippet_id/user_agent_detail
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | Integer | yes      | The ID of a snippet                  |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/snippets/1/user_agent_detail
+```
+
+Example response:
+
+```json
+{
+  "user_agent": "AppleWebKit/537.36",
+  "ip_address": "127.0.0.1",
+  "akismet_submitted": false
+}
+```
+
+[ce-[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508

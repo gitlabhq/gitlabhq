@@ -93,7 +93,7 @@ For example, suppose we have a UX team with an Issue Board that contains:
 - **Doing**
 - **Frontend**
 
-When done with something, they move the card to **Frontend**. The Frontend team's board looks like: 
+When done with something, they move the card to **Frontend**. The Frontend team's board looks like:
 
 - **Frontend**
 - **Doing**
@@ -108,8 +108,7 @@ Cards finished by the UX team will automatically appear in the **Frontend** colu
 >
 >- For a real use case, please check why
 [Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
-to improve their workflow with
-multiple boards.
+to improve their workflow with multiple boards.
 
 ## Issue Board terminology
 

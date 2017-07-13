@@ -6,7 +6,7 @@ describe 'Admin::AuditLogs', feature: true, js: true do
   let(:user) { create(:user) }
 
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe 'user events' do

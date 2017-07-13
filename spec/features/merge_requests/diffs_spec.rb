@@ -74,7 +74,7 @@ feature 'Diffs URL', js: true, feature: true do
 
     context 'as author' do
       it 'shows direct edit link' do
-        gitlab_sign_in(author_user)
+        sign_in(author_user)
         visit diffs_project_merge_request_path(project, merge_request)
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
@@ -84,7 +84,7 @@ feature 'Diffs URL', js: true, feature: true do
 
     context 'as user who needs to fork' do
       it 'shows fork/cancel confirmation' do
-        gitlab_sign_in(user)
+        sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax

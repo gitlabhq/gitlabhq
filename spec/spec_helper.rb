@@ -57,7 +57,7 @@ RSpec.configure do |config|
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include ApiHelpers, :api
-  config.include Gitlab::Routing.url_helpers, type: :routing
+  config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
   config.include EE::LicenseHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
@@ -98,20 +98,30 @@ RSpec.configure do |config|
     end
   end
 
-  config.around(:each, :caching) do |example|
+  config.around(:each, :use_clean_rails_memory_store_caching) do |example|
     caching_store = Rails.cache
-    Rails.cache = ActiveSupport::Cache::MemoryStore.new if example.metadata[:caching]
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
     example.run
+
     Rails.cache = caching_store
   end
 
-  config.around(:each, :redis) do |example|
-    Gitlab::Redis.with(&:flushall)
+  config.around(:each, :clean_gitlab_redis_cache) do |example|
+    Gitlab::Redis::Cache.with(&:flushall)
+
+    example.run
+
+    Gitlab::Redis::Cache.with(&:flushall)
+  end
+
+  config.around(:each, :clean_gitlab_redis_shared_state) do |example|
+    Gitlab::Redis::SharedState.with(&:flushall)
     Sidekiq.redis(&:flushall)
 
     example.run
 
-    Gitlab::Redis.with(&:flushall)
+    Gitlab::Redis::SharedState.with(&:flushall)
     Sidekiq.redis(&:flushall)
   end
 

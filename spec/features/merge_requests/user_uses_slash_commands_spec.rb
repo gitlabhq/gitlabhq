@@ -16,7 +16,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
   describe 'merge-request-only commands' do
     before do
       project.team << [user, :master]
-      gitlab_sign_in(user)
+      sign_in(user)
       visit project_merge_request_path(project, merge_request)
     end
 
@@ -51,8 +51,8 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          gitlab_sign_out
-          gitlab_sign_in(guest)
+          sign_out(:user)
+          sign_in(guest)
           visit project_merge_request_path(project, merge_request)
         end
 
@@ -97,8 +97,8 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          gitlab_sign_out
-          gitlab_sign_in(guest)
+          sign_out(:user)
+          sign_in(guest)
           visit project_merge_request_path(project, merge_request)
         end
 
@@ -125,9 +125,9 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
       let(:new_url_opts) { { merge_request: { source_branch: 'feature' } } }
 
       before do
-        gitlab_sign_out
+        sign_out(:user)
         another_project.team << [user, :master]
-        gitlab_sign_in(user)
+        sign_in(user)
       end
 
       it 'changes target_branch in new merge_request' do
@@ -181,8 +181,8 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          gitlab_sign_out
-          gitlab_sign_in(guest)
+          sign_out(:user)
+          sign_in(guest)
           visit project_merge_request_path(project, merge_request)
         end
 

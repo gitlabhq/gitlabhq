@@ -112,7 +112,50 @@ Vue Resource should only be imported in the service file.
   Vue.use(VueResource);
   ```
 
-### CSRF token
+#### Vue-resource gotchas
+#### Headers
+Headers are being parsed into a plain object in an interceptor.
+In Vue-resource 1.x `headers` object was changed into an `Headers` object. In order to not change all old code, an interceptor was added.
+
+If you need to write a unit test that takes the headers in consideration, you need to include an interceptor to parse the headers after your test interceptor.
+You can see an example in `spec/javascripts/environments/environment_spec.js`:
+  ```javascript
+  import { headersInterceptor } from './helpers/vue_resource_helper';
+
+  beforeEach(() => {
+    Vue.http.interceptors.push(myInterceptor);
+    Vue.http.interceptors.push(headersInterceptor);
+  });
+
+  afterEach(() => {
+    Vue.http.interceptors = _.without(Vue.http.interceptors, myInterceptor);
+    Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
+  });
+  ```
+
+#### `.json()`
+When making a request to the server, you will most likely need to access the body of the response.
+Use `.json()` to convert. Because `.json()` returns a Promise the follwoing structure should be used:
+
+  ```javascript
+  service.get('url')
+    .then(resp => resp.json())
+    .then((data) => {
+      this.store.storeData(data);
+    })
+    .catch(() => new Flash('Something went wrong'));
+  ```
+
+When using `Poll` (`app/assets/javascripts/lib/utils/poll.js`), the `successCallback` needs to handle `.json()` as a Promise:
+  ```javascript
+  successCallback: (response) => {
+    return response.json().then((data) => {
+      // handle the response
+    });
+  }
+  ```
+
+#### CSRF token
 We use a Vue Resource interceptor to manage the CSRF token.
 `app/assets/javascripts/vue_shared/vue_resource_interceptor.js` holds all our common interceptors.
 Note: You don't need to load `app/assets/javascripts/vue_shared/vue_resource_interceptor.js`
@@ -126,13 +169,13 @@ The following example shows an  application:
 // store.js
 export default class Store {
 
-  /**  
+  /**
    * This is where we will iniatialize the state of our data.
    * Usually in a small SPA you don't need any options when starting the store. In the case you do
    * need guarantee it's an Object and it's documented.
-   *    
-   * @param  {Object} options   
-   */   
+   *
+   * @param  {Object} options
+   */
   constructor(options) {
     this.options = options;
 
@@ -205,14 +248,14 @@ import Store from 'store';
 import Service from 'service';
 import TodoComponent from 'todoComponent';
 export default {
-  /**  
+  /**
    * Although most data belongs in the store, each component it's own state.
    * We want to show a loading spinner while we are fetching the todos, this state belong
    * in the component.
    *
    * We need to access the store methods through all methods of our component.
    * We need to access the state of our store.
-   */   
+   */
   data() {
     const store = new Store();
 
@@ -396,43 +439,46 @@ need to test the rendered output. [Vue][vue-test] guide's to unit test show us e
 [Vue Resource Interceptors][vue-resource-interceptor] allow us to add a interceptor with
 the response we need:
 
-```javascript
-  // Mock the service to return data
-  const interceptor = (request, next) => {
-    next(request.respondWith(JSON.stringify([{
-      title: 'This is a todo',
-      body: 'This is the text'
-    }]), {
-      status: 200,
-    }));
-  };
+  ```javascript
+    // Mock the service to return data
+    const interceptor = (request, next) => {
+      next(request.respondWith(JSON.stringify([{
+        title: 'This is a todo',
+        body: 'This is the text'
+      }]), {
+        status: 200,
+      }));
+    };
 
-  beforeEach(() => {
-    Vue.http.interceptors.push(interceptor);
-  });
+    beforeEach(() => {
+      Vue.http.interceptors.push(interceptor);
+    });
 
-  afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-  });
+    afterEach(() => {
+      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+    });
 
-  it('should do something', (done) => {
-    setTimeout(() => {
-      // Test received data
-      done();
-    }, 0);
-  });
-```
+    it('should do something', (done) => {
+      setTimeout(() => {
+        // Test received data
+        done();
+      }, 0);
+    });
+  ```
+
+1. Headers interceptor
+Refer to [this section](vue.md#headers)
 
 1. Use `$.mount()` to mount the component
 
 ```javascript
-  // bad
-  new Component({
-    el: document.createElement('div')
-  });
+// bad
+new Component({
+  el: document.createElement('div')
+});
 
-  // good
-  new Component().$mount();
+// good
+new Component().$mount();
 ```
 
 [vue-docs]: http://vuejs.org/guide/index.html

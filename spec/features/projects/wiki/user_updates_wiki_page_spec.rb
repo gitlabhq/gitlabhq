@@ -6,7 +6,7 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
   background do
     project.team << [user, :master]
     WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit project_wikis_path(project)
   end

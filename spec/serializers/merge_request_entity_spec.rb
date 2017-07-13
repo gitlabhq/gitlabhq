@@ -47,7 +47,7 @@ describe MergeRequestEntity do
                                :cancel_merge_when_pipeline_succeeds_path,
                                :create_issue_to_resolve_discussions_path,
                                :source_branch_path, :target_branch_commits_path,
-                               :commits_count,
+                               :target_branch_tree_path, :commits_count,
                                ## EE
                                :can_push_to_source_branch, :approvals_before_merge,
                                :squash, :rebase_commit_sha, :rebase_in_progress,

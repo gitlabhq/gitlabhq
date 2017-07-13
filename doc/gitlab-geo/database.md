@@ -31,6 +31,11 @@ connect to `secondary` database servers (which are read-only too).
 In many databases documentation you will see `primary` being references as `master`
 and `secondary` as either `slave` or `standby` server (read-only).
 
+New for GitLab 9.4: We recommend using [PostgreSQL replication
+slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
+to ensure the primary retains all the data necessary for the secondaries to
+recover. See below for more details.
+
 ### Prerequisites
 
 The following guide assumes that:
@@ -73,6 +78,8 @@ The following guide assumes that:
     postgresql['listen_address'] = "1.2.3.4"
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
+    # New for 9.4: Set this to be the number of Geo secondary nodes you have
+    postgresql['max_replication_slots'] = 1
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
     ```
@@ -118,6 +125,7 @@ The following guide assumes that:
     postgresql['listen_address'] = "10.1.5.3"
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','10.1.5.3/32']
     postgresql['md5_auth_cidr_addresses'] = ['10.1.10.5/32']
+    postgresql['max_replication_slots'] = 1 # Number of Geo secondary nodes
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
     ```
@@ -138,6 +146,8 @@ The following guide assumes that:
 1. Check to make sure your firewall rules are set so that the secondary nodes
    can access port 5432 on the primary node.
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. New for 9.4: Restart your primary PostgreSQL server to ensure the replication slot changes
+   take effect (`sudo gitlab-ctl restart postgresql` for Omnibus-provided PostgreSQL).
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening to the server's
    public IP.
@@ -196,15 +206,24 @@ data before running `pg_basebackup`.
     sudo -i
     ```
 
+1. New for 9.4: Choose a database-friendly name to use for your secondary to use as the
+   replication slot name. For example, if your domain is
+   `geo-secondary.mydomain.com`, you may use `geo_secondary_my_domain_com` as
+   the slot name.
+
 1. Execute the command below to start a backup/restore and begin the replication:
 
     ```
-    gitlab-ctl replicate-geo-database --host=1.2.3.4
+    gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=geo-secondary_my_domain_com
     ```
 
     Change the `--host=` to the primary node IP or FQDN. You can check other possible
     parameters with `--help`. When prompted, enter the password you set up for
     the `gitlab_replicator` user in the first step.
+
+    New for 9.4: Change the `--slot-name` to the name of the replication slot
+    to be used on the primary database. The script will attempt to create the
+    replication slot automatically if it does not exist.
 
 The replication process is now over.
 

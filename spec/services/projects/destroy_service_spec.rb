@@ -73,14 +73,14 @@ describe Projects::DestroyService, services: true do
     before do
       new_user = create(:user)
       project.team.add_user(new_user, Gitlab::Access::DEVELOPER)
-      allow_any_instance_of(Projects::DestroyService).to receive(:flush_caches).and_raise(Redis::CannotConnectError)
+      allow_any_instance_of(Projects::DestroyService).to receive(:flush_caches).and_raise(::Redis::CannotConnectError)
     end
 
     it 'keeps project team intact upon an error' do
       Sidekiq::Testing.inline! do
         begin
           destroy_project(project, user, {})
-        rescue Redis::CannotConnectError
+        rescue ::Redis::CannotConnectError
         end
       end
 

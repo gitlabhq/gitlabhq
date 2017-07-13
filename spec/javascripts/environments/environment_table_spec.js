@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import environmentTableComp from '~/environments/components/environments_table.vue';
+import eventHub from '~/environments/event_hub';
 import { deployBoardMockData } from './mock_data';
 
 describe('Environment item', () => {
@@ -24,9 +25,6 @@ describe('Environment item', () => {
         environments: [mockItem],
         canCreateDeployment: false,
         canReadEnvironment: true,
-        toggleDeployBoard: () => {},
-        store: {},
-        service: {},
       },
     }).$mount();
 
@@ -43,6 +41,8 @@ describe('Environment item', () => {
       hasDeployBoard: true,
       deployBoardData: deployBoardMockData,
       isDeployBoardVisible: true,
+      isLoadingDeployBoard: false,
+      hasErrorDeployBoard: false,
     };
 
     const component = new EnvironmentTable({
@@ -51,11 +51,6 @@ describe('Environment item', () => {
         environments: [mockItem],
         canCreateDeployment: true,
         canReadEnvironment: true,
-        toggleDeployBoard: () => {},
-        store: {},
-        service: {
-          getDeployBoard: () => Promise.resolve(),
-        },
       },
     }).$mount();
 
@@ -85,7 +80,9 @@ describe('Environment item', () => {
       isDeployBoardVisible: false,
     };
 
-    const spy = jasmine.createSpy('spy');
+    eventHub.$on('toggleDeployBoard', (env) => {
+      expect(env.id).toEqual(mockItem.id);
+    });
 
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),
@@ -93,16 +90,9 @@ describe('Environment item', () => {
         environments: [mockItem],
         canCreateDeployment: true,
         canReadEnvironment: true,
-        toggleDeployBoard: spy,
-        store: {},
-        service: {
-          getDeployBoard: () => Promise.resolve(),
-        },
       },
     }).$mount();
 
     component.$el.querySelector('.deploy-board-icon').click();
-
-    expect(spy).toHaveBeenCalled();
   });
 });

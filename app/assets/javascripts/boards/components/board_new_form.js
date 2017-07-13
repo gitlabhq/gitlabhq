@@ -78,7 +78,8 @@ import extraMilestones from '../mixins/extra_milestones';
       },
       submit() {
         gl.boardService.createBoard(this.board)
-          .then((resp) => {
+          .then(resp => resp.json())
+          .then((data) => {
             if (this.currentBoard && this.currentPage !== 'new') {
               this.currentBoard.name = this.board.name;
 
@@ -94,7 +95,6 @@ import extraMilestones from '../mixins/extra_milestones';
               Store.state.currentPage = '';
               Store.state.reload = true;
             } else if (this.currentPage === 'new') {
-              const data = resp.json();
               gl.utils.visitUrl(`${Store.rootPath}/${data.id}`);
             }
           })

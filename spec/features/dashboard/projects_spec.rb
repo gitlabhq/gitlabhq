@@ -7,7 +7,13 @@ feature 'Dashboard Projects' do
 
   before do
     project.team << [user, :developer]
-    gitlab_sign_in(user)
+    sign_in(user)
+  end
+
+  it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token" do
+    before do
+      visit dashboard_projects_path
+    end
   end
 
   it 'shows the project the user in a member of in the list' do
@@ -55,7 +61,7 @@ feature 'Dashboard Projects' do
     end
   end
 
-  describe 'with a pipeline', redis: true do
+  describe "with a pipeline", clean_gitlab_redis_shared_state: true do
     let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha) }
 
     before do
@@ -71,6 +77,4 @@ feature 'Dashboard Projects' do
       expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit)}']")
     end
   end
-
-  it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
 end

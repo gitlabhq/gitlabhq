@@ -6,7 +6,7 @@ feature 'Projects > Members > User requests access', feature: true do
   let(:master) { project.owner }
 
   background do
-    gitlab_sign_in(user)
+    sign_in(user)
     visit project_path(project)
   end
 
@@ -46,10 +46,11 @@ feature 'Projects > Members > User requests access', feature: true do
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
-    open_project_settings_menu
-    click_link 'Members'
+    page.within('.layout-nav .nav-links') do
+      click_link('Members')
+    end
 
-    visit project_settings_members_path(project)
+    visit project_project_members_path(project)
     page.within('.content') do
       expect(page).not_to have_content(user.name)
     end

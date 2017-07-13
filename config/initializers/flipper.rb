@@ -1,4 +1,8 @@
 require 'flipper/middleware/memoizer'
 
-Rails.application.config.middleware.use Flipper::Middleware::Memoizer,
-  lambda { Feature.flipper }
+unless Rails.env.test?
+  Rails.application.config.middleware.use Flipper::Middleware::Memoizer,
+    lambda { Feature.flipper }
+
+  Feature.register_feature_groups
+end

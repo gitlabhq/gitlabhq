@@ -9,7 +9,7 @@ feature 'Global elastic search', feature: true do
     Gitlab::Elastic::Helper.create_empty_index
 
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   after do

@@ -6,10 +6,10 @@ feature 'Path Locks', feature: true, js: true do
   let(:tree_path) { project_tree_path(project, project.repository.root_ref) }
 
   before do
-    allow(project).to receive(:feature_available?).with(:file_lock) { true }
+    allow(project).to receive(:feature_available?).with(:file_locks) { true }
 
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit tree_path
   end

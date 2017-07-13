@@ -6,7 +6,7 @@ feature 'User wants to create a file', feature: true do
 
   background do
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
     visit project_new_blob_path(project, project.default_branch)
   end
 
@@ -28,11 +28,6 @@ feature 'User wants to create a file', feature: true do
   scenario 'directory name contains Chinese characters' do
     submit_new_file(file_name: '中文/测试.md')
     expect(page).to have_content 'The file has been successfully created'
-  end
-
-  scenario 'file name contains invalid characters' do
-    submit_new_file(file_name: '\\')
-    expect(page).to have_content 'Path can contain only'
   end
 
   scenario 'file name contains directory traversal' do

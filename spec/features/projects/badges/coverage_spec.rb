@@ -7,7 +7,7 @@ feature 'test coverage badge' do
   context 'when user has access to view badge' do
     background do
       project.team << [user, :developer]
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     scenario 'user requests coverage badge image for pipeline' do
@@ -45,7 +45,7 @@ feature 'test coverage badge' do
   end
 
   context 'when user does not have access to view badge' do
-    background { gitlab_sign_in(user) }
+    background { sign_in(user) }
 
     scenario 'user requests test coverage badge image' do
       show_test_coverage_badge

@@ -325,13 +325,13 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       context 'when the milestone change' do
-        before do
-          update_merge_request({ milestone: create(:milestone) })
-        end
-
         it 'marks pending todos as done' do
+          update_merge_request({ milestone: create(:milestone) })
+
           expect(pending_todo.reload).to be_done
         end
+
+        it_behaves_like 'system notes for milestones'
       end
 
       context 'when the labels change' do

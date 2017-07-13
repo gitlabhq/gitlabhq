@@ -1,3 +1,5 @@
+require 'net/ldap/dn'
+
 module EE
   module Gitlab
     module LDAP
@@ -15,6 +17,31 @@ module EE
 
             nil
           end
+
+          def find_by_kerberos_principal(principal, adapter)
+            uid, domain = principal.split('@', 2)
+            return nil unless uid && domain
+
+            # In multi-forest setups, there may be several users with matching
+            # uids but differing DNs, so skip adapters configured to connect to
+            # non-matching domains
+            return unless domain.casecmp(domain_from_dn(adapter.config.base)) == 0
+
+            find_by_uid(uid, adapter)
+          end
+
+          # Extracts the rightmost unbroken set of domain components from an
+          # LDAP DN and constructs a domain name from them
+          def domain_from_dn(dn)
+            dn_components = []
+            Net::LDAP::DN.new(dn).each_pair { |name, value| dn_components << { name: name, value: value } }
+            dn_components
+              .reverse
+              .take_while { |rdn| rdn[:name].casecmp('DC').zero? } # Domain Component
+              .map { |rdn| rdn[:value] }
+              .reverse
+              .join('.')
+          end
         end
 
         def ssh_keys
@@ -27,23 +54,12 @@ module EE
           end
         end
 
+        # We assume that the Kerberos username matches the configured uid
+        # attribute in LDAP. For Active Directory, this is `sAMAccountName`
         def kerberos_principal
-          # The following is only meaningful for Active Directory
-          return unless entry.respond_to?(:sAMAccountName)
-          entry[:sAMAccountName].first + '@' + windows_domain_name.upcase
-        end
+          return nil unless uid
 
-        def windows_domain_name
-          # The following is only meaningful for Active Directory
-          require 'net/ldap/dn'
-          dn_components = []
-          Net::LDAP::DN.new(dn).each_pair { |name, value| dn_components << { name: name, value: value } }
-          dn_components
-            .reverse
-            .take_while { |rdn| rdn[:name].casecmp('DC').zero? } # Domain Component
-          .map { |rdn| rdn[:value] }
-            .reverse
-            .join('.')
+          uid + '@' + self.class.domain_from_dn(dn).upcase
         end
 
         def memberof

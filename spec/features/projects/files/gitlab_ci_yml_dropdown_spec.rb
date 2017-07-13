@@ -5,7 +5,7 @@ feature 'User wants to add a .gitlab-ci.yml file', feature: true do
     user = create(:user)
     project = create(:project)
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
     visit project_new_blob_path(project, 'master', file_name: '.gitlab-ci.yml')
   end
 

@@ -105,6 +105,24 @@ user associated with the email, which is built from the Kerberos username and
 realm. User accounts will be created automatically when authentication was
 successful.
 
+## Linking Kerberos and LDAP accounts together
+
+If your users log in with Kerberos, but you also have [LDAP integration](../administration/auth/ldap.md)
+enabled, then your users will be automatically linked to their LDAP accounts on
+first login. For this to work, some prerequisites must be met:
+
+The Kerberos username must match the LDAP user's UID. You can choose which LDAP
+attribute is used as the UID in GitLab's [LDAP configuration](../administration/auth/ldap.md#configuration)
+but for Active Directory, this should be `sAMAccountName`.
+
+The Kerberos realm must match the domain part of the LDAP user's Distinguished
+Name. For instance, if the Kerberos realm is `AD.EXAMPLE.COM`, then the LDAP
+user's Distinguished Name should end in `dc=ad,dc=example,dc=com`.
+
+Taken together, these rules mean that linking will only work if your users'
+Kerberos usernames are of the form `foo@AD.EXAMPLE.COM` and their
+LDAP Distinguished Names look like `sAMAccountName=foo,dc=ad,dc=example,dc=com`.
+
 ## HTTP Git access
 
 A linked Kerberos account enables you to `git pull` and `git push` using your

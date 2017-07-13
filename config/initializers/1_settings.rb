@@ -579,7 +579,6 @@ Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 # Gitaly
 #
 Settings['gitaly'] ||= Settingslogic.new({})
-Settings.gitaly['enabled'] = true if Settings.gitaly['enabled'].nil?
 
 #
 # Webpack settings
@@ -589,6 +588,13 @@ Settings.webpack['dev_server'] ||= Settingslogic.new({})
 Settings.webpack.dev_server['enabled'] ||= false
 Settings.webpack.dev_server['host']    ||= 'localhost'
 Settings.webpack.dev_server['port']    ||= 3808
+
+#
+# Monitoring settings
+#
+Settings['monitoring'] ||= Settingslogic.new({})
+Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
+Settings.monitoring['unicorn_sampler_interval'] ||= 10
 
 #
 # Testing settings

@@ -12,7 +12,7 @@ feature 'Widget Deployments Header', feature: true, js: true do
     given!(:manual) { }
 
     background do
-      gitlab_sign_in(user)
+      sign_in(user)
       project.team << [user, role]
       visit project_merge_request_path(project, merge_request)
     end

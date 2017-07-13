@@ -37,8 +37,12 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
     cache_storage.is_a?(CarrierWave::Storage::File)
   end
 
-  def object_store
+  def real_object_store
     subject.public_send(:"#{field}_store")
+  end
+
+  def object_store
+    real_object_store || LOCAL_STORE
   end
 
   def object_store=(value)
@@ -127,7 +131,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   private
 
   def set_default_local_store(new_file)
-    self.object_store = LOCAL_STORE unless self.object_store
+    self.object_store = LOCAL_STORE unless self.real_object_store
   end
 
   def storage

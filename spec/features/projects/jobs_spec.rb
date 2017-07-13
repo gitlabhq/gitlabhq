@@ -16,7 +16,7 @@ feature 'Jobs', :feature do
 
   before do
     project.team << [user, user_access_level]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe "GET /:project/jobs" do
@@ -117,6 +117,10 @@ feature 'Jobs', :feature do
 
       before do
         visit project_job_path(project, job)
+      end
+
+      it 'shows status name', :js do
+        expect(page).to have_css('.ci-status.ci-success', text: 'passed')
       end
 
       it 'shows commit`s data' do
@@ -398,8 +402,8 @@ feature 'Jobs', :feature do
         job.cancel!
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
-        gitlab_sign_out_direct
-        gitlab_sign_in(create(:user))
+        sign_out(:user)
+        sign_in(create(:user))
         visit project_job_path(project, job)
       end
 

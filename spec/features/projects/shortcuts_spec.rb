@@ -7,7 +7,7 @@ feature 'Project shortcuts', feature: true do
   describe 'On a project', js: true do
     before do
       project.team << [user, :master]
-      gitlab_sign_in user
+      sign_in user
       visit project_path(project)
     end
 

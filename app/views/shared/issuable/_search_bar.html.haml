@@ -23,11 +23,11 @@
               content_class: "filtered-search-history-dropdown-content",
               title: "Recent searches" }) do
               .js-filtered-search-history-dropdown{ data: { project_full_path: @project.full_path } }
-          .filtered-search-box-input-container
+          .filtered-search-box-input-container.droplab-dropdown
             .scroll-container
               %ul.tokens-container.list-unstyled
                 %li.input-token
-                  %input.form-control.filtered-search{ id: "filtered-search-#{type.to_s}", placeholder: 'Search or filter results...', data: { 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => project_path(@project) } }
+                  %input.form-control.filtered-search{ search_filter_input_options(type) }
               = icon('filter')
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }

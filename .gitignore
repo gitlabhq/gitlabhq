@@ -32,6 +32,9 @@ eslint-report.html
 /config/initializers/smtp_settings.rb
 /config/initializers/relative_url.rb
 /config/resque.yml
+/config/redis.cache.yml
+/config/redis.queues.yml
+/config/redis.shared_state.yml
 /config/unicorn.rb
 /config/secrets.yml
 /config/sidekiq.yml
@@ -61,3 +64,4 @@ eslint-report.html
 /.gitlab_workhorse_secret
 /webpack-report/
 /locale/**/LC_MESSAGES
+/.rspec

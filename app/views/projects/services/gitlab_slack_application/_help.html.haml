@@ -1,0 +1,16 @@
+- pretty_name = defined?(@project) ? @project.name_with_namespace : 'namespace / path'
+- run_actions_text = "Perform common operations on GitLab project: #{pretty_name}"
+
+.well
+  %p
+    This service allows users to perform common operations on this
+    project by entering slash commands in Slack.
+    = link_to help_page_path('user/project/integrations/gitlab_slack_application.md'), target: '_blank' do
+      View documentation
+      = icon('external-link')
+  %p.inline
+    See the list of available commands in Slack after setting up this service
+    by entering
+  %kbd.inline /gitlab help
+  - unless @service.template?
+    = render "projects/services/#{@service.to_param}/slack_integration_form"

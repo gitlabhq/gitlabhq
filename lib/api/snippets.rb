@@ -140,6 +140,22 @@ module API
         content_type 'text/plain'
         present snippet.content
       end
+
+      desc 'Get the user agent details for a snippet' do
+        success Entities::UserAgentDetail
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of a snippet'
+      end
+      get ":id/user_agent_detail" do
+        authenticated_as_admin!
+
+        snippet = Snippet.find_by!(id: params[:id])
+
+        return not_found!('UserAgentDetail') unless snippet.user_agent_detail
+
+        present snippet.user_agent_detail, with: Entities::UserAgentDetail
+      end
     end
   end
 end

@@ -53,19 +53,19 @@ module Gitlab
 
         # Stops sticking to the primary.
         def self.unstick(namespace, id)
-          Gitlab::Redis.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             redis.del(redis_key_for(namespace, id))
           end
         end
 
         def self.set_write_location_for(namespace, id, location)
-          Gitlab::Redis.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             redis.set(redis_key_for(namespace, id), location, ex: EXPIRATION)
           end
         end
 
         def self.last_write_location_for(namespace, id)
-          Gitlab::Redis.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             redis.get(redis_key_for(namespace, id))
           end
         end

@@ -16,7 +16,7 @@ describe 'New/edit merge request', feature: true, js: true do
 
   context 'owned projects' do
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'new merge request' do
@@ -174,7 +174,7 @@ describe 'New/edit merge request', feature: true, js: true do
   context 'forked project' do
     before do
       fork_project.team << [user, :master]
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'new merge request' do

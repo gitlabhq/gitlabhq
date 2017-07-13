@@ -2,7 +2,9 @@ module Ci
   class Variable < ActiveRecord::Base
     extend Ci::Model
     include HasVariable
+    include Presentable
     prepend EE::Ci::Variable
+    include Presentable
 
     belongs_to :project
 

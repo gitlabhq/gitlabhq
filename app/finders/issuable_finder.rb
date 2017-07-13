@@ -19,6 +19,8 @@
 #     iids: integer[]
 #
 class IssuableFinder
+  include CreatedAtFilter
+  
   NONE = '0'.freeze
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
 
@@ -36,6 +38,7 @@ class IssuableFinder
   def execute
     items = init_collection
     items = by_scope(items)
+    items = by_created_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_search(items)
@@ -47,7 +50,6 @@ class IssuableFinder
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
-    items = by_created_at(items)
 
     # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
     items = by_project(items)
@@ -152,9 +154,17 @@ class IssuableFinder
 
     @milestones =
       if milestones?
-        scope = Milestone.where(project_id: projects)
+        if project?
+          group_id = project.group&.id
+          project_id = project.id
+        end
 
-        scope.where(title: params[:milestone_title])
+        group_id = group.id if group
+
+        search_params =
+          { title: params[:milestone_title], project_ids: project_id, group_ids: group_id }
+
+        MilestonesFinder.new(search_params).execute
       else
         Milestone.none
       end
@@ -336,11 +346,6 @@ class IssuableFinder
         items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
       else
         items = items.with_milestone(params[:milestone_title])
-        items_projects = projects(items)
-
-        if items_projects
-          items = items.where(milestones: { project_id: items_projects })
-        end
       end
     end
 
@@ -436,18 +441,6 @@ class IssuableFinder
 
   def by_non_archived(items)
     params[:non_archived].present? ? items.non_archived : items
-  end
-
-  def by_created_at(items)
-    if params[:created_after].present?
-      items = items.where(items.klass.arel_table[:created_at].gteq(params[:created_after]))
-    end
-
-    if params[:created_before].present?
-      items = items.where(items.klass.arel_table[:created_at].lteq(params[:created_before]))
-    end
-
-    items
   end
 
   def current_user_related?

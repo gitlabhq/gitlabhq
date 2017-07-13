@@ -12,7 +12,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
   before do
     project.team << [user, :master]
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   it 'shows empty state when no results found' do

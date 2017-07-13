@@ -1,9 +1,9 @@
 class GeoNode < ActiveRecord::Base
   include Presentable
 
-  belongs_to :geo_node_key, dependent: :destroy
-  belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
-  belongs_to :system_hook, dependent: :destroy
+  belongs_to :geo_node_key, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
+  belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
+  belongs_to :system_hook, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
   default_values schema: lambda { Gitlab.config.gitlab.protocol },
                  host: lambda { Gitlab.config.gitlab.host },

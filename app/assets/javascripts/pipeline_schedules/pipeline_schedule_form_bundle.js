@@ -3,6 +3,7 @@ import Translate from '../vue_shared/translate';
 import intervalPatternInput from './components/interval_pattern_input.vue';
 import TimezoneDropdown from './components/timezone_dropdown';
 import TargetBranchDropdown from './components/target_branch_dropdown';
+import { setupPipelineVariableList } from './setup_pipeline_variable_list';
 
 Vue.use(Translate);
 
@@ -39,4 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
   gl.timezoneDropdown = new TimezoneDropdown();
   gl.targetBranchDropdown = new TargetBranchDropdown();
   gl.pipelineScheduleFieldErrors = new gl.GlFieldErrors(formElement);
+
+  setupPipelineVariableList($('.js-pipeline-variable-list'));
 });

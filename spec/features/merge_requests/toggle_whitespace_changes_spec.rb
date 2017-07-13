@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Toggle Whitespace Changes', js: true, feature: true do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
     merge_request = create(:merge_request)
     project = merge_request.source_project
     visit diffs_project_merge_request_path(project, merge_request)

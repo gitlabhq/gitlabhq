@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe KubernetesService, models: true, caching: true do
+describe KubernetesService, :use_clean_rails_memory_store_caching, models: true do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 
@@ -129,7 +129,7 @@ describe KubernetesService, models: true, caching: true do
     it "returns the default namespace" do
       is_expected.to eq(service.send(:default_namespace))
     end
-    
+
     context 'when namespace is specified' do
       before do
         service.namespace = 'my-namespace'
@@ -201,6 +201,22 @@ describe KubernetesService, models: true, caching: true do
   end
 
   describe '#predefined_variables' do
+    let(:kubeconfig) do
+      config =
+        YAML.load(File.read(expand_fixture_path('config/kubeconfig.yml')))
+
+      config.dig('users', 0, 'user')['token'] =
+        'token'
+
+      config.dig('clusters', 0, 'cluster')['certificate-authority-data'] =
+        Base64.encode64('CA PEM DATA')
+
+      config.dig('contexts', 0, 'context')['namespace'] =
+        namespace
+
+      YAML.dump(config)
+    end
+
     before do
       subject.api_url = 'https://kube.domain.com'
       subject.token = 'token'
@@ -208,31 +224,33 @@ describe KubernetesService, models: true, caching: true do
       subject.project = project
     end
 
-    context 'namespace is provided' do
-      before do
-        subject.namespace = 'my-project'
-      end
-
+    shared_examples 'setting variables' do
       it 'sets the variables' do
         expect(subject.predefined_variables).to include(
           { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
           { key: 'KUBE_TOKEN', value: 'token', public: false },
-          { key: 'KUBE_NAMESPACE', value: 'my-project', public: true },
+          { key: 'KUBE_NAMESPACE', value: namespace, public: true },
+          { key: 'KUBECONFIG', value: kubeconfig, public: false, file: true },
           { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
           { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
         )
       end
     end
 
-    context 'no namespace provided' do
-      it 'sets the variables' do
-        expect(subject.predefined_variables).to include(
-          { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
-          { key: 'KUBE_TOKEN', value: 'token', public: false },
-          { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
-          { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
-        )
+    context 'namespace is provided' do
+      let(:namespace) { 'my-project' }
+
+      before do
+        subject.namespace = namespace
       end
+
+      it_behaves_like 'setting variables'
+    end
+
+    context 'no namespace provided' do
+      let(:namespace) { subject.actual_namespace }
+
+      it_behaves_like 'setting variables'
 
       it 'sets the KUBE_NAMESPACE' do
         kube_namespace = subject.predefined_variables.find { |h| h[:key] == 'KUBE_NAMESPACE' }

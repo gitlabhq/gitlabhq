@@ -1,8 +1,35 @@
 # Milestones
 
+Milestones in GitLab are a way to track issues and merge requests created
+to achieve a broader goal in a certain period of time.
+
+## Overview
+
 Milestones allow you to organize issues and merge requests into a cohesive group,
-optionally setting a due date. A common use is keeping track of an upcoming
-software version. Milestones can be created per-project or per-group.
+optionally setting a start and a due date.
+
+With milestones you can set a deadline for certain achievement you're targeting,
+and assign this milestone to issues and merge requests that together compose
+this broader goal.
+
+Milestones are a valuable tool to track the development of the process of achieving that goal.
+From a milestone, you view the status of issues and merge requests, its contributors,
+and opened and closed issues for each label.
+
+With [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
+you will also see a [Burndown Chart](#burndown-charts) for your milestone, which
+gives a visual insight over the progress of the conclusion of that milestone:
+
+![milestones with burndown charts](img/milestones.gif)
+
+## Use cases
+
+There are numerous cases you can create a milestone for. For example:
+
+- Track an upcoming software version
+- Track the launch of a new product
+- Track the progress of achievements per quarter for your team
+- Track the community contribution for a new feature in your open source application
 
 ## Creating a project milestone
 
@@ -24,14 +51,11 @@ The start/due dates are required if you intend to use [Burndown charts](#burndow
 >**Note:**
 You need [Master permissions](../../permissions.md) in order to create a milestone.
 
-You can create a milestone for several projects in the same group simultaneously.
-On the group's **Issues ➔ Milestones** page, you will be able to see the status
-of that milestone across all of the selected projects. To create a new milestone
-for selected projects in the group, click the **New milestone** button. The
-form is the same as when creating a milestone for a specific project with the
-addition of the selection of the projects you want to inherit this milestone.
+You can create a milestone for a group that will be shared across group projects.
+On the group's **Issues ➔ Milestones** page, you will be able to see the state
+of that milestone and the issues/merge requests count that it shares across the group projects. To create a new milestone click the **New milestone** button. The form is the same as when creating a milestone for a specific project which you can find in the previous item.
 
-![Creating a group milestone](img/milestone_group_create.png)
+In addition to that you will be able to filter issues or merge requests by group milestones in all projects that belongs to the milestone group.
 
 ## Special milestone filters
 
@@ -56,39 +80,10 @@ total merge requests and issues.
 
 ![Milestone statistics](img/progress.png)
 
-## Burndown charts
+## Burndown Charts
 
->**Notes:**
-- [Introduced][ee-1540] in GitLab Enterprise Edition 9.1 and is available for
-  [Enterprise Edition Starter][ee] users.
-- Closed or reopened issues prior to GitLab 9.1 won't have a `closed_at`
-  value, so the burndown chart considers them as closed on the milestone
-  `start_date`. In that case, a warning will be displayed.
-
-A burndown chart is available for every project milestone that has a set start
-date and a set due date and is located on the project's milestone page.
-
-It indicates the project's progress throughout that milestone (for issues that
-have that milestone assigned to it). In particular, it shows how many issues
-were or are still open for a given day in the milestone period. Since GitLab
-only tracks when an issue was last closed (and not its full history), the chart
-assumes that issue was open on days prior to that date. Reopened issues are
-considered as open on one day after they were closed.
-
-Note that with this design, if you create a new issue in the middle of the milestone period 
-(and assign the milestone to the issue), the burndown chart will appear as if the 
-issue was already open at the beginning of the milestone. A workaround is to simply 
-close the issue (so that a closed timestamp is stored in the system), and reopen 
-it to ge the desired effect, with a rise in the chart appearing on the day after.
-This is what appears in the example below.
-
-The burndown chart can also be toggled to display the cumulative open issue
-weight for a given day. When using this feature, make sure your weights have
-been properly assigned, since an open issue with no weight adds zero to the
-cumulative value.
+[Burndown Charts](burndown_charts.md), available in
+[GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee),
+are visual representations of the progress of completing a milestone.
 
 ![burndown chart](img/burndown_chart.png)
-
-[ee-1540]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1540
-[ee]: https://about.gitlab.com/gitlab-ee
-

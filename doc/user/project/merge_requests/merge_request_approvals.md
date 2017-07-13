@@ -42,6 +42,14 @@ This sets the amount of approvals required before being able to merge a merge re
 
 The number of approvers can be higher than the required approvals.
 
+### Can override approvers and approvals required per merge request
+
+> Introduced in GitLab Enterprise Edition 9.4.
+
+When this setting is enabled, the approvers for a project can be overridden for
+a merge request. When editing a merge request you can add or remove approvers,
+and increase the number of required approvers.
+
 ### Reset approvals on push
 
 With this setting turned on, approvals are reset when a new push

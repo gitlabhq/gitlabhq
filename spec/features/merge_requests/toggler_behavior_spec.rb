@@ -8,7 +8,7 @@ feature 'toggler_behavior', js: true, feature: true do
   let(:fragment_id) { "#note_#{note.id}" }
 
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
     project = merge_request.source_project
     page.current_window.resize_to(1000, 300)
     visit "#{project_merge_request_path(project, merge_request)}#{fragment_id}"

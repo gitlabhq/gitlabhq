@@ -13,7 +13,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
 
     before do
       project.team << [user, :master]
-      gitlab_sign_in(user)
+      sign_in(user)
       visit project_issue_path(project, issue)
     end
 
@@ -42,7 +42,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
         before do
           project.team << [guest, :guest]
           gitlab_sign_out
-          gitlab_sign_in(guest)
+          sign_in(guest)
           visit project_issue_path(project, issue)
         end
 
@@ -82,7 +82,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
         before do
           project.team << [guest, :guest]
           gitlab_sign_out
-          gitlab_sign_in(guest)
+          sign_in(guest)
           visit project_issue_path(project, issue)
         end
 
@@ -96,32 +96,6 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
 
           expect(issue.due_date).to eq Date.new(2016, 8, 28)
         end
-      end
-    end
-
-    describe 'Issuable time tracking' do
-      let(:issue) { create(:issue, project: project) }
-
-      before do
-        project.team << [user, :developer]
-      end
-
-      context 'Issue' do
-        before do
-          visit project_issue_path(project, issue)
-        end
-
-        it_behaves_like 'issuable time tracker'
-      end
-
-      context 'Merge Request' do
-        let(:merge_request) { create(:merge_request, source_project: project) }
-
-        before do
-          visit project_merge_request_path(project, merge_request)
-        end
-
-        it_behaves_like 'issuable time tracker'
       end
     end
 
@@ -182,7 +156,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
         before do
           project.team << [guest, :guest]
           gitlab_sign_out
-          gitlab_sign_in(guest)
+          sign_in(guest)
           visit project_issue_path(project, issue)
         end
 
@@ -220,7 +194,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
         before do
           project.team << [guest, :guest]
           gitlab_sign_out
-          gitlab_sign_in(guest)
+          sign_in(guest)
           visit project_issue_path(project, issue)
         end
 

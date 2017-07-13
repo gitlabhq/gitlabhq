@@ -8,7 +8,7 @@ describe 'issuable list', feature: true do
 
   before do
     project.add_user(user, :developer)
-    gitlab_sign_in(user)
+    sign_in(user)
     issuable_types.each { |type| create_issuables(type) }
   end
 

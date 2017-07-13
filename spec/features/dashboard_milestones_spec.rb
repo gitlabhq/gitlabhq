@@ -17,7 +17,7 @@ feature 'Dashboard > Milestones', feature: true do
     let!(:milestone) { create(:milestone, project: project) }
     before do
       project.team << [user, :master]
-      gitlab_sign_in(user)
+      sign_in(user)
       visit dashboard_milestones_path
     end
 

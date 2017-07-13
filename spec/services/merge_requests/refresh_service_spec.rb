@@ -109,21 +109,55 @@ describe MergeRequests::RefreshService, services: true do
     end
 
     context 'push to origin repo target branch' do
-      before do
-        service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
-        reload_mrs
+      context 'when all MRs to the target branch had diffs' do
+        before do
+          service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          reload_mrs
+        end
+
+        it 'updates the merge state' do
+          expect(@merge_request.notes.last.note).to include('merged')
+          expect(@merge_request).to be_merged
+          expect(@fork_merge_request).to be_merged
+          expect(@fork_merge_request.notes.last.note).to include('merged')
+          expect(@build_failed_todo).to be_done
+          expect(@fork_build_failed_todo).to be_done
+          # EE-only
+          expect(@merge_request.approvals).not_to be_empty
+          expect(@fork_merge_request.approvals).not_to be_empty
+        end
       end
 
-      it 'updates the merge state' do
-        expect(@merge_request.notes.last.note).to include('merged')
-        expect(@merge_request).to be_merged
-        expect(@fork_merge_request).to be_merged
-        expect(@fork_merge_request.notes.last.note).to include('merged')
-        expect(@build_failed_todo).to be_done
-        expect(@fork_build_failed_todo).to be_done
-        # EE-only
-        expect(@merge_request.approvals).not_to be_empty
-        expect(@fork_merge_request.approvals).not_to be_empty
+      context 'when an MR to be closed was empty already' do
+        let!(:empty_fork_merge_request) do
+          create(:merge_request,
+                 source_project: @fork_project,
+                 source_branch: 'master',
+                 target_branch: 'master',
+                 target_project: @project)
+        end
+
+        before do
+          # This spec already has a fake push, so pretend that we were targeting
+          # feature all along.
+          empty_fork_merge_request.update_columns(target_branch: 'feature')
+
+          service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          reload_mrs
+          empty_fork_merge_request.reload
+        end
+
+        it 'only updates the non-empty MRs' do
+          expect(@merge_request).to be_merged
+          expect(@merge_request.notes.last.note).to include('merged')
+
+          expect(@fork_merge_request).to be_merged
+          expect(@fork_merge_request.notes.last.note).to include('merged')
+
+          expect(empty_fork_merge_request).to be_open
+          expect(empty_fork_merge_request.merge_request_diff.state).to eq('empty')
+          expect(empty_fork_merge_request.notes).to be_empty
+        end
       end
     end
 

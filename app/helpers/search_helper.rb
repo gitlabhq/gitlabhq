@@ -1,4 +1,6 @@
 module SearchHelper
+  prepend EE::SearchHelper
+
   def search_autocomplete_opts(term)
     return unless current_user
 
@@ -83,7 +85,7 @@ module SearchHelper
         { category: "Current Project", label: "Merge Requests", url: project_merge_requests_path(@project) },
         { category: "Current Project", label: "Milestones",     url: project_milestones_path(@project) },
         { category: "Current Project", label: "Snippets",       url: project_snippets_path(@project) },
-        { category: "Current Project", label: "Members",        url: project_settings_members_path(@project) },
+        { category: "Current Project", label: "Members",        url: project_project_members_path(@project) },
         { category: "Current Project", label: "Wiki",           url: project_wikis_path(@project) }
       ]
     else
@@ -132,6 +134,18 @@ module SearchHelper
 
     options = exist_opts.merge(options)
     search_path(options)
+  end
+
+  def search_filter_input_options(type)
+    {
+      id: "filtered-search-#{type}",
+      placeholder: 'Search or filter results...',
+      data: {
+        'project-id' => @project.id,
+        'username-params' => @users.to_json(only: [:id, :username]),
+        'base-endpoint' => project_path(@project)
+      }
+    }
   end
 
   # Sanitize a HTML field for search display. Most tags are stripped out and the

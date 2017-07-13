@@ -24,17 +24,21 @@ module EE
 
       belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
-      has_one :mirror_data, dependent: :delete, autosave: true, class_name: 'ProjectMirrorData'
-      has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }, dependent: :destroy
-      has_one :index_status, dependent: :destroy
-      has_one :jenkins_service, dependent: :destroy
-      has_one :jenkins_deprecated_service, dependent: :destroy
+      has_one :mirror_data, autosave: true, class_name: 'ProjectMirrorData'
+      has_one :push_rule, ->(project) { project&.feature_available?(:push_rules) ? all : none }
+      has_one :index_status
+      has_one :jenkins_service
+      has_one :jenkins_deprecated_service
 
-      has_many :approvers, as: :target, dependent: :destroy
-      has_many :approver_groups, as: :target, dependent: :destroy
-      has_many :audit_events, as: :entity, dependent: :destroy
-      has_many :remote_mirrors, inverse_of: :project, dependent: :destroy
-      has_many :path_locks, dependent: :destroy
+      has_many :approvers, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :approver_groups, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :audit_events, as: :entity, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :remote_mirrors, inverse_of: :project
+      has_many :path_locks
+
+      has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
+
+      has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
 
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
@@ -159,6 +163,10 @@ module EE
       return unless mirror?
 
       repository.fetch_upstream(self.import_url)
+    end
+
+    def can_override_approvers?
+      !disable_overriding_approvers_per_merge_request?
     end
 
     def shared_runners_available?
@@ -425,6 +433,21 @@ module EE
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
+    def rename_repo
+      raise NotImplementedError unless defined?(super)
+
+      super
+
+      path_was = previous_changes['path'].first
+      old_path_with_namespace = File.join(namespace.full_path, path_was)
+
+      ::Geo::RepositoryRenamedEventStore.new(
+        self,
+        old_path: path_was,
+        old_path_with_namespace: old_path_with_namespace
+      ).create
+    end
+
     private
 
     def licensed_feature_available?(feature)
@@ -448,6 +471,10 @@ module EE
 
     def destroy_mirror_data
       mirror_data.destroy
+    end
+
+    def validate_board_limit(board)
+      # Board limits are disabled in EE, so this method is just a no-op.
     end
   end
 end

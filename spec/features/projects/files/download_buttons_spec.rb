@@ -22,7 +22,7 @@ feature 'Download buttons in files tree', feature: true do
   end
 
   background do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, role]
   end
 

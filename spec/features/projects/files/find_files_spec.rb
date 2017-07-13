@@ -5,7 +5,7 @@ feature 'Find files button in the tree header', feature: true do
   given(:project) { create(:project) }
 
   background do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, :developer]
   end
 

@@ -15,7 +15,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   scenario 'filters by no Milestone', js: true do

@@ -143,26 +143,13 @@ import './render_math';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
-import './signin_tabs_memoizer';
-import './single_file_diff';
 import './smart_interval';
 import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
 import './syntax_highlight';
-import './task_list';
-import './todos';
-import './tree';
-import './usage_ping';
 import './user';
-import './user_tabs';
-import './username_validator';
-import './users_select';
-import './version_check_image';
-import './visibility_select';
-import './wikis';
-import './zen_mode';
 
 // EE-only scripts
 import './admin_email_select';

@@ -30,7 +30,8 @@ module Issuable
     belongs_to :updated_by, class_name: "User"
     belongs_to :last_edited_by, class_name: 'User'
     belongs_to :milestone
-    has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do
+
+    has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do # rubocop:disable Cop/ActiveRecordDependent
       def authors_loaded?
         # We check first if we're loaded to not load unnecessarily.
         loaded? && to_a.all? { |note| note.association(:author).loaded? }
@@ -42,9 +43,9 @@ module Issuable
       end
     end
 
-    has_many :label_links, as: :target, dependent: :destroy
+    has_many :label_links, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :labels, through: :label_links
-    has_many :todos, as: :target, dependent: :destroy
+    has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     has_one :metrics
 
@@ -104,6 +105,10 @@ module Issuable
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?
       title_changed? || description_changed?
+    end
+
+    def allows_multiple_assignees?
+      false
     end
   end
 

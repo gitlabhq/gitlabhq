@@ -18,15 +18,10 @@ module Gitlab
     end
 
     def token
-      Gitlab::Redis.with do |redis|
-        token = redis.get(redis_key)
-
-        if token
-          redis.expire(redis_key, EXPIRY_TIME)
-        else
-          token = Devise.friendly_token(TOKEN_LENGTH)
-          redis.set(redis_key, token, ex: EXPIRY_TIME)
-        end
+      Gitlab::Redis::SharedState.with do |redis|
+        token = redis.get(redis_shared_state_key)
+        token ||= Devise.friendly_token(TOKEN_LENGTH)
+        redis.set(redis_shared_state_key, token, ex: EXPIRY_TIME)
 
         token
       end
@@ -46,7 +41,7 @@ module Gitlab
 
     private
 
-    def redis_key
+    def redis_shared_state_key
       "gitlab:lfs_token:#{actor.class.name.underscore}_#{actor.id}" if actor
     end
   end

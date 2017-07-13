@@ -6,7 +6,7 @@ feature 'Template type dropdown selector', js: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
   end
 
   context 'editing a non-matching file' do

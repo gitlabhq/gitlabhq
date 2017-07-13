@@ -12,7 +12,7 @@ feature 'Merge request approvals', js: true, feature: true do
       project.add_developer(user)
       project.add_developer(author)
 
-      gitlab_sign_in(user)
+      sign_in(user)
       visit edit_project_merge_request_path(project, merge_request)
 
       find('#s2id_merge_request_approver_ids .select2-input').click
@@ -39,7 +39,7 @@ feature 'Merge request approvals', js: true, feature: true do
       project.add_developer(user)
       project.add_developer(other_user)
 
-      gitlab_sign_in(user)
+      sign_in(user)
       visit project_new_merge_request_path(forked_project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
       find('#s2id_merge_request_approver_ids .select2-input').click
@@ -66,7 +66,7 @@ feature 'Merge request approvals', js: true, feature: true do
         project.add_developer(user)
         project.add_developer(other_user)
 
-        gitlab_sign_in(user)
+        sign_in(user)
       end
 
       it 'allows setting groups as approvers' do
@@ -120,7 +120,7 @@ feature 'Merge request approvals', js: true, feature: true do
       before do
         project.add_developer(user)
 
-        gitlab_sign_in(user)
+        sign_in(user)
       end
 
       it 'allows setting groups as approvers' do
@@ -178,7 +178,6 @@ feature 'Merge request approvals', js: true, feature: true do
 
         # project setting in the beginning on the edit MR page
         expect(find('#merge_request_approvals_before_merge').value).to eq('1')
-        expect(find('#merge_request_approvals_before_merge ~ .help-block')).to have_content('1 user')
 
         fill_in 'merge_request_approvals_before_merge', with: '3'
 
@@ -192,7 +191,6 @@ feature 'Merge request approvals', js: true, feature: true do
 
         # new MR setting on the edit MR page
         expect(find('#merge_request_approvals_before_merge').value).to eq('3')
-        expect(find('#merge_request_approvals_before_merge ~ .help-block')).to have_content('1 user')
       end
     end
   end
@@ -207,7 +205,7 @@ feature 'Merge request approvals', js: true, feature: true do
       group.add_developer(other_user)
       group.add_developer(user)
 
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'when group is assigned to a project', js: true do
@@ -278,7 +276,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
     before do
       project.add_developer(user)
-      gitlab_sign_in(user)
+      sign_in(user)
 
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 

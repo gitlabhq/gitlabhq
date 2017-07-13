@@ -4,7 +4,7 @@ feature 'Projects > Members > Owner cannot request access to his project', featu
   let(:project) { create(:project) }
 
   background do
-    gitlab_sign_in(project.owner)
+    sign_in(project.owner)
     visit project_path(project)
   end
 

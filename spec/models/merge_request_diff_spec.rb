@@ -98,7 +98,7 @@ describe MergeRequestDiff, models: true do
     end
 
     it 'saves empty state' do
-      allow_any_instance_of(MergeRequestDiff).to receive(:commits)
+      allow_any_instance_of(MergeRequestDiff).to receive_message_chain(:compare, :commits)
         .and_return([])
 
       mr_diff = create(:merge_request).merge_request_diff
@@ -107,14 +107,14 @@ describe MergeRequestDiff, models: true do
     end
   end
 
-  describe '#commits_sha' do
+  describe '#commit_shas' do
     it 'returns all commits SHA using serialized commits' do
       subject.st_commits = [
         { id: 'sha1' },
         { id: 'sha2' }
       ]
 
-      expect(subject.commits_sha).to eq(%w(sha1 sha2))
+      expect(subject.commit_shas).to eq(%w(sha1 sha2))
     end
   end
 

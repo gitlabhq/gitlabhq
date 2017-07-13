@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JenkinsDeprecatedService, caching: true do
+describe JenkinsDeprecatedService, use_clean_rails_memory_store_caching: true do
   include ReactiveCachingHelpers
 
   describe "Associations" do

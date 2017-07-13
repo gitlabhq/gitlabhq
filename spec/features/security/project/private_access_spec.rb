@@ -126,20 +126,6 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:reporter).of(project) }
     it { is_expected.to be_denied_for(:guest).of(project) }
     it { is_expected.to be_denied_for(:user) }
-    it { is_expected.to be_denied_for(:visitor) }
-    it { is_expected.to be_denied_for(:external) }
-  end
-
-  describe "GET /:project_path/settings/repository" do
-    subject { project_settings_repository_path(project) }
-
-    it { is_expected.to be_allowed_for(:admin) }
-    it { is_expected.to be_allowed_for(:owner).of(project) }
-    it { is_expected.to be_allowed_for(:master).of(project) }
-    it { is_expected.to be_denied_for(:developer).of(project) }
-    it { is_expected.to be_denied_for(:reporter).of(project) }
-    it { is_expected.to be_denied_for(:guest).of(project) }
-    it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
   end

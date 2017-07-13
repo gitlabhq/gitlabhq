@@ -9,7 +9,7 @@ describe 'Edit Project Settings', feature: true do
   describe 'project features visibility selectors', js: true do
     before do
       project.team << [member, :master]
-      gitlab_sign_in(member)
+      sign_in(member)
     end
 
     tools = { builds: "pipelines", issues: "issues", wiki: "wiki", snippets: "snippets", merge_requests: "merge_requests" }
@@ -83,7 +83,7 @@ describe 'Edit Project Settings', feature: true do
 
     context 'normal user' do
       before do
-        gitlab_sign_in(member)
+        sign_in(member)
       end
 
       it 'renders 200 if tool is enabled' do
@@ -130,7 +130,7 @@ describe 'Edit Project Settings', feature: true do
     context 'admin user' do
       before do
         non_member.update_attribute(:admin, true)
-        gitlab_sign_in(non_member)
+        sign_in(non_member)
       end
 
       it 'renders 404 if feature is disabled' do
@@ -156,7 +156,7 @@ describe 'Edit Project Settings', feature: true do
   describe 'repository visibility', js: true do
     before do
       project.team << [member, :master]
-      gitlab_sign_in(member)
+      sign_in(member)
       visit edit_project_path(project)
     end
 
@@ -242,7 +242,7 @@ describe 'Edit Project Settings', feature: true do
 
     before do
       project.team << [member, :guest]
-      gitlab_sign_in(member)
+      sign_in(member)
       visit project_path(project)
     end
 

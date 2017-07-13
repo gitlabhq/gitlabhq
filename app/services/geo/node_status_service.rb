@@ -28,7 +28,8 @@ module Geo
               if payload.is_a?(Hash)
                 payload['message']
               else
-                payload
+                # The return value can be a giant blob of HTML; ignore it
+                ''
               end
 
             Array([message, details].compact.join("\n"))
