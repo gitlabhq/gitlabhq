@@ -1,13 +1,8 @@
 class GeoRepositorySyncWorker < Geo::BaseSchedulerWorker
-  LEASE_KEY = 'geo_repository_sync_worker'.freeze
   BACKOFF_DELAY = 5.minutes
   MAX_CAPACITY = 25
 
   private
-
-  def lease_key
-    LEASE_KEY
-  end
 
   def max_capacity
     MAX_CAPACITY

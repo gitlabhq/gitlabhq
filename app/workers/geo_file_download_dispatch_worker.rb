@@ -1,11 +1,5 @@
 class GeoFileDownloadDispatchWorker < Geo::BaseSchedulerWorker
-  LEASE_KEY = 'geo_file_download_dispatch_worker'.freeze
-
   private
-
-  def lease_key
-    LEASE_KEY
-  end
 
   def schedule_job(object_db_id, object_type)
     job_id = GeoFileDownloadWorker.perform_async(object_type, object_db_id)

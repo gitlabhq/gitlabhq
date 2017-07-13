@@ -31,7 +31,7 @@ module Geo
 
       @start_time = Time.now
 
-      # Prevent multiple Sidekiq workers from attempting to schedule projects synchronization
+      # Prevent multiple Sidekiq workers from attempting to schedule jobs
       try_obtain_lease do
         loop do
           break unless node_enabled?
@@ -62,6 +62,10 @@ module Geo
 
     def db_retrieve_batch_size
       DB_RETRIEVE_BATCH_SIZE
+    end
+
+    def lease_key
+      @lease_key ||= self.class.name.underscore
     end
 
     def lease_timeout
