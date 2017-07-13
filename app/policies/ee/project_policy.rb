@@ -49,6 +49,7 @@ module EE
       rule { can?(:master_access) }.policy do
         enable :push_code_to_protected_branches
         enable :admin_path_locks
+        enable :update_approvers
       end
 
       rule { auditor }.policy do
