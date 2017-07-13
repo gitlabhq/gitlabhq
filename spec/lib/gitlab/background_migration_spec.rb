@@ -34,6 +34,20 @@ describe Gitlab::BackgroundMigration do
         described_class.steal('Bar')
       end
     end
+
+    context 'when there are scheduled jobs present', :sidekiq, :redis do
+      it 'steals all jobs from the schedule sets' do
+        Sidekiq::Testing.disable! do
+          BackgroundMigrationWorker.perform_in(10.minutes, 'Object')
+          expect(Sidekiq::ScheduledSet.new).to be_one
+          expect(described_class).to receive(:perform).with('Object', any_args)
+
+          described_class.steal('Object')
+
+          expect(Sidekiq::ScheduledSet.new).to be_none
+        end
+      end
+    end
   end
 
   describe '.perform' do

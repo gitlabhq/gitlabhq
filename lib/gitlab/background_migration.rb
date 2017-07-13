@@ -1,7 +1,7 @@
 module Gitlab
   module BackgroundMigration
     def self.queue
-      BackgroundMigrationWorker.sidekiq_options['queue']
+      @queue ||= BackgroundMigrationWorker.sidekiq_options['queue']
     end
 
     # Begins stealing jobs from the background migrations queue, blocking the
@@ -9,16 +9,20 @@ module Gitlab
     #
     # steal_class - The name of the class for which to steal jobs.
     def self.steal(steal_class)
-      queue = Sidekiq::Queue.new(self.queue)
+      enqueued = Sidekiq::Queue.new(self.queue)
+      scheduled = Sidekiq::ScheduledSet.new
 
-      queue.each do |job|
-        migration_class, migration_args = job.args
+      [scheduled, enqueued].each do |queue|
+        queue.each do |job|
+          migration_class, migration_args = job.args
 
-        next unless migration_class == steal_class
+          next unless job.queue == self.queue
+          next unless migration_class == steal_class
 
-        perform(migration_class, migration_args)
+          perform(migration_class, migration_args)
 
-        job.delete
+          job.delete
+        end
       end
     end
 
@@ -28,6 +32,7 @@ module Gitlab
     # arguments - The arguments to pass to the background migration's "perform"
     #             method.
     def self.perform(class_name, arguments)
+      puts class_name
       const_get(class_name).new.perform(*arguments)
     end
   end
