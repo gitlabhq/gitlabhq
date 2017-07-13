@@ -61,17 +61,14 @@ export default {
         });
     },
     initPolling() {
-      const { notesPath, lastFetchedAt } = this.$el.parentNode.dataset;
-      const options = {
-        endpoint: `${notesPath}?full_data=1`,
-        lastFetchedAt,
-      };
+      const { lastFetchedAt } = $('.js-notes-wrapper')[0].dataset;
+      this.$store.commit('setLastFetchedAt', lastFetchedAt);
 
       // FIXME: @fatihacet Implement real polling mechanism
       setInterval(() => {
-        this.$store.dispatch('poll', options)
+        this.$store.dispatch('poll')
           .then((res) => {
-            options.lastFetchedAt = res.last_fetched_at;
+            this.$store.commit('setLastFetchedAt', res.lastFetchedAt);
           })
           .catch(() => {
             new Flash('Something went wrong while fetching latest comments.'); // eslint-disable-line

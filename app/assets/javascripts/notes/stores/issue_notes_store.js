@@ -7,6 +7,7 @@ const findNoteObjectById = (notes, id) => notes.filter(n => n.id === id)[0];
 const state = {
   notes: [],
   targetNoteHash: null,
+  lastFetchedAt: null,
 };
 
 const getters = {
@@ -104,6 +105,9 @@ const mutations = {
       });
     }
   },
+  setLastFetchedAt(storeState, fetchedAt) {
+    storeState.lastFetchedAt = fetchedAt;
+  },
 };
 
 const actions = {
@@ -156,10 +160,10 @@ const actions = {
       });
   },
   poll(context, data) {
-    const { endpoint, lastFetchedAt } = data;
+    const { notesPath } = $('.js-notes-wrapper')[0].dataset;
 
     return service
-      .poll(endpoint, lastFetchedAt)
+      .poll(`${notesPath}?full_data=1`, context.state.lastFetchedAt)
       .then(res => res.json())
       .then((res) => {
         if (res.notes.length) {
