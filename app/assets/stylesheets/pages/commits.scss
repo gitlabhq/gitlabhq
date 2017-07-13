@@ -284,15 +284,15 @@
   }
 }
 
+
 .gpg-status-box {
   &.valid {
-    color: $brand-success;
-    border: 1px solid $brand-success;
+    @include green-status-color;
   }
 
   &.invalid {
-    color: $gray;
-    border: 1px solid $common-gray-light;
+    @include status-color($gray-dark, $gray, $common-gray-dark);
+    border-color: $common-gray-light;
   }
 }
 
