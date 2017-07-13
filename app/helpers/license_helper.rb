@@ -59,5 +59,12 @@ module LicenseHelper
     @current_license = License.current
   end
 
+  def new_trial_url
+    uri = URI.parse(Gitlab::SUBSCRIPTIONS_URL)
+    uri.path = '/trials/new'
+    uri.query = "return_to=#{Gitlab.config.gitlab.url}"
+    uri.to_s
+  end
+
   extend self
 end

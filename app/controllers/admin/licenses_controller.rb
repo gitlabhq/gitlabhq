@@ -17,7 +17,7 @@ class Admin::LicensesController < Admin::ApplicationController
   end
 
   def new
-    @license = License.new
+    build_license
   end
 
   def create
@@ -64,6 +64,10 @@ class Admin::LicensesController < Admin::ApplicationController
 
     flash.keep
     redirect_to new_admin_license_path
+  end
+
+  def build_license
+    @license ||= License.new(data: params[:trial_key])
   end
 
   def license_params
