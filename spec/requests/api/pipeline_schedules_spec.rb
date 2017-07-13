@@ -84,6 +84,7 @@ describe API::PipelineSchedules do
     let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer) }
 
     before do
+      create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule)
       pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
     end
 
@@ -120,7 +121,8 @@ describe API::PipelineSchedules do
   end
 
   describe 'POST /projects/:id/pipeline_schedules' do
-    let(:params) { attributes_for(:ci_pipeline_schedule) }
+    let(:variables_params) { attributes_for(:ci_pipeline_schedule_variable) }
+    let(:params) { attributes_for(:ci_pipeline_schedule).merge(variables_attributes: variables_params.to_json) }
 
     context 'authenticated user with valid permissions' do
       context 'with required parameters' do
@@ -137,6 +139,7 @@ describe API::PipelineSchedules do
           expect(json_response['cron']).to eq(params[:cron])
           expect(json_response['cron_timezone']).to eq(params[:cron_timezone])
           expect(json_response['owner']['id']).to eq(developer.id)
+          expect(json_response['variables'][0]['key']).to eq(variables_params[:key])
         end
       end
 
@@ -199,6 +202,15 @@ describe API::PipelineSchedules do
           expect(response).to have_http_status(:bad_request)
           expect(json_response['message']).to have_key('cron')
         end
+      end
+
+      it 'updates variables' do
+        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+          variables_attributes: ([{ key: 'ABC', value: 'ABC123'}]).to_json
+
+        expect(response).to have_http_status(:ok)
+        expect(response).to match_response_schema('pipeline_schedule')
+        expect(json_response['variables'][0]['key']).to eq('ABC')
       end
     end
 

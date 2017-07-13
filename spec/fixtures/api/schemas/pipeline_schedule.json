@@ -31,6 +31,18 @@
         "web_url": { "type": "uri" }
       },
       "additionalProperties": false
+    },
+    "variables": {
+      "type": ["array", "null"],
+      "items": {
+        "type": ["object", "null"],
+        "properties": {
+          "id": { "type": "integer" },
+          "key": { "type": "string" },
+          "value": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
     }
   },
   "required": [

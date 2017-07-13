@@ -733,6 +733,10 @@ module API
       expose :protected?, as: :protected
     end
 
+    class PipelineScheduleVariable < Grape::Entity
+      expose :id, :key, :value
+    end
+
     class Pipeline < PipelineBasic
       expose :before_sha, :tag, :yaml_errors
 
@@ -751,6 +755,7 @@ module API
 
     class PipelineScheduleDetails < PipelineSchedule
       expose :last_pipeline, using: Entities::PipelineBasic
+      expose :variables, using: Entities::PipelineScheduleVariable
     end
 
     class EnvironmentBasic < Grape::Entity

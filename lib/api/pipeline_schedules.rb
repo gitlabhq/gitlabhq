@@ -47,12 +47,25 @@ module API
         requires :cron, type: String, desc: 'The cron'
         optional :cron_timezone, type: String, default: 'UTC', desc: 'The timezone'
         optional :active, type: Boolean, default: true, desc: 'The activation of pipeline schedule'
+        optional :variables_attributes, type: Array[JSON], desc: 'The variables of pipeline schedule' do
+          optional :id, type: Integer
+          optional :key, type: String
+          optional :value, type: String
+          optional :_destroy, type: Boolean
+        end
       end
       post ':id/pipeline_schedules' do
         authorize! :create_pipeline_schedule, user_project
 
+        params = declared_params(include_missing: false)
+
+        # Convert Mash(GrapeHashWrapper) to Hash
+        if params[:variables_attributes]
+          params[:variables_attributes] = params[:variables_attributes].map(&:to_hash)
+        end
+
         pipeline_schedule = Ci::CreatePipelineScheduleService
-          .new(user_project, current_user, declared_params(include_missing: false))
+          .new(user_project, current_user, params)
           .execute
 
         if pipeline_schedule.persisted?
@@ -72,6 +85,12 @@ module API
         optional :cron, type: String, desc: 'The cron'
         optional :cron_timezone, type: String, desc: 'The timezone'
         optional :active, type: Boolean, desc: 'The activation of pipeline schedule'
+        optional :variables_attributes, type: Array[JSON], desc: 'The variables of pipeline schedule' do
+          optional :id, type: Integer
+          optional :key, type: String
+          optional :value, type: String
+          optional :_destroy, type: Boolean
+        end
       end
       put ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :read_pipeline_schedule, user_project
@@ -79,7 +98,14 @@ module API
         not_found!('PipelineSchedule') unless pipeline_schedule
         authorize! :update_pipeline_schedule, pipeline_schedule
 
-        if pipeline_schedule.update(declared_params(include_missing: false))
+        params = declared_params(include_missing: false)
+
+        # Convert Mash(GrapeHashWrapper) to Hash
+        if params[:variables_attributes]
+          params[:variables_attributes] = params[:variables_attributes].map(&:to_hash)
+        end
+
+        if pipeline_schedule.update(params)
           present pipeline_schedule, with: Entities::PipelineScheduleDetails
         else
           render_validation_error!(pipeline_schedule)
