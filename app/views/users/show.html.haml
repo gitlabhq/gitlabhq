@@ -9,7 +9,7 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
-.user-profile
+.user-profile.js-user-profile{ data: { action: controller.action_name } }
   .cover-block.user-cover-block.layout-nav
     .cover-controls
       - if @user == current_user
@@ -129,10 +129,3 @@
 
     .loading-status
       = spinner
-
-:javascript
-  var userProfile;
-
-  userProfile = new gl.User({
-    action: "#{controller.action_name}"
-  });

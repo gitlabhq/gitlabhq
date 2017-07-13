@@ -409,6 +409,9 @@ import PerformanceBar from './performance_bar';
           break;
         case 'users:show':
           new UserCallout();
+          new gl.User({
+            action: document.querySelector('.js-user-profile').dataset.action,
+          });
           break;
         case 'admin:conversational_development_index:show':
           new UserCallout();

@@ -1,4 +1,5 @@
 /* eslint-disable max-len, space-before-function-paren, no-underscore-dangle, consistent-return, comma-dangle, no-unused-vars, dot-notation, no-new, no-return-assign, camelcase, no-param-reassign, class-methods-use-this */
+/* global Calendar */
 
 /*
 UserTabs
@@ -147,7 +148,11 @@ export default class UserTabs {
       return;
     }
     const $calendarWrap = this.$parentEl.find('.user-calendar');
-    $calendarWrap.load($calendarWrap.data('href'));
+    $calendarWrap.load($calendarWrap.data('href'), () => {
+      const calendarEl = document.querySelector('.calendar');
+
+      return new Calendar(JSON.parse(calendarEl.dataset.dates), calendarEl.dataset.path);
+    });
     new gl.Activities();
     return this.loaded['activity'] = true;
   }

@@ -1,9 +1,4 @@
-.clearfix.calendar
+.clearfix.calendar{ data: { dates: @activity_dates.to_json, path: user_calendar_activities_path } }
   .js-contrib-calendar
   .calendar-hint
     Summary of issues, merge requests, push events, and comments
-:javascript
-  new Calendar(
-    #{@activity_dates.to_json},
-    '#{user_calendar_activities_path}'
-  );
