@@ -37,15 +37,21 @@ class GpgKey < ActiveRecord::Base
     write_attribute(:key, value)
   end
 
-  def emails
-    @emails ||= Gitlab::Gpg.emails_from_key(key)
+  def user_infos
+    @user_infos ||= Gitlab::Gpg.user_infos_from_key(key)
+  end
+
+  def verified_user_infos
+    user_infos.select do |user_info|
+      user_info[:email] == user.email
+    end
   end
 
   def emails_with_verified_status
-    emails.map do |email|
+    user_infos.map do |user_info|
       [
-        email,
-        email == user.email
+        user_info[:email],
+        user_info[:email] == user.email
       ]
     end.to_h
   end

@@ -46,11 +46,31 @@ describe GpgKey do
     end
   end
 
-  describe '#emails' do
-    it 'returns the emails from the gpg key' do
+  describe '#user_infos' do
+    it 'returns the user infos from the gpg key' do
       gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key
+      expect(Gitlab::Gpg).to receive(:user_infos_from_key).with(gpg_key.key)
 
-      expect(gpg_key.emails).to eq GpgHelpers::User1.emails
+      gpg_key.user_infos
+    end
+  end
+
+  describe '#verified_user_infos' do
+    it 'returns the user infos if it is verified' do
+      user = create :user, email: GpgHelpers::User1.emails.first
+      gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+
+      expect(gpg_key.verified_user_infos).to eq([{
+        name: GpgHelpers::User1.names.first,
+        email: GpgHelpers::User1.emails.first
+      }])
+    end
+
+    it 'returns an empty array if the user info is not verified' do
+      user = create :user, email: 'unrelated@example.com'
+      gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+
+      expect(gpg_key.verified_user_infos).to eq([])
     end
   end
 

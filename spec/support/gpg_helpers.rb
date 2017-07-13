@@ -98,6 +98,10 @@ module GpgHelpers
       '5F7EA3981A5845B141ABD522CCFBE19F00AC8B1D'
     end
 
+    def names
+      ['Nannie Bernhard']
+    end
+
     def emails
       ['nannie.bernhard@example.com']
     end
@@ -185,6 +189,10 @@ module GpgHelpers
 
     def fingerprint
       '6D494CA6FC90C0CAE0910E42BF9D925F911EFD65'
+    end
+
+    def names
+      ['Bette Cartwright', 'Bette Cartwright']
     end
 
     def emails

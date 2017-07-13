@@ -32,6 +32,8 @@ RSpec.describe Gitlab::Gpg::Commit do
           project: project,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
+          gpg_key_user_name: GpgHelpers::User1.names.first,
+          gpg_key_user_email: GpgHelpers::User1.emails.first,
           valid_signature: true
         )
       end
@@ -67,6 +69,8 @@ RSpec.describe Gitlab::Gpg::Commit do
           project: project,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
+          gpg_key_user_name: GpgHelpers::User1.names.first,
+          gpg_key_user_email: GpgHelpers::User1.emails.first,
           valid_signature: false
         )
       end
@@ -102,6 +106,8 @@ RSpec.describe Gitlab::Gpg::Commit do
           project: project,
           gpg_key: nil,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
+          gpg_key_user_name: nil,
+          gpg_key_user_email: nil,
           valid_signature: false
         )
       end

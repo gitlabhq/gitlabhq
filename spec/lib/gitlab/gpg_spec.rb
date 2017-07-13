@@ -28,16 +28,18 @@ describe Gitlab::Gpg do
     end
   end
 
-  describe '.emails_from_key' do
-    it 'returns the emails' do
-      expect(
-        described_class.emails_from_key(GpgHelpers::User1.public_key)
-      ).to eq GpgHelpers::User1.emails
+  describe '.user_infos_from_key' do
+    it 'returns the names and emails' do
+      user_infos = described_class.user_infos_from_key(GpgHelpers::User1.public_key)
+      expect(user_infos).to eq([{
+        name: GpgHelpers::User1.names.first,
+        email: GpgHelpers::User1.emails.first
+      }])
     end
 
     it 'returns an empty array when the key is invalid' do
       expect(
-        described_class.emails_from_key('bogus')
+        described_class.user_infos_from_key('bogus')
       ).to eq []
     end
   end
