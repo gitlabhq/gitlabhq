@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.9'
+gem 'rails', '5.0.4'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -20,8 +20,8 @@ gem 'rugged', '~> 0.25.1.1'
 gem 'faraday', '~> 0.12'
 
 # Authentication libraries
-gem 'devise', '~> 4.2'
-gem 'doorkeeper', '~> 4.2.0'
+gem 'devise', '~> 4.3'
+gem 'doorkeeper', '~> 4.2.6'
 gem 'doorkeeper-openid_connect', '~> 1.1.0'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
@@ -33,7 +33,7 @@ gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
-gem 'omniauth-saml', '~> 1.7.0'
+gem 'omniauth-saml', '~> 1.8.1'
 gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.2.0'
 gem 'omniauth_crowd', '~> 2.2.0'
@@ -64,7 +64,7 @@ gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: 'omniauth-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
-gem 'gollum-lib', '~> 4.2', require: false
+gem 'gollum-lib', '~> 4.2.5', require: false
 gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
@@ -100,7 +100,7 @@ gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.1.0'
 
 # for Google storage
-gem 'google-api-client', '~> 0.8.6'
+gem 'google-api-client', '~> 0.9.28'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -109,7 +109,7 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.5'
 
 # Markdown and HTML processing
-gem 'html-pipeline', '~> 1.11.0'
+gem 'html-pipeline', '~> 2.6.0'
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.5.1'
 gem 'redcarpet', '~> 3.4'
@@ -126,7 +126,7 @@ gem 'bootstrap_form', '~> 2.7.0'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
-gem 'nokogiri', '~> 1.6.7', '>= 1.6.7.2'
+gem 'nokogiri', '~> 1.6.8.1'
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -198,9 +198,6 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 # Kubernetes integration
 gem 'kubeclient', '~> 2.2.0'
 
-# d3
-gem 'd3_rails', '~> 3.5.0'
-
 # underscore-rails
 gem 'underscore-rails', '~> 1.8.0'
 
@@ -246,7 +243,7 @@ gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.0'
 gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-gem 'jquery-rails', '~> 4.1.0'
+gem 'jquery-rails', '~> 4.3.1'
 gem 'request_store', '~> 1.3'
 gem 'select2-rails', '~> 3.5.9'
 gem 'virtus', '~> 1.0.1'
@@ -259,7 +256,7 @@ gem 'premailer-rails', '~> 1.9.7'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
-gem 'rails-i18n', '~> 4.0.9'
+gem 'rails-i18n', '~> 5.0.4'
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
@@ -311,7 +308,7 @@ group :development, :test do
 
   gem 'database_cleaner', '~> 1.5.0'
   gem 'factory_girl_rails', '~> 4.7.0'
-  gem 'rspec-rails', '~> 3.5.0'
+  gem 'rspec-rails', '~> 3.6.0'
   gem 'rspec-retry', '~> 0.4.5'
   gem 'spinach-rails', '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
@@ -324,7 +321,7 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.4'
 
-  gem 'capybara', '~> 2.6.2'
+  gem 'capybara', '~> 2.14.4'
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist', '~> 1.9.0'
 
@@ -345,7 +342,7 @@ group :development, :test do
   gem 'license_finder', '~> 2.1.0', require: false
   gem 'knapsack', '~> 1.11.0'
 
-  gem 'activerecord_sane_schema_dumper', '0.2'
+  gem 'activerecord_sane_schema_dumper', '1.0'
 
   gem 'stackprof', '~> 0.2.10'
 end
