@@ -36,15 +36,32 @@ describe Gitlab::BackgroundMigration do
     end
 
     context 'when there are scheduled jobs present', :sidekiq, :redis do
-      it 'steals all jobs from the schedule sets' do
+      it 'steals all jobs from the scheduled sets' do
         Sidekiq::Testing.disable! do
           BackgroundMigrationWorker.perform_in(10.minutes, 'Object')
+
           expect(Sidekiq::ScheduledSet.new).to be_one
           expect(described_class).to receive(:perform).with('Object', any_args)
 
           described_class.steal('Object')
 
           expect(Sidekiq::ScheduledSet.new).to be_none
+        end
+      end
+    end
+
+    context 'when there are enqueued and scheduled jobs present', :sidekiq, :redis do
+      it 'steals from the scheduled sets queue first' do
+        Sidekiq::Testing.disable! do
+          expect(described_class).to receive(:perform)
+            .with('Object', [1]).ordered
+          expect(described_class).to receive(:perform)
+            .with('Object', [2]).ordered
+
+          BackgroundMigrationWorker.perform_async('Object', [2])
+          BackgroundMigrationWorker.perform_in(10.minutes, 'Object', [1])
+
+          described_class.steal('Object')
         end
       end
     end
