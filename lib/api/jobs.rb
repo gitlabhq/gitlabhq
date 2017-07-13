@@ -167,7 +167,7 @@ module API
         authorize_update_builds!
 
         build = get_build!(params[:job_id])
-        authorize!(:update_build, build)
+        authorize!(:admin_build, build)
         return forbidden!('Job is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)

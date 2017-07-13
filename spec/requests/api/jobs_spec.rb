@@ -18,14 +18,11 @@ describe API::Jobs do
   let(:reporter) { create(:project_member, :reporter, project: project).user }
   let(:guest) { create(:project_member, :guest, project: project).user }
 
-  before do
-    project.add_developer(user)
-  end
-
   describe 'GET /projects/:id/jobs' do
     let(:query) { Hash.new }
 
     before do
+      project.add_developer(user)
       get api("/projects/#{project.id}/jobs", api_user), query
     end
 
@@ -89,6 +86,7 @@ describe API::Jobs do
     let(:query) { Hash.new }
 
     before do
+      project.add_developer(user)
       get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
     end
 
@@ -159,6 +157,7 @@ describe API::Jobs do
 
   describe 'GET /projects/:id/jobs/:job_id' do
     before do
+      project.add_developer(user)
       get api("/projects/#{project.id}/jobs/#{job.id}", api_user)
     end
 
@@ -190,6 +189,7 @@ describe API::Jobs do
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
     before do
+      project.add_developer(user)
       get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
     end
 
@@ -228,6 +228,7 @@ describe API::Jobs do
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     before do
+      project.add_developer(user)
       job.success
     end
 
@@ -325,6 +326,7 @@ describe API::Jobs do
     let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
 
     before do
+      project.add_developer(user)
       get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
     end
 
@@ -346,6 +348,7 @@ describe API::Jobs do
 
   describe 'POST /projects/:id/jobs/:job_id/cancel' do
     before do
+      project.add_developer(user)
       post api("/projects/#{project.id}/jobs/#{job.id}/cancel", api_user)
     end
 
@@ -379,6 +382,7 @@ describe API::Jobs do
     let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
 
     before do
+      project.add_developer(user)
       post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user)
     end
 
@@ -411,6 +415,7 @@ describe API::Jobs do
 
   describe 'POST /projects/:id/jobs/:job_id/erase' do
     before do
+      project.add_master(user)
       post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
     end
 
@@ -443,6 +448,7 @@ describe API::Jobs do
 
   describe 'POST /projects/:id/jobs/:job_id/artifacts/keep' do
     before do
+      project.add_developer(user)
       post api("/projects/#{project.id}/jobs/#{job.id}/artifacts/keep", user)
     end
 
@@ -469,6 +475,7 @@ describe API::Jobs do
 
   describe 'POST /projects/:id/jobs/:job_id/play' do
     before do
+      project.add_developer(user)
       post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user)
     end
 

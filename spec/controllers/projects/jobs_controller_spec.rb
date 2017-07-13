@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Projects::JobsController do
   include ApiHelpers
+  include AccessMatchersForController
 
   let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
@@ -370,41 +371,57 @@ describe Projects::JobsController do
     end
   end
 
-  describe 'POST erase' do
-    before do
-      project.add_developer(user)
-      sign_in(user)
+  describe 'POST #erase' do
+    describe 'functionality' do
+      before do
+        project.add_master(user)
+        sign_in(user)
 
-      post_erase
+        go
+      end
+
+      context 'when job is erasable' do
+        let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline) }
+
+        it 'redirects to the erased job page' do
+          expect(response).to have_http_status(:found)
+          expect(response).to redirect_to(namespace_project_job_path(id: job.id))
+        end
+
+        it 'erases artifacts' do
+          expect(job.artifacts_file.exists?).to be_falsey
+          expect(job.artifacts_metadata.exists?).to be_falsey
+        end
+
+        it 'erases trace' do
+          expect(job.trace.exist?).to be_falsey
+        end
+      end
+
+      context 'when job is not erasable' do
+        let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
+
+        it 'returns unprocessable_entity' do
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
     end
 
-    context 'when job is erasable' do
+    describe 'security' do
       let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline) }
 
-      it 'redirects to the erased job page' do
-        expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
-      end
-
-      it 'erases artifacts' do
-        expect(job.artifacts_file.exists?).to be_falsey
-        expect(job.artifacts_metadata.exists?).to be_falsey
-      end
-
-      it 'erases trace' do
-        expect(job.trace.exist?).to be_falsey
-      end
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:visitor) }
     end
 
-    context 'when job is not erasable' do
-      let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
-
-      it 'returns unprocessable_entity' do
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-    end
-
-    def post_erase
+    def go
       post :erase, namespace_id: project.namespace,
                    project_id: project,
                    id: job.id
