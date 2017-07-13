@@ -334,6 +334,7 @@ module Gitlab
         raw_log(options).map { |c| Commit.decorate(c) }
       end
 
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/382
       def count_commits(options)
         cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
@@ -884,6 +885,9 @@ module Gitlab
         Rugged::Walker.walk(rugged, walk_options).to_a
       end
 
+      # Gitaly note: JV: although #log_by_shell shells out to Git I think the
+      # complexity is such that we should migrate it as Ruby before trying to
+      # do it in Go.
       def log_by_shell(sha, options)
         limit = options[:limit].to_i
         offset = options[:offset].to_i
