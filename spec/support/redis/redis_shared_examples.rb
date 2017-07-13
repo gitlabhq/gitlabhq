@@ -65,7 +65,6 @@ RSpec.shared_examples "redis_shared_examples" do
   end
 
   describe '.url' do
-<<<<<<< HEAD
     it 'withstands mutation' do
       url1 = described_class.url
       url2 = described_class.url
@@ -74,8 +73,6 @@ RSpec.shared_examples "redis_shared_examples" do
       expect(url2).not_to end_with('foobar')
     end
 
-=======
->>>>>>> ce/master
     context 'when yml file with env variable' do
       let(:config_file_name) { config_with_environment_variable_inside }
 

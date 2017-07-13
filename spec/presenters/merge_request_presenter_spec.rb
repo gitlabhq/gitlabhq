@@ -388,7 +388,6 @@ describe MergeRequestPresenter do
     end
   end
 
-<<<<<<< HEAD
   describe '#can_push_to_source_branch' do
     before do
       allow(resource).to receive(:source_branch_exists?) { source_branch_exists }
@@ -521,8 +520,6 @@ describe MergeRequestPresenter do
     end
   end
 
-=======
->>>>>>> ce/master
   describe '#source_branch_with_namespace_link' do
     subject do
       described_class.new(resource, current_user: user).source_branch_with_namespace_link

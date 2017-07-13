@@ -23,7 +23,6 @@ class BoardService {
         url: bulkUpdatePath,
       },
     });
-<<<<<<< HEAD
   }
 
   allBoards () {
@@ -35,8 +34,6 @@ class BoardService {
       return this.boards.update({ id: board.id }, board);
     }
     return this.boards.save({}, board);
-=======
->>>>>>> ce/master
   }
 
   all () {

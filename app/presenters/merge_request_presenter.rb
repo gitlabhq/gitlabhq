@@ -76,15 +76,12 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-<<<<<<< HEAD
   def rebase_path
     if !rebase_in_progress? && should_be_rebased? && user_can_push_to_source_branch?
       rebase_project_merge_request_path(project, merge_request)
     end
   end
 
-=======
->>>>>>> ce/master
   def target_branch_tree_path
     if target_branch_exists?
       project_tree_path(project, target_branch)

@@ -500,11 +500,7 @@ GEM
       mustermann (= 0.4.0)
     mysql2 (0.4.5)
     net-ldap (0.12.1)
-<<<<<<< HEAD
     net-ntp (2.1.3)
-    net-ssh (3.0.1)
-=======
->>>>>>> ce/master
     netrc (0.11.0)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
@@ -1051,14 +1047,9 @@ DEPENDENCIES
   method_source (~> 0.8)
   minitest (~> 5.7.0)
   mousetrap-rails (~> 1.4.6)
-<<<<<<< HEAD
   mysql2 (~> 0.4.5)
   net-ldap
   net-ntp
-  net-ssh (~> 3.0.1)
-=======
-  mysql2 (~> 0.3.16)
->>>>>>> ce/master
   nokogiri (~> 1.6.7, >= 1.6.7.2)
   oauth2 (~> 1.4)
   octokit (~> 4.6.2)
