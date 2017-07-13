@@ -518,4 +518,12 @@ module ProjectsHelper
 
     current_application_settings.restricted_visibility_levels || []
   end
+
+  def find_file_path
+    return unless @project && !@project.empty_repo?
+
+    ref = @ref || @project.repository.root_ref
+
+    project_find_file_path(@project, ref)
+  end
 end
