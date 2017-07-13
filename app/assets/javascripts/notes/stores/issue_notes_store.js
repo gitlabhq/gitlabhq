@@ -108,30 +108,25 @@ const mutations = {
   setLastFetchedAt(storeState, fetchedAt) {
     storeState.lastFetchedAt = fetchedAt;
   },
-  showPlaceholderSystemNote(storeState, data) {
+  showPlaceholderNote(storeState, data) {
     storeState.notes.push({
-      placeholderNote: true,
       individual_note: true,
-      placeholderType: 'systemNote',
+      isPlaceholderNote: true,
+      placeholderType: data.isSystemNote ? 'systemNote' : 'note',
       notes: [
         {
-          id: 'placeholderSystemNote',
           body: data.noteBody,
         },
       ],
     });
   },
-  removePlaceholderSystemNote(storeState) {
-    let index = -1;
+  removePlaceholderNotes(storeState) {
+    const { notes } = storeState;
 
-    storeState.notes.forEach((n, i) => {
-      if (n.placeholderNote && n.placeholderType === 'systemNote') {
-        index = i;
+    for (let i = notes.length - 1; i >= 0; i -= 1) {
+      if (notes[i].isPlaceholderNote) {
+        notes.splice(i, 1);
       }
-    });
-
-    if (index > -1) {
-      storeState.notes.splice(index, 1);
     }
   },
 };
@@ -185,7 +180,7 @@ const actions = {
         return res;
       });
   },
-  poll(context, data) {
+  poll(context) {
     const { notesPath } = $('.js-notes-wrapper')[0].dataset;
 
     return service

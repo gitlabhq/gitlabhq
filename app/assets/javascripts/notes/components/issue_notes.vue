@@ -9,6 +9,7 @@ import IssueNote from './issue_note.vue';
 import IssueDiscussion from './issue_discussion.vue';
 import IssueSystemNote from './issue_system_note.vue';
 import IssueCommentForm from './issue_comment_form.vue';
+import PlaceholderNote from './issue_placeholder_note.vue';
 import PlaceholderSystemNote from './issue_placeholder_system_note.vue';
 
 Vue.use(Vuex);
@@ -27,6 +28,7 @@ export default {
     IssueDiscussion,
     IssueSystemNote,
     IssueCommentForm,
+    PlaceholderNote,
     PlaceholderSystemNote,
   },
   computed: {
@@ -37,12 +39,12 @@ export default {
   },
   methods: {
     component(note) {
-      if (note.placeholderNote) {
+      if (note.isPlaceholderNote) {
         if (note.placeholderType === 'systemNote') {
           return PlaceholderSystemNote;
         }
-      }
-      else if (note.individual_note) {
+        return PlaceholderNote;
+      } else if (note.individual_note) {
         return note.notes[0].system ? IssueSystemNote : IssueNote;
       }
 

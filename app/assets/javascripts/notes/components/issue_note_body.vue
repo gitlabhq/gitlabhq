@@ -39,10 +39,10 @@ export default {
     },
     initTaskList() {
       if (this.canEdit) {
-        new TaskList({
+        this.taskList = new TaskList({
           dataType: 'note',
           fieldName: 'note',
-          selector: '.notes'
+          selector: '.notes',
         });
       }
     },
