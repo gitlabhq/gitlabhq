@@ -3,8 +3,7 @@
     = icon 'key', class: "settings-list-icon hidden-xs"
   .key-list-item-info
     - key.emails_with_verified_status.map do |email, verified|
-      = email
-      = verified_email_badge(email, verified)
+      = render partial: 'email_with_badge', locals: { email: email, verified: verified }
 
     .description
       %code= key.fingerprint
