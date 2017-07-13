@@ -379,7 +379,7 @@ module Gitlab
 
       # Counts the amount of commits between `from` and `to`.
       def count_commits_between(from, to)
-        commits_between(from, to).size
+        Commit.between(self, from, to).size
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
