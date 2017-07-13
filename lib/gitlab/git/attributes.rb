@@ -1,3 +1,8 @@
+# Gitaly note: JV: not sure what to make of this class. Why does it use
+# the full disk path of the repository to look up attributes This is
+# problematic in Gitaly, because Gitaly hides the full disk path to the
+# repository from gitlab-ce.
+
 module Gitlab
   module Git
     # Class for parsing Git attribute files and extracting the attributes for
