@@ -50,8 +50,8 @@ describe GeoFileDownloadDispatchWorker do
     # 1. A total of 8 files in the queue, and we can load a maximimum of 5 and send 2 at a time.
     # 2. We send 2, wait for 1 to finish, and then send again.
     it 'attempts to load a new batch without pending downloads' do
-      stub_const('GeoFileDownloadDispatchWorker::DB_RETRIEVE_BATCH_SIZE', 5)
-      stub_const('GeoFileDownloadDispatchWorker::MAX_CAPACITY', 2)
+      stub_const('Geo::BaseSchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 5)
+      stub_const('Geo::BaseSchedulerWorker::MAX_CAPACITY', 2)
 
       avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
       create_list(:lfs_object, 2, :with_file)

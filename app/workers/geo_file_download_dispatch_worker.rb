@@ -1,9 +1,5 @@
 class GeoFileDownloadDispatchWorker < Geo::BaseSchedulerWorker
   LEASE_KEY = 'geo_file_download_dispatch_worker'.freeze
-  LEASE_TIMEOUT = 10.minutes
-  DB_RETRIEVE_BATCH_SIZE = 1000
-  MAX_CAPACITY = 10
-  RUN_TIME = 60.minutes.to_i
 
   private
 
@@ -11,24 +7,8 @@ class GeoFileDownloadDispatchWorker < Geo::BaseSchedulerWorker
     LEASE_KEY
   end
 
-  def lease_timeout
-    LEASE_TIMEOUT
-  end
-
-  def db_retrieve_batch_size
-    DB_RETRIEVE_BATCH_SIZE
-  end
-
-  def max_capacity
-    MAX_CAPACITY
-  end
-
-  def run_time
-    RUN_TIME
-  end
-
   def schedule_jobs
-    num_to_schedule = [MAX_CAPACITY - scheduled_job_ids.size, @pending_resources.size].min
+    num_to_schedule = [max_capacity - scheduled_job_ids.size, @pending_resources.size].min
 
     return unless resources_remain?
 
@@ -43,8 +23,8 @@ class GeoFileDownloadDispatchWorker < Geo::BaseSchedulerWorker
   end
 
   def load_pending_resources
-    lfs_object_ids = find_lfs_object_ids(DB_RETRIEVE_BATCH_SIZE)
-    objects_ids    = find_object_ids(DB_RETRIEVE_BATCH_SIZE)
+    lfs_object_ids = find_lfs_object_ids(db_retrieve_batch_size)
+    objects_ids    = find_object_ids(db_retrieve_batch_size)
 
     @pending_resources = interleave(lfs_object_ids, objects_ids)
   end

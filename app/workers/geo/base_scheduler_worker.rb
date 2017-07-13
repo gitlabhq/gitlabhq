@@ -3,6 +3,11 @@ module Geo
     include Sidekiq::Worker
     include CronjobQueue
 
+    DB_RETRIEVE_BATCH_SIZE = 1000
+    LEASE_TIMEOUT = 10.minutes
+    MAX_CAPACITY = 10
+    RUN_TIME = 60.minutes.to_i
+
     def initialize
       @pending_resources = []
       @scheduled_jobs = []
@@ -52,6 +57,22 @@ module Geo
     end
 
     private
+
+    def db_retrieve_batch_size
+      DB_RETRIEVE_BATCH_SIZE
+    end
+
+    def lease_timeout
+      LEASE_TIMEOUT
+    end
+
+    def max_capacity
+      MAX_CAPACITY
+    end
+
+    def run_time
+      RUN_TIME
+    end
 
     def reload_queue?
       @pending_resources.size < max_capacity
