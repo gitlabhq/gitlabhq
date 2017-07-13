@@ -44,7 +44,7 @@ The following Elasticsearch settings are available:
 
 | Parameter                           | Description |
 | ---------                           | ----------- |
-| `Elasticsearch indexing`            | Enables/disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also keep in mind that this option doesn't have any impact on existing data, this only enables/disables background indexer which tracks data changes. So by enabling this you will not get your existing data indexed, use special rake task for that as explained in [Add GitLab's data to the Elasticsearch index](#add-gitlabs-data-to-the-elasticsearch-index). |
+| `Elasticsearch indexing`            | Enables/disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also keep in mind that this option doesn't have any impact on existing data, this only enables/disables background indexer which tracks data changes. So by enabling this you will not get your existing data indexed, use special rake task for that as explained in [Adding GitLab's data to the Elasticsearch index](#adding-gitlabs-data-to-the-elasticsearch-index). |
 | `Use experimental repository indexer` | Perform repository indexing using [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). |
 | `Search with Elasticsearch enabled` | Enables/disables using Elasticsearch in search. |
 | `URL`                              | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://host1, https://host2:9200"). |
@@ -62,7 +62,9 @@ To disable the Elasticsearch integration:
    and 'Elasticsearch indexing'
 1. Click **Save** for the changes to take effect
 
-## Adding GitLab data to the Elasticsearch index
+## Adding GitLab's data to the Elasticsearch index
+
+### Indexing small instances (database size less than 500 MiB, size of repos less than 5 GiB)
 
 Configure Elasticsearch's host and port in **Admin > Settings**. Then create empty indexes using one of the following commands:
 
@@ -78,6 +80,42 @@ Then enable Elasticsearch indexing and run repository indexing tasks:
 
 ```
 # Omnibus installations
+sudo gitlab-rake gitlab:elastic:index
+
+# Installations from source
+bundle exec rake gitlab:elastic:index
+```
+
+Enable Elasticsearch search.
+
+### Indexing large instances
+
+Configure Elasticsearch's host and port in **Admin > Settings**. Then create empty indexes using one of the following commands:
+
+```
+# Omnibus installations
+sudo gitlab-rake gitlab:elastic:create_empty_index
+
+# Installations from source
+bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
+```
+
+Indexing large Git repositories can take a while. To speed up the process, you
+can temporarily disable auto-refreshing and replicating. In our experience you can expect a 20%
+time drop. We'll enable them when indexing is done. This step is optional!
+
+```bash
+curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+    "index" : {
+        "refresh_interval" : "-1",
+        "number_of_replicas" : 0
+    } }'
+```
+
+Then enable Elasticsearch indexing and run repository indexing tasks:
+
+```
+# Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_repositories_async
 
 # Installations from source
@@ -87,6 +125,7 @@ bundle exec rake gitlab:elastic:index_repositories_async RAILS_ENV=production
 This enqueues a number of Sidekiq jobs to index your existing repositories.
 You can view the jobs in the admin panel (they are placed in the `elastic_batch_project_indexer`)
 queue), or you can query indexing status using a rake task:
+
 
 ```
 # Omnibus installations
@@ -114,8 +153,8 @@ sudo gitlab-rake gitlab:elastic:index_repositories
 # Installations from source
 bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production
 ```
- It might take a while depending on how big your Git repositories are (see
-[Indexing large repositories](#indexing-large-repositories)).
+
+It might take a while depending on how big your Git repositories are.
 
 If you want to run several tasks in parallel (probably in separate terminal
 windows) you can provide the `ID_FROM` and `ID_TO` parameters:
@@ -164,7 +203,7 @@ bundle exec rake gitlab:elastic:index_wikis RAILS_ENV=production
 The wiki indexer also supports the `ID_FROM` and `ID_TO` parameters if you want
 to limit a project set.
 
-To index all database entities:
+Index all database entities (Keep in mind it can take a while so consider using `screen` or `tmux`):
 
 ```
 # Omnibus installations
@@ -174,96 +213,23 @@ sudo gitlab-rake gitlab:elastic:index_database
 bundle exec rake gitlab:elastic:index_database RAILS_ENV=production
 ```
 
-If your instance is small enough you can index everything at once (database records, repositories, wikis):
+Enable replication and refreshing again after indexing (only if you previously disabled it):
 
+```bash
+curl --request PUT localhost:9200/gitlab-production/_settings --data '{
+    "index" : {
+        "number_of_replicas" : 1,
+        "refresh_interval" : "1s"
+    } }'
 ```
-# Omnibus installations
-sudo gitlab-rake gitlab:elastic:index
 
-# Installations from source
-bundle exec rake gitlab:elastic:index RAILS_ENV=production
+A force merge should be called after enabling the refreshing above:
+
+```bash
+curl --request POST 'http://localhost:9200/_forcemerge?max_num_segments=5'
 ```
 
-## Special recommendations
-
-Here are some tips to use Elasticsearch with GitLab more efficiently.
-
-### Indexing large repositories
-
-Indexing large Git repositories can take a while. To speed up the process, you
-can temporarily disable auto-refreshing and replicating. In our experience you can expect a 20%
-time drop.
-
-1.  Disable refreshing:
-
-    ```bash
-    curl --request PUT localhost:9200/_settings --data '{
-        "index" : {
-            "refresh_interval" : "-1"
-        } }'
-    ```
-
-1.  Disable replication and enable it after indexing:
-
-    ```bash
-    curl --request PUT localhost:9200/_settings --data '{
-        "index" : {
-            "number_of_replicas" : 0
-        } }'
-    ```
-
-1. [Create the indexes](#add-gitlabs-data-to-the-elasticsearch-index)
-
-1.  Enable replication again after
-    the indexing is done and set it to its default value, which is 1:
-
-    ```bash
-    curl --request PUT localhost:9200/_settings --data '{
-        "index" : {
-            "number_of_replicas" : 1
-        } }'
-    ```
-
-1.  Enable refreshing again (after indexing):
-
-    ```bash
-    curl --request PUT localhost:9200/_settings --data '{
-        "index" : {
-            "refresh_interval" : "1s"
-        } }'
-    ```
-
-1.  A force merge should be called after enabling the refreshing above:
-
-    ```bash
-    curl --request POST 'http://localhost:9200/_forcemerge?max_num_segments=5'
-    ```
-
-To minimize downtime of the search feature we recommend the following:
-
-1. Configure Elasticsearch in **Admin > Settings**, but do not enable it, just set a host and port.
-
-1. Create empty indexes:
-
-    ```
-    # Omnibus installations
-    sudo gitlab-rake gitlab:elastic:create_empty_index
-
-    # Installations from source
-    bundle exec rake gitlab:elastic:create_empty_index RAILS_ENV=production
-    ```
-
-1. Index all repositories using the `gitlab:elastic:index_repositories` Rake
-   task (see above). You'll probably want to do this in parallel.
-
-1. Enable Elasticsearch indexing.
-
-1. Run indexers for database, wikis, and
-   repositories (with the `UPDATE_INDEX=1` parameter). By running the repository indexer twice you will be sure that
-   everything is indexed because some commits could be pushed while you
-   performed the initial indexing. The repository indexer will skip
-   repositories and commits that are already indexed, so it will be much
-   shorter than the first run.
+Enable Elasticsearch search in **Admin > Settings**. That's it. Enjoy it!
 
 ## Troubleshooting
 
