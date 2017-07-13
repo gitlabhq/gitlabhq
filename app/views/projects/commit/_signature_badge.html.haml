@@ -9,7 +9,8 @@
     = content
 
   GPG Key ID:
-  = signature.gpg_key_primary_keyid
+  %span.monospace= signature.gpg_key_primary_keyid
+
 
   = link_to('Learn more about signing commits', help_page_path('workflow/gpg_signed_commits/index.md'), class: 'gpg-popover-help-link')
 
