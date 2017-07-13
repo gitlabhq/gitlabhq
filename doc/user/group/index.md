@@ -3,13 +3,13 @@
 With GitLab Groups you can assemble related projects together
 and grant members access to several projects at once.
 
-Groups can also be nested is [subgroups](subgroups/index.md).
+Groups can also be nested in [subgroups](subgroups/index.md).
 
-Find the your groups by expanding the left menu and clicking **Groups**:
+Find your groups by expanding the left menu and clicking **Groups**:
 
 ![GitLab Groups](img/groups.png)
 
-The Groups page displays all groups you are member, how many projects it holds,
+The Groups page displays all groups you are a member of, how many projects it holds,
 how many members it has, the group visibility, and, if you have enough permissions,
 a link to the group settings. By clicking the last button you can leave that group.
 
@@ -26,11 +26,11 @@ group and grant access to all their projects at once
       you created subgroups in this group for each individual team `backend-team`,
       `frontend-team`, and `production-team`:
         1. When you start a new implementation from an issue, you add a comment:
-        _"`@company-team`, let's do it! `@backend-team` you're good to go!"_
+        _"`@company-team`, let's do it! `@company-team/backend-team` you're good to go!"_
         1. When your backend team needs help from frontend, they add a comment:
-        _"`@frontend-team` could you help us here please?"_
+        _"`@company-team/frontend-team` could you help us here please?"_
         1. When the frontend team completes their implementation, they comment:
-        _"`@backend`, it's done! Let's ship it `@production-team`"_
+        _"`@company-team/backend-team`, it's done! Let's ship it `@company-team/production-team`!"_
 
 ## Namespaces
 
@@ -43,11 +43,11 @@ In GitLab, a namespace is a unique name to be used as a user name, a group name,
 For example, consider a user called John:
 
 1. John creates his account on GitLab.com with the username `jonh`;
-his profile will be accessed under `https://gitlab.com/john`
+his profile will be accessed under `https://gitlab.example.com/john`
 1. John creates a group for his team with the groupname `john-team`;
-his group and its projects will be accessed under `https://gitlab.com/john-team`
+his group and its projects will be accessed under `https://gitlab.example.com/john-team`
 1. John creates a subgroup of `john-team` with the subgroup name `marketing`;
-his subgroup and its projects will be accessed under `https://gitlab.com/john-team/marketing`
+his subgroup and its projects will be accessed under `https://gitlab.example.com/john-team/marketing`
 
 By doing so:
 
@@ -87,7 +87,7 @@ Add members to a group by navigating to the group's dashboard, and clicking **Me
 
 ![add members to group](img/add_new_members.png)
 
-Select the permission level and add the new member. You can also set the expiring
+Select the [permission level][permissions] and add the new member. You can also set the expiring
 date for that user, from which they will no longer have access to your group.
 
 One of the benefits of putting multiple projects in one group is that you can
@@ -100,7 +100,7 @@ Consider we have a group with two projects:
 gets **Developer** access to **all projects** within that group.
 
 If necessary, you can increase the access level of an individual user for a specific project,
-by adding them as a Member to the project.
+by adding them again as a new member to the project with the new permission levels.
 
 ## Request access to a group
 
@@ -115,7 +115,7 @@ side of your screen.
 
 ---
 
-Group owners & masters will be notified of your request and will be able to approve or
+Group owners and masters will be notified of your request and will be able to approve or
 decline it on the members page.
 
 ![Manage access requests](img/access_requests_management.png)
@@ -144,33 +144,19 @@ There are two different ways to add a new project to a group:
 
 ## Transfer an existing project into a group
 
-You can transfer an existing project into a group you have at least Master access in from the project settings page. 
-The option to transfer a project is only available if you are the Owner of the project.
-First scroll down to the 'Dangerous settings' and click 'Show them to me'.
-Now you can pick any of the groups you have at least Master access in as the new namespace for the group.
+You can transfer an existing project into a group as long as you have at least **Master** [permissions][permissions] to that group
+and if you are an **Owner** of the project.
 
 ![Transfer a project to a new namespace](img/transfer_project_to_other_group.png)
+
+Find this option under your project's settings.
 
 GitLab administrators can use the admin interface to move any project to any namespace if needed.
 
 ## Manage group memberships via LDAP
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
-See [the GitLab Enterprise Edition documentation](http://docs.gitlab.com/ee/integration/ldap.html) for more information.
-
-## Allow only admins to create groups
-
-By default, any GitLab user can create new groups.
-This ability can be disabled for individual users from the admin panel.
-It is also possible to configure GitLab so that new users default to not being able to create groups:
-
-```
-# For omnibus-gitlab, put the following in /etc/gitlab/gitlab.rb
-gitlab_rails['gitlab_default_can_create_group'] = false
-
-# For installations from source, uncomment the 'default_can_create_group'
-# line in /home/git/gitlab/config/gitlab.yml
-```
+See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
 
 ## Group settings
 
@@ -178,7 +164,6 @@ Once you have created a group, you can manage its settings by navigating to
 the group's dashboard, and clicking **Settings**.
 
 ![group settings](img/group_settings.png)
-
 
 ### General settings
 
@@ -242,3 +227,5 @@ and [push rules](../../push_rules/push_rules.md) to your group
 - **Audit Events**: view [Audit Events](../../administration/audit_events.md)
 for the group (GitLab admins only)
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
+
+[permissions]: ../permissions.md#permissions
