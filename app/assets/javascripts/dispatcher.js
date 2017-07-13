@@ -414,9 +414,6 @@ import AuditLogs from './audit_logs';
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           new UsersSelect();
-          // Initialize Protected Tag Settings
-          new gl.ProtectedTagCreate();
-          new gl.ProtectedTagEditList();
           // Initialize expandable settings panels
           initSettingsPanels();
           break;
