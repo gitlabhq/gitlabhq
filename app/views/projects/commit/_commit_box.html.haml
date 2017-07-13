@@ -30,7 +30,7 @@
       %ul.dropdown-menu.dropdown-menu-align-right
         %li.visible-xs-block.visible-sm-block
           = link_to project_tree_path(@project, @commit) do
-            _('Browse Files')
+            #{ _('Browse Files') }
         - unless @commit.has_been_reverted?(current_user)
           %li.clearfix
             = revert_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
