@@ -7,19 +7,10 @@ class GeoFileDownloadDispatchWorker < Geo::BaseSchedulerWorker
     LEASE_KEY
   end
 
-  def schedule_jobs
-    num_to_schedule = [max_capacity - scheduled_job_ids.size, pending_resources.size].min
+  def schedule_job(object_db_id, object_type)
+    job_id = GeoFileDownloadWorker.perform_async(object_type, object_db_id)
 
-    return unless resources_remain?
-
-    num_to_schedule.times do
-      object_db_id, object_type = pending_resources.shift
-      job_id = GeoFileDownloadWorker.perform_async(object_type, object_db_id)
-
-      if job_id
-        @scheduled_jobs << { id: object_db_id, type: object_type, job_id: job_id }
-      end
-    end
+    { id: object_db_id, type: object_type, job_id: job_id } if job_id
   end
 
   def load_pending_resources

@@ -13,17 +13,10 @@ class GeoRepositorySyncWorker < Geo::BaseSchedulerWorker
     MAX_CAPACITY
   end
 
-  def schedule_jobs
-    num_to_schedule = [max_capacity - scheduled_job_ids.size, pending_resources.size].min
+  def schedule_job(project_id)
+    job_id = Geo::ProjectSyncWorker.perform_in(BACKOFF_DELAY, project_id, Time.now)
 
-    return unless resources_remain?
-
-    num_to_schedule.times do
-      project_id = pending_resources.shift
-      job_id = Geo::ProjectSyncWorker.perform_in(BACKOFF_DELAY, project_id, Time.now)
-
-      scheduled_jobs << { id: project_id, job_id: job_id } if job_id
-    end
+    { id: project_id, job_id: job_id } if job_id
   end
 
   def load_pending_resources

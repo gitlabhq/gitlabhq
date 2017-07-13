@@ -105,6 +105,17 @@ module Geo
       @scheduled_jobs = @scheduled_jobs.zip(status).map { |(job, completed)| job if completed }.compact
     end
 
+    def schedule_jobs
+      num_to_schedule = [max_capacity - scheduled_job_ids.size, pending_resources.size].min
+
+      return unless resources_remain?
+
+      num_to_schedule.times do
+        job = schedule_job(*pending_resources.shift)
+        scheduled_jobs << job if job&.fetch(:job_id).present?
+      end
+    end
+
     def scheduled_job_ids
       scheduled_jobs.map { |data| data[:job_id] }
     end
