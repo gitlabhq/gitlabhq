@@ -8,6 +8,8 @@ module Geo
     MAX_CAPACITY = 10
     RUN_TIME = 60.minutes.to_i
 
+    attr_reader :pending_resources, :scheduled_jobs, :start_time
+
     def initialize
       @pending_resources = []
       @scheduled_jobs = []
@@ -35,7 +37,7 @@ module Geo
           break unless node_enabled?
 
           update_jobs_in_progress
-          load_pending_resources if reload_queue?
+          @pending_resources = load_pending_resources if reload_queue?
 
           # If we are still under the limit after refreshing our DB, we can end
           # after scheduling the remaining transfers.
@@ -75,15 +77,15 @@ module Geo
     end
 
     def reload_queue?
-      @pending_resources.size < max_capacity
+      pending_resources.size < max_capacity
     end
 
     def resources_remain?
-      @pending_resources.size > 0
+      pending_resources.size > 0
     end
 
     def over_time?
-      Time.now - @start_time >= run_time
+      Time.now - start_time >= run_time
     end
 
     def interleave(first, second)
@@ -104,7 +106,7 @@ module Geo
     end
 
     def scheduled_job_ids
-      @scheduled_jobs.map { |data| data[:job_id] }
+      scheduled_jobs.map { |data| data[:job_id] }
     end
 
     def try_obtain_lease

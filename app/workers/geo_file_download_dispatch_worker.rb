@@ -8,12 +8,12 @@ class GeoFileDownloadDispatchWorker < Geo::BaseSchedulerWorker
   end
 
   def schedule_jobs
-    num_to_schedule = [max_capacity - scheduled_job_ids.size, @pending_resources.size].min
+    num_to_schedule = [max_capacity - scheduled_job_ids.size, pending_resources.size].min
 
     return unless resources_remain?
 
     num_to_schedule.times do
-      object_db_id, object_type = @pending_resources.shift
+      object_db_id, object_type = pending_resources.shift
       job_id = GeoFileDownloadWorker.perform_async(object_type, object_db_id)
 
       if job_id
@@ -26,7 +26,7 @@ class GeoFileDownloadDispatchWorker < Geo::BaseSchedulerWorker
     lfs_object_ids = find_lfs_object_ids(db_retrieve_batch_size)
     objects_ids    = find_object_ids(db_retrieve_batch_size)
 
-    @pending_resources = interleave(lfs_object_ids, objects_ids)
+    interleave(lfs_object_ids, objects_ids)
   end
 
   def find_object_ids(limit)
@@ -55,6 +55,6 @@ class GeoFileDownloadDispatchWorker < Geo::BaseSchedulerWorker
   end
 
   def scheduled_file_ids(types)
-    @scheduled_jobs.select { |data| types.include?(data[:type]) }.map { |data| data[:id] }
+    scheduled_jobs.select { |data| types.include?(data[:type]) }.map { |data| data[:id] }
   end
 end
