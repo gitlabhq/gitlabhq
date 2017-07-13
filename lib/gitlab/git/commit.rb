@@ -38,7 +38,7 @@ module Gitlab
           repo = options.delete(:repo)
           raise 'Gitlab::Git::Repository is required' unless repo.respond_to?(:log)
 
-          repo.log(options).map { |c| decorate(c) }
+          repo.log(options)
         end
 
         # Get single commit
