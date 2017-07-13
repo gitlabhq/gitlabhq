@@ -121,9 +121,6 @@ namespace :admin do
   end
 
   ## EE-specific
-  resource :trials, only: [:new, :create]
-
-  ## EE-specific
   resource :license, only: [:show, :new, :create, :destroy] do
     get :download, on: :member
   end
