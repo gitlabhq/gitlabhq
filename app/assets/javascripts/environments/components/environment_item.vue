@@ -498,9 +498,9 @@ export default {
     <div class="table-section section-15 hidden-xs hidden-sm" role="gridcell">
       <a
         v-if="shouldRenderBuildName"
-        class="build-link"
+        class="build-link flex-truncate-parent"
         :href="buildPath">
-        {{buildName}}
+        <span class="flex-truncate-child">{{buildName}}</span>
       </a>
     </div>
 
