@@ -20,59 +20,6 @@ module API
       success Entities::ApplicationSetting
     end
     params do
-      # CE
-      at_least_one_of_ce = [
-        :admin_notification_email,
-        :after_sign_out_path,
-        :after_sign_up_text,
-        :akismet_enabled,
-        :container_registry_token_expire_delay,
-        :default_artifacts_expire_in,
-        :default_branch_protection,
-        :default_group_visibility,
-        :default_project_visibility,
-        :default_projects_limit,
-        :default_snippet_visibility,
-        :disabled_oauth_sign_in_sources,
-        :domain_blacklist_enabled,
-        :domain_whitelist,
-        :email_author_in_body,
-        :enabled_git_access_protocol,
-        :gravatar_enabled,
-        :help_page_hide_commercial_content,
-        :help_page_text,
-        :help_page_support_url,
-        :home_page_url,
-        :housekeeping_enabled,
-        :html_emails_enabled,
-        :import_sources,
-        :koding_enabled,
-        :max_artifacts_size,
-        :max_attachment_size,
-        :max_pages_size,
-        :metrics_enabled,
-        :plantuml_enabled,
-        :polling_interval_multiplier,
-        :recaptcha_enabled,
-        :repository_checks_enabled,
-        :repository_storage,
-        :require_two_factor_authentication,
-        :restricted_visibility_levels,
-        :send_user_confirmation_email,
-        :sentry_enabled,
-        :clientside_sentry_enabled,
-        :session_expire_delay,
-        :shared_runners_enabled,
-        :sidekiq_throttling_enabled,
-        :sign_in_text,
-        :password_authentication_enabled,
-        :signin_enabled,
-        :signup_enabled,
-        :terminal_max_session_time,
-        :user_default_external,
-        :user_oauth_applications,
-        :version_check_enabled
-      ]
       optional :default_branch_protection, type: Integer, values: [0, 1, 2], desc: 'Determine if developers can push to master'
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
@@ -151,7 +98,7 @@ module API
       given clientside_sentry_enabled: ->(val) { val } do
         requires :clientside_sentry_dsn, type: String, desc: 'Clientside Sentry Data Source Name'
       end
-      optional :repository_storage, type: String, desc: 'Storage paths for new projects'
+      optional :repository_storages, type: Array[String], desc: 'Storage paths for new projects'
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :koding_enabled, type: Boolean, desc: 'Enable Koding'
       given koding_enabled: ->(val) { val } do
