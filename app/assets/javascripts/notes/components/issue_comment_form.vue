@@ -94,8 +94,11 @@ export default {
       }
     },
     discard() {
-      this.note = '';
+      // `blur` is needed to clear slash commands autocomplete cache if event fired.
+      // `focus` is needed to remain cursor in the textarea.
+      this.$refs.textarea.blur();
       this.$refs.textarea.focus();
+      this.note = '';
     },
     setNoteType(type) {
       this.noteType = type;
