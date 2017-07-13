@@ -32,7 +32,6 @@ module Gitlab
     # arguments - The arguments to pass to the background migration's "perform"
     #             method.
     def self.perform(class_name, arguments)
-      puts class_name
       const_get(class_name).new.perform(*arguments)
     end
   end

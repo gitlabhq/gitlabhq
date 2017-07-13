@@ -10,12 +10,16 @@ describe Gitlab::BackgroundMigration do
 
   describe '.steal' do
     context 'when there are enqueued jobs present' do
-      let(:queue) { [double(:job, args: ['Foo', [10, 20]])] }
+      let(:job) { double(:job, args: ['Foo', [10, 20]]) }
+      let(:queue) { [job] }
 
       before do
         allow(Sidekiq::Queue).to receive(:new)
           .with(described_class.queue)
           .and_return(queue)
+
+        allow(job).to receive(:queue)
+          .and_return(described_class.queue)
       end
 
       it 'steals jobs from a queue' do
