@@ -108,6 +108,32 @@ const mutations = {
   setLastFetchedAt(storeState, fetchedAt) {
     storeState.lastFetchedAt = fetchedAt;
   },
+  showPlaceholderSystemNote(storeState, data) {
+    storeState.notes.push({
+      placeholderNote: true,
+      individual_note: true,
+      placeholderType: 'systemNote',
+      notes: [
+        {
+          id: 'placeholderSystemNote',
+          body: data.noteBody,
+        },
+      ],
+    });
+  },
+  removePlaceholderSystemNote(storeState) {
+    let index = -1;
+
+    storeState.notes.forEach((n, i) => {
+      if (n.placeholderNote && n.placeholderType === 'systemNote') {
+        index = i;
+      }
+    });
+
+    if (index > -1) {
+      storeState.notes.splice(index, 1);
+    }
+  },
 };
 
 const actions = {

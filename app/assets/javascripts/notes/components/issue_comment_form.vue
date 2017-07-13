@@ -1,13 +1,14 @@
 <script>
 /* global Flash */
 
+import AjaxCache from '~/lib/utils/ajax_cache';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import MarkdownField from '../../vue_shared/components/markdown/field.vue';
 import IssueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
 import eventHub from '../event_hub';
+const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default {
-  props: {},
   data() {
     const { create_note_path, state } = window.gl.issueData;
     const { currentUserData } = window.gl;
@@ -67,14 +68,14 @@ export default {
         }
 
         this.$store.dispatch('createNewNote', data)
-          .then((res) => {
-            if (res.errors) {
-              this.handleError();
-            } else {
-              this.discard();
-            }
-          })
+          .then(this.handleNewNoteCreated)
           .catch(this.handleError);
+
+        if (this.hasQuickActions()) {
+          this.$store.commit('showPlaceholderSystemNote', {
+            noteBody: this.getQuickActionText(),
+          });
+        }
       }
 
       if (withIssueAction) {
@@ -92,6 +93,26 @@ export default {
         const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
         $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
       }
+    },
+    handleNewNoteCreated(res) {
+      const { commands_changes, errors, valid } = res;
+
+      if (!valid && errors) {
+        const { commands_only } = errors;
+
+        if (commands_only) {
+          new Flash(commands_only, 'notice', $(this.$el)); // eslint-disable-line
+          $(this.$refs.textarea).trigger('clear-commands-cache.atwho');
+          this.$store.dispatch('poll');
+          this.discard();
+        } else {
+          this.handleError();
+        }
+      } else {
+        this.discard();
+      }
+
+      this.$store.commit('removePlaceholderSystemNote');
     },
     discard() {
       // `blur` is needed to clear slash commands autocomplete cache if event fired.
@@ -117,6 +138,30 @@ export default {
         }
       }
     },
+    getQuickActionText() {
+      let text = 'Applying command';
+      const quickActions = AjaxCache.get(gl.GfmAutoComplete.dataSources.commands);
+      const { note } = this;
+
+      const executedCommands = quickActions.filter((command, index) => {
+        const commandRegex = new RegExp(`/${command.name}`);
+        return commandRegex.test(note);
+      });
+
+      if (executedCommands && executedCommands.length) {
+        if (executedCommands.length > 1) {
+          text = 'Applying multiple commands';
+        } else {
+          const commandDescription = executedCommands[0].description.toLowerCase();
+          text = `Applying command to ${commandDescription}`;
+        }
+      }
+
+      return text;
+    },
+    hasQuickActions() {
+      return REGEX_QUICK_ACTIONS.test(this.note);
+    },
   },
   mounted() {
     const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
@@ -141,6 +186,7 @@ export default {
       class="notes notes-form timeline new-note">
       <li class="timeline-entry">
         <div class="timeline-entry-inner">
+          <div class="flash-container timeline-content"></div>
           <div class="timeline-icon hidden-xs hidden-sm">
             <user-avatar-link
               v-if="author"
