@@ -243,8 +243,12 @@ module EE
         environment_name: environment.name
       }
 
-      quoted_values =
-        values.transform_values(&self.class.connection.method(:quote))
+      quoted_values = values.transform_values do |value|
+        # Note that the connection could be
+        # Gitlab::Database::LoadBalancing::ConnectionProxy
+        # which supports `quote` via `method_missing`
+        self.class.connection.quote(value)
+      end
 
       # The query is trying to find variables with scopes matching the
       # current environment name. Suppose the environment name is
