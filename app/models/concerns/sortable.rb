@@ -38,9 +38,15 @@ module Sortable
     scope :order_name_asc, -> { reorder(name: :asc) }
     scope :order_name_desc, -> { reorder(name: :desc) }
 
-    # All queries (relations) on this model are instances of this `relation_klass`.
-    relation_klass = relation_delegate_class(ActiveRecord::Relation)
-    relation_klass.prepend DropDefaultScopeOnFinders
+    # All queries (relations) on this model are instances of one of these classes.
+    [
+      ActiveRecord::Relation,
+      ActiveRecord::Associations::CollectionProxy,
+      ActiveRecord::AssociationRelation
+    ].each do |klass|
+      relation_klass = relation_delegate_class(klass)
+      relation_klass.prepend DropDefaultScopeOnFinders
+    end
   end
 
   module ClassMethods
