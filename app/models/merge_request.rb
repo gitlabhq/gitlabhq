@@ -32,9 +32,6 @@ class MergeRequest < ActiveRecord::Base
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
 
-  delegate :commits, :real_size, :commit_shas, :commits_count,
-    to: :merge_request_diff, prefix: nil
-
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
@@ -224,6 +221,36 @@ class MergeRequest < ActiveRecord::Base
     "#{project.to_reference(from, full: full)}#{reference}"
   end
 
+  def commits
+    if persisted?
+      merge_request_diff.commits
+    elsif compare_commits
+      compare_commits.reverse
+    else
+      []
+    end
+  end
+
+  def commits_count
+    if persisted?
+      merge_request_diff.commits_count
+    elsif compare_commits
+      compare_commits.size
+    else
+      0
+    end
+  end
+
+  def commit_shas
+    if persisted?
+      merge_request_diff.commit_shas
+    elsif compare_commits
+      compare_commits.reverse.map(&:sha)
+    else
+      []
+    end
+  end
+
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
@@ -246,9 +273,7 @@ class MergeRequest < ActiveRecord::Base
   def diff_size
     # Calling `merge_request_diff.diffs.real_size` will also perform
     # highlighting, which we don't need here.
-    return real_size if merge_request_diff
-
-    diffs.real_size
+    merge_request_diff&.real_size || diffs.real_size
   end
 
   def diff_base_commit
