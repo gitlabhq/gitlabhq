@@ -174,6 +174,10 @@ if Gitlab::Metrics.enabled?
           loc && loc[0].start_with?(models) && method.source =~ regex
         end
       end
+
+    # Ability is in app/models, is not an ActiveRecord model, but should still
+    # be instrumented.
+    Gitlab::Metrics::Instrumentation.instrument_methods(Ability)
   end
 
   Gitlab::Metrics::Instrumentation.configure do |config|
