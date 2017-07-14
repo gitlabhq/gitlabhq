@@ -35,6 +35,7 @@ export default class RepoSidebar {
       methods: {
         addPopEventListener() {
           window.addEventListener('popstate', () => {
+            if(location.href.indexOf('#') > -1) return;
             this.linkClicked({
               url: location.href
             });

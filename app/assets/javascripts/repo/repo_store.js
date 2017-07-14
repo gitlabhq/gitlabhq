@@ -21,6 +21,7 @@ let RepoStore = {
     size: 0,
     url: ''
   },
+  activeLine: 0,
   files: [],
   binary: false,
   binaryMimeType: '',

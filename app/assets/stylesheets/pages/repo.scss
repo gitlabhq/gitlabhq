@@ -27,10 +27,19 @@ header {
 .panel-right{
   display: inline-block;
   width: 85%;
-
-  .monaco-editor.vs .cursor {
-    background: rgba(255,255,255,0);
-    border-color: rgba(255,255,255,0);
+ 
+  .monaco-editor.vs {
+    .line-numbers{
+      cursor: pointer;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .cursor {
+      background: rgba(255,255,255,0);
+      border-color: rgba(255,255,255,0);
+    }
   }
 
   #tabs {

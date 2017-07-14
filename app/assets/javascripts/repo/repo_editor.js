@@ -9,6 +9,20 @@ export default class RepoEditor {
     this.el = document.getElementById('ide');
   }
 
+  addMonacoEvents() {
+    this.vue.$watch('activeFile.lineNumber', () => {
+      console.log('cahnged')
+    })
+    this.monacoEditor.onMouseUp(this.onMonacoEditorMouseUp);
+  }
+
+  onMonacoEditorMouseUp(e) {
+    if(e.target.element.className === 'line-numbers') {
+      location.hash = `L${e.target.position.lineNumber}`;
+      Store.activeLine = e.target.position.lineNumber;
+    }
+  }
+
   initMonaco() {
     window.require.config({ paths: { vs: '/monaco-editor/min/vs' } });
     window.require(['vs/editor/editor.main'], () => {
@@ -19,10 +33,12 @@ export default class RepoEditor {
           readOnly: true,
           contextmenu: false,
         }
-      )
+      );
+
       Helper.monacoInstance = monaco;
       this.initVue();
       monaco.languages.getLanguages();
+      this.addMonacoEvents();
     });
   }
 
@@ -54,6 +70,13 @@ export default class RepoEditor {
       },
 
       watch: {
+        activeLine() {
+          self.monacoEditor.setPosition({
+            lineNumber: this.activeLine,
+            column: 1
+          });
+        },
+
         isTree() {
           this.showHide();
         },

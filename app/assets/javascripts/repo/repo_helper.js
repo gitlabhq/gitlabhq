@@ -37,7 +37,6 @@ let RepoHelper = {
       split[blobIndex] = 'tree';
     }
     joined = split.join('/');
-    console.log(split)
     return split.join('/');
   },
 
@@ -164,14 +163,12 @@ let RepoHelper = {
 
     // may be tree or file.
   getContent(file) {
-    console.log('file')
     const loadingData = this.setLoading(true);
     Service.getContent()
     .then((response) => {
       let data = response.data;
       this.setLoading(false, loadingData);
       Store.isTree = this.isTree(data);
-
       if(!Store.isTree) {
         if(!file) {
           file = data;
@@ -185,7 +182,6 @@ let RepoHelper = {
             data
           );
           data.binary = true;
-          console.log('file1', file)
           if(!file.url) {
             file.url = location.pathname;
           }
@@ -194,7 +190,6 @@ let RepoHelper = {
           this.setActiveFile(data);
         } else {
           Store.blobRaw = data.plain;
-          console.log('file2', file)
           if(!file.url) {
             file.url = location.pathname;
           }
@@ -219,7 +214,6 @@ let RepoHelper = {
       }
     })
     .catch((response)=> {
-      console.log('response',response)
       this.setLoading(false, loadingData);
       new Flash('Unable to load the file at this time.')
     });
