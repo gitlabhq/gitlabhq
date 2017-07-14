@@ -580,14 +580,18 @@ class User < ActiveRecord::Base
     keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
-  def require_password?
-    password_automatically_set? && !ldap_user? && current_application_settings.signin_enabled?
+  def require_password_creation?
+    password_automatically_set? && allow_password_authentication?
   end
 
-  def require_personal_access_token?
-    return false if current_application_settings.signin_enabled? || ldap_user?
+  def require_personal_access_token_creation_for_git_auth?
+    return false if allow_password_authentication? || ldap_user?
 
     PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
+  end
+
+  def allow_password_authentication?
+    !ldap_user? && current_application_settings.password_authentication_enabled?
   end
 
   def can_change_username?
