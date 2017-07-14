@@ -69,8 +69,7 @@ class Projects::TriggersController < Projects::ApplicationController
 
   def trigger_params
     params.require(:trigger).permit(
-      :description,
-      trigger_schedule_attributes: [:id, :active, :cron, :cron_timezone, :ref]
+      :description
     )
   end
 end

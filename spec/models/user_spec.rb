@@ -2055,6 +2055,7 @@ describe User, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe '#forget_me!' do
     subject { create(:user, remember_created_at: Time.now) }
 
@@ -2084,6 +2085,27 @@ describe User, models: true do
       allow(Gitlab::Geo).to receive(:secondary?) { true }
 
       expect { subject.remember_me! }.not_to change(subject, :remember_created_at)
+=======
+  describe '#allow_password_authentication?' do
+    context 'regular user' do
+      let(:user) { build(:user) }
+
+      it 'returns true when sign-in is enabled' do
+        expect(user.allow_password_authentication?).to be_truthy
+      end
+
+      it 'returns false when sign-in is disabled' do
+        stub_application_setting(password_authentication_enabled: false)
+
+        expect(user.allow_password_authentication?).to be_falsey
+      end
+    end
+
+    it 'returns false for ldap user' do
+      user = create(:omniauth_user, provider: 'ldapmain')
+
+      expect(user.allow_password_authentication?).to be_falsey
+>>>>>>> upstream/master
     end
   end
 end

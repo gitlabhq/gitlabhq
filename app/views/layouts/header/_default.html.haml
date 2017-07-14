@@ -103,8 +103,3 @@
       = yield :header_content
 
 = render 'shared/outdated_browser'
-
-- if @project && !@project.empty_repo?
-  - if ref = @ref || @project.repository.root_ref
-    :javascript
-      var findFileURL = "#{project_find_file_path(@project, ref)}";

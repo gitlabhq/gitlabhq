@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 - if license_message.present?
   .broadcast-message
     = icon('bullhorn')
     = license_message
 
 - BroadcastMessage.current.each do |message|
+=======
+- BroadcastMessage.current&.each do |message|
+>>>>>>> upstream/master
   = broadcast_message(message)
 

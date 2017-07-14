@@ -59,8 +59,12 @@ RSpec.configure do |config|
   config.include ApiHelpers, :api
   config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
+<<<<<<< HEAD
   config.include EE::LicenseHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
+=======
+  config.include StubFeatureFlags
+>>>>>>> upstream/master
 
   config.infer_spec_type_from_file_location!
 
@@ -86,6 +90,8 @@ RSpec.configure do |config|
   config.before(:example) do
     # Skip pre-receive hook check so we can use the web editor and merge.
     allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
+    # Enable all features by default for testing
+    allow(Feature).to receive(:enabled?) { true }
   end
 
   config.before(:example, :request_store) do
