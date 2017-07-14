@@ -755,6 +755,10 @@ a.allowed-to-push {
   .table-bordered {
     border-radius: 1px;
 
+    td {
+      vertical-align: top;
+    }
+
     th:not(:last-child),
     td:not(:last-child) {
       border-right: solid 1px transparent;

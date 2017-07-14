@@ -1,0 +1,10 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('ee_protected_branches')
+
+- content_for :create_protected_branch do
+  = render 'projects/protected_branches/ee/create_protected_branch'
+
+- content_for :branches_list do
+  = render "projects/protected_branches/ee/branches_list"
+
+= render 'projects/protected_branches/shared/index'

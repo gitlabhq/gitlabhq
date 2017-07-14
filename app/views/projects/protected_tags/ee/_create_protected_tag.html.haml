@@ -1,0 +1,12 @@
+- content_for :create_access_levels do
+  .create_access_levels-container
+    = dropdown_tag('Select',
+                   options: { toggle_class: 'js-allowed-to-create js-multiselect wide',
+                   dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
+                   data: { input_id: 'create_access_levels_attributes', default_label: 'Select' } })
+  .help-block
+    Only groups that
+    = link_to 'have this project shared', help_page_path('workflow/share_projects_with_other_groups')
+    can be added here
+
+= render 'projects/protected_tags/shared/create_protected_tag'

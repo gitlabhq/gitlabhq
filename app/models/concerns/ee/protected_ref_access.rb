@@ -18,9 +18,15 @@ module EE
       validates :user_id, uniqueness: { scope: protected_type, allow_nil: true }
       validates :access_level, uniqueness: { scope: protected_type, if: :role?,
                                              conditions: -> { where(user_id: nil, group_id: nil) } }
+      validates :group, :user,
+               absence: true,
+               unless: :protected_refs_for_users_required_and_available
 
       scope :by_user, -> (user) { where(user: user ) }
       scope :by_group, -> (group) { where(group: group ) }
+      scope :for_role, -> { where(user: nil, group: nil) }
+      scope :for_user, -> { where.not(user: nil) }
+      scope :for_group, -> { where.not(group: nil) }
     end
 
     def type
@@ -51,6 +57,14 @@ module EE
       return group.users.exists?(user.id) if self.group.present?
 
       super
+    end
+
+    # We don't need to validate the license if this access applies to a role.
+    #
+    # If it applies to a user/group we can only skip validation `nil`-validation
+    # if the feature is available
+    def protected_refs_for_users_required_and_available
+      type != :role && project.feature_available?(:protected_refs_for_users)
     end
   end
 end

@@ -1,0 +1,4 @@
+- can_admin_project = can?(current_user, :admin_project, @project)
+
+= render layout: 'projects/protected_tags/shared/tags_list' do
+  = render partial: 'projects/protected_tags/ee/protected_tag', collection: @protected_tags, locals: { can_admin_project: can_admin_project }

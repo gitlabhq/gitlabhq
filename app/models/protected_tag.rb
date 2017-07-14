@@ -1,6 +1,7 @@
 class ProtectedTag < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include ProtectedRef
+  include EE::ProtectedRef
 
   protected_ref_access_levels :create
 
