@@ -486,7 +486,7 @@ class Project < ActiveRecord::Base
   end
 
   def has_container_registry_tags?
-    container_repositories.to_a.any?(&:has_tags?) ||
+    @images ||= container_repositories.to_a.any?(&:has_tags?) ||
       has_root_container_repository_tags?
   end
 
