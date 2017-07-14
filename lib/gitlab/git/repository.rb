@@ -196,13 +196,6 @@ module Gitlab
         branch_names + tag_names
       end
 
-      # Deprecated. Will be removed in 5.2
-      def heads
-        rugged.references.each("refs/heads/*").map do |head|
-          Gitlab::Git::Ref.new(self, head.name, head.target)
-        end.sort_by(&:name)
-      end
-
       def has_commits?
         !empty?
       end
