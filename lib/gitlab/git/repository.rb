@@ -80,6 +80,8 @@ module Gitlab
       end
 
       # Returns an Array of Branches
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/389
       def branches(sort_by: nil)
         branches_filter(sort_by: sort_by)
       end
@@ -157,6 +159,8 @@ module Gitlab
       end
 
       # Returns an Array of Tags
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
         rugged.references.each("refs/tags/*").map do |ref|
           message = nil
