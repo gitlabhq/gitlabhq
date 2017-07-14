@@ -197,6 +197,7 @@ instance and project. In addition, all admins can use the admin interface under
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
 | Add specific runners                  |                 |             | ✓        | ✓      |
+| Erase job                             |                 |             | ✓        | ✓      |
 | Add shared runners                    |                 |             |          | ✓      |
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
