@@ -31,6 +31,10 @@ module Geo
 
     private
 
+    def sync_repository
+      raise NotImplementedError, 'This class should implement sync_repository method'
+    end
+
     def registry
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
