@@ -1236,7 +1236,7 @@ describe Project, models: true do
 
       subject { project.rename_repo }
 
-      it { expect{subject}.to raise_error(Exception) }
+      it { expect{subject}.to raise_error(StandardError) }
     end
   end
 
