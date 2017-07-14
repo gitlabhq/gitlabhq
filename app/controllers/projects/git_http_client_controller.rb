@@ -11,7 +11,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   alias_method :user, :actor
 
   # Git clients will not know what authenticity token to send along
-  skip_before_action :verify_authenticity_token
+  skip_before_action :verify_authenticity_token, raise: false
   skip_before_action :repository
   before_action :authenticate_user
 
