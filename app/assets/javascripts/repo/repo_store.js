@@ -10,7 +10,17 @@ let RepoStore = {
   blobRaw: '',
   blobRendered: '',
   openedFiles: [],
-  activeFile: {},
+  activeFile: {
+    active: true,
+    binary: false,
+    extension: '',
+    html: '',
+    mime_type: '',
+    name: 'loading...',
+    plain: '',
+    size: 0,
+    url: ''
+  },
   files: [],
   binary: false,
   binaryMimeType: '',

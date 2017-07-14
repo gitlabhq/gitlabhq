@@ -16,7 +16,8 @@ export default class RepoEditor {
       .create(
         document.getElementById('ide'), {
           model: null,
-          readOnly: true
+          readOnly: true,
+          contextmenu: false,
         }
       )
       Helper.monacoInstance = monaco;

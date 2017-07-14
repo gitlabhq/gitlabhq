@@ -27,12 +27,17 @@ header {
 .panel-right{
   display: inline-block;
   width: 85%;
+
+  .monaco-editor.vs .cursor {
+    background: rgba(255,255,255,0);
+    border-color: rgba(255,255,255,0);
+  }
+
   #tabs {
     height: 41px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid $white-normal;
     padding-left: 0;
     margin-bottom: 0;
-    background: $gray-light;
     display: inline-block;
     white-space: nowrap;
     width: 100%;
@@ -65,13 +70,19 @@ header {
   }
   #ide {
     height: 70vh;
+  }
+
+  #repo-file-buttons {
+    background: $gray-light;
+    padding: 5px;
     margin-top: -5px;
-  }  
+    border-bottom: 1px solid $white-normal;
+  }
 
   #binary-viewer {
     height: 70vh;
     overflow: auto;
-    margin-top: -5px;
+    margin-top: 5px;
     margin-left: 10px;
 
     .blob-viewer {

@@ -117,6 +117,14 @@ let RepoHelper = {
     return url.replace('blob', 'raw');
   },
 
+  getBlameURLFromBlobURL(url) {
+    return url.replace('blob', 'blame');
+  },
+
+  getHistoryURLFromBlobURL(url) {
+    return url.replace('blob', 'commits');
+  },
+
   setBinaryDataAsBase64(url, file) {
     Service.getBase64Content(url)
     .then((response) => {
@@ -156,6 +164,7 @@ let RepoHelper = {
 
     // may be tree or file.
   getContent(file) {
+    console.log('file')
     const loadingData = this.setLoading(true);
     Service.getContent()
     .then((response) => {
@@ -176,11 +185,19 @@ let RepoHelper = {
             data
           );
           data.binary = true;
+          console.log('file1', file)
+          if(!file.url) {
+            file.url = location.pathname;
+          }
           data.url = file.url;
           this.addToOpenedFiles(data);
           this.setActiveFile(data);
         } else {
           Store.blobRaw = data.plain;
+          console.log('file2', file)
+          if(!file.url) {
+            file.url = location.pathname;
+          }
           data.url = file.url;
           data.binary = false;
           this.addToOpenedFiles(data);

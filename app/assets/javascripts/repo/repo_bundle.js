@@ -1,6 +1,7 @@
 import Tabs from './repo_tabs'
 import Sidebar from './repo_sidebar'
 import Editor from './repo_editor'
+import FileButtons from './repo_file_buttons'
 import BinaryViewer from './repo_binary_viewer'
 import ViewToggler from './repo_view_toggler'
 import Service from './repo_service'
@@ -15,6 +16,7 @@ export default class RepoBundle {
     Store.tabs = new Tabs();
     Store.sidebar = new Sidebar(url);
     Store.editor = new Editor();
+    Store.buttons = new FileButtons();
     // Store.toggler = new ViewToggler();
     Store.binaryViewer = new BinaryViewer();
     Helper.getContent();
