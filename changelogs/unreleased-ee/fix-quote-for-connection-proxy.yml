@@ -1,0 +1,4 @@
+---
+title: Fix undefined method quote when database load balancing is used
+merge_request: 2430
+author:
