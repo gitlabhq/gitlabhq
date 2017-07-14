@@ -284,7 +284,7 @@ header.navbar-gitlab-new {
     position: relative;
     top: -1px;
     padding: 0 5px;
-    color: rgba($black, .65);
+    color: $gl-text-color-secondary;
     font-size: 10px;
     line-height: 1;
     background: none;
@@ -310,10 +310,10 @@ header.navbar-gitlab-new {
 .breadcrumbs-links {
   flex: 1;
   align-self: center;
-  color: $black-transparent;
+  color: $gl-text-color-quaternary;
 
   a {
-    color: rgba($black, .65);
+    color: $gl-text-color-secondary;
 
     &:not(:first-child),
     &.group-path {
