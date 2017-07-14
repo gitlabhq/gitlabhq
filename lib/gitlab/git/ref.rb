@@ -34,8 +34,7 @@ module Gitlab
       end
 
       def initialize(repository, name, target, derefenced_target)
-        encode! name
-        @name = name.gsub(/\Arefs\/(tags|heads)\//, '')
+        @name = Gitlab::Git.ref_name(name)
         @dereferenced_target = derefenced_target
         @target = if target.respond_to?(:oid)
                     target.oid
