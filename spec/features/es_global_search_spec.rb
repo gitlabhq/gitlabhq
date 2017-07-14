@@ -93,6 +93,7 @@ feature 'Global elastic search', feature: true do
       select_filter("Commits")
 
       expect(page).to have_selector('.commit-row-description')
+      expect(page).to have_selector('.project_namespace')
     end
   end
 end
