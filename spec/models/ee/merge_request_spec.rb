@@ -136,10 +136,10 @@ describe MergeRequest, models: true do
 
   describe '#approvals_before_merge' do
     [
-      { license: true,  database: 5,  expected: 5 },
-      { license: true,  database: 0,  expected: 0 },
-      { license: false, database: 5,  expected: 0 },
-      { license: false, database: 0,  expected: 0 }
+      { license: true,  database: 5,   expected: 5 },
+      { license: true,  database: nil, expected: nil },
+      { license: false, database: 5,   expected: nil },
+      { license: false, database: nil, expected: nil }
     ].each do |spec|
       context spec.inspect do
         let(:spec) { spec }

@@ -23,7 +23,7 @@ module Approvable
   end
 
   def approvals_before_merge
-    return 0 unless project&.feature_available?(:merge_request_approvers)
+    return nil unless project&.feature_available?(:merge_request_approvers)
 
     super
   end
