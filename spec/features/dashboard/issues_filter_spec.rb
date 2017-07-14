@@ -1,21 +1,23 @@
 require 'spec_helper'
 
-describe "Dashboard Issues filtering", feature: true, js: true do
+feature 'Dashboard Issues filtering', js: true do
+  include SortingHelper
+
   let(:user)      { create(:user) }
   let(:project)   { create(:empty_project) }
   let(:milestone) { create(:milestone, project: project) }
 
+  let!(:issue)  { create(:issue, project: project, author: user, assignees: [user]) }
+  let!(:issue2) { create(:issue, project: project, author: user, assignees: [user], milestone: milestone) }
+
+  before do
+    project.add_master(user)
+    sign_in(user)
+
+    visit_issues
+  end
+
   context 'filtering by milestone' do
-    before do
-      project.team << [user, :master]
-      sign_in(user)
-
-      create(:issue, project: project, author: user, assignees: [user])
-      create(:issue, project: project, author: user, assignees: [user], milestone: milestone)
-
-      visit_issues
-    end
-
     it 'shows all issues with no milestone' do
       show_milestone_dropdown
 
@@ -59,6 +61,46 @@ describe "Dashboard Issues filtering", feature: true, js: true do
       expect(auto_discovery_params).to include('rss_token' => [user.rss_token])
       expect(auto_discovery_params).to include('milestone_title' => [''])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
+    end
+  end
+
+  context 'filtering by label' do
+    let(:label) { create(:label, project: project) }
+    let!(:label_link) { create(:label_link, label: label, target: issue) }
+
+    it 'shows all issues without filter' do
+      page.within 'ul.content-list' do
+        expect(page).to have_content issue.title
+        expect(page).to have_content issue2.title
+      end
+    end
+
+    it 'shows all issues with the selected label' do
+      page.within '.labels-filter' do
+        find('.dropdown').click
+        click_link label.title
+      end
+
+      page.within 'ul.content-list' do
+        expect(page).to have_content issue.title
+        expect(page).not_to have_content issue2.title
+      end
+    end
+  end
+
+  context 'sorting' do
+    it 'shows sorted issues' do
+      sorting_by('Oldest updated')
+      visit_issues
+
+      expect(find('.issues-filters')).to have_content('Oldest updated')
+    end
+
+    it 'keeps sorting issues after visiting Projects Issues page' do
+      sorting_by('Oldest updated')
+      visit project_issues_path(project)
+
+      expect(find('.issues-filters')).to have_content('Oldest updated')
     end
   end
 
