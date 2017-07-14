@@ -51,11 +51,11 @@
     },
     methods: {
       successCallback(resp) {
-        const response = resp.json();
-
-        // depending of the endpoint the response can either bring a `pipelines` key or not.
-        const pipelines = response.pipelines || response;
-        this.setCommonData(pipelines);
+        return resp.json().then((response) => {
+          // depending of the endpoint the response can either bring a `pipelines` key or not.
+          const pipelines = response.pipelines || response;
+          this.setCommonData(pipelines);
+        });
       },
     },
   };

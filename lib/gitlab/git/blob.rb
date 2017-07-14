@@ -1,3 +1,5 @@
+# Gitaly note: JV: seems to be completely migrated (behind feature flags).
+
 module Gitlab
   module Git
     class Blob
@@ -106,6 +108,8 @@ module Gitlab
           detect = CharlockHolmes::EncodingDetector.new(8000).detect(data)
           detect && detect[:type] == :binary
         end
+
+        private
 
         # Recursive search of blob id by path
         #

@@ -11,7 +11,7 @@
     #js-details-block-vue
 
     - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
-      .block{ class: ("block-first" if !@build.coverage) }
+      .block
         .title
           Job artifacts
         - if @build.artifacts_expired?
@@ -37,7 +37,7 @@
                 Browse
 
     - if @build.trigger_request
-      .build-widget
+      .build-widget.block
         %h4.title
           Trigger
 
@@ -55,7 +55,7 @@
               .js-build-variable.trigger-build-variable= key
               .js-build-value.trigger-build-value= value
 
-    .block
+    %div{ class: (@build.pipeline.stages_count > 1 ? "block" : "block-last") }
       %p
         Commit
         = link_to @build.pipeline.short_sha, project_commit_path(@project, @build.pipeline.sha), class: 'commit-sha link-commit'
@@ -69,7 +69,7 @@
 
     - if @build.pipeline.stages_count > 1
       .dropdown.build-dropdown
-        .title
+        %div
           %span{ class: "ci-status-icon-#{@build.pipeline.status}" }
             = ci_icon_for_status(@build.pipeline.status)
           Pipeline

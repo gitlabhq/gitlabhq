@@ -7,9 +7,8 @@ module MergeRequests
       source_project = @project
       @project = Project.find(params[:target_project_id]) if params[:target_project_id]
 
-      params[:target_project_id] ||= source_project.id
-
       merge_request = MergeRequest.new
+      merge_request.target_project = @project
       merge_request.source_project = source_project
       merge_request.source_branch = params[:source_branch]
       merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
