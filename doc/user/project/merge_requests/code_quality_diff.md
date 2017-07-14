@@ -29,7 +29,10 @@ In order for the report to show in the merge request, you need to specify a
 `codeclimate.json` as an artifact. GitLab will then check this file and show
 the information inside the merge request.
 
->**Note:**
+`codeclimate.json` needs to be the only artifact file for the job. If you try
+to also include other files, like Code Climate's HTML report, it will break the
+Code Climate display in the merge request.
+
 If the Code Climate report doesn't have anything to compare to, no information
 will be displayed in the merge request area. That is the case when you add the
 `codeclimate` job in your `.gitlab-ci.yml` for the very first time.
