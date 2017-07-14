@@ -23,9 +23,17 @@ describe Gitlab::BackgroundMigration do
       end
 
       it 'steals jobs from a queue' do
-        expect(queue[0]).to receive(:delete)
+        expect(queue[0]).to receive(:delete).and_return(true)
 
         expect(described_class).to receive(:perform).with('Foo', [10, 20])
+
+        described_class.steal('Foo')
+      end
+
+      it 'does not steal job that has already been taken' do
+        expect(queue[0]).to receive(:delete).and_return(false)
+
+        expect(described_class).not_to receive(:perform).with('Foo', [10, 20])
 
         described_class.steal('Foo')
       end

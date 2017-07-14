@@ -19,9 +19,7 @@ module Gitlab
           next unless job.queue == self.queue
           next unless migration_class == steal_class
 
-          perform(migration_class, migration_args)
-
-          job.delete
+          perform(migration_class, migration_args) if job.delete
         end
       end
     end
