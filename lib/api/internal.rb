@@ -101,7 +101,7 @@ module API
       end
 
       get "/broadcast_message" do
-        if message = BroadcastMessage.current.last
+        if message = BroadcastMessage.current&.last
           present message, with: Entities::BroadcastMessage
         else
           {}
