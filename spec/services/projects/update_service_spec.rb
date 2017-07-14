@@ -1,11 +1,14 @@
 require 'spec_helper'
 
-describe Projects::UpdateService, services: true do
+describe Projects::UpdateService, '#execute', :services do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
 
-  describe 'update_by_user' do
+  let(:project) do
+    create(:empty_project, creator: user, namespace: user.namespace)
+  end
+
+  context 'when changing visibility level' do
     context 'when visibility_level is INTERNAL' do
       it 'updates the project to internal' do
         result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
@@ -55,12 +58,13 @@ describe Projects::UpdateService, services: true do
     end
   end
 
-  describe 'visibility_level' do
+  describe 'when updating project that has forks' do
     let(:project) { create(:empty_project, :internal) }
     let(:forked_project) { create(:forked_project_with_submodules, :internal) }
 
     before do
-      forked_project.build_forked_project_link(forked_to_project_id: forked_project.id, forked_from_project_id: project.id)
+      forked_project.build_forked_project_link(forked_to_project_id: forked_project.id,
+                                               forked_from_project_id: project.id)
       forked_project.save
     end
 
@@ -89,11 +93,23 @@ describe Projects::UpdateService, services: true do
     end
   end
 
-  it 'returns an error result when record cannot be updated' do
-    result = update_project(project, admin, { name: 'foo&bar' })
+  context 'when updating a default branch' do
+    let(:project) { create(:project, :repository) }
 
-    expect(result).to eq({ status: :error,
-                           message: 'Project could not be updated!' })
+    it 'changes a default branch' do
+      update_project(project, admin, default_branch: 'feature')
+
+      expect(Project.find(project.id).default_branch).to eq 'feature'
+    end
+  end
+
+  context 'when passing invalid parameters' do
+    it 'returns an error result when record cannot be updated' do
+      result = update_project(project, admin, { name: 'foo&bar' })
+
+      expect(result).to eq({ status: :error,
+                             message: 'Project could not be updated!' })
+    end
   end
 
   def update_project(project, user, opts)
