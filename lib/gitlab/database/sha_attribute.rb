@@ -5,7 +5,7 @@ module Gitlab
                     # behaviour from the default Binary type.
                     ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Bytea
                   else
-                    ActiveRecord::Type::Binary
+                    ActiveModel::Type::Binary
                   end
 
     # Class for casting binary data to hexadecimal SHA1 hashes (and vice-versa).
@@ -17,14 +17,14 @@ module Gitlab
       PACK_FORMAT = 'H*'.freeze
 
       # Casts binary data to a SHA1 in hexadecimal.
-      def type_cast_from_database(value)
+      def deserialize(value)
         value = super
 
         value ? value.unpack(PACK_FORMAT)[0] : nil
       end
 
       # Casts a SHA1 in hexadecimal to the proper binary format.
-      def type_cast_for_database(value)
+      def serialize(value)
         arg = value ? [value].pack(PACK_FORMAT) : nil
 
         super(arg)

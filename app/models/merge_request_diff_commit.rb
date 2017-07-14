@@ -17,7 +17,7 @@ class MergeRequestDiffCommit < ActiveRecord::Base
       commit_hash.merge(
         merge_request_diff_id: merge_request_diff_id,
         relative_order: index,
-        sha: sha_attribute.type_cast_for_database(sha)
+        sha: sha_attribute.serialize(sha)
       )
     end
 
