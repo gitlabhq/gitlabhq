@@ -278,42 +278,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#search_files' do
-    let(:results) { repository.search_files('rails', 'master') }
-    subject { results }
-
-    it { is_expected.to be_kind_of Array }
-
-    describe '#first' do
-      subject { super().first }
-      it { is_expected.to be_kind_of Gitlab::Git::BlobSnippet }
-    end
-
-    context 'blob result' do
-      subject { results.first }
-
-      describe '#ref' do
-        subject { super().ref }
-        it { is_expected.to eq('master') }
-      end
-
-      describe '#filename' do
-        subject { super().filename }
-        it { is_expected.to eq('CHANGELOG') }
-      end
-
-      describe '#startline' do
-        subject { super().startline }
-        it { is_expected.to eq(35) }
-      end
-
-      describe '#data' do
-        subject { super().data }
-        it { is_expected.to include "Ability to filter by multiple labels" }
-      end
-    end
-  end
-
   describe '#submodule_url_for' do
     let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
     let(:ref) { 'master' }
