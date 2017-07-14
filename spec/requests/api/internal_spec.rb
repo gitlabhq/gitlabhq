@@ -35,6 +35,17 @@ describe API::Internal do
         expect(json_response).to be_empty
       end
     end
+
+    context 'nil broadcast message' do
+      it 'returns nothing' do
+        allow(BroadcastMessage).to receive(:current).and_return(nil)
+
+        get api('/internal/broadcast_message'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
   end
 
   describe 'GET /internal/broadcast_messages' do
