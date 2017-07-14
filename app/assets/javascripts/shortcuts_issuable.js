@@ -6,87 +6,81 @@
 import 'mousetrap';
 import './shortcuts_navigation';
 
-(function() {
-  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-  this.ShortcutsIssuable = (function(superClass) {
-    extend(ShortcutsIssuable, superClass);
+var ShortcutsIssuable = {};
 
-    function ShortcutsIssuable(isMergeRequest) {
-      ShortcutsIssuable.__super__.constructor.call(this);
-      Mousetrap.bind('a', this.openSidebarDropdown.bind(this, 'assignee'));
-      Mousetrap.bind('m', this.openSidebarDropdown.bind(this, 'milestone'));
-      Mousetrap.bind('r', (function(_this) {
-        return function() {
-          _this.replyWithSelectedText();
-          return false;
-        };
-      })(this));
-      Mousetrap.bind('e', (function(_this) {
-        return function() {
-          _this.editIssue();
-          return false;
-        };
-      })(this));
-      Mousetrap.bind('l', this.openSidebarDropdown.bind(this, 'labels'));
-      if (isMergeRequest) {
-        this.enabledHelp.push('.hidden-shortcut.merge_requests');
-      } else {
-        this.enabledHelp.push('.hidden-shortcut.issues');
-      }
-    }
+extend(ShortcutsIssuable, ShortcutsNavigation);
 
-    ShortcutsIssuable.prototype.replyWithSelectedText = function() {
-      var quote, documentFragment, el, selected, separator;
-      var replyField = $('.js-main-target-form #note_note');
+ShortcutsIssuable = function(isMergeRequest) {
+  ShortcutsIssuable.__super__.constructor.call(this);
+  Mousetrap.bind('a', this.openSidebarDropdown.bind(this, 'assignee'));
+  Mousetrap.bind('m', this.openSidebarDropdown.bind(this, 'milestone'));
+  Mousetrap.bind('r', function() {
+    this.replyWithSelectedText();
+    return false;
+  }.bind(this));
+  Mousetrap.bind('e', function() {
+    this.editIssue();
+    return false;
+  }.bind(this));
+  Mousetrap.bind('l', this.openSidebarDropdown.bind(this, 'labels'));
+  if (isMergeRequest) {
+    this.enabledHelp.push('.hidden-shortcut.merge_requests');
+  } else {
+    this.enabledHelp.push('.hidden-shortcut.issues');
+  }
+};
 
-      documentFragment = window.gl.utils.getSelectedFragment();
-      if (!documentFragment) {
-        replyField.focus();
-        return;
-      }
+ShortcutsIssuable.prototype.replyWithSelectedText = function() {
+  var quote, documentFragment, el, selected, separator;
+  var replyField = $('.js-main-target-form #note_note');
 
-      el = window.gl.CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
-      selected = window.gl.CopyAsGFM.nodeToGFM(el);
+  documentFragment = window.gl.utils.getSelectedFragment();
+  if (!documentFragment) {
+    replyField.focus();
+    return;
+  }
 
-      if (selected.trim() === "") {
-        return;
-      }
-      quote = _.map(selected.split("\n"), function(val) {
-        return ("> " + val).trim() + "\n";
-      });
-      // If replyField already has some content, add a newline before our quote
-      separator = replyField.val().trim() !== "" && "\n\n" || '';
-      replyField.val(function(_, current) {
-        return current + separator + quote.join('') + "\n";
-      });
+  el = window.gl.CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
+  selected = window.gl.CopyAsGFM.nodeToGFM(el);
 
-      // Trigger autosave
-      replyField.trigger('input');
+  if (selected.trim() === "") {
+    return;
+  }
+  quote = _.map(selected.split("\n"), function(val) {
+    return ("> " + val).trim() + "\n";
+  });
+  // If replyField already has some content, add a newline before our quote
+  separator = replyField.val().trim() !== "" && "\n\n" || '';
+  replyField.val(function(_, current) {
+    return current + separator + quote.join('') + "\n";
+  });
 
-      // Trigger autosize
-      var event = document.createEvent('Event');
-      event.initEvent('autosize:update', true, false);
-      replyField.get(0).dispatchEvent(event);
+  // Trigger autosave
+  replyField.trigger('input');
 
-      // Focus the input field
-      return replyField.focus();
-    };
+  // Trigger autosize
+  var event = document.createEvent('Event');
+  event.initEvent('autosize:update', true, false);
+  replyField.get(0).dispatchEvent(event);
 
-    ShortcutsIssuable.prototype.editIssue = function() {
-      var $editBtn;
-      $editBtn = $('.issuable-edit');
-      // Need to click the element as on issues, editing is inline
-      // on merge request, editing is on a different page
-      $editBtn.get(0).click();
-    };
+  // Focus the input field
+  return replyField.focus();
+};
 
-    ShortcutsIssuable.prototype.openSidebarDropdown = function(name) {
-      sidebar.openDropdown(name);
-      return false;
-    };
+ShortcutsIssuable.prototype.editIssue = function() {
+  var $editBtn;
+  $editBtn = $('.issuable-edit');
+  // Need to click the element as on issues, editing is inline
+  // on merge request, editing is on a different page
+  $editBtn.get(0).click();
+};
 
-    return ShortcutsIssuable;
-  })(ShortcutsNavigation);
-}).call(window);
+ShortcutsIssuable.prototype.openSidebarDropdown = function(name) {
+  sidebar.openDropdown(name);
+  return false;
+};
+
+window.ShortcutsIssuable = ShortcutsIssuable;

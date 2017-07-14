@@ -2,52 +2,48 @@
 /* global Flash */
 /* global Sortable */
 
-(function() {
-  this.Milestone = (function() {
-    function Milestone() {
-      this.bindTabsSwitching();
+function Milestone() {
+  this.bindTabsSwitching();
 
-      // Load merge request tab if it is active
-      // merge request tab is active based on different conditions in the backend
-      this.loadTab($('.js-milestone-tabs .active a'));
+  // Load merge request tab if it is active
+  // merge request tab is active based on different conditions in the backend
+  this.loadTab($('.js-milestone-tabs .active a'));
 
-      this.loadInitialTab();
-    }
+  this.loadInitialTab();
+}
 
-    Milestone.prototype.bindTabsSwitching = function() {
-      return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
-        const $target = $(e.target);
+Milestone.prototype.bindTabsSwitching = function() {
+  return $('a[data-toggle="tab"]').on('show.bs.tab', (e) => {
+    const $target = $(e.target);
 
-        location.hash = $target.attr('href');
-        this.loadTab($target);
-      });
-    };
+    location.hash = $target.attr('href');
+    this.loadTab($target);
+  });
+};
 
-    Milestone.prototype.loadInitialTab = function() {
-      const $target = $(`.js-milestone-tabs a[href="${location.hash}"]`);
+Milestone.prototype.loadInitialTab = function() {
+  const $target = $(`.js-milestone-tabs a[href="${location.hash}"]`);
 
-      if ($target.length) {
-        $target.tab('show');
-      }
-    };
+  if ($target.length) {
+    $target.tab('show');
+  }
+};
 
-    Milestone.prototype.loadTab = function($target) {
-      const endpoint = $target.data('endpoint');
-      const tabElId = $target.attr('href');
+Milestone.prototype.loadTab = function($target) {
+  const endpoint = $target.data('endpoint');
+  const tabElId = $target.attr('href');
 
-      if (endpoint && !$target.hasClass('is-loaded')) {
-        $.ajax({
-          url: endpoint,
-          dataType: 'JSON',
-        })
-        .fail(() => new Flash('Error loading milestone tab'))
-        .done((data) => {
-          $(tabElId).html(data.html);
-          $target.addClass('is-loaded');
-        });
-      }
-    };
+  if (endpoint && !$target.hasClass('is-loaded')) {
+    $.ajax({
+      url: endpoint,
+      dataType: 'JSON',
+    })
+    .fail(() => new Flash('Error loading milestone tab'))
+    .done((data) => {
+      $(tabElId).html(data.html);
+      $target.addClass('is-loaded');
+    });
+  }
+};
 
-    return Milestone;
-  })();
-}).call(window);
+window.Milestone = Milestone;

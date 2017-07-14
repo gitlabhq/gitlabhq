@@ -4,25 +4,23 @@
 
 import './shortcuts_navigation';
 
-(function() {
-  var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
-  this.ShortcutsNetwork = (function(superClass) {
-    extend(ShortcutsNetwork, superClass);
+var ShortcutsNetwork = {};
 
-    function ShortcutsNetwork(graph) {
-      this.graph = graph;
-      ShortcutsNetwork.__super__.constructor.call(this);
-      Mousetrap.bind(['left', 'h'], this.graph.scrollLeft);
-      Mousetrap.bind(['right', 'l'], this.graph.scrollRight);
-      Mousetrap.bind(['up', 'k'], this.graph.scrollUp);
-      Mousetrap.bind(['down', 'j'], this.graph.scrollDown);
-      Mousetrap.bind(['shift+up', 'shift+k'], this.graph.scrollTop);
-      Mousetrap.bind(['shift+down', 'shift+j'], this.graph.scrollBottom);
-      this.enabledHelp.push('.hidden-shortcut.network');
-    }
+extend(ShortcutsNetwork, ShortcutsNavigation);
 
-    return ShortcutsNetwork;
-  })(ShortcutsNavigation);
-}).call(window);
+ShortcutsNetwork = function(graph) {
+  this.graph = graph;
+  ShortcutsNetwork.__super__.constructor.call(this);
+  Mousetrap.bind(['left', 'h'], this.graph.scrollLeft);
+  Mousetrap.bind(['right', 'l'], this.graph.scrollRight);
+  Mousetrap.bind(['up', 'k'], this.graph.scrollUp);
+  Mousetrap.bind(['down', 'j'], this.graph.scrollDown);
+  Mousetrap.bind(['shift+up', 'shift+k'], this.graph.scrollTop);
+  Mousetrap.bind(['shift+down', 'shift+j'], this.graph.scrollBottom);
+  this.enabledHelp.push('.hidden-shortcut.network');
+};
+
+window.ShortcutsNetwork = ShortcutsNetwork;
