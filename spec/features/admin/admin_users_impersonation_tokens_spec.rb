@@ -64,7 +64,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
       expect(no_personal_access_tokens_message).to have_text("This user has no active Impersonation Tokens.")
     end
 
-    it "moves expired tokens to the 'inactive' section" do
+    it "removes expired tokens from 'active' section" do
       impersonation_token.update(expires_at: 5.days.ago)
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
