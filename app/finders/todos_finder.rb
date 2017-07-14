@@ -109,7 +109,7 @@ class TodosFinder
   end
 
   def sort(items)
-    params[:sort] ? items.sort(params[:sort]) : items.reorder(id: :desc)
+    params[:sort] ? items.sort_by_attr(params[:sort]) : items.reorder(id: :desc)
   end
 
   def by_action(items)

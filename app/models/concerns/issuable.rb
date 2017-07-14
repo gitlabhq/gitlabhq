@@ -139,7 +139,7 @@ module Issuable
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
 
-    def sort(method, excluded_labels: [])
+    def sort_by_attr(method, excluded_labels: [])
       sorted = case method.to_s
                when 'milestone_due_asc' then order_milestone_due_asc
                when 'milestone_due_desc' then order_milestone_due_desc

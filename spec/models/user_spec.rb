@@ -1211,7 +1211,7 @@ describe User, models: true do
     end
   end
 
-  describe '#sort' do
+  describe '#sort_by_attr' do
     before do
       User.delete_all
       @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
@@ -1221,34 +1221,34 @@ describe User, models: true do
 
     context 'when sort by recent_sign_in' do
       it 'sorts users by the recent sign-in time' do
-        expect(User.sort('recent_sign_in').first).to eq(@user)
+        expect(User.sort_by_attr('recent_sign_in').first).to eq(@user)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(User.sort('recent_sign_in').third).to eq(@user2)
+        expect(User.sort_by_attr('recent_sign_in').third).to eq(@user2)
       end
     end
 
     context 'when sort by oldest_sign_in' do
       it 'sorts users by the oldest sign-in time' do
-        expect(User.sort('oldest_sign_in').first).to eq(@user1)
+        expect(User.sort_by_attr('oldest_sign_in').first).to eq(@user1)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(User.sort('oldest_sign_in').third).to eq(@user2)
+        expect(User.sort_by_attr('oldest_sign_in').third).to eq(@user2)
       end
     end
 
     it 'sorts users in descending order by their creation time' do
-      expect(User.sort('created_desc').first).to eq(@user)
+      expect(User.sort_by_attr('created_desc').first).to eq(@user)
     end
 
     it 'sorts users in ascending order by their creation time' do
-      expect(User.sort('created_asc').first).to eq(@user2)
+      expect(User.sort_by_attr('created_asc').first).to eq(@user2)
     end
 
     it 'sorts users by id in descending order when nil is passed' do
-      expect(User.sort(nil).first).to eq(@user2)
+      expect(User.sort_by_attr(nil).first).to eq(@user2)
     end
   end
 

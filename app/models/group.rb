@@ -58,7 +58,7 @@ class Group < Namespace
       where(table[:name].matches(pattern).or(table[:path].matches(pattern)))
     end
 
-    def sort(method)
+    def sort_by_attr(method)
       if method == 'storage_size_desc'
         # storage_size is a virtual column so we need to
         # pass a string to avoid AR adding the table name
