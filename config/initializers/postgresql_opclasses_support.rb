@@ -41,7 +41,7 @@ module ActiveRecord
     # Abstract representation of an index definition on a table. Instances of
     # this type are typically created and returned by methods in database
     # adapters. e.g. ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter#indexes
-    class IndexDefinition < Struct.new(:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :opclasses) #:nodoc:
+    class IndexDefinition < Struct.new(:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :opclasses, :comment) #:nodoc
     end
   end
 end
@@ -50,15 +50,15 @@ end
 module ActiveRecord
   module ConnectionAdapters # :nodoc:
     module SchemaStatements
-      def add_index_options(table_name, column_name, options = {}) #:nodoc:
-        column_names = Array(column_name)
-        index_name   = index_name(table_name, column: column_names)
+      def add_index_options(table_name, column_name, comment: nil, **options) #:nodoc:
+        column_names = index_column_names(column_name)
 
         options.assert_valid_keys(:unique, :order, :name, :where, :length, :internal, :using, :algorithm, :type, :opclasses)
 
-        index_type = options[:unique] ? "UNIQUE" : ""
         index_type = options[:type].to_s if options.key?(:type)
+        index_type ||= options[:unique] ? "UNIQUE" : ""
         index_name = options[:name].to_s if options.key?(:name)
+        index_name ||= index_name(table_name, column_names)
         max_index_length = options.fetch(:internal, false) ? index_name_length : allowed_index_name_length
 
         if options.key?(:algorithm)
@@ -76,12 +76,36 @@ module ActiveRecord
         if index_name.length > max_index_length
           raise ArgumentError, "Index name '#{index_name}' on table '#{table_name}' is too long; the limit is #{max_index_length} characters"
         end
-        if table_exists?(table_name) && index_name_exists?(table_name, index_name, false)
+        if data_source_exists?(table_name) && index_name_exists?(table_name, index_name, false)
           raise ArgumentError, "Index name '#{index_name}' on table '#{table_name}' already exists"
         end
         index_columns = quoted_columns_for_index(column_names, options).join(", ")
 
-        [index_name, index_type, index_columns, index_options, algorithm, using]
+        [index_name, index_type, index_columns, index_options, algorithm, using, comment]
+      end
+    end
+  end
+end
+
+module ActiveRecord
+  module ConnectionAdapters # :nodoc:
+    class PostgreSQLAdapter
+      private
+
+      def add_index_opclass(column_names, options = {})
+        opclass = if options[:opclasses].is_a?(Hash)
+                    options[:opclasses].symbolize_keys
+                  else
+                    Hash.new { |hash, column| hash[column] = options[:opclasses].to_s }
+                  end
+        column_names.each do |name, column|
+          column << " #{opclass[name]}" if opclass[name].present?
+        end
+      end
+
+      def add_options_for_index_columns(quoted_columns, **options)
+        quoted_columns = add_index_opclass(quoted_columns, options)
+        super
       end
     end
   end
@@ -93,61 +117,69 @@ module ActiveRecord
       module SchemaStatements
         # Returns an array of indexes for the given table.
         def indexes(table_name, name = nil)
-           result = query(<<-SQL, 'SCHEMA')
-             SELECT distinct i.relname, d.indisunique, d.indkey, pg_get_indexdef(d.indexrelid), t.oid
-             FROM pg_class t
-             INNER JOIN pg_index d ON t.oid = d.indrelid
-             INNER JOIN pg_class i ON d.indexrelid = i.oid
-             WHERE i.relkind = 'i'
-               AND d.indisprimary = 'f'
-               AND t.relname = '#{table_name}'
-               AND i.relnamespace IN (SELECT oid FROM pg_namespace WHERE nspname = ANY (current_schemas(false)) )
+          table = Utils.extract_schema_qualified_name(table_name.to_s)
+
+          result = query(<<-SQL, 'SCHEMA')
+            SELECT distinct i.relname, d.indisunique, d.indkey, pg_get_indexdef(d.indexrelid), t.oid,
+                            pg_catalog.obj_description(i.oid, 'pg_class') AS comment
+            FROM pg_class t
+            INNER JOIN pg_index d ON t.oid = d.indrelid
+            INNER JOIN pg_class i ON d.indexrelid = i.oid
+            LEFT JOIN pg_namespace n ON n.oid = i.relnamespace
+            WHERE i.relkind = 'i'
+              AND d.indisprimary = 'f'
+              AND t.relname = '#{table.identifier}'
+              AND n.nspname = #{table.schema ? "'#{table.schema}'" : 'ANY (current_schemas(false))'}
             ORDER BY i.relname
           SQL
 
           result.map do |row|
             index_name = row[0]
-            unique = row[1] == 't'
-            indkey = row[2].split(" ")
+            unique = row[1]
+            indkey = row[2].split(" ").map(&:to_i)
             inddef = row[3]
             oid = row[4]
+            comment = row[5]
 
-            columns = Hash[query(<<-SQL, "SCHEMA")]
-            SELECT a.attnum, a.attname
-            FROM pg_attribute a
-            WHERE a.attrelid = #{oid}
-            AND a.attnum IN (#{indkey.join(",")})
-            SQL
+            using, expressions, where = inddef.scan(/ USING (\w+?) \((.+?)\)(?: WHERE (.+))?\z/).flatten
 
-            column_names = columns.values_at(*indkey).compact
+            if indkey.include?(0)
+              columns = expressions
+            else
+              columns = Hash[query(<<-SQL.strip_heredoc, "SCHEMA")].values_at(*indkey).compact
+                SELECT a.attnum, a.attname
+                FROM pg_attribute a
+                WHERE a.attrelid = #{oid}
+                AND a.attnum IN (#{indkey.join(",")})
+              SQL
 
-            unless column_names.empty?
-              # add info on sort order for columns (only desc order is explicitly specified, asc is the default)
-              desc_order_columns = inddef.scan(/(\w+) DESC/).flatten
-              orders = desc_order_columns.any? ? Hash[desc_order_columns.map {|order_column| [order_column, :desc]}] : {}
-              where = inddef.scan(/WHERE (.+)$/).flatten[0]
-              using = inddef.scan(/USING (.+?) /).flatten[0].to_sym
-              opclasses = Hash[inddef.scan(/\((.+)\)$/).flatten[0].split(',').map do |column_and_opclass|
-                                 column, opclass = column_and_opclass.split(' ').map(&:strip)
-                                 [column, opclass] if opclass
-                               end.compact]
+              orders = {}
+              opclasses = {}
 
-              IndexDefinition.new(table_name, index_name, unique, column_names, [], orders, where, nil, using, opclasses)
+              # add info on sort order (only desc order is explicitly specified, asc is the default)
+              # and non-default opclasses
+              expressions.scan(/(\w+)(?: (?!DESC)(\w+))?(?: (DESC))?/).each do |column, opclass, desc|
+                opclasses[column] = opclass if opclass
+                orders[column] = :desc if desc
+              end
+
+              # Use a string for the opclass description (instead of a hash) when all columns
+              # have the same opclass specified.
+              if columns.count == opclasses.count && opclasses.values.uniq.count == 1
+                opclasses = opclasses.values.first
+              end
             end
+
+            IndexDefinition.new(table_name, index_name, unique, columns, [], orders, where, nil, using.to_sym, opclasses, comment.presence)
           end.compact
         end
 
         def add_index(table_name, column_name, options = {}) #:nodoc:
-          index_name, index_type, index_columns_and_opclasses, index_options, index_algorithm, index_using = add_index_options(table_name, column_name, options)
-          execute "CREATE #{index_type} INDEX #{index_algorithm} #{quote_column_name(index_name)} ON #{quote_table_name(table_name)} #{index_using} (#{index_columns_and_opclasses})#{index_options}"
-        end
-
-        protected
-
-          def quoted_columns_for_index(column_names, options = {})
-            column_opclasses = options[:opclasses] || {}
-            column_names.map {|name| "#{quote_column_name(name)} #{column_opclasses[name]}"}
+          index_name, index_type, index_columns_and_opclasses, index_options, index_algorithm, index_using, comment = add_index_options(table_name, column_name, options)
+          execute("CREATE #{index_type} INDEX #{index_algorithm} #{quote_column_name(index_name)} ON #{quote_table_name(table_name)} #{index_using} (#{index_columns_and_opclasses})#{index_options}").tap do
+            execute "COMMENT ON INDEX #{quote_column_name(index_name)} IS #{quote(comment)}" if comment
           end
+        end
       end
     end
   end
@@ -157,32 +189,24 @@ module ActiveRecord
   class SchemaDumper
     private
 
-      def indexes(table, stream)
-        if (indexes = @connection.indexes(table)).any?
-          add_index_statements = indexes.map do |index|
-            statement_parts = [
-              "add_index #{remove_prefix_and_suffix(index.table).inspect}",
-              index.columns.inspect,
-              "name: #{index.name.inspect}",
-            ]
-            statement_parts << 'unique: true' if index.unique
+      def index_parts(index)
+        index_parts = [
+          index.columns.inspect,
+          "name: #{index.name.inspect}",
+        ]
+        index_parts << 'unique: true' if index.unique
 
-            index_lengths = (index.lengths || []).compact
-            statement_parts << "length: #{Hash[index.columns.zip(index.lengths)].inspect}" if index_lengths.any?
+        index_lengths = (index.lengths || []).compact
+        index_parts << "length: #{Hash[index.columns.zip(index.lengths)].inspect}" if index_lengths.any?
 
-            index_orders = index.orders || {}
-            statement_parts << "order: #{index.orders.inspect}" if index_orders.any?
-            statement_parts << "where: #{index.where.inspect}" if index.where
-            statement_parts << "using: #{index.using.inspect}" if index.using
-            statement_parts << "type: #{index.type.inspect}" if index.type
-            statement_parts << "opclasses: #{index.opclasses}" if index.opclasses.present?
-
-            "  #{statement_parts.join(', ')}"
-          end
-
-          stream.puts add_index_statements.sort.join("\n")
-          stream.puts
-        end
+        index_orders = index.orders || {}
+        index_parts << "order: #{index.orders.inspect}" if index_orders.any?
+        index_parts << "where: #{index.where.inspect}" if index.where
+        index_parts << "using: #{index.using.inspect}" if index.using
+        index_parts << "type: #{index.type.inspect}" if index.type
+        index_parts << "opclasses: #{index.opclasses.inspect}" if index.opclasses.present?
+        index_parts << "comment: #{index.comment.inspect}" if index.comment
+        index_parts
       end
   end
 end
