@@ -42,7 +42,7 @@ class Issue {
   initIssueBtnEventListeners() {
     const issueFailMessage = 'Unable to update this issue at this time.';
 
-    return $(document).on('click', '.issuable-actions a.btn-close, .issuable-actions a.btn-reopen', (e) => {
+    return $(document).on('click', '.js-issuable-actions a.btn-close, .js-issuable-actions a.btn-reopen', (e) => {
       var $button, shouldSubmit, url;
       e.preventDefault();
       e.stopImmediatePropagation();

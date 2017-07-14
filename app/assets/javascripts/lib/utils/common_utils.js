@@ -161,12 +161,12 @@
     };
 
     gl.utils.scrollToElement = function($el) {
-      var top = $el.offset().top;
-      var mrTabsHeight = $('.merge-request-tabs').height() || 0;
-      var headerHeight = $('.navbar-gitlab').height() || 0;
+      const top = $el.offset().top;
+      const mrTabsHeight = $('.merge-request-tabs').height() || 0;
+      const headerHeight = $('.navbar-gitlab').height() || 0;
 
       return $('body, html').animate({
-        scrollTop: top - mrTabsHeight - headerHeight
+        scrollTop: top - mrTabsHeight - headerHeight,
       }, 200);
     };
 
