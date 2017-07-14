@@ -375,23 +375,29 @@ describe License do
 
   describe 'reading add-ons' do
     describe '#plan' do
-      it 'interprets no plan as EES' do
-        license = build(:license, data: build(:gitlab_license, restrictions: { add_ons: {} }).export)
+      let(:gl_license) { build(:gitlab_license, restrictions: restrictions.merge(add_ons: {})) }
+      let(:license)    { build(:license, data: gl_license.export) }
 
-        expect(license.plan).to eq(License::STARTER_PLAN)
-      end
+      subject { license.plan }
 
-      it 'interprets an unknown plan as unknown' do
-        license = build_license_with_add_ons({}, plan: 'unknown')
+      [
+        { restrictions: {},                  plan: License::STARTER_PLAN },
+        { restrictions: { plan: nil },       plan: License::STARTER_PLAN },
+        { restrictions: { plan: '' },        plan: License::STARTER_PLAN },
+        { restrictions: { plan: 'unknown' }, plan: 'unknown' }
+      ].each do |spec|
+        context spec.inspect do
+          let(:restrictions) { spec[:restrictions] }
 
-        expect(license.plan).to eq('unknown')
+          it { is_expected.to eq(spec[:plan]) }
+        end
       end
     end
 
     describe '#add_ons' do
       context 'without add-ons' do
         it 'returns an empty Hash' do
-          license = build_license_with_add_ons({})
+          license = build_license_with_add_ons({}, plan: 'unknown')
 
           expect(license.add_ons).to eq({})
         end
