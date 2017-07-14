@@ -38,6 +38,9 @@ linters:
   ImplicitDiv:
     enabled: true
 
+  InlineJavaScript:
+    enabled: true
+
   LeadingCommentSpace:
     enabled: false
 
