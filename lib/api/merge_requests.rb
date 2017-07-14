@@ -10,6 +10,8 @@ module API
     resource :projects, requirements: { id: %r{[^/]+} } do
       include TimeTrackingEndpoints
 
+      helpers ::Gitlab::IssuableMetadata
+
       helpers do
         def handle_merge_request_errors!(errors)
           if errors[:project_access].any?
@@ -42,10 +44,14 @@ module API
           args[:label_name] = args.delete(:labels)
 
           merge_requests = MergeRequestsFinder.new(current_user, args).execute
-                             .inc_notes_with_associations
-                             .preload(:target_project, :author, :assignee, :milestone, :merge_request_diff)
+                             .reorder(args[:order_by] => args[:sort])
+          merge_requests = paginate(merge_requests)
+                             .preload(:target_project)
 
-          merge_requests.reorder(args[:order_by] => args[:sort])
+          return merge_requests if args[:view] == 'simple'
+
+          merge_requests
+            .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
         end
 
         params :optional_params_ce do
@@ -76,6 +82,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
+        optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         use :pagination
       end
       get ":id/merge_requests" do
@@ -83,7 +90,17 @@ module API
 
         merge_requests = find_merge_requests(project_id: user_project.id)
 
-        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+        options = { with: Entities::MergeRequestBasic,
+                    current_user: current_user,
+                    project: user_project }
+
+        if params[:view] == 'simple'
+          options[:with] = Entities::MergeRequestSimple
+        else
+          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
+        end
+
+        present merge_requests, options
       end
 
       desc 'Create a merge request' do
