@@ -132,6 +132,14 @@ Issues can be [exported as CSV](csv_export.md) from GitLab and are sent to your 
 
 _Exporting issues to CSV is available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
 
+## Related Issues (EES/SSP)
+
+Related Issues are a bi-directional relationship between any two issues
+and appear in a block below the issue description. Issues can be across groups
+and projects.
+
+Read more about [Related Issues](related_issues.md).
+
 ### Issue's API
 
 Read through the [API documentation](../../../api/issues.md).
