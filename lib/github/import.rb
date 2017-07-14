@@ -48,9 +48,9 @@ module Github
       @project = project
       @repository = project.repository
       @repo = project.import_source
-      @options = options
       @repo_url = project.import_url
       @wiki_url = project.import_url.sub(/\.git\z/, '.wiki.git')
+      @options = options.reverse_merge(url: root_endpoint)
       @verbose = options.fetch(:verbose, false)
       @cached  = Hash.new { |hash, key| hash[key] = Hash.new }
       @errors  = []
@@ -382,6 +382,21 @@ module Github
 
     def error(type, url, message)
       errors << { type: type, url: Gitlab::UrlSanitizer.sanitize(url), error: message }
+    end
+
+    def root_endpoint
+      @root_endpoint ||= custom_endpoint || githup_endpoint
+    end
+
+    def custom_endpoint
+      Gitlab.config.omniauth.providers
+                            .find { |provider| provider.name == 'github' }
+                            .to_h
+                            .dig('args', 'client_options', 'site')
+    end
+
+    def github_endpoint
+      OmniAuth::Strategies::GitHub.default_options[:client_options][:site]
     end
   end
 end
