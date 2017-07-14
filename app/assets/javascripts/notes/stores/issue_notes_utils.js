@@ -3,6 +3,9 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default {
+  findNoteObjectById(notes, id) {
+    return notes.filter(n => n.id === id)[0];
+  },
   getQuickActionText(note) {
     let text = 'Applying command';
     const quickActions = AjaxCache.get(gl.GfmAutoComplete.dataSources.commands);

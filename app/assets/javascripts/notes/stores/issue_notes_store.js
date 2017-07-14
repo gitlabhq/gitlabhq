@@ -3,8 +3,6 @@
 import service from '../services/issue_notes_service';
 import utils from './issue_notes_utils';
 
-const findNoteObjectById = (notes, id) => notes.filter(n => n.id === id)[0];
-
 const state = {
   notes: [],
   targetNoteHash: null,
@@ -39,17 +37,17 @@ const mutations = {
     storeState.targetNoteHash = hash;
   },
   toggleDiscussion(storeState, { discussionId }) {
-    const discussion = findNoteObjectById(storeState.notes, discussionId);
+    const discussion = utils.findNoteObjectById(storeState.notes, discussionId);
 
     discussion.expanded = !discussion.expanded;
   },
   deleteNote(storeState, note) {
-    const noteObj = findNoteObjectById(storeState.notes, note.discussion_id);
+    const noteObj = utils.findNoteObjectById(storeState.notes, note.discussion_id);
 
     if (noteObj.individual_note) {
       storeState.notes.splice(storeState.notes.indexOf(noteObj), 1);
     } else {
-      const comment = findNoteObjectById(noteObj.notes, note.id);
+      const comment = utils.findNoteObjectById(noteObj.notes, note.id);
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1);
 
       if (!noteObj.notes.length) {
@@ -58,19 +56,19 @@ const mutations = {
     }
   },
   addNewReplyToDiscussion(storeState, note) {
-    const noteObj = findNoteObjectById(storeState.notes, note.discussion_id);
+    const noteObj = utils.findNoteObjectById(storeState.notes, note.discussion_id);
 
     if (noteObj) {
       noteObj.notes.push(note);
     }
   },
   updateNote(storeState, note) {
-    const noteObj = findNoteObjectById(storeState.notes, note.discussion_id);
+    const noteObj = utils.findNoteObjectById(storeState.notes, note.discussion_id);
 
     if (noteObj.individual_note) {
       noteObj.notes.splice(0, 1, note);
     } else {
-      const comment = findNoteObjectById(noteObj.notes, note.id);
+      const comment = utils.findNoteObjectById(noteObj.notes, note.id);
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
     }
   },
@@ -112,7 +110,7 @@ const mutations = {
   showPlaceholderNote(storeState, data) {
     let notesArr = storeState.notes;
     if (data.replyId) {
-      notesArr = findNoteObjectById(notesArr, data.replyId).notes;
+      notesArr = utils.findNoteObjectById(notesArr, data.replyId).notes;
     }
 
     notesArr.push({
@@ -255,7 +253,7 @@ const actions = {
             if (notesById[note.id]) {
               context.commit('updateNote', note);
             } else if (note.type === 'DiscussionNote') {
-              const discussion = findNoteObjectById(context.state.notes, note.discussion_id);
+              const discussion = utils.findNoteObjectById(context.state.notes, note.discussion_id);
 
               if (discussion) {
                 context.commit('addNewReplyToDiscussion', note);
