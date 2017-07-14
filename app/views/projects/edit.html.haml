@@ -61,68 +61,68 @@
               = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
         = f.submit 'Save changes', class: "btn btn-save"
 
-%section.settings.sharing-permissions
-  .settings-header
-    %h4
-      Sharing and permissions
-    %button.btn.js-settings-toggle
-      = expanded ? 'Collapse' : 'Expand'
-    %p
-      Enable or disable certain project features and choose access levels.
-  .settings-content.no-animate{ class: ('expaneded' if expanded) }
-    = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
-      .form_group.sharing-and-permissions
-        .row.js-visibility-select
-          .col-md-8
-            .label-light
-              = label_tag :project_visibility, 'Project Visibility', class: 'label-light', for: :project_visibility_level
-              = link_to icon('question-circle'), help_page_path("public_access/public_access")
-            %span.help-block
-          .col-md-4.visibility-select-container
-            = render('projects/visibility_select', model_method: :visibility_level, form: f, selected_level: @project.visibility_level)
-        = f.fields_for :project_feature do |feature_fields|
-          %fieldset.features
-            .row
-              .col-md-8.project-feature
-                = feature_fields.label :repository_access_level, "Repository", class: 'label-light'
-                %span.help-block View and edit files in this project
-              .col-md-4.js-repo-access-level
-                = project_feature_access_select(:repository_access_level)
+  %section.settings.sharing-permissions
+    .settings-header
+      %h4
+        Sharing and permissions
+      %button.btn.js-settings-toggle
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        Enable or disable certain project features and choose access levels.
+    .settings-content.no-animate{ class: ('expaneded' if expanded) }
+      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
+        .form-group.sharing-and-permissions
+          .row.js-visibility-select
+            .col-md-8
+              .label-light
+                = label_tag :project_visibility, 'Project Visibility', class: 'label-light', for: :project_visibility_level
+                = link_to icon('question-circle'), help_page_path("public_access/public_access")
+              %span.help-block
+            .col-md-4.visibility-select-container
+              = render('projects/visibility_select', model_method: :visibility_level, form: f, selected_level: @project.visibility_level)
+          = f.fields_for :project_feature do |feature_fields|
+            %fieldset.features
+              .row
+                .col-md-8.project-feature
+                  = feature_fields.label :repository_access_level, "Repository", class: 'label-light'
+                  %span.help-block View and edit files in this project
+                .col-md-4.js-repo-access-level
+                  = project_feature_access_select(:repository_access_level)
 
-            .row
-              .col-md-8.project-feature.nested
-                = feature_fields.label :merge_requests_access_level, "Merge requests", class: 'label-light'
-                %span.help-block Submit changes to be merged upstream
-              .col-md-4
-                = project_feature_access_select(:merge_requests_access_level)
+              .row
+                .col-md-8.project-feature.nested
+                  = feature_fields.label :merge_requests_access_level, "Merge requests", class: 'label-light'
+                  %span.help-block Submit changes to be merged upstream
+                .col-md-4
+                  = project_feature_access_select(:merge_requests_access_level)
+              .row
+                .col-md-8.project-feature.nested
+                  = feature_fields.label :builds_access_level, "Pipelines", class: 'label-light'
+                  %span.help-block Build, test, and deploy your changes
+                .col-md-4
+                  = project_feature_access_select(:builds_access_level)
 
-            .row
-              .col-md-8.project-feature.nested
-                = feature_fields.label :builds_access_level, "Pipelines", class: 'label-light'
-                %span.help-block Build, test, and deploy your changes
-              .col-md-4
-                = project_feature_access_select(:builds_access_level)
+              .row
+                .col-md-8.project-feature
+                  = feature_fields.label :snippets_access_level, "Snippets", class: 'label-light'
+                  %span.help-block Share code pastes with others out of Git repository
+                .col-md-4
+                  = project_feature_access_select(:snippets_access_level)
 
-            .row
-              .col-md-8.project-feature
-                = feature_fields.label :snippets_access_level, "Snippets", class: 'label-light'
-                %span.help-block Share code pastes with others out of Git repository
-              .col-md-4
-                = project_feature_access_select(:snippets_access_level)
+              .row
+                .col-md-8.project-feature
+                  = feature_fields.label :issues_access_level, "Issues", class: 'label-light'
+                  %span.help-block Lightweight issue tracking system for this project
+                .col-md-4
+                  = project_feature_access_select(:issues_access_level)
 
-            .row
-              .col-md-8.project-feature
-                = feature_fields.label :issues_access_level, "Issues", class: 'label-light'
-                %span.help-block Lightweight issue tracking system for this project
-              .col-md-4
-                = project_feature_access_select(:issues_access_level)
+              .row
+                .col-md-8.project-feature
+                  = feature_fields.label :wiki_access_level, "Wiki", class: 'label-light'
+                  %span.help-block Pages for project documentation
+                .col-md-4
+                  = project_feature_access_select(:wiki_access_level)
 
-            .row
-              .col-md-8.project-feature
-                = feature_fields.label :wiki_access_level, "Wiki", class: 'label-light'
-                %span.help-block Pages for project documentation
-              .col-md-4
-                = project_feature_access_select(:wiki_access_level)
       .form-group
         = render 'shared/allow_request_access', form: f
       - if Gitlab.config.lfs.enabled && current_user.admin?

@@ -95,8 +95,13 @@
   }
 
   .bs-callout,
-  .checkbox:first-child {
+  .checkbox:first-child,
+  .help-block {
     margin-top: 0;
+  }
+
+  .label-light {
+    margin-bottom: 0;
   }
 }
 
