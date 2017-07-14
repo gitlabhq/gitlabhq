@@ -41,13 +41,16 @@ module Github
       self.reset_callbacks :validate
     end
 
-    attr_reader :project, :repository, :repo, :options, :errors, :cached, :verbose
+    attr_reader :project, :repository, :repo, :repo_url, :wiki_url,
+                :options, :errors, :cached, :verbose
 
     def initialize(project, options)
       @project = project
       @repository = project.repository
       @repo = project.import_source
       @options = options
+      @repo_url = project.import_url
+      @wiki_url = project.import_url.sub(/\.git\z/, '.wiki.git')
       @verbose = options.fetch(:verbose, false)
       @cached  = Hash.new { |hash, key| hash[key] = Hash.new }
       @errors  = []
@@ -81,23 +84,21 @@ module Github
 
     def fetch_repository
       begin
-        project.create_repository unless project.repository.exists?
-        project.repository.add_remote('github', "https://#{options.fetch(:token)}@github.com/#{repo}.git")
+        project.ensure_repository
+        project.repository.add_remote('github', repo_url)
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
       rescue Gitlab::Shell::Error => e
-        error(:project, "https://github.com/#{repo}.git", e.message)
+        error(:project, repo_url, e.message)
         raise Github::RepositoryFetchError
       end
     end
 
     def fetch_wiki_repository
-      wiki_url  = "https://#{options.fetch(:token)}@github.com/#{repo}.wiki.git"
-      wiki_path = "#{project.full_path}.wiki"
+      return if project.wiki.repository_exists?
 
-      unless project.wiki.repository_exists?
-        gitlab_shell.import_repository(project.repository_storage_path, wiki_path, wiki_url)
-      end
+      wiki_path = "#{project.path_with_namespace}.wiki"
+      gitlab_shell.import_repository(project.repository_storage_path, wiki_path, wiki_url)
     rescue Gitlab::Shell::Error => e
       # GitHub error message when the wiki repo has not been created,
       # this means that repo has wiki enabled, but have no pages. So,
