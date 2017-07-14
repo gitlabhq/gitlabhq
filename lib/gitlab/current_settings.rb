@@ -63,7 +63,7 @@ module Gitlab
       active_db_connection = ActiveRecord::Base.connection.active? rescue false
 
       active_db_connection &&
-        ActiveRecord::Base.connection.table_exists?('application_settings')
+        ActiveRecord::Base.connection.data_source_exists?('application_settings')
     rescue ActiveRecord::NoDatabaseError
       false
     end
