@@ -3,7 +3,7 @@
 module OmniAuth
   module RequestForgeryProtection
     class Controller < ActionController::Base
-      protect_from_forgery with: :exception
+      protect_from_forgery with: :exception, prepend: true
 
       def index
         head :ok

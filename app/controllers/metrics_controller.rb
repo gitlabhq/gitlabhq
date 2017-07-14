@@ -1,7 +1,7 @@
 class MetricsController < ActionController::Base
   include RequiresWhitelistedMonitoringClient
 
-  protect_from_forgery with: :exception
+  protect_from_forgery with: :exception, prepend: true
 
   before_action :validate_prometheus_metrics
 

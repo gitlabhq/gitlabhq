@@ -2,7 +2,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
 
-  protect_from_forgery except: [:kerberos, :saml, :cas3]
+  protect_from_forgery except: [:kerberos, :saml, :cas3], prepend: true
 
   Gitlab.config.omniauth.providers.each do |provider|
     define_method provider['name'] do
