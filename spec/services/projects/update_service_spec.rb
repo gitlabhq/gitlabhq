@@ -103,6 +103,21 @@ describe Projects::UpdateService, '#execute', :services do
     end
   end
 
+  context 'when renaming project that contains container images' do
+    before do
+      stub_container_registry_config(enabled: true)
+      stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+      create(:container_repository, project: project, name: :image)
+    end
+
+    it 'does not allow to rename the project' do
+      result = update_project(project, admin, path: 'renamed')
+
+      expect(result).to include(status: :error)
+      expect(result[:message]).to match(/contains container registry tags/)
+    end
+  end
+
   context 'when passing invalid parameters' do
     it 'returns an error result when record cannot be updated' do
       result = update_project(project, admin, { name: 'foo&bar' })
