@@ -82,7 +82,7 @@ class Member < ActiveRecord::Base
       joins(:user).merge(User.search(query))
     end
 
-    def sort(method)
+    def sort_by_attr(method)
       case method.to_s
       when 'access_level_asc' then reorder(access_level: :asc)
       when 'access_level_desc' then reorder(access_level: :desc)

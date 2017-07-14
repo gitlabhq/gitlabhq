@@ -20,7 +20,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @group_links = @group_links.where(group_id: @project.invited_groups.search(params[:search]).select(:id))
     end
 
-    @project_members = @project_members.sort(@sort).page(params[:page])
+    @project_members = @project_members.sort_by_attr(@sort).page(params[:page])
     @requesters = AccessRequestsFinder.new(@project).execute(current_user)
     @project_member = @project.project_members.new
   end
