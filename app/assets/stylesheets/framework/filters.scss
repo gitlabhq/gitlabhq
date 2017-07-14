@@ -368,7 +368,7 @@
     margin-right: 0.3em;
   }
 
-  & > .value {
+  > .value {
     font-weight: 600;
   }
 }
@@ -467,7 +467,7 @@
     -webkit-flex-direction: column;
     flex-direction: column;
 
-    &> span {
+    > span {
       white-space: normal;
       word-break: break-all;
     }

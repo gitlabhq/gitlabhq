@@ -1,7 +1,7 @@
-.row.blank-state.clearfix
-  .col-md-1.col-md-offset-3.blank-state-icon
+.blank-state
+  .blank-state-icon
     = custom_icon("add_new_user", size: 50)
-  .col-md-5.blank-state-body
+  .blank-state-body
     %h3.blank-state-title
       Add user
     %p.blank-state-text
@@ -9,10 +9,10 @@
     = link_to new_admin_user_path, class: "btn btn-new" do
       New user
 
-.row.blank-state.clearfix
-  .col-md-1.col-md-offset-3.blank-state-icon
+.blank-state
+  .blank-state-icon
     = custom_icon("configure_server", size: 50)
-  .col-md-5.blank-state-body
+  .blank-state-body
     %h3.blank-state-title
       Configure GitLab
     %p.blank-state-text
@@ -21,10 +21,10 @@
       Configure
 
 - if current_user.can_create_group?
-  .row.blank-state.clearfix
-    .col-md-1.col-md-offset-3.blank-state-icon
+  .blank-state
+    .blank-state-icon
       = custom_icon("add_new_group", size: 50)
-    .col-md-5.blank-state-body
+    .blank-state-body
       %h3.blank-state-title
         Create a group
       %p.blank-state-text

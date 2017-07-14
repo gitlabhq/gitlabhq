@@ -358,7 +358,7 @@ ul.related-merge-requests > li {
     background-color: $border-gray-normal;
   }
 
-  & > .fa {
+  > .fa {
     line-height: inherit;
   }
 }
@@ -394,7 +394,7 @@ ul.related-merge-requests > li {
     outline: none;
   }
 
-  & > .fa {
+  > .fa {
     font-size: 0.9em;
   }
 }

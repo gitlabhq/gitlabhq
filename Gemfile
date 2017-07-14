@@ -255,12 +255,12 @@ gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.0'
 gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-gem 'jquery-rails',       '~> 4.1.0'
-gem 'request_store',      '~> 1.3'
-gem 'select2-rails',      '~> 3.5.9'
-gem 'virtus',             '~> 1.0.1'
-gem 'net-ssh',            '~> 3.0.1'
-gem 'base32',             '~> 0.3.0'
+gem 'jquery-rails', '~> 4.1.0'
+gem 'request_store', '~> 1.3'
+gem 'select2-rails', '~> 3.5.9'
+gem 'virtus', '~> 1.0.1'
+gem 'base32', '~> 0.3.0'
+
 gem "gitlab-license", "~> 1.0"
 
 # Sentry integration
@@ -345,7 +345,7 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.47.1', require: false
   gem 'rubocop-rspec', '~> 1.15.0', require: false
-  gem 'scss_lint', '~> 0.47.0', require: false
+  gem 'scss_lint', '~> 0.54.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false

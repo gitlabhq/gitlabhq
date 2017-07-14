@@ -48,6 +48,7 @@ module Gitlab
         #
         #   Commit.find(repo, 'master')
         #
+        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/321
         def find(repo, commit_id = "HEAD")
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
           return decorate(commit_id) if commit_id.is_a?(Rugged::Commit)
@@ -124,6 +125,7 @@ module Gitlab
         #        are documented here:
         #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
         #
+        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/326
         def find_all(repo, options = {})
           actual_options = options.dup
 
@@ -243,6 +245,8 @@ module Gitlab
       # Shows the diff between the commit's parent and the commit.
       #
       # Cuts out the header and stats from #to_patch and returns only the diff.
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
       def to_diff
         diff_from_parent.patch
       end

@@ -553,6 +553,7 @@ module Gitlab
       #   @repository.submodule_url_for('master', 'rack')
       #   # => git@localhost:rack.git
       #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/329
       def submodule_url_for(ref, path)
         Gitlab::GitalyClient.migrate(:submodule_url_for) do |is_enabled|
           if is_enabled
@@ -567,6 +568,8 @@ module Gitlab
       end
 
       # Return total commits count accessible from passed ref
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/330
       def commit_count(ref)
         gitaly_migrate(:commit_count) do |is_enabled|
           if is_enabled
@@ -838,6 +841,7 @@ module Gitlab
       # Ex.
       #   repo.ls_files('master')
       #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/327
       def ls_files(ref)
         actual_ref = ref || root_ref
 
@@ -864,6 +868,7 @@ module Gitlab
         raw_output.compact
       end
 
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
       def copy_gitattributes(ref)
         begin
           commit = lookup(ref)

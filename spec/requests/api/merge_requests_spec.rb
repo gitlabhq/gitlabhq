@@ -70,6 +70,22 @@ describe API::MergeRequests do
         expect(json_response.first['squash']).to eq(merge_request_merged.squash)
       end
 
+      it "returns an array of all merge_requests using simple mode" do
+        get api("/projects/#{project.id}/merge_requests?view=simple", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response.last.keys).to match_array(%w(id iid title web_url created_at description project_id state updated_at))
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(3)
+        expect(json_response.last['iid']).to eq(merge_request.iid)
+        expect(json_response.last['title']).to eq(merge_request.title)
+        expect(json_response.last).to have_key('web_url')
+        expect(json_response.first['iid']).to eq(merge_request_merged.iid)
+        expect(json_response.first['title']).to eq(merge_request_merged.title)
+        expect(json_response.first).to have_key('web_url')
+      end
+
       it "returns an array of all merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state", user)
 

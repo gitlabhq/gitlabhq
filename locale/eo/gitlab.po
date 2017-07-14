@@ -4,11 +4,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-19 15:50-0500\n"
+"POT-Creation-Date: 2017-06-28 13:32+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-07-05 02:56-0400\n"
+"PO-Revision-Date: 2017-07-05 08:18-0400\n"
 "Last-Translator: Lyubomir Vasilev <lyubomirv@abv.bg>\n"
 "Language-Team: Esperanto (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: eo\n"
@@ -28,6 +28,14 @@ msgstr[1] "%d enmetadoj"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} enmetis %{commit_timeago}"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 ĉenstablo"
+msgstr[1] "%d ĉenstabloj"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "Aro da diagramoj pri la seninterrompa integrado"
 
 msgid "About auto deploy"
 msgstr "Pri la aŭtomata disponigado"
@@ -191,6 +199,9 @@ msgid_plural "Commits"
 msgstr[0] "Enmetado"
 msgstr[1] "Enmetadoj"
 
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "Daŭro de la enmetadoj por la lastaj 30 enmetadoj"
+
 msgid "Commit message"
 msgstr "Mesaĝo pri la enmetado"
 
@@ -230,6 +241,13 @@ msgstr "Kopii la identigilon de la enmetado"
 msgid "Create New Directory"
 msgstr "Krei novan dosierujon"
 
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr ""
+"Kreu propran atingoĵetonon en via konto por ebligi al vi eltiri kaj alpuŝi "
+"per %{protocol}."
+
 msgid "Create directory"
 msgstr "Krei dosierujon"
 
@@ -247,6 +265,9 @@ msgstr "Disbranĉigi"
 
 msgid "CreateTag|Tag"
 msgstr "Etikedo"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "kreos propran atingoĵetonon"
 
 msgid "Cron Timezone"
 msgstr "Horzono por Cron"
@@ -420,6 +441,15 @@ msgstr "Intervala ŝablono"
 msgid "Introducing Cycle Analytics"
 msgstr "Ni prezentas al vi la ciklan analizon"
 
+msgid "Jobs for last month"
+msgstr "Taskoj po la lasta monato"
+
+msgid "Jobs for last week"
+msgstr "Taskoj po la lasta semajno"
+
+msgid "Jobs for last year"
+msgstr "Taskoj po la lasta jaro"
+
 msgid "LFSStatus|Disabled"
 msgstr "Malŝaltita"
 
@@ -585,6 +615,21 @@ msgstr "Ĉenstabla plano"
 msgid "Pipeline Schedules"
 msgstr "Ĉenstablaj planoj"
 
+msgid "PipelineCharts|Failed:"
+msgstr "Malsukcesaj:"
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "Ĝenerala statistiko"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "Proporcio de sukceso:"
+
+msgid "PipelineCharts|Successful:"
+msgstr "Sukcesaj:"
+
+msgid "PipelineCharts|Total:"
+msgstr "Totalo:"
+
 msgid "PipelineSchedules|Activated"
 msgstr "Ŝaltita"
 
@@ -614,6 +659,18 @@ msgstr "Celo"
 
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "Propra"
+
+msgid "Pipelines"
+msgstr "Ĉenstabloj"
+
+msgid "Pipelines charts"
+msgstr "Ĉenstablaj diagramoj"
+
+msgid "Pipeline|all"
+msgstr "ĉiuj"
+
+msgid "Pipeline|success"
+msgstr "sukcesaj"
 
 msgid "Pipeline|with stage"
 msgstr "kun etapo"

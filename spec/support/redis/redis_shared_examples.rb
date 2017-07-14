@@ -97,6 +97,12 @@ RSpec.shared_examples "redis_shared_examples" do
     it 'returns false when the file does not exist' do
       expect(subject).to eq(false)
     end
+
+    it "returns false when the filename can't be determined" do
+      expect(described_class).to receive(:config_file_name).and_return(nil)
+
+      expect(subject).to eq(false)
+    end
   end
 
   describe '.with' do
@@ -191,7 +197,13 @@ RSpec.shared_examples "redis_shared_examples" do
     it 'returns false when no config file is present' do
       allow(described_class).to receive(:_raw_config) { false }
 
-      expect(subject.send(:fetch_config)).to be_falsey
+      expect(subject.send(:fetch_config)).to eq false
+    end
+
+    it 'returns false when config file is present but has invalid YAML' do
+      allow(described_class).to receive(:_raw_config) { "# development: true" }
+
+      expect(subject.send(:fetch_config)).to eq false
     end
   end
 

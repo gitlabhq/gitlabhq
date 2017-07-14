@@ -11,7 +11,7 @@
 
 .is-dragging {
   // Important because plugin sets inline CSS
-  opacity: 1!important;
+  opacity: 1 !important;
 
   * {
     -webkit-user-select: none;
@@ -19,8 +19,8 @@
     -ms-user-select: none;
     user-select: none;
     // !important to make sure no style can override this when dragging
-    cursor: -webkit-grabbing!important;
-    cursor: grabbing!important;
+    cursor: -webkit-grabbing !important;
+    cursor: grabbing !important;
   }
 }
 
