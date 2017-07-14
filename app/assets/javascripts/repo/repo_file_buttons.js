@@ -14,7 +14,7 @@ export default class RepoSidebar {
       el: '#repo-file-buttons',
       data: () => Store,
       template: `
-      <div id='repo-file-buttons'>
+      <div id='repo-file-buttons' v-if='!isTree'>
         <a :href='rawFileURL' target='_blank' class='btn btn-default'>Download file</a>
         <div class="btn-group" role="group" aria-label="File actions">
           <a :href='blameFileUrl' class='btn btn-default'>Blame</a>
