@@ -182,14 +182,12 @@ Separate CE and EE actions/keywords. For instance for `params.require` in
 
 ```ruby
 def project_params
-  params.require(:project).permit(project_params_ce)
-  # On EE, this is always:
-  # params.require(:project).permit(project_params_ce << project_params_ee)
+  params.require(:project).permit(project_params_attributes)
 end
 
 # Always returns an array of symbols, created however best fits the use case.
 # It _should_ be sorted alphabetically.
-def project_params_ce
+def project_params_attributes
   %i[
     description
     name
@@ -197,8 +195,16 @@ def project_params_ce
   ]
 end
 
-# (On EE)
-def project_params_ee
+```
+
+In the `EE::ProjectsController` module:
+
+```ruby
+def project_params_attributes
+  super + project_params_attributes_ee
+end
+
+def project_params_attributes_ee
   %i[
     approvals_before_merge
     approver_group_ids
