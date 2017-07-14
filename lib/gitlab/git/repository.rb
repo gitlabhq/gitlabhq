@@ -99,7 +99,10 @@ module Gitlab
         reload_rugged if force_reload
 
         rugged_ref = rugged.branches[name]
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target) if rugged_ref
+        if rugged_ref
+          target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+          Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+        end
       end
 
       def local_branches(sort_by: nil)
@@ -166,7 +169,8 @@ module Gitlab
             end
           end
 
-          Gitlab::Git::Tag.new(self, ref.name, ref.target, message)
+          target_commit = Gitlab::Git::Commit.find(self, ref.target)
+          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
         end.sort_by(&:name)
       end
 
@@ -692,7 +696,8 @@ module Gitlab
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
         rugged_ref = rugged.branches.create(ref, start_point)
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
+        target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
         raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
         raise InvalidRef.new("Invalid reference #{start_point}")
@@ -826,7 +831,8 @@ module Gitlab
       def branches_filter(filter: nil, sort_by: nil)
         branches = rugged.branches.each(filter).map do |rugged_ref|
           begin
-            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
+            target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
           rescue Rugged::ReferenceError
             # Omit invalid branch
           end
