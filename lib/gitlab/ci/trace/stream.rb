@@ -10,15 +10,13 @@ module Gitlab
 
         delegate :close, :tell, :seek, :size, :path, :truncate, to: :stream, allow_nil: true
 
-        delegate :valid?, to: :stream, as: :present?, allow_nil: true
-
         def initialize
           @stream = yield
           @stream&.binmode
         end
 
         def valid?
-          self.stream.present?
+          self&.stream.present?
         end
 
         def file?
