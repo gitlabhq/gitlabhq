@@ -80,16 +80,8 @@ module Gitlab
       end
 
       # Returns an Array of Branches
-      def branches(filter: nil, sort_by: nil)
-        branches = rugged.branches.each(filter).map do |rugged_ref|
-          begin
-            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
-          rescue Rugged::ReferenceError
-            # Omit invalid branch
-          end
-        end.compact
-
-        sort_branches(branches, sort_by)
+      def branches(sort_by: nil)
+        branches_filter(sort_by: sort_by)
       end
 
       def reload_rugged
@@ -115,7 +107,7 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
-            branches(filter: :local, sort_by: sort_by)
+            branches_filter(filter: :local, sort_by: sort_by)
           end
         end
       end
@@ -836,6 +828,19 @@ module Gitlab
       end
 
       private
+
+      # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
+      def branches_filter(filter: nil, sort_by: nil)
+        branches = rugged.branches.each(filter).map do |rugged_ref|
+          begin
+            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
+          rescue Rugged::ReferenceError
+            # Omit invalid branch
+          end
+        end.compact
+
+        sort_branches(branches, sort_by)
+      end
 
       def raw_log(options)
         default_options = {
