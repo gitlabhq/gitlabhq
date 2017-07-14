@@ -10,40 +10,65 @@ describe Gitlab::BackgroundMigration do
 
   describe '.steal' do
     context 'when there are enqueued jobs present' do
-      let(:job) { double(:job, args: ['Foo', [10, 20]]) }
-      let(:queue) { [job] }
+      let(:queue) do
+        [double(args: ['Foo', [10, 20]], queue: described_class.queue)]
+      end
 
       before do
         allow(Sidekiq::Queue).to receive(:new)
           .with(described_class.queue)
           .and_return(queue)
-
-        allow(job).to receive(:queue)
-          .and_return(described_class.queue)
       end
 
-      it 'steals jobs from a queue' do
-        expect(queue[0]).to receive(:delete).and_return(true)
+      context 'when queue contains unprocessed jobs' do
+        it 'steals jobs from a queue' do
+          expect(queue[0]).to receive(:delete).and_return(true)
 
-        expect(described_class).to receive(:perform).with('Foo', [10, 20])
+          expect(described_class).to receive(:perform).with('Foo', [10, 20])
 
-        described_class.steal('Foo')
+          described_class.steal('Foo')
+        end
+
+        it 'does not steal job that has already been taken' do
+          expect(queue[0]).to receive(:delete).and_return(false)
+
+          expect(described_class).not_to receive(:perform).with('Foo', [10, 20])
+
+          described_class.steal('Foo')
+        end
+
+        it 'does not steal jobs for a different migration' do
+          expect(described_class).not_to receive(:perform)
+
+          expect(queue[0]).not_to receive(:delete)
+
+          described_class.steal('Bar')
+        end
       end
 
-      it 'does not steal job that has already been taken' do
-        expect(queue[0]).to receive(:delete).and_return(false)
+      context 'when one of the jobs raises an error' do
+        let(:migration) { spy(:migration) }
 
-        expect(described_class).not_to receive(:perform).with('Foo', [10, 20])
+        let(:queue) do
+          [double(args: ['Foo', [10, 20]], queue: described_class.queue),
+           double(args: ['Foo', [20, 30]], queue: described_class.queue)]
+        end
 
-        described_class.steal('Foo')
-      end
+        before do
+          stub_const("#{described_class}::Foo", migration)
 
-      it 'does not steal jobs for a different migration' do
-        expect(described_class).not_to receive(:perform)
+          allow(migration).to receive(:perform).with(10, 20)
+            .and_raise(StandardError, 'Migration error')
 
-        expect(queue[0]).not_to receive(:delete)
+          allow(queue[0]).to receive(:delete).and_return(true)
+          allow(queue[1]).to receive(:delete).and_return(true)
+        end
 
-        described_class.steal('Bar')
+        it 'recovers from an exceptions and continues' do
+          expect(migration).to receive(:perform).twice
+          expect { described_class.steal('Foo') }
+            .to output(/Migration error/).to_stdout
+        end
       end
     end
 
