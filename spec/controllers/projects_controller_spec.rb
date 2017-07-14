@@ -238,7 +238,7 @@ describe ProjectsController do
         expect { update_project path: 'renamed_path' }
           .not_to change { project.reload.path }
 
-        expect(project.reload.path).to_not include 'renamed_path'
+        expect(project.reload.path).not_to include 'renamed_path'
         expect(controller).to set_flash[:alert].to(/container registry tags/)
         expect(response).to have_http_status(200)
       end
