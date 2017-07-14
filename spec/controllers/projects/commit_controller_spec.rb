@@ -343,7 +343,8 @@ describe Projects::CommitController do
             get_pipelines(id: commit.id, format: :json)
 
             expect(response).to be_ok
-            expect(JSON.parse(response.body)).not_to be_empty
+            expect(JSON.parse(response.body)['pipelines']).not_to be_empty
+            expect(JSON.parse(response.body)['count']['all']).to eq 1
           end
         end
       end
