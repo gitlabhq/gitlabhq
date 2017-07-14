@@ -6,17 +6,13 @@
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('deploy_keys')
 
-<<<<<<< HEAD
 = render "projects/push_rules/index"
 = render "projects/mirrors/show"
 
-=======
->>>>>>> upstream/master
 -# Protected branches & tags use a lot of nested partials.
 -# The shared parts of the views can be found in the `shared` directory.
 -# Those are used throughout the actual views. These `shared` views are then
 -# reused in EE.
-<<<<<<< HEAD
 - if @project.feature_available?(:protected_refs_for_users, current_user)
   = render "projects/protected_branches/ee/index"
   = render "projects/protected_tags/ee/index"
@@ -24,8 +20,4 @@
   = render "projects/protected_branches/index"
   = render "projects/protected_tags/index"
 
-=======
-= render "projects/protected_branches/index"
-= render "projects/protected_tags/index"
->>>>>>> upstream/master
 = render @deploy_keys
