@@ -133,7 +133,7 @@ class Milestone < ActiveRecord::Base
     User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).uniq
   end
 
-  def self.sort(method)
+  def self.sort_by_attr(method)
     case method.to_s
     when 'due_date_asc'
       reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
