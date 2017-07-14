@@ -1,13 +1,11 @@
 <script>
 /* global Flash */
 
-import AjaxCache from '~/lib/utils/ajax_cache';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import MarkdownField from '../../vue_shared/components/markdown/field.vue';
 import IssueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
 import eventHub from '../event_hub';
 
-const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 export default {
   data() {
     const { create_note_path, state } = window.gl.issueData;
@@ -51,9 +49,10 @@ export default {
   methods: {
     handleSave(withIssueAction) {
       if (this.note.length) {
-        const data = {
+        const noteData = {
           endpoint: this.endpoint,
-          noteData: {
+          flashContainer: this.$el,
+          data: {
             full_data: true,
             note: {
               noteable_type: 'Issue',
@@ -64,42 +63,13 @@ export default {
         };
 
         if (this.noteType === 'discussion') {
-          data.noteData.note.type = 'DiscussionNote';
+          noteData.data.note.type = 'DiscussionNote';
         }
 
-        let placeholderText = this.note;
-        const hasQuickActions = this.hasQuickActions();
-
-        if (hasQuickActions) {
-          placeholderText = this.stripQuickActions();
-        }
-
-        if (placeholderText.length) {
-          this.$store.commit('showPlaceholderNote', {
-            noteBody: placeholderText,
-          });
-        }
-
-        if (hasQuickActions) {
-          this.$store.commit('showPlaceholderNote', {
-            isSystemNote: true,
-            noteBody: this.getQuickActionText(),
-          });
-        }
-
-        this.$store.dispatch('createNewNote', data)
+        this.$store.dispatch('saveNote', noteData)
           .then((res) => {
-            const { errors } = res;
-
-            if (hasQuickActions) {
-              this.$store.dispatch('poll');
-              $(this.$refs.textarea).trigger('clear-commands-cache.atwho');
-              new Flash('Commands applied', 'notice', $(this.$el)); // eslint-disable-line
-            }
-
-            if (errors) {
-              if (errors.commands_only) {
-                new Flash(errors.commands_only, 'notice', $(this.$el)); // eslint-disable-line
+            if (res.errors) {
+              if (res.errors.commands_only) {
                 this.discard();
               } else {
                 this.handleError();
@@ -107,8 +77,6 @@ export default {
             } else {
               this.discard();
             }
-
-            this.$store.commit('removePlaceholderNotes');
           })
           .catch(this.handleError);
       }
@@ -152,33 +120,6 @@ export default {
           });
         }
       }
-    },
-    getQuickActionText() {
-      let text = 'Applying command';
-      const quickActions = AjaxCache.get(gl.GfmAutoComplete.dataSources.commands);
-      const { note } = this;
-
-      const executedCommands = quickActions.filter((command) => {
-        const commandRegex = new RegExp(`/${command.name}`);
-        return commandRegex.test(note);
-      });
-
-      if (executedCommands && executedCommands.length) {
-        if (executedCommands.length > 1) {
-          text = 'Applying multiple commands';
-        } else {
-          const commandDescription = executedCommands[0].description.toLowerCase();
-          text = `Applying command to ${commandDescription}`;
-        }
-      }
-
-      return text;
-    },
-    hasQuickActions() {
-      return REGEX_QUICK_ACTIONS.test(this.note);
-    },
-    stripQuickActions() {
-      return this.note.replace(REGEX_QUICK_ACTIONS, '').trim();
     },
   },
   mounted() {

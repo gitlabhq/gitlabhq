@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import service from '../services/issue_notes_service';
+import utils from './issue_notes_utils';
 
 const findNoteObjectById = (notes, id) => notes.filter(n => n.id === id)[0];
 
@@ -147,16 +148,6 @@ const actions = {
         context.commit('deleteNote', note);
       });
   },
-  replyToDiscussion(context, data) {
-    const { endpoint, reply } = data;
-
-    return service
-      .replyToDiscussion(endpoint, reply)
-      .then(res => res.json())
-      .then((res) => {
-        context.commit('addNewReplyToDiscussion', res);
-      });
-  },
   updateNote(context, data) {
     const { endpoint, note } = data;
 
@@ -167,16 +158,69 @@ const actions = {
         context.commit('updateNote', res);
       });
   },
-  createNewNote(context, data) {
-    const { endpoint, noteData } = data;
+  replyToDiscussion(context, noteData) {
+    const { endpoint, data } = noteData;
 
     return service
-      .createNewNote(endpoint, noteData)
+      .replyToDiscussion(endpoint, data)
+      .then(res => res.json())
+      .then((res) => {
+        context.commit('addNewReplyToDiscussion', res);
+      });
+  },
+  createNewNote(context, noteData) {
+    const { endpoint, data } = noteData;
+
+    return service
+      .createNewNote(endpoint, data)
       .then(res => res.json())
       .then((res) => {
         if (!res.errors) {
           context.commit('addNewNote', res);
         }
+        return res;
+      });
+  },
+  saveNote(context, noteData) {
+    const { note } = noteData.data.note;
+    let placeholderText = note;
+    const hasQuickActions = utils.hasQuickActions(placeholderText);
+
+    if (hasQuickActions) {
+      placeholderText = utils.stripQuickActions(placeholderText);
+    }
+
+    if (placeholderText.length) {
+      context.commit('showPlaceholderNote', {
+        noteBody: placeholderText,
+      });
+    }
+
+    if (hasQuickActions) {
+      context.commit('showPlaceholderNote', {
+        isSystemNote: true,
+        noteBody: utils.getQuickActionText(note),
+      });
+    }
+
+    const hasReplyId = noteData.data.in_reply_to_discussion_id;
+    const methodToDispatch = hasReplyId ? 'replyToDiscussion' : 'createNewNote';
+
+    return context.dispatch(methodToDispatch, noteData)
+      .then((res) => {
+        const { errors } = res;
+
+        if (hasQuickActions) {
+          context.dispatch('poll');
+          $('.js-gfm-input').trigger('clear-commands-cache.atwho');
+          new Flash('Commands applied', 'notice', $(noteData.flashContainer)); // eslint-disable-line
+        }
+
+        if (errors && errors.commands_only) {
+          new Flash(errors.commands_only, 'notice', $(noteData.flashContainer)); // eslint-disable-line
+        }
+        context.commit('removePlaceholderNotes');
+
         return res;
       });
   },

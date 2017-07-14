@@ -63,9 +63,9 @@ export default {
       this.isReplying = false;
     },
     saveReply({ note }) {
-      const data = {
+      const replyData = {
         endpoint: this.newNotePath,
-        reply: {
+        data: {
           in_reply_to_discussion_id: this.note.reply_id,
           target_type: 'issue',
           target_id: this.discussion.noteable_id,
@@ -74,7 +74,7 @@ export default {
         },
       };
 
-      this.$store.dispatch('replyToDiscussion', data)
+      this.$store.dispatch('saveNote', replyData)
         .then(() => {
           this.isReplying = false;
         })
