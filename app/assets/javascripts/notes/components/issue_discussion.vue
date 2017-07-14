@@ -8,6 +8,8 @@ import IssueNoteActions from './issue_note_actions.vue';
 import IssueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
 import IssueNoteEditedText from './issue_note_edited_text.vue';
 import IssueNoteForm from './issue_note_form.vue';
+import PlaceholderNote from './issue_placeholder_note.vue';
+import PlaceholderSystemNote from './issue_placeholder_system_note.vue';
 
 export default {
   props: {
@@ -41,8 +43,23 @@ export default {
     IssueNoteEditedText,
     IssueNoteSignedOutWidget,
     IssueNoteForm,
+    PlaceholderNote,
+    PlaceholderSystemNote,
   },
   methods: {
+    component(note) {
+      if (note.isPlaceholderNote) {
+        if (note.placeholderType === 'systemNote') {
+          return PlaceholderSystemNote;
+        }
+        return PlaceholderNote;
+      }
+
+      return IssueNote;
+    },
+    componentData(note) {
+      return note.isPlaceholderNote ? note.notes[0] : note;
+    },
     toggleDiscussion() {
       this.$store.commit('toggleDiscussion', {
         discussionId: this.note.id,
@@ -65,6 +82,7 @@ export default {
     saveReply({ note }) {
       const replyData = {
         endpoint: this.newNotePath,
+        flashContainer: this.$el,
         data: {
           in_reply_to_discussion_id: this.note.reply_id,
           target_type: 'issue',
@@ -120,10 +138,11 @@ export default {
             <div class="panel panel-default">
               <div class="discussion-notes">
                 <ul class="notes">
-                  <issue-note
+                  <component
                     v-for="note in note.notes"
-                    key="note.id"
-                    :note="note" />
+                    :is="component(note)"
+                    :note="componentData(note)"
+                    key="note.id" />
                 </ul>
                 <div class="flash-container"></div>
                 <div class="discussion-reply-holder">

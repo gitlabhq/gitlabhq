@@ -110,7 +110,12 @@ const mutations = {
     storeState.lastFetchedAt = fetchedAt;
   },
   showPlaceholderNote(storeState, data) {
-    storeState.notes.push({
+    let notesArr = storeState.notes;
+    if (data.replyId) {
+      notesArr = findNoteObjectById(notesArr, data.replyId).notes;
+    }
+
+    notesArr.push({
       individual_note: true,
       isPlaceholderNote: true,
       placeholderType: data.isSystemNote ? 'systemNote' : 'note',
@@ -125,7 +130,16 @@ const mutations = {
     const { notes } = storeState;
 
     for (let i = notes.length - 1; i >= 0; i -= 1) {
-      if (notes[i].isPlaceholderNote) {
+      const note = notes[i];
+      const children = note.notes;
+
+      if (children.length && !note.individual_note) { // remove placeholder from discussions
+        for (let j = children.length - 1; j >= 0; j -= 1) {
+          if (children[j].isPlaceholderNote) {
+            children.splice(j, 1);
+          }
+        }
+      } else if (note.isPlaceholderNote) { // remove placeholders from state root
         notes.splice(i, 1);
       }
     }
@@ -166,6 +180,8 @@ const actions = {
       .then(res => res.json())
       .then((res) => {
         context.commit('addNewReplyToDiscussion', res);
+
+        return res;
       });
   },
   createNewNote(context, noteData) {
@@ -185,6 +201,8 @@ const actions = {
     const { note } = noteData.data.note;
     let placeholderText = note;
     const hasQuickActions = utils.hasQuickActions(placeholderText);
+    const replyId = noteData.data.in_reply_to_discussion_id;
+    const methodToDispatch = replyId ? 'replyToDiscussion' : 'createNewNote';
 
     if (hasQuickActions) {
       placeholderText = utils.stripQuickActions(placeholderText);
@@ -193,6 +211,7 @@ const actions = {
     if (placeholderText.length) {
       context.commit('showPlaceholderNote', {
         noteBody: placeholderText,
+        replyId,
       });
     }
 
@@ -200,11 +219,9 @@ const actions = {
       context.commit('showPlaceholderNote', {
         isSystemNote: true,
         noteBody: utils.getQuickActionText(note),
+        replyId,
       });
     }
-
-    const hasReplyId = noteData.data.in_reply_to_discussion_id;
-    const methodToDispatch = hasReplyId ? 'replyToDiscussion' : 'createNewNote';
 
     return context.dispatch(methodToDispatch, noteData)
       .then((res) => {

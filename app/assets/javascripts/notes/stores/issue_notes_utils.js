@@ -29,4 +29,4 @@ export default {
   stripQuickActions(note) {
     return note.replace(REGEX_QUICK_ACTIONS, '').trim();
   },
-}
+};
