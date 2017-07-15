@@ -12,11 +12,20 @@ const RepoService = {
     this.url = url;
   },
 
+  paramsWithRich(url) {
+    // copy the obj so we don't modify perm.
+    const params = JSON.parse(JSON.stringify(this.params));
+    if (url.substr(url.length - 2) === 'md') {
+      params.params.viewer = 'rich';
+    }
+    return params;
+  },
+
   getContent(url) {
     if (url) {
-      return axios.get(url, this.params);
+      return axios.get(url, this.paramsWithRich(url, params));
     }
-    return axios.get(this.url, this.params);
+    return axios.get(this.url, this.paramsWithRich(this.url, this.params));
   },
 
   getBase64Content(url) {

@@ -24,12 +24,14 @@ const RepoHelper = {
   },
 
   blobURLtoParent(url) {
+    let joined = '';
     const split = url.split('/');
     split.pop();
     const blobIndex = split.indexOf('blob');
     if (blobIndex > -1) {
       split[blobIndex] = 'tree';
     }
+    joined = split.join('/');
     return split.join('/');
   },
 
@@ -55,6 +57,13 @@ const RepoHelper = {
       return oldList;
     }
     return newList;
+  },
+
+  resetBinaryTypes() {
+    let s = '';
+    for (s in Store.binaryTypes) {
+      Store.binaryTypes[s] = false;
+    }
   },
 
   setActiveFile(file) {
@@ -101,6 +110,14 @@ const RepoHelper = {
 
   getRawURLFromBlobURL(url) {
     return url.replace('blob', 'raw');
+  },
+
+  getBlameURLFromBlobURL(url) {
+    return url.replace('blob', 'blame');
+  },
+
+  getHistoryURLFromBlobURL(url) {
+    return url.replace('blob', 'commits');
   },
 
   setBinaryDataAsBase64(url, file) {
@@ -151,6 +168,9 @@ const RepoHelper = {
       this.setLoading(false, loadingData);
       Store.isTree = this.isTree(data);
       if (!Store.isTree) {
+        if (!file) {
+          file = data;
+        }
         // it's a blob
         Store.binary = data.binary;
         if (data.binary) {
@@ -160,17 +180,28 @@ const RepoHelper = {
             data,
           );
           data.binary = true;
+          if (!file.url) {
+            file.url = location.pathname;
+          }
           data.url = file.url;
           this.addToOpenedFiles(data);
           this.setActiveFile(data);
         } else {
-          const parentURL = this.blobURLtoParent(Service.url);
           Store.blobRaw = data.plain;
-          Store.prevURL = this.blobURLtoParent(parentURL);
+          if (!file.url) {
+            file.url = location.pathname;
+          }
           data.url = file.url;
           data.binary = false;
           this.addToOpenedFiles(data);
           this.setActiveFile(data);
+        }
+
+        // if the file tree is empty
+        if (Store.files.length === 0) {
+          const parentURL = this.blobURLtoParent(Service.url);
+          Service.url = parentURL;
+          this.getContent();
         }
       } else {
         // it's a tree
@@ -208,30 +239,38 @@ const RepoHelper = {
   },
   /* eslint-enable no-param-reassign */
 
+  blobToSimpleBlob(blob) {
+    return {
+      type: 'blob',
+      name: blob.name,
+      url: blob.url,
+      icon: this.toFA(blob.icon),
+      lastCommitMessage: blob.last_commit.message,
+      lastCommitUpdate: blob.last_commit.committed_date,
+      level: 0,
+    };
+  },
+
+  treeToSimpleTree(tree) {
+    return {
+      type: 'tree',
+      name: tree.name,
+      url: tree.url,
+      icon: this.toFA(tree.icon),
+      level: 0,
+    };
+  },
+
   dataToListOfFiles(data) {
     const a = [];
 
     // push in blobs
     data.blobs.forEach((blob) => {
-      a.push({
-        type: 'blob',
-        name: blob.name,
-        url: blob.url,
-        icon: this.toFA(blob.icon),
-        lastCommitMessage: blob.last_commit.message,
-        lastCommitUpdate: blob.last_commit.committed_date,
-        level: 0,
-      });
+      a.push(this.blobToSimpleBlob(blob));
     });
 
     data.trees.forEach((tree) => {
-      a.push({
-        type: 'tree',
-        name: tree.name,
-        url: tree.url,
-        icon: this.toFA(tree.icon),
-        level: 0,
-      });
+      a.push(this.treeToSimpleTree(tree));
     });
 
     data.submodules.forEach((submodule) => {

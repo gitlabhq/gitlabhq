@@ -11,8 +11,9 @@ module RendersBlob
       else
         blob.simple_viewer
       end
+    
     return render_404 unless viewer
-    puts blob
+
     if blob.binary?
       render json: {
         binary: true,

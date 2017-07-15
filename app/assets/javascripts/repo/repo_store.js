@@ -10,7 +10,18 @@ const RepoStore = {
   blobRaw: '',
   blobRendered: '',
   openedFiles: [],
-  activeFile: '',
+  activeFile: {
+    active: true,
+    binary: false,
+    extension: '',
+    html: '',
+    mime_type: '',
+    name: 'loading...',
+    plain: '',
+    size: 0,
+    url: '',
+  },
+  activeLine: 0,
   files: [],
   binary: false,
   binaryMimeType: '',
@@ -18,6 +29,7 @@ const RepoStore = {
   scrollWidth: 0,
   binaryTypes: {
     png: false,
+    markdown: false,
   },
   loading: {
     tree: false,
