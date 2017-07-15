@@ -17,35 +17,30 @@ the settings page with a default template. To configure the template, see the
 Integration with Prometheus requires the following:
 
 1. GitLab 9.0 or higher
-1. The [Kubernetes integration must be enabled][kube] on your project
-1. Your app must be deployed on [Kubernetes][]
-1. Prometheus must be configured to collect Kubernetes metrics
+1. Prometheus must be configured to collect one of the [supported metrics](prometheus_library/metrics.md)
 1. Each metric must be have a label to indicate the environment
-1. GitLab must have network connectivity to the Prometheus sever
+1. GitLab must have network connectivity to the Prometheus server
 
-There are a few steps necessary to set up integration between Prometheus and
-GitLab.
+## Getting started with Prometheus monitoring
 
-## Configuring Prometheus to collect Kubernetes metrics
+Depending on your deployment and where you have located your Prometheus server, there are a few options to get started with Prometheus monitoring.
 
-In order for Prometheus to collect Kubernetes metrics, you first must have a
-Prometheus server up and running. You have two options here:
+* If both GitLab and your applications are installed in the same Kubernetes cluster, you can leveraged the [bundled Prometheus server within GitLab](#configuring-omnibus-gitlab-prometheus-to-monitor-kubernetes).
+* If your applications are deployed on Kubernetes, but GitLab is not in the same cluster, then you can [configure a Prometheus server in your Kubernetes cluster](#configuring-your-own-prometheus-server-within-kubernetes).
+* If your applications are not running in Kubernetes, [get started with Prometheus](#getting-started-with-proemtheus-outside-of-kubernetes).
 
-- If you installed Omnibus GitLab inside of Kubernetes, you can simply use the
-  [bundled version of Prometheus][promgldocs]. In that case, follow the info in the
-  [Omnibus GitLab section](#configuring-omnibus-gitlab-prometheus-to-monitor-kubernetes)
-  below.
-- If you are using GitLab.com or installed GitLab outside of Kubernetes, you
-  will likely need to run a Prometheus server within the Kubernetes cluster.
-  Once installed, the easiest way to monitor Kubernetes is to simply use
-  Prometheus' support for [Kubernetes Service Discovery][prometheus-k8s-sd].
-  In that case, follow the instructions on
-  [configuring your own Prometheus server within Kubernetes](#configuring-your-own-prometheus-server-within-kubernetes).
+### Getting started with Prometheus outside of Kubernetes
 
-### Configuring Omnibus GitLab Prometheus to monitor Kubernetes
+Installing and configuring Prometheus to monitor applications is fairly straight forward.
+
+1. [Install Prometheus](https://prometheus.io/docs/introduction/install/)
+1. Set up one of the [supported monitoring targets](metrics.md)
+1. Configure the Prometheus server to [collect their metrics](https://prometheus.io/docs/operating/configuration/#scrape_config)
+
+### Configuring Omnibus GitLab Prometheus to monitor Kubernetes deployments
 
 With Omnibus GitLab running inside of Kubernetes, you can leverage the bundled
-version of Prometheus to collect the required metrics.
+version of Prometheus to collect the required metrics. Once enabled, Prometheus will
 
 1. Read how to configure the bundled Prometheus server in the
    [Administration guide][gitlab-prometheus-k8s-monitor].
@@ -132,30 +127,6 @@ to integrate with.
    to the Prometheus server.
 
 ![Configure Prometheus Service](img/prometheus_service_configuration.png)
-
-## Metrics and Labels
-
-GitLab retrieves performance data from two metrics, `container_cpu_usage_seconds_total`
-and `container_memory_usage_bytes`. These metrics are collected from the
-Kubernetes pods via Prometheus, and report CPU and Memory utilization of each
-container or Pod running in the cluster.
-
-In order to isolate and only display relevant metrics for a given environment
-however, GitLab needs a method to detect which pods are associated. To do that,
-GitLab will specifically request metrics that have an `environment` tag that
-matches the [$CI_ENVIRONMENT_SLUG][ci-environment-slug].
-
-If you are using [GitLab Auto-Deploy][autodeploy] and one of the methods of
-configuring Prometheus above, the `environment` will be automatically added.
-
-### GitLab Prometheus queries
-
-The queries utilized by GitLab are shown in the following table.
-
-| Metric | Query |
-| ------ | ----- |
-| Average Memory (MB) | `(sum(container_memory_usage_bytes{container_name!="POD",environment="$CI_ENVIRONMENT_SLUG"}) / count(container_memory_usage_bytes{container_name!="POD",environment="$CI_ENVIRONMENT_SLUG"})) /1024/1024` |
-| Average CPU Utilization (%) | `sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="$CI_ENVIRONMENT_SLUG"}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",environment="$CI_ENVIRONMENT_SLUG"}) * 100` |
 
 ## Monitoring CI/CD Environments
 
