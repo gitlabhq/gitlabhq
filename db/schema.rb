@@ -541,25 +541,25 @@ ActiveRecord::Schema.define(version: 20170725145659) do
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
   create_table "gpg_keys", force: :cascade do |t|
-    t.string "fingerprint"
-    t.text "key"
-    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.string "fingerprint"
     t.string "primary_keyid"
+    t.text "key"
   end
 
   add_index "gpg_keys", ["primary_keyid"], name: "index_gpg_keys_on_primary_keyid", using: :btree
   add_index "gpg_keys", ["user_id"], name: "index_gpg_keys_on_user_id", using: :btree
 
   create_table "gpg_signatures", force: :cascade do |t|
-    t.string "commit_sha"
-    t.integer "project_id"
-    t.integer "gpg_key_id"
-    t.string "gpg_key_primary_keyid"
-    t.boolean "valid_signature"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "project_id"
+    t.integer "gpg_key_id"
+    t.boolean "valid_signature"
+    t.string "commit_sha"
+    t.string "gpg_key_primary_keyid"
     t.string "gpg_key_user_name"
     t.string "gpg_key_user_email"
   end

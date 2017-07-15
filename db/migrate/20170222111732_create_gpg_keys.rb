@@ -3,11 +3,16 @@ class CreateGpgKeys < ActiveRecord::Migration
 
   def change
     create_table :gpg_keys do |t|
-      t.string :fingerprint
-      t.text :key
+      t.timestamps_with_timezone null: false
+
       t.references :user, index: true, foreign_key: true
 
-      t.timestamps_with_timezone null: false
+      t.string :fingerprint
+      t.string :primary_keyid
+
+      t.text :key
+
+      t.index :primary_keyid
     end
   end
 end
