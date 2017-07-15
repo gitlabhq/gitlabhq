@@ -1,7 +1,7 @@
 /* global monaco */
 import Vue from 'vue';
-import Store from './repo_store'
-import Helper from './repo_helper'
+import Store from './repo_store';
+import Helper from './repo_helper';
 
 export default class RepoEditor {
   constructor() {
@@ -15,9 +15,9 @@ export default class RepoEditor {
       this.monacoEditor = monaco.editor
       .create(
         document.getElementById('ide'), {
-          model: null
-        }
-      )
+          model: null,
+        },
+      );
       Helper.monacoInstance = monaco;
       this.initVue();
       monaco.languages.getLanguages();
@@ -29,20 +29,20 @@ export default class RepoEditor {
     const monacoEditor = this.monacoEditor;
     this.vue = new Vue({
       data: () => Store,
-      created () {
-        if(this.blobRaw !== ''){
+      created() {
+        if (this.blobRaw !== '') {
           monacoEditor.setModel(
             monaco.editor.createModel(
               this.blobRaw,
-              'plain'
-            )
+              'plain',
+            ),
           );
         }
       },
 
       watch: {
         isTree() {
-          if(this.isTree || !this.openedFiles.length) {
+          if (this.isTree || !this.openedFiles.length) {
             self.el.style.display = 'none';
           } else {
             self.el.style.display = 'inline-block';
@@ -50,7 +50,7 @@ export default class RepoEditor {
         },
 
         openedFiles() {
-          if((this.isTree || !this.openedFiles.length) || this.binary) {
+          if ((this.isTree || !this.openedFiles.length) || this.binary) {
             self.el.style.display = 'none';
           } else {
             self.el.style.display = 'inline-block';
@@ -58,21 +58,21 @@ export default class RepoEditor {
         },
 
         blobRaw() {
-          if(this.binary) {
+          if (this.binary) {
             self.el.style.display = 'none';
           } else {
-            self.el.style.display = 'inline-block'; 
+            self.el.style.display = 'inline-block';
           }
-          if(!this.isTree) {
+          if (!this.isTree) {
             self.monacoEditor.setModel(
               monaco.editor.createModel(
                 this.blobRaw,
-                this.activeFile.mime_type
-              )
+                this.activeFile.mime_type,
+              ),
             );
           }
-        }
-      }
+        },
+      },
     });
   }
 }

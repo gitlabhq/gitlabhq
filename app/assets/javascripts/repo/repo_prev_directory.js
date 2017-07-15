@@ -1,4 +1,4 @@
-let RepoPreviousDirectory = {
+const RepoPreviousDirectory = {
   template: `
   <tr>
     <td colspan='3'>
@@ -8,13 +8,13 @@ let RepoPreviousDirectory = {
   `,
   props: {
     name: 'repo-previous-directory',
-    prevurl: String
+    prevurl: String,
   },
 
   methods: {
     linkClicked(file) {
       this.$emit('linkclicked', file);
-    }
-  }
+    },
+  },
 };
 export default RepoPreviousDirectory;

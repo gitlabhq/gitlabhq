@@ -1,11 +1,11 @@
-import Service from './repo_service'
-import Helper from './repo_helper'
-import Vue from 'vue'
-import Store from './repo_store'
-import RepoPreviousDirectory from './repo_prev_directory'
-import RepoFile from './repo_file'
-import RepoLoadingFile from './repo_loading_file'
-import RepoMiniMixin from './repo_mini_mixin'
+import Vue from 'vue';
+import Service from './repo_service';
+import Helper from './repo_helper';
+import Store from './repo_store';
+import RepoPreviousDirectory from './repo_prev_directory';
+import RepoFile from './repo_file';
+import RepoLoadingFile from './repo_loading_file';
+import RepoMiniMixin from './repo_mini_mixin';
 
 export default class RepoSidebar {
   constructor(url) {
@@ -34,28 +34,28 @@ export default class RepoSidebar {
         addPopEventListener() {
           window.addEventListener('popstate', () => {
             this.linkClicked({
-              url: location.href
+              url: location.href,
             });
           });
         },
 
         linkClicked(file) {
           let url = '';
-          if(typeof file === 'string'){
+          if (typeof file === 'string') {
             // go back
             url = file;
           } else {
             url = file.url;
           }
           Service.url = url;
-          if(typeof file === 'object') {
-            if(file.type === 'tree' && file.opened) {
+          if (typeof file === 'object') {
+            if (file.type === 'tree' && file.opened) {
               Helper.removeChildFilesOfTree(file);
               return;
             }
             Helper.getContent(file);
           }
-        }
+        },
       },
     });
   }

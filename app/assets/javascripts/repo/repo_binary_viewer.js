@@ -1,8 +1,9 @@
-import Vue from 'vue'
-import Store from './repo_store'
+import Vue from 'vue';
+import Store from './repo_store';
+import Flash from '../flash';
 
 export default class RepoBinaryViewer {
-  constructor(url) {
+  constructor() {
     this.initVue();
   }
 
@@ -15,19 +16,23 @@ export default class RepoBinaryViewer {
       computed: {
         pngBlobWithDataURI() {
           return `data:image/png;base64,${this.blobRaw}`;
-        }
+        },
       },
 
       watch: {
         blobRaw() {
-          if(!this.binary) return;
-          switch(this.binaryMimeType) {
+          if (!this.binary) return;
+
+          switch (this.binaryMimeType) {
             case 'image/png':
               this.binaryTypes.png = true;
-            break;
-          }          
-        }
-      }
+              break;
+            default:
+              new Flash('Blob could not be loaded'); // eslint-disable-line no-new
+              break;
+          }
+        },
+      },
     });
   }
 }

@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-let RepoService = {
+const RepoService = {
   url: '',
   params: {
     params: {
-      format: 'json'
-    }
+      format: 'json',
+    },
   },
 
   setUrl(url) {
@@ -13,8 +13,8 @@ let RepoService = {
   },
 
   getContent(url) {
-    if(url){
-      return axios.get(url, this.params);  
+    if (url) {
+      return axios.get(url, this.params);
     }
     return axios.get(this.url, this.params);
   },
@@ -22,10 +22,10 @@ let RepoService = {
   getBase64Content(url) {
     return axios
       .get(url, {
-        responseType: 'arraybuffer'
+        responseType: 'arraybuffer',
       })
-      .then(response => new Buffer(response.data, 'binary').toString('base64'))
-  }
+      .then(response => new Buffer(response.data, 'binary').toString('base64'));
+  },
 };
 
 export default RepoService;

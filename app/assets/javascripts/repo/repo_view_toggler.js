@@ -1,6 +1,5 @@
-import Service from './repo_service'
-import Vue from 'vue'
-import Store from './repo_store'
+import Vue from 'vue';
+import Store from './repo_store';
 
 export default class RepoViewToggler {
   constructor() {

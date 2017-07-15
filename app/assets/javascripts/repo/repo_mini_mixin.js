@@ -1,10 +1,10 @@
-import Store from './repo_store'
+import Store from './repo_store';
 
-let RepoMiniMixin = {
+const RepoMiniMixin = {
   computed: {
     isMini() {
       return !!Store.openedFiles.length;
-    }
+    },
   },
 };
 

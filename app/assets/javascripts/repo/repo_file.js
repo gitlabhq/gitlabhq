@@ -1,4 +1,4 @@
-let RepoFile = {
+const RepoFile = {
   template: `
   <tr v-if='!loading.tree || hasFiles'>
     <td>
@@ -19,13 +19,13 @@ let RepoFile = {
     isTree: Boolean,
     isMini: Boolean,
     loading: Object,
-    hasFiles: Boolean
+    hasFiles: Boolean,
   },
 
   methods: {
     linkClicked(file) {
       this.$emit('linkclicked', file);
-    }
-  }
+    },
+  },
 };
 export default RepoFile;
