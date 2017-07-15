@@ -6,7 +6,14 @@ module EE
 
         super
 
+        mirror_cleanup(project)
         log_geo_event(project)
+      end
+
+      def mirror_cleanup(project)
+        return unless project.mirror?
+
+        ::Gitlab::Mirror.decrement_capacity(project.id)
       end
 
       def log_geo_event(project)
