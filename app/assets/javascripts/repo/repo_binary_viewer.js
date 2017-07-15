@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Store from './repo_store';
-import Flash from '../flash';
+import { loadingError } from './repo_helper';
 
 export default class RepoBinaryViewer {
   constructor() {
@@ -45,7 +45,7 @@ export default class RepoBinaryViewer {
               this.binaryTypes.png = true;
               break;
             default:
-              new Flash('Blob could not be loaded'); // eslint-disable-line no-new
+              loadingError();
               break;
           }
         },

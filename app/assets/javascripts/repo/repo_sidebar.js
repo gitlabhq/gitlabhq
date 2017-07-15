@@ -1,6 +1,6 @@
+import Vue from 'vue';
 import Service from './repo_service';
 import Helper from './repo_helper';
-import Vue from 'vue';
 import Store from './repo_store';
 import RepoPreviousDirectory from './repo_prev_directory';
 import RepoFileOptions from './repo_file_options';

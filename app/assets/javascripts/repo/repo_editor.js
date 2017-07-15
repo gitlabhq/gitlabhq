@@ -13,10 +13,10 @@ export default class RepoEditor {
     this.vue.$watch('activeFile.lineNumber', () => {
       console.log('cahnged');
     });
-    this.monacoEditor.onMouseUp(this.onMonacoEditorMouseUp);
+    this.monacoEditor.onMouseUp(RepoEditor.onMonacoEditorMouseUp);
   }
 
-  onMonacoEditorMouseUp(e) {
+  static onMonacoEditorMouseUp(e) {
     if (e.target.element.className === 'line-numbers') {
       location.hash = `L${e.target.position.lineNumber}`;
       Store.activeLine = e.target.position.lineNumber;

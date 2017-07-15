@@ -24,14 +24,12 @@ const RepoHelper = {
   },
 
   blobURLtoParent(url) {
-    let joined = '';
     const split = url.split('/');
     split.pop();
     const blobIndex = split.indexOf('blob');
     if (blobIndex > -1) {
       split[blobIndex] = 'tree';
     }
-    joined = split.join('/');
     return split.join('/');
   },
 
@@ -60,10 +58,9 @@ const RepoHelper = {
   },
 
   resetBinaryTypes() {
-    let s = '';
-    for (s in Store.binaryTypes) {
-      Store.binaryTypes[s] = false;
-    }
+    Object.keys(Store.binaryTypes).forEach((typeKey) => {
+      Store.binaryTypes[typeKey] = false;
+    });
   },
 
   setActiveFile(file) {
@@ -160,7 +157,8 @@ const RepoHelper = {
   },
 
     // may be tree or file.
-  getContent(file) {
+  getContent(treeOrFile) {
+    let file = treeOrFile;
     const loadingData = this.setLoading(true);
     Service.getContent()
     .then((response) => {

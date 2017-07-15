@@ -23,7 +23,7 @@ const RepoService = {
 
   getContent(url) {
     if (url) {
-      return axios.get(url, this.paramsWithRich(url, params));
+      return axios.get(url, this.paramsWithRich(url, this.params));
     }
     return axios.get(this.url, this.paramsWithRich(this.url, this.params));
   },
