@@ -295,18 +295,18 @@ import PerformanceBar from './performance_bar';
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
-          const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
-          const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
+          // const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
+          // const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
 
-          new Pipelines({
-            initTabs: true,
-            pipelineStatusUrl,
-            tabsOptions: {
-              action: controllerAction,
-              defaultAction: 'pipelines',
-              parentEl: '.pipelines-tabs',
-            },
-          });
+          // new Pipelines({
+          //   initTabs: true,
+          //   pipelineStatusUrl,
+          //   tabsOptions: {
+          //     action: controllerAction,
+          //     defaultAction: 'pipelines',
+          //     parentEl: '.pipelines-tabs',
+          //   },
+          // });
           break;
         case 'groups:activity':
           new gl.Activities();

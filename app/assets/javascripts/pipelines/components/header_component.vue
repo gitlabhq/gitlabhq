@@ -1,7 +1,6 @@
 <script>
 import ciHeader from '../../vue_shared/components/header_ci_component.vue';
 import eventHub from '../event_hub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   name: 'PipelineHeaderSection',
@@ -10,14 +9,9 @@ export default {
       type: Object,
       required: true,
     },
-    isLoading: {
-      type: Boolean,
-      required: true,
-    },
   },
   components: {
     ciHeader,
-    loadingIcon,
   },
 
   data() {
@@ -29,9 +23,6 @@ export default {
   computed: {
     status() {
       return this.pipeline.details && this.pipeline.details.status;
-    },
-    shouldRenderContent() {
-      return !this.isLoading && Object.keys(this.pipeline).length;
     },
   },
 
@@ -81,7 +72,6 @@ export default {
 <template>
   <div class="pipeline-header-container">
     <ci-header
-      v-if="shouldRenderContent"
       :status="status"
       item-name="Pipeline"
       :item-id="pipeline.id"
@@ -90,8 +80,5 @@ export default {
       :actions="actions"
       @actionClicked="postAction"
       />
-    <loading-icon
-      v-if="isLoading"
-      size="2"/>
   </div>
 </template>

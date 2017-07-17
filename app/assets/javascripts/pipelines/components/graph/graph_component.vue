@@ -1,14 +1,8 @@
 <script>
   import stageColumnComponent from './stage_column_component.vue';
-  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
-  import '../../../flash';
 
   export default {
     props: {
-      isLoading: {
-        type: Boolean,
-        required: true,
-      },
       pipeline: {
         type: Object,
         required: true,
@@ -17,7 +11,6 @@
 
     components: {
       stageColumnComponent,
-      loadingIcon,
     },
 
     computed: {
@@ -54,16 +47,7 @@
 <template>
   <div class="build-content middle-block js-pipeline-graph">
     <div class="pipeline-visualization pipeline-graph">
-      <div class="text-center">
-        <loading-icon
-          v-if="isLoading"
-          size="3"
-          />
-      </div>
-
-      <ul
-        v-if="!isLoading"
-        class="stage-column-list">
+      <ul class="stage-column-list">
         <stage-column-component
           v-for="(stage, index) in graph"
           :title="capitalizeStageName(stage.name)"
