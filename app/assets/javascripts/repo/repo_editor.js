@@ -10,10 +10,8 @@ export default class RepoEditor {
   }
 
   addMonacoEvents() {
-    this.vue.$watch('activeFile.lineNumber', () => {
-      console.log('cahnged')
-    })
-    this.monacoEditor.onMouseUp(this.onMonacoEditorMouseUp);
+    this.monacoEditor.onMouseUp(this.onMonacoEditorMouseUp.bind(this));
+    this.monacoEditor.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
   }
 
   onMonacoEditorMouseUp(e) {
@@ -21,6 +19,10 @@ export default class RepoEditor {
       location.hash = `L${e.target.position.lineNumber}`;
       Store.activeLine = e.target.position.lineNumber;
     }
+  }
+
+  onMonacoEditorKeysPressed(e) {
+    Helper.setActiveFileContents(this.monacoEditor.getValue());
   }
 
   initMonaco() {
@@ -61,7 +63,7 @@ export default class RepoEditor {
 
       methods: {
         showHide() {
-          if((!this.openedFiles.length) || this.binary) {
+          if(!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
             self.el.style.display = 'none';
           } else {
             self.el.style.display = 'inline-block';
@@ -75,6 +77,26 @@ export default class RepoEditor {
             lineNumber: this.activeLine,
             column: 1
           });
+        },
+
+        editMode() {
+          if(this.editMode) {
+            document.querySelector('.panel-right').classList.add('edit-mode');
+            self.monacoEditor.updateOptions({
+              readOnly: false
+            });
+
+          } else {
+            document.querySelector('.panel-right').classList.remove('edit-mode');
+
+            self.monacoEditor.updateOptions({
+              readOnly: true
+            });
+          }
+        },
+
+        activeFileLabel() {
+          this.showHide();
         },
 
         isTree() {
@@ -93,12 +115,16 @@ export default class RepoEditor {
           this.showHide();
 
           if(!this.isTree) {
+            // kill the current model;
+            self.monacoEditor.setModel(null);
+            // then create the new one
             self.monacoEditor.setModel(
               monaco.editor.createModel(
                 this.blobRaw,
                 this.activeFile.mime_type
               )
             );
+            console.log(monaco.editor.getModels());
           }
         }
       }

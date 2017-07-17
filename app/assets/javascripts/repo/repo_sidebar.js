@@ -51,7 +51,7 @@ export default class RepoSidebar {
             } else {
               url = file.url;
               Service.url = url;
-              Helper.getContent(file);  
+              Helper.getContent(file);
             }
           } else if(typeof file === 'string') {
             // go back

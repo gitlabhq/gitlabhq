@@ -23,6 +23,47 @@
     #binary-viewer{ "v-if" => "binary" }
       %img{"v-if" => "binaryTypes.png", ":src" => "pngBlobWithDataURI"}
       %div{"v-if" => "binaryTypes.markdown", "v-html" => "activeFile.html"}
+  #commit-area{"v-if" => "changedFiles.length"}
+    %form.form-horizontal
+      %fieldset
+        .form-group
+          %label.col-md-4.control-label Staged files ({{changedFiles.length}})
+          .col-md-4
+            %ul.list-unstyled
+              %li{"v-for" => "file in changedFiles"}
+                %span.help-block
+                  {{file.url}}
+        / Textarea
+        .form-group
+          %label.col-md-4.control-label{:for => "commit-message"} Commit message
+          .col-md-4
+            %textarea#commit-message.form-control{:name => "commit-message"} Updating README.md
+        / Button Drop Down
+        .form-group
+          %label.col-md-4.control-label{:for => "target-branch"} Target branch
+          .col-md-4
+            .input-group
+              .input-group-btn
+                %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :type => "button"}
+                  Action
+                  =icon "caret-down"
+                %ul.dropdown-menu.pull-right
+                  %li
+                    %a{:href => "#"} Target branch
+                  %li
+                    %a{:href => "#"} Create my own branch
+              %input#target-branch.form-control{:name => "target-branch", :placeholder => "placeholder", :type => "text"}/
+        / Multiple Checkboxes
+        .form-group
+          %label.col-md-4.control-label{:for => "checkboxes"}
+          .col-md-4
+            .checkbox
+              %label{:for => "checkboxes-0"}
+                %input#checkboxes-0{:name => "checkboxes", :type => "checkbox", :value => "1"}/
+                Start a new merge request with these changes
+
+
+
 - if can_edit_tree?
   = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
   = render 'projects/blob/new_dir'

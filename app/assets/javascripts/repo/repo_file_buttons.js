@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Store from './repo_store'
 import Helper from './repo_helper'
+import RepoMiniMixin from './repo_mini_mixin'
 
 export default class RepoSidebar {
   constructor(url) {
@@ -13,8 +14,9 @@ export default class RepoSidebar {
     this.vue = new Vue({
       el: '#repo-file-buttons',
       data: () => Store,
+      mixins: [RepoMiniMixin],
       template: `
-      <div id='repo-file-buttons' v-if='isMini'>
+      <div id='repo-file-buttons' v-if='isMini' :style='{"border-bottom": editableBorder}'>
         <a :href='rawFileURL' target='_blank' class='btn btn-default'>Download file</a>
         <div class="btn-group" role="group" aria-label="File actions">
           <a :href='blameFileUrl' class='btn btn-default'>Blame</a>
@@ -22,13 +24,16 @@ export default class RepoSidebar {
           <a href='#' class='btn btn-default'>Permalink</a>
           <a href='#' class='btn btn-default'>Lock</a>
         </div>
-        <a href='#' v-if='canPreview' class='btn btn-default'>{{previewLabel}}</a>
+        <a href='#' v-if='canPreview' @click.prevent='rawPreviewToggle' class='btn btn-default'>
+          {{activeFileLabel}}
+        </a>
         <a href='#' class='btn btn-danger'>Delete</a>
       </div>
       `,
       computed: {
-        previewLabel() {
-          return this.activeFile.raw ? 'Preview' : 'Raw'
+
+        editableBorder() {
+          return this.editMode ? '1px solid #1F78D1' :'1px solid #f0f0f0';
         },
 
         canPreview() {
@@ -49,10 +54,10 @@ export default class RepoSidebar {
       },
 
       methods: {
-        setRawPreviewMode() {
-
+        rawPreviewToggle() {
+          Helper.setCurrentFileRawOrPreview();
         }
-      }
+      },
     });
   }
 }

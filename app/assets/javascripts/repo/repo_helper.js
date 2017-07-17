@@ -70,14 +70,29 @@ let RepoHelper = {
     }
   },
 
+  setCurrentFileRawOrPreview() {
+    Store.activeFile.raw = !Store.activeFile.raw;
+    Store.activeFileLabel = Store.activeFile.raw ? 'Preview' : 'Raw';
+  },
+
   setActiveFile(file) {
-    Store.openedFiles = Store.openedFiles.map((openedFile) => {
+    // don't load the file that is already loaded
+    if(file.url === Store.activeFile.url) return;
+
+    Store.openedFiles = Store.openedFiles.map((openedFile, i) => {
       openedFile.active = file.url === openedFile.url;
       if(openedFile.active) {
         Store.activeFile = openedFile;
+        Store.activeFileIndex = i;
       }
       return openedFile;
     });
+
+    // reset the active file raw
+    Store.activeFile.raw = false;
+    // can't get vue to listen to raw for some reason so this for now.
+    Store.activeFileLabel = 'Raw';
+
     if(file.binary) {
       Store.blobRaw = file.base64;
     } else {
@@ -101,6 +116,7 @@ let RepoHelper = {
       return openedFile.url === file.url
     });
     if(!openedFilesAlreadyExists) {
+      file.changed = false;
       Store.openedFiles.push(file);
     }
   },
@@ -130,6 +146,13 @@ let RepoHelper = {
       Store.blobRaw = response;
       file.base64 = response
     });
+  },
+
+  setActiveFileContents(contents) {
+    if(!Store.editMode) return;
+    Store.activeFile.newContent = contents;
+    Store.activeFile.changed = Store.activeFile.plain !== Store.activeFile.newContent;
+    Store.openedFiles[Store.activeFileIndex].changed = Store.activeFile.changed;
   },
 
   toggleFakeTab(loading, file) {
@@ -163,6 +186,8 @@ let RepoHelper = {
 
     // may be tree or file.
   getContent(file) {
+    // don't load the same active file. That's silly. 
+    // if(file && file.url === this.activeFile.url) return;
     const loadingData = this.setLoading(true);
     Service.getContent()
     .then((response) => {
@@ -182,22 +207,17 @@ let RepoHelper = {
             data
           );
           data.binary = true;
-          if(!file.url) {
-            file.url = location.pathname;
-          }
-          data.url = file.url;
-          this.addToOpenedFiles(data);
-          this.setActiveFile(data);
         } else {
           Store.blobRaw = data.plain;
-          if(!file.url) {
-            file.url = location.pathname;
-          }
-          data.url = file.url;
           data.binary = false;
-          this.addToOpenedFiles(data);
-          this.setActiveFile(data);
         }
+        if(!file.url) {
+          file.url = location.pathname;
+        }
+        data.url = file.url;
+        data.newContent = '';
+        this.addToOpenedFiles(data);
+        this.setActiveFile(data);
 
         // if the file tree is empty
         if(Store.files.length === 0) {

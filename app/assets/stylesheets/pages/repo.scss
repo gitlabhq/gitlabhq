@@ -31,7 +31,7 @@ header {
   .monaco-editor.vs {
     .line-numbers{
       cursor: pointer;
-      
+
       &:hover {
         text-decoration: underline;
       }
@@ -39,6 +39,15 @@ header {
     .cursor {
       background: rgba(255,255,255,0);
       border-color: rgba(255,255,255,0);
+    }
+  }
+
+  &.edit-mode {
+    .monaco-editor.vs {
+      .cursor {
+        background: #000;
+        border-color: #000;
+      }
     }
   }
 
@@ -70,10 +79,11 @@ header {
         color: black;
       }
 
-      i.fa.fa-times {
+      i.fa.fa-times, i.fa.fa-circle {
         float: right;
         margin-top: 3px;
         margin-left: 15px;
+        color: $gray-darkest;
       }
     }
   }
@@ -99,6 +109,11 @@ header {
       padding-left: 20px;
     }
   }
+}
+
+#commit-area {
+  background: $gray-light;
+  padding: 20px;
 }
 
 #view-toggler {

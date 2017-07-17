@@ -1,6 +1,7 @@
 .tree-controls
-  %a.btn.btn-default.editable-mode{"href"=>"#"}
-    Edit mode
+  %a.btn.btn-default.btn-grouped#editable-mode{"href"=>"#", "@click.prevent" => "editClicked", "v-cloak" => 1}
+    %i{":class" => "buttonIcon"}
+    %span {{buttonLabel}}
   = render 'projects/find_file_link'
 
   = render 'projects/buttons/download', project: @project, ref: @ref
