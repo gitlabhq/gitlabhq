@@ -1,7 +1,7 @@
 module ApplicationSettingsHelper
   delegate  :gravatar_enabled?,
             :signup_enabled?,
-            :signin_enabled?,
+            :password_authentication_enabled?,
             :akismet_enabled?,
             :koding_enabled?,
             to: :current_application_settings

@@ -42,7 +42,6 @@ ActiveRecord::Schema.define(version: 20170707184244) do
   create_table "application_settings", force: :cascade do |t|
     t.integer "default_projects_limit"
     t.boolean "signup_enabled"
-    t.boolean "signin_enabled"
     t.boolean "gravatar_enabled"
     t.text "sign_in_text"
     t.datetime "created_at"
@@ -149,6 +148,7 @@ ActiveRecord::Schema.define(version: 20170707184244) do
     t.string "slack_app_secret"
     t.string "slack_app_verification_token"
     t.integer "performance_bar_allowed_group_id"
+    t.boolean "password_authentication_enabled"
   end
 
   create_table "approvals", force: :cascade do |t|

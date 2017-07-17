@@ -129,6 +129,7 @@ class GitOperationService
     end
   end
 
+  # Gitaly note: JV: wait with migrating #update_ref until we know how to migrate its call sites.
   def update_ref(ref, newrev, oldrev)
     # We use 'git update-ref' because libgit2/rugged currently does not
     # offer 'compare and swap' ref updates. Without compare-and-swap we can

@@ -12,9 +12,9 @@ Is it simple as the name implies: a _request_ to _merge_ one branch into another
 With GitLab merge requests, you can:
 
 - Compare the changes between two [branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell#_git_branching)
-- Discuss and review the proposed modifications inline
+- [Review and discuss](../../discussions/index.md#discussions) the proposed modifications inline
 - Live preview the changes when [Review Apps](../../../ci/review_apps/index.md) is configured for your project
-- Build, test, and deploy your code is a per-branch basis with built-in [GitLab CI/CD](../../../ci/README.md)
+- Build, test, and deploy your code in a per-branch basis with built-in [GitLab CI/CD](../../../ci/README.md)
 - Prevent the merge request from being merged before it's ready with [WIP MRs](#work-in-progress-merge-requests)
 - View the deployment process through [Pipeline Graphs](../../../ci/pipelines.md#pipeline-graphs)
 - [Automatically close the issue(s)](../../project/issues/closing_issues.md#via-merge-request) that originated the implementation proposed in the merge request
@@ -24,14 +24,14 @@ With GitLab merge requests, you can:
 - Add a time estimation and the time spent with that merge request with [Time Tracking](../../../workflow/time_tracking.html#time-tracking)
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
 
-With [GitLab Enterprise Edition][ee], you can also:
+With **[GitLab Enterprise Edition][ee]**, you can also:
 
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md) (available only in GitLab Enterprise Edition Premium)
 - Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests) (available in GitLab Enterprise Edition Starter)
 - [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch (available in GitLab Enterprise Edition Starter)
-- Analise the impact of your changes with [Code Quality reports](#code-quality-reports) (available only in GitLab Enterprise Edition Starter)
+- Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Enterprise Edition Starter)
 
 ## Use cases
 
@@ -41,8 +41,8 @@ A. Consider you are a software developer working in a team:
 1. You gather feedback from your team
 1. You work on the implementation optimizing code with [Code Quality reports](#code-quality-reports)
 1. You build and test your changes with GitLab CI/CD
-1. You request the approval from your manager
-1. Your manager pushes a commit with his final review and set the merge request to [merge when pipeline succeeds](#merge-when-pipeline-succeeds)
+1. You request the [approval](#merge-request-approvals) from your manager
+1. Your manager pushes a commit with his final review, [approves the merge request](#merge-request-approvals), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds)
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#manual-actions) for GitLab CI/CD
 1. Your implementations were successfully shipped to your customer
 
@@ -52,7 +52,7 @@ B. Consider you're a web developer writing a webpage for your company's website:
 1. You gather feedback from your reviewers
 1. Your changes are previewed with [Review Apps](../../../ci/review_apps/index.md)
 1. You request your web designers for their implementation
-1. You request the approval from your manager
+1. You request the [approval](#merge-request-approvals) from your manager
 1. Once approved, your merge request is [squashed and merged](#squash-and-merge), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
 1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
 

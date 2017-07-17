@@ -35,7 +35,7 @@ describe ButtonHelper do
 
     context 'with internal auth disabled' do
       before do
-        stub_application_setting(signin_enabled?: false)
+        stub_application_setting(password_authentication_enabled?: false)
       end
 
       context 'when user has no personal access tokens' do

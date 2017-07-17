@@ -109,7 +109,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     @target_project = @merge_request.target_project
     @source_project = @merge_request.source_project
-    @commits = @merge_request.compare_commits.reverse
+    @commits = @merge_request.commits
     @commit = @merge_request.diff_head_commit
 
     @note_counts = Note.where(commit_id: @commits.map(&:id))

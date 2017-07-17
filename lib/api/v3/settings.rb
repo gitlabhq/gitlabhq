@@ -44,7 +44,9 @@ module API
           requires :domain_blacklist, type: String, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
         end
         optional :after_sign_up_text, type: String, desc: 'Text shown after sign up'
-        optional :signin_enabled, type: Boolean, desc: 'Flag indicating if sign in is enabled'
+        optional :password_authentication_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled'
+        optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled'
+        mutually_exclusive :password_authentication_enabled, :signin_enabled
         optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to setup Two-factor authentication'
         given require_two_factor_authentication: ->(val) { val } do
           requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'
@@ -127,7 +129,7 @@ module API
                         :max_attachment_size, :session_expire_delay, :disabled_oauth_sign_in_sources,
                         :user_oauth_applications, :user_default_external, :signup_enabled,
                         :send_user_confirmation_email, :domain_whitelist, :domain_blacklist_enabled,
-                        :after_sign_up_text, :signin_enabled, :require_two_factor_authentication,
+                        :after_sign_up_text, :password_authentication_enabled, :signin_enabled, :require_two_factor_authentication,
                         :home_page_url, :after_sign_out_path, :sign_in_text, :help_page_text,
                         :shared_runners_enabled, :max_artifacts_size, :max_pages_size, :container_registry_token_expire_delay,
                         :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
@@ -139,7 +141,13 @@ module API
                         :repository_storage, :repository_storages, :repository_size_limit
       end
       put "application/settings" do
-        if current_settings.update_attributes(declared_params(include_missing: false))
+        attrs = declared_params(include_missing: false)
+
+        if attrs.has_key?(:signin_enabled)
+          attrs[:password_authentication_enabled] = attrs.delete(:signin_enabled)
+        end
+
+        if current_settings.update_attributes(attrs)
           present current_settings, with: Entities::ApplicationSetting
         else
           render_validation_error!(current_settings)

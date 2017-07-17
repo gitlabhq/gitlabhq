@@ -65,6 +65,7 @@ module API
         :shared_runners_enabled,
         :sidekiq_throttling_enabled,
         :sign_in_text,
+        :password_authentication_enabled,
         :signin_enabled,
         :signup_enabled,
         :terminal_max_session_time,
@@ -95,7 +96,9 @@ module API
         requires :domain_blacklist, type: String, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com'
       end
       optional :after_sign_up_text, type: String, desc: 'Text shown after sign up'
-      optional :signin_enabled, type: Boolean, desc: 'Flag indicating if sign in is enabled'
+      optional :password_authentication_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled'
+      optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled'
+      mutually_exclusive :password_authentication_enabled, :signin_enabled
       optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to setup Two-factor authentication'
       given require_two_factor_authentication: ->(val) { val } do
         requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'
@@ -215,6 +218,10 @@ module API
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)
+
+      if attrs.has_key?(:signin_enabled)
+        attrs[:password_authentication_enabled] = attrs.delete(:signin_enabled)
+      end
 
       if current_settings.update_attributes(attrs)
         present current_settings, with: Entities::ApplicationSetting

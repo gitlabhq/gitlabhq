@@ -34,7 +34,7 @@ EOT
   describe 'size limit feature toggles' do
     context 'when the feature gitlab_git_diff_size_limit_increase is enabled' do
       before do
-        Feature.enable('gitlab_git_diff_size_limit_increase')
+        stub_feature_flags(gitlab_git_diff_size_limit_increase: true)
       end
 
       it 'returns 200 KB for size_limit' do
@@ -48,7 +48,7 @@ EOT
 
     context 'when the feature gitlab_git_diff_size_limit_increase is disabled' do
       before do
-        Feature.disable('gitlab_git_diff_size_limit_increase')
+        stub_feature_flags(gitlab_git_diff_size_limit_increase: false)
       end
 
       it 'returns 100 KB for size_limit' do
