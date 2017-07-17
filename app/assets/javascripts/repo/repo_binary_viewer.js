@@ -20,30 +20,14 @@ export default class RepoBinaryViewer {
       },
 
       methods: {
-<<<<<<< HEAD
         isMarkdown() {
           return this.activeFile.extension === 'md';
-=======
-        supportedNonBinaryFileType() {
-          switch (this.activeFile.extension) {
-            case 'md':
-              this.binaryTypes.markdown = true;
-              return true;
-            default:
-              return false;
-          }
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
         },
       },
 
       watch: {
         blobRaw() {
-<<<<<<< HEAD
           if(this.isMarkdown()) {
-=======
-          const supported = this.supportedNonBinaryFileType();
-          if (supported) {
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
             this.binaryTypes.markdown = true;
             this.activeFile.raw = false;
             // counts as binaryish so we use the binary viewer in this case.

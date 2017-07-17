@@ -10,15 +10,8 @@ export default class RepoEditor {
   }
 
   addMonacoEvents() {
-<<<<<<< HEAD
     this.monacoEditor.onMouseUp(this.onMonacoEditorMouseUp.bind(this));
     this.monacoEditor.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
-=======
-    this.vue.$watch('activeFile.lineNumber', () => {
-      console.log('cahnged');
-    });
-    this.monacoEditor.onMouseUp(RepoEditor.onMonacoEditorMouseUp);
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
   }
 
   static onMonacoEditorMouseUp(e) {
@@ -70,11 +63,7 @@ export default class RepoEditor {
 
       methods: {
         showHide() {
-<<<<<<< HEAD
           if(!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
-=======
-          if ((!this.openedFiles.length) || this.binary) {
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
             self.el.style.display = 'none';
           } else {
             self.el.style.display = 'inline-block';
@@ -125,14 +114,10 @@ export default class RepoEditor {
         blobRaw() {
           this.showHide();
 
-<<<<<<< HEAD
           if(!this.isTree) {
             // kill the current model;
             self.monacoEditor.setModel(null);
             // then create the new one
-=======
-          if (!this.isTree) {
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
             self.monacoEditor.setModel(
               monaco.editor.createModel(
                 this.blobRaw,

@@ -69,7 +69,6 @@ const RepoHelper = {
   },
 
   setActiveFile(file) {
-<<<<<<< HEAD
     // don't load the file that is already loaded
     if(file.url === Store.activeFile.url) return;
 
@@ -78,17 +77,9 @@ const RepoHelper = {
       if(openedFile.active) {
         Store.activeFile = openedFile;
         Store.activeFileIndex = i;
-=======
-    Store.openedFiles = Store.openedFiles.map((openedFile) => {
-      const activeFile = openedFile;
-      activeFile.active = file.url === activeFile.url; // eslint-disable-line no-param-reassign
-      if (activeFile.active) {
-        Store.activeFile = activeFile;
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
       }
       return activeFile;
     });
-<<<<<<< HEAD
 
     // reset the active file raw
     Store.activeFile.raw = false;
@@ -96,9 +87,6 @@ const RepoHelper = {
     Store.activeFileLabel = 'Raw';
 
     if(file.binary) {
-=======
-    if (file.binary) {
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
       Store.blobRaw = file.base64;
     } else {
       Store.blobRaw = file.plain;
@@ -115,17 +103,11 @@ const RepoHelper = {
   },
 
   addToOpenedFiles(file) {
-<<<<<<< HEAD
     const openedFilesAlreadyExists = Store.openedFiles.some((openedFile) => {
       return openedFile.url === file.url
     });
     if(!openedFilesAlreadyExists) {
       file.changed = false;
-=======
-    const openedFilesAlreadyExists = Store.openedFiles
-      .some(openedFile => openedFile.url === file.url);
-    if (!openedFilesAlreadyExists) {
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
       Store.openedFiles.push(file);
     }
   },
@@ -198,14 +180,9 @@ const RepoHelper = {
   },
 
     // may be tree or file.
-<<<<<<< HEAD
   getContent(file) {
-    // don't load the same active file. That's silly. 
+    // don't load the same active file. That's silly.
     // if(file && file.url === this.activeFile.url) return;
-=======
-  getContent(treeOrFile) {
-    let file = treeOrFile;
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
     const loadingData = this.setLoading(true);
     Service.getContent()
     .then((response) => {
@@ -225,23 +202,8 @@ const RepoHelper = {
             data,
           );
           data.binary = true;
-<<<<<<< HEAD
         } else {
           Store.blobRaw = data.plain;
-=======
-          if (!file.url) {
-            file.url = location.pathname;
-          }
-          data.url = file.url;
-          this.addToOpenedFiles(data);
-          this.setActiveFile(data);
-        } else {
-          Store.blobRaw = data.plain;
-          if (!file.url) {
-            file.url = location.pathname;
-          }
-          data.url = file.url;
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
           data.binary = false;
         }
         if(!file.url) {

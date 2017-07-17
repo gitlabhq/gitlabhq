@@ -47,14 +47,11 @@ export default class RepoSidebar {
           if (typeof file === 'object') {
             if (file.type === 'tree' && file.opened) {
               Helper.removeChildFilesOfTree(file);
-<<<<<<< HEAD
               return;
             } else {
               url = file.url;
               Service.url = url;
               Helper.getContent(file);
-=======
->>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
             }
             url = file.url;
             Service.url = url;

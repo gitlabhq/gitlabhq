@@ -151,21 +151,12 @@ describe Gitlab::Conflict::File, lib: true do
     default_regexp
   end
 
-<<<<<<< files/ruby/regex.rb
 def project_name_regexp
   /\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z/
 end
 
 def name_regexp
   /\A[a-zA-Z0-9_\-\. ]*\z/
-=======
-def project_name_regex
-  %r{\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z}
-end
-
-def name_regex
-  %r{\A[a-zA-Z0-9_\-\. ]*\z}
->>>>>>> files/ruby/regex.rb
 end
 
 # Some extra lines
@@ -176,13 +167,8 @@ def path_regexp
   default_regexp
 end
 
-<<<<<<< files/ruby/regex.rb
 def archive_formats_regexp
   /(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
-=======
-def archive_formats_regex
-  %r{(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)}
->>>>>>> files/ruby/regex.rb
 end
 
 def git_reference_regexp
@@ -209,13 +195,8 @@ end
 
 protected
 
-<<<<<<< files/ruby/regex.rb
 def default_regexp
   /\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
-=======
-def default_regex
-  %r{\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z}
->>>>>>> files/ruby/regex.rb
 end
 FILE
       end
