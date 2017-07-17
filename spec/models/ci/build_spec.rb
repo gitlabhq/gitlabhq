@@ -1624,13 +1624,44 @@ describe Ci::Build, :models do
     end
   end
 
-  describe 'State transition: any => [:pending]' do
+  describe 'state transition: any => [:pending]' do
     let(:build) { create(:ci_build, :created) }
 
     it 'queues BuildQueueWorker' do
       expect(BuildQueueWorker).to receive(:perform_async).with(build.id)
 
       build.enqueue
+    end
+  end
+
+  describe 'state transition when build fails' do
+    context 'when build is configured to be retried' do
+      subject { create(:ci_build, :running, options: { retry: 3 }) }
+
+      it 'retries builds and assigns a same user to it' do
+        expect(described_class).to receive(:retry)
+          .with(subject, subject.user)
+
+        subject.drop!
+      end
+    end
+
+    context 'when build is not configured to be retried' do
+      subject { create(:ci_build, :running) }
+
+      it 'does not retry build' do
+        expect(described_class).not_to receive(:retry)
+
+        subject.drop!
+      end
+
+      it 'does not count retries when not necessary' do
+        expect(described_class).not_to receive(:retry)
+        expect_any_instance_of(described_class)
+          .not_to receive(:retries_count)
+
+        subject.drop!
+      end
     end
   end
 end

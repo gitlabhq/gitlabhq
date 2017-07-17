@@ -96,6 +96,16 @@ module Ci
           BuildSuccessWorker.perform_async(id)
         end
       end
+
+      after_transition any => [:failed] do |build|
+        build.run_after_commit do
+          next if build.retries_max.zero?
+
+          if build.retries_count < build.retries_max
+            Ci::Build.retry(build, build.user)
+          end
+        end
+      end
     end
 
     def detailed_status(current_user)
