@@ -28,6 +28,11 @@ export default {
       required: true,
     },
   },
+  computed: {
+    noteBody() {
+      return this.note.note;
+    },
+  },
   components: {
     IssueNoteEditedText,
     IssueNoteAwardsList,
@@ -75,7 +80,8 @@ export default {
       ref="noteForm"
       :updateHandler="handleFormUpdate"
       :cancelHandler="formCancelHandler"
-      :noteBody="note.note" />
+      :noteBody="noteBody"
+      :noteId="note.id" />
     <textarea
       v-if="canEdit"
       v-model="note.note"

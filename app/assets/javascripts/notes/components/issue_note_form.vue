@@ -9,6 +9,10 @@ export default {
       required: false,
       default: '',
     },
+    noteId: {
+      type: Number,
+      required: false,
+    },
     updateHandler: {
       type: Function,
       required: true,
@@ -29,7 +33,17 @@ export default {
       note: this.noteBody,
       markdownPreviewUrl: '',
       markdownDocsUrl: '',
+      conflictWhileEditing: false,
     };
+  },
+  watch: {
+    noteBody() {
+      if (this.note === this.initialNote) {
+        this.note = this.noteBody;
+      } else {
+        this.conflictWhileEditing = true;
+      }
+    },
   },
   components: {
     MarkdownField,
@@ -57,6 +71,9 @@ export default {
     isDirty() {
       return this.initialNote !== this.note;
     },
+    noteHash() {
+      return `#note_${this.noteId}`;
+    },
   },
   mounted() {
     const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
@@ -72,6 +89,16 @@ export default {
 
 <template>
   <div class="note-edit-form">
+    <div
+      v-if="conflictWhileEditing"
+      class="js-conflict-edit-warning alert alert-danger">
+      This comment has changed since you started editing, please review the
+      <a
+        :href="noteHash"
+        target="_blank"
+        rel="noopener noreferrer">updated comment</a>
+        to ensure information is not lost.
+    </div>
     <form class="edit-note common-note-form">
       <markdown-field
         :markdown-preview-url="markdownPreviewUrl"
@@ -79,7 +106,7 @@ export default {
         :addSpacingClasses="false">
         <textarea
           id="note-body"
-          class="note-textarea js-gfm-input js-autosize markdown-area"
+          class="note-textarea js-gfm-input js-autosize markdown-area js-note-text"
           data-supports-slash-commands="true"
           data-supports-quick-actions="true"
           aria-label="Description"
@@ -101,7 +128,7 @@ export default {
         </button>
         <button
           @click="cancelHandler()"
-          class="btn btn-nr btn-cancel"
+          class="btn btn-nr btn-cancel note-edit-cancel"
           type="button">
           Cancel
         </button>

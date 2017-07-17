@@ -111,7 +111,7 @@ export default {
             <button
               @click="editHandler"
               type="button"
-              class="btn btn-transparent">
+              class="btn btn-transparent js-note-edit">
               Edit comment
             </button>
           </li>
@@ -126,7 +126,7 @@ export default {
           <a
             v-if="canEdit"
             @click.prevent="deleteHandler"
-            class="js-note-delete"
+            class="js-note-delete js-note-delete"
             href="#">
             <span class="text-danger">
               Delete comment
