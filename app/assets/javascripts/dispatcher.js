@@ -286,12 +286,6 @@ import RepoBundle from './repo/repo_bundle';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          if ($('#tree-slider').length) {
-            new TreeView();
-          }
-          if ($('.blob-viewer').length) {
-            new BlobViewer();
-          }
           break;
         case 'projects:edit':
           setupProjectEdit();
