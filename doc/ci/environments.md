@@ -603,7 +603,7 @@ exist, you should see something like:
 >
 - For the monitor dashboard to appear, you need to:
   - Have enabled the [Prometheus integration][prom]
-  - Configured Prometheus to collect at least one [supported metric](prometheus_library/metrics.md)
+  - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
 - With GitLab 9.2, all deployments to an environment are shown directly on the
   monitoring dashboard
 

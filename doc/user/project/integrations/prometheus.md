@@ -34,7 +34,7 @@ Depending on your deployment and where you have located your GitLab server, ther
 Installing and configuring Prometheus to monitor applications is fairly straight forward.
 
 1. [Install Prometheus](https://prometheus.io/docs/introduction/install/)
-1. Set up one of the [supported monitoring targets](metrics.md)
+1. Set up one of the [supported monitoring targets](prometheus_library/metrics.md)
 1. Configure the Prometheus server to [collect their metrics](https://prometheus.io/docs/operating/configuration/#scrape_config)
 
 ### Configuring Omnibus GitLab Prometheus to monitor Kubernetes deployments
