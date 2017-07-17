@@ -62,7 +62,7 @@ class GithubImport
         visibility_level: visibility_level,
         import_type: 'github',
         import_source: @repo['full_name'],
-        import_url: @repo['clone_url'].sub('://', "://#{options[:token]}@"),
+        import_url: @repo['clone_url'].sub('://', "://#{@options[:token]}@"),
         skip_wiki: @repo['has_wiki']
       ).execute
     end
