@@ -37,23 +37,45 @@ module Gitlab
         end
       end
 
-      def request_store_wrap(method_name)
-        const_get(:RequestStoreWrapExtension)
-          .send(:define_method, method_name) do |*args|
-            return super(*args) unless RequestStore.active?
+      def request_store_wrap(method_name, &method_key_block)
+        const_get(:RequestStoreWrapExtension).module_eval do
+          define_method(method_name) do |*args|
+            store =
+              if RequestStore.active?
+                RequestStore.store
+              else
+                ivar_name = # ! and ? cannot be used as ivar name
+                  "@#{method_name.to_s.tr('!', "\u2605").tr('?', "\u2606")}"
 
-            klass = self.class
-            key = [klass.name,
-                   method_name,
-                   *instance_exec(&klass.request_store_wrap_key),
-                   *args].join(':')
+                instance_variable_get(ivar_name) ||
+                  instance_variable_set(ivar_name, {})
+              end
 
-            if RequestStore.store.key?(key)
-              RequestStore.store[key]
+            key = send("#{method_name}_cache_key", args)
+
+            if store.key?(key)
+              store[key]
             else
-              RequestStore.store[key] = super(*args)
+              store[key] = super(*args)
             end
           end
+
+          cache_key_method_name = "#{method_name}_cache_key"
+
+          define_method(cache_key_method_name) do |args|
+            klass = self.class
+
+            instance_key = instance_exec(&klass.request_store_wrap_key) if
+              klass.request_store_wrap_key
+
+            method_key = instance_exec(&method_key_block) if method_key_block
+
+            [klass.name, method_name, *instance_key, *method_key, *args]
+              .join(':')
+          end
+
+          private cache_key_method_name
+        end
       end
     end
   end
