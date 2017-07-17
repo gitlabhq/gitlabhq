@@ -15,7 +15,7 @@ module Ci
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :description, presence: true
-    validates :variables, variable_duplicates: true
+    # validates :variables, variable_duplicates: true
 
     before_save :set_next_run_at
 

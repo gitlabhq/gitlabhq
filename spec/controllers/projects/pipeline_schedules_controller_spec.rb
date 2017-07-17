@@ -215,7 +215,7 @@ describe Projects::PipelineSchedulesController do
             expect { go }.not_to change { Ci::PipelineScheduleVariable.count }
 
             pipeline_schedule.reload
-            expect(assigns(:schedule).errors['variables']).not_to be_empty
+            expect(assigns(:schedule).errors['variables.key']).not_to be_empty
           end
         end
 
