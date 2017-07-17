@@ -44,6 +44,18 @@ You need to copy-paste these the ca.crt and token into your project on GitLab.co
 
 For API URL setting you should use the `Endpoint` IP from your cluster page on Google Cloud Platform. That will ensure GitLab.com can deploy containers to your cluster at Google Container Engine.
 
+### Setup Auto Deploy
+
+Visit home page of your GitLab.com project and press "Setup Auto Deploy" button. 
+
+![auto deploy button](img/auto_deploy_btn.png)
+
+You will be redirected to new file page where you can apply one of the several Auto Deploy templates. Select "Kubernetes", replace "domain.example.com" with your domain name and any other adjustments you feel comfortable with. 
+
+![auto deplote template](img/auto_deploy_dropdown.png)
+
+Once submitted, your changes should create a new pipeline with several jobs. If you made only domain changes it will be 3 jobs: build, staging and production. The build job will create a docker image with your new change and push it to the GitLab Container Registry. Staging job will deploy this image on your cluster. Once the deploy job succeeds you should be able to see your application by visiting the Kubernetes dashboard. Select the namespace of your project, which will look like `ruby-autodeploy-23`, but with a unique ID for your project, and your app will be listed as “staging” under the Deployment tab.
+
 ### Expose application to the world
 
 In order to be able to visit your application, you need to install an NGINX ingress controller and point your domain name to its external IP address.
@@ -71,18 +83,5 @@ kubectl get svc ruby-app-nginx-ingress-controller -o jsonpath='{.status.loadBala
 Use this IP address to configure your DNS. This part heavily depends on your preferences and domain provider. But in case you are not sure, just create an A record with a wildcard host like `*.<your-domain>`.
 
 Use `nslookup minimal-ruby-app-staging.<yourdomain>` to confirm that domain is assigned to the cluster IP.
-
-### Setup Auto Deploy
-
-Visit home page of your GitLab.com project and press "Setup Auto Deploy" button. 
-
-![auto deploy button](img/auto_deploy_btn.png)
-
-
-You will be redirected to new file page where you can apply one of the several Auto Deploy templates. Select "Kubernetes", replace "domain.example.com" with your domain name and any other adjustments you feel comfortable with. 
-
-![auto deplote template](img/auto_deploy_dropdown.png)
-
-Once submitted, your changes should create a new pipeline with several jobs. If you made only domain changes it will be 3 jobs: build, staging and production. The build job will create a docker image with your new change and push it to the GitLab Container Registry. Staging job will deploy this image on your cluster. Once the deploy job succeeds you should be able to see your application by visiting the Kubernetes dashboard. Select the namespace of your project, which will look like `ruby-autodeploy-23`, but with a unique ID for your project, and your app will be listed as “staging” under the Deployment tab.
 
 Once its ready - just visit http://minimal-ruby-app-staging.yourdomain.com to see “Hello, world!”
