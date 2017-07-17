@@ -5,6 +5,8 @@
   import PipelineStore from '../stores/pipeline_store';
   import PipelineService from '../services/pipeline_service';
   import pipelineGraph from './graph/graph_component.vue';
+  import pipelineInfoBlock from './pipeline_info_block.vue';
+  import pipelineCommitBlock from './pipeline_commit_block.vue';
   import ciHeader from '../../vue_shared/components/header_ci_component.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import eventHub from '../event_hub';
@@ -22,9 +24,11 @@
       },
     },
     components: {
-      pipelineGraph,
       ciHeader,
       loadingIcon,
+      pipelineGraph,
+      pipelineCommitBlock,
+      pipelineInfoBlock,
     },
     data() {
       const store = new PipelineStore();
@@ -60,10 +64,6 @@
           this.poll.stop();
         }
       });
-    },
-
-    updated() {
-      debugger;
     },
     computed: {
       status() {
@@ -145,7 +145,13 @@
           />
       </div>
 
-      Information block goes here
+      <pipeline-commit-block
+        v-if="state.pipeline.commit"
+        :commit="state.pipeline.commit"
+        />
+
+      <pipeline-info-block :pipeline="state.pipeline" />
+
       <br/>
       Tabs go here
 
