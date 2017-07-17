@@ -175,17 +175,18 @@ export default {
             </markdown-field>
             <div class="note-form-actions clearfix">
               <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown">
-                <input
+                <button
                   @click="handleSave()"
                   :disabled="!note.length"
-                  :value="commentButtonTitle"
                   class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
-                  type="submit" />
+                  type="button">
+                  {{commentButtonTitle}}
+                </button>
                 <button
                   :disabled="!note.length"
                   name="button"
                   type="button"
-                  class="btn btn-nr comment-btn note-type-toggle js-note-new-discussion"
+                  class="btn btn-nr comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
                   data-toggle="dropdown"
                   aria-label="Open comment type dropdown">
                   <i
@@ -193,7 +194,7 @@ export default {
                     class="fa fa-caret-down toggle-icon"></i>
                 </button>
                 <ul
-                  class="dropdown-menu note-type-dropdown dropdown-open-top">
+                  class="note-type-dropdown dropdown-open-top dropdown-menu">
                   <li
                     :class="{ 'item-selected': noteType === 'comment' }"
                     @click.prevent="setNoteType('comment')">
@@ -230,7 +231,8 @@ export default {
               <a
                 @click="handleSave(true)"
                 :class="{'btn-reopen': !isIssueOpen, 'btn-close': isIssueOpen}"
-                class="btn btn-nr btn-comment">
+                class="btn btn-nr btn-comment btn-comment-and-close"
+                role="button">
                 {{issueActionButtonTitle}}
               </a>
               <a

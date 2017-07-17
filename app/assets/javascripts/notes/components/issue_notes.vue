@@ -38,7 +38,7 @@ export default {
     ]),
   },
   methods: {
-    component(note) {
+    componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === 'systemNote') {
           return PlaceholderSystemNote;
@@ -132,7 +132,7 @@ export default {
       class="notes main-notes-list timeline">
       <component
         v-for="note in notes"
-        :is="component(note)"
+        :is="componentName(note)"
         :note="componentData(note)"
         :key="note.id" />
     </ul>

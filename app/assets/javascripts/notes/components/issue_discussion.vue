@@ -47,7 +47,7 @@ export default {
     PlaceholderSystemNote,
   },
   methods: {
-    component(note) {
+    componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === 'systemNote') {
           return PlaceholderSystemNote;
@@ -140,7 +140,7 @@ export default {
                 <ul class="notes">
                   <component
                     v-for="note in note.notes"
-                    :is="component(note)"
+                    :is="componentName(note)"
                     :note="componentData(note)"
                     key="note.id" />
                 </ul>
@@ -152,12 +152,12 @@ export default {
                     type="button"
                     class="btn btn-text-field"
                     title="Add a reply">Reply...</button>
-                    <issue-note-form
-                      v-if="isReplying"
-                      saveButtonTitle="Comment"
-                      :updateHandler="saveReply"
-                      :cancelHandler="cancelReplyForm"
-                      ref="noteForm" />
+                  <issue-note-form
+                    v-if="isReplying"
+                    saveButtonTitle="Comment"
+                    :updateHandler="saveReply"
+                    :cancelHandler="cancelReplyForm"
+                    ref="noteForm" />
                   <issue-note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>
