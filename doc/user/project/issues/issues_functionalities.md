@@ -43,11 +43,6 @@ assigned to them if they created the issue themselves.
 
 ##### 3.1. Multiple Assignees (EES/EEP)
 
-<<<<<<< HEAD
-=======
-Multiple Assignees are only available in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
-
->>>>>>> ce-com/master
 Often multiple people likely work on the same issue together,
 which can especially be difficult to track in large teams
 where there is shared ownership of an issue.
@@ -55,11 +50,7 @@ where there is shared ownership of an issue.
 In GitLab Enterprise Edition, you can also select multiple assignees
 to an issue.
 
-<<<<<<< HEAD
 Learn more on the [Multiple Assignees documentation](multiple_assignees_for_issues.md).
-=======
-Learn more on the [Multiple Assignees documentation](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html).
->>>>>>> ce-com/master
 
 #### 4. Milestone
 
