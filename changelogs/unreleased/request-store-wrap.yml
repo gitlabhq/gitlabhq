@@ -1,0 +1,4 @@
+---
+title: Add RequestStoreWrap which makes caching with RequestStore easier
+merge_request: 12920
+author:
