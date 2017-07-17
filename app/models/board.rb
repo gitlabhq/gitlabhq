@@ -1,4 +1,4 @@
-class Board < ActiveRecord::Base
+class Board < ApplicationRecord
   belongs_to :project
 
   has_many :lists, -> { order(:list_type, :position) }, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent

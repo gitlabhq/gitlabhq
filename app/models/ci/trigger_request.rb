@@ -1,5 +1,5 @@
 module Ci
-  class TriggerRequest < ActiveRecord::Base
+  class TriggerRequest < ApplicationRecord
     extend Ci::Model
 
     belongs_to :trigger

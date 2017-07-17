@@ -1,4 +1,4 @@
-class LfsObject < ActiveRecord::Base
+class LfsObject < ApplicationRecord
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :lfs_objects_projects
 

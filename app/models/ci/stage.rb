@@ -1,5 +1,5 @@
 module Ci
-  class Stage < ActiveRecord::Base
+  class Stage < ApplicationRecord
     extend Ci::Model
 
     belongs_to :project

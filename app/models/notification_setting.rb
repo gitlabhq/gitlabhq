@@ -1,4 +1,4 @@
-class NotificationSetting < ActiveRecord::Base
+class NotificationSetting < ApplicationRecord
   enum level: { global: 3, watch: 2, mention: 4, participating: 1, disabled: 0, custom: 5 }
 
   default_value_for :level, NotificationSetting.levels[:global]

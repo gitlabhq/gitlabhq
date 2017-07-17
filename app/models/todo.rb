@@ -1,4 +1,4 @@
-class Todo < ActiveRecord::Base
+class Todo < ApplicationRecord
   include Sortable
 
   ASSIGNED           = 1

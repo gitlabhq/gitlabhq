@@ -1,4 +1,4 @@
-class MergeRequest < ActiveRecord::Base
+class MergeRequest < ApplicationRecord
   include InternalId
   include Issuable
   include Noteable

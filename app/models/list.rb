@@ -1,4 +1,4 @@
-class List < ActiveRecord::Base
+class List < ApplicationRecord
   belongs_to :board
   belongs_to :label
 

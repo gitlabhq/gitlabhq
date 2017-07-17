@@ -1,4 +1,4 @@
-class Environment < ActiveRecord::Base
+class Environment < ApplicationRecord
   # Used to generate random suffixes for the slug
   LETTERS = 'a'..'z'
   NUMBERS = '0'..'9'

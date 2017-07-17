@@ -1,5 +1,5 @@
 module Ci
-  class RunnerProject < ActiveRecord::Base
+  class RunnerProject < ApplicationRecord
     extend Ci::Model
 
     belongs_to :runner

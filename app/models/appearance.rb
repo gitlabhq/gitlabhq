@@ -1,4 +1,4 @@
-class Appearance < ActiveRecord::Base
+class Appearance < ApplicationRecord
   include CacheMarkdownField
 
   cache_markdown_field :description

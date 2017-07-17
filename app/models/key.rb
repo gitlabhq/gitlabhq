@@ -1,6 +1,6 @@
 require 'digest/md5'
 
-class Key < ActiveRecord::Base
+class Key < ApplicationRecord
   include Sortable
 
   LAST_USED_AT_REFRESH_TIME = 1.day.to_i

@@ -1,4 +1,4 @@
-class Milestone < ActiveRecord::Base
+class Milestone < ApplicationRecord
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.
   MilestoneStruct = Struct.new(:title, :name, :id)

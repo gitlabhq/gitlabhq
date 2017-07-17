@@ -1,6 +1,6 @@
 require 'carrierwave/orm/activerecord'
 
-class ProjectImportData < ActiveRecord::Base
+class ProjectImportData < ApplicationRecord
   belongs_to :project
   attr_encrypted :credentials,
                  key: Gitlab::Application.secrets.db_key_base,

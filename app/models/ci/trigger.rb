@@ -1,5 +1,5 @@
 module Ci
-  class Trigger < ActiveRecord::Base
+  class Trigger < ApplicationRecord
     extend Ci::Model
 
     acts_as_paranoid

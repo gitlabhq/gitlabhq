@@ -1,4 +1,4 @@
-class SystemNoteMetadata < ActiveRecord::Base
+class SystemNoteMetadata < ApplicationRecord
   ICON_TYPES = %w[
     commit description merge confidential visible label assignee cross_reference
     title time_tracking branch milestone discussion task moved opened closed merged

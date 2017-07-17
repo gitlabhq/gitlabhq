@@ -1,5 +1,5 @@
 module ConversationalDevelopmentIndex
-  class Metric < ActiveRecord::Base
+  class Metric < ApplicationRecord
     include Presentable
 
     self.table_name = 'conversational_development_index_metrics'

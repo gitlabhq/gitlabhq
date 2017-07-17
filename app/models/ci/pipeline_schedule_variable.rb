@@ -1,5 +1,5 @@
 module Ci
-  class PipelineScheduleVariable < ActiveRecord::Base
+  class PipelineScheduleVariable < ApplicationRecord
     extend Ci::Model
     include HasVariable
 

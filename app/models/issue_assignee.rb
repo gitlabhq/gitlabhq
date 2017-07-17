@@ -1,4 +1,4 @@
-class IssueAssignee < ActiveRecord::Base
+class IssueAssignee < ApplicationRecord
   extend Gitlab::CurrentSettings
 
   belongs_to :issue

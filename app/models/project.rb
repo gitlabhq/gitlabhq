@@ -1,6 +1,6 @@
 require 'carrierwave/orm/activerecord'
 
-class Project < ActiveRecord::Base
+class Project < ApplicationRecord
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel

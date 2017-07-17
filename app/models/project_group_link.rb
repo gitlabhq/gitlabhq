@@ -1,4 +1,4 @@
-class ProjectGroupLink < ActiveRecord::Base
+class ProjectGroupLink < ApplicationRecord
   include Expirable
 
   GUEST     = 10

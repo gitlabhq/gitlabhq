@@ -1,4 +1,4 @@
-class Namespace < ActiveRecord::Base
+class Namespace < ApplicationRecord
   acts_as_paranoid without_default_scope: true
 
   include CacheMarkdownField

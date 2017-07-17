@@ -1,4 +1,4 @@
-class Timelog < ActiveRecord::Base
+class Timelog < ApplicationRecord
   validates :time_spent, :user, presence: true
   validate :issuable_id_is_present
 

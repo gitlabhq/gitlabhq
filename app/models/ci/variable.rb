@@ -1,5 +1,5 @@
 module Ci
-  class Variable < ActiveRecord::Base
+  class Variable < ApplicationRecord
     extend Ci::Model
     include HasVariable
     include Presentable

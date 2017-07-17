@@ -1,5 +1,5 @@
 module Ci
-  class Runner < ActiveRecord::Base
+  class Runner < ApplicationRecord
     extend Ci::Model
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes

@@ -1,4 +1,4 @@
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   include Sortable
   default_scope { reorder(nil).where.not(author_id: nil) }
 

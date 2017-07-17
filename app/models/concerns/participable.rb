@@ -5,7 +5,7 @@
 #
 # Usage:
 #
-#     class Issue < ActiveRecord::Base
+#     class Issue < ApplicationRecord
 #       include Participable
 #
 #       # ...

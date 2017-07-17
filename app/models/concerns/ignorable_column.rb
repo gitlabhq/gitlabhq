@@ -3,7 +3,7 @@
 #
 # Example:
 #
-#     class User < ActiveRecord::Base
+#     class User < ApplicationRecord
 #       include IgnorableColumn
 #
 #       ignore_column :updated_at

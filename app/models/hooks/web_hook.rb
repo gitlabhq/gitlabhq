@@ -1,4 +1,4 @@
-class WebHook < ActiveRecord::Base
+class WebHook < ApplicationRecord
   include Sortable
 
   default_value_for :push_events, true

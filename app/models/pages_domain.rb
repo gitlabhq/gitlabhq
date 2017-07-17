@@ -1,4 +1,4 @@
-class PagesDomain < ActiveRecord::Base
+class PagesDomain < ApplicationRecord
   belongs_to :project
 
   validates :domain, hostname: { allow_numeric_hostname: true }

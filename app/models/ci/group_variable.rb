@@ -1,5 +1,5 @@
 module Ci
-  class GroupVariable < ActiveRecord::Base
+  class GroupVariable < ApplicationRecord
     extend Ci::Model
     include HasVariable
     include Presentable

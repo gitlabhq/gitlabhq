@@ -1,5 +1,5 @@
 module Ci
-  class PipelineSchedule < ActiveRecord::Base
+  class PipelineSchedule < ApplicationRecord
     extend Ci::Model
     include Importable
 

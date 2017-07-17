@@ -1,6 +1,6 @@
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
-class Service < ActiveRecord::Base
+class Service < ApplicationRecord
   include Sortable
   serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 

@@ -1,4 +1,4 @@
-class SpamLog < ActiveRecord::Base
+class SpamLog < ApplicationRecord
   belongs_to :user
 
   validates :user, presence: true

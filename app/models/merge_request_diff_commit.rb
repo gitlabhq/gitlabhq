@@ -1,4 +1,4 @@
-class MergeRequestDiffCommit < ActiveRecord::Base
+class MergeRequestDiffCommit < ApplicationRecord
   include ShaAttribute
 
   belongs_to :merge_request_diff

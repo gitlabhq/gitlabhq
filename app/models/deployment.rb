@@ -1,4 +1,4 @@
-class Deployment < ActiveRecord::Base
+class Deployment < ApplicationRecord
   include InternalId
 
   belongs_to :project, required: true, validate: true

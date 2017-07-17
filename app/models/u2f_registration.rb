@@ -1,6 +1,6 @@
 # Registration information for U2F (universal 2nd factor) devices, like Yubikeys
 
-class U2fRegistration < ActiveRecord::Base
+class U2fRegistration < ApplicationRecord
   belongs_to :user
 
   def self.register(user, app_id, params, challenges)

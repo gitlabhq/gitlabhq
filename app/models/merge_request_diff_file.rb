@@ -1,4 +1,4 @@
-class MergeRequestDiffFile < ActiveRecord::Base
+class MergeRequestDiffFile < ApplicationRecord
   include Gitlab::EncodingHelper
 
   belongs_to :merge_request_diff

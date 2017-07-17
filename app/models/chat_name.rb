@@ -1,4 +1,4 @@
-class ChatName < ActiveRecord::Base
+class ChatName < ApplicationRecord
   belongs_to :service
   belongs_to :user
 
