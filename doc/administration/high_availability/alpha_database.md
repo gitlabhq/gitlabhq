@@ -1,4 +1,5 @@
 # Configuring a Database for GitLab HA
+> Note: GitLab HA requires Enterprise Edition Premium
 
 **Warning**
 This functionality should be considered beta, use with caution.
