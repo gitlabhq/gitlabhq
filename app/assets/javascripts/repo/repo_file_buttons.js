@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 import Vue from 'vue'
 import Store from './repo_store'
 import Helper from './repo_helper'
 import RepoMiniMixin from './repo_mini_mixin'
+=======
+import Vue from 'vue';
+import Store from './repo_store';
+import Helper from './repo_helper';
+>>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
 
 export default class RepoSidebar {
   constructor(url) {
@@ -9,7 +15,7 @@ export default class RepoSidebar {
     this.initVue();
     this.el = document.getElementById('repo-file-buttons');
   }
-  
+
   initVue() {
     this.vue = new Vue({
       el: '#repo-file-buttons',
@@ -31,16 +37,21 @@ export default class RepoSidebar {
       </div>
       `,
       computed: {
+<<<<<<< HEAD
 
         editableBorder() {
           return this.editMode ? '1px solid #1F78D1' :'1px solid #f0f0f0';
+=======
+        previewLabel() {
+          return this.activeFile.raw ? 'Preview' : 'Raw';
+>>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
         },
 
         canPreview() {
           return this.activeFile.extension === 'md';
         },
 
-        rawFileURL() { 
+        rawFileURL() {
           return Helper.getRawURLFromBlobURL(this.activeFile.url);
         },
 
@@ -50,13 +61,19 @@ export default class RepoSidebar {
 
         historyFileUrl() {
           return Helper.getHistoryURLFromBlobURL(this.activeFile.url);
-        }
+        },
       },
 
       methods: {
+<<<<<<< HEAD
         rawPreviewToggle() {
           Helper.setCurrentFileRawOrPreview();
         }
+=======
+        setRawPreviewMode() {
+
+        },
+>>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
       },
     });
   }

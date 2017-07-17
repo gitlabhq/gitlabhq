@@ -1,4 +1,4 @@
-let RepoLoadingFile = {
+const RepoLoadingFile = {
   template: `
   <tr v-if='loading.tree && !hasFiles'>
     <td>
@@ -18,17 +18,17 @@ let RepoLoadingFile = {
     </td>
   </tr>
   `,
-  
+
   methods: {
     lineOfCode(n) {
       return `line-of-code-${n}`;
-    }
+    },
   },
 
   props: {
     loading: Object,
     hasFiles: Boolean,
-    isMini: Boolean
-  }
+    isMini: Boolean,
+  },
 };
 export default RepoLoadingFile;

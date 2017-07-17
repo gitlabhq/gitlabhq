@@ -1,6 +1,6 @@
-import RepoHelper from './repo_helper'
+import RepoHelper from './repo_helper';
 
-let RepoTab = {
+const RepoTab = {
   template: `
   <li>
     <a href='#' @click.prevent='xClicked(tab)' v-if='!tab.loading'>
@@ -34,7 +34,7 @@ let RepoTab = {
     xClicked(file) {
       if(file.changed) return;
       RepoHelper.removeFromOpenedFiles(file);
-    }
-  }
+    },
+  },
 };
 export default RepoTab;

@@ -72,19 +72,18 @@ import RepoBundle from './repo/repo_bundle';
     }
 
     Dispatcher.prototype.initPageScripts = function() {
-      var page, path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl, os;
+      var page, path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl;
       page = $('body').attr('data-page');
       if (!page) {
         return false;
       }
 
-
       function getScrollBarWidth () {
-        var $outer = $('<div>').css({visibility: 'hidden', width: 100, overflow: 'scroll'}).appendTo('body'),
-              widthWithScroll = $('<div>').css({width: '100%'}).appendTo($outer).outerWidth();
+        var $outer = $('<div>').css({ visibility: 'hidden', width: 100, overflow: 'scroll' }).appendTo('body'),
+          widthWithScroll = $('<div>').css({ width: '100%' }).appendTo($outer).outerWidth();
         $outer.remove();
         return 100 - widthWithScroll;
-      };
+      }
 
       $('body').attr('data-scroll-width', getScrollBarWidth());
 
@@ -353,7 +352,7 @@ import RepoBundle from './repo/repo_bundle';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          new RepoBundle();  
+          new RepoBundle();
           break;
         case 'projects:blame:show':
           initBlob();

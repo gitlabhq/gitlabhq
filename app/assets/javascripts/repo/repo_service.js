@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-let RepoService = {
+const RepoService = {
   url: '',
   params: {
     params: {
-      format: 'json'
-    }
+      format: 'json',
+    },
   },
 
   setUrl(url) {
@@ -14,16 +14,16 @@ let RepoService = {
 
   paramsWithRich(url) {
     // copy the obj so we don't modify perm.
-    let params = JSON.parse(JSON.stringify(this.params));
-    if(url.substr(url.length-2) === 'md') {
+    const params = JSON.parse(JSON.stringify(this.params));
+    if (url.substr(url.length - 2) === 'md') {
       params.params.viewer = 'rich';
     }
     return params;
   },
 
   getContent(url) {
-    if(url){
-      return axios.get(url, this.paramsWithRich(url, params));
+    if (url) {
+      return axios.get(url, this.paramsWithRich(url, this.params));
     }
     return axios.get(this.url, this.paramsWithRich(this.url, this.params));
   },
@@ -31,10 +31,10 @@ let RepoService = {
   getBase64Content(url) {
     return axios
       .get(url, {
-        responseType: 'arraybuffer'
+        responseType: 'arraybuffer',
       })
-      .then(response => new Buffer(response.data, 'binary').toString('base64'))
-  }
+      .then(response => new Buffer(response.data, 'binary').toString('base64'));
+  },
 };
 
 export default RepoService;

@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import Store from './repo_store'
-import RepoTab from './repo_tab'
-import RepoMiniMixin from './repo_mini_mixin'
+import Store from './repo_store';
+import RepoTab from './repo_tab';
+import RepoMiniMixin from './repo_mini_mixin';
 
 export default class RepoTabs {
   constructor() {
-    this.styleTabsForWindows();
+    RepoTabs.styleTabsForWindows();
     this.initVue();
   }
 
@@ -20,7 +20,7 @@ export default class RepoTabs {
     });
   }
 
-  styleTabsForWindows() {
+  static styleTabsForWindows() {
     const scrollWidth = Number(document.body.dataset.scrollWidth);
     Store.scrollWidth = scrollWidth;
   }

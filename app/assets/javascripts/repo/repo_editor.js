@@ -1,7 +1,7 @@
 /* global monaco */
 import Vue from 'vue';
-import Store from './repo_store'
-import Helper from './repo_helper'
+import Store from './repo_store';
+import Helper from './repo_helper';
 
 export default class RepoEditor {
   constructor() {
@@ -10,12 +10,19 @@ export default class RepoEditor {
   }
 
   addMonacoEvents() {
+<<<<<<< HEAD
     this.monacoEditor.onMouseUp(this.onMonacoEditorMouseUp.bind(this));
     this.monacoEditor.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
+=======
+    this.vue.$watch('activeFile.lineNumber', () => {
+      console.log('cahnged');
+    });
+    this.monacoEditor.onMouseUp(RepoEditor.onMonacoEditorMouseUp);
+>>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
   }
 
-  onMonacoEditorMouseUp(e) {
-    if(e.target.element.className === 'line-numbers') {
+  static onMonacoEditorMouseUp(e) {
+    if (e.target.element.className === 'line-numbers') {
       location.hash = `L${e.target.position.lineNumber}`;
       Store.activeLine = e.target.position.lineNumber;
     }
@@ -34,7 +41,7 @@ export default class RepoEditor {
           model: null,
           readOnly: true,
           contextmenu: false,
-        }
+        },
       );
 
       Helper.monacoInstance = monaco;
@@ -49,33 +56,37 @@ export default class RepoEditor {
     const monacoEditor = this.monacoEditor;
     this.vue = new Vue({
       data: () => Store,
-      created () {
+      created() {
         this.showHide();
-        if(this.blobRaw !== ''){
+        if (this.blobRaw !== '') {
           monacoEditor.setModel(
             monaco.editor.createModel(
               this.blobRaw,
-              'plain'
-            )
+              'plain',
+            ),
           );
         }
       },
 
       methods: {
         showHide() {
+<<<<<<< HEAD
           if(!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
+=======
+          if ((!this.openedFiles.length) || this.binary) {
+>>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
             self.el.style.display = 'none';
           } else {
             self.el.style.display = 'inline-block';
           }
-        }
+        },
       },
 
       watch: {
         activeLine() {
           self.monacoEditor.setPosition({
             lineNumber: this.activeLine,
-            column: 1
+            column: 1,
           });
         },
 
@@ -114,20 +125,24 @@ export default class RepoEditor {
         blobRaw() {
           this.showHide();
 
+<<<<<<< HEAD
           if(!this.isTree) {
             // kill the current model;
             self.monacoEditor.setModel(null);
             // then create the new one
+=======
+          if (!this.isTree) {
+>>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
             self.monacoEditor.setModel(
               monaco.editor.createModel(
                 this.blobRaw,
-                this.activeFile.mime_type
-              )
+                this.activeFile.mime_type,
+              ),
             );
             console.log(monaco.editor.getModels());
           }
-        }
-      }
+        },
+      },
     });
   }
 }

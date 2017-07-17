@@ -1,4 +1,4 @@
-let RepoStore = {
+const RepoStore = {
   service: '',
   editor: '',
   sidebar: '',
@@ -22,9 +22,12 @@ let RepoStore = {
     plain: '',
     size: 0,
     url: '',
+<<<<<<< HEAD
     raw: false,
     newContent: '',
     changed: false
+=======
+>>>>>>> 51a936fb3d2cdbd133a3b0eed463b47c1c92fe7d
   },
   activeFileIndex: 0,
   activeLine: 0,
@@ -32,15 +35,15 @@ let RepoStore = {
   files: [],
   binary: false,
   binaryMimeType: '',
-  //scroll bar space for windows
+  // scroll bar space for windows
   scrollWidth: 0,
   binaryTypes: {
     png: false,
-    markdown: false
+    markdown: false,
   },
   loading: {
     tree: false,
-    blob: false
-  }
+    blob: false,
+  },
 };
 export default RepoStore;

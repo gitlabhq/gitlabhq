@@ -1,4 +1,4 @@
-let RepoFileOptions = {
+const RepoFileOptions = {
   template: `
     <tr v-if='isMini' class='repo-file-options'>
       <td>
@@ -21,8 +21,8 @@ let RepoFileOptions = {
   props: {
     name: 'repo-file-options',
     isMini: Boolean,
-    projectName: String
-  }
-}
+    projectName: String,
+  },
+};
 
 export default RepoFileOptions;
