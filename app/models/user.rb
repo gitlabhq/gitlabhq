@@ -328,7 +328,7 @@ class User < ActiveRecord::Base
         table[:name].matches(pattern)
           .or(table[:email].matches(pattern))
           .or(table[:username].matches(pattern))
-      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, id: :desc)
+      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
 
     # searches user by given pattern
