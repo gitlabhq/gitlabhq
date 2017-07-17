@@ -63,14 +63,10 @@ describe Gitlab::BackgroundMigration do
         end
 
         context 'when standard error is being raised' do
-          before do
-            allow(migration).to receive(:perform).with(10, 20)
-              .and_raise(StandardError, 'Migration error')
-          end
-
           it 'recovers from an exception and retries the migration' do
             expect(migration).to receive(:perform).with(10, 20)
-              .exactly(3).times.ordered
+              .and_raise(StandardError, 'Migration error')
+              .exactly(4).times.ordered
             expect(migration).to receive(:perform).with(20, 30)
               .once.ordered
             expect(Rails.logger).to receive(:warn)
@@ -148,7 +144,17 @@ describe Gitlab::BackgroundMigration do
         expect(migration).to receive(:perform).with(10, 20)
           .and_raise(StandardError).once
 
-        expect {  described_class.perform('Foo', [10, 20], retries: 0) }
+        expect { described_class.perform('Foo', [10, 20], retries: 0) }
+          .to raise_error(StandardError)
+      end
+    end
+
+    context 'when retries count is one' do
+      it 'retries a background migration when needed' do
+        expect(migration).to receive(:perform).with(10, 20)
+          .and_raise(StandardError).twice
+
+        expect { described_class.perform('Foo', [10, 20], retries: 1) }
           .to raise_error(StandardError)
       end
     end
@@ -156,9 +162,9 @@ describe Gitlab::BackgroundMigration do
     context 'when retries count is larger than zero' do
       it 'retries a background migration when needed' do
         expect(migration).to receive(:perform).with(10, 20)
-          .and_raise(StandardError).exactly(3).times
+          .and_raise(StandardError).exactly(4).times
 
-        expect {  described_class.perform('Foo', [10, 20], retries: 3) }
+        expect { described_class.perform('Foo', [10, 20], retries: 3) }
           .to raise_error(StandardError)
       end
     end

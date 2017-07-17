@@ -48,12 +48,17 @@ module Gitlab
     #
     # arguments - The arguments to pass to the background migration's "perform"
     #             method.
-    def self.perform(class_name, arguments, retries: 1)
+    def self.perform(class_name, arguments, retries: 0)
       const_get(class_name).new.perform(*arguments)
-    rescue => e
-      Rails.logger.warn("Retrying background migration #{class_name} " \
-                        "with #{arguments}")
-      (retries -= 1) > 0 ? retry : raise
+    rescue StandardError
+      if retries > 0
+        Rails.logger.warn("Retrying background migration #{class_name} " \
+                          "with #{arguments}")
+        retries -= 1
+        retry
+      else
+        raise
+      end
     end
   end
 end
