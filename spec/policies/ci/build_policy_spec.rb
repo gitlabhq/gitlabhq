@@ -103,12 +103,7 @@ describe Ci::BuildPolicy, :models do
         project.add_developer(user)
       end
 
-      context 'when branch build is assigned to is protected' do
-        before do
-          create(:protected_branch, :no_one_can_push,
-                 name: 'some-ref', project: project)
-        end
-
+      shared_examples 'protected ref' do
         context 'when build is a manual action' do
           let(:build) do
             create(:ci_build, :manual, ref: 'some-ref', pipeline: pipeline)
@@ -128,6 +123,24 @@ describe Ci::BuildPolicy, :models do
             expect(policy).to be_allowed :update_build
           end
         end
+      end
+
+      context 'when build is against a protected branch' do
+        before do
+          create(:protected_branch, :no_one_can_push,
+                 name: 'some-ref', project: project)
+        end
+
+        it_behaves_like 'protected ref'
+      end
+
+      context 'when build is against a protected tag' do
+        before do
+          create(:protected_tag, :no_one_can_create,
+                 name: 'some-ref', project: project)
+        end
+
+        it_behaves_like 'protected ref'
       end
 
       context 'when branch build is assigned to is not protected' do

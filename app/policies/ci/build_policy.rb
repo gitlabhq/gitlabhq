@@ -3,9 +3,10 @@ module Ci
     condition(:protected_action) do
       next false unless @subject.action?
 
-      !::Gitlab::UserAccess
-        .new(@user, project: @subject.project)
-        .can_merge_to_branch?(@subject.ref)
+      access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
+
+      !access.can_merge_to_branch?(@subject.ref) ||
+        !access.can_create_tag?(@subject.ref)
     end
 
     rule { protected_action }.prevent :update_build
