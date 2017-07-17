@@ -34,11 +34,7 @@ your project public, open to collaboration.
 
 ### Streamline collaboration
 
-<<<<<<< HEAD
 With [Multiple Assignees for Issues](multiple_assignees_for_issues.md),
-=======
-With [Multiple Assignees for Issues](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html),
->>>>>>> ce-com/master
 available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
 you can streamline collaboration and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your workflows and receive notifications (as they
@@ -121,14 +117,13 @@ Find GitLab Issue Boards by navigating to your **Project's Dashboard** > **Issue
 Read through the documentation for [Issue Boards](../issue_board.md)
 to find out more about this feature.
 
-<<<<<<< HEAD
 #### Multiple Issue Boards (EES/EEP)
 
 Multiple Issue Boards enables you to create more than one Issue Board per project.
 It's great for large projects with more than one team or in situations where a
 repository is used to host the code of multiple products.
 
-_[Multiple Issue Boards](../issue_board.html#multiple-issue-boards)
+_[Multiple Issue Boards](../issue_board.md#multiple-issue-boards)
 are available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
 
 ### Export Issues to CSV (EES/EEP)
@@ -144,10 +139,6 @@ and appear in a block below the issue description. Issues can be across groups
 and projects.
 
 Read more about [Related Issues](related_issues.md).
-=======
-With [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/), you can also
-create various boards per project with [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
->>>>>>> ce-com/master
 
 ### Issue's API
 
