@@ -4,21 +4,12 @@ class AutocompleteController < ApplicationController
   before_action :find_users, only: [:users]
 
   def users
-<<<<<<< HEAD
     @users = @users.non_ldap if params[:skip_ldap] == 'true'
-    @users = @users.search(params[:search]) if params[:search].present?
-    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.active
     @users = @users.reorder(:name)
+    @users = @users.search(params[:search]) if params[:search].present?
+    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = load_users_by_ability || @users.page(params[:page]).per(params[:per_page])
-=======
-    @users ||= User.none
-    @users = @users.active
-    @users = @users.reorder(:name)
-    @users = @users.search(params[:search]) if params[:search].present?
-    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
-    @users = @users.page(params[:page]).per(params[:per_page])
->>>>>>> ce-com/master
 
     if params[:todo_filter].present? && current_user
       @users = @users.todo_authors(current_user.id, params[:todo_state_filter])
