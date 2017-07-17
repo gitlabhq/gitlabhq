@@ -23,11 +23,11 @@ Integration with Prometheus requires the following:
 
 ## Getting started with Prometheus monitoring
 
-Depending on your deployment and where you have located your Prometheus server, there are a few options to get started with Prometheus monitoring.
+Depending on your deployment and where you have located your GitLab server, there are a few options to get started with Prometheus monitoring.
 
 * If both GitLab and your applications are installed in the same Kubernetes cluster, you can leveraged the [bundled Prometheus server within GitLab](#configuring-omnibus-gitlab-prometheus-to-monitor-kubernetes).
 * If your applications are deployed on Kubernetes, but GitLab is not in the same cluster, then you can [configure a Prometheus server in your Kubernetes cluster](#configuring-your-own-prometheus-server-within-kubernetes).
-* If your applications are not running in Kubernetes, [get started with Prometheus](#getting-started-with-proemtheus-outside-of-kubernetes).
+* If your applications are not running in Kubernetes, [get started with Prometheus](#getting-started-with-prometheus-outside-of-kubernetes).
 
 ### Getting started with Prometheus outside of Kubernetes
 
@@ -69,7 +69,7 @@ kubectl apply -f path/to/prometheus.yml
 Once deployed, you should see the Prometheus service, deployment, and
 pod start within the `prometheus` namespace. The server will begin to collect
 metrics from each Kubernetes Node in the cluster, based on the configuration
-provided in the template.
+provided in the template. It will also attempt to collect metrics from any Kubernetes Pods that have been [annotated for Prometheus](https://prometheus.io/docs/operating/configuration/#pod).
 
 Since GitLab is not running within Kubernetes, the template provides external
 network access via a `NodePort` running on `30090`. This method allows access
@@ -139,8 +139,9 @@ environment which has had a successful deployment.
 
 > [Introduced][ce-10408] in GitLab 9.2.
 > GitLab 9.3 added the [numeric comparison](https://gitlab.com/gitlab-org/gitlab-ce/issues/27439) of the 30 minute averages.
+> Requires [Kubernetes](prometheus_library/kubernetes.md) metrics
 
-Developers can view the performance impact of their changes within the merge
+Developers can view theperformance impact of their changes within the merge
 request workflow. When a source branch has been deployed to an environment, a sparkline and numeric comparison of the average memory consumption will appear. On the sparkline, a dot
 indicates when the current changes were deployed, with up to 30 minutes of
 performance data displayed before and after. The comparison shows the difference between the 30 minute average before and after the deployment. This information is updated after
