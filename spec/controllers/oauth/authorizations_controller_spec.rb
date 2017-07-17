@@ -34,6 +34,22 @@ describe Oauth::AuthorizationsController do
     end
 
     context 'with valid params' do
+      context 'when trusted application' do
+        before do
+          doorkeeper.update(trusted: true)
+        end
+
+        it 'deletes session.user_return_to and redirects' do
+          request.session['user_return_to'] = 'http://example.com'
+          allow(controller).to receive(:skip_authorization?).and_return(true)
+
+          get :new, params
+
+          expect(request.session['user_return_to']).to be_nil
+          expect(response).to have_http_status(302)
+        end
+      end
+
       it 'returns 200 code and renders view' do
         get :new, params
 
