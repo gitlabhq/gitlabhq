@@ -3,7 +3,7 @@ module Github
     attr_reader :connection, :rate_limit
 
     def initialize(options)
-      @connection = Faraday.new(url: options.fetch(:url)) do |faraday|
+      @connection = Faraday.new(url: options.fetch(:url, root_endpoint)) do |faraday|
         faraday.options.open_timeout = options.fetch(:timeout, 60)
         faraday.options.timeout = options.fetch(:timeout, 60)
         faraday.authorization 'token', options.fetch(:token)
@@ -18,6 +18,23 @@ module Github
       sleep reset_in if exceed
 
       Github::Response.new(connection.get(url, query))
+    end
+
+    private
+
+    def root_endpoint
+      custom_endpoint || githup_endpoint
+    end
+
+    def custom_endpoint
+      Gitlab.config.omniauth.providers
+                            .find { |provider| provider.name == 'github' }
+                            .to_h
+                            .dig('args', 'client_options', 'site')
+    end
+
+    def github_endpoint
+      OmniAuth::Strategies::GitHub.default_options[:client_options][:site]
     end
   end
 end
