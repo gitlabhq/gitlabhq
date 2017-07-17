@@ -7,6 +7,12 @@ module Gitlab
     # Begins stealing jobs from the background migrations queue, blocking the
     # caller until all jobs have been completed.
     #
+    # When a migration raises a StandardError is is going to be retries up to
+    # three times, for example, to recover from a deadlock.
+    #
+    # When Exception is being raised, it enqueues the migration again, and
+    # re-raises the exception.
+    #
     # steal_class - The name of the class for which to steal jobs.
     def self.steal(steal_class)
       enqueued = Sidekiq::Queue.new(self.queue)
@@ -20,22 +26,34 @@ module Gitlab
           next unless migration_class == steal_class
 
           begin
-            perform(migration_class, migration_args) if job.delete
-          rescue => e
-            Logger.new($stdout).warn(e.message)
+            perform(migration_class, migration_args, retries: 3) if job.delete
+          rescue StandardError
             next
+          rescue Exception
+            BackgroundMigrationWorker # enqueue this migration again
+              .perform_async(migration_class, migration_args)
+
+            raise
           end
         end
       end
     end
 
+    ##
+    # Performs a background migration. In case of `StandardError` being caught
+    # this will retry a migration up to three times.
+    #
     # class_name - The name of the background migration class as defined in the
     #              Gitlab::BackgroundMigration namespace.
     #
     # arguments - The arguments to pass to the background migration's "perform"
     #             method.
-    def self.perform(class_name, arguments)
+    def self.perform(class_name, arguments, retries: 1)
       const_get(class_name).new.perform(*arguments)
+    rescue => e
+      Rails.logger.warn("Retrying background migration #{class_name} " \
+                        "with #{arguments}")
+      (retries -= 1) > 0 ? retry : raise
     end
   end
 end
