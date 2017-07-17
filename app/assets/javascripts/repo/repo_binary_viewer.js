@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Store from './repo_store';
-import { loadingError } from './repo_helper';
+import RepoHelper from './repo_helper';
 
 export default class RepoBinaryViewer {
   constructor() {
@@ -40,7 +40,7 @@ export default class RepoBinaryViewer {
               this.binaryTypes.png = true;
               break;
             default:
-              loadingError();
+              RepoHelper.loadingError();
               break;
           }
         },
