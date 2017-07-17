@@ -183,7 +183,6 @@ Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab
 with **Member Lock** it is possible to lock membership in project to the
 level of members in group.
 
-<<<<<<< HEAD
 Member Lock lets a group owner to lock down any new project membership to all the
 projects within the group, allowing tighter control over project membership.
 
@@ -199,9 +198,6 @@ and **Save group**.
 This will disable the option for all users who previously had permissions to
 operate project memberships so no new users can be added. Furthermore, any
 request to add new user to project through API will not be possible.
-=======
-Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock-ees-eep).
->>>>>>> ce-com/master
 
 #### Share with group lock (EES/EEP)
 
@@ -210,7 +206,6 @@ it is possible to prevent projects in a group from [sharing
 a project with another group](../../workflow/share_projects_with_other_groups.md).
 This allows for tighter control over project access.
 
-<<<<<<< HEAD
 For example, consider you have two distinct teams (Group A and Group B)
 working together in a project.
 To inherit the group membership, you share the project between the
@@ -222,28 +217,18 @@ To enable this feature, navigate to the group settings page. Select
 **Share with group lock** and **Save the group**.
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
-=======
-Learn more about [Share with group lock](https://docs.gitlab.com/ee/user/group/index.html#share-with-group-lock-ees-eep).
->>>>>>> ce-com/master
 
 ### Advanced settings
 
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
-<<<<<<< HEAD
 and [push rules](../../push_rules/push_rules.md) to your group
+(Push Rules is available in [GitLab Enteprise Edition Starter][ee].)
 - **Audit Events**: view [Audit Events](../../administration/audit_events.md)
-for the group (GitLab admins only)
-- **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
-
-[permissions]: ../permissions.md#permissions
-=======
-and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Enteprise Edition Starter][ee].)
-- **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
-for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee]).
-- **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
+for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee])
+- **Pipelines quota**: keep track of the
+[pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
 [permissions]: ../permissions.md#permissions
 [ee]: https://about.gitlab.com/products/
->>>>>>> ce-com/master
