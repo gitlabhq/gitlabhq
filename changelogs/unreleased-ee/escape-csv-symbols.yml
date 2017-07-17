@@ -1,0 +1,4 @@
+---
+title: Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel
+merge_request:
+author:
