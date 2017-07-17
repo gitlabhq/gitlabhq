@@ -31,9 +31,9 @@
       %p
         You can reset runners registration token by pressing a button below.
       .prepend-top-10
-        = button_to "Reset runners registration token", reset_runners_token_admin_application_settings_path,
+        = button_to _("Reset runners registration token"), reset_runners_token_admin_application_settings_path,
           method: :put, class: 'btn btn-default',
-          data: { confirm: 'Are you sure you want to reset registration token?' }
+          data: { confirm: _("Are you sure you want to reset registration token?") }
 
   = render partial: 'ci/runner/how_to_setup_runner', locals: {registration_token: current_application_settings.runners_registration_token, type: 'shared'}
 
