@@ -1,34 +1,24 @@
 module Projects
   class UpdateService < BaseService
     def execute
-      unless visibility_level_allowed?
-        return error('New visibility level not allowed!')
-      end
-
-<<<<<<< HEAD
       # Repository size limit comes as MB from the view
       limit = params.delete(:repository_size_limit)
       project.repository_size_limit = Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
 
-      new_branch = params.delete(:default_branch)
-      new_repository_storage = params.delete(:repository_storage)
+      unless visibility_level_allowed?
+        return error('New visibility level not allowed!')
+      end
 
-      if project.repository.exists?
-        if new_branch && new_branch != project.default_branch
-          project.change_head(new_branch)
-        end
+      if changing_storage_size?
+        project.change_repository_storage(params.delete(:repository_storage))
+      end
 
-        if new_repository_storage && can?(current_user, :change_repository_storage, project)
-          project.change_repository_storage(new_repository_storage)
-        end
-=======
       if project.has_container_registry_tags?
         return error('Cannot rename project because it contains container registry tags!')
       end
 
       if changing_default_branch?
         project.change_head(params[:default_branch])
->>>>>>> ce-com/master
       end
 
       if project.update_attributes(params)
@@ -62,11 +52,18 @@ module Projects
       true
     end
 
+    def changing_storage_size?
+      new_repository_storage = params[:repository_storage]
+
+      new_repository_storage && project.repository.exists? &&
+        can?(current_user, :change_repository_storage, project)
+    end
+
     def changing_default_branch?
       new_branch = params[:default_branch]
 
-      project.repository.exists? &&
-        new_branch && new_branch != project.default_branch
+      new_branch && project.repository.exists? &&
+        new_branch != project.default_branch
     end
   end
 end
