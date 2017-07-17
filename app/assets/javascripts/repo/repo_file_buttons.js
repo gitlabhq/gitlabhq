@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import Store from './repo_store'
-import Helper from './repo_helper'
-import RepoMiniMixin from './repo_mini_mixin'
+import Vue from 'vue';
+import Store from './repo_store';
+import Helper from './repo_helper';
+import RepoMiniMixin from './repo_mini_mixin';
 
 export default class RepoSidebar {
   constructor(url) {
@@ -33,7 +33,7 @@ export default class RepoSidebar {
       computed: {
 
         editableBorder() {
-          return this.editMode ? '1px solid #1F78D1' :'1px solid #f0f0f0';
+          return this.editMode ? '1px solid #1F78D1' : '1px solid #f0f0f0';
         },
 
         canPreview() {
@@ -56,7 +56,7 @@ export default class RepoSidebar {
       methods: {
         rawPreviewToggle() {
           Helper.setCurrentFileRawOrPreview();
-        }
+        },
       },
     });
   }

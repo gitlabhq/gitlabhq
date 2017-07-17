@@ -70,12 +70,14 @@ const RepoHelper = {
 
   setActiveFile(file) {
     // don't load the file that is already loaded
-    if(file.url === Store.activeFile.url) return;
+    if (file.url === Store.activeFile.url) return;
 
     Store.openedFiles = Store.openedFiles.map((openedFile, i) => {
-      openedFile.active = file.url === openedFile.url;
-      if(openedFile.active) {
-        Store.activeFile = openedFile;
+      const activeFile = openedFile;
+
+      activeFile.active = file.url === activeFile.url;
+      if (activeFile.active) {
+        Store.activeFile = activeFile;
         Store.activeFileIndex = i;
       }
       return activeFile;
@@ -86,7 +88,7 @@ const RepoHelper = {
     // can't get vue to listen to raw for some reason so this for now.
     Store.activeFileLabel = 'Raw';
 
-    if(file.binary) {
+    if (file.binary) {
       Store.blobRaw = file.base64;
     } else {
       Store.blobRaw = file.plain;
@@ -103,12 +105,13 @@ const RepoHelper = {
   },
 
   addToOpenedFiles(file) {
-    const openedFilesAlreadyExists = Store.openedFiles.some((openedFile) => {
-      return openedFile.url === file.url
-    });
-    if(!openedFilesAlreadyExists) {
-      file.changed = false;
-      Store.openedFiles.push(file);
+    const openFile = file;
+
+    const openedFilesAlreadyExists = Store.openedFiles
+      .some(openedFile => openedFile.url === openFile.url);
+    if (!openedFilesAlreadyExists) {
+      openFile.changed = false;
+      Store.openedFiles.push(openFile);
     }
   },
 
@@ -143,7 +146,7 @@ const RepoHelper = {
   },
 
   setActiveFileContents(contents) {
-    if(!Store.editMode) return;
+    if (!Store.editMode) return;
     Store.activeFile.newContent = contents;
     Store.activeFile.changed = Store.activeFile.plain !== Store.activeFile.newContent;
     Store.openedFiles[Store.activeFileIndex].changed = Store.activeFile.changed;
@@ -180,7 +183,8 @@ const RepoHelper = {
   },
 
     // may be tree or file.
-  getContent(file) {
+  getContent(treeOrFile) {
+    let file = treeOrFile;
     // don't load the same active file. That's silly.
     // if(file && file.url === this.activeFile.url) return;
     const loadingData = this.setLoading(true);
@@ -206,7 +210,7 @@ const RepoHelper = {
           Store.blobRaw = data.plain;
           data.binary = false;
         }
-        if(!file.url) {
+        if (!file.url) {
           file.url = location.pathname;
         }
         data.url = file.url;

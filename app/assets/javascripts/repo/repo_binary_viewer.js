@@ -27,7 +27,7 @@ export default class RepoBinaryViewer {
 
       watch: {
         blobRaw() {
-          if(this.isMarkdown()) {
+          if (this.isMarkdown()) {
             this.binaryTypes.markdown = true;
             this.activeFile.raw = false;
             // counts as binaryish so we use the binary viewer in this case.

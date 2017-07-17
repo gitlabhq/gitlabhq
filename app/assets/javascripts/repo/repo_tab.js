@@ -20,10 +20,10 @@ const RepoTab = {
     changedClass() {
       const tabChangedObj = {
         'fa-times': !this.tab.changed,
-        'fa-circle': this.tab.changed
+        'fa-circle': this.tab.changed,
       };
-      return tabChangedObj
-    }
+      return tabChangedObj;
+    },
   },
 
   methods: {
@@ -32,7 +32,7 @@ const RepoTab = {
     },
 
     xClicked(file) {
-      if(file.changed) return;
+      if (file.changed) return;
       RepoHelper.removeFromOpenedFiles(file);
     },
   },

@@ -10,18 +10,11 @@ export default class RepoEditor {
   }
 
   addMonacoEvents() {
-    this.monacoEditor.onMouseUp(this.onMonacoEditorMouseUp.bind(this));
+    this.monacoEditor.onMouseUp(RepoEditor.onMonacoEditorMouseUp);
     this.monacoEditor.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
   }
 
-  static onMonacoEditorMouseUp(e) {
-    if (e.target.element.className === 'line-numbers') {
-      location.hash = `L${e.target.position.lineNumber}`;
-      Store.activeLine = e.target.position.lineNumber;
-    }
-  }
-
-  onMonacoEditorKeysPressed(e) {
+  onMonacoEditorKeysPressed() {
     Helper.setActiveFileContents(this.monacoEditor.getValue());
   }
 
@@ -63,7 +56,7 @@ export default class RepoEditor {
 
       methods: {
         showHide() {
-          if(!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
+          if (!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
             self.el.style.display = 'none';
           } else {
             self.el.style.display = 'inline-block';
@@ -80,17 +73,16 @@ export default class RepoEditor {
         },
 
         editMode() {
-          if(this.editMode) {
+          if (this.editMode) {
             document.querySelector('.panel-right').classList.add('edit-mode');
             self.monacoEditor.updateOptions({
-              readOnly: false
+              readOnly: false,
             });
-
           } else {
             document.querySelector('.panel-right').classList.remove('edit-mode');
 
             self.monacoEditor.updateOptions({
-              readOnly: true
+              readOnly: true,
             });
           }
         },
@@ -114,7 +106,7 @@ export default class RepoEditor {
         blobRaw() {
           this.showHide();
 
-          if(!this.isTree) {
+          if (!this.isTree) {
             // kill the current model;
             self.monacoEditor.setModel(null);
             // then create the new one
@@ -129,5 +121,12 @@ export default class RepoEditor {
         },
       },
     });
+  }
+
+  static onMonacoEditorMouseUp(e) {
+    if (e.target.element.className === 'line-numbers') {
+      location.hash = `L${e.target.position.lineNumber}`;
+      Store.activeLine = e.target.position.lineNumber;
+    }
   }
 }

@@ -1,7 +1,5 @@
-import Service from './repo_service'
-import Helper from './repo_helper'
-import Vue from 'vue'
-import Store from './repo_store'
+import Vue from 'vue';
+import Store from './repo_store';
 
 export default class RepoEditButton {
   constructor() {
@@ -19,14 +17,14 @@ export default class RepoEditButton {
         },
 
         buttonIcon() {
-          return this.editMode ? [] : ['fa', 'fa-pencil']; 
-        }
+          return this.editMode ? [] : ['fa', 'fa-pencil'];
+        },
       },
       methods: {
         editClicked() {
           this.editMode = !this.editMode;
-        }
-      }
+        },
+      },
     });
   }
 }

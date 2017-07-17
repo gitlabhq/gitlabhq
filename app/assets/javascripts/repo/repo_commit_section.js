@@ -1,6 +1,5 @@
-import Helper from './repo_helper'
-import Vue from 'vue'
-import Store from './repo_store'
+import Vue from 'vue';
+import Store from './repo_store';
 
 export default class RepoCommitSection {
   constructor() {
@@ -16,13 +15,11 @@ export default class RepoCommitSection {
       computed: {
         changedFiles() {
           const changedFileList = this.openedFiles
-          .filter((file) => {
-            return file.changed;
-          });
-          console.log('changedFileList',changedFileList);
+          .filter(file => file.changed);
+          console.log('changedFileList', changedFileList);
           return changedFileList;
         },
-      }
+      },
     });
   }
 }

@@ -24,7 +24,7 @@ const RepoStore = {
     url: '',
     raw: false,
     newContent: '',
-    changed: false
+    changed: false,
   },
   activeFileIndex: 0,
   activeLine: 0,
