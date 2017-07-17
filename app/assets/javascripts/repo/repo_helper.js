@@ -14,13 +14,19 @@ const RepoHelper = {
   ? window.performance
   : Date,
 
-  getLanguagesForMimeType(mimetypeNeedle) {
-    const langs = window.monaco.languages.getLanguages();
-    langs.map((lang) => {
-      const hasLang = lang.mimetypes.some(mimetype => mimetypeNeedle === mimetype);
-      if (hasLang) return lang.id;
-      return lang;
-    });
+  getLanguageForFile(file, langs) {
+    const ext = `.${file.name.split('.').pop()}`;
+    let foundLang;
+    if(langs.some((l) => {
+      if(l.extensions && l.extensions.indexOf(ext) > -1) {
+        foundLang = l;
+        return true;
+      }
+      return false;
+    })) {
+      return foundLang.id
+    }
+    return 'plain';
   },
 
   blobURLtoParent(url) {

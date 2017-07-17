@@ -16,7 +16,6 @@ export default class RepoCommitSection {
         changedFiles() {
           const changedFileList = this.openedFiles
           .filter(file => file.changed);
-          console.log('changedFileList', changedFileList);
           return changedFileList;
         },
       },

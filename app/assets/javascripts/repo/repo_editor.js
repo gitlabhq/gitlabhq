@@ -32,7 +32,6 @@ export default class RepoEditor {
 
       Helper.monacoInstance = monaco;
       this.initVue();
-      monaco.languages.getLanguages();
       this.addMonacoEvents();
     });
   }
@@ -113,10 +112,13 @@ export default class RepoEditor {
             self.monacoEditor.setModel(
               monaco.editor.createModel(
                 this.blobRaw,
-                this.activeFile.mime_type,
+                Helper
+                  .getLanguageForFile(
+                    this.activeFile,
+                    monaco.languages.getLanguages()
+                  ),
               ),
             );
-            console.log(monaco.editor.getModels());
           }
         },
       },
