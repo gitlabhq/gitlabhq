@@ -49,7 +49,6 @@ module Gitlab
       sent_notifications
       services
       snippets
-      system
       teams
       u
       unicorn_test
