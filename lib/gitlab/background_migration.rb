@@ -27,9 +27,7 @@ module Gitlab
 
           begin
             perform(migration_class, migration_args, retries: 3) if job.delete
-          rescue StandardError
-            next
-          rescue Exception
+          rescue Exception # rubocop:disable Lint/RescueException
             BackgroundMigrationWorker # enqueue this migration again
               .perform_async(migration_class, migration_args)
 
@@ -40,25 +38,15 @@ module Gitlab
     end
 
     ##
-    # Performs a background migration. In case of `StandardError` being caught
-    # this will retry a migration up to three times.
+    # Performs a background migration.
     #
     # class_name - The name of the background migration class as defined in the
     #              Gitlab::BackgroundMigration namespace.
     #
     # arguments - The arguments to pass to the background migration's "perform"
     #             method.
-    def self.perform(class_name, arguments, retries: 0)
+    def self.perform(class_name, arguments)
       const_get(class_name).new.perform(*arguments)
-    rescue StandardError
-      if retries > 0
-        Rails.logger.warn("Retrying background migration #{class_name} " \
-                          "with #{arguments}")
-        retries -= 1
-        retry
-      else
-        raise
-      end
     end
   end
 end

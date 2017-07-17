@@ -62,32 +62,14 @@ describe Gitlab::BackgroundMigration do
           allow(queue[1]).to receive(:delete).and_return(true)
         end
 
-        context 'when standard error is being raised' do
-          it 'recovers from an exception and retries the migration' do
-            expect(migration).to receive(:perform).with(10, 20)
-              .and_raise(StandardError, 'Migration error')
-              .exactly(4).times.ordered
-            expect(migration).to receive(:perform).with(20, 30)
-              .once.ordered
-            expect(Rails.logger).to receive(:warn)
-              .with(/Retrying background migration/).exactly(3).times
+        it 'enqueues the migration again and re-raises the error' do
+          allow(migration).to receive(:perform).with(10, 20)
+            .and_raise(Exception, 'Migration error').once
 
-            described_class.steal('Foo')
-          end
-        end
+          expect(BackgroundMigrationWorker).to receive(:perform_async)
+            .with('Foo', [10, 20]).once
 
-        context 'when top level exception is being raised' do
-          it 'enqueues the migration again and reraises the error' do
-            allow(migration).to receive(:perform).with(10, 20)
-              .and_raise(Exception, 'Migration error').once
-
-            expect(BackgroundMigrationWorker).to receive(:perform_async)
-              .with('Foo', [10, 20]).once
-
-            expect(Rails.logger).not_to receive(:warn)
-            expect { described_class.steal('Foo') }
-              .to raise_error(Exception)
-          end
+          expect { described_class.steal('Foo') }.to raise_error(Exception)
         end
       end
     end
@@ -131,42 +113,10 @@ describe Gitlab::BackgroundMigration do
       stub_const("#{described_class.name}::Foo", migration)
     end
 
-    context 'when retries count is not specified' do
-      it 'performs a background migration' do
-        expect(migration).to receive(:perform).with(10, 20).once
+    it 'performs a background migration' do
+      expect(migration).to receive(:perform).with(10, 20).once
 
-        described_class.perform('Foo', [10, 20])
-      end
-    end
-
-    context 'when retries count is zero' do
-      it 'perform a background migration only once' do
-        expect(migration).to receive(:perform).with(10, 20)
-          .and_raise(StandardError).once
-
-        expect { described_class.perform('Foo', [10, 20], retries: 0) }
-          .to raise_error(StandardError)
-      end
-    end
-
-    context 'when retries count is one' do
-      it 'retries a background migration when needed' do
-        expect(migration).to receive(:perform).with(10, 20)
-          .and_raise(StandardError).twice
-
-        expect { described_class.perform('Foo', [10, 20], retries: 1) }
-          .to raise_error(StandardError)
-      end
-    end
-
-    context 'when retries count is larger than zero' do
-      it 'retries a background migration when needed' do
-        expect(migration).to receive(:perform).with(10, 20)
-          .and_raise(StandardError).exactly(4).times
-
-        expect { described_class.perform('Foo', [10, 20], retries: 3) }
-          .to raise_error(StandardError)
-      end
+      described_class.perform('Foo', [10, 20])
     end
   end
 end
