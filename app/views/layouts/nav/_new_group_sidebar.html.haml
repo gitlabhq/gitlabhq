@@ -6,15 +6,15 @@
       = @group.name
   %ul.sidebar-top-level-items
     = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
-      = link_to group_path(@group), title: 'Home' do
+      = link_to group_path(@group), title: 'About group' do
         %span
-          Group
+          About
 
       %ul.sidebar-sub-level-items
         = nav_link(path: ['groups#show', 'groups#subgroups'], html_options: { class: 'home' }) do
-          = link_to group_path(@group), title: 'Group Home' do
+          = link_to group_path(@group), title: 'Group details' do
             %span
-              Home
+              Details
 
         = nav_link(path: 'groups#activity') do
           = link_to activity_group_path(@group), title: 'Activity' do
