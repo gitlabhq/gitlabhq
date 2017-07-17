@@ -320,5 +320,19 @@ describe Ci::CreatePipelineService, :services do
         end.not_to change { Environment.count }
       end
     end
+
+    context 'when builds with auto-retries are configured' do
+      before do
+        config = YAML.dump(rspec: { script: 'rspec', retry: 3 })
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'correctly creates builds with auto-retry value configured' do
+        pipeline = execute_service
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 3
+      end
+    end
   end
 end
