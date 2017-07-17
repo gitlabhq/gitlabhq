@@ -50,10 +50,13 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       if result[:status] == :success
         flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
+
         format.html do
           redirect_to(edit_project_path(@project))
         end
       else
+        flash[:alert] = result[:message]
+
         format.html { render 'edit' }
       end
 
@@ -92,7 +95,7 @@ class ProjectsController < Projects::ApplicationController
 
   def show
     if @project.import_in_progress?
-      redirect_to namespace_project_import_path(@project.namespace, @project)
+      redirect_to project_import_path(@project)
       return
     end
 

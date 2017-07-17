@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.8'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
-gem 'bootsnap', '~> 1.1'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
@@ -13,7 +12,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.0.0'
 
 # Supported DBs
-gem 'mysql2', '~> 0.3.16', group: :mysql
+gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.25.1.1'
@@ -92,7 +91,7 @@ gem 'carrierwave', '~> 1.1'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 0.9'
+gem 'fog-aws', '~> 1.4'
 gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
@@ -251,11 +250,10 @@ gem 'jquery-rails', '~> 4.1.0'
 gem 'request_store', '~> 1.3'
 gem 'select2-rails', '~> 3.5.9'
 gem 'virtus', '~> 1.0.1'
-gem 'net-ssh', '~> 3.0.1'
 gem 'base32', '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.4.0'
+gem 'sentry-raven', '~> 2.5.3'
 
 gem 'premailer-rails', '~> 1.9.7'
 
@@ -336,7 +334,7 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.47.1', require: false
   gem 'rubocop-rspec', '~> 1.15.0', require: false
-  gem 'scss_lint', '~> 0.47.0', require: false
+  gem 'scss_lint', '~> 0.54.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false
@@ -386,7 +384,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.9.0'
+gem 'gitaly', '~> 0.14.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

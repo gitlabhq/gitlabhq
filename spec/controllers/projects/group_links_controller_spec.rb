@@ -34,7 +34,7 @@ describe Projects::GroupLinksController do
 
       it 'redirects to project group links page' do
         expect(response).to redirect_to(
-          namespace_project_settings_members_path(project.namespace, project)
+          project_project_members_path(project)
         )
       end
     end
@@ -65,7 +65,7 @@ describe Projects::GroupLinksController do
 
       it 'redirects to project group links page' do
         expect(response).to redirect_to(
-          namespace_project_settings_members_path(project.namespace, project)
+          project_project_members_path(project)
         )
       end
     end
@@ -79,7 +79,7 @@ describe Projects::GroupLinksController do
 
       it 'redirects to project group links page' do
         expect(response).to redirect_to(
-          namespace_project_settings_members_path(project.namespace, project)
+          project_project_members_path(project)
         )
         expect(flash[:alert]).to eq('Please select a group.')
       end

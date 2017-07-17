@@ -63,6 +63,14 @@ describe Namespace, models: true do
     it { is_expected.to respond_to(:has_parent?) }
   end
 
+  describe 'inclusions' do
+    it { is_expected.to include_module(Gitlab::VisibilityLevel) }
+  end
+
+  describe '#visibility_level_field' do
+    it { expect(namespace.visibility_level_field).to eq(:visibility_level) }
+  end
+
   describe '#to_param' do
     it { expect(namespace.to_param).to eq(namespace.full_path) }
   end

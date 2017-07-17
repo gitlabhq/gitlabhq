@@ -1,5 +1,4 @@
 require 'constraints/project_url_constrainer'
-require 'gitlab/routes/legacy_builds'
 
 resources :projects, only: [:index, :new, :create]
 
@@ -253,7 +252,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      Gitlab::Routes::LegacyBuilds.new(self).draw
+      draw :legacy_builds
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
@@ -387,7 +386,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
       namespace :settings do
-        resource :members, only: [:show]
+        get :members, to: redirect('/%{namespace_id}/%{project_id}/project_members')
         resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository

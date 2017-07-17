@@ -32,7 +32,6 @@ export default {
       state: store.state,
       visibility: 'available',
       isLoading: false,
-      isLoadingFolderContent: false,
       cssContainerClass: environmentsData.cssClass,
       endpoint: environmentsData.environmentsDataEndpoint,
       canCreateDeployment: environmentsData.canCreateDeployment,
@@ -86,9 +85,6 @@ export default {
       errorCallback: this.errorCallback,
       notificationCallback: (isMakingRequest) => {
         this.isMakingRequest = isMakingRequest;
-
-        // We need to verify if any folder is open to also fecth it
-        this.openFolders = this.store.getOpenFolders();
       },
     });
 
@@ -119,7 +115,7 @@ export default {
       this.store.toggleFolder(folder);
 
       if (!folder.isOpen) {
-        this.fetchChildEnvironments(folder, folderUrl);
+        this.fetchChildEnvironments(folder, folderUrl, true);
       }
     },
 
@@ -147,19 +143,17 @@ export default {
         .catch(this.errorCallback);
     },
 
-    fetchChildEnvironments(folder, folderUrl) {
-      this.isLoadingFolderContent = true;
+    fetchChildEnvironments(folder, folderUrl, showLoader = false) {
+      this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
 
       this.service.getFolderContent(folderUrl)
         .then(resp => resp.json())
-        .then((response) => {
-          this.store.setfolderContent(folder, response.environments);
-          this.isLoadingFolderContent = false;
-        })
+        .then(response => this.store.setfolderContent(folder, response.environments))
+        .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
         .catch(() => {
-          this.isLoadingFolderContent = false;
           // eslint-disable-next-line no-new
           new Flash('An error occurred while fetching the environments.');
+          this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false);
         });
     },
 
@@ -176,13 +170,13 @@ export default {
     successCallback(resp) {
       this.saveData(resp);
 
-      // If folders are open while polling we need to open them again
-      if (this.openFolders.length) {
-        this.openFolders.map((folder) => {
+      // We need to verify if any folder is open to also update it
+      const openFolders = this.store.getOpenFolders();
+      if (openFolders.length) {
+        openFolders.forEach((folder) => {
           // TODO - Move this to the backend
           const folderUrl = `${window.location.pathname}/folders/${folder.folderName}`;
 
-          this.store.updateFolder(folder, 'isOpen', true);
           return this.fetchChildEnvironments(folder, folderUrl);
         });
       }
@@ -267,7 +261,7 @@ export default {
           :environments="state.environments"
           :can-create-deployment="canCreateDeploymentParsed"
           :can-read-environment="canReadEnvironmentParsed"
-          :is-loading-folder-content="isLoadingFolderContent" />
+          />
       </div>
 
       <table-pagination

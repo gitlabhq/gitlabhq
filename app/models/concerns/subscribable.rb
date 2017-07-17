@@ -9,7 +9,7 @@ module Subscribable
   extend ActiveSupport::Concern
 
   included do
-    has_many :subscriptions, dependent: :destroy, as: :subscribable
+    has_many :subscriptions, dependent: :destroy, as: :subscribable # rubocop:disable Cop/ActiveRecordDependent
   end
 
   def subscribed?(user, project = nil)

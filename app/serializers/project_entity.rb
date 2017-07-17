@@ -5,7 +5,7 @@ class ProjectEntity < Grape::Entity
   expose :name
 
   expose :full_path do |project|
-    namespace_project_path(project.namespace, project)
+    project_path(project)
   end
 
   expose :full_name do |project|

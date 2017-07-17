@@ -6,8 +6,8 @@ feature 'Visibility settings', feature: true, js: true do
 
   context 'as owner' do
     before do
-      gitlab_sign_in(user)
-      visit edit_namespace_project_path(project.namespace, project)
+      sign_in(user)
+      visit edit_project_path(project)
     end
 
     scenario 'project visibility select is available' do
@@ -32,8 +32,8 @@ feature 'Visibility settings', feature: true, js: true do
 
     before do
       project.team << [master_user, :master]
-      gitlab_sign_in(master_user)
-      visit edit_namespace_project_path(project.namespace, project)
+      sign_in(master_user)
+      visit edit_project_path(project)
     end
 
     scenario 'project visibility is locked' do

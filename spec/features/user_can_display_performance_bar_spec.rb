@@ -33,22 +33,24 @@ describe 'User can display performance bar', :js do
     end
   end
 
+  let(:group) { create(:group) }
+
   context 'when user is logged-out' do
     before do
       visit root_path
     end
 
-    context 'when the gitlab_performance_bar feature is disabled' do
+    context 'when the performance_bar feature is disabled' do
       before do
-        Feature.disable('gitlab_performance_bar')
+        stub_application_setting(performance_bar_allowed_group_id: nil)
       end
 
       it_behaves_like 'performance bar is disabled'
     end
 
-    context 'when the gitlab_performance_bar feature is enabled' do
+    context 'when the performance_bar feature is enabled' do
       before do
-        Feature.enable('gitlab_performance_bar')
+        stub_application_setting(performance_bar_allowed_group_id: group.id)
       end
 
       it_behaves_like 'performance bar is disabled'
@@ -57,22 +59,25 @@ describe 'User can display performance bar', :js do
 
   context 'when user is logged-in' do
     before do
-      gitlab_sign_in(create(:user))
+      user = create(:user)
+
+      sign_in(user)
+      group.add_guest(user)
 
       visit root_path
     end
 
-    context 'when the gitlab_performance_bar feature is disabled' do
+    context 'when the performance_bar feature is disabled' do
       before do
-        Feature.disable('gitlab_performance_bar')
+        stub_application_setting(performance_bar_allowed_group_id: nil)
       end
 
       it_behaves_like 'performance bar is disabled'
     end
 
-    context 'when the gitlab_performance_bar feature is enabled' do
+    context 'when the performance_bar feature is enabled' do
       before do
-        Feature.enable('gitlab_performance_bar')
+        stub_application_setting(performance_bar_allowed_group_id: group.id)
       end
 
       it_behaves_like 'performance bar is enabled'

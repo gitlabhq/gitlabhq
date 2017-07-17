@@ -4,13 +4,14 @@
 import 'vendor/jquery.waitforimages';
 import '~/lib/utils/text_utility';
 import './flash';
-import './task_list';
+import TaskList from './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
+import IssuablesHelper from './helpers/issuables_helper';
 
 class Issue {
   constructor() {
     if ($('a.btn-close').length) {
-      this.taskList = new gl.TaskList({
+      this.taskList = new TaskList({
         dataType: 'issue',
         fieldName: 'description',
         selector: '.detail-page-description',
@@ -28,6 +29,11 @@ class Issue {
     Issue.initMergeRequests();
     Issue.initRelatedBranches();
 
+    this.closeButtons = $('a.btn-close');
+    this.reopenButtons = $('a.btn-reopen');
+
+    this.initCloseReopenReport();
+
     if (Issue.createMrDropdownWrap) {
       this.createMergeRequestDropdown = new CreateMergeRequestDropdown(Issue.createMrDropdownWrap);
     }
@@ -35,13 +41,8 @@ class Issue {
 
   initIssueBtnEventListeners() {
     const issueFailMessage = 'Unable to update this issue at this time.';
-    const closeButtons = $('a.btn-close');
-    const isClosedBadge = $('div.status-box-closed');
-    const isOpenBadge = $('div.status-box-open');
-    const projectIssuesCounter = $('.issue_counter');
-    const reopenButtons = $('a.btn-reopen');
 
-    return closeButtons.add(reopenButtons).on('click', (e) => {
+    return $(document).on('click', 'a.btn-close, a.btn-reopen', (e) => {
       var $button, shouldSubmit, url;
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -50,7 +51,9 @@ class Issue {
       if (shouldSubmit) {
         Issue.submitNoteForm($button.closest('form'));
       }
-      $button.prop('disabled', true);
+
+      this.disableCloseReopenButton($button);
+
       url = $button.attr('href');
       return $.ajax({
         type: 'PUT',
@@ -58,14 +61,18 @@ class Issue {
       })
       .fail(() => new Flash(issueFailMessage))
       .done((data) => {
+        const isClosedBadge = $('div.status-box-closed');
+        const isOpenBadge = $('div.status-box-open');
+        const projectIssuesCounter = $('.issue_counter');
+
         if ('id' in data) {
           $(document).trigger('issuable:change');
 
           const isClosed = $button.hasClass('btn-close');
-          closeButtons.toggleClass('hidden', isClosed);
-          reopenButtons.toggleClass('hidden', !isClosed);
           isClosedBadge.toggleClass('hidden', !isClosed);
           isOpenBadge.toggleClass('hidden', isClosed);
+
+          this.toggleCloseReopenButton(isClosed);
 
           let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));
           numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
@@ -83,10 +90,32 @@ class Issue {
         } else {
           new Flash(issueFailMessage);
         }
-
-        $button.prop('disabled', false);
+      })
+      .then(() => {
+        this.disableCloseReopenButton($button, false);
       });
     });
+  }
+
+  initCloseReopenReport() {
+    this.closeReopenReportToggle = IssuablesHelper.initCloseReopenReport();
+
+    if (this.closeButtons) this.closeButtons = this.closeButtons.not('.issuable-close-button');
+    if (this.reopenButtons) this.reopenButtons = this.reopenButtons.not('.issuable-close-button');
+  }
+
+  disableCloseReopenButton($button, shouldDisable) {
+    if (this.closeReopenReportToggle) {
+      this.closeReopenReportToggle.setDisable(shouldDisable);
+    } else {
+      $button.prop('disabled', shouldDisable);
+    }
+  }
+
+  toggleCloseReopenButton(isClosed) {
+    if (this.closeReopenReportToggle) this.closeReopenReportToggle.updateButton(isClosed);
+    this.closeButtons.toggleClass('hidden', isClosed);
+    this.reopenButtons.toggleClass('hidden', !isClosed);
   }
 
   static submitNoteForm(form) {

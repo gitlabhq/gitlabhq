@@ -8,7 +8,8 @@ module InternalId
 
   def set_iid
     if iid.blank?
-      records = project.send(self.class.name.tableize)
+      parent = project || group
+      records = parent.send(self.class.name.tableize)
       records = records.with_deleted if self.paranoid?
       max_iid = records.maximum(:iid)
 

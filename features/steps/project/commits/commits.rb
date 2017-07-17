@@ -33,7 +33,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I click on commit link' do
-    visit namespace_project_commit_path(@project.namespace, @project, sample_commit.id)
+    visit project_commit_path(@project, sample_commit.id)
   end
 
   step 'I see commit info' do
@@ -73,7 +73,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I visit commits list page for feature branch' do
-    visit namespace_project_commits_path(@project.namespace, @project, 'feature', { limit: 5 })
+    visit project_commits_path(@project, 'feature', { limit: 5 })
   end
 
   step 'I see feature branch commits' do
@@ -119,7 +119,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'I should see button to the merge request' do
     merge_request = MergeRequest.find_by(title: 'Feature')
-    expect(page).to have_link "View open merge request", href: namespace_project_merge_request_path(@project.namespace, @project, merge_request)
+    expect(page).to have_link "View open merge request", href: project_merge_request_path(@project, merge_request)
   end
 
   step 'I see breadcrumb links' do
@@ -135,7 +135,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I visit a commit with an image that changed' do
-    visit namespace_project_commit_path(@project.namespace, @project, sample_image_commit.id)
+    visit project_commit_path(@project, sample_image_commit.id)
   end
 
   step 'The diff links to both the previous and current image' do

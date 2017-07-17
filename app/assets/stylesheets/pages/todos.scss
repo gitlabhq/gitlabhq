@@ -81,7 +81,7 @@
   .todo-title {
     display: flex;
 
-    & > .title-item {
+    > .title-item {
       -webkit-flex: 0 0 auto;
       flex: 0 0 auto;
       margin: 0 2px;

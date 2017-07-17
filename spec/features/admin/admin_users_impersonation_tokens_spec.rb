@@ -8,12 +8,12 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
     find(".table.active-tokens")
   end
 
-  def inactive_impersonation_tokens
-    find(".table.inactive-tokens")
+  def no_personal_access_tokens_message
+    find(".settings-message")
   end
 
   before do
-    gitlab_sign_in(admin)
+    sign_in(admin)
   end
 
   describe "token creation" do
@@ -60,15 +60,17 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
 
       click_on "Revoke"
 
-      expect(inactive_impersonation_tokens).to have_text(impersonation_token.name)
+      expect(page).to have_selector(".settings-message")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active Impersonation Tokens.")
     end
 
-    it "moves expired tokens to the 'inactive' section" do
+    it "removes expired tokens from 'active' section" do
       impersonation_token.update(expires_at: 5.days.ago)
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
-      expect(inactive_impersonation_tokens).to have_text(impersonation_token.name)
+      expect(page).to have_selector(".settings-message")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active Impersonation Tokens.")
     end
   end
 end

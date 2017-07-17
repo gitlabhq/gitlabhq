@@ -21,7 +21,7 @@ describe 'cycle analytics events', api: true do
     end
 
     it 'lists the issue events' do
-      get namespace_project_cycle_analytics_issue_path(project.namespace, project, format: :json)
+      get project_cycle_analytics_issue_path(project, format: :json)
 
       first_issue_iid = project.issues.sort(:created_desc).pluck(:iid).first.to_s
 
@@ -30,7 +30,7 @@ describe 'cycle analytics events', api: true do
     end
 
     it 'lists the plan events' do
-      get namespace_project_cycle_analytics_plan_path(project.namespace, project, format: :json)
+      get project_cycle_analytics_plan_path(project, format: :json)
 
       first_mr_short_sha = project.merge_requests.sort(:created_asc).first.commits.first.short_id
 
@@ -39,7 +39,7 @@ describe 'cycle analytics events', api: true do
     end
 
     it 'lists the code events' do
-      get namespace_project_cycle_analytics_code_path(project.namespace, project, format: :json)
+      get project_cycle_analytics_code_path(project, format: :json)
 
       expect(json_response['events']).not_to be_empty
 
@@ -49,14 +49,14 @@ describe 'cycle analytics events', api: true do
     end
 
     it 'lists the test events' do
-      get namespace_project_cycle_analytics_test_path(project.namespace, project, format: :json)
+      get project_cycle_analytics_test_path(project, format: :json)
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['date']).not_to be_empty
     end
 
     it 'lists the review events' do
-      get namespace_project_cycle_analytics_review_path(project.namespace, project, format: :json)
+      get project_cycle_analytics_review_path(project, format: :json)
 
       first_mr_iid = project.merge_requests.sort(:created_desc).pluck(:iid).first.to_s
 
@@ -65,14 +65,14 @@ describe 'cycle analytics events', api: true do
     end
 
     it 'lists the staging events' do
-      get namespace_project_cycle_analytics_staging_path(project.namespace, project, format: :json)
+      get project_cycle_analytics_staging_path(project, format: :json)
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['date']).not_to be_empty
     end
 
     it 'lists the production events' do
-      get namespace_project_cycle_analytics_production_path(project.namespace, project, format: :json)
+      get project_cycle_analytics_production_path(project, format: :json)
 
       first_issue_iid = project.issues.sort(:created_desc).pluck(:iid).first.to_s
 
@@ -84,7 +84,7 @@ describe 'cycle analytics events', api: true do
       it 'lists the test events' do
         branch = project.merge_requests.first.source_branch
 
-        get namespace_project_cycle_analytics_test_path(project.namespace, project, format: :json, branch: branch)
+        get project_cycle_analytics_test_path(project, format: :json, branch: branch)
 
         expect(json_response['events']).not_to be_empty
         expect(json_response['events'].first['date']).not_to be_empty
@@ -97,19 +97,19 @@ describe 'cycle analytics events', api: true do
       end
 
       it 'does not list the test events' do
-        get namespace_project_cycle_analytics_test_path(project.namespace, project, format: :json)
+        get project_cycle_analytics_test_path(project, format: :json)
 
         expect(response).to have_http_status(:not_found)
       end
 
       it 'does not list the staging events' do
-        get namespace_project_cycle_analytics_staging_path(project.namespace, project, format: :json)
+        get project_cycle_analytics_staging_path(project, format: :json)
 
         expect(response).to have_http_status(:not_found)
       end
 
       it 'lists the issue events' do
-        get namespace_project_cycle_analytics_issue_path(project.namespace, project, format: :json)
+        get project_cycle_analytics_issue_path(project, format: :json)
 
         expect(response).to have_http_status(:ok)
       end

@@ -7,8 +7,8 @@ feature 'Merge request awards', js: true, feature: true do
 
   describe 'logged in' do
     before do
-      gitlab_sign_in(user)
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      sign_in(user)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'adds award to merge request' do
@@ -16,7 +16,7 @@ feature 'Merge request awards', js: true, feature: true do
       expect(page).to have_selector('.js-emoji-btn.active')
       expect(first('.js-emoji-btn')).to have_content '1'
 
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
       expect(first('.js-emoji-btn')).to have_content '1'
     end
 
@@ -25,7 +25,7 @@ feature 'Merge request awards', js: true, feature: true do
       find('.js-emoji-btn.active').click
       expect(first('.js-emoji-btn')).to have_content '0'
 
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
       expect(first('.js-emoji-btn')).to have_content '0'
     end
 
@@ -39,7 +39,7 @@ feature 'Merge request awards', js: true, feature: true do
 
   describe 'logged out' do
     before do
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'does not see award menu button' do

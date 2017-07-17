@@ -6,7 +6,7 @@ describe 'Copy as GFM', feature: true, js: true do
   include ActionView::Helpers::JavaScriptHelper
 
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe 'Copying rendered GFM' do
@@ -16,7 +16,7 @@ describe 'Copy as GFM', feature: true, js: true do
       # `markdown` helper expects a `@project` variable
       @project = @feat.project
 
-      visit namespace_project_issue_path(@project.namespace, @project, @feat.issue)
+      visit project_issue_path(@project, @feat.issue)
     end
 
     # The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert GitLab Flavored Markdown (GFM) to HTML.
@@ -121,13 +121,13 @@ describe 'Copy as GFM', feature: true, js: true do
         # full issue reference
         @feat.issue.to_reference(full: true),
         # issue URL
-        namespace_project_issue_url(@project.namespace, @project, @feat.issue),
+        project_issue_url(@project, @feat.issue),
         # issue URL with note anchor
-        namespace_project_issue_url(@project.namespace, @project, @feat.issue, anchor: 'note_123'),
+        project_issue_url(@project, @feat.issue, anchor: 'note_123'),
         # issue link
-        "[Issue](#{namespace_project_issue_url(@project.namespace, @project, @feat.issue)})",
+        "[Issue](#{project_issue_url(@project, @feat.issue)})",
         # issue link with note anchor
-        "[Issue](#{namespace_project_issue_url(@project.namespace, @project, @feat.issue, anchor: 'note_123')})"
+        "[Issue](#{project_issue_url(@project, @feat.issue, anchor: 'note_123')})"
       )
 
       verify(
@@ -466,7 +466,7 @@ describe 'Copy as GFM', feature: true, js: true do
 
     context 'from a diff' do
       before do
-        visit namespace_project_commit_path(project.namespace, project, sample_commit.id)
+        visit project_commit_path(project, sample_commit.id)
       end
 
       context 'selecting one word of text' do
@@ -507,7 +507,7 @@ describe 'Copy as GFM', feature: true, js: true do
 
     context 'from a blob' do
       before do
-        visit namespace_project_blob_path(project.namespace, project, File.join('master', 'files/ruby/popen.rb'))
+        visit project_blob_path(project, File.join('master', 'files/ruby/popen.rb'))
         wait_for_requests
       end
 
@@ -549,7 +549,7 @@ describe 'Copy as GFM', feature: true, js: true do
 
     context 'from a GFM code block' do
       before do
-        visit namespace_project_blob_path(project.namespace, project, File.join('markdown', 'doc/api/users.md'))
+        visit project_blob_path(project, File.join('markdown', 'doc/api/users.md'))
         wait_for_requests
       end
 

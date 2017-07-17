@@ -46,6 +46,8 @@ export default {
   },
   methods: {
     changePage(e) {
+      if (e.target.parentElement.classList.contains('disabled')) return;
+
       const text = e.target.innerText;
       const { totalPages, nextPage, previousPage } = this.pageInfo;
 
@@ -82,7 +84,9 @@ export default {
       const page = this.pageInfo.page;
       const items = [];
 
-      if (page > 1) items.push({ title: FIRST });
+      if (page > 1) {
+        items.push({ title: FIRST, first: true });
+      }
 
       if (page > 1) {
         items.push({ title: PREV, prev: true });
@@ -110,7 +114,9 @@ export default {
         items.push({ title: NEXT, next: true });
       }
 
-      if (total - page >= 1) items.push({ title: LAST, last: true });
+      if (total - page >= 1) {
+        items.push({ title: LAST, last: true });
+      }
 
       return items;
     },
@@ -124,13 +130,15 @@ export default {
         v-for="item in getItems"
         :class="{
           page: item.page,
-          prev: item.prev,
-          next: item.next,
+          'js-previous-button': item.prev,
+          'js-next-button': item.next,
+          'js-last-button': item.last,
+          'js-first-button': item.first,
           separator: item.separator,
           active: item.active,
           disabled: item.disabled
         }">
-        <a @click="changePage($event)">{{item.title}}</a>
+        <a @click.prevent="changePage($event)">{{item.title}}</a>
       </li>
     </ul>
   </div>

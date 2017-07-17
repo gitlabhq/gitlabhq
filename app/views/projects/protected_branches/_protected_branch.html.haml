@@ -1,22 +1,2 @@
-%tr.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
-  %td
-    %span.ref-name= protected_branch.name
-
-    - if @project.root_ref?(protected_branch.name)
-      %span.label.label-info.prepend-left-5 default
-  %td
-    - if protected_branch.wildcard?
-      - matching_branches = protected_branch.matching(repository.branches)
-      = link_to pluralize(matching_branches.count, "matching branch"), namespace_project_protected_branch_path(@project.namespace, @project, protected_branch)
-    - else
-      - if commit = protected_branch.commit
-        = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit-sha')
-        = time_ago_with_tooltip(commit.committed_date)
-      - else
-        (branch was removed from repository)
-
+= render layout: 'projects/protected_branches/shared/protected_branch', locals: { protected_branch: protected_branch } do
   = render partial: 'projects/protected_branches/update_protected_branch', locals: { protected_branch: protected_branch }
-
-  - if can_admin_project
-    %td
-      = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: 'btn btn-warning'

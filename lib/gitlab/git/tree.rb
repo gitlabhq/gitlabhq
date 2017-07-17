@@ -1,3 +1,5 @@
+# Gitaly note: JV: needs 1 RPC, migration is in progress.
+
 module Gitlab
   module Git
     class Tree
@@ -10,6 +12,8 @@ module Gitlab
         # Get list of tree objects
         # for repository based on commit sha and path
         # Uses rugged for raw objects
+        #
+        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/320
         def where(repository, sha, path = nil)
           path = nil if path == '' || path == '/'
 
@@ -39,6 +43,8 @@ module Gitlab
             )
           end
         end
+
+        private
 
         # Recursive search of tree id for path
         #
@@ -78,6 +84,10 @@ module Gitlab
 
       def name
         encode! @name
+      end
+
+      def path
+        encode! @path
       end
 
       def dir?

@@ -6,7 +6,7 @@ feature 'Creating a new project milestone', :feature, :js do
 
   before do
     login_as(user)
-    visit new_namespace_project_milestone_path(project.namespace, project)
+    visit new_project_milestone_path(project)
   end
 
   it 'description has autocomplete' do

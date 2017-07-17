@@ -35,8 +35,8 @@
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
-    display: block;
     @include set-visible;
+    display: block;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
@@ -184,13 +184,15 @@
 
 .dropdown-menu,
 .dropdown-menu-nav {
+  @include set-invisible;
   display: block;
   position: absolute;
-  width: 100%;
+  width: auto;
   top: 100%;
   left: 0;
   z-index: 9;
   min-width: 240px;
+  max-width: 500px;
   margin-top: 2px;
   margin-bottom: 0;
   font-size: 14px;
@@ -200,7 +202,6 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
-  @include set-invisible;
 
   @media (max-width: $screen-sm-min) {
     width: 100%;
@@ -295,9 +296,74 @@
   }
 }
 
-.filtered-search-box-input-container .dropdown-menu,
-.filtered-search-box-input-container .dropdown-menu-nav,
-.comment-type-dropdown .dropdown-menu {
+.droplab-dropdown {
+  .description {
+    display: inline-block;
+    white-space: normal;
+    margin-left: 5px;
+  }
+
+  .dropdown-toggle > i {
+    pointer-events: none;
+  }
+
+  li {
+    padding: $gl-btn-padding $gl-btn-padding 2px;
+    cursor: pointer;
+
+    > a,
+    > button {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      border-radius: 0;
+      text-overflow: inherit;
+      background-color: inherit;
+      color: inherit;
+      border: inherit;
+      text-align: left;
+
+      &:hover,
+      &:focus {
+        background-color: inherit;
+        color: inherit;
+      }
+
+      &.btn .fa:not(:last-child) {
+        margin-left: 5px;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      background-color: $dropdown-hover-color;
+      color: $white-light;
+    }
+
+    &.droplab-item-selected i {
+      visibility: visible;
+    }
+
+    .icon {
+      visibility: hidden;
+    }
+  }
+
+  .icon {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 2px;
+  }
+
+  .divider {
+    margin: 0 8px;
+    padding: 0;
+    border-top: $gray-darkest;
+  }
+}
+
+.droplab-dropdown .dropdown-menu,
+.droplab-dropdown .dropdown-menu-nav {
   display: none;
   opacity: 1;
   visibility: visible;
@@ -610,8 +676,8 @@
   }
 
   .pika-single {
-    position: relative!important;
-    top: 0!important;
+    position: relative !important;
+    top: 0 !important;
     border: 0;
     box-shadow: none;
   }

@@ -37,9 +37,6 @@ describe Issues::MoveService, services: true do
 
   describe '#execute' do
     shared_context 'issue move executed' do
-      let!(:milestone2) do
-        create(:milestone, project_id: new_project.id, title: 'v9.0')
-      end
       let!(:award_emoji) { create(:award_emoji, awardable: old_issue) }
 
       let!(:new_issue) { move_service.execute(old_issue, new_project) }
@@ -48,16 +45,68 @@ describe Issues::MoveService, services: true do
     context 'issue movable' do
       include_context 'user can move issue'
 
+      context 'move to new milestone'  do
+        let(:new_issue) { move_service.execute(old_issue, new_project) }
+
+        context 'project milestone' do
+          let!(:milestone2) do
+            create(:milestone, project_id: new_project.id, title: 'v9.0')
+          end
+
+          it 'assigns milestone to new issue' do
+            expect(new_issue.reload.milestone.title).to eq 'v9.0'
+            expect(new_issue.reload.milestone).to eq(milestone2)
+          end
+        end
+
+        context 'group milestones' do
+          let!(:group) { create(:group, :private) }
+          let!(:group_milestone_1) do
+            create(:milestone, group_id: group.id, title: 'v9.0_group')
+          end
+
+          before do
+            old_issue.update(milestone: group_milestone_1)
+            old_project.update(namespace: group)
+            new_project.update(namespace: group)
+
+            group.add_users([user], GroupMember::DEVELOPER)
+          end
+
+          context 'when moving to a project of the same group' do
+            it 'keeps the same group milestone' do
+              expect(new_issue.reload.project).to eq(new_project)
+              expect(new_issue.reload.milestone).to eq(group_milestone_1)
+            end
+          end
+
+          context 'when moving to a project of a different group' do
+            let!(:group_2) { create(:group, :private) }
+
+            let!(:group_milestone_2) do
+              create(:milestone, group_id: group_2.id, title: 'v9.0_group')
+            end
+
+            before do
+              old_issue.update(milestone: group_milestone_1)
+              new_project.update(namespace: group_2)
+
+              group_2.add_users([user], GroupMember::DEVELOPER)
+            end
+
+            it 'assigns to new group milestone of same title' do
+              expect(new_issue.reload.project).to eq(new_project)
+              expect(new_issue.reload.milestone).to eq(group_milestone_2)
+            end
+          end
+        end
+      end
+
       context 'generic issue' do
         include_context 'issue move executed'
 
         it 'creates a new issue in a new project' do
           expect(new_issue.project).to eq new_project
-        end
-
-        it 'assigns milestone to new issue' do
-          expect(new_issue.reload.milestone.title).to eq 'v9.0'
-          expect(new_issue.reload.milestone).to eq(milestone2)
         end
 
         it 'assign labels to new issue' do

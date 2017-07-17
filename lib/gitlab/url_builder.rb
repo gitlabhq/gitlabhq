@@ -1,6 +1,6 @@
 module Gitlab
   class UrlBuilder
-    include Gitlab::Routing.url_helpers
+    include Gitlab::Routing
     include GitlabRoutingHelper
     include ActionView::RecordIdentifier
 
@@ -23,9 +23,9 @@ module Gitlab
       when WikiPage
         wiki_page_url
       when ProjectSnippet
-        project_snippet_url(object)
+        project_snippet_url(object.project, object)
       when Snippet
-        personal_snippet_url(object)
+        snippet_url(object)
       else
         raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end
@@ -52,26 +52,24 @@ module Gitlab
         commit_url(id: object.commit_id, anchor: dom_id(object))
 
       elsif object.for_issue?
-        issue = Issue.find(object.noteable_id)
-        issue_url(issue, anchor: dom_id(object))
+        issue_url(object.noteable, anchor: dom_id(object))
 
       elsif object.for_merge_request?
-        merge_request = MergeRequest.find(object.noteable_id)
-        merge_request_url(merge_request, anchor: dom_id(object))
+        merge_request_url(object.noteable, anchor: dom_id(object))
 
       elsif object.for_snippet?
-        snippet = Snippet.find(object.noteable_id)
+        snippet = object.noteable
 
         if snippet.is_a?(PersonalSnippet)
           snippet_url(snippet, anchor: dom_id(object))
         else
-          project_snippet_url(snippet, anchor: dom_id(object))
+          project_snippet_url(snippet.project, snippet, anchor: dom_id(object))
         end
       end
     end
 
     def wiki_page_url
-      namespace_project_wiki_url(object.wiki.project.namespace, object.wiki.project, object.slug)
+      project_wiki_url(object.wiki.project, object.slug)
     end
   end
 end

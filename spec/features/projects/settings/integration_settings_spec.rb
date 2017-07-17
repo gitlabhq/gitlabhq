@@ -4,10 +4,10 @@ feature 'Integration settings', feature: true do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:role) { :developer }
-  let(:integrations_path) { namespace_project_settings_integrations_path(project.namespace, project) }
+  let(:integrations_path) { project_settings_integrations_path(project) }
 
   background do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, role]
   end
 
@@ -109,7 +109,7 @@ feature 'Integration settings', feature: true do
 
       scenario 'show list of hook logs' do
         hook_log
-        visit edit_namespace_project_hook_path(project.namespace, project, hook)
+        visit edit_project_hook_path(project, hook)
 
         expect(page).to have_content('Recent Deliveries')
         expect(page).to have_content(hook_log.url)
@@ -117,7 +117,7 @@ feature 'Integration settings', feature: true do
 
       scenario 'show hook log details' do
         hook_log
-        visit edit_namespace_project_hook_path(project.namespace, project, hook)
+        visit edit_project_hook_path(project, hook)
         click_link 'View details'
 
         expect(page).to have_content("POST #{hook_log.url}")
@@ -129,11 +129,11 @@ feature 'Integration settings', feature: true do
         WebMock.stub_request(:post, hook.url)
 
         hook_log
-        visit edit_namespace_project_hook_path(project.namespace, project, hook)
+        visit edit_project_hook_path(project, hook)
         click_link 'View details'
         click_link 'Resend Request'
 
-        expect(current_path).to eq(edit_namespace_project_hook_path(project.namespace, project, hook))
+        expect(current_path).to eq(edit_project_hook_path(project, hook))
       end
     end
   end

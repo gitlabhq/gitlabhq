@@ -60,7 +60,7 @@ class Projects::PipelinesController < Projects::ApplicationController
       .execute(:web, ignore_skip_ci: true, save_on_errors: false)
 
     if @pipeline.persisted?
-      redirect_to namespace_project_pipeline_path(project.namespace, project, @pipeline)
+      redirect_to project_pipeline_path(project, @pipeline)
     else
       render 'new'
     end
@@ -111,7 +111,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+        redirect_back_or_default default: project_pipelines_path(project)
       end
 
       format.json { head :no_content }
@@ -123,7 +123,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+        redirect_back_or_default default: project_pipelines_path(project)
       end
 
       format.json { head :no_content }

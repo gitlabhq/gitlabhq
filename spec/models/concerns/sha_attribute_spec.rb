@@ -13,15 +13,34 @@ describe ShaAttribute do
   end
 
   describe '#sha_attribute' do
-    it 'defines a SHA attribute for a binary column' do
-      expect(model).to receive(:attribute)
-        .with(:sha1, an_instance_of(Gitlab::Database::ShaAttribute))
+    context 'when the table exists' do
+      before do
+        allow(model).to receive(:table_exists?).and_return(true)
+      end
 
-      model.sha_attribute(:sha1)
+      it 'defines a SHA attribute for a binary column' do
+        expect(model).to receive(:attribute)
+          .with(:sha1, an_instance_of(Gitlab::Database::ShaAttribute))
+
+        model.sha_attribute(:sha1)
+      end
+
+      it 'raises ArgumentError when the column type is not :binary' do
+        expect { model.sha_attribute(:name) }.to raise_error(ArgumentError)
+      end
     end
 
-    it 'raises ArgumentError when the column type is not :binary' do
-      expect { model.sha_attribute(:name) }.to raise_error(ArgumentError)
+    context 'when the table does not exist' do
+      before do
+        allow(model).to receive(:table_exists?).and_return(false)
+      end
+
+      it 'does nothing' do
+        expect(model).not_to receive(:columns)
+        expect(model).not_to receive(:attribute)
+
+        model.sha_attribute(:name)
+      end
     end
   end
 end

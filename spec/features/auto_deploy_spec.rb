@@ -7,7 +7,7 @@ describe 'Auto deploy' do
   before do
     create :kubernetes_service, project: project
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
   end
 
   context 'when no deployment service is active' do
@@ -16,7 +16,7 @@ describe 'Auto deploy' do
     end
 
     it 'does not show a button to set up auto deploy' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
       expect(page).to have_no_content('Set up auto deploy')
     end
   end
@@ -24,7 +24,7 @@ describe 'Auto deploy' do
   context 'when a deployment service is active' do
     before do
       project.kubernetes_service.update!(active: true)
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
     end
 
     it 'shows a button to set up auto deploy' do

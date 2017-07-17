@@ -81,8 +81,9 @@ $(() => {
     mounted () {
       Store.disabled = this.disabled;
       gl.boardService.all()
+        .then(response => response.json())
         .then((resp) => {
-          resp.json().forEach((board) => {
+          resp.forEach((board) => {
             const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
@@ -97,7 +98,8 @@ $(() => {
 
           Store.addBlankState();
           this.loading = false;
-        }).catch(() => new Flash('An error occurred. Please try again.'));
+        })
+        .catch(() => new Flash('An error occurred. Please try again.'));
     },
     methods: {
       updateTokens() {

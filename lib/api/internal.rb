@@ -47,7 +47,8 @@ module API
         {
           status: true,
           gl_repository: gl_repository,
-          repository_path: repository_path
+          repository_path: repository_path,
+          gitaly: gitaly_payload(params[:action])
         }
       end
 
@@ -100,7 +101,7 @@ module API
       end
 
       get "/broadcast_message" do
-        if message = BroadcastMessage.current.last
+        if message = BroadcastMessage.current&.last
           present message, with: Entities::BroadcastMessage
         else
           {}

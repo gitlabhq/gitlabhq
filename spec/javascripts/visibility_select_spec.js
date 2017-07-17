@@ -1,8 +1,6 @@
-import '~/visibility_select';
+import VisibilitySelect from '~/visibility_select';
 
 (() => {
-  const VisibilitySelect = gl.VisibilitySelect;
-
   describe('VisibilitySelect', function () {
     const lockedElement = document.createElement('div');
     lockedElement.dataset.helpBlock = 'lockedHelpBlock';

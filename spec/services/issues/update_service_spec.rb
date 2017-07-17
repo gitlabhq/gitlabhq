@@ -253,13 +253,13 @@ describe Issues::UpdateService, services: true do
       end
 
       context 'when the milestone change' do
-        before do
-          update_issue(milestone: create(:milestone))
-        end
-
         it 'marks todos as done' do
+          update_issue(milestone: create(:milestone))
+
           expect(todo.reload.done?).to eq true
         end
+
+        it_behaves_like 'system notes for milestones'
       end
 
       context 'when the labels change' do

@@ -9,7 +9,7 @@ feature 'issue move to another project' do
     create(:issue, description: text, project: old_project, author: user)
   end
 
-  background { gitlab_sign_in(user) }
+  background { sign_in(user) }
 
   context 'user does not have permission to move issue' do
     background do
@@ -95,10 +95,6 @@ feature 'issue move to another project' do
   end
 
   def issue_path(issue)
-    namespace_project_issue_path(issue.project.namespace, issue.project, issue)
-  end
-
-  def project_path(project)
-    namespace_project_path(new_project.namespace, new_project)
+    project_issue_path(issue.project, issue)
   end
 end

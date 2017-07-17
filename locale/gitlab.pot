@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-28 13:32+0200\n"
-"PO-Revision-Date: 2017-06-28 13:32+0200\n"
+"POT-Creation-Date: 2017-07-12 12:31-0500\n"
+"PO-Revision-Date: 2017-07-12 12:31-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,13 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid "%d additional commit has been omitted to prevent performance issues."
-msgid_plural "%d additional commits have been omitted to prevent performance issues."
+msgid "%d commit"
+msgid_plural "%d commits"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d commit"
-msgid_plural "%d commits"
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural "%s additional commits have been omitted to prevent performance issues."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -620,6 +620,12 @@ msgstr ""
 msgid "PipelineSchedules|Inactive"
 msgstr ""
 
+msgid "PipelineSchedules|Input variable key"
+msgstr ""
+
+msgid "PipelineSchedules|Input variable value"
+msgstr ""
+
 msgid "PipelineSchedules|Next Run"
 msgstr ""
 
@@ -629,10 +635,16 @@ msgstr ""
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr ""
+
 msgid "PipelineSchedules|Take ownership"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
+msgstr ""
+
+msgid "PipelineSchedules|Variables"
 msgstr ""
 
 msgid "PipelineSheduleIntervalPattern|Custom"
@@ -1055,6 +1067,12 @@ msgid "We don't have enough data to show this stage."
 msgstr ""
 
 msgid "Withdraw Access Request"
+msgstr ""
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid ""

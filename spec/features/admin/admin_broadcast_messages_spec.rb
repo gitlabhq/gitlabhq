@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Admin Broadcast Messages', feature: true do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
     create(:broadcast_message, :expired, message: 'Migration to new server')
     visit admin_broadcast_messages_path
   end

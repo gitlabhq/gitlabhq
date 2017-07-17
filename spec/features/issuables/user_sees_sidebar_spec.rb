@@ -14,7 +14,7 @@ describe 'Issue Sidebar on Mobile' do
 
   context 'mobile sidebar on merge requests', js: true do
     before do
-      visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+      visit project_merge_request_path(merge_request.project, merge_request)
     end
 
     it_behaves_like "issue sidebar stays collapsed on mobile"
@@ -22,7 +22,7 @@ describe 'Issue Sidebar on Mobile' do
 
   context 'mobile sidebar on issues', js: true do
     before do
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
     end
 
     it_behaves_like "issue sidebar stays collapsed on mobile"

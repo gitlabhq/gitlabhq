@@ -17,8 +17,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "\n"
 
-msgid "%d additional commit has been omitted to prevent performance issues."
-msgid_plural "%d additional commits have been omitted to prevent performance issues."
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural "%s additional commits have been omitted to prevent performance issues."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -619,6 +619,12 @@ msgstr ""
 msgid "PipelineSchedules|Inactive"
 msgstr ""
 
+msgid "PipelineSchedules|Input variable key"
+msgstr ""
+
+msgid "PipelineSchedules|Input variable value"
+msgstr ""
+
 msgid "PipelineSchedules|Next Run"
 msgstr ""
 
@@ -628,10 +634,16 @@ msgstr ""
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr ""
+
 msgid "PipelineSchedules|Take ownership"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
+msgstr ""
+
+msgid "PipelineSchedules|Variables"
 msgstr ""
 
 msgid "PipelineSheduleIntervalPattern|Custom"
@@ -1054,6 +1066,12 @@ msgid "We don't have enough data to show this stage."
 msgstr ""
 
 msgid "Withdraw Access Request"
+msgstr ""
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid ""

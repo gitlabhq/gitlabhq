@@ -1,4 +1,4 @@
-import '~/todos';
+import Todos from '~/todos';
 import '~/lib/utils/common_utils';
 
 describe('Todos', () => {
@@ -9,7 +9,7 @@ describe('Todos', () => {
     loadFixtures('todos/todos.html.raw');
     todoItem = document.querySelector('.todos-list .todo');
 
-    return new gl.Todos();
+    return new Todos();
   });
 
   describe('goToTodoUrl', () => {

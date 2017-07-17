@@ -44,7 +44,7 @@ class SearchController < ApplicationController
       query = params[:search].strip.downcase
       found_by_commit_sha = Commit.valid_hash?(query) && only_commit.sha.start_with?(query)
 
-      redirect_to namespace_project_commit_path(@project.namespace, @project, only_commit) if found_by_commit_sha
+      redirect_to project_commit_path(@project, only_commit) if found_by_commit_sha
     end
   end
 end

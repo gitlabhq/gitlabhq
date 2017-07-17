@@ -5,7 +5,7 @@ feature 'Admin uses repository checks', feature: true do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   scenario 'to trigger a single check' do
@@ -43,6 +43,6 @@ feature 'Admin uses repository checks', feature: true do
   end
 
   def visit_admin_project_page(project)
-    visit admin_namespace_project_path(project.namespace, project)
+    visit admin_project_path(project)
   end
 end

@@ -5,7 +5,7 @@ feature 'Protected Branches', feature: true, js: true do
   let(:project) { create(:project, :repository) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   def set_protected_branch_name(branch_name)
@@ -16,7 +16,7 @@ feature 'Protected Branches', feature: true, js: true do
 
   describe "explicit protected branches" do
     it "allows creating explicit protected branches" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('some-branch')
       click_on "Protect"
 
@@ -29,7 +29,7 @@ feature 'Protected Branches', feature: true, js: true do
       commit = create(:commit, project: project)
       project.repository.add_branch(user, 'some-branch', commit.id)
 
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('some-branch')
       click_on "Protect"
 
@@ -37,7 +37,7 @@ feature 'Protected Branches', feature: true, js: true do
     end
 
     it "displays an error message if the named branch does not exist" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('some-branch')
       click_on "Protect"
 
@@ -47,7 +47,7 @@ feature 'Protected Branches', feature: true, js: true do
 
   describe "wildcard protected branches" do
     it "allows creating protected branches with a wildcard" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('*-stable')
       click_on "Protect"
 
@@ -60,7 +60,7 @@ feature 'Protected Branches', feature: true, js: true do
       project.repository.add_branch(user, 'production-stable', 'master')
       project.repository.add_branch(user, 'staging-stable', 'master')
 
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('*-stable')
       click_on "Protect"
 
@@ -72,11 +72,11 @@ feature 'Protected Branches', feature: true, js: true do
       project.repository.add_branch(user, 'staging-stable', 'master')
       project.repository.add_branch(user, 'development', 'master')
 
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('*-stable')
       click_on "Protect"
 
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       click_on "2 matching branches"
 
       within(".protected-branches-list") do

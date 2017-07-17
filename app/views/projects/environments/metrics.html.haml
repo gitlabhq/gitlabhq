@@ -10,12 +10,12 @@
   .top-area
     .row
       .col-sm-6
-        %h3.page-title
+        %h3
           Environment:
           = link_to @environment.name, environment_path(@environment)
 
-  #prometheus-graphs{ data: { "settings-path": edit_namespace_project_service_path(@project.namespace, @project, 'prometheus'),
+  #prometheus-graphs{ data: { "settings-path": edit_project_service_path(@project, 'prometheus'),
     "documentation-path": help_page_path('administration/monitoring/prometheus/index.md'),
-    "additional-metrics": additional_metrics_namespace_project_environment_path(@project.namespace, @project, @environment, format: :json),
-    "has-metrics": "#{@environment.has_metrics?}", deployment_endpoint: namespace_project_environment_deployments_path(@project.namespace, @project, @environment, format: :json) } }
+    "additional-metrics": additional_metrics_project_environment_path(@project, @environment, format: :json),
+    "has-metrics": "#{@environment.has_metrics?}", deployment_endpoint: project_environment_deployments_path(@project, @environment, format: :json) } }
 

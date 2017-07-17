@@ -21,7 +21,7 @@ class IssueTrackerService < Service
   end
 
   def project_path
-    project_url
+    read_attribute(:project_url)
   end
 
   def new_issue_path

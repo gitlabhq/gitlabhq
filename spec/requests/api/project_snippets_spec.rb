@@ -5,6 +5,26 @@ describe API::ProjectSnippets do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
+  describe "GET /projects/:project_id/snippets/:id/user_agent_detail" do
+    let(:snippet) { create(:project_snippet, :public, project: project) }
+    let!(:user_agent_detail) { create(:user_agent_detail, subject: snippet) }
+
+    it 'exposes known attributes' do
+      get api("/projects/#{project.id}/snippets/#{snippet.id}/user_agent_detail", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
+      expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
+      expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
+    end
+
+    it "returns unautorized for non-admin users" do
+      get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/user_agent_detail", user)
+
+      expect(response).to have_http_status(403)
+    end
+  end
+
   describe 'GET /projects/:project_id/snippets/' do
     let(:user) { create(:user) }
 
@@ -20,7 +40,7 @@ describe API::ProjectSnippets do
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(3)
-      expect(json_response.map{ |snippet| snippet['id']} ).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
+      expect(json_response.map { |snippet| snippet['id'] }).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
       expect(json_response.last).to have_key('web_url')
     end
 
@@ -38,7 +58,7 @@ describe API::ProjectSnippets do
 
   describe 'GET /projects/:project_id/snippets/:id' do
     let(:user) { create(:user) }
-    let(:snippet) {  create(:project_snippet, :public, project: project) }
+    let(:snippet) { create(:project_snippet, :public, project: project) }
 
     it 'returns snippet json' do
       get api("/projects/#{project.id}/snippets/#{snippet.id}", user)

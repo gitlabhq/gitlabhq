@@ -34,9 +34,9 @@ feature 'Clicking toggle commit message link', feature: true, js: true do
   before do
     project.team << [user, :master]
 
-    gitlab_sign_in user
+    sign_in user
 
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit project_merge_request_path(project, merge_request)
 
     expect(page).not_to have_selector('.js-commit-message')
     click_button "Modify commit message"

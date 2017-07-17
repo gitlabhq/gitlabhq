@@ -163,7 +163,10 @@ module Ci
           commands: "pwd\nrspec",
           coverage_regex: nil,
           tag_list: [],
-          options: {},
+          options: {
+            before_script: ["pwd"],
+            script: ["rspec"]
+          },
           allow_failure: false,
           when: "on_success",
           environment: nil,
@@ -616,10 +619,12 @@ module Ci
             coverage_regex: nil,
             tag_list: [],
             options: {
-                image: { name: "ruby:2.1", entrypoint: ["/usr/local/bin/init", "run"] },
-                services: [{ name: "mysql" },
-                           { name: "docker:dind", alias: "docker", entrypoint: ["/usr/local/bin/init", "run"],
-                             command: ["/usr/local/bin/init", "run"] }]
+              before_script: ["pwd"],
+              script: ["rspec"],
+              image: { name: "ruby:2.1", entrypoint: ["/usr/local/bin/init", "run"] },
+              services: [{ name: "mysql" },
+                         { name: "docker:dind", alias: "docker", entrypoint: ["/usr/local/bin/init", "run"],
+                           command: ["/usr/local/bin/init", "run"] }]
             },
             allow_failure: false,
             when: "on_success",
@@ -649,10 +654,12 @@ module Ci
             coverage_regex: nil,
             tag_list: [],
             options: {
-                image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
-                services: [{ name: "postgresql", alias: "db-pg", entrypoint: ["/usr/local/bin/init", "run"],
-                             command: ["/usr/local/bin/init", "run"] },
-                           { name: "docker:dind" }]
+              before_script: ["pwd"],
+              script: ["rspec"],
+              image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
+              services: [{ name: "postgresql", alias: "db-pg", entrypoint: ["/usr/local/bin/init", "run"],
+                           command: ["/usr/local/bin/init", "run"] },
+                         { name: "docker:dind" }]
             },
             allow_failure: false,
             when: "on_success",
@@ -680,6 +687,8 @@ module Ci
             coverage_regex: nil,
             tag_list: [],
             options: {
+              before_script: ["pwd"],
+              script: ["rspec"],
               image: { name: "ruby:2.1" },
               services: [{ name: "mysql" }, { name: "docker:dind" }]
             },
@@ -707,8 +716,10 @@ module Ci
             coverage_regex: nil,
             tag_list: [],
             options: {
-                image: { name: "ruby:2.5" },
-                services: [{ name: "postgresql" }, { name: "docker:dind" }]
+              before_script: ["pwd"],
+              script: ["rspec"],
+              image: { name: "ruby:2.5" },
+              services: [{ name: "postgresql" }, { name: "docker:dind" }]
             },
             allow_failure: false,
             when: "on_success",
@@ -878,7 +889,8 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["logs/", "binaries/"],
           untracked: true,
-          key: 'key'
+          key: 'key',
+          policy: 'pull-push'
         )
       end
 
@@ -896,7 +908,8 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["logs/", "binaries/"],
           untracked: true,
-          key: 'key'
+          key: 'key',
+          policy: 'pull-push'
         )
       end
 
@@ -915,7 +928,8 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["test/"],
           untracked: false,
-          key: 'local'
+          key: 'local',
+          policy: 'pull-push'
         )
       end
     end
@@ -948,6 +962,8 @@ module Ci
           coverage_regex: nil,
           tag_list: [],
           options: {
+            before_script: ["pwd"],
+            script: ["rspec"],
             image: { name: "ruby:2.1" },
             services: [{ name: "mysql" }],
             artifacts: {
@@ -1159,7 +1175,9 @@ module Ci
             commands: "test",
             coverage_regex: nil,
             tag_list: [],
-            options: {},
+            options: {
+              script: ["test"]
+            },
             when: "on_success",
             allow_failure: false,
             environment: nil,
@@ -1205,7 +1223,9 @@ module Ci
             commands: "execute-script-for-job",
             coverage_regex: nil,
             tag_list: [],
-            options: {},
+            options: {
+              script: ["execute-script-for-job"]
+            },
             when: "on_success",
             allow_failure: false,
             environment: nil,
@@ -1218,7 +1238,9 @@ module Ci
             commands: "execute-script-for-job",
             coverage_regex: nil,
             tag_list: [],
-            options: {},
+            options: {
+              script: ["execute-script-for-job"]
+            },
             when: "on_success",
             allow_failure: false,
             environment: nil,

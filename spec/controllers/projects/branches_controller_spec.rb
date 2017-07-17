@@ -110,7 +110,7 @@ describe Projects::BranchesController do
             branch_name: branch,
             issue_iid: issue.iid
 
-          expect(response).to redirect_to namespace_project_tree_path(project.namespace, project, branch)
+          expect(response).to redirect_to project_tree_path(project, branch)
         end
 
         it 'redirects to autodeploy setup page' do
@@ -127,7 +127,7 @@ describe Projects::BranchesController do
             branch_name: branch,
             issue_iid: issue.iid
 
-          expect(response.location).to include(namespace_project_new_blob_path(project.namespace, project, branch))
+          expect(response.location).to include(project_new_blob_path(project, branch))
           expect(response).to have_http_status(302)
         end
       end
@@ -303,7 +303,7 @@ describe Projects::BranchesController do
 
       it 'redirects to branches path' do
         expect(response)
-          .to redirect_to(namespace_project_branches_path(project.namespace, project))
+          .to redirect_to(project_branches_path(project))
       end
     end
   end
@@ -323,7 +323,7 @@ describe Projects::BranchesController do
       it 'redirects to branches' do
         destroy_all_merged
 
-        expect(response).to redirect_to namespace_project_branches_path(project.namespace, project)
+        expect(response).to redirect_to project_branches_path(project)
       end
 
       it 'starts worker to delete merged branches' do

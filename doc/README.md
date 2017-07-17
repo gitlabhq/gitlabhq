@@ -50,8 +50,7 @@ Shortcuts to GitLab's most visited docs:
 - [Fork a project](gitlab-basics/fork-project.md)
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
-- [Groups](workflow/groups.md): Organize your projects in groups.
-  - [Create a group](gitlab-basics/create-group.md)
+- [Groups](user/group/index.md): Organize your projects in groups.
   - [GitLab Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
@@ -167,6 +166,7 @@ have access to GitLab administration tools and settings.
 - [Operations](administration/operations.md): Keeping GitLab up and running.
 - [Polling](administration/polling.md): Configure how often the GitLab UI polls for updates.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
+- [Performance Bar](administration/monitoring/performance/performance_bar.md): Get performance information for the current page.
 
 ### Customization
 
@@ -179,6 +179,7 @@ have access to GitLab administration tools and settings.
 
 ### Admin tools
 
+- [Gitaly](administration/gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service
 - [Raketasks](raketasks/README.md): Backups, maintenance, automatic webhook setup and the importing of projects.
     - [Backup and restore](raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Reply by email](administration/reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.

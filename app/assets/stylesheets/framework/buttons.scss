@@ -20,17 +20,29 @@
   color: $text;
   border-color: $border;
 
+  > .icon {
+    color: $text;
+  }
+
   &:hover,
   &:focus {
     background-color: $hover-background;
     border-color: $hover-border;
     color: $hover-text;
+
+    > .icon {
+      color: $hover-text;
+    }
   }
 
   &:active {
     background-color: $active-background;
     border-color: $active-border;
     color: $hover-text;
+
+    > .icon {
+      color: $hover-text;
+    }
   }
 }
 
@@ -163,7 +175,8 @@
     @include btn-orange;
   }
 
-  &.btn-close {
+  &.btn-close,
+  &.btn-close-color {
     @include btn-outline($white-light, $orange-600, $orange-500, $orange-500, $white-light, $orange-600, $orange-600, $orange-700);
   }
 
@@ -181,7 +194,8 @@
     float: right;
   }
 
-  &.btn-reopen {
+  &.btn-reopen,
+  .btn-reopen-color {
     /* should be same as parent class for now */
   }
 

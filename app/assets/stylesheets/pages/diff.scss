@@ -91,6 +91,7 @@
 
     .old_line,
     .new_line {
+      @include user-select(none);
       margin: 0;
       border: none;
       padding: 0 5px;
@@ -99,7 +100,6 @@
       min-width: 35px;
       max-width: 50px;
       width: 35px;
-      @include user-select(none);
 
       a {
         float: left;
@@ -354,12 +354,12 @@
       }
 
       &.active {
+        cursor: default;
+        color: $gl-text-color;
+
         &:hover {
           text-decoration: none;
         }
-
-        cursor: default;
-        color: $gl-text-color;
       }
 
       &.disabled {

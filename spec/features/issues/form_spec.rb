@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'New/edit issue', :feature, :js do
-  include GitlabRoutingHelper
   include ActionView::Helpers::JavaScriptHelper
   include FormHelper
 
@@ -16,15 +15,15 @@ describe 'New/edit issue', :feature, :js do
   before do
     project.team << [user, :master]
     project.team << [user2, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'new issue' do
     before do
-      visit new_namespace_project_issue_path(project.namespace, project)
+      visit new_project_issue_path(project)
     end
 
-    describe 'shorten users API pagination limit (CE)' do
+    describe 'shorten users API pagination limit' do
       before do
         # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
         # somehow refer to the very block we defined to _wrap_ that method, instead of
@@ -39,7 +38,7 @@ describe 'New/edit issue', :feature, :js do
           options
         end
 
-        visit new_namespace_project_issue_path(project.namespace, project)
+        visit new_project_issue_path(project)
 
         click_button 'Unassigned'
 
@@ -64,7 +63,7 @@ describe 'New/edit issue', :feature, :js do
       end
     end
 
-    describe 'single assignee (CE)' do
+    describe 'single assignee' do
       before do
         click_button 'Unassigned'
 
@@ -221,7 +220,7 @@ describe 'New/edit issue', :feature, :js do
 
   context 'edit issue' do
     before do
-      visit edit_namespace_project_issue_path(project.namespace, project, issue)
+      visit edit_project_issue_path(project, issue)
     end
 
     it 'allows user to update issue' do
@@ -282,7 +281,7 @@ describe 'New/edit issue', :feature, :js do
     before do
       sub_group_project.add_master(user)
 
-      visit new_namespace_project_issue_path(sub_group_project.namespace, sub_group_project)
+      visit new_project_issue_path(sub_group_project)
     end
 
     it 'creates new label from dropdown' do

@@ -2,13 +2,12 @@ require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
-  include Gitlab::VisibilityLevel
   include AccessRequestable
   include Avatarable
   include Referable
   include SelectForProjectAuthorization
 
-  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
   has_many :users, through: :group_members
   has_many :owners,
@@ -16,12 +15,14 @@ class Group < Namespace
     through: :group_members,
     source: :user
 
-  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :project_group_links, dependent: :destroy
+  has_many :milestones
+  has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
-  has_many :notification_settings, dependent: :destroy, as: :source
+  has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :labels, class_name: 'GroupLabel'
+  has_many :variables, class_name: 'Ci::GroupVariable'
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
@@ -31,7 +32,7 @@ class Group < Namespace
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -99,10 +100,6 @@ class Group < Namespace
 
   def human_name
     full_name
-  end
-
-  def visibility_level_field
-    :visibility_level
   end
 
   def visibility_level_allowed_by_projects
@@ -246,6 +243,14 @@ class Group < Namespace
       display_name: name[0..max_length],
       type: public? ? 'O' : 'I' # Open vs Invite-only
     }
+  end
+
+  def secret_variables_for(ref, project)
+    list_of_ids = [self] + ancestors
+    variables = Ci::GroupVariable.where(group: list_of_ids)
+    variables = variables.unprotected unless project.protected_for?(ref)
+    variables = variables.group_by(&:group_id)
+    list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
   protected

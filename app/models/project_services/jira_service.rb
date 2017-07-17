@@ -1,5 +1,5 @@
 class JiraService < IssueTrackerService
-  include Gitlab::Routing.url_helpers
+  include Gitlab::Routing
 
   validates :url, url: true, presence: true, if: :activated?
   validates :api_url, url: true, allow_blank: true
@@ -152,8 +152,8 @@ class JiraService < IssueTrackerService
         url: resource_url(user_path(author))
       },
       project: {
-        name: self.project.path_with_namespace,
-        url: resource_url(namespace_project_path(project.namespace, self.project))
+        name: project.path_with_namespace,
+        url: resource_url(namespace_project_path(project.namespace, project)) # rubocop:disable Cop/ProjectPathHelper
       },
       entity: {
         name: noteable_type.humanize.downcase,

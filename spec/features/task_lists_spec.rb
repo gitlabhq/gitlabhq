@@ -59,7 +59,7 @@ feature 'Task Lists', feature: true do
   end
 
   def visit_issue(project, issue)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
   describe 'for Issues', feature: true do
@@ -98,7 +98,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on Issues#index' do
-        visit namespace_project_issues_path(project.namespace, project)
+        visit project_issues_path(project)
         expect(page).to have_content("2 of 6 tasks completed")
       end
     end
@@ -116,7 +116,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on Issues#index' do
-        visit namespace_project_issues_path(project.namespace, project)
+        visit project_issues_path(project)
 
         expect(page).to have_content("0 of 1 task completed")
       end
@@ -135,7 +135,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on Issues#index' do
-        visit namespace_project_issues_path(project.namespace, project)
+        visit project_issues_path(project)
 
         expect(page).to have_content("1 of 1 task completed")
       end
@@ -242,7 +242,7 @@ feature 'Task Lists', feature: true do
 
   describe 'for Merge Requests' do
     def visit_merge_request(project, merge)
-      visit namespace_project_merge_request_path(project.namespace, project, merge)
+      visit project_merge_request_path(project, merge)
     end
 
     describe 'multiple tasks' do
@@ -281,7 +281,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on MergeRequests#index' do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
         expect(page).to have_content("2 of 6 tasks completed")
       end
     end
@@ -298,7 +298,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on MergeRequests#index' do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
         expect(page).to have_content("0 of 1 task completed")
       end
     end
@@ -315,7 +315,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on MergeRequests#index' do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
         expect(page).to have_content("1 of 1 task completed")
       end
     end

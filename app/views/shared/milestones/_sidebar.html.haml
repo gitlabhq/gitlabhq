@@ -21,7 +21,7 @@
       .title
         Start date
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: 'edit-link pull-right'
+          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'edit-link pull-right'
       .value
         %span.value-content
           - if milestone.start_date
@@ -51,7 +51,7 @@
       .title.hide-collapsed
         Due date
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: 'edit-link pull-right'
+          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'edit-link pull-right'
       .value.hide-collapsed
         %span.value-content
           - if milestone.due_date
@@ -73,7 +73,7 @@
           Issues
           %span.badge= milestone.issues_visible_to_user(current_user).count
           - if project && can?(current_user, :create_issue, project)
-            = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
+            = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
               New issue
         .value.hide-collapsed.bold
           %span.milestone-stat
