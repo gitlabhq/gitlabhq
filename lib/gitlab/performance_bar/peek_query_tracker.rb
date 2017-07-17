@@ -1,4 +1,5 @@
 # Inspired by https://github.com/peek/peek-pg/blob/master/lib/peek/views/pg.rb
+# PEEK_DB_CLIENT is a constant set in config/initializers/peek.rb
 module Gitlab
   module PerformanceBar
     module PeekQueryTracker
@@ -23,7 +24,13 @@ module Gitlab
 
         subscribe('sql.active_record') do |_, start, finish, _, data|
           if RequestStore.active? && RequestStore.store[:peek_enabled]
-            track_query(data[:sql].strip, data[:binds], start, finish)
+            # data[:cached] is only available starting from Rails 5.1.0
+            # https://github.com/rails/rails/blob/v5.1.0/activerecord/lib/active_record/connection_adapters/abstract/query_cache.rb#L113
+            # Before that, data[:name] was set to 'CACHE'
+            # https://github.com/rails/rails/blob/v4.2.9/activerecord/lib/active_record/connection_adapters/abstract/query_cache.rb#L80
+            unless data.fetch(:cached, data[:name] == 'CACHE')
+              track_query(data[:sql].strip, data[:binds], start, finish)
+            end
           end
         end
       end
