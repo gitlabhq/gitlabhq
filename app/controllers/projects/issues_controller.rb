@@ -23,8 +23,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   respond_to :html
 
-  helper_method :issues_params
-
   def index
     @collection_type    = "Issue"
     @issues             = issues_collection
@@ -270,19 +268,6 @@ class Projects::IssuesController < Projects::ApplicationController
     else
       redirect_to external.project_path
     end
-  end
-
-  def issues_params
-    params.permit(
-      :page,
-      :label_name,
-      :assignee_id,
-      :author_id,
-      :state,
-      :scope,
-      :milestone_title,
-      :weight
-    )
   end
 
   def issue_params
