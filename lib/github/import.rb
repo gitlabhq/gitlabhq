@@ -44,13 +44,13 @@ module Github
     attr_reader :project, :repository, :repo, :repo_url, :wiki_url,
                 :options, :errors, :cached, :verbose
 
-    def initialize(project, options)
+    def initialize(project, options = {})
       @project = project
       @repository = project.repository
       @repo = project.import_source
       @repo_url = project.import_url
       @wiki_url = project.import_url.sub(/\.git\z/, '.wiki.git')
-      @options = options
+      @options = options.reverse_merge(token: project.import_data&.credentials&.fetch(:user))
       @verbose = options.fetch(:verbose, false)
       @cached  = Hash.new { |hash, key| hash[key] = Hash.new }
       @errors  = []
