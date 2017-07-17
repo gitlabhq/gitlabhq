@@ -26,40 +26,74 @@ $new-sidebar-width: 220px;
 }
 
 .context-header {
-  border-bottom: 1px solid $border-color;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  padding: 10px 16px 10px 10px;
-  color: $gl-text-color;
+  position: relative;
+
+  a {
+    border-bottom: 1px solid $border-color;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px 10px 10px;
+    color: $gl-text-color;
+
+    @media (max-width: $screen-xs-max) {
+      padding-right: 30px;
+    }
+
+    &:hover {
+      background-color: $hover-background;
+      color: $hover-color;
+      border-color: $hover-background;
+
+      .avatar-container {
+        border-color: transparent;
+      }
+
+      .settings-avatar {
+        background-color: $indigo-500;
+
+        i {
+          color: $hover-color;
+        }
+      }
+    }
+  }
 
   .avatar-container {
     flex: 0 0 40px;
     background-color: $white-light;
   }
 
-  &:hover {
-    background-color: $hover-background;
-    color: $hover-color;
-    border-color: $hover-background;
-
-    .avatar-container {
-      border-color: transparent;
-    }
-
-    .settings-avatar {
-      background-color: $indigo-500;
-
-      i {
-        color: $hover-color;
-      }
-    }
-  }
-
   .project-title,
   .group-title {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+
+  &:hover {
+    .close-nav-button {
+      color: $white-light;
+    }
+  }
+
+  .close-nav-button {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    background-color: transparent;
+    border: 0;
+    padding: 0 10px;
+
+    @media (max-width: $screen-xs-max) {
+      display: block;
+    }
+
+    &:hover {
+      color: $gl-text-color;
+    }
   }
 }
 
@@ -88,6 +122,10 @@ $new-sidebar-width: 220px;
   overflow: auto;
   background-color: $gray-normal;
   box-shadow: inset -2px 0 0 $border-color;
+
+  &.nav-sidebar-expanded {
+    width: $new-sidebar-width;
+  }
 
   a {
     text-decoration: none;
@@ -182,6 +220,25 @@ $new-sidebar-width: 220px;
         color: $hover-color;
       }
     }
+  }
+}
+
+.toggle-mobile-nav {
+  display: none;
+  background-color: transparent;
+  border: 0;
+  padding: 6px 16px;
+  margin: 0 16px 0 -15px;
+  height: 46px;
+  border-right: 1px solid $gl-text-color-quaternary;
+
+  i {
+    font-size: 20px;
+    color: $gl-text-color-secondary;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: inline-block;
   }
 }
 

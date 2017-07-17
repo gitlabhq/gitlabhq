@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, no-unused-vars, one-var, one-var-declaration-per-line, vars-on-top, max-len */
 import _ from 'underscore';
+import NewNavSidebar from './new_sidebar';
 
 (function() {
   var hideEndFade;
@@ -53,6 +54,7 @@ import _ from 'underscore';
   }
 
   $(() => {
+    new NewNavSidebar();
     $(window).on('scroll', _.throttle(applyScrollNavClass, 100));
   });
 }).call(window);

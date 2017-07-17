@@ -275,8 +275,6 @@ header.navbar-gitlab-new {
 .breadcrumbs {
   display: flex;
   min-height: 60px;
-  padding-top: $gl-padding-top;
-  padding-bottom: $gl-padding-top;
   color: $gl-text-color;
   border-bottom: 1px solid $border-color;
 
@@ -300,6 +298,7 @@ header.navbar-gitlab-new {
   display: flex;
   width: 100%;
   position: relative;
+  align-items: center;
 
   .dropdown-menu-projects {
     margin-top: -$gl-padding;
