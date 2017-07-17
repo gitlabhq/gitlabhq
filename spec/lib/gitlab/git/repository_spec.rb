@@ -705,9 +705,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
       # Add new commits so that there's a renamed file in the commit history
       repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
 
-      commit_with_old_name = new_commit_edit_old_file(repo)
-      rename_commit = new_commit_move_file(repo)
-      commit_with_new_name = new_commit_edit_new_file(repo)
+      commit_with_old_name = Gitlab::Git::Commit.decorate(new_commit_edit_old_file(repo))
+      rename_commit = Gitlab::Git::Commit.decorate(new_commit_move_file(repo))
+      commit_with_new_name = Gitlab::Git::Commit.decorate(new_commit_edit_new_file(repo))
     end
 
     after(:context) do
@@ -880,8 +880,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context "compare results between log_by_walk and log_by_shell" do
       let(:options) { { ref: "master" } }
-      let(:commits_by_walk) { repository.log(options).map(&:oid) }
-      let(:commits_by_shell) { repository.log(options.merge({ disable_walk: true })).map(&:oid) }
+      let(:commits_by_walk) { repository.log(options).map(&:id) }
+      let(:commits_by_shell) { repository.log(options.merge({ disable_walk: true })).map(&:id) }
 
       it { expect(commits_by_walk).to eq(commits_by_shell) }
 
@@ -924,7 +924,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
         expect(commits.size).to be > 0
         expect(commits).to satisfy do |commits|
-          commits.all? { |commit| commit.time >= options[:after] }
+          commits.all? { |commit| commit.committed_date >= options[:after] }
         end
       end
     end
@@ -937,7 +937,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
         expect(commits.size).to be > 0
         expect(commits).to satisfy do |commits|
-          commits.all? { |commit| commit.time <= options[:before] }
+          commits.all? { |commit| commit.committed_date <= options[:before] }
         end
       end
     end
@@ -946,7 +946,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
 
       def commit_files(commit)
-        commit.diff(commit.parent_ids.first).deltas.flat_map do |delta|
+        commit.diff_from_parent.deltas.flat_map do |delta|
           [delta.old_file[:path], delta.new_file[:path]].uniq.compact
         end
       end

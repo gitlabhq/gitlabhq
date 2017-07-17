@@ -8,9 +8,9 @@
   - @ldap_servers.each_with_index do |server, i|
     %li{ class: active_when(i.zero? && !crowd_enabled?) }
       = link_to server['label'], "##{server['provider_name']}",  'data-toggle' => 'tab'
-  - if signin_enabled?
+  - if password_authentication_enabled?
     %li
       = link_to 'Standard', '#ldap-standard', 'data-toggle' => 'tab'
-  - if signin_enabled? && signup_enabled?
+  - if password_authentication_enabled? && signup_enabled?
     %li
       = link_to 'Register', '#register-pane', 'data-toggle' => 'tab'

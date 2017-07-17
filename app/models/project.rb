@@ -844,7 +844,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    @ci_service ||= ci_services.find_by(active: true)
+    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
   def deployment_services
@@ -852,7 +852,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_service
-    @deployment_service ||= deployment_services.find_by(active: true)
+    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
@@ -860,7 +860,7 @@ class Project < ActiveRecord::Base
   end
 
   def monitoring_service
-    @monitoring_service ||= monitoring_services.find_by(active: true)
+    @monitoring_service ||= monitoring_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
