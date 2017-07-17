@@ -3,6 +3,7 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VueResource from 'vue-resource';
 import storeOptions from '../stores/issue_notes_store';
 import eventHub from '../event_hub';
 import IssueNote from './issue_note.vue';
@@ -13,6 +14,7 @@ import PlaceholderNote from './issue_placeholder_note.vue';
 import PlaceholderSystemNote from './issue_placeholder_system_note.vue';
 
 Vue.use(Vuex);
+Vue.use(VueResource);
 const store = new Vuex.Store(storeOptions);
 
 export default {

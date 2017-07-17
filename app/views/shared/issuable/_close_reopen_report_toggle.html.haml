@@ -2,7 +2,7 @@
 - button_action = issuable.closed? ? 'reopen' : 'close'
 - display_button_action = button_action.capitalize
 - button_responsive_class = 'hidden-xs hidden-sm'
-- button_class = "#{button_responsive_class} btn btn-grouped js-issuable-close-button issuable-close-button"
+- button_class = "#{button_responsive_class} btn btn-grouped js-issuable-close-button js-btn-issue-action issuable-close-button"
 - toggle_class = "#{button_responsive_class} btn btn-nr dropdown-toggle js-issuable-close-toggle"
 - button_method = issuable_close_reopen_button_method(issuable)
 

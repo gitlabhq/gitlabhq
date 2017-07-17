@@ -13,7 +13,8 @@ feature 'Issue notes polling', :feature, :js do
 
     it 'displays the new comment' do
       note = create(:note, noteable: issue, project: project, note: 'Looks good!')
-      page.execute_script('notes.refresh();')
+      page.execute_script('issueNotes.refresh();')
+      wait_for_requests
 
       expect(page).to have_selector("#note_#{note.id}", text: 'Looks good!')
     end
@@ -29,16 +30,6 @@ feature 'Issue notes polling', :feature, :js do
       before do
         sign_in(user)
         visit project_issue_path(project, issue)
-      end
-
-      it 'has .original-note-content to compare against' do
-        expect(page).to have_selector("#note_#{existing_note.id}", text: note_text)
-        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
-
-        update_note(existing_note, updated_text)
-
-        expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
-        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
       end
 
       it 'displays the updated content' do
@@ -127,7 +118,8 @@ feature 'Issue notes polling', :feature, :js do
 
   def update_note(note, new_text)
     note.update(note: new_text)
-    page.execute_script('notes.refresh();')
+    page.execute_script('issueNotes.refresh();')
+    wait_for_requests
   end
 
   def click_edit_action(note)

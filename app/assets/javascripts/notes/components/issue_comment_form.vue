@@ -45,6 +45,14 @@ export default {
 
       return this.isIssueOpen ? 'Close issue' : 'Reopen issue';
     },
+    actionButtonClassNames() {
+      return {
+        'btn-reopen': !this.isIssueOpen,
+        'btn-close': this.isIssueOpen,
+        'js-note-target-close': this.isIssueOpen,
+        'js-note-target-reopen': !this.isIssueOpen,
+      }
+    },
   },
   methods: {
     handleSave(withIssueAction) {
@@ -173,8 +181,8 @@ export default {
                 @keydown.meta.enter="handleSave()">
               </textarea>
             </markdown-field>
-            <div class="note-form-actions clearfix">
-              <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown">
+            <div class="note-form-actions">
+              <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                 <button
                   @click="handleSave()"
                   :disabled="!note.length"
@@ -196,41 +204,41 @@ export default {
                 <ul
                   class="note-type-dropdown dropdown-open-top dropdown-menu">
                   <li
-                    :class="{ 'item-selected': noteType === 'comment' }"
+                    :class="{ 'droplab-item-selected': noteType === 'comment' }"
                     @click.prevent="setNoteType('comment')">
-                    <a href="#">
+                    <button class="btn btn-transparent">
                       <i
                         aria-hidden="true"
-                        class="fa fa-check"></i>
+                        class="fa fa-check icon"></i>
                       <div class="description">
                         <strong>Comment</strong>
                         <p>
                           Add a general comment to this issue.
                         </p>
                       </div>
-                    </a>
+                    </button>
                   </li>
-                  <li class="divider"></li>
+                  <li class="divider droplab-item-ignore"></li>
                   <li
-                    :class="{ 'item-selected': noteType === 'discussion' }"
+                    :class="{ 'droplab-item-selected': noteType === 'discussion' }"
                     @click.prevent="setNoteType('discussion')">
-                    <a href="#">
+                    <button class="btn btn-transparent">
                       <i
                         aria-hidden="true"
-                        class="fa fa-check"></i>
+                        class="fa fa-check icon"></i>
                       <div class="description">
                         <strong>Start discussion</strong>
                         <p>
                           Discuss a specific suggestion or question.
                         </p>
                       </div>
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>
               <a
                 @click="handleSave(true)"
-                :class="{'btn-reopen': !isIssueOpen, 'btn-close': isIssueOpen}"
+                :class="actionButtonClassNames"
                 class="btn btn-nr btn-comment btn-comment-and-close"
                 role="button">
                 {{issueActionButtonTitle}}
