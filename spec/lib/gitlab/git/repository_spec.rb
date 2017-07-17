@@ -234,33 +234,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { expect(repository.bare?).to be_truthy }
   end
 
-  describe '#heads' do
-    let(:heads) { repository.heads }
-    subject { heads }
-
-    it { is_expected.to be_kind_of Array }
-
-    describe '#size' do
-      subject { super().size }
-      it { is_expected.to eq(SeedRepo::Repo::BRANCHES.size) }
-    end
-
-    context :head do
-      subject { heads.first }
-
-      describe '#name' do
-        subject { super().name }
-        it { is_expected.to eq("feature") }
-      end
-
-      context :commit do
-        subject { heads.first.dereferenced_target.sha }
-
-        it { is_expected.to eq("0b4bc9a49b562e85de7cc9e834518ea6828729b9") }
-      end
-    end
-  end
-
   describe '#ref_names' do
     let(:ref_names) { repository.ref_names }
     subject { ref_names }
@@ -521,7 +494,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it "should refresh the repo's #heads collection" do
-        head_names = @normal_repo.heads.map { |h| h.name }
+        head_names = @normal_repo.branches.map { |h| h.name }
         expect(head_names).to include(new_branch)
       end
 
@@ -542,7 +515,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
             eq(normal_repo.rugged.branches["master"].target.oid)
           )
 
-          head_names = normal_repo.heads.map { |h| h.name }
+          head_names = normal_repo.branches.map { |h| h.name }
           expect(head_names).not_to include(new_branch)
         end
 
@@ -587,10 +560,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it "should remove the branch from the repo" do
       expect(@repo.rugged.branches["feature"]).to be_nil
-    end
-
-    it "should update the repo's #heads collection" do
-      expect(@repo.heads).not_to include("feature")
     end
 
     after(:all) do

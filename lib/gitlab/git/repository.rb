@@ -80,16 +80,10 @@ module Gitlab
       end
 
       # Returns an Array of Branches
-      def branches(filter: nil, sort_by: nil)
-        branches = rugged.branches.each(filter).map do |rugged_ref|
-          begin
-            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
-          rescue Rugged::ReferenceError
-            # Omit invalid branch
-          end
-        end.compact
-
-        sort_branches(branches, sort_by)
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/389
+      def branches(sort_by: nil)
+        branches_filter(sort_by: sort_by)
       end
 
       def reload_rugged
@@ -107,7 +101,10 @@ module Gitlab
         reload_rugged if force_reload
 
         rugged_ref = rugged.branches[name]
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target) if rugged_ref
+        if rugged_ref
+          target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+          Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+        end
       end
 
       def local_branches(sort_by: nil)
@@ -115,7 +112,7 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
-            branches(filter: :local, sort_by: sort_by)
+            branches_filter(filter: :local, sort_by: sort_by)
           end
         end
       end
@@ -162,6 +159,8 @@ module Gitlab
       end
 
       # Returns an Array of Tags
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
         rugged.references.each("refs/tags/*").map do |ref|
           message = nil
@@ -174,7 +173,8 @@ module Gitlab
             end
           end
 
-          Gitlab::Git::Tag.new(self, ref.name, ref.target, message)
+          target_commit = Gitlab::Git::Commit.find(self, ref.target)
+          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
         end.sort_by(&:name)
       end
 
@@ -202,13 +202,6 @@ module Gitlab
       # Returns an Array of branch and tag names
       def ref_names
         branch_names + tag_names
-      end
-
-      # Deprecated. Will be removed in 5.2
-      def heads
-        rugged.references.each("refs/heads/*").map do |head|
-          Gitlab::Git::Ref.new(self, head.name, head.target)
-        end.sort_by(&:name)
       end
 
       def has_commits?
@@ -707,7 +700,8 @@ module Gitlab
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
         rugged_ref = rugged.branches.create(ref, start_point)
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
+        target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
         raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
         raise InvalidRef.new("Invalid reference #{start_point}")
@@ -836,6 +830,20 @@ module Gitlab
       end
 
       private
+
+      # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
+      def branches_filter(filter: nil, sort_by: nil)
+        branches = rugged.branches.each(filter).map do |rugged_ref|
+          begin
+            target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+          rescue Rugged::ReferenceError
+            # Omit invalid branch
+          end
+        end.compact
+
+        sort_branches(branches, sort_by)
+      end
 
       def raw_log(options)
         default_options = {
