@@ -178,6 +178,7 @@ if Gitlab::Metrics.enabled?
     # Ability is in app/models, is not an ActiveRecord model, but should still
     # be instrumented.
     Gitlab::Metrics::Instrumentation.instrument_methods(Ability)
+    Gitlab::Metrics::Instrumentation.instrument_class_hierarchy(DeclarativePolicy::Base)
   end
 
   Gitlab::Metrics::Instrumentation.configure do |config|
