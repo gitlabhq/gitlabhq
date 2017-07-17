@@ -13,7 +13,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     @projects = @projects.non_archived unless params[:archived].present?
     @projects = @projects.personal(current_user) if params[:personal].present?
     @projects = @projects.search(params[:name]) if params[:name].present?
-    @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.sort_by_attr(@sort = params[:sort])
     @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page])
 
     respond_to do |format|
