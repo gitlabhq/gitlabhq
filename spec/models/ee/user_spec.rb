@@ -73,4 +73,36 @@ describe EE::User, models: true do
       expect(user.full_private_access?).to be_truthy
     end
   end
+
+  describe '#forget_me!' do
+    subject { create(:user, remember_created_at: Time.now) }
+
+    it 'clears remember_created_at' do
+      subject.forget_me!
+
+      expect(subject.reload.remember_created_at).to be_nil
+    end
+
+    it 'does not clear remember_created_at when in a Geo secondary node' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+
+      expect { subject.forget_me! }.not_to change(subject, :remember_created_at)
+    end
+  end
+
+  describe '#remember_me!' do
+    subject { create(:user, remember_created_at: nil) }
+
+    it 'updates remember_created_at' do
+      subject.remember_me!
+
+      expect(subject.reload.remember_created_at).not_to be_nil
+    end
+
+    it 'does not update remember_created_at when in a Geo secondary node' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+
+      expect { subject.remember_me! }.not_to change(subject, :remember_created_at)
+    end
+  end
 end
