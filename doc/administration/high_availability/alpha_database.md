@@ -1,47 +1,48 @@
-# Configuring a Database for GitLab HA
+# Configuring Databases for GitLab HA
 > Note: GitLab HA requires Enterprise Edition Premium
 
 **Warning**
 This functionality should be considered beta, use with caution.
 **Warning**
 
-You can choose to install and manage a database server (PostgreSQL/MySQL)
-yourself, or you can use GitLab Omnibus packages to help. GitLab recommends
-PostgreSQL. This is the database that will be installed if you use the
-Omnibus package to manage your database.
+## Overview
+GitLab supports multiple options for its database backend
+* Using the Omnibus GitLab package to configure PG in HA setup (EEP only). This document contains directions for EEP users.
+* Using GitLab with an [externally managed PostgreSQL service](../external_database.md). This could be a cloud provider, or your own service.
+or for a non-HA option
+* Using the Omnibus Gitlab CE/EES package with a [single PostgreSQL instance](http://docs.gitlab.com/omnibus/settings/database.html).
 
-## Configure your own database server
+## Configure Omnibus GitLab package database HA (Enterprise Edition Premium)
 
-If you're hosting GitLab on a cloud provider, you can optionally use a
-managed service for PostgreSQL. For example, AWS offers a managed Relational
-Database Service (RDS) that runs PostgreSQL.
 
-Alternatively, you may opt to manage your own PostgreSQL instance or cluster
-separate from the GitLab Omnibus package.
 
-If you use a cloud-managed service, or provide your own PostgreSQL instance:
 
-1. Setup PostgreSQL according to the
-   [database requirements document](../../install/requirements.md#database).
-1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
-   needs privileges to create the `gitlabhq_production` database.
-1. Configure the GitLab application servers with the appropriate details.
-   This step is covered in [Configuring GitLab for HA](gitlab.md).
+### Preparation
+The recommended configuration for a PostgreSQL HA setup requires:
+* A minimum of two database nodes
+  * Each node will run the following services
+    * postgresql -- The database itself
+    * repmgrd -- A service to monitor, and handle failover in case of a master failure
+* At least one separate node for running the `pgbouncer` service.
+  * This is recommended to be on the same node as your `gitlab-rails` service(s)
 
-## Configure using Omnibus
-Following these steps should leave you with a database cluster consisting of at least 2 nodes,
-using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and failing over.
+#### Needed information
+* Network information for all nodes, IP addresses, subnet masks, and DNS names if appropriate.
+* Password and it's hash for pgbouncer to authenticate with the database.
+  * The hash can be generated with the following command:
+   ```
+   $ echo -n 'PASSWORD+USERNAME' | md5sum
+   ```
+   The default username is pgbouncer
 
-### On each database node
+### Installation
+
+#### On each node
 1. Download/install GitLab Omnibus using **steps 1 and 2** from
    [GitLab downloads](https://about.gitlab.com/downloads). Do not complete other
    steps on the download page.
 
-1. Create a password hash for the sql user (the default username is `gitlab`)
-   ```
-   $ echo -n 'PASSWORD+USERNAME' | md5sum
-   ```
-
+#### On each database node
 1. Create/edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    If there is a directive listed below that you do not see in the configuration, be sure to add it.
     ```ruby
@@ -58,18 +59,20 @@ using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and fa
     mailroom['enable'] = false
 
     # PostgreSQL configuration
-    postgresql['md5_auth_cidr_addresses'] = %w(0.0.0.0/0)
-    postgresql['listen_address'] = '0.0.0.0'
-    postgresql['sql_user_password'] = 'PASSWORD_HASH' # This is the hash generated in the previous step
+    postgresql['listen_address'] = '0.0.0.0' # This can also be the IP address of the server, but should not be the loopback address
     postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.0/24)
     postgresql['hot_standby'] = 'on'
     postgresql['wal_level'] = 'replica'
     postgresql['max_wal_senders'] = X # Should be set to at least 1 more than the number of nodes in the cluster
     postgresql['shared_preload_libraries'] = 'repmgr_funcs' # If this attribute is already defined, append the new value as a comma separated list
 
+    # pgbouncer user
+    postgresql['pgbouncer_user'] = 'pgbouncer'
+    postgresql['pgbouncer_user_password'] = 'HASH' # This is the hash generated in the preparation section
+
     # repmgr configuration
     repmgr['enable'] = true
-    repmgr['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY) # This should be the CIDR of the network your database nodes are on
+    repmgr['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY) # This should be the CIDR of the network(s) your database nodes are on
 
     # Disable automatic database migrations
     gitlab_rails['auto_migrate'] = false
@@ -80,35 +83,22 @@ using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and fa
     # gitlab-ctl reconfigure
     ```
 
-### On the primary database node
+#### On the primary database node
 
 1. Open a database prompt:
 
     ```
-    $ gitlab-psql -d template1
+    $ gitlab-psql -d gitlabhq_production
     # Output:
 
     psql (DB_VERSION)
     Type "help" for help.
 
-    template1=#
+    gitlabhq_production=#
     ```
 
-1. Run the following command at the database prompt and you will be asked to
-   enter the new password for the PostgreSQL superuser.
-
+1. Enable the `pg_trgm` extension:
     ```
-    template1=# \password
-
-    # Output:
-
-    Enter new password:
-    Enter it again:
-    ```
-
-1. Switch to the GitLab database and Enable the `pg_trgm` extension:
-    ```
-    template1=# \c gitlabhq_production
     gitlabhq_production=# CREATE EXTENSION pg_trgm;
 
     # Output:
@@ -126,7 +116,7 @@ using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and fa
    * master  | HOSTNAME    |          | host=HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
    ```
 
-### On each standby node
+#### On each standby node
 1. Setup the repmgr standby
     ```
     # gitlab-ctl repmgr standby setup MASTER_NODE
@@ -141,65 +131,66 @@ using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and fa
      standby | STANDBY    | MASTER     | host=STANDBY_HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
    ```
 
-### (Optional) Enable repmgrd
-You can use repmgrd to monitor the database, and automatically failover if it detects the current master is unreachable.
-Currently, there is no method of telling the application to automatically fail over to the new master, it must be done
-manually. So this step is not required.
+#### On the pgbouncer node
+Ensure the following attributes are set
+```ruby
+pgbouncer['enable'] = true
+pgbouncer['databases'] = {
+  gitlabhq_production: {
+    host: '172.21.0.2',
+    user: 'pgbouncer',
+    password: 'HASH' # This should be the hash from the preparation section
+  }
+}
+```
+Remaining TBD
 
-If you still want to enable this feature, do the following on each database node
-1. Add the following line to `/var/opt/gitlab/postgresql/repmgr.conf`
-    ```
-    failover=automatic
-    ```
+#### Configuring the Application
+After database setup is complete, the next step is to Configure the GitLab application servers with the appropriate details.
+Add the following to `/etc/gitlab/gitlab.rb` on the application nodes
+```ruby
+gitlab_rails['db_host'] = '127.0.0.1'
+gitlab_rails['db_port'] = 6432
+```
 
-1. Create the log directory
-    ```
-    install -o -d gitlab-psql /var/log/gitlab/repmgr
-    ```
+### Failover procedure
+By default, if the master database fails, repmgrd should promote one of the standby nodes to master automatically.
 
-1. Start repmgrd
-    ```
-    # su - gitlab-psql -c '/opt/gitlab/embedded/bin/repmgrd -f /var/opt/gitlab/postgresql/repmgr.conf --verbose -d >> /var/log/gitlab/repmgr/repmgr.log 2>&1'
-    ```
-
-### Operations
-If your master node is experiencing an issue, you can manually failover.
-1. If the master database is still running, shut it down first
+If you need to failover manually, you have two options:
+1. Shutdown the current master database
    ```
    # gitlab-ctl stop postgresql
    ```
+   The automated failover process will see this and failover to one of the standby nodes.
 
-1. Login to the server that should become the new master and run the following
-    ```
-    # gitlab-ctl repmgr standby promote
-    ```
+1. Manually failover
+  1. Login to the server that should become the new master and run the following
+      ```
+      # gitlab-ctl repmgr standby promote
+      ```
 
-1. If there are any other standby servers in the cluster, have them follow the new master server
-    ```
-    # gitlab-ctl repmgr standby follow NEW_MASTER
-    ```
+  1. If there are any other standby servers in the cluster, have them follow the new master server
+      ```
+      # gitlab-ctl repmgr standby follow NEW_MASTER
+      ```
 
-1. On the servers that run `gitlab-rails`, set the `gitlab_rails['db_host']` attribute to the new master, and run `gitlab-ctl reconfigure`
+  1. TBD: Notify application of new nodes
 
-1. At this point, you should have a functioning cluster with database writes going to the new master. Now you can recover the failed master server, or remove it from the cluster
+### Restore procedure
+If a node fails, it can be removed from the cluster, or added back as a standby after it has been restored to service.
 
-1. If you want to remove the node from the cluster, on any other node in the cluster, run:
+* If you want to remove the node from the cluster, on any other node in the cluster, run:
     ```
     # gitlab-ctl repmgr standby unregister --node=X # X should be the value of node in repmgr.conf on the old server
     ```
 
-1. If the failed master has been recovered, it can be converted to a standby server and follow the new master server[^1]
+* To add the node as a standby server[^1]
     ```
     # gitlab-ctl repmgr standby follow NEW_MASTER
     ```
 
-[^1]: When the server is back online, and before you switch it to a standby node, repmgr will report that there are two masters.
-If there are any clients that are still writing to the old master, this will cause a split, and the old master will need to be resynced from scratch by performing a `standby clone` before you run `standby follow`
-
-## Configuring the Application
-After database setup is complete, the next step is to Configure the GitLab application servers with the appropriate details.
-When prompted for `gitlab_rails['db_host']`, this should be set to the master node in your cluster.
-This step is covered in [Configuring GitLab for HA](gitlab.md).
+[^1]: **Warning**: When the server is brought back online, and before you switch it to a standby node, repmgr will report that there are two masters.
+If there are any clients that are still attempting to write to the old master, this will cause a split, and the old master will need to be resynced from scratch by performing a `standby setup NEW_MASTER`.
 
 ---
 
