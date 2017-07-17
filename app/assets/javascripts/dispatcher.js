@@ -11,7 +11,6 @@
 /* global MilestoneSelect */
 /* global Commit */
 /* global NotificationsForm */
-/* global TreeView */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
