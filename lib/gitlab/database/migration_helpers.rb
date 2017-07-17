@@ -260,7 +260,7 @@ module Gitlab
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
+          update_arel = Arel::UpdateManager.new
             .table(table)
             .set([[table[column], value]])
             .where(table[:id].gteq(start_id))
