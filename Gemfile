@@ -91,7 +91,7 @@ gem 'carrierwave', '~> 1.1'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 0.9'
+gem 'fog-aws', '~> 1.4'
 gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
