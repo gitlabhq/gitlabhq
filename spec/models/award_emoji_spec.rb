@@ -41,4 +41,40 @@ describe AwardEmoji, models: true do
       end
     end
   end
+
+  describe 'expiring ETag cache' do
+    context 'on a note' do
+      let(:note) { create(:note_on_issue) }
+      let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: note) }
+
+      it 'calls expire_etag_cache on the note when saved' do
+        expect(note).to receive(:expire_etag_cache)
+
+        award_emoji.save!
+      end
+
+      it 'calls expire_etag_cache on the note when destroyed' do
+        expect(note).to receive(:expire_etag_cache)
+
+        award_emoji.destroy!
+      end
+    end
+
+    context 'on another awardable' do
+      let(:issue) { create(:issue) }
+      let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: issue) }
+
+      it 'does not call expire_etag_cache on the issue when saved' do
+        expect(issue).not_to receive(:expire_etag_cache)
+
+        award_emoji.save!
+      end
+
+      it 'does not call expire_etag_cache on the issue when destroyed' do
+        expect(issue).not_to receive(:expire_etag_cache)
+
+        award_emoji.destroy!
+      end
+    end
+  end
 end

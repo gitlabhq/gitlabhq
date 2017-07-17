@@ -299,6 +299,17 @@ class Note < ActiveRecord::Base
     end
   end
 
+  def expire_etag_cache
+    return unless for_issue?
+
+    key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
+      noteable.project,
+      target_type: noteable_type.underscore,
+      target_id: noteable.id
+    )
+    Gitlab::EtagCaching::Store.new.touch(key)
+  end
+
   private
 
   def keep_around_commit
@@ -325,16 +336,5 @@ class Note < ActiveRecord::Base
 
   def set_discussion_id
     self.discussion_id ||= discussion_class.discussion_id(self)
-  end
-
-  def expire_etag_cache
-    return unless for_issue?
-
-    key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
-      noteable.project,
-      target_type: noteable_type.underscore,
-      target_id: noteable.id
-    )
-    Gitlab::EtagCaching::Store.new.touch(key)
   end
 end
