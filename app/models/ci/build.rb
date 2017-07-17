@@ -130,6 +130,14 @@ module Ci
       success? || failed? || canceled?
     end
 
+    def retries_count
+      pipeline.builds.retried.where(name: self.name).count
+    end
+
+    def retries_max
+      self.options.fetch(:retry, 0).to_i
+    end
+
     def latest?
       !retried?
     end

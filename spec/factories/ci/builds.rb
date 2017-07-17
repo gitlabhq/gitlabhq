@@ -84,6 +84,10 @@ FactoryGirl.define do
       success
     end
 
+    trait :retried do
+      retried true
+    end
+
     trait :cancelable do
       pending
     end
