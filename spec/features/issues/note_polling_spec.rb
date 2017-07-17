@@ -43,17 +43,17 @@ feature 'Issue notes polling', :feature, :js do
       it 'when editing but have not changed anything, and an update comes in, show the updated content in the textarea' do
         click_edit_action(existing_note)
 
-        expect(page).to have_field("note[note]", with: note_text)
+        expect(page).to have_field("note-body", with: note_text)
 
         update_note(existing_note, updated_text)
 
-        expect(page).to have_field("note[note]", with: updated_text)
+        expect(page).to have_field("note-body", with: updated_text)
       end
 
       it 'when editing but you changed some things, and an update comes in, show a warning' do
         click_edit_action(existing_note)
 
-        expect(page).to have_field("note[note]", with: note_text)
+        expect(page).to have_field("note-body", with: note_text)
 
         find("#note_#{existing_note.id} .js-note-text").set('something random')
         update_note(existing_note, updated_text)
@@ -64,7 +64,7 @@ feature 'Issue notes polling', :feature, :js do
       it 'when editing but you changed some things, an update comes in, and you press cancel, show the updated content' do
         click_edit_action(existing_note)
 
-        expect(page).to have_field("note[note]", with: note_text)
+        expect(page).to have_field("note-body", with: note_text)
 
         find("#note_#{existing_note.id} .js-note-text").set('something random')
 
@@ -88,14 +88,12 @@ feature 'Issue notes polling', :feature, :js do
         visit project_issue_path(project, issue)
       end
 
-      it 'has .original-note-content to compare against' do
+      it 'displays the updated content' do
         expect(page).to have_selector("#note_#{existing_note.id}", text: note_text)
-        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
 
         update_note(existing_note, updated_text)
 
         expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
-        expect(page).to have_selector("#note_#{existing_note.id} .original-note-content", count: 1, visible: false)
       end
     end
 
@@ -109,9 +107,8 @@ feature 'Issue notes polling', :feature, :js do
         visit project_issue_path(project, issue)
       end
 
-      it 'has .original-note-content to compare against' do
+      it 'shows the system note' do
         expect(page).to have_selector("#note_#{system_note.id}", text: note_text)
-        expect(page).to have_selector("#note_#{system_note.id} .original-note-content", count: 1, visible: false)
       end
     end
   end
