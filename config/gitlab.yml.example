@@ -383,13 +383,13 @@ production: &base
       #             service_validate_url: '/cas/p3/serviceValidate',
       #             logout_url: '/cas/logout'} }
       # - { name: 'authentiq',
-      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/
+      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/developers
       #     app_id: 'YOUR_CLIENT_ID',
       #     app_secret: 'YOUR_CLIENT_SECRET',
       #     args: {
       #             scope: 'aq:name email~rs address aq:push'
-      #             # redirect_uri parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
-      #             # redirect_uri: 'YOUR_REDIRECT_URI'
+      #             # callback_url parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
+      #             # callback_url: 'YOUR_CALLBACK_URL'
       #           }
       #   }
       # - { name: 'github',
