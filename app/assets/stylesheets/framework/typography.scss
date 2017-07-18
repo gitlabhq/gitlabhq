@@ -2,6 +2,10 @@
   color: $gl-text-color;
   word-wrap: break-word;
 
+  [dir="auto"] {
+    text-align: initial;
+  }
+
   a {
     color: $md-link-color;
   }
