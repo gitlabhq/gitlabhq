@@ -275,7 +275,7 @@
 }
 
 .filtered-search-input-dropdown-menu {
-  max-height: 215px;
+  max-height: 225px;
   max-width: 280px;
   overflow: auto;
 
@@ -382,10 +382,6 @@
   }
 }
 
-.dropdown-menu .filter-dropdown-item {
-  padding: 0;
-}
-
 @media (max-width: $screen-xs-max) {
   .issues-details-filters {
     padding: 0 0 10px;
@@ -435,6 +431,7 @@
 
     .fa {
       width: 15px;
+      line-height: $line-height-base;
     }
 
     .dropdown-label-box {

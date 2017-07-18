@@ -91,7 +91,7 @@ gem 'carrierwave', '~> 1.1'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 0.9'
+gem 'fog-aws', '~> 1.4'
 gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
@@ -237,7 +237,6 @@ gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sass-rails', '~> 5.0.6'
-gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable', '~> 2.3.8'

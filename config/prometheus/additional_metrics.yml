@@ -7,7 +7,7 @@
       - aws_elb_request_count_sum
     weight: 1
     queries:
-    - query_range: 'sum(aws_elb_request_count_sum{%{environment_filter}}) * 60'
+    - query_range: 'sum(aws_elb_request_count_sum{%{environment_filter}}) / 60'
       label: Total
       unit: req / sec
   - title: "Latency"

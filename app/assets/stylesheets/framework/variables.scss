@@ -110,10 +110,10 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
-$gl-text-color: rgba(0, 0, 0, .85);
-$gl-text-color-light: rgba(0, 0, 0, .7);
-$gl-text-color-secondary: rgba(0, 0, 0, .55);
-$gl-text-color-disabled: rgba(0, 0, 0, .35);
+$gl-text-color: #2e2e2e;
+$gl-text-color-secondary: #707070;
+$gl-text-color-tertiary: #949494;
+$gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1.0);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
 $gl-text-green: $green-600;
@@ -127,7 +127,7 @@ $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
 $gl-header-nav-hover-color: #434343;
-$placeholder-text-color: rgba(0, 0, 0, .42);
+$placeholder-text-color: $gl-text-color-tertiary;
 
 /*
  * Lists
@@ -135,7 +135,7 @@ $placeholder-text-color: rgba(0, 0, 0, .42);
 $list-font-size: $gl-font-size;
 $list-title-color: $gl-text-color;
 $list-text-color: $gl-text-color;
-$list-text-disabled-color: $gl-text-color-disabled;
+$list-text-disabled-color: $gl-text-color-tertiary;
 $list-border-light: #eee;
 $list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
