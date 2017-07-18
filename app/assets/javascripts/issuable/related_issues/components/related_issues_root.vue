@@ -102,7 +102,9 @@ export default {
     onPendingIssueRemoveRequest(indexToRemove) {
       this.store.removePendingRelatedIssue(indexToRemove);
     },
-    onPendingFormSubmit() {
+    onPendingFormSubmit(newValue) {
+      this.processAllReferences(newValue);
+
       if (this.state.pendingReferences.length > 0) {
         this.isSubmitting = true;
         this.service.addRelatedIssues(this.state.pendingReferences)
@@ -165,7 +167,10 @@ export default {
       this.inputValue = `${touchedReference}`;
     },
     onBlur(newValue) {
-      const rawReferences = newValue
+      this.processAllReferences(newValue);
+    },
+    processAllReferences(value = '') {
+      const rawReferences = value
         .split(/\s+/)
         .filter(reference => reference.trim().length > 0);
 

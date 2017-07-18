@@ -75,7 +75,8 @@ export default {
       this.$refs.input.focus();
     },
     onFormSubmit() {
-      eventHub.$emit('addIssuableFormSubmit');
+      const value = this.$refs.input.value;
+      eventHub.$emit('addIssuableFormSubmit', value);
     },
     onFormCancel() {
       eventHub.$emit('addIssuableFormCancel');
@@ -105,7 +106,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <form @submit.prevent="onFormSubmit">
     <div
       ref="issuableFormWrapper"
       class="add-issuable-form-input-wrapper form-control"
@@ -139,9 +140,8 @@ export default {
     <div class="add-issuable-form-actions clearfix">
       <button
         ref="addButton"
-        type="button"
+        type="submit"
         class="js-add-issuable-form-add-button btn btn-new pull-left"
-        @click="onFormSubmit"
         :disabled="isSubmitButtonDisabled">
         Add
         <loadingIcon
@@ -157,5 +157,5 @@ export default {
         Cancel
       </button>
     </div>
-  </div>
+  </form>
 </template>
