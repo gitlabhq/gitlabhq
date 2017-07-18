@@ -16,6 +16,7 @@ class License < ActiveRecord::Base
   ISSUABLE_DEFAULT_TEMPLATES_FEATURE = 'GitLab_IssuableDefaultTemplates'.freeze
   ISSUE_BOARD_FOCUS_MODE_FEATURE = 'GitLab_IssueBoardFocusMode'.freeze
   ISSUE_BOARD_MILESTONE_FEATURE = 'GitLab_IssueBoardMilestone'.freeze
+  GROUP_ISSUE_BOARDS_FEATURE =  'GitLab_GroupIssueBoards'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
   MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
@@ -51,6 +52,7 @@ class License < ActiveRecord::Base
     issuable_default_templates: ISSUABLE_DEFAULT_TEMPLATES_FEATURE,
     issue_board_focus_mode: ISSUE_BOARD_FOCUS_MODE_FEATURE,
     issue_board_milestone: ISSUE_BOARD_MILESTONE_FEATURE,
+    group_issue_boards: GROUP_ISSUE_BOARDS_FEATURE,
     issue_weights: ISSUE_WEIGHTS_FEATURE,
     merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
     merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
@@ -97,7 +99,8 @@ class License < ActiveRecord::Base
     { GEO_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 },
-    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 }
+    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 },
+    { GROUP_ISSUE_BOARDS_FEATURE => 1 }
   ].freeze
 
   EEU_FEATURES = [

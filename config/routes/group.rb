@@ -61,6 +61,21 @@ scope(path: 'groups/*group_id',
 
     resources :variables, only: [:index, :show, :update, :create, :destroy]
   end
+
+  ## EE-specific
+  resources :boards, only: [:index, :show, :create, :update, :destroy] do
+    scope module: :boards do
+      resources :issues, only: [:index, :update]
+
+      resources :lists, only: [:index, :create, :update, :destroy] do
+        collection do
+          post :generate
+        end
+
+        resources :issues, only: [:index, :create]
+      end
+    end
+  end
 end
 
 scope(path: 'groups/*id',

@@ -4,6 +4,9 @@ module EE
 
     prepended do
       belongs_to :milestone
+      belongs_to :group
+
+      validates :group, presence: true, unless: :project
     end
 
     def milestone

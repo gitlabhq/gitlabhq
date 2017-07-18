@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170707184244) do
+ActiveRecord::Schema.define(version: 20170718190627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,8 +212,10 @@ ActiveRecord::Schema.define(version: 20170707184244) do
     t.datetime "updated_at", null: false
     t.string "name", default: "Development", null: false
     t.integer "milestone_id"
+    t.integer "group_id"
   end
 
+  add_index "boards", ["group_id"], name: "index_boards_on_group_id", using: :btree
   add_index "boards", ["milestone_id"], name: "index_boards_on_milestone_id", using: :btree
   add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree
 
@@ -1895,6 +1897,7 @@ ActiveRecord::Schema.define(version: 20170707184244) do
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
