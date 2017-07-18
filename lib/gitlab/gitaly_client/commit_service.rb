@@ -80,6 +80,19 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      def find_all_commits(opts = {})
+        request = Gitaly::FindAllCommitsRequest.new(
+          repository: @gitaly_repo,
+          revision: opts[:ref].to_s,
+          max_count: opts[:max_count].to_i,
+          skip: opts[:skip].to_i
+        )
+        request.order = opts[:order].upcase if opts[:order].present?
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_all_commits, request)
+        consume_commits_response(response)
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})
@@ -94,7 +107,12 @@ module Gitlab
       end
 
       def consume_commits_response(response)
-        response.flat_map { |r| r.commits }
+        response.flat_map do |message|
+          message.commits.map do |gitaly_commit|
+            commit = GitalyClient::Commit.new(@repository, gitaly_commit)
+            Gitlab::Git::Commit.new(commit)
+          end
+        end
       end
     end
   end
