@@ -134,6 +134,7 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
+    mount ::API::GroupVariables
     mount ::API::Version
 
     route :any, '*path' do
