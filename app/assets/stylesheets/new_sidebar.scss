@@ -98,6 +98,7 @@ $new-sidebar-width: 220px;
   }
 
   li {
+    position: relative;
     white-space: nowrap;
 
     a {
@@ -126,8 +127,21 @@ $new-sidebar-width: 220px;
   padding-bottom: 8px;
 
   > li {
+    &:not(.active) {
+      @media (min-width: $screen-sm-min) {
+        a {
+          padding: 11px 16px 11px 24px;
+
+          &:hover,
+          &:focus {
+            background: transparent;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+
     a {
-      font-size: 12px;
       padding: 8px 16px 8px 24px;
 
       &:hover,
@@ -152,6 +166,34 @@ $new-sidebar-width: 220px;
 
 .sidebar-top-level-items {
   > li {
+    &:not(.active) {
+      .sidebar-sub-level-items {
+        @media (min-width: $screen-sm-min) {
+          position: fixed;
+          left: 220px;
+          width: 150px;
+          margin-left: -1px;
+          padding-bottom: 0;
+          background-color: #fff;
+          box-shadow: 2px 1px 3px rgba(0,0,0,.1);
+          border: 1px solid #e5e5e5;
+          border-left: 0;
+
+          &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 21px 12px;
+            border-color: transparent transparent transparent $hover-background;
+          }
+        }
+      }
+    }
+
     .badge {
       float: right;
       background-color: $inactive-badge-background;
@@ -171,6 +213,7 @@ $new-sidebar-width: 220px;
       }
     }
 
+    &:not(.active):hover > a,
     > a:hover {
       background-color: $hover-background;
       color: $hover-color;

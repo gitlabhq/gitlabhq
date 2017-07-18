@@ -347,4 +347,21 @@ $(function () {
   gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
+
+  $('.sidebar-top-level-items > li:not(.active)').on('mouseover', (e) => {
+    const windowHeight = window.innerHeight;
+    const $this = e.currentTarget;
+    const $subitems = $('.sidebar-sub-level-items', $this).show();
+
+    if ($subitems.length) {
+      const boundingRect = $this.getBoundingClientRect();
+
+      const bottomOverflow = windowHeight - (boundingRect.top + $subitems.outerHeight());
+      const top = bottomOverflow < 0 ? boundingRect.top - Math.abs(bottomOverflow) : boundingRect.top;
+
+      $subitems.css({
+        top,
+      });
+    }
+  }).on('mouseout', e => $('.sidebar-sub-level-items', e.currentTarget).hide());
 });
