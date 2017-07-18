@@ -1,5 +1,7 @@
 /* eslint-disable max-len, space-before-function-paren, no-underscore-dangle, consistent-return, comma-dangle, no-unused-vars, dot-notation, no-new, no-return-assign, camelcase, no-param-reassign, class-methods-use-this */
 
+import ActivityCalendar from './activity_calendar';
+
 /*
 UserTabs
 
@@ -59,6 +61,15 @@ content on the Users#show page.
      </div>
    </div>
 */
+
+const CALENDAR_TEMPLATE = `
+  <div class="clearfix calendar">
+    <div class="js-contrib-calendar"></div>
+    <div class="calendar-hint">
+      Summary of issues, merge requests, push events, and comments
+    </div>
+  </div>
+`;
 
 export default class UserTabs {
   constructor ({ defaultAction, action, parentEl }) {
@@ -147,9 +158,21 @@ export default class UserTabs {
       return;
     }
     const $calendarWrap = this.$parentEl.find('.user-calendar');
-    $calendarWrap.load($calendarWrap.data('href'));
+    const calendarPath = $calendarWrap.data('calendarPath');
+    const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
+
+    $.ajax({
+      dataType: 'json',
+      type: 'GET',
+      url: calendarPath,
+      success: (activityData) => {
+        $calendarWrap.html(CALENDAR_TEMPLATE);
+        new ActivityCalendar(activityData, calendarActivitiesPath);
+      }
+    });
+
     new gl.Activities();
-    return this.loaded['activity'] = true;
+    this.loaded['activity'] = true;
   }
 
   toggleLoading(status) {
