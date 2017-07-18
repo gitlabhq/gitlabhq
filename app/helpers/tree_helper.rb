@@ -12,7 +12,7 @@ module TreeHelper
     tree.html_safe
   end
 
-  def repo_url()
+  def repo_url
     request.original_url
   end
 
