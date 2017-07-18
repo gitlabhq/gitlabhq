@@ -21,7 +21,7 @@ module Projects
         project.change_head(params[:default_branch])
       end
 
-      if project.update_attributes(params)
+      if project.update_attributes(params.except(:default_branch))
         if project.previous_changes.include?('path')
           project.rename_repo
         else
