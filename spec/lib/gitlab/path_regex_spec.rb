@@ -36,10 +36,12 @@ describe Gitlab::PathRegex, lib: true do
       described_class::PROJECT_WILDCARD_ROUTES.include?(path.split('/').first)
   end
 
-  def failure_message(constant_name, migration_helper, missing_words:, additional_words: [])
+  def failure_message(constant_name, migration_helper, missing_words: [], additional_words: [])
     missing_words = Array(missing_words)
     additional_words = Array(additional_words)
-    message = <<-MSG
+    message = ""
+    if missing_words.any?
+      message += <<-MISSING
       Found new routes that could cause conflicts with existing namespaced routes
       for groups or projects.
 
@@ -52,16 +54,15 @@ describe Gitlab::PathRegex, lib: true do
 
       Make sure to make a note of the renamed records in the release blog post.
 
-    MSG
+      MISSING
+    end
 
     if additional_words.any?
-      additional_message = <<-ADDITIONAL
+      message += <<-ADDITIONAL
       Why are <#{additional_words.join(', ')}> in `#{constant_name}`?
       If they are really required, update these specs to reflect that.
 
       ADDITIONAL
-
-      message = [message, additional_message].join
     end
 
     message
@@ -85,14 +86,11 @@ describe Gitlab::PathRegex, lib: true do
       route.split('/')[1]
     end.compact.uniq
 
-    words += files_in_public
-    words + additional_top_level_words
+    words + ee_top_level_words + files_in_public
   end
 
-  let(:additional_top_level_words) do
-    # Required to keep the uploads safe, remove after
-    # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12917 gets merged
-    ['system']
+  let(:ee_top_level_words) do
+    ['unsubscribes']
   end
 
   let(:files_in_public) do
@@ -145,7 +143,16 @@ describe Gitlab::PathRegex, lib: true do
   let(:paths_after_group_id) do
     group_routes.map do |route|
       route.gsub(STARTING_WITH_GROUP, '').split('/').first
-    end.uniq
+    end.uniq + ee_paths_after_group_id
+  end
+
+  let(:ee_paths_after_group_id) do
+    %w(analytics
+       ldap
+       ldap_group_links
+       notification_setting
+       audit_events
+       pipeline_quota hooks)
   end
 
   describe 'TOP_LEVEL_ROUTES' do
@@ -166,11 +173,13 @@ describe Gitlab::PathRegex, lib: true do
     it "don't contain a second wildcard" do
       failure_block = lambda do
         missing_words = paths_after_group_id - described_class::GROUP_ROUTES
-        failure_message('GROUP_ROUTES', 'rename_child_paths', missing_words: missing_words)
+        additional_words = described_class::GROUP_ROUTES - paths_after_group_id
+        failure_message('GROUP_ROUTES', 'rename_child_paths',
+                        missing_words: missing_words, additional_words: additional_words)
       end
 
       expect(described_class::GROUP_ROUTES)
-        .to include(*paths_after_group_id), failure_block
+        .to contain_exactly(*paths_after_group_id), failure_block
     end
   end
 
