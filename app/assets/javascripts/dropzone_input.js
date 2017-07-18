@@ -5,21 +5,28 @@ import './preview_markdown';
 
 window.DropzoneInput = (function() {
   function DropzoneInput(form) {
-    var updateAttachingMessage, $attachingFileMessage, $mdArea, $attachButton, $cancelButton, $retryLink, $uploadingErrorContainer, $uploadingErrorMessage, $uploadProgress, $uploadingProgressContainer, appendToTextArea, btnAlert, child, closeAlertMessage, closeSpinner, divHover, divSpinner, dropzone, $formDropzone, formTextarea, getFilename, handlePaste, iconPaperclip, iconSpinner, insertToTextArea, isImage, maxFileSize, pasteText, uploadsPath, showError, showSpinner, uploadFile, addFileToForm;
     Dropzone.autoDiscover = false;
-    divHover = '<div class="div-dropzone-hover"></div>';
-    iconPaperclip = '<i class="fa fa-paperclip div-dropzone-icon"></i>';
-    $attachButton = form.find('.button-attach-file');
-    $attachingFileMessage = form.find('.attaching-file-message');
-    $cancelButton = form.find('.button-cancel-uploading-files');
-    $retryLink = form.find('.retry-uploading-link');
-    $uploadProgress = form.find('.uploading-progress');
-    $uploadingErrorContainer = form.find('.uploading-error-container');
-    $uploadingErrorMessage = form.find('.uploading-error-message');
-    $uploadingProgressContainer = form.find('.uploading-progress-container');
-    uploadsPath = window.uploads_path || null;
-    maxFileSize = gon.max_file_size || 10;
-    formTextarea = form.find('.js-gfm-input');
+    const divHover = '<div class="div-dropzone-hover"></div>';
+    const iconPaperclip = '<i class="fa fa-paperclip div-dropzone-icon"></i>';
+    const $attachButton = form.find('.button-attach-file');
+    const $attachingFileMessage = form.find('.attaching-file-message');
+    const $cancelButton = form.find('.button-cancel-uploading-files');
+    const $retryLink = form.find('.retry-uploading-link');
+    const $uploadProgress = form.find('.uploading-progress');
+    const $uploadingErrorContainer = form.find('.uploading-error-container');
+    const $uploadingErrorMessage = form.find('.uploading-error-message');
+    const $uploadingProgressContainer = form.find('.uploading-progress-container');
+    const uploadsPath = window.uploads_path || null;
+    const maxFileSize = gon.max_file_size || 10;
+    const formTextarea = form.find('.js-gfm-input');
+    let handlePaste;
+    let pasteText;
+    let addFileToForm;
+    let updateAttachingMessage;
+    let isImage;
+    let getFilename;
+    let uploadFile;
+
     formTextarea.wrap('<div class="div-dropzone"></div>');
     formTextarea.on('paste', (function(_this) {
       return function(event) {
@@ -28,16 +35,16 @@ window.DropzoneInput = (function() {
     })(this));
 
     // Add dropzone area to the form.
-    $mdArea = formTextarea.closest('.md-area');
+    const $mdArea = formTextarea.closest('.md-area');
     form.setupMarkdownPreview();
-    $formDropzone = form.find('.div-dropzone');
+    const $formDropzone = form.find('.div-dropzone');
     $formDropzone.parent().addClass('div-dropzone-wrapper');
     $formDropzone.append(divHover);
     $formDropzone.find('.div-dropzone-hover').append(iconPaperclip);
 
     if (!uploadsPath) return;
 
-    dropzone = $formDropzone.dropzone({
+    const dropzone = $formDropzone.dropzone({
       url: uploadsPath,
       dictDefaultMessage: '',
       clickable: true,
@@ -117,7 +124,7 @@ window.DropzoneInput = (function() {
       }
     });
 
-    child = $(dropzone[0]).children('textarea');
+    const child = $(dropzone[0]).children('textarea');
 
     // removeAllFiles(true) stops uploading files (if any)
     // and remove them from dropzone files queue.
@@ -214,6 +221,35 @@ window.DropzoneInput = (function() {
       return value.first();
     };
 
+    const showSpinner = function(e) {
+      return $uploadingProgressContainer.removeClass('hide');
+    };
+
+    const closeSpinner = function() {
+      return $uploadingProgressContainer.addClass('hide');
+    };
+
+    const showError = function(message) {
+      $uploadingErrorContainer.removeClass('hide');
+      $uploadingErrorMessage.html(message);
+    };
+
+    const closeAlertMessage = function() {
+      return form.find('.div-dropzone-alert').alert('close');
+    };
+
+    const insertToTextArea = function(filename, url) {
+      return $(child).val(function(index, val) {
+        return val.replace(`{{${filename}}}`, url);
+      });
+    };
+
+    const appendToTextArea = function(url) {
+      return $(child).val(function(index, val) {
+        return val + url + "\n";
+      });
+    };
+
     uploadFile = function(item, filename) {
       var formData;
       formData = new FormData();
@@ -260,35 +296,6 @@ window.DropzoneInput = (function() {
       }
 
       messageContainer.text(attachingMessage);
-    };
-
-    insertToTextArea = function(filename, url) {
-      return $(child).val(function(index, val) {
-        return val.replace(`{{${filename}}}`, url);
-      });
-    };
-
-    appendToTextArea = function(url) {
-      return $(child).val(function(index, val) {
-        return val + url + "\n";
-      });
-    };
-
-    showSpinner = function(e) {
-      return $uploadingProgressContainer.removeClass('hide');
-    };
-
-    closeSpinner = function() {
-      return $uploadingProgressContainer.addClass('hide');
-    };
-
-    showError = function(message) {
-      $uploadingErrorContainer.removeClass('hide');
-      $uploadingErrorMessage.html(message);
-    };
-
-    closeAlertMessage = function() {
-      return form.find('.div-dropzone-alert').alert('close');
     };
 
     form.find('.markdown-selector').click(function(e) {
