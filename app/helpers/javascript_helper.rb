@@ -11,6 +11,6 @@ module JavascriptHelper
   def repo_bundle_tags
     return unless body_data_page =~ /projects\:(tree|blob)\:show/
 
-    javascript_include_tag('/assets/webpack/vs/loader') + webpack_bundle_tag('repo')
+    webpack_bundle_tag('repo')
   end
 end
