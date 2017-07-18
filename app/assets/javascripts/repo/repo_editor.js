@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import Store from './repo_store';
 import Helper from './repo_helper';
+import monacoLoader from './monaco_loader';
 
 export default class RepoEditor {
   constructor() {
@@ -19,8 +20,7 @@ export default class RepoEditor {
   }
 
   initMonaco() {
-    window.require.config({ paths: { vs: '/assets/webpack/vs' } });
-    window.require(['vs/editor/editor.main'], () => {
+    monacoLoader(['vs/editor/editor.main'], () => {
       this.monacoEditor = monaco.editor
       .create(
         document.getElementById('ide'), {
@@ -115,7 +115,7 @@ export default class RepoEditor {
                 Helper
                   .getLanguageForFile(
                     this.activeFile,
-                    monaco.languages.getLanguages()
+                    monaco.languages.getLanguages(),
                   ),
               ),
             );

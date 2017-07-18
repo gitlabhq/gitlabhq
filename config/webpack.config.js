@@ -4,11 +4,11 @@ var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
 var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -58,7 +58,7 @@ var config = {
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
-    repo:                 './repo/repo_bundle',
+    repo:                 './repo/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
     schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
@@ -110,7 +110,16 @@ var config = {
         test: /locale\/\w+\/(.*)\.js$/,
         loader: 'exports-loader?locales',
       },
-    ]
+      {
+        test: /monaco-editor\/\w+\/vs\/loader\.js$/,
+        use: [
+          { loader: 'exports-loader', options: 'l.global' },
+          { loader: 'imports-loader', options: 'l=>{},this=>l,AMDLoader=>this,module=>undefined' },
+        ],
+      }
+    ],
+
+    noParse: [/monaco-editor\/\w+\/vs\//],
   },
 
   plugins: [
@@ -168,6 +177,7 @@ var config = {
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
+        'repo',
         'schedule_form',
         'schedules_index',
         'sidebar',
@@ -193,10 +203,22 @@ var config = {
       names: ['main', 'locale', 'common', 'runtime'],
     }),
 
+    // copy pre-compiled vendor libraries verbatim
     new CopyWebpackPlugin([
       {
-        from: `../../../node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`,
-        to: 'vs'
+        from: path.join(ROOT_PATH, `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`),
+        to: 'monaco-editor/vs',
+        transform: function(content, path) {
+          if (/\.js$/.test(path)) {
+            return (
+              '(function(){\n' +
+              'var define = this.define, require = this.require;\n' +
+              content +
+              '\n}.call(window.__monaco_context__ || (window.__monaco_context__ = {})));'
+            );
+          }
+          return content;
+        }
       }
     ]),
   ],

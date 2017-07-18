@@ -3,6 +3,11 @@
 - page_title @path.presence || _("Files"), @ref
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
+
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'repo'
+
 = render "projects/commits/head"
 
 = render 'projects/last_push'
