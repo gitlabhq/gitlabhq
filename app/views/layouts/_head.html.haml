@@ -32,8 +32,6 @@
 
   = Gon::Base.render_data
 
-  %script{:type => "text/javascript", :src => "/monaco-editor/min/vs/loader.js"}
-
   = webpack_bundle_tag "runtime"
   = webpack_bundle_tag "common"
   = webpack_bundle_tag "locale"
@@ -42,7 +40,7 @@
   = webpack_bundle_tag "test" if Rails.env.test?
   = webpack_bundle_tag 'peek' if peek_enabled?
 
-  = webpack_bundle_tag 'repo'
+  = repo_bundle_tags
 
   - if content_for?(:page_specific_javascripts)
     = yield :page_specific_javascripts

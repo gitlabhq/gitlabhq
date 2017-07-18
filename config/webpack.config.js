@@ -8,6 +8,7 @@ var CompressionPlugin = require('compression-webpack-plugin');
 var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -191,6 +192,13 @@ var config = {
     new webpack.optimize.CommonsChunkPlugin({
       names: ['main', 'locale', 'common', 'runtime'],
     }),
+
+    new CopyWebpackPlugin([
+      {
+        from: `../../../node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`,
+        to: 'vs'
+      }
+    ]),
   ],
 
   resolve: {

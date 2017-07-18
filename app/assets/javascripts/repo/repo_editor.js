@@ -19,7 +19,7 @@ export default class RepoEditor {
   }
 
   initMonaco() {
-    window.require.config({ paths: { vs: '/monaco-editor/min/vs' } });
+    window.require.config({ paths: { vs: '/assets/webpack/vs' } });
     window.require(['vs/editor/editor.main'], () => {
       this.monacoEditor = monaco.editor
       .create(
