@@ -267,24 +267,30 @@ const RepoHelper = {
   },
   /* eslint-enable no-param-reassign */
 
-  blobToSimpleBlob(blob) {
-    return {
-      type: 'blob',
-      name: blob.name,
-      url: blob.url,
-      icon: this.toFA(blob.icon),
-      lastCommitMessage: blob.last_commit.message,
-      lastCommitUpdate: blob.last_commit.committed_date,
-      level: 0,
-    };
+  serializeBlob(blob) {
+    const simpleBlob = this.serializeRepoEntity('blob', blob);
+    simpleBlob.lastCommitMessage = blob.last_commit.message;
+    simpleBlob.lastCommitUpdate = blob.last_commit.committed_date;
+
+    return simpleBlob;
   },
 
-  treeToSimpleTree(tree) {
+  serializeTree(tree) {
+    return this.serializeRepoEntity('tree', tree);
+  },
+
+  serializeSubmodule(submodule) {
+    return this.serializeRepoEntity('submodule', submodule);
+  },
+
+  serializeRepoEntity(type, entity) {
+    const { url, name, icon } = entity;
+
     return {
-      type: 'tree',
-      name: tree.name,
-      url: tree.url,
-      icon: this.toFA(tree.icon),
+      type,
+      name,
+      url,
+      icon: this.toFA(icon),
       level: 0,
     };
   },
@@ -294,21 +300,15 @@ const RepoHelper = {
 
     // push in blobs
     data.blobs.forEach((blob) => {
-      a.push(this.blobToSimpleBlob(blob));
+      a.push(this.serializeBlob(blob));
     });
 
     data.trees.forEach((tree) => {
-      a.push(this.treeToSimpleTree(tree));
+      a.push(this.serializeTree(tree));
     });
 
     data.submodules.forEach((submodule) => {
-      a.push({
-        type: 'submodule',
-        name: submodule.name,
-        url: submodule.url,
-        icon: this.toFA(submodule.icon),
-        level: 0,
-      });
+      a.push(this.serializeSubmodule(submodule));
     });
 
     return a;
