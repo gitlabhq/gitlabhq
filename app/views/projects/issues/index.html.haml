@@ -11,7 +11,7 @@
   = webpack_bundle_tag 'filtered_search'
 
 = content_for :meta_tags do
-  = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
+  = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@project.name} issues")
 
 - if show_new_nav?
   - content_for :breadcrumbs_extra do

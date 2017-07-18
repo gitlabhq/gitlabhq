@@ -26,7 +26,7 @@
   - else
     %ul.merge-request-tabs.nav-links.no-top.no-bottom
       %li.commits-tab.active
-        = link_to url_for(params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
+        = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
           Commits
           %span.badge= @commits.size
       - if @pipelines.any?
