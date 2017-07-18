@@ -9,18 +9,18 @@ describe Ci::PipelinePolicy, :models do
   end
 
   describe 'rules' do
-    describe 'rules for protected branch' do
+    describe 'rules for protected ref' do
       let(:project) { create(:project) }
 
       before do
         project.add_developer(user)
-
-        create(:protected_branch, branch_policy,
-               name: pipeline.ref, project: project)
       end
 
       context 'when no one can push or merge to the branch' do
-        let(:branch_policy) { :no_one_can_push }
+        before do
+          create(:protected_branch, :no_one_can_push,
+                 name: pipeline.ref, project: project)
+        end
 
         it 'does not include ability to update pipeline' do
           expect(policy).to be_disallowed :update_pipeline
@@ -28,15 +28,34 @@ describe Ci::PipelinePolicy, :models do
       end
 
       context 'when developers can push to the branch' do
-        let(:branch_policy) { :developers_can_push }
+        before do
+          create(:protected_branch, :developers_can_merge,
+                 name: pipeline.ref, project: project)
+        end
 
         it 'includes ability to update pipeline' do
           expect(policy).to be_allowed :update_pipeline
         end
       end
 
-      context 'when developers can push to the branch' do
-        let(:branch_policy) { :developers_can_merge }
+      context 'when no one can create the tag' do
+        before do
+          create(:protected_tag, :no_one_can_create,
+                 name: pipeline.ref, project: project)
+
+          pipeline.update(tag: true)
+        end
+
+        it 'does not include ability to update pipeline' do
+          expect(policy).to be_disallowed :update_pipeline
+        end
+      end
+
+      context 'when no one can create the tag but it is not a tag' do
+        before do
+          create(:protected_tag, :no_one_can_create,
+                 name: pipeline.ref, project: project)
+        end
 
         it 'includes ability to update pipeline' do
           expect(policy).to be_allowed :update_pipeline

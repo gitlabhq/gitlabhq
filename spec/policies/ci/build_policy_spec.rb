@@ -96,7 +96,7 @@ describe Ci::BuildPolicy, :models do
       end
     end
 
-    describe 'rules for protected branch' do
+    describe 'rules for protected ref' do
       let(:project) { create(:project) }
       let(:build) { create(:ci_build, ref: 'some-ref', pipeline: pipeline) }
 
@@ -107,7 +107,7 @@ describe Ci::BuildPolicy, :models do
       context 'when no one can push or merge to the branch' do
         before do
           create(:protected_branch, :no_one_can_push,
-                 name: 'some-ref', project: project)
+                 name: build.ref, project: project)
         end
 
         it 'does not include ability to update build' do
@@ -118,7 +118,7 @@ describe Ci::BuildPolicy, :models do
       context 'when developers can push to the branch' do
         before do
           create(:protected_branch, :developers_can_merge,
-                 name: 'some-ref', project: project)
+                 name: build.ref, project: project)
         end
 
         it 'includes ability to update build' do
@@ -129,7 +129,7 @@ describe Ci::BuildPolicy, :models do
       context 'when no one can create the tag' do
         before do
           create(:protected_tag, :no_one_can_create,
-                 name: 'some-ref', project: project)
+                 name: build.ref, project: project)
 
           build.update(tag: true)
         end
@@ -142,7 +142,7 @@ describe Ci::BuildPolicy, :models do
       context 'when no one can create the tag but it is not a tag' do
         before do
           create(:protected_tag, :no_one_can_create,
-                 name: 'some-ref', project: project)
+                 name: build.ref, project: project)
         end
 
         it 'includes ability to update build' do
