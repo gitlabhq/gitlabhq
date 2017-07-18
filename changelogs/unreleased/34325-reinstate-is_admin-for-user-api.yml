@@ -1,4 +1,0 @@
----
-title: Return `is_admin` attribute in the GET /user endpoint for admins
-merge_request: 12811
-author:
