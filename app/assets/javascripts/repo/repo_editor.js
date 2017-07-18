@@ -21,14 +21,11 @@ export default class RepoEditor {
 
   initMonaco() {
     monacoLoader(['vs/editor/editor.main'], () => {
-      this.monacoEditor = monaco.editor
-      .create(
-        document.getElementById('ide'), {
-          model: null,
-          readOnly: true,
-          contextmenu: false,
-        },
-      );
+      this.monacoEditor = monaco.editor.create(this.el, {
+        model: null,
+        readOnly: true,
+        contextmenu: false,
+      });
 
       Helper.monacoInstance = monaco;
       this.initVue();
