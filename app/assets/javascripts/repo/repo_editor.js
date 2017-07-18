@@ -72,18 +72,19 @@ export default class RepoEditor {
         },
 
         editMode() {
-          if (this.editMode) {
-            document.querySelector('.panel-right').classList.add('edit-mode');
-            self.monacoEditor.updateOptions({
-              readOnly: false,
-            });
-          } else {
-            document.querySelector('.panel-right').classList.remove('edit-mode');
+          const panelClassList = document.querySelector('.panel-right').classList;
+          let readOnly = true;
 
-            self.monacoEditor.updateOptions({
-              readOnly: true,
-            });
+          if (this.editMode) {
+            panelClassList.add('edit-mode');
+          } else {
+            panelClassList.remove('edit-mode');
+            readOnly = true;
           }
+
+          self.monacoEditor.updateOptions({
+            readOnly,
+          });
         },
 
         activeFileLabel() {
