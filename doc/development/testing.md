@@ -479,6 +479,11 @@ slowest test files and try to improve them.
   run the suite against MySQL for tags, `master`, and any branch that includes
   `mysql` in the name.
 - On EE, the test suite always runs both PostgreSQL and MySQL.
+- Rails logging to `log/test.log` is disabled by default in CI [for
+  performance reasons][logging]. To override this setting, provide the
+  `RAILS_ENABLE_TEST_LOG` environment variable.
+
+[logging]: https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4
 
 ## Spinach (feature) tests
 
