@@ -8,8 +8,6 @@ const RepoHelper = {
     return Object.hasOwnProperty.call(data, 'blobs');
   },
 
-  monacoInstance: undefined,
-
   Time: window.performance
   && window.performance.now
   ? window.performance

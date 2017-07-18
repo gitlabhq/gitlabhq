@@ -1,4 +1,6 @@
 const RepoStore = {
+  ideEl: {},
+  monacoInstance: {},
   service: '',
   editor: '',
   sidebar: '',

@@ -7,7 +7,7 @@ import monacoLoader from './monaco_loader';
 export default class RepoEditor {
   constructor(el) {
     this.initMonaco();
-    this.el = el;
+    Store.ideEl = el;
   }
 
   addMonacoEvents() {
@@ -21,26 +21,26 @@ export default class RepoEditor {
 
   initMonaco() {
     monacoLoader(['vs/editor/editor.main'], () => {
-      this.monacoEditor = monaco.editor.create(this.el, {
+      this.monacoEditor = monaco.editor.create(Store.ideEl, {
         model: null,
         readOnly: true,
         contextmenu: false,
       });
 
-      Helper.monacoInstance = monaco;
+      Store.monacoInstance = this.monacoEditor;
+
       this.initVue();
       this.addMonacoEvents();
     });
   }
 
   initVue() {
-    const self = this;
     this.vue = new Vue({
       data: () => Store,
       created() {
         this.showHide();
         if (this.blobRaw !== '') {
-          self.monacoEditor.setModel(
+          this.monacoInstance.setModel(
             monaco.editor.createModel(
               this.blobRaw,
               'plain',
@@ -52,16 +52,16 @@ export default class RepoEditor {
       methods: {
         showHide() {
           if (!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
-            self.el.style.display = 'none';
+            this.ideEl.style.display = 'none';
           } else {
-            self.el.style.display = 'inline-block';
+            this.ideEl.style.display = 'inline-block';
           }
         },
       },
 
       watch: {
         activeLine() {
-          self.monacoEditor.setPosition({
+          this.monacoInstance.setPosition({
             lineNumber: this.activeLine,
             column: 1,
           });
@@ -78,7 +78,7 @@ export default class RepoEditor {
             readOnly = true;
           }
 
-          self.monacoEditor.updateOptions({
+          this.monacoInstance.updateOptions({
             readOnly,
           });
         },
@@ -104,9 +104,9 @@ export default class RepoEditor {
 
           if (!this.isTree) {
             // kill the current model;
-            self.monacoEditor.setModel(null);
+            this.monacoInstance.setModel(null);
             // then create the new one
-            self.monacoEditor.setModel(
+            this.monacoInstance.setModel(
               monaco.editor.createModel(
                 this.blobRaw,
                 Helper
