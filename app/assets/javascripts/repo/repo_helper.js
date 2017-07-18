@@ -17,6 +17,7 @@ const RepoHelper = {
 
   getLanguageForFile(file, langs) {
     const ext = `.${file.name.split('.').pop()}`;
+    console.log('ext',ext,'ext')
     let foundLang;
     if (langs.some((l) => {
       if (l.extensions && l.extensions.indexOf(ext) > -1) {
