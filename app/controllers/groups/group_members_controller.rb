@@ -12,7 +12,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @members = GroupMembersFinder.new(@group).execute
     @members = @members.non_invite unless can?(current_user, :admin_group, @group)
     @members = @members.search(params[:search]) if params[:search].present?
-    @members = @members.sort(@sort)
+    @members = @members.sort_by_attr(@sort)
     @members = @members.page(params[:page]).per(50)
     @members.includes(:user)
 
