@@ -23,7 +23,7 @@ module Github
     private
 
     def root_endpoint
-      custom_endpoint || githup_endpoint
+      custom_endpoint || github_endpoint
     end
 
     def custom_endpoint
