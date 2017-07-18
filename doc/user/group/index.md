@@ -224,8 +224,11 @@ To enable this feature, navigate to the group settings page. Select
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
 and [push rules](../../push_rules/push_rules.md) to your group
+(Push Rules is available in [GitLab Enteprise Edition Starter][ee].)
 - **Audit Events**: view [Audit Events](../../administration/audit_events.md)
-for the group (GitLab admins only)
-- **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
+for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee])
+- **Pipelines quota**: keep track of the
+[pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
 [permissions]: ../permissions.md#permissions
+[ee]: https://about.gitlab.com/products/

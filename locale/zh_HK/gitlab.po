@@ -14,10 +14,10 @@ msgstr ""
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
-msgid "%d additional commit has been omitted to prevent performance issues."
+msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural ""
-"%d additional commits have been omitted to prevent performance issues."
-msgstr[0] "為提高頁面加載速度及性能，已省略了 %d 次提交。"
+"%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "為提高頁面加載速度及性能，已省略了 %s 次提交。"
 
 msgid "%d commit"
 msgid_plural "%d commits"

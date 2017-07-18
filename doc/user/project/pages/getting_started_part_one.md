@@ -94,7 +94,8 @@ GitLab Pages for this project, the site will live under
 Once you enable GitLab Pages for your project, your website
 will be published under `https://john.gitlab.io`.
 - Under your group `websites`, you created a project called
-`websites.gitlab.io`. your project's URL will be `https://gitlab.com/websites/websites.gitlab.io`. Once you enable GitLab Pages for your project,
+`websites.gitlab.io`. your project's URL will be `https://gitlab.com/websites/websites.gitlab.io`.
+Once you enable GitLab Pages for your project,
 your website will be published under `https://websites.gitlab.io`.
 
 >**Note:**

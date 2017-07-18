@@ -123,7 +123,7 @@ Multiple Issue Boards enables you to create more than one Issue Board per projec
 It's great for large projects with more than one team or in situations where a
 repository is used to host the code of multiple products.
 
-_[Multiple Issue Boards](../issue_board.html#multiple-issue-boards)
+_[Multiple Issue Boards](../issue_board.md#multiple-issue-boards)
 are available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
 
 ### Export Issues to CSV (EES/EEP)

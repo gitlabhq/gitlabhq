@@ -26,6 +26,7 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
+
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md) (available only in GitLab Enterprise Edition Premium)
 - Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests) (available in GitLab Enterprise Edition Starter)
@@ -188,6 +189,16 @@ specific commit page.
 >**Tip:**
 You can append `?w=1` while on the diffs page of a merge request to ignore any
 whitespace changes.
+
+## Live preview with Review Apps
+
+If you configured [Review Apps](https://about.gitlab.com/features/review-apps/) for your project,
+you can preview the changes submitted to a feature-branch through a merge request
+in a per-branch basis. No need to checkout the branch, install and preview locally;
+all your changes will be available to preview by anyone with the Review Apps link.
+
+[Read more about Review Apps.](../../../ci/review_apps/index.md)
+
 
 ## Tips
 

@@ -149,7 +149,6 @@ import './star';
 import './subscription';
 import './subscription_select';
 import './syntax_highlight';
-import './user';
 
 // EE-only scripts
 import './admin_email_select';
