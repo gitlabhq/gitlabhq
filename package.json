@@ -29,6 +29,7 @@
     "dropzone": "^4.2.0",
     "emoji-unicode-version": "^0.2.1",
     "es6-map": "^0.1.5",
+    "es6-set": "^0.1.5",
     "eslint-plugin-html": "^2.0.1",
     "exports-loader": "^0.6.4",
     "file-loader": "^0.11.1",
