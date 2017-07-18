@@ -8,7 +8,6 @@ module Gitlab
       geo_node_enabled
       geo_node_primary
       geo_node_secondary
-      geo_primary_ssh_path_prefix
       geo_oauth_application
     ).freeze
 
