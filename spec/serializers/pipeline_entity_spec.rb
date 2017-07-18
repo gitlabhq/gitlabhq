@@ -5,6 +5,8 @@ describe PipelineEntity do
   let(:request) { double('request') }
 
   before do
+    stub_not_protect_default_branch
+
     allow(request).to receive(:current_user).and_return(user)
   end
 
@@ -52,7 +54,7 @@ describe PipelineEntity do
 
       context 'user has ability to retry pipeline' do
         before do
-          project.add_master(user)
+          project.add_developer(user)
         end
 
         it 'contains retry path' do
@@ -80,7 +82,7 @@ describe PipelineEntity do
 
       context 'user has ability to cancel pipeline' do
         before do
-          project.add_master(user)
+          project.add_developer(user)
         end
 
         it 'contains cancel path' do

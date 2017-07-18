@@ -9,6 +9,8 @@ describe PipelineDetailsEntity do
   end
 
   before do
+    stub_not_protect_default_branch
+
     allow(request).to receive(:current_user).and_return(user)
   end
 
@@ -52,7 +54,7 @@ describe PipelineDetailsEntity do
 
       context 'user has ability to retry pipeline' do
         before do
-          project.add_master(user)
+          project.add_developer(user)
         end
 
         it 'retryable flag is true' do
@@ -80,7 +82,7 @@ describe PipelineDetailsEntity do
 
       context 'user has ability to cancel pipeline' do
         before do
-          project.add_master(user)
+          project.add_developer(user)
         end
 
         it 'cancelable flag is true' do

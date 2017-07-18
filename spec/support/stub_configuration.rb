@@ -9,6 +9,11 @@ module StubConfiguration
       .to receive_messages(messages)
   end
 
+  def stub_not_protect_default_branch
+    stub_application_setting(
+      default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+  end
+
   def stub_config_setting(messages)
     allow(Gitlab.config.gitlab).to receive_messages(messages)
   end

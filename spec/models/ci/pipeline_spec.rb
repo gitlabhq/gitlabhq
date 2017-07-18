@@ -734,8 +734,10 @@ describe Ci::Pipeline, models: true do
 
     context 'on failure and build retry' do
       before do
+        stub_not_protect_default_branch
+
         build.drop
-        project.add_master(user)
+        project.add_developer(user)
 
         Ci::Build.retry(build, user)
       end
@@ -999,7 +1001,9 @@ describe Ci::Pipeline, models: true do
     let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
 
     before do
-      project.add_master(user)
+      stub_not_protect_default_branch
+
+      project.add_developer(user)
     end
 
     context 'when there is a failed build and failed external status' do

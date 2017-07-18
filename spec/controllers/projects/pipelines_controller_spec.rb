@@ -8,7 +8,8 @@ describe Projects::PipelinesController do
   let(:feature) { ProjectFeature::DISABLED }
 
   before do
-    project.add_master(user)
+    stub_not_protect_default_branch
+    project.add_developer(user)
     project.project_feature.update(
       builds_access_level: feature)
 

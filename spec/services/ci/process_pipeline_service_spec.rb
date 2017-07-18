@@ -9,7 +9,9 @@ describe Ci::ProcessPipelineService, '#execute', :services do
   end
 
   before do
-    project.add_master(user)
+    stub_not_protect_default_branch
+
+    project.add_developer(user)
   end
 
   context 'when simple pipeline is defined' do

@@ -7,7 +7,9 @@ describe Gitlab::Ci::Status::Build::Factory do
   let(:factory) { described_class.new(build, user) }
 
   before do
-    project.add_master(user)
+    stub_not_protect_default_branch
+
+    project.add_developer(user)
   end
 
   context 'when build is successful' do
@@ -232,11 +234,10 @@ describe Gitlab::Ci::Status::Build::Factory do
 
       context 'when user does not have ability to play action' do
         before do
-          project.team.truncate
-          project.add_developer(user)
+          allow(build.project).to receive(:empty_repo?).and_return(false)
 
           create(:protected_branch, :no_one_can_push,
-                 name: build.ref, project: project)
+                 name: build.ref, project: build.project)
         end
 
         it 'fabricates status that has no action' do
@@ -264,11 +265,10 @@ describe Gitlab::Ci::Status::Build::Factory do
 
       context 'when user is not allowed to execute manual action' do
         before do
-          project.team.truncate
-          project.add_developer(user)
+          allow(build.project).to receive(:empty_repo?).and_return(false)
 
           create(:protected_branch, :no_one_can_push,
-                 name: build.ref, project: project)
+                 name: build.ref, project: build.project)
         end
 
         it 'fabricates status with correct details' do

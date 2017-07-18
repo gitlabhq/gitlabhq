@@ -7,6 +7,10 @@ describe Projects::JobsController do
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:user) { create(:user) }
 
+  before do
+    stub_not_protect_default_branch
+  end
+
   describe 'GET index' do
     context 'when scope is pending' do
       before do
@@ -218,7 +222,7 @@ describe Projects::JobsController do
 
   describe 'POST retry' do
     before do
-      project.add_master(user)
+      project.add_developer(user)
       sign_in(user)
 
       post_retry
@@ -250,7 +254,7 @@ describe Projects::JobsController do
 
   describe 'POST play' do
     before do
-      project.add_master(user)
+      project.add_developer(user)
 
       create(:protected_branch, :developers_can_merge,
              name: 'master', project: project)
@@ -290,7 +294,7 @@ describe Projects::JobsController do
 
   describe 'POST cancel' do
     before do
-      project.add_master(user)
+      project.add_developer(user)
       sign_in(user)
 
       post_cancel
@@ -326,7 +330,7 @@ describe Projects::JobsController do
 
   describe 'POST cancel_all' do
     before do
-      project.add_master(user)
+      project.add_developer(user)
       sign_in(user)
     end
 
@@ -368,7 +372,7 @@ describe Projects::JobsController do
 
   describe 'POST erase' do
     before do
-      project.add_master(user)
+      project.add_developer(user)
       sign_in(user)
 
       post_erase
