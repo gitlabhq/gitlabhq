@@ -1,6 +1,7 @@
+/* global Flash */
 import Service from './repo_service';
 import Store from './repo_store';
-import Flash from '../flash';
+import '../flash';
 
 const RepoHelper = {
   isTree(data) {
