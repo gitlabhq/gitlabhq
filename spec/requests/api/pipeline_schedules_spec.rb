@@ -206,7 +206,7 @@ describe API::PipelineSchedules do
 
       it 'updates variables' do
         put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
-          variables_attributes: ([{ key: 'ABC', value: 'ABC123'}]).to_json
+          variables_attributes: [{ key: 'ABC', value: 'ABC123' }].to_json
 
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
