@@ -453,7 +453,10 @@ ul.notes {
 }
 
 .note-actions {
+  align-self: flex-start;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
   // For PhantomJS that does not support flex
   float: right;
   margin-left: 10px;
@@ -463,18 +466,12 @@ ul.notes {
     float: none;
     margin-left: 0;
   }
-
-  .note-action-button {
-    margin-left: 8px;
-  }
-
-  .more-actions-toggle {
-    margin-left: 2px;
-  }
 }
 
 .more-actions {
-  display: inline-block;
+  float: right; // phantomjs fallback
+  display: flex;
+  align-items: flex-end;
 
   .tooltip {
     white-space: nowrap;
@@ -482,15 +479,9 @@ ul.notes {
 }
 
 .more-actions-toggle {
-  padding: 0;
-
   &:hover .icon,
   &:focus .icon {
     color: $blue-600;
-  }
-
-  .icon {
-    padding: 0 6px;
   }
 }
 
@@ -519,28 +510,42 @@ ul.notes {
   @include notes-media('max', $screen-md-max) {
     float: none;
     margin-left: 0;
+  }
+}
 
-    .note-action-button {
-      margin-left: 0;
-    }
+.note-actions-item {
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+
+  &.more-actions {
+    // compensate for narrow icon
+    margin-left: 10px;
   }
 }
 
 .note-action-button {
-  display: inline;
-  line-height: 20px;
+  line-height: 1;
+  padding: 0;
+  min-width: 16px;
+  color: $gray-darkest;
 
   .fa {
-    color: $gray-darkest;
     position: relative;
-    font-size: 17px;
+    font-size: 16px;
   }
+
+
 
   svg {
     height: 16px;
     width: 16px;
-    fill: $gray-darkest;
+    top: 0;
     vertical-align: text-top;
+
+    path {
+      fill: currentColor;
+    }
   }
 
   .award-control-icon-positive,
@@ -613,10 +618,7 @@ ul.notes {
 
 .note-role {
   position: relative;
-  top: -2px;
-  display: inline-block;
-  padding-left: 7px;
-  padding-right: 7px;
+  padding: 0 7px;
   color: $notes-role-color;
   font-size: 12px;
   line-height: 20px;

@@ -75,7 +75,6 @@ describe 'Merge requests > User posts notes', :js do
     describe 'editing the note' do
       before do
         find('.note').hover
-        open_more_actions_dropdown(note)
 
         find('.js-note-edit').click
       end
@@ -104,7 +103,6 @@ describe 'Merge requests > User posts notes', :js do
 
         wait_for_requests
         find('.note').hover
-        open_more_actions_dropdown(note)
 
         find('.js-note-edit').click
 
@@ -132,7 +130,6 @@ describe 'Merge requests > User posts notes', :js do
     describe 'deleting an attachment' do
       before do
         find('.note').hover
-        open_more_actions_dropdown(note)
 
         find('.js-note-edit').click
       end

@@ -299,9 +299,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I change the comment "Line is wrong" to "Typo, please fix" on diff' do
     page.within('.diff-file:nth-of-type(5) .note') do
-      find('.more-actions').click
-      find('.more-actions .dropdown-menu li', match: :first)
-
       find('.js-note-edit').click
 
       page.within('.current-note-edit-form', visible: true) do

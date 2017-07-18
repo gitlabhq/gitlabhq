@@ -91,11 +91,7 @@ describe 'Comments on personal snippets', :js do
 
   context 'when editing a note' do
     it 'changes the text' do
-      open_more_actions_dropdown(snippet_notes[0])
-
-      page.within("#notes-list li#note_#{snippet_notes[0].id}") do
-        click_on 'Edit comment'
-      end
+      find('.js-note-edit').click
 
       page.within('.current-note-edit-form') do
         fill_in 'note[note]', with: 'new content'
