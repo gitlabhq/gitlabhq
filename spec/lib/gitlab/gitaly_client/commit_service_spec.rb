@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::Commit do
-  let(:diff_stub) { double('Gitaly::Diff::Stub') }
+describe Gitlab::GitalyClient::CommitService do
+  let(:diff_stub) { double('Gitaly::DiffService::Stub') }
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:repository_message) { repository.gitaly_repository }
@@ -16,7 +16,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: commit.id
         )
 
-        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
 
         described_class.new(repository).diff_from_parent(commit)
       end
@@ -31,7 +31,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: initial_commit.id
         )
 
-        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
+        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
 
         described_class.new(repository).diff_from_parent(initial_commit)
       end
@@ -61,7 +61,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: commit.id
         )
 
-        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return([])
+        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return([])
 
         described_class.new(repository).commit_deltas(commit)
       end
@@ -76,7 +76,7 @@ describe Gitlab::GitalyClient::Commit do
           right_commit_id: initial_commit.id
         )
 
-        expect_any_instance_of(Gitaly::Diff::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return([])
+        expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_delta).with(request, kind_of(Hash)).and_return([])
 
         described_class.new(repository).commit_deltas(initial_commit)
       end

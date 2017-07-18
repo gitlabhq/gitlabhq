@@ -150,7 +150,7 @@ module API
         #
         # begin
         #   repository = wiki? ? project.wiki.repository : project.repository
-        #   Gitlab::GitalyClient::Notifications.new(repository.raw_repository).post_receive
+        #   Gitlab::GitalyClient::NotificationService.new(repository.raw_repository).post_receive
         # rescue GRPC::Unavailable => e
         #   render_api_error!(e, 500)
         # end

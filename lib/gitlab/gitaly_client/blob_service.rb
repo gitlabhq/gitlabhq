@@ -1,10 +1,10 @@
 module Gitlab
   module GitalyClient
-    class Blob
+    class BlobService
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
       end
-      
+
       def get_blob(oid:, limit:)
         request = Gitaly::GetBlobRequest.new(
           repository: @gitaly_repo,
