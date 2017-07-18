@@ -84,7 +84,14 @@ curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
         "web_url": "https://gitlab.example.com/root"
-    }
+    },
+    "variables": [
+        {
+            "id": 1,
+            "key": "TEST_VARIABLE_1",
+            "value": "TEST_1"
+        }
+    ]
 }
 ```
 
@@ -104,6 +111,7 @@ POST /projects/:id/pipeline_schedules
 | `cron ` | string  | yes      | The cron (e.g. `0 1 * * *`) ([Cron syntax](https://en.wikipedia.org/wiki/Cron))       |
 | `cron_timezone ` | string  | no      | The timezone supproted by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) (default: `'UTC'`)     |
 | `active ` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially (default: `true`) |
+| `variables_attributes` | Array[JSON]  | no      | The variables of pipeline schedule. You can specify `:key` and `:value`. |
 
 ```sh
 curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form description="Build packages" --form ref="master" --form cron="0 1 * * 5" --form cron_timezone="UTC" --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
@@ -128,7 +136,14 @@ curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form descri
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
         "web_url": "https://gitlab.example.com/root"
-    }
+    },
+    "variables": [
+        {
+            "id": 1,
+            "key": "TEST_VARIABLE_1",
+            "value": "TEST_1"
+        }
+    ]
 }
 ```
 
@@ -149,6 +164,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `cron ` | string  | no      | The cron (e.g. `0 1 * * *`) ([Cron syntax](https://en.wikipedia.org/wiki/Cron))       |
 | `cron_timezone ` | string  | no      | The timezone supproted by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) or `TZInfo::Timezone` (e.g. `America/Los_Angeles`)      |
 | `active ` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially. |
+| `variables_attributes` | Array[JSON]  | no      | The variables of pipeline schedule. For update, `:id` and `:key` or `:value`. For delete, `:id` and `_destroy: 1`. |
 
 ```sh
 curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
@@ -178,7 +194,14 @@ curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form cron="0
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
         "web_url": "https://gitlab.example.com/root"
-    }
+    },
+    "variables": [
+        {
+            "id": 1,
+            "key": "TEST_VARIABLE_1",
+            "value": "TEST_1"
+        }
+    ]
 }
 ```
 
@@ -223,7 +246,14 @@ curl --request POST --header "PRIVATE-TOKEN: hf2CvZXB9w8Uc5pZKpSB" "https://gitl
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/8ca0a796a679c292e3a11da50f99e801?s=80&d=identicon",
         "web_url": "https://gitlab.example.com/maeda"
-    }
+    },
+    "variables": [
+        {
+            "id": 1,
+            "key": "TEST_VARIABLE_1",
+            "value": "TEST_1"
+        }
+    ]
 }
 ```
 
@@ -268,6 +298,13 @@ curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gi
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/8ca0a796a679c292e3a11da50f99e801?s=80&d=identicon",
         "web_url": "https://gitlab.example.com/maeda"
-    }
+    },
+    "variables": [
+        {
+            "id": 1,
+            "key": "TEST_VARIABLE_1",
+            "value": "TEST_1"
+        }
+    ]
 }
 ```
