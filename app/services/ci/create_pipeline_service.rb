@@ -89,7 +89,7 @@ module Ci
 
       Ability.allowed?(triggering_user, :create_pipeline, project) &&
         if branch?
-          access.can_push_or_merge_to_branch?(ref)
+          access.can_update_branch?(ref)
         elsif tag?
           access.can_create_tag?(ref)
         else

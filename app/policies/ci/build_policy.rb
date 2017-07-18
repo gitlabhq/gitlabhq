@@ -6,7 +6,7 @@ module Ci
       if @subject.tag?
         !access.can_create_tag?(@subject.ref)
       else
-        !access.can_push_or_merge_to_branch?(@subject.ref)
+        !access.can_update_branch?(@subject.ref)
       end
     end
 

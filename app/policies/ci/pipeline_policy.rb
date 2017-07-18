@@ -3,9 +3,13 @@ module Ci
     delegate { @subject.project }
 
     condition(:user_cannot_update) do
-      !::Gitlab::UserAccess
-        .new(@user, project: @subject.project)
-        .can_push_or_merge_to_branch?(@subject.ref)
+      access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
+
+      if @subject.tag?
+        !access.can_create_tag?(@subject.ref)
+      else
+        !access.can_update_branch?(@subject.ref)
+      end
     end
 
     rule { user_cannot_update }.prevent :update_pipeline

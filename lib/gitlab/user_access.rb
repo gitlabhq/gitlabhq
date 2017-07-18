@@ -54,7 +54,7 @@ module Gitlab
       end
     end
 
-    def can_push_or_merge_to_branch?(ref)
+    def can_update_branch?(ref)
       can_push_to_branch?(ref) || can_merge_to_branch?(ref)
     end
 
