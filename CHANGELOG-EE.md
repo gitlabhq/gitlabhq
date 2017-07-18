@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.7 (2017-07-18)
+
+- No changes.
+
 ## 9.3.6 (2017-07-12)
 
 - Geo: Fix clone instructions in a secondary node for SSH protocol. !2319
