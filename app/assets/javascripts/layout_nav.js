@@ -54,7 +54,8 @@ import NewNavSidebar from './new_sidebar';
   }
 
   $(() => {
-    new NewNavSidebar();
+    var newNavSidebar = new NewNavSidebar();
+    newNavSidebar.bindEvents();
     $(window).on('scroll', _.throttle(applyScrollNavClass, 100));
   });
 }).call(window);

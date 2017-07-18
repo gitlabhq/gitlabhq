@@ -1,7 +1,6 @@
 export default class NewNavSidebar {
   constructor() {
     this.initDomElements();
-    this.bindEvents();
   }
 
   initDomElements() {
