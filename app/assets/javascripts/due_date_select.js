@@ -2,6 +2,8 @@
 /* global dateFormat */
 /* global Pikaday */
 
+import DateFix from './lib/utils/datefix'
+
 class DueDateSelect {
   constructor({ $dropdown, $loading } = {}) {
     const $dropdownParent = $dropdown.closest('.dropdown');
@@ -50,7 +52,6 @@ class DueDateSelect {
       format: 'yyyy-mm-dd',
       onSelect: (dateText) => {
         const formattedDate = dateFormat(new Date(dateText), 'yyyy-mm-dd');
-
         $dueDateInput.val(formattedDate);
 
         if (this.$dropdown.hasClass('js-issue-boards-due-date')) {
@@ -62,7 +63,7 @@ class DueDateSelect {
       }
     });
 
-    calendar.setDate(new Date($dueDateInput.val()));
+    calendar.setDate(DateFix.dashedFix($dueDateInput.val()));
     this.$datePicker.append(calendar.el);
     this.$datePicker.data('pikaday', calendar);
   }
@@ -168,7 +169,6 @@ class DueDateSelectors {
   initMilestoneDatePicker() {
     $('.datepicker').each(function() {
       const $datePicker = $(this);
-      const [y, m, d] = $datePicker.val().split('-');
       const calendar = new Pikaday({
         field: $datePicker.get(0),
         theme: 'gitlab-theme animate-picker',
@@ -179,7 +179,7 @@ class DueDateSelectors {
         }
       });
 
-      calendar.setDate(new Date(y, m - 1, d));
+      calendar.setDate(DateFix.dashedFix($datePicker.val()));
 
       $datePicker.data('pikaday', calendar);
     });
