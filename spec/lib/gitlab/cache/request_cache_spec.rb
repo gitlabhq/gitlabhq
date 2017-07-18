@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Cache::RequestCache, :request_store do
+describe Gitlab::Cache::RequestCache do
   let(:klass) do
     Class.new do
       extend Gitlab::Cache::RequestCache
@@ -35,13 +35,12 @@ describe Gitlab::Cache::RequestCache, :request_store do
 
   let(:algorithm) { klass.new('id', 'name', []) }
 
-  context 'when RequestStore is active' do
+  shared_examples 'cache for the same instance' do
     it 'does not compute twice for the same argument' do
+      algorithm.compute(true)
       result = algorithm.compute(true)
 
       expect(result).to eq([true])
-      expect(algorithm.compute(true)).to eq(result)
-      expect(algorithm.result).to eq(result)
     end
 
     it 'computes twice for the different argument' do
@@ -49,7 +48,6 @@ describe Gitlab::Cache::RequestCache, :request_store do
       result = algorithm.compute(false)
 
       expect(result).to eq([true, false])
-      expect(algorithm.result).to eq(result)
     end
 
     it 'computes twice for the different class name' do
@@ -58,7 +56,6 @@ describe Gitlab::Cache::RequestCache, :request_store do
       result = algorithm.compute(true)
 
       expect(result).to eq([true, true])
-      expect(algorithm.result).to eq(result)
     end
 
     it 'computes twice for the different method' do
@@ -66,18 +63,6 @@ describe Gitlab::Cache::RequestCache, :request_store do
       result = algorithm.repute(true)
 
       expect(result).to eq([true, true])
-      expect(algorithm.result).to eq(result)
-    end
-
-    it 'computes twice if RequestStore starts over' do
-      algorithm.compute(true)
-      RequestStore.end!
-      RequestStore.clear!
-      RequestStore.begin!
-      result = algorithm.compute(true)
-
-      expect(result).to eq([true, true])
-      expect(algorithm.result).to eq(result)
     end
 
     context 'when request_cache_key is provided' do
@@ -93,7 +78,6 @@ describe Gitlab::Cache::RequestCache, :request_store do
         result = algorithm.compute(true)
 
         expect(result).to eq([true, true])
-        expect(algorithm.result).to eq(result)
       end
 
       it 'computes twice for the different keys, name' do
@@ -102,7 +86,6 @@ describe Gitlab::Cache::RequestCache, :request_store do
         result = algorithm.compute(true)
 
         expect(result).to eq([true, true])
-        expect(algorithm.result).to eq(result)
       end
 
       it 'uses extra method cache key if provided' do
@@ -112,30 +95,39 @@ describe Gitlab::Cache::RequestCache, :request_store do
         result = algorithm.dispute(true) # hit
 
         expect(result).to eq([true, true])
-        expect(algorithm.result).to eq(result)
       end
     end
   end
 
-  context 'when RequestStore is inactive' do
-    before do
-      RequestStore.end!
-    end
+  context 'when RequestStore is active', :request_store do
+    it_behaves_like 'cache for the same instance'
 
-    it 'computes only once if it is the same instance for the same key' do
+    it 'computes once for different instances when keys are the same' do
       algorithm.compute(true)
-      result = algorithm.compute(true)
+      result = klass.new('id', 'name', algorithm.result).compute(true)
 
       expect(result).to eq([true])
-      expect(algorithm.result).to eq(result)
     end
+
+    it 'computes twice if RequestStore starts over' do
+      algorithm.compute(true)
+      RequestStore.end!
+      RequestStore.clear!
+      RequestStore.begin!
+      result = algorithm.compute(true)
+
+      expect(result).to eq([true, true])
+    end
+  end
+
+  context 'when RequestStore is inactive' do
+    it_behaves_like 'cache for the same instance'
 
     it 'computes twice for different instances even if keys are the same' do
       algorithm.compute(true)
       result = klass.new('id', 'name', algorithm.result).compute(true)
 
       expect(result).to eq([true, true])
-      expect(algorithm.result).to eq(result)
     end
   end
 end
