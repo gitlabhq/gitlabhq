@@ -17,14 +17,14 @@ const RepoHelper = {
   getLanguageForFile(file, langs) {
     const ext = `.${file.name.split('.').pop()}`;
     let foundLang;
-    if(langs.some((l) => {
-      if(l.extensions && l.extensions.indexOf(ext) > -1) {
+    if (langs.some((l) => {
+      if (l.extensions && l.extensions.indexOf(ext) > -1) {
         foundLang = l;
         return true;
       }
       return false;
     })) {
-      return foundLang.id
+      return foundLang.id;
     }
     return 'plain';
   },
