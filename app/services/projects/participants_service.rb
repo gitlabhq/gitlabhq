@@ -41,7 +41,7 @@ module Projects
     end
 
     def all_members
-      count = project.team.members.flatten.count
+      count = project.team.members.count
       [{ username: "all", name: "All Project and Group Members", count: count }]
     end
   end
