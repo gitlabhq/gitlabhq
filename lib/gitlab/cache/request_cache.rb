@@ -10,11 +10,11 @@ module Gitlab
     # class UserAccess
     #   extend Gitlab::Cache::RequestCache
     #
-    #   request_store_wrap_key do
+    #   request_cache_key do
     #     [user&.id, project&.id]
     #   end
     #
-    #   request_store_wrap def can_push_to_branch?(ref)
+    #   request_cache def can_push_to_branch?(ref)
     #     # ...
     #   end
     # end
@@ -31,7 +31,7 @@ module Gitlab
     #   def author
     #     User.find_by_any_email(author_email.downcase)
     #   end
-    #   request_store_wrap(:author) { author_email.downcase }
+    #   request_cache(:author) { author_email.downcase }
     # end
     #
     # So that we could have different strategies for different methods
@@ -45,15 +45,15 @@ module Gitlab
         klass.prepend(extension)
       end
 
-      def request_store_wrap_key(&block)
+      def request_cache_key(&block)
         if block_given?
-          @request_store_wrap_key = block
+          @request_cache_key = block
         else
-          @request_store_wrap_key
+          @request_cache_key
         end
       end
 
-      def request_store_wrap(method_name, &method_key_block)
+      def request_cache(method_name, &method_key_block)
         const_get(:RequestCacheExtension).module_eval do
           cache_key_method_name = "#{method_name}_cache_key"
 
@@ -77,8 +77,8 @@ module Gitlab
           define_method(cache_key_method_name) do |args|
             klass = self.class
 
-            instance_key = instance_exec(&klass.request_store_wrap_key) if
-              klass.request_store_wrap_key
+            instance_key = instance_exec(&klass.request_cache_key) if
+              klass.request_cache_key
 
             method_key = instance_exec(&method_key_block) if method_key_block
 

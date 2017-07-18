@@ -18,18 +18,18 @@ describe Gitlab::Cache::RequestCache, :request_store do
         self.extra = nil
       end
 
-      request_store_wrap def compute(arg)
+      request_cache def compute(arg)
         result << arg
       end
 
-      request_store_wrap def repute(arg)
+      request_cache def repute(arg)
         result << arg
       end
 
       def dispute(arg)
         result << arg
       end
-      request_store_wrap(:dispute) { extra }
+      request_cache(:dispute) { extra }
     end
   end
 
@@ -80,9 +80,9 @@ describe Gitlab::Cache::RequestCache, :request_store do
       expect(algorithm.result).to eq(result)
     end
 
-    context 'when request_store_wrap_key is provided' do
+    context 'when request_cache_key is provided' do
       before do
-        klass.request_store_wrap_key do
+        klass.request_cache_key do
           [id, name]
         end
       end

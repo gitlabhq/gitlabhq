@@ -172,7 +172,7 @@ class Commit
   def author
     User.find_by_any_email(author_email.downcase)
   end
-  request_store_wrap(:author) { author_email.downcase }
+  request_cache(:author) { author_email.downcase }
 
   def committer
     @committer ||= User.find_by_any_email(committer_email.downcase)

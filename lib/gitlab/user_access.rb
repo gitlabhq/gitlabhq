@@ -2,7 +2,7 @@ module Gitlab
   class UserAccess
     extend Gitlab::Cache::RequestCache
 
-    request_store_wrap_key do
+    request_cache_key do
       [user&.id, project&.id]
     end
 
@@ -34,7 +34,7 @@ module Gitlab
       true
     end
 
-    request_store_wrap def can_create_tag?(ref)
+    request_cache def can_create_tag?(ref)
       return false unless can_access_git?
 
       if ProtectedTag.protected?(project, ref)
@@ -44,7 +44,7 @@ module Gitlab
       end
     end
 
-    request_store_wrap def can_delete_branch?(ref)
+    request_cache def can_delete_branch?(ref)
       return false unless can_access_git?
 
       if ProtectedBranch.protected?(project, ref)
@@ -54,7 +54,7 @@ module Gitlab
       end
     end
 
-    request_store_wrap def can_push_to_branch?(ref)
+    request_cache def can_push_to_branch?(ref)
       return false unless can_access_git?
 
       if ProtectedBranch.protected?(project, ref)
@@ -66,7 +66,7 @@ module Gitlab
       end
     end
 
-    request_store_wrap def can_merge_to_branch?(ref)
+    request_cache def can_merge_to_branch?(ref)
       return false unless can_access_git?
 
       if ProtectedBranch.protected?(project, ref)
