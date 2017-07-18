@@ -75,6 +75,7 @@ module Github
 
       true
     rescue Github::RepositoryFetchError
+      expire_repository_cache
       false
     ensure
       keep_track_of_errors
@@ -88,7 +89,7 @@ module Github
         project.repository.add_remote('github', repo_url)
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
-      rescue Gitlab::Shell::Error => e
+      rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
         error(:project, repo_url, e.message)
         raise Github::RepositoryFetchError
       end
@@ -368,7 +369,7 @@ module Github
     end
 
     def expire_repository_cache
-      repository.expire_content_cache
+      repository.expire_content_cache if project.repository_exists?
     end
 
     def keep_track_of_errors
