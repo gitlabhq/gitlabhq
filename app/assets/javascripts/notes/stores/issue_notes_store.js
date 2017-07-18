@@ -2,6 +2,7 @@
 
 import service from '../services/issue_notes_service';
 import utils from './issue_notes_utils';
+import loadAwardsHandler from '../../awards_handler';
 
 const state = {
   notes: [],
@@ -225,10 +226,23 @@ const actions = {
       .then((res) => {
         const { errors } = res;
 
-        if (hasQuickActions) {
+        if (hasQuickActions && Object.keys(errors).length) {
           context.dispatch('poll');
           $('.js-gfm-input').trigger('clear-commands-cache.atwho');
           new Flash('Commands applied', 'notice', $(noteData.flashContainer)); // eslint-disable-line
+        }
+
+
+        if (res.commands_changes.emoji_award) {
+          const votesBlock = $('.js-awards-block').eq(0);
+
+          loadAwardsHandler().then((awardsHandler) => {
+            awardsHandler.addAwardToEmojiBar(votesBlock, res.commands_changes.emoji_award);
+            awardsHandler.scrollToAwards();
+          }).catch(() => {
+            const msg = 'Something went wrong while adding your award. Please try again.';
+            new Flash(msg, $(noteData.flashContainer)); // eslint-disable-line
+          });
         }
 
         if (errors && errors.commands_only) {
