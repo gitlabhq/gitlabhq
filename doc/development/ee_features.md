@@ -251,3 +251,27 @@ Instead add a file in a `/ee/` sub-folder.
 When doing this, rubocop might complain about the path not
 matching. So on the top-level `describe` append `# rubocop:disable
 RSpec/FilePath` to disable the cop for that line.
+
+## JS-code
+
+To seperate EE-specific JS-files we can also move the files into an `ee` folder.
+
+For example there can be an
+`app/assets/javascripts/protected_branches/protected_branches_bundle.js` and an
+ee counterpart
+`app/assets/javascripts/protected_branches/ee/protected_branches_bundle.js`.
+
+That way we can create a separate webpack bundle in `webpack.config.js`:
+
+```javascript
+ee_protected_branches: './protected_branches/ee/protected_branches_bundle.js',
+protected_tags:       './protected_tags',
+```
+
+With the separate bundle in place, we can decide which bundle to load inside the
+view, using the `page_specific_javascript_bundle_tag` helper.
+
+```
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('protected_branches')
+```
