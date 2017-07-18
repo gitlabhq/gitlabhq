@@ -1,6 +1,6 @@
 class Commit
   extend ActiveModel::Naming
-  extend Gitlab::Cache::RequestStoreWrap
+  extend Gitlab::Cache::RequestCache
 
   include ActiveModel::Conversion
   include Noteable

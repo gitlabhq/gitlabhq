@@ -8,7 +8,7 @@ module Gitlab
     # A simple example:
     #
     # class UserAccess
-    #   extend Gitlab::Cache::RequestStoreWrap
+    #   extend Gitlab::Cache::RequestCache
     #
     #   request_store_wrap_key do
     #     [user&.id, project&.id]
@@ -26,7 +26,7 @@ module Gitlab
     # Here's another example using customized method level values:
     #
     # class Commit
-    #   extend Gitlab::Cache::RequestStoreWrap
+    #   extend Gitlab::Cache::RequestCache
     #
     #   def author
     #     User.find_by_any_email(author_email.downcase)
@@ -36,12 +36,12 @@ module Gitlab
     #
     # So that we could have different strategies for different methods
     #
-    module RequestStoreWrap
+    module RequestCache
       def self.extended(klass)
         return if klass < self
 
         extension = Module.new
-        klass.const_set(:RequestStoreWrapExtension, extension)
+        klass.const_set(:RequestCacheExtension, extension)
         klass.prepend(extension)
       end
 
@@ -54,29 +54,25 @@ module Gitlab
       end
 
       def request_store_wrap(method_name, &method_key_block)
-        const_get(:RequestStoreWrapExtension).module_eval do
+        const_get(:RequestCacheExtension).module_eval do
+          cache_key_method_name = "#{method_name}_cache_key"
+
           define_method(method_name) do |*args|
             store =
               if RequestStore.active?
                 RequestStore.store
               else
                 ivar_name = # ! and ? cannot be used as ivar name
-                  "@#{method_name.to_s.tr('!', "\u2605").tr('?', "\u2606")}"
+                  "@cache_#{method_name.to_s.tr('!?', "\u2605\u2606")}"
 
                 instance_variable_get(ivar_name) ||
                   instance_variable_set(ivar_name, {})
               end
 
-            key = send("#{method_name}_cache_key", args)
+            key = __send__(cache_key_method_name, args)
 
-            if store.key?(key)
-              store[key]
-            else
-              store[key] = super(*args)
-            end
+            store.fetch(key) { store[key] = super(*args) }
           end
-
-          cache_key_method_name = "#{method_name}_cache_key"
 
           define_method(cache_key_method_name) do |args|
             klass = self.class

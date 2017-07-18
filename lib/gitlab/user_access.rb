@@ -1,6 +1,6 @@
 module Gitlab
   class UserAccess
-    extend Gitlab::Cache::RequestStoreWrap
+    extend Gitlab::Cache::RequestCache
 
     request_store_wrap_key do
       [user&.id, project&.id]

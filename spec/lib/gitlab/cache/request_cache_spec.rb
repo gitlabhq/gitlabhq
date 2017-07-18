@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::Cache::RequestStoreWrap, :request_store do
+describe Gitlab::Cache::RequestCache, :request_store do
   let(:klass) do
     Class.new do
-      extend Gitlab::Cache::RequestStoreWrap
+      extend Gitlab::Cache::RequestCache
 
       attr_accessor :id, :name, :result, :extra
 
