@@ -130,30 +130,29 @@ describe Projects::DestroyService, services: true do
         it_behaves_like 'handles errors thrown during async destroy', "Failed to remove project repository"
       end
 
-      context 'when `execute` raises any other error' do
+      context 'when `execute` raises expected error' do
         before do
-          expect_any_instance_of(Projects::DestroyService)
-            .to receive(:execute).and_raise(ArgumentError.new("Other error message"))
+          expect_any_instance_of(Project)
+            .to receive(:destroy!).and_raise(StandardError.new("Other error message"))
         end
 
         it_behaves_like 'handles errors thrown during async destroy', "Other error message"
       end
-    end
-  end
 
-  context 'with execute' do
-    it_behaves_like 'deleting the project with pipeline and build'
+      context 'when `execute` raises unexpected error' do
+        before do
+          expect_any_instance_of(Project)
+            .to receive(:destroy!).and_raise(Exception.new("Other error message"))
+        end
 
-    context 'when `execute` raises an error' do
-      before do
-        expect_any_instance_of(Projects::DestroyService)
-          .to receive(:execute).and_raise(ArgumentError)
-      end
+        it 'allows error to bubble up and rolls back project deletion' do
+          expect do
+            Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+          end.to raise_error
 
-      it 'allows the error to bubble up' do
-        expect do
-          Sidekiq::Testing.inline! { Projects::DestroyService.new(project, user, {}).execute }
-        end.to raise_error(ArgumentError)
+          expect(project.reload.pending_delete).to be(false)
+          expect(project.delete_error).to include("Other error message")
+        end
       end
     end
   end
@@ -182,8 +181,7 @@ describe Projects::DestroyService, services: true do
           expect_any_instance_of(ContainerRepository)
             .to receive(:delete_tags!).and_return(false)
 
-          expect{ destroy_project(project, user) }
-            .to raise_error(ActiveRecord::RecordNotDestroyed)
+          expect(destroy_project(project, user)).to be false
         end
       end
     end
@@ -208,8 +206,7 @@ describe Projects::DestroyService, services: true do
           expect_any_instance_of(ContainerRepository)
             .to receive(:delete_tags!).and_return(false)
 
-          expect { destroy_project(project, user) }
-            .to raise_error(Projects::DestroyService::DestroyError)
+          expect(destroy_project(project, user)).to be false
         end
       end
     end

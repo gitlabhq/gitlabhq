@@ -21,17 +21,16 @@ describe ProjectDestroyWorker do
       expect(Dir.exist?(path)).to be_truthy
     end
 
-    describe 'when StandardError is raised' do
-      it 'reverts pending_delete attribute with a error message' do
-        allow_any_instance_of(::Projects::DestroyService).to receive(:execute).and_raise(StandardError, "some error message")
+    it 'does not raise error when project could not be found' do
+      expect do
+        subject.perform(-1, project.owner.id, {})
+      end.not_to raise_error
+    end
 
-        expect do
-          subject.perform(project.id, project.owner.id, {})
-        end.to change { project.reload.pending_delete }.from(true).to(false)
-
-        expect(Project.all).to include(project)
-        expect(project.delete_error).to eq("some error message")
-      end
+    it 'does not raise error when user could not be found' do
+      expect do
+        subject.perform(project.id, -1, {})
+      end.not_to raise_error
     end
   end
 end
