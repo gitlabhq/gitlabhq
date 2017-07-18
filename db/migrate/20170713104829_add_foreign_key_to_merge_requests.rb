@@ -5,14 +5,23 @@ class AddForeignKeyToMergeRequests < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
+  class MergeRequest < ActiveRecord::Base
+    self.table_name = 'merge_requests'
+    include ::EachBatch
+  end
+
   def up
-    execute <<-SQL.strip_heredoc
-      UPDATE merge_requests SET head_pipeline_id = null
-        WHERE NOT EXISTS (
+    scope = <<-SQL.strip_heredoc
+      head_pipeline_id IS NOT NULL
+        AND NOT EXISTS (
           SELECT 1 FROM ci_pipelines
             WHERE ci_pipelines.id = merge_requests.head_pipeline_id
         )
     SQL
+
+    MergeRequest.where(scope).each_batch(of: 1000) do |merge_requests|
+      merge_requests.update_all(head_pipeline_id: nil)
+    end
 
     unless foreign_key_exists?(:merge_requests, :head_pipeline_id)
       add_concurrent_foreign_key(:merge_requests, :ci_pipelines,
