@@ -40,5 +40,14 @@ describe Projects::DestroyService, services: true do
         expect { subject.execute }.to change(Geo::RepositoryDeletedEvent, :count).by(1)
       end
     end
+
+    it 'does not log event to the Geo log if project deletion fails' do
+      expect_any_instance_of(Project)
+        .to receive(:destroy!).and_raise(StandardError.new('Other error message'))
+
+      Sidekiq::Testing.inline! do
+        expect { subject.execute }.not_to change(Geo::RepositoryDeletedEvent, :count)
+      end
+    end
   end
 end

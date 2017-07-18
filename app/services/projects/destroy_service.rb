@@ -16,25 +16,26 @@ module Projects
     def execute
       return false unless can?(current_user, :remove_project, project)
 
-      repo_path = project.path_with_namespace
-      wiki_path = repo_path + '.wiki'
-
       # Flush the cache for both repositories. This has to be done _before_
       # removing the physical repositories as some expiration code depends on
       # Git data (e.g. a list of branch names).
-      flush_caches(project, wiki_path)
+      flush_caches(project)
 
       Projects::UnlinkForkService.new(project, current_user).execute
 
-      attempt_destroy_transaction(project, repo_path, wiki_path)
+      attempt_destroy_transaction(project)
 
       system_hook_service.execute_hooks_for(project, :destroy)
-
       log_info("Project \"#{project.full_path}\" was removed")
+
       true
-    rescue Projects::DestroyService::DestroyError => error
-      Rails.logger.error("Deletion failed on #{project.full_path} with the following message: #{error.message}")
+    rescue => error
+      attempt_rollback(project, error.message)
       false
+    rescue Exception => error # rubocop:disable Lint/RescueException
+      # Project.transaction can raise Exception
+      attempt_rollback(project, error.message)
+      raise
     end
 
     private
@@ -78,7 +79,14 @@ module Projects
       end
     end
 
-    def attempt_destroy_transaction(project, repo_path, wiki_path)
+    def attempt_rollback(project, message)
+      return unless project
+
+      project.update_attributes(delete_error: message, pending_delete: false)
+      log_error("Deletion failed on #{project.full_path} with the following message: #{message}")
+    end
+
+    def attempt_destroy_transaction(project)
       Project.transaction do
         unless remove_legacy_registry_tags
           raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
@@ -89,9 +97,6 @@ module Projects
         project.team.truncate
         project.destroy!
       end
-    rescue Exception => error # rubocop:disable Lint/RescueException
-      project.update_attributes(delete_error: error.message, pending_delete: false)
-      raise
     end
 
     ##
@@ -120,7 +125,7 @@ module Projects
       "#{path}+#{project.id}#{DELETED_FLAG}"
     end
 
-    def flush_caches(project, wiki_path)
+    def flush_caches(project)
       project.repository.before_delete
 
       Repository.new(wiki_path, project).before_delete

@@ -8,6 +8,6 @@ class ProjectDestroyWorker
 
     ::Projects::DestroyService.new(project, user, params.symbolize_keys).execute
   rescue ActiveRecord::RecordNotFound => error
-    logger.error("Failed to delete project #{project.path_with_namespace} (#{project.id}): #{error.message}")
+    logger.error("Failed to delete project (#{project_id}): #{error.message}")
   end
 end
