@@ -2,7 +2,7 @@
 /* global dateFormat */
 /* global Pikaday */
 
-import DateFix from './lib/utils/datefix'
+import DateFix from './lib/utils/datefix';
 
 class DueDateSelect {
   constructor({ $dropdown, $loading } = {}) {
