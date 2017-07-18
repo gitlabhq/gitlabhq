@@ -20,7 +20,7 @@ it, the client IP needs to be [included in a whitelist][whitelist].
 Currently the embedded Prometheus server is not automatically configured to
 collect metrics from this endpoint. We recommend setting up another Prometheus
 server, because the embedded server configuration is overwritten once every
-[reconfigure of GitLab][reconfigure]. In the future this will not be required.
+[reconfigure of GitLab][reconfigure]. In the future this will not be required. 
 
 ## Metrics available
 
@@ -44,6 +44,20 @@ In this experimental phase, only a few metrics are available:
 | redis_ping_success                | Gauge     | Whether or not the last redis ping succeeded |
 | redis_ping_latency_seconds        | Gauge     | Round trip time of the redis ping |
 | user_session_logins_total         | Counter   | Counter of how many users have logged in |
+
+## Metrics shared directory
+
+GitLab's Prometheus client requires a directory to store metrics data shared between multi-process services.
+Those files are shared among all instances running under Unicorn server.
+The directory needs to be accessible to all running Unicorn's processes otherwise
+metrics will not function correctly.
+
+For best performance its advisable that this directory will be located in `tmpfs`.
+
+Its location is configured using environment variable `prometheus_multiproc_dir`.
+
+If GitLab is installed using Omnibus and `tmpfs` is available then metrics
+directory will be automatically configured.
 
 [← Back to the main Prometheus page](index.md)
 
