@@ -31,7 +31,12 @@ module Gitlab
     end
 
     def self.enabled?
-      self.cache_value(:geo_node_enabled) { GeoNode.exists? }
+      GeoNode.connected? && self.cache_value(:geo_node_enabled) { GeoNode.exists? }
+    rescue => e
+      # We can't use the actual classes in rescue because we load only one of them based on database supported
+      raise e unless %w(PG::UndefinedTable Mysql2::Error).include? e.class.name
+
+      false
     end
 
     def self.current_node_enabled?
