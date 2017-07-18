@@ -45,7 +45,7 @@ class DueDateSelect {
 
   initDatePicker() {
     const $dueDateInput = $(`input[name='${this.fieldName}']`);
-
+    const dateFix = DateFix.dashedFix($dueDateInput.val());
     const calendar = new Pikaday({
       field: $dueDateInput.get(0),
       theme: 'gitlab-theme',
@@ -63,7 +63,7 @@ class DueDateSelect {
       }
     });
 
-    calendar.setDate(DateFix.dashedFix($dueDateInput.val()));
+    calendar.setDate(dateFix);
     this.$datePicker.append(calendar.el);
     this.$datePicker.data('pikaday', calendar);
   }
@@ -169,6 +169,7 @@ class DueDateSelectors {
   initMilestoneDatePicker() {
     $('.datepicker').each(function() {
       const $datePicker = $(this);
+      const dateFix = DateFix.dashedFix($datePicker.val());
       const calendar = new Pikaday({
         field: $datePicker.get(0),
         theme: 'gitlab-theme animate-picker',
@@ -179,7 +180,7 @@ class DueDateSelectors {
         }
       });
 
-      calendar.setDate(DateFix.dashedFix($datePicker.val()));
+      calendar.setDate(dateFix);
 
       $datePicker.data('pikaday', calendar);
     });
