@@ -4,15 +4,13 @@ import Helper from './repo_helper';
 import RepoMiniMixin from './repo_mini_mixin';
 
 export default class RepoFileButtons {
-  constructor(url) {
-    this.url = url;
-    this.initVue();
-    this.el = document.getElementById('repo-file-buttons');
+  constructor(el) {
+    this.initVue(el);
   }
 
-  initVue() {
+  initVue(el) {
     this.vue = new Vue({
-      el: '#repo-file-buttons',
+      el,
       data: () => Store,
       mixins: [RepoMiniMixin],
       template: `

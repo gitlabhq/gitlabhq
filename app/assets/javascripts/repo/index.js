@@ -11,15 +11,26 @@ import Store from './repo_store';
 import Helper from './repo_helper';
 
 $(() => {
-  const url = document.getElementById('ide').dataset.url;
+  const ide = document.getElementById('ide');
+  const tabs = document.getElementById('tabs');
+  const sidebar = document.getElementById('sidebar');
+  const fileButtons = document.getElementById('repo-file-buttons');
+  const editButton = document.getElementById('editable-mode');
+  const commitSection = document.getElementById('commit-area');
+  const binaryViewer = document.getElementById('binary-viewer');
+
+  const url = ide.dataset.url;
+
   Store.service = Service;
   Store.service.url = url;
-  Store.tabs = new Tabs();
-  Store.sidebar = new Sidebar(url);
-  Store.editor = new Editor();
-  Store.buttons = new FileButtons();
-  Store.editButton = new EditButton();
-  Store.commitSection = new CommitSection();
-  Store.binaryViewer = new BinaryViewer();
+
+  Store.tabs = new Tabs(tabs);
+  Store.sidebar = new Sidebar(sidebar);
+  Store.editor = new Editor(ide);
+  Store.buttons = new FileButtons(fileButtons);
+  Store.editButton = new EditButton(editButton);
+  Store.commitSection = new CommitSection(commitSection);
+  Store.binaryViewer = new BinaryViewer(binaryViewer);
+
   Helper.getContent();
 });

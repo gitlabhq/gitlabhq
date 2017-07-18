@@ -2,14 +2,13 @@ import Vue from 'vue';
 import Store from './repo_store';
 
 export default class RepoEditButton {
-  constructor() {
-    this.initVue();
-    this.el = document.getElementById('editable-mode');
+  constructor(el) {
+    this.initVue(el);
   }
 
-  initVue() {
+  initVue(el) {
     this.vue = new Vue({
-      el: '#editable-mode',
+      el,
       data: () => Store,
       computed: {
         buttonLabel() {

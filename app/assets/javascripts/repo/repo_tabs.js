@@ -4,14 +4,14 @@ import RepoTab from './repo_tab';
 import RepoMiniMixin from './repo_mini_mixin';
 
 export default class RepoTabs {
-  constructor() {
+  constructor(el) {
     RepoTabs.styleTabsForWindows();
-    this.initVue();
+    this.initVue(el);
   }
 
-  initVue() {
+  initVue(el) {
     this.vue = new Vue({
-      el: '#tabs',
+      el,
       mixins: [RepoMiniMixin],
       components: {
         'repo-tab': RepoTab,

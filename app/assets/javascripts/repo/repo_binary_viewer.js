@@ -3,13 +3,13 @@ import Store from './repo_store';
 import RepoHelper from './repo_helper';
 
 export default class RepoBinaryViewer {
-  constructor() {
-    this.initVue();
+  constructor(el) {
+    this.initVue(el);
   }
 
-  initVue() {
+  initVue(el) {
     this.vue = new Vue({
-      el: '#binary-viewer',
+      el,
 
       data: () => Store,
 

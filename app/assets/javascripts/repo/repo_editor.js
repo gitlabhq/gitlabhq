@@ -5,9 +5,9 @@ import Helper from './repo_helper';
 import monacoLoader from './monaco_loader';
 
 export default class RepoEditor {
-  constructor() {
+  constructor(el) {
     this.initMonaco();
-    this.el = document.getElementById('ide');
+    this.el = el;
   }
 
   addMonacoEvents() {
@@ -38,13 +38,12 @@ export default class RepoEditor {
 
   initVue() {
     const self = this;
-    const monacoEditor = this.monacoEditor;
     this.vue = new Vue({
       data: () => Store,
       created() {
         this.showHide();
         if (this.blobRaw !== '') {
-          monacoEditor.setModel(
+          self.monacoEditor.setModel(
             monaco.editor.createModel(
               this.blobRaw,
               'plain',

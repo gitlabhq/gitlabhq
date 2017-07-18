@@ -9,15 +9,13 @@ import RepoLoadingFile from './repo_loading_file';
 import RepoMiniMixin from './repo_mini_mixin';
 
 export default class RepoSidebar {
-  constructor(url) {
-    this.url = url;
-    this.initVue();
-    this.el = document.getElementById('ide');
+  constructor(el) {
+    this.initVue(el);
   }
 
-  initVue() {
+  initVue(el) {
     this.vue = new Vue({
-      el: '#sidebar',
+      el,
       mixins: [RepoMiniMixin],
       components: {
         'repo-file-options': RepoFileOptions,

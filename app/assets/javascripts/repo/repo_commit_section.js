@@ -2,14 +2,13 @@ import Vue from 'vue';
 import Store from './repo_store';
 
 export default class RepoCommitSection {
-  constructor() {
-    this.initVue();
-    this.el = document.getElementById('commit-area');
+  constructor(el) {
+    this.initVue(el);
   }
 
-  initVue() {
+  initVue(el) {
     this.vue = new Vue({
-      el: '#commit-area',
+      el,
       data: () => Store,
 
       computed: {
