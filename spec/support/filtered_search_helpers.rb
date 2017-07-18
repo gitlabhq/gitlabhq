@@ -56,12 +56,14 @@ module FilteredSearchHelpers
   def expect_tokens(tokens)
     page.find '.filtered-search-box .tokens-container' do
       page.all(:css, '.tokens-container li').each_with_index do |el, index|
-        token_name = tokens[index][:name]
-        token_value = tokens[index][:value]
+        if tokens[index]
+          token_name = tokens[index][:name]
+          token_value = tokens[index][:value]
 
-        expect(el.find('.name')).to have_content(token_name)
-        if token_value
-          expect(el.find('.value')).to have_content(token_value)
+          expect(el.find('.name')).to have_content(/#{Regexp.escape(token_name)}/i)
+          if token_value
+            expect(el.find('.value')).to have_content(/#{Regexp.escape(token_value)}/i)
+          end
         end
       end
     end

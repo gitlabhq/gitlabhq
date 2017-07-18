@@ -312,7 +312,7 @@ describe 'Filter issues', js: true, feature: true do
         input_filtered_search("label:~'#{special_multiple_label.title}'")
 
         # filtered search defaults quotations to double quotes
-        expect_tokens([{ name: 'label', value: "\"#{special_multiple_label.title}\"" }])
+        expect_tokens([{ name: 'label', value: "\'#{special_multiple_label.title}\'" }])
         expect_issues_list_count(1)
 
         expect_filtered_search_input_empty
@@ -321,7 +321,7 @@ describe 'Filter issues', js: true, feature: true do
       it 'single quotes' do
         input_filtered_search("label:~'#{multiple_words_label.title}'")
 
-        expect_tokens([{ name: 'label', value: "\"#{multiple_words_label.title}\"" }])
+        expect_tokens([{ name: 'label', value: "\'#{multiple_words_label.title}\'" }])
         expect_issues_list_count(1)
         expect_filtered_search_input_empty
       end
