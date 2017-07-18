@@ -138,9 +138,28 @@ describe Ci::BuildPolicy, :models do
         before do
           create(:protected_tag, :no_one_can_create,
                  name: 'some-ref', project: project)
+
+          build.update(tag: true)
         end
 
         it_behaves_like 'protected ref'
+      end
+
+      context 'when build is against a protected tag but it is not a tag' do
+        before do
+          create(:protected_tag, :no_one_can_create,
+                 name: 'some-ref', project: project)
+        end
+
+        context 'when build is a manual action' do
+          let(:build) do
+            create(:ci_build, :manual, ref: 'some-ref', pipeline: pipeline)
+          end
+
+          it 'includes ability to update build' do
+            expect(policy).to be_allowed :update_build
+          end
+        end
       end
 
       context 'when branch build is assigned to is not protected' do

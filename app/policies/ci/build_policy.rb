@@ -5,8 +5,11 @@ module Ci
 
       access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
 
-      !access.can_merge_to_branch?(@subject.ref) ||
+      if @subject.tag?
         !access.can_create_tag?(@subject.ref)
+      else
+        !access.can_merge_to_branch?(@subject.ref)
+      end
     end
 
     rule { protected_action }.prevent :update_build
