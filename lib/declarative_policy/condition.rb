@@ -82,13 +82,14 @@ module DeclarativePolicy
     # depending on the scope, we may cache only by the user or only by
     # the subject, resulting in sharing across different policy objects.
     def cache_key
-      case @condition.scope
-      when :normal  then "/dp/condition/#{@condition.key}/#{user_key},#{subject_key}"
-      when :user    then "/dp/condition/#{@condition.key}/#{user_key}"
-      when :subject then "/dp/condition/#{@condition.key}/#{subject_key}"
-      when :global  then "/dp/condition/#{@condition.key}"
-      else raise 'invalid scope'
-      end
+      @cache_key ||=
+        case @condition.scope
+        when :normal  then "/dp/condition/#{@condition.key}/#{user_key},#{subject_key}"
+        when :user    then "/dp/condition/#{@condition.key}/#{user_key}"
+        when :subject then "/dp/condition/#{@condition.key}/#{subject_key}"
+        when :global  then "/dp/condition/#{@condition.key}"
+        else raise 'invalid scope'
+        end
     end
 
     def user_key
