@@ -106,6 +106,7 @@ export default {
         :addSpacingClasses="false">
         <textarea
           id="note-body"
+          name="note[note]"
           class="note-textarea js-gfm-input js-autosize markdown-area js-note-text"
           data-supports-slash-commands="true"
           data-supports-quick-actions="true"

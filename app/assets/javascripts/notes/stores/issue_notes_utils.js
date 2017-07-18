@@ -8,7 +8,7 @@ export default {
   },
   getQuickActionText(note) {
     let text = 'Applying command';
-    const quickActions = AjaxCache.get(gl.GfmAutoComplete.dataSources.commands);
+    const quickActions = AjaxCache.get(gl.GfmAutoComplete.dataSources.commands) || [];
 
     const executedCommands = quickActions.filter((command) => {
       const commandRegex = new RegExp(`/${command.name}`);
