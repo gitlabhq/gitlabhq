@@ -1,6 +1,6 @@
 module Ci
   class BuildPolicy < CommitStatusPolicy
-    condition(:user_cannot_update) do
+    condition(:protected_ref) do
       access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
 
       if @subject.tag?
@@ -10,6 +10,6 @@ module Ci
       end
     end
 
-    rule { user_cannot_update }.prevent :update_build
+    rule { protected_ref }.prevent :update_build
   end
 end

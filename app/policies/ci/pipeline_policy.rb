@@ -2,7 +2,7 @@ module Ci
   class PipelinePolicy < BasePolicy
     delegate { @subject.project }
 
-    condition(:user_cannot_update) do
+    condition(:protected_ref) do
       access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
 
       if @subject.tag?
@@ -12,6 +12,6 @@ module Ci
       end
     end
 
-    rule { user_cannot_update }.prevent :update_pipeline
+    rule { protected_ref }.prevent :update_pipeline
   end
 end
