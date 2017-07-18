@@ -45,7 +45,7 @@ Prometheus server up and running. You have two options here:
 ### Configuring Omnibus GitLab Prometheus to monitor Kubernetes
 
 With Omnibus GitLab running inside of Kubernetes, you can leverage the bundled
-version of Prometheus to collect the required metrics.
+version of Prometheus to collect the supported metrics. Once enabled, Prometheus will automatically begin monitoring Kubernetes Nodes and any [annotated Pods](https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>).
 
 1. Read how to configure the bundled Prometheus server in the
    [Administration guide][gitlab-prometheus-k8s-monitor].
