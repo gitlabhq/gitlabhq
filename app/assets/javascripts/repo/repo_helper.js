@@ -1,6 +1,7 @@
+/* global Flash */
 import Service from './repo_service';
 import Store from './repo_store';
-import Flash from '../flash';
+import '../flash';
 
 const RepoHelper = {
   isTree(data) {
@@ -18,14 +19,14 @@ const RepoHelper = {
     const ext = `.${file.name.split('.').pop()}`;
     console.log('ext',ext,'ext')
     let foundLang;
-    if(langs.some((l) => {
-      if(l.extensions && l.extensions.indexOf(ext) > -1) {
+    if (langs.some((l) => {
+      if (l.extensions && l.extensions.indexOf(ext) > -1) {
         foundLang = l;
         return true;
       }
       return false;
     })) {
-      return foundLang.id
+      return foundLang.id;
     }
     return 'plain';
   },

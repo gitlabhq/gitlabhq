@@ -2,12 +2,14 @@
   display: none;
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .5s;
 }
 
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
-  opacity: 0
+.fade-enter,
+.fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
 }
 
 .commit-message {
@@ -19,210 +21,216 @@
   border-radius: $border-radius-default;
   color: $almost-black;
 
-header {
-  background: $gray-light;
-  padding: 10px 15px;
-}
-
-.panel-right{
-  display: inline-block;
-  width: 85%;
- 
-  .monaco-editor.vs {
-    .line-numbers{
-      cursor: pointer;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-    .cursor {
-      background: rgba(255,255,255,0);
-      border-color: rgba(255,255,255,0);
-    }
-  }
-
-  &.edit-mode {
-    .monaco-editor.vs {
-      .cursor {
-        background: #000;
-        border-color: #000;
-      }
-    }
-  }
-
-  #tabs {
-    height: 41px;
-    border-bottom: 1px solid $white-normal;
-    padding-left: 0;
-    margin-bottom: 0;
-    display: inline-block;
-    white-space: nowrap;
-    width: 100%;
-    overflow-y: none;
-    overflow-x: scroll;
-
-    li {
-      -webkit-animation: fadein 0.5s;
-      list-style-type: none;
-      background: $gray-normal;
-      display: inline-block;
-      padding: 10px 18px;
-      border-right: 1px solid $border-color;
-      white-space: nowrap;
-
-      &.active {
-        background: $white-light;
-      }
-
-      a {
-        color: black;
-      }
-
-      i.fa.fa-times, i.fa.fa-circle {
-        float: right;
-        margin-top: 3px;
-        margin-left: 15px;
-        color: $gray-darkest;
-      }
-    }
-  }
-  #ide {
-    height: 70vh;
-  }
-
-  #repo-file-buttons {
+  header {
     background: $gray-light;
-    padding: 5px;
-    margin-top: -5px;
+    padding: 10px 15px;
+  }
+
+  .panel-right {
+    display: inline-block;
+    width: 85%;
+
+    .monaco-editor.vs {
+      .line-numbers {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .cursor {
+        background: $black;
+        border-color: $black;
+      }
+    }
+
+    &.edit-mode {
+      .monaco-editor.vs {
+        .cursor {
+          background: $black;
+          border-color: $black;
+        }
+      }
+    }
+
+    #tabs {
+      height: 41px;
+      border-bottom: 1px solid $white-normal;
+      padding-left: 0;
+      margin-bottom: 0;
+      display: inline-block;
+      white-space: nowrap;
+      width: 100%;
+      overflow-y: none;
+      overflow-x: scroll;
+
+      li {
+        animation: fadein 0.5s;
+        list-style-type: none;
+        background: $gray-normal;
+        display: inline-block;
+        padding: 10px 18px;
+        border-right: 1px solid $border-color;
+        white-space: nowrap;
+
+        &.active {
+          background: $white-light;
+        }
+
+        a {
+          color: $black;
+        }
+
+        i.fa.fa-times,
+        i.fa.fa-circle {
+          float: right;
+          margin-top: 3px;
+          margin-left: 15px;
+          color: $gray-darkest;
+        }
+      }
+    }
+
+    #ide {
+      height: 70vh;
+    }
+
+    #repo-file-buttons {
+      background: $gray-light;
+      padding: 5px;
+      margin-top: -5px;
+      border-bottom: 1px solid $white-normal;
+    }
+
+    #binary-viewer {
+      height: 70vh;
+      overflow: auto;
+      margin-top: 5px;
+      margin-left: 10px;
+
+      .blob-viewer {
+        padding-top: 20px;
+        padding-left: 20px;
+      }
+    }
+  }
+
+  #commit-area {
+    background: $gray-light;
+    padding: 20px;
+  }
+
+  #view-toggler {
+    height: 41px;
+    position: relative;
+    display: block;
     border-bottom: 1px solid $white-normal;
+    background: $white-light;
+    margin-top: -5px;
   }
 
   #binary-viewer {
-    height: 70vh;
-    overflow: auto;
-    margin-top: 5px;
-    margin-left: 10px;
-
-    .blob-viewer {
-      padding-top: 20px;
-      padding-left: 20px;
+    img {
+      max-width: 100%;
     }
   }
-}
 
-#commit-area {
-  background: $gray-light;
-  padding: 20px;
-}
+  #sidebar {
 
-#view-toggler {
-  height: 41px;
-  position: relative;
-  display: block;
-  border-bottom: 1px solid $white-normal;
-  background: white;
-  margin-top: -5px;
-}
-
-#binary-viewer {
-  img {
-    max-width: 100%;
-  }
-}
-
-#sidebar {
-
-  &.sidebar-mini {
-    display: inline-block;
-    vertical-align: top;
-    width: 15%;
-    border-right: 1px solid $white-normal;
-    height: 80vh;
-    overflow: auto;
-  }
-
-  tr {
-    -webkit-animation: fadein 0.5s;
-    &.repo-file-options td {
-      padding: 0;
-      border-top: none;
-      background: $gray-light;
-      width: 190px;
+    &.sidebar-mini {
       display: inline-block;
-      border-top: none;
+      vertical-align: top;
+      width: 15%;
+      border-right: 1px solid $white-normal;
+      height: 80vh;
+      overflow: auto;
+    }
 
-      &:hover {
+    tr {
+      animation: fadein 0.5s;
+
+      &.repo-file-options td {
+        padding: 0;
+        border-top: none;
+        background: $gray-light;
+        width: 190px;
+        display: inline-block;
+
+        &:hover {
+          .title {
+            width: 105px;
+          }
+
+          ul {
+            display: inline-block;
+          }
+
+        }
+
         .title {
-          width: 105px;
+          display: inline-block;
+          font-size: 10px;
+          text-transform: uppercase;
+          font-weight: bold;
+          color: $gray-darkest;
+          width: 185px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: middle;
+          padding: 2px 16px;
         }
 
         ul {
-          display: inline-block;  
-        }
-        
-      }
+          display: none;
+          float: right;
+          margin: 0 10px 0 0;
+          padding: 1px 0;
 
-      .title {
-        display: inline-block;
-        font-size: 10px;
-        text-transform: uppercase;
-        font-weight: bold;
-        color: $gray-darkest;
-        width: 185px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-        padding: 2px 16px;
-      }
-      ul {
-        display: none;
-        float: right;
-        margin: 0 10px 0 0;
-        padding: 1px 0;
-
-        li {
-          display: inline-block;
-          padding: 0px 2px;
-          border-bottom: none;
+          li {
+            display: inline-block;
+            padding: 0 2px;
+            border-bottom: none;
+          }
         }
       }
-    }
-    .fa {
-      margin-right: 5px;
-    }
-  }
 
-  a {
-    color: $almost-black;
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-
-    li {
-      border-bottom: 1px solid $border-gray-normal;
-      padding: 10px 20px;
-
-      a {
-        color: $almost-black;
-      }
       .fa {
-        font-size: $code_font_size;
         margin-right: 5px;
       }
     }
+
+    a {
+      color: $almost-black;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+
+      li {
+        border-bottom: 1px solid $border-gray-normal;
+        padding: 10px 20px;
+
+        a {
+          color: $almost-black;
+        }
+
+        .fa {
+          font-size: $code_font_size;
+          margin-right: 5px;
+        }
+      }
+    }
   }
-}
-  
+
 }
 
 .animation-container {
-  background: #f6f7f9;
+  background: $repo-editor-grey;
   height: 40px;
   overflow: hidden;
   position: relative;
@@ -230,14 +238,14 @@ header {
   &.animation-container-small {
     height: 12px;
   }
-  
+
   &::before {
-    -webkit-animation-duration: 1s;
-    -webkit-animation-fill-mode: forwards;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-name: blockTextShine;
-    -webkit-animation-timing-function: linear;
-    background-image: linear-gradient(to right, #f6f7f9 0%, #e9ebee 20%, #f6f7f9 40%, #f6f7f9 100%);
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: blockTextShine;
+    animation-timing-function: linear;
+    background-image: $repo-editor-linear-gradient;
     background-repeat: no-repeat;
     background-size: 800px 45px;
     content: ' ';
@@ -245,42 +253,42 @@ header {
     height: 100%;
     position: relative;
   }
-  
+
   div {
-    background: #fff;
+    background: $white-light;
     height: 6px;
     left: 0;
     position: absolute;
-    right: 0
+    right: 0;
   }
-  
+
   .line-of-code-1 {
     left: 0;
     top: 8px;
   }
-  
+
   .line-of-code-2 {
     left: 150px;
-    top: 0px;
+    top: 0;
     height: 10px;
   }
-  
+
   .line-of-code-3 {
     left: 0;
     top: 23px;
   }
-  
+
   .line-of-code-4 {
     left: 0;
     top: 38px;
   }
-  
+
   .line-of-code-5 {
     left: 200px;
     top: 28px;
     height: 10px;
   }
-  
+
   .line-of-code-6 {
     top: 14px;
     left: 230px;
@@ -288,16 +296,22 @@ header {
   }
 }
 
-@-webkit-keyframes blockTextShine {
-    0% {
-        transform: translateX(-468px)
-    }
-    100% {
-        transform: translateX(468px)
-    }
+@keyframes blockTextShine {
+  0% {
+    transform: translateX(-468px);
+  }
+
+  100% {
+    transform: translateX(468px);
+  }
 }
 
-@-webkit-keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

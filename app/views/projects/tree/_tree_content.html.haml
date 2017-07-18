@@ -1,65 +1,65 @@
 .tree-content-holder
   #sidebar{ ":class" => "{'sidebar-mini' : isMini}", "v-cloak" => "1" }<
     %table.table
-      %thead{"v-if" => "!isMini"}
-        %th{"v-if" => "!isMini"}
+      %thead{ "v-if" => "!isMini" }
+        %th{ "v-if" => "!isMini" }
           Name
-        %th{"v-else" => "1"}
+        %th{ "v-else" => "1" }
           Project
-        %th.hidden-sm.hidden-xs{"v-if" => "!isMini"}
+        %th.hidden-sm.hidden-xs{ "v-if" => "!isMini" }
           Last Commit
-        %th.hidden-xs{"v-if" => "!isMini"}
+        %th.hidden-xs{ "v-if" => "!isMini" }
           Last Update
       %tbody
         %tr{ is: "repo-file-options", ":is-mini" => "isMini", "project-name" => @project.name }
         %tr{ is: "repo-previous-directory", ":prev-url" => "prevURL", "@linkclicked" => "linkClicked(prevURL)" }
-        %tr{ is: "repo-loading-file", "v-for" => "n in 5", ":loading" => "loading", ":has-files" => "!!files.length", ":is-mini" => "isMini"}
+        %tr{ is: "repo-loading-file", "v-for" => "n in 5", ":loading" => "loading", ":has-files" => "!!files.length", ":is-mini" => "isMini" }
         %tr{ is: "repo-file", "v-for" => "file in files", ":key" => "file.id", ":file" => "file",":is-mini" => "isMini", "@linkclicked" => "linkClicked(file)", ":is-tree" => "isTree", ":loading" => "loading", ":has-files" => "!!files.length", ":active-file" => "activeFile" }
   .panel-right>
-    %ul#tabs{"v-if" => "isMini", ":style" => "{height: 41 + scrollWidth + 'px'}", "v-cloak" => "1"}
+    %ul#tabs{ "v-if" => "isMini", ":style" => "{height: 41 + scrollWidth + 'px'}", "v-cloak" => "1" }
       %li{ is: "repo-tab", "v-for" => "tab in openedFiles", ":key" => "tab.id", ":tab" => "tab", ":class" => "{'active' : tab.active}" }
     #repo-file-buttons
     #ide{ data: { url: repo_url } }
     #binary-viewer{ "v-if" => "binary" }
-      %img{"v-if" => "binaryTypes.png", ":src" => "pngBlobWithDataURI"}
-      %div{"v-if" => "binaryTypes.markdown", "v-html" => "activeFile.html"}
-  #commit-area{"v-if" => "changedFiles.length"}
+      %img{ "v-if" => "binaryTypes.png", ":src" => "pngBlobWithDataURI", ":alt" => "activeFile.name", alt: '' }
+      %div{ "v-if" => "binaryTypes.markdown", "v-html" => "activeFile.html" }
+  #commit-area{ "v-if" => "changedFiles.length" }
     %form.form-horizontal
       %fieldset
         .form-group
           %label.col-md-4.control-label Staged files ({{changedFiles.length}})
           .col-md-4
             %ul.list-unstyled
-              %li{"v-for" => "file in changedFiles"}
+              %li{ "v-for" => "file in changedFiles" }
                 %span.help-block
                   {{file.url}}
         / Textarea
         .form-group
-          %label.col-md-4.control-label{:for => "commit-message"} Commit message
+          %label.col-md-4.control-label{ :for => "commit-message" } Commit message
           .col-md-4
-            %textarea#commit-message.form-control{:name => "commit-message"} Updating README.md
+            %textarea#commit-message.form-control{ :name => "commit-message" } Updating README.md
         / Button Drop Down
         .form-group
-          %label.col-md-4.control-label{:for => "target-branch"} Target branch
+          %label.col-md-4.control-label{ :for => "target-branch" } Target branch
           .col-md-4
             .input-group
               .input-group-btn
-                %button.btn.btn-default.dropdown-toggle{"data-toggle" => "dropdown", :type => "button"}
+                %button.btn.btn-default.dropdown-toggle{ "data-toggle" => "dropdown", :type => "button" }
                   Action
-                  =icon "caret-down"
+                  = icon "caret-down"
                 %ul.dropdown-menu.pull-right
                   %li
-                    %a{:href => "#"} Target branch
+                    %a{ :href => "#" } Target branch
                   %li
-                    %a{:href => "#"} Create my own branch
-              %input#target-branch.form-control{:name => "target-branch", :placeholder => "placeholder", :type => "text"}/
+                    %a{ :href => "#" } Create my own branch
+              %input#target-branch.form-control{ :name => "target-branch", :placeholder => "placeholder", :type => "text" }/
         / Multiple Checkboxes
         .form-group
-          %label.col-md-4.control-label{:for => "checkboxes"}
+          %label.col-md-4.control-label{ :for => "checkboxes" }
           .col-md-4
             .checkbox
-              %label{:for => "checkboxes-0"}
-                %input#checkboxes-0{:name => "checkboxes", :type => "checkbox", :value => "1"}/
+              %label{ :for => "checkboxes-0" }
+                %input#checkboxes-0{ :name => "checkboxes", :type => "checkbox", :value => "1" }/
                 Start a new merge request with these changes
 
 

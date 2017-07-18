@@ -4,7 +4,9 @@
 = render "projects/commits/head"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('blob')
+  = webpack_bundle_tag 'blob'
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'repo'
 
 = render 'projects/last_push'
 
