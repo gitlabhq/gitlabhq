@@ -1,6 +1,6 @@
 module Gitlab
   module GitalyClient
-    class Ref
+    class RefService
       include Gitlab::EncodingHelper
 
       # 'repository' is a Gitlab::Git::Repository
@@ -12,19 +12,19 @@ module Gitlab
 
       def default_branch_name
         request = Gitaly::FindDefaultBranchNameRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref, :find_default_branch_name, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_default_branch_name, request)
         Gitlab::Git.branch_name(response.name)
       end
 
       def branch_names
         request = Gitaly::FindAllBranchNamesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref, :find_all_branch_names, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branch_names, request)
         consume_refs_response(response) { |name| Gitlab::Git.branch_name(name) }
       end
 
       def tag_names
         request = Gitaly::FindAllTagNamesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref, :find_all_tag_names, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_tag_names, request)
         consume_refs_response(response) { |name| Gitlab::Git.tag_name(name) }
       end
 
@@ -34,7 +34,7 @@ module Gitlab
           commit_id: commit_id,
           prefix: ref_prefix
         )
-        encode!(GitalyClient.call(@storage, :ref, :find_ref_name, request).name.dup)
+        encode!(GitalyClient.call(@storage, :ref_service, :find_ref_name, request).name.dup)
       end
 
       def count_tag_names
@@ -48,7 +48,7 @@ module Gitlab
       def local_branches(sort_by: nil)
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
         request.sort_by = sort_by_param(sort_by) if sort_by
-        response = GitalyClient.call(@storage, :ref, :find_local_branches, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request)
         consume_branches_response(response)
       end
 
