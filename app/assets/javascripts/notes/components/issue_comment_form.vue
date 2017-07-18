@@ -53,6 +53,10 @@ export default {
         'js-note-target-reopen': !this.isIssueOpen,
       }
     },
+    canUpdateIssue() {
+      const { issueData } = window.gl;
+      return issueData && issueData.current_user.can_update;
+    },
   },
   methods: {
     handleSave(withIssueAction) {
@@ -239,6 +243,7 @@ export default {
               </div>
               <a
                 @click="handleSave(true)"
+                v-if="canUpdateIssue"
                 :class="actionButtonClassNames"
                 class="btn btn-nr btn-comment btn-comment-and-close"
                 role="button">
