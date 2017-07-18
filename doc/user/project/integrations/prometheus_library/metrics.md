@@ -22,4 +22,4 @@ For example if you are deploying to an environment named `production`, there mus
 
 We strive to support the 2-4 most important metrics for each common system service that supports Prometheus. If you are looking for support for a particular exporter which has not yet been added to the library, additions can be made [to the `additional_metrics.yml`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/prometheus/additional_metrics.yml) file.
 
-> Note: The library is only for monitoring public, common, system services which all customers can benefit from. Support for monitoring [customer proprietary metrics](https://gitlab.com/gitlab-org/gitlab-ee/issues/2273) will be added in an subsequent release.
+> Note: The library is only for monitoring public, common, system services which all customers can benefit from. Support for monitoring [customer proprietary metrics](https://gitlab.com/gitlab-org/gitlab-ee/issues/2273) will be added in a subsequent release.

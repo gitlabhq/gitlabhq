@@ -25,7 +25,7 @@ Integration with Prometheus requires the following:
 
 Depending on your deployment and where you have located your GitLab server, there are a few options to get started with Prometheus monitoring.
 
-* If both GitLab and your applications are installed in the same Kubernetes cluster, you can leveraged the [bundled Prometheus server within GitLab](#configuring-omnibus-gitlab-prometheus-to-monitor-kubernetes).
+* If both GitLab and your applications are installed in the same Kubernetes cluster, you can leverage the [bundled Prometheus server within GitLab](#configuring-omnibus-gitlab-prometheus-to-monitor-kubernetes).
 * If your applications are deployed on Kubernetes, but GitLab is not in the same cluster, then you can [configure a Prometheus server in your Kubernetes cluster](#configuring-your-own-prometheus-server-within-kubernetes).
 * If your applications are not running in Kubernetes, [get started with Prometheus](#getting-started-with-prometheus-outside-of-kubernetes).
 
