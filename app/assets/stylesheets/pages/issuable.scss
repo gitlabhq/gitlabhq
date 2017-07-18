@@ -346,13 +346,9 @@
         display: none;
       }
 
-      .avatar:hover,
-      .avatar-counter:hover {
-        border-color: $issuable-sidebar-color;
-      }
-
       .avatar-counter:hover {
         color: $issuable-sidebar-color;
+        border-color: $issuable-sidebar-color;
       }
 
       .btn-clipboard {
