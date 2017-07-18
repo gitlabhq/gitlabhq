@@ -190,7 +190,7 @@ describe Projects::UpdateService, '#execute', :services do
   it 'returns an error result when record cannot be updated' do
     result = update_project(project, admin, { name: 'foo&bar' })
 
-    expect(result).to eq({ status: :error, message: 'Project could not be updated' })
+    expect(result).to eq({ status: :error, message: 'Project could not be updated!' })
   end
 
   def update_project(project, user, opts)
