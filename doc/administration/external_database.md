@@ -13,4 +13,4 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
-   This step is covered in [Configuring GitLab for HA](gitlab.md).
+   This step is covered in [Configuring GitLab for HA](high_availability/gitlab.md).
