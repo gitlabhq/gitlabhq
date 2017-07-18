@@ -155,9 +155,9 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
         let(:guest) { create(:user) }
         before do
           project.team << [guest, :guest]
-          logout
-          login_with(guest)
-          visit namespace_project_issue_path(project.namespace, project, issue)
+          gitlab_sign_out
+          sign_in(guest)
+          visit project_issue_path(project, issue)
         end
 
         it 'does not create a note, and does not mark the issue as a duplicate' do
