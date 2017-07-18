@@ -19,7 +19,7 @@ class AddEnvironmentSlug < ActiveRecord::Migration
     finder = environments.project(:id, :name)
 
     connection.exec_query(finder.to_sql).rows.each do |id, name|
-      updater = Arel::UpdateManager.new(ActiveRecord::Base)
+      updater = Arel::UpdateManager.new
         .table(environments)
         .set(environments[:slug] => generate_slug(name))
         .where(environments[:id].eq(id))

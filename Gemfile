@@ -321,6 +321,8 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.4'
 
+  gem 'rails-controller-testing', '~> 1.0.2'
+
   gem 'capybara', '~> 2.14.4'
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist', '~> 1.9.0'

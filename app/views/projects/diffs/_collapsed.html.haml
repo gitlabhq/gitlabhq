@@ -1,5 +1,5 @@
 - diff_file = viewer.diff_file
-- url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier))
+- url = url_for(safe_params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier))
 .nothing-here-block.diff-collapsed{ data: { diff_for_path: url } }
   This diff is collapsed.
   %a.click-to-expand Click to expand it.

@@ -33,7 +33,7 @@ class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
       end
 
       updates.each do |visibility_level, project_ids|
-        updater = Arel::UpdateManager.new(ActiveRecord::Base)
+        updater = Arel::UpdateManager.new
           .table(projects)
           .set(projects[:visibility_level] => visibility_level)
           .where(projects[:id].in(project_ids))

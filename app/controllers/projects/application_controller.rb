@@ -17,7 +17,7 @@ class Projects::ApplicationController < ApplicationController
     # to
     #   localhost/group/project
     #
-    redirect_to url_for(params.merge(format: nil)) if params[:format] == 'git'
+    redirect_to url_for(safe_params.merge(format: nil)) if params[:format] == 'git'
   end
 
   def project

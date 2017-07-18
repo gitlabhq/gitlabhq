@@ -38,7 +38,7 @@ class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration
     activities = activities(day.at_beginning_of_day, day.at_end_of_day, page: page)
 
     update_sql =
-      Arel::UpdateManager.new(ActiveRecord::Base)
+      Arel::UpdateManager.new
         .table(users_table)
         .set(users_table[:last_activity_on] => day.to_date)
         .where(users_table[:username].in(activities.map(&:first)))

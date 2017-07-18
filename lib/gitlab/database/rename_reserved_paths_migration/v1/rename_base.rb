@@ -62,7 +62,7 @@ module Gitlab
                                             old_full_path,
                                             new_full_path)
 
-            update = Arel::UpdateManager.new(ActiveRecord::Base)
+            update = Arel::UpdateManager.new
                        .table(routes)
                        .set([[routes[:path], replace_statement]])
                        .where(Arel::Nodes::SqlLiteral.new(filter))
