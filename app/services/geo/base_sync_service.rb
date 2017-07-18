@@ -29,6 +29,12 @@ module Geo
       @lease_key ||= "#{LEASE_KEY_PREFIX}:#{type}:#{project.id}"
     end
 
+    def primary_ssh_path_prefix
+      @primary_ssh_path_prefix ||= Gitlab::Geo.primary_node.clone_url_prefix.tap do |prefix|
+        raise EmptyCloneUrlPrefixError, 'Missing clone_url_prefix in the primary node' unless prefix.present?
+      end
+    end
+
     private
 
     def sync_repository
@@ -76,12 +82,6 @@ module Geo
 
     def type
       self.class.type
-    end
-
-    def primary_ssh_path_prefix
-      @primary_ssh_path_prefix ||= Gitlab::Geo.primary_node.clone_url_prefix.tap do |prefix|
-        raise EmptyCloneUrlPrefixError, 'Missing clone_url_prefix in the primary node' unless prefix.present?
-      end
     end
 
     def log(message)
