@@ -205,6 +205,7 @@
 
   @media (max-width: $screen-sm-min) {
     width: 100%;
+    min-width: 180px;
   }
 
   &.dropdown-open-left {
@@ -287,12 +288,6 @@
     cursor: not-allowed;
     padding: 5px 8px;
     color: $gl-text-color-secondary;
-  }
-
-  .badge {
-    position: absolute;
-    right: 8px;
-    top: 5px;
   }
 }
 
@@ -466,10 +461,6 @@
   left: auto;
   right: 0;
   margin-top: -5px;
-
-  @media (max-width: $screen-xs-max) {
-    left: 0;
-  }
 }
 
 .dropdown-menu-selectable {
