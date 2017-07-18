@@ -115,7 +115,7 @@ $new-sidebar-width: 220px;
   position: fixed;
   z-index: 400;
   width: $new-sidebar-width;
-  transition: width $sidebar-transition-duration;
+  transition: left $sidebar-transition-duration;
   top: 50px;
   bottom: 0;
   left: 0;
@@ -124,7 +124,7 @@ $new-sidebar-width: 220px;
   box-shadow: inset -2px 0 0 $border-color;
 
   &.nav-sidebar-expanded {
-    width: $new-sidebar-width;
+    left: 0;
   }
 
   a {
@@ -156,7 +156,7 @@ $new-sidebar-width: 220px;
   }
 
   @media (max-width: $screen-xs-max) {
-    width: 0;
+    left: (-$new-sidebar-width);
   }
 }
 
@@ -239,6 +239,19 @@ $new-sidebar-width: 220px;
 
   @media (max-width: $screen-xs-max) {
     display: inline-block;
+  }
+}
+
+.mobile-overlay {
+  display: none;
+
+  &.mobile-nav-open {
+    display: block;
+    position: absolute;
+    background-color: $black-transparent;
+    height: 100%;
+    width: 100%;
+    z-index: 300;
   }
 }
 

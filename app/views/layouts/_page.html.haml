@@ -10,6 +10,8 @@
     - if content_for?(:sub_nav)
       = yield :sub_nav
   .content-wrapper{ class: "#{(layout_nav_class unless show_new_nav?)}" }
+    - if show_new_nav?
+      .mobile-overlay
     .alert-wrapper
       = render "layouts/broadcast"
       - if show_new_nav?

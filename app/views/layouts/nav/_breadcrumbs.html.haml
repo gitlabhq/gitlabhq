@@ -3,8 +3,9 @@
 
 %nav.breadcrumbs{ role: "navigation" }
   .breadcrumbs-container{ class: [container_class, @content_class] }
-    %button.toggle-mobile-nav
-      = icon ('bars')
+    - if defined?(@new_sidebar)
+      %button.toggle-mobile-nav
+        = icon ('bars')
     .breadcrumbs-links.js-title-container
       - unless hide_top_links
         .title
