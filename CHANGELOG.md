@@ -2,6 +2,11 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.7 (2017-07-18)
+
+- Prevent bad data being added to application settings when Redis is unavailable. !12750
+- Return `is_admin` attribute in the GET /user endpoint for admins. !12811
+
 ## 9.3.6 (2017-07-12)
 
 - Fix API Scoping. !12300
