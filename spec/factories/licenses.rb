@@ -2,19 +2,26 @@ FactoryGirl.define do
   factory :gitlab_license, class: "Gitlab::License" do
     starts_at { Date.today - 1.month }
     expires_at { Date.today + 11.months }
+    notify_users_at { |l| l.expires_at }
+    notify_admins_at { |l| l.expires_at }
+
     licensee do
       { "Name" => generate(:name) }
     end
+
     restrictions do
       {
         add_ons: {
           'GitLab_FileLocks' => 1,
           'GitLab_Auditor_User' => 1
-        }
+        },
+        plan: plan
       }
     end
-    notify_users_at   { |l| l.expires_at }
-    notify_admins_at  { |l| l.expires_at }
+
+    transient do
+      plan License::STARTER_PLAN
+    end
 
     trait :trial do
       restrictions do
@@ -24,7 +31,11 @@ FactoryGirl.define do
   end
 
   factory :license do
-    data { build(:gitlab_license).export }
+    transient do
+      plan nil
+    end
+
+    data { build(:gitlab_license, plan: plan).export }
   end
 
   factory :trial_license, class: License do

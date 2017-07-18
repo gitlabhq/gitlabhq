@@ -322,8 +322,50 @@ describe Project, models: true do
     end
   end
 
+  describe '#size_limit_enabled?' do
+    let(:project) { create(:empty_project) }
+
+    context 'when repository_size_limit is not configured' do
+      it 'is disabled' do
+        expect(project.size_limit_enabled?).to be_falsey
+      end
+    end
+
+    context 'when repository_size_limit is configured' do
+      before do
+        project.update_attributes(repository_size_limit: 1024)
+      end
+
+      context 'with an EES license' do
+        let!(:license) { create(:license, plan: License::STARTER_PLAN) }
+
+        it 'is enabled' do
+          expect(project.size_limit_enabled?).to be_truthy
+        end
+      end
+
+      context 'with an EEP license' do
+        let!(:license) { create(:license, plan: License::PREMIUM_PLAN) }
+
+        it 'is enabled' do
+          expect(project.size_limit_enabled?).to be_truthy
+        end
+      end
+
+      context 'without a License' do
+        before do
+          License.destroy_all
+        end
+
+        it 'is disabled' do
+          expect(project.size_limit_enabled?).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#service_desk_enabled?' do
-    let!(:license) { create(:license, data: build(:gitlab_license, restrictions: { plan: License::PREMIUM_PLAN }).export) }
+    let!(:license) { create(:license, plan: License::PREMIUM_PLAN) }
     let(:namespace) { create(:namespace) }
 
     subject(:project) { build(:empty_project, :private, namespace: namespace, service_desk_enabled: true) }

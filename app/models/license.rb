@@ -25,7 +25,8 @@ class License < ActiveRecord::Base
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   PROTECTED_REFS_FOR_USERS_FEATURE = 'GitLab_RefPermissionsForUsers'.freeze
   PUSH_RULES_FEATURE = 'GitLab_PushRules'.freeze
-  RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
+  RELATED_ISSUES_FEATURE = 'GitLab_RelatedIssues'.freeze
+  REPOSITORY_SIZE_LIMIT_FEATURE = 'GitLab_RepositorySizeLimit'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
   VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VariableEnvironmentScope'.freeze
 
@@ -36,6 +37,7 @@ class License < ActiveRecord::Base
     geo: GEO_FEATURE,
     object_storage: OBJECT_STORAGE_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
+    repository_size_limit: REPOSITORY_SIZE_LIMIT_FEATURE,
     service_desk: SERVICE_DESK_FEATURE,
     variable_environment_scope: VARIABLE_ENVIRONMENT_SCOPE_FEATURE,
 
@@ -85,7 +87,8 @@ class License < ActiveRecord::Base
     { MULTIPLE_ISSUE_BOARDS_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
     { PROTECTED_REFS_FOR_USERS_FEATURE => 1 },
-    { RELATED_ISSUES_FEATURE => 1 }
+    { RELATED_ISSUES_FEATURE => 1 },
+    { REPOSITORY_SIZE_LIMIT_FEATURE => 1 }
   ].freeze
 
   EEP_FEATURES = [
