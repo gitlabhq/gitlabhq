@@ -66,7 +66,6 @@ var config = {
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
-    users:                './users/index.js',
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
@@ -184,7 +183,6 @@ var config = {
       name: 'common_d3',
       chunks: [
         'graphs',
-        'users',
         'monitoring',
       ],
     }),

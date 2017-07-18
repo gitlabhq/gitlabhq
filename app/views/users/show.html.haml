@@ -1,8 +1,5 @@
 - page_title       @user.name
 - page_description @user.bio
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('users')
 - header_title     @user.name, user_path(@user)
 - @no_container = true
 
@@ -129,10 +126,3 @@
 
     .loading-status
       = spinner
-
-:javascript
-  var userProfile;
-
-  userProfile = new gl.User({
-    action: "#{controller.action_name}"
-  });
