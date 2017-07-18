@@ -594,10 +594,10 @@ describe API::Internal do
   #   end
   #
   #   it "calls the Gitaly client with the project's repository" do
-  #     expect(Gitlab::GitalyClient::Notifications).
+  #     expect(Gitlab::GitalyClient::NotificationService).
   #       to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
   #       and_call_original
-  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #     expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #       to receive(:post_receive)
   #
   #     post api("/internal/notify_post_receive"), valid_params
@@ -606,10 +606,10 @@ describe API::Internal do
   #   end
   #
   #   it "calls the Gitaly client with the wiki's repository if it's a wiki" do
-  #     expect(Gitlab::GitalyClient::Notifications).
+  #     expect(Gitlab::GitalyClient::NotificationService).
   #       to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
   #       and_call_original
-  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #     expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #       to receive(:post_receive)
   #
   #     post api("/internal/notify_post_receive"), valid_wiki_params
@@ -618,7 +618,7 @@ describe API::Internal do
   #   end
   #
   #   it "returns 500 if the gitaly call fails" do
-  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #     expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #       to receive(:post_receive).and_raise(GRPC::Unavailable)
   #
   #     post api("/internal/notify_post_receive"), valid_params
@@ -636,10 +636,10 @@ describe API::Internal do
   #     end
   #
   #     it "calls the Gitaly client with the project's repository" do
-  #       expect(Gitlab::GitalyClient::Notifications).
+  #       expect(Gitlab::GitalyClient::NotificationService).
   #         to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
   #         and_call_original
-  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #         to receive(:post_receive)
   #
   #       post api("/internal/notify_post_receive"), valid_params
@@ -648,10 +648,10 @@ describe API::Internal do
   #     end
   #
   #     it "calls the Gitaly client with the wiki's repository if it's a wiki" do
-  #       expect(Gitlab::GitalyClient::Notifications).
+  #       expect(Gitlab::GitalyClient::NotificationService).
   #         to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
   #         and_call_original
-  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #         to receive(:post_receive)
   #
   #       post api("/internal/notify_post_receive"), valid_wiki_params

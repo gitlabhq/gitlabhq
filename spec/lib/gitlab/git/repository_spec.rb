@@ -45,11 +45,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'gets the branch name from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:default_branch_name)
       repository.root_ref
     end
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :default_branch_name do
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :default_branch_name do
       subject { repository.root_ref }
     end
   end
@@ -132,11 +132,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.not_to include("branch-from-space") }
 
     it 'gets the branch names from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:branch_names)
       subject
     end
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :branch_names
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :branch_names
   end
 
   describe '#tag_names' do
@@ -160,11 +160,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.not_to include("v5.0.0") }
 
     it 'gets the tag names from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:tag_names)
       subject
     end
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :tag_names
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
   end
 
   shared_examples 'archive check' do |extenstion|
@@ -368,7 +368,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'when Gitaly commit_count feature is enabled' do
       it_behaves_like 'counting commits'
-      it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Commit, :commit_count do
+      it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
         subject { repository.commit_count('master') }
       end
     end
@@ -1225,12 +1225,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'gets the branches from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:local_branches)
         .and_return([])
       @repo.local_branches
     end
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :local_branches do
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :local_branches do
       subject { @repo.local_branches }
     end
   end

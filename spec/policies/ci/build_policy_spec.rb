@@ -115,14 +115,6 @@ describe Ci::BuildPolicy, :models do
       end
 
       context 'when developers can push to the branch' do
-        let(:branch_policy) { :developers_can_push }
-
-        it 'includes ability to update build' do
-          expect(policy).to be_allowed :update_build
-        end
-      end
-
-      context 'when developers can push to the branch' do
         let(:branch_policy) { :developers_can_merge }
 
         it 'includes ability to update build' do

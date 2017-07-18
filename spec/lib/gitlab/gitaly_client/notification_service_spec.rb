@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::Notifications do
+describe Gitlab::GitalyClient::NotificationService do
   describe '#post_receive' do
     let(:project) { create(:empty_project) }
     let(:storage_name) { project.repository_storage }
@@ -8,7 +8,7 @@ describe Gitlab::GitalyClient::Notifications do
     subject { described_class.new(project.repository) }
 
     it 'sends a post_receive message' do
-      expect_any_instance_of(Gitaly::Notifications::Stub)
+      expect_any_instance_of(Gitaly::NotificationService::Stub)
         .to receive(:post_receive).with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
 
       subject.post_receive
