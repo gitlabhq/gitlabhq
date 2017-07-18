@@ -26,25 +26,25 @@ server, because the embedded server configuration is overwritten once every
 
 In this experimental phase, only a few metrics are available:
 
-| Metric                            | Type      | Description |
-| --------------------------------- | --------- | ----------- |
-| db_ping_timeout                   | Gauge     | Whether or not the last database ping timed out |
-| db_ping_success                   | Gauge     | Whether or not the last database ping succeeded |
-| db_ping_latency_seconds           | Gauge     | Round trip time of the database ping |
-| filesystem_access_latency_seconds | Gauge     | Latency in accessing a specific filesystem |
-| filesystem_accessible             | Gauge     | Whether or not a specific filesystem is accessible |
-| filesystem_write_latency_seconds  | Gauge     | Write latency of a specific filesystem |
-| filesystem_writable               | Gauge     | Whether or not the filesystem is writable |
-| filesystem_read_latency_seconds   | Gauge     | Read latency of a specific filesystem |
-| filesystem_readable               | Gauge     | Whether or not the filesystem is readable |
-| http_requests_total               | Counter   | Rack request count |
-| http_request_duration_seconds     | Histogram | HTTP response time from rack middleware |
-| pipelines_created_total           | Counter   | Counter of pipelines created |
-| rack_uncaught_errors_total        | Counter   | Rack connections handling uncaught errors count |
-| redis_ping_timeout                | Gauge     | Whether or not the last redis ping timed out |
-| redis_ping_success                | Gauge     | Whether or not the last redis ping succeeded |
-| redis_ping_latency_seconds        | Gauge     | Round trip time of the redis ping |
-| user_session_logins_total         | Counter   | Counter of how many users have logged in |
+| Metric                            | Type      | Since | Description |
+|:--------------------------------- |:--------- |:----- |:----------- |
+| db_ping_timeout                   | Gauge     | 9.4   | Whether or not the last database ping timed out |
+| db_ping_success                   | Gauge     | 9.4   | Whether or not the last database ping succeeded |
+| db_ping_latency_seconds           | Gauge     | 9.4   | Round trip time of the database ping |
+| filesystem_access_latency_seconds | Gauge     | 9.4   | Latency in accessing a specific filesystem |
+| filesystem_accessible             | Gauge     | 9.4   | Whether or not a specific filesystem is accessible |
+| filesystem_write_latency_seconds  | Gauge     | 9.4   | Write latency of a specific filesystem |
+| filesystem_writable               | Gauge     | 9.4   | Whether or not the filesystem is writable |
+| filesystem_read_latency_seconds   | Gauge     | 9.4   | Read latency of a specific filesystem |
+| filesystem_readable               | Gauge     | 9.4   | Whether or not the filesystem is readable |
+| http_requests_total               | Counter   | 9.4   | Rack request count |
+| http_request_duration_seconds     | Histogram | 9.4   | HTTP response time from rack middleware |
+| pipelines_created_total           | Counter   | 9.4   | Counter of pipelines created |
+| rack_uncaught_errors_total        | Counter   | 9.4   | Rack connections handling uncaught errors count |
+| redis_ping_timeout                | Gauge     | 9.4   | Whether or not the last redis ping timed out |
+| redis_ping_success                | Gauge     | 9.4   | Whether or not the last redis ping succeeded |
+| redis_ping_latency_seconds        | Gauge     | 9.4   | Round trip time of the redis ping |
+| user_session_logins_total         | Counter   | 9.4   | Counter of how many users have logged in |
 
 [← Back to the main Prometheus page](index.md)
 
