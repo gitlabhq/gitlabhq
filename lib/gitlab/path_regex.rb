@@ -14,14 +14,23 @@ module Gitlab
     TOP_LEVEL_ROUTES = %w[
       -
       .well-known
+      404.html
+      422.html
+      500.html
+      502.html
+      503.html
       abuse_reports
       admin
       api
+      apple-touch-icon-precomposed.png
+      apple-touch-icon.png
       assets
       autocomplete
       ci
       dashboard
+      deploy.html
       explore
+      favicon.ico
       files
       groups
       health_check
@@ -39,6 +48,7 @@ module Gitlab
       s
       search
       sent_notifications
+      slash-command-logo.png
       snippets
       u
       unicorn_test
