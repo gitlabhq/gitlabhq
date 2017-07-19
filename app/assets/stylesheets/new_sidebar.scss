@@ -65,7 +65,6 @@ $new-sidebar-width: 220px;
 
 .settings-avatar {
   background-color: $white-light;
-  transition: background-color 100ms linear;
 
   i {
     font-size: 20px;
@@ -73,7 +72,6 @@ $new-sidebar-width: 220px;
     color: $gl-text-color-secondary;
     text-align: center;
     align-self: center;
-    transition: color 100ms linear;
   }
 }
 
@@ -90,6 +88,7 @@ $new-sidebar-width: 220px;
   box-shadow: inset -2px 0 0 $border-color;
 
   a {
+    transition: none;
     text-decoration: none;
   }
 
@@ -177,7 +176,6 @@ $new-sidebar-width: 220px;
       color: $hover-color;
 
       .badge {
-        transition: background-color 100ms linear, color 100ms linear;
         background-color: $indigo-500;
         color: $hover-color;
       }
