@@ -348,6 +348,9 @@ $(function () {
 
   $(document).trigger('init.scrolling-tabs');
 
+  const style = document.createElement("style");
+  document.head.appendChild(style);
+
   $('.sidebar-top-level-items > li:not(.active)').on('mouseover', (e) => {
     const windowHeight = window.innerHeight;
     const $this = e.currentTarget;
@@ -355,13 +358,20 @@ $(function () {
 
     if ($subitems.length) {
       const boundingRect = $this.getBoundingClientRect();
-
       const bottomOverflow = windowHeight - (boundingRect.top + $subitems.outerHeight());
       const top = bottomOverflow < 0 ? boundingRect.top - Math.abs(bottomOverflow) : boundingRect.top;
 
       $subitems.css({
-        top,
+        transform: `translate3d(0, ${top}px, 0)`,
       });
+
+      style.sheet.insertRule(`.sidebar-sub-level-items::before { transform: translate3d(0, ${boundingRect.top - top}px, 0); }`, 0);
     }
-  }).on('mouseout', e => $('.sidebar-sub-level-items', e.currentTarget).hide());
+  }).on('mouseout', (e) => {
+    $('.sidebar-sub-level-items', e.currentTarget).hide();
+
+    if (style.sheet.rules.length) {
+      style.sheet.deleteRule(0);
+    }
+  });
 });
