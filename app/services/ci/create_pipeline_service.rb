@@ -23,14 +23,14 @@ module Ci
 
       unless allowed_to_trigger_pipeline?(triggering_user)
         if can?(triggering_user, :create_pipeline, project)
-          if branch? || tag?
-            return error("Insufficient permissions for protected ref '#{ref}'")
-          else
-            return error('Reference not found')
-          end
+          return error("Insufficient permissions for protected ref '#{ref}'")
         else
           return error('Insufficient permissions to create a new pipeline')
         end
+      end
+
+      unless branch? || tag?
+        return error('Reference not found')
       end
 
       unless commit
@@ -93,7 +93,7 @@ module Ci
         elsif tag?
           access.can_create_tag?(ref)
         else
-          false
+          true # Allow it for now and we'll reject when we check ref existence
         end
     end
 
