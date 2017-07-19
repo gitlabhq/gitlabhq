@@ -174,12 +174,22 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           allow(Gitlab::Database).to receive(:mysql?).and_return(false)
         end
 
-        it 'creates a concurrent foreign key' do
+        it 'creates a concurrent foreign key and validates it' do
           expect(model).to receive(:disable_statement_timeout)
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+
+        it 'appends a valid ON DELETE statement' do
+          expect(model).to receive(:disable_statement_timeout)
+          expect(model).to receive(:execute).with(/ON DELETE SET NULL/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+
+          model.add_concurrent_foreign_key(:projects, :users,
+                                           column: :user_id,
+                                           on_delete: :nullify)
         end
       end
     end

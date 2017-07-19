@@ -1,6 +1,6 @@
 module Gitlab
   module GitalyClient
-    class Notifications
+    class NotificationService
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
@@ -10,7 +10,7 @@ module Gitlab
       def post_receive
         GitalyClient.call(
           @storage,
-          :notifications,
+          :notification_service,
           :post_receive,
           Gitaly::PostReceiveRequest.new(repository: @gitaly_repo)
         )

@@ -5,7 +5,6 @@ require 'carrierwave/orm/activerecord'
 class Group < Namespace
   include EE::Group
   include Gitlab::ConfigHelper
-  include Gitlab::VisibilityLevel
   include AccessRequestable
   include Avatarable
   include Referable
@@ -119,10 +118,6 @@ class Group < Namespace
 
   def human_name
     full_name
-  end
-
-  def visibility_level_field
-    :visibility_level
   end
 
   def visibility_level_allowed_by_projects

@@ -42,18 +42,18 @@
         .key
           = icon('arrow-up', 'aria-label' => 'hidden')
           I
+      %span.badge.pull-right= number_with_delimiter(assigned_issuables_count(:issues))
       %span
         Issues
-      .badge= number_with_delimiter(assigned_issuables_count(:issues))
   = nav_link(path: 'dashboard#merge_requests') do
     = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
       .shortcut-mappings
         .key
           = icon('arrow-up', 'aria-label' => 'hidden')
           M
+      %span.badge.pull-right= number_with_delimiter(assigned_issuables_count(:merge_requests))
       %span
         Merge Requests
-      .badge= number_with_delimiter(assigned_issuables_count(:merge_requests))
   = nav_link(controller: 'dashboard/snippets') do
     = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
       .shortcut-mappings

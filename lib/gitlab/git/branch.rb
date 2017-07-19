@@ -3,6 +3,7 @@
 module Gitlab
   module Git
     class Branch < Ref
+<<<<<<< HEAD
       def initialize(repository, name, target)
         if target.is_a?(Gitaly::FindLocalBranchResponse)
           target = target_from_gitaly_local_branches_response(target)
@@ -36,6 +37,10 @@ module Gitlab
         }
 
         Gitlab::Git::Commit.decorate(hash)
+=======
+      def initialize(repository, name, target, target_commit)
+        super(repository, name, target, target_commit)
+>>>>>>> upstream/master
       end
     end
   end

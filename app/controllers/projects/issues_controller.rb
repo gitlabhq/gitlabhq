@@ -269,7 +269,7 @@ class Projects::IssuesController < Projects::ApplicationController
     if action_name == 'new'
       redirect_to external.new_issue_path
     else
-      redirect_to external.project_path
+      redirect_to external.issue_tracker_path
     end
   end
 
