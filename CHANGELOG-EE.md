@@ -77,6 +77,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix: /unassign by default unassigns everyone. Implement /reassign command.
 - Speed up checking for approvers remaining.
 
+## 9.2.8 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
+
 ## 9.2.7 (2017-06-21)
 
 - Geo: fixed Dynamic Backoff strategy that was not being used by workers. !2128
