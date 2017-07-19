@@ -2,6 +2,11 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.17.7 (2017-07-19)
+
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+- Fix incorrect project authorizations.
+
 ## 8.17.6 (2017-05-05)
 
 - Enforce project features when searching blobs and wikis.
