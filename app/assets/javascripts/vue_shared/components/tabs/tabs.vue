@@ -20,18 +20,36 @@
     data() {
       return {
         tabs: [],
+        selectedTab: this.defaultIndex,
       };
     },
     methods: {
       switchTab(e, index, tab) {
-        this.selectTab(index);
+        this.selectedTab = index;
 
-        this.$emit('tab-selected', e, index, tab);
+        this.$emit('tabSelected', e, index, tab);
       },
+
       selectTab(index) {
         this.tabs.forEach((tab, i) => {
-          tab.isActive = (index === i);
+          tab.isActive = index === i;
         });
+      },
+
+      closeTab(tab) {
+        this.$emit('closeTab', tab);
+      },
+    },
+
+    watch: {
+      defaultIndex() {
+        console.log('updated', this.defaultIndex);
+        this.selectedTab = this.defaultIndex;
+
+      },
+      selectedTab(){
+        console.log('asdfadsf');
+        this.selectTab(this.selectedTab);
       }
     },
 
@@ -51,15 +69,23 @@
       role="tablist">
       <li
         v-for="(tab, index) in tabs"
-        :class="{ active: tab.isActive, titleClass }"
+        :class="{ active: tab.isActive }"
         role="presentation"
         @click="switchTab($event, index, tab)">
 
         <a v-if="!tab.headerHtml">
           {{tab.title}}
         </a>
-        <div v-else v-html="tab.headerHtml">
+        <div
+          v-else
+          v-html="tab.headerHtml">
         </div>
+
+        <button
+          v-if="tab.isClosable"
+          @click.stop="closeTab(tab)">
+          x
+        </button>
       </li>
     </ul>
 

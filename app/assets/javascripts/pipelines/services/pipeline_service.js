@@ -16,4 +16,9 @@ export default class PipelineService {
   postAction(endpoint) {
     return Vue.http.post(`${endpoint}.json`);
   }
+
+  getJobTrace(endpoint) {
+    const traceEndpoint = `${endpoint}/raw`;
+    return Vue.http.get(traceEndpoint);
+  }
 }

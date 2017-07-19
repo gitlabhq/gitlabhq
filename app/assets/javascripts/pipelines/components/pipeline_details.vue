@@ -43,6 +43,11 @@
         state: store.state,
         actions: this.getActions(),
         isLoading: false,
+        jobTab: null,
+        selectedTab: 0,
+        isLoadingJobTrace: false,
+        //move to store
+        jobLog: null,
       };
     },
     created() {
@@ -67,6 +72,12 @@
           this.poll.stop();
         }
       });
+
+
+      eventHub.$on('jobNodeClicked', this.openJob);
+    },
+    beforeDestroy() {
+      eventHub.$off('jobNodeClicked', this.openJob);
     },
     computed: {
       status() {
@@ -128,8 +139,34 @@
           .catch(() => new Flash('An error occurred while making the request.'));
 
       },
-      handleSelectedTab(event, index, tab) {
-        console.log('tab selected');
+
+      openJob(job) {
+        // open job tab
+        this.jobTab = job;
+
+        this.$nextTick(() => {
+          this.selectedTab = 3;
+        });
+
+        // let's load the data!
+        this.service.getJobTrace(job.status.details_path)
+          //.then(response => response.json())
+          .then((resp) => {
+            this.jobLog = resp.bodyText;
+          });
+
+      },
+
+      closeJobTab() {
+        this.jobTab = null;
+
+        this.$nextTick(() => {
+          this.selectedTab = 0;
+        });
+      },
+
+      getJobTabTitle() {
+        return `<a> status icon - ${this.jobTab.name}</a>`;
       }
     },
   };
@@ -160,8 +197,11 @@
 
       <tabs
         class="tabs-holder"
-        @tabSelected="handleSelectedTab"
+        @tabSelected="handleSelectedTab()"
+        @closeTab="closeJobTab()"
+        :default-index="selectedTab"
         css-class="pipelines-tabs no-top no-bottom">
+
         <tab title="Pipeline" random-prop="foo">
           <pipeline-graph :pipeline="state.pipeline" />
         </tab>
@@ -170,6 +210,12 @@
         </tab>
         <tab title="Failed Jobs <badge goes here>">
           TO BE DONE - FAILED JOBS
+        </tab>
+        <tab
+          v-if="jobTab"
+          :title="jobTab.name"
+          :is-closable="true">
+          {{jobLog}}
         </tab>
       </tabs>
 

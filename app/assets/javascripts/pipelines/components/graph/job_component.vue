@@ -3,6 +3,7 @@
   import dropdownActionComponent from './dropdown_action_component.vue';
   import jobNameComponent from './job_name_component.vue';
   import tooltip from '../../../vue_shared/directives/tooltip';
+  import eventHub from '../../event_hub';
 
   /**
    * Renders the badge for the pipeline graph and the job's dropdown.
@@ -72,6 +73,11 @@
         return this.job.status && this.job.status.action && this.job.status.action.path;
       },
     },
+    methods: {
+      jobNodeClicked()  {
+        eventHub.$emit('jobNodeClicked', this.job);
+      }
+    }
   };
 </script>
 <template>
@@ -79,7 +85,7 @@
     <a
       v-tooltip
       v-if="job.status.details_path"
-      :href="job.status.details_path"
+      @click="jobNodeClicked"
       :title="tooltipText"
       :class="cssClassJobName"
       data-container="body">

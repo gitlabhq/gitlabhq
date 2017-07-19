@@ -16,6 +16,11 @@
         required: false,
         default: null,
       },
+      isClosable: {
+        type: Boolean,
+        required: false,
+        default: false,
+      }
     },
     data() {
       return {
