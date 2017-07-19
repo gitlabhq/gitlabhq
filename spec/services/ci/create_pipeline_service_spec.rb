@@ -40,7 +40,7 @@ describe Ci::CreatePipelineService, :services do
 
       it 'increments the prometheus counter' do
         expect(Gitlab::Metrics).to receive(:counter)
-          .with(:pipelines_created_count, "Pipelines created count")
+          .with(:pipelines_created_total, "Counter of pipelines created")
           .and_call_original
 
         pipeline

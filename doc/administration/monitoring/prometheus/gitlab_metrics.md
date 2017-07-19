@@ -39,6 +39,7 @@ In this experimental phase, only a few metrics are available:
 | filesystem_readable               | Gauge     | Whether or not the filesystem is readable |
 | http_requests_total               | Counter   | Rack request count |
 | http_request_duration_seconds     | Histogram | HTTP response time from rack middleware |
+| pipelines_created_total           | Counter   | Counter of pipelines created |
 | rack_uncaught_errors_total        | Counter   | Rack connections handling uncaught errors count |
 | redis_ping_timeout                | Gauge     | Whether or not the last redis ping timed out |
 | redis_ping_success                | Gauge     | Whether or not the last redis ping succeeded |
