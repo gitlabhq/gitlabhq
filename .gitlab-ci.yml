@@ -160,6 +160,9 @@ build-package:
   when: manual
   script:
     - scripts/trigger-build
+  only:
+    - //@gitlab-org/gitlab-ce
+    - //@gitlab-org/gitlab-ee
 
 # Prepare and merge knapsack tests
 knapsack:
