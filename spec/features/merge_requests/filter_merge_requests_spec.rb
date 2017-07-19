@@ -132,19 +132,13 @@ describe 'Filter merge requests', feature: true do
     end
   end
 
-  describe 'for assignee and label from issues#index' do
+  describe 'for assignee and label from mr#index' do
     let(:search_query) { "assignee:@#{user.username} label:~#{label.title}" }
 
     before do
-      input_filtered_search("assignee:@#{user.username}")
+      input_filtered_search(search_query)
 
-      expect_mr_list_count(1)
-      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
-      expect_filtered_search_input_empty
-
-      input_filtered_search_keys("label:~#{label.title}")
-
-      expect_mr_list_count(1)
+      expect_mr_list_count(0)
     end
 
     context 'assignee and label', js: true do
