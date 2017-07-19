@@ -12,7 +12,7 @@ describe MetricsController do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    stub_env('prometheus_multiproc_dir', metrics_multiproc_dir)
+    allow(Prometheus::Client.configuration).to receive(:multiprocess_files_dir).and_return(metrics_multiproc_dir)
     allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
     allow(Settings.monitoring).to receive(:ip_whitelist).and_return([whitelisted_ip, whitelisted_ip_range])
   end
