@@ -808,19 +808,11 @@ module Gitlab
       end
 
       def gitaly_ref_client
-<<<<<<< HEAD
-        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
-      end
-
-      def gitaly_commit_client
-        @gitaly_commit_client ||= Gitlab::GitalyClient::Commit.new(self)
-=======
         @gitaly_ref_client ||= Gitlab::GitalyClient::RefService.new(self)
       end
 
       def gitaly_commit_client
         @gitaly_commit_client ||= Gitlab::GitalyClient::CommitService.new(self)
->>>>>>> upstream/master
       end
 
       private

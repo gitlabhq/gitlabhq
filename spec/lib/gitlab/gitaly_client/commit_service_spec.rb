@@ -1,10 +1,6 @@
 require 'spec_helper'
 
-<<<<<<< HEAD:spec/lib/gitlab/gitaly_client/commit_spec.rb
-describe Gitlab::GitalyClient::Commit do
-=======
 describe Gitlab::GitalyClient::CommitService do
->>>>>>> upstream/master:spec/lib/gitlab/gitaly_client/commit_service_spec.rb
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:repository_message) { repository.gitaly_repository }

@@ -72,12 +72,8 @@ module Gitlab
             Gitlab::Git::Branch.new(
               @repository,
               encode!(gitaly_branch.name.dup),
-<<<<<<< HEAD:lib/gitlab/gitaly_client/ref.rb
-              gitaly_branch
-=======
               gitaly_branch.commit_id,
               commit_from_local_branches_response(gitaly_branch)
->>>>>>> upstream/master:lib/gitlab/gitaly_client/ref_service.rb
             )
           end
         end

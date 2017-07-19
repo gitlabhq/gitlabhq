@@ -120,15 +120,9 @@ describe GitPushService, services: true do
       context "the commit" do
         subject { push_data_from_service(project, user, oldrev, newrev, ref)[:commits].first }
 
-<<<<<<< HEAD
         it { is_expected.to include(id: commit.id) }
         it { is_expected.to include(message: commit.safe_message) }
         it { expect(subject[:timestamp].in_time_zone).to eq(commit.date.in_time_zone) }
-=======
-        it { is_expected.to include(id: @commit.id) }
-        it { is_expected.to include(message: @commit.safe_message) }
-        it { expect(subject[:timestamp].in_time_zone).to eq(@commit.date.in_time_zone) }
->>>>>>> upstream/master
         it do
           is_expected.to include(
             url: [
