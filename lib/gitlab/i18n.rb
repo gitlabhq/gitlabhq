@@ -13,7 +13,8 @@ module Gitlab
       'zh_TW' => '繁體中文(臺灣)',
       'bg' => 'български',
       'eo' => 'Esperanto',
-      'it' => 'Italiano'
+      'it' => 'Italiano',
+      'ja' => '日本語'
     }.freeze
 
     def available_locales
