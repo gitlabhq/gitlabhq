@@ -278,20 +278,16 @@ view, using the `page_specific_javascript_bundle_tag` helper.
 
 ## SCSS code in `assets/stylesheets`
 
-To separate EE-specific styles in SCSS files, we can adopt one of the two approaches.
+To separate EE-specific styles in SCSS files, If a component you're adding styles for,
+is limited to only EE, it is better to have a separate SCSS file in appropriate directory
+within `assets/stylesheets` such that the file will only exist in EE codebase.
 
-### Moving styles into dedicated SCSS file
 
-If a component you're adding styles for, is limited to only EE, it is better to have a
-separate file in appropriate directory within `assets/stylesheets` such that the file will
-only exist in EE codebase.
-
-### Isolating EE-specific ruleset within SCSS file
-
-There are situations where creating dedicated SCSS file is an overkill, for eg; a text style
-of some component is different for EE. In such cases, styles are usually kept in stylesheet
-that is common for both CE and EE, and it is wise to isolate such ruleset from rest of
-CE rules (along with adding comment describing the same) to avoid conflicts during CE to EE merge.
+In some cases, this is not entirely possible and creating dedicated SCSS file is an overkill,
+for eg; a text style of some component is different for EE. In such cases,
+styles are usually kept in stylesheet that is common for both CE and EE, and it is wise
+to isolate such ruleset from rest of CE rules (along with adding comment describing the same)
+to avoid conflicts during CE to EE merge.
 
 #### Bad
 ```scss
