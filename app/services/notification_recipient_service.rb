@@ -253,7 +253,6 @@ class NotificationRecipientService
     end
 
     users = users.to_a.compact.uniq
-    users = users.select { |u| u.can?(:receive_notifications) }
 
     users.reject do |user|
       global_notification_setting = user.global_notification_setting
@@ -287,6 +286,8 @@ class NotificationRecipientService
   end
 
   def reject_users_without_access(recipients, target)
+    recipients = recipients.select { |u| u.can?(:receive_notifications) }
+
     ability = case target
               when Issuable
                 :"read_#{target.to_ability_name}"
