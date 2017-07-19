@@ -10,6 +10,7 @@
   import ciHeader from '../../vue_shared/components/header_ci_component.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import eventHub from '../event_hub';
+  import { tabs, tab } from '../../vue_shared/components/tabs';
 
   export default {
     props: {
@@ -29,6 +30,8 @@
       pipelineGraph,
       pipelineCommitBlock,
       pipelineInfoBlock,
+      tabs,
+      tab
     },
     data() {
       const store = new PipelineStore();
@@ -130,7 +133,7 @@
 </script>
 <template>
   <div :class="cssClass">
-    <loading-icon v-if="isLoading" />
+    <loading-icon v-if="isLoading" size="3" />
 
     <template v-else>
       <div class="pipeline-header-container">
@@ -153,7 +156,18 @@
       <pipeline-info-block :pipeline="state.pipeline" />
 
       <br/>
-      Tabs go here
+      <tabs>
+        <tab title="Vue" href="vue">
+          This is Vue
+        </tab>
+        <tab title="React">
+          This is React
+        </tab>
+        <tab title="Svelte">
+          This is Svelte
+        </tab>
+      </tabs>
+
 
       <pipeline-graph :pipeline="state.pipeline" />
 
