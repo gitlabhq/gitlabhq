@@ -12,7 +12,7 @@ describe Gitlab::Badge::Pipeline::Template do
 
   describe '#value_text' do
     it 'is status value' do
-      expect(template.value_text).to eq 'success'
+      expect(template.value_text).to eq 'passed'
     end
   end
 

@@ -7,6 +7,7 @@ module Gitlab
       # Template object will be passed to badge.svg.erb template.
       #
       class Template < Badge::Template
+        STATUS_RENAME = { 'success' => 'passed' }.freeze
         STATUS_COLOR = {
           success: '#4c1',
           failed: '#e05d44',
@@ -27,7 +28,7 @@ module Gitlab
         end
 
         def value_text
-          @status.to_s
+          STATUS_RENAME[@status.to_s] || @status.to_s
         end
 
         def key_width

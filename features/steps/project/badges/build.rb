@@ -9,7 +9,7 @@ class Spinach::Features::ProjectBadgesBuild < Spinach::FeatureSteps
   end
 
   step 'I should see a build success badge' do
-    expect_badge('success')
+    expect_badge('passed')
   end
 
   step 'I should see a build failed badge' do
