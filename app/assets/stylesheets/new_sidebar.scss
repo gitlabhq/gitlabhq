@@ -179,10 +179,11 @@ $new-sidebar-width: 220px;
           }
 
           a {
-            color: $white-light;
+            color: rgba($white-light, .9);
 
             &:hover,
             &:focus {
+              color: $white-light;
               background-color: rgba($black, .12);
             }
           }
