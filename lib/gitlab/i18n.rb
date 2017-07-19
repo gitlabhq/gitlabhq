@@ -15,6 +15,7 @@ module Gitlab
       'ru' => 'Русский',
       'eo' => 'Esperanto',
       'it' => 'Italiano',
+      'uk' => 'Українська',
       'ja' => '日本語'
     }.freeze
 
