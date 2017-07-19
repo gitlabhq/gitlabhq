@@ -835,6 +835,14 @@ module Gitlab
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
       end
 
+      def gitaly_ref_client
+        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
+      end
+
+      def gitaly_commit_client
+        @gitaly_commit_client ||= Gitlab::GitalyClient::Commit.new(self)
+      end
+
       private
 
       def raw_log(options)
@@ -1184,14 +1192,6 @@ module Gitlab
         else
           branches
         end
-      end
-
-      def gitaly_ref_client
-        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
-      end
-
-      def gitaly_commit_client
-        @gitaly_commit_client ||= Gitlab::GitalyClient::Commit.new(self)
       end
 
       def gitaly_migrate(method, &block)

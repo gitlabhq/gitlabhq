@@ -122,7 +122,7 @@ describe GitPushService, services: true do
 
         it { is_expected.to include(id: commit.id) }
         it { is_expected.to include(message: commit.safe_message) }
-        it { is_expected.to include(timestamp: commit.date.xmlschema) }
+        it { expect(subject[:timestamp].in_time_zone).to eq(commit.date.in_time_zone) }
         it do
           is_expected.to include(
             url: [

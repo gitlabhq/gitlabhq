@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Gitlab::GitalyClient::Commit do
-  let(:diff_stub) { double('Gitaly::Diff::Stub') }
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:repository_message) { repository.gitaly_repository }
@@ -80,6 +79,21 @@ describe Gitlab::GitalyClient::Commit do
 
         described_class.new(repository).commit_deltas(initial_commit)
       end
+    end
+  end
+
+  describe '#between' do
+    let(:from) { 'master' }
+    let(:to) { '4b825dc642cb6eb9a060e54bf8d69288fbee4904' }
+    it 'sends an RPC request' do
+      request = Gitaly::CommitsBetweenRequest.new(
+        repository: repository_message, from: from, to: to
+      )
+
+      expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:commits_between)
+        .with(request, kind_of(Hash)).and_return([])
+
+      described_class.new(repository).between(from, to)
     end
   end
 end
