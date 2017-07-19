@@ -22,8 +22,11 @@ module Projects
     private
 
     def import_upload_path
-      @import_upload_path ||= Gitlab::ImportExport
-        .import_upload_path(filename: "#{params[:namespace_id]}-#{params[:path]}")
+      @import_upload_path ||= Gitlab::ImportExport.import_upload_path(filename: tmp_filename)
+    end
+
+    def tmp_filename
+      "#{SecureRandom.hex}_#{params[:path]}"
     end
 
     def file
