@@ -44,15 +44,5 @@ describe 'Project settings > [EE] repository' do
       expect(page).to have_selector('#project_remote_mirrors_attributes_0_enabled')
       expect(page).to have_selector('#project_remote_mirrors_attributes_0_url')
     end
-
-    it 'sets mirror user' do
-      page.within('.project-mirror-settings') do
-        select2(user2.id, from: '#project_mirror_user_id')
-
-        click_button('Save changes')
-
-        expect(find('.select2-chosen')).to have_content(user.name)
-      end
-    end
   end
 end

@@ -1,4 +1,7 @@
 - expanded = Rails.env.test?
+- import_data = @project.import_data || @project.build_import_data
+- protocols = AddressableUrlValidator::DEFAULT_OPTIONS[:protocols].join('|')
+
 %section.settings.project-mirror-settings
   .settings-header
     %h4
@@ -10,30 +13,26 @@
       updated from an upstream repository.
       = link_to 'Read more', help_page_path('workflow/repository_mirroring', anchor: 'pulling-from-a-remote-repository'), target: '_blank'
   .settings-content.no-animate{ class: ('expanded' if expanded) }
-    = form_for @project, url: project_mirror_path(@project) do |f|
+    = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors project-mirror-push-form js-project-mirror-push-form', autocomplete: 'false', data: { project_mirror_endpoint: ssh_host_keys_project_mirror_path(@project, :json) } } do |f|
       %div
         = form_errors(@project)
-      %h5
-        Set up mirror repository
       = render "shared/mirror_update_button"
-      - if @project.mirror_last_update_failed?
-        .panel.panel-danger
-          .panel-heading
-            The repository failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
-            - if @project.mirror_ever_updated_successfully?
-              Last successful update #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
-          .panel-body
-            %pre
-              :preserve
-                #{h(@project.import_error.try(:strip))}
+      = render "projects/mirrors/pull/mirror_update_fail"
       .form-group
         = f.check_box :mirror, class: "pull-left"
         .prepend-left-20
           = f.label :mirror, "Mirror repository", class: "label-light append-bottom-0"
+
       .form-group
-        = f.label :import_url, "Git repository URL", class: "label-light"
-        = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
-        = render "projects/mirrors/instructions"
+        = f.label :username_only_import_url, "Git repository URL", class: "label-light"
+        = f.text_field :username_only_import_url, class: 'form-control js-repo-url', placeholder: 'https://username@gitlab.company.com/group/project.git', required: 'required', pattern: "(#{protocols}):\/\/.+", title: 'URL must have protocol present (eg; ssh://...)'
+
+      = render "projects/mirrors/instructions"
+
+      = f.fields_for :import_data, import_data do |import_form|
+        = render partial: "projects/mirrors/pull/ssh_host_keys", locals: { f: import_form }
+        = render partial: "projects/mirrors/pull/authentication_method", locals: { f: import_form }
+
       .form-group
         = f.label :mirror_user_id, "Mirror user", class: "label-light"
         = select_tag('project[mirror_user_id]', options_for_mirror_user, class: "select2 lg", required: true)

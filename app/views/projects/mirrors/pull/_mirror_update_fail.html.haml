@@ -1,0 +1,10 @@
+- if @project.mirror_last_update_failed?
+  .panel.panel-danger
+    .panel-heading
+      The repository failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
+      - if @project.mirror_ever_updated_successfully?
+        Last successful update #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+    .panel-body
+      %pre
+        :preserve
+          #{h(@project.import_error.try(:strip))}

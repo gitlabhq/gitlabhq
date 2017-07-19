@@ -184,6 +184,18 @@ describe Projects::MirrorsController do
         expect(import_data.ssh_known_hosts_verified_at).to be_nil
         expect(import_data.ssh_known_hosts_verified_by).to be_nil
       end
+
+      it 'only allows the current user to be the mirror user' do
+        mirror_user = project.mirror_user
+
+        other_user = create(:user)
+        project.add_master(other_user)
+
+        do_put(project, { mirror_user_id: other_user.id }, format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(project.mirror_user(true)).to eq(mirror_user)
+      end
     end
 
     context 'HTML' do

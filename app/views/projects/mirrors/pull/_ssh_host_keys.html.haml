@@ -1,0 +1,34 @@
+- import_data = f.object
+- verified_by = import_data.ssh_known_hosts_verified_by
+- verified_at = import_data.ssh_known_hosts_verified_at
+
+.form-group.js-ssh-host-keys-section{ class: ('hidden' unless import_data.ssh_import?) }
+  %button.btn.btn-inverted.btn-success.append-bottom-15.js-detect-host-keys{ type: 'button' }
+    = icon('spinner spin', class: 'detect-host-keys-load-spinner hidden')
+    Detect host keys
+  .fingerprint-ssh-info.js-fingerprint-ssh-info{ class: ('hidden' unless import_data.ssh_import?) }
+    %label.label-light
+      Fingerprints
+    .fingerprints-list.js-fingerprints-list
+      - import_data.ssh_known_hosts_fingerprints.each do |fp|
+        %code= fp.fingerprint
+    - if verified_by || verified_at
+      .help-block.js-fingerprint-verification
+        %i.fa.fa-check.fingerprint-verified
+        Verified by
+        - if verified_by
+          = link_to verified_by.name, user_path(verified_by)
+        - else
+          a deleted user
+        #{time_ago_in_words(verified_at)} ago
+
+  .js-ssh-hosts-advanced
+    %button.btn.btn-sm.btn-default.prepend-top-10.append-bottom-15.btn-show-advanced.show-advanced{ type: 'button' }
+      %span.label-show
+        Show advanced
+      %span.label-hide
+        Hide advanced
+      = icon('chevron')
+    .js-ssh-known-hosts.hidden
+      = f.label :ssh_known_hosts, 'SSH host keys', class: 'label-light'
+      = f.text_area :ssh_known_hosts, class: 'form-control known-hosts js-known-hosts', rows: '10'
