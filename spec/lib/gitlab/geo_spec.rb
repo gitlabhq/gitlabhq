@@ -88,7 +88,7 @@ describe Gitlab::Geo, lib: true do
 
       it 'returns false when database schema does not contain required tables' do
         if Gitlab::Database.mysql?
-          allow(GeoNode).to receive(:exists?).and_raise(Mysql2::Error)
+          allow(GeoNode).to receive(:exists?).and_raise(Mysql2::Error, "Table 'gitlabhq_test.geo_nodes' doesn't exist: SHOW FULL FIELDS FROM `geo_nodes`")
         else
           allow(GeoNode).to receive(:exists?).and_raise(PG::UndefinedTable)
         end
