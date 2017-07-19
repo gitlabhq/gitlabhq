@@ -195,7 +195,7 @@ module ProjectsHelper
       controller.controller_name,
       controller.action_name,
       current_application_settings.cache_key,
-      'v2.4'
+      'v2.5'
     ]
 
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
