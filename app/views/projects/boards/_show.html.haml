@@ -4,8 +4,7 @@
 - page_title "Boards"
 
 - if show_new_nav?
-  - content_for :sub_title_before do
-    %li= link_to "Issues", project_issues_path(@project)
+  - add_to_breadcrumbs("Issues", project_issues_path(@project))
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
