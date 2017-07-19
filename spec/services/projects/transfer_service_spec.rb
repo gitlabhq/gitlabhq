@@ -19,6 +19,18 @@ describe Projects::TransferService, services: true do
     it { expect(project.namespace).to eq(group) }
   end
 
+  context 'when transfer succeeds' do
+    before do
+      group.add_owner(user)
+    end
+
+    it 'expires full_path cache' do
+      expect(project).to receive(:expires_full_path_cache)
+
+      transfer_project(project, user, group)
+    end
+  end
+
   context 'namespace -> no namespace' do
     before do
       @result = transfer_project(project, user, nil)

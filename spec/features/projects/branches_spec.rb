@@ -20,8 +20,46 @@ describe 'Branches', feature: true do
       it 'shows all the branches' do
         visit namespace_project_branches_path(project.namespace, project)
 
-        repository.branches { |branch| expect(page).to have_content("#{branch.name}") }
+        repository.branches_sorted_by(:name).first(20).each do |branch|
+          expect(page).to have_content("#{branch.name}")
+        end
         expect(page).to have_content("Protected branches can be managed in project settings")
+      end
+
+      it 'sorts the branches by name' do
+        visit namespace_project_branches_path(project.namespace, project)
+
+        click_button "Name" # Open sorting dropdown
+        click_link "Name"
+
+        sorted = repository.branches_sorted_by(:name).first(20).map do |branch|
+          Regexp.escape(branch.name)
+        end
+        expect(page).to have_content(/#{sorted.join(".*")}/)
+      end
+
+      it 'sorts the branches by last updated' do
+        visit namespace_project_branches_path(project.namespace, project)
+
+        click_button "Name" # Open sorting dropdown
+        click_link "Last updated"
+
+        sorted = repository.branches_sorted_by(:updated_desc).first(20).map do |branch|
+          Regexp.escape(branch.name)
+        end
+        expect(page).to have_content(/#{sorted.join(".*")}/)
+      end
+
+      it 'sorts the branches by oldest updated' do
+        visit namespace_project_branches_path(project.namespace, project)
+
+        click_button "Name" # Open sorting dropdown
+        click_link "Oldest updated"
+
+        sorted = repository.branches_sorted_by(:updated_asc).first(20).map do |branch|
+          Regexp.escape(branch.name)
+        end
+        expect(page).to have_content(/#{sorted.join(".*")}/)
       end
 
       it 'avoids a N+1 query in branches index' do

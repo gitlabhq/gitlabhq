@@ -3,18 +3,22 @@
     .table-mobile-header{ role: 'rowheader' } ID
     %strong.table-mobile-content ##{deployment.iid}
 
-  .table-section.section-40{ role: 'gridcell' }
+  .table-section.section-30{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' } Commit
     = render 'projects/deployments/commit', deployment: deployment
 
-  .table-section.section-15.build-column{ role: 'gridcell' }
+  .table-section.section-25.build-column{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' } Job
     - if deployment.deployable
-      = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link table-mobile-content' do
-        #{deployment.deployable.name} (##{deployment.deployable.id})
-      - if deployment.user
-        by
-        = user_avatar(user: deployment.user, size: 20)
+      .table-mobile-content
+        .flex-truncate-parent
+          .flex-truncate-child
+            = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link' do
+              #{deployment.deployable.name} (##{deployment.deployable.id})
+        - if deployment.user
+          %div
+            by
+            = user_avatar(user: deployment.user, size: 20)
 
   .table-section.section-15{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' } Created

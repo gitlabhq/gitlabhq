@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.8'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
-gem 'bootsnap', '~> 1.0.0'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
@@ -259,7 +258,7 @@ gem 'base32', '~> 0.3.0'
 # Sentry integration
 gem 'sentry-raven', '~> 2.4.0'
 
-gem 'premailer-rails', '~> 1.9.0'
+gem 'premailer-rails', '~> 1.9.7'
 
 # I18n
 gem 'ruby_parser', '~> 3.8.4', require: false

@@ -204,13 +204,7 @@ export default {
       method: 'getData',
       successCallback: (res) => {
         const data = res.json();
-        const shouldUpdate = this.store.stateShouldUpdate(data);
-
         this.store.updateState(data);
-
-        if (this.showForm && (shouldUpdate.title || shouldUpdate.description)) {
-          this.store.formState.lockedWarningVisible = true;
-        }
       },
       errorCallback(err) {
         throw new Error(err);

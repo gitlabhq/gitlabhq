@@ -39,8 +39,6 @@ class Feature
       get(key).disable
     end
 
-    private
-
     def flipper
       @flipper ||= begin
         adapter = Flipper::Adapters::ActiveRecord.new(

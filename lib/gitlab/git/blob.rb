@@ -129,6 +129,10 @@ module Gitlab
         encode! @name
       end
 
+      def path
+        encode! @path
+      end
+
       def truncated?
         size && (size > loaded_size)
       end

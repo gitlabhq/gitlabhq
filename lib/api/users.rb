@@ -1,9 +1,11 @@
 module API
   class Users < Grape::API
     include PaginationParams
+    include APIGuard
+
+    allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     before do
-      allow_access_with_scope :read_user if request.get?
       authenticate!
     end
 
@@ -400,7 +402,16 @@ module API
         success Entities::UserPublic
       end
       get do
-        present current_user, with: sudo? ? Entities::UserWithPrivateDetails : Entities::UserPublic
+        entity =
+          if sudo?
+            Entities::UserWithPrivateDetails
+          elsif current_user.admin?
+            Entities::UserWithAdmin
+          else
+            Entities::UserPublic
+          end
+
+        present current_user, with: entity
       end
 
       desc "Get the currently authenticated user's SSH keys" do

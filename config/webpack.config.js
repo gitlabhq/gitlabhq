@@ -11,21 +11,12 @@ var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeMod
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
-var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
+var IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
 var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var NO_COMPRESSION = process.env.NO_COMPRESSION;
-
-// optional dependency `node-zopfli` is unavailable on CentOS 6
-var ZOPFLI_AVAILABLE;
-try {
-  require.resolve('node-zopfli');
-  ZOPFLI_AVAILABLE = true;
-} catch(err) {
-  ZOPFLI_AVAILABLE = false;
-}
 
 var config = {
   // because sqljs requires fs.
@@ -231,12 +222,12 @@ if (IS_PRODUCTION) {
 
   // zopfli requires a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
-    config.plugins.push(
-      new CompressionPlugin({
-        asset: '[path].gz[query]',
-        algorithm: ZOPFLI_AVAILABLE ? 'zopfli' : 'gzip',
-      })
-    );
+    // gracefully fall back to gzip if `node-zopfli` is unavailable (e.g. in CentOS 6)
+    try {
+      config.plugins.push(new CompressionPlugin({ algorithm: 'zopfli' }));
+    } catch(err) {
+      config.plugins.push(new CompressionPlugin({ algorithm: 'gzip' }));
+    }
   }
 }
 

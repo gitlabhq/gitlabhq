@@ -7,8 +7,10 @@ module Gitlab
     CommandError = Class.new(StandardError)
 
     class << self
+      include Gitlab::EncodingHelper
+
       def ref_name(ref)
-        ref.sub(/\Arefs\/(tags|heads)\//, '')
+        encode! ref.sub(/\Arefs\/(tags|heads)\//, '')
       end
 
       def branch_name(ref)

@@ -85,9 +85,8 @@ window.Build = (function () {
         if (!this.hasBeenScrolled) {
           this.scrollToBottom();
         }
-      });
-
-    this.verifyTopPosition();
+      })
+      .then(() => this.verifyTopPosition());
   }
 
   Build.prototype.canScroll = function () {
@@ -149,27 +148,34 @@ window.Build = (function () {
   Build.prototype.verifyTopPosition = function () {
     const $buildPage = $('.build-page');
 
+    const $flashError = $('.alert-wrapper');
     const $header = $('.build-header', $buildPage);
     const $runnersStuck = $('.js-build-stuck', $buildPage);
     const $startsEnvironment = $('.js-environment-container', $buildPage);
     const $erased = $('.js-build-erased', $buildPage);
+    const prependTopDefault = 20;
 
+    // header + navigation + margin
     let topPostion = 168;
 
-    if ($header) {
+    if ($header.length) {
       topPostion += $header.outerHeight();
     }
 
-    if ($runnersStuck) {
+    if ($runnersStuck.length) {
       topPostion += $runnersStuck.outerHeight();
     }
 
-    if ($startsEnvironment) {
-      topPostion += $startsEnvironment.outerHeight();
+    if ($startsEnvironment.length) {
+      topPostion += $startsEnvironment.outerHeight() + prependTopDefault;
     }
 
-    if ($erased) {
-      topPostion += $erased.outerHeight() + 10;
+    if ($erased.length) {
+      topPostion += $erased.outerHeight() + prependTopDefault;
+    }
+
+    if ($flashError.length) {
+      topPostion += $flashError.outerHeight() + prependTopDefault;
     }
 
     this.$buildTrace.css({
@@ -222,7 +228,8 @@ window.Build = (function () {
                 if (!this.hasBeenScrolled) {
                   this.scrollToBottom();
                 }
-              });
+              })
+              .then(() => this.verifyTopPosition());
           }, 4000);
         } else {
           this.$buildRefreshAnimation.remove();

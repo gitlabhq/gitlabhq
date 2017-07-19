@@ -47,46 +47,45 @@
             - if environment.try(:last_deployment)
               and will overwrite the #{deployment_link(environment.last_deployment, text: 'latest deployment')}
 
-    .prepend-top-default.js-build-erased
-      - if @build.erased?
+    - if @build.erased?
+      .prepend-top-default.js-build-erased
         .erased.alert.alert-warning
           - if @build.erased_by_user?
             Job has been erased by #{link_to(@build.erased_by_name, user_path(@build.erased_by))} #{time_ago_with_tooltip(@build.erased_at)}
           - else
             Job has been erased #{time_ago_with_tooltip(@build.erased_at)}
 
-    .prepend-top-default
-      .build-trace-container#build-trace
-        .top-bar.sticky
-          .js-truncated-info.truncated-info.hidden<
-            Showing last
-            %span.js-truncated-info-size.truncated-info-size><
-            KiB of log -
-            %a.js-raw-link.raw-link{ href: raw_namespace_project_job_path(@project.namespace, @project, @build) }>< Complete Raw
-          .controllers
-            - if @build.has_trace?
-              = link_to raw_namespace_project_job_path(@project.namespace, @project, @build),
-                      title: 'Show complete raw',
-                      data: { placement: 'top', container: 'body' },
-                      class: 'js-raw-link-controller has-tooltip controllers-buttons' do
-                = icon('file-text-o')
+    .build-trace-container#build-trace
+      .top-bar.sticky
+        .js-truncated-info.truncated-info.hidden<
+          Showing last
+          %span.js-truncated-info-size.truncated-info-size><
+          KiB of log -
+          %a.js-raw-link.raw-link{ href: raw_namespace_project_job_path(@project.namespace, @project, @build) }>< Complete Raw
+        .controllers
+          - if @build.has_trace?
+            = link_to raw_namespace_project_job_path(@project.namespace, @project, @build),
+                    title: 'Show complete raw',
+                    data: { placement: 'top', container: 'body' },
+                    class: 'js-raw-link-controller has-tooltip controllers-buttons' do
+              = icon('file-text-o')
 
-            - if can?(current_user, :update_build, @project) && @build.erasable?
-              = link_to erase_namespace_project_job_path(@project.namespace, @project, @build),
-                        method: :post,
-                        data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },
-                        title: 'Erase job log',
-                        class: 'has-tooltip js-erase-link controllers-buttons' do
-                = icon('trash')
-            .has-tooltip.controllers-buttons{ title: 'Scroll to top', data: { placement: 'top', container: 'body'} }
-              %button.js-scroll-up.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
-                = custom_icon('scroll_up')
-            .has-tooltip.controllers-buttons{ title: 'Scroll to bottom', data: { placement: 'top', container: 'body'} }
-              %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
-                = custom_icon('scroll_down')
-        .bash.sticky.js-scroll-container
-          %code.js-build-output
-          .build-loader-animation.js-build-refresh
+          - if can?(current_user, :update_build, @project) && @build.erasable?
+            = link_to erase_namespace_project_job_path(@project.namespace, @project, @build),
+                      method: :post,
+                      data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },
+                      title: 'Erase job log',
+                      class: 'has-tooltip js-erase-link controllers-buttons' do
+              = icon('trash')
+          .has-tooltip.controllers-buttons{ title: 'Scroll to top', data: { placement: 'top', container: 'body'} }
+            %button.js-scroll-up.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
+              = custom_icon('scroll_up')
+          .has-tooltip.controllers-buttons{ title: 'Scroll to bottom', data: { placement: 'top', container: 'body'} }
+            %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
+              = custom_icon('scroll_down')
+      .bash.sticky.js-scroll-container
+        %code.js-build-output
+        .build-loader-animation.js-build-refresh
 
   = render "sidebar"
 

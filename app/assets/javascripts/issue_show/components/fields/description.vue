@@ -47,7 +47,8 @@
         ref="textarea"
         slot="textarea"
         placeholder="Write a comment or drag your files here..."
-        @keydown.meta.enter="updateIssuable">
+        @keydown.meta.enter="updateIssuable"
+        @keydown.ctrl.enter="updateIssuable">
       </textarea>
     </markdown-field>
   </div>

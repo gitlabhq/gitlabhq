@@ -29,14 +29,14 @@ import Cookies from 'js-cookie';
     Sidebar.prototype.addEventListeners = function() {
       const $document = $(document);
       const throttledSetSidebarHeight = _.throttle(this.setSidebarHeight.bind(this), 20);
-      const debouncedSetSidebarHeight = _.debounce(this.setSidebarHeight.bind(this), 200);
+      const slowerThrottledSetSidebarHeight = _.throttle(this.setSidebarHeight.bind(this), 200);
 
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
       $(window).on('resize', () => throttledSetSidebarHeight());
-      $document.on('scroll', () => debouncedSetSidebarHeight());
+      $document.on('scroll', () => slowerThrottledSetSidebarHeight());
       $document.on('click', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
