@@ -222,6 +222,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Show user cohorts data when usage ping is enabled.
 - Visualise Canary Deployments.
 
+## 9.0.11 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
+
 ## 9.0.10 (2017-06-07)
 
 - No changes.
