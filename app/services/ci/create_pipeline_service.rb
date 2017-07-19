@@ -19,16 +19,18 @@ module Ci
         return error('Pipeline is disabled')
       end
 
-      unless trigger_request || can?(current_user, :create_pipeline, project)
-        return error('Insufficient permissions to create a new pipeline')
+      triggering_user = current_user || trigger_request.trigger.owner
+
+      unless allowed_to_trigger_pipeline?(triggering_user)
+        if can?(triggering_user, :create_pipeline, project)
+          return error("Insufficient permissions for protected ref '#{ref}'")
+        else
+          return error('Insufficient permissions to create a new pipeline')
+        end
       end
 
       unless branch? || tag?
         return error('Reference not found')
-      end
-
-      unless triggering_user_allowed_for_ref?(trigger_request)
-        return error("Insufficient permissions for protected ref '#{ref}'")
       end
 
       unless commit
@@ -74,9 +76,7 @@ module Ci
       pipeline.tap(&:process!)
     end
 
-    def triggering_user_allowed_for_ref?(trigger_request)
-      triggering_user = current_user || trigger_request.trigger.owner
-
+    def allowed_to_trigger_pipeline?(triggering_user)
       if triggering_user
         allowed_to_create?(triggering_user)
       else # legacy triggers don't have a corresponding user
@@ -87,7 +87,7 @@ module Ci
     def allowed_to_create?(triggering_user)
       access = Gitlab::UserAccess.new(triggering_user, project: project)
 
-      Ability.allowed?(triggering_user, :create_pipeline, project) &&
+      can?(triggering_user, :create_pipeline, project) &&
         if branch?
           access.can_update_branch?(ref)
         elsif tag?
