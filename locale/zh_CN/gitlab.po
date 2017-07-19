@@ -579,6 +579,12 @@ msgstr "所有"
 msgid "PipelineSchedules|Inactive"
 msgstr "未启用"
 
+msgid "PipelineSchedules|Input variable key"
+msgstr "输入变量名"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "输入变量值"
+
 msgid "PipelineSchedules|Next Run"
 msgstr "下次运行时间"
 
@@ -588,11 +594,17 @@ msgstr "无"
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr "为此流水线提供简短描述"
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr "删除变量"
+
 msgid "PipelineSchedules|Take ownership"
-msgstr "取得所有者"
+msgstr "取得所有权"
 
 msgid "PipelineSchedules|Target"
 msgstr "目标"
+
+msgid "PipelineSchedules|Variables"
+msgstr "变量"
 
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "自定义"
@@ -1030,6 +1042,14 @@ msgstr "该阶段的数据不足，无法显示。"
 
 msgid "Withdraw Access Request"
 msgstr "取消权限申请"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr "即将删除 %{group_name}。\n"
+"已删除的群组无法恢复！\n"
+"确定继续吗？"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
