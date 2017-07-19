@@ -27,8 +27,8 @@ module API
         end
 
         # create request and trigger builds
-        trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref].to_s, variables)
-        pipeline = trigger_request.pipeline
+        result = Ci::CreateTriggerRequestService.execute(project, trigger, params[:ref].to_s, variables)
+        pipeline = result[:pipeline]
 
         if pipeline.persisted?
           present pipeline, with: Entities::Pipeline

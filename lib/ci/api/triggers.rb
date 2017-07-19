@@ -24,11 +24,11 @@ module Ci
           end
 
           # create request and trigger builds
-          trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref], variables)
-          pipeline = trigger_request.pipeline
+          result = Ci::CreateTriggerRequestService.execute(project, trigger, params[:ref], variables)
+          pipeline = result[:pipeline]
 
           if pipeline.persisted?
-            present trigger_request, with: Entities::TriggerRequest
+            present result[:trigger_request], with: Entities::TriggerRequest
           else
             render_validation_error!(pipeline)
           end
