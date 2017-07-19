@@ -395,4 +395,12 @@ class Commit
   def merged_merge_request_no_cache(user)
     MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
   end
+
+  # This method is called by ActiveRecord when you "touch" the child object
+  # As Rails 5 got smarter about touching parents we need to have this placeholder.
+  # As Commit class represents a "virtual" object and it never persists in database
+  # we don't have to do anything here.
+  # see https://github.com/rails/rails/commit/e7c48db509f1b712c2a72a3ff7f27e3e8b7b4868
+  def touch_later(*names)
+  end
 end
