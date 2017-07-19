@@ -6,6 +6,16 @@
         default: 0,
         type: Number
       },
+      containerClass: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      titleClass: {
+        type: String,
+        required: false,
+        default: '',
+      }
     },
     data() {
       return {
@@ -35,20 +45,26 @@
 
 <template>
   <div>
-    <ul class="nav nav-tabs" role="tablist">
+    <ul
+      class="nav-links"
+      :class="containerClass"
+      role="tablist">
       <li
         v-for="(tab, index) in tabs"
-        :class="{ active: tab.isActive }"
-        role="presentation">
-        <a @click="switchTab($event, index, tab)">
+        :class="{ active: tab.isActive, titleClass }"
+        role="presentation"
+        @click="switchTab($event, index, tab)">
+
+        <a v-if="!tab.headerHtml">
           {{tab.title}}
         </a>
+        <div v-else v-html="tab.headerHtml">
+        </div>
       </li>
     </ul>
 
     <div class="tab-content">
       <slot></slot>
     </div>
-
   </div>
 </template>

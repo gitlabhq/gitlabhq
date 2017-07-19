@@ -128,6 +128,9 @@
           .catch(() => new Flash('An error occurred while making the request.'));
 
       },
+      handleSelectedTab(event, index, tab) {
+        console.log('tab selected');
+      }
     },
   };
 </script>
@@ -155,21 +158,20 @@
 
       <pipeline-info-block :pipeline="state.pipeline" />
 
-      <br/>
-      <tabs>
-        <tab title="Vue" href="vue">
-          This is Vue
+      <tabs
+        class="tabs-holder"
+        @tabSelected="handleSelectedTab"
+        css-class="pipelines-tabs no-top no-bottom">
+        <tab title="Pipeline" random-prop="foo">
+          <pipeline-graph :pipeline="state.pipeline" />
         </tab>
-        <tab title="React">
-          This is React
+        <tab title="Jobs <badge goes here>">
+          TO BE DONE - JOBS TABLE
         </tab>
-        <tab title="Svelte">
-          This is Svelte
+        <tab title="Failed Jobs <badge goes here>">
+          TO BE DONE - FAILED JOBS
         </tab>
       </tabs>
-
-
-      <pipeline-graph :pipeline="state.pipeline" />
 
     </template>
   </div>

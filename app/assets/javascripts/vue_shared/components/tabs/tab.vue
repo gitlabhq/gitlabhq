@@ -4,7 +4,17 @@
     props: {
       title: {
         type: String,
-        required: true
+        required: false,
+      },
+      headerHtml: {
+        type: String,
+        required: false,
+        default: null,
+      },
+      tabId: {
+        type: String,
+        required: false,
+        default: null,
       },
     },
     data() {
