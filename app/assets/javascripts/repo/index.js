@@ -10,7 +10,7 @@ import Service from './repo_service';
 import Store from './repo_store';
 import Helper from './repo_helper';
 
-$(() => {
+function initRepo() {
   const ide = document.getElementById('ide');
   const tabs = document.getElementById('tabs');
   const sidebar = document.getElementById('sidebar');
@@ -33,4 +33,8 @@ $(() => {
   Store.binaryViewer = new BinaryViewer(binaryViewer);
 
   Helper.getContent();
-});
+}
+
+$(initRepo);
+
+export default initRepo;
