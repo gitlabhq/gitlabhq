@@ -1104,6 +1104,14 @@ ActiveRecord::Schema.define(version: 20170809161910) do
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
+  create_table "project_access_requests", id: false, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "user_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+  end
+
+  add_index "project_access_requests", ["project_id", "user_id"], name: "index_project_access_requests_on_project_id_and_user_id", unique: true, using: :btree
+
   create_table "project_authorizations", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "project_id"
@@ -1716,6 +1724,8 @@ ActiveRecord::Schema.define(version: 20170809161910) do
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "project_access_requests", "projects", on_delete: :cascade
+  add_foreign_key "project_access_requests", "users", on_delete: :cascade
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
