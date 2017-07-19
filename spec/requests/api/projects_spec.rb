@@ -442,7 +442,7 @@ describe API::Projects do
       post api('/projects', user), project
 
       project_id = json_response['id']
-      expect(json_response['avatar_url']).to eq("http://localhost/uploads/system/project/avatar/#{project_id}/banana_sample.gif")
+      expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
     end
 
     it 'sets a project as allowing merge even if build fails' do
