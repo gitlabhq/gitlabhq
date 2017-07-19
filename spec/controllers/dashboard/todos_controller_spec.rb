@@ -11,6 +11,30 @@ describe Dashboard::TodosController do
       project.team << [user, :developer]
     end
 
+    context 'project authorization' do
+      it 'renders 404 when user does not have read access on given project' do
+        unauthorized_project = create(:empty_project, :private)
+
+        get :index, project_id: unauthorized_project.id
+
+        expect(response).to have_http_status(404)
+      end
+
+      it 'renders 200 when filtering for "any project" todos' do
+        get :index, project_id: ''
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'renders 200 when user has access on given project' do
+        authorized_project = create(:empty_project, :public)
+
+        get :index, project_id: authorized_project.id
+
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when using pagination' do
       let(:last_page) { user.todos.page.total_pages }
       let!(:issues) { create_list(:issue, 2, project: project, assignee: user) }
