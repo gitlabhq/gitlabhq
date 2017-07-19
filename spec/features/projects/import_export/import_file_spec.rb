@@ -31,6 +31,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
 
       expect(page).to have_content('GitLab project export')
       expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&path=test-project-path")
+      expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A[0-9a-f]{32}_test_project_export\.tar\.gz\z/).and_call_original
 
       attach_file('file', file)
 
