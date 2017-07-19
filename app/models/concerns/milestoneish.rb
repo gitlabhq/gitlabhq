@@ -49,7 +49,7 @@ module Milestoneish
   end
 
   def sorted_merge_requests
-    merge_requests.sort('label_priority')
+    merge_requests.sort_by_attr('label_priority')
   end
 
   def upcoming?

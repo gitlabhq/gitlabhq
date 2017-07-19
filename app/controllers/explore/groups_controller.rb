@@ -2,7 +2,7 @@ class Explore::GroupsController < Explore::ApplicationController
   def index
     @groups = GroupsFinder.new(current_user).execute
     @groups = @groups.search(params[:filter_groups]) if params[:filter_groups].present?
-    @groups = @groups.sort(@sort = params[:sort])
+    @groups = @groups.sort_by_attr(@sort = params[:sort])
     @groups = @groups.page(params[:page])
 
     respond_to do |format|
