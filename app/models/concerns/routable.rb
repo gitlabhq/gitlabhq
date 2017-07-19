@@ -78,7 +78,7 @@ module Routable
     # Returns an ActiveRecord::Relation.
     def member_descendants(user_id)
       joins(:route).
-        joins("INNER JOIN routes r2 ON routes.path LIKE CONCAT(r2.path, '/%')
+        joins("INNER JOIN routes r2 ON routes.path LIKE CONCAT(REPLACE(r2.path, '_', '\\_'), '/%')
                INNER JOIN members ON members.source_id = r2.source_id
                AND members.source_type = r2.source_type").
         where('members.user_id = ?', user_id)
