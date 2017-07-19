@@ -151,6 +151,12 @@ $new-sidebar-width: 220px;
 
 .sidebar-top-level-items {
   > li {
+    > a {
+      @media (min-width: $screen-sm-min) {
+        margin-right: 2px;
+      }
+    }
+
     &:not(.active) {
       .sidebar-sub-level-items {
         @media (min-width: $screen-sm-min) {
@@ -158,43 +164,26 @@ $new-sidebar-width: 220px;
           top: 0;
           left: 220px;
           width: 150px;
-          margin-left: -1px;
-          padding-bottom: 0;
-          background-color: $white-light;
+          background-color: $hover-background;
           box-shadow: 2px 1px 3px $dropdown-shadow-color;
-          border: 1px solid $dropdown-border-color;
-          border-left: 0;
-
-          &::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 21px 12px;
-            border-color: transparent transparent transparent $hover-background;
-            pointer-events: none;
-          }
+          border-radius: 0 3px 3px 0;
 
           &::after {
             content: "";
             position: absolute;
             top: 44px;
-            left: -20px;
+            left: -30px;
             right: 0;
             bottom: 0;
             z-index: -1;
           }
 
           a {
-            padding: 11px 16px 11px 24px;
+            color: $white-light;
 
             &:hover,
             &:focus {
-              background: transparent;
-              font-weight: 600;
+              background-color: darken($hover-background, 10%);
             }
           }
         }
