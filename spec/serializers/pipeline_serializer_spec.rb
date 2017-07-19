@@ -108,14 +108,35 @@ describe PipelineSerializer do
         end
       end
 
-      it 'verifies number of queries', :request_store do
-        recorded = ActiveRecord::QueryRecorder.new { subject }
-        expect(recorded.count).to be_within(1).of(59)
-        expect(recorded.cached_count).to eq(0)
+      shared_examples 'no N+1 queries' do
+        it 'verifies number of queries', :request_store do
+          recorded = ActiveRecord::QueryRecorder.new { subject }
+          expect(recorded.count).to be_within(1).of(59)
+          expect(recorded.cached_count).to eq(0)
+        end
+      end
+
+      context 'with the same ref' do
+        let(:ref) { 'feature' }
+
+        it_behaves_like 'no N+1 queries'
+      end
+
+      context 'with different refs' do
+        def ref
+          @sequence ||= 0
+          @sequence += 1
+          "feature-#{@sequence}"
+        end
+
+        it_behaves_like 'no N+1 queries'
       end
 
       def create_pipeline(status)
-        create(:ci_empty_pipeline, project: project, status: status).tap do |pipeline|
+        create(:ci_empty_pipeline,
+               project: project,
+               status: status,
+               ref: ref).tap do |pipeline|
           Ci::Build::AVAILABLE_STATUSES.each do |status|
             create_build(pipeline, status, status)
           end
@@ -125,7 +146,7 @@ describe PipelineSerializer do
       def create_build(pipeline, stage, status)
         create(:ci_build, :tags, :triggered, :artifacts,
           pipeline: pipeline, stage: stage,
-          name: stage, status: status)
+          name: stage, status: status, ref: pipeline.ref)
       end
     end
   end
