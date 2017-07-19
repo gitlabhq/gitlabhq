@@ -13,6 +13,22 @@ class Projects::MirrorsController < Projects::ApplicationController
     redirect_to_repository_settings(@project)
   end
 
+  def ssh_host_keys
+    lookup = SshHostKey.new(project: project, url: params[:ssh_url])
+
+    if lookup.error.present?
+      # Failed to read keys
+      render json: { message: lookup.error }, status: 400
+    elsif lookup.known_hosts.nil?
+      # Still working, come back later
+      render body: nil, status: 204
+    else
+      render json: lookup
+    end
+  rescue ArgumentError => err
+    render json: { message: err.message }, status: 400
+  end
+
   def update
     if @project.update_attributes(safe_mirror_params)
       if @project.mirror?

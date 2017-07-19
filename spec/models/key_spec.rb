@@ -83,15 +83,6 @@ describe Key, :mailer do
       expect(build(:key)).to be_valid
     end
 
-    it 'rejects an unfingerprintable key that contains a space' do
-      key = build(:key)
-
-      # Not always the middle, but close enough
-      key.key = key.key[0..100] + ' ' + key.key[101..-1]
-
-      expect(key).not_to be_valid
-    end
-
     it 'accepts a key with newline charecters after stripping them' do
       key = build(:key)
       key.key = key.key.insert(100, "\n")
@@ -102,7 +93,6 @@ describe Key, :mailer do
     it 'rejects the unfingerprintable key (not a key)' do
       expect(build(:key, key: 'ssh-rsa an-invalid-key==')).not_to be_valid
     end
-    
   end
 
   context 'callbacks' do

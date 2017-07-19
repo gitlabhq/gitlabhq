@@ -1,55 +1,48 @@
 module Gitlab
   class KeyFingerprint
-    include Gitlab::Popen
+    attr_reader :key, :ssh_key
 
-    attr_accessor :key
+    # Unqualified MD5 fingerprint for compatibility
+    delegate :fingerprint, to: :ssh_key, allow_nil: true
 
     def initialize(key)
       @key = key
+
+      @ssh_key =
+        begin
+          Net::SSH::KeyFactory.load_data_public_key(key)
+        rescue Net::SSH::Exception, NotImplementedError
+        end
     end
 
-    def fingerprint
-      cmd_status = 0
-      cmd_output = ''
+    def valid?
+      ssh_key.present?
+    end
 
-      Tempfile.open('gitlab_key_file') do |file|
-        file.puts key
-        file.rewind
+    def type
+      return unless valid?
 
-        cmd = []
-        cmd.push('ssh-keygen')
-        cmd.push('-E', 'md5') if explicit_fingerprint_algorithm?
-        cmd.push('-lf', file.path)
+      parts = ssh_key.ssh_type.split('-')
+      parts.shift if parts[0] == 'ssh'
 
-        cmd_output, cmd_status = popen(cmd, '/tmp')
+      parts[0].upcase
+    end
+
+    def bits
+      return unless valid?
+
+      case type
+      when 'RSA'
+        ssh_key.n.num_bits
+      when 'DSS', 'DSA'
+        ssh_key.p.num_bits
+      when 'ECDSA'
+        ssh_key.group.order.num_bits
+      when 'ED25519'
+        256
+      else
+        raise "Unsupported key type: #{type}"
       end
-
-      return nil unless cmd_status.zero?
-
-      # 16 hex bytes separated by ':', optionally starting with "MD5:"
-      fingerprint_matches = cmd_output.match(/(MD5:)?(?<fingerprint>(\h{2}:){15}\h{2})/)
-      return nil unless fingerprint_matches
-
-      fingerprint_matches[:fingerprint]
-    end
-
-    private
-
-    def explicit_fingerprint_algorithm?
-      # OpenSSH 6.8 introduces a new default output format for fingerprints.
-      # Check the version and decide which command to use.
-
-      version_output, version_status = popen(%w(ssh -V))
-      return false unless version_status.zero?
-
-      version_matches = version_output.match(/OpenSSH_(?<major>\d+)\.(?<minor>\d+)/)
-      return false unless version_matches
-
-      version_info = Gitlab::VersionInfo.new(version_matches[:major].to_i, version_matches[:minor].to_i)
-
-      required_version_info = Gitlab::VersionInfo.new(6, 8)
-
-      version_info >= required_version_info
     end
   end
 end

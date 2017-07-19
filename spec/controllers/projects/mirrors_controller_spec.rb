@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::MirrorsController do
+  include ReactiveCachingHelpers
+
   describe 'setting up a remote mirror' do
     context 'when the current project is a mirror' do
       let(:project) { create(:project, :repository, :mirror) }
@@ -123,6 +125,63 @@ describe Projects::MirrorsController do
       sign_in(project.owner)
 
       put :update_now, { namespace_id: project.namespace.to_param, project_id: project.to_param }
+    end
+  end
+
+  describe '#ssh_host_keys', use_clean_rails_memory_store_caching: true do
+    let(:project) { create(:project) }
+    let(:cache) { SshHostKey.new(project_id: project.id, url: "ssh://example.com:22") }
+
+    before do
+      sign_in(project.owner)
+    end
+
+    context 'invalid URL' do
+      it 'returns an error with a 400 response' do
+        do_get(project, 'INVALID URL')
+
+        expect(response).to have_http_status(400)
+        expect(json_response).to eq('message' => 'Invalid URL')
+      end
+    end
+
+    context 'no data in cache' do
+      it 'requests the cache to be filled and returns a 204 response' do
+        expect(ReactiveCachingWorker).to receive(:perform_async).with(cache.class, cache.id).at_least(:once)
+
+        do_get(project)
+
+        expect(response).to have_http_status(204)
+      end
+    end
+
+    context 'error in the cache' do
+      it 'returns the error with a 400 response' do
+        stub_reactive_cache(cache, error: 'An error')
+
+        do_get(project)
+
+        expect(response).to have_http_status(400)
+        expect(json_response).to eq('message' => 'An error')
+      end
+    end
+
+    context 'data in the cache' do
+      let(:ssh_key) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf' }
+      let(:ssh_fp) { { type: 'ED25519', bits: 256, fingerprint: '2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16', index: 0 } }
+
+      it 'returns the data with a 200 response' do
+        stub_reactive_cache(cache, known_hosts: ssh_key)
+
+        do_get(project)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to eq('known_hosts' => ssh_key, 'fingerprints' => [ssh_fp.stringify_keys])
+      end
+    end
+
+    def do_get(project, url = 'ssh://example.com')
+      get :ssh_host_keys, namespace_id: project.namespace, project_id: project, ssh_url: url
     end
   end
 
