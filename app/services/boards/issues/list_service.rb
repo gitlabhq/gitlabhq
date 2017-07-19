@@ -33,15 +33,10 @@ module Boards
       end
 
       def filter_params
-        set_default_scope
         set_project
         set_state
 
         params
-      end
-
-      def set_default_scope
-        params[:scope] = 'all'
       end
 
       def set_project
