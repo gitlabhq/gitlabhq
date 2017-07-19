@@ -1,29 +1,30 @@
-function getScrollWidth() {
-  const $rulerContainer = $('<div>').css({
-    visibility: 'hidden',
-    width: 100,
-    overflow: 'scroll',
-  });
+import $ from 'jquery';
 
-  const $ruler = $('<div>').css({
-    width: '100%',
-  });
+const ScrollHelper = {
+  getScrollWidth() {
+    const $rulerContainer = $('<div>').css({
+      visibility: 'hidden',
+      width: 100,
+      overflow: 'scroll',
+    });
 
-  $ruler.appendTo($rulerContainer);
-  $rulerContainer.appendTo('body');
+    const $ruler = $('<div>').css({
+      width: '100%',
+    });
 
-  const scrollWidth = $ruler.outerWidth();
+    $ruler.appendTo($rulerContainer);
+    $rulerContainer.appendTo('body');
 
-  $rulerContainer.remove();
+    const scrollWidth = $ruler.outerWidth();
 
-  return 100 - scrollWidth;
-}
+    $rulerContainer.remove();
 
-function setScrollWidth() {
-  $('body').attr('data-scroll-width', getScrollWidth());
-}
+    return 100 - scrollWidth;
+  },
 
-export {
-  getScrollWidth,
-  setScrollWidth,
+  setScrollWidth() {
+    $('body').attr('data-scroll-width', ScrollHelper.getScrollWidth());
+  },
 };
+
+export default ScrollHelper;

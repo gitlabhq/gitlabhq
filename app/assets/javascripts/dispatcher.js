@@ -54,7 +54,7 @@ import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import initSettingsPanels from './settings_panels';
-import { setScrollWidth } from './helpers/scroll_helper';
+import ScrollHelper from './helpers/scroll_helper';
 
 (function() {
   var Dispatcher;
@@ -77,7 +77,7 @@ import { setScrollWidth } from './helpers/scroll_helper';
         return false;
       }
 
-      setScrollWidth();
+      ScrollHelper.setScrollWidth();
 
       path = page.split(':');
       shortcut_handler = null;
