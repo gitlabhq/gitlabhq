@@ -183,7 +183,7 @@ $new-sidebar-width: 220px;
 
             &:hover,
             &:focus {
-              background-color: darken($hover-background, 10%);
+              background-color: rgba($black, .12);
             }
           }
         }
