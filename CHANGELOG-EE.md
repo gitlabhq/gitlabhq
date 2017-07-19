@@ -138,6 +138,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Feature availability check using feature list AND license addons.
 - Disable mirror workers for Geo secondaries.
 
+## 9.1.8 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
+
 ## 9.1.7 (2017-06-07)
 
 - No changes.
