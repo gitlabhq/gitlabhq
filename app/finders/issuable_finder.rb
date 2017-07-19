@@ -20,7 +20,7 @@
 #
 class IssuableFinder
   include CreatedAtFilter
-  
+
   NONE = '0'.freeze
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
 
@@ -418,7 +418,7 @@ class IssuableFinder
   end
 
   def state_counter_cache_key_components(state)
-    opts = params.with_indifferent_access
+    opts = params.to_h
     opts[:state] = state
     opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
     opts.delete_if { |_, value| value.blank? }

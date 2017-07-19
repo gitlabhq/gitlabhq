@@ -452,11 +452,12 @@ describe Projects::MergeRequestsController do
 
   describe 'GET commits' do
     def go(format: 'html')
-      get :commits,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: merge_request.iid,
-          format: format
+      get :commits, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid,
+        format: format
+      }
     end
 
     it 'renders the commits template to a string' do

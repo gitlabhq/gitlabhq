@@ -112,7 +112,7 @@ class Label < ApplicationRecord
       state: 'opened'
     }
 
-    MergeRequestsFinder.new(user, params.with_indifferent_access).execute.count
+    MergeRequestsFinder.new(user, params.to_h).execute.count
   end
 
   def prioritize!(project, value)
@@ -184,7 +184,7 @@ class Label < ApplicationRecord
 
   def issues_count(user, params = {})
     params.merge!(subject_foreign_key => subject.id, label_name: title, scope: 'all')
-    IssuesFinder.new(user, params.with_indifferent_access).execute.count
+    IssuesFinder.new(user, params.to_h).execute.count
   end
 
   def label_format_reference(format = :id)
