@@ -9,10 +9,11 @@ const ScrollHelper = {
     });
 
     const $ruler = $('<div>').css({
-      width: '100%',
+      width: 100,
     });
 
     $ruler.appendTo($rulerContainer);
+
     $rulerContainer.appendTo('body');
 
     const scrollWidth = $ruler.outerWidth();
