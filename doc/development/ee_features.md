@@ -252,9 +252,9 @@ When doing this, rubocop might complain about the path not
 matching. So on the top-level `describe` append `# rubocop:disable
 RSpec/FilePath` to disable the cop for that line.
 
-## JS-code
+## JavaScript code in `assets/javascripts/`
 
-To seperate EE-specific JS-files we can also move the files into an `ee` folder.
+To separate EE-specific JS-files we can also move the files into an `ee` folder.
 
 For example there can be an
 `app/assets/javascripts/protected_branches/protected_branches_bundle.js` and an
@@ -274,4 +274,52 @@ view, using the `page_specific_javascript_bundle_tag` helper.
 ```
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('protected_branches')
+```
+
+## SCSS code in `assets/stylesheets`
+
+To separate EE-specific styles in SCSS files, we can adopt one of the two approaches.
+
+### Moving styles into dedicated SCSS file
+
+If a component you're adding styles for, is limited to only EE, it is better to have a
+separate file in appropriate directory within `assets/stylesheets` such that the file will
+only exist in EE codebase.
+
+### Isolating EE-specific ruleset within SCSS file
+
+There are situations where creating dedicated SCSS file is an overkill, for eg; a text style
+of some component is different for EE. In such cases, styles are usually kept in stylesheet
+that is common for both CE and EE, and it is wise to isolate such ruleset from rest of
+CE rules (along with adding comment describing the same) to avoid conflicts during CE to EE merge.
+
+#### Bad
+```scss
+.section-body {
+  .section-title {
+    background: $gl-header-color;
+  }
+
+  &.ee-section-body {
+    .section-title {
+      background: $gl-header-color-cyan;
+    }
+  }
+}
+```
+
+#### Good
+```scss
+.section-body {
+  .section-title {
+    background: $gl-header-color;
+  }
+}
+
+/* EE-specific styles */
+.section-body.ee-section-body {
+  .section-title {
+    background: $gl-header-color-cyan;
+  }
+}
 ```
