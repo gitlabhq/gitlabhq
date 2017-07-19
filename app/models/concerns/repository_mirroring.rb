@@ -40,7 +40,8 @@ module RepositoryMirroring
       name = ref.name.sub(/\Arefs\/remotes\/#{remote_name}\//, '')
 
       begin
-        branches << Gitlab::Git::Branch.new(raw_repository, name, ref.target)
+        target_commit = Gitlab::Git::Commit.find(raw_repository, ref.target)
+        branches << Gitlab::Git::Branch.new(raw_repository, name, ref.target, target_commit)
       rescue Rugged::ReferenceError
         # Omit invalid branch
       end
