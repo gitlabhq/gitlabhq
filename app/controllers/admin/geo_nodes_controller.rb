@@ -1,6 +1,6 @@
 class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license, except: [:index, :destroy]
-  before_action :load_node, only: [:destroy, :repair, :toggle, :status]
+  before_action :load_node, only: [:destroy, :edit, :update, :repair, :toggle, :status]
 
   def index
     @nodes = GeoNode.all.order(:id)
@@ -19,6 +19,15 @@ class Admin::GeoNodesController < Admin::ApplicationController
     else
       @nodes = GeoNode.all
       render :index
+    end
+  end
+
+  def update
+    if @node.update_attributes(geo_node_params.except(:geo_node_key_attributes))
+      flash[:notice] = 'GeoNode was successfully updated.'
+      redirect_to admin_geo_nodes_path
+    else
+      render 'edit'
     end
   end
 

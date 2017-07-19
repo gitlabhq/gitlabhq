@@ -125,7 +125,7 @@ namespace :admin do
     get :download, on: :member
   end
 
-  resources :geo_nodes, only: [:index, :create, :destroy] do
+  resources :geo_nodes, only: [:index, :create, :edit, :update, :destroy] do
     member do
       post :repair
       post :toggle
