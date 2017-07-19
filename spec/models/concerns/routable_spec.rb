@@ -89,6 +89,29 @@ describe Group, 'Routable' do
     subject { described_class.member_self_and_descendants(user.id) }
 
     it { is_expected.to match_array [group, nested_group] }
+
+    context 'when the group has special chars in its path' do
+      let(:user1) { create(:user) }
+      let(:group1) { create(:group, name: 'demo', path: 'demo') }
+      let(:nested_group1) { create(:group, name: 'nest', path: 'nest', parent: group1) }
+      let!(:project1) { create(:empty_project, group: nested_group1) }
+
+      let(:user2) { create(:user) }
+      let(:group2) { create(:group, name: '____', path: '____') }
+      let(:nested_group2) { create(:group, name: 'test', path: 'test', parent: group2) }
+      let!(:project2) { create(:empty_project, group: nested_group2) }
+
+      before do
+        group1.add_master(user1)
+        group2.add_master(user2)
+      end
+
+      it 'only returns the right groups' do
+        groups = described_class.member_self_and_descendants(user2.id)
+
+        expect(groups).to match_array([group2, nested_group2])
+      end
+    end
   end
 
   describe '.member_hierarchy' do
