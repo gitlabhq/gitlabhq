@@ -1,8 +1,8 @@
 module Gitlab
   module Badge
-    module Build
+    module Pipeline
       ##
-      # Class that represents a build badge template.
+      # Class that represents a pipeline badge template.
       #
       # Template object will be passed to badge.svg.erb template.
       #
@@ -31,7 +31,7 @@ module Gitlab
         end
 
         def key_width
-          38
+          62
         end
 
         def value_width
