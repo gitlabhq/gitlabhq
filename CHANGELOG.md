@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.2.8 (2017-07-19)
+
+- Improve support for external issue references. !12485
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+- Fix incorrect project authorizations.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
+
 ## 9.2.7 (2017-06-21)
 
 - Reinstate is_admin flag in users api when authenticated user is an admin. !12211 (rickettm)
