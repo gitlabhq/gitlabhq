@@ -8,6 +8,7 @@ var CompressionPlugin = require('compression-webpack-plugin');
 var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+var HappyPack = require('happypack');
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -86,7 +87,7 @@ var config = {
       {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader',
+        loader: 'happypack/loader?id=babel',
       },
       {
         test: /\.vue$/,
@@ -114,6 +115,11 @@ var config = {
   },
 
   plugins: [
+    new HappyPack({
+      id: 'babel',
+      loaders: ['babel-loader'],
+    }),
+
     // manifest filename must match config.webpack.manifest_filename
     // webpack-rails only needs assetsByChunkName to function properly
     new StatsPlugin('manifest.json', {
