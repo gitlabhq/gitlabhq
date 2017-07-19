@@ -45,7 +45,7 @@ module Milestoneish
   end
 
   def sorted_issues(user)
-    issues_visible_to_user(user).preload_associations.sort('label_priority')
+    issues_visible_to_user(user).preload_associations.sort_by_attr('label_priority')
   end
 
   def sorted_merge_requests
