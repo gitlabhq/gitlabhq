@@ -24,15 +24,6 @@ describe JiraService, models: true do
     end
   end
 
-  describe '#reference_pattern' do
-    it_behaves_like 'allows project key on reference pattern'
-
-    it 'does not allow # on the code' do
-      expect(subject.reference_pattern.match('#123')).to be_nil
-      expect(subject.reference_pattern.match('1#23#12')).to be_nil
-    end
-  end
-
   describe '#can_test?' do
     let(:jira_service) { described_class.new }
 
@@ -65,6 +56,15 @@ describe JiraService, models: true do
       )
 
       expect(jira_service.can_test?).to be_truthy
+    end
+  end
+
+  describe '.reference_pattern' do
+    it_behaves_like 'allows project key on reference pattern'
+
+    it 'does not allow # on the code' do
+      expect(described_class.reference_pattern.match('#123')).to be_nil
+      expect(described_class.reference_pattern.match('1#23#12')).to be_nil
     end
   end
 

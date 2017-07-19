@@ -17,7 +17,7 @@ class JiraService < IssueTrackerService
   end
 
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
-  def reference_pattern
+  def self.reference_pattern
     @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
   end
 
