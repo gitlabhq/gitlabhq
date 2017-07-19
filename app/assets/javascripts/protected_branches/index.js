@@ -1,5 +1,2 @@
-import './protected_branch_access_dropdown';
-import './protected_branch_create';
-import './protected_branch_dropdown';
-import './protected_branch_edit';
-import './protected_branch_edit_list';
+export { default as ProtectedBranchCreate } from './protected_branch_create';
+export { default as ProtectedBranchEditList } from './protected_branch_edit_list';
