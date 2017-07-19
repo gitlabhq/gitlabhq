@@ -94,13 +94,15 @@ module Gitlab
 
     def protected_branch_accessible_to?(ref, action:)
       ProtectedBranch.protected_ref_accessible_to?(
-        ref, user, action: action,
+        ref, user,
+        action: action,
         protected_refs: project.protected_branches)
     end
 
     def protected_tag_accessible_to?(ref, action:)
       ProtectedTag.protected_ref_accessible_to?(
-        ref, user, action: action,
+        ref, user,
+        action: action,
         protected_refs: project.protected_tags)
     end
 
