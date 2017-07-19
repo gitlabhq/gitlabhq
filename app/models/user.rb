@@ -385,9 +385,11 @@ class User < ActiveRecord::Base
     # Return (create if necessary) the ghost user. The ghost user
     # owns records previously belonging to deleted users.
     def ghost
-      unique_internal(where(ghost: true), 'ghost', 'ghost%s@example.com') do |u|
+      email = 'ghost%s@example.com'
+      unique_internal(where(ghost: true), 'ghost', email) do |u|
         u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
         u.name = 'Ghost User'
+        u.notification_email = email
       end
     end
   end
