@@ -1,5 +1,10 @@
 - @no_container = true
 - page_title 'Milestones'
+
+- if show_new_nav?
+  - content_for :breadcrumbs_extra do
+    = link_to "New milestone", new_namespace_project_milestone_path(@project.namespace, @project), class: 'btn btn-new', title: 'New milestone'
+
 = render "shared/mr_head"
 
 %div{ class: container_class }
