@@ -54,6 +54,7 @@ import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
 import initSettingsPanels from './settings_panels';
+import { setScrollWidth } from './helpers/scroll_helper';
 
 (function() {
   var Dispatcher;
@@ -76,14 +77,7 @@ import initSettingsPanels from './settings_panels';
         return false;
       }
 
-      function getScrollBarWidth () {
-        var $outer = $('<div>').css({ visibility: 'hidden', width: 100, overflow: 'scroll' }).appendTo('body'),
-          widthWithScroll = $('<div>').css({ width: '100%' }).appendTo($outer).outerWidth();
-        $outer.remove();
-        return 100 - widthWithScroll;
-      }
-
-      $('body').attr('data-scroll-width', getScrollBarWidth());
+      setScrollWidth();
 
       path = page.split(':');
       shortcut_handler = null;
