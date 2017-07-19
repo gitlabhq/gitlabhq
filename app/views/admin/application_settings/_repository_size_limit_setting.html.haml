@@ -1,0 +1,12 @@
+- return unless License.feature_available?(:repository_size_limit)
+
+- form = local_assigns.fetch(:form)
+
+.form-group
+  = form.label :repository_size_limit, class: 'control-label col-sm-2' do
+    Size limit per repository (MB)
+  .col-sm-10
+    = form.number_field :repository_size_limit, value: form.object.repository_size_limit.try(:to_mb), class: 'form-control', min: 0
+    %span.help-block#repository_size_limit_help_block
+      Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited.
+      = link_to icon('question-circle'), help_page_path("user/admin_area/settings/account_and_limit_settings")

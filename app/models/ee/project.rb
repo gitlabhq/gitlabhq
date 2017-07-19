@@ -414,6 +414,8 @@ module EE
     end
 
     def size_limit_enabled?
+      return false unless License.feature_available?(:repository_size_limit)
+
       actual_size_limit != 0
     end
 
