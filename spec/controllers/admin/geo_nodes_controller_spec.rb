@@ -104,6 +104,37 @@ describe Admin::GeoNodesController, :postgresql do
     end
   end
 
+  describe '#update' do
+    let(:geo_node_attributes) { { url: 'http://example.com', geo_node_key_attributes: { key: SSHKeygen.generate } } }
+    let(:geo_node) { create(:geo_node) }
+
+    subject { post :update, id: geo_node, geo_node: geo_node_attributes }
+
+    context 'without add-on license' do
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?) { false }
+        subject
+      end
+
+      it_behaves_like 'unlicensed geo action'
+    end
+
+    context 'with add-on license' do
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
+        subject
+      end
+
+      it 'updates the node without changing the key' do
+        original_fingerprint = geo_node.geo_node_key.fingerprint
+        geo_node.reload
+
+        expect(geo_node.url.chomp('/')).to eq(geo_node_attributes[:url])
+        expect(geo_node.geo_node_key.fingerprint).to eq(original_fingerprint)
+      end
+    end
+  end
+
   describe '#repair' do
     let(:geo_node) { create(:geo_node) }
     subject { post :repair, id: geo_node }
