@@ -390,3 +390,6 @@ gem 'toml-rb', '~> 0.3.15', require: false
 # Feature toggles
 gem 'flipper', '~> 0.10.2'
 gem 'flipper-active_record', '~> 0.10.2'
+
+# Structured logging
+gem 'lograge', '~> 0.5'
