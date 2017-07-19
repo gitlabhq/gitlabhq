@@ -242,11 +242,28 @@ describe ProjectPolicy, models: true do
     context 'auditor' do
       let(:current_user) { auditor }
 
-      it do
-        is_expected.to be_disallowed(*developer_permissions)
-        is_expected.to be_disallowed(*master_permissions)
-        is_expected.to be_disallowed(*owner_permissions)
-        is_expected.to be_allowed(*auditor_permissions)
+      context 'not a team member' do
+        it do
+          is_expected.to be_disallowed(*developer_permissions)
+          is_expected.to be_disallowed(*master_permissions)
+          is_expected.to be_disallowed(*owner_permissions)
+          is_expected.to be_disallowed(*(guest_permissions - auditor_permissions))
+          is_expected.to be_allowed(*auditor_permissions)
+        end
+      end
+
+      context 'team member' do
+        before do
+          project.team << [auditor, :guest]
+        end
+
+        it do
+          is_expected.to be_disallowed(*developer_permissions)
+          is_expected.to be_disallowed(*master_permissions)
+          is_expected.to be_disallowed(*owner_permissions)
+          is_expected.to be_allowed(*(guest_permissions - auditor_permissions))
+          is_expected.to be_allowed(*auditor_permissions)
+        end
       end
     end
   end
