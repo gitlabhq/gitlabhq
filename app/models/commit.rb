@@ -1,5 +1,6 @@
 class Commit
   extend ActiveModel::Naming
+  extend Gitlab::Cache::RequestCache
 
   include ActiveModel::Conversion
   include Noteable
@@ -169,19 +170,9 @@ class Commit
   end
 
   def author
-    if RequestStore.active?
-      key = "commit_author:#{author_email.downcase}"
-      # nil is a valid value since no author may exist in the system
-      if RequestStore.store.key?(key)
-        @author = RequestStore.store[key]
-      else
-        @author = find_author_by_any_email
-        RequestStore.store[key] = @author
-      end
-    else
-      @author ||= find_author_by_any_email
-    end
+    User.find_by_any_email(author_email.downcase)
   end
+  request_cache(:author) { author_email.downcase }
 
   def committer
     @committer ||= User.find_by_any_email(committer_email.downcase)
@@ -366,10 +357,6 @@ class Commit
     else
       referable_commit_id
     end
-  end
-
-  def find_author_by_any_email
-    User.find_by_any_email(author_email.downcase)
   end
 
   def repo_changes

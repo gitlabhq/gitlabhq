@@ -807,6 +807,14 @@ module Gitlab
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
       end
 
+      def gitaly_ref_client
+        @gitaly_ref_client ||= Gitlab::GitalyClient::RefService.new(self)
+      end
+
+      def gitaly_commit_client
+        @gitaly_commit_client ||= Gitlab::GitalyClient::CommitService.new(self)
+      end
+
       private
 
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
@@ -1103,14 +1111,6 @@ module Gitlab
         else
           branches
         end
-      end
-
-      def gitaly_ref_client
-        @gitaly_ref_client ||= Gitlab::GitalyClient::RefService.new(self)
-      end
-
-      def gitaly_commit_client
-        @gitaly_commit_client ||= Gitlab::GitalyClient::CommitService.new(self)
       end
 
       def gitaly_migrate(method, &block)
