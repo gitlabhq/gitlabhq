@@ -25,7 +25,7 @@ module Gitlab
               validates :allow_failure, boolean: true
               validates :retry, numericality: { only_integer: true,
                                                 greater_than_or_equal_to: 0,
-                                                less_than: 10 }
+                                                less_than_or_equal_to: 2 }
               validates :when,
                 inclusion: { in: %w[on_success on_failure always manual],
                              message: 'should be on_success, on_failure, ' \

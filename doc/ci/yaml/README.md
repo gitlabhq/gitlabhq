@@ -1147,7 +1147,7 @@ up to the amount of times specified by the `retry` keyword.
 
 If `retry` is set to 3, and a job succeeds in a second run, it won't be retried
 again. `retry` value has to be a positive integer, equal or larger than 0, but
-lower than 10.
+lower or equal to 2 (two retries maximum, three runs in total).
 
 A simple example:
 

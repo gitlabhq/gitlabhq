@@ -115,7 +115,7 @@ describe Gitlab::Ci::Config::Entry::Job do
 
           it 'returns error about value too high' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job retry must be less than 10'
+            expect(entry.errors).to include 'job retry must be less than or equal to 2'
           end
         end
       end
