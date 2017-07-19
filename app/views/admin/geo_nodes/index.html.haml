@@ -10,7 +10,7 @@
 
 - if Gitlab::Geo.license_allows?
   = form_for [:admin, @node], as: :geo_node, url: admin_geo_nodes_path, html: { class: 'form-horizontal' } do |f|
-    = render partial: 'form', locals: { form: f, geo_node: @node, add_key: true }
+    = render partial: 'form', locals: { form: f, geo_node: @node }
     .form-actions
       = f.submit 'Add Node', class: 'btn btn-create'
 

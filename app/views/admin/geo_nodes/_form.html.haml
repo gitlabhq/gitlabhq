@@ -1,9 +1,6 @@
-- disable_key_edit = defined?(edit) && edit
+- disable_key_edit = local_assigns.fetch(:disable_key_edit, false)
 
-- if geo_node.errors.any?
-  .alert.alert-danger
-    - geo_node.errors.full_messages.each do |msg|
-      %p= msg
+= form_errors(geo_node)
 .form-group
   .col-sm-offset-2.col-sm-10
     .checkbox
