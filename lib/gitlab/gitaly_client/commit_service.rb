@@ -23,9 +23,13 @@ module Gitlab
       def diff_from_parent(commit, options = {})
         request_params = commit_diff_request_params(commit, options)
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
+        request_params[:enforce_limits] = options.fetch(:limits, true)
+        request_params[:collapse_diffs] = request_params[:enforce_limits] || !options.fetch(:expanded, true)
+        request_params.merge!(Gitlab::Git::DiffCollection.collection_limits(options).to_h)
+
         request = Gitaly::CommitDiffRequest.new(request_params)
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request)
-        Gitlab::Git::DiffCollection.new(GitalyClient::DiffStitcher.new(response), options)
+        Gitlab::Git::DiffCollection.new(GitalyClient::DiffStitcher.new(response), options.merge(from_gitaly: true))
       end
 
       def commit_deltas(commit)

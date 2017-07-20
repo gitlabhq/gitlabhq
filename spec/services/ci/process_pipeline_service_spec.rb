@@ -463,6 +463,35 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
+  context 'when builds with auto-retries are configured' do
+    before do
+      create_build('build:1', stage_idx: 0, user: user, options: { retry: 2 })
+      create_build('test:1', stage_idx: 1, user: user, when: :on_failure)
+      create_build('test:2', stage_idx: 1, user: user, options: { retry: 1 })
+    end
+
+    it 'automatically retries builds in a valid order' do
+      expect(process_pipeline).to be_truthy
+
+      fail_running_or_pending
+
+      expect(builds_names).to eq %w[build:1 build:1]
+      expect(builds_statuses).to eq %w[failed pending]
+
+      succeed_running_or_pending
+
+      expect(builds_names).to eq %w[build:1 build:1 test:2]
+      expect(builds_statuses).to eq %w[failed success pending]
+
+      succeed_running_or_pending
+
+      expect(builds_names).to eq %w[build:1 build:1 test:2]
+      expect(builds_statuses).to eq %w[failed success success]
+
+      expect(pipeline.reload).to be_success
+    end
+  end
+
   def process_pipeline
     described_class.new(pipeline.project, user).execute(pipeline)
   end

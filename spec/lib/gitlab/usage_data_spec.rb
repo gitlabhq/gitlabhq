@@ -59,6 +59,7 @@ describe Gitlab::UsageData do
         milestones
         notes
         projects
+        projects_imported_from_github
         projects_prometheus_active
         pages_domains
         protected_branches

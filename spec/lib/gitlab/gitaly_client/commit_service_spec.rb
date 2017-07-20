@@ -12,7 +12,10 @@ describe Gitlab::GitalyClient::CommitService do
         request = Gitaly::CommitDiffRequest.new(
           repository: repository_message,
           left_commit_id: 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660',
-          right_commit_id: commit.id
+          right_commit_id: commit.id,
+          collapse_diffs: true,
+          enforce_limits: true,
+          **Gitlab::Git::DiffCollection.collection_limits.to_h
         )
 
         expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
@@ -27,7 +30,10 @@ describe Gitlab::GitalyClient::CommitService do
         request        = Gitaly::CommitDiffRequest.new(
           repository: repository_message,
           left_commit_id: '4b825dc642cb6eb9a060e54bf8d69288fbee4904',
-          right_commit_id: initial_commit.id
+          right_commit_id: initial_commit.id,
+          collapse_diffs: true,
+          enforce_limits: true,
+          **Gitlab::Git::DiffCollection.collection_limits.to_h
         )
 
         expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_diff).with(request, kind_of(Hash))
@@ -43,7 +49,7 @@ describe Gitlab::GitalyClient::CommitService do
     end
 
     it 'passes options to Gitlab::Git::DiffCollection' do
-      options = { max_files: 31, max_lines: 13 }
+      options = { max_files: 31, max_lines: 13, from_gitaly: true }
 
       expect(Gitlab::Git::DiffCollection).to receive(:new).with(kind_of(Enumerable), options)
 

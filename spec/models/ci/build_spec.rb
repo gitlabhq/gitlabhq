@@ -821,6 +821,47 @@ describe Ci::Build, :models do
     end
   end
 
+  describe 'build auto retry feature' do
+    describe '#retries_count' do
+      subject { create(:ci_build, name: 'test', pipeline: pipeline) }
+
+      context 'when build has been retried several times' do
+        before do
+          create(:ci_build, :retried, name: 'test', pipeline: pipeline)
+          create(:ci_build, :retried, name: 'test', pipeline: pipeline)
+        end
+
+        it 'reports a correct retry count value' do
+          expect(subject.retries_count).to eq 2
+        end
+      end
+
+      context 'when build has not been retried' do
+        it 'returns zero' do
+          expect(subject.retries_count).to eq 0
+        end
+      end
+    end
+
+    describe '#retries_max' do
+      context 'when max retries value is defined' do
+        subject { create(:ci_build, options: { retry: 1 }) }
+
+        it 'returns a number of configured max retries' do
+          expect(subject.retries_max).to eq 1
+        end
+      end
+
+      context 'when max retries value is not defined' do
+        subject { create(:ci_build) }
+
+        it 'returns zero' do
+          expect(subject.retries_max).to eq 0
+        end
+      end
+    end
+  end
+
   describe '#keep_artifacts!' do
     let(:build) { create(:ci_build, artifacts_expire_at: Time.now + 7.days) }
 
@@ -1602,7 +1643,7 @@ describe Ci::Build, :models do
     end
   end
 
-  describe 'State transition: any => [:pending]' do
+  describe 'state transition: any => [:pending]' do
     let(:build) { create(:ci_build, :created) }
 
     it 'queues BuildQueueWorker' do
@@ -1612,6 +1653,7 @@ describe Ci::Build, :models do
     end
   end
 
+<<<<<<< HEAD
   describe '#has_codeclimate_json?' do
     context 'valid build' do
       let!(:build) do
@@ -1643,6 +1685,36 @@ describe Ci::Build, :models do
       end
 
       it { expect(build.has_codeclimate_json?).to be_falsey }
+=======
+  describe 'state transition when build fails' do
+    context 'when build is configured to be retried' do
+      subject { create(:ci_build, :running, options: { retry: 3 }) }
+
+      it 'retries builds and assigns a same user to it' do
+        expect(described_class).to receive(:retry)
+          .with(subject, subject.user)
+
+        subject.drop!
+      end
+    end
+
+    context 'when build is not configured to be retried' do
+      subject { create(:ci_build, :running) }
+
+      it 'does not retry build' do
+        expect(described_class).not_to receive(:retry)
+
+        subject.drop!
+      end
+
+      it 'does not count retries when not necessary' do
+        expect(described_class).not_to receive(:retry)
+        expect_any_instance_of(described_class)
+          .not_to receive(:retries_count)
+
+        subject.drop!
+      end
+>>>>>>> ce/master
     end
   end
 end

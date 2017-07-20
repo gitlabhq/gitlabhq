@@ -36,14 +36,14 @@ feature 'Integration settings', feature: true do
         expect(page.status_code).to eq(200)
         expect(page).to have_content(hook.url)
         expect(page).to have_content('SSL Verification: enabled')
-        expect(page).to have_content('Push Events')
-        expect(page).to have_content('Tag Push Events')
-        expect(page).to have_content('Issues Events')
-        expect(page).to have_content('Confidential Issues Events')
-        expect(page).to have_content('Note Events')
-        expect(page).to have_content('Merge Requests  Events')
-        expect(page).to have_content('Pipeline Events')
-        expect(page).to have_content('Wiki Page Events')
+        expect(page).to have_content('Push events')
+        expect(page).to have_content('Tag push events')
+        expect(page).to have_content('Issues events')
+        expect(page).to have_content('Confidential issues events')
+        expect(page).to have_content('Note events')
+        expect(page).to have_content('Merge requests  events')
+        expect(page).to have_content('Pipeline events')
+        expect(page).to have_content('Wiki page events')
       end
 
       scenario 'create webhook' do
@@ -58,8 +58,8 @@ feature 'Integration settings', feature: true do
 
         expect(page).to have_content(url)
         expect(page).to have_content('SSL Verification: enabled')
-        expect(page).to have_content('Push Events')
-        expect(page).to have_content('Tag Push Events')
+        expect(page).to have_content('Push events')
+        expect(page).to have_content('Tag push events')
         expect(page).to have_content('Job events')
       end
 
@@ -76,11 +76,12 @@ feature 'Integration settings', feature: true do
         expect(page).to have_content(url)
       end
 
-      scenario 'test existing webhook' do
+      scenario 'test existing webhook', js: true do
         WebMock.stub_request(:post, hook.url)
         visit integrations_path
 
-        click_link 'Test'
+        find('.hook-test-button.dropdown').click
+        click_link 'Push events'
 
         expect(current_path).to eq(integrations_path)
       end

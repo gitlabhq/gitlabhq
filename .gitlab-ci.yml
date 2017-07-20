@@ -1,10 +1,20 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-phantomjs-2.1-node-7.1-postgresql-9.6"
 
-cache:
+.default-cache: &default-cache
   key: "ruby-233-with-yarn"
   paths:
-  - vendor/ruby
-  - .yarn-cache/
+    - vendor/ruby
+    - .yarn-cache/
+
+.push-cache: &push-cache
+  cache:
+    <<: *default-cache
+    policy: push
+
+.pull-cache: &pull-cache
+  cache:
+    <<: *default-cache
+    policy: pull
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
@@ -27,11 +37,11 @@ before_script:
   - source scripts/prepare_build.sh
 
 stages:
-- build
-- prepare
-- test
-- post-test
-- pages
+  - build
+  - prepare
+  - test
+  - post-test
+  - pages
 
 # Predefined scopes
 .dedicated-runner: &dedicated-runner
@@ -44,10 +54,6 @@ stages:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
     KNAPSACK_S3_BUCKET: "gitlab-ce-cache"
-  cache:
-    key: "knapsack"
-    paths:
-      - knapsack/
   artifacts:
     expire_in: 31d
     paths:
@@ -84,8 +90,9 @@ stages:
     - /(^docs[\/-].*|.*-docs$)/
 
 .rspec-knapsack: &rspec-knapsack
-  stage: test
   <<: *dedicated-runner
+  <<: *pull-cache
+  stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
@@ -115,8 +122,9 @@ stages:
   <<: *except-docs
 
 .spinach-knapsack: &spinach-knapsack
-  stage: test
   <<: *dedicated-runner
+  <<: *pull-cache
+  stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
@@ -163,6 +171,7 @@ build-package:
     USE_BUNDLE_INSTALL: "false"
     EE_PACKAGE: "true"
   stage: build
+  cache: {}
   when: manual
   script:
     - scripts/trigger-build
@@ -176,6 +185,11 @@ knapsack:
   <<: *dedicated-runner
   <<: *except-docs
   stage: prepare
+  cache:
+    key: knapsack
+    paths:
+      - knapsack/
+    policy: pull
   script:
     - mkdir -p knapsack/${CI_PROJECT_NAME}/
     - wget -O $KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${KNAPSACK_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $KNAPSACK_RSPEC_SUITE_REPORT_PATH
@@ -188,6 +202,11 @@ update-knapsack:
   <<: *dedicated-runner
   <<: *only-canonical-masters
   stage: post-test
+  cache:
+    key: knapsack
+    paths:
+      - knapsack/
+    policy: push
   script:
     - retry gem install fog-aws mime-types
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
@@ -200,6 +219,8 @@ setup-test-env:
   <<: *dedicated-runner
   <<: *except-docs
   stage: prepare
+  cache:
+    <<: *default-cache
   script:
     - node --version
     - yarn install --pure-lockfile --cache-folder .yarn-cache
@@ -279,6 +300,7 @@ spinach-mysql 4 5: *spinach-knapsack-mysql
 
 # Static analysis jobs
 .ruby-static-analysis: &ruby-static-analysis
+  <<: *pull-cache
   variables:
     SIMPLECOV: "false"
     SETUP_DB: "false"
@@ -287,6 +309,7 @@ spinach-mysql 4 5: *spinach-knapsack-mysql
   <<: *ruby-static-analysis
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
   stage: test
   script:
     - bundle exec rake $CI_JOB_NAME
@@ -303,9 +326,9 @@ static-analysis:
 # - Check validity of relative links
 # - Make sure cURL examples in API docs use the full switches
 docs lint:
+  <<: *dedicated-runner
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
-  <<: *dedicated-runner
   cache: {}
   dependencies: []
   before_script: []
@@ -328,9 +351,10 @@ downtime_check:
 
 # DB migration, rollback, and seed jobs
 .db-migrate-reset: &db-migrate-reset
-  stage: test
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: test
   script:
     - bundle exec rake db:migrate:reset
 
@@ -343,11 +367,12 @@ db:migrate:reset-mysql:
   <<: *use-mysql
 
 .migration-paths: &migration-paths
-  stage: test
   <<: *dedicated-runner
+  <<: *only-canonical-masters
+  <<: *pull-cache
+  stage: test
   variables:
     SETUP_DB: "false"
-  <<: *only-canonical-masters
   script:
     - git fetch origin v8.14.10-ee
     - git checkout -f FETCH_HEAD
@@ -368,9 +393,10 @@ migration:path-mysql:
   <<: *use-mysql
 
 .db-rollback: &db-rollback
-  stage: test
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: test
   script:
     - bundle exec rake db:rollback STEP=120
     - bundle exec rake db:migrate
@@ -384,9 +410,10 @@ db:rollback-mysql:
   <<: *use-mysql
 
 .db-seed_fu: &db-seed_fu
-  stage: test
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: test
   variables:
     SIZE: "1"
     SETUP_DB: "false"
@@ -411,9 +438,10 @@ db:seed_fu-mysql:
 
 # Frontend-related jobs
 gitlab:assets:compile:
-  stage: test
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: test
   dependencies: []
   variables:
     NODE_ENV: "production"
@@ -431,14 +459,15 @@ gitlab:assets:compile:
     name: webpack-report
     expire_in: 31d
     paths:
-    - webpack-report/
+      - webpack-report/
 
 karma:
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-chrome-59.0-node-7.1-postgresql-9.6"
-  stage: test
   <<: *use-pg
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-chrome-59.0-node-7.1-postgresql-9.6"
+  stage: test
   variables:
     BABEL_ENV: "coverage"
     CHROME_LOG_FILE: "chrome_debug.log"
@@ -456,6 +485,7 @@ karma:
 
 codeclimate:
   <<: *except-docs
+  <<: *pull-cache
   before_script: []
   image: docker:latest
   stage: test
@@ -471,10 +501,11 @@ codeclimate:
     paths: [codeclimate.json]
 
 coverage:
-  stage: post-test
-  services: []
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: post-test
+  services: []
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
@@ -491,6 +522,7 @@ coverage:
 lint:javascript:report:
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
   stage: post-test
   before_script: []
   script:
@@ -503,9 +535,10 @@ lint:javascript:report:
     - eslint-report.html
 
 pages:
+  <<: *dedicated-runner
+  <<: *pull-cache
   before_script: []
   stage: pages
-  <<: *dedicated-runner
   dependencies:
     - coverage
     - karma
@@ -529,6 +562,7 @@ pages:
 # rubygems.org in the future.
 cache gems:
   <<: *dedicated-runner
+  <<: *pull-cache
   only:
     - tags
   variables:
@@ -543,8 +577,9 @@ cache gems:
     - master@gitlab-org/gitlab-ee
 
 gitlab_git_test:
+  <<: *pull-cache
+  <<: *except-docs
   variables:
     SETUP_DB: "false"
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
-  <<: *except-docs

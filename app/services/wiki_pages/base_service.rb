@@ -1,5 +1,6 @@
 module WikiPages
   class BaseService < ::BaseService
+<<<<<<< HEAD
     prepend EE::WikiPages::BaseService
 
     def hook_data(page, action)
@@ -16,10 +17,12 @@ module WikiPages
       hook_data
     end
 
+=======
+>>>>>>> ce/master
     private
 
     def execute_hooks(page, action = 'create')
-      page_data = hook_data(page, action)
+      page_data = Gitlab::DataBuilder::WikiPage.build(page, current_user, action)
       @project.execute_hooks(page_data, :wiki_page_hooks)
       @project.execute_services(page_data, :wiki_page_hooks)
     end
