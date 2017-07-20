@@ -167,7 +167,7 @@ describe "Admin Runners" do
     end
 
     describe 'reload registration token' do
-      let(:page_token) { find('#registration_token code').text }
+      let(:page_token) { find('#registration_token').text }
 
       before do
         click_button 'Reset runners registration token'
