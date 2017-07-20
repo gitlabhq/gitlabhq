@@ -15,7 +15,7 @@ export default class RepoFileButtons {
       mixins: [RepoMiniMixin],
       template: `
       <div id='repo-file-buttons' v-if='isMini' :style='{"border-bottom": editableBorder}'>
-        <a :href='rawFileURL' target='_blank' class='btn btn-default'>Download file</a>
+        <a :href='rawFileURL' target='_blank' class='btn btn-default'>Raw</a>
         <div class="btn-group" role="group" aria-label="File actions">
           <a :href='blameFileUrl' class='btn btn-default'>Blame</a>
           <a :href='historyFileUrl' class='btn btn-default'>History</a>

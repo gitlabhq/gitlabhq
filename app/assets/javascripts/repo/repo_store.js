@@ -55,7 +55,7 @@ const RepoStore = {
 
   toggleRawPreview() {
     this.activeFile.raw = !this.activeFile.raw;
-    this.activeFileLabel = this.activeFile.raw ? 'Preview' : 'Raw';
+    this.activeFileLabel = this.activeFile.raw ?  'Display rendered file' : 'Display source';
   },
 
   setActiveFiles(file) {
@@ -92,7 +92,7 @@ const RepoStore = {
   setActiveToRaw() {
     this.activeFile.raw = false;
     // can't get vue to listen to raw for some reason so this for now.
-    this.activeFileLabel = 'Raw';
+    this.activeFileLabel = 'Display source';
   },
 
   /* eslint-disable no-param-reassign */

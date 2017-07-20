@@ -1,3 +1,4 @@
+import RepoHelper from './repo_helper';
 import RepoStore from './repo_store';
 
 const RepoTab = {
@@ -27,7 +28,7 @@ const RepoTab = {
   },
 
   methods: {
-    tabClicked: RepoStore.setActiveFiles,
+    tabClicked: RepoStore.setActiveFiles.bind(RepoStore),
 
     xClicked(file) {
       if (file.changed) return;
