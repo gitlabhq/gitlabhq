@@ -243,7 +243,7 @@ module IssuablesHelper
 
   def issuables_count_for_state(issuable_type, state, finder: nil)
     finder ||= public_send("#{issuable_type}_finder")
-    cache_key = finder.state_counter_cache_key(state)
+    cache_key = finder.state_counter_cache_key
 
     @counts ||= {}
     @counts[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 2.minutes) do

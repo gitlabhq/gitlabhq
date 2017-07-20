@@ -15,7 +15,7 @@ class GeoRepositorySyncWorker
   end
 
   def perform
-    return unless Gitlab::Geo.secondary_role_enabled?
+    return unless Gitlab::Geo.geo_database_configured?
     return unless Gitlab::Geo.primary_node.present?
 
     logger.info "Started Geo repository sync scheduler"

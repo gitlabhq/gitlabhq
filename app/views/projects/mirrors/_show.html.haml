@@ -36,12 +36,11 @@
         = render "projects/mirrors/instructions"
       .form-group
         = f.label :mirror_user_id, "Mirror user", class: "label-light"
-        = users_select_tag("project[mirror_user_id]", class: 'input-large', selected: @project.mirror_user_id || current_user.id,
-          first_user: true, current_user: true, push_code_to_protected_branches: true)
+        = select_tag('project[mirror_user_id]', options_for_mirror_user, class: "select2 lg", required: true)
         .help-block
           This user will be the author of all events in the activity feed that are the result of an update,
           like new branches being created or new commits being pushed to existing branches.
-          They need to have at least master access to this project.
+          You can only assign yourself to be the mirror user.
       - if @project.builds_enabled?
         = render "shared/mirror_trigger_builds_setting", f: f
       = f.submit 'Save changes', class: 'btn btn-create', name: 'update_remote_mirror'

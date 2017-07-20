@@ -25,6 +25,43 @@ describe Gitlab::Geo, lib: true do
     end
   end
 
+  describe 'primary?' do
+    context 'when current node is a primary node' do
+      before(:each) do
+        primary_node
+      end
+
+      it 'returns true' do
+        expect(described_class.primary?).to be_truthy
+      end
+
+      it 'returns false when GeoNode is disabled' do
+        allow(described_class).to receive(:enabled?) { false }
+
+        expect(described_class.primary?).to be_falsey
+      end
+    end
+  end
+
+  describe 'secondary?' do
+    context 'when current node is a secondary node' do
+      before(:each) do
+        secondary_node
+        allow(described_class).to receive(:current_node) { secondary_node }
+      end
+
+      it 'returns true' do
+        expect(described_class.secondary?).to be_truthy
+      end
+
+      it 'returns false when GeoNode is disabled' do
+        allow(described_class).to receive(:enabled?) { false }
+
+        expect(described_class.secondary?).to be_falsey
+      end
+    end
+  end
+
   describe 'enabled?' do
     context 'when any GeoNode exists' do
       before do
@@ -38,6 +75,24 @@ describe Gitlab::Geo, lib: true do
 
     context 'when no GeoNode exists' do
       it 'returns false' do
+        expect(described_class.enabled?).to be_falsey
+      end
+    end
+
+    context 'when there is a database issue' do
+      it 'returns false when database connection is down' do
+        allow(GeoNode).to receive(:connected?) { false }
+
+        expect(described_class.enabled?).to be_falsey
+      end
+
+      it 'returns false when database schema does not contain required tables' do
+        if Gitlab::Database.mysql?
+          allow(GeoNode).to receive(:exists?).and_raise(Mysql2::Error, "Table 'gitlabhq_test.geo_nodes' doesn't exist: SHOW FULL FIELDS FROM `geo_nodes`")
+        else
+          allow(GeoNode).to receive(:exists?).and_raise(PG::UndefinedTable)
+        end
+
         expect(described_class.enabled?).to be_falsey
       end
     end
@@ -142,8 +197,8 @@ describe Gitlab::Geo, lib: true do
     end
 
     it 'activates cron jobs for primary' do
-      allow(described_class).to receive(:primary_role_enabled?).and_return(true)
-      allow(described_class).to receive(:secondary_role_enabled?).and_return(false)
+      allow(described_class).to receive(:primary?).and_return(true)
+      allow(described_class).to receive(:secondary?).and_return(false)
 
       described_class.configure_cron_jobs!
 
@@ -154,8 +209,8 @@ describe Gitlab::Geo, lib: true do
     end
 
     it 'activates cron jobs for secondary' do
-      allow(described_class).to receive(:primary_role_enabled?).and_return(false)
-      allow(described_class).to receive(:secondary_role_enabled?).and_return(true)
+      allow(described_class).to receive(:primary?).and_return(false)
+      allow(described_class).to receive(:secondary?).and_return(true)
 
       described_class.configure_cron_jobs!
 
@@ -166,8 +221,8 @@ describe Gitlab::Geo, lib: true do
     end
 
     it 'deactivates all jobs when Geo is not active' do
-      allow(described_class).to receive(:primary_role_enabled?).and_return(false)
-      allow(described_class).to receive(:secondary_role_enabled?).and_return(false)
+      allow(described_class).to receive(:primary?).and_return(false)
+      allow(described_class).to receive(:secondary?).and_return(false)
 
       described_class.configure_cron_jobs!
 
@@ -178,14 +233,14 @@ describe Gitlab::Geo, lib: true do
     end
 
     it 'reactivates cron jobs when node turns off Geo' do
-      allow(described_class).to receive(:primary_role_enabled?).and_return(false)
-      allow(described_class).to receive(:secondary_role_enabled?).and_return(true)
+      allow(described_class).to receive(:primary?).and_return(false)
+      allow(described_class).to receive(:secondary?).and_return(true)
 
       described_class.configure_cron_jobs!
       expect(Sidekiq::Cron::Job.find('ldap_test')).not_to be_enabled
 
-      allow(described_class).to receive(:primary_role_enabled?).and_return(false)
-      allow(described_class).to receive(:secondary_role_enabled?).and_return(false)
+      allow(described_class).to receive(:primary?).and_return(false)
+      allow(described_class).to receive(:secondary?).and_return(false)
 
       described_class.configure_cron_jobs!
       expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled

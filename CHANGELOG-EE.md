@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.3.8 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
+
 ## 9.3.7 (2017-07-18)
 
 - No changes.
@@ -72,6 +77,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix: /unassign by default unassigns everyone. Implement /reassign command.
 - Speed up checking for approvers remaining.
 
+## 9.2.8 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
+
 ## 9.2.7 (2017-06-21)
 
 - Geo: fixed Dynamic Backoff strategy that was not being used by workers. !2128
@@ -127,6 +137,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix for XSS in project mirror errors caused by Hamlit filter usage.
 - Feature availability check using feature list AND license addons.
 - Disable mirror workers for Geo secondaries.
+
+## 9.1.8 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
 
 ## 9.1.7 (2017-06-07)
 
@@ -206,6 +221,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove N+1 queries for Groups::AnalyticsController.
 - Show user cohorts data when usage ping is enabled.
 - Visualise Canary Deployments.
+
+## 9.0.11 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
 
 ## 9.0.10 (2017-06-07)
 
@@ -298,6 +318,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Update Elasticsearch to 5.1.
 - [Elasticsearch] More efficient search.
 - Get Geo secondaries nodes statuses over AJAX.
+
+## 8.17.7 (2017-07-19)
+
+- Prevent mirror user to be assigned to users other than the current one.
 
 ## 8.17.6 (2017-05-05)
 
