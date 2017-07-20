@@ -21,8 +21,8 @@ module Geo
 
     def uploader_klass
       "Gitlab::Geo::#{service_klass_name}Uploader".constantize
-    rescue NameError
-      log("Unknown file type: #{object_type}")
+    rescue NameError => e
+      log_error('Unknown file type', e)
       raise
     end
   end

@@ -15,8 +15,8 @@ module Geo
     def downloader
       klass = "Gitlab::Geo::#{service_klass_name}Downloader".constantize
       klass.new(object_type, object_db_id)
-    rescue NameError
-      log("Unknown file type: #{object_type}")
+    rescue NameError => e
+      log_error('Unknown file type', e)
       raise
     end
 
