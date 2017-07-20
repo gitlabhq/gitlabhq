@@ -7,14 +7,16 @@ describe Projects::IssuesController do
 
   describe "GET #index" do
     context 'external issue tracker' do
+      let!(:service) do
+        create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker', project_url: 'http://test.com')
+      end
+
       it 'redirects to the external issue tracker' do
-        external = double(project_path: 'https://example.com/project')
-        allow(project).to receive(:external_issue_tracker).and_return(external)
         controller.instance_variable_set(:@project, project)
 
         get :index, namespace_id: project.namespace, project_id: project
 
-        expect(response).to redirect_to('https://example.com/project')
+        expect(response).to redirect_to(service.issue_tracker_path)
       end
     end
 
@@ -139,19 +141,21 @@ describe Projects::IssuesController do
     end
 
     context 'external issue tracker' do
+      let!(:service) do
+        create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker', new_issue_url: 'http://test.com')
+      end
+
       before do
         sign_in(user)
         project.team << [user, :developer]
       end
 
       it 'redirects to the external issue tracker' do
-        external = double(new_issue_path: 'https://example.com/issues/new')
-        allow(project).to receive(:external_issue_tracker).and_return(external)
         controller.instance_variable_set(:@project, project)
 
         get :new, namespace_id: project.namespace, project_id: project
 
-        expect(response).to redirect_to('https://example.com/issues/new')
+        expect(response).to redirect_to('http://test.com')
       end
     end
   end

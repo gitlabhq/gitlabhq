@@ -1,6 +1,6 @@
 module Gitlab
   module GitalyClient
-    class Commit
+    class CommitService
       # The ID of empty tree.
       # See http://stackoverflow.com/a/40884093/1856239 and https://github.com/git/git/blob/3ad8b5bf26362ac67c9020bf8c30eee54a84f56d/cache.h#L1011-L1012
       EMPTY_TREE_ID = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'.freeze
@@ -17,20 +17,20 @@ module Gitlab
           child_id: child_id
         )
 
-        GitalyClient.call(@repository.storage, :commit, :commit_is_ancestor, request).value
+        GitalyClient.call(@repository.storage, :commit_service, :commit_is_ancestor, request).value
       end
 
       def diff_from_parent(commit, options = {})
         request_params = commit_diff_request_params(commit, options)
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
         request = Gitaly::CommitDiffRequest.new(request_params)
-        response = GitalyClient.call(@repository.storage, :diff, :commit_diff, request)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request)
         Gitlab::Git::DiffCollection.new(GitalyClient::DiffStitcher.new(response), options)
       end
 
       def commit_deltas(commit)
         request = Gitaly::CommitDeltaRequest.new(commit_diff_request_params(commit))
-        response = GitalyClient.call(@repository.storage, :diff, :commit_delta, request)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request)
         response.flat_map do |msg|
           msg.deltas.map { |d| Gitlab::Git::Diff.new(d) }
         end
@@ -44,7 +44,7 @@ module Gitlab
           limit: limit.to_i
         )
 
-        response = GitalyClient.call(@repository.storage, :commit, :tree_entry, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :tree_entry, request)
         entry = response.first
         return unless entry.oid.present?
 

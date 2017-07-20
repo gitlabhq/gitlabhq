@@ -12,7 +12,7 @@ describe GroupsHelper do
       group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
       expect(group_icon(group.path).to_s)
-        .to match("/uploads/system/group/avatar/#{group.id}/banana_sample.gif")
+        .to match("/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif")
     end
 
     it 'gives default avatar_icon when no avatar is present' do
@@ -31,7 +31,7 @@ describe GroupsHelper do
       it 'returns an url for the avatar pointing to the primary node base url' do
         group.avatar = fixture_file_upload(avatar_file_path)
         group.save!
-        expect(group_icon(group.path).to_s).to match("#{geo_url}/uploads/system/group/avatar/#{group.id}/banana_sample.gif")
+        expect(group_icon(group.path).to_s).to match("#{geo_url}/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif")
       end
 
       it 'gives default avatar_icon when no avatar is present' do

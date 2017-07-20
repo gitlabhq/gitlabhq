@@ -80,16 +80,10 @@ module Gitlab
       end
 
       # Returns an Array of Branches
-      def branches(filter: nil, sort_by: nil)
-        branches = rugged.branches.each(filter).map do |rugged_ref|
-          begin
-            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
-          rescue Rugged::ReferenceError
-            # Omit invalid branch
-          end
-        end.compact
-
-        sort_branches(branches, sort_by)
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/389
+      def branches(sort_by: nil)
+        branches_filter(sort_by: sort_by)
       end
 
       def reload_rugged
@@ -107,7 +101,10 @@ module Gitlab
         reload_rugged if force_reload
 
         rugged_ref = rugged.branches[name]
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target) if rugged_ref
+        if rugged_ref
+          target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+          Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+        end
       end
 
       def local_branches(sort_by: nil)
@@ -115,7 +112,7 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
-            branches(filter: :local, sort_by: sort_by)
+            branches_filter(filter: :local, sort_by: sort_by)
           end
         end
       end
@@ -162,6 +159,8 @@ module Gitlab
       end
 
       # Returns an Array of Tags
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
         rugged.references.each("refs/tags/*").map do |ref|
           message = nil
@@ -174,7 +173,8 @@ module Gitlab
             end
           end
 
-          Gitlab::Git::Tag.new(self, ref.name, ref.target, message)
+          target_commit = Gitlab::Git::Commit.find(self, ref.target)
+          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
         end.sort_by(&:name)
       end
 
@@ -202,13 +202,6 @@ module Gitlab
       # Returns an Array of branch and tag names
       def ref_names
         branch_names + tag_names
-      end
-
-      # Deprecated. Will be removed in 5.2
-      def heads
-        rugged.references.each("refs/heads/*").map do |head|
-          Gitlab::Git::Ref.new(self, head.name, head.target)
-        end.sort_by(&:name)
       end
 
       def has_commits?
@@ -295,28 +288,6 @@ module Gitlab
       def size
         size = popen(%w(du -sk), path).first.strip.to_i
         (size.to_f / 1024).round(2)
-      end
-
-      # Returns an array of BlobSnippets for files at the specified +ref+ that
-      # contain the +query+ string.
-      def search_files(query, ref = nil)
-        greps = []
-        ref ||= root_ref
-
-        populated_index(ref).each do |entry|
-          # Discard submodules
-          next if submodule?(entry)
-
-          blob = Gitlab::Git::Blob.raw(self, entry[:oid])
-
-          # Skip binary files
-          next if blob.data.encoding == Encoding::ASCII_8BIT
-
-          blob.load_all_data!(self)
-          greps += build_greps(blob.data, query, ref, entry[:path])
-        end
-
-        greps
       end
 
       # Use the Rugged Walker API to build an array of commits.
@@ -707,7 +678,8 @@ module Gitlab
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
         rugged_ref = rugged.branches.create(ref, start_point)
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
+        target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
         raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
         raise InvalidRef.new("Invalid reference #{start_point}")
@@ -836,14 +808,28 @@ module Gitlab
       end
 
       def gitaly_ref_client
-        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
+        @gitaly_ref_client ||= Gitlab::GitalyClient::RefService.new(self)
       end
 
       def gitaly_commit_client
-        @gitaly_commit_client ||= Gitlab::GitalyClient::Commit.new(self)
+        @gitaly_commit_client ||= Gitlab::GitalyClient::CommitService.new(self)
       end
 
       private
+
+      # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
+      def branches_filter(filter: nil, sort_by: nil)
+        branches = rugged.branches.each(filter).map do |rugged_ref|
+          begin
+            target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+          rescue Rugged::ReferenceError
+            # Omit invalid branch
+          end
+        end.compact
+
+        sort_branches(branches, sort_by)
+      end
 
       def raw_log(options)
         default_options = {
@@ -1097,73 +1083,6 @@ module Gitlab
         index = rugged.index
         index.read_tree(commit.tree)
         index
-      end
-
-      # Return an array of BlobSnippets for lines in +file_contents+ that match
-      # +query+
-      def build_greps(file_contents, query, ref, filename)
-        # The file_contents string is potentially huge so we make sure to loop
-        # through it one line at a time. This gives Ruby the chance to GC lines
-        # we are not interested in.
-        #
-        # We need to do a little extra work because we are not looking for just
-        # the lines that matches the query, but also for the context
-        # (surrounding lines). We will use Enumerable#each_cons to efficiently
-        # loop through the lines while keeping surrounding lines on hand.
-        #
-        # First, we turn "foo\nbar\nbaz" into
-        # [
-        #  [nil, -3], [nil, -2], [nil, -1],
-        #  ['foo', 0], ['bar', 1], ['baz', 3],
-        #  [nil, 4], [nil, 5], [nil, 6]
-        # ]
-        lines_with_index = Enumerator.new do |yielder|
-          # Yield fake 'before' lines for the first line of file_contents
-          (-SEARCH_CONTEXT_LINES..-1).each do |i|
-            yielder.yield [nil, i]
-          end
-
-          # Yield the actual file contents
-          count = 0
-          file_contents.each_line do |line|
-            line.chomp!
-            yielder.yield [line, count]
-            count += 1
-          end
-
-          # Yield fake 'after' lines for the last line of file_contents
-          (count + 1..count + SEARCH_CONTEXT_LINES).each do |i|
-            yielder.yield [nil, i]
-          end
-        end
-
-        greps = []
-
-        # Loop through consecutive blocks of lines with indexes
-        lines_with_index.each_cons(2 * SEARCH_CONTEXT_LINES + 1) do |line_block|
-          # Get the 'middle' line and index from the block
-          line, _ = line_block[SEARCH_CONTEXT_LINES]
-
-          next unless line && line.match(/#{Regexp.escape(query)}/i)
-
-          # Yay, 'line' contains a match!
-          # Get an array with just the context lines (no indexes)
-          match_with_context = line_block.map(&:first)
-          # Remove 'nil' lines in case we are close to the first or last line
-          match_with_context.compact!
-
-          # Get the line number (1-indexed) of the first context line
-          first_context_line_number = line_block[0][1] + 1
-
-          greps << Gitlab::Git::BlobSnippet.new(
-            ref,
-            match_with_context,
-            first_context_line_number,
-            filename
-          )
-        end
-
-        greps
       end
 
       # Return the Rugged patches for the diff between +from+ and +to+.
