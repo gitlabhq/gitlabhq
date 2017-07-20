@@ -409,9 +409,10 @@ describe CommitStatus, :models do
   end
 
   describe '#stage_entity' do
-    let!(:stage) do
-      create(:ci_stage_entity, pipeline: commit_status.pipeline,
-                               name: commit_status.stage)
+    let(:stage) { create(:ci_stage_entity) }
+
+    let(:commit_status) do
+      create(:commit_status, stage_id: stage.id)
     end
 
     it 'has a correct association with persisted stage' do

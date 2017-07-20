@@ -43,9 +43,7 @@ class CommitStatus < ActiveRecord::Base
   # `ci_builds.stage` attribute and migrate `ci_builds.stage_id` reference in
   # one of upcoming releases.
   #
-  def stage_entity
-    Ci::Stage.find_by(pipeline: pipeline, name: stage)
-  end
+  belongs_to :stage_entity, foreign_key: :stage_id, class_name: 'Ci::Stage'
 
   state_machine :status do
     event :enqueue do
