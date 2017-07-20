@@ -544,8 +544,8 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
-    t.string "fingerprint"
-    t.string "primary_keyid"
+    t.binary "primary_keyid"
+    t.binary "fingerprint"
     t.text "key"
   end
 
@@ -558,8 +558,8 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.integer "project_id"
     t.integer "gpg_key_id"
     t.boolean "valid_signature"
-    t.string "commit_sha"
-    t.string "gpg_key_primary_keyid"
+    t.binary "commit_sha"
+    t.binary "gpg_key_primary_keyid"
     t.string "gpg_key_user_name"
     t.string "gpg_key_user_email"
   end

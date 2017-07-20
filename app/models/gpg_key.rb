@@ -1,6 +1,11 @@
 class GpgKey < ActiveRecord::Base
   KEY_PREFIX = '-----BEGIN PGP PUBLIC KEY BLOCK-----'.freeze
 
+  include ShaAttribute
+
+  sha_attribute :primary_keyid
+  sha_attribute :fingerprint
+
   belongs_to :user
   has_many :gpg_signatures, dependent: :nullify
 

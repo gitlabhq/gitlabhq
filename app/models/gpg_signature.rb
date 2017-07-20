@@ -1,4 +1,9 @@
 class GpgSignature < ActiveRecord::Base
+  include ShaAttribute
+
+  sha_attribute :commit_sha
+  sha_attribute :gpg_key_primary_keyid
+
   belongs_to :project
   belongs_to :gpg_key
 

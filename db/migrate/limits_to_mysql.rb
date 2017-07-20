@@ -8,5 +8,9 @@ class LimitsToMysql < ActiveRecord::Migration
     change_column :snippets, :content, :text, limit: 2147483647
     change_column :notes, :st_diff, :text, limit: 2147483647
     change_column :events, :data, :text, limit: 2147483647
+    change_column :gpg_keys, :primary_keyid, :binary, limit: 20
+    change_column :gpg_keys, :fingerprint, :binary, limit: 20
+    change_column :gpg_signatures, :commit_sha, :binary, limit: 20
+    change_column :gpg_signatures, :gpg_key_primary_keyid, :binary, limit: 20
   end
 end

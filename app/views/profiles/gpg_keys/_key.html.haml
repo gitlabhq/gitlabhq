@@ -6,7 +6,7 @@
       = render partial: 'email_with_badge', locals: { email: email, verified: verified }
 
     .description
-      %code= key.fingerprint
+      %code= key.fingerprint.upcase
   .pull-right
     %span.key-created-at
       created #{time_ago_with_tooltip(key.created_at)}

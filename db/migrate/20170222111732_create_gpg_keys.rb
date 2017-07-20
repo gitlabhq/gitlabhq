@@ -7,8 +7,8 @@ class CreateGpgKeys < ActiveRecord::Migration
 
       t.references :user, index: true, foreign_key: true
 
-      t.string :fingerprint
-      t.string :primary_keyid
+      t.binary :primary_keyid, limit: Gitlab::Database.mysql? ? 20 : nil
+      t.binary :fingerprint, limit: Gitlab::Database.mysql? ? 20 : nil
 
       t.text :key
 
