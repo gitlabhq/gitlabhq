@@ -71,9 +71,10 @@ The next time a pipeline is scheduled, your credentials will be used.
 
 >**Note:**
 When the owner of the schedule doesn't have the ability to create pipelines
-anymore, due to e.g., being blocked or removed from the project, the schedule
-is deactivated. Another user can take ownership and activate it, so the
-schedule can be run again.
+anymore, due to e.g., being blocked or removed from the project, or lacking
+the permission to run on protected branches or tags. When this happened, the
+schedule is deactivated. Another user can take ownership and activate it, so
+the schedule can be run again.
 
 ## Advanced admin configuration
 
