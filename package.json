@@ -12,6 +12,7 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
+    "anser": "^1.4.1",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.2.1",
     "babel-loader": "^6.2.10",

@@ -1,6 +1,7 @@
 
 <script>
   import Visibility from 'visibilityjs';
+  import Anser from 'anser';
   import Poll from '../../lib/utils/poll';
   import PipelineStore from '../stores/pipeline_store';
   import PipelineService from '../services/pipeline_service';
@@ -152,7 +153,14 @@
         this.service.getJobTrace(job.status.details_path)
           //.then(response => response.json())
           .then((resp) => {
-            this.jobLog = resp.bodyText;
+
+            const jobLog = resp.bodyText.split('\n');
+
+            this.jobLog = jobLog.map((line) => {
+              return Anser.ansiToHtml(line, { use_classes: true });
+            });
+            // \n
+
           });
 
       },
@@ -167,6 +175,10 @@
 
       getJobTabTitle() {
         return `<a> status icon - ${this.jobTab.name}</a>`;
+      },
+
+      getLineLink(number) {
+        return `#L${number}`
       }
     },
   };
@@ -215,7 +227,19 @@
           v-if="jobTab"
           :title="jobTab.name"
           :is-closable="true">
-          {{jobLog}}
+
+          <div class="job-log-container" v-if="jobLog">
+            <ul class="trace-log">
+              <li class="line-container" v-for="(line, index) in jobLog">
+                <ul>
+                  <li class="number"><a :href="getLineLink(index)">{{index}}</a></li>
+                  <li class="code" v-html="line"></li>
+                </ul>
+              </li>
+
+            </ul>
+
+          </div>
         </tab>
       </tabs>
 

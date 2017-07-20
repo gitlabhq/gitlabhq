@@ -921,3 +921,36 @@
     }
   }
 }
+
+
+.job-log-container {
+  background: $black;
+
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  .number,
+  .code {
+    color: $white-light;
+    font-family: $monospace_font;
+    font-size: 85%;
+    display: inline;
+  }
+
+  .number {
+    margin-right: 10px;
+    a {
+      color: $white-light;
+    }
+  }
+
+  .ansi-yellow-fg {
+    color: $tanuki-yellow;
+  }
+}
