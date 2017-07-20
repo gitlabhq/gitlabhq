@@ -30,7 +30,7 @@ class NotificationRecipientService
         raise 'abstract'
       end
 
-      def build(*)
+      def target
         raise 'abstract'
       end
 
@@ -44,7 +44,7 @@ class NotificationRecipientService
 
       # Ensure that if we modify this array, we aren't modifying the memoised
       # participants on the target.
-      def participants(target, user)
+      def participants(user)
         return unless target.respond_to?(:participants)
 
         target.participants(user).dup
@@ -92,7 +92,7 @@ class NotificationRecipientService
         reject_users(users, :mention)
       end
 
-      def add_subscribed_users(recipients, target)
+      def add_subscribed_users(recipients)
         return recipients unless target.respond_to? :subscribers
 
         recipients + target.subscribers(project)
@@ -184,7 +184,7 @@ class NotificationRecipientService
         end
       end
 
-      def reject_unsubscribed_users(recipients, target)
+      def reject_unsubscribed_users(recipients)
         return recipients unless target.respond_to? :subscriptions
 
         recipients.reject do |user|
@@ -193,7 +193,7 @@ class NotificationRecipientService
         end
       end
 
-      def reject_users_without_access(recipients, target)
+      def reject_users_without_access(recipients)
         recipients = recipients.select { |u| u.can?(:receive_notifications) }
 
         ability = case target
@@ -210,7 +210,7 @@ class NotificationRecipientService
         end
       end
 
-      def add_labels_subscribers(recipients, target, labels: nil)
+      def add_labels_subscribers(recipients, labels: nil)
         return recipients unless target.respond_to? :labels
 
         (labels || target.labels).each do |label|
@@ -246,7 +246,7 @@ class NotificationRecipientService
       def build
         custom_action = build_custom_key(action, target)
 
-        recipients = participants(target, current_user)
+        recipients = participants(current_user)
         recipients = add_project_watchers(recipients)
         recipients = add_custom_notifications(recipients, custom_action)
         recipients = reject_mention_users(recipients)
@@ -265,14 +265,14 @@ class NotificationRecipientService
         end
 
         recipients = reject_muted_users(recipients)
-        recipients = add_subscribed_users(recipients, target)
+        recipients = add_subscribed_users(recipients)
 
         if [:new_issue, :new_merge_request].include?(custom_action)
-          recipients = add_labels_subscribers(recipients, target)
+          recipients = add_labels_subscribers(recipients)
         end
 
-        recipients = reject_unsubscribed_users(recipients, target)
-        recipients = reject_users_without_access(recipients, target)
+        recipients = reject_unsubscribed_users(recipients)
+        recipients = reject_users_without_access(recipients)
 
         recipients.delete(current_user) if skip_current_user && !current_user.notified_of_own_activity?
 
@@ -311,7 +311,7 @@ class NotificationRecipientService
 
         return [] if (notification_setting.watch? || notification_setting.participating?) && NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
 
-        reject_users_without_access([current_user], target)
+        reject_users_without_access([current_user])
       end
     end
 
@@ -328,9 +328,9 @@ class NotificationRecipientService
       end
 
       def build
-        recipients = add_labels_subscribers([], target, labels: labels)
-        recipients = reject_unsubscribed_users(recipients, target)
-        recipients = reject_users_without_access(recipients, target)
+        recipients = add_labels_subscribers([], labels: labels)
+        recipients = reject_unsubscribed_users(recipients)
+        recipients = reject_users_without_access(recipients)
         recipients.delete(current_user) unless current_user.notified_of_own_activity?
         recipients.uniq
       end
@@ -356,7 +356,7 @@ class NotificationRecipientService
         mentioned_users = note.mentioned_users.select { |user| user.can?(ability, subject) }
 
         # Add all users participating in the thread (author, assignee, comment authors)
-        recipients = participants(target, note.author) || mentioned_users
+        recipients = participants(note.author) || mentioned_users
 
         unless note.for_personal_snippet?
           # Merge project watchers
@@ -372,9 +372,9 @@ class NotificationRecipientService
 
         recipients = reject_muted_users(recipients)
 
-        recipients = add_subscribed_users(recipients, note.noteable)
-        recipients = reject_unsubscribed_users(recipients, note.noteable)
-        recipients = reject_users_without_access(recipients, note.noteable)
+        recipients = add_subscribed_users(recipients)
+        recipients = reject_unsubscribed_users(recipients)
+        recipients = reject_users_without_access(recipients)
 
         recipients.delete(note.author) unless note.author.notified_of_own_activity?
         recipients.uniq
