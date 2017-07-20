@@ -5,12 +5,12 @@ export default class ProtectedBranchAccessDropdown {
   }
 
   initDropdown() {
-    const { onSelect } = this.options;
-    this.options.$dropdown.glDropdown({
-      data: this.options.data,
+    const { $dropdown, data, onSelect } = this.options;
+    $dropdown.glDropdown({
+      data,
       selectable: true,
-      inputId: this.options.$dropdown.data('input-id'),
-      fieldName: this.options.$dropdown.data('field-name'),
+      inputId: $dropdown.data('input-id'),
+      fieldName: $dropdown.data('field-name'),
       toggleLabel(item, $el) {
         if ($el.is('.is-active')) {
           return item.text;
