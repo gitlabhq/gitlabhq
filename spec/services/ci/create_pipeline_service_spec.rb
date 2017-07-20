@@ -323,7 +323,7 @@ describe Ci::CreatePipelineService, :services do
 
     context 'when builds with auto-retries are configured' do
       before do
-        config = YAML.dump(rspec: { script: 'rspec', retry: 3 })
+        config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
         stub_ci_pipeline_yaml_file(config)
       end
 
@@ -331,7 +331,7 @@ describe Ci::CreatePipelineService, :services do
         pipeline = execute_service
 
         expect(pipeline).to be_persisted
-        expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 3
+        expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
       end
     end
   end
