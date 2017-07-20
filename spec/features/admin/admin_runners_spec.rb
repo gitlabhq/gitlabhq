@@ -163,11 +163,11 @@ describe "Admin Runners" do
     end
 
     it 'has a registration token' do
-      expect(page.find('.help-callout li:nth-of-type(3)')).to have_content(token)
+      expect(page.find('#registration_token')).to have_content(token)
     end
 
     describe 'reload registration token' do
-      let(:page_token) { find('.help-callout li:nth-of-type(3) code').text }
+      let(:page_token) { find('#registration_token code').text }
 
       before do
         click_button 'Reset runners registration token'
