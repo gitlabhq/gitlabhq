@@ -1,16 +1,16 @@
-# Андрей Витюк <andruwa13@gmail.com>, 2017. #zanata
 # Huang Tao <htve@outlook.com>, 2017. #zanata
+# Андрей Витюк <andruwa13@gmail.com>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-28 13:32+0200\n"
+"POT-Creation-Date: 2017-07-05 08:50-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-07-12 09:05-0400\n"
-"Last-Translator: Андрей Витюк <andruwa13@gmail.com>\n"
 "Language-Team: Ukrainian (https://translate.zanata.org/project/view/GitLab)\n"
+"PO-Revision-Date: 2017-07-14 01:22-0400\n"
+"Last-Translator: Huang Tao <htve@outlook.com>\n"
 "Language: uk\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -654,6 +654,12 @@ msgstr "Всі"
 msgid "PipelineSchedules|Inactive"
 msgstr "Неактивні"
 
+msgid "PipelineSchedules|Input variable key"
+msgstr "Введіть ім'я змінної"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "Вхідні значення змінних"
+
 msgid "PipelineSchedules|Next Run"
 msgstr "Наступний запуск"
 
@@ -663,11 +669,17 @@ msgstr "Немає"
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr "Задайте короткий опис для цього Конвеєру"
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr "Видалити змінні"
+
 msgid "PipelineSchedules|Take ownership"
 msgstr "Стати власником"
 
 msgid "PipelineSchedules|Target"
 msgstr "Ціль"
+
+msgid "PipelineSchedules|Variables"
+msgstr "Змінні"
 
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "Власні"
@@ -1139,6 +1151,15 @@ msgstr "Ми не маємо достатньо даних для показу �
 
 msgid "Withdraw Access Request"
 msgstr "Скасувати запит доступу"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr ""
+"Ви хочете видалити %{group_name}.\n"
+"Видалені групи НЕ МОЖНА буду відновити!\n"
+"Ви АБСОЛЮТНО впевнені?"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
