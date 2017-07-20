@@ -57,7 +57,6 @@ export default class ProtectedBranchEdit {
         },
       },
       error() {
-        $.scrollTo(0);
         new Flash('Failed to update branch!', null, $('.js-protected-branches-list'));
       },
     }).always(() => {
