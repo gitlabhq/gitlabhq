@@ -12,6 +12,6 @@ class BlobEntity < Grape::Entity
   end
 
   expose :url do |blob|
-    namespace_project_blob_path(request.project.namespace, request.project, File.join(request.ref, blob.path))
+    project_blob_path(request.project, File.join(request.ref, blob.path))
   end
 end

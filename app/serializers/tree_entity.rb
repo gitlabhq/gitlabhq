@@ -12,6 +12,6 @@ class TreeEntity < Grape::Entity
   end
 
   expose :url do |tree|
-    namespace_project_tree_path(request.project.namespace, request.project, File.join(request.ref, tree.path))
+    project_tree_path(request.project, File.join(request.ref, tree.path))
   end
 end
