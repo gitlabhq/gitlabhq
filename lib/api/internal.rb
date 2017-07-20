@@ -48,7 +48,8 @@ module API
           status: true,
           gl_repository: gl_repository,
           repository_path: repository_path,
-          gitaly: gitaly_payload(params[:action])
+          gitaly: gitaly_payload(params[:action]),
+          geo_node: actor.is_a?(GeoNodeKey)
         }
       end
 
