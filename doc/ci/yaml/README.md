@@ -1145,7 +1145,7 @@ case of a failure.
 When a job fails, and has `retry` configured it is going to be processed again
 up to the amount of times specified by the `retry` keyword.
 
-If `retry` is set to 3, and a job succeeds in a second run, it won't be retried
+If `retry` is set to 2, and a job succeeds in a second run (first retry), it won't be retried
 again. `retry` value has to be a positive integer, equal or larger than 0, but
 lower or equal to 2 (two retries maximum, three runs in total).
 
@@ -1154,7 +1154,7 @@ A simple example:
 ```yaml
 test:
   script: rspec
-  retry: 3
+  retry: 2
 ```
 
 ## Git Strategy

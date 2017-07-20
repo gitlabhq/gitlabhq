@@ -826,10 +826,10 @@ describe Ci::Build, :models do
 
     describe '#retries_max' do
       context 'when max retries value is defined' do
-        subject { create(:ci_build, options: { retry: 3 }) }
+        subject { create(:ci_build, options: { retry: 1 }) }
 
         it 'returns a number of configured max retries' do
-          expect(subject.retries_max).to eq 3
+          expect(subject.retries_max).to eq 1
         end
       end
 
