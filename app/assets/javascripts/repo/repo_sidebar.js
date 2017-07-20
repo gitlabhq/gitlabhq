@@ -2,10 +2,10 @@ import Vue from 'vue';
 import Service from './repo_service';
 import Helper from './repo_helper';
 import Store from './repo_store';
-import RepoPreviousDirectory from './repo_prev_directory';
-import RepoFileOptions from './repo_file_options';
-import RepoFile from './repo_file';
-import RepoLoadingFile from './repo_loading_file';
+import RepoPreviousDirectory from './repo_prev_directory.vue';
+import RepoFileOptions from './repo_file_options.vue';
+import RepoFile from './repo_file.vue';
+import RepoLoadingFile from './repo_loading_file.vue';
 import RepoMiniMixin from './repo_mini_mixin';
 
 export default class RepoSidebar {

@@ -1,11 +1,5 @@
+<script>
 const RepoPreviousDirectory = {
-  template: `
-  <tr>
-    <td colspan='3'>
-      <a :href='prevUrl' @click.prevent='linkClicked(prevUrl)'>..</a>
-    </td>
-  </tr>
-  `,
   props: {
     name: 'repo-previous-directory',
     prevUrl: String,
@@ -17,4 +11,14 @@ const RepoPreviousDirectory = {
     },
   },
 };
+
 export default RepoPreviousDirectory;
+</script>
+
+<template>
+<tr>
+  <td colspan="3">
+    <a :href="prevUrl" @click.prevent="linkClicked(prevUrl)">..</a>
+  </td>
+</tr>
+</template>

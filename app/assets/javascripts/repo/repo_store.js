@@ -55,7 +55,7 @@ const RepoStore = {
 
   toggleRawPreview() {
     this.activeFile.raw = !this.activeFile.raw;
-    this.activeFileLabel = this.activeFile.raw ?  'Display rendered file' : 'Display source';
+    this.activeFileLabel = this.activeFile.raw ? 'Display rendered file' : 'Display source';
   },
 
   setActiveFiles(file) {

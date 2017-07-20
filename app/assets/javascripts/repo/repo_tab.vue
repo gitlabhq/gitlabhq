@@ -1,16 +1,7 @@
-import RepoHelper from './repo_helper';
+<script>
 import RepoStore from './repo_store';
 
 const RepoTab = {
-  template: `
-  <li>
-    <a href='#' @click.prevent='xClicked(tab)' v-if='!tab.loading'>
-      <i class='fa' :class="changedClass"></i>
-    </a>
-    <a href='#' v-if='!tab.loading' :title='tab.url' @click.prevent='tabClicked(tab)'>{{tab.name}}</a>
-    <i v-if='tab.loading' class='fa fa-spinner fa-spin'></i>
-  </li>
-  `,
   props: {
     name: 'repo-tab',
     tab: Object,
@@ -36,4 +27,18 @@ const RepoTab = {
     },
   },
 };
+
 export default RepoTab;
+</script>
+
+<template>
+<li>
+  <a href="#" @click.prevent="xClicked(tab)" v-if="!tab.loading">
+    <i class="fa" :class="changedClass"></i>
+  </a>
+
+  <a href="#" v-if="!tab.loading" :title="tab.url" @click.prevent="tabClicked(tab)">{{tab.name}}</a>
+
+  <i v-if="tab.loading" class="fa fa-spinner fa-spin"></i>
+</li>
+</template>
