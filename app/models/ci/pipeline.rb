@@ -15,6 +15,7 @@ module Ci
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
+    has_many :variables, class_name: 'Ci::PipelineVariable'
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.

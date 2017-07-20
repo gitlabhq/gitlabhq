@@ -1,3 +1,5 @@
+# This class is deprecated because we're closing trigger_requests.
+# New class is PipelineTriggerService (app/services/ci/pipeline_trigger_service.rb).
 module Ci
   class CreateTriggerRequestService
     def execute(project, trigger, ref, variables = nil)

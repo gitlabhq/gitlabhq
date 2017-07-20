@@ -2,7 +2,7 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
       @pipeline = Ci::Pipeline.new(
         source: source,
         project: project,
@@ -47,8 +47,16 @@ module Ci
         return error('No stages / jobs for this pipeline.')
       end
 
+      _create_pipeline(source, &block)
+    end
+
+    private
+
+    def _create_pipeline(source)
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
+
+        yield(pipeline) if block_given?
 
         Ci::CreatePipelineStagesService
           .new(project, current_user)
@@ -61,8 +69,6 @@ module Ci
 
       pipeline.tap(&:process!)
     end
-
-    private
 
     def update_merge_requests_head_pipeline
       return unless pipeline.latest?
