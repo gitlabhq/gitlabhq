@@ -212,8 +212,9 @@ setup-test-env:
   <<: *use-pg
   <<: *dedicated-runner
   <<: *except-docs
-  <<: *push-cache
   stage: prepare
+  cache:
+    <<: *default-cache
   script:
     - node --version
     - yarn install --pure-lockfile --cache-folder .yarn-cache
