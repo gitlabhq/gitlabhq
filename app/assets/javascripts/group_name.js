@@ -5,12 +5,15 @@ export default class GroupName {
   constructor() {
     this.titleContainer = document.querySelector('.js-title-container');
     this.title = this.titleContainer.querySelector('.title');
-    this.titleWidth = this.title.offsetWidth;
-    this.groupTitle = this.titleContainer.querySelector('.group-title');
-    this.groups = this.titleContainer.querySelectorAll('.group-path');
-    this.toggle = null;
-    this.isHidden = false;
-    this.init();
+
+    if (this.title) {
+      this.titleWidth = this.title.offsetWidth;
+      this.groupTitle = this.titleContainer.querySelector('.group-title');
+      this.groups = this.titleContainer.querySelectorAll('.group-path');
+      this.toggle = null;
+      this.isHidden = false;
+      this.init();
+    }
   }
 
   init() {

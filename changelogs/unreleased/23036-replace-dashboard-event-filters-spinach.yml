@@ -1,0 +1,4 @@
+---
+title: Replaces dashboard/event_filters.feature spinach with rspec
+merge_request: 12651
+author: Alexander Randa (@randaalex)

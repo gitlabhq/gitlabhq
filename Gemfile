@@ -37,7 +37,7 @@ gem 'omniauth-saml', '~> 1.7.0'
 gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.2.0'
 gem 'omniauth_crowd', '~> 2.2.0'
-gem 'omniauth-authentiq', '~> 0.3.0'
+gem 'omniauth-authentiq', '~> 0.3.1'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -163,6 +163,9 @@ gem 'rainbow', '~> 2.2'
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
 
+# Linear-time regex library for untrusted regular expressions
+gem 're2', '~> 1.0.0'
+
 # Misc
 
 gem 'version_sorter', '~> 2.1.0'
@@ -268,7 +271,7 @@ gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
 gem 'peek-host', '~> 1.0.0'
 gem 'peek-mysql2', '~> 1.1.0', group: :mysql
-gem 'peek-performance_bar', '~> 1.2.1'
+gem 'peek-performance_bar', '~> 1.3.0'
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
@@ -281,7 +284,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta5'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta9'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -390,3 +393,6 @@ gem 'toml-rb', '~> 0.3.15', require: false
 # Feature toggles
 gem 'flipper', '~> 0.10.2'
 gem 'flipper-active_record', '~> 0.10.2'
+
+# Structured logging
+gem 'lograge', '~> 0.5'

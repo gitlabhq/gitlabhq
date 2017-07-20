@@ -80,6 +80,45 @@ describe Gitlab::Ci::Config::Entry::Job do
           expect(entry.errors).to include "job script can't be blank"
         end
       end
+
+      context 'when retry value is not correct' do
+        context 'when it is not a numeric value' do
+          let(:config) { { retry: true } }
+
+          it 'returns error about invalid type' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job retry is not a number'
+          end
+        end
+
+        context 'when it is lower than zero' do
+          let(:config) { { retry: -1 } }
+
+          it 'returns error about value too low' do
+            expect(entry).not_to be_valid
+            expect(entry.errors)
+              .to include 'job retry must be greater than or equal to 0'
+          end
+        end
+
+        context 'when it is not an integer' do
+          let(:config) { { retry: 1.5 } }
+
+          it 'returns error about wrong value' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job retry must be an integer'
+          end
+        end
+
+        context 'when the value is too high' do
+          let(:config) { { retry: 10 } }
+
+          it 'returns error about value too high' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job retry must be less than or equal to 2'
+          end
+        end
+      end
     end
   end
 

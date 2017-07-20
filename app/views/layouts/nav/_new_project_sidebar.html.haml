@@ -1,20 +1,24 @@
 .nav-sidebar
   - can_edit = can?(current_user, :admin_project, @project)
-  = link_to project_path(@project), title: @project.name, class: 'context-header' do
-    .avatar-container.s40.project-avatar
-      = project_icon(@project, alt: @project.name, class: 'avatar s40 avatar-tile')
-    .project-title
-      = @project.name
+  .context-header
+    = link_to project_path(@project), title: @project.name do
+      .avatar-container.s40.project-avatar
+        = project_icon(@project, alt: @project.name, class: 'avatar s40 avatar-tile')
+      .project-title
+        = @project.name
+    = button_tag class: 'close-nav-button', type: 'button' do
+      %span.sr-only Close sidebar
+      = icon ('times')
   %ul.sidebar-top-level-items
     = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
-      = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
+      = link_to project_path(@project), title: 'About project', class: 'shortcuts-project' do
         %span
-          Project
+          About
 
       %ul.sidebar-sub-level-items
         = nav_link(path: 'projects#show') do
-          = link_to project_path(@project), title: _('Project home'), class: 'shortcuts-project' do
-            %span= _('Home')
+          = link_to project_path(@project), title: _('Project details'), class: 'shortcuts-project' do
+            %span= _('Details')
 
         = nav_link(path: 'projects#activity') do
           = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do

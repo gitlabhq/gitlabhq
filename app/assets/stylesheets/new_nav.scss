@@ -275,8 +275,6 @@ header.navbar-gitlab-new {
 .breadcrumbs {
   display: flex;
   min-height: 60px;
-  padding-top: $gl-padding-top;
-  padding-bottom: $gl-padding-top;
   color: $gl-text-color;
   border-bottom: 1px solid $border-color;
 
@@ -300,6 +298,7 @@ header.navbar-gitlab-new {
   display: flex;
   width: 100%;
   position: relative;
+  align-items: center;
 
   .dropdown-menu-projects {
     margin-top: -$gl-padding;
@@ -330,7 +329,7 @@ header.navbar-gitlab-new {
     white-space: nowrap;
 
     > a {
-      &:last-of-type {
+      &:last-of-type:not(:first-child) {
         font-weight: 600;
       }
     }
@@ -384,6 +383,7 @@ header.navbar-gitlab-new {
       &::after {
         content: "/";
         margin: 0 2px 0 5px;
+        color: rgba($black, .65);
       }
     }
 
@@ -394,5 +394,15 @@ header.navbar-gitlab-new {
 
   a {
     color: $gl-text-color;
+  }
+}
+
+.top-area {
+  .nav-controls-new-nav {
+    .dropdown {
+      @media (min-width: $screen-sm-min) {
+        margin-right: 0;
+      }
+    }
   }
 }

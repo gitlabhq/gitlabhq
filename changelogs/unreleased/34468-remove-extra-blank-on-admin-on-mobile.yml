@@ -1,0 +1,4 @@
+---
+title: Use smaller min-width for dropdown-menu-nav only on mobile
+merge_request: 12528
+author: Takuya Noguchi
