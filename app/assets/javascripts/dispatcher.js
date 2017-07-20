@@ -53,7 +53,6 @@ import ShortcutsBlob from './shortcuts_blob';
 import SigninTabsMemoizer from './signin_tabs_memoizer';
 import Star from './star';
 import Todos from './todos';
-import TreeView from './tree';
 import UsagePing from './usage_ping';
 import UsernameValidator from './username_validator';
 import VersionCheckImage from './version_check_image';
