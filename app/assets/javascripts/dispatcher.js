@@ -40,8 +40,6 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
-import { ProtectedBranchCreate, ProtectedBranchEditList } from './protected_branches';
-import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
@@ -391,12 +389,6 @@ import PerformanceBar from './performance_bar';
           new Search();
           break;
         case 'projects:settings:repository:show':
-          // Initialize Protected Branch Settings
-          new ProtectedBranchCreate();
-          new ProtectedBranchEditList();
-          // Initialize Protected Tag Settings
-          new ProtectedTagCreate();
-          new ProtectedTagEditList();
           // Initialize expandable settings panels
           initSettingsPanels();
           break;
