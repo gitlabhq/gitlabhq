@@ -46,17 +46,8 @@ describe Gitlab::UntrustedRegexp do
     context 'malicious regexp' do
       let(:text) { malicious_text }
       let(:regexp) { malicious_regexp }
-
+ 
       include_examples 'malicious regexp'
-    end
-
-    context 'empty regexp' do
-      let(:regexp) { '' }
-      let(:text) { 'foo' }
-
-      it 'returns an empty array' do
-        is_expected.to eq([])
-      end
     end
 
     context 'no capture group' do
