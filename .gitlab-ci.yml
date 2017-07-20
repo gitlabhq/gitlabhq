@@ -538,6 +538,8 @@ lint:javascript:report:
   <<: *except-docs
   <<: *pull-cache
   stage: post-test
+  dependencies:
+    - setup-test-env
   before_script: []
   script:
     - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
