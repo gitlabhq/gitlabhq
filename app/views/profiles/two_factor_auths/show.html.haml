@@ -1,5 +1,10 @@
 - page_title 'Two-Factor Authentication', 'Account'
-- header_title "Two-Factor Authentication", profile_two_factor_auth_path
+- if show_new_nav?
+  - add_to_breadcrumbs("Account", profile_account_path)
+- else
+  - header_title "Two-Factor Authentication", profile_two_factor_auth_path
+- @content_class = "limit-container-width" unless fluid_layout
+
 = render 'profiles/head'
 
 - if inject_u2f_api?
@@ -7,12 +12,12 @@
     = page_specific_javascript_bundle_tag('u2f')
 
 .row.prepend-top-default
-  .col-lg-3
+  .col-lg-4
     %h4.prepend-top-0
       Register Two-Factor Authentication App
     %p
       Use an app on your mobile device to enable two-factor authentication (2FA).
-  .col-lg-9
+  .col-lg-8
     - if current_user.two_factor_otp_enabled?
       = icon "check inverse", base: "circle", class: "text-success", text: "You've already enabled two-factor authentication using mobile authenticator applications. You can disable it from your account settings page."
     - else
@@ -20,9 +25,9 @@
         Download the Google Authenticator application from App Store or Google Play Store and scan this code.
         More information is available in the #{link_to('documentation', help_page_path('profile/two_factor_authentication'))}.
       .row.append-bottom-10
-        .col-md-3
+        .col-md-4
           = raw @qr_code
-        .col-md-9
+        .col-md-8
           .account-well
             %p.prepend-top-0.append-bottom-0
               Can't scan the code?
@@ -50,7 +55,7 @@
 
 .row.prepend-top-default
 
-  .col-lg-3
+  .col-lg-4
     %h4.prepend-top-0
       Register Universal Two-Factor (U2F) Device
     %p
@@ -59,7 +64,7 @@
       As U2F devices are only supported by a few browsers, we require that you set up a
       two-factor authentication app before a U2F device. That way you'll always be able to
       log in - even when you're using an unsupported browser.
-  .col-lg-9
+  .col-lg-8
     - if @u2f_registration.errors.present?
       = form_errors(@u2f_registration)
     = render "u2f/register"

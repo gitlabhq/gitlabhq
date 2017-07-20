@@ -9,7 +9,7 @@ feature 'Group name toggle', feature: true, js: true do
   SMALL_SCREEN = 300
 
   before do
-    gitlab_sign_in :user
+    sign_in(create(:user))
   end
 
   it 'is not present if enough horizontal space' do

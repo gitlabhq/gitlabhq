@@ -6,8 +6,8 @@ feature 'Master updates tag', feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
-    visit namespace_project_tags_path(project.namespace, project)
+    sign_in(user)
+    visit project_tags_path(project)
   end
 
   context 'from the tags list page' do
@@ -20,7 +20,7 @@ feature 'Master updates tag', feature: true do
       click_button 'Save changes'
 
       expect(current_path).to eq(
-        namespace_project_tag_path(project.namespace, project, 'v1.1.0'))
+        project_tag_path(project, 'v1.1.0'))
       expect(page).to have_content 'v1.1.0'
       expect(page).to have_content 'Awesome release notes'
     end
@@ -45,7 +45,7 @@ feature 'Master updates tag', feature: true do
       click_button 'Save changes'
 
       expect(current_path).to eq(
-        namespace_project_tag_path(project.namespace, project, 'v1.1.0'))
+        project_tag_path(project, 'v1.1.0'))
       expect(page).to have_content 'v1.1.0'
       expect(page).to have_content 'Awesome release notes'
     end

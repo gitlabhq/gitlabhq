@@ -41,7 +41,7 @@ feature 'Projects > Members > Group member cannot request access to his group pr
   end
 
   def login_and_visit_project_page(user)
-    gitlab_sign_in(user)
-    visit namespace_project_path(project.namespace, project)
+    sign_in(user)
+    visit project_path(project)
   end
 end

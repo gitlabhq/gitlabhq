@@ -7,7 +7,7 @@ feature 'Edit group label', feature: true do
 
   background do
     group.add_owner(user)
-    gitlab_sign_in(user)
+    sign_in(user)
     visit edit_group_label_path(group, label)
   end
 

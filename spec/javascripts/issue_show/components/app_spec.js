@@ -5,29 +5,30 @@ import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
 import issueShowData from '../mock_data';
 
-const issueShowInterceptor = data => (request, next) => {
-  next(request.respondWith(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      'POLL-INTERVAL': 1,
-    },
-  }));
-};
-
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
 }
 
 describe('Issuable output', () => {
+  let requestData = issueShowData.initialRequest;
+
   document.body.innerHTML = '<span id="task_status"></span>';
+
+  const interceptor = (request, next) => {
+    next(request.respondWith(JSON.stringify(requestData), {
+      status: 200,
+    }));
+  };
 
   let vm;
 
-  beforeEach(() => {
-    const IssuableDescriptionComponent = Vue.extend(issuableApp);
-    Vue.http.interceptors.push(issueShowInterceptor(issueShowData.initialRequest));
-
+  beforeEach((done) => {
     spyOn(eventHub, '$emit');
+
+    const IssuableDescriptionComponent = Vue.extend(issuableApp);
+
+    requestData = issueShowData.initialRequest;
+    Vue.http.interceptors.push(interceptor);
 
     vm = new IssuableDescriptionComponent({
       propsData: {
@@ -48,15 +49,23 @@ describe('Issuable output', () => {
         projectPath: '/',
       },
     }).$mount();
+
+    setTimeout(done);
   });
 
   afterEach(() => {
+    Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+
+    vm.poll.stop();
   });
 
   it('should render a title/description/edited and update title/description/edited on update', (done) => {
-    setTimeout(() => {
-      const editedText = vm.$el.querySelector('.edited-text');
-
+    let editedText;
+    Vue.nextTick()
+    .then(() => {
+      editedText = vm.$el.querySelector('.edited-text');
+    })
+    .then(() => {
       expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
       expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
       expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
@@ -64,22 +73,24 @@ describe('Issuable output', () => {
       expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
       expect(editedText.querySelector('.author_link').href).toMatch(/\/some_user$/);
       expect(editedText.querySelector('time')).toBeTruthy();
-
-      Vue.http.interceptors.push(issueShowInterceptor(issueShowData.secondRequest));
-
-      setTimeout(() => {
-        expect(document.querySelector('title').innerText).toContain('2 (#1)');
-        expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
-        expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
-        expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
-        expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
-        expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(/Edited[\s\S]+?by Other User/);
-        expect(editedText.querySelector('.author_link').href).toMatch(/\/other_user$/);
-        expect(editedText.querySelector('time')).toBeTruthy();
-
-        done();
-      });
-    });
+    })
+    .then(() => {
+      requestData = issueShowData.secondRequest;
+      vm.poll.makeRequest();
+    })
+    .then(() => new Promise(resolve => setTimeout(resolve)))
+    .then(() => {
+      expect(document.querySelector('title').innerText).toContain('2 (#1)');
+      expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
+      expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
+      expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
+      expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
+      expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(/Edited[\s\S]+?by Other User/);
+      expect(editedText.querySelector('.author_link').href).toMatch(/\/other_user$/);
+      expect(editedText.querySelector('time')).toBeTruthy();
+    })
+    .then(done)
+    .catch(done.fail);
   });
 
   it('shows actions if permissions are correct', (done) => {
@@ -301,7 +312,7 @@ describe('Issuable output', () => {
 
     it('stops polling when deleting', (done) => {
       spyOn(gl.utils, 'visitUrl');
-      spyOn(vm.poll, 'stop');
+      spyOn(vm.poll, 'stop').and.callThrough();
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {
@@ -344,21 +355,14 @@ describe('Issuable output', () => {
 
   describe('open form', () => {
     it('shows locked warning if form is open & data is different', (done) => {
-      Vue.http.interceptors.push(issueShowInterceptor(issueShowData.initialRequest));
-
       Vue.nextTick()
-        .then(() => new Promise((resolve) => {
-          setTimeout(resolve);
-        }))
         .then(() => {
           vm.openForm();
 
-          Vue.http.interceptors.push(issueShowInterceptor(issueShowData.secondRequest));
-
-          return new Promise((resolve) => {
-            setTimeout(resolve);
-          });
+          requestData = issueShowData.secondRequest;
+          vm.poll.makeRequest();
         })
+        .then(() => new Promise(resolve => setTimeout(resolve)))
         .then(() => {
           expect(
             vm.formState.lockedWarningVisible,
@@ -367,9 +371,8 @@ describe('Issuable output', () => {
           expect(
             vm.$el.querySelector('.alert'),
           ).not.toBeNull();
-
-          done();
         })
+        .then(done)
         .catch(done.fail);
     });
   });

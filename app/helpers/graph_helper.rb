@@ -17,13 +17,10 @@ module GraphHelper
     ids.zip(parent_spaces)
   end
 
-  def success_ratio(success_builds, failed_builds)
-    failed_builds = failed_builds.count(:all)
-    success_builds = success_builds.count(:all)
+  def success_ratio(counts)
+    return 100 if counts[:failed].zero?
 
-    return 100 if failed_builds.zero?
-
-    ratio = (success_builds.to_f / (success_builds + failed_builds)) * 100
+    ratio = (counts[:success].to_f / (counts[:success] + counts[:failed])) * 100
     ratio.to_i
   end
 end

@@ -3,7 +3,10 @@ require 'prometheus/client/formats/text'
 class MetricsService
   CHECKS = [
     Gitlab::HealthChecks::DbCheck,
-    Gitlab::HealthChecks::RedisCheck,
+    Gitlab::HealthChecks::Redis::RedisCheck,
+    Gitlab::HealthChecks::Redis::CacheCheck,
+    Gitlab::HealthChecks::Redis::QueuesCheck,
+    Gitlab::HealthChecks::Redis::SharedStateCheck,
     Gitlab::HealthChecks::FsShardsCheck
   ].freeze
 
@@ -28,6 +31,6 @@ class MetricsService
   end
 
   def multiprocess_metrics_path
-    @multiprocess_metrics_path ||= Rails.root.join(ENV['prometheus_multiproc_dir']).freeze
+    ::Prometheus::Client.configuration.multiprocess_files_dir
   end
 end

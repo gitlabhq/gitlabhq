@@ -1,4 +1,5 @@
 - @content_class = "limit-container-width limit-container-width-sm" unless fluid_layout
+- breadcrumb_title "Wiki"
 - page_title @page.title.capitalize, "Wiki"
 
 .wiki-page-header.has-sidebar-toggle
@@ -22,7 +23,7 @@
 - if @page.historical?
   .warning_message
     This is an old version of this page.
-    You can view the #{link_to "most recent version", namespace_project_wiki_path(@project.namespace, @project, @page)} or browse the #{link_to "history", namespace_project_wiki_history_path(@project.namespace, @project, @page)}.
+    You can view the #{link_to "most recent version", project_wiki_path(@project, @page)} or browse the #{link_to "history", project_wiki_history_path(@project, @page)}.
 
 .wiki-holder.prepend-top-default.append-bottom-default
   .wiki

@@ -15,8 +15,9 @@ describe Projects::DestroyService, services: true do
   shared_examples 'deleting the project' do
     it 'deletes the project' do
       expect(Project.unscoped.all).not_to include(project)
-      expect(Dir.exist?(path)).to be_falsey
-      expect(Dir.exist?(remove_path)).to be_falsey
+
+      expect(project.gitlab_shell.exists?(project.repository_storage_path, path + '.git')).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage_path, remove_path + '.git')).to be_falsey
     end
   end
 
@@ -59,14 +60,14 @@ describe Projects::DestroyService, services: true do
     before do
       new_user = create(:user)
       project.team.add_user(new_user, Gitlab::Access::DEVELOPER)
-      allow_any_instance_of(Projects::DestroyService).to receive(:flush_caches).and_raise(Redis::CannotConnectError)
+      allow_any_instance_of(Projects::DestroyService).to receive(:flush_caches).and_raise(::Redis::CannotConnectError)
     end
 
     it 'keeps project team intact upon an error' do
       Sidekiq::Testing.inline! do
         begin
           destroy_project(project, user, {})
-        rescue Redis::CannotConnectError
+        rescue ::Redis::CannotConnectError
         end
       end
 

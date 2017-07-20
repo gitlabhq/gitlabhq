@@ -70,12 +70,8 @@ module Gitlab
       params['gitaly_token'].presence || Gitlab.config.gitaly['token']
     end
 
-    def self.enabled?
-      Gitlab.config.gitaly.enabled
-    end
-
     def self.feature_enabled?(feature, status: MigrationStatus::OPT_IN)
-      return false if !enabled? || status == MigrationStatus::DISABLED
+      return false if status == MigrationStatus::DISABLED
 
       feature = Feature.get("gitaly_#{feature}")
 
@@ -90,8 +86,8 @@ module Gitlab
       feature.enabled?
     end
 
-    def self.migrate(feature)
-      is_enabled  = feature_enabled?(feature)
+    def self.migrate(feature, status: MigrationStatus::OPT_IN)
+      is_enabled  = feature_enabled?(feature, status: status)
       metric_name = feature.to_s
       metric_name += "_gitaly" if is_enabled
 

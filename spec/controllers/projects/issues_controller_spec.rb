@@ -7,14 +7,16 @@ describe Projects::IssuesController do
 
   describe "GET #index" do
     context 'external issue tracker' do
+      let!(:service) do
+        create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker', project_url: 'http://test.com')
+      end
+
       it 'redirects to the external issue tracker' do
-        external = double(project_path: 'https://example.com/project')
-        allow(project).to receive(:external_issue_tracker).and_return(external)
         controller.instance_variable_set(:@project, project)
 
         get :index, namespace_id: project.namespace, project_id: project
 
-        expect(response).to redirect_to('https://example.com/project')
+        expect(response).to redirect_to(service.issue_tracker_path)
       end
     end
 
@@ -35,7 +37,7 @@ describe Projects::IssuesController do
       it "returns 301 if request path doesn't match project path" do
         get :index, namespace_id: project.namespace, project_id: project.path.upcase
 
-        expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
+        expect(response).to redirect_to(project_issues_path(project))
       end
 
       it "returns 404 when issues are disabled" do
@@ -139,19 +141,21 @@ describe Projects::IssuesController do
     end
 
     context 'external issue tracker' do
+      let!(:service) do
+        create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker', new_issue_url: 'http://test.com')
+      end
+
       before do
         sign_in(user)
         project.team << [user, :developer]
       end
 
       it 'redirects to the external issue tracker' do
-        external = double(new_issue_path: 'https://example.com/issues/new')
-        allow(project).to receive(:external_issue_tracker).and_return(external)
         controller.instance_variable_set(:@project, project)
 
         get :new, namespace_id: project.namespace, project_id: project
 
-        expect(response).to redirect_to('https://example.com/issues/new')
+        expect(response).to redirect_to('http://test.com')
       end
     end
   end
@@ -329,7 +333,7 @@ describe Projects::IssuesController do
               update_verified_issue
 
               expect(response)
-                .to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+                .to redirect_to(project_issue_path(project, issue))
             end
 
             it 'accepts an issue after recaptcha is verified' do
@@ -509,6 +513,36 @@ describe Projects::IssuesController do
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: id
+      end
+    end
+
+    describe 'GET #realtime_changes' do
+      it_behaves_like 'restricted action', success: 200
+
+      def go(id:)
+        get :realtime_changes,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id
+      end
+
+      context 'when an issue was edited by a deleted user' do
+        let(:deleted_user) { create(:user) }
+
+        before do
+          project.team << [user, :developer]
+
+          issue.update!(last_edited_by: deleted_user, last_edited_at: Time.now)
+
+          deleted_user.destroy
+          sign_in(user)
+        end
+
+        it 'returns 200' do
+          go(id: issue.iid)
+
+          expect(response).to have_http_status(200)
+        end
       end
     end
 

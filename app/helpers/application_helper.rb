@@ -131,10 +131,7 @@ module ApplicationHelper
   end
 
   def body_data_page
-    path = controller.controller_path.split('/')
-    namespace = path.first if path.second
-
-    [namespace, controller.controller_name, controller.action_name].compact.join(':')
+    [*controller.controller_path.split('/'), controller.action_name].compact.join(':')
   end
 
   # shortcut for gitlab config
@@ -299,5 +296,9 @@ module ApplicationHelper
     else
       "https://www.twitter.com/#{name}"
     end
+  end
+
+  def show_new_nav?
+    cookies["new_nav"] == "true"
   end
 end

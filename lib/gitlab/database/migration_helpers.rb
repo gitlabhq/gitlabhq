@@ -140,6 +140,8 @@ module Gitlab
           return add_foreign_key(source, target,
                                  column: column,
                                  on_delete: on_delete)
+        else
+          on_delete = 'SET NULL' if on_delete == :nullify
         end
 
         disable_statement_timeout
@@ -155,7 +157,7 @@ module Gitlab
         ADD CONSTRAINT #{key_name}
         FOREIGN KEY (#{column})
         REFERENCES #{target} (id)
-        #{on_delete ? "ON DELETE #{on_delete}" : ''}
+        #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
         NOT VALID;
         EOF
 
@@ -222,6 +224,12 @@ module Gitlab
       #
       # rubocop: disable Metrics/AbcSize
       def update_column_in_batches(table, column, value)
+        if transaction_open?
+          raise 'update_column_in_batches can not be run inside a transaction, ' \
+            'you can disable transactions by calling disable_ddl_transaction! ' \
+            'in the body of your migration class'
+        end
+
         table = Arel::Table.new(table)
 
         count_arel = table.project(Arel.star.count.as('count'))

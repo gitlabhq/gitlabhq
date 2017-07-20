@@ -44,7 +44,7 @@ describe Namespace, models: true do
       end
 
       context "is case insensitive" do
-        let(:group) { build(:group, path: "System") }
+        let(:group) { build(:group, path: "Groups") }
 
         it { expect(group).not_to be_valid }
       end
@@ -61,6 +61,14 @@ describe Namespace, models: true do
     it { is_expected.to respond_to(:human_name) }
     it { is_expected.to respond_to(:to_param) }
     it { is_expected.to respond_to(:has_parent?) }
+  end
+
+  describe 'inclusions' do
+    it { is_expected.to include_module(Gitlab::VisibilityLevel) }
+  end
+
+  describe '#visibility_level_field' do
+    it { expect(namespace.visibility_level_field).to eq(:visibility_level) }
   end
 
   describe '#to_param' do
@@ -320,6 +328,36 @@ describe Namespace, models: true do
       expect(deep_nested_group.descendants.to_a).to include(very_deep_nested_group)
       expect(nested_group.descendants.to_a).to include(deep_nested_group, very_deep_nested_group)
       expect(group.descendants.to_a).to include(nested_group, deep_nested_group, very_deep_nested_group)
+    end
+  end
+
+  describe '#users_with_descendants', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+
+    it 'returns member users on every nest level without duplication' do
+      group.add_developer(user_a)
+      nested_group.add_developer(user_b)
+      deep_nested_group.add_developer(user_a)
+
+      expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(deep_nested_group.users_with_descendants).to contain_exactly(user_a)
+    end
+  end
+
+  describe '#soft_delete_without_removing_associations' do
+    let(:project1) { create(:project_empty_repo, namespace: namespace) }
+
+    it 'updates the deleted_at timestamp but preserves projects' do
+      namespace.soft_delete_without_removing_associations
+
+      expect(Project.all).to include(project1)
+      expect(namespace.deleted_at).not_to be_nil
     end
   end
 

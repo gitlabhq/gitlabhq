@@ -13,4 +13,4 @@
           %button.btn.btn-success.js-submit-button{ type: "button", "@click" => "commit()", ":disabled" => "!readyToCommit" }
             %span {{commitButtonText}}
         .col-xs-6.text-right
-          = link_to "Cancel", namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request), class: "btn btn-cancel"
+          = link_to "Cancel", project_merge_request_path(@merge_request.project, @merge_request), class: "btn btn-cancel"

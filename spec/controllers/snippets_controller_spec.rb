@@ -186,8 +186,8 @@ describe SnippetsController do
     end
 
     context 'when the snippet description contains a file' do
-      let(:picture_file) { '/temp/secret56/picture.jpg' }
-      let(:text_file) { '/temp/secret78/text.txt' }
+      let(:picture_file) { '/system/temp/secret56/picture.jpg' }
+      let(:text_file) { '/system/temp/secret78/text.txt' }
       let(:description) do
         "Description with picture: ![picture](/uploads#{picture_file}) and "\
         "text: [text.txt](/uploads#{text_file})"
@@ -208,8 +208,8 @@ describe SnippetsController do
         snippet = subject
 
         expected_description = "Description with picture: "\
-          "![picture](/uploads/personal_snippet/#{snippet.id}/secret56/picture.jpg) and "\
-          "text: [text.txt](/uploads/personal_snippet/#{snippet.id}/secret78/text.txt)"
+          "![picture](/uploads/system/personal_snippet/#{snippet.id}/secret56/picture.jpg) and "\
+          "text: [text.txt](/uploads/system/personal_snippet/#{snippet.id}/secret78/text.txt)"
 
         expect(snippet.description).to eq(expected_description)
       end
@@ -341,7 +341,7 @@ describe SnippetsController do
                                      { spam_log_id: spam_logs.last.id,
                                        recaptcha_verification: true })
 
-            expect(response).to redirect_to(snippet)
+            expect(response).to redirect_to(snippet_path(snippet))
           end
         end
       end

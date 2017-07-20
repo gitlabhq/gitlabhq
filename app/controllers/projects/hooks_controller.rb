@@ -9,6 +9,10 @@ class Projects::HooksController < Projects::ApplicationController
 
   layout "project_settings"
 
+  def index
+    redirect_to project_settings_integrations_path(@project)
+  end
+
   def create
     @hook = @project.hooks.new(hook_params)
     @hook.save
@@ -17,7 +21,7 @@ class Projects::HooksController < Projects::ApplicationController
       @hooks = @project.hooks.select(&:persisted?)
       flash[:alert] = @hook.errors.full_messages.join.html_safe
     end
-    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
+    redirect_to project_settings_integrations_path(@project)
   end
 
   def edit
@@ -26,20 +30,16 @@ class Projects::HooksController < Projects::ApplicationController
   def update
     if hook.update_attributes(hook_params)
       flash[:notice] = 'Hook was successfully updated.'
-      redirect_to namespace_project_settings_integrations_path(@project.namespace, @project)
+      redirect_to project_settings_integrations_path(@project)
     else
       render 'edit'
     end
   end
 
   def test
-    if !@project.empty_repo?
-      status, message = TestHookService.new.execute(hook, current_user)
+    result = TestHooks::ProjectService.new(hook, current_user, params[:trigger]).execute
 
-      set_hook_execution_notice(status, message)
-    else
-      flash[:alert] = 'Hook execution failed. Ensure the project has commits.'
-    end
+    set_hook_execution_notice(result)
 
     redirect_back_or_default(default: { action: 'index' })
   end
@@ -47,7 +47,7 @@ class Projects::HooksController < Projects::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to namespace_project_settings_integrations_path(@project.namespace, @project), status: 302
+    redirect_to project_settings_integrations_path(@project), status: 302
   end
 
   private

@@ -5,17 +5,17 @@ feature 'project owner sees a link to create a license file in empty project', f
   let(:project) { create(:empty_project) }
   background do
     project.team << [project_master, :master]
-    gitlab_sign_in(project_master)
+    sign_in(project_master)
   end
 
   scenario 'project master creates a license file from a template' do
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
     click_link 'Create empty bare repository'
     click_on 'LICENSE'
     expect(page).to have_content('New file')
 
     expect(current_path).to eq(
-      namespace_project_new_blob_path(project.namespace, project, 'master'))
+      project_new_blob_path(project, 'master'))
     expect(find('#file_name').value).to eq('LICENSE')
     expect(page).to have_selector('.license-selector')
 
@@ -31,7 +31,7 @@ feature 'project owner sees a link to create a license file in empty project', f
     click_button 'Commit changes'
 
     expect(current_path).to eq(
-      namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
+      project_blob_path(project, 'master/LICENSE'))
     expect(page).to have_content('MIT License')
     expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
   end

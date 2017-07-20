@@ -49,7 +49,6 @@ module Gitlab
       sent_notifications
       services
       snippets
-      system
       teams
       u
       unicorn_test
@@ -112,6 +111,7 @@ module Gitlab
     # this group would not be accessible through `/groups/parent/activity` since
     # this would map to the activity-page of its parent.
     GROUP_ROUTES = %w[
+      -
       activity
       analytics
       audit_events

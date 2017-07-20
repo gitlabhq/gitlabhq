@@ -1,0 +1,1259 @@
+# Huang Tao <htve@outlook.com>, 2017. #zanata
+# Lyubomir Vasilev <lyubomirv@abv.bg>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-05 08:50-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-07-13 08:46-0400\n"
+"Last-Translator: Lyubomir Vasilev <lyubomirv@abv.bg>\n"
+"Language-Team: Esperanto (https://translate.zanata.org/project/view/GitLab)\n"
+"Language: eo\n"
+"X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural ""
+"%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "%s enmetado estis transsaltita, por ne troŝarĝi la sistemon."
+msgstr[1] "%s enmetadoj estis transsaltitaj, por ne troŝarĝi la sistemon."
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d enmetado"
+msgstr[1] "%d enmetadoj"
+
+msgid "%{commit_author_link} committed %{commit_timeago}"
+msgstr "%{commit_author_link} enmetis %{commit_timeago}"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 ĉenstablo"
+msgstr[1] "%d ĉenstabloj"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "Aro da diagramoj pri la seninterrompa integrado"
+
+msgid "About auto deploy"
+msgstr "Pri la aŭtomata disponigado"
+
+msgid "Active"
+msgstr "Aktiva"
+
+msgid "Activity"
+msgstr "Aktiveco"
+
+msgid "Add Changelog"
+msgstr "Aldoni liston de ŝanĝoj"
+
+msgid "Add Contribution guide"
+msgstr "Aldoni gvidliniojn por kontribuado"
+
+msgid "Add License"
+msgstr "Aldoni rajtigilon"
+
+msgid "Add an SSH key to your profile to pull or push via SSH."
+msgstr ""
+"Aldonu SSH-ŝlosilon al via profilo por ebligi al vi eltiri kaj alpuŝi per "
+"SSH."
+
+msgid "Add new directory"
+msgstr "Aldoni novan dosierujon"
+
+msgid "Archived project! Repository is read-only"
+msgstr "Arkivita projekto! La deponejo permesas nur legadon"
+
+msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr "Ĉu vi certe volas forigi ĉi tiun ĉenstablan planon?"
+
+msgid "Attach a file by drag &amp; drop or %{upload_link}"
+msgstr "Alkroĉu dosieron per ŝovmetado aŭ %{upload_link}"
+
+msgid "Branch"
+msgid_plural "Branches"
+msgstr[0] "Branĉo"
+msgstr[1] "Branĉoj"
+
+msgid ""
+"Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, "
+"choose a GitLab CI Yaml template and commit your changes. "
+"%{link_to_autodeploy_doc}"
+msgstr ""
+"La branĉo <strong>%{branch_name}</strong> estis kreita. Por agordi aŭtomatan "
+"disponigadon, bonvolu elekti Yaml-ŝablonon por GitLab CI kaj enmeti viajn "
+"ŝanĝojn. %{link_to_autodeploy_doc}"
+
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr "Serĉu branĉon"
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr "Iri al branĉo"
+
+msgid "Branches"
+msgstr "Branĉoj"
+
+msgid "Browse Directory"
+msgstr "Foliumi dosierujon"
+
+msgid "Browse File"
+msgstr "Foliumi dosieron"
+
+msgid "Browse Files"
+msgstr "Foliumi dosierojn"
+
+msgid "Browse files"
+msgstr "Elekti dosierojn"
+
+msgid "ByAuthor|by"
+msgstr "de"
+
+msgid "CI configuration"
+msgstr "Agordoj de seninterrompa integrado"
+
+msgid "Cancel"
+msgstr "Nuligi"
+
+msgid "ChangeTypeActionLabel|Pick into branch"
+msgstr "Elekti en branĉon"
+
+msgid "ChangeTypeActionLabel|Revert in branch"
+msgstr "Malfari en branĉo"
+
+msgid "ChangeTypeAction|Cherry-pick"
+msgstr "Precize elekti"
+
+msgid "ChangeTypeAction|Revert"
+msgstr "Malfari"
+
+msgid "Changelog"
+msgstr "Listo de ŝanĝoj"
+
+msgid "Charts"
+msgstr "Diagramoj"
+
+msgid "Cherry-pick this commit"
+msgstr "Precize elekti ĉi tiun kunmetadon"
+
+msgid "Cherry-pick this merge request"
+msgstr "Precize elekti ĉi tiun peton pri kunfando"
+
+msgid "CiStatusLabel|canceled"
+msgstr "nuligita"
+
+msgid "CiStatusLabel|created"
+msgstr "kreita"
+
+msgid "CiStatusLabel|failed"
+msgstr "malsukcesa"
+
+msgid "CiStatusLabel|manual action"
+msgstr "mana ago"
+
+msgid "CiStatusLabel|passed"
+msgstr "sukcesa"
+
+msgid "CiStatusLabel|passed with warnings"
+msgstr "sukcesa, kun avertoj"
+
+msgid "CiStatusLabel|pending"
+msgstr "okazonta"
+
+msgid "CiStatusLabel|skipped"
+msgstr "transsaltita"
+
+msgid "CiStatusLabel|waiting for manual action"
+msgstr "atendanta manan agon"
+
+msgid "CiStatusText|blocked"
+msgstr "blokita"
+
+msgid "CiStatusText|canceled"
+msgstr "nuligita"
+
+msgid "CiStatusText|created"
+msgstr "kreita"
+
+msgid "CiStatusText|failed"
+msgstr "malsukcesa"
+
+msgid "CiStatusText|manual"
+msgstr "mana"
+
+msgid "CiStatusText|passed"
+msgstr "sukcesa"
+
+msgid "CiStatusText|pending"
+msgstr "okazonta"
+
+msgid "CiStatusText|skipped"
+msgstr "transsaltita"
+
+msgid "CiStatus|running"
+msgstr "plenumiĝanta"
+
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] "Enmetado"
+msgstr[1] "Enmetadoj"
+
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "Daŭro de la enmetadoj por la lastaj 30 enmetadoj"
+
+msgid "Commit message"
+msgstr "Mesaĝo pri la enmetado"
+
+msgid "CommitBoxTitle|Commit"
+msgstr "Enmeti"
+
+msgid "CommitMessage|Add %{file_name}"
+msgstr "Aldoni „%{file_name}“"
+
+msgid "Commits"
+msgstr "Enmetadoj"
+
+msgid "Commits feed"
+msgstr "Fluo de enmetadoj"
+
+msgid "Commits|History"
+msgstr "Historio"
+
+msgid "Committed by"
+msgstr "Enmetita de"
+
+msgid "Compare"
+msgstr "Kompari"
+
+msgid "Contribution guide"
+msgstr "Gvidlinioj por kontribuado"
+
+msgid "Contributors"
+msgstr "Kontribuantoj"
+
+msgid "Copy URL to clipboard"
+msgstr "Kopii la adreson en la kopibufron"
+
+msgid "Copy commit SHA to clipboard"
+msgstr "Kopii la identigilon de la enmetado"
+
+msgid "Create New Directory"
+msgstr "Krei novan dosierujon"
+
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr ""
+"Kreu propran atingoĵetonon en via konto por ebligi al vi eltiri kaj alpuŝi "
+"per %{protocol}."
+
+msgid "Create directory"
+msgstr "Krei dosierujon"
+
+msgid "Create empty bare repository"
+msgstr "Krei malplenan deponejon"
+
+msgid "Create merge request"
+msgstr "Krei peton pri kunfando"
+
+msgid "Create new..."
+msgstr "Krei novan…"
+
+msgid "CreateNewFork|Fork"
+msgstr "Disbranĉigi"
+
+msgid "CreateTag|Tag"
+msgstr "Etikedo"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "kreos propran atingoĵetonon"
+
+msgid "Cron Timezone"
+msgstr "Horzono por Cron"
+
+msgid "Cron syntax"
+msgstr "La sintakso de Cron"
+
+msgid "Custom notification events"
+msgstr "Propraj sciigaj eventoj"
+
+msgid ""
+"Custom notification levels are the same as participating levels. With custom "
+"notification levels you will also receive notifications for select events. "
+"To find out more, check out %{notification_link}."
+msgstr ""
+"La propraj sciigaj niveloj estas la samaj kiel la niveloj de partoprenado. "
+"Uzante la proprajn sciigajn nivelojn, vi ricevos ankaŭ sciigojn por "
+"elektitaj de vi eventoj. Por lerni pli, bonvolu vidi %{notification_link}."
+
+msgid "Cycle Analytics"
+msgstr "Cikla analizo"
+
+msgid ""
+"Cycle Analytics gives an overview of how much time it takes to go from idea "
+"to production in your project."
+msgstr ""
+"La cikla analizo esploras kiom da tempo necesas por disvolvi ideon ĝis ĝi "
+"fariĝos realaĵo."
+
+msgid "CycleAnalyticsStage|Code"
+msgstr "Programado"
+
+msgid "CycleAnalyticsStage|Issue"
+msgstr "Problemo"
+
+msgid "CycleAnalyticsStage|Plan"
+msgstr "Plano"
+
+msgid "CycleAnalyticsStage|Production"
+msgstr "Eldonado"
+
+msgid "CycleAnalyticsStage|Review"
+msgstr "Kontrolo"
+
+msgid "CycleAnalyticsStage|Staging"
+msgstr "Preparo por eldono"
+
+msgid "CycleAnalyticsStage|Test"
+msgstr "Testado"
+
+msgid "Define a custom pattern with cron syntax"
+msgstr "Difini propran ŝablonon, uzante la sintakson de Cron"
+
+msgid "Delete"
+msgstr "Forigi"
+
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] "Disponigado"
+msgstr[1] "Disponigadoj"
+
+msgid "Description"
+msgstr "Priskribo"
+
+msgid "Directory name"
+msgstr "Nomo de dosierujo"
+
+msgid "Don't show again"
+msgstr "Ne montru denove"
+
+msgid "Download"
+msgstr "Elŝuti"
+
+msgid "Download tar"
+msgstr "Elŝuti en formato „tar“"
+
+msgid "Download tar.bz2"
+msgstr "Elŝuti en formato „tar.bz2“"
+
+msgid "Download tar.gz"
+msgstr "Elŝuti en formato „tar.gz“"
+
+msgid "Download zip"
+msgstr "Elŝuti en formato „zip“"
+
+msgid "DownloadArtifacts|Download"
+msgstr "Elŝuti"
+
+msgid "DownloadCommit|Email Patches"
+msgstr "Sendi flikaĵojn per retpoŝto"
+
+msgid "DownloadCommit|Plain Diff"
+msgstr "Normala dosiero kun diferencoj"
+
+msgid "DownloadSource|Download"
+msgstr "Elŝuti"
+
+msgid "Edit"
+msgstr "Redakti"
+
+msgid "Edit Pipeline Schedule %{id}"
+msgstr "Redakti ĉenstablan planon %{id}"
+
+msgid "Every day (at 4:00am)"
+msgstr "Ĉiutage (je 4:00)"
+
+msgid "Every month (on the 1st at 4:00am)"
+msgstr "Ĉiumonate (en la 1a de la monato, je 4:00)"
+
+msgid "Every week (Sundays at 4:00am)"
+msgstr "Ĉiusemajne (en dimanĉo, je 4:00)"
+
+msgid "Failed to change the owner"
+msgstr "Ne eblas ŝanĝi la posedanton"
+
+msgid "Failed to remove the pipeline schedule"
+msgstr "Ne eblas forigi la ĉenstablan planon"
+
+msgid "Files"
+msgstr "Dosieroj"
+
+msgid "Filter by commit message"
+msgstr "Filtri per mesaĝo"
+
+msgid "Find by path"
+msgstr "Trovi per dosierindiko"
+
+msgid "Find file"
+msgstr "Trovi dosieron"
+
+msgid "FirstPushedBy|First"
+msgstr "Unue"
+
+msgid "FirstPushedBy|pushed by"
+msgstr "alpuŝita de"
+
+msgid "Fork"
+msgid_plural "Forks"
+msgstr[0] "Disbranĉigo"
+msgstr[1] "Disbranĉigoj"
+
+msgid "ForkedFromProjectPath|Forked from"
+msgstr "Disbranĉigita el"
+
+msgid "From issue creation until deploy to production"
+msgstr "De la kreado de la problemo ĝis la disponigado en la publika versio"
+
+msgid "From merge request merge until deploy to production"
+msgstr ""
+"De la kunfandado de la peto pri kunfando ĝis la disponigado en la publika "
+"versio"
+
+msgid "Go to your fork"
+msgstr "Al via disbranĉigo"
+
+msgid "GoToYourFork|Fork"
+msgstr "Disbranĉigo"
+
+msgid "Home"
+msgstr "Hejmo"
+
+msgid "Housekeeping successfully started"
+msgstr "La refreŝigo komenciĝis sukcese"
+
+msgid "Import repository"
+msgstr "Enporti deponejon"
+
+msgid "Interval Pattern"
+msgstr "Intervala ŝablono"
+
+msgid "Introducing Cycle Analytics"
+msgstr "Ni prezentas al vi la ciklan analizon"
+
+msgid "Jobs for last month"
+msgstr "Taskoj po la lasta monato"
+
+msgid "Jobs for last week"
+msgstr "Taskoj po la lasta semajno"
+
+msgid "Jobs for last year"
+msgstr "Taskoj po la lasta jaro"
+
+msgid "LFSStatus|Disabled"
+msgstr "Malŝaltita"
+
+msgid "LFSStatus|Enabled"
+msgstr "Ŝaltita"
+
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] "La lasta %d tago"
+msgstr[1] "La lastaj %d tagoj"
+
+msgid "Last Pipeline"
+msgstr "Lasta ĉenstablo"
+
+msgid "Last Update"
+msgstr "Lasta ĝisdatigo"
+
+msgid "Last commit"
+msgstr "Lasta enmetado"
+
+msgid "Learn more in the"
+msgstr "Lernu pli en la"
+
+msgid "Learn more in the|pipeline schedules documentation"
+msgstr "dokumentado pri ĉenstablaj planoj"
+
+msgid "Leave group"
+msgstr "Forlasi la grupon"
+
+msgid "Leave project"
+msgstr "Forlasi la projekton"
+
+msgid "Limited to showing %d event at most"
+msgid_plural "Limited to showing %d events at most"
+msgstr[0] "Limigita al montrado de ne pli ol %d evento"
+msgstr[1] "Limigita al montrado de ne pli ol %d eventoj"
+
+msgid "Median"
+msgstr "Mediano"
+
+msgid "MissingSSHKeyWarningLink|add an SSH key"
+msgstr "aldonos SSH-ŝlosilon"
+
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] "Nova problemo"
+msgstr[1] "Novaj problemoj"
+
+msgid "New Pipeline Schedule"
+msgstr "Nova ĉenstabla plano"
+
+msgid "New branch"
+msgstr "Nova branĉo"
+
+msgid "New directory"
+msgstr "Nova dosierujo"
+
+msgid "New file"
+msgstr "Nova dosiero"
+
+msgid "New issue"
+msgstr "Nova problemo"
+
+msgid "New merge request"
+msgstr "Nova peto pri kunfando"
+
+msgid "New schedule"
+msgstr "Nova plano"
+
+msgid "New snippet"
+msgstr "Nova kodaĵo"
+
+msgid "New tag"
+msgstr "Nova etikedo"
+
+msgid "No repository"
+msgstr "Ne estas deponejo"
+
+msgid "No schedules"
+msgstr "Ne estas planoj"
+
+msgid "Not available"
+msgstr "Ne disponebla"
+
+msgid "Not enough data"
+msgstr "Ne estas sufiĉe da datenoj"
+
+msgid "Notification events"
+msgstr "Sciigaj eventoj"
+
+msgid "NotificationEvent|Close issue"
+msgstr "Fermi problemon"
+
+msgid "NotificationEvent|Close merge request"
+msgstr "Fermi peton pri kunfando"
+
+msgid "NotificationEvent|Failed pipeline"
+msgstr "Malsukcesa ĉenstablo"
+
+msgid "NotificationEvent|Merge merge request"
+msgstr "Apliki peton pri kunfando"
+
+msgid "NotificationEvent|New issue"
+msgstr "Nova problemo"
+
+msgid "NotificationEvent|New merge request"
+msgstr "Nova peto pri kunfando"
+
+msgid "NotificationEvent|New note"
+msgstr "Nova noto"
+
+msgid "NotificationEvent|Reassign issue"
+msgstr "Reatribui problemon"
+
+msgid "NotificationEvent|Reassign merge request"
+msgstr "Reatribui peton pri kunfando"
+
+msgid "NotificationEvent|Reopen issue"
+msgstr "Remalfermi problemon"
+
+msgid "NotificationEvent|Successful pipeline"
+msgstr "Sukcesa ĉenstablo"
+
+msgid "NotificationLevel|Custom"
+msgstr "Propraj"
+
+msgid "NotificationLevel|Disabled"
+msgstr "Malŝaltitaj"
+
+msgid "NotificationLevel|Global"
+msgstr "Ĝeneralaj"
+
+msgid "NotificationLevel|On mention"
+msgstr "Ĉe mencio"
+
+msgid "NotificationLevel|Participate"
+msgstr "Partoprenado"
+
+msgid "NotificationLevel|Watch"
+msgstr "Rigardado"
+
+msgid "OfSearchInADropdown|Filter"
+msgstr "Filtrilo"
+
+msgid "OpenedNDaysAgo|Opened"
+msgstr "Malfermita"
+
+msgid "Options"
+msgstr "Opcioj"
+
+msgid "Owner"
+msgstr "Posedanto"
+
+msgid "Pipeline"
+msgstr "Ĉenstablo"
+
+msgid "Pipeline Health"
+msgstr "Stato"
+
+msgid "Pipeline Schedule"
+msgstr "Ĉenstabla plano"
+
+msgid "Pipeline Schedules"
+msgstr "Ĉenstablaj planoj"
+
+msgid "PipelineCharts|Failed:"
+msgstr "Malsukcesaj:"
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "Ĝenerala statistiko"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "Proporcio de sukceso:"
+
+msgid "PipelineCharts|Successful:"
+msgstr "Sukcesaj:"
+
+msgid "PipelineCharts|Total:"
+msgstr "Totalo:"
+
+msgid "PipelineSchedules|Activated"
+msgstr "Ŝaltita"
+
+msgid "PipelineSchedules|Active"
+msgstr "Ŝaltitaj"
+
+msgid "PipelineSchedules|All"
+msgstr "Ĉiuj"
+
+msgid "PipelineSchedules|Inactive"
+msgstr "Malŝaltitaj"
+
+msgid "PipelineSchedules|Input variable key"
+msgstr "Entajpu ŝlosilon por la variablo"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "Entajpu la valoron de la variablo"
+
+msgid "PipelineSchedules|Next Run"
+msgstr "Sekvanta plenumo"
+
+msgid "PipelineSchedules|None"
+msgstr "Nenio"
+
+msgid "PipelineSchedules|Provide a short description for this pipeline"
+msgstr "Entajpu mallongan priskribon pri ĉi tiu ĉenstablo"
+
+msgid "PipelineSchedules|Remove variable row"
+msgstr "Forigi la variablan linion"
+
+msgid "PipelineSchedules|Take ownership"
+msgstr "Akiri posedon"
+
+msgid "PipelineSchedules|Target"
+msgstr "Celo"
+
+msgid "PipelineSchedules|Variables"
+msgstr "Variabloj"
+
+msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr "Propra"
+
+msgid "Pipelines"
+msgstr "Ĉenstabloj"
+
+msgid "Pipelines charts"
+msgstr "Ĉenstablaj diagramoj"
+
+msgid "Pipeline|all"
+msgstr "ĉiuj"
+
+msgid "Pipeline|success"
+msgstr "sukcesaj"
+
+msgid "Pipeline|with stage"
+msgstr "kun etapo"
+
+msgid "Pipeline|with stages"
+msgstr "kun etapoj"
+
+msgid "Project '%{project_name}' queued for deletion."
+msgstr "La projekto „%{project_name}“ estis alvicigita por forigado."
+
+msgid "Project '%{project_name}' was successfully created."
+msgstr "La projekto „%{project_name}“ estis sukcese kreita."
+
+msgid "Project '%{project_name}' was successfully updated."
+msgstr "La projekto „%{project_name}“ estis sukcese ĝisdatigita."
+
+msgid "Project '%{project_name}' will be deleted."
+msgstr "La projekto „%{project_name}“ estos forigita."
+
+msgid "Project access must be granted explicitly to each user."
+msgstr "Ĉiu uzanto devas akiri propran atingon al la projekto."
+
+msgid "Project export could not be deleted."
+msgstr "Ne eblas forigi la projektan elporton."
+
+msgid "Project export has been deleted."
+msgstr "La projekta elporto estis forigita."
+
+msgid ""
+"Project export link has expired. Please generate a new export from your "
+"project settings."
+msgstr ""
+"La ligilo por la projekta elporto eksvalidiĝis. Bonvolu krei novan elporton "
+"en la agordoj de la projekto."
+
+msgid "Project export started. A download link will be sent by email."
+msgstr ""
+"La elporto de la projekto komenciĝis. Vi ricevos ligilon per retpoŝto por "
+"elŝuti la datenoj."
+
+msgid "Project home"
+msgstr "Hejmo de la projekto"
+
+msgid "ProjectFeature|Disabled"
+msgstr "Malŝaltita"
+
+msgid "ProjectFeature|Everyone with access"
+msgstr "Ĉiu, kiu havas atingon"
+
+msgid "ProjectFeature|Only team members"
+msgstr "Nur skipanoj"
+
+msgid "ProjectFileTree|Name"
+msgstr "Nomo"
+
+msgid "ProjectLastActivity|Never"
+msgstr "Neniam"
+
+msgid "ProjectLifecycle|Stage"
+msgstr "Etapo"
+
+msgid "ProjectNetworkGraph|Graph"
+msgstr "Grafeo"
+
+msgid "Read more"
+msgstr "Legu pli"
+
+msgid "Readme"
+msgstr "LeguMin"
+
+msgid "RefSwitcher|Branches"
+msgstr "Branĉoj"
+
+msgid "RefSwitcher|Tags"
+msgstr "Etikedoj"
+
+msgid "Related Commits"
+msgstr "Rilataj enmetadoj"
+
+msgid "Related Deployed Jobs"
+msgstr "Rilataj disponigitaj taskoj"
+
+msgid "Related Issues"
+msgstr "Rilataj problemoj"
+
+msgid "Related Jobs"
+msgstr "Rilataj taskoj"
+
+msgid "Related Merge Requests"
+msgstr "Rilataj petoj pri kunfando"
+
+msgid "Related Merged Requests"
+msgstr "Rilataj aplikitaj petoj pri kunfando"
+
+msgid "Remind later"
+msgstr "Rememorigu denove"
+
+msgid "Remove project"
+msgstr "Forigi la projekton"
+
+msgid "Request Access"
+msgstr "Peti atingeblon"
+
+msgid "Revert this commit"
+msgstr "Malfari ĉi tiun enmetadon"
+
+msgid "Revert this merge request"
+msgstr "Malfari ĉi tiun peton pri kunfando"
+
+msgid "Save pipeline schedule"
+msgstr "Konservi ĉenstablan planon"
+
+msgid "Schedule a new pipeline"
+msgstr "Plani novan ĉenstablon"
+
+msgid "Scheduling Pipelines"
+msgstr "Planado de la ĉenstabloj"
+
+msgid "Search branches and tags"
+msgstr "Serĉu branĉon aŭ etikedon"
+
+msgid "Select Archive Format"
+msgstr "Elektu formaton de arkivo"
+
+msgid "Select a timezone"
+msgstr "Elektu horzonon"
+
+msgid "Select target branch"
+msgstr "Elektu celan branĉon"
+
+msgid "Set a password on your account to pull or push via %{protocol}."
+msgstr ""
+"Kreu pasvorton por via konto por ebligi al vi eltiri kaj alpuŝi per "
+"%{protocol}."
+
+msgid "Set up CI"
+msgstr "Agordi SI"
+
+msgid "Set up Koding"
+msgstr "Agordi „Koding“"
+
+msgid "Set up auto deploy"
+msgstr "Agordi aŭtomatan disponigadon"
+
+msgid "SetPasswordToCloneLink|set a password"
+msgstr "kreos pasvorton"
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] "Estas montrata %d evento"
+msgstr[1] "Estas montrataj %d eventoj"
+
+msgid "Source code"
+msgstr "Kodo"
+
+msgid "StarProject|Star"
+msgstr "Steligi"
+
+msgid "Start a %{new_merge_request} with these changes"
+msgstr "Kreu %{new_merge_request} kun ĉi tiuj ŝanĝoj"
+
+msgid "Switch branch/tag"
+msgstr "Iri al branĉo/etikedo"
+
+msgid "Tag"
+msgid_plural "Tags"
+msgstr[0] "Etikedo"
+msgstr[1] "Etikedoj"
+
+msgid "Tags"
+msgstr "Etikedoj"
+
+msgid "Target Branch"
+msgstr "Cela branĉo"
+
+msgid ""
+"The coding stage shows the time from the first commit to creating the merge "
+"request. The data will automatically be added here once you create your "
+"first merge request."
+msgstr ""
+"La etapo de programado montras la tempon de la unua enmetado ĝis la kreado "
+"de la peto pri kunfando. La datenoj aldoniĝos aŭtomate ĉi tie post kiam vi "
+"kreas la unuan peton pri kunfando."
+
+msgid "The collection of events added to the data gathered for that stage."
+msgstr ""
+"La aro da eventoj, kiuj estas aldonitaj al la datenoj kolektitaj por la "
+"etapo."
+
+msgid "The fork relationship has been removed."
+msgstr "La rilato de disbranĉigo estis forigita."
+
+msgid ""
+"The issue stage shows the time it takes from creating an issue to assigning "
+"the issue to a milestone, or add the issue to a list on your Issue Board. "
+"Begin creating issues to see data for this stage."
+msgstr ""
+"La etapo de la problemo montras kiom la tempo pasas de la kreado de problemo "
+"ĝis la atribuado de la problemo al cela etapo de la projekto, aŭ al listo "
+"sur la problemtabulo. Komencu krei problemojn por vidi la datenojn por ĉi "
+"tiu etapo."
+
+msgid "The phase of the development lifecycle."
+msgstr "La etapo de la disvolva ciklo."
+
+msgid ""
+"The pipelines schedule runs pipelines in the future, repeatedly, for "
+"specific branches or tags. Those scheduled pipelines will inherit limited "
+"project access based on their associated user."
+msgstr ""
+"La ĉenstabla plano plenumas ĉenstablojn en la estonteco, ripete, por "
+"difinitaj branĉoj aŭ etikedoj. Tiuj planitaj ĉenstabloj heredos la limigitan "
+"atingon al la projekto de la rilata uzanto."
+
+msgid ""
+"The planning stage shows the time from the previous step to pushing your "
+"first commit. This time will be added automatically once you push your first "
+"commit."
+msgstr ""
+"La etapo de la plano montras la tempon de la antaŭa ŝtupo ĝis la alpuŝado de "
+"via unua enmetado. Ĉi tiu tempo aldoniĝos aŭtomate post kiam vi alpuŝas la "
+"unuan enmetadon."
+
+msgid ""
+"The production stage shows the total time it takes between creating an issue "
+"and deploying the code to production. The data will be automatically added "
+"once you have completed the full idea to production cycle."
+msgstr ""
+"La etapo de eldonado montras la tutan tempon de la kreado de problemo ĝis la "
+"disponigado en la publika versio. La datenoj aldoniĝos aŭtomate post kiam vi "
+"kompletigos plenan ciklon de ideo ĝis realaĵo."
+
+msgid "The project can be accessed by any logged in user."
+msgstr "Ĉiu ensalutita uzanto havas atingon al la projekto"
+
+msgid "The project can be accessed without any authentication."
+msgstr "Ĉiu povas havi atingon al la projekto, sen ensaluti"
+
+msgid "The repository for this project does not exist."
+msgstr "La deponejo por ĉi tiu projekto ne ekzistas."
+
+msgid ""
+"The review stage shows the time from creating the merge request to merging "
+"it. The data will automatically be added after you merge your first merge "
+"request."
+msgstr ""
+"La etapo de la kontrolo montras la tempon de la kreado de la peto pri "
+"kunfando ĝis ĝia aplikado. La datenoj aldoniĝos aŭtomate post kiam vi "
+"aplikos la unuan peton pri kunfando."
+
+msgid ""
+"The staging stage shows the time between merging the MR and deploying code "
+"to the production environment. The data will be automatically added once you "
+"deploy to production for the first time."
+msgstr ""
+"La etapo de preparo por eldono montras la tempon inter la aplikado de la "
+"peto pri kunfando kaj la disponigado de la kodo en la publika versio. La "
+"datenoj aldoniĝos aŭtomate post kiam vi faros la unuan disponigadon en la "
+"publika versio."
+
+msgid ""
+"The testing stage shows the time GitLab CI takes to run every pipeline for "
+"the related merge request. The data will automatically be added after your "
+"first pipeline finishes running."
+msgstr ""
+"La etapo de testado montras kiom da tempo necesas al „GitLab CI“ por plenumi "
+"ĉiujn ĉenstablojn por la rilata peto pri kunfando. La datenoj aldoniĝos "
+"aŭtomate post kiam via unua ĉenstablo finiĝos."
+
+msgid "The time taken by each data entry gathered by that stage."
+msgstr "La tempo, kiu estas necesa por ĉiu dateno kolektita de la etapo."
+
+msgid ""
+"The value lying at the midpoint of a series of observed values. E.g., "
+"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 ="
+" 6."
+msgstr ""
+"La valoro, kiu troviĝas en la mezo de aro da rigardataj valoroj. Ekzemple: "
+"inter 3, 5 kaj 9, la mediano estas 5. Inter 3, 5, 7 kaj 8, la mediano estas "
+"(5+7)/2 = 6."
+
+msgid ""
+"This means you can not push code until you create an empty repository or "
+"import existing one."
+msgstr ""
+"Ĉi tiu signifas, ke vi ne povos alpuŝi kodon, antaŭ ol vi kreos malplenan "
+"deponejon aŭ enportos jam ekzistantan."
+
+msgid "Time before an issue gets scheduled"
+msgstr "Tempo antaŭ problemo estas planita por ellabori"
+
+msgid "Time before an issue starts implementation"
+msgstr "Tempo antaŭ la komenco de laboro super problemo"
+
+msgid "Time between merge request creation and merge/close"
+msgstr "Tempo inter la kreado de poeto pri kunfando kaj ĝia aplikado/fermado"
+
+msgid "Time until first merge request"
+msgstr "Tempo ĝis la unua peto pri kunfando"
+
+msgid "Timeago|%s days ago"
+msgstr "antaŭ %s tagoj"
+
+msgid "Timeago|%s days remaining"
+msgstr "restas %s tagoj"
+
+msgid "Timeago|%s hours remaining"
+msgstr "restas %s horoj"
+
+msgid "Timeago|%s minutes ago"
+msgstr "antaŭ %s minutoj"
+
+msgid "Timeago|%s minutes remaining"
+msgstr "restas %s minutoj"
+
+msgid "Timeago|%s months ago"
+msgstr "antaŭ %s monatoj"
+
+msgid "Timeago|%s months remaining"
+msgstr "restas %s monatoj"
+
+msgid "Timeago|%s seconds remaining"
+msgstr "restas %s sekundoj"
+
+msgid "Timeago|%s weeks ago"
+msgstr "antaŭ %s semajnoj"
+
+msgid "Timeago|%s weeks remaining"
+msgstr "restas %s semajnoj"
+
+msgid "Timeago|%s years ago"
+msgstr "antaŭ %s jaroj"
+
+msgid "Timeago|%s years remaining"
+msgstr "restas %s jaroj"
+
+msgid "Timeago|1 day remaining"
+msgstr "restas 1 tago"
+
+msgid "Timeago|1 hour remaining"
+msgstr "restas 1 horo"
+
+msgid "Timeago|1 minute remaining"
+msgstr "restas 1 minuto"
+
+msgid "Timeago|1 month remaining"
+msgstr "restas 1 monato"
+
+msgid "Timeago|1 week remaining"
+msgstr "restas 1 semajno"
+
+msgid "Timeago|1 year remaining"
+msgstr "restas 1 jaro"
+
+msgid "Timeago|Past due"
+msgstr "Malfruiĝis"
+
+msgid "Timeago|a day ago"
+msgstr "antaŭ unu tago"
+
+msgid "Timeago|a month ago"
+msgstr "antaŭ unu monato"
+
+msgid "Timeago|a week ago"
+msgstr "antaŭ unu semajno"
+
+msgid "Timeago|a while"
+msgstr "antaŭ iom da tempo"
+
+msgid "Timeago|a year ago"
+msgstr "antaŭ unu jaro"
+
+msgid "Timeago|about %s hours ago"
+msgstr "antaŭ ĉirkaŭ %s horoj"
+
+msgid "Timeago|about a minute ago"
+msgstr "antaŭ ĉirkaŭ unu minuto"
+
+msgid "Timeago|about an hour ago"
+msgstr "antaŭ ĉirkaŭ unu horo"
+
+msgid "Timeago|in %s days"
+msgstr "post %s tagoj"
+
+msgid "Timeago|in %s hours"
+msgstr "post %s horoj"
+
+msgid "Timeago|in %s minutes"
+msgstr "post %s minutoj"
+
+msgid "Timeago|in %s months"
+msgstr "post %s monatoj"
+
+msgid "Timeago|in %s seconds"
+msgstr "post %s sekundoj"
+
+msgid "Timeago|in %s weeks"
+msgstr "post %s semajnoj"
+
+msgid "Timeago|in %s years"
+msgstr "post %s jaroj"
+
+msgid "Timeago|in 1 day"
+msgstr "post 1 tago"
+
+msgid "Timeago|in 1 hour"
+msgstr "post 1 horo"
+
+msgid "Timeago|in 1 minute"
+msgstr "post 1 minuto"
+
+msgid "Timeago|in 1 month"
+msgstr "post 1 monato"
+
+msgid "Timeago|in 1 week"
+msgstr "post 1 semajno"
+
+msgid "Timeago|in 1 year"
+msgstr "post 1 jaro"
+
+msgid "Timeago|less than a minute ago"
+msgstr "antaŭ malpli ol minuto"
+
+msgid "Time|hr"
+msgid_plural "Time|hrs"
+msgstr[0] "h"
+msgstr[1] "h"
+
+msgid "Time|min"
+msgid_plural "Time|mins"
+msgstr[0] "min"
+msgstr[1] "min"
+
+msgid "Time|s"
+msgstr "s"
+
+msgid "Total Time"
+msgstr "Totala tempo"
+
+msgid "Total test time for all commits/merges"
+msgstr "Totala tempo por la testado de ĉiuj enmetadoj/kunfandoj"
+
+msgid "Unstar"
+msgstr "Malsteligi"
+
+msgid "Upload New File"
+msgstr "Alŝuti novan dosieron"
+
+msgid "Upload file"
+msgstr "Alŝuti dosieron"
+
+msgid "UploadLink|click to upload"
+msgstr "alklaku por alŝuti"
+
+msgid "Use your global notification setting"
+msgstr "Uzi vian ĝeneralan agordon pri la sciigoj"
+
+msgid "View open merge request"
+msgstr "Vidi la malfermitan peton pri kunfando"
+
+msgid "VisibilityLevel|Internal"
+msgstr "Interna"
+
+msgid "VisibilityLevel|Private"
+msgstr "Privata"
+
+msgid "VisibilityLevel|Public"
+msgstr "Publika"
+
+msgid "Want to see the data? Please ask an administrator for access."
+msgstr ""
+"Ĉu vi volas vidi la datenojn? Bonvolu peti atingeblon de administranto."
+
+msgid "We don't have enough data to show this stage."
+msgstr "Ne estas sufiĉe da datenoj por montri ĉi tiun etapon."
+
+msgid "Withdraw Access Request"
+msgstr "Nuligi la peton pri atingeblo"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr ""
+"Vi forigos „%{group_name}“.\n"
+"Oni NE POVAS malfari la forigon de grupo!\n"
+"Ĉu vi estas ABSOLUTE certa?"
+
+msgid ""
+"You are going to remove %{project_name_with_namespace}.\n"
+"Removed project CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr ""
+"Vi forigos „%{project_name_with_namespace}“.\n"
+"Oni NE POVAS malfari la forigon de projekto!\n"
+"Ĉu vi estas ABSOLUTE certa?"
+
+msgid ""
+"You are going to remove the fork relationship to source project "
+"%{forked_from_project}. Are you ABSOLUTELY sure?"
+msgstr ""
+"Vi forigos la rilaton de la disbranĉigo al la originala projekto, "
+"„%{forked_from_project}“. Ĉu vi estas ABSOLUTE certa?"
+
+msgid ""
+"You are going to transfer %{project_name_with_namespace} to another owner. "
+"Are you ABSOLUTELY sure?"
+msgstr ""
+"Vi transigos „%{project_name_with_namespace}“ al alia posedanto. Ĉu vi estas "
+"ABSOLUTE certa?"
+
+msgid "You can only add files when you are on a branch"
+msgstr "Oni povas aldoni dosierojn nur kiam oni estas en branĉo"
+
+msgid "You have reached your project limit"
+msgstr "Vi ne povas krei pliajn projektojn"
+
+msgid "You must sign in to star a project"
+msgstr "Oni devas ensaluti por steligi projekton"
+
+msgid "You need permission."
+msgstr "VI bezonas permeson."
+
+msgid "You will not get any notifications via email"
+msgstr "VI ne ricevos sciigojn per retpoŝto"
+
+msgid "You will only receive notifications for the events you choose"
+msgstr "Vi ricevos sciigojn nur por la eventoj elektitaj de vi"
+
+msgid ""
+"You will only receive notifications for threads you have participated in"
+msgstr "Vi ricevos sciigojn nur por la fadenoj, en kiuj vi partoprenis"
+
+msgid "You will receive notifications for any activity"
+msgstr "Vi ricevos sciigojn por ĉiu ago"
+
+msgid ""
+"You will receive notifications only for comments in which you were "
+"@mentioned"
+msgstr "Vi ricevos sciigojn nur por komentoj, en kiuj vi estas @menciita"
+
+msgid ""
+"You won't be able to pull or push project code via %{protocol} until you "
+"%{set_password_link} on your account"
+msgstr ""
+"Vi ne povos eltiri aŭ alpuŝi kodon per %{protocol} antaŭ ol vi "
+"%{set_password_link} por via konto"
+
+msgid ""
+"You won't be able to pull or push project code via SSH until you "
+"%{add_ssh_key_link} to your profile"
+msgstr ""
+"Vi ne povos eltiri aŭ alpuŝi kodon per SSH antaŭ ol vi %{add_ssh_key_link} "
+"al via profilo"
+
+msgid "Your name"
+msgstr "Via nomo"
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "tago"
+msgstr[1] "tagoj"
+
+msgid "new merge request"
+msgstr "novan peton pri kunfando"
+
+msgid "notification emails"
+msgstr "sciigoj per retpoŝto"
+
+msgid "parent"
+msgid_plural "parents"
+msgstr[0] "patro"
+msgstr[1] "patroj"
+

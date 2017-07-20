@@ -4,7 +4,7 @@ function expandSectionParent($section, $content) {
 }
 
 function expandSection($section) {
-  $section.find('.js-settings-toggle').text('Close');
+  $section.find('.js-settings-toggle').text('Collapse');
 
   const $content = $section.find('.settings-content');
   $content.addClass('expanded').off('scroll.expandSection').scrollTop(0);

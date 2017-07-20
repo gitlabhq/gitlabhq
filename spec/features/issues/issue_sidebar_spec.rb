@@ -10,7 +10,7 @@ feature 'Issue Sidebar', feature: true do
   let!(:label) { create(:label, project: project, title: 'bug') }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'assignee', js: true do
@@ -154,20 +154,6 @@ feature 'Issue Sidebar', feature: true do
     end
   end
 
-  context 'as a allowed mobile user', js: true do
-    before do
-      project.team << [user, :developer]
-      resize_screen_xs
-      visit_issue(project, issue)
-    end
-
-    context 'mobile sidebar' do
-      it 'collapses the sidebar for small screens' do
-        expect(page).not_to have_css('aside.right-sidebar.right-sidebar-collapsed')
-      end
-    end
-  end
-
   context 'as a guest' do
     before do
       project.team << [user, :guest]
@@ -180,7 +166,7 @@ feature 'Issue Sidebar', feature: true do
   end
 
   def visit_issue(project, issue)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
   def open_issue_sidebar

@@ -48,7 +48,7 @@ describe HasStatus do
           [create(type, status: :failed, allow_failure: true)]
         end
 
-        it { is_expected.to eq 'skipped' }
+        it { is_expected.to eq 'success' }
       end
 
       context 'success and canceled' do

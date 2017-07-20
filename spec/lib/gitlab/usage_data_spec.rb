@@ -30,13 +30,15 @@ describe Gitlab::UsageData do
       expect(count_data.keys).to match_array(%i(
         boards
         ci_builds
-        ci_pipelines
+        ci_internal_pipelines
+        ci_external_pipelines
         ci_runners
         ci_triggers
         ci_pipeline_schedules
         deploy_keys
         deployments
         environments
+        in_review_folder
         groups
         issues
         keys
@@ -46,6 +48,7 @@ describe Gitlab::UsageData do
         milestones
         notes
         projects
+        projects_imported_from_github
         projects_prometheus_active
         pages_domains
         protected_branches

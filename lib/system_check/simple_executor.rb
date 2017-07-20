@@ -75,6 +75,8 @@ module SystemCheck
 
         check.show_error
       end
+    rescue StandardError => e
+      $stdout.puts "Exception: #{e.message}".color(:red)
     end
 
     private

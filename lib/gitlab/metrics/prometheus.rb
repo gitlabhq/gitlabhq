@@ -6,9 +6,11 @@ module Gitlab
       include Gitlab::CurrentSettings
 
       def metrics_folder_present?
-        ENV.has_key?('prometheus_multiproc_dir') &&
-          ::Dir.exist?(ENV['prometheus_multiproc_dir']) &&
-          ::File.writable?(ENV['prometheus_multiproc_dir'])
+        multiprocess_files_dir = ::Prometheus::Client.configuration.multiprocess_files_dir
+
+        multiprocess_files_dir &&
+          ::Dir.exist?(multiprocess_files_dir) &&
+          ::File.writable?(multiprocess_files_dir)
       end
 
       def prometheus_metrics_enabled?
@@ -29,8 +31,8 @@ module Gitlab
         provide_metric(name) || registry.summary(name, docstring, base_labels)
       end
 
-      def gauge(name, docstring, base_labels = {})
-        provide_metric(name) || registry.gauge(name, docstring, base_labels)
+      def gauge(name, docstring, base_labels = {}, multiprocess_mode = :all)
+        provide_metric(name) || registry.gauge(name, docstring, base_labels, multiprocess_mode)
       end
 
       def histogram(name, docstring, base_labels = {}, buckets = ::Prometheus::Client::Histogram::DEFAULT_BUCKETS)

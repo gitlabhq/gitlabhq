@@ -10,7 +10,7 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to belong_to(:assignee) }
-    it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
+    it { is_expected.to have_many(:merge_request_diffs) }
   end
 
   describe 'modules' do
@@ -102,6 +102,22 @@ describe MergeRequest, models: true do
 
       expect(subject.card_attributes)
         .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+    end
+  end
+
+  describe '#assignee_ids' do
+    it 'returns an array of the assigned user id' do
+      subject.assignee_id = 123
+
+      expect(subject.assignee_ids).to eq([123])
+    end
+  end
+
+  describe '#assignee_ids=' do
+    it 'sets assignee_id to the last id in the array' do
+      subject.assignee_ids = [123, 456]
+
+      expect(subject.assignee_id).to eq(456)
     end
   end
 
@@ -704,14 +720,14 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
-  describe '#commits_sha' do
+  describe '#commit_shas' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_sha)
+      allow(subject.merge_request_diff).to receive(:commit_shas)
         .and_return(['sha1'])
     end
 
     it 'delegates to merge request diff' do
-      expect(subject.commits_sha).to eq ['sha1']
+      expect(subject.commit_shas).to eq ['sha1']
     end
   end
 
@@ -736,7 +752,7 @@ describe MergeRequest, models: true do
   describe '#all_pipelines' do
     shared_examples 'returning pipelines with proper ordering' do
       let!(:all_pipelines) do
-        subject.all_commits_sha.map do |sha|
+        subject.all_commit_shas.map do |sha|
           create(:ci_empty_pipeline,
                  project: subject.source_project,
                  sha: sha,
@@ -778,16 +794,16 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#all_commits_sha' do
+  describe '#all_commit_shas' do
     context 'when merge request is persisted' do
-      let(:all_commits_sha) do
+      let(:all_commit_shas) do
         subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
       end
 
       shared_examples 'returning all SHA' do
         it 'returns all SHA from all merge_request_diffs' do
           expect(subject.merge_request_diffs.size).to eq(2)
-          expect(subject.all_commits_sha).to eq(all_commits_sha)
+          expect(subject.all_commit_shas).to match_array(all_commit_shas)
         end
       end
 
@@ -818,7 +834,7 @@ describe MergeRequest, models: true do
         end
 
         it 'returns commits from compare commits temporary data' do
-          expect(subject.all_commits_sha).to eq [commit, commit]
+          expect(subject.all_commit_shas).to eq [commit, commit]
         end
       end
 
@@ -826,7 +842,7 @@ describe MergeRequest, models: true do
         subject { build(:merge_request) }
 
         it 'returns array with diff head sha element only' do
-          expect(subject.all_commits_sha).to eq [subject.diff_head_sha]
+          expect(subject.all_commit_shas).to eq [subject.diff_head_sha]
         end
       end
     end
@@ -1572,6 +1588,42 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         expect(subject.version_params_for(diff_refs)).to be_nil
       end
+    end
+  end
+
+  describe '#fetch_ref' do
+    it 'sets "ref_fetched" flag to true' do
+      subject.update!(ref_fetched: nil)
+
+      subject.fetch_ref
+
+      expect(subject.reload.ref_fetched).to be_truthy
+    end
+  end
+
+  describe '#ref_fetched?' do
+    it 'does not perform git operation when value is cached' do
+      subject.ref_fetched = true
+
+      expect_any_instance_of(Repository).not_to receive(:ref_exists?)
+      expect(subject.ref_fetched?).to be_truthy
+    end
+
+    it 'caches the value when ref exists but value is not cached' do
+      subject.update!(ref_fetched: nil)
+      allow_any_instance_of(Repository).to receive(:ref_exists?)
+        .and_return(true)
+
+      expect(subject.ref_fetched?).to be_truthy
+      expect(subject.reload.ref_fetched).to be_truthy
+    end
+
+    it 'returns false when ref does not exist' do
+      subject.update!(ref_fetched: nil)
+      allow_any_instance_of(Repository).to receive(:ref_exists?)
+        .and_return(false)
+
+      expect(subject.ref_fetched?).to be_falsey
     end
   end
 end

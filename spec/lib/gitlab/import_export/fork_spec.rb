@@ -44,6 +44,8 @@ describe 'forked project import', services: true do
   end
 
   it 'can access the MR' do
-    expect(project.merge_requests.first.ensure_ref_fetched.first).to include('refs/merge-requests/1/head')
+    project.merge_requests.first.ensure_ref_fetched
+
+    expect(project.repository.ref_exists?('refs/merge-requests/1/head')).to be_truthy
   end
 end

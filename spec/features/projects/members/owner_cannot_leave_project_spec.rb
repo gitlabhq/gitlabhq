@@ -4,8 +4,8 @@ feature 'Projects > Members > Owner cannot leave project', feature: true do
   let(:project) { create(:project) }
 
   background do
-    gitlab_sign_in(project.owner)
-    visit namespace_project_path(project.namespace, project)
+    sign_in(project.owner)
+    visit project_path(project)
   end
 
   scenario 'user does not see a "Leave project" link' do

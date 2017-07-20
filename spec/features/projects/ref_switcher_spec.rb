@@ -6,8 +6,8 @@ feature 'Ref switcher', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
-    visit namespace_project_tree_path(project.namespace, project, 'master')
+    sign_in(user)
+    visit project_tree_path(project, 'master')
   end
 
   it 'allow user to change ref by enter key' do

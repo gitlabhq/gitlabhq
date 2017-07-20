@@ -5,7 +5,10 @@ class IssueTrackerService < Service
 
   # Pattern used to extract links from comments
   # Override this method on services that uses different patterns
-  def reference_pattern
+  # This pattern does not support cross-project references
+  # The other code assumes that this pattern is a superset of all
+  # overriden patterns. See ReferenceRegexes::EXTERNAL_PATTERN
+  def self.reference_pattern
     @reference_pattern ||= %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
   end
 
@@ -17,7 +20,7 @@ class IssueTrackerService < Service
     self.issues_url.gsub(':id', iid.to_s)
   end
 
-  def project_path
+  def issue_tracker_path
     project_url
   end
 

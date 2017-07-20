@@ -13,7 +13,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I visit project "Community" page' do
     project = Project.find_by(name: 'Community')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I should see project "Community" home page' do
@@ -25,12 +25,12 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I visit project "Enterprise" page' do
     project = Project.find_by(name: 'Enterprise')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I visit project "CommunityDoesNotExist" page' do
     project = Project.find_by(name: 'Community')
-    visit namespace_project_path(project.namespace, project) + 'DoesNotExist'
+    visit project_path(project) + 'DoesNotExist'
   end
 
   step 'I click on "Sign In"' do

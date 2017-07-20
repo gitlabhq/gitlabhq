@@ -7,7 +7,7 @@ feature 'Pipelines for Merge Requests', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
   end
 
   context 'with pipelines' do
@@ -19,7 +19,7 @@ feature 'Pipelines for Merge Requests', feature: true, js: true do
     end
 
     before do
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     scenario 'user visits merge request pipelines tab' do
@@ -34,7 +34,7 @@ feature 'Pipelines for Merge Requests', feature: true, js: true do
 
   context 'without pipelines' do
     before do
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     scenario 'user visits merge request page' do

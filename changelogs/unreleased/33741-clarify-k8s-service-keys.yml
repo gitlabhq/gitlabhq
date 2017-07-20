@@ -1,0 +1,5 @@
+---
+title: Clarifies and rearranges the input variables on the kubernetes integration
+  page and adjusts the docs slightly to meet the same order
+merge_request: !12188
+author:

@@ -7,7 +7,7 @@ module AwardEmojiHelper
       if awardable.for_personal_snippet?
         toggle_award_emoji_snippet_note_path(awardable.noteable, awardable)
       else
-        toggle_award_emoji_namespace_project_note_path(@project.namespace, @project, awardable.id)
+        toggle_award_emoji_project_note_path(@project, awardable.id)
       end
     else
       url_for([:toggle_award_emoji, @project.namespace.becomes(Namespace), @project, awardable])

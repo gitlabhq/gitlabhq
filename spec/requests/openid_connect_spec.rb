@@ -79,7 +79,7 @@ describe 'OpenID Connect requests' do
           'email_verified' => true,
           'website'        => 'https://example.com',
           'profile'        => 'http://localhost/alice',
-          'picture'        => "http://localhost/uploads/system/user/avatar/#{user.id}/dk.png"
+          'picture'        => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png"
         })
       end
     end
@@ -98,7 +98,7 @@ describe 'OpenID Connect requests' do
         expect(@payload['sub']).to eq hashed_subject
       end
 
-      it 'includes the time of the last authentication', :redis do
+      it 'includes the time of the last authentication', :clean_gitlab_redis_shared_state do
         expect(@payload['auth_time']).to eq user.current_sign_in_at.to_i
       end
 

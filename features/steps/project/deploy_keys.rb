@@ -36,7 +36,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should be on deploy keys page' do
-    expect(current_path).to eq namespace_project_settings_repository_path(@project.namespace, @project)
+    expect(current_path).to eq project_settings_repository_path(@project)
   end
 
   step 'I should see newly created deploy key' do

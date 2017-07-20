@@ -48,7 +48,7 @@ class SessionsController < Devise::SessionsController
   private
 
   def login_counter
-    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins, 'User sign in count')
+    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins_total, 'User sign in count')
   end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
@@ -58,12 +58,13 @@ class SessionsController < Devise::SessionsController
 
     user = User.admins.last
 
-    return unless user && user.require_password?
+    return unless user && user.require_password_creation?
 
-    token = user.generate_reset_token
-    user.save
+    Users::UpdateService.new(user).execute do |user|
+      @token = user.generate_reset_token
+    end
 
-    redirect_to edit_user_password_path(reset_password_token: token),
+    redirect_to edit_user_password_path(reset_password_token: @token),
       notice: "Please create a password for your new account."
   end
 

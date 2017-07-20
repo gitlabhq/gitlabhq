@@ -7,6 +7,10 @@ import '~/commons';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 
+const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
+Vue.config.devtools = !isHeadlessChrome;
+Vue.config.productionTip = false;
+
 Vue.use(VueResource);
 
 // enable test fixtures
@@ -21,6 +25,19 @@ window._ = _;
 window.gl = window.gl || {};
 window.gl.TEST_HOST = 'http://test.host';
 window.gon = window.gon || {};
+
+let hasUnhandledPromiseRejections = false;
+
+window.addEventListener('unhandledrejection', (event) => {
+  hasUnhandledPromiseRejections = true;
+  console.error('Unhandled promise rejection:');
+  console.error(event.reason.stack || event.reason);
+});
+
+const checkUnhandledPromiseRejections = (done) => {
+  expect(hasUnhandledPromiseRejections).toBe(false);
+  done();
+};
 
 // HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
 // because it appears to lock up the thread that communicates to Karma's socket
@@ -61,6 +78,10 @@ testsContext.keys().forEach(function (path) {
       });
     });
   }
+});
+
+it('has no unhandled Promise rejections', (done) => {
+  setTimeout(checkUnhandledPromiseRejections(done), 1000);
 });
 
 // if we're generating coverage reports, make sure to include all files so

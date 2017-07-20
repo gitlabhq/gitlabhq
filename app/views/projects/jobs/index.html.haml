@@ -2,6 +2,9 @@
 - page_title "Jobs"
 = render "projects/pipelines/head"
 
+- if show_new_nav?
+  - add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
+
 %div{ class: container_class }
   .top-area
     - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }
@@ -10,7 +13,7 @@
     .nav-controls
       - if can?(current_user, :update_build, @project)
         - if @all_builds.running_or_pending.any?
-          = link_to 'Cancel running', cancel_all_namespace_project_jobs_path(@project.namespace, @project),
+          = link_to 'Cancel running', cancel_all_project_jobs_path(@project),
             data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
         - unless @repository.gitlab_ci_yml

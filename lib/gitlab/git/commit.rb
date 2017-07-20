@@ -38,7 +38,7 @@ module Gitlab
           repo = options.delete(:repo)
           raise 'Gitlab::Git::Repository is required' unless repo.respond_to?(:log)
 
-          repo.log(options).map { |c| decorate(c) }
+          repo.log(options)
         end
 
         # Get single commit
@@ -48,6 +48,7 @@ module Gitlab
         #
         #   Commit.find(repo, 'master')
         #
+        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/321
         def find(repo, commit_id = "HEAD")
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
           return decorate(commit_id) if commit_id.is_a?(Rugged::Commit)
@@ -97,16 +98,79 @@ module Gitlab
         #   Commit.between(repo, '29eda46b', 'master')
         #
         def between(repo, base, head)
-          repo.commits_between(base, head).map do |commit|
+          commits = Gitlab::GitalyClient.migrate(:commits_between) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.between(base, head)
+            else
+              repo.commits_between(base, head)
+            end
+          end
+
+          commits.map do |commit|
             decorate(commit)
           end
         rescue Rugged::ReferenceError
           []
         end
 
-        # Delegate Repository#find_commits
+        # Returns commits collection
+        #
+        # Ex.
+        #   Commit.find_all(
+        #     repo,
+        #     ref: 'master',
+        #     max_count: 10,
+        #     skip: 5,
+        #     order: :date
+        #   )
+        #
+        #   +options+ is a Hash of optional arguments to git
+        #     :ref is the ref from which to begin (SHA1 or name)
+        #     :max_count is the maximum number of commits to fetch
+        #     :skip is the number of commits to skip
+        #     :order is the commits order and allowed value is :none (default), :date,
+        #        :topo, or any combination of them (in an array). Commit ordering types
+        #        are documented here:
+        #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
+        #
+        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/326
         def find_all(repo, options = {})
-          repo.find_commits(options)
+          actual_options = options.dup
+
+          allowed_options = [:ref, :max_count, :skip, :order]
+
+          actual_options.keep_if do |key|
+            allowed_options.include?(key)
+          end
+
+          default_options = { skip: 0 }
+          actual_options = default_options.merge(actual_options)
+
+          rugged = repo.rugged
+          walker = Rugged::Walker.new(rugged)
+
+          if actual_options[:ref]
+            walker.push(rugged.rev_parse_oid(actual_options[:ref]))
+          else
+            rugged.references.each("refs/heads/*") do |ref|
+              walker.push(ref.target_id)
+            end
+          end
+
+          walker.sorting(rugged_sort_type(actual_options[:order]))
+
+          commits = []
+          offset = actual_options[:skip]
+          limit = actual_options[:max_count]
+          walker.each(offset: offset, limit: limit) do |commit|
+            commits.push(decorate(commit))
+          end
+
+          walker.reset
+
+          commits
+        rescue Rugged::OdbError
+          []
         end
 
         def decorate(commit, ref = nil)
@@ -131,6 +195,20 @@ module Gitlab
           diff.find_similar!(break_rewrites: break_rewrites)
           diff
         end
+
+        # Returns the `Rugged` sorting type constant for one or more given
+        # sort types. Valid keys are `:none`, `:topo`, and `:date`, or an array
+        # containing more than one of them. `:date` uses a combination of date and
+        # topological sorting to closer mimic git's native ordering.
+        def rugged_sort_type(sort_type)
+          @rugged_sort_types ||= {
+            none: Rugged::SORT_NONE,
+            topo: Rugged::SORT_TOPO,
+            date: Rugged::SORT_DATE | Rugged::SORT_TOPO
+          }
+
+          @rugged_sort_types.fetch(sort_type, Rugged::SORT_NONE)
+        end
       end
 
       def initialize(raw_commit, head = nil)
@@ -140,6 +218,8 @@ module Gitlab
           init_from_hash(raw_commit)
         elsif raw_commit.is_a?(Rugged::Commit)
           init_from_rugged(raw_commit)
+        elsif raw_commit.is_a?(Gitaly::GitCommit)
+          init_from_gitaly(raw_commit)
         else
           raise "Invalid raw commit type: #{raw_commit.class}"
         end
@@ -175,8 +255,10 @@ module Gitlab
       # Shows the diff between the commit's parent and the commit.
       #
       # Cuts out the header and stats from #to_patch and returns only the diff.
-      def to_diff(options = {})
-        diff_from_parent(options).patch
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
+      def to_diff
+        diff_from_parent.patch
       end
 
       # Returns a diff object for the changes from this commit's first parent.
@@ -297,6 +379,22 @@ module Gitlab
         @committer_name = committer[:name]
         @committer_email = committer[:email]
         @parent_ids = commit.parents.map(&:oid)
+      end
+
+      def init_from_gitaly(commit)
+        @raw_commit = commit
+        @id = commit.id
+        # TODO: Once gitaly "takes over" Rugged consider separating the
+        # subject from the message to make it clearer when there's one
+        # available but not the other.
+        @message = (commit.body.presence || commit.subject).dup
+        @authored_date = Time.at(commit.author.date.seconds)
+        @author_name = commit.author.name.dup
+        @author_email = commit.author.email.dup
+        @committed_date = Time.at(commit.committer.date.seconds)
+        @committer_name = commit.committer.name.dup
+        @committer_email = commit.committer.email.dup
+        @parent_ids = commit.parent_ids
       end
 
       def serialize_keys

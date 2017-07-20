@@ -6,7 +6,7 @@
         %h3.page-title Delete #{@blob.name}
 
       .modal-body
-        = form_tag namespace_project_blob_path(@project.namespace, @project, @id), method: :delete, class: 'form-horizontal js-delete-blob-form js-quick-submit js-requires-input' do
+        = form_tag project_blob_path(@project, @id), method: :delete, class: 'form-horizontal js-delete-blob-form js-quick-submit js-requires-input' do
           = render 'shared/new_commit_form', placeholder: "Delete #{@blob.name}"
 
           .form-group

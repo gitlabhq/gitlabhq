@@ -58,20 +58,23 @@
 
   %br
 
-  .table-holder
-    %table.table
-      %thead
-        %tr
-          %th Type
-          %th Runner token
-          %th Description
-          %th Version
-          %th Projects
-          %th Jobs
-          %th Tags
-          %th Last contact
-          %th
+  - if @runners.any?
+    .table-holder
+      %table.table
+        %thead
+          %tr
+            %th Type
+            %th Runner token
+            %th Description
+            %th Version
+            %th Projects
+            %th Jobs
+            %th Tags
+            %th Last contact
+            %th
 
-      - @runners.each do |runner|
-        = render "admin/runners/runner", runner: runner
-  = paginate @runners, theme: "gitlab"
+        - @runners.each do |runner|
+          = render "admin/runners/runner", runner: runner
+    = paginate @runners, theme: "gitlab"
+  - else
+    .nothing-here-block No runners found

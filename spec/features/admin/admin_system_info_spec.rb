@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Admin System Info' do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe 'GET /admin/system_info' do

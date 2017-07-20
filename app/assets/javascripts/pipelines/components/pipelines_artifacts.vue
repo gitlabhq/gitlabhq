@@ -1,5 +1,5 @@
 <script>
-  import tooltipMixin from '../../vue_shared/mixins/tooltip';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
     props: {
@@ -8,9 +8,9 @@
         required: true,
       },
     },
-    mixins: [
-      tooltipMixin,
-    ],
+    directives: {
+      tooltip,
+    },
   };
 </script>
 <template>
@@ -18,12 +18,12 @@
     class="btn-group"
     role="group">
     <button
+      v-tooltip
       class="dropdown-toggle btn btn-default build-artifacts js-pipeline-dropdown-download"
       title="Artifacts"
       data-placement="top"
       data-toggle="dropdown"
-      aria-label="Artifacts"
-      ref="tooltip">
+      aria-label="Artifacts">
       <i
         class="fa fa-download"
         aria-hidden="true">

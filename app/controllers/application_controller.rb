@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
-  include Peek::Rblineprof::CustomControllerHelpers
+  include WithPerformanceBar
 
   before_action :authenticate_user_from_private_token!
   before_action :authenticate_user_from_rss_token!
@@ -40,6 +40,10 @@ class ApplicationController < ActionController::Base
     render_404
   end
 
+  rescue_from(ActionController::UnknownFormat) do
+    render_404
+  end
+
   rescue_from Gitlab::Access::AccessDeniedError do |exception|
     render_403
   end
@@ -61,21 +65,6 @@ class ApplicationController < ActionController::Base
       not_found
     else
       authenticate_user!
-    end
-  end
-
-  def peek_enabled?
-    return false unless Gitlab::PerformanceBar.enabled?
-    return false unless current_user
-
-    if RequestStore.active?
-      if RequestStore.store.key?(:peek_enabled)
-        RequestStore.store[:peek_enabled]
-      else
-        RequestStore.store[:peek_enabled] = cookies[:perf_bar_enabled].present?
-      end
-    else
-      cookies[:perf_bar_enabled].present?
     end
   end
 
@@ -106,6 +95,8 @@ class ApplicationController < ActionController::Base
   end
 
   def log_exception(exception)
+    Raven.capture_exception(exception) if sentry_enabled?
+
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
@@ -179,7 +170,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && current_user.allow_password_authentication?
       return redirect_to new_profile_password_path
     end
   end

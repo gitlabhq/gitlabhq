@@ -278,6 +278,24 @@ describe ProjectWiki, models: true do
     end
   end
 
+  describe '#ensure_repository' do
+    it 'creates the repository if it not exist' do
+      allow(subject).to receive(:repository_exists?).and_return(false)
+
+      expect(subject).to receive(:create_repo!)
+
+      subject.ensure_repository
+    end
+
+    it 'does not create the repository if it exists' do
+      allow(subject).to receive(:repository_exists?).and_return(true)
+
+      expect(subject).not_to receive(:create_repo!)
+
+      subject.ensure_repository
+    end
+  end
+
   describe '#hook_attrs' do
     it 'returns a hash with values' do
       expect(subject.hook_attrs).to be_a Hash

@@ -14,6 +14,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    showToggle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     assigneeTitle() {
@@ -35,6 +40,19 @@ export default {
         href="#"
       >
         Edit
+      </a>
+      <a
+        v-if="showToggle"
+        aria-label="Toggle sidebar"
+        class="gutter-toggle pull-right js-sidebar-toggle"
+        href="#"
+        role="button"
+      >
+        <i
+          aria-hidden="true"
+          data-hidden="true"
+          class="fa fa-angle-double-right"
+        />
       </a>
     </div>
   `,

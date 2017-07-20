@@ -1,11 +1,7 @@
 module NavHelper
   def page_gutter_class
     if current_path?('merge_requests#show') ||
-        current_path?('merge_requests#diffs') ||
-        current_path?('merge_requests#commits') ||
-        current_path?('merge_requests#builds') ||
-        current_path?('merge_requests#conflicts') ||
-        current_path?('merge_requests#pipelines') ||
+        current_path?('projects/merge_requests/conflicts#show') ||
         current_path?('issues#show') ||
         current_path?('milestones#show')
       if cookies[:collapsed_gutter] == 'true'
@@ -27,7 +23,6 @@ module NavHelper
   def nav_header_class
     class_name = ''
     class_name << " with-horizontal-nav" if defined?(nav) && nav
-    class_name << " with-peek" if peek_enabled?
 
     class_name
   end

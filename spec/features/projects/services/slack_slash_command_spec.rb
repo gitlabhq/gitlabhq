@@ -7,8 +7,8 @@ feature 'Slack slash commands', feature: true do
 
   background do
     project.team << [user, :master]
-    gitlab_sign_in(user)
-    visit edit_namespace_project_service_path(project.namespace, project, service)
+    sign_in(user)
+    visit edit_project_service_path(project, service)
   end
 
   it 'shows a token placeholder' do
@@ -25,7 +25,7 @@ feature 'Slack slash commands', feature: true do
     fill_in 'service_token', with: 'token'
     click_on 'Save'
 
-    expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
+    expect(current_path).to eq(project_settings_integrations_path(project))
     expect(page).to have_content('Slack slash commands settings saved, but not activated.')
   end
 
@@ -34,7 +34,7 @@ feature 'Slack slash commands', feature: true do
     check 'service_active'
     click_on 'Save'
 
-    expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
+    expect(current_path).to eq(project_settings_integrations_path(project))
     expect(page).to have_content('Slack slash commands activated.')
   end
 

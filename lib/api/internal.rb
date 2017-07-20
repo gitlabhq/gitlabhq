@@ -47,7 +47,8 @@ module API
         {
           status: true,
           gl_repository: gl_repository,
-          repository_path: repository_path
+          repository_path: repository_path,
+          gitaly: gitaly_payload(params[:action])
         }
       end
 
@@ -100,7 +101,7 @@ module API
       end
 
       get "/broadcast_message" do
-        if message = BroadcastMessage.current.last
+        if message = BroadcastMessage.current&.last
           present message, with: Entities::BroadcastMessage
         else
           {}
@@ -132,8 +133,11 @@ module API
           return { success: false, message: 'Two-factor authentication is not enabled for this user' }
         end
 
-        codes = user.generate_otp_backup_codes!
-        user.save!
+        codes = nil
+
+        ::Users::UpdateService.new(user).execute! do |user|
+          codes = user.generate_otp_backup_codes!
+        end
 
         { success: true, recovery_codes: codes }
       end
@@ -146,7 +150,7 @@ module API
         #
         # begin
         #   repository = wiki? ? project.wiki.repository : project.repository
-        #   Gitlab::GitalyClient::Notifications.new(repository.raw_repository).post_receive
+        #   Gitlab::GitalyClient::NotificationService.new(repository.raw_repository).post_receive
         # rescue GRPC::Unavailable => e
         #   render_api_error!(e, 500)
         # end

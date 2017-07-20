@@ -5,8 +5,8 @@ feature 'User wants to add a .gitignore file', feature: true do
     user = create(:user)
     project = create(:project)
     project.team << [user, :master]
-    gitlab_sign_in user
-    visit namespace_project_new_blob_path(project.namespace, project, 'master', file_name: '.gitignore')
+    sign_in user
+    visit project_new_blob_path(project, 'master', file_name: '.gitignore')
   end
 
   scenario 'user can see .gitignore dropdown' do

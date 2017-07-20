@@ -17,7 +17,7 @@ module API
 
         namespaces = namespaces.search(params[:search]) if params[:search].present?
 
-        present paginate(namespaces), with: Entities::Namespace
+        present paginate(namespaces), with: Entities::Namespace, current_user: current_user
       end
     end
   end

@@ -22,7 +22,6 @@ describe('Time ago with tooltip component', () => {
     }).$mount();
 
     expect(vm.$el.tagName).toEqual('TIME');
-    expect(vm.$el.classList.contains('js-vue-timeago')).toEqual(true);
     expect(
       vm.$el.getAttribute('data-original-title'),
     ).toEqual(gl.utils.formatDate('2017-05-08T14:57:39.781Z'));

@@ -1,0 +1,4 @@
+---
+title: Update QA Dockerfile to lock Chrome browser version
+merge_request: 12071
+author:

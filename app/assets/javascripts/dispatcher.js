@@ -1,10 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-/* global UsernameValidator */
-/* global ActiveTabMemoizer */
+/* global ProjectSelect */
 /* global ShortcutsNavigation */
 /* global IssuableIndex */
 /* global ShortcutsIssuable */
-/* global ZenMode */
 /* global Milestone */
 /* global IssuableForm */
 /* global LabelsSelect */
@@ -24,7 +22,6 @@
 /* global ProjectAvatar */
 /* global CompareAutocomplete */
 /* global ProjectNew */
-/* global Star */
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
@@ -53,8 +50,20 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import SigninTabsMemoizer from './signin_tabs_memoizer';
+import Star from './star';
+import Todos from './todos';
+import TreeView from './tree';
+import UsagePing from './usage_ping';
+import UsernameValidator from './username_validator';
+import VersionCheckImage from './version_check_image';
+import Wikis from './wikis';
+import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
 import ScrollHelper from './helpers/scroll_helper';
+import initExperimentalFlags from './experimental_flags';
+import OAuthRememberMe from './oauth_remember_me';
+import PerformanceBar from './performance_bar';
 
 (function() {
   var Dispatcher;
@@ -123,9 +132,13 @@ import ScrollHelper from './helpers/scroll_helper';
       }
 
       switch (page) {
+        case 'profiles:preferences:show':
+          initExperimentalFlags();
+          break;
         case 'sessions:new':
           new UsernameValidator();
-          new ActiveTabMemoizer();
+          new SigninTabsMemoizer();
+          new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':
@@ -149,6 +162,9 @@ import ScrollHelper from './helpers/scroll_helper';
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
           break;
+        case 'dashboard:milestones:index':
+          new ProjectSelect();
+          break;
         case 'projects:milestones:show':
         case 'groups:milestones:show':
         case 'dashboard:milestones:show':
@@ -158,9 +174,10 @@ import ScrollHelper from './helpers/scroll_helper';
         case 'groups:issues':
         case 'groups:merge_requests':
           new UsersSelect();
+          new ProjectSelect();
           break;
         case 'dashboard:todos:index':
-          new gl.Todos();
+          new Todos();
           break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
@@ -208,8 +225,8 @@ import ScrollHelper from './helpers/scroll_helper';
           new MilestoneSelect();
           new gl.IssuableTemplateSelectors();
           break;
-        case 'projects:merge_requests:new':
-        case 'projects:merge_requests:new_diffs':
+        case 'projects:merge_requests:creations:new':
+        case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
@@ -246,15 +263,12 @@ import ScrollHelper from './helpers/scroll_helper';
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
           break;
-        case "projects:merge_requests:diffs":
-          new gl.Diff();
-          new ZenMode();
-          break;
         case 'dashboard:activity':
           new gl.Activities();
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
+          new ProjectSelect();
           new UsersSelect();
           break;
         case 'projects:commit:show':
@@ -312,7 +326,7 @@ import ScrollHelper from './helpers/scroll_helper';
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:members:show':
+        case 'projects:project_members:index':
           new gl.MemberExpirationDate('.js-access-expiration-date-groups');
           new GroupsSelect();
           new gl.MemberExpirationDate();
@@ -365,12 +379,12 @@ import ScrollHelper from './helpers/scroll_helper';
           new BlobViewer();
           break;
         case 'help:index':
-          gl.VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
           break;
         case 'search:show':
           new Search();
           break;
-        case 'projects:repository:show':
+        case 'projects:settings:repository:show':
           // Initialize Protected Branch Settings
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
@@ -380,7 +394,8 @@ import ScrollHelper from './helpers/scroll_helper';
           // Initialize expandable settings panels
           initSettingsPanels();
           break;
-        case 'projects:ci_cd:show':
+        case 'projects:settings:ci_cd:show':
+        case 'groups:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
         case 'ci:lints:create':
@@ -417,7 +432,7 @@ import ScrollHelper from './helpers/scroll_helper';
           new Admin();
           switch (path[1]) {
             case 'cohorts':
-              new gl.UsagePing();
+              new UsagePing();
               break;
             case 'groups':
               new UsersSelect();
@@ -469,7 +484,7 @@ import ScrollHelper from './helpers/scroll_helper';
               new NotificationsDropdown();
               break;
             case 'wikis':
-              new gl.Wikis();
+              new Wikis();
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);
@@ -500,6 +515,10 @@ import ScrollHelper from './helpers/scroll_helper';
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
         new Shortcuts();
+      }
+
+      if (document.querySelector('#peek')) {
+        new PerformanceBar({ container: '#peek' });
       }
     };
 

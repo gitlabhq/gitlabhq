@@ -1,3 +1,5 @@
+# Gitaly note: JV: 1 RPC, migration in progress.
+
 # Gitlab::Git::CommitStats counts the additions, deletions, and total changes
 # in a commit.
 module Gitlab
@@ -6,6 +8,8 @@ module Gitlab
       attr_reader :id, :additions, :deletions, :total
 
       # Instantiate a CommitStats object
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/323
       def initialize(commit)
         @id = commit.id
         @additions = 0

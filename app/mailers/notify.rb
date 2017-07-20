@@ -1,5 +1,6 @@
 class Notify < BaseMailer
   include ActionDispatch::Routing::PolymorphicRoutes
+  include GitlabRoutingHelper
 
   include Emails::Issues
   include Emails::MergeRequests

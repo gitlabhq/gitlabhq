@@ -12,9 +12,9 @@ feature 'Widget Deployments Header', feature: true, js: true do
     given!(:manual) { }
 
     background do
-      gitlab_sign_in(user)
+      sign_in(user)
       project.team << [user, role]
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     scenario 'displays that the environment is deployed' do

@@ -7,8 +7,8 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
     find(".table.active-tokens")
   end
 
-  def inactive_personal_access_tokens
-    find(".table.inactive-tokens")
+  def no_personal_access_tokens_message
+    find(".settings-message")
   end
 
   def created_personal_access_token
@@ -23,7 +23,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   end
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe "token creation" do
@@ -80,14 +80,16 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
       visit profile_personal_access_tokens_path
       click_on "Revoke"
 
-      expect(inactive_personal_access_tokens).to have_text(personal_access_token.name)
+      expect(page).to have_selector(".settings-message")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active Personal Access Tokens.")
     end
 
-    it "moves expired tokens to the 'inactive' section" do
+    it "removes expired tokens from 'active' section" do
       personal_access_token.update(expires_at: 5.days.ago)
       visit profile_personal_access_tokens_path
 
-      expect(inactive_personal_access_tokens).to have_text(personal_access_token.name)
+      expect(page).to have_selector(".settings-message")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active Personal Access Tokens.")
     end
 
     context "when revocation fails" do

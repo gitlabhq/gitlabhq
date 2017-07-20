@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ExclusiveLease, type: :redis do
+describe Gitlab::ExclusiveLease, type: :clean_gitlab_redis_shared_state do
   let(:unique_key) { SecureRandom.hex(10) }
 
   describe '#try_obtain' do
@@ -16,6 +16,19 @@ describe Gitlab::ExclusiveLease, type: :redis do
       lease.try_obtain # start the lease
       sleep(2 * timeout) # lease should have expired now
       expect(lease.try_obtain).to be_present
+    end
+  end
+
+  describe '#renew' do
+    it 'returns true when we have the existing lease' do
+      lease = described_class.new(unique_key, timeout: 3600)
+      expect(lease.try_obtain).to be_present
+      expect(lease.renew).to be_truthy
+    end
+
+    it 'returns false when we dont have a lease' do
+      lease = described_class.new(unique_key, timeout: 3600)
+      expect(lease.renew).to be_falsey
     end
   end
 

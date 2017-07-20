@@ -206,7 +206,7 @@ describe Gitlab::Auth, lib: true do
     end
 
     it 'throws an error suggesting user create a PAT when internal auth is disabled' do
-      allow_any_instance_of(ApplicationSetting).to receive(:signin_enabled?) { false }
+      allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled?) { false }
 
       expect { gl_auth.find_for_git_client('foo', 'bar', project: nil, ip: 'ip') }.to raise_error(Gitlab::Auth::MissingPersonalTokenError)
     end
@@ -277,6 +277,16 @@ describe Gitlab::Auth, lib: true do
         expect(Gitlab::LDAP::Authentication).to receive(:login)
 
         gl_auth.find_with_user_password('ldap_user', 'password')
+      end
+    end
+
+    context "with sign-in disabled" do
+      before do
+        stub_application_setting(password_authentication_enabled: false)
+      end
+
+      it "does not find user by valid login/password" do
+        expect(gl_auth.find_with_user_password(username, password)).to be_nil
       end
     end
   end

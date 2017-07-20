@@ -1,7 +1,7 @@
 # Pipelines settings
 
 To reach the pipelines settings navigate to your project's
-**Settings ➔ CI/CD Pipelines**.
+**Settings ➔ Pipelines**.
 
 The following settings can be configured per project.
 
@@ -26,6 +26,22 @@ Timeout defines the maximum amount of time in minutes that a job is able run.
 The default value is 60 minutes. Decrease the time limit if you want to impose
 a hard limit on your jobs' running time or increase it otherwise. In any case,
 if the job surpasses the threshold, it is marked as failed.
+
+## Custom CI config path
+
+>  - [Introduced][ce-12509] in GitLab 9.4.
+
+By default we look for the `.gitlab-ci.yml` file in the project's root
+directory. If you require a different location **within** the repository,
+you can set a custom filepath that will be used to lookup the config file,
+this filepath should be **relative** to the root.
+
+Here are some valid examples:
+
+> * .gitlab-ci.yml
+> * .my-custom-file.yml
+> * my/path/.gitlab-ci.yml
+> * my/path/.my-custom-file.yml
 
 ## Test coverage parsing
 
@@ -59,8 +75,8 @@ pipelines** checkbox and save the changes.
 
 > [Introduced][ce-9362] in GitLab 9.1.
 
-If you want to auto-cancel all pending non-HEAD pipelines on branch, when 
-new pipeline will be created (after your git push or manually from UI), 
+If you want to auto-cancel all pending non-HEAD pipelines on branch, when
+new pipeline will be created (after your git push or manually from UI),
 check **Auto-cancel pending pipelines** checkbox and save the changes.
 
 ## Badges
@@ -115,3 +131,4 @@ into your `README.md`:
 [var]: ../../../ci/yaml/README.md#git-strategy
 [coverage report]: #test-coverage-parsing
 [ce-9362]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9362
+[ce-12509]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12509

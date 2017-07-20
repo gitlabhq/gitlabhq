@@ -150,7 +150,7 @@ module IssuesHelper
              Gitlab::UrlBuilder.build(single_discussion.first_note)
            else
              project = merge_request.project
-             namespace_project_merge_request_path(project.namespace, project, merge_request)
+             project_merge_request_path(project, merge_request)
            end
 
     link_to link_text, path

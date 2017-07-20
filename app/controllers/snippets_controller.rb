@@ -107,6 +107,10 @@ class SnippetsController < ApplicationController
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
 
+  def spammable_path
+    snippet_path(@snippet)
+  end
+
   def authorize_read_snippet!
     return if can?(current_user, :read_personal_snippet, @snippet)
 

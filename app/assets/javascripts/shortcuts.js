@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
 /* global Mousetrap */
-/* global findFileURL */
 import Cookies from 'js-cookie';
 
 import findAndFollowLink from './shortcuts_dashboard_navigation';
@@ -20,6 +19,7 @@ import findAndFollowLink from './shortcuts_dashboard_navigation';
 
       const $globalDropdownMenu = $('.global-dropdown-menu');
       const $globalDropdownToggle = $('.global-dropdown-toggle');
+      const findFileURL = document.body.dataset.findFile;
 
       $('.global-dropdown').on('hide.bs.dropdown', () => {
         $globalDropdownMenu.removeClass('shortcuts');
@@ -62,7 +62,7 @@ import findAndFollowLink from './shortcuts_dashboard_navigation';
       if (Cookies.get(performanceBarCookieName) === 'true') {
         Cookies.remove(performanceBarCookieName, { path: '/' });
       } else {
-        Cookies.set(performanceBarCookieName, true, { path: '/' });
+        Cookies.set(performanceBarCookieName, 'true', { path: '/' });
       }
       gl.utils.refreshCurrentPage();
     };

@@ -1,6 +1,11 @@
 - @no_container = true
 - page_title "Labels"
 - hide_class = ''
+
+- if show_new_nav? && can?(current_user, :admin_label, @project)
+  - content_for :breadcrumbs_extra do
+    = link_to "New label", new_namespace_project_label_path(@project.namespace, @project), class: "btn btn-new"
+
 = render "shared/mr_head"
 
 - if @labels.exists? || @prioritized_labels.exists?
@@ -9,9 +14,9 @@
       .nav-text
         Labels can be applied to issues and merge requests. Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
 
-      .nav-controls
+      .nav-controls{ class: ("visible-xs" if show_new_nav?) }
         - if can?(current_user, :admin_label, @project)
-          = link_to new_namespace_project_label_path(@project.namespace, @project), class: "btn btn-new" do
+          = link_to new_project_label_path(@project), class: "btn btn-new" do
             New label
 
     .labels
@@ -20,7 +25,7 @@
         - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
         .prioritized-labels{ class: ('hide' if hide) }
           %h5 Prioritized Labels
-          %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
+          %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_project_labels_path(@project) }
             #js-priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty?}" }
               = render 'shared/empty_states/priority_labels'
             - if @prioritized_labels.present?

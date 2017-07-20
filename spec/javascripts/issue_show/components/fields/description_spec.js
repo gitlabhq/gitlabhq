@@ -1,6 +1,8 @@
 import Vue from 'vue';
+import eventHub from '~/issue_show/event_hub';
 import Store from '~/issue_show/stores';
 import descriptionField from '~/issue_show/components/fields/description.vue';
+import { keyboardDownEvent } from '../../helpers';
 
 describe('Description field component', () => {
   let vm;
@@ -17,6 +19,8 @@ describe('Description field component', () => {
     store.formState.description = 'test';
 
     document.body.appendChild(el);
+
+    spyOn(eventHub, '$emit');
 
     vm = new Component({
       el,
@@ -52,5 +56,21 @@ describe('Description field component', () => {
     expect(
       document.activeElement,
     ).toBe(vm.$refs.textarea);
+  });
+
+  it('triggers update with meta+enter', () => {
+    vm.$el.querySelector('.md-area textarea').dispatchEvent(keyboardDownEvent(13, true));
+
+    expect(
+      eventHub.$emit,
+    ).toHaveBeenCalled();
+  });
+
+  it('triggers update with ctrl+enter', () => {
+    vm.$el.querySelector('.md-area textarea').dispatchEvent(keyboardDownEvent(13, false, true));
+
+    expect(
+      eventHub.$emit,
+    ).toHaveBeenCalled();
   });
 });

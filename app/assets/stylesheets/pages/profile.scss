@@ -286,8 +286,7 @@ table.u2f-registrations {
 }
 
 .user-callout {
-  margin: 0 auto;
-  max-width: $screen-lg-min;
+  margin: 20px -5px 0;
 
   .bordered-box {
     border: 1px solid $blue-300;
@@ -375,5 +374,20 @@ table.u2f-registrations {
         }
       }
     }
+  }
+}
+
+.nav-wip {
+  border: 1px solid $blue-500;
+  background: $blue-25;
+  padding: $gl-padding;
+  margin-bottom: $gl-padding;
+
+  a {
+    color: $blue-500;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
   }
 }
