@@ -121,16 +121,15 @@ export default {
             Report as abuse
           </a>
         </li>
-        <li>
-          <a
-            v-if="canEdit"
-            @click.prevent="deleteHandler"
-            class="js-note-delete js-note-delete"
-            href="#">
+        <li v-if="canEdit">
+          <button
+            @click="deleteHandler"
+            class="btn btn-transparent js-note-delete js-note-delete"
+            type="button">
             <span class="text-danger">
               Delete comment
             </span>
-          </a>
+          </button>
         </li>
       </ul>
     </div>
