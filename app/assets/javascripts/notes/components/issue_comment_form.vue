@@ -51,7 +51,7 @@ export default {
         'btn-close': this.isIssueOpen,
         'js-note-target-close': this.isIssueOpen,
         'js-note-target-reopen': !this.isIssueOpen,
-      }
+      };
     },
     canUpdateIssue() {
       const { issueData } = window.gl;

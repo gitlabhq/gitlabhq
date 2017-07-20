@@ -78,6 +78,9 @@ export default {
       data-position="right"
       href="#"
       title="Add reaction">
+        <i
+          aria-hidden="true"
+          class="fa fa-spinner fa-spin"></i>
         <span
           v-html="emojiSmiling"
           class="link-highlight award-control-icon-neutral"></span>

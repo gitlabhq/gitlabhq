@@ -173,7 +173,7 @@ export default {
         data-placement="bottom"
         type="button">
         <span v-html="getAwardHTML(awardName)"></span>
-        <span class="award-control-text">
+        <span class="award-control-text js-counter">
           {{awardList.length}}
         </span>
       </button>

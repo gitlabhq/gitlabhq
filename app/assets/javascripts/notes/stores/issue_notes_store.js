@@ -225,6 +225,7 @@ const actions = {
     return context.dispatch(methodToDispatch, noteData)
       .then((res) => {
         const { errors } = res;
+        const commandsChanges = res.commands_changes;
 
         if (hasQuickActions && Object.keys(errors).length) {
           context.dispatch('poll');
@@ -232,12 +233,11 @@ const actions = {
           new Flash('Commands applied', 'notice', $(noteData.flashContainer)); // eslint-disable-line
         }
 
-
-        if (res.commands_changes.emoji_award) {
+        if (commandsChanges && commandsChanges.emoji_award) {
           const votesBlock = $('.js-awards-block').eq(0);
 
           loadAwardsHandler().then((awardsHandler) => {
-            awardsHandler.addAwardToEmojiBar(votesBlock, res.commands_changes.emoji_award);
+            awardsHandler.addAwardToEmojiBar(votesBlock, commandsChanges.emoji_award);
             awardsHandler.scrollToAwards();
           }).catch(() => {
             const msg = 'Something went wrong while adding your award. Please try again.';

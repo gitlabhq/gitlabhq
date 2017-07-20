@@ -137,7 +137,6 @@ export default {
             :authorId="author.id"
             :noteId="note.id"
             :accessLevel="note.human_access"
-            :canAward="note.emoji_awardable"
             :canEdit="note.current_user.can_edit"
             :canDelete="note.current_user.can_edit"
             :canReportAsAbuse="canReportAsAbuse"

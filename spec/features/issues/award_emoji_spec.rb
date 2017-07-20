@@ -70,13 +70,13 @@ describe 'Awards Emoji', feature: true do
       it 'toggles the smiley emoji on a note', js: true do
         toggle_smiley_emoji(true)
 
-        within('.note-awards') do
+        within('.note-body') do
           expect(find(emoji_counter)).to have_text("1")
         end
 
         toggle_smiley_emoji(false)
 
-        within('.note-awards') do
+        within('.note-body') do
           expect(page).not_to have_selector(emoji_counter)
         end
       end
