@@ -234,6 +234,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Show user cohorts data when usage ping is enabled.
 - Visualise Canary Deployments.
 
+## 9.0.12 (2017-07-20)
+
+- No changes.
+
 ## 9.0.11 (2017-07-19)
 
 - Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
