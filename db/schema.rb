@@ -560,8 +560,8 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.boolean "valid_signature"
     t.binary "commit_sha"
     t.binary "gpg_key_primary_keyid"
-    t.string "gpg_key_user_name"
-    t.string "gpg_key_user_email"
+    t.text "gpg_key_user_name"
+    t.text "gpg_key_user_email"
   end
 
   add_index "gpg_signatures", ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", using: :btree
