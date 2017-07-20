@@ -247,7 +247,7 @@ $new-sidebar-width: 220px;
 
   &.mobile-nav-open {
     display: block;
-    position: absolute;
+    position: fixed;
     background-color: $black-transparent;
     height: 100%;
     width: 100%;

@@ -5,8 +5,9 @@
         = image_tag group_icon(@group), class: "avatar s40 avatar-tile"
       .group-title
         = @group.name
-    %button.close-nav-button
-      = icon('times')
+    = button_tag class: 'close-nav-button', type: 'button' do
+      %span.sr-only Close sidebar
+      = icon ('times')
   %ul.sidebar-top-level-items
     = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
       = link_to group_path(@group), title: 'Home' do

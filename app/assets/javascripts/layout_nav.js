@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, no-unused-vars, one-var, one-var-declaration-per-line, vars-on-top, max-len */
 import _ from 'underscore';
+import Cookies from 'js-cookie';
 import NewNavSidebar from './new_sidebar';
 
 (function() {
@@ -54,8 +55,11 @@ import NewNavSidebar from './new_sidebar';
   }
 
   $(() => {
-    var newNavSidebar = new NewNavSidebar();
-    newNavSidebar.bindEvents();
+    if (Cookies.get('new_nav') === 'true') {
+      const newNavSidebar = new NewNavSidebar();
+      newNavSidebar.bindEvents();
+    }
+
     $(window).on('scroll', _.throttle(applyScrollNavClass, 100));
   });
 }).call(window);

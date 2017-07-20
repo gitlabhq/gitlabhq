@@ -11,9 +11,9 @@ export default class NewNavSidebar {
   }
 
   bindEvents() {
-    this.$openSidebar.on('click', e => this.toggleSidebarNav(e, true));
-    this.$closeSidebar.on('click', e => this.toggleSidebarNav(e, false));
-    this.$overlay.on('click', e => this.toggleSidebarNav(e, false));
+    this.$openSidebar.on('click', () => this.toggleSidebarNav(true));
+    this.$closeSidebar.on('click', () => this.toggleSidebarNav(false));
+    this.$overlay.on('click', () => this.toggleSidebarNav(false));
   }
 
   toggleSidebarNav(show) {
