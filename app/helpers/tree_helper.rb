@@ -12,8 +12,8 @@ module TreeHelper
     tree.html_safe
   end
 
-  def repo_url
-    request.original_url
+  def repo_url(project)
+    controller_name == 'projects' ? project_tree_url(project, project.default_branch) : request.original_url
   end
 
   # Return an image icon depending on the file type and mode

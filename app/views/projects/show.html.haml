@@ -6,6 +6,10 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'repo'
+
 = content_for flash_message_container do
   - if current_user && can?(current_user, :download_code, @project)
     = render 'shared/no_ssh'

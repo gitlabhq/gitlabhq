@@ -19,7 +19,7 @@
     %ul#tabs{ "v-if" => "isMini", ":style" => "{height: 41 + scrollWidth + 'px'}", "v-cloak" => "1" }
       %li{ is: "repo-tab", "v-for" => "tab in openedFiles", ":key" => "tab.id", ":tab" => "tab", ":class" => "{'active' : tab.active}" }
     #repo-file-buttons
-    #ide{ data: { url: repo_url } }
+    #ide{ data: { url: repo_url(@project) } }
     #binary-viewer{ "v-if" => "binary" }
       %img{ "v-if" => "binaryTypes.png", ":src" => "pngBlobWithDataURI", ":alt" => "activeFile.name", alt: '' }
       %div{ "v-if" => "binaryTypes.markdown", "v-html" => "activeFile.html" }
