@@ -27,4 +27,4 @@ For example, if your gitlab instance URL is `https://mygitlab.com`, your API URL
 
 You can learn more about generating a personal access token in the [Personal Access Token Documentation][personal-access-token-documentation]
 
-[personal-access-token-documentation]: ../user/profile/personal_access_tokens.html
+[personal-access-token-documentation]: ../user/profile/personal_access_tokens
