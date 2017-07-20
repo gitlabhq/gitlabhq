@@ -35,13 +35,13 @@ export default {
       required: false,
     },
   },
-  components: {
-    timeAgoTooltip,
-  },
   data() {
     return {
       isExpanded: true,
     };
+  },
+  components: {
+    timeAgoTooltip,
   },
   computed: {
     toggleChevronClass() {

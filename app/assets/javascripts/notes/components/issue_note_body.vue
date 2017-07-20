@@ -28,15 +28,15 @@ export default {
       required: true,
     },
   },
-  computed: {
-    noteBody() {
-      return this.note.note;
-    },
-  },
   components: {
     issueNoteEditedText,
     issueNoteAwardsList,
     issueNoteForm,
+  },
+  computed: {
+    noteBody() {
+      return this.note.note;
+    },
   },
   methods: {
     renderGFM() {

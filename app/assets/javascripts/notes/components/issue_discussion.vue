@@ -24,17 +24,6 @@ export default {
       isReplying: false,
     };
   },
-  computed: {
-    discussion() {
-      return this.note.notes[0];
-    },
-    author() {
-      return this.discussion.author;
-    },
-    canReply() {
-      return window.gl.issueData.current_user.can_create_note;
-    },
-  },
   components: {
     issueNote,
     userAvatarLink,
@@ -45,6 +34,17 @@ export default {
     issueNoteForm,
     placeholderNote,
     placeholderSystemNote,
+  },
+  computed: {
+    discussion() {
+      return this.note.notes[0];
+    },
+    author() {
+      return this.discussion.author;
+    },
+    canReply() {
+      return window.gl.issueData.current_user.can_create_note;
+    },
   },
   methods: {
     componentName(note) {

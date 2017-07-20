@@ -36,17 +36,16 @@ export default {
       conflictWhileEditing: false,
     };
   },
-  watch: {
-    noteBody() {
-      if (this.note === this.initialNote) {
-        this.note = this.noteBody;
-      } else {
-        this.conflictWhileEditing = true;
-      }
-    },
-  },
   components: {
     markdownField,
+  },
+  computed: {
+    isDirty() {
+      return this.initialNote !== this.note;
+    },
+    noteHash() {
+      return `#note_${this.noteId}`;
+    },
   },
   methods: {
     handleUpdate() {
@@ -67,14 +66,6 @@ export default {
       }
     },
   },
-  computed: {
-    isDirty() {
-      return this.initialNote !== this.note;
-    },
-    noteHash() {
-      return `#note_${this.noteId}`;
-    },
-  },
   mounted() {
     const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
     const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
@@ -83,6 +74,15 @@ export default {
     this.markdownDocsUrl = markdownDocs;
     this.markdownPreviewUrl = markdownPreviewUrl;
     this.$refs.textarea.focus();
+  },
+  watch: {
+    noteBody() {
+      if (this.note === this.initialNote) {
+        this.note = this.noteBody;
+      } else {
+        this.conflictWhileEditing = true;
+      }
+    },
   },
 };
 </script>
