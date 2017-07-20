@@ -2,10 +2,10 @@
 /* global Flash */
 
 import { mapGetters } from 'vuex';
-import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import IssueNoteHeader from './issue_note_header.vue';
-import IssueNoteActions from './issue_note_actions.vue';
-import IssueNoteBody from './issue_note_body.vue';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import issueNoteHeader from './issue_note_header.vue';
+import issueNoteActions from './issue_note_actions.vue';
+import issueNoteBody from './issue_note_body.vue';
 import eventHub from '../event_hub';
 
 export default {
@@ -22,10 +22,10 @@ export default {
     };
   },
   components: {
-    UserAvatarLink,
-    IssueNoteHeader,
-    IssueNoteActions,
-    IssueNoteBody,
+    userAvatarLink,
+    issueNoteHeader,
+    issueNoteActions,
+    issueNoteBody,
   },
   computed: {
     ...mapGetters([

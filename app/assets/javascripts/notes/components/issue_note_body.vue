@@ -1,7 +1,7 @@
 <script>
-import IssueNoteEditedText from './issue_note_edited_text.vue';
-import IssueNoteAwardsList from './issue_note_awards_list.vue';
-import IssueNoteForm from './issue_note_form.vue';
+import issueNoteEditedText from './issue_note_edited_text.vue';
+import issueNoteAwardsList from './issue_note_awards_list.vue';
+import issueNoteForm from './issue_note_form.vue';
 import TaskList from '../../task_list';
 
 export default {
@@ -34,9 +34,9 @@ export default {
     },
   },
   components: {
-    IssueNoteEditedText,
-    IssueNoteAwardsList,
-    IssueNoteForm,
+    issueNoteEditedText,
+    issueNoteAwardsList,
+    issueNoteForm,
   },
   methods: {
     renderGFM() {

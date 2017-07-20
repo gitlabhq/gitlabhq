@@ -1,9 +1,9 @@
 <script>
 /* global Flash */
 
-import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import MarkdownField from '../../vue_shared/components/markdown/field.vue';
-import IssueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import markdownField from '../../vue_shared/components/markdown/field.vue';
+import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
 import eventHub from '../event_hub';
 
 export default {
@@ -22,9 +22,9 @@ export default {
     };
   },
   components: {
-    UserAvatarLink,
-    MarkdownField,
-    IssueNoteSignedOutWidget,
+    userAvatarLink,
+    markdownField,
+    issueNoteSignedOutWidget,
   },
   computed: {
     isLoggedIn() {

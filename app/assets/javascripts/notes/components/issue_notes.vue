@@ -6,12 +6,12 @@ import Vuex from 'vuex';
 import VueResource from 'vue-resource';
 import storeOptions from '../stores/issue_notes_store';
 import eventHub from '../event_hub';
-import IssueNote from './issue_note.vue';
-import IssueDiscussion from './issue_discussion.vue';
-import IssueSystemNote from './issue_system_note.vue';
-import IssueCommentForm from './issue_comment_form.vue';
-import PlaceholderNote from './issue_placeholder_note.vue';
-import PlaceholderSystemNote from './issue_placeholder_system_note.vue';
+import issueNote from './issue_note.vue';
+import issueDiscussion from './issue_discussion.vue';
+import issueSystemNote from './issue_system_note.vue';
+import issueCommentForm from './issue_comment_form.vue';
+import placeholderNote from './issue_placeholder_note.vue';
+import placeholderSystemNote from './issue_placeholder_system_note.vue';
 
 Vue.use(Vuex);
 Vue.use(VueResource);
@@ -26,12 +26,12 @@ export default {
     };
   },
   components: {
-    IssueNote,
-    IssueDiscussion,
-    IssueSystemNote,
-    IssueCommentForm,
-    PlaceholderNote,
-    PlaceholderSystemNote,
+    issueNote,
+    issueDiscussion,
+    issueSystemNote,
+    issueCommentForm,
+    placeholderNote,
+    placeholderSystemNote,
   },
   computed: {
     ...Vuex.mapGetters([
@@ -43,14 +43,14 @@ export default {
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === 'systemNote') {
-          return PlaceholderSystemNote;
+          return placeholderSystemNote;
         }
-        return PlaceholderNote;
+        return placeholderNote;
       } else if (note.individual_note) {
-        return note.notes[0].system ? IssueSystemNote : IssueNote;
+        return note.notes[0].system ? issueSystemNote : issueNote;
       }
 
-      return IssueDiscussion;
+      return issueDiscussion;
     },
     componentData(note) {
       return note.individual_note ? note.notes[0] : note;

@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import iconsMap from './issue_note_icons';
-import IssueNoteHeader from './issue_note_header.vue';
+import issueNoteHeader from './issue_note_header.vue';
 
 export default {
   props: {
@@ -16,7 +16,7 @@ export default {
     };
   },
   components: {
-    IssueNoteHeader,
+    issueNoteHeader,
   },
   computed: {
     ...mapGetters([

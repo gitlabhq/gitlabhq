@@ -1,5 +1,5 @@
 <script>
-import MarkdownField from '../../vue_shared/components/markdown/field.vue';
+import markdownField from '../../vue_shared/components/markdown/field.vue';
 import eventHub from '../event_hub';
 
 export default {
@@ -46,7 +46,7 @@ export default {
     },
   },
   components: {
-    MarkdownField,
+    markdownField,
   },
   methods: {
     handleUpdate() {
