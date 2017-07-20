@@ -344,6 +344,7 @@ describe Project do
     it { is_expected.to respond_to(:execute_hooks) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
+    it { is_expected.to respond_to(:full_path) }
   end
 
   describe 'delegation' do
@@ -506,7 +507,7 @@ describe Project do
       end
 
       it 'returns the address to create a new issue' do
-        address = "p+#{project.path_with_namespace}+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
 
         expect(project.new_issue_address(user)).to eq(address)
       end

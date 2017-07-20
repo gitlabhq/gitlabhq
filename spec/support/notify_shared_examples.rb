@@ -50,7 +50,7 @@ shared_examples 'an email with X-GitLab headers containing project details' do
     aggregate_failures do
       is_expected.to have_header('X-GitLab-Project', /#{project.name}/)
       is_expected.to have_header('X-GitLab-Project-Id', /#{project.id}/)
-      is_expected.to have_header('X-GitLab-Project-Path', /#{project.path_with_namespace}/)
+      is_expected.to have_header('X-GitLab-Project-Path', /#{project.full_path}/)
     end
   end
 end

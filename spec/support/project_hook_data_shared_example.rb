@@ -8,7 +8,7 @@ RSpec.shared_examples 'project hook data with deprecateds' do |project_key: :pro
     expect(data[project_key][:git_ssh_url]).to eq(project.ssh_url_to_repo)
     expect(data[project_key][:namespace]).to eq(project.namespace.name)
     expect(data[project_key][:visibility_level]).to eq(project.visibility_level)
-    expect(data[project_key][:path_with_namespace]).to eq(project.path_with_namespace)
+    expect(data[project_key][:path_with_namespace]).to eq(project.full_path)
     expect(data[project_key][:default_branch]).to eq(project.default_branch)
     expect(data[project_key][:homepage]).to eq(project.web_url)
     expect(data[project_key][:url]).to eq(project.url_to_repo)
@@ -27,7 +27,7 @@ RSpec.shared_examples 'project hook data' do |project_key: :project|
     expect(data[project_key][:git_ssh_url]).to eq(project.ssh_url_to_repo)
     expect(data[project_key][:namespace]).to eq(project.namespace.name)
     expect(data[project_key][:visibility_level]).to eq(project.visibility_level)
-    expect(data[project_key][:path_with_namespace]).to eq(project.path_with_namespace)
+    expect(data[project_key][:path_with_namespace]).to eq(project.full_path)
     expect(data[project_key][:default_branch]).to eq(project.default_branch)
   end
 end

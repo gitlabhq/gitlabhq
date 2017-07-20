@@ -47,7 +47,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I should be redirected to "Community" page' do
     project = Project.find_by(name: 'Community')
-    expect(current_path).to eq "/#{project.path_with_namespace}"
+    expect(current_path).to eq "/#{project.full_path}"
     expect(status_code).to eq 200
   end
 
@@ -61,7 +61,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I should be redirected to "Enterprise" page' do
     project = Project.find_by(name: 'Enterprise')
-    expect(current_path).to eq "/#{project.path_with_namespace}"
+    expect(current_path).to eq "/#{project.full_path}"
     expect(status_code).to eq 200
   end
 end

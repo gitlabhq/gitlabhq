@@ -378,7 +378,7 @@ class Project < ActiveRecord::Base
           begin
             Projects::HousekeepingService.new(project).execute
           rescue Projects::HousekeepingService::LeaseTaken => e
-            Rails.logger.info("Could not perform housekeeping for project #{project.path_with_namespace} (#{project.id}): #{e}")
+            Rails.logger.info("Could not perform housekeeping for project #{project.full_path} (#{project.id}): #{e}")
           end
         end
       end
@@ -484,7 +484,7 @@ class Project < ActiveRecord::Base
 
   def container_registry_url
     if Gitlab.config.registry.enabled
-      "#{Gitlab.config.registry.host_port}/#{path_with_namespace.downcase}"
+      "#{Gitlab.config.registry.host_port}/#{full_path.downcase}"
     end
   end
 
@@ -523,16 +523,16 @@ class Project < ActiveRecord::Base
     job_id =
       if forked?
         RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
-          forked_from_project.path_with_namespace,
+          forked_from_project.full_path,
           self.namespace.full_path)
       else
         RepositoryImportWorker.perform_async(self.id)
       end
 
     if job_id
-      Rails.logger.info "Import job started for #{path_with_namespace} with job ID #{job_id}"
+      Rails.logger.info "Import job started for #{full_path} with job ID #{job_id}"
     else
-      Rails.logger.error "Import job failed to start for #{path_with_namespace}"
+      Rails.logger.error "Import job failed to start for #{full_path}"
     end
   end
 
@@ -693,7 +693,7 @@ class Project < ActiveRecord::Base
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     if full || cross_namespace_reference?(from)
-      path_with_namespace
+      full_path
     elsif cross_project_reference?(from)
       path
     end
@@ -717,7 +717,7 @@ class Project < ActiveRecord::Base
     author.ensure_incoming_email_token!
 
     Gitlab::IncomingEmail.reply_address(
-      "#{path_with_namespace}+#{author.incoming_email_token}")
+      "#{full_path}+#{author.incoming_email_token}")
   end
 
   def build_commit_note(commit)
@@ -1001,7 +1001,7 @@ class Project < ActiveRecord::Base
       git_http_url: http_url_to_repo,
       namespace: namespace.name,
       visibility_level: visibility_level,
-      path_with_namespace: path_with_namespace,
+      path_with_namespace: full_path,
       default_branch: default_branch,
       ci_config_path: ci_config_path
     }
@@ -1271,8 +1271,8 @@ class Project < ActiveRecord::Base
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
-      { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
-      { key: 'CI_PROJECT_PATH_SLUG', value: path_with_namespace.parameterize, public: true },
+      { key: 'CI_PROJECT_PATH', value: full_path, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: full_path.parameterize, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
@@ -1377,6 +1377,7 @@ class Project < ActiveRecord::Base
 
   alias_method :name_with_namespace, :full_name
   alias_method :human_name, :full_name
+  # @deprecated cannot remove yet because it has an index with its name in elasticsearch
   alias_method :path_with_namespace, :full_path
 
   private
@@ -1431,7 +1432,7 @@ class Project < ActiveRecord::Base
   def pending_delete_twin
     return false unless path
 
-    Project.pending_delete.find_by_full_path(path_with_namespace)
+    Project.pending_delete.find_by_full_path(full_path)
   end
 
   ##

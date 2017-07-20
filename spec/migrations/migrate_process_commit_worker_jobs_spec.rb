@@ -20,7 +20,7 @@ describe MigrateProcessCommitWorkerJobs do
           .find_including_path(project.id)
 
         expect(migration_project[:path_with_namespace])
-          .to eq(project.path_with_namespace)
+          .to eq(project.full_path)
       end
     end
 

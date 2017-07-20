@@ -7,7 +7,7 @@ module Backup
       prepare
 
       Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{project.path_with_namespace} ... "
+        progress.print " * #{project.full_path} ... "
         path_to_project_repo = path_to_repo(project)
         path_to_project_bundle = path_to_bundle(project)
 
@@ -71,7 +71,7 @@ module Backup
       end
 
       Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{project.path_with_namespace} ... "
+        progress.print " * #{project.full_path} ... "
         path_to_project_repo = path_to_repo(project)
         path_to_project_bundle = path_to_bundle(project)
 
@@ -185,7 +185,7 @@ module Backup
 
     def progress_warn(project, cmd, output)
       progress.puts "[WARNING] Executing #{cmd}".color(:orange)
-      progress.puts "Ignoring error on #{project.path_with_namespace} - #{output}".color(:orange)
+      progress.puts "Ignoring error on #{project.full_path} - #{output}".color(:orange)
     end
 
     def empty_repo?(project_or_wiki)
