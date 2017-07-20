@@ -16,7 +16,7 @@
       - haproxy_frontend_http_responses_total
     weight: 1
     queries:
-    - query_range: 'sum(rate(haproxy_frontend_http_requests_total{code="5xx",%{environment_filter}}[2m])) / sum(rate(haproxy_frontend_http_requests_total{%{environment_filter}}[2m]))'
+    - query_range: 'sum(rate(haproxy_frontend_http_responses_total{code="5xx",%{environment_filter}}[2m])) / sum(rate(haproxy_frontend_http_responses_total{%{environment_filter}}[2m]))'
       label: HTTP Errors
       unit: "%"
 - group: AWS Elastic Load Balancer
