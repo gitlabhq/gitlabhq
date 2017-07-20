@@ -5,13 +5,13 @@ class NotificationRecipientService
   attr_reader :project
 
   def self.notification_setting_for_user_project(user, project)
-    project_setting = user.notification_settings_for(project)
+    project_setting = project && user.notification_settings_for(project)
 
-    return project_setting unless project_setting.global?
+    return project_setting unless project_setting.nil? || project_setting.global?
 
-    group_setting = user.notification_settings_for(project.group)
+    group_setting = project&.group && user.notification_settings_for(project.group)
 
-    return group_setting unless group_setting.global?
+    return group_setting unless group_setting.nil? || group_setting.global?
 
     user.global_notification_setting
   end
