@@ -24,7 +24,8 @@ describe 'Filter merge requests', feature: true do
     let(:search_query) { "assignee:@#{user.username}" }
 
     def expect_assignee_visual_tokens
-      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      wait_for_requests
+      expect_tokens([{ name: 'assignee', value: "#{user.name}" }])
       expect_filtered_search_input_empty
     end
 
@@ -139,7 +140,8 @@ describe 'Filter merge requests', feature: true do
       input_filtered_search("assignee:@#{user.username}")
 
       expect_mr_list_count(1)
-      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      wait_for_requests
+      expect_tokens([{ name: 'assignee', value: "#{user.name}" }])
       expect_filtered_search_input_empty
 
       input_filtered_search_keys("label:~#{label.title}")
@@ -149,8 +151,9 @@ describe 'Filter merge requests', feature: true do
 
     context 'assignee and label', js: true do
       def expect_assignee_label_visual_tokens
+        wait_for_requests
         expect_tokens([
-          { name: 'assignee', value: "@#{user.username}" },
+          { name: 'assignee', value: "#{user.name}" },
           { name: 'label', value: "~#{label.title}" }
         ])
         expect_filtered_search_input_empty
@@ -246,7 +249,8 @@ describe 'Filter merge requests', feature: true do
         input_filtered_search_keys(" assignee:@#{user.username}")
 
         expect_mr_list_count(1)
-        expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+        wait_for_requests
+        expect_tokens([{ name: 'assignee', value: "#{user.name}" }])
         expect_filtered_search_input('Bug')
       end
 
@@ -259,7 +263,8 @@ describe 'Filter merge requests', feature: true do
         input_filtered_search_keys(" author:@#{user.username}")
 
         expect_mr_list_count(1)
-        expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+        wait_for_requests
+        expect_tokens([{ name: 'author', value: "#{user.name}" }])
         expect_filtered_search_input('Bug')
       end
     end
@@ -299,7 +304,7 @@ describe 'Filter merge requests', feature: true do
     it 'filter by current user' do
       visit project_merge_requests_path(project, assignee_id: user.id)
 
-      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_tokens([{ name: 'assignee', value: "#{user.username}" }])
       expect_filtered_search_input_empty
     end
 
@@ -309,7 +314,8 @@ describe 'Filter merge requests', feature: true do
 
       visit project_merge_requests_path(project, assignee_id: new_user.id)
 
-      expect_tokens([{ name: 'assignee', value: "@#{new_user.username}" }])
+      wait_for_requests
+      expect_tokens([{ name: 'assignee', value: "#{new_user.name}" }])
       expect_filtered_search_input_empty
     end
   end
@@ -318,7 +324,8 @@ describe 'Filter merge requests', feature: true do
     it 'filter by current user' do
       visit project_merge_requests_path(project, author_id: user.id)
 
-      expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+      wait_for_requests
+      expect_tokens([{ name: 'author', value: "#{user.name}" }])
       expect_filtered_search_input_empty
     end
 
@@ -328,7 +335,8 @@ describe 'Filter merge requests', feature: true do
 
       visit project_merge_requests_path(project, author_id: new_user.id)
 
-      expect_tokens([{ name: 'author', value: "@#{new_user.username}" }])
+      wait_for_requests
+      expect_tokens([{ name: 'author', value: "#{new_user.name}" }])
       expect_filtered_search_input_empty
     end
   end

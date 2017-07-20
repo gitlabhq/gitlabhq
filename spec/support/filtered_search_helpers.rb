@@ -61,6 +61,7 @@ module FilteredSearchHelpers
           token_value = tokens[index][:value]
 
           expect(el.find('.name')).to have_content(/#{Regexp.escape(token_name)}/i)
+
           if token_value
             expect(el.find('.value')).to have_content(/#{Regexp.escape(token_value)}/i)
           end
