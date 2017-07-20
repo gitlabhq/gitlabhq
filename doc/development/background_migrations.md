@@ -31,6 +31,18 @@ It's also possible for different migrations to be executed at the same time.
 This means that different background migrations should not migrate data in a
 way that would cause conflicts.
 
+## Idempotence
+
+Background migrations are executed in a context of a Sidekiq process.
+Usual Sidekiq rules apply, especially the rule that jobs should be small
+and idempotent.
+
+See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/Best-Practices)
+for more details.
+
+Make sure that in case that your migration job is going to be retried a data
+integrity is guarateed.
+
 ## How It Works
 
 Background migrations are simple classes that define a `perform` method. A
@@ -212,3 +224,21 @@ end
 This migration will then process any jobs for the ExtractServicesUrl migration
 and continue once all jobs have been processed. Once done you can safely remove
 the `services.properties` column.
+
+## Testing
+
+It is possible to test a background migrations scheduling migration and a
+cleanup migration using `:migration` RSpec tag. See README in specs/migration/
+directory.
+
+When you do that, keep in mind that `before` and `after` RSpec hooks are going
+to migrate you database down and up, which can result in another background
+migrations being called. That means that using `spy` test doubles with
+`have_received` is encouraged, instead of using regular test doubles, because
+your expectation defined in a `it` block can conflict with what is being
+called in RSpec hooks. See gitlab-org/gitlab-ce#35351 for more details.
+
+## Best practices
+
+1. Make sure that background migration jobs are idempotent.
+1. Make sure that tests you write are not false positives.
