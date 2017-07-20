@@ -39,14 +39,12 @@ export default class RepoEditor {
       data: () => Store,
       created() {
         this.showHide();
-        if (this.blobRaw !== '') {
-          this.monacoInstance.setModel(
-            monaco.editor.createModel(
-              this.blobRaw,
-              'plain',
-            ),
-          );
-        }
+
+        if (this.blobRaw === '') return;
+
+        const newModel = monaco.editor.createModel(this.blobRaw, 'plaintext');
+
+        this.monacoInstance.setModel(newModel);
       },
 
       methods: {
@@ -102,21 +100,15 @@ export default class RepoEditor {
         blobRaw() {
           this.showHide();
 
-          if (!this.isTree) {
-            // kill the current model;
-            this.monacoInstance.setModel(null);
-            // then create the new one
-            this.monacoInstance.setModel(
-              monaco.editor.createModel(
-                this.blobRaw,
-                Helper
-                  .getLanguageIDForFile(
-                    this.activeFile,
-                    monaco.languages.getLanguages(),
-                  ),
-              ),
-            );
-          }
+          if (this.isTree) return;
+
+          this.monacoInstance.setModel(null);
+
+          const languages = monaco.languages.getLanguages();
+          const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
+          const newModel = monaco.editor.createModel(this.blobRaw, languageID);
+
+          this.monacoInstance.setModel(newModel);
         },
       },
     });

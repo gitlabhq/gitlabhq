@@ -19,7 +19,7 @@ const RepoHelper = {
     const ext = file.name.split('.').pop();
     const foundLang = this.findLanguage(ext, langs);
 
-    return foundLang ? foundLang.id : 'plain';
+    return foundLang ? foundLang.id : 'plaintext';
   },
 
   findLanguage(ext, langs) {
