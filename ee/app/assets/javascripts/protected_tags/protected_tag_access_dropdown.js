@@ -11,7 +11,6 @@ export default class ProtectedTagAccessDropdown {
       accessLevelsData,
     } = options;
     this.options = options;
-    this.isAllowedToCreateDropdown = false;
     this.groups = [];
     this.accessLevel = accessLevel;
     this.accessLevelsData = accessLevelsData.roles;
@@ -25,10 +24,7 @@ export default class ProtectedTagAccessDropdown {
     this.setSelectedItems([]);
     this.persistPreselectedItems();
 
-    if (ACCESS_LEVELS.CREATE === this.accessLevel) {
-      this.isAllowedToCreateDropdown = true;
-      this.noOneObj = this.accessLevelsData.find(level => level.id === ACCESS_LEVEL_NONE);
-    }
+    this.noOneObj = this.accessLevelsData.find(level => level.id === ACCESS_LEVEL_NONE);
 
     this.initDropdown();
   }
@@ -56,25 +52,23 @@ export default class ProtectedTagAccessDropdown {
         e.preventDefault();
 
         if ($el.is('.is-active')) {
-          if (self.isAllowedToCreateDropdown) {
-            if (item.id === self.noOneObj.id) {
-              self.accessLevelsData.forEach((level) => {
-                if (level.id !== item.id) {
-                  self.removeSelectedItem(level);
-                }
-              });
-
-              self.$wrap.find(`.item-${item.type}`).removeClass('is-active');
-            } else {
-              const $noOne = self.$wrap.find(`.is-active.item-${item.type}[data-role-id="${self.noOneObj.id}"]`);
-              if ($noOne.length) {
-                $noOne.removeClass('is-active');
-                self.removeSelectedItem(self.noOneObj);
+          if (item.id === self.noOneObj.id) {
+            self.accessLevelsData.forEach((level) => {
+              if (level.id !== item.id) {
+                self.removeSelectedItem(level);
               }
-            }
+            });
 
-            $el.addClass(`is-active item-${item.type}`);
+            self.$wrap.find(`.item-${item.type}`).removeClass('is-active');
+          } else {
+            const $noOne = self.$wrap.find(`.is-active.item-${item.type}[data-role-id="${self.noOneObj.id}"]`);
+            if ($noOne.length) {
+              $noOne.removeClass('is-active');
+              self.removeSelectedItem(self.noOneObj);
+            }
           }
+
+          $el.addClass(`is-active item-${item.type}`);
 
           self.addSelectedItem(item);
         } else {
