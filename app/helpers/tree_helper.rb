@@ -13,7 +13,11 @@ module TreeHelper
   end
 
   def repo_url(project)
-    controller_name == 'projects' ? project_tree_url(project, project.default_branch) : request.original_url
+    if controller_name == 'projects'
+      readme_path(project)
+    else
+      request.original_url
+    end
   end
 
   # Return an image icon depending on the file type and mode
