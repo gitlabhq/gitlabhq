@@ -1,3 +1,8 @@
+- breadcrumb_title "Integrations"
 - page_title @service.title, "Services"
+
+- if show_new_nav?
+  - add_to_breadcrumbs("Settings", edit_project_path(@project))
+
 = render "projects/settings/head"
 = render 'form'
