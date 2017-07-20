@@ -174,8 +174,8 @@ module API
 
     class AccessRequester < UserBasic
       expose :requested_at do |user, options|
-        access_requester = options[:access_requester] || options[:source].access_requests.find_by(user_id: user.id)
-        access_requester.requested_at
+        access_request = options[:access_request] || options[:source].access_requests.find_by(user_id: user.id)
+        access_request.requested_at
       end
     end
 

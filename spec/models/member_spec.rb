@@ -247,29 +247,31 @@ describe Member do
           end
 
           context 'when called with a user object' do
-            it 'adds the user as a member' do
-              expect(source.users).not_to include(user)
+            context 'when the user is not a requester' do
+              it 'adds the user as a member' do
+                expect(source.users).not_to include(user)
 
-              described_class.add_user(source, user, :master)
+                described_class.add_user(source, user, :master)
 
-              expect(source.users.reload).to include(user)
-            end
-          end
-
-          context 'when called with a requester user object' do
-            before do
-              source.request_access(user)
+                expect(source.users.reload).to include(user)
+              end
             end
 
-            it 'adds the requester as a member' do
-              expect(source.users).not_to include(user)
-              expect(source.access_requests.exists?(user_id: user)).to be_truthy
+            context 'when the user is a requester' do
+              before do
+                source.request_access(user)
+              end
 
-              expect { described_class.add_user(source, user, :master) }
-                .to raise_error(Gitlab::Access::AccessDeniedError)
+              it 'does not add the user as a member' do
+                expect(source.users).not_to include(user)
+                expect(source.access_requests.exists?(user_id: user)).to be_truthy
 
-              expect(source.users.reload).not_to include(user)
-              expect(source.access_requests.reload.exists?(user_id: user)).to be_truthy
+                expect { described_class.add_user(source, user, :master) }
+                  .to raise_error(Gitlab::Access::AccessDeniedError)
+
+                expect(source.users.reload).not_to include(user)
+                expect(source.access_requests.reload.exists?(user_id: user)).to be_truthy
+              end
             end
           end
 
@@ -335,7 +337,7 @@ describe Member do
               source.request_access(user)
             end
 
-            it 'does not destroy the requester' do
+            it 'does not destroy the request' do
               expect(source.users).not_to include(user)
               expect(source.access_requests.exists?(user_id: user)).to be_truthy
 
@@ -445,10 +447,10 @@ describe Member do
 
   describe '#pending?' do
     let(:invited_member) { create(:project_member, invite_email: "user@example.com", user: nil) }
-    let(:requester) { create(:project_member, requested_at: Time.now.utc) }
+    let(:request) { create(:project_member, requested_at: Time.now.utc) }
 
     it { expect(invited_member).to be_invite }
-    it { expect(requester).to be_pending }
+    it { expect(request).to be_pending }
   end
 
   describe "#accept_invite!" do

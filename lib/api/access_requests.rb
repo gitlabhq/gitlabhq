@@ -33,12 +33,12 @@ module API
         end
         post ":id/access_requests" do
           source = find_source(source_type, params[:id])
-          access_requester = source.request_access(current_user)
+          access_request = source.request_access(current_user)
 
-          if access_requester.persisted?
-            present access_requester.user, with: Entities::AccessRequester, access_requester: access_requester
+          if access_request.persisted?
+            present access_request.user, with: Entities::AccessRequester, access_request: access_request
           else
-            render_validation_error!(access_requester)
+            render_validation_error!(access_request)
           end
         end
 
@@ -47,7 +47,7 @@ module API
           success Entities::Member
         end
         params do
-          requires :user_id, type: Integer, desc: 'The user ID of the access requester'
+          requires :user_id, type: Integer, desc: 'The user ID of the access request'
           optional :access_level, type: Integer, desc: 'A valid access level (defaults: `30`, developer access level)'
         end
         put ':id/access_requests/:user_id/approve' do
@@ -63,7 +63,7 @@ module API
           detail 'This feature was introduced in GitLab 8.11.'
         end
         params do
-          requires :user_id, type: Integer, desc: 'The user ID of the access requester'
+          requires :user_id, type: Integer, desc: 'The user ID of the access request'
         end
         delete ":id/access_requests/:user_id" do
           source = find_source(source_type, params[:id])
