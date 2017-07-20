@@ -852,6 +852,10 @@ entry.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
 
+## 9.0.12 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
+
 ## 9.0.11 (2017-07-19)
 
 - Renders 404 if given project is not readable by the user on Todos dashboard.
