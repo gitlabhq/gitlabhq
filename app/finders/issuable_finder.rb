@@ -23,13 +23,10 @@ class IssuableFinder
 
   NONE = '0'.freeze
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page state].freeze
-<<<<<<< HEAD
 
   SCALAR_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight).freeze
   ARRAY_PARAMS = { label_name: [], iids: [] }.freeze
   VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
-=======
->>>>>>> ce/master
 
   attr_accessor :current_user, :params
 
