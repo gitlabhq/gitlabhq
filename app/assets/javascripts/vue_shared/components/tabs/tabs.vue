@@ -43,12 +43,10 @@
 
     watch: {
       defaultIndex() {
-        console.log('updated', this.defaultIndex);
         this.selectedTab = this.defaultIndex;
 
       },
       selectedTab(){
-        console.log('asdfadsf');
         this.selectTab(this.selectedTab);
       }
     },
@@ -83,6 +81,7 @@
 
         <button
           v-if="tab.isClosable"
+          class="tab-close-button btn-transparent btn-blank"
           @click.stop="closeTab(tab)">
           x
         </button>

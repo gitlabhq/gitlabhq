@@ -10,8 +10,9 @@
   import pipelineCommitBlock from './pipeline_commit_block.vue';
   import ciHeader from '../../vue_shared/components/header_ci_component.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import eventHub from '../event_hub';
+  import jobLog from './job_log.vue';
   import { tabs, tab } from '../../vue_shared/components/tabs';
+  import eventHub from '../event_hub';
 
   export default {
     props: {
@@ -27,6 +28,7 @@
     },
     components: {
       ciHeader,
+      jobLog,
       loadingIcon,
       pipelineGraph,
       pipelineCommitBlock,
@@ -48,7 +50,7 @@
         selectedTab: 0,
         isLoadingJobTrace: false,
         //move to store
-        jobLog: null,
+        logTrace: null,
       };
     },
     created() {
@@ -153,16 +155,12 @@
         this.service.getJobTrace(job.status.details_path)
           //.then(response => response.json())
           .then((resp) => {
+            const log = Anser.ansiToHtml(resp.bodyText);
+            const linkedLog = Anser.linkify(log);
 
-            const jobLog = resp.bodyText.split('\n');
-
-            this.jobLog = jobLog.map((line) => {
-              return Anser.ansiToHtml(line, { use_classes: true });
-            });
-            // \n
-
-          });
-
+            this.logTrace = linkedLog.split('\n');
+          })
+          .catch(() => new Flash('An error occurred while fetching the job log.'));
       },
 
       closeJobTab() {
@@ -176,10 +174,6 @@
       getJobTabTitle() {
         return `<a> status icon - ${this.jobTab.name}</a>`;
       },
-
-      getLineLink(number) {
-        return `#L${number}`
-      }
     },
   };
 </script>
@@ -209,7 +203,6 @@
 
       <tabs
         class="tabs-holder"
-        @tabSelected="handleSelectedTab()"
         @closeTab="closeJobTab()"
         :default-index="selectedTab"
         css-class="pipelines-tabs no-top no-bottom">
@@ -217,29 +210,25 @@
         <tab title="Pipeline" random-prop="foo">
           <pipeline-graph :pipeline="state.pipeline" />
         </tab>
+
         <tab title="Jobs <badge goes here>">
           TO BE DONE - JOBS TABLE
         </tab>
+
         <tab title="Failed Jobs <badge goes here>">
           TO BE DONE - FAILED JOBS
         </tab>
+
         <tab
           v-if="jobTab"
           :title="jobTab.name"
           :is-closable="true">
 
-          <div class="job-log-container" v-if="jobLog">
-            <ul class="trace-log">
-              <li class="line-container" v-for="(line, index) in jobLog">
-                <ul>
-                  <li class="number"><a :href="getLineLink(index)">{{index}}</a></li>
-                  <li class="code" v-html="line"></li>
-                </ul>
-              </li>
-
-            </ul>
-
-          </div>
+          <job-log
+            class="job-log-container"
+            v-if="logTrace"
+            :log="logTrace"
+            />
         </tab>
       </tabs>
 
