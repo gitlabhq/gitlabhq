@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Ci::Stage, :models do
-  describe 'associations' do
-    let(:stage) { create(:ci_stage_entity) }
+  let(:stage) { create(:ci_stage_entity) }
 
+  describe 'associations' do
     before do
       create(:ci_build, stage_id: stage.id)
       create(:commit_status, stage_id: stage.id)
@@ -37,6 +37,24 @@ describe Ci::Stage, :models do
       it 'has a correct status value' do
         expect(stage.status).to eq 'success'
       end
+    end
+  end
+
+  describe 'update!' do
+    context 'when stage objects needs to be updated' do
+      before do
+        create(:ci_build, :success, stage_id: stage.id)
+        create(:ci_build, :running, stage_id: stage.id)
+      end
+
+      it 'updates stage status correctly' do
+        expect { stage.update! }
+          .to change { stage.reload.status }
+          .to 'running'
+      end
+    end
+
+    context 'when stage object is locked' do
     end
   end
 end
