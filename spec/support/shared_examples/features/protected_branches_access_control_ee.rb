@@ -96,7 +96,7 @@ shared_examples "protected branches > access control > EE" do
 
       # Update Protected Branch
       within(".protected-branches-list") do
-        find(".js-allowed-to-#{git_operation}").click
+        find(".js-allowed-to-#{git_operation}").trigger(:click)
         find(".dropdown-input-field").set(users.last.name) # Find a user that is not loaded
 
         expect(page).to have_selector('.dropdown-header', count: 3)
@@ -112,7 +112,7 @@ shared_examples "protected branches > access control > EE" do
       wait_for_requests
 
       # Verify the user is appended in the dropdown
-      find(".protected-branches-list .js-allowed-to-#{git_operation}").click
+      find(".protected-branches-list .js-allowed-to-#{git_operation}").trigger(:click)
       expect(page).to have_selector '.dropdown-content .is-active', text: users.last.name
 
       expect(ProtectedBranch.count).to eq(1)
