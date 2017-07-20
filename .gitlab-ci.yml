@@ -66,6 +66,11 @@ stages:
     - mysql:latest
     - redis:alpine
 
+# Enable Bullet to detect N+1 queries
+.use-bullet: &use-bullet
+  variables:
+    ENABLE_BULLET: '1'
+
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
     - /mysql/
@@ -108,11 +113,13 @@ stages:
 .rspec-knapsack-pg: &rspec-knapsack-pg
   <<: *rspec-knapsack
   <<: *use-pg
+  <<: *use-bullet
   <<: *except-docs
 
 .rspec-knapsack-mysql: &rspec-knapsack-mysql
   <<: *rspec-knapsack
   <<: *use-mysql
+  <<: *use-bullet
   <<: *only-master-and-ee-or-mysql
   <<: *except-docs
 
