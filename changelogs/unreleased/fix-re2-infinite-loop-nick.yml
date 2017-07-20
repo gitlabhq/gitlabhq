@@ -1,0 +1,4 @@
+---
+title: Fix an infinite loop when handling user-supplied regular expressions
+merge_request:
+author:
