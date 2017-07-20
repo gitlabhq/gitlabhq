@@ -4,21 +4,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-28 13:32+0200\n"
+"POT-Creation-Date: 2017-07-05 08:50-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-07-10 09:58-0400\n"
+"PO-Revision-Date: 2017-07-12 06:23-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
 "Language-Team: Chinese (China) (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: zh-CN\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
-msgid "%d additional commit has been omitted to prevent performance issues."
+msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural ""
-"%d additional commits have been omitted to prevent performance issues."
-msgstr[0] "为提高页面加载速度及性能，已省略了 %d 次提交。"
+"%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "为提高页面加载速度及性能，已省略了 %s 次提交。"
 
 msgid "%d commit"
 msgid_plural "%d commits"
@@ -621,6 +621,12 @@ msgstr "所有"
 msgid "PipelineSchedules|Inactive"
 msgstr "未启用"
 
+msgid "PipelineSchedules|Input variable key"
+msgstr "输入变量名"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "输入变量值"
+
 msgid "PipelineSchedules|Next Run"
 msgstr "下次运行时间"
 
@@ -630,11 +636,17 @@ msgstr "无"
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr "为此流水线提供简短描述"
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr "删除变量"
+
 msgid "PipelineSchedules|Take ownership"
-msgstr "取得所有者"
+msgstr "取得所有权"
 
 msgid "PipelineSchedules|Target"
 msgstr "目标"
+
+msgid "PipelineSchedules|Variables"
+msgstr "变量"
 
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "自定义"
@@ -1084,6 +1096,14 @@ msgstr "该阶段的数据不足，无法显示。"
 
 msgid "Withdraw Access Request"
 msgstr "取消权限申请"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr "即将删除 %{group_name}。\n"
+"已删除的群组无法恢复！\n"
+"确定继续吗？"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"

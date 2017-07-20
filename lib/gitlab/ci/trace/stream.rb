@@ -67,12 +67,12 @@ module Gitlab
           return unless valid?
           return unless regex
 
-          regex = Regexp.new(regex)
+          regex = Gitlab::UntrustedRegexp.new(regex)
 
           match = ""
 
           reverse_line do |line|
-            matches = line.scan(regex)
+            matches = regex.scan(line)
             next unless matches.is_a?(Array)
             next if matches.empty?
 

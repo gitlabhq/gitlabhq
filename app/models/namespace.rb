@@ -5,6 +5,7 @@ class Namespace < ApplicationRecord
   include Sortable
   include Gitlab::ShellAdapter
   include Gitlab::CurrentSettings
+  include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue
 
@@ -103,6 +104,10 @@ class Namespace < ApplicationRecord
       uniquify = Uniquify.new
       uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
+  end
+
+  def visibility_level_field
+    :visibility_level
   end
 
   def to_param

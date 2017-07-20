@@ -190,7 +190,7 @@ class Note < ApplicationRecord
   # override to return commits, which are not active record
   def noteable
     if for_commit?
-      project.commit(commit_id)
+      @commit ||= project.commit(commit_id)
     else
       super
     end

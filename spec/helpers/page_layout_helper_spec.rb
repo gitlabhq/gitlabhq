@@ -60,7 +60,7 @@ describe PageLayoutHelper do
     %w(project user group).each do |type|
       context "with @#{type} assigned" do
         it "uses #{type.titlecase} avatar if available" do
-          object = double(avatar_url: 'http://example.com/uploads/system/avatar.png')
+          object = double(avatar_url: 'http://example.com/uploads/-/system/avatar.png')
           assign(type, object)
 
           expect(helper.page_image).to eq object.avatar_url

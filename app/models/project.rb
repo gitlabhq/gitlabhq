@@ -486,7 +486,9 @@ class Project < ApplicationRecord
   end
 
   def has_container_registry_tags?
-    container_repositories.to_a.any?(&:has_tags?) ||
+    return @images if defined?(@images)
+
+    @images = container_repositories.to_a.any?(&:has_tags?) ||
       has_root_container_repository_tags?
   end
 
@@ -845,7 +847,7 @@ class Project < ApplicationRecord
   end
 
   def ci_service
-    @ci_service ||= ci_services.find_by(active: true)
+    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
   def deployment_services
@@ -853,7 +855,7 @@ class Project < ApplicationRecord
   end
 
   def deployment_service
-    @deployment_service ||= deployment_services.find_by(active: true)
+    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
@@ -861,7 +863,7 @@ class Project < ApplicationRecord
   end
 
   def monitoring_service
-    @monitoring_service ||= monitoring_services.find_by(active: true)
+    @monitoring_service ||= monitoring_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
@@ -977,14 +979,14 @@ class Project < ApplicationRecord
 
     Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
-    expire_caches_before_rename(old_path_with_namespace)
-
     if has_container_registry_tags?
       Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present!"
 
       # we currently doesn't support renaming repository if it contains images in container registry
       raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
     end
+
+    expire_caches_before_rename(old_path_with_namespace)
 
     if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.

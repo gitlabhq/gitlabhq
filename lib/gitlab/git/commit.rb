@@ -38,7 +38,7 @@ module Gitlab
           repo = options.delete(:repo)
           raise 'Gitlab::Git::Repository is required' unless repo.respond_to?(:log)
 
-          repo.log(options).map { |c| decorate(c) }
+          repo.log(options)
         end
 
         # Get single commit
@@ -98,7 +98,15 @@ module Gitlab
         #   Commit.between(repo, '29eda46b', 'master')
         #
         def between(repo, base, head)
-          repo.commits_between(base, head).map do |commit|
+          commits = Gitlab::GitalyClient.migrate(:commits_between) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.between(base, head)
+            else
+              repo.commits_between(base, head)
+            end
+          end
+
+          commits.map do |commit|
             decorate(commit)
           end
         rescue Rugged::ReferenceError
@@ -210,6 +218,8 @@ module Gitlab
           init_from_hash(raw_commit)
         elsif raw_commit.is_a?(Rugged::Commit)
           init_from_rugged(raw_commit)
+        elsif raw_commit.is_a?(Gitaly::GitCommit)
+          init_from_gitaly(raw_commit)
         else
           raise "Invalid raw commit type: #{raw_commit.class}"
         end
@@ -369,6 +379,22 @@ module Gitlab
         @committer_name = committer[:name]
         @committer_email = committer[:email]
         @parent_ids = commit.parents.map(&:oid)
+      end
+
+      def init_from_gitaly(commit)
+        @raw_commit = commit
+        @id = commit.id
+        # TODO: Once gitaly "takes over" Rugged consider separating the
+        # subject from the message to make it clearer when there's one
+        # available but not the other.
+        @message = (commit.body.presence || commit.subject).dup
+        @authored_date = Time.at(commit.author.date.seconds)
+        @author_name = commit.author.name.dup
+        @author_email = commit.author.email.dup
+        @committed_date = Time.at(commit.committer.date.seconds)
+        @committer_name = commit.committer.name.dup
+        @committer_email = commit.committer.email.dup
+        @parent_ids = commit.parent_ids
       end
 
       def serialize_keys
