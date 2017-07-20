@@ -16,7 +16,7 @@ module EE
 
       validates :mirror_max_delay,
                 presence: true,
-                numericality: { allow_nil: true, only_integer: true, greater_than: 0 }
+                numericality: { allow_nil: true, only_integer: true, greater_than: :mirror_max_delay_in_minutes }
 
       validates :mirror_max_capacity,
                 presence: true,
@@ -49,6 +49,10 @@ module EE
     end
 
     private
+
+    def mirror_max_delay_in_minutes
+      ::Gitlab::Mirror.min_delay_upper_bound / 60
+    end
 
     def mirror_capacity_threshold_less_than
       return unless mirror_max_capacity && mirror_capacity_threshold
