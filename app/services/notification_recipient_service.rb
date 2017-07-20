@@ -267,24 +267,8 @@ class NotificationRecipientService
     users = users.to_a.compact.uniq
 
     users.reject do |user|
-      global_notification_setting = user.global_notification_setting
-
-      next global_notification_setting.level == level unless project
-
-      setting = user.notification_settings_for(project)
-
-      if project.group && (setting.nil? || setting.global?)
-        setting = user.notification_settings_for(project.group)
-      end
-
-      # reject users who globally set mention notification and has no setting per project/group
-      next global_notification_setting.level == level unless setting
-
-      # reject users who set mention notification in project
-      next true if setting.level == level
-
-      # reject users who have mention level in project and disabled in global settings
-      setting.global? && global_notification_setting.level == level
+      setting = NotificationRecipientService.notification_setting_for_user_project(user, project)
+      setting.present? && setting.level == level
     end
   end
 
