@@ -10,14 +10,14 @@ class CreateGpgSignatures < ActiveRecord::Migration
 
       t.boolean :valid_signature
 
-      t.binary :commit_sha, limit: Gitlab::Database.mysql? ? 20 : nil
-      t.binary :gpg_key_primary_keyid, limit: Gitlab::Database.mysql? ? 20 : nil
+      t.binary :commit_sha
+      t.binary :gpg_key_primary_keyid
 
       t.text :gpg_key_user_name
       t.text :gpg_key_user_email
 
-      t.index :commit_sha
-      t.index :gpg_key_primary_keyid
+      t.index :commit_sha, length: Gitlab::Database.mysql? ? 20 : nil
+      t.index :gpg_key_primary_keyid, length: Gitlab::Database.mysql? ? 20 : nil
     end
   end
 end
