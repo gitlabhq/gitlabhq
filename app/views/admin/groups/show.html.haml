@@ -107,7 +107,7 @@
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
             = button_tag 'Add users to group', class: "btn btn-create"
-      = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
+      = render 'shared/members/requests', membership_source: @group, access_requests: @access_requests, force_mobile_view: true
 
     .panel.panel-default
       .panel-heading

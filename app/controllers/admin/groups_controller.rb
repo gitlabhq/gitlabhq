@@ -11,7 +11,7 @@ class Admin::GroupsController < Admin::ApplicationController
   def show
     @group = Group.with_statistics.joins(:route).group('routes.path').find_by_full_path(params[:id])
     @members = @group.members.order("access_level DESC").page(params[:members_page])
-    @requesters = AccessRequestsFinder.new(@group).execute(current_user)
+    @access_requests = AccessRequestsFinder.new(@group).execute(current_user)
     @projects = @group.projects.with_statistics.page(params[:projects_page])
   end
 

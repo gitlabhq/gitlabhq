@@ -16,13 +16,13 @@ describe AccessRequestsFinder do
     end
   end
 
-  shared_examples 'a finder returning access requesters' do |method_name|
-    it 'returns access requesters' do
-      access_requesters = described_class.new(source).public_send(method_name, user)
+  shared_examples 'a finder returning access requests' do |method_name|
+    it 'returns access requests' do
+      access_requests = described_class.new(source).public_send(method_name, user)
 
-      expect(access_requesters.size).to eq(1)
-      expect(access_requesters.first).to be_a "#{source.class}Member".constantize
-      expect(access_requesters.first.user).to eq(access_requester)
+      expect(access_requests.size).to eq(1)
+      expect(access_requests.first).to be_a "#{source.class}Member".constantize
+      expect(access_requests.first.user).to eq(access_requester)
     end
   end
 
@@ -55,11 +55,11 @@ describe AccessRequestsFinder do
         group.add_owner(user)
       end
 
-      it_behaves_like 'a finder returning access requesters', :execute do
+      it_behaves_like 'a finder returning access requests', :execute do
         let(:source) { project }
       end
 
-      it_behaves_like 'a finder returning access requesters', :execute do
+      it_behaves_like 'a finder returning access requests', :execute do
         let(:source) { group }
       end
     end
@@ -82,11 +82,11 @@ describe AccessRequestsFinder do
         group.add_owner(user)
       end
 
-      it_behaves_like 'a finder returning access requesters', :execute! do
+      it_behaves_like 'a finder returning access requests', :execute! do
         let(:source) { project }
       end
 
-      it_behaves_like 'a finder returning access requesters', :execute! do
+      it_behaves_like 'a finder returning access requests', :execute! do
         let(:source) { group }
       end
     end

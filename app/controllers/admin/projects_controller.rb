@@ -23,7 +23,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     end
 
     @project_members = @project.members.page(params[:project_members_page])
-    @requesters = AccessRequestsFinder.new(@project).execute(current_user)
+    @access_requests = AccessRequestsFinder.new(@project).execute(current_user)
   end
 
   def transfer

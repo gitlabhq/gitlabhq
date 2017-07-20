@@ -13,7 +13,7 @@ describe Project do
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:project_members).dependent(:delete_all) }
     it { is_expected.to have_many(:users).through(:project_members) }
-    it { is_expected.to have_many(:requesters).dependent(:delete_all) }
+    it { is_expected.to have_many(:access_requests).dependent(:delete_all) }
     it { is_expected.to have_many(:notes) }
     it { is_expected.to have_many(:snippets).class_name('ProjectSnippet') }
     it { is_expected.to have_many(:deploy_keys_projects) }
@@ -81,7 +81,7 @@ describe Project do
       end
     end
 
-    describe '#members & #requesters' do
+    describe '#members & #access_requests' do
       let(:project) { create(:project, :public, :access_requestable) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
@@ -99,9 +99,9 @@ describe Project do
         end
       end
 
-      describe '#requesters' do
-        it 'does not include requesters' do
-          requester_user_ids = project.requesters.pluck(:user_id)
+      describe '#access_requests' do
+        it 'includes requesters and excludes members' do
+          requester_user_ids = project.access_requests.pluck(:user_id)
 
           expect(requester_user_ids).to include(requester.id)
           expect(requester_user_ids).not_to include(developer.id)

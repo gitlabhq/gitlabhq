@@ -148,7 +148,7 @@ class Project < ActiveRecord::Base
   alias_method :members, :project_members
   has_many :users, through: :project_members
 
-  has_many :requesters, -> { where.not(requested_at: nil) },
+  has_many :access_requests, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :deploy_keys_projects

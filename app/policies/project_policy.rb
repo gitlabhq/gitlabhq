@@ -321,7 +321,7 @@ class ProjectPolicy < BasePolicy
     project.group &&
       (
         project.group.members_with_parents.exists?(user_id: @user.id) ||
-        project.group.requesters.exists?(user_id: @user.id)
+        project.group.access_requests.exists?(user_id: @user.id)
       )
   end
 

@@ -11,7 +11,7 @@
         %strong= @group.name
       = render "new_group_member"
 
-    = render 'shared/members/requests', membership_source: @group, requesters: @requesters
+    = render 'shared/members/requests', membership_source: @group, access_requests: @access_requests
 
   .append-bottom-default.clearfix
     %h5.member.existing-title

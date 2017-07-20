@@ -4,7 +4,7 @@ module Members
 
     attr_accessor :source
 
-    # source - The source object that respond to `#requesters` (i.g. project or group)
+    # source - The source object that respond to `#access_requests` (i.g. project or group)
     # current_user - The user that performs the access request approval
     # params - A hash of parameters
     #   :user_id - User ID used to retrieve the access requester
@@ -20,7 +20,7 @@ module Members
     #   :force - Bypass permission check: current_user can be nil in that case
     def execute(opts = {})
       condition = params[:user_id] ? { user_id: params[:user_id] } : { id: params[:id] }
-      access_requester = source.requesters.find_by!(condition)
+      access_requester = source.access_requests.find_by!(condition)
 
       raise Gitlab::Access::AccessDeniedError unless can_update_access_requester?(access_requester, opts)
 

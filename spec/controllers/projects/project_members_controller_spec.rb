@@ -183,7 +183,7 @@ describe Projects::ProjectMembersController do
 
           expect(response).to set_flash.to 'Your access request to the project has been withdrawn.'
           expect(response).to redirect_to(project_path(project))
-          expect(project.requesters).to be_empty
+          expect(project.access_requests).to be_empty
           expect(project.users).not_to include user
         end
       end
@@ -203,7 +203,7 @@ describe Projects::ProjectMembersController do
       expect(response).to redirect_to(
         project_path(project)
       )
-      expect(project.requesters.exists?(user_id: user)).to be_truthy
+      expect(project.access_requests.exists?(user_id: user)).to be_truthy
       expect(project.users).not_to include user
     end
   end

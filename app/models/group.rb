@@ -15,7 +15,7 @@ class Group < Namespace
     through: :group_members,
     source: :user
 
-  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
+  has_many :access_requests, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :milestones
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

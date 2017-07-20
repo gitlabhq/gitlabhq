@@ -21,7 +21,7 @@ describe Members::ApproveAccessRequestService do
 
   shared_examples 'a service approving an access request' do
     it 'succeeds' do
-      expect { described_class.new(source, user, params).execute(opts) }.to change { source.requesters.count }.by(-1)
+      expect { described_class.new(source, user, params).execute(opts) }.to change { source.access_requests.count }.by(-1)
     end
 
     it 'returns a <Source>Member' do
@@ -136,7 +136,7 @@ describe Members::ApproveAccessRequestService do
       end
 
       context 'when given a :id' do
-        let(:params) { { id: project.requesters.find_by!(user_id: access_requester.id).id } }
+        let(:params) { { id: project.access_requests.find_by!(user_id: access_requester.id).id } }
 
         it_behaves_like 'a service approving an access request' do
           let(:source) { project }

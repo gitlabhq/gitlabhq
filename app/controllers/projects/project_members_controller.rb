@@ -21,7 +21,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
 
     @project_members = @project_members.sort(@sort).page(params[:page])
-    @requesters = AccessRequestsFinder.new(@project).execute(current_user)
+    @access_requests = AccessRequestsFinder.new(@project).execute(current_user)
     @project_member = @project.project_members.new
   end
 

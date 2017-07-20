@@ -42,7 +42,7 @@ describe API::AccessRequests do
       end
 
       context 'when authenticated as a master/owner' do
-        it 'returns access requesters' do
+        it 'returns access requests' do
           get api("/#{source_type.pluralize}/#{source.id}/access_requests", master)
 
           expect(response).to have_http_status(200)
@@ -69,7 +69,7 @@ describe API::AccessRequests do
                 post api("/#{source_type.pluralize}/#{source.id}/access_requests", user)
 
                 expect(response).to have_http_status(403)
-              end.not_to change { source.requesters.count }
+              end.not_to change { source.access_requests.count }
             end
           end
         end
@@ -81,7 +81,7 @@ describe API::AccessRequests do
             post api("/#{source_type.pluralize}/#{source.id}/access_requests", access_requester)
 
             expect(response).to have_http_status(400)
-          end.not_to change { source.requesters.count }
+          end.not_to change { source.access_requests.count }
         end
       end
 
@@ -96,7 +96,7 @@ describe API::AccessRequests do
               post api("/#{source_type.pluralize}/#{source.id}/access_requests", stranger)
 
               expect(response).to have_http_status(403)
-            end.not_to change { source.requesters.count }
+            end.not_to change { source.access_requests.count }
           end
         end
 
@@ -105,7 +105,7 @@ describe API::AccessRequests do
             post api("/#{source_type.pluralize}/#{source.id}/access_requests", stranger)
 
             expect(response).to have_http_status(201)
-          end.to change { source.requesters.count }.by(1)
+          end.to change { source.access_requests.count }.by(1)
 
           # User attributes
           expect(json_response['id']).to eq(stranger.id)
@@ -199,7 +199,7 @@ describe API::AccessRequests do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", access_requester)
 
             expect(response).to have_http_status(204)
-          end.to change { source.requesters.count }.by(-1)
+          end.to change { source.access_requests.count }.by(-1)
         end
       end
 
@@ -209,7 +209,7 @@ describe API::AccessRequests do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", master)
 
             expect(response).to have_http_status(204)
-          end.to change { source.requesters.count }.by(-1)
+          end.to change { source.access_requests.count }.by(-1)
         end
 
         context 'user_id matches a member, not an access requester' do
@@ -218,7 +218,7 @@ describe API::AccessRequests do
               delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{developer.id}", master)
 
               expect(response).to have_http_status(404)
-            end.not_to change { source.requesters.count }
+            end.not_to change { source.access_requests.count }
           end
         end
 
@@ -228,7 +228,7 @@ describe API::AccessRequests do
               delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{stranger.id}", master)
 
               expect(response).to have_http_status(404)
-            end.not_to change { source.requesters.count }
+            end.not_to change { source.access_requests.count }
           end
         end
       end

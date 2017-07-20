@@ -18,7 +18,7 @@ describe AccessRequestable do
         group.request_access(user)
       end
 
-      it { expect(group.requesters.exists?(user_id: user)).to be_truthy }
+      it { expect(group.access_requests.exists?(user_id: user)).to be_truthy }
     end
   end
 
@@ -38,7 +38,7 @@ describe AccessRequestable do
         project.request_access(user)
       end
 
-      it { expect(project.requesters.exists?(user_id: user)).to be_truthy }
+      it { expect(project.access_requests.exists?(user_id: user)).to be_truthy }
     end
   end
 end

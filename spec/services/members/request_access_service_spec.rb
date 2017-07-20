@@ -11,7 +11,7 @@ describe Members::RequestAccessService do
 
   shared_examples 'a service creating a access request' do
     it 'succeeds' do
-      expect { described_class.new(source, user).execute }.to change { source.requesters.count }.by(1)
+      expect { described_class.new(source, user).execute }.to change { source.access_requests.count }.by(1)
     end
 
     it 'returns a <Source>Member' do

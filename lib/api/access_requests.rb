@@ -21,10 +21,10 @@ module API
         get ":id/access_requests" do
           source = find_source(source_type, params[:id])
 
-          access_requesters = AccessRequestsFinder.new(source).execute!(current_user)
-          access_requesters = paginate(access_requesters.includes(:user))
+          access_requests = AccessRequestsFinder.new(source).execute!(current_user)
+          access_requests = paginate(access_requests.includes(:user))
 
-          present access_requesters.map(&:user), with: Entities::AccessRequester, source: source
+          present access_requests.map(&:user), with: Entities::AccessRequester, source: source
         end
 
         desc "Requests access for the authenticated user to a #{source_type}." do
@@ -70,7 +70,7 @@ module API
 
           status 204
           ::Members::DestroyService.new(source, current_user, params)
-            .execute(:requesters)
+            .execute(:access_requests)
         end
       end
     end

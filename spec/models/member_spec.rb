@@ -87,10 +87,10 @@ describe Member do
                                       .tap { |u| u.accept_invite!(accepted_invite_user) }
 
       requested_user = create(:user).tap { |u| project.request_access(u) }
-      @requested_member = project.requesters.find_by(user_id: requested_user.id)
+      @requested_member = project.access_requests.find_by(user_id: requested_user.id)
 
       accepted_request_user = create(:user).tap { |u| project.request_access(u) }
-      @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
+      @accepted_request_member = project.access_requests.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
     end
 
     describe '.access_for_user_ids' do
@@ -263,13 +263,13 @@ describe Member do
 
             it 'adds the requester as a member' do
               expect(source.users).not_to include(user)
-              expect(source.requesters.exists?(user_id: user)).to be_truthy
+              expect(source.access_requests.exists?(user_id: user)).to be_truthy
 
               expect { described_class.add_user(source, user, :master) }
                 .to raise_error(Gitlab::Access::AccessDeniedError)
 
               expect(source.users.reload).not_to include(user)
-              expect(source.requesters.reload.exists?(user_id: user)).to be_truthy
+              expect(source.access_requests.reload.exists?(user_id: user)).to be_truthy
             end
           end
 
@@ -310,12 +310,12 @@ describe Member do
 
             it 'adds the requester as a member' do
               expect(source.users).not_to include(user)
-              expect(source.requesters.exists?(user_id: user)).to be_truthy
+              expect(source.access_requests.exists?(user_id: user)).to be_truthy
 
               described_class.add_user(source, user, :master, current_user: admin)
 
               expect(source.users.reload).to include(user)
-              expect(source.requesters.reload.exists?(user_id: user)).to be_falsy
+              expect(source.access_requests.reload.exists?(user_id: user)).to be_falsy
             end
           end
         end
@@ -337,12 +337,12 @@ describe Member do
 
             it 'does not destroy the requester' do
               expect(source.users).not_to include(user)
-              expect(source.requesters.exists?(user_id: user)).to be_truthy
+              expect(source.access_requests.exists?(user_id: user)).to be_truthy
 
               described_class.add_user(source, user, :master, current_user: user)
 
               expect(source.users.reload).not_to include(user)
-              expect(source.requesters.exists?(user_id: user)).to be_truthy
+              expect(source.access_requests.exists?(user_id: user)).to be_truthy
             end
           end
         end

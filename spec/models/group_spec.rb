@@ -8,7 +8,7 @@ describe Group do
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
     it { is_expected.to have_many(:users).through(:group_members) }
     it { is_expected.to have_many(:owners).through(:group_members) }
-    it { is_expected.to have_many(:requesters).dependent(:destroy) }
+    it { is_expected.to have_many(:access_requests).dependent(:destroy) }
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
@@ -17,7 +17,7 @@ describe Group do
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_one(:chat_team) }
 
-    describe '#members & #requesters' do
+    describe '#members & #access_requests' do
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do
@@ -34,9 +34,9 @@ describe Group do
         end
       end
 
-      describe '#requesters' do
-        it 'does not include requesters' do
-          requester_user_ids = group.requesters.pluck(:user_id)
+      describe '#access_requests' do
+        it 'includes requesters and excludes members' do
+          requester_user_ids = group.access_requests.pluck(:user_id)
 
           expect(requester_user_ids).to include(requester.id)
           expect(requester_user_ids).not_to include(developer.id)

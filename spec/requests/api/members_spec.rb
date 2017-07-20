@@ -131,7 +131,7 @@ describe API::Members do
 
               expect(response).to have_http_status(201)
             end.to change { source.members.count }.by(1)
-            expect(source.requesters.count).to eq(0)
+            expect(source.access_requests.count).to eq(0)
             expect(json_response['id']).to eq(access_requester.id)
             expect(json_response['access_level']).to eq(Member::MASTER)
           end
@@ -273,7 +273,7 @@ describe API::Members do
               delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", master)
 
               expect(response).to have_http_status(404)
-            end.not_to change { source.requesters.count }
+            end.not_to change { source.access_requests.count }
           end
         end
 

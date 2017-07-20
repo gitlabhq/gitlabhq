@@ -33,7 +33,7 @@
           .tab-pane{ id: 'share-with-group-pane', role: 'tabpanel' }
             = render 'projects/project_members/new_shared_group', tab_title: 'Share with group'
 
-        = render 'shared/members/requests', membership_source: @project, requesters: @requesters
+        = render 'shared/members/requests', membership_source: @project, access_requests: @access_requests
         .clearfix
           %h5.member.existing-title
             Existing members and groups

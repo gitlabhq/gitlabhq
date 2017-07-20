@@ -4,7 +4,7 @@ module Members
 
     attr_accessor :source
 
-    ALLOWED_SCOPES = %i[members requesters all].freeze
+    ALLOWED_SCOPES = %i[members access_requests all].freeze
 
     def initialize(source, current_user, params = {})
       @source = source
@@ -29,7 +29,7 @@ module Members
       case scope
       when :all
         source.members.find_by(condition) ||
-          source.requesters.find_by!(condition)
+          source.access_requests.find_by!(condition)
       else
         source.public_send(scope).find_by!(condition)
       end

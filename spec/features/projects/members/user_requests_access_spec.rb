@@ -23,7 +23,7 @@ feature 'Projects > Members > User requests access' do
     expect(ActionMailer::Base.deliveries.last.to).to eq [master.notification_email]
     expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.name_with_namespace} project"
 
-    expect(project.requesters.exists?(user_id: user)).to be_truthy
+    expect(project.access_requests.exists?(user_id: user)).to be_truthy
     expect(page).to have_content 'Your request for access has been queued for review.'
 
     expect(page).to have_content 'Withdraw Access Request'
@@ -44,7 +44,7 @@ feature 'Projects > Members > User requests access' do
   scenario 'user is not listed in the project members page' do
     click_link 'Request Access'
 
-    expect(project.requesters.exists?(user_id: user)).to be_truthy
+    expect(project.access_requests.exists?(user_id: user)).to be_truthy
 
     page.within('.layout-nav .nav-links') do
       click_link('Members')
@@ -59,11 +59,11 @@ feature 'Projects > Members > User requests access' do
   scenario 'user can withdraw its request for access' do
     click_link 'Request Access'
 
-    expect(project.requesters.exists?(user_id: user)).to be_truthy
+    expect(project.access_requests.exists?(user_id: user)).to be_truthy
 
     click_link 'Withdraw Access Request'
 
-    expect(project.requesters.exists?(user_id: user)).to be_falsey
+    expect(project.access_requests.exists?(user_id: user)).to be_falsey
     expect(page).to have_content 'Your access request to the project has been withdrawn.'
   end
 

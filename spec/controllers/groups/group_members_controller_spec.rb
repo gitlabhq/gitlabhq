@@ -171,7 +171,7 @@ describe Groups::GroupMembersController do
 
           expect(response).to set_flash.to 'Your access request to the group has been withdrawn.'
           expect(response).to redirect_to(group_path(group))
-          expect(group.requesters).to be_empty
+          expect(group.access_requests).to be_empty
           expect(group.users).not_to include user
         end
       end
@@ -188,7 +188,7 @@ describe Groups::GroupMembersController do
 
       expect(response).to set_flash.to 'Your request for access has been queued for review.'
       expect(response).to redirect_to(group_path(group))
-      expect(group.requesters.exists?(user_id: user)).to be_truthy
+      expect(group.access_requests.exists?(user_id: user)).to be_truthy
       expect(group.users).not_to include user
     end
   end

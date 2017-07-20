@@ -374,7 +374,7 @@ describe Notify do
         let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
-          project.requesters.find_by(user_id: user.id)
+          project.access_requests.find_by(user_id: user.id)
         end
         subject { described_class.member_access_requested_email('project', project_member.id) }
 
@@ -401,7 +401,7 @@ describe Notify do
         let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
-          project.requesters.find_by(user_id: user.id)
+          project.access_requests.find_by(user_id: user.id)
         end
         subject { described_class.member_access_requested_email('project', project_member.id) }
 
@@ -427,7 +427,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:project_member) do
         project.request_access(user)
-        project.requesters.find_by(user_id: user.id)
+        project.access_requests.find_by(user_id: user.id)
       end
       subject { described_class.member_access_denied_email('project', project.id, user.id) }
 
@@ -853,7 +853,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
-        group.requesters.find_by(user_id: user.id)
+        group.access_requests.find_by(user_id: user.id)
       end
       subject { described_class.member_access_requested_email('group', group_member.id) }
 
@@ -874,7 +874,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
-        group.requesters.find_by(user_id: user.id)
+        group.access_requests.find_by(user_id: user.id)
       end
       subject { described_class.member_access_denied_email('group', group.id, user.id) }
 

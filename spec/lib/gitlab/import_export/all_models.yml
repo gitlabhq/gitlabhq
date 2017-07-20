@@ -231,7 +231,7 @@ project:
 - protected_tags
 - project_members
 - users
-- requesters
+- access_requests
 - deploy_keys_projects
 - deploy_keys
 - users_star_projects
