@@ -1653,39 +1653,6 @@ describe Ci::Build, :models do
     end
   end
 
-<<<<<<< HEAD
-  describe '#has_codeclimate_json?' do
-    context 'valid build' do
-      let!(:build) do
-        create(
-          :ci_build,
-          :artifacts,
-          name: 'codeclimate',
-          pipeline: pipeline,
-          options: {
-            artifacts: {
-              paths: ['codeclimate.json']
-            }
-          }
-        )
-      end
-
-      it { expect(build.has_codeclimate_json?).to be_truthy }
-    end
-
-    context 'invalid build' do
-      let!(:build) do
-        create(
-          :ci_build,
-          :artifacts,
-          name: 'codeclimate',
-          pipeline: pipeline,
-          options: {}
-        )
-      end
-
-      it { expect(build.has_codeclimate_json?).to be_falsey }
-=======
   describe 'state transition when build fails' do
     context 'when build is configured to be retried' do
       subject { create(:ci_build, :running, options: { retry: 3 }) }
@@ -1714,7 +1681,6 @@ describe Ci::Build, :models do
 
         subject.drop!
       end
->>>>>>> ce/master
     end
   end
 end
