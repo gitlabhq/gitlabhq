@@ -2,6 +2,8 @@ class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license, except: [:index, :destroy]
   before_action :load_node, only: [:edit, :update, :destroy, :repair, :toggle, :status]
 
+  helper EE::GeoHelper
+
   def index
     @nodes = GeoNode.all.order(:id)
     @node = GeoNode.new
