@@ -109,25 +109,25 @@ export default {
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
-          :linkHref="author.path"
-          :imgSrc="author.avatar_url"
-          :imgAlt="author.name"
-          :imgSize="40" />
+          :link-href="author.path"
+          :img-src="author.avatar_url"
+          :img-alt="author.name"
+          :img-size="40" />
       </div>
       <div class="timeline-content">
         <div class="discussion">
           <div class="discussion-header">
             <issue-note-header
               :author="author"
-              :createdAt="discussion.created_at"
-              :noteId="discussion.id"
-              :includeToggle="true"
-              :toggleHandler="toggleDiscussion"
+              :created-at="discussion.created_at"
+              :note-id="discussion.id"
+              :include-toggle="true"
+              :toggle-handler="toggleDiscussion"
               actionText="started a discussion" />
             <issue-note-edited-text
               v-if="note.last_updated_by"
-              :editedAt="note.last_updated_at"
-              :editedBy="note.last_updated_by"
+              :edited-at="note.last_updated_at"
+              :edited-by="note.last_updated_by"
               actionText="Last updated"
               className="discussion-headline-light js-discussion-headline" />
             </div>
@@ -155,8 +155,8 @@ export default {
                   <issue-note-form
                     v-if="isReplying"
                     saveButtonTitle="Comment"
-                    :updateHandler="saveReply"
-                    :cancelHandler="cancelReplyForm"
+                    :update-handler="saveReply"
+                    :cancel-handler="cancelReplyForm"
                     ref="noteForm" />
                   <issue-note-signed-out-widget v-if="!canReply" />
                 </div>

@@ -161,10 +161,10 @@ export default {
           <div class="timeline-icon hidden-xs hidden-sm">
             <user-avatar-link
               v-if="author"
-              :linkHref="author.path"
-              :imgSrc="author.avatar_url"
-              :imgAlt="author.name"
-              :imgSize="40" />
+              :link-href="author.path"
+              :img-src="author.avatar_url"
+              :img-alt="author.name"
+              :img-size="40" />
           </div>
           <div class="js-main-target-form timeline-content timeline-content-form common-note-form">
             <markdown-field

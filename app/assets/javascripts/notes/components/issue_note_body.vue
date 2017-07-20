@@ -78,10 +78,10 @@ export default {
     <issue-note-form
       v-if="isEditing"
       ref="noteForm"
-      :updateHandler="handleFormUpdate"
-      :cancelHandler="formCancelHandler"
-      :noteBody="noteBody"
-      :noteId="note.id" />
+      :update-handler="handleFormUpdate"
+      :cancel-handler="formCancelHandler"
+      :note-body="noteBody"
+      :note-id="note.id" />
     <textarea
       v-if="canEdit"
       v-model="note.note"
@@ -89,14 +89,14 @@ export default {
       class="hidden js-task-list-field"></textarea>
     <issue-note-edited-text
       v-if="note.last_edited_by"
-      :editedAt="note.last_edited_at"
-      :editedBy="note.last_edited_by"
+      :edited-at="note.last_edited_at"
+      :edited-by="note.last_edited_by"
       actionText="Edited" />
     <issue-note-awards-list
       v-if="note.award_emoji.length"
-      :noteId="note.id"
-      :noteAuthorId="note.author.id"
+      :note-id="note.id"
+      :note-author-id="note.author.id"
       :awards="note.award_emoji"
-      :toggleAwardPath="note.toggle_award_path" />
+      :toggle-award-path="note.toggle_award_path" />
   </div>
 </template>

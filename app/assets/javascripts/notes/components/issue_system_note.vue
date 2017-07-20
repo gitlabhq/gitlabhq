@@ -45,9 +45,9 @@ export default {
         <div class="note-header">
           <issue-note-header
             :author="note.author"
-            :createdAt="note.created_at"
-            :noteId="note.id"
-            :actionTextHtml="note.note_html" />
+            :created-at="note.created_at"
+            :note-id="note.id"
+            :action-text-html="note.note_html" />
         </div>
       </div>
     </div>

@@ -38,6 +38,6 @@ export default {
     </a>
     <time-ago-tooltip
       :time="editedAt"
-      tooltipPlacement="bottom" />
+      tooltip-placement="bottom" />
   </div>
 </template>

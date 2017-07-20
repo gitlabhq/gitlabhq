@@ -121,35 +121,35 @@ export default {
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
-          :linkHref="author.path"
-          :imgSrc="author.avatar_url"
-          :imgAlt="author.name"
-          :imgSize="40" />
+          :link-href="author.path"
+          :img-src="author.avatar_url"
+          :img-alt="author.name"
+          :img-size="40" />
       </div>
       <div class="timeline-content">
         <div class="note-header">
           <issue-note-header
             :author="author"
-            :createdAt="note.created_at"
-            :noteId="note.id"
+            :created-at="note.created_at"
+            :note-id="note.id"
             actionText="commented" />
           <issue-note-actions
-            :authorId="author.id"
-            :noteId="note.id"
-            :accessLevel="note.human_access"
-            :canEdit="note.current_user.can_edit"
-            :canDelete="note.current_user.can_edit"
-            :canReportAsAbuse="canReportAsAbuse"
-            :reportAbusePath="note.report_abuse_path"
-            :editHandler="editHandler"
-            :deleteHandler="deleteHandler" />
+            :author-id="author.id"
+            :note-id="note.id"
+            :access-level="note.human_access"
+            :can-edit="note.current_user.can_edit"
+            :can-delete="note.current_user.can_edit"
+            :can-report-as-abuse="canReportAsAbuse"
+            :report-abuse-path="note.report_abuse_path"
+            :edit-handler="editHandler"
+            :delete-handler="deleteHandler" />
         </div>
         <issue-note-body
           :note="note"
-          :canEdit="note.current_user.can_edit"
-          :isEditing="isEditing"
-          :formUpdateHandler="formUpdateHandler"
-          :formCancelHandler="formCancelHandler"
+          :can-edit="note.current_user.can_edit"
+          :is-editing="isEditing"
+          :form-update-handler="formUpdateHandler"
+          :form-cancel-handler="formCancelHandler"
           ref="noteBody" />
       </div>
     </div>
