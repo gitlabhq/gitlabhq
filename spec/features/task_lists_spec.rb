@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Task Lists', feature: true do
+feature 'Task Lists', feature: true, js: true do
   include Warden::Test::Helpers
 
   let(:project) { create(:empty_project) }
@@ -194,7 +194,6 @@ feature 'Task Lists', feature: true do
 
         expect(page).to have_selector('.note .js-task-list-container')
         expect(page).to have_selector('.note .js-task-list-container .task-list .task-list-item .task-list-item-checkbox')
-        expect(page).to have_selector('.note .js-task-list-container .js-task-list-field')
       end
 
       it 'is only editable by author' do
@@ -264,7 +263,6 @@ feature 'Task Lists', feature: true do
 
         expect(page).to have_selector(container)
         expect(page).to have_selector("#{container} .wiki .task-list .task-list-item .task-list-item-checkbox")
-        expect(page).to have_selector("#{container} .js-task-list-field")
         expect(page).to have_selector('form.js-issuable-update')
         expect(page).to have_selector('a.btn-close')
       end
