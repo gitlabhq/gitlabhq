@@ -20,7 +20,10 @@ describe Admin::GeoNodesController, :postgresql do
 
   describe '#index' do
     render_views
-    subject { get :index }
+
+    def go
+      get :index
+    end
 
     context 'with add-on license available' do
       before do
@@ -28,7 +31,7 @@ describe Admin::GeoNodesController, :postgresql do
       end
 
       it 'renders creation form' do
-        expect(subject).to render_template(partial: 'admin/geo_nodes/_form')
+        expect(go).to render_template(partial: 'admin/geo_nodes/_form')
       end
     end
 
@@ -38,16 +41,16 @@ describe Admin::GeoNodesController, :postgresql do
       end
 
       it 'does not render the creation form' do
-        expect(subject).not_to render_template(partial: 'admin/geo_nodes/_form')
+        expect(go).not_to render_template(partial: 'admin/geo_nodes/_form')
       end
 
       it 'displays a flash message' do
-        subject
+        go
         expect(controller).to set_flash.now[:alert].to('You need a different license to enable Geo replication')
       end
 
       it 'does not redirects to the license page' do
-        subject
+        go
         expect(response).not_to redirect_to(admin_license_path)
       end
     end
@@ -55,7 +58,8 @@ describe Admin::GeoNodesController, :postgresql do
 
   describe '#destroy' do
     let!(:geo_node) { create(:geo_node) }
-    subject do
+
+    def go
       delete(:destroy, id: geo_node)
     end
 
@@ -65,7 +69,7 @@ describe Admin::GeoNodesController, :postgresql do
       end
 
       it 'deletes the node' do
-        expect { subject }.to change { GeoNode.count }.by(-1)
+        expect { go }.to change { GeoNode.count }.by(-1)
       end
     end
 
@@ -75,19 +79,22 @@ describe Admin::GeoNodesController, :postgresql do
       end
 
       it 'deletes the node' do
-        expect { subject }.to change { GeoNode.count }.by(-1)
+        expect { go }.to change { GeoNode.count }.by(-1)
       end
     end
   end
 
   describe '#create' do
     let(:geo_node_attributes) { { url: 'http://example.com', geo_node_key_attributes: { key: SSHKeygen.generate } } }
-    subject { post :create, geo_node: geo_node_attributes }
+
+    def go
+      post :create, geo_node: geo_node_attributes
+    end
 
     context 'without add-on license' do
       before do
         allow(Gitlab::Geo).to receive(:license_allows?) { false }
-        subject
+        go
       end
 
       it_behaves_like 'unlicensed geo action'
@@ -99,18 +106,53 @@ describe Admin::GeoNodesController, :postgresql do
       end
 
       it 'creates the node' do
-        expect { subject }.to change { GeoNode.count }.by(1)
+        expect { go }.to change { GeoNode.count }.by(1)
+      end
+    end
+  end
+
+  describe '#update' do
+    let(:geo_node_attributes) { { url: 'http://example.com', geo_node_key_attributes: attributes_for(:key) } }
+    let(:geo_node) { create(:geo_node) }
+    let!(:original_fingerprint) { geo_node.geo_node_key.fingerprint }
+
+    def go
+      post :update, id: geo_node, geo_node: geo_node_attributes
+    end
+
+    context 'without add-on license' do
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?) { false }
+        go
+      end
+
+      it_behaves_like 'unlicensed geo action'
+    end
+
+    context 'with add-on license' do
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
+        go
+      end
+
+      it 'updates the node without changing the key' do
+        geo_node.reload
+
+        expect(geo_node.url.chomp('/')).to eq(geo_node_attributes[:url])
+        expect(geo_node.geo_node_key.fingerprint).to eq(original_fingerprint)
       end
     end
   end
 
   describe '#repair' do
     let(:geo_node) { create(:geo_node) }
-    subject { post :repair, id: geo_node }
+    def go
+      post :repair, id: geo_node
+    end
 
     before do
       allow(Gitlab::Geo).to receive(:license_allows?) { false }
-      subject
+      go
     end
 
     it_behaves_like 'unlicensed geo action'
