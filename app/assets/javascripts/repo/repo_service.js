@@ -2,38 +2,46 @@ import axios from 'axios';
 
 const RepoService = {
   url: '',
-  params: {
+  options: {
     params: {
       format: 'json',
     },
   },
+  richExtensionRegExp: /md/,
 
-  setUrl(url) {
-    this.url = url;
-  },
+  buildParams(url = this.url) {
+    // shallow clone object without reference
+    const params = Object.assign({}, this.options.params);
 
-  paramsWithRich(url) {
-    // copy the obj so we don't modify perm.
-    const params = JSON.parse(JSON.stringify(this.params));
-    if (url.substr(url.length - 2) === 'md') {
-      params.params.viewer = 'rich';
-    }
+    if (this.urlIsRichBlob(url)) params.viewer = 'rich';
+
     return params;
   },
 
-  getContent(url) {
-    if (url) {
-      return axios.get(url, this.paramsWithRich(url, this.params));
-    }
-    return axios.get(this.url, this.paramsWithRich(this.url, this.params));
+  urlIsRichBlob(url = this.url) {
+    const extension = url.split('.').pop();
+
+    return this.richExtensionRegExp.test(extension);
   },
 
-  getBase64Content(url) {
-    return axios
-      .get(url, {
-        responseType: 'arraybuffer',
-      })
-      .then(response => new Buffer(response.data, 'binary').toString('base64'));
+  getContent(url = this.url) {
+    const params = this.buildParams(url);
+
+    return axios.get(url, {
+      params,
+    });
+  },
+
+  getBase64Content(url = this.url) {
+    const request = axios.get(url, {
+      responseType: 'arraybuffer',
+    });
+
+    return request.then(response => this.bufferToBase64(response.data));
+  },
+
+  bufferToBase64(data) {
+    return new Buffer(data, 'binary').toString('base64');
   },
 };
 
