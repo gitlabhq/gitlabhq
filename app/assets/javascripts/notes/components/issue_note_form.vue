@@ -60,7 +60,7 @@ export default {
         const myLastNoteId = discussion.find('.js-my-note').last().attr('id');
 
         if (myLastNoteId) {
-          eventHub.$emit('EnterEditMode', {
+          eventHub.$emit('enterEditMode', {
             noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
           });
         }

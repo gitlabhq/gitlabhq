@@ -103,7 +103,7 @@ export default {
     },
   },
   created() {
-    eventHub.$on('EnterEditMode', ({ noteId }) => {
+    eventHub.$on('enterEditMode', ({ noteId }) => {
       if (noteId === this.note.id) {
         this.isEditing = true;
         this.$store.dispatch('scrollToNoteIfNeeded', $(this.$el));

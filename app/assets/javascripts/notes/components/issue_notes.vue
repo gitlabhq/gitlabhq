@@ -98,7 +98,7 @@ export default {
       });
 
       $(document).on('issuable:change', (e, isClosed) => {
-        eventHub.$emit('IssueStateChanged', isClosed);
+        eventHub.$emit('issueStateChanged', isClosed);
       });
     },
     checkLocationHash() {

@@ -127,7 +127,7 @@ export default {
         const myLastNoteId = $('.js-my-note').last().attr('id');
 
         if (myLastNoteId) {
-          eventHub.$emit('EnterEditMode', {
+          eventHub.$emit('enterEditMode', {
             noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
           });
         }
@@ -142,7 +142,7 @@ export default {
     this.markdownDocsUrl = markdownDocs;
     this.markdownPreviewUrl = markdownPreviewUrl;
 
-    eventHub.$on('IssueStateChanged', (isClosed) => {
+    eventHub.$on('issueStateChanged', (isClosed) => {
       this.issueState = isClosed ? 'closed' : 'reopened';
     });
   },
