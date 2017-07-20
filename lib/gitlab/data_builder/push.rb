@@ -74,6 +74,8 @@ module Gitlab
         build(project, user, commits.last&.id, commits.first&.id, ref, commits)
       end
 
+      private
+
       def checkout_sha(repository, newrev, ref)
         # Checkout sha is nil when we remove branch or tag
         return if Gitlab::Git.blank_ref?(newrev)

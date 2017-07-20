@@ -309,10 +309,14 @@ describe Project, models: true do
   end
 
   describe 'delegation' do
-    it { is_expected.to delegate_method(:add_guest).to(:team) }
-    it { is_expected.to delegate_method(:add_reporter).to(:team) }
-    it { is_expected.to delegate_method(:add_developer).to(:team) }
-    it { is_expected.to delegate_method(:add_master).to(:team) }
+    [:add_guest, :add_reporter, :add_developer, :add_master, :add_user, :add_users].each do |method|
+      it { is_expected.to delegate_method(method).to(:team) }
+    end
+
+    it { is_expected.to delegate_method(:empty_repo?).to(:repository) }
+    it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
+    it { is_expected.to delegate_method(:count).to(:forks).with_prefix(true) }
+    it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
   end
 
   describe '#to_reference' do
