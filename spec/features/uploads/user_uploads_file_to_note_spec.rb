@@ -10,6 +10,7 @@ feature 'User uploads file to note', feature: true do
   before do
     sign_in(user)
     visit project_issue_path(project, issue)
+    wait_for_requests
   end
 
   context 'before uploading' do
