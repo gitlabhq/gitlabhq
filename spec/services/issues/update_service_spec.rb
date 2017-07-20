@@ -492,43 +492,22 @@ describe Issues::UpdateService, services: true do
     end
 
     context 'duplicate issue' do
-      let(:original_issue) { create(:issue, project: project) }
+      let(:canonical_issue) { create(:issue, project: project) }
 
-      context 'invalid original_issue_id' do
-        before do
-          update_issue(original_issue_id: 123456789)
-        end
+      context 'invalid canonical_issue_id' do
+        it 'does not call the duplicate service' do
+          expect(Issues::DuplicateService).not_to receive(:new)
 
-        it 'does not close the issue' do
-          expect(issue.reload).not_to be_closed
-        end
-
-        it 'does not create a system note' do
-          note = find_note("marked this issue as a duplicate of #{original_issue.to_reference}")
-          expect(note).to be_nil
-        end
-
-        it 'does not upvote the issue on behalf of the author' do
-          expect(original_issue).not_to be_awarded_emoji(AwardEmoji::UPVOTE_NAME, issue.author)
+          update_issue(canonical_issue_id: 123456789)
         end
       end
 
-      context 'valid original_issue_id' do
-        before do
-          update_issue(original_issue_id: original_issue.id)
-        end
+      context 'valid canonical_issue_id' do
+        it 'calls the duplicate service with both issues' do
+          expect_any_instance_of(Issues::DuplicateService)
+            .to receive(:execute).with(issue, canonical_issue)
 
-        it 'closes the issue' do
-          expect(issue.reload).to be_closed
-        end
-
-        it 'creates a system note that this issue is a duplicate' do
-          note = find_note("marked this issue as a duplicate of #{original_issue.to_reference}")
-          expect(note).not_to be_nil
-        end
-
-        it 'upvotes the issue on behalf of the author' do
-          expect(original_issue).to be_awarded_emoji(AwardEmoji::UPVOTE_NAME, issue.author)
+          update_issue(canonical_issue_id: canonical_issue.id)
         end
       end
     end

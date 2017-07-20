@@ -262,11 +262,11 @@ describe QuickActions::InterpretService, services: true do
     end
 
     shared_examples 'duplicate command' do
-      it 'fetches issue and populates original_issue_id if content contains /duplicate issue_reference' do
+      it 'fetches issue and populates canonical_issue_id if content contains /duplicate issue_reference' do
         issue_duplicate # populate the issue
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(original_issue_id: issue_duplicate.id)
+        expect(updates).to eq(canonical_issue_id: issue_duplicate.id)
       end
     end
 
@@ -661,11 +661,6 @@ describe QuickActions::InterpretService, services: true do
       end
 
       it_behaves_like 'empty command' do
-        let(:content) { "/duplicate #{issue.to_reference}" }
-        let(:issuable) { issue }
-      end
-
-      it_behaves_like 'empty command' do
         let(:content) { '/duplicate' }
         let(:issuable) { issue }
       end
@@ -679,7 +674,7 @@ describe QuickActions::InterpretService, services: true do
         end
 
         it_behaves_like 'empty command' do
-          let(:content) { '/duplicate imaginary#1234' }
+          let(:content) { "/duplicate imaginary#1234" }
           let(:issuable) { issue }
         end
 

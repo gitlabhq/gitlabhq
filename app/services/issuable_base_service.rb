@@ -46,10 +46,6 @@ class IssuableBaseService < BaseService
     SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
   end
 
-  def create_issue_duplicate_note(issuable, original_issue)
-    SystemNoteService.mark_duplicate_issue(issuable, issuable.project, current_user, original_issue)
-  end
-
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
@@ -62,7 +58,7 @@ class IssuableBaseService < BaseService
       params.delete(:assignee_ids)
       params.delete(:assignee_id)
       params.delete(:due_date)
-      params.delete(:original_issue_id)
+      params.delete(:canonical_issue_id)
     end
 
     filter_assignee(issuable)
@@ -214,7 +210,6 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
-    change_issue_duplicate(issuable)
     toggle_award(issuable)
     filter_params(issuable)
     old_labels = issuable.labels.to_a
@@ -295,22 +290,6 @@ class IssuableBaseService < BaseService
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
       todo_service.mark_todos_as_done([todo], current_user) if todo
     end
-  end
-
-  def change_issue_duplicate(issuable)
-    original_issue_id = params.delete(:original_issue_id)
-    return unless original_issue_id
-
-    begin
-      original_issue = IssuesFinder.new(current_user).find(original_issue_id)
-    rescue ActiveRecord::RecordNotFound
-      return
-    end
-
-    note = create_issue_duplicate_note(issuable, original_issue)
-    note.create_cross_references!
-    close_service.new(project, current_user, {}).execute(issuable)
-    original_issue.create_award_emoji(AwardEmoji::UPVOTE_NAME, issuable.author)
   end
 
   def toggle_award(issuable)

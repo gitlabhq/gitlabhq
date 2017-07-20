@@ -472,6 +472,9 @@ module QuickActions
     end
 
     desc 'Mark this issue as a duplicate of another issue'
+    explanation do |duplicate_reference|
+      "Marks this issue as a duplicate of #{duplicate_reference}."
+    end
     params '#issue'
     condition do
       issuable.is_a?(Issue) &&
@@ -479,9 +482,10 @@ module QuickActions
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
     command :duplicate do |duplicate_param|
-      original_issue = extract_references(duplicate_param, :issue).first
-      if original_issue.present? && original_issue != issuable
-        @updates[:original_issue_id] = original_issue.id
+      canonical_issue = extract_references(duplicate_param, :issue).first
+
+      if canonical_issue.present?
+        @updates[:canonical_issue_id] = canonical_issue.id
       end
     end
 
