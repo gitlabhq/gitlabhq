@@ -1,11 +1,8 @@
 class ProjectHook < WebHook
-<<<<<<< HEAD
   include CustomModelNaming
 
   self.singular_route_key = :hook
 
-  belongs_to :project
-=======
   TRIGGERS = {
     push_hooks:               :push_events,
     tag_push_hooks:           :tag_push_events,
@@ -21,7 +18,6 @@ class ProjectHook < WebHook
   TRIGGERS.each do |trigger, event|
     scope trigger, -> { where(event => true) }
   end
->>>>>>> ce/master
 
   belongs_to :project
   validates :project, presence: true
