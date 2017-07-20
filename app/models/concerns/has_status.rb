@@ -12,7 +12,7 @@ module HasStatus
                     failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
 
   class_methods do
-    def enumerated_status!
+    def enumerate_status!
       enum status: HasStatus::STATUSES_ENUM
     end
 

@@ -4,7 +4,7 @@ module Ci
     include Importable
     include HasStatus
 
-    enumerated_status!
+    enumerate_status!
 
     belongs_to :project
     belongs_to :pipeline
