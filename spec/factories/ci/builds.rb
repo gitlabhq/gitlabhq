@@ -140,7 +140,6 @@ FactoryGirl.define do
     end
 
     trait :erased do
-      erasable
       erased_at Time.now
       erased_by factory: :user
     end

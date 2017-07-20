@@ -87,18 +87,18 @@ describe BuildDetailsEntity do
         end
       end
 
-      context 'when the build has been erased' do
-        let(:build) { create(:ci_build, :erased, project: project) }
+      context 'when the build has not been erased' do
+        let(:build) { create(:ci_build, :erasable, project: project) }
 
-        it 'exposes the user whom erased the build' do
+        it 'exposes a build erase path' do
           expect(subject).to include(:erase_path)
         end
       end
 
       context 'when the build has been erased' do
-        let(:build) { create(:ci_build, :erased, project: project, erased_by: user) }
+        let(:build) { create(:ci_build, :erased, project: project) }
 
-        it 'exposes the user whom erased the build' do
+        it 'exposes the user who erased the build' do
           expect(subject).to include(:erased_by)
         end
       end
