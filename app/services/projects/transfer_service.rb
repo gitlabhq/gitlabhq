@@ -34,7 +34,7 @@ module Projects
     private
 
     def transfer(project)
-      @old_path = project.path_with_namespace
+      @old_path = project.full_path
       @old_group = project.group
       @new_path = File.join(@new_namespace.try(:full_path) || '', project.path)
       @old_namespace = project.namespace

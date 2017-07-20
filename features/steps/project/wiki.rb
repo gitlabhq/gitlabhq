@@ -142,7 +142,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see non-escaped link in the pages list' do
-    expect(page).to have_xpath("//a[@href='/#{project.path_with_namespace}/wikis/one/two/three-test']")
+    expect(page).to have_xpath("//a[@href='/#{project.full_path}/wikis/one/two/three-test']")
   end
 
   step 'I edit the Wiki page with a path' do

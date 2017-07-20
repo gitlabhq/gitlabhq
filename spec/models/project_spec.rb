@@ -306,6 +306,7 @@ describe Project do
     it { is_expected.to respond_to(:execute_hooks) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
+    it { is_expected.to respond_to(:full_path) }
   end
 
   describe 'delegation' do
@@ -460,7 +461,7 @@ describe Project do
       end
 
       it 'returns the address to create a new issue' do
-        address = "p+#{project.path_with_namespace}+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
 
         expect(project.new_issue_address(user)).to eq(address)
       end
@@ -1152,6 +1153,33 @@ describe Project do
 
     context "if public folder doesn't exist" do
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#pages_url' do
+    let(:group) { create :group, name: group_name }
+    let(:project) { create :empty_project, namespace: group, name: project_name }
+    let(:domain) { 'Example.com' }
+
+    subject { project.pages_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
+    end
+
+    context 'group page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'group.example.com' }
+
+      it { is_expected.to eq("http://group.example.com") }
+    end
+
+    context 'project page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'Project' }
+
+      it { is_expected.to eq("http://group.example.com/project") }
     end
   end
 
