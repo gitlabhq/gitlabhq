@@ -1,13 +1,29 @@
 <script>
 const RepoFile = {
   props: {
-    name: 'repo-file',
-    file: Object,
-    isTree: Boolean,
-    isMini: Boolean,
-    loading: Object,
-    hasFiles: Boolean,
-    activeFile: Object,
+    file: {
+      type: Object,
+      required: true,
+    },
+    isMini: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    loading: {
+      type: Object,
+      required: false,
+      default: {},
+    },
+    hasFiles: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    activeFile: {
+      type: Object,
+      required: true,
+    },
   },
 
   methods: {

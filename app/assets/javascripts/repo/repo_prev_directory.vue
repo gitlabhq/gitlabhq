@@ -1,8 +1,10 @@
 <script>
 const RepoPreviousDirectory = {
   props: {
-    name: 'repo-previous-directory',
-    prevUrl: String,
+    prevUrl: {
+      type: String,
+      required: true,
+    },
   },
 
   methods: {

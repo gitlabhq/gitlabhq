@@ -1,9 +1,15 @@
 <script>
 const RepoFileOptions = {
   props: {
-    name: 'repo-file-options',
-    isMini: Boolean,
-    projectName: String,
+    isMini: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    projectName: {
+      type: String,
+      required: true,
+    },
   },
 };
 

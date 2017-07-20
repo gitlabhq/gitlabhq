@@ -1,15 +1,27 @@
 <script>
 const RepoLoadingFile = {
+  props: {
+    loading: {
+      type: Object,
+      required: false,
+      default: {},
+    },
+    hasFiles: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isMini: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+
   methods: {
     lineOfCode(n) {
       return `line-of-code-${n}`;
     },
-  },
-
-  props: {
-    loading: Object,
-    hasFiles: Boolean,
-    isMini: Boolean,
   },
 };
 

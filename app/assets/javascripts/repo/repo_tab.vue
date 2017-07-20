@@ -3,9 +3,10 @@ import RepoStore from './repo_store';
 
 const RepoTab = {
   props: {
-    name: 'repo-tab',
-    tab: Object,
-    saved: true,
+    tab: {
+      type: Object,
+      required: true,
+    },
   },
 
   computed: {
