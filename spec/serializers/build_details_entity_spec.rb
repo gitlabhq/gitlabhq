@@ -46,8 +46,8 @@ describe BuildDetailsEntity do
           expect(subject).to include(:new_issue_path)
         end
 
-        it 'exposes details of the merge request' do
-          expect(subject[:merge_request]).to include(:iid, :path)
+        it 'exposes correct details of the merge request' do
+          expect(subject[:merge_request][:iid]).to eq merge_request.iid
         end
 
         it 'has a correct merge request path' do
@@ -78,7 +78,7 @@ describe BuildDetailsEntity do
         end
 
         it 'exposes details of the merge request' do
-          expect(subject[:merge_request]).to include(:iid, :path)
+          expect(subject[:merge_request][:iid]).to eq merge_request.iid
         end
 
         it 'has a correct merge request path' do
@@ -88,7 +88,7 @@ describe BuildDetailsEntity do
       end
 
       context 'when the build has been erased' do
-        let(:build) { create(:ci_build, :erasable, project: project) }
+        let(:build) { create(:ci_build, :erased, project: project) }
 
         it 'exposes the user whom erased the build' do
           expect(subject).to include(:erase_path)
@@ -96,7 +96,7 @@ describe BuildDetailsEntity do
       end
 
       context 'when the build has been erased' do
-        let(:build) { create(:ci_build, erased_at: Time.now, project: project, erased_by: user) }
+        let(:build) { create(:ci_build, :erased, project: project, erased_by: user) }
 
         it 'exposes the user whom erased the build' do
           expect(subject).to include(:erased_by)
