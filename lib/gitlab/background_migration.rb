@@ -26,7 +26,7 @@ module Gitlab
           next unless migration_class == steal_class
 
           begin
-            perform(migration_class, migration_args, retries: 3) if job.delete
+            perform(migration_class, migration_args) if job.delete
           rescue Exception # rubocop:disable Lint/RescueException
             BackgroundMigrationWorker # enqueue this migration again
               .perform_async(migration_class, migration_args)
