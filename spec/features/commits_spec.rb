@@ -215,7 +215,7 @@ describe 'Commits' do
 
       sign_in(user)
 
-      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
+      visit project_commits_path(project, :'signed-commits')
 
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
@@ -228,7 +228,7 @@ describe 'Commits' do
         user.update_attributes!(email: GpgHelpers::User1.emails.first)
       end
 
-      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
+      visit project_commits_path(project, :'signed-commits')
 
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
@@ -242,7 +242,7 @@ describe 'Commits' do
 
       sign_in(user)
 
-      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
+      visit project_commits_path(project, :'signed-commits')
 
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
@@ -254,7 +254,7 @@ describe 'Commits' do
         create :gpg_key, key: GpgHelpers::User1.public_key, user: user
       end
 
-      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
+      visit project_commits_path(project, :'signed-commits')
 
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
@@ -272,7 +272,7 @@ describe 'Commits' do
       project.team << [user, :master]
 
       sign_in(user)
-      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
+      visit project_commits_path(project, :'signed-commits')
 
       # unverified signature
       click_on 'Unverified', match: :first
@@ -293,7 +293,7 @@ describe 'Commits' do
       # verified and the gpg user's profile doesn't exist anymore
       gpg_user.destroy!
 
-      visit namespace_project_commits_path(project.namespace, project, :'signed-commits')
+      visit project_commits_path(project, :'signed-commits')
 
       click_on 'Verified'
       within '.popover' do
