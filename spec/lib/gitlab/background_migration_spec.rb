@@ -25,7 +25,7 @@ describe Gitlab::BackgroundMigration do
           expect(queue[0]).to receive(:delete).and_return(true)
 
           expect(described_class).to receive(:perform)
-            .with('Foo', [10, 20], anything)
+            .with('Foo', [10, 20])
 
           described_class.steal('Foo')
         end
@@ -93,9 +93,9 @@ describe Gitlab::BackgroundMigration do
       it 'steals from the scheduled sets queue first' do
         Sidekiq::Testing.disable! do
           expect(described_class).to receive(:perform)
-            .with('Object', [1], anything).ordered
+            .with('Object', [1]).ordered
           expect(described_class).to receive(:perform)
-            .with('Object', [2], anything).ordered
+            .with('Object', [2]).ordered
 
           BackgroundMigrationWorker.perform_async('Object', [2])
           BackgroundMigrationWorker.perform_in(10.minutes, 'Object', [1])
