@@ -4,6 +4,18 @@
 class NotificationRecipientService
   attr_reader :project
 
+  def self.notification_setting_for_user_project(user, project)
+    project_setting = user.notification_settings_for(project)
+
+    return project_setting unless project_setting.global?
+
+    group_setting = user.notification_settings_for(project.group)
+
+    return group_setting unless group_setting.global?
+
+    user.global_notification_setting
+  end
+
   def initialize(project)
     @project = project
   end
@@ -55,7 +67,7 @@ class NotificationRecipientService
         :success_pipeline
       end
 
-    notification_setting = notification_setting_for_user_project(current_user, target.project)
+    notification_setting = NotificationRecipientService.notification_setting_for_user_project(current_user, target.project)
 
     return [] if notification_setting.mention? || notification_setting.disabled?
 
@@ -316,17 +328,5 @@ class NotificationRecipientService
   # Check NotificationSetting::EMAIL_EVENTS
   def build_custom_key(action, object)
     "#{action}_#{object.class.model_name.name.underscore}".to_sym
-  end
-
-  def notification_setting_for_user_project(user, project)
-    project_setting = user.notification_settings_for(project)
-
-    return project_setting unless project_setting.global?
-
-    group_setting = user.notification_settings_for(project.group)
-
-    return group_setting unless group_setting.global?
-
-    user.global_notification_setting
   end
 end
