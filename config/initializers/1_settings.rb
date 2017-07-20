@@ -513,6 +513,12 @@ Settings.webpack.dev_server['port']    ||= 3808
 Settings['monitoring'] ||= Settingslogic.new({})
 Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
 Settings.monitoring['unicorn_sampler_interval'] ||= 10
+Settings.monitoring['prometheus'] ||= Settingslogic.new({})
+Settings.monitoring.prometheus['multiprocess_files_dir'] ||= ENV['prometheus_multiproc_dir']
+
+if Rails.env.development?
+  Settings.monitoring.prometheus['multiprocess_files_dir'] ||= Rails.root.join('tmp/prometheus_multiproc_dir')
+end
 
 #
 # Testing settings

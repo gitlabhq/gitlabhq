@@ -10,3 +10,4 @@ Prometheus::Client.configure do |config|
     config.multiprocess_files_dir ||= Rails.root.join('tmp/prometheus_multiproc_dir')
   end
 end
+

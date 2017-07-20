@@ -584,6 +584,9 @@ production: &base
     # IP whitelist to access monitoring endpoints
     ip_whitelist:
       - 127.0.0.0/8
+    prometheus:
+      # Prometheus metrics storage folder. Required for prometheus metrics to function correctly.
+      # multiprocess_files_dir: tmp/prometheus_multiproc_dir
 
   #
   # 5. Extra customization

@@ -55,10 +55,12 @@ metrics will not function correctly.
 
 For best performance its advisable that this directory will be located in `tmpfs`.
 
-Its location is configured using environment variable `prometheus_multiproc_dir`.
-
 If GitLab is installed using Omnibus and `tmpfs` is available then metrics
 directory will be automatically configured.
+
+If GitLab is installed from source its location can be configured in `gitlab.yml`.
+
+Using environment variable `prometheus_multiproc_dir` to configure the location has been deprecated in GitLab 9.5.
 
 [← Back to the main Prometheus page](index.md)
 
