@@ -92,13 +92,13 @@ export default {
             :class="{'label-truncated has-tooltip': isBranchTitleLong(mr.targetBranch)}"
             :title="isBranchTitleLong(mr.targetBranch) ? mr.targetBranch : ''"
             data-placement="bottom">
-            <a :href="mr.targetBranchPath">{{mr.targetBranch}}</a>
+            <a :href="mr.targetBranchTreePath">{{mr.targetBranch}}</a>
           </span>
         </strong>
         <span
           v-if="shouldShowCommitsBehindText"
           class="diverged-commits-count">
-          ({{mr.divergedCommitsCount}} {{commitsText}} behind)
+          (<a :href="mr.targetBranchPath">{{mr.divergedCommitsCount}} {{commitsText}} behind</a>)
         </span>
       </div>
     </div>

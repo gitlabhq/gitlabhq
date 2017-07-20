@@ -1,3 +1,5 @@
+# Gitaly note: JV: seems to be completely migrated (behind feature flags).
+
 module Gitlab
   module Git
     class Blob
@@ -27,7 +29,7 @@ module Gitlab
           path = path.sub(/\A\/*/, '')
           path = '/' if path.empty?
           name = File.basename(path)
-          entry = Gitlab::GitalyClient::Commit.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
           return unless entry
 
           case entry.type
@@ -85,10 +87,10 @@ module Gitlab
         def raw(repository, sha)
           Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
             if is_enabled
-              Gitlab::GitalyClient::Blob.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
             else
               blob = repository.lookup(sha)
-    
+
               new(
                 id: blob.oid,
                 size: blob.size,
@@ -106,6 +108,8 @@ module Gitlab
           detect = CharlockHolmes::EncodingDetector.new(8000).detect(data)
           detect && detect[:type] == :binary
         end
+
+        private
 
         # Recursive search of blob id by path
         #
@@ -178,7 +182,7 @@ module Gitlab
         Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
           @data = begin
             if is_enabled
-              Gitlab::GitalyClient::Blob.new(repository).get_blob(oid: id, limit: -1).data
+              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: id, limit: -1).data
             else
               repository.lookup(id).content
             end

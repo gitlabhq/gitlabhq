@@ -108,7 +108,7 @@ describe GitPushService, services: true do
 
         it { is_expected.to include(id: @commit.id) }
         it { is_expected.to include(message: @commit.safe_message) }
-        it { is_expected.to include(timestamp: @commit.date.xmlschema) }
+        it { expect(subject[:timestamp].in_time_zone).to eq(@commit.date.in_time_zone) }
         it do
           is_expected.to include(
             url: [
@@ -163,7 +163,7 @@ describe GitPushService, services: true do
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
     end
-    
+
     context "Sends System Push data" do
       it "when pushing on a branch" do
         expect(SystemHookPushWorker).to receive(:perform_async).with(@push_data, :push_hooks)
@@ -527,14 +527,18 @@ describe GitPushService, services: true do
     let(:housekeeping) { Projects::HousekeepingService.new(project) }
 
     before do
-      # Flush any raw Redis data stored by the housekeeping code.
-      Gitlab::Redis.with { |conn| conn.flushall }
+      # Flush any raw key-value data stored by the housekeeping code.
+      Gitlab::Redis::Cache.with { |conn| conn.flushall }
+      Gitlab::Redis::Queues.with { |conn| conn.flushall }
+      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
 
       allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
     end
 
     after do
-      Gitlab::Redis.with { |conn| conn.flushall }
+      Gitlab::Redis::Cache.with { |conn| conn.flushall }
+      Gitlab::Redis::Queues.with { |conn| conn.flushall }
+      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
     end
 
     it 'does not perform housekeeping when not needed' do

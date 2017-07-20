@@ -63,7 +63,7 @@ describe ProjectsHelper do
     end
   end
 
-  describe "#project_list_cache_key", redis: true do
+  describe "#project_list_cache_key", clean_gitlab_redis_shared_state: true do
     let(:project) { create(:project) }
 
     it "includes the route" do
@@ -160,7 +160,7 @@ describe ProjectsHelper do
 
     context 'user requires a personal access token' do
       it 'returns true' do
-        stub_application_setting(signin_enabled?: false)
+        stub_application_setting(password_authentication_enabled?: false)
 
         expect(helper.show_no_password_message?).to be_truthy
       end
@@ -184,7 +184,7 @@ describe ProjectsHelper do
       let(:user) { create(:user) }
 
       it 'returns link to create a personal access token' do
-        stub_application_setting(signin_enabled?: false)
+        stub_application_setting(password_authentication_enabled?: false)
 
         expect(helper.link_to_set_password).to match %r{<a href="#{profile_personal_access_tokens_path}">create a personal access token</a>}
       end

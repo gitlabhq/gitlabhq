@@ -1,0 +1,82 @@
+require 'spec_helper'
+
+describe 'User uploads files' do
+  include DropzoneHelper
+
+  let(:fork_message) do
+    "You're not allowed to make changes to this project directly. "\
+    "A fork of this project has been created that you can make changes in, so you can submit a merge request."
+  end
+  let(:project) { create(:project, name: 'Shop') }
+  let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
+  let(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
+  let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
+  let(:user) { create(:user) }
+
+  before do
+    project.team << [user, :master]
+    sign_in(user)
+  end
+
+  context 'when an user has write access' do
+    before do
+      visit(project_tree_path_root_ref)
+    end
+
+    it 'uploads and commit a new file', js: true do
+      find('.add-to-tree').click
+      click_link('Upload file')
+      drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+
+      page.within('#modal-upload-blob') do
+        fill_in(:commit_message, with: 'New commit message')
+      end
+
+      fill_in(:branch_name, with: 'new_branch_name', visible: true)
+      click_button('Upload file')
+
+      expect(page).to have_content('New commit message')
+      expect(current_path).to eq(project_new_merge_request_path(project))
+
+      click_link('Changes')
+
+      expect(page).to have_content('Lorem ipsum dolor sit amet')
+      expect(page).to have_content('Sed ut perspiciatis unde omnis')
+    end
+  end
+
+  context 'when an user does not have write access' do
+    before do
+      project2.team << [user, :reporter]
+      visit(project2_tree_path_root_ref)
+    end
+
+    it 'uploads and commit a new fileto a forked project', js: true do
+      find('.add-to-tree').click
+      click_link('Upload file')
+
+      expect(page).to have_content(fork_message)
+
+      find('.add-to-tree').click
+      click_link('Upload file')
+      drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
+
+      page.within('#modal-upload-blob') do
+        fill_in(:commit_message, with: 'New commit message')
+      end
+
+      click_button('Upload file')
+
+      expect(page).to have_content('New commit message')
+
+      fork = user.fork_of(project2)
+
+      expect(current_path).to eq(project_new_merge_request_path(fork))
+
+      click_link('Changes')
+
+      expect(page).to have_content('Lorem ipsum dolor sit amet')
+      expect(page).to have_content('Sed ut perspiciatis unde omnis')
+    end
+  end
+end

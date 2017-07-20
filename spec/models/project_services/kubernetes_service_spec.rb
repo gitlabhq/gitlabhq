@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe KubernetesService, models: true, caching: true do
+describe KubernetesService, :use_clean_rails_memory_store_caching, models: true do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 

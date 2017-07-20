@@ -43,7 +43,7 @@ assigned to them if they created the issue themselves.
 
 ##### 3.1. Multiple Assignees (EES/EEP)
 
-Issue Weights are only available in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
+Multiple Assignees are only available in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
 
 Often multiple people likely work on the same issue together,
 which can especially be difficult to track in large teams
@@ -52,9 +52,7 @@ where there is shared ownership of an issue.
 In GitLab Enterprise Edition, you can also select multiple assignees
 to an issue.
 
-> **Note:**
-Multiple Assignees was [introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1904)
-in [GitLab Enterprise Edition 9.2](https://about.gitlab.com/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
+Learn more on the [Multiple Assignees documentation](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html).
 
 #### 4. Milestone
 

@@ -943,11 +943,11 @@ describe API::Users do
           expect(response).to have_http_status(403)
         end
 
-        it 'returns initial current user without private token when sudo not defined' do
+        it 'returns initial current user without private token but with is_admin when sudo not defined' do
           get api("/user?private_token=#{admin_personal_access_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/public')
+          expect(response).to match_response_schema('public_api/v4/user/admin')
           expect(json_response['id']).to eq(admin.id)
         end
       end
@@ -961,11 +961,11 @@ describe API::Users do
           expect(json_response['id']).to eq(user.id)
         end
 
-        it 'returns initial current user without private token when sudo not defined' do
+        it 'returns initial current user without private token but with is_admin when sudo not defined' do
           get api("/user?private_token=#{admin.private_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/public')
+          expect(response).to match_response_schema('public_api/v4/user/admin')
           expect(json_response['id']).to eq(admin.id)
         end
       end
@@ -1313,7 +1313,7 @@ describe API::Users do
     end
   end
 
-  context "user activities", :redis do
+  context "user activities", :clean_gitlab_redis_shared_state do
     let!(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
     let!(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
 

@@ -30,7 +30,7 @@ feature 'No Password Alert' do
     let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
 
     before do
-      stub_application_setting(signin_enabled?: false)
+      stub_application_setting(password_authentication_enabled?: false)
       stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
     end
 

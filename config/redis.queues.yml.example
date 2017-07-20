@@ -1,0 +1,38 @@
+# If you change this file in a Merge Request, please also create
+# a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
+#
+development:
+  url: redis://localhost:6379/11
+  #
+  # url: redis://localhost:6381
+  # sentinels:
+  #   -
+  #     host: localhost
+  #     port: 26381 # point to sentinel, not to redis port
+  #   -
+  #     host: slave2
+  #     port: 26381 # point to sentinel, not to redis port
+test:
+  url: redis://localhost:6379/11
+  #
+  # url: redis://localhost:6381
+production:
+  # Redis (single instance)
+  url: unix:/var/run/redis/redis.queues.sock
+  ##
+  # Redis + Sentinel (for HA)
+  #
+  # Please read instructions carefully before using it as you may lose data:
+  # http://redis.io/topics/sentinel
+  #
+  # You must specify a list of a few sentinels that will handle client connection
+  # please read here for more information: https://docs.gitlab.com/ce/administration/high_availability/redis.html
+  ##
+  # url: redis://master:6381
+  # sentinels:
+  #   -
+  #     host: slave1
+  #     port: 26381 # point to sentinel, not to redis port
+  #   -
+  #     host: slave2
+  #     port: 26381 # point to sentinel, not to redis port

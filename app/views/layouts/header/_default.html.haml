@@ -75,7 +75,7 @@
                   %li
                     = link_to "Settings", profile_path
                   %li
-                    = link_to "Turn on new nav", profile_preferences_path(anchor: "new-navigation")
+                    = link_to "Turn on new navigation", profile_preferences_path(anchor: "new-navigation")
                   %li.divider
                   %li
                     = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link"
@@ -91,8 +91,3 @@
       = yield :header_content
 
 = render 'shared/outdated_browser'
-
-- if @project && !@project.empty_repo?
-  - if ref = @ref || @project.repository.root_ref
-    :javascript
-      var findFileURL = "#{project_find_file_path(@project, ref)}";

@@ -149,7 +149,6 @@ import './star';
 import './subscription';
 import './subscription_select';
 import './syntax_highlight';
-import './user';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');

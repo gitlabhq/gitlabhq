@@ -314,7 +314,7 @@ class User < ActiveRecord::Base
         table[:name].matches(pattern)
           .or(table[:email].matches(pattern))
           .or(table[:username].matches(pattern))
-      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, id: :desc)
+      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
 
     # searches user by given pattern
@@ -385,9 +385,11 @@ class User < ActiveRecord::Base
     # Return (create if necessary) the ghost user. The ghost user
     # owns records previously belonging to deleted users.
     def ghost
-      unique_internal(where(ghost: true), 'ghost', 'ghost%s@example.com') do |u|
+      email = 'ghost%s@example.com'
+      unique_internal(where(ghost: true), 'ghost', email) do |u|
         u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
         u.name = 'Ghost User'
+        u.notification_email = email
       end
     end
   end
@@ -580,14 +582,18 @@ class User < ActiveRecord::Base
     keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
-  def require_password?
-    password_automatically_set? && !ldap_user? && current_application_settings.signin_enabled?
+  def require_password_creation?
+    password_automatically_set? && allow_password_authentication?
   end
 
-  def require_personal_access_token?
-    return false if current_application_settings.signin_enabled? || ldap_user?
+  def require_personal_access_token_creation_for_git_auth?
+    return false if allow_password_authentication? || ldap_user?
 
     PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
+  end
+
+  def allow_password_authentication?
+    !ldap_user? && current_application_settings.password_authentication_enabled?
   end
 
   def can_change_username?
@@ -699,7 +705,7 @@ class User < ActiveRecord::Base
   end
 
   def sanitize_attrs
-    %w[name username skype linkedin twitter].each do |attr|
+    %w[username skype linkedin twitter].each do |attr|
       value = public_send(attr)
       public_send("#{attr}=", Sanitize.clean(value)) if value.present?
     end

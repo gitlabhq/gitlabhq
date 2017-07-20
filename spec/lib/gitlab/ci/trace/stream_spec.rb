@@ -293,5 +293,12 @@ describe Gitlab::Ci::Trace::Stream do
 
       it { is_expected.to eq("65") }
     end
+
+    context 'malicious regexp' do
+      let(:data) { malicious_text }  
+      let(:regex) { malicious_regexp }
+
+      include_examples 'malicious regexp'
+    end
   end
 end

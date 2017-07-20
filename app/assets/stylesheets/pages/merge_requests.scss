@@ -96,7 +96,7 @@
       overflow: visible;
     }
 
-    & > span {
+    > span {
       padding-right: 4px;
     }
 
@@ -125,7 +125,7 @@
 
     .dropdown-menu {
       margin-top: 11px;
-      z-index: 200;
+      z-index: 300;
     }
 
     .ci-action-icon-wrapper {

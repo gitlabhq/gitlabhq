@@ -110,10 +110,10 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
-$gl-text-color: rgba(0, 0, 0, .85);
-$gl-text-color-light: rgba(0, 0, 0, .7);
-$gl-text-color-secondary: rgba(0, 0, 0, .55);
-$gl-text-color-disabled: rgba(0, 0, 0, .35);
+$gl-text-color: #2e2e2e;
+$gl-text-color-secondary: #707070;
+$gl-text-color-tertiary: #949494;
+$gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1.0);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
 $gl-text-green: $green-600;
@@ -127,7 +127,7 @@ $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
 $gl-header-nav-hover-color: #434343;
-$placeholder-text-color: rgba(0, 0, 0, .42);
+$placeholder-text-color: $gl-text-color-tertiary;
 
 /*
  * Lists
@@ -135,7 +135,7 @@ $placeholder-text-color: rgba(0, 0, 0, .42);
 $list-font-size: $gl-font-size;
 $list-title-color: $gl-text-color;
 $list-text-color: $gl-text-color;
-$list-text-disabled-color: $gl-text-color-disabled;
+$list-text-disabled-color: $gl-text-color-tertiary;
 $list-border-light: #eee;
 $list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
@@ -176,6 +176,7 @@ $header-height: 50px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $limited-layout-width-sm: 790px;
+$container-text-max-width: 540px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: $red-500;
 $border-radius-default: 3px;
@@ -316,7 +317,7 @@ $badge-color: $gl-text-color-secondary;
 /*
  *  Award emoji
  */
-$award-emoji-menu-shadow: rgba(0,0,0,.175);
+$award-emoji-menu-shadow: rgba(0, 0, 0, .175);
 $award-emoji-positive-add-bg: #fed159;
 $award-emoji-positive-add-lines: #bb9c13;
 
@@ -378,7 +379,7 @@ $issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
 * Avatar
 */
 $avatar_radius: 50%;
-$avatar-border: rgba(0, 0, 0, .1);
+$avatar-border: $border-color;
 $gl-avatar-size: 40px;
 
 /*
@@ -567,7 +568,7 @@ $kdb-color: #555;
 $kdb-border: #ccc;
 $kdb-border-bottom: #bbb;
 $kdb-shadow: #bbb;
-$body-text-shadow: rgba(255,255,255,0.01);
+$body-text-shadow: rgba(255, 255, 255, 0.01);
 
 /*
 * UI Dev Kit

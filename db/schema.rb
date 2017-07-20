@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170711145558) do
+ActiveRecord::Schema.define(version: 20170717150329) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,7 +41,6 @@ ActiveRecord::Schema.define(version: 20170711145558) do
   create_table "application_settings", force: :cascade do |t|
     t.integer "default_projects_limit"
     t.boolean "signup_enabled"
-    t.boolean "signin_enabled"
     t.boolean "gravatar_enabled"
     t.text "sign_in_text"
     t.datetime "created_at"
@@ -127,6 +126,7 @@ ActiveRecord::Schema.define(version: 20170711145558) do
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
     t.integer "performance_bar_allowed_group_id"
+    t.boolean "password_authentication_enabled"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1616,6 +1616,7 @@ ActiveRecord::Schema.define(version: 20170711145558) do
   add_foreign_key "merge_request_diffs", "merge_requests", name: "fk_8483f3258f", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_requests", "ci_pipelines", column: "head_pipeline_id", name: "fk_fd82eae0b9", on_delete: :nullify
   add_foreign_key "merge_requests", "projects", column: "target_project_id", name: "fk_a6963e8447", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade

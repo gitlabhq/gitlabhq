@@ -52,7 +52,7 @@ describe EmailsHelper do
         )
 
         expect(header_logo).to eq(
-          %{<img style="height: 50px" src="/uploads/system/appearance/header_logo/#{appearance.id}/dk.png" alt="Dk" />}
+          %{<img style="height: 50px" src="/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png" alt="Dk" />}
         )
       end
     end

@@ -19,17 +19,15 @@ describe Commit, models: true do
       expect(commit.author).to eq(user)
     end
 
-    it 'caches the author' do
-      allow(RequestStore).to receive(:active?).and_return(true)
+    it 'caches the author', :request_store do
       user = create(:user, email: commit.author_email)
-      expect_any_instance_of(Commit).to receive(:find_author_by_any_email).and_call_original
+      expect(User).to receive(:find_by_any_email).and_call_original
 
       expect(commit.author).to eq(user)
-      key = "commit_author:#{commit.author_email}"
+      key = "Commit:author:#{commit.author_email.downcase}"
       expect(RequestStore.store[key]).to eq(user)
 
       expect(commit.author).to eq(user)
-      RequestStore.store.clear
     end
   end
 
