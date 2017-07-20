@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
 /* global Flash */
 
-import { ACCESS_LEVELS, LEVEL_TYPES, ACCESS_LEVEL_NONE } from './constants';
+import { LEVEL_TYPES, ACCESS_LEVEL_NONE } from './constants';
 
 export default class ProtectedBranchAccessDropdown {
   constructor(options) {
