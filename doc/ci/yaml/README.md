@@ -395,6 +395,7 @@ job_name:
 | after_script  | no       | Override a set of commands that are executed after job |
 | environment   | no       | Defines a name of environment to which deployment is done by this job |
 | coverage      | no       | Define code coverage settings for a given job |
+| retry         | no       | Define how many times a job can be auto-retried in case of a failure |
 
 ### script
 
@@ -1129,7 +1130,31 @@ A simple example:
 
 ```yaml
 job1:
+  script: rspec
   coverage: '/Code coverage: \d+\.\d+/'
+```
+
+### retry
+
+**Notes:**
+- [Introduced][ce-3442] in GitLab 9.5.
+
+`retry` allows you to configure how many times a job is going to be retried in
+case of a failure.
+
+When a job fails, and has `retry` configured it is going to be processed again
+up to the amount of times specified by the `retry` keyword.
+
+If `retry` is set to 2, and a job succeeds in a second run (first retry), it won't be retried
+again. `retry` value has to be a positive integer, equal or larger than 0, but
+lower or equal to 2 (two retries maximum, three runs in total).
+
+A simple example:
+
+```yaml
+test:
+  script: rspec
+  retry: 2
 ```
 
 ## Git Strategy
@@ -1506,3 +1531,4 @@ CI with various languages.
 [variables]: ../variables/README.md
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
+[ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442
