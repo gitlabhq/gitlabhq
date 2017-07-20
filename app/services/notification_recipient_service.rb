@@ -219,12 +219,6 @@ class NotificationRecipientService
 
         recipients
       end
-
-      # Build event key to search on custom notification level
-      # Check NotificationSetting::EMAIL_EVENTS
-      def build_custom_key(action, object)
-        "#{action}_#{object.class.model_name.name.underscore}".to_sym
-      end
     end
 
     class Default < Base
@@ -244,8 +238,6 @@ class NotificationRecipientService
       end
 
       def build
-        custom_action = build_custom_key(action, target)
-
         recipients = participants(current_user)
         recipients = add_project_watchers(recipients)
         recipients = add_custom_notifications(recipients, custom_action)
@@ -277,6 +269,12 @@ class NotificationRecipientService
         recipients.delete(current_user) if skip_current_user && !current_user.notified_of_own_activity?
 
         recipients.uniq
+      end
+
+      # Build event key to search on custom notification level
+      # Check NotificationSetting::EMAIL_EVENTS
+      def custom_action
+        @custom_action ||= "#{action}_#{target.class.model_name.name.underscore}".to_sym
       end
     end
 
