@@ -9,8 +9,8 @@ module Ci
     belongs_to :project
     belongs_to :pipeline
 
-    has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
-    has_many :builds, foreign_key: :commit_id
+    has_many :commit_statuses, foreign_key: :stage_id
+    has_many :builds, foreign_key: :stage_id
 
     validates :project, presence: true, unless: :importing?
     validates :pipeline, presence: true, unless: :importing?
