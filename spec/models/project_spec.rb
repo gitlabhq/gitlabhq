@@ -2192,15 +2192,15 @@ describe Project do
       let!(:project2) { create(:project) }
 
       it 'returns the projects matching the paths' do
-        projects = described_class.where_full_path_in([project1.path_with_namespace,
-                                                       project2.path_with_namespace])
+        projects = described_class.where_full_path_in([project1.full_path,
+                                                       project2.full_path])
 
         expect(projects).to contain_exactly(project1, project2)
       end
 
       it 'returns projects regardless of the casing of paths' do
-        projects = described_class.where_full_path_in([project1.path_with_namespace.upcase,
-                                                       project2.path_with_namespace.upcase])
+        projects = described_class.where_full_path_in([project1.full_path.upcase,
+                                                       project2.full_path.upcase])
 
         expect(projects).to contain_exactly(project1, project2)
       end

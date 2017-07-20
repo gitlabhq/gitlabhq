@@ -19,7 +19,7 @@ module Projects
         service_id: service.id,
         team_id: slack_data['team_id'],
         team_name: slack_data['team_name'],
-        alias: project.path_with_namespace,
+        alias: project.full_path,
         user_id: slack_data['user_id']
       )
 

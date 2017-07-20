@@ -37,10 +37,10 @@ describe SlashCommands::GlobalSlackHandler do
       enable_slack_application(project)
 
       slack_integration = create(:slack_integration, service: project.gitlab_slack_application_service)
-      slack_integration.update(alias: project.path_with_namespace)
+      slack_integration.update(alias: project.full_path)
 
       handler_with_valid_token(
-        text: "#{project.path_with_namespace} issue new title",
+        text: "#{project.full_path} issue new title",
         team_id: slack_integration.team_id
       ).trigger
     end
@@ -66,10 +66,10 @@ describe SlashCommands::GlobalSlackHandler do
       enable_slack_application(project)
 
       slack_integration = create(:slack_integration, service: project.gitlab_slack_application_service)
-      slack_integration.update(alias: project.path_with_namespace)
+      slack_integration.update(alias: project.full_path)
 
       handler_with_valid_token(
-        text: "#{project.path_with_namespace} issue new title",
+        text: "#{project.full_path} issue new title",
         team_id: slack_integration.team_id
       ).trigger
     end
