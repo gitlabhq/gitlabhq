@@ -129,7 +129,7 @@ window.DropzoneInput = (function() {
     // removeAllFiles(true) stops uploading files (if any)
     // and remove them from dropzone files queue.
     $cancelButton.on('click', (e) => {
-      const target = e.target.closest('form').querySelector('.div-dropzone');
+      const target = e.target.closest('.js-main-target-form').querySelector('.div-dropzone');
 
       e.preventDefault();
       e.stopPropagation();
@@ -141,7 +141,7 @@ window.DropzoneInput = (function() {
     // and add that files to the dropzone files queue again.
     // addFile() adds file to dropzone files queue and upload it.
     $retryLink.on('click', (e) => {
-      const dropzoneInstance = Dropzone.forElement(e.target.closest('form').querySelector('.div-dropzone'));
+      const dropzoneInstance = Dropzone.forElement(e.target.closest('.js-main-target-form').querySelector('.div-dropzone'));
       const failedFiles = dropzoneInstance.files;
 
       e.preventDefault();

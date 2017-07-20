@@ -19,15 +19,52 @@
         Markdown is supported
       </a>
     </div>
-    <button
-      class="toolbar-button markdown-selector"
-      type="button"
-      tabindex="-1">
-      <i
-        class="fa fa-file-image-o toolbar-button-icon"
-        aria-hidden="true">
-      </i>
-      Attach a file
-    </button>
+    <span class="uploading-container">
+      <span class="uploading-progress-container hide">
+        <i
+          class="fa fa-file-image-o toolbar-button-icon"
+          aria-hidden="true"></i>
+        <span class="attaching-file-message"></span>
+        <span class="uploading-progress">0%</span>
+        <span class="uploading-spinner">
+          <i
+            class="fa fa-spinner fa-spin toolbar-button-icon"
+            aria-hidden="true"></i>
+        </span>
+      </span>
+      <span class="uploading-error-container hide">
+        <span class="uploading-error-icon">
+          <i
+            class="fa fa-file-image-o toolbar-button-icon"
+            aria-hidden="true"></i>
+        </span>
+        <span class="uploading-error-message"></span>
+        <button
+          class="retry-uploading-link"
+          type="button">
+            Try again
+        </button>
+        or
+        <button
+          class="attach-new-file markdown-selector"
+          type="button">
+          attach a new file
+        </button>
+      </span>
+      <button
+        class="markdown-selector button-attach-file"
+        tabindex="-1"
+        type="button">
+        <i
+          class="fa fa-file-image-o toolbar-button-icon"
+          aria-hidden="true"></i>
+        Attach a file
+      </button>
+      <button
+        class="btn btn-default btn-xs hide button-cancel-uploading-files"
+        type="button">
+        Cancel
+      </button>
+    </span>
   </div>
 </template>
