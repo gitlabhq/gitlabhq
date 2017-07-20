@@ -1,4 +1,4 @@
-import RepoHelper from './repo_helper';
+import RepoStore from './repo_store';
 
 const RepoTab = {
   template: `
@@ -27,13 +27,11 @@ const RepoTab = {
   },
 
   methods: {
-    tabClicked(file) {
-      RepoHelper.setActiveFile(file);
-    },
+    tabClicked: RepoStore.setActiveFiles,
 
     xClicked(file) {
       if (file.changed) return;
-      RepoHelper.removeFromOpenedFiles(file);
+      RepoStore.removeFromOpenedFiles(file);
     },
   },
 };

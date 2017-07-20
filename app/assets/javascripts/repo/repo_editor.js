@@ -16,7 +16,7 @@ export default class RepoEditor {
   }
 
   onMonacoEditorKeysPressed() {
-    Helper.setActiveFileContents(this.monacoEditor.getValue());
+    Store.setActiveFileContents(this.monacoEditor.getValue());
   }
 
   initMonaco() {
@@ -110,7 +110,7 @@ export default class RepoEditor {
               monaco.editor.createModel(
                 this.blobRaw,
                 Helper
-                  .getLanguageForFile(
+                  .getLanguageIDForFile(
                     this.activeFile,
                     monaco.languages.getLanguages(),
                   ),

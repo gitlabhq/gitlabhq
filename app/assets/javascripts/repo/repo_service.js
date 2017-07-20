@@ -43,6 +43,16 @@ const RepoService = {
   bufferToBase64(data) {
     return new Buffer(data, 'binary').toString('base64');
   },
+
+  blobURLtoParentTree(url) {
+    const urlArray = url.split('/');
+    urlArray.pop();
+    const blobIndex = urlArray.indexOf('blob');
+
+    if (blobIndex > -1) urlArray[blobIndex] = 'tree';
+
+    return urlArray.join('/');
+  },
 };
 
 export default RepoService;

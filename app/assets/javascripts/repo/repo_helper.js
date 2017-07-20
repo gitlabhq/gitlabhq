@@ -15,7 +15,7 @@ const RepoHelper = {
   ? window.performance
   : Date,
 
-  getLanguageForFile(file, langs) {
+  getLanguageIDForFile(file, langs) {
     const ext = file.name.split('.').pop();
     const foundLang = this.findLanguage(ext, langs);
 
@@ -24,105 +24,6 @@ const RepoHelper = {
 
   findLanguage(ext, langs) {
     langs.find(lang => lang.extensions && lang.extensions.indexOf(`.${ext}`) > -1);
-  },
-
-  blobURLtoParent(url) {
-    const urlArray = url.split('/');
-    urlArray.pop();
-    const blobIndex = urlArray.indexOf('blob');
-
-    if (blobIndex > -1) urlArray[blobIndex] = 'tree';
-
-    return urlArray.join('/');
-  },
-
-  insertNewFilesIntoParentDir(inDirectory, oldList, newList) {
-    if (!inDirectory) return newList;
-
-    const indexOfFile = oldList.findIndex(file => file.url === inDirectory.url);
-
-    if (!indexOfFile) return newList;
-
-    return this.mergeNewListToOldList(newList, oldList, inDirectory, indexOfFile);
-  },
-
-  mergeNewListToOldList(newList, oldList, inDirectory, indexOfFile) {
-    newList.forEach((newFile) => {
-      const file = newFile;
-      file.level = inDirectory.level + 1;
-
-      oldList.splice(indexOfFile, 0, file);
-    });
-
-    return oldList;
-  },
-
-  resetBinaryTypes() {
-    const binaryTypeKeys = Object.keys(Store.binaryTypes);
-
-    binaryTypeKeys.forEach((typeKey) => {
-      Store.binaryTypes[typeKey] = false;
-    });
-  },
-
-  setCurrentFileRawOrPreview() {
-    Store.activeFile.raw = !Store.activeFile.raw;
-    Store.activeFileLabel = Store.activeFile.raw ? 'Preview' : 'Raw';
-  },
-
-  setActiveFile(file) {
-    if (this.isActiveFile(file)) return;
-
-    Store.openedFiles = Store.openedFiles.map((openedFile, i) => {
-      const activeFile = openedFile;
-      activeFile.active = file.url === activeFile.url;
-
-      if (activeFile.active) {
-        Store.activeFile = activeFile;
-        Store.activeFileIndex = i;
-      }
-
-      return activeFile;
-    });
-
-    this.setActiveToRaw();
-
-    if (file.binary) {
-      Store.blobRaw = file.base64;
-    } else {
-      Store.blobRaw = file.plain;
-    }
-
-    if (!file.loading) this.toURL(file.url);
-    Store.binary = file.binary;
-  },
-
-  setActiveToRaw() {
-    Store.activeFile.raw = false;
-    // can't get vue to listen to raw for some reason so this for now.
-    Store.activeFileLabel = 'Raw';
-  },
-
-  isActiveFile(file) {
-    return file && file.url === Store.activeFile.url;
-  },
-
-  removeFromOpenedFiles(file) {
-    if (file.type === 'tree') return;
-
-    Store.openedFiles = Store.openedFiles.filter(openedFile => openedFile.url !== file.url);
-  },
-
-  addToOpenedFiles(file) {
-    const openFile = file;
-
-    const openedFilesAlreadyExists = Store.openedFiles
-      .some(openedFile => openedFile.url === openFile.url);
-
-    if (openedFilesAlreadyExists) return;
-
-    openFile.changed = false;
-    Store.openedFiles.push(openFile);
   },
 
   setDirectoryOpen(tree) {
@@ -155,34 +56,9 @@ const RepoHelper = {
     .catch(this.loadingError);
   },
 
-  setActiveFileContents(contents) {
-    if (!Store.editMode) return;
-
-    Store.activeFile.newContent = contents;
-    Store.activeFile.changed = Store.activeFile.plain !== Store.activeFile.newContent;
-    Store.openedFiles[Store.activeFileIndex].changed = Store.activeFile.changed;
-  },
-
   toggleFakeTab(loading, file) {
-    if (loading) return this.addPlaceholderFile();
-    return this.removeFromOpenedFiles(file);
-  },
-
-  addPlaceholderFile() {
-    const randomURL = this.Time.now();
-    const newFakeFile = {
-      active: false,
-      binary: true,
-      type: 'blob',
-      loading: true,
-      mime_type: 'loading',
-      name: 'loading',
-      url: randomURL,
-    };
-
-    Store.openedFiles.push(newFakeFile);
-
-    return newFakeFile;
+    if (loading) return Store.addPlaceholderFile();
+    return Store.removeFromOpenedFiles(file);
   },
 
   setLoading(loading, file) {
@@ -194,6 +70,27 @@ const RepoHelper = {
     if (Service.url.indexOf('tree') > -1) Store.loading.tree = loading;
 
     return undefined;
+  },
+
+  getNewMergedList(inDirectory, currentList, newList) {
+    if (!inDirectory) return newList;
+
+    const indexOfFile = currentList.findIndex(file => file.url === inDirectory.url);
+
+    if (!indexOfFile) return newList;
+
+    return this.mergeNewListToOldList(newList, currentList, inDirectory, indexOfFile);
+  },
+
+  mergeNewListToOldList(newList, oldList, inDirectory, indexOfFile) {
+    newList.forEach((newFile) => {
+      const file = newFile;
+      file.level = inDirectory.level + 1;
+
+      oldList.splice(indexOfFile, 0, file);
+    });
+
+    return oldList;
   },
 
   getContent(treeOrFile) {
@@ -223,12 +120,13 @@ const RepoHelper = {
 
         data.url = file.url;
         data.newContent = '';
-        this.addToOpenedFiles(data);
-        this.setActiveFile(data);
+
+        Store.addToOpenedFiles(data);
+        Store.setActiveFiles(data);
 
         // if the file tree is empty
         if (Store.files.length === 0) {
-          const parentURL = this.blobURLtoParent(Service.url);
+          const parentURL = Service.blobURLtoParentTree(Service.url);
           Service.url = parentURL;
           this.getContent();
         }
@@ -236,8 +134,8 @@ const RepoHelper = {
         // it's a tree
         this.setDirectoryOpen(file);
         const newDirectory = this.dataToListOfFiles(data);
-        Store.files = this.insertNewFilesIntoParentDir(file, Store.files, newDirectory);
-        Store.prevURL = this.blobURLtoParent(Service.url);
+        Store.addFilesToDirectory(file, Store.files, newDirectory);
+        Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
     })
     .catch(() => {
@@ -249,21 +147,6 @@ const RepoHelper = {
   toFA(icon) {
     return `fa-${icon}`;
   },
-
-  /* eslint-disable no-param-reassign */
-  removeChildFilesOfTree(tree) {
-    let foundTree = false;
-    Store.files = Store.files.filter((file) => {
-      if (file.url === tree.url) foundTree = true;
-
-      if (foundTree) return file.level <= tree.level;
-      return true;
-    });
-
-    tree.opened = false;
-    tree.icon = 'fa-folder';
-  },
-  /* eslint-enable no-param-reassign */
 
   serializeBlob(blob) {
     const simpleBlob = this.serializeRepoEntity('blob', blob);

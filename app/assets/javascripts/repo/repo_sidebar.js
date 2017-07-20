@@ -44,7 +44,7 @@ export default class RepoSidebar {
           let url = '';
           if (typeof file === 'object') {
             if (file.type === 'tree' && file.opened) {
-              Helper.removeChildFilesOfTree(file);
+              Store.removeChildFilesOfTree(file);
             }
             url = file.url;
             Service.url = url;

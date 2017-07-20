@@ -52,9 +52,7 @@ export default class RepoFileButtons {
       },
 
       methods: {
-        rawPreviewToggle() {
-          Helper.setCurrentFileRawOrPreview();
-        },
+        rawPreviewToggle: Store.toggleRawPreview,
       },
     });
   }
