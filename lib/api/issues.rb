@@ -8,6 +8,9 @@ module API
       def find_issues(args = {})
         args = params.merge(args)
 
+        # Do not scope to "authored" when author or assignee id is given
+        args.delete(:scope) if args[:author_id] || args[:assignee_id]
+
         args.delete(:id)
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
@@ -29,6 +32,8 @@ module API
         optional :search, type: String, desc: 'Search issues for text present in the title or description'
         optional :created_after, type: DateTime, desc: 'Return issues created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return issues created before the specified time'
+        optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
+        optional :assignee_id, type: Integer, desc: 'Return issues which are assigned to the user with the given ID'
         use :pagination
       end
 

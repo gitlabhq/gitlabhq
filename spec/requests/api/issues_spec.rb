@@ -105,6 +105,33 @@ describe API::Issues do
         expect(json_response.second['id']).to eq(closed_issue.id)
       end
 
+      it 'returns issues authored by the given author id' do
+        issue2 = create(:issue, author: user2, project: project)
+
+        get api('/issues', user), author_id: user2.id
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues assigned to the given assignee id' do
+        issue2 = create(:issue, assignees: [user2], project: project)
+
+        get api('/issues', user), assignee_id: user2.id
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues authored by the given author id and assigned to the given assignee id' do
+        issue2 = create(:issue, author: user2, assignees: [user2], project: project)
+
+        get api('/issues', user), author_id: user2.id, assignee_id: user2.id
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
       it 'returns issues matching given search string for title' do
         get api("/issues", user), search: issue.title
 
