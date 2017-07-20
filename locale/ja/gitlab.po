@@ -33,7 +33,8 @@ msgstr "%{commit_author_link}は%{commit_timeago}前、コミットしました�
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] "%d 個のパイプライン"
+msgstr[0] "1 個のパイプライン"
+msgstr[1] "%d 個のパイプライン"
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "CIについてのグラフ"
@@ -1135,8 +1136,7 @@ msgstr ""
 msgid ""
 "You are going to remove the fork relationship to source project "
 "%{forked_from_project}. Are you ABSOLUTELY sure?"
-msgstr "元のプロジェクト (%{forked_from_project}) とのリレーションを削除しようとしています。\n"
-"本当によろしいですか？"
+msgstr "元のプロジェクト (%{forked_from_project}) とのリレーションを削除しようとしています。本当によろしいですか？"
 
 msgid ""
 "You are going to transfer %{project_name_with_namespace} to another owner. "
@@ -1201,4 +1201,3 @@ msgstr "メール通知"
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] "親"
-
