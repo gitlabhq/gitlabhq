@@ -68,7 +68,7 @@ describe User do
     end
 
     describe '#group_members' do
-      it 'does not include group memberships for which user is a requester' do
+      it 'does not include group memberships if the user has an access request' do
         user = create(:user)
         group = create(:group, :public, :access_requestable)
         group.request_access(user)
@@ -78,7 +78,7 @@ describe User do
     end
 
     describe '#project_members' do
-      it 'does not include project memberships for which user is a requester' do
+      it 'does not include project memberships if the user has an access request' do
         user = create(:user)
         project = create(:project, :public, :access_requestable)
         project.request_access(user)

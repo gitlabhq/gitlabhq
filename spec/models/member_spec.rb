@@ -247,7 +247,7 @@ describe Member do
           end
 
           context 'when called with a user object' do
-            context 'when the user is not a requester' do
+            context 'when the user has not requested access' do
               it 'adds the user as a member' do
                 expect(source.users).not_to include(user)
 
@@ -257,7 +257,7 @@ describe Member do
               end
             end
 
-            context 'when the user is a requester' do
+            context 'when the user has requested access' do
               before do
                 source.request_access(user)
               end
@@ -305,12 +305,12 @@ describe Member do
             expect(source.users.reload).to include(user)
           end
 
-          context 'when called with a requester user object' do
+          context 'when called with a user who requested access' do
             before do
               source.request_access(user)
             end
 
-            it 'adds the requester as a member' do
+            it 'adds the user as a member' do
               expect(source.users).not_to include(user)
               expect(source.access_requests.exists?(user_id: user)).to be_truthy
 
@@ -332,7 +332,7 @@ describe Member do
             expect(member).not_to be_persisted
           end
 
-          context 'when called with a requester user object' do
+          context 'when called with a user who requested access' do
             before do
               source.request_access(user)
             end

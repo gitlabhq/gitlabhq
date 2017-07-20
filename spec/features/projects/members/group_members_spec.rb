@@ -7,8 +7,8 @@ feature 'Projects members' do
   let(:project) { create(:project, :public, :access_requestable, creator: user, group: group) }
   let(:project_invitee) { create(:project_member, project: project, invite_token: '123', invite_email: 'test1@abc.com', user: nil) }
   let(:group_invitee) { create(:group_member, group: group, invite_token: '123', invite_email: 'test2@abc.com', user: nil) }
-  let(:project_requester) { create(:user) }
-  let(:group_requester) { create(:user) }
+  let(:project_access_request_user) { create(:user) }
+  let(:group_access_request_user) { create(:user) }
 
   background do
     project.team << [developer, :developer]
@@ -51,30 +51,30 @@ feature 'Projects members' do
     end
   end
 
-  context 'with a group requester' do
+  context 'with a user that has requested access to the group' do
     before do
-      group.request_access(group_requester)
+      group.request_access(group_access_request_user)
       visit project_settings_members_path(project)
     end
 
     scenario 'does not appear in the project members page' do
       page.within first('.content-list') do
-        expect(page).not_to have_content(group_requester.name)
+        expect(page).not_to have_content(group_access_request_user.name)
       end
     end
   end
 
-  context 'with a group and a project requesters' do
+  context 'with users that have requested access to the group and the project' do
     before do
-      group.request_access(group_requester)
-      project.request_access(project_requester)
+      group.request_access(group_access_request_user)
+      project.request_access(project_access_request_user)
       visit project_settings_members_path(project)
     end
 
-    scenario 'shows the project requester, the project developer, and the group owner' do
+    scenario 'shows the user that requested access to the project, the project developer, and the group owner' do
       page.within first('.content-list') do
-        expect(page).to have_content(project_requester.name)
-        expect(page).not_to have_content(group_requester.name)
+        expect(page).to have_content(project_access_request_user.name)
+        expect(page).not_to have_content(group_access_request_user.name)
       end
 
       page.within all('.content-list').last do

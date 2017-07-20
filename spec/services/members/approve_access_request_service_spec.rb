@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Members::ApproveAccessRequestService do
   let(:user) { create(:user) }
-  let(:access_requester) { create(:user) }
+  let(:access_request_user) { create(:user) }
   let(:project) { create(:project, :public, :access_requestable) }
   let(:group) { create(:group, :public, :access_requestable) }
   let(:opts) { {} }
@@ -32,7 +32,7 @@ describe Members::ApproveAccessRequestService do
     end
 
     context 'with a custom access level' do
-      let(:params2) { params.merge(user_id: access_requester.id, access_level: Gitlab::Access::MASTER) }
+      let(:params2) { params.merge(user_id: access_request_user.id, access_level: Gitlab::Access::MASTER) }
 
       it 'returns a ProjectMember with the custom access level' do
         member = described_class.new(source, user, params2).execute(opts)
@@ -42,7 +42,7 @@ describe Members::ApproveAccessRequestService do
     end
   end
 
-  context 'when no access requester are found' do
+  context 'when there are no users that have requested access' do
     let(:params) { { user_id: 42 } }
 
     it_behaves_like 'a service raising ActiveRecord::RecordNotFound' do
@@ -54,12 +54,12 @@ describe Members::ApproveAccessRequestService do
     end
   end
 
-  context 'when an access requester is found' do
+  context 'when users have requested access' do
     before do
-      project.request_access(access_requester)
-      group.request_access(access_requester)
+      project.request_access(access_request_user)
+      group.request_access(access_request_user)
     end
-    let(:params) { { user_id: access_requester.id } }
+    let(:params) { { user_id: access_request_user.id } }
 
     context 'when current user is nil' do
       let(:user) { nil }
@@ -99,7 +99,7 @@ describe Members::ApproveAccessRequestService do
       end
 
       context 'and :force param is true' do
-        let(:params) { { user_id: access_requester.id, force: true } }
+        let(:params) { { user_id: access_request_user.id, force: true } }
 
         it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
           let(:source) { project }
@@ -136,7 +136,7 @@ describe Members::ApproveAccessRequestService do
       end
 
       context 'when given a :id' do
-        let(:params) { { id: project.access_requests.find_by!(user_id: access_requester.id).id } }
+        let(:params) { { id: project.access_requests.find_by!(user_id: access_request_user.id).id } }
 
         it_behaves_like 'a service approving an access request' do
           let(:source) { project }

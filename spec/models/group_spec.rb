@@ -18,28 +18,28 @@ describe Group do
     it { is_expected.to have_one(:chat_team) }
 
     describe '#members & #access_requests' do
-      let(:requester) { create(:user) }
+      let(:access_request_user) { create(:user) }
       let(:developer) { create(:user) }
       before do
-        group.request_access(requester)
+        group.request_access(access_request_user)
         group.add_developer(developer)
       end
 
       describe '#members' do
-        it 'includes members and exclude requesters' do
+        it 'includes members and exclude users who requested access' do
           member_user_ids = group.members.pluck(:user_id)
 
           expect(member_user_ids).to include(developer.id)
-          expect(member_user_ids).not_to include(requester.id)
+          expect(member_user_ids).not_to include(access_request_user.id)
         end
       end
 
       describe '#access_requests' do
-        it 'includes requesters and excludes members' do
-          requester_user_ids = group.access_requests.pluck(:user_id)
+        it 'includes users who requested access, and excludes members' do
+          access_request_user_ids = group.access_requests.pluck(:user_id)
 
-          expect(requester_user_ids).to include(requester.id)
-          expect(requester_user_ids).not_to include(developer.id)
+          expect(access_request_user_ids).to include(access_request_user.id)
+          expect(access_request_user_ids).not_to include(developer.id)
         end
       end
     end
@@ -244,7 +244,7 @@ describe Group do
     it { expect(group.has_owner?(@members[:developer])).to be_falsey }
     it { expect(group.has_owner?(@members[:reporter])).to be_falsey }
     it { expect(group.has_owner?(@members[:guest])).to be_falsey }
-    it { expect(group.has_owner?(@members[:requester])).to be_falsey }
+    it { expect(group.has_owner?(@members[:access_request_user])).to be_falsey }
     it { expect(group.has_owner?(nil)).to be_falsey }
   end
 
@@ -259,7 +259,7 @@ describe Group do
     it { expect(group.has_master?(@members[:developer])).to be_falsey }
     it { expect(group.has_master?(@members[:reporter])).to be_falsey }
     it { expect(group.has_master?(@members[:guest])).to be_falsey }
-    it { expect(group.has_master?(@members[:requester])).to be_falsey }
+    it { expect(group.has_master?(@members[:access_request_user])).to be_falsey }
     it { expect(group.has_master?(nil)).to be_falsey }
   end
 
@@ -328,7 +328,7 @@ describe Group do
       developer: create(:user),
       reporter: create(:user),
       guest: create(:user),
-      requester: create(:user)
+      access_request_user: create(:user)
     }
 
     group.add_user(members[:owner], GroupMember::OWNER)
@@ -336,7 +336,7 @@ describe Group do
     group.add_user(members[:developer], GroupMember::DEVELOPER)
     group.add_user(members[:reporter], GroupMember::REPORTER)
     group.add_user(members[:guest], GroupMember::GUEST)
-    group.request_access(members[:requester])
+    group.request_access(members[:access_request_user])
 
     members
   end

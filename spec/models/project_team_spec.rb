@@ -142,39 +142,39 @@ describe ProjectTeam do
         create(:project, :public, :access_requestable)
       end
 
-      let(:requester) { create(:user) }
+      let(:access_request_user) { create(:user) }
 
       before do
         project.add_master(master)
         project.add_reporter(reporter)
         project.add_guest(guest)
-        project.request_access(requester)
+        project.request_access(access_request_user)
       end
 
       it { expect(project.team.find_member(master.id)).to be_a(ProjectMember) }
       it { expect(project.team.find_member(reporter.id)).to be_a(ProjectMember) }
       it { expect(project.team.find_member(guest.id)).to be_a(ProjectMember) }
       it { expect(project.team.find_member(nonmember.id)).to be_nil }
-      it { expect(project.team.find_member(requester.id)).to be_nil }
+      it { expect(project.team.find_member(access_request_user.id)).to be_nil }
     end
 
     context 'group project' do
       let(:group) { create(:group, :access_requestable) }
       let(:project) { create(:project, group: group) }
-      let(:requester) { create(:user) }
+      let(:access_request_user) { create(:user) }
 
       before do
         group.add_master(master)
         group.add_reporter(reporter)
         group.add_guest(guest)
-        group.request_access(requester)
+        group.request_access(access_request_user)
       end
 
       it { expect(project.team.find_member(master.id)).to be_a(GroupMember) }
       it { expect(project.team.find_member(reporter.id)).to be_a(GroupMember) }
       it { expect(project.team.find_member(guest.id)).to be_a(GroupMember) }
       it { expect(project.team.find_member(nonmember.id)).to be_nil }
-      it { expect(project.team.find_member(requester.id)).to be_nil }
+      it { expect(project.team.find_member(access_request_user.id)).to be_nil }
     end
   end
 
@@ -201,7 +201,7 @@ describe ProjectTeam do
   end
 
   describe '#max_member_access' do
-    let(:requester) { create(:user) }
+    let(:access_request_user) { create(:user) }
 
     context 'personal project' do
       let(:project) do
@@ -213,14 +213,14 @@ describe ProjectTeam do
           project.add_master(master)
           project.add_reporter(reporter)
           project.add_guest(guest)
-          project.request_access(requester)
+          project.request_access(access_request_user)
         end
 
         it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::MASTER) }
         it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
         it { expect(project.team.max_member_access(guest.id)).to eq(Gitlab::Access::GUEST) }
         it { expect(project.team.max_member_access(nonmember.id)).to eq(Gitlab::Access::NO_ACCESS) }
-        it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
+        it { expect(project.team.max_member_access(access_request_user.id)).to eq(Gitlab::Access::NO_ACCESS) }
       end
 
       context 'when project is shared with group' do
@@ -237,7 +237,7 @@ describe ProjectTeam do
         it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::DEVELOPER) }
         it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
         it { expect(project.team.max_member_access(nonmember.id)).to eq(Gitlab::Access::NO_ACCESS) }
-        it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
+        it { expect(project.team.max_member_access(access_request_user.id)).to eq(Gitlab::Access::NO_ACCESS) }
 
         context 'but share_with_group_lock is true' do
           before do
@@ -260,14 +260,14 @@ describe ProjectTeam do
         group.add_master(master)
         group.add_reporter(reporter)
         group.add_guest(guest)
-        group.request_access(requester)
+        group.request_access(access_request_user)
       end
 
       it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::MASTER) }
       it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
       it { expect(project.team.max_member_access(guest.id)).to eq(Gitlab::Access::GUEST) }
       it { expect(project.team.max_member_access(nonmember.id)).to eq(Gitlab::Access::NO_ACCESS) }
-      it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
+      it { expect(project.team.max_member_access(access_request_user.id)).to eq(Gitlab::Access::NO_ACCESS) }
     end
   end
 

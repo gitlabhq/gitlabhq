@@ -83,28 +83,28 @@ describe Project do
 
     describe '#members & #access_requests' do
       let(:project) { create(:project, :public, :access_requestable) }
-      let(:requester) { create(:user) }
+      let(:access_request_user) { create(:user) }
       let(:developer) { create(:user) }
       before do
-        project.request_access(requester)
+        project.request_access(access_request_user)
         project.team << [developer, :developer]
       end
 
       describe '#members' do
-        it 'includes members and exclude requesters' do
+        it 'includes members and exclude users who requested access' do
           member_user_ids = project.members.pluck(:user_id)
 
           expect(member_user_ids).to include(developer.id)
-          expect(member_user_ids).not_to include(requester.id)
+          expect(member_user_ids).not_to include(access_request_user.id)
         end
       end
 
       describe '#access_requests' do
-        it 'includes requesters and excludes members' do
-          requester_user_ids = project.access_requests.pluck(:user_id)
+        it 'includes users who requested access, and excludes members' do
+          access_request_user_ids = project.access_requests.pluck(:user_id)
 
-          expect(requester_user_ids).to include(requester.id)
-          expect(requester_user_ids).not_to include(developer.id)
+          expect(access_request_user_ids).to include(access_request_user.id)
+          expect(access_request_user_ids).not_to include(developer.id)
         end
       end
     end

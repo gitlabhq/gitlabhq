@@ -172,7 +172,7 @@ describe Projects::ProjectMembersController do
         end
       end
 
-      context 'and is a requester' do
+      context 'and has requested access' do
         before do
           project.request_access(user)
         end

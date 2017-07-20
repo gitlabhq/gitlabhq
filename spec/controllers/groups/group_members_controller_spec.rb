@@ -161,7 +161,7 @@ describe Groups::GroupMembersController do
         end
       end
 
-      context 'and is a requester' do
+      context 'and has requested access' do
         before do
           group.request_access(user)
         end

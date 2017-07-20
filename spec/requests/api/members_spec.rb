@@ -3,14 +3,14 @@ require 'spec_helper'
 describe API::Members do
   let(:master) { create(:user, username: 'master_user') }
   let(:developer) { create(:user) }
-  let(:access_requester) { create(:user) }
+  let(:access_request_user) { create(:user) }
   let(:stranger) { create(:user) }
 
   let(:project) do
     create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
       project.team << [developer, :developer]
       project.team << [master, :master]
-      project.request_access(access_requester)
+      project.request_access(access_request_user)
     end
   end
 
@@ -18,7 +18,7 @@ describe API::Members do
     create(:group, :public, :access_requestable) do |group|
       group.add_developer(developer)
       group.add_owner(master)
-      group.request_access(access_requester)
+      group.request_access(access_request_user)
     end
   end
 
@@ -28,7 +28,7 @@ describe API::Members do
         let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members", stranger) }
       end
 
-      %i[master developer access_requester stranger].each do |type|
+      %i[master developer access_request_user stranger].each do |type|
         context "when authenticated as a #{type}" do
           it 'returns 200' do
             user = public_send(type)
@@ -75,7 +75,7 @@ describe API::Members do
       end
 
       context 'when authenticated as a non-member' do
-        %i[access_requester stranger].each do |type|
+        %i[access_request_user stranger].each do |type|
           context "as a #{type}" do
             it 'returns 200' do
               user = public_send(type)
@@ -104,17 +104,17 @@ describe API::Members do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           post api("/#{source_type.pluralize}/#{source.id}/members", stranger),
-               user_id: access_requester.id, access_level: Member::MASTER
+               user_id: access_request_user.id, access_level: Member::MASTER
         end
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
-        %i[access_requester stranger developer].each do |type|
+        %i[access_request_user stranger developer].each do |type|
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
               post api("/#{source_type.pluralize}/#{source.id}/members", user),
-                   user_id: access_requester.id, access_level: Member::MASTER
+                   user_id: access_request_user.id, access_level: Member::MASTER
 
               expect(response).to have_http_status(403)
             end
@@ -123,16 +123,16 @@ describe API::Members do
       end
 
       context 'when authenticated as a master/owner' do
-        context 'and new member is already a requester' do
-          it 'transforms the requester into a proper member' do
+        context 'and the new member has already requested access' do
+          it 'grants the user access' do
             expect do
               post api("/#{source_type.pluralize}/#{source.id}/members", master),
-                   user_id: access_requester.id, access_level: Member::MASTER
+                   user_id: access_request_user.id, access_level: Member::MASTER
 
               expect(response).to have_http_status(201)
             end.to change { source.members.count }.by(1)
             expect(source.access_requests.count).to eq(0)
-            expect(json_response['id']).to eq(access_requester.id)
+            expect(json_response['id']).to eq(access_request_user.id)
             expect(json_response['access_level']).to eq(Member::MASTER)
           end
         end
@@ -190,7 +190,7 @@ describe API::Members do
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
-        %i[access_requester stranger developer].each do |type|
+        %i[access_request_user stranger developer].each do |type|
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
@@ -244,7 +244,7 @@ describe API::Members do
       end
 
       context 'when authenticated as a non-member or member with insufficient rights' do
-        %i[access_requester stranger].each do |type|
+        %i[access_request_user stranger].each do |type|
           context "as a #{type}" do
             it 'returns 403' do
               user = public_send(type)
@@ -267,10 +267,10 @@ describe API::Members do
       end
 
       context 'when authenticated as a master/owner' do
-        context 'and member is a requester' do
+        context 'and the user is not a member but has requested access' do
           it 'returns 404' do
             expect do
-              delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", master)
+              delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_request_user.id}", master)
 
               expect(response).to have_http_status(404)
             end.not_to change { source.access_requests.count }

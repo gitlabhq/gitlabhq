@@ -14,7 +14,7 @@ feature 'Projects > Members > Group requester cannot request access to project',
     visit project_path(project)
   end
 
-  scenario 'group requester does not see the request access / withdraw access request button' do
+  scenario 'a user that has requested access to a group does not see its project request access / withdraw access request button' do
     expect(page).not_to have_content 'Request Access'
     expect(page).not_to have_content 'Withdraw Access Request'
   end

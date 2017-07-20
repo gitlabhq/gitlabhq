@@ -2,17 +2,17 @@ require 'spec_helper'
 
 describe AccessRequestsFinder do
   let(:user) { create(:user) }
-  let(:access_requester) { create(:user) }
+  let(:access_request_user) { create(:user) }
 
   let(:project) do
     create(:project, :public, :access_requestable) do |project|
-      project.request_access(access_requester)
+      project.request_access(access_request_user)
     end
   end
 
   let(:group) do
     create(:group, :public, :access_requestable) do |group|
-      group.request_access(access_requester)
+      group.request_access(access_request_user)
     end
   end
 
@@ -22,7 +22,7 @@ describe AccessRequestsFinder do
 
       expect(access_requests.size).to eq(1)
       expect(access_requests.first).to be_a "#{source.class}Member".constantize
-      expect(access_requests.first.user).to eq(access_requester)
+      expect(access_requests.first.user).to eq(access_request_user)
     end
   end
 
