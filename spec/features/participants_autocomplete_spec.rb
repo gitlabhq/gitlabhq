@@ -14,7 +14,11 @@ feature 'Member autocomplete', :js do
   shared_examples "open suggestions when typing @" do
     before do
       page.within('.new-note') do
-        find('#note_note').send_keys('@')
+        if note.noteable_type === 'Issue'
+          find('#note-body').send_keys('@')
+        else
+          find('#note_note').send_keys('@')
+        end
       end
     end
 
