@@ -21,11 +21,13 @@ class NotificationRecipientService
   end
 
   module Builder
-
     class Base
-      attr_reader :project
-      def initialize(project)
-        @project = project
+      def initialize(*)
+        raise 'abstract'
+      end
+
+      def build
+        raise 'abstract'
       end
 
       def build(*)
@@ -226,7 +228,22 @@ class NotificationRecipientService
     end
 
     class Default < Base
-      def build(target, current_user, action:, previous_assignee: nil, skip_current_user: true)
+      attr_reader :project
+      attr_reader :target
+      attr_reader :current_user
+      attr_reader :action
+      attr_reader :previous_assignee
+      attr_reader :skip_current_user
+      def initialize(project, target, current_user, action:, previous_assignee: nil, skip_current_user: true)
+        @project = project
+        @target = target
+        @current_user = current_user
+        @action = action
+        @previous_assignee = previous_assignee
+        @skip_current_user = skip_current_user
+      end
+
+      def build
         custom_action = build_custom_key(action, target)
 
         recipients = participants(target, current_user)
@@ -264,7 +281,18 @@ class NotificationRecipientService
     end
 
     class Pipeline < Base
-      def build(target, current_user, action:)
+      attr_reader :project
+      attr_reader :target
+      attr_reader :current_user
+      attr_reader :action
+      def initialize(project, target, current_user, action:)
+        @project = project
+        @target = target
+        @current_user = current_user
+        @action = action
+      end
+
+      def build
         return [] unless current_user
 
         custom_action =
@@ -288,7 +316,18 @@ class NotificationRecipientService
     end
 
     class Relabeled < Base
-      def build(target, current_user, labels:)
+      attr_reader :project
+      attr_reader :target
+      attr_reader :current_user
+      attr_reader :labels
+      def initialize(project, target, current_user, labels:)
+        @project = project
+        @target = target
+        @current_user = current_user
+        @labels = labels
+      end
+
+      def build
         recipients = add_labels_subscribers([], target, labels: labels)
         recipients = reject_unsubscribed_users(recipients, target)
         recipients = reject_users_without_access(recipients, target)
@@ -298,9 +337,16 @@ class NotificationRecipientService
     end
 
     class NewNote < Base
-      def build(note)
-        target = note.noteable
+      attr_reader :project
+      attr_reader :note
+      attr_reader :target
+      def initialize(project, note)
+        @project = project
+        @note = note
+        @target = note.noteable
+      end
 
+      def build(note)
         ability, subject = if note.for_personal_snippet?
                              [:read_personal_snippet, note.noteable]
                            else
@@ -337,18 +383,18 @@ class NotificationRecipientService
   end
 
   def build_recipients(*a)
-    Builder::Default.new(@project).build(*a)
+    Builder::Default.new(@project, *a).build
   end
 
   def build_pipeline_recipients(*a)
-    Builder::Pipeline.new(@project).build(*a)
+    Builder::Pipeline.new(@project, *a).build
   end
 
   def build_relabeled_recipients(*a)
-    Builder::Relabeled.new(@project).build(*a)
+    Builder::Relabeled.new(@project, *a).build
   end
 
-  def build_new_note_recipients(note)
-    Builder::NewNote.new(@project).build(note)
+  def build_new_note_recipients(*a)
+    Builder::NewNote.new(@project, *a).build
   end
 end
