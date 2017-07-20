@@ -1631,9 +1631,9 @@ ActiveRecord::Schema.define(version: 20170725145659) do
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", name: "fk_0434b48643", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
-  add_foreign_key "gpg_keys", "users"
-  add_foreign_key "gpg_signatures", "gpg_keys"
-  add_foreign_key "gpg_signatures", "projects"
+  add_foreign_key "gpg_keys", "users", on_delete: :cascade
+  add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
+  add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade

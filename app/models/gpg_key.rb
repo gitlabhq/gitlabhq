@@ -7,7 +7,7 @@ class GpgKey < ActiveRecord::Base
   sha_attribute :fingerprint
 
   belongs_to :user
-  has_many :gpg_signatures, dependent: :nullify
+  has_many :gpg_signatures
 
   validates :user, presence: true
 

@@ -5,8 +5,8 @@ class CreateGpgSignatures < ActiveRecord::Migration
     create_table :gpg_signatures do |t|
       t.timestamps_with_timezone null: false
 
-      t.references :project, index: true, foreign_key: true
-      t.references :gpg_key, index: true, foreign_key: true
+      t.references :project, index: true, foreign_key: { on_delete: :cascade }
+      t.references :gpg_key, index: true, foreign_key: { on_delete: :nullify }
 
       t.boolean :valid_signature
 
