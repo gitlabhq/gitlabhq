@@ -64,7 +64,7 @@ export default class ProtectedBranchCreate {
 
     Object.keys(ACCESS_LEVELS).forEach((level) => {
       const accessLevel = ACCESS_LEVELS[level];
-      const selectedItems = this[`${ACCESS_LEVELS[accessLevel]}_dropdown`].getSelectedItems();
+      const selectedItems = this[`${accessLevel}_dropdown`].getSelectedItems();
       const levelAttributes = [];
 
       selectedItems.forEach((item) => {
