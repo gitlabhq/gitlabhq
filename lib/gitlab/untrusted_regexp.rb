@@ -22,13 +22,7 @@ module Gitlab
     end
 
     def scan(text)
-      scan_regexp.scan(text).map do |match|
-        if regexp.number_of_capturing_groups == 0
-          match.first
-        else
-          match
-        end
-      end
+      regexp.scan(text).scan.to_a
     end
 
     def replace(text, rewrite)
@@ -38,16 +32,5 @@ module Gitlab
     private
 
     attr_reader :regexp
-
-    # RE2 scan operates differently to Ruby scan when there are no capture
-    # groups, so work around it
-    def scan_regexp
-      @scan_regexp ||=
-        if regexp.number_of_capturing_groups == 0
-          RE2::Regexp.new('(' + regexp.source + ')')
-        else
-          regexp
-        end
-    end
   end
 end
