@@ -16,15 +16,20 @@ export default class RepoFileButtons {
       template: `
       <div id='repo-file-buttons' v-if='isMini' :style='{"border-bottom": editableBorder}'>
         <a :href='rawFileURL' target='_blank' class='btn btn-default'>Raw</a>
+
         <div class="btn-group" role="group" aria-label="File actions">
           <a :href='blameFileUrl' class='btn btn-default'>Blame</a>
           <a :href='historyFileUrl' class='btn btn-default'>History</a>
           <a href='#' class='btn btn-default'>Permalink</a>
           <a href='#' class='btn btn-default'>Lock</a>
         </div>
+
         <a href='#' v-if='canPreview' @click.prevent='rawPreviewToggle' class='btn btn-default'>
           {{activeFileLabel}}
         </a>
+
+        <button type="button" class="btn btn-default" data-target="#modal-upload-blob" data-toggle="modal">Replace</button>
+
         <a href='#' class='btn btn-danger'>Delete</a>
       </div>
       `,

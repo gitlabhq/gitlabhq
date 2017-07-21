@@ -40,15 +40,17 @@ export default class RepoSidebar {
           });
         },
 
-        linkClicked(file) {
+        linkClicked(clickedFile) {
           let url = '';
+          let file = clickedFile;
           if (typeof file === 'object') {
             if (file.type === 'tree' && file.opened) {
               file = Store.removeChildFilesOfTree(file);
+            } else {
+              url = file.url;
+              Service.url = url;
+              Helper.getContent(file);
             }
-            url = file.url;
-            Service.url = url;
-            Helper.getContent(file);
           } else if (typeof file === 'string') {
             // go back
             url = file;
