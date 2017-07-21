@@ -319,7 +319,7 @@ describe "Admin::Users" do
 
   describe "GET /admin/users/:id/projects" do
     let(:group) { create(:group) }
-    let!(:project) { create(:project, group: group) }
+    let!(:project) { create(:empty_project, group: group) }
 
     before do
       group.add_developer(user)
