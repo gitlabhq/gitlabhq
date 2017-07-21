@@ -766,16 +766,12 @@ a.allowed-to-push {
   }
 }
 
-<<<<<<< HEAD
 .disabled-item {
   @extend .btn.disabled;
 }
 
-.protected-tags-list {
-=======
 .protected-tags-list,
 .protected-branches-list {
->>>>>>> upstream/master
   .dropdown-menu-toggle {
     width: 100%;
     max-width: 300px;

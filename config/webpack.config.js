@@ -59,12 +59,8 @@ var config = {
     pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     prometheus_metrics:   './prometheus_metrics',
-<<<<<<< HEAD
-    protected_branches:   './protected_branches/protected_branches_bundle.js',
-    ee_protected_branches: './protected_branches/ee/protected_branches_bundle.js',
-=======
     protected_branches:   './protected_branches',
->>>>>>> upstream/master
+    ee_protected_branches: './protected_branches/ee/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
     ee_protected_tags:    './protected_tags/ee',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
