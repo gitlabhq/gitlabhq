@@ -962,7 +962,7 @@ describe Repository do
     end
 
     it 'returns false if no full path can be constructed' do
-      allow(repository).to receive(:path_with_namespace).and_return(nil)
+      allow(repository).to receive(:full_path).and_return(nil)
 
       expect(repository.exists?).to eq(false)
     end
