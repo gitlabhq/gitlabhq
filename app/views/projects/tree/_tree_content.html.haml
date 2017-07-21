@@ -16,7 +16,7 @@
         %tr{ is: "repo-loading-file", "v-for" => "n in 5", ":loading" => "loading", ":has-files" => "!!files.length", ":is-mini" => "isMini" }
         %tr{ is: "repo-file", "v-for" => "file in files", ":key" => "file.id", ":file" => "file",":is-mini" => "isMini", "@linkclicked" => "linkClicked(file)", ":is-tree" => "isTree", ":loading" => "loading", ":has-files" => "!!files.length", ":active-file" => "activeFile" }
   .panel-right>
-    %ul#tabs{ "v-if" => "isMini", ":style" => "{height: 41 + scrollWidth + 'px'}", "v-cloak" => "1" }
+    %ul#tabs{ "v-if" => "isMini", "v-cloak" => "1" }
       %li{ is: "repo-tab", "v-for" => "tab in openedFiles", ":key" => "tab.id", ":tab" => "tab", ":class" => "{'active' : tab.active}" }
     #repo-file-buttons
     #ide{ data: { url: repo_url(@project) } }

@@ -105,9 +105,7 @@ export default class RepoEditor {
           this.monacoInstance.setModel(null);
 
           const languages = monaco.languages.getLanguages();
-          console.log(languages)
           const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
-          console.log('languageID',languageID)
           const newModel = monaco.editor.createModel(this.blobRaw, languageID);
 
           this.monacoInstance.setModel(newModel);

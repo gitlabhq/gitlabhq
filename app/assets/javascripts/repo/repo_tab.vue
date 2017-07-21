@@ -34,7 +34,7 @@ export default RepoTab;
 
 <template>
 <li>
-  <a href="#" @click.prevent="xClicked(tab)" v-if="!tab.loading">
+  <a href="#" class="close" @click.prevent="xClicked(tab)" v-if="!tab.loading">
     <i class="fa" :class="changedClass"></i>
   </a>
 
