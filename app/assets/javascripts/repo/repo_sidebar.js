@@ -44,10 +44,13 @@ export default class RepoSidebar {
           let url = '';
           let file = clickedFile;
           if (typeof file === 'object') {
-            if (file.type === 'tree' && file.opened) file = Store.removeChildFilesOfTree(file);
-            url = file.url;
-            Service.url = url;
-            Helper.getContent(file);
+            if (file.type === 'tree' && file.opened) {
+              file = Store.removeChildFilesOfTree(file);
+            } else {
+              url = file.url;
+              Service.url = url;
+              Helper.getContent(file);
+            }
           } else if (typeof file === 'string') {
             // go back
             url = file;

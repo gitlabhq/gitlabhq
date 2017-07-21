@@ -84,10 +84,11 @@ const RepoHelper = {
 
   mergeNewListToOldList(newList, oldList, inDirectory, indexOfFile) {
     newList.forEach((newFile) => {
+      const fileIndex = indexOfFile + 1;
       const file = newFile;
       file.level = inDirectory.level + 1;
 
-      oldList.splice(indexOfFile, 0, file);
+      oldList.splice(fileIndex, 0, file);
     });
 
     return oldList;
