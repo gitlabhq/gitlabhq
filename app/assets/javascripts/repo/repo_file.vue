@@ -13,7 +13,7 @@ const RepoFile = {
     loading: {
       type: Object,
       required: false,
-      default: {},
+      default() { return {}; },
     },
     hasFiles: {
       type: Boolean,
@@ -48,7 +48,7 @@ export default RepoFile;
   </td>
 
   <td v-if="!isMini" class="hidden-xs">
-    <span>{{file.lastCommitUpdate}}</span>
+    <span class="commit-update">{{file.lastCommitUpdate}}</span>
   </td>
 </tr>
 </template>
