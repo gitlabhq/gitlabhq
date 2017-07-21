@@ -42,4 +42,4 @@ tests should be placed in `spec/workers`.
 Try to avoid renaming or removing queues in minor and patch releases. 
 During online update instance can have pending jobs and removing the queue can 
 lead to those jobs being stuck forever. If you can't write migration for those 
-sidekiq jobs, please consider doing rename or remove queue in major release only. 
+Sidekiq jobs, please consider doing rename or remove queue in major release only. 
