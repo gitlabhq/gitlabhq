@@ -19,7 +19,7 @@ describe "User Feed"  do
     end
 
     context 'feed content' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:issue) do
         create(:issue,
                project: project,
