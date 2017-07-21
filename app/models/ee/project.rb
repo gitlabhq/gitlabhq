@@ -454,6 +454,27 @@ module EE
       ).create
     end
 
+    # Override to reject disabled services
+    def find_or_initialize_services(exceptions: [])
+      available_services = super
+
+      available_services.reject do |service|
+        disabled_services.include?(service.to_param)
+      end
+    end
+
+    def disabled_services
+      return @disabled_services if defined?(@disabled_services)
+
+      @disabled_services = []
+
+      unless feature_available?(:jenkins_integration)
+        @disabled_services.push('jenkins', 'jenkins_deprecated')
+      end
+
+      @disabled_services
+    end
+
     private
 
     def licensed_feature_available?(feature)

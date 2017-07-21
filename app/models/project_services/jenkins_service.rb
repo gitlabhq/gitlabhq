@@ -28,6 +28,7 @@ class JenkinsService < CiService
   end
 
   def execute(data)
+    return if project.disabled_services.include?(to_param)
     return unless supported_events.include?(data[:object_kind])
 
     service_hook.execute(data, "#{data[:object_kind]}_hook")
