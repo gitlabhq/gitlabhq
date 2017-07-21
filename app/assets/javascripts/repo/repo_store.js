@@ -95,20 +95,22 @@ const RepoStore = {
     RepoStore.activeFileLabel = 'Display source';
   },
 
-  /* eslint-disable no-param-reassign */
   removeChildFilesOfTree(tree) {
     let foundTree = false;
-    RepoStore.files = RepoStore.files.filter((file) => {
-      if (file.url === tree.url) foundTree = true;
+    const newTree = tree;
 
-      if (foundTree) return file.level <= tree.level;
+    RepoStore.files = RepoStore.files.filter((file) => {
+      if (file.url === newTree.url) foundTree = true;
+
+      if (foundTree) return file.level <= newTree.level;
       return true;
     });
 
-    tree.opened = false;
-    tree.icon = 'fa-folder';
+    newTree.opened = false;
+    newTree.icon = 'fa-folder';
+
+    return newTree;
   },
-  /* eslint-enable no-param-reassign */
 
   removeFromOpenedFiles(file) {
     if (file.type === 'tree') return;
