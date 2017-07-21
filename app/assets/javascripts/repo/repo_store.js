@@ -62,7 +62,7 @@ const RepoStore = {
     if (RepoStore.isActiveFile(file)) return;
 
     RepoStore.openedFiles = RepoStore.openedFiles
-      .map((openedFile, i) => RepoStore.w(openedFile, i));
+      .map((openedFile, i) => RepoStore.setFileActivity(file, openedFile, i));
 
     RepoStore.setActiveToRaw();
 
@@ -76,9 +76,9 @@ const RepoStore = {
     RepoStore.binary = file.binary;
   },
 
-  w(file, i) {
-    const activeFile = file;
-    activeFile.active = activeFile.url === activeFile.url;
+  setFileActivity(file, openedFile, i) {
+    const activeFile = openedFile;
+    activeFile.active = file.url === activeFile.url;
 
     if (activeFile.active) RepoStore.setActiveFile(activeFile, i);
 
