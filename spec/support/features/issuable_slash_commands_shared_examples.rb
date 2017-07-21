@@ -18,7 +18,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     project.team << [assignee, :developer]
     project.team << [guest, :guest]
 
-    sign_in(master)
+    gitlab_sign_in(master)
   end
 
   after do
@@ -111,8 +111,8 @@ shared_examples 'issuable record that supports quick actions in its description 
 
       context "when current user cannot close #{issuable_type}" do
         before do
-          sign_out(:user)
-          sign_in(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -146,8 +146,8 @@ shared_examples 'issuable record that supports quick actions in its description 
 
       context "when current user cannot reopen #{issuable_type}" do
         before do
-          sign_out(:user)
-          sign_in(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -176,8 +176,8 @@ shared_examples 'issuable record that supports quick actions in its description 
 
       context "when current user cannot change title of #{issuable_type}" do
         before do
-          sign_out(:user)
-          sign_in(guest)
+          gitlab_sign_out
+          gitlab_sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -265,7 +265,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     end
   end
 
-  describe "preview of note on #{issuable_type}" do
+  describe "preview of note on #{issuable_type}", js: true do
     it 'removes quick actions from note and explains them' do
       visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
 
