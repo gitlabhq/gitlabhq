@@ -23,16 +23,16 @@ const RepoHelper = {
   },
 
   findLanguage(ext, langs) {
-    langs.find(lang => lang.extensions && lang.extensions.indexOf(`.${ext}`) > -1);
+    return langs.find(lang => lang.extensions && lang.extensions.indexOf(`.${ext}`) > -1);
   },
 
   setDirectoryOpen(tree) {
-    if (!tree) return;
+    let file = tree;
+    if (!file) return;
 
-    /* eslint-disable no-param-reassign */
-    tree.opened = true;
-    tree.icon = 'fa-folder-open';
-    /* eslint-enable no-param-reassign */
+    file.opened = true;
+    file.icon = 'fa-folder-open';
+    return file;
   },
 
   getRawURLFromBlobURL(url) {
@@ -132,7 +132,7 @@ const RepoHelper = {
         }
       } else {
         // it's a tree
-        this.setDirectoryOpen(file);
+        file = this.setDirectoryOpen(file);
         const newDirectory = this.dataToListOfFiles(data);
         Store.addFilesToDirectory(file, Store.files, newDirectory);
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
@@ -216,7 +216,7 @@ const RepoHelper = {
   },
 
   loadingError() {
-    new Flash('Unable to load the file at this time.'); // eslint-disable-line no-new
+    Flash('Unable to load the file at this time.');
   },
 };
 
