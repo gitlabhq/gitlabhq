@@ -290,9 +290,9 @@ we encourage all **Geo** users to
 This will be necessary once Geo system hooks are removed.
 
 We highly recommend using replication slots. The easiest way to do this in Omnibus is the following:
-  1. Install GitLab 9.4 on the primary server
+  1. Install GitLab on the primary server
   1. Run `gitlab-ctl reconfigure` and `gitlab-ctl restart postgresql`. This will enable replication slots on the primary database.
-  1. Install GitLab 9.4 on the secondary server.
+  1. Install GitLab on the secondary server.
   1. Re-run the [database replication process](database.md#step-3-initiate-the-replication-process).
 
 ## Troubleshooting
