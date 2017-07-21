@@ -13,7 +13,7 @@ const RepoFile = {
     loading: {
       type: Object,
       required: false,
-      default() { return {}; },
+      default() { return { tree: false }; },
     },
     hasFiles: {
       type: Boolean,

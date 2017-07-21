@@ -21,11 +21,10 @@ describe('RepoFile', () => {
     }).$mount();
   }
 
-  it('renders if not loading tree and has files', () => {
+  it('renders link, icon, name and last commit details', () => {
     const vm = createComponent({
       file,
       activeFile,
-      isMini: false,
     });
     const icon = vm.$el.querySelector(`.${file.icon}`);
     const name = vm.$el.querySelector('.repo-file-name');
@@ -46,9 +45,63 @@ describe('RepoFile', () => {
     expect(commitUpdate.textContent).toBe(file.lastCommitUpdate);
   });
 
-  it('does not render if loading tree or has no files', () => {});
+  it('does render if hasFiles is true and is loading tree', () => {
+    const vm = createComponent({
+      file,
+      activeFile,
+      loading: {
+        tree: true,
+      },
+      hasFiles: true,
+    });
 
-  it('does not render commit message and datetime if mini', () => {});
+    expect(vm.$el.innerHTML).toBeTruthy();
+  });
 
-  it('does not set active class if file is active file', () => {});
+  it('does not render if loading tree', () => {
+    const vm = createComponent({
+      file,
+      activeFile,
+      loading: {
+        tree: true,
+      },
+    });
+
+    expect(vm.$el.innerHTML).toBeFalsy();
+  });
+
+  it('does not render commit message and datetime if mini', () => {
+    const vm = createComponent({
+      file,
+      activeFile,
+      isMini: true,
+    });
+    const commitMessage = vm.$el.querySelector('.commit-message');
+    const commitUpdate = vm.$el.querySelector('.commit-update');
+
+    expect(commitMessage).toBeFalsy();
+    expect(commitUpdate).toBeFalsy();
+  });
+
+  it('does not set active class if file is active file', () => {
+    const vm = createComponent({
+      file,
+      activeFile: {},
+    });
+
+    expect(vm.$el.classList.contains('active')).toBeFalsy();
+  });
+
+  it('fires linkClicked when the link is clicked', () => {
+    const vm = createComponent({
+      file,
+      activeFile,
+    });
+
+    spyOn(vm, 'linkClicked');
+
+    vm.$el.querySelector('.repo-file-name').click();
+
+    expect(vm.linkClicked).toHaveBeenCalled();
+  });
 });
