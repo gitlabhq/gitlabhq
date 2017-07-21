@@ -142,11 +142,11 @@ module Backup
     end
 
     def path_to_bundle(project)
-      File.join(backup_repos_path, project.path_with_namespace + '.bundle')
+      File.join(backup_repos_path, project.disk_path + '.bundle')
     end
 
     def path_to_tars(project, dir = nil)
-      path = File.join(backup_repos_path, project.path_with_namespace)
+      path = File.join(backup_repos_path, project.disk_path)
 
       if dir
         File.join(path, "#{dir}.tar")

@@ -1198,7 +1198,7 @@ class Project < ActiveRecord::Base
   end
 
   def pages_path
-    File.join(Settings.pages.path, path_with_namespace)
+    File.join(Settings.pages.path, disk_path)
   end
 
   def public_pages_path
@@ -1256,7 +1256,7 @@ class Project < ActiveRecord::Base
   end
 
   def export_path
-    File.join(Gitlab::ImportExport.storage_path, path_with_namespace)
+    File.join(Gitlab::ImportExport.storage_path, disk_path)
   end
 
   def export_project_path

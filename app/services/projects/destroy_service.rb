@@ -40,7 +40,7 @@ module Projects
     private
 
     def repo_path
-      project.path_with_namespace
+      project.disk_path
     end
 
     def wiki_path
