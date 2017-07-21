@@ -251,7 +251,12 @@ const actions = {
         context.commit('removePlaceholderNotes');
 
         return res;
-      });
+      })
+      .catch(() => {
+        const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
+        Flash(msg, 'alert', $(noteData.flashContainer));
+        context.commit('removePlaceholderNotes');
+      })
   },
   poll(context) {
     const { notesPath } = $('.js-notes-wrapper')[0].dataset;

@@ -90,7 +90,9 @@ export default {
               this.discard();
             }
           })
-          .catch(this.handleError);
+          .catch(() => {
+            this.discard(false);
+          });
       }
 
       if (withIssueAction) {
@@ -109,12 +111,15 @@ export default {
         $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
       }
     },
-    discard() {
+    discard(shouldClear = true) {
       // `blur` is needed to clear slash commands autocomplete cache if event fired.
       // `focus` is needed to remain cursor in the textarea.
       this.$refs.textarea.blur();
       this.$refs.textarea.focus();
-      this.note = '';
+
+      if (shouldClear) {
+        this.note = '';
+      }
     },
     setNoteType(type) {
       this.noteType = type;

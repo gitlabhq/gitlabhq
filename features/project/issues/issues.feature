@@ -46,7 +46,6 @@ Feature: Project Issues
     Given I visit issue page "Release 0.4"
     And I leave a comment like "XML attached"
     Then I should see comment "XML attached"
-    And I should see an error alert section within the comment form
 
   @javascript
   Scenario: Visiting Issues after being sorted the list
