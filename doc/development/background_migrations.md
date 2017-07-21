@@ -40,7 +40,7 @@ and idempotent.
 See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/Best-Practices)
 for more details.
 
-Make sure that in case that your migration job is going to be retried a data
+Make sure that in case that your migration job is going to be retried data
 integrity is guarateed.
 
 ## How It Works
@@ -227,18 +227,24 @@ the `services.properties` column.
 
 ## Testing
 
-It is possible to test a background migrations scheduling migration and a
-cleanup migration using `:migration` RSpec tag. See README in specs/migration/
-directory.
+It is required to write tests for background migrations' scheduling migration
+(either a regular migration or a post deployment migration), background
+migration itself and a cleanup migration. You can use the `:migration` RSpec
+tag when testing a regular / post deployment migration.
+See [README][migrations-readme].
 
 When you do that, keep in mind that `before` and `after` RSpec hooks are going
-to migrate you database down and up, which can result in another background
+to migrate you database down and up, which can result in other background
 migrations being called. That means that using `spy` test doubles with
 `have_received` is encouraged, instead of using regular test doubles, because
-your expectation defined in a `it` block can conflict with what is being
-called in RSpec hooks. See gitlab-org/gitlab-ce#35351 for more details.
+your expectations defined in a `it` block can conflict with what is being
+called in RSpec hooks. See [gitlab-org/gitlab-ce#35351][issue-rspec-hooks]
+for more details.
 
 ## Best practices
 
 1. Make sure that background migration jobs are idempotent.
 1. Make sure that tests you write are not false positives.
+
+[migrations-readme]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md
+[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-ce/issues/35351
