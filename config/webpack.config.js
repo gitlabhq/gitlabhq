@@ -216,6 +216,7 @@ var config = {
             return (
               '(function(){\n' +
               'var define = this.define, require = this.require;\n' +
+              'window.define = define; window.require = require;\n' +
               content +
               '\n}.call(window.__monaco_context__ || (window.__monaco_context__ = {})));'
             );
