@@ -382,14 +382,6 @@ constraints(ProjectUrlConstrainer.new) do
       resources :boards, only: [:index, :show, :create, :update, :destroy] do
         scope module: :boards do
           resources :issues, only: [:index, :update]
-
-          resources :lists, only: [:index, :create, :update, :destroy] do
-            collection do
-              post :generate
-            end
-
-            resources :issues, only: [:index, :create]
-          end
         end
       end
 

@@ -5,7 +5,8 @@ module BoardsHelper
     board = @board || @boards.first
 
     {
-      endpoint: @boards_endpoint,
+      boards_endpoint: @boards_endpoint,
+      lists_endpoint: board_lists_path(board),
       board_id: board.id,
       board_milestone_title: board&.milestone&.title,
       disabled: "#{!can?(current_user, :admin_list, @project)}", # Create this permission for groups( if needed )

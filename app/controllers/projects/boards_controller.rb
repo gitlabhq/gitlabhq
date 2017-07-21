@@ -32,6 +32,7 @@ class Projects::BoardsController < Projects::ApplicationController
   def assign_endpoint_vars
     @boards_endpoint = project_boards_path(project)
     @issues_path = project_issues_path(project)
+
     @bulk_issues_path = bulk_update_project_issues_path(@project)
   end
 

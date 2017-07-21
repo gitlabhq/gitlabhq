@@ -96,5 +96,15 @@ Rails.application.routes.draw do
 
   draw :test if Rails.env.test?
 
+  resources :boards do
+    resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do
+      collection do
+        post :generate
+      end
+
+      resources :issues, only: [:index, :create, :update]
+    end
+  end
+
   get '*unmatched_route', to: 'application#route_not_found'
 end

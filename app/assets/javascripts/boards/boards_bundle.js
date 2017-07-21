@@ -57,7 +57,8 @@ $(() => {
     data: {
       state: Store.state,
       loading: true,
-      endpoint: $boardApp.dataset.endpoint,
+      boardsEndpoint: $boardApp.dataset.boardsEndpoint,
+      listsEndpoint: $boardApp.dataset.listsEndpoint,
       boardId: $boardApp.dataset.boardId,
       disabled: $boardApp.dataset.disabled === 'true',
       issueLinkBase: $boardApp.dataset.issueLinkBase,
@@ -83,8 +84,8 @@ $(() => {
         Store.updateFiltersUrl(true);
       }
 
-      gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
-      Store.rootPath = this.endpoint;
+      gl.boardService = new BoardService(this.boardsEndpoint, this.listsEndpoint, this.bulkUpdatePath, this.boardId);
+      Store.rootPath = this.boardsEndpoint;
 
       this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
       this.filterManager.setup();
