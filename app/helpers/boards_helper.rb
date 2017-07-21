@@ -8,10 +8,10 @@ module BoardsHelper
       endpoint: @boards_endpoint,
       board_id: board.id,
       board_milestone_title: board&.milestone&.title,
-      disabled: "#{!can?(current_user, :admin_list, @project)}",
-      issue_link_base: project_issues_path(@project),
+      disabled: "#{!can?(current_user, :admin_list, @project)}", # Create this permission for groups( if needed )
+      issue_link_base: @issues_path,
       root_path: root_path,
-      bulk_update_path: bulk_update_project_issues_path(@project),
+      bulk_update_path: @bulk_issues_path,
       default_avatar: image_path(default_avatar)
     }
   end

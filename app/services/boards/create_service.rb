@@ -14,7 +14,7 @@ module Boards
 
     def create_board!
       board = parent.boards.create(params)
-
+      byebug
       if board.persisted?
         board.lists.create(list_type: :backlog)
         board.lists.create(list_type: :closed)

@@ -10,7 +10,9 @@ module EE
     end
 
     def milestone
-      return nil unless project.feature_available?(:issue_board_milestone)
+      parent = project || group
+
+      return nil unless parent.feature_available?(:issue_board_milestone)
 
       if milestone_id == ::Milestone::Upcoming.id
         ::Milestone::Upcoming

@@ -14,6 +14,8 @@ class Groups::BoardsController < Groups::ApplicationController
   end
 
   def assign_endpoint_vars
-    @boards_endpoint = group_boards_path(@group)
+    @boards_endpoint = group_boards_path(group)
+    @issues_path = issues_group_path(group)
+    @bulk_issues_path = ""
   end
 end

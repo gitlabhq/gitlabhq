@@ -207,7 +207,7 @@ ActiveRecord::Schema.define(version: 20170718190627) do
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
 
   create_table "boards", force: :cascade do |t|
-    t.integer "project_id", null: false
+    t.integer "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name", default: "Development", null: false
