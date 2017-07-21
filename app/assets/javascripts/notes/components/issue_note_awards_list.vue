@@ -154,7 +154,7 @@ export default {
           $(this.$el).find('.award-control').tooltip('fixTitle');
         })
         .catch(() => {
-          new Flash('Something went wrong on our end.'); // eslint-disable-line
+          Flash('Something went wrong on our end.');
         });
     },
   },

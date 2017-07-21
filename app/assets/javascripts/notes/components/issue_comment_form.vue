@@ -120,7 +120,7 @@ export default {
       this.noteType = type;
     },
     handleError() {
-      new Flash('Something went wrong while adding your comment. Please try again.'); // eslint-disable-line
+      Flash('Something went wrong while adding your comment. Please try again.');
     },
     editMyLastNote() {
       if (this.note === '') {

@@ -87,7 +87,7 @@ export default {
           $(this.$refs.noteBody.$el).renderGFM();
         })
         .catch(() => {
-          new Flash('Something went wrong while editing your comment. Please try again.'); // eslint-disable-line
+          Flash('Something went wrong while editing your comment. Please try again.');
         });
     },
     formCancelHandler(shouldConfirm) {

@@ -68,7 +68,7 @@ export default {
           });
         })
         .catch(() => {
-          new Flash('Something went wrong while fetching issue comments. Please try again.'); // eslint-disable-line
+          Flash('Something went wrong while fetching issue comments. Please try again.');
         });
     },
     initPolling() {
@@ -82,7 +82,7 @@ export default {
             this.$store.commit('setLastFetchedAt', res.lastFetchedAt);
           })
           .catch(() => {
-            new Flash('Something went wrong while fetching latest comments.'); // eslint-disable-line
+            Flash('Something went wrong while fetching latest comments.');
           });
       }, 15000);
     },
@@ -93,7 +93,7 @@ export default {
 
         this.$store.dispatch('toggleAward', { endpoint, awardName, noteId })
           .catch(() => {
-            new Flash('Something went wrong on our end.'); // eslint-disable-line
+            Flash('Something went wrong on our end.');
           });
       });
 

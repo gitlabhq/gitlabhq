@@ -230,7 +230,7 @@ const actions = {
         if (hasQuickActions && Object.keys(errors).length) {
           context.dispatch('poll');
           $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-          new Flash('Commands applied', 'notice', $(noteData.flashContainer)); // eslint-disable-line
+          Flash('Commands applied', 'notice', $(noteData.flashContainer));
         }
 
         if (commandsChanges && commandsChanges.emoji_award) {
@@ -241,12 +241,12 @@ const actions = {
             awardsHandler.scrollToAwards();
           }).catch(() => {
             const msg = 'Something went wrong while adding your award. Please try again.';
-            new Flash(msg, $(noteData.flashContainer)); // eslint-disable-line
+            Flash(msg, $(noteData.flashContainer));
           });
         }
 
         if (errors && errors.commands_only) {
-          new Flash(errors.commands_only, 'notice', $(noteData.flashContainer)); // eslint-disable-line
+          Flash(errors.commands_only, 'notice', $(noteData.flashContainer));
         }
         context.commit('removePlaceholderNotes');
 

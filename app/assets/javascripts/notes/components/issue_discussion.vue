@@ -97,7 +97,7 @@ export default {
           this.isReplying = false;
         })
         .catch(() => {
-          new Flash('Something went wrong while adding your reply. Please try again.'); // eslint-disable-line
+          Flash('Something went wrong while adding your reply. Please try again.');
         });
     },
   },
