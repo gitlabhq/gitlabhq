@@ -228,7 +228,7 @@ Tip: If you want to limit access to the nested members of an Active Directory
 group you can use the following syntax:
 
 ```
-(memberOf:1.2.840.113556.1.4.1941=CN=My Group,DC=Example,DC=com)
+(memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
 ```
 
 Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at 
