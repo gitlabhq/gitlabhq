@@ -16,7 +16,7 @@ const RepoFile = {
     loading: {
       type: Object,
       required: false,
-      default: {},
+      default() { return { tree: false }; },
     },
     hasFiles: {
       type: Boolean,
