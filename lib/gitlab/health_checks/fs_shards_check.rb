@@ -35,9 +35,9 @@ module Gitlab
           repository_storages.flat_map do |storage_name|
             tmp_file_path = tmp_file_path(storage_name)
             [
-              operation_metrics(:filesystem_accessible, :filesystem_access_latency_seconds, -> { storage_stat_test(storage_name) }, shard: storage_name),
-              operation_metrics(:filesystem_writable, :filesystem_write_latency_seconds, -> { storage_write_test(tmp_file_path) }, shard: storage_name),
-              operation_metrics(:filesystem_readable, :filesystem_read_latency_seconds, -> { storage_read_test(tmp_file_path) }, shard: storage_name)
+              operation_metrics(:filesystem_accessible, :filesystem_access_latency, -> { storage_stat_test(storage_name) }, shard: storage_name),
+              operation_metrics(:filesystem_writable, :filesystem_write_latency, -> { storage_write_test(tmp_file_path) }, shard: storage_name),
+              operation_metrics(:filesystem_readable, :filesystem_read_latency, -> { storage_read_test(tmp_file_path) }, shard: storage_name)
             ].flatten
           end
         end
