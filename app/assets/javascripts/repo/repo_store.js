@@ -61,7 +61,8 @@ const RepoStore = {
   setActiveFiles(file) {
     if (RepoStore.isActiveFile(file)) return;
 
-    RepoStore.openedFiles = RepoStore.openedFiles.map((openedFile, i) => RepoStore.w(openedFile, i));
+    RepoStore.openedFiles = RepoStore.openedFiles
+      .map((openedFile, i) => RepoStore.w(openedFile, i));
 
     RepoStore.setActiveToRaw();
 
