@@ -33,14 +33,16 @@ gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
-gem 'omniauth-saml',          '~> 1.7.0'
-gem 'omniauth-shibboleth',    '~> 1.2.0'
-gem 'omniauth-twitter',       '~> 1.2.0'
-gem 'omniauth_crowd',         '~> 2.2.0'
+gem 'omniauth-saml', '~> 1.7.0'
+gem 'omniauth-shibboleth', '~> 1.2.0'
+gem 'omniauth-twitter', '~> 1.2.0'
+gem 'omniauth_crowd', '~> 2.2.0'
+gem 'omniauth-authentiq', '~> 0.3.1'
+gem 'rack-oauth2', '~> 1.2.1'
+gem 'jwt', '~> 1.5.6'
+
+# Kerberos authentication. EE-only
 gem 'gssapi', group: :kerberos
-gem 'omniauth-authentiq',     '~> 0.3.0'
-gem 'rack-oauth2',            '~> 1.2.1'
-gem 'jwt',                    '~> 1.5.6'
 
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
@@ -400,7 +402,7 @@ gem 'sys-filesystem', '~> 1.1.6'
 gem 'net-ntp'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.14.0'
+gem 'gitaly', '~> 0.17.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

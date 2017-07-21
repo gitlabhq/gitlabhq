@@ -516,6 +516,36 @@ describe Projects::IssuesController do
       end
     end
 
+    describe 'GET #realtime_changes' do
+      it_behaves_like 'restricted action', success: 200
+
+      def go(id:)
+        get :realtime_changes,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id
+      end
+
+      context 'when an issue was edited by a deleted user' do
+        let(:deleted_user) { create(:user) }
+
+        before do
+          project.team << [user, :developer]
+
+          issue.update!(last_edited_by: deleted_user, last_edited_at: Time.now)
+
+          deleted_user.destroy
+          sign_in(user)
+        end
+
+        it 'returns 200' do
+          go(id: issue.iid)
+
+          expect(response).to have_http_status(200)
+        end
+      end
+    end
+
     describe 'GET #edit' do
       it_behaves_like 'restricted action', success: 200
 

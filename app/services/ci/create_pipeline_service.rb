@@ -145,7 +145,7 @@ module Ci
     end
 
     def pipeline_created_counter
-      @pipeline_created_counter ||= Gitlab::Metrics.counter(:pipelines_created_count, "Pipelines created count")
+      @pipeline_created_counter ||= Gitlab::Metrics.counter(:pipelines_created_total, "Counter of pipelines created")
     end
   end
 end
