@@ -1,0 +1,4 @@
+---
+title: Fix pipeline_schedules pages throwing error 500 (when ref is empty)
+merge_request: 12983
+author:
