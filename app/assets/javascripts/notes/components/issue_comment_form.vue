@@ -13,8 +13,8 @@ export default {
 
     return {
       note: '',
-      markdownPreviewUrl: '',
       markdownDocsUrl: '',
+      markdownPreviewUrl: gl.issueData.preview_note_path,
       noteType: 'comment',
       issueState: state,
       endpoint: create_note_path,
@@ -142,10 +142,8 @@ export default {
   mounted() {
     const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
     const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
-    const { markdownDocs, markdownPreviewUrl } = issueData;
 
-    this.markdownDocsUrl = markdownDocs;
-    this.markdownPreviewUrl = markdownPreviewUrl;
+    this.markdownDocsUrl = issueData.markdownDocs;
 
     eventHub.$on('issueStateChanged', (isClosed) => {
       this.issueState = isClosed ? 'closed' : 'reopened';

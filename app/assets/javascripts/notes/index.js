@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const vm = new Vue({
     el: '#js-notes',
     components: {
-      issueNotes
+      issueNotes,
     },
     template: `
       <issue-notes ref="notes" />

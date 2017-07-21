@@ -31,7 +31,7 @@ export default {
     return {
       initialNote: this.noteBody,
       note: this.noteBody,
-      markdownPreviewUrl: '',
+      markdownPreviewUrl: gl.issueData.preview_note_path,
       markdownDocsUrl: '',
       conflictWhileEditing: false,
     };
@@ -69,10 +69,8 @@ export default {
   mounted() {
     const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
     const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
-    const { markdownDocs, markdownPreviewUrl } = issueData;
 
-    this.markdownDocsUrl = markdownDocs;
-    this.markdownPreviewUrl = markdownPreviewUrl;
+    this.markdownDocsUrl = issueData.markdownDocs;
     this.$refs.textarea.focus();
   },
   watch: {

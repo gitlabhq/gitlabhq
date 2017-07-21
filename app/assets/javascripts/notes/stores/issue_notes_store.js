@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+/* global Flash */
 
 import service from '../services/issue_notes_service';
 import utils from './issue_notes_utils';
@@ -263,7 +264,7 @@ const actions = {
         const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
         Flash(msg, 'alert', $(noteData.flashContainer));
         context.commit('removePlaceholderNotes');
-      })
+      });
   },
   poll(context) {
     const { notesPath } = $('.js-notes-wrapper')[0].dataset;

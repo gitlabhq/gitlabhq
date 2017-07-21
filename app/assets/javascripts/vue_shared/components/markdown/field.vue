@@ -3,6 +3,8 @@
   import markdownHeader from './header.vue';
   import markdownToolbar from './toolbar.vue';
 
+  const REFERENCED_USERS_THRESHOLD = 10;
+
   export default {
     props: {
       markdownPreviewUrl: {
@@ -23,6 +25,8 @@
     data() {
       return {
         markdownPreview: '',
+        referencedCommands: '',
+        referencedUsers: '',
         markdownPreviewLoading: false,
         previewMarkdown: false,
       };
@@ -30,6 +34,11 @@
     components: {
       markdownHeader,
       markdownToolbar,
+    },
+    computed: {
+      shouldShowReferencedUsers() {
+        return this.referencedUsers.length >= REFERENCED_USERS_THRESHOLD;
+      },
     },
     methods: {
       toggleMarkdownPreview() {
@@ -53,6 +62,8 @@
           .then((data) => {
             this.markdownPreviewLoading = false;
             this.markdownPreview = data.body;
+            this.referencedCommands = data.references.commands;
+            this.referencedUsers = data.references.users;
 
             if (!this.markdownPreview) {
               this.markdownPreview = 'Nothing to preview.';
@@ -118,5 +129,27 @@
         Loading...
       </span>
     </div>
+    <template v-if="previewMarkdown && !markdownPreviewLoading">
+      <div
+        v-if="referencedCommands"
+        v-html="referencedCommands"
+        class="referenced-commands"></div>
+      <div
+        v-if="shouldShowReferencedUsers"
+        class="referenced-users">
+          <span>
+            <i
+              class="fa fa-exclamation-triangle"
+              aria-hidden="true">
+            </i>
+            You are about to add
+            <strong>
+              <span class="js-referenced-users-count">
+                {{referencedUsers.length}}
+              </span>
+            </strong> people to the discussion. Proceed with caution.
+          </span>
+        </div>
+    </template>
   </div>
 </template>
