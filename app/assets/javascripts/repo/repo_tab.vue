@@ -20,7 +20,7 @@ const RepoTab = {
   },
 
   methods: {
-    tabClicked: RepoStore.setActiveFiles.bind(RepoStore),
+    tabClicked: RepoStore.setActiveFiles,
 
     xClicked(file) {
       if (file.changed) return;

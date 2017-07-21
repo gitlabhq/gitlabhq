@@ -17,7 +17,7 @@ const RepoHelper = {
 
   getLanguageIDForFile(file, langs) {
     const ext = file.name.split('.').pop();
-    const foundLang = this.findLanguage(ext, langs);
+    const foundLang = RepoHelper.findLanguage(ext, langs);
 
     return foundLang ? foundLang.id : 'plaintext';
   },
@@ -53,7 +53,7 @@ const RepoHelper = {
       Store.blobRaw = response;
       file.base64 = response; // eslint-disable-line no-param-reassign
     })
-    .catch(this.loadingError);
+    .catch(RepoHelper.loadingError);
   },
 
   toggleFakeTab(loading, file) {
@@ -64,7 +64,7 @@ const RepoHelper = {
   setLoading(loading, file) {
     if (Service.url.indexOf('blob') > -1) {
       Store.loading.blob = loading;
-      return this.toggleFakeTab(loading, file);
+      return RepoHelper.toggleFakeTab(loading, file);
     }
 
     if (Service.url.indexOf('tree') > -1) Store.loading.tree = loading;
@@ -79,7 +79,7 @@ const RepoHelper = {
 
     if (!indexOfFile) return newList;
 
-    return this.mergeNewListToOldList(newList, currentList, inDirectory, indexOfFile);
+    return RepoHelper.mergeNewListToOldList(newList, currentList, inDirectory, indexOfFile);
   },
 
   mergeNewListToOldList(newList, oldList, inDirectory, indexOfFile) {
@@ -100,16 +100,16 @@ const RepoHelper = {
     Service.getContent()
     .then((response) => {
       const data = response.data;
-      this.setLoading(false, loadingData);
-      Store.isTree = this.isTree(data);
+      RepoHelper.setLoading(false, loadingData);
+      Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
         if (!file) file = data;
         Store.binary = data.binary;
 
         if (data.binary) {
           Store.binaryMimeType = data.mime_type;
-          const rawUrl = this.getRawURLFromBlobURL(file.url);
-          this.setBinaryDataAsBase64(rawUrl, data);
+          const rawUrl = RepoHelper.getRawURLFromBlobURL(file.url);
+          RepoHelper.setBinaryDataAsBase64(rawUrl, data);
           data.binary = true;
         } else {
           Store.blobRaw = data.plain;
@@ -128,19 +128,19 @@ const RepoHelper = {
         if (Store.files.length === 0) {
           const parentURL = Service.blobURLtoParentTree(Service.url);
           Service.url = parentURL;
-          this.getContent();
+          RepoHelper.getContent();
         }
       } else {
         // it's a tree
-        this.setDirectoryOpen(file);
+        RepoHelper.setDirectoryOpen(file);
         const newDirectory = this.dataToListOfFiles(data);
         Store.addFilesToDirectory(file, Store.files, newDirectory);
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
     })
     .catch(() => {
-      this.setLoading(false, loadingData);
-      this.loadingError();
+      RepoHelper.setLoading(false, loadingData);
+      RepoHelper.loadingError();
     });
   },
 
@@ -149,7 +149,7 @@ const RepoHelper = {
   },
 
   serializeBlob(blob) {
-    const simpleBlob = this.serializeRepoEntity('blob', blob);
+    const simpleBlob = RepoHelper.serializeRepoEntity('blob', blob);
     simpleBlob.lastCommitMessage = blob.last_commit.message;
     simpleBlob.lastCommitUpdate = blob.last_commit.committed_date;
 
@@ -157,11 +157,11 @@ const RepoHelper = {
   },
 
   serializeTree(tree) {
-    return this.serializeRepoEntity('tree', tree);
+    return RepoHelper.serializeRepoEntity('tree', tree);
   },
 
   serializeSubmodule(submodule) {
-    return this.serializeRepoEntity('submodule', submodule);
+    return RepoHelper.serializeRepoEntity('submodule', submodule);
   },
 
   serializeRepoEntity(type, entity) {
@@ -171,7 +171,7 @@ const RepoHelper = {
       type,
       name,
       url,
-      icon: this.toFA(icon),
+      icon: RepoHelper.toFA(icon),
       level: 0,
     };
   },
@@ -181,38 +181,38 @@ const RepoHelper = {
 
     // push in blobs
     data.blobs.forEach((blob) => {
-      a.push(this.serializeBlob(blob));
+      a.push(RepoHelper.serializeBlob(blob));
     });
 
     data.trees.forEach((tree) => {
-      a.push(this.serializeTree(tree));
+      a.push(RepoHelper.serializeTree(tree));
     });
 
     data.submodules.forEach((submodule) => {
-      a.push(this.serializeSubmodule(submodule));
+      a.push(RepoHelper.serializeSubmodule(submodule));
     });
 
     return a;
   },
 
   genKey() {
-    return this.Time.now().toFixed(3);
+    return RepoHelper.Time.now().toFixed(3);
   },
 
   getStateKey() {
-    return this.key;
+    return RepoHelper.key;
   },
 
   setStateKey(key) {
-    this.key = key;
+    RepoHelper.key = key;
   },
 
   toURL(url) {
     const history = window.history;
 
-    this.key = this.genKey();
+    RepoHelper.key = RepoHelper.genKey();
 
-    history.pushState({ key: this.key }, '', url);
+    history.pushState({ key: RepoHelper.key }, '', url);
   },
 
   loadingError() {

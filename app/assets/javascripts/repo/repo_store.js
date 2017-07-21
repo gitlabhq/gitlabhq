@@ -50,55 +50,55 @@ const RepoStore = {
   // mutations
 
   addFilesToDirectory(inDirectory, currentList, newList) {
-    this.files = RepoHelper.getNewMergedList(inDirectory, currentList, newList);
+    RepoStore.files = RepoHelper.getNewMergedList(inDirectory, currentList, newList);
   },
 
   toggleRawPreview() {
-    this.activeFile.raw = !this.activeFile.raw;
-    this.activeFileLabel = this.activeFile.raw ? 'Display rendered file' : 'Display source';
+    RepoStore.activeFile.raw = !RepoStore.activeFile.raw;
+    RepoStore.activeFileLabel = RepoStore.activeFile.raw ? 'Display rendered file' : 'Display source';
   },
 
   setActiveFiles(file) {
-    if (this.isActiveFile(file)) return;
+    if (RepoStore.isActiveFile(file)) return;
 
-    this.openedFiles = this.openedFiles.map((openedFile, i) => this.setFileToActive(openedFile, i));
+    RepoStore.openedFiles = RepoStore.openedFiles.map((openedFile, i) => RepoStore.w(openedFile, i));
 
-    this.setActiveToRaw();
+    RepoStore.setActiveToRaw();
 
     if (file.binary) {
-      this.blobRaw = file.base64;
+      RepoStore.blobRaw = file.base64;
     } else {
-      this.blobRaw = file.plain;
+      RepoStore.blobRaw = file.plain;
     }
 
     if (!file.loading) RepoHelper.toURL(file.url);
-    this.binary = file.binary;
+    RepoStore.binary = file.binary;
   },
 
-  setFileToActive(file, i) {
+  w(file, i) {
     const activeFile = file;
     activeFile.active = activeFile.url === activeFile.url;
 
-    if (activeFile.active) this.setActiveFile(activeFile, i);
+    if (activeFile.active) RepoStore.setActiveFile(activeFile, i);
 
     return activeFile;
   },
 
   setActiveFile(activeFile, i) {
-    this.activeFile = activeFile;
-    this.activeFileIndex = i;
+    RepoStore.activeFile = activeFile;
+    RepoStore.activeFileIndex = i;
   },
 
   setActiveToRaw() {
-    this.activeFile.raw = false;
-    // can't get vue to listen to raw for some reason so this for now.
-    this.activeFileLabel = 'Display source';
+    RepoStore.activeFile.raw = false;
+    // can't get vue to listen to raw for some reason so RepoStore for now.
+    RepoStore.activeFileLabel = 'Display source';
   },
 
   /* eslint-disable no-param-reassign */
   removeChildFilesOfTree(tree) {
     let foundTree = false;
-    this.files = this.files.filter((file) => {
+    RepoStore.files = RepoStore.files.filter((file) => {
       if (file.url === tree.url) foundTree = true;
 
       if (foundTree) return file.level <= tree.level;
@@ -113,7 +113,7 @@ const RepoStore = {
   removeFromOpenedFiles(file) {
     if (file.type === 'tree') return;
 
-    this.openedFiles = this.openedFiles.filter(openedFile => openedFile.url !== file.url);
+    RepoStore.openedFiles = RepoStore.openedFiles.filter(openedFile => openedFile.url !== file.url);
   },
 
   addPlaceholderFile() {
@@ -128,7 +128,7 @@ const RepoStore = {
       url: randomURL,
     };
 
-    this.openedFiles.push(newFakeFile);
+    RepoStore.openedFiles.push(newFakeFile);
 
     return newFakeFile;
   },
@@ -136,27 +136,27 @@ const RepoStore = {
   addToOpenedFiles(file) {
     const openFile = file;
 
-    const openedFilesAlreadyExists = this.openedFiles
+    const openedFilesAlreadyExists = RepoStore.openedFiles
       .some(openedFile => openedFile.url === openFile.url);
 
     if (openedFilesAlreadyExists) return;
 
     openFile.changed = false;
-    this.openedFiles.push(openFile);
+    RepoStore.openedFiles.push(openFile);
   },
 
   setActiveFileContents(contents) {
-    if (!this.editMode) return;
+    if (!RepoStore.editMode) return;
 
-    this.activeFile.newContent = contents;
-    this.activeFile.changed = this.activeFile.plain !== this.activeFile.newContent;
-    this.openedFiles[this.activeFileIndex].changed = this.activeFile.changed;
+    RepoStore.activeFile.newContent = contents;
+    RepoStore.activeFile.changed = RepoStore.activeFile.plain !== RepoStore.activeFile.newContent;
+    RepoStore.openedFiles[RepoStore.activeFileIndex].changed = RepoStore.activeFile.changed;
   },
 
   // getters
 
   isActiveFile(file) {
-    return file && file.url === this.activeFile.url;
+    return file && file.url === RepoStore.activeFile.url;
   },
 };
 export default RepoStore;
