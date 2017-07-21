@@ -305,8 +305,6 @@ ActiveRecord::Schema.define(version: 20170720130749) do
     t.string "encrypted_value_salt"
     t.string "encrypted_value_iv"
     t.integer "pipeline_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   add_index "ci_pipeline_variables", ["pipeline_id", "key"], name: "index_ci_pipeline_variables_on_pipeline_id_and_key", unique: true, using: :btree

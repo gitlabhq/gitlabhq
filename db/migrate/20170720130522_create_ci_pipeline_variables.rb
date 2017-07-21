@@ -9,8 +9,6 @@ class CreateCiPipelineVariables < ActiveRecord::Migration
       t.string :encrypted_value_salt
       t.string :encrypted_value_iv
       t.integer :pipeline_id, null: false
-
-      t.timestamps_with_timezone null: true
     end
 
     add_index :ci_pipeline_variables, [:pipeline_id, :key], unique: true
