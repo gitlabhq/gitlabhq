@@ -49,6 +49,10 @@ module Gitlab
       #{config.root}/ee/app/workers
     ])
 
+    config.paths['app/views'].push(*%W[
+      #{config.root}/ee/app/views
+    ])
+
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
