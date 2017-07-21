@@ -35,13 +35,13 @@ class JenkinsService < CiService
 
   def test(data)
     begin
-      code, message = execute(data)
-      return { success: false, result: message } if code != 200
+      result = execute(data)
+      return { success: false, result: result[:message] } if result[:http_status] != 200
     rescue StandardError => error
       return { success: false, result: error }
     end
 
-    { success: true, result: message }
+    { success: true, result: result[:message] }
   end
 
   def hook_url
