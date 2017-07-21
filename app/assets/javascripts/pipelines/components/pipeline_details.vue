@@ -144,14 +144,18 @@
       },
 
       openJob(job) {
-        // open job tab
+        // 1. Update URL
+        this.updateUrl(job)
+        // 2. Open Job Tab
         this.jobTab = job;
 
         this.$nextTick(() => {
           this.selectedTab = 3;
         });
 
-        // let's load the data!
+        // 3. Load Job data
+
+        // 4. let's load the data!
         this.service.getJobTrace(job.status.details_path)
           //.then(response => response.json())
           .then((resp) => {
@@ -205,7 +209,7 @@
         class="tabs-holder"
         @closeTab="closeJobTab()"
         :default-index="selectedTab"
-        css-class="pipelines-tabs no-top no-bottom">
+        container-class="pipelines-tabs no-top no-bottom">
 
         <tab title="Pipeline" random-prop="foo">
           <pipeline-graph :pipeline="state.pipeline" />
