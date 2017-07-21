@@ -16,7 +16,8 @@ class BuildDetailsEntity < JobEntity
     end
 
     expose :path do |build|
-      project_merge_request_path(build.project, build.merge_request)
+      project_merge_request_path(build.merge_request.project,
+                                 build.merge_request)
     end
   end
 

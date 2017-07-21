@@ -81,9 +81,9 @@ describe BuildDetailsEntity do
           expect(subject[:merge_request][:iid]).to eq merge_request.iid
         end
 
-        it 'has a correct merge request path' do
+        it 'has a merge request path to a target project' do
           expect(subject[:merge_request][:path])
-            .to include fork_project.full_path
+            .to include project.full_path
         end
       end
 
