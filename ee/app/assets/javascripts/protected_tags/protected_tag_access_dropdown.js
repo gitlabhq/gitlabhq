@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
 /* global Flash */
 
-import { LEVEL_TYPES, ACCESS_LEVEL_NONE } from './constants';
+import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVEL_NONE } from './constants';
 
 export default class ProtectedTagAccessDropdown {
   constructor(options) {
@@ -145,8 +145,24 @@ export default class ProtectedTagAccessDropdown {
     let index = -1;
     const selectedItems = this.getAllSelectedItems();
 
+    // Compare IDs based on selectedItem.type
     selectedItems.forEach((item, i) => {
-      if (selectedItem.id === item.access_level) {
+      let comparator;
+      switch (selectedItem.type) {
+        case LEVEL_TYPES.ROLE:
+          comparator = LEVEL_ID_PROP.ROLE;
+          break;
+        case LEVEL_TYPES.GROUP:
+          comparator = LEVEL_ID_PROP.GROUP;
+          break;
+        case LEVEL_TYPES.USER:
+          comparator = LEVEL_ID_PROP.USER;
+          break;
+        default:
+          break;
+      }
+
+      if (selectedItem.id === item[comparator]) {
         index = i;
       }
     });
