@@ -3,6 +3,7 @@
 import service from '../services/issue_notes_service';
 import utils from './issue_notes_utils';
 import loadAwardsHandler from '../../awards_handler';
+import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 
 const state = {
   notes: [],
@@ -233,16 +234,22 @@ const actions = {
           Flash('Commands applied', 'notice', $(noteData.flashContainer));
         }
 
-        if (commandsChanges && commandsChanges.emoji_award) {
-          const votesBlock = $('.js-awards-block').eq(0);
+        if (commandsChanges) {
+          if (commandsChanges.emoji_award) {
+            const votesBlock = $('.js-awards-block').eq(0);
 
-          loadAwardsHandler().then((awardsHandler) => {
-            awardsHandler.addAwardToEmojiBar(votesBlock, commandsChanges.emoji_award);
-            awardsHandler.scrollToAwards();
-          }).catch(() => {
-            const msg = 'Something went wrong while adding your award. Please try again.';
-            Flash(msg, $(noteData.flashContainer));
-          });
+            loadAwardsHandler().then((awardsHandler) => {
+              awardsHandler.addAwardToEmojiBar(votesBlock, commandsChanges.emoji_award);
+              awardsHandler.scrollToAwards();
+            }).catch(() => {
+              const msg = 'Something went wrong while adding your award. Please try again.';
+              Flash(msg, $(noteData.flashContainer));
+            });
+          }
+
+          if (commandsChanges.spend_time || commandsChanges.time_estimate) {
+            sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', res);
+          }
         }
 
         if (errors && errors.commands_only) {

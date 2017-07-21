@@ -4,6 +4,7 @@ import timeTracker from './time_tracker';
 
 import Store from '../../stores/sidebar_store';
 import Mediator from '../../sidebar_mediator';
+import eventHub from '../../event_hub';
 
 export default {
   data() {
@@ -18,6 +19,9 @@ export default {
   methods: {
     listenForQuickActions() {
       $(document).on('ajax:success', '.gfm-form', this.quickActionListened);
+      eventHub.$on('timeTrackingUpdated', (data) => {
+        this.quickActionListened(null, data);
+      });
     },
     quickActionListened(e, data) {
       const subscribedCommands = ['spend_time', 'time_estimate'];
