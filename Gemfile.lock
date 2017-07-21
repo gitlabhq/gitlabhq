@@ -980,7 +980,7 @@ DEPENDENCIES
   gollum-rugged_adapter (~> 0.4.4)
   gon (~> 6.1.0)
   google-api-client (~> 0.9.28)
-  grape (~> 0.19.0)
+  grape (~> 0.19.2)
   grape-entity (~> 0.6.0)
   haml_lint (~> 0.21.0)
   hamlit (~> 2.6.1)

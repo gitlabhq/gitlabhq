@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.9 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
+
 ## 9.3.8 (2017-07-19)
 
 - Improve support for external issue references. !12485
@@ -270,6 +274,10 @@ entry.
 - Remove foreigh key on ci_trigger_schedules only if it exists.
 - Allow translation of Pipeline Schedules.
 
+## 9.2.9 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
+
 ## 9.2.8 (2017-07-19)
 
 - Improve support for external issue references. !12485
@@ -520,6 +528,10 @@ entry.
 - Unassign all Issues and Merge Requests when member leaves a team.
 - Fix preemptive scroll bar on user activity calendar.
 - Pipeline chat notifications convert seconds to minutes and hours.
+
+## 9.1.9 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
 
 ## 9.1.8 (2017-07-19)
 
@@ -839,6 +851,10 @@ entry.
 - Removed the hours & minutes from the users start date on their profile.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
+
+## 9.0.12 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
 
 ## 9.0.11 (2017-07-19)
 

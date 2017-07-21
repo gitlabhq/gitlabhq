@@ -165,7 +165,6 @@ $new-sidebar-width: 220px;
 
   > li {
     a {
-      font-size: 12px;
       padding: 8px 16px 8px 24px;
 
       &:hover,
@@ -262,7 +261,7 @@ $new-sidebar-width: 220px;
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
     // scss-lint:disable DuplicateProperty
-    height: calc(100vh - 120px);
+    height: calc(100vh - 180px);
     // scss-lint:enable DuplicateProperty
   }
 }

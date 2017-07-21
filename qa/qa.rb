@@ -48,7 +48,14 @@ module QA
     module Main
       autoload :Entry, 'qa/page/main/entry'
       autoload :Menu, 'qa/page/main/menu'
-      autoload :Groups, 'qa/page/main/groups'
+    end
+
+    module Dashboard
+      autoload :Groups, 'qa/page/dashboard/groups'
+    end
+
+    module Group
+      autoload :Show, 'qa/page/group/show'
     end
 
     module Project
