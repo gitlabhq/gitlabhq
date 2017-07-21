@@ -98,19 +98,26 @@ const RepoStore = {
 
   removeChildFilesOfTree(tree) {
     let foundTree = false;
-    const newTree = tree;
-
+    const treeToClose = tree;
+    let wereDone = false;
     RepoStore.files = RepoStore.files.filter((file) => {
-      if (file.url === newTree.url) foundTree = true;
+      const isItTheTreeWeWant = file.url === treeToClose.url;
+      // if it's the next tree
+      if(foundTree && file.type === 'tree' && !isItTheTreeWeWant) {
+        wereDone = true;
+        return true;
+      }
+      if(wereDone) return true;
 
-      if (foundTree) return file.level <= newTree.level;
+      if (isItTheTreeWeWant) foundTree = true;
+
+      if (foundTree) return file.level <= treeToClose.level;
       return true;
     });
 
-    newTree.opened = false;
-    newTree.icon = 'fa-folder';
-
-    return newTree;
+    treeToClose.opened = false;
+    treeToClose.icon = 'fa-folder';
+    return treeToClose;
   },
 
   removeFromOpenedFiles(file) {

@@ -3,7 +3,7 @@
     = render 'shared/ref_switcher', destination: 'tree', path: @path
 
 .tree-controls
-  %a.btn.btn-default.btn-grouped#editable-mode{ "href"=>"#", "@click.prevent" => "editClicked", "v-cloak" => 1 }
+  %a.btn.btn-default#editable-mode{ "href"=>"#", "@click.prevent" => "editClicked", "v-cloak" => 1 }
     %i{ ":class" => "buttonIcon" }
     %span {{buttonLabel}}
 
