@@ -29,7 +29,7 @@ class Groups::HooksController < Groups::ApplicationController
 
   def test
     if @group.first_non_empty_project
-      service = TestHooks::ProjectService.new(hook, current_user, 'push_hooks')
+      service = TestHooks::ProjectService.new(hook, current_user, 'push_events')
       service.project = @group.first_non_empty_project
       result = service.execute
 
