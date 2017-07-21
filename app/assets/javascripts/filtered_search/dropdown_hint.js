@@ -2,8 +2,9 @@ import Filter from '~/droplab/plugins/filter';
 import './filtered_search_dropdown';
 
 class DropdownHint extends gl.FilteredSearchDropdown {
-  constructor(droplab, dropdown, input, tokenKeys, filter) {
-    super(droplab, dropdown, input, filter);
+  constructor(options = {}) {
+    const { input, tokenKeys } = options;
+    super(options);
     this.config = {
       Filter: {
         template: 'hint',

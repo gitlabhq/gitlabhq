@@ -24,6 +24,14 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
       wait_for_requests
     end
 
+    describe 'time tracking' do
+      before do
+        visit project_merge_request_path(project, merge_request)
+      end
+
+      it_behaves_like 'issuable time tracker'
+    end
+
     describe 'toggling the WIP prefix in the title from note' do
       context 'when the current user can toggle the WIP prefix' do
         it 'adds the WIP: prefix to the title' do
