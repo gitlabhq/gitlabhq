@@ -60,6 +60,31 @@ module Gitlab
         entry
       end
 
+      def tree_entries(repository, revision, path)
+        request = Gitaly::GetTreeEntriesRequest.new(
+          repository: @gitaly_repo,
+          revision: revision,
+          path: path.presence || '.'
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request)
+
+        response.flat_map do |message|
+          message.entries.map do |gitaly_tree_entry|
+            entry_path = gitaly_tree_entry.path.dup
+            Gitlab::Git::Tree.new(
+              id: gitaly_tree_entry.oid,
+              root_id: gitaly_tree_entry.root_oid,
+              type: gitaly_tree_entry.type.downcase,
+              mode: gitaly_tree_entry.mode.to_s(8),
+              name: File.basename(entry_path),
+              path: entry_path,
+              commit_id: gitaly_tree_entry.commit_oid
+            )
+          end
+        end
+      end
+
       def commit_count(ref)
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
