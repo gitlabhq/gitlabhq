@@ -16,7 +16,7 @@ shared_examples 'reportable note' do
     open_dropdown(dropdown)
 
     expect(dropdown).to have_button('Edit comment')
-    expect(dropdown).to have_button('Delete comment')
+    expect(dropdown).to have_link('Delete comment')
     expect(dropdown).to have_link('Report as abuse', href: abuse_report_path)
   end
 

@@ -88,7 +88,7 @@ export default {
 </script>
 
 <template>
-  <div class="note-edit-form">
+  <div class="note-edit-form current-note-edit-form">
     <div
       v-if="conflictWhileEditing"
       class="js-conflict-edit-warning alert alert-danger">
