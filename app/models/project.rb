@@ -1434,6 +1434,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def multiple_issue_boards_available?(user)
+    feature_available?(:multiple_issue_boards, user)
+  end
+
   alias_method :name_with_namespace, :full_name
   alias_method :human_name, :full_name
   alias_method :path_with_namespace, :full_path

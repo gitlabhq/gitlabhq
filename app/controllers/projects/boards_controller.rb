@@ -3,6 +3,7 @@ class Projects::BoardsController < Projects::ApplicationController
   include IssuableCollections
 
   before_action :authorize_read_board!, only: [:index, :show]
+  before_action :assign_endpoint_vars
 
   def index
     @boards = ::Boards::ListService.new(project, current_user).execute
@@ -27,6 +28,10 @@ class Projects::BoardsController < Projects::ApplicationController
   end
 
   private
+
+  def assign_endpoint_vars
+    @boards_endpoint = project_boards_path(@project)
+  end
 
   def authorize_read_board!
     return access_denied! unless can?(current_user, :read_board, project)

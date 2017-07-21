@@ -1,5 +1,6 @@
 class Groups::BoardsController < Groups::ApplicationController
   before_action :check_group_issue_boards_available!
+  before_action :assign_endpoint_vars
 
   def index
     @boards = ::Boards::ListService.new(group, current_user).execute
@@ -10,5 +11,9 @@ class Groups::BoardsController < Groups::ApplicationController
         render json: serialize_as_json(@boards)
       end
     end
+  end
+
+  def assign_endpoint_vars
+    @boards_endpoint = group_boards_path(@group)
   end
 end

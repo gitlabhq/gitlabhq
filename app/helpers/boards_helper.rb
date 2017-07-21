@@ -5,7 +5,7 @@ module BoardsHelper
     board = @board || @boards.first
 
     {
-      endpoint: project_boards_path(@project),
+      endpoint: @boards_endpoint,
       board_id: board.id,
       board_milestone_title: board&.milestone&.title,
       disabled: "#{!can?(current_user, :admin_list, @project)}",

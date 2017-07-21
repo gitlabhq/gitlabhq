@@ -231,6 +231,10 @@ class Namespace < ActiveRecord::Base
     self.deleted_at = Time.now
   end
 
+  def multiple_issue_boards_available?(user = nil)
+    feature_available?(:multiple_issue_boards)
+  end
+
   private
 
   def repository_storage_paths

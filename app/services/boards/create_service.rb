@@ -1,5 +1,5 @@
 module Boards
-  class CreateService < BaseService
+  class CreateService < Boards::BaseService
     prepend EE::Boards::CreateService
 
     def execute
@@ -9,11 +9,11 @@ module Boards
     private
 
     def can_create_board?
-      project.boards.size == 0
+      parent.boards.size == 0
     end
 
     def create_board!
-      board = project.boards.create(params)
+      board = parent.boards.create(params)
 
       if board.persisted?
         board.lists.create(list_type: :backlog)
