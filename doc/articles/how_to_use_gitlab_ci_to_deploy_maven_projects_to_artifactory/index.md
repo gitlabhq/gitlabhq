@@ -17,6 +17,8 @@
   - [Configure the Artifactory repository location](#configure-the-artifactory-repository-location)
   - [Configure GitLab Continuous Integration for `simple-maven-app`](#configure-gitlab-continuous-integration-for-simple-maven-app)
 
+-  [Conclusion](#conclusion)
+
 ## Introduction
 
 In this article, we're going to see how we can leverage the power of [GitLab Continuous Integration](https://about.gitlab.com/features/gitlab-ci-cd/) to build a [Maven](https://maven.apache.org/) project, deploy it to [Artifactory](https://www.jfrog.com/artifactory/) and then use it from another Maven application as a dependency.
@@ -83,7 +85,8 @@ For this scope, let's create a folder called `.m2` in the root of our repo. Insi
 </settings>
 ```
 
-**Note**: `username` and `password` will be replaced by the correct values using secret variables.
+>**Note**:
+`username` and `password` will be replaced by the correct values using secret variables.
 
 We should remember to commit all the changes to our repo!
 
@@ -91,7 +94,8 @@ We should remember to commit all the changes to our repo!
 
 Now it's time we set up GitLab CI to automatically build, test and deploy our dependency!  
 
-First of all, we should remember that we need to setup some secret variable for making the deploy happen, so let's go in the **Settings ➔ Pipelines** and add the following secret variables (replace them with your current values, of course):
+First of all, we should remember that we need to setup some secret variable for making the deploy happen, so let's go in the **Settings ➔ Pipelines**
+and add the following secret variables (replace them with your current values, of course):
 - **MAVEN_REPO_URL**: `http://artifactory.example.com:8081/artifactory` (your Artifactory URL)
 - **MAVEN_REPO_USER**: `gitlab` (your Artifactory username)
 - **MAVEN_REPO_KEY**: `AKCp2WXr3G61Xjz1PLmYa3arm3yfBozPxSta4taP3SeNu2HPXYa7FhNYosnndFNNgoEds8BCS` (your Artifactory API Key)
@@ -130,9 +134,15 @@ deploy:
     - master
 ```
 
-We're going to use the latest Docker image publicly available for Maven, which already contains everything we need to perform our tasks. Environment variables are set to instruct Maven to use the homedir of our repo instead of the user's home. Caching the `.m2/repository` folder, where all the Maven files are stored, and the `target` folder, that is the location where our application will be created, is useful in order to speed up the process: Maven runs all its phases in a sequential order, so executing `mvn test` will automatically run `mvn compile` if needed, but we want to improve performances by caching everything that has been already created in a previous stage. Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the repository.
+We're going to use the latest Docker image publicly available for Maven, which already contains everything we need to perform our tasks.
+Environment variables are set to instruct Maven to use the homedir of our repo instead of the user's home.
+Caching the `.m2/repository` folder, where all the Maven files are stored, and the `target` folder, that is the location where our application will be created,
+is useful in order to speed up the process: Maven runs all its phases in a sequential order, so executing `mvn test` will automatically run `mvn compile` if needed,
+but we want to improve performances by caching everything that has been already created in a previous stage.
+Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the repository.
 
-Deploy to Artifactory is done as defined by the secret variables we set up earlier. The deployment occurs only if we're pushing or merging to `master` branch, so development versions are tested but not published.
+Deploy to Artifactory is done as defined by the secret variables we set up earlier.
+The deployment occurs only if we're pushing or merging to `master` branch, so development versions are tested but not published.
 
 Done! We've now our changes in the GitLab repo, and a pipeline has already been started for this commit. Let's go to the **Pipelines** tab and see what happens.
 If we've no errors, we can see some text like this at the end of the `deploy` job output log:
@@ -145,7 +155,8 @@ If we've no errors, we can see some text like this at the end of the `deploy` jo
 
 ```
 
-**Note**: the `mvn` command downloads a lot of files from the Internet, so you'll see a lot of extra activity in the log the first time you run it.
+>**Note**:
+the `mvn` command downloads a lot of files from the Internet, so you'll see a lot of extra activity in the log the first time you run it.
 
 Wow! We did it! Checking in Artifactory will confirm that we've a new artifact available in the `libs-release-local` repo.
 
@@ -159,7 +170,8 @@ Let's create another application by cloning the one we can find at `https://gitl
 If you look at the `src/main/java/com/example/app/App.java` file you can see that it imports the `com.example.dep.Dep` class and calls the `hello` method passing `GitLab` as a parameter.
 
 Since Maven doesn't know how to resolve the dependency, we need to modify the configuration.  
-Let's go back to Artifactory, and browse the `libs-release-local` repository selecting the `simple-maven-dep-1.0.jar` file. In the **Dependency Declaration** section of the main panel we can copy the configuration snippet:
+Let's go back to Artifactory, and browse the `libs-release-local` repository selecting the `simple-maven-dep-1.0.jar` file.
+In the **Dependency Declaration** section of the main panel we can copy the configuration snippet:
 
 ```xml
 <dependency>
@@ -228,3 +240,12 @@ run:
 ```
 
 And that's it! In the `run` job output log we will find a friendly hello to GitLab!
+
+## Conclusion
+
+In this article we covered the basic steps to use an Artifactory Maven repository to automatically publish and consume our artifacts.
+
+A similar approach could be used to interact with any other Maven compatible Binary Repository Manager.
+You can improve these examples, optimizing the `.gitlab-ci.yml` file to better suit your needs, and adapting to your workflow.
+
+Enjoy GitLab CI with all your Maven projects!
