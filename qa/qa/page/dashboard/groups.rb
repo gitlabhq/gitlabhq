@@ -1,9 +1,11 @@
 module QA
   module Page
-    module Main
+    module Dashboard
       class Groups < Page::Base
         def prepare_test_namespace
-          return if page.has_content?(Runtime::Namespace.name)
+          if page.has_content?(Runtime::Namespace.name)
+            return click_link(Runtime::Namespace.name)
+          end
 
           click_on 'New group'
 
