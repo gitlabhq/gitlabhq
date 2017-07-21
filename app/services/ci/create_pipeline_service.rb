@@ -15,11 +15,33 @@ module Ci
         pipeline_schedule: schedule
       )
 
+      result = validate(current_user || trigger_request.trigger.owner,
+                        ignore_skip_ci: ignore_skip_ci,
+                        save_on_errors: save_on_errors)
+
+      return result if result
+
+      Ci::Pipeline.transaction do
+        update_merge_requests_head_pipeline if pipeline.save
+
+        Ci::CreatePipelineStagesService
+          .new(project, current_user)
+          .execute(pipeline)
+      end
+
+      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
+
+      pipeline_created_counter.increment(source: source)
+
+      pipeline.tap(&:process!)
+    end
+
+    private
+
+    def validate(triggering_user, ignore_skip_ci:, save_on_errors:)
       unless project.builds_enabled?
         return error('Pipeline is disabled')
       end
-
-      triggering_user = current_user || trigger_request.trigger.owner
 
       unless allowed_to_trigger_pipeline?(triggering_user)
         if can?(triggering_user, :create_pipeline, project)
@@ -52,28 +74,6 @@ module Ci
       unless pipeline.has_stage_seeds?
         return error('No stages / jobs for this pipeline.')
       end
-
-      process! do
-        pipeline_created_counter.increment(source: source)
-      end
-    end
-
-    private
-
-    def process!
-      Ci::Pipeline.transaction do
-        update_merge_requests_head_pipeline if pipeline.save
-
-        Ci::CreatePipelineStagesService
-          .new(project, current_user)
-          .execute(pipeline)
-      end
-
-      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
-
-      yield
-
-      pipeline.tap(&:process!)
     end
 
     def allowed_to_trigger_pipeline?(triggering_user)
