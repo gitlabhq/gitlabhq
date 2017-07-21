@@ -76,8 +76,13 @@
         }
       });
 
-
       eventHub.$on('jobNodeClicked', this.openJob);
+
+      // Check for open tab url
+      const jobId = gl.utils.getParameterByName('job');
+      if (jobId) {
+        // look for the job in the data we have and load it
+      }
     },
     beforeDestroy() {
       eventHub.$off('jobNodeClicked', this.openJob);
@@ -144,27 +149,35 @@
       },
 
       openJob(job) {
+        const jobId = job.jobs[0].id
         // 1. Update URL
-        this.updateUrl(job)
-        // 2. Open Job Tab
-        this.jobTab = job;
+        this.updateUrl(jobId);
 
-        this.$nextTick(() => {
+        // 2. Check if there is an open job tab and if it is not the same
+        if (!this.jobTab || this.jobTab.jobs[0].id !== jobId) {
+          // 2. Open Job Tab
+          this.jobTab = job;
+
+          this.$nextTick(() => {
+            this.selectedTab = 3;
+          });
+
+          // 3. Load Job data
+
+          // 4. let's load the data!
+          this.service.getJobTrace(job.status.details_path)
+            //.then(response => response.json())
+            .then((resp) => {
+              const log = Anser.ansiToHtml(resp.bodyText);
+              const linkedLog = Anser.linkify(log);
+
+              this.logTrace = linkedLog.split('\n');
+            })
+            .catch(() => new Flash('An error occurred while fetching the job log.'));
+        } else if (this.jobTab.jobs[0].id === jobId) {
           this.selectedTab = 3;
-        });
+        }
 
-        // 3. Load Job data
-
-        // 4. let's load the data!
-        this.service.getJobTrace(job.status.details_path)
-          //.then(response => response.json())
-          .then((resp) => {
-            const log = Anser.ansiToHtml(resp.bodyText);
-            const linkedLog = Anser.linkify(log);
-
-            this.logTrace = linkedLog.split('\n');
-          })
-          .catch(() => new Flash('An error occurred while fetching the job log.'));
       },
 
       closeJobTab() {
@@ -178,6 +191,11 @@
       getJobTabTitle() {
         return `<a> status icon - ${this.jobTab.name}</a>`;
       },
+
+      updateUrl(jobId) {
+        const url = `?job=${jobId}`;
+        window.history.pushState(null, null, url);
+      }
     },
   };
 </script>

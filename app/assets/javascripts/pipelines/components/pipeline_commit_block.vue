@@ -1,6 +1,6 @@
 <script>
   export default {
-    name: 'pipelineCommitBlocl',
+    name: 'pipelineCommitBlock',
     props: {
       commit: {
         type: Object,
