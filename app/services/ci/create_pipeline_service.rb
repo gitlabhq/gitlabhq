@@ -1,8 +1,8 @@
 module Ci
   class CreatePipelineService < BaseService
-    attr_reader :pipeline, :trigger_request
+    attr_reader :pipeline
 
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
       @pipeline = Ci::Pipeline.new(
         source: source,
         project: project,
@@ -15,24 +15,14 @@ module Ci
         pipeline_schedule: schedule
       )
 
-      @trigger_request = trigger_request
+      result = validate(trigger_request,
+                        ignore_skip_ci: ignore_skip_ci,
+                        save_on_errors: save_on_errors)
 
-      return error if error = validate_parameter
+      return result if result
 
-      if !ignore_skip_ci && skip_ci?
-        pipeline.skip if save_on_errors
-        return pipeline
-      end
-
-      Ci::Pipeline.transaction do
-        update_merge_requests_head_pipeline if pipeline.save
-
-        yield(pipeline) if block_given?
-
-        Ci::CreatePipelineStagesService
-          .new(project, current_user)
-          .execute(pipeline)
-      end
+      err = create_pipeline(&block)
+      return err if err
 
       cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
 
@@ -43,7 +33,23 @@ module Ci
 
     private
 
-    def validate_parameter
+    def create_pipeline
+      Ci::Pipeline.transaction do
+        update_merge_requests_head_pipeline if pipeline.save
+
+        yield(pipeline) if block_given?
+
+        Ci::CreatePipelineStagesService
+          .new(project, current_user)
+          .execute(pipeline)
+      end
+
+      return nil
+    rescue ActiveRecord::RecordInvalid => invalid
+      return error('Failed to persist the pipeline')
+    end
+
+    def validate(trigger_request, ignore_skip_ci:, save_on_errors:)
       unless project.builds_enabled?
         return error('Pipeline is disabled')
       end
@@ -65,6 +71,11 @@ module Ci
           return error("Missing #{pipeline.ci_yaml_file_path} file")
         end
         return error(pipeline.yaml_errors, save: save_on_errors)
+      end
+
+      if !ignore_skip_ci && skip_ci?
+        pipeline.skip if save_on_errors
+        return pipeline
       end
 
       unless pipeline.has_stage_seeds?

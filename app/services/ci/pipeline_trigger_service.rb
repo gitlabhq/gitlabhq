@@ -14,7 +14,7 @@ module Ci
 
       pipeline = Ci::CreatePipelineService.new(project, trigger.owner, ref: params[:ref])
         .execute(:trigger, ignore_skip_ci: true) do |pipeline|
-          pipeline.variables.create!(params[:variables])
+          pipeline.variables.create!(params[:variables]) if params[:variables]
         end
 
       if pipeline.persisted?
