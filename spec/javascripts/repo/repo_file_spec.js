@@ -102,6 +102,6 @@ describe('RepoFile', () => {
 
     vm.$el.querySelector('.repo-file-name').click();
 
-    expect(vm.linkClicked).toHaveBeenCalled();
+    expect(vm.linkClicked).toHaveBeenCalledWith(file);
   });
 });
