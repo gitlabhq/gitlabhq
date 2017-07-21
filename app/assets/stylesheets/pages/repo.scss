@@ -55,15 +55,15 @@
     }
 
     #tabs {
-      height: 41px;
+      height: 51px;
       border-bottom: 1px solid $white-normal;
       padding-left: 0;
       margin-bottom: 0;
       display: inline-block;
       white-space: nowrap;
       width: 100%;
-      overflow-y: none;
-      overflow-x: scroll;
+      overflow-y: hidden;
+      overflow-x: auto;
 
       li {
         animation: fadein 0.5s;
@@ -80,6 +80,16 @@
 
         a {
           color: $black;
+          display: inline-block;
+          width: 100px;
+          text-align: center;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          &.close {
+            width: auto;
+            font-size: 15px;
+          }
         }
 
         i.fa.fa-times,
@@ -98,9 +108,12 @@
 
     #repo-file-buttons {
       background: $gray-light;
-      padding: 5px;
-      margin-top: -5px;
       border-bottom: 1px solid $white-normal;
+      padding: 5px;
+      margin-top: -15px;
+      padding: 10px 5px;
+      position: relative;
+      border-top: 1px solid $white-normal;
     }
 
     #binary-viewer {

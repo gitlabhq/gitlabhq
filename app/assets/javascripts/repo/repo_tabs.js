@@ -5,7 +5,7 @@ import RepoMiniMixin from './repo_mini_mixin';
 
 export default class RepoTabs {
   constructor(el) {
-    RepoTabs.styleTabsForWindows();
+    // RepoTabs.styleTabsForWindows();
     this.initVue(el);
   }
 
@@ -20,8 +20,8 @@ export default class RepoTabs {
     });
   }
 
-  static styleTabsForWindows() {
-    const scrollWidth = Number(document.body.dataset.scrollWidth);
-    Store.scrollWidth = scrollWidth;
-  }
+  // static styleTabsForWindows() {
+  //   const scrollWidth = Number(document.body.dataset.scrollWidth);
+  //   Store.scrollWidth = scrollWidth;
+  // }
 }

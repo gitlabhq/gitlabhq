@@ -1,5 +1,8 @@
 <script>
+import TimeAgoMixin from '../vue_shared/mixins/timeago';
+
 const RepoFile = {
+  mixins: [TimeAgoMixin],
   props: {
     file: {
       type: Object,
@@ -48,7 +51,7 @@ export default RepoFile;
   </td>
 
   <td v-if="!isMini" class="hidden-xs">
-    <span class="commit-update">{{file.lastCommitUpdate}}</span>
+    <span>{{timeFormated(file.lastCommitUpdate)}}</span>
   </td>
 </tr>
 </template>
