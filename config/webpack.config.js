@@ -56,7 +56,7 @@ var config = {
     pipelines_details:     './pipelines/pipeline_details_bundle.js',
     profile:              './profile/profile_bundle.js',
     prometheus_metrics:   './prometheus_metrics',
-    protected_branches:   './protected_branches/protected_branches_bundle.js',
+    protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
