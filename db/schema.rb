@@ -1707,6 +1707,7 @@ ActiveRecord::Schema.define(version: 20170809161910) do
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
+  add_foreign_key "group_access_requests", "namespaces", column: "group_id", name: "fk_74acbd4b2f", on_delete: :cascade
   add_foreign_key "group_access_requests", "users", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
