@@ -113,6 +113,10 @@ If you installed GitLab from source:
 
 [install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
 
+## Configuring GitLab Geo
+
+Read through the [GitLab Geo configuration](configuration.md) documentation.
+
 ## Updating the Geo nodes
 
 Read how to [update your Geo nodes to the latest GitLab version](updating_the_geo_nodes.md).
