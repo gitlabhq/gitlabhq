@@ -609,6 +609,14 @@ ActiveRecord::Schema.define(version: 20170809161910) do
   add_index "gpg_signatures", ["gpg_key_primary_keyid"], name: "index_gpg_signatures_on_gpg_key_primary_keyid", using: :btree
   add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
 
+  create_table "group_access_requests", id: false, force: :cascade do |t|
+    t.integer "group_id", null: false
+    t.integer "user_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+  end
+
+  add_index "group_access_requests", ["group_id", "user_id"], name: "index_group_access_requests_on_group_id_and_user_id", unique: true, using: :btree
+
   create_table "identities", force: :cascade do |t|
     t.string "extern_uid"
     t.string "provider"
@@ -1699,6 +1707,7 @@ ActiveRecord::Schema.define(version: 20170809161910) do
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
+  add_foreign_key "group_access_requests", "users", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
