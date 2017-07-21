@@ -300,5 +300,12 @@ describe Gitlab::Ci::Trace::Stream do
 
       include_examples 'malicious regexp'
     end
+
+    context 'multi-line data with rooted regexp' do
+      let(:data) { "\n65%\n" }
+      let(:regex) { '^(\d+)\%$' }
+
+      it { is_expected.to eq('65') }
+    end
   end
 end
