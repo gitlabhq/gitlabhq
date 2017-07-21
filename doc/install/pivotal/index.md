@@ -26,6 +26,7 @@ The GitLab Pivotal Tile is based on [Enterprise Edition Premium] and includes ne
 * PostgreSQL
 * Pages
 * Geo
+* Registry
 * Mattermost
 * Subgroups
 * Elasticsearch
