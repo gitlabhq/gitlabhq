@@ -4,7 +4,7 @@ require 'json'
 
 main_report_file = ARGV.shift
 unless main_report_file
-  puts 'usage: merge_reports <main-report> [extra reports...]'
+  puts 'usage: merge-reports <main-report> [extra reports...]'
   exit 1
 end
 
