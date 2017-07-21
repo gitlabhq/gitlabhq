@@ -18,7 +18,7 @@ module Gitlab
         {
           class: self.class.name,
           project_id: project.id,
-          project_path: project.path_with_namespace,
+          project_path: project.full_path,
           message: message
         }
       end

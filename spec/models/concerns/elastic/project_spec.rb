@@ -72,7 +72,7 @@ describe Project, elastic: true do
     )
 
     expected_hash['name_with_namespace'] = project.name_with_namespace
-    expected_hash['path_with_namespace'] = project.path_with_namespace
+    expected_hash['path_with_namespace'] = project.full_path
 
     expect(project.as_indexed_json).to eq(expected_hash)
   end

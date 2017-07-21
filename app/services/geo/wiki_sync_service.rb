@@ -26,7 +26,7 @@ module Geo
     end
 
     def ssh_url_to_wiki
-      "#{primary_ssh_path_prefix}#{project.path_with_namespace}.wiki.git"
+      "#{primary_ssh_path_prefix}#{project.full_path}.wiki.git"
     end
   end
 end

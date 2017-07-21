@@ -27,7 +27,7 @@ module Geo
     end
 
     def new_wiki_path_with_namespace
-      project.wiki.path_with_namespace
+      project.wiki.full_path
     end
   end
 end
