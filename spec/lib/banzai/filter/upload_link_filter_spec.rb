@@ -52,21 +52,21 @@ describe Banzai::Filter::UploadLinkFilter do
     it 'rebuilds relative URL for a link' do
       doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
       expect(doc.at_css('a')['href'])
-        .to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+        .to eq "#{Gitlab.config.gitlab.url}/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
 
       doc = filter(nested_link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
       expect(doc.at_css('a')['href'])
-        .to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+        .to eq "#{Gitlab.config.gitlab.url}/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
     end
 
     it 'rebuilds relative URL for an image' do
       doc = filter(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
       expect(doc.at_css('img')['src'])
-        .to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+        .to eq "#{Gitlab.config.gitlab.url}/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
 
       doc = filter(nested_image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
       expect(doc.at_css('img')['src'])
-        .to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+        .to eq "#{Gitlab.config.gitlab.url}/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
     end
 
     it 'does not modify absolute URL' do
@@ -85,7 +85,7 @@ describe Banzai::Filter::UploadLinkFilter do
         .to receive(:image?).with(path).and_return(true)
 
       doc = filter(image(escaped))
-      expect(doc.at_css('img')['src']).to match "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/%ED%95%9C%EA%B8%80.png"
+      expect(doc.at_css('img')['src']).to match "#{Gitlab.config.gitlab.url}/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png"
     end
   end
 

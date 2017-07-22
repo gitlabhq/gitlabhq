@@ -20,7 +20,7 @@ describe 'Projects > Wiki > User views Git access wiki page' do
     visit project_wiki_path(project, wiki_page)
 
     click_link 'Clone repository'
-    expect(page).to have_text("Clone repository #{project.wiki.path_with_namespace}")
+    expect(page).to have_text("Clone repository #{project.wiki.full_path}")
     expect(page).to have_text(project.wiki.http_url_to_repo)
   end
 end

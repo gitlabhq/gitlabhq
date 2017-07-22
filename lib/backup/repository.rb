@@ -42,7 +42,7 @@ module Backup
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_repo)
-          progress.print " * #{wiki.path_with_namespace} ... "
+          progress.print " * #{wiki.full_path} ... "
           if empty_repo?(wiki)
             progress.puts " [SKIPPED]".color(:cyan)
           else
@@ -104,7 +104,7 @@ module Backup
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_bundle)
-          progress.print " * #{wiki.path_with_namespace} ... "
+          progress.print " * #{wiki.full_path} ... "
 
           # If a wiki bundle exists, first remove the empty repo
           # that was initialized with ProjectWiki.new() and then
@@ -192,7 +192,7 @@ module Backup
       project_or_wiki.repository.expire_exists_cache # protect backups from stale cache
       project_or_wiki.repository.empty_repo?
     rescue => e
-      progress.puts "Ignoring repository error and continuing backing up project: #{project_or_wiki.path_with_namespace} - #{e.message}".color(:orange)
+      progress.puts "Ignoring repository error and continuing backing up project: #{project_or_wiki.full_path} - #{e.message}".color(:orange)
 
       false
     end
