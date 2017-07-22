@@ -54,7 +54,7 @@ class ProjectWiki
 
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
   def kerberos_url_to_repo
-    [Gitlab.config.build_gitlab_kerberos_url, "/", path_with_namespace, ".git"].join('')
+    [Gitlab.config.build_gitlab_kerberos_url, '/', full_path, '.git'].join('')
   end
 
   def wiki_base_path
