@@ -911,18 +911,43 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#branches with deleted branch' do
-    before(:each) do
-      ref = double()
-      allow(ref).to receive(:name) { 'bad-branch' }
-      allow(ref).to receive(:target) { raise Rugged::ReferenceError }
-      branches = double()
-      allow(branches).to receive(:each) { [ref].each }
-      allow(repository.rugged).to receive(:branches) { branches }
+  describe '#branches' do
+    subject { repository.branches }
+
+    context 'with local and remote branches' do
+      let(:repository) do
+        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
+      end
+
+      before do
+        create_remote_branch(repository, 'joe', 'remote_branch', 'master')
+        repository.create_branch('local_branch', 'master')
+      end
+
+      after do
+        FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
+        ensure_seeds
+      end
+
+      it 'returns the local and remote branches' do
+        expect(subject.any? { |b| b.name == 'joe/remote_branch' }).to eq(true)
+        expect(subject.any? { |b| b.name == 'local_branch' }).to eq(true)
+      end
     end
 
-    it 'should return empty branches' do
-      expect(repository.branches).to eq([])
+    # With Gitaly enabled, Gitaly just doesn't return deleted branches.
+    context 'with deleted branch with Gitaly disabled' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
+        ref = double()
+        allow(ref).to receive(:name) { 'bad-branch' }
+        allow(ref).to receive(:target) { raise Rugged::ReferenceError }
+        branches = double()
+        allow(branches).to receive(:each) { [ref].each }
+        allow(repository.rugged).to receive(:branches) { branches }
+      end
+
+      it { is_expected.to eq([]) }
     end
   end
 
@@ -1070,7 +1095,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns the local branches' do
-      create_remote_branch('joe', 'remote_branch', 'master')
+      create_remote_branch(@repo, 'joe', 'remote_branch', 'master')
       @repo.create_branch('local_branch', 'master')
 
       expect(@repo.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
@@ -1097,9 +1122,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  def create_remote_branch(remote_name, branch_name, source_branch_name)
-    source_branch = @repo.branches.find { |branch| branch.name == source_branch_name }
-    rugged = @repo.rugged
+  def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
+    source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
+    rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
   end
 
