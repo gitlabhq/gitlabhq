@@ -248,7 +248,7 @@ const actions = {
             });
           }
 
-          if (commandsChanges.spend_time || commandsChanges.time_estimate) {
+          if (commandsChanges.spend_time != null || commandsChanges.time_estimate != null) {
             sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', res);
           }
         }
