@@ -80,10 +80,14 @@ module Gitlab
       end
 
       # Returns an Array of Branches
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/389
-      def branches(sort_by: nil)
-        branches_filter(sort_by: sort_by)
+      def branches
+        gitaly_migrate(:branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.branches
+          else
+            branches_filter
+          end
+        end
       end
 
       def reload_rugged
