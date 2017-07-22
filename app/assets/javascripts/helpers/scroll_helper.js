@@ -16,7 +16,7 @@ const ScrollHelper = {
 
     $rulerContainer.appendTo('body');
 
-    const scrollWidth = $ruler.outerWidth();
+    const scrollWidth = $ruler.get(0).offsetWidth;
 
     $rulerContainer.remove();
 
