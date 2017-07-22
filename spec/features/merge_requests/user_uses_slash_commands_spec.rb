@@ -78,7 +78,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
     describe 'merging the MR from the note' do
       context 'when the current user can merge the MR' do
         it 'merges the MR' do
-          write_note("/merge")
+          write_note("/merge", false)
 
           expect(page).to have_content 'Commands applied'
 
