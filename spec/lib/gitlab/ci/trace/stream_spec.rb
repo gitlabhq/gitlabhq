@@ -307,5 +307,27 @@ describe Gitlab::Ci::Trace::Stream do
 
       it { is_expected.to eq('65') }
     end
+
+    context 'empty regex' do
+      let(:data) { 'foo' }
+      let(:regex) { '' }
+
+      it 'skips processing' do
+        expect(stream).not_to receive(:read)
+
+        is_expected.to be_nil
+      end
+    end
+
+    context 'nil regex' do
+      let(:data) { 'foo' }
+      let(:regex) { nil }
+
+      it 'skips processing' do
+        expect(stream).not_to receive(:read)
+
+        is_expected.to be_nil
+      end
+    end
   end
 end
