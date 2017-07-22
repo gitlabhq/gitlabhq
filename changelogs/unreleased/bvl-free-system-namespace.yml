@@ -1,4 +1,0 @@
----
-title: "Move uploads from `uploads/system` to `uploads/-/system` to free up `system` as a group name"
-merge_request: 11713
-author:
