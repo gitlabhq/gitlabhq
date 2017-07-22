@@ -74,6 +74,7 @@ module Gitlab
           match = ""
 
           reverse_line do |line|
+            line.chomp!
             matches = regex.scan(line)
             next unless matches.is_a?(Array)
             next if matches.empty?
