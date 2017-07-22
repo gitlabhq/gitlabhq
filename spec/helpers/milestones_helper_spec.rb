@@ -10,7 +10,7 @@ describe MilestonesHelper do
       it 'returns project milestones JSON URL' do
         assign(:project, project)
 
-        expect(helper.milestones_filter_dropdown_path).to eq(project_milestones_path(project, :json))
+        expect(helper.milestones_filter_dropdown_path).to eq(project_milestones_path(project, format: :json))
       end
     end
 
@@ -18,7 +18,7 @@ describe MilestonesHelper do
       it 'returns targeted project milestones JSON URL' do
         assign(:target_project, project2)
 
-        expect(helper.milestones_filter_dropdown_path).to eq(project_milestones_path(project2, :json))
+        expect(helper.milestones_filter_dropdown_path).to eq(project_milestones_path(project2, format: :json))
       end
     end
 

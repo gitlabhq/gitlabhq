@@ -127,7 +127,7 @@ module LabelsHelper
     project = @target_project || @project
 
     if project
-      project_labels_path(project, :json)
+      project_labels_path(project, format: :json)
     else
       dashboard_labels_path(:json)
     end

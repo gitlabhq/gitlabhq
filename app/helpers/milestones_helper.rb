@@ -75,7 +75,7 @@ module MilestonesHelper
   def milestones_filter_dropdown_path
     project = @target_project || @project
     if project
-      project_milestones_path(project, :json)
+      project_milestones_path(project, format: :json)
     elsif @group
       group_milestones_path(@group, :json)
     else
