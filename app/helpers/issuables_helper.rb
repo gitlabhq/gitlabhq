@@ -26,9 +26,9 @@ module IssuablesHelper
     project = issuable.project
 
     if issuable.is_a?(MergeRequest)
-      project_merge_request_path(project, issuable.iid, :json)
+      project_merge_request_path(project, issuable.iid, format: :json)
     else
-      project_issue_path(project, issuable.iid, :json)
+      project_issue_path(project, issuable.iid, format: :json)
     end
   end
 
