@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'lib/gitlab/badge/shared/metadata'
 
-describe Gitlab::Badge::Build::Metadata do
+describe Gitlab::Badge::Pipeline::Metadata do
   let(:badge) { double(project: create(:empty_project), ref: 'feature') }
   let(:metadata) { described_class.new(badge) }
 
@@ -9,13 +9,13 @@ describe Gitlab::Badge::Build::Metadata do
 
   describe '#title' do
     it 'returns build status title' do
-      expect(metadata.title).to eq 'build status'
+      expect(metadata.title).to eq 'pipeline status'
     end
   end
 
   describe '#image_url' do
     it 'returns valid url' do
-      expect(metadata.image_url).to include 'badges/feature/build.svg'
+      expect(metadata.image_url).to include 'badges/feature/pipeline.svg'
     end
   end
 

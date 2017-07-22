@@ -1,8 +1,8 @@
 module Gitlab
   module Badge
-    module Build
+    module Pipeline
       ##
-      # Class that describes build badge metadata
+      # Class that describes pipeline badge metadata
       #
       class Metadata < Badge::Metadata
         def initialize(badge)
@@ -11,11 +11,11 @@ module Gitlab
         end
 
         def title
-          'build status'
+          'pipeline status'
         end
 
         def image_url
-          build_project_badges_url(@project, @ref, format: :svg)
+          pipeline_project_badges_url(@project, @ref, format: :svg)
         end
 
         def link_url
