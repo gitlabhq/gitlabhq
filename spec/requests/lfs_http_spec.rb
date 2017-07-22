@@ -704,7 +704,7 @@ describe 'Git LFS API and storage' do
               expect(json_response['objects']).to be_kind_of(Array)
               expect(json_response['objects'].first['oid']).to eq(sample_oid)
               expect(json_response['objects'].first['size']).to eq(sample_size)
-              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
+              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
               expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
             end
 
