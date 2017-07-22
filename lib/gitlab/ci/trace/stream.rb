@@ -67,7 +67,7 @@ module Gitlab
 
         def extract_coverage(regex)
           return unless valid?
-          return unless regex
+          return unless regex.present?
 
           regex = Gitlab::UntrustedRegexp.new(regex)
 
