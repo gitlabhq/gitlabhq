@@ -212,14 +212,14 @@ describe WikiPage, models: true do
     context 'with same last commit sha' do
       it 'returns true' do
         last_commit_sha = @page.commit.sha
-        expect(@page.update('more content', :markdown, nil, last_commit_sha)).to be_truthy
+        expect(@page.update('more content', last_commit_sha: last_commit_sha)).to be_truthy
       end
     end
 
     context 'with different last commit sha' do
       it 'raises exception' do
         last_commit_sha = 'xxx'
-        expect { @page.update('more content', :markdown, nil, last_commit_sha) }.to raise_error(WikiPage::PageChangedError)
+        expect { @page.update('more content', last_commit_sha: last_commit_sha) }.to raise_error(WikiPage::PageChangedError)
       end
     end
   end

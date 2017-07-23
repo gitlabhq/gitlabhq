@@ -192,7 +192,7 @@ class WikiPage
   #
   # Returns the String SHA1 of the newly created page
   # or False if the save was unsuccessful.
-  def update(new_content = "", format = :markdown, message = nil, last_commit_sha = nil)
+  def update(new_content, format: :markdown, message: nil, last_commit_sha: nil)
     @attributes[:content] = new_content
     @attributes[:format] = format
 
