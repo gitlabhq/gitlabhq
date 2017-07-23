@@ -441,6 +441,7 @@ module EE
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
+    # TODO: check storage type and NOOP when not using Legacy
     def rename_repo
       raise NotImplementedError unless defined?(super)
 
