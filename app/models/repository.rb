@@ -59,9 +59,9 @@ class Repository
     end
   end
 
-  def initialize(full_path, disk_path, project)
+  def initialize(full_path, project, disk_path: nil)
     @full_path = full_path
-    @disk_path = disk_path
+    @disk_path = disk_path || full_path
     @project = project
   end
 

@@ -479,7 +479,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(full_path, disk_path, self)
+    @repository ||= Repository.new(full_path, self, disk_path: disk_path)
   end
 
   def container_registry_url
@@ -979,9 +979,8 @@ class Project < ActiveRecord::Base
 
   # Expires various caches before a project is renamed.
   def expire_caches_before_rename(old_path)
-    # TODO: if we start using UUIDs for cache, we don't need to do this HACK anymore
-    repo = Repository.new(old_path, old_path, self)
-    wiki = Repository.new("#{old_path}.wiki", "#{old_path}.wiki", self)
+    repo = Repository.new(old_path, self)
+    wiki = Repository.new("#{old_path}.wiki", self)
 
     if repo.exists?
       repo.before_delete
