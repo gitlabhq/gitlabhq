@@ -179,6 +179,13 @@ const RepoHelper = {
     };
   },
 
+  scrollTabsRight() {
+    // wait for the transition. 0.1 seconds. 
+    setTimeout(() => {
+      document.getElementById('tabs').scrollLeft = 12000;
+    }, 200)
+  },
+
   dataToListOfFiles(data) {
     const a = [];
 

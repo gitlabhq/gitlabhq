@@ -28,7 +28,7 @@
 
   .panel-right {
     display: inline-block;
-    width: 85%;
+    width: 80%;
 
     .monaco-editor.vs {
       .line-numbers {
@@ -165,7 +165,7 @@
     &.sidebar-mini {
       display: inline-block;
       vertical-align: top;
-      width: 15%;
+      width: 20%;
       border-right: 1px solid $white-normal;
       height: 80vh;
       overflow: auto;

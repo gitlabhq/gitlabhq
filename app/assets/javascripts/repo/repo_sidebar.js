@@ -55,6 +55,7 @@ export default class RepoSidebar {
               // it works.
               Helper.getContent(file, () => {
                 file.loading = false;
+                Helper.scrollTabsRight();
               });
             }
           } else if (typeof file === 'string') {
@@ -63,6 +64,7 @@ export default class RepoSidebar {
             Service.url = url;
             Helper.getContent(null, () => {
               file.loading = false;
+              Helper.scrollTabsRight();
             });
           }
         },
