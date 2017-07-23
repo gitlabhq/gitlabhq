@@ -61,11 +61,13 @@ module Projects
         project.send_move_instructions(@old_path)
 
         # Move main repository
+        # TODO: check storage type and NOOP when not using Legacy
         unless move_repo_folder(@old_path, @new_path)
           raise TransferError.new('Cannot move project')
         end
 
         # Move wiki repo also if present
+        # TODO: check storage type and NOOP when not using Legacy
         move_repo_folder("#{@old_path}.wiki", "#{@new_path}.wiki")
 
         # Move missing group labels to project
